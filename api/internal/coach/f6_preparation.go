@@ -26,15 +26,6 @@ const (
 	prepFactAllowed  = "combat potions the fight could hold"
 	prepFactUnused   = "combat potions unused"
 	prepFactEnchants = "items without a permanent enchant"
-	prepIncomplete   = "{Category}: the coach's {list} list isn't complete yet."
-
-	// The words each missing thing goes by in DetailAlsoMissing's {items}.
-	prepMissingFlask    = "a flask"
-	prepMissingFood     = "food"
-	prepMissingOil      = "a weapon oil or stone"
-	prepMissingEnchant  = "a {Slot} enchant"
-	prepMissingPotions  = "combat potions"
-	prepMissingBlessing = "a blessing"
 )
 
 // prepKind is what an issue is about; issues of one kind group into one title.
@@ -59,10 +50,6 @@ const (
 	orderPotions
 	orderRaidBuff // last: a raid-buff title means raid buffs alone (§6.1, never rank 1)
 )
-
-// enchantSlotNames labels the gear indexes in rating.DisciplineEnchantSlots, the one
-// list of slots both the score and this check read.
-var enchantSlotNames = map[int]string{4: "Chest", 7: "Feet", 14: "Back", mainHandSlot: "Main Hand"}
 
 // prepIssue is one thing missing at the pull.
 type prepIssue struct {
@@ -91,7 +78,7 @@ type prepCategory struct {
 func prepCategories() []prepCategory {
 	return []prepCategory{
 		{consumables.CategoryFlask, orderFlask, kindFlask, prepMissingFlask, Fill(prepIncomplete, map[string]string{"Category": "Flask", "list": "flask"})},
-		{consumables.CategoryWeaponEnchant, orderWeaponOil, kindWeaponOil, prepMissingOil, Drafts["cannot_weapon_enchant"]},
+		{consumables.CategoryWeaponEnchant, orderWeaponOil, kindWeaponOil, prepMissingOil, CannotWeaponEnchant},
 		{consumables.CategoryFood, orderFood, kindFood, prepMissingFood, FoodIncomplete},
 	}
 }
@@ -269,7 +256,7 @@ func prepTitle(lead []prepIssue) string {
 	case kindFood:
 		return TitleNoFood
 	case kindWeaponOil:
-		return Drafts["title_no_weapon_oil"]
+		return TitleNoWeaponOil
 	case kindEnchant:
 		if len(lead) > 1 {
 			return Fill(TitleNoEnchants, map[string]string{"n": n})
@@ -292,7 +279,7 @@ func prepDetail(lead []prepIssue, have []string) string {
 	case kindFood:
 		return withItems(DetailNoFood, DetailNoFoodBare, have)
 	case kindWeaponOil:
-		return Drafts["detail_no_weapon_oil"]
+		return DetailNoWeaponOil
 	case kindEnchant:
 		if len(lead) > 1 {
 			return Fill(DetailNoEnchants, map[string]string{"slots": joinAnd(names(lead))})
@@ -304,7 +291,11 @@ func prepDetail(lead []prepIssue, have []string) string {
 		}
 		return upperFirst(Fill(DetailRaidBuff, map[string]string{"Buff": first.missing, "class": first.class}))
 	}
-	return Fill(DetailPotions, map[string]string{
+	format := DetailPotions
+	if first.potions.uses == 1 {
+		format = DetailPotionsOne
+	}
+	return Fill(format, map[string]string{
 		"used": strconv.FormatInt(first.potions.uses, 10), "max": strconv.FormatInt(first.potions.allowed, 10),
 	})
 }
@@ -386,7 +377,7 @@ func preparedStrengths(have, facts []string) []Strength {
 	if len(have) == 0 {
 		return nil
 	}
-	sentence := Drafts["strength_consumables"]
+	sentence := StrengthConsumables
 	if flask := firstFlask(have); flask != "" {
 		sentence = Fill(StrengthAtPull, map[string]string{"Item": flask})
 	}
@@ -412,8 +403,6 @@ const blessingClass = "Paladin"
 // blessingNames are the paladin blessings, one given by each paladin; blessingWord names
 // a shortfall when the log cannot say which was owed.
 var blessingNames = []string{"Blessing of Kings", "Blessing of Might", "Blessing of Wisdom"}
-
-const blessingWord = "blessing"
 
 func raidBuffIssues(in Input) []prepIssue {
 	var out []prepIssue

@@ -135,7 +135,7 @@ func TestPreparation_PotionsShortOfWhatTheFightHoldsAreMinorAndQuoteBothNumbers(
 	in.Fight.DurationMS = 300_000
 	in.Fight = seedPotion(in.Fight, in.Row.GUID)
 	f := preparation(in, CountedTime(in)).Finding
-	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 unused" || f.Detail != "You used 1 combat potions. The fight had room for 2." {
+	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 unused" || f.Detail != "You used 1 combat potion. The fight had room for 2." {
 		t.Fatalf("%+v", f)
 	}
 	if len(f.Facts.Numbers) != 3 || f.Facts.Numbers[1].Text != "2" || f.Facts.Numbers[2].Text != "1" {
@@ -154,7 +154,7 @@ func TestPreparation_AShortFightIsNotFaultedForTheSecondPotion(t *testing.T) {
 func TestPreparation_WeaponOilIsCouldntCheckNeverMissing(t *testing.T) {
 	in := furyPrep(t, 40, fullKit())
 	o := preparation(in, CountedTime(in))
-	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, "Weapon oils and stones: the coach can't read them from the log yet.") {
+	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, "Weapon oils and stones: the coach can't read them from your log yet.") {
 		t.Fatalf("%+v %v", o.Finding, o.CouldNotCheck)
 	}
 }

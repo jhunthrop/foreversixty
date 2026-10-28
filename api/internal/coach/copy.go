@@ -1,9 +1,11 @@
 package coach
 
 import (
+	"cmp"
 	"fmt"
 	"log/slog"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -11,7 +13,7 @@ import (
 // Every player-facing pack string the spec shows, word for word
 // (docs/superpowers/specs/2026-10-27-log-coach-design.md §5, §6, §11), as format strings
 // with named fields filled by Fill. The experience spec's §8.1 strings follow
-// (design/specs/2026-10-28-log-coach.md); strings neither spec shows are in copy_drafts.go.
+// (design/specs/2026-10-28-log-coach.md); every string is here.
 // verbatim below lists each product-spec string with the spec's own example values, and
 // spec_test.go proves every filled example is quoted in the spec; experienceCopy lists the
 // §8.1 strings by their table key, and experience_spec_test.go pins each to its row.
@@ -55,16 +57,14 @@ const (
 	TitleUptime        = "{Aura} up {pct}% of the fight"
 	TitleLowRank       = "{Spell}: {n} casts of Rank {r}"
 
-	DetailCoreCasts      = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gaps {gap1} and {gap2}."
-	DetailNoFlask        = "You pulled with {items}, and no flask."
-	DetailCapped         = "Your {resource} sat at its cap for {n} s outside the {downtime}, longest at {span}."
-	DetailDeathHit       = "{Spell} hit for {amount} at {t}."
-	DeathNoPotion        = "No healing potion or Healthstone used in the 10 s before."
-	DetailOutOfManaDeath = "Your mana stayed under 5% from {t} until you died at {death}, {n} s in all."
-	DetailHealRank       = "{pct}% of what {Spell} (Rank {r}) healed was overheal, over {n} casts."
-	DetailDiedWithReady  = "{Killer} killed you at {t}. {Spell} had been ready since the pull."
-	DetailUptime         = "{Aura} was up for {n} s of {duration}."
-	DetailLowRank        = "Rank {next} is trainable at your level. Rank {r} was cast {n} times."
+	DetailCoreCasts     = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gaps {gap1} and {gap2}."
+	DetailNoFlask       = "You pulled with {items}, and no flask."
+	DetailDeathHit      = "{Spell} hit for {amount} at {t}."
+	DeathNoPotion       = "No healing potion or Healthstone used in the 10 s before."
+	DetailHealRank      = "{pct}% of what {Spell} (Rank {r}) healed was overheal, over {n} casts."
+	DetailDiedWithReady = "{Killer} killed you at {t}. {Spell} had been ready since the pull."
+	DetailUptime        = "{Aura} was up for {n} s of {duration}."
+	DetailLowRank       = "Rank {next} is trainable at your level. Rank {r} was cast {n} times."
 
 	StrengthAlive     = "Alive the whole fight."
 	StrengthUptime    = "{Aura} up {pct}% of the fight. Top {n}: {ref}%."
@@ -82,7 +82,7 @@ const (
 // The experience spec's §8.1 pack copy, word for word, by its table key.
 const (
 	TitleIdle    = "Idle for {n} seconds"
-	DetailIdle   = "Idle outside downtime for {n} s, {pct}% of the pull. Longest: {windows}."
+	DetailIdle   = "Idle outside downtime for {n} s, {pct}% of the time you were up. Longest: {windows}."
 	BasisIdleTop = "Top {n} {Spec} {classPlural} on {Boss} ({size}): {ref}% active. You: {you}%."
 	BasisIdle    = "From your log. Downtime and time spent dead are left out."
 
@@ -103,16 +103,19 @@ const (
 	BasisGear             = "From the gear in your log."
 	TitlePotions          = "Combat potions: {n} unused"
 	DetailPotions         = "You used {used} combat potions. The fight had room for {max}."
+	DetailPotionsOne      = "You used {used} combat potion. The fight had room for {max}."
 	TitleRaidBuff         = "No {Buff} at the pull"
 	TitleRaidBuffs        = "{n} raid buffs missing"
 	DetailRaidBuff        = "{Buff} was not on you at the pull. A {class} in the raid provides it."
 	DetailRaidBuffs       = "Not on you at the pull: {buffs}. The raid has a class that provides each."
 	BasisRaidBuff         = "From the character sheet in your log, against the classes in this raid."
 
-	DetailCoreCastsOne = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gap {gap1}."
-	DetailCoreMore     = "Also lost: {more}."
-	DetailOutOfMana    = "Your mana stayed under 5% from {t}, {n} s in all."
-	DetailCappedPlain  = "Your {resource} sat at its cap for {n} s, longest at {span}."
+	DetailCoreCastsOne   = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gap {gap1}."
+	DetailCoreMore       = "Also lost: {more}."
+	DetailOutOfMana      = "Your mana was under 5% for {n} s in all, first from {t}."
+	DetailOutOfManaDeath = "Your mana was under 5% for {n} s in all, first from {t}. You died at {death}."
+	DetailCapped         = "Your {resource} sat at its cap for {n} s outside {downtime}, longest at {span}."
+	DetailCappedPlain    = "Your {resource} sat at its cap for {n} s, longest at {span}."
 
 	NotReviewableTrash = "The coach reviews boss pulls only."
 	NotReviewableShort = "This pull is under 30 seconds, too short to show a rotation."
@@ -135,6 +138,32 @@ const (
 	LinkNoFlaskMana        = "You pulled without a flask and your mana ran out from {t}."
 	LinkPotionDeath        = "You died at {t} with combat potions unused."
 
+	// The words the rules were drafted with, fixed by §8.1 once the rules existed.
+	PoolLacksMeasure             = "Top {Spec} logs on {Boss} ({size}) don't record this."
+	TitleNoWeaponOil             = "No weapon oil or stone"
+	DetailNoWeaponOil            = "You pulled with no weapon oil or stone."
+	CannotWeaponEnchant          = "Weapon oils and stones: the coach can't read them from your log yet."
+	StrengthConsumables          = "Every consumable the coach can check was up at the pull."
+	DetailDiedWithReadyAvoidable = "{Killer} killed you at {t}, and this boss lets you avoid it. {Spell} had been ready since {since}."
+	CannotDefensives             = "Defensive cooldowns: the coach doesn't know your spec's list yet."
+	CannotDefensiveLevel         = "Defensive cooldowns you never cast: this log doesn't tell us your level."
+	CannotDeathKiller            = "Your death at {t}: the log doesn't say what killed you."
+	basisUptimeValue             = "{ref}% up. You: {you}%."
+	detailUptimeMore             = "Also low: {others}."
+	uptimeMoreItem               = "{Aura} {pct}%"
+	coreMoreEntry                = "{Spell} {n}"
+	adherenceEntry               = "{Spell} ({n})"
+	prepMissingFlask             = "a flask"
+	prepMissingFood              = "food"
+	prepMissingOil               = "a weapon oil or stone"
+	prepMissingEnchant           = "a {Slot} enchant"
+	prepMissingPotions           = "combat potions"
+	prepMissingBlessing          = "a blessing"
+	prepIncomplete               = "{Category}: the coach's {list} list isn't complete yet."
+	readySincePull               = "the pull"
+	coreUnknownResource          = "resource"
+	blessingWord                 = "blessing"
+
 	StemUptime    = "{Aura} uptime"
 	StemIdle      = "Idle time"
 	StemCapped    = "{Resource} at the cap"
@@ -149,6 +178,30 @@ const (
 	StemDeath     = "Early deaths"
 	StemAdherence = "Casts off the rotation"
 )
+
+// The §8.1 rows that are lists, in the order the table gives them: the in-game slot names
+// by gear index, and the resource nouns by power id. experienceLists pins each.
+var (
+	enchantSlotNames = map[int]string{4: "Chest", 7: "Feet", 14: "Back", mainHandSlot: "Main Hand"}
+	experienceLists  = map[string]func() []string{
+		"enchantSlotNames": func() []string { return orderedValues(enchantSlotNames) },
+		"powerNames":       func() []string { return orderedValues(PowerNames) },
+	}
+)
+
+// orderedValues is m's values in key order.
+func orderedValues[K cmp.Ordered](m map[K]string) []string {
+	keys := make([]K, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	out := make([]string, len(keys))
+	for i, k := range keys {
+		out[i] = m[k]
+	}
+	return out
+}
 
 // experienceCopy is every §8.1 string by the key in the table's first column.
 var experienceCopy = map[string]string{
@@ -175,6 +228,19 @@ var experienceCopy = map[string]string{
 	"StemLowRank": StemLowRank, "StemHealRank": StemHealRank, "StemNoFlask": StemNoFlask,
 	"StemNoFood": StemNoFood, "StemEnchants": StemEnchants, "StemPotions": StemPotions,
 	"StemRaidBuffs": StemRaidBuffs, "StemDeath": StemDeath, "StemAdherence": StemAdherence,
+	"DetailCapped": DetailCapped, "BasisCapOwnBar": BasisCapOwnBar, "DetailOutOfManaDeath": DetailOutOfManaDeath,
+	"DetailPotionsOne":   DetailPotionsOne,
+	"pool_lacks_measure": PoolLacksMeasure, "title_no_weapon_oil": TitleNoWeaponOil,
+	"detail_no_weapon_oil": DetailNoWeaponOil, "cannot_weapon_enchant": CannotWeaponEnchant,
+	"strength_consumables": StrengthConsumables, "detail_died_with_ready_avoidable": DetailDiedWithReadyAvoidable,
+	"cannot_defensives": CannotDefensives, "cannot_defensive_level": CannotDefensiveLevel,
+	"cannot_death_killer": CannotDeathKiller,
+	"basisUptimeValue":    basisUptimeValue, "detailUptimeMore": detailUptimeMore, "uptimeMoreItem": uptimeMoreItem,
+	"coreMoreEntry": coreMoreEntry, "adherenceEntry": adherenceEntry,
+	"prepMissingFlask": prepMissingFlask, "prepMissingFood": prepMissingFood, "prepMissingOil": prepMissingOil,
+	"prepMissingEnchant": prepMissingEnchant, "prepMissingPotions": prepMissingPotions,
+	"prepMissingBlessing": prepMissingBlessing, "prepIncomplete": prepIncomplete, "readySincePull": readySincePull,
+	"coreUnknownResource": coreUnknownResource, "blessingWord": blessingWord,
 }
 
 // verbatimEntry is one spec-shown string and the fields that fill it into the form the
@@ -224,10 +290,8 @@ var verbatim = map[string]verbatimEntry{
 	"TitleLowRank":         {TitleLowRank, map[string]string{"Spell": "Sunder Armor", "n": "22", "r": "4"}},
 	"DetailCoreCasts":      {DetailCoreCasts, map[string]string{"lost": "9", "possible": "40", "resource": "rage", "gap1": "1:12–1:25", "gap2": "2:40–2:51"}},
 	"DetailNoFlask":        {DetailNoFlask, map[string]string{"items": "Grilled Squid and an Elemental Sharpening Stone"}},
-	"DetailCapped":         {DetailCapped, map[string]string{"resource": "rage", "n": "14", "downtime": "air phase", "span": "2:41–2:50"}},
 	"DetailDeathHit":       {DetailDeathHit, map[string]string{"Spell": "Flame Breath", "amount": "2,140", "t": "3:20"}},
 	"DeathNoPotion":        {DeathNoPotion, nil},
-	"DetailOutOfManaDeath": {DetailOutOfManaDeath, map[string]string{"t": "3:05", "death": "3:20", "n": "15"}},
 	"DetailHealRank":       {DetailHealRank, map[string]string{"pct": "44", "Spell": "Greater Heal", "r": "4", "n": "23"}},
 	"DetailDiedWithReady":  {DetailDiedWithReady, map[string]string{"Killer": "Onyxia's melee", "t": "2:50", "Spell": "Shield Wall"}},
 	"DetailUptime":         {DetailUptime, map[string]string{"Aura": "Shield Block", "n": "42", "duration": "3:52"}},

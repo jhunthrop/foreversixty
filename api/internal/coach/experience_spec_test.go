@@ -2,6 +2,7 @@ package coach
 
 import (
 	"os"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -53,6 +54,12 @@ func TestExperienceSpecCopyIsPinnedWordForWord(t *testing.T) {
 		t.Fatalf("read %d rows from §8.1; the table has more", len(rows))
 	}
 	for key, cell := range rows {
+		if list, ok := experienceLists[key]; ok {
+			if !slices.Equal(list(), cell) {
+				t.Errorf("%s = %q, §8.1 says %q", key, list(), cell)
+			}
+			continue
+		}
 		got, ok := experienceCopy[key]
 		switch {
 		case !ok:
@@ -68,24 +75,16 @@ func TestExperienceSpecCopyIsPinnedWordForWord(t *testing.T) {
 			t.Errorf("copy.go entry %s has no §8.1 row", key)
 		}
 	}
+	for key := range experienceLists {
+		if _, ok := rows[key]; !ok {
+			t.Errorf("copy.go list %s has no §8.1 row", key)
+		}
+	}
 }
 
 func TestExperienceRowsReadsOneCell(t *testing.T) {
 	rows := experienceRows(t, packCopyHeading)
 	if got := rows["DetailCoreMore"]; len(got) != 1 || got[0] != "Also lost: {more}." {
 		t.Fatalf("DetailCoreMore = %q: the Where column's backticks are not the words", got)
-	}
-}
-
-// Drafts holds only what §8.1 left: no draft repeats a pinned string.
-func TestDraftsAreOnlyWhatTheTableLeft(t *testing.T) {
-	pinned := map[string]string{}
-	for key, s := range experienceCopy {
-		pinned[s] = key
-	}
-	for key, d := range Drafts {
-		if k, ok := pinned[d]; ok {
-			t.Errorf("draft %s repeats §8.1's %s: read the constant", key, k)
-		}
 	}
 }

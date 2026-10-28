@@ -7,8 +7,8 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// downtimeNoun fills DetailCapped's {downtime}; the spec's example is "air phase".
-// Task 33 may name each encounter's downtime.
+// downtimeNoun fills {downtime} in DetailCapped and BasisCapOwnBar: §8.1 fixes it as the
+// neutral word on every boss.
 const downtimeNoun = "downtime"
 
 // rolePowers are the bars each role is checked on (§6.3), in the order they are tried.
@@ -157,11 +157,11 @@ func assessMana(in Input, c Counted, track summary.ResourceTrack) *waste {
 	return &waste{severity: severity, totalMS: total, out: withWaste(outcomeOf(finding, runs, first), resourceOutOfMana, PowerNames[PowerMana])}
 }
 
-// manaDetail says the stretch ran until the death when one unbroken stretch did; every
-// other stretch (to the end, or mana coming back) is the total from the first second.
+// manaDetail names the death when the player died; the total and the first second are
+// the same either way.
 func manaDetail(in Input, c Counted, runs []ratingengine.Window, secs string) string {
 	fields := map[string]string{"t": Clock(runs[0].FromMS), "n": secs}
-	if len(runs) == 1 && runs[0].ToMS >= c.AliveMS && c.AliveMS < in.Fight.DurationMS {
+	if c.AliveMS < in.Fight.DurationMS {
 		fields["death"] = Clock(c.AliveMS)
 		return Fill(DetailOutOfManaDeath, fields)
 	}

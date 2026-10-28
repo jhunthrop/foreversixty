@@ -43,7 +43,7 @@ FURY_WHY = ('Bloodthirst is the button the Fury rotation is built around, and 9 
 FURY_THEN = [
     ('No flask at the pull', 'You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.',
      'A flask is a big gain for one boss; bring one to every 40-player kill.'),
-    ('Rage full for 14 seconds', 'Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.',
+    ('Rage full for 14 seconds', 'Your rage sat at its cap for 14 s outside downtime, longest at 2:41–2:50.',
      'When the bar is full, Heroic Strike turns rage into damage instead of losing it.'),
 ]
 FURY_WELL = ['Alive the whole fight.', 'Death Wish up 94% of the fight. Top 25: 91%.']

@@ -264,9 +264,9 @@ func TestDeath_NarrowedDefensiveCheckSaysSo(t *testing.T) {
 		want []string
 	}{
 		{name: "no defensives list", in: holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140),
-			want: []string{"Defensive cooldowns: the coach's list for your spec isn't written yet."}},
+			want: []string{"Defensive cooldowns: the coach doesn't know your spec's list yet."}},
 		{name: "unknown level", in: f7Level(protDeathShieldWallReady(t, 232_000, 170_000), 0),
-			want: []string{"Defensive cooldowns you never cast: your log doesn't record your level."}},
+			want: []string{"Defensive cooldowns you never cast: this log doesn't tell us your level."}},
 		{name: "known level, Shield Wall ready", in: protDeathShieldWallReady(t, 232_000, 170_000)},
 		{name: "known level, nothing ready", in: f7Cast(protDeathShieldWallReady(t, 232_000, 170_000), shieldWallID, "Shield Wall", 100_000)},
 	}
@@ -288,14 +288,14 @@ func TestDeath_NarrowedDefensiveCheckSaysSo(t *testing.T) {
 func TestDeath_ReadyKeepsTheAvoidableFact(t *testing.T) {
 	sincePull := f7Died(protInput(t), 232_000, 170_000, tailSweepID, "Tail Sweep", 1_200)
 	f := death(sincePull, CountedTime(sincePull)).Finding
-	want := "Tail Sweep killed you at 2:50. Tail Sweep is on this boss's list of damage you can avoid. Shield Wall had been ready since the pull."
+	want := "Tail Sweep killed you at 2:50, and this boss lets you avoid it. Shield Wall had been ready since the pull."
 	if f == nil || f.Title != "Died at 2:50 with Shield Wall ready" || f.Detail != want {
 		t.Fatalf("got %+v, want detail %q", f, want)
 	}
 	back := f7Died(protInput(t), 400_000, 200_000, tailSweepID, "Tail Sweep", 1_200)
 	back = f7Cast(f7Cast(back, shieldWallID, "Shield Wall", 150_000), lastStandID, "Last Stand", 10_000)
 	f = death(back, CountedTime(back)).Finding
-	want = "Tail Sweep killed you at 3:20. Tail Sweep is on this boss's list of damage you can avoid. Last Stand had been ready since 3:10."
+	want = "Tail Sweep killed you at 3:20, and this boss lets you avoid it. Last Stand had been ready since 3:10."
 	if f == nil || f.Title != "Died at 3:20 with Last Stand ready" || f.Detail != want {
 		t.Fatalf("got %+v, want detail %q", f, want)
 	}

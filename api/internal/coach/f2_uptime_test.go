@@ -140,7 +140,7 @@ func TestUptime_PoolWithoutTheAuraSaysSoAndNeverTheThinPoolLine(t *testing.T) {
 		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
 	in.Fight = withAura(in.Fight, f2BossGUID, f2RendID, f2RendName, []string{furyGUID}, span(0, f2FightMS))
 	o := uptime(in, CountedTime(in))
-	want := "Top Fury logs on Onyxia (40) don't record this yet."
+	want := "Top Fury logs on Onyxia (40) don't record this."
 	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
 	}
@@ -252,6 +252,29 @@ func TestUptime_AnyRankIsTheAura(t *testing.T) {
 			t.Fatalf("finding %+v", f)
 		}
 	})
+}
+
+func TestUptime_AnchorOpensTheRankThatWasUp(t *testing.T) {
+	in := furyShoutRanks(t, poolUptime(f2ShoutRank7ID, 97, 25),
+		map[int64][]summary.Segment{f2ShoutRank6ID: {span(0, f2FightMS/10)}})
+	o := uptime(in, CountedTime(in))
+	if o.Finding == nil || len(o.Anchors) != 1 || o.Anchors[0].Kind != AnchorAura || o.Anchors[0].SpellID != f2ShoutRank6ID {
+		t.Fatalf("finding %+v anchors %+v", o.Finding, o.Anchors)
+	}
+}
+
+func TestUptime_AnotherPlayersLowerRankCountsTowardTheSoleApplier(t *testing.T) {
+	const rendLow, rendHigh = 11976, 11977
+	in := f2Steady(furyInput(t))
+	in.Tables.Rules.Auras = []AuraRule{{SpellID: rendHigh, SpellIDs: []int64{rendLow, rendHigh},
+		Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified}}
+	in.Fight = withAura(in.Fight, f2BossGUID, rendHigh, f2RendName, []string{furyGUID}, span(0, f2FightMS/5))
+	in.Fight = withAura(in.Fight, f2BossGUID, rendLow, f2RendName, []string{f2SecondaryGUID}, span(0, f2FightMS/5))
+	o := uptime(withPool(in, poolUptime(rendHigh, 80, 25)), CountedTime(in))
+	want := "Your share of Rend: 2 warriors applied it, and the log merges them."
+	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
+		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
+	}
 }
 
 func TestUptime_NeverAppliedUnlistedAuraIsSkipped(t *testing.T) {

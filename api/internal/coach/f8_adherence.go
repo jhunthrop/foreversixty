@@ -9,10 +9,8 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// F8's fact labels, and adherenceEntry, one spell in DetailAdherence's list as §8.1's
-// example shows it ("Heroic Strike (31), Slam (12) and Rend (9)").
+// F8's fact labels.
 const (
-	adherenceEntry         = "{Spell} ({n})"
 	adherenceFactYou       = "casts from the rotation"
 	adherenceFactMedian    = "casts from the rotation, top logs"
 	adherenceCastsPerSpell = "{Spell} casts outside the rotation"

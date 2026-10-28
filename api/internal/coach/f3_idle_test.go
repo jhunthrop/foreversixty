@@ -112,7 +112,7 @@ func TestIdleNumbersAndText(t *testing.T) {
 	in := furyIdle(t, 200_000, span(40_000, 52_000), span(90_000, 102_000))
 	o := idle(in, CountedTime(in))
 	assertNumbers(t, o.Finding.Facts, "24", "12")
-	for _, want := range []string{"Idle for 24 seconds", "Idle outside downtime for 24 s, 12% of the pull. Longest: 0:40–0:52 and 1:30–1:42."} {
+	for _, want := range []string{"Idle for 24 seconds", "Idle outside downtime for 24 s, 12% of the time you were up. Longest: 0:40–0:52 and 1:30–1:42."} {
 		if !strings.Contains(textOf(o), want) {
 			t.Errorf("text lacks %q: %s", want, textOf(o))
 		}

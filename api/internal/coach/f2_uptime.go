@@ -1,19 +1,13 @@
 package coach
 
 import (
+	"cmp"
 	"slices"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
-)
-
-// F2 pack strings the spec does not show (drafts until Task 33 pins them).
-const (
-	basisUptimeValue = "{ref}% up. You: {you}%."
-	detailUptimeMore = "Also low: {others}."
-	uptimeMoreItem   = "{Aura} {pct}%"
 )
 
 // uptimeKindsByRole is the aura kinds F2 judges for a role (§6.2).
@@ -80,6 +74,7 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 	up, den, ok := int64(0), c.CountedMS, c.CountedMS > 0 // never applied: up for none of it
 	if track != nil {
 		up, den, ok = measureUptime(*track, c)
+		anchor.SpellID = track.SpellID
 	} else {
 		// No aura row exists to open, so the finding points at the time it counts.
 		at, to := c.FirstCastMS, c.AliveMS
@@ -152,20 +147,30 @@ func ownTrack(in Input, rule AuraRule) (track *summary.AuraTrack, appliers int) 
 	return track, 0
 }
 
-// longestTrack is the aura's track with the most uptime among targets whose tracks of any
-// of ids match keep, or nil. Every rank's tracks on one target are one track (a lower
-// rank is still the aura): their segments are joined and their appliers pooled.
+// longestTrack is the aura's track with the most uptime among targets whose joined track
+// of any of ids matches keep, or nil. Every rank's tracks on one target are one track (a
+// lower rank is still the aura): segments joined, appliers pooled across all ranks before
+// keep looks at them, and the spell id is the rank that was up longest, so an anchor
+// opens a row that exists.
 func longestTrack(in Input, ids []int64, keep func(*summary.AuraTrack) bool) *summary.AuraTrack {
 	byTarget := map[string]*summary.AuraTrack{}
+	topRank := map[string]*summary.AuraTrack{}
 	for i := range in.Fight.Auras {
 		a := &in.Fight.Auras[i]
-		if !slices.Contains(ids, a.SpellID) || !keep(a) {
+		if !slices.Contains(ids, a.SpellID) {
 			continue
 		}
 		byTarget[a.TargetGUID] = unionTrack(byTarget[a.TargetGUID], a)
+		if t := topRank[a.TargetGUID]; t == nil || a.UptimeMS > t.UptimeMS {
+			topRank[a.TargetGUID] = a
+		}
 	}
 	var best *summary.AuraTrack
-	for _, t := range byTarget {
+	for target, t := range byTarget {
+		t.SpellID = topRank[target].SpellID
+		if !keep(t) {
+			continue
+		}
 		if best == nil || t.UptimeMS > best.UptimeMS || (t.UptimeMS == best.UptimeMS && t.TargetGUID < best.TargetGUID) {
 			best = t
 		}
@@ -173,8 +178,8 @@ func longestTrack(in Input, ids []int64, keep func(*summary.AuraTrack) bool) *su
 	return best
 }
 
-// unionTrack is acc joined with a: segments merged where they overlap, appliers pooled.
-// With acc nil it is a copy of a.
+// unionTrack is acc joined with a: segments merged where they overlap, appliers pooled,
+// applications summed, seeded when either is. With acc nil it is a copy of a.
 func unionTrack(acc, a *summary.AuraTrack) *summary.AuraTrack {
 	if acc == nil {
 		c := *a
@@ -183,7 +188,7 @@ func unionTrack(acc, a *summary.AuraTrack) *summary.AuraTrack {
 		return &c
 	}
 	segs := append(slices.Clone(acc.Segments), a.Segments...)
-	slices.SortFunc(segs, func(x, y summary.Segment) int { return int(x.StartMS - y.StartMS) })
+	slices.SortFunc(segs, func(x, y summary.Segment) int { return cmp.Compare(x.StartMS, y.StartMS) })
 	var merged []summary.Segment
 	var up int64
 	for _, s := range segs {
@@ -197,6 +202,8 @@ func unionTrack(acc, a *summary.AuraTrack) *summary.AuraTrack {
 		up += s.EndMS - s.StartMS
 	}
 	acc.Segments, acc.UptimeMS = merged, up
+	acc.Applications += a.Applications
+	acc.Seeded = acc.Seeded || a.Seeded
 	for _, g := range a.Appliers {
 		if !slices.Contains(acc.Appliers, g) {
 			acc.Appliers = append(acc.Appliers, g)

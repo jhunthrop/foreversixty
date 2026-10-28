@@ -109,13 +109,13 @@ func TestReview_CouldNotCheckStartsWithTalentsAndRange(t *testing.T) {
 
 func TestReview_CouldNotCheckDedupesInCheckOrder(t *testing.T) {
 	thin := Fill(ThinPool, map[string]string{"n": "0", "Spec": "Fury", "Boss": "Onyxia", "size": "40"})
-	lacks := Drafts["pool_lacks_measure"]
+	lacks := PoolLacksMeasure
 	results := []checked{
 		{CodeCoreCasts, outcome{CouldNotCheck: []string{thin}}},
 		{CodeUptime, outcome{CouldNotCheck: []string{lacks, thin}}},
-		{CodeRanks, outcome{CouldNotCheck: []string{Drafts["cannot_level"], lacks}}},
+		{CodeRanks, outcome{CouldNotCheck: []string{CannotLevelRanks, lacks}}},
 	}
-	want := []string{CannotTalents, CannotRange, thin, lacks, Drafts["cannot_level"]}
+	want := []string{CannotTalents, CannotRange, thin, lacks, CannotLevelRanks}
 	if got := couldNotCheck(results); !slices.Equal(got, want) {
 		t.Fatalf("%q", got)
 	}

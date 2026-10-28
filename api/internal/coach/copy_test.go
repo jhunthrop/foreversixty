@@ -36,24 +36,6 @@ func TestSpecVerbatimFillsTheSpecsFilledForms(t *testing.T) {
 	}
 }
 
-func TestDraftsAreNotInVerbatim(t *testing.T) {
-	verbatimText := map[string]string{}
-	for name, s := range SpecVerbatim() {
-		verbatimText[s] = name
-	}
-	for key, d := range Drafts {
-		if _, ok := verbatim[key]; ok {
-			t.Errorf("%s is both a draft and spec-verbatim", key)
-		}
-		if name, ok := verbatimText[d]; ok {
-			t.Errorf("draft %s repeats spec-verbatim %s", key, name)
-		}
-		if specQuoted(t, d) {
-			t.Errorf("draft %s %q is quoted in the spec: move it to copy.go", key, d)
-		}
-	}
-}
-
 // sampleFields fills any title with plausible values: a two-word name and one number.
 var sampleFields = map[string]string{
 	"Spell": "Greater Heal", "Aura": "Shield Block", "Resource": "Rage", "Item": "Thunderfury",
@@ -77,11 +59,6 @@ func TestTitlesShape(t *testing.T) {
 	for key, s := range experienceCopy {
 		if strings.HasPrefix(key, "Title") {
 			titles[key] = s
-		}
-	}
-	for key, d := range Drafts {
-		if strings.HasPrefix(key, "title_") {
-			titles[key] = d
 		}
 	}
 	if len(titles) < 18 {
@@ -133,9 +110,6 @@ func TestCopyNeverSaysHealMore(t *testing.T) {
 	all := []string{}
 	for _, s := range SpecVerbatim() {
 		all = append(all, s)
-	}
-	for _, d := range Drafts {
-		all = append(all, d)
 	}
 	for _, s := range experienceCopy {
 		all = append(all, s)

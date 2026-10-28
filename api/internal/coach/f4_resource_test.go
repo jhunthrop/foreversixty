@@ -23,7 +23,7 @@ func TestF4CapLeavesOutCuratedDowntime(t *testing.T) {
 	if f == nil || f.Title != "Rage full for 15 seconds" {
 		t.Fatalf("10 s before and 5 s after the downtime count: %+v", f)
 	}
-	if want := "Your rage sat at its cap for 15 s outside the downtime, longest at 0:30–0:40."; f.Detail != want {
+	if want := "Your rage sat at its cap for 15 s outside downtime, longest at 0:30–0:40."; f.Detail != want {
 		t.Errorf("detail %q, want %q", f.Detail, want)
 	}
 	if want := Fill(BasisCapOwnBar, map[string]string{"resource": "rage", "downtime": "downtime"}); f.Basis.Label != want {
@@ -271,9 +271,9 @@ func TestF4ManaDetailVariants(t *testing.T) {
 		in   Input
 		want string
 	}{
-		{"died while out of mana", died, "Your mana stayed under 5% from 3:05 until you died at 3:20, 15 s in all."},
-		{"out to the end", holyManaLow(t, 232_000, 150_000, 232_000), "Your mana stayed under 5% from 2:30, 82 s in all."},
-		{"recovered", holyManaLow(t, 232_000, 185_000, 200_000), "Your mana stayed under 5% from 3:05, 15 s in all."},
+		{"died while out of mana", died, "Your mana was under 5% for 15 s in all, first from 3:05. You died at 3:20."},
+		{"out to the end", holyManaLow(t, 232_000, 150_000, 232_000), "Your mana was under 5% for 82 s in all, first from 2:30."},
+		{"recovered", holyManaLow(t, 232_000, 185_000, 200_000), "Your mana was under 5% for 15 s in all, first from 3:05."},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

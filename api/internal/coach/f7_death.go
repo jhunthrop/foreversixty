@@ -43,9 +43,6 @@ type deathReady struct {
 	ReadyAtMS int64 // cast before the death: when its cooldown came back
 }
 
-// readySincePull fills {since} for a defensive never cast before the death.
-const readySincePull = "the pull"
-
 // death is F7 (§6.2): the player's first reviewable death, what killed them, whether it
 // is on the encounter's avoidable list, a defensive that was ready, and whether a healing
 // potion or Healthstone was cast in the DeathPotionWindowMS before. No death at all is a
@@ -61,7 +58,7 @@ func death(in Input, _ Counted) outcome {
 	}
 	hit, ok := deathHitOf(in, d)
 	if !ok {
-		return outcome{CouldNotCheck: []string{Fill(Drafts["cannot_death_killer"], map[string]string{"t": Clock(d.AtMS)})}}
+		return outcome{CouldNotCheck: []string{Fill(CannotDeathKiller, map[string]string{"t": Clock(d.AtMS)})}}
 	}
 	ready, hasReady, levelSkipped := readyDefensive(in, d.AtMS)
 	anchors := []Anchor{deathAnchor(d.AtMS)}
@@ -82,9 +79,9 @@ func death(in Input, _ Counted) outcome {
 func defensivesNarrowed(in Input, hasReady, levelSkipped bool) []string {
 	switch {
 	case len(in.Tables.Rules.Defensives) == 0:
-		return []string{Drafts["cannot_defensives"]}
+		return []string{CannotDefensives}
 	case levelSkipped && !hasReady:
-		return []string{Drafts["cannot_defensive_level"]}
+		return []string{CannotDefensiveLevel}
 	}
 	return nil
 }
@@ -290,7 +287,7 @@ func readyDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
 		format, fields["since"] = DetailDiedWithReadySince, Clock(ready.ReadyAtMS)
 	}
 	if deathAvoidable(in, hit) {
-		format = Drafts["detail_died_with_ready_avoidable"]
+		format = DetailDiedWithReadyAvoidable
 	}
 	return Fill(format, fields)
 }

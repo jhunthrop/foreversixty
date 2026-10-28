@@ -10,15 +10,8 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// coreMoreEntry is one ability in DetailCoreMore's list, as §8.1's example shows it
-// ("Whirlwind 4 and Heroic Strike 3"); coreCostMark is the word in CoreNoCost that a
-// different resource replaces.
-const (
-	coreMoreEntry = "{Spell} {n}"
-	coreCostMark  = "rage"
-)
-
-const coreUnknownResource = "resource"
+// coreCostMark is the word in CoreNoCost that another resource's noun replaces.
+var coreCostMark = PowerNames[PowerRage]
 
 // coreGap is one stretch where an ability sat ready and uncast: [fromMS, toMS) is the whole
 // gap, readyMS the counted ready time left after the grace.
