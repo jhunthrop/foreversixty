@@ -116,7 +116,10 @@ test.describe('Premium owner', () => {
       .locator('a')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href') ?? ''));
     expect(hrefs.length).toBeGreaterThanOrEqual(Object.keys(ANCHORS).length - 1);
-    for (const [id, lands] of Object.entries(ANCHOR_LANDS)) {
+    // The worked review is a warrior's, so it cites every anchor except the healing one (the
+    // healer test below covers that chip).
+    const cited = Object.entries(ANCHOR_LANDS).filter(([id]) => id !== 'healing');
+    for (const [id, lands] of cited) {
       const matches = hrefs.filter((href) => lands.test(href));
       expect(matches.length, `anchor ${id} has a chip`).toBeGreaterThan(0);
     }
