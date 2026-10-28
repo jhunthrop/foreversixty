@@ -561,7 +561,7 @@ func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	if !pull.Known || !ok {
 		return nil
 	}
-	full := pull.Has(consumables.CategoryFlask) && pull.Has(consumables.CategoryFood) && enchanted(combatant)
+	full := pull.Has(consumables.CategoryFlask) && pull.Has(consumables.CategoryFood) && Enchanted(combatant)
 	return &full
 }
 
@@ -575,9 +575,9 @@ func combatantOf(fight summary.Summary, guid string) (summary.CombatantRow, bool
 	return summary.CombatantRow{}, false
 }
 
-// enchanted is true when every equipped slot of disciplineEnchantSlots carries a
+// Enchanted is true when every equipped slot of disciplineEnchantSlots carries a
 // permanent enchant (the first of an item's enchant ids). An empty slot asks for none.
-func enchanted(c summary.CombatantRow) bool {
+func Enchanted(c summary.CombatantRow) bool {
 	for _, slot := range disciplineEnchantSlots {
 		if slot >= len(c.Gear) || c.Gear[slot].ID == 0 {
 			continue
