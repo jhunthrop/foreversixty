@@ -35,7 +35,8 @@ const (
 	plainNumber     = `\p{Nd}{1,3}(?:,\p{Nd}{3})+(?:\.\p{Nd}+)?|\p{Nd}+(?:\.\p{Nd}+)?`
 	numberSuffix    = `\s*%|\s+per\s?cent\b|[kK]\b`
 	betweenRange    = `(?i:between)\s+(` + timePattern + `)\s+(?i:and)\s+(` + timePattern + `)`
-	numberPatternRE = betweenRange + `|(` + timePattern + `)` + rangeJoin + `(` + timePattern + `)|(` + timePattern + `)|(` + plainNumber + `)(` + numberSuffix + `)?`
+	numberPatternRE = betweenRange + `|(` + timePattern + `)` + rangeJoin + `(` + timePattern + `)|(` + timePattern + `)|(` + plainNumber + `)(` + numberSuffix + `)?` +
+		`|(` + romanPattern + `)|(` + numberFormPattern + `)`
 )
 
 var numberRE = regexp.MustCompile(numberPatternRE)
@@ -49,12 +50,14 @@ const (
 	groupTime        = 5
 	groupNumber      = 6
 	groupSuffix      = 7
+	groupRoman       = 8
+	groupNumberForm  = 9
 )
 
 // ExtractNumbers finds every digit sequence in prose: integers, decimals, percentages
 // ("44%", "44 %", "44 percent"), thousands separators ("2,140"), "2.1k", m:ss times and
 // m:ss ranges joined by a hyphen, dash, "to" or "between ... and ...". Digits of any script
-// count. Norm is the form the pack states: ASCII digits, commas removed, a trailing zero
+// count, and so do roman numerals ("Rank IV" is 4) and other number forms ("x²", "Ⅻ"). Norm is the form the pack states: ASCII digits, commas removed, a trailing zero
 // dropped, a range joined by an en dash. A range is one token: it passes only when the
 // pack holds that very pair, never because its two ends appear in different ranges.
 func ExtractNumbers(s string) []NumberToken {
@@ -74,6 +77,12 @@ func ExtractNumbers(s string) []NumberToken {
 			out = append(out, rangeToken(raw, group(groupRangeFrom), group(groupRangeTo)))
 		case group(groupTime) != "":
 			out = append(out, NumberToken{Raw: raw, Norm: normTime(group(groupTime)), Kind: KindTime})
+		case group(groupRoman) != "":
+			out = append(out, NumberToken{Raw: raw, Norm: strconv.Itoa(romanValue(raw)), Kind: KindNumber})
+		case group(groupNumberForm) != "":
+			if !onlyVulgarFractions(raw) {
+				out = append(out, NumberToken{Raw: raw, Norm: numberFormNorm(raw), Kind: KindNumber})
+			}
 		default:
 			out = append(out, numberToken(raw, group(groupNumber), strings.TrimSpace(group(groupSuffix))))
 		}
@@ -136,10 +145,27 @@ func normTime(t string) string {
 }
 
 // numberWordPattern lists the number words above three a model might write in place of
-// a digit: teens, tens, magnitudes, ordinals, plus the vulgar fraction signs.
+// a digit: teens, tens, magnitudes, ordinals (to twentieth, the tens, the magnitudes),
+// multipliers ("tenfold", "two-fold", "quadruple"), plus the vulgar fraction signs.
 const numberWordPattern = `(?i)\b(?:four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|` +
 	`sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|` +
-	`hundred|thousand|million|dozen|fourth|fifth|sixth|seventh|eighth|ninth|tenth)s?\b|[\x{00BC}-\x{00BE}\x{2150}-\x{215E}]`
+	`hundred|thousand|million|dozen|fourth|fifth|sixth|seventh|eighth|ninth|tenth|` +
+	`eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|` +
+	`twentieth|thirtieth|fortieth|fiftieth|sixtieth|seventieth|eightieth|ninetieth|hundredth|thousandth|millionth|` +
+	`(?:two|three|four|five|six|seven|eight|nine|ten|twenty|hundred|thousand)-?fold|quadrupled?|quintupled?)s?\b|` +
+	`[\x{00BC}-\x{00BE}\x{2150}-\x{215E}]`
+
+// smallNumberWord is "one" to "ten": a ratio or multiplier phrase is built from them.
+const smallNumberWord = `(?:one|two|three|four|five|six|seven|eight|nine|ten)`
+
+// numberPhrasePattern lists the phrases that are numeric claims though their words are
+// small: ratios ("one in three", "two out of three"), multipliers ("three times as") and
+// hyphenated fractions ("one-third", "two-thirds") whatever follows them.
+const numberPhrasePattern = `(?i)\b(?:` +
+	`(?:one|two|three)\s+(?:in|out\s+of)\s+` + smallNumberWord +
+	`|(?:two|three)\s+times\s+(?:as|more|less|longer|faster|slower|over|the)` +
+	`|(?:one|two|three)-(?:thirds?|quarters?|halfs?|halves|fifths?)` +
+	`)\b`
 
 // quantifiedWordPattern lists fractions and multiples ("half", "a third", "two-thirds",
 // "a quarter", "twice", "double", "triple") only where they quantify something: followed by
@@ -154,6 +180,7 @@ const alwaysQuantifiedPattern = `(?i)\b(?:a\s+(third|quarter)|by\s+(half))\b`
 
 var (
 	numberWordRE         = regexp.MustCompile(numberWordPattern)
+	numberPhraseRE       = regexp.MustCompile(numberPhrasePattern)
 	quantifiedWordRE     = regexp.MustCompile(quantifiedWordPattern)
 	alwaysQuantifiedWord = regexp.MustCompile(alwaysQuantifiedPattern)
 )
@@ -187,8 +214,9 @@ func alwaysQuantifiedHits(s string, known []wordHit) []wordHit {
 	return out
 }
 
-// NumberWords finds number words above "three", and fractions and multiples that quantify
-// something, lowercased, in the order written.
+// NumberWords finds number words above "three", fractions and multiples that quantify
+// something, and ratio, multiplier and hyphenated-fraction phrases, lowercased, in the order
+// written.
 func NumberWords(s string) []string {
 	var hits []wordHit
 	for _, loc := range numberWordRE.FindAllStringIndex(s, -1) {
@@ -202,10 +230,29 @@ func NumberWords(s string) []string {
 		hits = append(hits, wordHit{m[2], word})
 	}
 	hits = append(hits, alwaysQuantifiedHits(s, hits)...)
-	sort.Slice(hits, func(i, j int) bool { return hits[i].at < hits[j].at })
-	out := make([]string, len(hits))
-	for i, h := range hits {
-		out[i] = h.word
+	for _, loc := range numberPhraseRE.FindAllStringIndex(s, -1) {
+		hits = append(hits, wordHit{loc[0], strings.ToLower(s[loc[0]:loc[1]])})
+	}
+	return withoutOverlaps(hits)
+}
+
+// withoutOverlaps orders hits as written and drops a hit inside an earlier, longer one
+// ("thirds" inside "two-thirds"), so one claim is reported once.
+func withoutOverlaps(hits []wordHit) []string {
+	sort.Slice(hits, func(i, j int) bool {
+		if hits[i].at != hits[j].at {
+			return hits[i].at < hits[j].at
+		}
+		return len(hits[i].word) > len(hits[j].word)
+	})
+	out := make([]string, 0, len(hits))
+	end := 0
+	for _, h := range hits {
+		if h.at < end {
+			continue
+		}
+		out = append(out, h.word)
+		end = h.at + len(h.word)
 	}
 	return out
 }

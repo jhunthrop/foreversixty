@@ -90,6 +90,68 @@ func TestNormalise_NonASCIIDigits(t *testing.T) {
 	}
 }
 
+// Every probe is a numeric claim the pack never made: each must be a number word.
+func TestNumberWords_OrdinalsMultipliersRatiosAndFractions(t *testing.T) {
+	for in, want := range map[string]string{
+		"your twelfth Bloodthirst":    "twelfth",
+		"the eleventh cast":           "eleventh",
+		"a twentieth of the fight":    "twentieth",
+		"the thirteenth pull":         "thirteenth",
+		"the nineteenth gap":          "nineteenth",
+		"a hundredth of a second":     "hundredth",
+		"three times as often":        "three times as",
+		"two times more casts":        "two times more",
+		"tenfold":                     "tenfold",
+		"fourfold more":               "fourfold",
+		"a two-fold gain":             "two-fold",
+		"quadruple the gaps":          "quadruple",
+		"rage quadrupled":             "quadrupled",
+		"one in three casts":          "one in three",
+		"two out of three pulls":      "two out of three",
+		"cut by one-third.":           "one-third",
+		"two-thirds.":                 "two-thirds",
+		"one-quarter, then one-half.": "one-quarter",
+	} {
+		if got := NumberWords(in); !slices.Contains(got, want) {
+			t.Errorf("%q: %v, want %q among them", in, got, want)
+		}
+	}
+}
+
+func TestNumberWords_NewPatternsLeaveIdiomAlone(t *testing.T) {
+	for _, in := range []string{"unfold the plan", "a scaffold", "one in the eye", "one of three", "the third pull",
+		"two times you were late", "one in a while"} {
+		if got := NumberWords(in); len(got) != 0 {
+			t.Errorf("%q: %v", in, got)
+		}
+	}
+}
+
+// Roman numerals, superscripts and other number forms are numbers: they pass only when the
+// pack holds the same value.
+func TestExtractNumbers_RomanSuperscriptAndNumberForms(t *testing.T) {
+	cases := map[string][]string{
+		"Rank IV":       {"4"},
+		"Rank XII":      {"12"},
+		"rank V":        {"5"},
+		"x² damage":     {"2"},
+		"Ⅻ casts":       {"12"},
+		"ⅳ casts":       {"4"},
+		"⑳ gaps":        {"20"},
+		"₃ stacks":      {"3"},
+		"I cast it":     nil,
+		"IVY and MIX":   nil,
+		"½ of it":       nil, // a vulgar fraction is a number word, not a number
+		"Rank 4 is up.": {"4"},
+	}
+	for in, want := range cases {
+		got := norms(ExtractNumbers(in))
+		if !slices.Equal(got, want) && len(got)+len(want) != 0 {
+			t.Errorf("%q: got %v, want %v", in, got, want)
+		}
+	}
+}
+
 func TestNormalise_BetweenRange(t *testing.T) {
 	tokens := ExtractNumbers("a gap between 1:12 and 1:30 opened")
 	if len(tokens) != 1 || tokens[0].Kind != KindRange || tokens[0].Norm != "1:12–1:30" {
