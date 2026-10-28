@@ -89,6 +89,7 @@ The caps act on their own without the switch:
   - `validation`: the model failed validation twice. `model_error`: the gateway failed; retried on the next view.
   - `timeout`: the generation ran past its 4-minute deadline (inside the 5-minute lease); not retried.
   - `privacy`: the pack carried a roster name or realm, so no call was made. The log line names the finding codes only. Any count above zero is a pack bug to fix.
+  - After the switch flips, watch two rates: `privacy` rows, and retries caused by lowercase spell names (`name` problems in `validation` on rows with `source = 'model'`, or rows with reason `validation`). A lowercase name is a common English word that is also a class spell missing from `ordinaryProseWords`.
 - Spend counts every attempt the gateway may have billed (timeouts, unreadable answers) at the worst case, so `llm_spend` can read above the gateway's invoice during an incident.
 - Leases stuck past their time: `select count(*) from coach_review_leases where leased_until < now();` (taken over on the next request).
 - Moderator samples: `GET /v1/admin/coach/samples?day=YYYY-MM-DD`. An anonymised character's sample has no name and no review.
