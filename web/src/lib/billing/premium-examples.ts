@@ -4,7 +4,7 @@
 import raw from '../../data/premium-examples.json';
 import { utcDayMonthYear } from '../dates';
 
-export const PLACEHOLDER_SIM_ID = 'placeholder';
+const RFC_3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 const MAX_LEVEL = 60;
 
 export interface ServerRunExample {
@@ -13,6 +13,8 @@ export interface ServerRunExample {
   level: number;
   specLabel: string;
   preset: boolean;
+  /** True until the capture step writes a real run; the page must not ship while it is set. */
+  placeholder: boolean;
   combinations: number;
   ranAt: string;
 }
@@ -33,6 +35,10 @@ export interface CaptionTemplates {
 
 function fail(field: string, why: string): never {
   throw new Error(`premium-examples.json: serverRun.${field} ${why}`);
+}
+
+function failFile(why: string): never {
+  throw new Error(`premium-examples.json: ${why}`);
 }
 
 function nonEmptyString(obj: Record<string, unknown>, field: string): string {
@@ -57,7 +63,7 @@ function integer(obj: Record<string, unknown>, field: string, min: number, max: 
 
 function instant(obj: Record<string, unknown>, field: string): string {
   const v = nonEmptyString(obj, field);
-  if (Number.isNaN(Date.parse(v))) fail(field, 'must be an RFC 3339 instant');
+  if (!RFC_3339.test(v) || Number.isNaN(Date.parse(v))) fail(field, 'must be an RFC 3339 instant');
   return v;
 }
 
@@ -71,18 +77,18 @@ function characterName(obj: Record<string, unknown>, preset: boolean): string {
 export function parseServerRunExample(input: unknown): ServerRunExample {
   const root = input as { serverRun?: unknown } | null;
   const run = root?.serverRun;
-  if (typeof run !== 'object' || run === null) fail('', 'object is missing');
+  if (typeof run !== 'object' || run === null) failFile('serverRun is missing');
   const obj = run as Record<string, unknown>;
   const simId = nonEmptyString(obj, 'simId');
   const preset = boolean(obj, 'preset');
-  const minCombinations = simId === PLACEHOLDER_SIM_ID ? 0 : 1;
   return {
     simId,
     characterName: characterName(obj, preset),
     level: integer(obj, 'level', 1, MAX_LEVEL),
     specLabel: nonEmptyString(obj, 'specLabel'),
     preset,
-    combinations: integer(obj, 'combinations', minCombinations, Number.MAX_SAFE_INTEGER),
+    placeholder: boolean(obj, 'placeholder'),
+    combinations: integer(obj, 'combinations', 1, Number.MAX_SAFE_INTEGER),
     ranAt: instant(obj, 'ranAt'),
   };
 }
@@ -90,7 +96,7 @@ export function parseServerRunExample(input: unknown): ServerRunExample {
 export const serverRunExample: ServerRunExample = parseServerRunExample(raw);
 
 export function isPlaceholder(ex: ServerRunExample): boolean {
-  return ex.simId === PLACEHOLDER_SIM_ID;
+  return ex.placeholder;
 }
 
 export function captionFields(ex: ServerRunExample): CaptionFields {

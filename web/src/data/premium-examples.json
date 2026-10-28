@@ -1,11 +1,12 @@
 {
   "serverRun": {
-    "simId": "placeholder",
+    "simId": "placeholder-run",
     "characterName": "",
     "level": 60,
     "specLabel": "Fury Warrior",
     "preset": true,
-    "combinations": 0,
+    "placeholder": true,
+    "combinations": 4812,
     "ranAt": "2026-10-27T00:00:00Z"
   }
 }
