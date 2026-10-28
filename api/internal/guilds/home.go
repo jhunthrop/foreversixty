@@ -229,6 +229,9 @@ type ViewerView struct {
 	// RaidGuildTools is true when the guild also holds the Raid guild tier, which
 	// unlocks the loot council and the readiness board.
 	RaidGuildTools bool `json:"raid_guild_tools"`
+	// Verify is whether anyone in the guild can approve a character; the web
+	// tells an unverified member whom to ask from it.
+	Verify auth.GuildVerifyView `json:"verify"`
 }
 
 // SummaryView is the Overview tab's own glance row (design spec §4.A).
@@ -604,12 +607,17 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		}
 	}
 
+	_, verifyViews, err := s.ClaimAndVerifyViews(ctx, userID, []int64{guildID})
+	if err != nil {
+		return HomeView{}, err
+	}
+
 	view := HomeView{
 		Guild: GuildIdentity{
 			ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Faction: g.Faction,
 			CrestURL: CrestURL(s.APIBaseURL, g.ID, g.CrestKey),
 		},
-		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified},
+		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified, Verify: verifyViews[guildID]},
 		Claim:    claim,
 		Summary:  summary,
 		Standing: standingFor(s, roster, userID),

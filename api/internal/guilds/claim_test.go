@@ -519,3 +519,31 @@ func TestLockAccountForClaimActivityHandlesAUserIDAboveInt32Max(t *testing.T) {
 		t.Fatalf("Claim status = %q, want confirmed", result.Status)
 	}
 }
+
+// TestConfirmClaim_VerifiesClaimant pins spec §5.4: a confirmed officer claim verifies the
+// claimant's own membership, so they can use the officer tools at once.
+func TestConfirmClaim_VerifiesClaimant(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	claimant := seedUser(t, pool, "verify-claimant@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/verifyclaimant", "officer", false)
+	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+	confirmer := seedUser(t, pool, "verify-confirmer@example.com")
+	seedCharacter(t, pool, gid, confirmer, "us/hardcore/verifyconfirmer", "officer", false)
+	if _, err := s.ConfirmClaim(ctx, gid, confirmer); err != nil {
+		t.Fatal(err)
+	}
+	var verified bool
+	if err := pool.QueryRow(ctx,
+		`select verified_at is not null from guild_characters where guild_id = $1 and user_id = $2`,
+		gid, claimant).Scan(&verified); err != nil {
+		t.Fatal(err)
+	}
+	if !verified {
+		t.Fatal("the claimant's character is not verified after the confirmed claim")
+	}
+}

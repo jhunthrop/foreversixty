@@ -422,3 +422,25 @@ func TestHomeSetsPrivateCacheControl(t *testing.T) {
 		t.Errorf("Cache-Control = %q", got)
 	}
 }
+
+// TestHome_ViewerVerifyHasApprover is the viewer's verify fact: false until a verified
+// officer or leader exists in the guild, true after.
+func TestHome_ViewerVerifyHasApprover(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	member := seedUser(t, h.pool, "home-verify-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/homeverifymember", "member", true)
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	read := func() bool {
+		var view HomeView
+		h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
+		return view.Viewer.Verify.HasApprover
+	}
+	if read() {
+		t.Fatal("verify.has_approver = true with no verified officer")
+	}
+	seedRanked(t, h, gid, "Approver", "officer", true)
+	if !read() {
+		t.Fatal("verify.has_approver = false with a verified officer")
+	}
+}

@@ -31,8 +31,8 @@ func TestReadinessGate(t *testing.T) {
 			t.Errorf("%v: %q, want %q", c.err, rep.Message.Content, c.want)
 		}
 		if c.button != "" {
-			if b := rep.Message.Components[0][0]; b.Label != c.button || !strings.HasSuffix(b.URL, "/settings#billing") ||
-				!strings.HasPrefix(b.URL, pressPublic+"/guild/") {
+			wantURL := fmt.Sprintf("%s/premium/checkout?plan=raid_guild&interval=yearly&guild_id=%d", pressPublic, w.gid)
+			if b := rep.Message.Components[0][0]; b.Label != c.button || b.URL != wantURL {
 				t.Errorf("%v: button %+v", c.err, b)
 			}
 		}

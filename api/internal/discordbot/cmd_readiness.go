@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	// readinessTab is the guild page's Readiness tab; billingAnchor the settings' plan section.
-	readinessTab  = "/readiness"
-	billingAnchor = "/settings#billing"
+	// readinessTab is the guild page's Readiness tab.
+	readinessTab = "/readiness"
 	// goldColor is #e5b955, a neutral answer.
 	goldColor = 15055189
 	// readinessLineMax bounds one failing row; the guilds read keeps the rows inside a field.
@@ -43,7 +42,7 @@ func (s *Service) cmdReadiness(ctx context.Context, in Interaction) (Reply, erro
 		return Reply{}, fmt.Errorf("discordbot: readiness path: %w", err)
 	}
 	ans, err := s.d.Guilds.NextRaidReadiness(ctx, guildID, *viewer, s.now())
-	if refusal, ok := s.readinessRefusal(err, guildName, s.d.PublicBaseURL+path+billingAnchor); ok {
+	if refusal, ok := s.readinessRefusal(err, guildName, checkoutGuildURL(s.d.PublicBaseURL, guildID)); ok {
 		return refusal, nil
 	}
 	if err != nil {
@@ -61,6 +60,12 @@ func (s *Service) cmdReadiness(ctx context.Context, in Interaction) (Reply, erro
 	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	link := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.Board, URL: board}
 	return Reply{Message: Message{Embeds: embeds, Components: []ActionRow{{link}}, Ephemeral: true}}, nil
+}
+
+// checkoutGuildURL opens the checkout's guild step with the Raid guild plan chosen for guildID,
+// where an officer subscribes or moves the guild up.
+func checkoutGuildURL(base string, guildID int64) string {
+	return base + "/premium/checkout?plan=raid_guild&interval=yearly&guild_id=" + strconv.FormatInt(guildID, 10)
 }
 
 // readinessRefusal is the sentence for a gate's refusal; ok is false for any other error.
