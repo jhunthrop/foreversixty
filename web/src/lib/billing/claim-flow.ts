@@ -22,8 +22,9 @@ export function claimKindOf(step: SubscribeStep | null): ClaimKind | null {
 
 export type ClaimGuild = Pick<StepGuild, 'id' | 'name' | 'claim'>;
 
-function claimantName(guild: ClaimGuild): string {
-  return guild.claim?.holder_name ?? copy.rank.officer;
+/** The claimant's name when the API shows it to this viewer; never a rank word in its place. */
+function claimantName(guild: ClaimGuild): string | null {
+  return guild.claim?.holder_name ?? null;
 }
 
 export function openerLabel(kind: ClaimKind, guildName: string): string {

@@ -92,11 +92,21 @@ describe('leadSentence', () => {
     expect(leadSentence([guild(1, 'ready'), guild(2, 'ask_leader')])).toBe(copy.lead.ready);
   });
 
-  it('every guild unclaimed reads by count', () => {
+  it('every guild unclaimed, and nobody here can act on a claim, reads by count', () => {
     expect(leadSentence([guild(1, 'ask_leader')])).toBe(copy.lead.allUnclaimed(1));
-    expect(leadSentence([guild(1, 'ask_leader'), guild(2, 'start_claim')])).toBe(copy.lead.allUnclaimed(2));
-    expect(leadSentence([1, 2, 3].map((id) => guild(id, 'claim')))).toBe(copy.lead.allUnclaimed(3));
+    expect(leadSentence([guild(1, 'ask_leader'), guild(2, 'claim_pending_ask')])).toBe(
+      copy.lead.allUnclaimed(2),
+    );
+    expect(leadSentence([1, 2, 3].map((id) => guild(id, 'ask_leader')))).toBe(copy.lead.allUnclaimed(3));
   });
+
+  it.each(['claim', 'start_claim', 'confirm_claim', 'claim_link_bnet', 'claim_blocked'] as const)(
+    'a %s card never says the next step is theirs (G6)',
+    (step) => {
+      expect(leadSentence([guild(1, step), guild(2, 'ask_leader')])).toBe(copy.lead.someClaimed);
+      expect(leadSentence([guild(1, step)])).toBe(copy.lead.someClaimed);
+    },
+  );
 
   it('some claimed', () => {
     const claimed = guild(2, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: null } });
@@ -216,7 +226,12 @@ describe('verifySubLine', () => {
     expect(verifySubLine(withApprover('ask_leader'), false)).toBe(copy.verify.approver);
   });
 
-  it.each(['claim', 'start_claim', 'confirm_claim'] as const)('never on %s', (step) => {
+  it('no approver on a claimed guild: the claim holder approves, nobody waits on a claim', () => {
+    const claimed = guild(1, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: null } });
+    expect(verifySubLine(claimed, false)).toBe(copy.verify.claimedNoApprover);
+  });
+
+  it.each(['claim', 'start_claim', 'confirm_claim', 'claim_blocked'] as const)('never on %s', (step) => {
     expect(verifySubLine(withApprover(step), false)).toBeNull();
   });
 

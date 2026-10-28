@@ -156,7 +156,7 @@ export function stepSentence(
     case 'start_claim':
       return copy.startClaim.sentence(name);
     case 'confirm_claim':
-      return copy.confirmClaim.sentence(guild.claim?.holder_name ?? copy.rank.officer, name);
+      return copy.confirmClaim.sentence(guild.claim?.holder_name ?? null, name);
     case 'claimed_ask':
       return claimedAskLine(guild, viewerIsOfficer);
     case 'ask_leader':

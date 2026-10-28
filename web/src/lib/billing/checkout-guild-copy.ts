@@ -3,6 +3,7 @@
 // §9.1. A `{…}` slot in the spec is a function argument here. The figure 25 is
 // GUILD_TIER_MEMBER_LIMIT and every 7 is GUILD_TRIAL_DAYS; dates arrive as stored values.
 import { utcDayMonthYear } from '../dates';
+import { possessive as of } from '../possessive';
 import {
   CLAIM_COOLDOWN_DAYS,
   checkoutGuildBusy,
@@ -59,9 +60,9 @@ export const checkoutGuildCopy = {
     ended: (endedAt: string): string => `Plan ended ${date(endedAt)}`,
   },
   ready: {
-    holdsClaim: (guild: string): string => `You hold ${guild}'s claim.`,
+    holdsClaim: (guild: string): string => `You hold ${of(guild)} claim.`,
     lapsed: (guild: string, endedAt: string): string =>
-      `${guild}'s plan ended ${date(endedAt)}. You hold its claim.`,
+      `${of(guild)} plan ended ${date(endedAt)}. You hold its claim.`,
     startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
     subscribe: (price: string): string => `Subscribe · ${price}`,
     subscribeAgain: (price: string): string => `Subscribe again · ${price}`,
@@ -85,12 +86,15 @@ export const checkoutGuildCopy = {
   },
   startClaim: {
     sentence: (guild: string): string =>
-      `Nobody holds ${guild}'s claim yet. As an officer you can start one; a second officer or the guild master confirms it.`,
+      `Nobody holds ${of(guild)} claim yet. As an officer you can start one; a second officer or the guild master confirms it.`,
     button: 'Start a claim',
   },
   confirmClaim: {
-    sentence: (name: string, guild: string): string =>
-      `${name} has started a claim on ${guild}. As an officer you can confirm it.`,
+    /** `name` null: the claimant's name is not shown to this viewer, and no rank word stands in for it. */
+    sentence: (name: string | null, guild: string): string =>
+      name === null
+        ? `An officer has started a claim on ${guild}. As an officer you can confirm it.`
+        : `${name} has started a claim on ${guild}. As an officer you can confirm it.`,
     button: 'Confirm the claim',
   },
   confirm: {
@@ -100,15 +104,20 @@ export const checkoutGuildCopy = {
     startClaim: (guild: string): string =>
       `Start a claim on ${guild}? A second officer or the guild master confirms it. ${LAST_CLAIM_WINDOW}.`,
     yesStartClaim: 'Yes, start the claim',
-    confirmClaim: (name: string, guild: string): string =>
-      `Confirm ${name}'s claim on ${guild}? They will run the guild here and can subscribe it.`,
+    confirmClaim: (name: string | null, guild: string): string =>
+      name === null
+        ? `Confirm the claim on ${guild}? The officer who started it will run the guild here and can subscribe it.`
+        : `Confirm ${of(name)} claim on ${guild}? They will run the guild here and can subscribe it.`,
     yesConfirmClaim: 'Yes, confirm it',
     cancel: 'Cancel',
   },
   done: {
     claim: (guild: string): string => `Claimed. You hold ${guild}.`,
     startClaim: 'Claim started. It waits for a second officer or the guild master.',
-    confirmClaim: (name: string, guild: string): string => `Confirmed. ${name} holds ${guild}.`,
+    confirmClaim: (name: string | null, guild: string): string =>
+      name === null
+        ? `Confirmed. The officer who started the claim holds ${guild}.`
+        : `Confirmed. ${name} holds ${guild}.`,
   },
   claimPendingYours: (guild: string): string =>
     `Your claim on ${guild} waits for a second officer or the guild master. Send them this link.`,
@@ -116,14 +125,14 @@ export const checkoutGuildCopy = {
     `An officer has started a claim on ${guild}. Once a second officer or the guild master confirms it, they can subscribe it. Send them this link.`,
   claimedAsk: {
     holdsClaim: (guild: string): string =>
-      `You hold ${guild}'s claim. Subscribing it needs a verified officer or guild-master character.`,
+      `You hold ${of(guild)} claim. Subscribing it needs a verified officer or guild-master character.`,
     officer: (name: string, guild: string): string =>
-      `${name} holds ${guild}'s claim and subscribes it. Send them this link.`,
+      `${name} holds ${of(guild)} claim and subscribes it. Send them this link.`,
     member: (guild: string): string =>
-      `The guild master who holds ${guild}'s claim subscribes it. Send them this link.`,
+      `The guild master who holds ${of(guild)} claim subscribes it. Send them this link.`,
   },
   askLeader: (guild: string): string =>
-    `Only ${guild}'s guild master can claim it and subscribe it. Send them this link.`,
+    `Only ${of(guild)} guild master can claim it and subscribe it. Send them this link.`,
   otherCharacter: (guild: string): string =>
     `Lead ${guild} on another character? Save that character with the addon, then come back.`,
   getSetUp: 'Get set up',
@@ -131,12 +140,12 @@ export const checkoutGuildCopy = {
   moderatorLinkText: 'Ask us on Discord',
   claimBlocked: {
     holdsOther: (other: string, guild: string): string =>
-      `You already hold ${other}'s claim. One account holds one guild's claim, so an officer of ${guild} claims it instead.`,
+      `You already hold ${of(other)} claim. One account holds one guild's claim, so an officer of ${guild} claims it instead.`,
     rateLimited: (guild: string, availableAt: string): string =>
       `You made a claim in the last ${CLAIM_COOLDOWN_DAYS} days. You can claim ${guild} from ${date(availableAt)}.`,
   },
   frozen: (guild: string): string =>
-    `${guild}'s claim is contested. Nobody can subscribe it until a moderator resolves the contest.`,
+    `${of(guild)} claim is contested. Nobody can subscribe it until a moderator resolves the contest.`,
   checkoutOpen: (guild: string): string =>
     `Someone already has a checkout open for ${guild}. It closes on its own if they do not finish.`,
   checkAgain: 'Check again',
@@ -159,10 +168,13 @@ export const checkoutGuildCopy = {
       "Not verified yet. An officer approves you from the roster, the guild's invite link verifies you at once, or you are verified when you turn up in the guild's logs.",
     noApprover: (guild: string): string =>
       `Not verified yet. You are verified when you turn up in the guild's logs, or once the guild master claims ${guild} and approves you.`,
+    /** A claimed guild with no verified approver: the claim holder approves, nobody is waiting on a claim. */
+    claimedNoApprover:
+      "Not verified yet. You are verified when you turn up in the guild's logs, or once the claim holder approves you.",
     short: "Not verified yet. Turning up in the guild's logs also verifies you.",
   },
   copyField: {
-    labelGuildMaster: (guild: string): string => `Link for ${guild}'s guild master`,
+    labelGuildMaster: (guild: string): string => `Link for ${of(guild)} guild master`,
     labelPerson: (name: string): string => `Link for ${name}`,
     labelSecondOfficer: 'Link for a second officer',
     copy: 'Copy link',

@@ -3,6 +3,7 @@
 // use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
 // tool. Wording quoted directly from the spec is marked as such below.
 import { uiCopy } from '../ui/copy';
+import { possessive } from '../possessive';
 
 export const guildHomeCopy = {
   // The line every not-yet-ready state paints (loading, failed, a bad address), so the first
@@ -123,7 +124,7 @@ export const guildClaimCopy = {
   memberHandoff: (guildName: string): string =>
     `You are a member of ${guildName}, so only its guild master can claim it. Send them this page's link.`,
   // After a save on /setup that came from a claim link (spec section 9.3).
-  backToClaim: (guildName: string): string => `Back to ${guildName}'s claim`,
+  backToClaim: (guildName: string): string => `Back to ${possessive(guildName)} claim`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
   notAMember:
     'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',

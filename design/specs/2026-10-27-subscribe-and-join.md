@@ -165,7 +165,7 @@ The static page cannot read the session at build time. It reuses the founder pat
    - h1, Cinzel 700 22 px `--strong`: `Subscribe a guild`.
    - **Plan summary.** From 1024 it is right-aligned on the h1's row; below 1024 it is its own row under the h1. Line 1: the plan name, Cinzel 700 15 px `--strong` (`Guild`); 8 px; the price, JetBrains Mono 500 20 px `--strong`, tabular (`$120`), then ` a year` 14 px muted; then `pill-site` `Founder` 8 px after it while the founder window is open. Line 2, 13 px `--text`: the size line (§9.1). Guild: `Up to 25 verified members. A 10-person raid team fits, and a 20-person one with a small bench.` Raid guild: `Any size. For guilds over 25 verified members.` Line 3, 13 px `--text`: `First 7 days free` (`--strong` 600) when the plan carries a trial, then ` · ` and the underlined `--text` link `Change plan` to `/premium`.
 2. **Body**, a centred column, max 880 px, padding 32 px top desktop and 20 px phone, side gutters 48 / 18.
-   - **Lead sentence**, 15 px `--text` (14 px below 768), max 720 px, 16 px below it. Chosen from the set of steps (§9.1).
+   - **Lead sentence**, 15 px `--text` (14 px below 768), max 720 px, 16 px below it. Chosen from the set of steps (§9.1), in this order (gate fix G6, 2026-10-28): any card `ready` gives the `ready` lead; else any card `claim`, `start_claim`, `confirm_claim`, `claim_link_bnet` or `claim_blocked` (a step the viewer takes on the claim themselves) gives the some-claimed form; else the §9.1 rows as written. A lead never tells a player who can act that the next step is someone else's.
    - **Guild cards**, a `ul` with gap 12. Order: `ready` first, then `claim`, `confirm_claim`, `start_claim`, `claim_link_bnet`, then the hand-off steps (`claimed_ask`, `ask_leader`, `claim_pending_yours`, `claim_pending_ask`), then `checkout_open`, `frozen`, `claim_blocked`, then `on_plan`. Ties keep the order of `me.guilds`.
    - **Foot**, 24 px below the last card, 13 px muted, two lines at most: the missing-guild line with `Get set up`; then, only when `premiumSource(me)` is `none`, the personal Premium line with `Get Premium`.
 
@@ -211,8 +211,10 @@ Copy is verbatim in §9.1.
 
 The verify sub-line shows under the step when the viewer has no verified character in the guild. It names the three routes of the `Verified members` rule:
 - The guild has a verified officer (`verify.has_approver` true): `Not verified yet. An officer approves you from the roster, the guild's invite link verifies you at once, or you are verified when you turn up in the guild's logs.`
-- No verified officer, and the step is not `ask_leader` or `claim_pending_ask`: `Not verified yet. You are verified when you turn up in the guild's logs, or once the guild master claims {Guild} and approves you.`
+- No verified officer, the guild claimed: `Not verified yet. You are verified when you turn up in the guild's logs, or once the claim holder approves you.` (gate fix, 2026-10-28: a claimed guild is never waiting on its guild master to claim it).
+- No verified officer, the guild not claimed, and the step is not `ask_leader` or `claim_pending_ask`: `Not verified yet. You are verified when you turn up in the guild's logs, or once the guild master claims {Guild} and approves you.`
 - On `ask_leader` and `claim_pending_ask` with no verified officer, the step sentence already says the guild master acts first, so the short form shows: `Not verified yet. Turning up in the guild's logs also verifies you.`
+- Never on `claim_blocked`: its viewer is the guild master, who is never told to wait for the guild master (gate fix, 2026-10-28).
 - Never on `claim`, `start_claim` or `confirm_claim`: claiming verifies the claimant (`setVerifiedForAccount` in `claim.go`; the API lane confirms an officer's claim does the same once confirmed).
 
 Under the `ask_leader` step only, a second 13 px muted line: `Lead {Guild} on another character? Save that character with the addon, then come back.` with the inline gold link `Get set up` (to `/setup` with `next` set to this URL plus `#guild-{id}`).
@@ -458,7 +460,7 @@ No new tables. No change to who may claim, verify or bill.
 
 ## 9. Copy, verbatim
 
-Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the API; `{…}` marks a value. Dates use `d Mon yyyy` (`18 Nov 2027`). Guild names render as stored (`OLYMPUS XXVII`). The figure 25 is always `GUILD_TIER_MEMBER_LIMIT`, never typed.
+Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the API; `{…}` marks a value. Dates use `d Mon yyyy` (`18 Nov 2027`). Guild names render as stored (`OLYMPUS XXVII`). A possessive on a name ending in s takes the apostrophe alone: `{Guild}'s` reads `Employed Millennials'` (gate fix, 2026-10-28; `web/src/lib/possessive.ts`). The figure 25 is always `GUILD_TIER_MEMBER_LIMIT`, never typed.
 
 ### 9.1 Checkout guild step
 
@@ -494,6 +496,9 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `confirm_claim` | `{Name} has started a claim on {Guild}. As an officer you can confirm it.`; button `Confirm the claim` |
 | `confirm_claim` confirm | `Confirm {Name}'s claim on {Guild}? They will run the guild here and can subscribe it.`; `Yes, confirm it`; `Cancel` |
 | `confirm_claim` done | `Confirmed. {Name} holds {Guild}.` |
+| `confirm_claim`, no `holder_name` (gate fix, 2026-10-28: a rank word never stands in for `{Name}`) | `An officer has started a claim on {Guild}. As an officer you can confirm it.` |
+| `confirm_claim` confirm, no `holder_name` | `Confirm the claim on {Guild}? The officer who started it will run the guild here and can subscribe it.` |
+| `confirm_claim` done, no `holder_name` | `Confirmed. The officer who started the claim holds {Guild}.` |
 | `claim_pending_ask` | `An officer has started a claim on {Guild}. Once a second officer or the guild master confirms it, they can subscribe it. Send them this link.` |
 | `claimed_ask`, viewer is an officer | `{Name} holds {Guild}'s claim and subscribes it. Send them this link.` |
 | `claimed_ask`, viewer is a member | `The guild master who holds {Guild}'s claim subscribes it. Send them this link.` |
@@ -511,7 +516,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `on_plan`, no payer name | `{Guild} is on the {Tier} plan.` |
 | `on_plan`, seat lines | `You hold one of its Premium seats.`; `{given} of {total} Premium seats are given. Ask {Name} for one.`; `{given} of {total} Premium seats are given. Ask the guild master for one.` (no payer name); `All {total} of its Premium seats are given.` |
 | `on_plan`, link | `Open the guild` |
-| Verify sub-lines | approver exists: `Not verified yet. An officer approves you from the roster, the guild's invite link verifies you at once, or you are verified when you turn up in the guild's logs.`; no approver: `Not verified yet. You are verified when you turn up in the guild's logs, or once the guild master claims {Guild} and approves you.`; short form: `Not verified yet. Turning up in the guild's logs also verifies you.` |
+| Verify sub-lines | approver exists: `Not verified yet. An officer approves you from the roster, the guild's invite link verifies you at once, or you are verified when you turn up in the guild's logs.`; no approver: `Not verified yet. You are verified when you turn up in the guild's logs, or once the guild master claims {Guild} and approves you.`; short form: `Not verified yet. Turning up in the guild's logs also verifies you.`; claimed, no approver: `Not verified yet. You are verified when you turn up in the guild's logs, or once the claim holder approves you.` |
 | Copy field | sr label `Link for {Guild}'s guild master`, `Link for {Name}` or `Link for a second officer`; `Copy link`; `Copied`; `Share`; `Could not copy. Select the link and copy it.` |
 | Share sheet | title `Subscribe {Guild} on Forever Sixty`; text, claim link: `{Guild} could use the {Plan} plan on Forever Sixty. Claim the guild here, then subscribe it.`; text, settings link: `{Guild} could use the {Plan} plan on Forever Sixty. Subscribe it from the guild's billing.` |
 | Busy | `Redirecting to secure checkout…`; `Claiming…`; `Starting…`; `Confirming…` |

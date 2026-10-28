@@ -136,6 +136,24 @@ describe('steps', () => {
     expect(copy.done.confirmClaim('Thrall', G)).toBe(row('`confirm_claim` done', 0, fill));
   });
 
+  it('confirm_claim with no holder name never puts a rank word where the name goes', () => {
+    const fill = { Guild: G };
+    expect(copy.confirmClaim.sentence(null, G)).toBe(row('`confirm_claim`, no `holder_name`', 0, fill));
+    expect(copy.confirm.confirmClaim(null, G)).toBe(
+      row('`confirm_claim` confirm, no `holder_name`', 0, fill),
+    );
+    expect(copy.done.confirmClaim(null, G)).toBe(row('`confirm_claim` done, no `holder_name`', 0, fill));
+  });
+
+  it('a guild name ending in s takes the apostrophe alone', () => {
+    const name = 'Employed Millennials';
+    expect(copy.askLeader(name)).toBe(
+      "Only Employed Millennials' guild master can claim it and subscribe it. Send them this link.",
+    );
+    expect(copy.copyField.labelGuildMaster(name)).toBe("Link for Employed Millennials' guild master");
+    expect(copy.claimBlocked.holdsOther(name, G)).toMatch(/^You already hold Employed Millennials' claim\./);
+  });
+
   it('pending and hand-off steps', () => {
     expect(copy.claimPendingYours(G)).toBe(row('`claim_pending_yours`', 0, { Guild: G }));
     expect(copy.claimPendingAsk(G)).toBe(row('`claim_pending_ask`', 0, { Guild: G }));
@@ -200,6 +218,7 @@ describe('verify, copy field and share', () => {
     expect(copy.verify.approver).toBe(row('Verify sub-lines', 0));
     expect(copy.verify.noApprover(G)).toBe(row('Verify sub-lines', 1, { Guild: G }));
     expect(copy.verify.short).toBe(row('Verify sub-lines', 2));
+    expect(copy.verify.claimedNoApprover).toBe(row('Verify sub-lines', 3));
   });
 
   it('copy field', () => {

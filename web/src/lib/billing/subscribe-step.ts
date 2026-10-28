@@ -45,7 +45,16 @@ export const STEP_ORDER: readonly SubscribeStep[] = [
 export type HandoffStep = 'ask_leader' | 'claimed_ask' | 'claim_pending_yours' | 'claim_pending_ask';
 
 const SITE_ORIGIN = 'https://foreversixty.gg';
-const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = ['claim', 'start_claim', 'confirm_claim'];
+/** Claiming verifies the claimant, and a claim_blocked viewer is the guild master: no verify line. */
+const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = ['claim', 'start_claim', 'confirm_claim', 'claim_blocked'];
+/** Steps where the viewer can act on the claim themselves: the lead never says the next step is someone else's. */
+const OWN_CLAIM_STEPS: readonly SubscribeStep[] = [
+  'claim',
+  'start_claim',
+  'confirm_claim',
+  'claim_link_bnet',
+  'claim_blocked',
+];
 const SHORT_VERIFY_STEPS: readonly SubscribeStep[] = ['ask_leader', 'claim_pending_ask'];
 
 function stepOf(guild: StepGuild): SubscribeStep | null {
@@ -67,16 +76,26 @@ export function orderGuildCards<T extends StepGuild>(guilds: readonly T[], first
   return first === undefined ? byStep : [first, ...byStep.filter((guild) => guild !== first)];
 }
 
+function actsOnClaim(guild: StepGuild): boolean {
+  const step = stepOf(guild);
+  return step !== null && OWN_CLAIM_STEPS.includes(step);
+}
+
 function isUnclaimed(guild: StepGuild): boolean {
   if (stepOf(guild) === 'on_plan') return false;
   const state = guild.claim?.state;
   return state === undefined || state === 'unclaimed' || state === 'pending';
 }
 
-/** Spec §9.1's lead rows ('' for no guilds: the empty states draw instead): any `ready` card, else by how many guilds still have no claim holder. */
+/**
+ * Spec §9.1's lead rows ('' for no guilds: the empty states draw instead): any `ready` card; else,
+ * when a card is a step the viewer takes on the claim themselves, the some-claimed form (gate fix
+ * G6); else by how many guilds still have no claim holder.
+ */
 export function leadSentence(guilds: readonly StepGuild[]): string {
   if (guilds.length === 0) return '';
   if (guilds.some((guild) => stepOf(guild) === 'ready')) return copy.lead.ready;
+  if (guilds.some(actsOnClaim)) return copy.lead.someClaimed;
   const unclaimed = guilds.filter(isUnclaimed).length;
   if (unclaimed === 0) return copy.lead.allClaimed;
   return unclaimed === guilds.length ? copy.lead.allUnclaimed(unclaimed) : copy.lead.someClaimed;
@@ -111,6 +130,7 @@ export function verifySubLine(guild: StepGuild, viewerVerified: boolean): string
   if (step !== null && NO_VERIFY_LINE_STEPS.includes(step)) return null;
   if (guild.verify?.has_approver === true) return copy.verify.approver;
   if (step !== null && SHORT_VERIFY_STEPS.includes(step)) return copy.verify.short;
+  if (guild.claim?.state === 'claimed') return copy.verify.claimedNoApprover;
   return copy.verify.noApprover(guild.name);
 }
 
