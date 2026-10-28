@@ -21,7 +21,7 @@ const trial = trialParts();
 const cardId = plan === 'free' ? 'free' : undefined;
 ---
 
-<article class="plan-card" id={cardId} data-testid={`plan-${plan}`} data-plan={plan}>
+<article class="plan-card" id={cardId} data-testid={`plan-${plan}`} data-plan={plan} data-highlight>
   <h2 class="plan-name">{block.name}</h2>
   <p class="audience">{block.audience}</p>
 
@@ -53,14 +53,19 @@ const cardId = plan === 'free' ? 'free' : undefined;
     )}
   </div>
 
-  <p class="trial-slot">
+  <div class="slot" data-part="slot">
+    {plan === 'premium' && (
+      <p class="slot-line" data-testid="premium-support">
+        {plansPageCopy.premium.support}
+      </p>
+    )}
     {priced && PLANS[priced].guild && (
-      <>
+      <p class="slot-line">
         <strong>{trial.lead}</strong>
         {trial.rest}
-      </>
+      </p>
     )}
-  </p>
+  </div>
 
   <div class="feature-block">
     <ul class="features">
@@ -81,6 +86,11 @@ const cardId = plan === 'free' ? 'free' : undefined;
       ))}
     </ul>
     {plan === 'free' && <p class="promise">{free.promise}</p>}
+    {plan === 'premium' && (
+      <p class="scope" data-testid="premium-scope">
+        {plansPageCopy.premium.scope}
+      </p>
+    )}
   </div>
 </article>
 
@@ -91,9 +101,11 @@ const cardId = plan === 'free' ? 'free' : undefined;
     padding: 12px 20px 20px;
     background: var(--color-raised);
     border: 1px solid var(--color-line);
-    border-top-color: rgba(229, 185, 85, 0.35);
     border-radius: 6px;
     scroll-margin-top: 16px;
+  }
+  .plan-card[data-highlight] {
+    border-top-color: rgba(229, 185, 85, 0.35);
   }
   .plan-name {
     margin: 0;
@@ -141,18 +153,23 @@ const cardId = plan === 'free' ? 'free' : undefined;
   .plan-button:hover {
     background: rgba(229, 185, 85, 0.08);
   }
-  .trial-slot {
+  /* One subgrid cell: the guild cards' trial line, Premium's support line, blank on Free. */
+  .slot {
     margin: 8px 0 0;
     min-height: 40px;
     font-size: 13px;
+    font-weight: 400;
     line-height: 18px;
     color: var(--color-text);
   }
-  .trial-slot strong {
+  .slot-line {
+    margin: 0;
+  }
+  .slot strong {
     font-weight: 600;
     color: var(--color-strong);
   }
-  .trial-slot:empty {
+  .slot:empty {
     display: none;
   }
   .features {
@@ -179,6 +196,12 @@ const cardId = plan === 'free' ? 'free' : undefined;
     margin-top: 3px;
     color: var(--color-kill);
   }
+  .scope {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-muted);
+  }
   .promise {
     margin: 12px 0 0;
     font-size: 13px;
@@ -203,8 +226,8 @@ const cardId = plan === 'free' ? 'free' : undefined;
       font-size: 11px;
       letter-spacing: 0.03em;
     }
-    /* Each card is a six-row subgrid of the cards grid (premium.astro), so the trial slot is as
-       tall as the tallest trial line in its row: at 1024 the guild line wraps to three lines and
+    /* Each card is a six-row subgrid of the cards grid (premium.astro), so the slot is as
+       tall as the tallest slot line in its row: at 1024 the guild line wraps to three lines and
        the features still start on one line (UX 1). */
     .plan-card {
       display: grid;
@@ -212,10 +235,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
       grid-template-rows: subgrid;
       row-gap: 0;
     }
-    .trial-slot {
-      min-height: 40px;
-    }
-    .trial-slot:empty {
+    .slot:empty {
       display: block;
     }
     .free-price {
