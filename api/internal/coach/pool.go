@@ -32,7 +32,7 @@ with best as (
   from coach_profiles cp join reports r on r.id = cp.report_id
   where cp.encounter_id = $1 and cp.difficulty = $2 and cp.size = $3 and cp.spec = $4
     and cp.phase = $5 and cp.kill and ` + presence.EvidenceReport("r") + `
-  order by cp.player_key, cp.metric desc
+  order by cp.player_key, cp.metric desc, cp.fought_at desc, cp.report_id
 ), ranked as (
   select player_key, profile, row_number() over (order by metric desc, player_key) as rn from best
 )
@@ -46,8 +46,9 @@ type Pool struct {
 	TTL time.Duration    // DefaultPoolTTL when zero
 	Now func() time.Time // time.Now when nil
 
-	mu    sync.Mutex
-	cache map[PoolKey]poolEntry
+	mu       sync.Mutex
+	cache    map[PoolKey]poolEntry
+	inflight map[PoolKey]*inflight
 }
 
 // poolEntry is a bracket as read: every player's key in rank order, and the profiles of
@@ -85,23 +86,60 @@ func (e poolEntry) without(exclude string) (int, []Profile) {
 	return count, profiles[:min(len(profiles), PoolTopN)]
 }
 
+// poolReadTimeout bounds a shared read, which runs detached from any one caller's context.
+const poolReadTimeout = 30 * time.Second
+
+// inflight is one bracket read that every concurrent caller of that bracket waits on.
+type inflight struct {
+	done  chan struct{}
+	entry poolEntry
+	err   error
+}
+
+// entry serves the bracket from memory or from one shared read. The lock covers only the
+// maps: a slow bracket never blocks another, and a caller whose context ends stops waiting
+// without failing the callers that share its read.
 func (p *Pool) entry(ctx context.Context, k PoolKey) (poolEntry, error) {
 	p.mu.Lock()
-	defer p.mu.Unlock()
-	now := p.now()
-	if e, ok := p.cache[k]; ok && now.Sub(e.readAt) < p.ttl() {
+	if e, ok := p.cache[k]; ok && p.now().Sub(e.readAt) < p.ttl() {
+		p.mu.Unlock()
 		return e, nil
 	}
+	call, running := p.inflight[k]
+	if !running {
+		call = &inflight{done: make(chan struct{})}
+		if p.inflight == nil {
+			p.inflight = map[PoolKey]*inflight{}
+		}
+		p.inflight[k] = call
+		go p.load(k, call)
+	}
+	p.mu.Unlock()
+	select {
+	case <-call.done:
+		return call.entry, call.err
+	case <-ctx.Done():
+		return poolEntry{}, fmt.Errorf("coach pool %+v: %w", k, ctx.Err())
+	}
+}
+
+// load reads the bracket once, stores it on success (errors are not cached) and wakes the waiters.
+func (p *Pool) load(k PoolKey, call *inflight) {
+	ctx, cancel := context.WithTimeout(context.Background(), poolReadTimeout)
+	defer cancel()
 	e, err := p.read(ctx, k)
-	if err != nil {
-		return poolEntry{}, err
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if err == nil {
+		e.readAt = p.now()
+		if p.cache == nil {
+			p.cache = map[PoolKey]poolEntry{}
+		}
+		p.cache[k] = e
 	}
-	e.readAt = now
-	if p.cache == nil {
-		p.cache = map[PoolKey]poolEntry{}
-	}
-	p.cache[k] = e
-	return e, nil
+	call.entry, call.err = e, err
+	delete(p.inflight, k)
+	close(call.done)
 }
 
 func (p *Pool) read(ctx context.Context, k PoolKey) (poolEntry, error) {
