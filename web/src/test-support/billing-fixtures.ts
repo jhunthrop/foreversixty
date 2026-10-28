@@ -36,6 +36,21 @@ export function mockEntitlements(overrides: Partial<EntitlementsView> = {}): Ent
   };
 }
 
+/** A Premium account's features: every standard feature on, the guild-only ones off. */
+export function premiumEntitlements(overrides: Partial<EntitlementsView> = {}): EntitlementsView {
+  return mockEntitlements({
+    server_sims: true,
+    retention: true,
+    multi_compare: true,
+    history: true,
+    notifications: true,
+    roster_check: true,
+    log_coach: true,
+    supporter_mark: true,
+    ...overrides,
+  });
+}
+
 function envelope(data: unknown, status: number): { status: number; contentType: string; body: string } {
   return {
     status,

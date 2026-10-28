@@ -824,6 +824,48 @@ func TestMeIncludesEntitlementsAndDefaultsToAllFalseWithNoRows(t *testing.T) {
 	}
 }
 
+func (h *harness) meLogCoach(t *testing.T, uid int64) bool {
+	t.Helper()
+	var body struct {
+		Entitlements struct {
+			LogCoach bool `json:"log_coach"`
+		} `json:"entitlements"`
+	}
+	h.decode(t, h.sessionRequest(t, http.MethodGet, "/v1/me", uid), &body)
+	return body.Entitlements.LogCoach
+}
+
+func TestMeLogCoachIsFalseForAFreeAccount(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-log-coach-free@example.com")
+	if h.meLogCoach(t, uid) {
+		t.Fatal("a free account must not carry log_coach")
+	}
+}
+
+func TestMeLogCoachIsTrueForAVerifiedSeatHolder(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "Coach Seat Guild")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (guild_id, plan, source, status, tier) values ($1, 'guild', 'grant', 'active', 'guild')`,
+		gid); err != nil {
+		t.Fatal(err)
+	}
+	uid := h.seedUser(t, "me-log-coach-seat@example.com")
+	h.seedGuildMember(t, gid, uid, "member", true)
+	if h.meLogCoach(t, uid) {
+		t.Fatal("a guild member without a seat must not carry log_coach")
+	}
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into premium_seats (guild_id, slot, state, holder_user_id, given_at, movable_at)
+		 values ($1, 1, 'held', $2, now(), now() + interval '30 days')`, gid, uid); err != nil {
+		t.Fatal(err)
+	}
+	if !h.meLogCoach(t, uid) {
+		t.Fatal("a verified seat holder on an active guild plan must carry log_coach")
+	}
+}
+
 func TestMeReflectsAnActivePersonalPremiumEntitlement(t *testing.T) {
 	h := newHarness(t)
 	uid := h.seedUser(t, "me-active-premium@example.com")

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mockEntitlements } from '../../test-support/billing-fixtures';
+import { mockEntitlements, premiumEntitlements } from '../../test-support/billing-fixtures';
 import { invalidate } from '../data/query';
 import {
   ACCOUNT_FAILED,
@@ -374,10 +374,18 @@ describe('fetchMeOnce', () => {
   });
 });
 
-describe('entitlements fixtures', () => {
-  it('carry log_coach, true when overridden for a Premium account', () => {
-    expect(mockEntitlements().log_coach).toBe(false);
-    expect(mockEntitlements({ server_sims: true, log_coach: true }).log_coach).toBe(true);
+describe('log_coach on a parsed /v1/me', () => {
+  it.each([
+    ['Premium', premiumEntitlements(), true],
+    ['free', mockEntitlements(), false],
+  ])('a %s account reads log_coach %s', async (_name, entitlements, want) => {
+    const me = { ...ME, entitlements };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(me)),
+    );
+    const parsed = await fetchMe(`${API}/log-coach-${want}`);
+    expect(parsed?.entitlements?.log_coach).toBe(want);
   });
 });
 
