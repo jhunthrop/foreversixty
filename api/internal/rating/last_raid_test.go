@@ -134,8 +134,9 @@ func TestConsumablesMissedNamesThePlainCategories(t *testing.T) {
 	if got := missed(preparedPull("g", dps.Flask[0].SpellID)); !reflect.DeepEqual(got, []string{"flask"}) {
 		t.Errorf("no flask = %v", got)
 	}
-	if got := missed(preparedPull("g", dps.Flask[0].SpellID, dps.Food[0].SpellID)); !reflect.DeepEqual(got, []string{"flask", "food"}) {
-		t.Errorf("neither = %v", got)
+	// The food list is incomplete: no listed food is not a missed food (any other may be up).
+	if got := missed(preparedPull("g", dps.Flask[0].SpellID, dps.Food[0].SpellID)); !reflect.DeepEqual(got, []string{"flask"}) {
+		t.Errorf("neither = %v, want [flask]", got)
 	}
 	// Weapon stones and oils stay out until a beta log shows how they appear.
 	if got := missed(preparedPull("g", dps.WeaponEnchant[0].SpellID)); len(got) != 0 {

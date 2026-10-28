@@ -666,9 +666,8 @@ func TestRosterAndRankingMetrics(t *testing.T) {
 	}
 }
 
-func TestCombatantRowsCarryGearTalentsAndConsumables(t *testing.T) {
+func TestCombatantRowsCarryGearTalentsAndRaidBuffs(t *testing.T) {
 	o, reg := opts(t)
-	o.ConsumableSpells = map[int64]string{871: "Shield Wall Elixir"}
 	o.RaidBuffSpells = map[int64]string{17: "Power Word: Shield", 1459: "Arcane Intellect"}
 	a := New(o)
 	a.Start(at(0))
@@ -686,9 +685,6 @@ func TestCombatantRowsCarryGearTalentsAndConsumables(t *testing.T) {
 	}
 	if len(c.Talents) != 1 || c.Talents[0] != 202751 {
 		t.Errorf("talents = %v", c.Talents)
-	}
-	if len(c.Consumables) != 1 || c.Consumables[0].Name != "Shield Wall Elixir" {
-		t.Errorf("consumables = %+v", c.Consumables)
 	}
 	if len(c.RaidBuffs) != 1 || c.RaidBuffs[0].SpellID != 17 {
 		t.Errorf("raid buffs = %+v", c.RaidBuffs)

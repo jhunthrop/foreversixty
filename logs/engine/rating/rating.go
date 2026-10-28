@@ -69,10 +69,11 @@ const DefaultCapThreshold = 40.0
 // "a short string... bumped whenever a formula, a weight, or any curated
 // table changes in a way that could change a stored score"). Bumped
 // 2026-10-28 when Preparation (and the API's discipline and consumables-
-// missed readers) moved to consumables.AtPull, the seeded aura tracks,
-// off the never-filled CombatantRow.Consumables (log coach spec §13):
-// every row stored under the previous stamp is stale until the backfill
-// recomputes it, the same mechanism that handles every model-version bump.
+// missed readers) moved to consumables.AtPull, the seeded aura tracks (log
+// coach spec §13), and Preparation became excluded without a character
+// sheet: every row stored under the previous stamp is stale until the
+// backfill recomputes it, the same mechanism that handles every
+// model-version bump.
 const DefaultModelVersion = "rating-2026-10-28-consumables-at-pull"
 
 // The fixed machine-readable exclusion reasons Component.Reason carries
@@ -85,8 +86,11 @@ const (
 	ReasonNoMechanicsTable      = "no_mechanics_table"
 	ReasonNoUtilityTable        = "no_utility_table"
 	ReasonNoConsumableCatalogue = "no_consumable_catalogue"
-	ReasonWipe                  = "wipe"
-	ReasonNotEnoughSamples      = "not_enough_samples"
+	// ReasonNoCharacterSheet: the log has no COMBATANT_INFO with gear for
+	// the player, so what they brought into the pull is unknown.
+	ReasonNoCharacterSheet = "no_character_sheet"
+	ReasonWipe             = "wipe"
+	ReasonNotEnoughSamples = "not_enough_samples"
 )
 
 // The Bracket.Component values for Mechanics' and Survival's independently-

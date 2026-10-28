@@ -9,13 +9,9 @@ import (
 // scorePreparation implements spec §1.3's Preparation component: a
 // completeness score built from the consumable catalogue, percentile-
 // within-bracket (or its own value as the absolute standard, RULING R5,
-// since it is already a bounded 0-100 score).
-//
-// What the player brought is read through consumables.AtPull: the seeded
-// aura tracks (or an aura applied within AtPullGraceMS of the pull), never
-// CombatantRow.Consumables, which production never fills (log coach spec
-// §13). With no character sheet nothing reads present; potion casts still
-// count, since they need no sheet.
+// since it is already a bounded 0-100 score). With no character sheet the
+// pull is unknown, so the component is excluded rather than placed as an
+// empty pull (no preparation digest fills with sheetless zeros).
 func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat *consumables.RoleCatalogue, src PercentileSource) Component {
 	bracket.Component = ComponentNamePreparation
 	c := Component{Name: ComponentNamePreparation}
@@ -23,20 +19,42 @@ func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat
 		c.Excluded, c.Reason = true, ReasonNoConsumableCatalogue
 		return c
 	}
-	value, _ := PreparationValue(fight, player, cat)
+	value, ok := preparationTotal(fight, player, cat)
+	if !ok {
+		c.Excluded, c.Reason = true, ReasonNoCharacterSheet
+		return c
+	}
 	return placeBoundedOrSelf(c, src, bracket, value)
 }
 
+// preparationTotal is the raw 0-100 completeness for player, read through
+// consumables.AtPull (the seeded aura tracks, or an aura applied within
+// AtPullGraceMS of the pull; log coach spec §13). false when the log has no
+// character sheet for player. A carried category whose list is incomplete
+// and reads nothing is unknown, not missing: its weight leaves the total
+// and the rest is read out of what is left (unknownWeight).
+func preparationTotal(fight summary.Summary, player string, cat *consumables.RoleCatalogue) (float64, bool) {
+	pull := consumables.AtPull(fight, player, *cat)
+	if !pull.Known {
+		return 0, false
+	}
+	possible := totalWeight(cat) - unknownWeight(pull, cat)
+	if possible <= 0 {
+		return 0, true
+	}
+	earned := carriedWeight(pull, cat) + worldBuffWeight(pull, cat) + potionWeight(pull, cat)
+	return clamp(100*earned/possible, 0, 100), true
+}
+
 // PreparationValue is the raw 0-100 completeness scorePreparation places for player; false
-// with no catalogue, where the component is excluded instead. Exported so the rating
-// rebuild can refold a preparation digest from stored summaries without scoring a card.
+// with no catalogue or no character sheet, where the component is excluded instead. Exported
+// so the rating rebuild can refold a preparation digest from stored summaries without
+// scoring a card.
 func PreparationValue(fight summary.Summary, player string, cat *consumables.RoleCatalogue) (float64, bool) {
 	if cat == nil {
 		return 0, false
 	}
-	pull := consumables.AtPull(fight, player, *cat)
-	total := carriedWeight(pull, cat) + worldBuffWeight(pull, cat) + potionWeight(pull, cat)
-	return clamp(total, 0, 100), true
+	return preparationTotal(fight, player, cat)
 }
 
 // carriedCategories are the categories a player carries exactly one of, so
@@ -49,6 +67,44 @@ func carriedWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float6
 		if pull.Has(category) {
 			total += float64(cat.Weights[category])
 		}
+	}
+	return total
+}
+
+// weighedCategories are every category Preparation weighs.
+var weighedCategories = append(append([]string{}, carriedCategories...),
+	consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion)
+
+// unknownWeight is the weight of every category the catalogue cannot judge
+// absent: its list is incomplete and nothing on it was read. The food list
+// names one food per role, the dps potion list is partial, and the
+// weapon_enchant entries are the stone and oil application spells, which
+// never show as auras (a temporary enchant rides on the weapon item, and
+// AtPull does not read it), so each stays unknown unless a listed entry is
+// seen.
+func unknownWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
+	var total float64
+	for _, category := range weighedCategories {
+		if !cat.IsComplete(category) && !readAny(pull, category) {
+			total += float64(cat.Weights[category])
+		}
+	}
+	return total
+}
+
+// readAny is whether the pull read anything of the category: a listed
+// entry up, or for combat_potion a use.
+func readAny(pull consumables.Pull, category string) bool {
+	if category == consumables.CategoryCombatPotion && pull.PotionUses > 0 {
+		return true
+	}
+	return pull.Has(category)
+}
+
+func totalWeight(cat *consumables.RoleCatalogue) float64 {
+	var total float64
+	for _, w := range cat.Weights {
+		total += float64(w)
 	}
 	return total
 }

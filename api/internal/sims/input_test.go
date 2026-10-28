@@ -71,8 +71,8 @@ func seedFightRow(h *harness, key, name, class, specSlug string, at time.Time) {
 			RaidBuffs: []summary.AuraRef{
 				{SpellID: 20217, Name: "Blessing of Kings"},
 				{SpellID: 999999, Name: "Some Forever Aura Nobody Mapped"},
+				{SpellID: 25289, Name: "Battle Shout"},
 			},
-			Consumables: []summary.AuraRef{{SpellID: 25289, Name: "Battle Shout"}},
 		}},
 	})
 	if err != nil {

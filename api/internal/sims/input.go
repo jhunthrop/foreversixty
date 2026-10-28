@@ -13,7 +13,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
 // inputMaxAge is how long an anonymous sim-input read may be cached,
@@ -232,5 +231,5 @@ func (s *Service) recordedBuffs(ctx context.Context, ref FightRef) []string {
 			"fight", ref.FightIndex, "err", "the summary has no combatant for "+ref.PlayerName)
 		return []string{}
 	}
-	return BuffIDs(append(append([]summary.AuraRef{}, c.RaidBuffs...), c.Consumables...), s.logger())
+	return BuffIDs(c.RaidBuffs, s.logger())
 }

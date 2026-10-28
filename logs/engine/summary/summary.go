@@ -36,9 +36,6 @@ type Options struct {
 	// Threat computes threat per point of damage and healing. Default
 	// BaseThreat{}, which reports itself as incomplete.
 	Threat ThreatModel
-	// ConsumableSpells maps a spell id to a consumable name, for the
-	// consumables-at-pull table. Empty means the table is empty.
-	ConsumableSpells map[int64]string
 	// RaidBuffSpells maps a spell id to a raid buff name, for the buffs-at-
 	// pull check. Empty means the check is skipped.
 	RaidBuffSpells map[int64]string

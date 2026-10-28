@@ -383,15 +383,14 @@ func trinketsOf(c summary.CombatantRow) []int64 {
 	return out
 }
 
-// buffCountOf is how many raid buffs and consumables a player pulled
-// with.
+// buffCountOf is how many raid buffs a player pulled with.
 //
-// FOLLOW-UP (data): the engine counts these against the spell tables it
+// FOLLOW-UP (data): the engine counts these against the spell table it
 // is given, and the API gives it none yet, so this is zero until
-// data/curated names the raid buffs and consumables. The column is
-// written from the start so the rankings row shape never changes.
+// data/curated names the raid buffs. The column is written from the
+// start so the rankings row shape never changes.
 func buffCountOf(c summary.CombatantRow) int {
-	return len(c.RaidBuffs) + len(c.Consumables)
+	return len(c.RaidBuffs)
 }
 
 // valueOf picks the number a row is ranked on.

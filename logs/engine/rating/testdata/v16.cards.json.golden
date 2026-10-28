@@ -51,18 +51,18 @@
       {
         "Name": "preparation",
         "Score": 0,
-        "Weight": 66.67,
-        "Basis": "absolute",
+        "Weight": 0,
+        "Basis": "",
         "Percentile": null,
         "BracketN": 0,
-        "Excluded": false,
-        "Reason": "",
+        "Excluded": true,
+        "Reason": "no_character_sheet",
         "Moments": null
       },
       {
         "Name": "activity",
         "Score": 0,
-        "Weight": 33.33,
+        "Weight": 100,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -74,9 +74,9 @@
     "Basis": "absolute",
     "ModelVersion": "rating-2026-10-28-consumables-at-pull",
     "KillTimeBand": "",
-    "Coverage": 0.15,
+    "Coverage": 0.05,
     "Insufficient": true,
-    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec; preparation not scored"
   },
   "Player-4184-000000A2": {
     "Overall": 0,
@@ -130,18 +130,18 @@
       {
         "Name": "preparation",
         "Score": 0,
-        "Weight": 50,
-        "Basis": "absolute",
+        "Weight": 0,
+        "Basis": "",
         "Percentile": null,
         "BracketN": 0,
-        "Excluded": false,
-        "Reason": "",
+        "Excluded": true,
+        "Reason": "no_character_sheet",
         "Moments": null
       },
       {
         "Name": "activity",
         "Score": 56.25,
-        "Weight": 50,
+        "Weight": 100,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -153,9 +153,9 @@
     "Basis": "absolute",
     "ModelVersion": "rating-2026-10-28-consumables-at-pull",
     "KillTimeBand": "",
-    "Coverage": 0.2,
+    "Coverage": 0.1,
     "Insufficient": true,
-    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec; preparation not scored"
   },
   "Player-4184-000000A3": {
     "Overall": 0,
@@ -209,18 +209,18 @@
       {
         "Name": "preparation",
         "Score": 0,
-        "Weight": 66.67,
-        "Basis": "absolute",
+        "Weight": 0,
+        "Basis": "",
         "Percentile": null,
         "BracketN": 0,
-        "Excluded": false,
-        "Reason": "",
+        "Excluded": true,
+        "Reason": "no_character_sheet",
         "Moments": null
       },
       {
         "Name": "activity",
         "Score": 23.44,
-        "Weight": 33.33,
+        "Weight": 100,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -232,8 +232,8 @@
     "Basis": "absolute",
     "ModelVersion": "rating-2026-10-28-consumables-at-pull",
     "KillTimeBand": "",
-    "Coverage": 0.15,
+    "Coverage": 0.05,
     "Insufficient": true,
-    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec; preparation not scored"
   }
 }

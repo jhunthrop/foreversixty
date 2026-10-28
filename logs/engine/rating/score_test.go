@@ -64,6 +64,7 @@ func TestWorkedExampleDPSWarriorFury(t *testing.T) {
 	}}
 	cat := &consumables.RoleCatalogue{
 		Weights:       map[string]int{"flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20},
+		Complete:      everyCategoryComplete(),
 		Flask:         []consumables.Entry{{SpellID: 17626, Name: "Flask of the Titans", Verified: "test"}},
 		Food:          []consumables.Entry{{SpellID: 1249522, Name: "Grilled Squid", Verified: "test"}},
 		WeaponEnchant: []consumables.Entry{{SpellID: 25122, Name: "Brilliant Wizard Oil", Verified: "test"}},
@@ -142,6 +143,7 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 	}}
 	cat := &consumables.RoleCatalogue{
 		Weights:       map[string]int{"flask": 30, "food": 15, "weapon_enchant": 0, "world_buffs": 20, "combat_potion": 35},
+		Complete:      everyCategoryComplete(),
 		Flask:         []consumables.Entry{{SpellID: 17627, Name: "Flask of Distilled Wisdom", Verified: "test"}},
 		Food:          []consumables.Entry{{SpellID: 1249513, Name: "Nightfin Soup", Verified: "test"}},
 		WeaponEnchant: nil,
@@ -220,6 +222,8 @@ func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 			{SpellID: 19998, Name: "Cleave", Kind: mechanics.Avoidable, Role: "tank",
 				Players: []summary.MechanicHit{{GUID: player, Hits: 2, Damage: 4000, FirstMS: 60000, LastMS: 65000}}},
 		}},
+		// A character sheet and nothing up at the pull: Preparation is scored, not unknown.
+		Combatants: []summary.CombatantRow{{GUID: player, Gear: []event.Item{{ID: 1}}}},
 	}
 	assignments := []Assignment{
 		{PlayerKey: otherTank, Job: "cleave duty", FromMS: 50000, ToMS: 70000},
@@ -236,6 +240,7 @@ func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 	}}
 	cat := &consumables.RoleCatalogue{
 		Weights:       map[string]int{"flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20},
+		Complete:      everyCategoryComplete(),
 		Flask:         []consumables.Entry{{SpellID: 17626, Name: "Flask of the Titans", Verified: "test"}},
 		Food:          []consumables.Entry{{SpellID: 1248395, Name: "Tender Wolf Steak", Verified: "test"}},
 		WeaponEnchant: []consumables.Entry{{SpellID: 22756, Name: "Elemental Sharpening Stone", Verified: "test"}},

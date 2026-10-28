@@ -487,8 +487,7 @@ func TestTrinketsAndBuffCountReadTheCombatantRow(t *testing.T) {
 	if len(got) != 2 || got[0] != 19406 || got[1] != 18820 {
 		t.Fatalf("trinkets = %v, want both trinket slots", got)
 	}
-	c.RaidBuffs = []summary.AuraRef{{}, {}}
-	c.Consumables = []summary.AuraRef{{}}
+	c.RaidBuffs = []summary.AuraRef{{}, {}, {}}
 	if got := buffCountOf(c); got != 3 {
 		t.Fatalf("buff count = %d, want three", got)
 	}
@@ -514,7 +513,7 @@ func TestARowCarriesItsTrinketsBuffsAndFaction(t *testing.T) {
 		Region: "us", Ruleset: "hardcore", GuildID: &h.guildID, Rows: rows,
 		Combatants: []summary.CombatantRow{{
 			GUID: rows[0].PlayerGUID, Gear: gear,
-			RaidBuffs: []summary.AuraRef{{}, {}}, Consumables: []summary.AuraRef{{}},
+			RaidBuffs: []summary.AuraRef{{}, {}, {}},
 		}},
 		Factions: map[string]string{rows[0].PlayerGUID: "alliance"},
 	}); err != nil {

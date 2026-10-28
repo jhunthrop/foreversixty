@@ -114,7 +114,8 @@ func TestFightDisciplineNeedsFlaskFoodAndEnchants(t *testing.T) {
 
 	check("a fully prepared player", preparedCombatant("g"), preparedPull("g"), true)
 	check("no flask", preparedCombatant("g"), preparedPull("g", dps.Flask[0].SpellID), false)
-	check("no food", preparedCombatant("g"), preparedPull("g", dps.Food[0].SpellID), false)
+	// The food list is incomplete, so no listed food is unknown, not unprepared.
+	check("no listed food", preparedCombatant("g"), preparedPull("g", dps.Food[0].SpellID), true)
 	unenchanted := preparedCombatant("g")
 	unenchanted.Gear[slotBack].Enchants = nil
 	check("an unenchanted cloak", unenchanted, preparedPull("g"), false)

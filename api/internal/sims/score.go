@@ -91,9 +91,8 @@ type CombatantBuilder struct {
 func (b CombatantBuilder) FightCharacter(spec, class string, c summary.CombatantRow) (simapi.CharacterSpec, error) {
 	out := simapi.CharacterSpec{
 		Name: c.Name, Class: class, Level: simapi.MaxLevel,
-		Gear:     gearFrom(c.Gear),
-		Buffs:    BuffIDs(c.RaidBuffs, nil),
-		Consumes: BuffIDs(c.Consumables, nil),
+		Gear:  gearFrom(c.Gear),
+		Buffs: BuffIDs(c.RaidBuffs, nil),
 	}
 	var missing []string
 	switch {

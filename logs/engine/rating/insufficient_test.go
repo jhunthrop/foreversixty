@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/utility"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -25,6 +26,8 @@ func TestScoreProducesAnInsufficientCardOnAWipeWithNoMechanicsTable(t *testing.T
 			{GUID: player, Class: "Priest", Spec: "Shadow", Role: RoleDPS, DPS: 300, ActivityPct: 40, ActiveMS: 24000},
 		},
 		// No Mechanics.TableFound: the fixture never sets it, so tables.Mechanics is nil below.
+		// A character sheet, so Preparation is scored rather than excluded as unknown.
+		Combatants: []summary.CombatantRow{{GUID: player, Gear: []event.Item{{ID: 1}}}},
 	}
 	utilTable := &utility.Table{Spec: "priest-shadow", Owned: []utility.Entry{
 		{SpellID: 12345, Name: "Shadow Weaving", Kind: utility.Debuff, Target: "enemy", Verified: "test"},

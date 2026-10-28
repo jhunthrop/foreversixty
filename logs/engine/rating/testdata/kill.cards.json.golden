@@ -1,13 +1,13 @@
 {
   "Player-Kill-1": {
-    "Overall": 62.75,
-    "OverallUncapped": 62.75,
+    "Overall": 71.71,
+    "OverallUncapped": 71.71,
     "OverallCapped": false,
     "Components": [
       {
         "Name": "output",
         "Score": 88,
-        "Weight": 43.75,
+        "Weight": 50,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -18,7 +18,7 @@
       {
         "Name": "survival",
         "Score": 100,
-        "Weight": 18.75,
+        "Weight": 21.43,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -40,7 +40,7 @@
       {
         "Name": "utility",
         "Score": 0,
-        "Weight": 18.75,
+        "Weight": 21.43,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -51,18 +51,18 @@
       {
         "Name": "preparation",
         "Score": 0,
-        "Weight": 12.5,
-        "Basis": "absolute",
+        "Weight": 0,
+        "Basis": "",
         "Percentile": null,
         "BracketN": 0,
-        "Excluded": false,
-        "Reason": "",
+        "Excluded": true,
+        "Reason": "no_character_sheet",
         "Moments": null
       },
       {
         "Name": "activity",
         "Score": 88,
-        "Weight": 6.25,
+        "Weight": 7.14,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -74,7 +74,7 @@
     "Basis": "absolute",
     "ModelVersion": "rating-2026-10-28-consumables-at-pull",
     "KillTimeBand": "typical",
-    "Coverage": 0.8,
+    "Coverage": 0.7,
     "Insufficient": false,
     "InsufficientReason": ""
   },
@@ -97,7 +97,7 @@
       {
         "Name": "survival",
         "Score": 100,
-        "Weight": 33.33,
+        "Weight": 42.86,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -119,7 +119,7 @@
       {
         "Name": "utility",
         "Score": 0,
-        "Weight": 33.33,
+        "Weight": 42.86,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -130,18 +130,18 @@
       {
         "Name": "preparation",
         "Score": 0,
-        "Weight": 22.22,
-        "Basis": "absolute",
+        "Weight": 0,
+        "Basis": "",
         "Percentile": null,
         "BracketN": 0,
-        "Excluded": false,
-        "Reason": "",
+        "Excluded": true,
+        "Reason": "no_character_sheet",
         "Moments": null
       },
       {
         "Name": "activity",
         "Score": 90,
-        "Weight": 11.11,
+        "Weight": 14.29,
         "Basis": "absolute",
         "Percentile": null,
         "BracketN": 0,
@@ -153,8 +153,8 @@
     "Basis": "absolute",
     "ModelVersion": "rating-2026-10-28-consumables-at-pull",
     "KillTimeBand": "typical",
-    "Coverage": 0.45,
+    "Coverage": 0.35,
     "Insufficient": true,
-    "InsufficientReason": "not enough logs to score output; not enough logs to score mechanics"
+    "InsufficientReason": "not enough logs to score output; not enough logs to score mechanics; preparation not scored"
   }
 }

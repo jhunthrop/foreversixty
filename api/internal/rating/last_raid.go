@@ -176,18 +176,16 @@ func msToSeconds(ms int64) int {
 // consumablesMissed is the plain names of the categories the player pulled without, read
 // through consumables.AtPull against the same catalogue the discipline fact uses
 // (disciplineCatalogue: flask and food; the weapon enchant stays out until a beta log
-// shows how stones and oils appear, see score_v2.go). With no character sheet the log
-// cannot say, and the list is empty: unknown is never missing.
+// shows how stones and oils appear, see score_v2.go). A category is named only when the
+// pull proves it absent (missedAtPull): with no character sheet, or with an incomplete
+// list (food today), the log cannot say, and it is left out: unknown is never missing.
 func consumablesMissed(fight summary.Summary, row summary.RosterRow) []string {
 	missed := []string{}
 	pull := consumables.AtPull(fight, row.GUID, disciplineCatalogue)
-	if !pull.Known {
-		return missed
-	}
-	if !pull.Has(consumables.CategoryFlask) {
+	if missedAtPull(pull, consumables.CategoryFlask) {
 		missed = append(missed, consumableFlask)
 	}
-	if !pull.Has(consumables.CategoryFood) {
+	if missedAtPull(pull, consumables.CategoryFood) {
 		missed = append(missed, consumableFood)
 	}
 	return missed

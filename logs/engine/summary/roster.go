@@ -9,7 +9,9 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 )
 
-// CombatantRow is one player's gear, talents and consumables at the pull.
+// CombatantRow is one player's gear, talents and raid buffs at the pull.
+// What the player brought into the pull is read from the seeded aura tracks
+// (Summary.Auras, AuraTrack.Seeded) by consumables.AtPull.
 type CombatantRow struct {
 	GUID         string       `json:"guid"`
 	Name         string       `json:"name"`
@@ -18,7 +20,6 @@ type CombatantRow struct {
 	ItemLevel    int64        `json:"item_level,omitempty"`
 	Gear         []event.Item `json:"gear"`
 	Talents      []int64      `json:"talents"`
-	Consumables  []AuraRef    `json:"consumables"`
 	RaidBuffs    []AuraRef    `json:"raid_buffs"`
 	MissingBuffs []int64      `json:"missing_buffs"`
 }
@@ -117,14 +118,8 @@ func (a *Accumulator) combatantRows() []CombatantRow {
 		seen := map[int64]bool{}
 		for _, au := range c.Auras {
 			seen[au.SpellID] = true
-			ref := AuraRef{SpellID: au.SpellID, SourceGUID: au.SourceGUID}
-			if name, ok := a.opt.ConsumableSpells[au.SpellID]; ok {
-				ref.Name = name
-				row.Consumables = append(row.Consumables, ref)
-			}
 			if name, ok := a.opt.RaidBuffSpells[au.SpellID]; ok {
-				ref.Name = name
-				row.RaidBuffs = append(row.RaidBuffs, ref)
+				row.RaidBuffs = append(row.RaidBuffs, AuraRef{SpellID: au.SpellID, SourceGUID: au.SourceGUID, Name: name})
 			}
 		}
 		for id := range a.opt.RaidBuffSpells {
@@ -132,12 +127,8 @@ func (a *Accumulator) combatantRows() []CombatantRow {
 				row.MissingBuffs = append(row.MissingBuffs, id)
 			}
 		}
-		sortAuraRefs(row.Consumables)
 		sortAuraRefs(row.RaidBuffs)
 		sort.Slice(row.MissingBuffs, func(i, j int) bool { return row.MissingBuffs[i] < row.MissingBuffs[j] })
-		if row.Consumables == nil {
-			row.Consumables = []AuraRef{}
-		}
 		if row.RaidBuffs == nil {
 			row.RaidBuffs = []AuraRef{}
 		}
