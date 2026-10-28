@@ -266,3 +266,278 @@ Email cases (unit, the billing mailer's tests): each subject and first sentence 
 **Amendment (controller, 2026-10-27, persona round on the launch pricing captures):** the copy changes above are recorded in their §6 rows. Also: the account Premium rows read `In your browser` (Server sims, off) and `Premium only` (Discord notifications, free) in place of `Browser lane only` and `Off · Premium`; class names in the seat picker are capitalised (`Mirelle · Priest · pays for Premium`); a member with an open seat offer is left out of the picker; the seat-ended sentence replaces the plan line with the gold inline link; the answered seat offer is a plain status line with no rule; the founder Guild upgrade lands on the founder Raid guild price and the confirm quotes it (verified in `api/internal/billing/upgrade.go` and `catalog.UpgradeLookupKey`); `Billed by` names the payer's character in the guild, the public name only without one.
 
 **Amendment (controller, 2026-10-27, persona round 2):** the guild plan line's `Founder` is the gold `pill-site` 8 px after the price, as on the account panel; the chooser's struck list figure sits 8 px after the price; the receiver reads `Seats, raids and records stay with the guild; you manage seats from then.`; from 1024 to 1279 the plan cards take 16 px padding and the card buttons no extra tracking, so the guild labels hold one line; the checkout chooser's right-hand label shows only when the plan picked on /premium does not fit the guild (`Raid guild fits {n} members` on a Guild purchase above 25), and every row's label shows only when no plan was picked; while a seat offer stands, the account Discord panel's `Save webhook` is a gold outline (§5: the offer is the page's only fill); How it works terms stay 12 px `--strong` 600 per the mock.
+
+## Amendment 2026-10-27b: Premium value and guild leaders
+
+Author: ux-designer, 2026-10-27. Coordinator rulings applied the same day (B10). Source: the four persona appeal reviews in `design/reviews/2026-10-27-launch-pricing/appeal-*.md` and the differentiator round in `design/reviews/2026-10-27-premium-differentiators/README.md`. Direction approved by the owner. Builds on the concurrent change already in this file: on phone the Free card is first and appears once (the summary row is gone), and the list price reads `{list} after 6 Jan 2027` as plain text, with no strike. This amendment overrides §1 (the 1280 answer), §3.1.2 to §3.1.5, §5 (plans page) and the §6.1 rows it names. It also changes the `/sim` landing example (B3.4). Everything else in this spec stands.
+
+### B1. What the visitor must see, restated
+
+| Viewer | Question | Answer with no scroll |
+|---|---|---|
+| A solo player, 1280 x 800 | "What do I get for free, what does Premium do for my character, and what does it cost?" | Free and Premium side by side, each with its price and button above y 520. Premium's first two benefit lines and the support line are above y 800. The Premium example image starts above y 800. |
+| A guild leader, 1280 x 800 | "Where are the guild plans?" | The band's gold link `Guild and Raid guild are further down` above y 300. One click scrolls to `#guild-leaders`, where both guild prices, their per-raider lines and the trial line fit in one 800 px screen. |
+| Anyone, 360 x 640 | unchanged | Owned by the concurrent phone-order change. This amendment adds nothing above Premium's button. |
+
+### B2. Reference, and what we borrow
+
+- **The in-game character panel's stat tooltip** ("Increases your chance to hit... by 1%"). Borrowed: each line says what a thing does for your character, not what it is. That is the rewrite rule for every Premium and guild line.
+- **Raidbots' result page** (the Top Gear result players already share in Discord). Borrowed: the proof of a sim is the result itself, shown as a screenshot of the real page, with the character, the number of combinations and the winning set. Not borrowed: their tier upsell around it.
+- **Warcraft Logs' guild subscription note** ("one officer pays, the whole guild benefits"). Borrowed: the cost framed per raider.
+- Unchanged from §2: Warcraft Logs' tier columns, the WoW Shop's per-month line, the G1 segment control.
+
+### B3. Layout
+
+Tokens, type and gutters as §3. The 1344 px content column stays centred at every width up to 2000 and beyond. The band stays full bleed (§3.1.1). Both regions below sit in the 1344 column.
+
+**B3.1 Band additions.** One new row, from 768 up only, under the founder row: 13 px `--text`, a 44 px tap row, `Running a guild?` then 6 px, then the inline gold link `Guild and Raid guild are further down` (the site's inline gold link: `--gold`, `--gold-hover` and an underline on hover, a 2 px gold focus ring at 2 px offset). It links to `#guild-leaders`. Below 768 the row does not render, because the phone order already reaches the guild region by scrolling and the first screen is owned by the concurrent change.
+
+**B3.2 Region A, for your character** (no heading; it follows the band, which already asks the question). From 1024: `grid-template-columns: repeat(3, minmax(0, 1fr))`, gap 16. Column 1 is the Free card, column 2 the Premium card, column 3 the Premium example. Free and Premium are one subgrid row set (as today's cards), so their prices, buttons and slot rows align. The example card stretches to the row's height. From 768 to 1023: two columns, Free and Premium. The example spans both columns underneath, at a max width of 480 px, left-aligned. Below 768: one column, in the order Free, Premium, example.
+
+Free card: unchanged.
+
+Premium card (the `card` recipe as §3.1.2, gold top highlight kept):
+1. Name `Premium`, audience line.
+2. Price block as §3.1.2 and the concurrent change.
+3. Button `Subscribe · {price}` (gold outline, unchanged).
+4. The 40 px slot that holds the trial line on guild cards now holds the **support line**, 13 px `--text`, weight 400. Free keeps its slot blank.
+5. Benefits: the tick list recipe of §3.1.2 (14 px `--text`, 32 px minimum rows on `--line-soft`, the 14 px `--kill` tick). Six lines, verbatim in B5. Each line may wrap to two lines; nothing is truncated (tenet 4). A seventh line, the log coach, is drafted in B5 and held until the coach ships.
+6. **Scope note**, 12 px above, 13 px `--muted`, no tick: it says the sims cover damage specs only.
+
+Premium example card (`card` recipe, no gold top highlight: it is evidence, not a plan):
+- `label` 11 px `--muted`: `EXAMPLE · A REAL SERVER RUN`.
+- 8 px, then the image: a picture element with AVIF and WebP sources; the img carries width 440 and height 330, `aspect-ratio: 4 / 3`, `width: 100%`, 1 px `--line-soft` border, 4 px radius, lazy loading, async decoding. Its alt text is the caption sentence (B5).
+- 8 px, then the caption, 13 px `--muted`, numbers in mono: who, which spec, how many combinations, the date of the run.
+- Then the inline gold link `Open this result` (44 px min-height row), to `/sim/{id}`. The saved result is a public read (`GET /v1/sims/{id}`); the owner has ruled that public read is fine. It opens for a signed-out visitor, with the site's real item tooltips there.
+
+What the image is (ruled): a capture of the real saved result page of one finished **server** Top Gear run on the **owner's own Fury Warrior**, run from the owner's Premium account. The page is opened at a 440 x 900 CSS px viewport at device pixel ratio 2 (so its phone layout is used and its text stays legible at 324 to 437 px wide), and the clip is the 440 x 330 CSS px box from the top of the result: the character strip (crest, name, spec), the run's combinations and precision, the winning set's DPS with its error, and the first swaps with item icons in quality colour. Files: `web/public/premium/example-server-run.avif` and `.webp` at 880 x 660, AVIF at most 45 KB. Every word of the caption comes from a sidecar, `web/src/data/premium-examples.json` (`serverRun`: `simId`, `characterName`, `specLabel`, `combinations`, `ranAt`), written by the same capture script. No figure is typed in copy (the standing rule that prose never quotes generated numbers). The capture script lives at `web/tests/captures/premium-examples/capture.spec.ts`, beside the Discord capture harness. This example is a ship blocker: the page never ships the region empty.
+
+**B3.3 Region B, for guild leaders** (a section with id `guild-leaders`, `scroll-margin-top: 16px`). 40 px above it on desktop, 28 px on phone.
+- h2 `section-title` (18 px Cinzel uppercase): `For guild leaders`.
+- 8 px, the region lede, 14 px `--text`, max 720 px (B5).
+- 4 px, the members line, 13 px `--muted`, max 720 px (B5).
+- 16 px, then the guild row. From 1024: three equal columns, gap 16, as region A. Column 1 Guild, column 2 Raid guild, column 3 the history promise (§3.1.4 recipe: 14 px `--text`, 2 px `--line` left rule, padding-left 14), top-aligned. This is ruled and final: there is no Raid guild example image. From 768 to 1023: two columns, Guild and Raid guild; the history promise spans both underneath. Below 768: one column, Guild, Raid guild, then the history promise.
+- Then **How the guild plans work** (§3.1.5), now inside this section as its h3 at the `section-title` size, with the two new rows of B5.
+
+Guild cards are visibly secondary to Premium, and complete:
+- The `card` recipe without the gold top highlight (top border `--line`).
+- Price figure mono 500 at 24 px desktop and 22 px phone (Premium keeps 32 and 28).
+- Price block lines, in order: the price; the concurrent list-price line while founder; the per-month line (yearly) or `Or {yearly}.` (monthly); the founder line while founder; then the new **cost line**, 13 px `--text`, 18 px line height. Guild's cost line is the per-member line. Raid guild's is the per-raider line. Each cost line sits in a box reserved for three lines (54 px), because the Raid guild line wraps to two lines at 1280 and three at 1024 and on phone. The whole block is therefore a fixed 152 px tall from 768 and 144 px on phone, in both intervals and both founder states. Guild and Raid guild align, and nothing shifts when the interval changes.
+- Button `Subscribe a guild · {price}` in plain `SECONDARY_BUTTON_FIXED` (border `--line-warm-strong`, text `--text`, today's hover), `w-full justify-center`. Not gold: gold on this page belongs to Premium's button and the founder marks.
+- Trial slot (B5), 13 px `--text`, `First 7 days free` in `--strong` 600. Its minimum height is 40 px. Both guild cards share a subgrid row, so the two feature lists start on one line. When the trial email ships and its sentence is added (B5), the slot grows by at most one line in both cards together.
+- Features: the tick list recipe. Guild has five lines, Raid guild five, verbatim in B5. Raid guild's first line is the loot council line. The old `Everything in Guild` lead row (and its `--strong` style) is gone; its replacement is the last line, in `--text`.
+
+The cost lines are computed, never typed.
+- `plans.ts` gains `RAID_SIZES = [40, 20, 10] as const`. Forever has 40-, 20- and 10-person raids. The order is the display order: the 40 figure leads, and 20 and 10 follow.
+- `perRaiderLine(interval, founder)` divides the Raid guild price by each size and formats each amount with `formatAmount`, so each is rounded to the cent.
+- `perMemberLine(interval, founder)` divides the Guild price by `GUILD_TIER_MEMBER_LIMIT` (25).
+- Raid guild values today. Yearly founder ($200): $5, $10, $20. Yearly list ($250): $6.25, $12.50, $25. Monthly founder ($20): $0.50, $1, $2. Monthly list ($25): $0.63 (rounded from $0.625), $1.25, $2.50.
+- Guild values today. Yearly founder $4.80, list $6. Monthly founder $0.48, list $0.60.
+- The price figure sits directly above the cost line in the same block, so the sum each amount divides is always on screen.
+
+**B3.4 The `/sim` landing example (replaces an invented figure).** `ExampleResultCard.svelte` today shows the static `Fury Warrior` and `1,245 DPS` typed in `landing-copy.ts`. No sim produced that figure (tenet 8). It is replaced by the same real capture as B3.2. The card keeps its recipe (`border-line bg-card-top rounded-panel border p-4`, gap 8). Inside it: the `label` `EXAMPLE · A REAL SERVER RUN`; the same picture element, image files and 4:3 reserved box as B3.2; the caption from the same sidecar; then the existing hint line. `landingCopy.exampleSpec` and `landingCopy.exampleDps` are deleted. `exampleCaption` becomes the B5 label. The card has no `Open this result` link on `/sim`, because the visitor is already on the simulator and the link would pull them away from loading their own character. One capture and one sidecar feed both pages, so the two can never disagree.
+
+**B3.5 Wireframes.**
+
+Desktop, 1280 x 800 (content column 1184 px, three columns of 384):
+
+```
+y 0    +- header -----------------------------------------------------------------------+
+y 64   +- band (full bleed, --raised) --------------------------------------------------+
+       | -- PLANS                                               [ YEARLY | MONTHLY ]    |
+       | What is free, and what the plans add                                           |
+       | Everything a player needs is free ... no ads for anyone.                       |
+       | [Founder] Founder prices until 6 January 2027. Buy by then ...                 |
+       | Running a guild?  Guild and Raid guild are further down  (gold link)           |
+y 290  +--------------------------------------------------------------------------------+
+y 314   +- FREE --------------+ +- PREMIUM -----------+ +- EXAMPLE . A REAL SERVER RUN -+
+        | For every player    | | For one player      | | +---------------------------+ |
+        | $0                  | | $40 /year           | | | capture 4:3: crest, name, | |
+        | No card, no trial.. | | $50 after 6 Jan 2027| | | Fury Warrior, n combos,   | |
+        |                     | | $3.33 a month, ..   | | | best set DPS +- error,    | |
+        |                     | | Founder price, kept | | | first swaps with icons    | |
+        | Sign in with Bnet.. | | [ SUBSCRIBE . $40 ] | | +---------------------------+ |
+y 510   |                     | | Free stays complete.| | Name, Fury Warrior: n         |
+        | v Addon export..    | | v Try up to 5,000 ..| | combinations on our servers,  |
+        | v BiS lists..       | | v Close the tab..   | | d MMM yyyy.                   |
+        | v Talent planner    | | v Runs go up to ..  | | Open this result              |
+        | v Browser sims      | | v See if you are .. | |                               |
+        | v Logs, live ..     | | v A message in your | |                               |
+        | v Rankings..        | | v A Supporter mark  | |                               |
+        | v Class guides      | | Sims cover damage ..| |                               |
+        | This list never..   | |                     | |                               |
+        +---------------------+ +---------------------+ +-------------------------------+
+        FOR GUILD LEADERS                                            (#guild-leaders)
+        One officer pays, and the whole guild gets raids, sign-ups and attendance. ..
+        Plans count verified members: players with a Forever Sixty account whose ..
+        +- GUILD -------------+ +- RAID GUILD --------+ | history promise (2 px rule)   
+        | For a guild of up ..| | For a raiding guild | | If a guild plan ends, its     
+        | $120 /year  (24 px) | | $200 /year  (24 px) | | raids, attendance, loot and   
+        | $150 after 6 Jan 27 | | $250 after 6 Jan 27 | | reports stay readable ..      
+        | $10 a month, billed | | $16.67 a month, ..  |                                 
+        | Founder price, kept | | Founder price, kept |                                 
+        | $4.80 per member a  | | $5 per raider a year|                                 
+        | year at 25 members..| | in a 40-person raid,|                                 
+        |                     | | $10 in a 20, $20 .. |                                 
+        | [SUBSCRIBE A GUILD] | | [SUBSCRIBE A GUILD] |                                 
+        | First 7 days free.. | | First 7 days free.. |                                 
+        | v Post raids on the | | v Loot council: each|                                 
+        | v See who came..    | | v Readiness board:..|                                 
+        | v The Forever Sixty | | v 3 Premium seats ..|                                 
+        | v 1 Premium seat .. | | v Any number of ..  |                                 
+        | v Up to 25 verified | | v Everything in Gui |                                 
+        |   .. 10- or 20- ..  | |                     |                                 
+        +---------------------+ +---------------------+                                 
+        HOW THE GUILD PLANS WORK
+        Verified members | A verified member is a player with a Forever Sixty account ..
+        Size             | ..
+        Paying together  | One person's card pays for the plan. ..
+        Seats, Moving a seat, Already on Premium, Trial, Renewals, A new guild leader, Refunds
+        Prices in US dollars. ..            FAQ (disclosures)
+```
+
+At 2000 the band stays full bleed. The 1344 column is centred, and each column is about 437 px. The example image grows to 437 x 328, and its 880 px source stays sharp at DPR 2.
+
+Phone, 360 (gutter 18, card width 324):
+
+```
++- band ------------------------+   (as the concurrent change: no eyebrow, 12/12, no guild link)
+| What is free, and what ..     |
+| lede . founder row            |
+| [ YEARLY    |    MONTHLY ]    |
++-------------------------------+
++- FREE (full card, once) ------+
++-------------------------------+
++- PREMIUM ---------------------+
+| $40 /year (28 px) ..          |
+| [ SUBSCRIBE . $40 A YEAR ]    |
+| Free stays complete. ..       |
+| v six benefit lines           |
+| Sims cover damage specs; ..   |
++-------------------------------+
++- EXAMPLE . A REAL SERVER RUN -+
+| [ image 324 x 243 ]           |
+| caption . Open this result    |
++-------------------------------+
+FOR GUILD LEADERS
+lede . members line
++- GUILD -----------------------+
+| $120 /year (22 px) ..         |
+| $4.80 per member a year ..    |
+| [ SUBSCRIBE A GUILD . .. ]    |
+| First 7 days free, ..         |
+| v five lines                  |
++-------------------------------+
++- RAID GUILD ------------------+  (same shape; 3-line per-raider line; loot council first)
++-------------------------------+
+| history promise (2 px rule)
+HOW THE GUILD PLANS WORK (stacked: term, then sentence)
+foot . FAQ
+```
+
+### B4. States
+
+| Element | Default | Hover | Focus-visible | Active | Disabled | Loading | Empty | Error |
+|---|---|---|---|---|---|---|---|---|
+| Band link `Guild and Raid guild are further down` | `--gold`, no underline | `--gold-hover`, underline | 2 px gold ring, 2 px offset | `--gold-hover` | n/a | n/a | n/a | n/a |
+| Guild card button (now neutral) | `SECONDARY_BUTTON_FIXED` | today's `SECONDARY_BUTTON_HOVER` | 2 px gold ring, 2 px offset | `--card-top` ground | n/a | n/a (it navigates) | n/a | the checkout chooser's own states |
+| Example image (plans page and simulator landing) | the picture | none (not a control) | n/a | n/a | n/a | the 4:3 box reserves its space on the `--card-top` ground until the image decodes; no spinner, no shimmer | n/a: the capture is a ship blocker | a failed load leaves the reserved box on `--card-top`; the alt text, caption and link still render |
+| `Open this result` | inline gold link | `--gold-hover`, underline | 2 px gold ring, 2 px offset | `--gold-hover` | n/a | n/a | n/a | the saved result page's own not-found state |
+
+Touch and keyboard: both links have a 44 px minimum tap height. Tab order: band link, interval control, Premium button, `Open this result`, Guild button, Raid guild button, then the FAQ summaries. The image is not focusable.
+
+### B5. Copy, verbatim
+
+Strings live in `web/src/lib/billing/plans-page-copy.ts` (and `web/src/lib/sim/landing-copy.ts` for B3.4). Figures come from `plans.ts`, from `lib/sim/precision.ts` (`CAPS.server`, `CAPS.browser`, `LANE_ITERATION_CEILING`), and from `web/src/data/premium-examples.json`. In the table those figures appear in braces, with today's value after the arrow.
+
+| Where | Key | String |
+|---|---|---|
+| Band (from 768) | `band.guildLead`, `band.guildLink` | `Running a guild?` + `Guild and Raid guild are further down` |
+| Premium slot | `premium.support` | `Free stays complete. Premium pays for the servers and keeps the site going.` |
+| Premium benefit 1 | `premium.features[0]` | `Try up to {CAPS.server} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at {CAPS.browser}.` → 5,000 / 400 |
+| Premium benefit 2 | `premium.features[1]` | `Close the tab. Server sims keep running, and the site tells you when they finish.` |
+| Premium benefit 3 | `premium.features[2]` | `Runs go up to {LANE_ITERATION_CEILING.server} iterations instead of {LANE_ITERATION_CEILING.browser}, so close upgrades come out clear.` → 100,000 / 30,000 |
+| Premium benefit 4 | `premium.features[3]` | `See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.` |
+| Premium benefit 5 | `premium.features[4]` | `A message in your own Discord channel when a server sim finishes or a log is parsed.` |
+| Premium benefit 6 | `premium.features[5]` | `A Supporter mark beside your name on your characters and in your guild's roster.` |
+| Premium scope note | `premium.scope` | `Sims cover damage specs; healing and tanking specs are not simulated yet. History, Discord messages and the Supporter mark work for every spec.` |
+| Premium example | `examples.serverRun.label` | `EXAMPLE · A REAL SERVER RUN` |
+| | `examples.serverRun.caption` (also the image alt) | `{characterName}, {specLabel}: {combinations} combinations on our servers, {ranAt as d MMM yyyy}.` |
+| | `examples.serverRun.link` | `Open this result` |
+| Simulator landing example | `landingCopy.exampleCaption` | `EXAMPLE · A REAL SERVER RUN` (was `Example`); the caption uses the same sidecar and template as `examples.serverRun.caption`; `exampleHint` unchanged |
+| Guild region | `guildRegion.heading` | `For guild leaders` |
+| | `guildRegion.lede` | `One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.` |
+| | `guildRegion.members` | `Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.` |
+| Guild card | `guild.audience` | `For a guild of up to {GUILD_TIER_MEMBER_LIMIT} verified members` → 25 |
+| | `guild.features` | `Post raids on the site and in Discord; members sign up with one tap.`; `See who came: attendance and a report for every raid night from its log.`; `The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.`; `1 Premium seat to give a member, such as your raid leader.`; `Up to {GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs 10- or 20-person raids fits under Guild. Nothing switches off if you grow past it.` |
+| Raid guild card | `raidGuild.audience` | `For a raiding guild of any size` (unchanged) |
+| | `raidGuild.features` | `Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.`; `Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.`; `3 Premium seats to give members.`; `Any number of members.`; `Everything in Guild: raids, sign-ups, attendance and the Discord bot.` |
+| Per-member line, Guild | `price.perMember(interval, founder)` | yearly `{amount} per member a year at {GUILD_TIER_MEMBER_LIMIT} members.` → `$4.80 per member a year at 25 members.`; monthly `{amount} per member a month at {GUILD_TIER_MEMBER_LIMIT} members.` → `$0.48 per member a month at 25 members.` |
+| Per-raider line, Raid guild | `price.perRaider(interval, founder)` | yearly `{a40} per raider a year in a 40-person raid, {a20} in a 20, {a10} in a 10.` → `$5 per raider a year in a 40-person raid, $10 in a 20, $20 in a 10.`; monthly `{a40} per raider a month in a 40-person raid, {a20} in a 20, {a10} in a 10.` → `$0.50 per raider a month in a 40-person raid, $1 in a 20, $2 in a 10.` (sizes from `RAID_SIZES`) |
+| Trial slot (guild cards), today | `trial` | `First {GUILD_TRIAL_DAYS} days free, once per guild. Cancel before day {GUILD_TRIAL_DAYS + 1} and nothing is charged; guild settings shows the date of the first charge.` |
+| Trial sentence added when the trial email ships | `trialEmail` (appended to `trial` and to the Trial rule, after one space) | `We email you {TRIAL_REMINDER_DAYS} days before the trial ends.` → 3 |
+| How it works, new first row | `rules[Verified members]` | term `Verified members`; `A verified member is a player with a Forever Sixty account whose character the guild has confirmed: an officer approved it, they joined by the guild's invite link, or the character is in the guild's logs. Each player counts once, however many characters they have in the guild. Discord members without an account do not count.` |
+| How it works, Trial row (changed), today | `rules[Trial]` | `A guild's first {GUILD_TRIAL_DAYS} days are free, once per guild. The card is added at the start, and guild settings shows the date of the first charge from day one. Cancel before day {GUILD_TRIAL_DAYS + 1} and nothing is charged.` |
+| How it works, new row after Size | `rules[Paying together]` | term `Paying together`; `One person's card pays for the plan. Members cannot split the bill on the site.` |
+| How it works heading | `howItWorks` | `How the guild plans work` (same words; now an h3 inside `#guild-leaders`) |
+
+**Held until built (not rendered).** The Premium list gains this line, as its first benefit, only on the day the log coach ships and its changelog entry lands. The key is `premium.featuresHeld.coach`. It stays out of `premium.features` until then, and no "ships {Month}" suffix is shown for it in the meantime:
+`Coach: after every raid, what to fix first — the casts you missed, the buffs you let drop, the consumables you skipped — learned from the engine and from the top logs on the site.`
+Before it renders, the builder checks each clause against the shipped coach (missed casts, dropped buffs, skipped consumables, the engine, the top logs) and cuts any clause the coach does not deliver. When it renders, the scope note is re-read too: if the coach covers healers or tanks, the scope note says so.
+
+**Removed.** The four §6.1 Premium features (`Server sims: 5,000 combinations, any precision, no tab left open`; `History charts of your score and parses`; `Discord notifications when a server sim or a log finishes`; `A supporter mark on your characters`). The five §6.1 Guild features and the five Raid guild features, replaced above. The old trial line `First 7 days free, once per guild. Cancel before day 8 and nothing is charged.` and the old Trial rule sentence. The `Everything in Guild` lead row and its `--strong` style. The four-column card grid, and the §1 requirement that all four prices sit above y 520 at 1280. The §5 line "No column is emphasised"; B6 replaces it. The history promise's span over the Guild and Raid guild columns. The gold outline on guild card buttons. The Raid guild example image and its loot-council caption (ruled out; the history promise holds that slot). On the simulator landing: the invented `Fury Warrior` / `1,245 DPS` in `ExampleResultCard.svelte` (`landingCopy.exampleSpec`, `landingCopy.exampleDps`), replaced by the real capture (B3.4).
+
+**Not on the page, on purpose.** Anything not live today: log coaching, a sim of your real pull, alt views, healer sims, consumables in server sims, chip-in, and the trial email until it ships. A reviewer who finds `coach`, `chip in`, or an email promise about the trial on the plans page before its feature ships fails the build (B8, check 9).
+
+### B6. Hierarchy
+
+- Region A is the page's primary region. Inside Premium, the price is primary, the button is the action, and the benefits are secondary. The support line is quiet: 13 px, weight 400, never gold.
+- Free and Premium are the same size. Free is never shrunk to push Premium (budget persona).
+- Region B is secondary to a solo player, and complete for a GM. Guild cards have smaller prices (24/22 against 32/28), no gold top highlight and neutral buttons. Inside region B, the cost line is the GM's figure. It sits in `--text`, one step above the muted lines around it.
+- Gold on the page: Premium's button, the founder pill, the founder lines, the band's guild link and `Open this result`. Nothing is filled.
+- The example card carries no gold border and no highlight. It is proof, and proof sits beside the plan it proves.
+
+### B7. Phone and desktop
+
+Never collapses: every benefit line, the scope note, the support line, every cost line (all three raid sizes), the trial slot, the members line, the Verified members rule, the example caption. Collapses: the band's guild link (gone below 768); the three-column rows become two columns from 768 to 1023 (the example or the history promise spans underneath, the example capped at 480 px) and one column below 768. Wide: at 1440 and 2000 the column is centred at 1344, and each card keeps about 437 px. One-up rows below 768 keep the column width and never stretch past it.
+
+### B8. Acceptance checks
+
+1. Every Premium benefit names a live feature. Before merge, the builder records in the lane report, line by line, the file or route that proves it: `CAPS` and `LANE_ITERATION_CEILING` in `lib/sim/precision.ts`, and that the server lane honours both (`bulk-server-run.ts`, the job's cap check); `ServerRuns.svelte` and `FinishedSimLine.svelte` for "close the tab"; `CharacterHistory.svelte` (score and parse charts with fight lists); the account Discord block and the notify job (sim finished, log parsed); `SupporterChip.svelte` on the character header and in `GuildRosterTable.svelte`. A line with no proof comes off the page.
+2. No figure is typed in `plans-page-copy.ts` or `landing-copy.ts`. A unit test changes `CAPS.server`, a price, `RAID_SIZES` and `TRIAL_REMINDER_DAYS` in fixtures and sees every string follow.
+3. `perRaiderLine` unit cases: all twelve Raid guild amounts of B3.3 (two intervals, founder and list, three sizes), including the $0.63 rounding case, in the order 40, 20, 10. `perMemberLine` covers its four Guild values.
+4. CLS 0: switching the interval, and both founder states, leave every card's height unchanged at 360, 768, 1024 and 1440 (this extends §9 E2E 3 to the guild price block's 152/144 px). The per-raider line never overflows its 54 px box at 360, 1024 or 1280. The example img carries width and height on both `/premium` and `/sim`. Lighthouse CLS on both pages stays at most 0.05 in the lhci run, with 0 as the target.
+5. The plans page still ships no `_astro` script. The image is the only new request. The AVIF is at most 45 KB. LCP stays at most 2400 ms under `web/lighthouserc.json`'s default row, on `/premium` and `/sim`.
+6. At 1280 x 800: Free's and Premium's buttons end above y 520. The band's guild link is above y 300. Activating it puts the `For guild leaders` heading at the top of the viewport, and both guild buttons and trial lines end above that viewport's bottom.
+7. The example's caption words equal the sidecar's values, and the sidecar names a Fury Warrior on the owner's account. `Open this result` resolves to a saved result that answers 200 signed out.
+8. `#guild-leaders` exists and contains Guild, Raid guild, the history promise and How the guild plans work. `Verified members` is its first rule and equals B5 word for word; it contains no `Battle.net`. `Paying together` follows `Size`.
+9. No text on `/premium` contains `coach`, `chip in`, `retention`, `compare more than`, or an exclamation mark (extends §9 E2E 7). Until the trial email ships, no text contains `email you` near `trial`. When it ships, an e2e asserts the trial slot and the Trial rule end with `We email you 3 days before the trial ends.`, and that sentence is added in the same lane that ships the email.
+10. No loot-council example and no `EXAMPLE · A REAL LOOT COUNCIL` text exists. Column 3 of the guild row is the history promise at 1024 and above.
+11. The Free card appears exactly once at every width (the concurrent change).
+12. Axe is clean. Every link and button is at least 44 px tall at 360.
+13. `/sim` landing: `ExampleResultCard` shows the capture, the B5 label and the sidecar caption. No text on `/sim` contains `1,245 DPS`. `landingCopy` has no `exampleSpec` or `exampleDps` key.
+14. The held coach line is not in `premium.features` and not in the rendered page.
+
+### B9. Capture rows (added to §9's table)
+
+| # | State | 360 | 390 | 1024 | 1440 | 2000 |
+|---|---|---|---|---|---|---|
+| 15 | Region A, founder open, Yearly: Free, Premium, the server-run example | x | x | x | x | x |
+| 16 | Region A, Monthly (same heights as row 15, overlaid diff) | | x | | x | |
+| 17 | Region B, founder open, Yearly, with the history promise in column 3 | x | x | x | x | x |
+| 18 | Region B, Monthly and after the founder window (the cost lines in all four forms, all three raid sizes) | x | x | x | x | |
+| 19 | `/sim` landing with the real example card (replaces the invented one) | x | x | | x | |
+| 20 | Band link: default, hover, focus-visible; and the viewport after activating it | | | | x | |
+| 21 | The example image failing to load (blocked request): reserved box, alt text, caption, link | | x | | x | |
+| 22 | Full page, same-scale side by side with the mock board for this amendment (`design/mocks/gen_launch_pricing.py` gains a `premium-value` board) | | | x | x | x |
+
+### B10. Rulings (coordinator, 2026-10-27)
+
+1. **Trial email.** A trial-ending email will be built: on Stripe's `customer.subscription.trial_will_end`, 3 days before the trial ends (`TRIAL_REMINDER_DAYS = 3`). The renewal email skips a subscription that is still trialing. Today nothing is sent before a trial ends, and a yearly trial gets the renewal email in its first day (`notices_store.go` treats the trial end as the period end). Until the email ships, the page promises only the charge date in guild settings. The trial line is written so that one appended sentence (B5 `trialEmail`) makes it complete.
+2. **Log coaching** is the real differentiator. Its Premium line is drafted and held (B5). The page does not mention coaching until the coach ships.
+3. **No Raid guild example.** The history promise takes column 3 of the guild row.
+4. **The server-sim example** is the owner's Fury Warrior, a real server Top Gear run. Public read of the saved result is fine.
+5. **Verified members** follows the code: officer approval, the guild's invite link, or the guild's logs. One count per player. Discord-only members do not count. No Battle.net wording.
+6. **Raid sizes.** Forever has 10-, 20- and 40-person raids. The per-raider line shows the 40 figure first, with 20 and 10 beside it. The Guild card's 25-member line says a 10- or 20-person raiding guild fits under Guild.
+7. **One card pays.** Chip-in stays deferred.
+8. **`/sim`'s invented figure** is replaced by the real capture (B3.4).
