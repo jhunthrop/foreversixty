@@ -95,3 +95,55 @@ The coach's voice also does not show. The model review (`Your Fury coach`) is wo
 4. The holy-priest fixture reuses the Fury strengths and basis.
 5. `Onyxia's Lair … 5 of 8 bosses`, and `Warden Kelthas (5)` as a raid boss.
 6. Spec §10.7 already flags `Rend` in the `DetailAdherence` example. Confirm it never reaches a Fury player.
+
+## Re-read 2026-10-28
+
+Read against the gate-fix captures (`.superpowers/sdd/2026-10-27-log-coach/coach-gate-fix-report.md`, `task-44-report.md`). The fixture is now a believable night: Baelgrim, Fury, Onyxia (40), Kill 3:52, gaps 1:12–1:25 and 2:44–2:55, rage cap 2:45–2:54; Sunwick, Holy, Flame Breath at 3:20. Every time on the panel fits inside the fight. The model review now sounds like a guild's best warrior talking: "Bloodthirst is the button the Fury rotation is built around … so that one gap cost you twice." The rule-only review gives the §8 sentences: "9 of a possible 33 went unused while you had the rage. Longest gaps 1:12–1:25 and 2:44–2:55."
+
+### Overall verdict: SHIP WITH FIXES
+
+### Per row
+- A1 strip icon: FIXED (20 px Bloodthirst icon, all widths). The 9-of-33 numbers are now consistent.
+- A2 preparing: FIXED (`Top Fury logs for this boss are still loading.`).
+- A2 free: FIXED (`3 things to fix · [icon] Bloodthirst: 9 casts lost first · Read the full review with Premium`).
+- A4 rail overflow: FIXED. 1440 is 1440 wide and the rail sits inside the column at 2000.
+- A4 icons: FIXED for the Fix first title, the why token and the chip. STILL OPEN, minor: `Heroic Strike` in the Rage-full why, and `Whirlwind` / `Heroic Strike` in the Practice line, are plain text (`log-coach-a4-panel-model-1440.png`). Confirm whether this is data (no spellicons entry) or the token pass.
+- A4 empty chips: FIXED (`Bloodthirst · Casts`, `Timelines · 1:12–1:25`, `Resources · 2:45–2:54`). The Whirlwind `· Debuffs` chip is gone.
+- A4 gaps sentence: FIXED (DetailCoreCasts as keyed, with ranges).
+- A4 Last Stand / killer / 3:20 death: FIXED. Fury is alive the whole fight and there is no defensive clause.
+- A4 defensives shown both ways: FIXED.
+- A4 spell ranks on a raid boss: FIXED (the line is gone on this pull).
+- A4 zone, boss, pool size, talents line: FIXED (`Onyxia (40)`, `Top 25 Fury warriors on Onyxia (40)`, `Talents and race: Forever logs don't record them.`).
+- A4 adherence without a reference: FIXED (`Battle Shout was up 100% of the fight, against 97% for the top 25.`).
+- A5 link line: FIXED (`The Bloodthirst gap at 2:44–2:55 overlaps the rage cap at 2:45–2:54.`, and it is true).
+- A5 swap delivers nothing: FIXED. Ready shows the model's words.
+- A6 titles (`Your Fury coach`, `Your coach` for not-available): FIXED.
+- A6 not-reviewable reasons: FIXED (`The coach reviews boss pulls only.`, `This pull is under 30 seconds, too short to show a rotation.`).
+- A6 no-findings opening: FIXED (`Nothing to fix on this pull that the log can show.`). NEW, STILL OPEN: its footer reads `Reviewed 24 Oct · Based on: .` (`log-coach-a6-state-no-findings-1440.png`). That is an empty basis with a stray full stop. Either print the Doing well bases (`Top 25 Fury warriors on Onyxia (40)`) or drop `Based on:` when there is none.
+- A6 raid-buffs-only: FIXED (`No Mark of the Wild at the pull … A druid in the raid provides it.`).
+- A6 teasers: FIXED (icon, gold `3 things to fix`, title alone).
+- A6 healer: FIXED. The pack is a real Holy priest's: `Greater Heal (Rank 4): 44% overheal`, downrank advice, a flask and Inner Fire under Doing well, a Holy basis, and no "rotation". The Greater Heal icon is missing by data (ruled).
+- A6 busy / ready-rules / starter content: FIXED.
+- A8 zone: FIXED (`Molten Core … on 5 of 8 bosses`, `Onyxia's Lair, Sat 24 Oct · Fix first: Bloodthirst casts lost`).
+- A11 field order: FIXED (Your coach sits before Loot).
+- A11 masked link: FIXED in the render. STILL OPEN as proof only: there is no capture from the private test server, and no check that `#coach` reopens the panel.
+- A11 Aimed Shot stem: FIXED (`Aimed Shot casts lost — on all 8 bosses`).
+- A11 raidNight: FIXED (`Coach reviews for tonight's pulls are ready; open the report or use /report.`).
+- A11 loot placeholders: out of scope (rating lane), still visible.
+
+### A12 History, first read
+It answers "is my Fix first the same every week?", which is the reason to keep a coach. Rows are one link each, newest first, with a Wipe tag. Fine as a start. What a player would trip on:
+- **STILL OPEN** `log-coach-a12-history-older-error-*-390/1440`: under a list, `The coach couldn't read this pull just now.` is wrong ("this pull"?). It needs a list key, e.g. `historyOlderError`: `Older reviews didn't load. Try again.`
+- **STILL OPEN** `Log only` on nearly every row (`log-coach-a12-history-rows-list-1440.png`) means nothing to a raider. Nowhere on the page is it explained. Either drop the tag or word it `Rules only` with the same meaning the panel's `Your Fury review` title carries.
+- Should, not blocker: twenty flat rows read like a parser dump. Group by night (`Molten Core · 17 Oct`, then the bosses), put the 16 px spell icon before each title as the strip does, and the trend jumps out ("Bloodthirst on 5 of 8 again").
+- Capture data (parked): Fury rows under Elyra Duskvale, a Holy priest. The same page still carries `Warden Kelthas` and `Deep Warden` in Every ranked fight, plus `0/9/0` talents at level 60.
+
+### Privacy, Log coach paragraph
+A player understands it. What leaves: one fight's numbers, with no name, account, guild or realm. Who gets it: the Vercel AI Gateway, which keeps nothing, then DeepSeek, which writes the review. Officers opening your review also send it. Two small things:
+- The parenthesis is circular: `the numbers of one fight (… and the fight's own numbers)`. Say `one fight's numbers: spec, class, …, spell names, casts, uptimes and timings`.
+- A raider will ask "can I turn it off for me?" The paragraph only covers the site switching the model off. Add one line on whether a player can opt out, or say plainly that they cannot.
+
+### Data I do not believe (for accuracy)
+1. The Molten Core kill order (Discord, A12 history) runs Lucifron … Golemagg, Ragnaros with no Sulfuron Harbinger and no Majordomo Executus, and calls that `8 kills` / `all 8 bosses`. Ragnaros cannot be summoned without Majordomo, and MC has 10 bosses. Use a real night, either 10/10 or a believable partial without Ragnaros.
+2. Zulmara gets `Fix first: Bloodthirst casts lost` in the Discord post, while the account mock lists Zulmara as a Marksmanship hunter. Check the class.
+3. Logs table fixture: `4,400` damage and `19.0 per sec`, `1.9% active` on a 3:52 Onyxia kill, plus the page title `Onyxia's Lair, fixture night`. That is capture data, but it sits above the coach strip in every A1 and A2 capture.
