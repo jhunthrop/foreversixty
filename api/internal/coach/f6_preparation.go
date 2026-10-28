@@ -134,7 +134,7 @@ func categoryIssues(in Input, pull consumables.Pull) (issues []prepIssue, have, 
 			have = append(have, entryNames(present)...)
 		case !in.Tables.Consumables.IsComplete(c.category):
 			couldNot = append(couldNot, c.incomplete)
-		default:
+		case in.Tables.Consumables.MissedAtPull(pull, c.category):
 			issues = append(issues, prepIssue{order: c.order, severity: sizeSeverity(in.Size), title: c.title,
 				phrase: Fill(prepPhraseNo, map[string]string{"what": c.what})})
 		}

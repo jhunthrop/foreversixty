@@ -9,7 +9,7 @@ sources:
   - data/builds/1.60.1.70630/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
-reviewed: wow-player, 2026-10-28
+reviewed: pending
 ---
 
 ## Who they are

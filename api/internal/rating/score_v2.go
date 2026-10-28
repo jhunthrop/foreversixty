@@ -545,7 +545,7 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 // §13).
 //
 // Only flask and food are judged, and each only while its list is complete
-// (missedAtPull): the food list names one food per role, so no listed food up is unknown,
+// (consumables.RoleCatalogue.MissedAtPull): the food list names one food per role, so no listed food up is unknown,
 // never "food missed". The catalogue's weapon_enchant category (sharpening stones, wizard
 // oils) is left out of the requirement - treated as unknown - until a real beta log shows
 // how stones and oils appear in COMBATANT_INFO (as an aura, or as a temporary enchant on
@@ -555,7 +555,7 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 var disciplineCatalogue = consumables.Load().AllRoles()
 
 // fightDiscipline is whether row's player pulled fully prepared: no flask or food missed at
-// the pull (missedAtPull), and every equipped slot of DisciplineEnchantSlots
+// the pull (disciplineCatalogue.MissedAtPull), and every equipped slot of DisciplineEnchantSlots
 // enchanted. nil is "not known": no combatant info with gear for the player.
 func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	pull := consumables.AtPull(fight, row.GUID, disciplineCatalogue)
@@ -563,15 +563,9 @@ func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	if !pull.Known || !ok {
 		return nil
 	}
-	full := !missedAtPull(pull, consumables.CategoryFlask) && !missedAtPull(pull, consumables.CategoryFood) && Enchanted(combatant)
+	full := !disciplineCatalogue.MissedAtPull(pull, consumables.CategoryFlask) &&
+		!disciplineCatalogue.MissedAtPull(pull, consumables.CategoryFood) && Enchanted(combatant)
 	return &full
-}
-
-// missedAtPull is whether a known pull proves the category absent: nothing of it was up
-// and disciplineCatalogue's list of it is complete. An incomplete list can prove presence,
-// never absence (an off-list food is still a food).
-func missedAtPull(pull consumables.Pull, category string) bool {
-	return pull.Known && disciplineCatalogue.IsComplete(category) && !pull.Has(category)
 }
 
 // combatantOf is guid's combatant row, if the fight has one.

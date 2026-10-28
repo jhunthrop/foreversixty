@@ -30,19 +30,33 @@ func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat
 // preparationTotal is the raw 0-100 completeness for player, read through
 // consumables.AtPull (the seeded aura tracks, or an aura applied within
 // AtPullGraceMS of the pull; log coach spec §13). false when the log has no
-// character sheet for player. A carried category whose list is incomplete
-// and reads nothing is unknown, not missing: its weight leaves the total
-// and the rest is read out of what is left (unknownWeight).
+// character sheet for player, or (unreachable on the shipped catalogue,
+// whose flask and world_buffs lists are complete) when nothing on it can be
+// judged: either way the pull is unknown, not empty.
+//
+// A complete list's category weighs in full whatever was read. An
+// incomplete list can prove presence, never absence, so its category
+// counts only what it earned, in the earned and the possible total alike:
+// a read adds credit and never a shortfall, and bringing one more thing
+// never lowers the score.
 func preparationTotal(fight summary.Summary, player string, cat *consumables.RoleCatalogue) (float64, bool) {
 	pull := consumables.AtPull(fight, player, *cat)
 	if !pull.Known {
 		return 0, false
 	}
-	possible := totalWeight(cat) - unknownWeight(pull, cat)
-	if possible <= 0 {
-		return 0, true
+	var earned, possible float64
+	for _, category := range weighedCategories {
+		credit := categoryCredit(pull, cat, category)
+		earned += credit
+		if cat.IsComplete(category) {
+			possible += float64(cat.Weights[category])
+		} else {
+			possible += credit
+		}
 	}
-	earned := carriedWeight(pull, cat) + worldBuffWeight(pull, cat) + potionWeight(pull, cat)
+	if possible <= 0 {
+		return 0, false
+	}
 	return clamp(100*earned/possible, 0, 100), true
 }
 
@@ -61,52 +75,22 @@ func PreparationValue(fight summary.Summary, player string, cat *consumables.Rol
 // any one listed entry present earns the category's full weight.
 var carriedCategories = []string{consumables.CategoryFlask, consumables.CategoryFood, consumables.CategoryWeaponEnchant}
 
-func carriedWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
-	var total float64
-	for _, category := range carriedCategories {
-		if pull.Has(category) {
-			total += float64(cat.Weights[category])
-		}
-	}
-	return total
-}
-
 // weighedCategories are every category Preparation weighs.
 var weighedCategories = append(append([]string{}, carriedCategories...),
 	consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion)
 
-// unknownWeight is the weight of every category the catalogue cannot judge
-// absent: its list is incomplete and nothing on it was read. The food list
-// names one food per role, the dps potion list is partial, and the
-// weapon_enchant entries are the stone and oil application spells, which
-// never show as auras (a temporary enchant rides on the weapon item, and
-// AtPull does not read it), so each stays unknown unless a listed entry is
-// seen.
-func unknownWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
-	var total float64
-	for _, category := range weighedCategories {
-		if !cat.IsComplete(category) && !readAny(pull, category) {
-			total += float64(cat.Weights[category])
-		}
+// categoryCredit is the weight the pull earned in one category.
+func categoryCredit(pull consumables.Pull, cat *consumables.RoleCatalogue, category string) float64 {
+	switch category {
+	case consumables.CategoryWorldBuffs:
+		return worldBuffWeight(pull, cat)
+	case consumables.CategoryCombatPotion:
+		return potionWeight(pull, cat)
 	}
-	return total
-}
-
-// readAny is whether the pull read anything of the category: a listed
-// entry up, or for combat_potion a use.
-func readAny(pull consumables.Pull, category string) bool {
-	if category == consumables.CategoryCombatPotion && pull.PotionUses > 0 {
-		return true
+	if pull.Has(category) {
+		return float64(cat.Weights[category])
 	}
-	return pull.Has(category)
-}
-
-func totalWeight(cat *consumables.RoleCatalogue) float64 {
-	var total float64
-	for _, w := range cat.Weights {
-		total += float64(w)
-	}
-	return total
+	return 0
 }
 
 // worldBuffWeight credits world_buffs: several stack at once, so credit is

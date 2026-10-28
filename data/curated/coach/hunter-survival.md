@@ -9,7 +9,7 @@ sources:
   - data/builds/1.60.1.70630/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
-reviewed: wow-player, 2026-10-28
+reviewed: pending
 ---
 
 ## Who they are
@@ -21,9 +21,9 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Raptor Strike.
-- Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
+- Counterattack.
 - Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
-- Lacerate whenever its bleed has fallen off.
+- Lacerate.
 - Strider Kick as the lowest-priority filler on its own eight second cooldown.
 - Immolation Trap.
 - Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.

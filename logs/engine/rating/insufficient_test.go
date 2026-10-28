@@ -33,7 +33,8 @@ func TestScoreProducesAnInsufficientCardOnAWipeWithNoMechanicsTable(t *testing.T
 		{SpellID: 12345, Name: "Shadow Weaving", Kind: utility.Debuff, Target: "enemy", Verified: "test"},
 	}}
 	cat := &consumables.RoleCatalogue{
-		Weights: map[string]int{"flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20},
+		Weights:  map[string]int{"flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20},
+		Complete: everyCategoryComplete(),
 	}
 	src := &fakePercentiles{} // ok=false everywhere: every scored component uses its own absolute standard
 	card := Score(fight, player, CuratedTables{Mechanics: nil, Utility: utilTable, Consumables: cat}, src, nil, DefaultModelInfo())

@@ -2,6 +2,7 @@
 package rating
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
@@ -57,7 +58,7 @@ func testCatalogue(incomplete ...string) *consumables.RoleCatalogue {
 		Flask:         []consumables.Entry{{SpellID: 17626, Name: "Flask of the Titans"}},
 		Food:          []consumables.Entry{{SpellID: 1249522, Name: "Grilled Squid"}},
 		WeaponEnchant: []consumables.Entry{{SpellID: 25122, Name: "Brilliant Wizard Oil"}},
-		WorldBuffs:    []consumables.Entry{{SpellID: 22888, Name: "Rallying Cry"}},
+		WorldBuffs:    []consumables.Entry{{SpellID: 22888, Name: "Rallying Cry"}, {SpellID: 24425, Name: "Spirit of Zandalar"}},
 		CombatPotion:  consumables.PotionGroup{MaxUses: 2, Entries: []consumables.Entry{{SpellID: 17528, Name: "Mighty Rage Potion"}}},
 	}
 }
@@ -118,19 +119,124 @@ func TestPreparation_PrePullPotionCountsAsOneUse(t *testing.T) {
 	checkPreparation(t, "a seeded potion", preparedFight(seededAura(17528)), testCatalogue(), 10)
 }
 
-// An incomplete category can prove presence, never absence: absent, its
-// weight drops out of the total and the rest is read out of what is left.
-func TestPreparation_AnIncompleteCategoryAbsentIsUnknown(t *testing.T) {
+// A sheet whose every list is incomplete, with nothing listed up, has
+// nothing to judge: unknown, never a zero.
+func TestPreparation_NothingJudgeableIsNotAZero(t *testing.T) {
+	every := testCatalogue(consumables.CategoryFlask, consumables.CategoryFood, consumables.CategoryWeaponEnchant,
+		consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion)
+	if v, ok := PreparationValue(preparedFight(), fixturePlayer, every); ok {
+		t.Fatalf("PreparationValue = %v, true; want no value", v)
+	}
+}
+
+// potionCast is one successful cast of spellID by the fixture player.
+func potionCast(spellID int64) summary.CastRow {
+	return summary.CastRow{GUID: fixturePlayer, OwnerGUID: fixturePlayer, SpellID: spellID, Succeeded: 1}
+}
+
+// An incomplete category can add credit, never a shortfall: what it earned
+// counts in both the earned and the possible total, and what it did not
+// earn counts in neither.
+func TestPreparation_AnIncompleteCategoryCountsOnlyWhatItEarned(t *testing.T) {
 	flask := preparedFight(seededAura(17626))
 	checkPreparation(t, "off-list food: 30 of 85", flask, testCatalogue(consumables.CategoryFood), 35.29)
 	fed := preparedFight(seededAura(17626), seededAura(1249522))
-	checkPreparation(t, "listed food still earns: 45 of 100", fed, testCatalogue(consumables.CategoryFood), 45)
+	checkPreparation(t, "listed food earns: 45 of 100", fed, testCatalogue(consumables.CategoryFood), 45)
 	checkPreparation(t, "an unreadable stone: 45 of 85", fed, testCatalogue(consumables.CategoryWeaponEnchant), 52.94)
 	checkPreparation(t, "a complete stone list: 45 of 100", fed, testCatalogue(), 45)
 	checkPreparation(t, "no use of a partial potion list: 45 of 80", fed, testCatalogue(consumables.CategoryCombatPotion), 56.25)
 	quaffed := preparedFight(seededAura(17626), seededAura(1249522))
-	quaffed.Casts = []summary.CastRow{{GUID: fixturePlayer, OwnerGUID: fixturePlayer, SpellID: 17528, Succeeded: 1}}
-	checkPreparation(t, "one use of a partial potion list: 55 of 100", quaffed, testCatalogue(consumables.CategoryCombatPotion), 55)
+	quaffed.Casts = []summary.CastRow{potionCast(17528)}
+	checkPreparation(t, "one use of a partial potion list: 55 of 90", quaffed, testCatalogue(consumables.CategoryCombatPotion), 61.11)
+}
+
+// The spec's worked examples (Fury 70, Holy 45; score_test.go) assume every
+// list is complete. The shipped catalogue marks food, weapon_enchant and
+// combat_potion incomplete for every role, so the same pulls read higher:
+// what those lists did not see is unknown, not missing. These pin the
+// shipped values so a catalogue change that moves them is seen.
+func TestPreparation_ShippedCatalogueValues(t *testing.T) {
+	healer, _ := consumables.Load().For(RoleHealer)
+	quaffed := preparedFight(seededAura(17626), seededAura(1249522), seededAura(25122))
+	quaffed.Casts = []summary.CastRow{potionCast(17528)}
+	for _, c := range []struct {
+		name  string
+		fight summary.Summary
+		want  float64
+	}{
+		{"dps flask only: 30 of 50", preparedFight(seededAura(17626)), 60},
+		{"dps flask, food, oil: 60 of 80", preparedFight(seededAura(17626), seededAura(1249522), seededAura(25122)), 75},
+		{"dps flask, food, oil, one potion: 70 of 90", quaffed, 77.78},
+	} {
+		if got := placedPreparation(t, c.fight); len(got) != 1 || roundTo(got[0], 2) != c.want {
+			t.Errorf("%s: placed %v, want [%v]", c.name, got, c.want)
+		}
+	}
+	holy := preparedFight(seededAura(healer.Flask[0].SpellID), seededAura(healer.Food[0].SpellID))
+	checkPreparation(t, "Holy's worked example on the shipped catalogue: 45 of 65", holy, &healer, 69.23)
+}
+
+// pullItem is one thing a player can bring, added to a fight.
+type pullItem struct {
+	name string
+	add  func(*summary.Summary)
+}
+
+// pullItems is one of each thing rc can credit, from its own lists.
+func pullItems(rc consumables.RoleCatalogue) []pullItem {
+	seed := func(name string, id int64) pullItem {
+		return pullItem{name, func(f *summary.Summary) { f.Auras = append(f.Auras, seededAura(id)) }}
+	}
+	potion := rc.CombatPotion.Entries[0].SpellID
+	items := []pullItem{
+		seed("flask", rc.Flask[0].SpellID), seed("food", rc.Food[0].SpellID),
+		seed("world buff 1", rc.WorldBuffs[0].SpellID), seed("world buff 2", rc.WorldBuffs[1].SpellID),
+		seed("pre-pull potion", potion),
+		{"potion cast", func(f *summary.Summary) { f.Casts = append(f.Casts, potionCast(potion)) }},
+	}
+	if len(rc.WeaponEnchant) > 0 {
+		items = append(items, seed("weapon enchant", rc.WeaponEnchant[0].SpellID))
+	}
+	return items
+}
+
+func fightWith(items []pullItem, mask int) summary.Summary {
+	fight := preparedFight()
+	for i, it := range items {
+		if mask&(1<<i) != 0 {
+			it.add(&fight)
+		}
+	}
+	return fight
+}
+
+// Bringing one more thing never lowers Preparation, for every role on the
+// shipped catalogue and on every completeness mix of the test catalogue.
+func TestPreparation_BringingMoreNeverLowersTheScore(t *testing.T) {
+	cats := map[string]*consumables.RoleCatalogue{}
+	for _, role := range []string{RoleDPS, RoleHealer, RoleTank} {
+		rc, _ := consumables.Load().For(role)
+		cats["shipped "+role] = &rc
+	}
+	for _, incomplete := range [][]string{nil, {consumables.CategoryFood},
+		{consumables.CategoryFood, consumables.CategoryWeaponEnchant, consumables.CategoryCombatPotion}} {
+		cats[fmt.Sprintf("test, incomplete %v", incomplete)] = testCatalogue(incomplete...)
+	}
+	for name, cat := range cats {
+		items := pullItems(*cat)
+		for mask := 0; mask < 1<<len(items); mask++ {
+			before, _ := preparationTotal(fightWith(items, mask), fixturePlayer, cat)
+			for i, it := range items {
+				if mask&(1<<i) != 0 {
+					continue
+				}
+				after, _ := preparationTotal(fightWith(items, mask|1<<i), fixturePlayer, cat)
+				if after < before-1e-9 {
+					t.Fatalf("%s: adding %s to mask %b lowered Preparation %.2f -> %.2f", name, it.name, mask, before, after)
+				}
+			}
+		}
+	}
 }
 
 func TestModelVersionMovedForConsumables(t *testing.T) {

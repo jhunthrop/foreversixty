@@ -38,9 +38,6 @@ CATALOGUE_PATH = "logs/engine/mechanics/consumables/catalogue.json"
 ACTIVE_BUILD_PATH = "web/src/data/active-build.json"
 FULL_SPECS = frozenset({"warrior-fury", "priest-holy", "warrior-protection"})
 STARTER_VERSION = "starter edition"
-# The recorded wow-player read of every starter (design/reviews/2026-10-27-log-coach-personas), pinned
-# so regeneration is deterministic. Change it only when a new read is recorded.
-REVIEWED = "wow-player, 2026-10-28"
 
 ROTATION_HEADING = "## Rotation and priority"
 # Spells the class spellconst files do not carry.
@@ -154,7 +151,7 @@ def front_matter(row: dict[str, Any]) -> str:
     listed = "\n".join(f"  - {s}" for s in sources)
     return (
         f"---\nspec: {row['spec']}\nrole: {row['role']}\nstatus: starter\n"
-        f"version: {STARTER_VERSION}\nsources:\n{listed}\nreviewed: {REVIEWED}\n---\n"
+        f"version: {STARTER_VERSION}\nsources:\n{listed}\nreviewed: pending\n---\n"
     )
 
 
