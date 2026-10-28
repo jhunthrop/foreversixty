@@ -4,6 +4,7 @@ import { priceFor } from '../../src/lib/billing/plan-costs';
 import { checkoutGuildCopy } from '../../src/lib/billing/checkout-guild-copy';
 import { PLANS, formatPrice, founderOpen } from '../../src/lib/billing/plans';
 import { guildClaimCopy } from '../../src/lib/guild/copy';
+import { SETUP_NAV_ITEM } from '../../src/lib/nav';
 import { uiCopy } from '../../src/lib/ui/copy';
 import type { Me } from '../../src/lib/account/me-types';
 import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscribe-fixtures';
@@ -284,13 +285,13 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   await routeMeCell(page, () =>
     claimed
       ? lastWatchMe({
-          rank: 'officer',
+          rank: 'leader',
           verified: true,
           verified_count: 12,
           claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
           subscribe: subscribeView('ready', { trial_used: false }),
         })
-      : lastWatchMe({ step: 'start_claim', rank: 'officer', verified: true }),
+      : lastWatchMe({ step: 'claim', rank: 'leader' }),
   );
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(envelope(claimed ? heldSettings : unclaimedSettings)),
@@ -376,7 +377,7 @@ test('a stranger is offered Get set up, which carries this claim page as next', 
   await routeMeCell(page, () => buildMe({ guilds: [] }));
   await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
   await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
-  const link = page.getByTestId('guild-claim-not-member').getByRole('link', { name: 'Get set up' });
+  const link = page.getByTestId('guild-claim-not-member').getByRole('link', { name: SETUP_NAV_ITEM.label });
   await expect(link).toHaveAttribute(
     'href',
     `/setup?next=${encodeURIComponent(`${CLAIM_PATH}${PLAN_QUERY}`)}`,
@@ -387,7 +388,7 @@ test('/setup offers Back to the claim once a save makes the account know the gui
   page,
 }) => {
   let saved = false;
-  await routeMeCell(page, () => (saved ? lastWatchMe({ rank: 'guild master' }) : buildMe({ guilds: [] })));
+  await routeMeCell(page, () => (saved ? lastWatchMe({ rank: 'leader' }) : buildMe({ guilds: [] })));
   const claimLink = `${CLAIM_PATH}${PLAN_QUERY}`;
   await page.goto(`/setup?next=${encodeURIComponent(claimLink)}`);
   const slot = page.getByTestId('setup-back-to-claim');

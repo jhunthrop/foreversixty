@@ -23,6 +23,8 @@ import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-bi
 
 const PHONE = { width: 360, height: 780 };
 const MIN_TAP_PX = 44;
+/** Spec 6.1: hand-off links name the site, not the host the page is served from. */
+const SITE_ORIGIN = 'https://foreversixty.gg';
 const NOON = '2026-12-01T12:00:00Z';
 
 const billing = (page: Page) => page.getByTestId('guild-settings-billing');
@@ -199,7 +201,7 @@ test('an officer who does not hold the claim gets the link to send the claim hol
   await openWith(page, guildBillingRead({ can: [], verified_count: 12 }));
   const block = page.getByTestId('guild-billing-handoff-block');
   await expect(block).toContainText(guildSettingsCopy.sendThemThisLink);
-  const origin = new URL(page.url()).origin;
+  const origin = SITE_ORIGIN;
   await expect(page.getByTestId('guild-billing-handoff-url')).toHaveValue(
     `${origin}${SETTINGS_GUILD_PATH}?plan=guild&interval=yearly#billing`,
   );
@@ -211,7 +213,7 @@ test('an officer who does not hold the claim gets the link to send the claim hol
 
 test('the hand-off link names Raid guild above 25 verified members', async ({ page }) => {
   await openWith(page, guildBillingRead({ can: [], verified_count: 28 }));
-  const origin = new URL(page.url()).origin;
+  const origin = SITE_ORIGIN;
   await expect(page.getByTestId('guild-billing-handoff-url')).toHaveValue(
     `${origin}${SETTINGS_GUILD_PATH}?plan=raid_guild&interval=yearly#billing`,
   );
