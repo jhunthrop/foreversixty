@@ -9,7 +9,7 @@ sources:
   - data/builds/1.60.1.70630/spellconst/warrior.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
-reviewed: pending
+reviewed: wow-player, 2026-10-28
 ---
 
 ## Who they are

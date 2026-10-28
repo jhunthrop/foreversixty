@@ -1,0 +1,41 @@
+# Task 24 - wow-player read 3 of the 25 starter coach personas (2026-10-27, commit a3e756e89)
+
+Verdict: 9 SHIP / 16 FIX.
+
+## G1-G7 check
+- G1 consumables: FIXED. Casters get Supreme Power + Wizard Oil + Major Mana Potion, no Mighty Rage; melee get no oil; Enhancement/feral/rogues have no stone; healers get Distilled Wisdom + Nightfin Soup, no resistance flask.
+- G2 mana drill: FIXED (casters/hunters get the mana drill). G3 preparation drill follows consumables: FIXED. Mistakes list is tailored per spec: FIXED.
+- G5 stray "s" and "one one hundred": FIXED (none left). G6 raw finding ids: FIXED.
+- G7 filler named: FIXED for Arcane (Arcane Blast), Combat (Sinister Strike), Fire (Scorch/Fireball). Arms still has no Whirlwind (guide never names it; acceptable).
+- G8 Shadow wand contradiction: FIXED.
+- G4 sim talk / orphans: PARTLY fixed, see below.
+
+## SHIP (9)
+hunter-beast-mastery (nit: "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown" still hard to parse), hunter-marksmanship, hunter-survival (melee list now right: Raptor Strike, Counterattack, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap, Wing Clip with the totem condition; matches survival.md line 85), mage-arcane, mage-frost, rogue-combat, rogue-subtlety (belief item: Hemorrhage "fifteen percent more damage from your Rupture", 145%, 180% are in subtlety.md line 57 but are not Classic; tooltip check), warlock-affliction (Wrack belongs: affliction.md line 61), warlock-destruction.
+
+## FIX (16)
+- druid-balance: "Moonfire." is the FIRST priority line; balance.md line 66 says "Moonfire is no longer a maintained DoT" and line 46 "keeping Moonfire up costs more than it returns". Drop it or say "Moonfire only as an opener".
+- druid-feral (cat): "Moonfire." and "Wrath." sit above Shifting Power and Tiger's Fury; feral.md cat section (line 66) names neither. Order should be Shifting Power (energy 60 or lower), Tiger's Fury, Rip at 5 points, Ferocious Bite, Shred. "Claw." and "Bear Form." bare in a cat list do not belong. "this is the new energy tool in the tree" is changelog voice. Rake is explicitly left out in the guide; fine, not listed.
+- druid-feral-bear: "Feral Charge." bare directly after "Growl, Challenging Roar, Bash and Feral Charge do nothing in a fight with one stationary enemy." (sim talk that tells a real tank Growl is useless; drop it, and Feral Charge). Frenzied Regeneration is listed twice. Defensives come before Primal Bite; feral-bear.md lines 72-76 put Primal Bite, Lacerate, Maul first.
+- druid-restoration: "Tranquility: Party members get Wild Growth when two are hurt, Rejuvenation when one is, and Tranquility when two are well down." is garbled; Tranquility is not the party-heal chooser. "Innervate: Nature's Swiftness into an instant Healing Touch ..." mixes two buttons under Innervate. Healer drill says "cheap heals over time", fine here.
+- mage-fire: the actionable Pyroblast line is missing; only "Pyroblast's own damage-over-time is minor next to the hit; the point of the buff is the fast cast." survives, "the buff" has no subject. Needs "Pyroblast only at three Heating Up stacks (1.5 second cast)" (fire.md line 69). Bare "Frostfire Bolt." contradicts fire.md ("no upgrade on Scorch", not in the loop). Scorch is the filler for every other global; the file says "Scorch to apply or refresh" only.
+- paladin-holy: "Holy Shock and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left" is sim talk. "Divine Favor ..." appears twice. Drill.resource says "let the cheap heals over time carry the tank": a Holy Paladin has no heals over time. Belief item: Flash of Light "most efficient heal per mana" (Classic players say Holy Light); confirm in the Forever tooltip.
+- paladin-protection: "Lay on Hands is the survival cooldown of last resort and fires itself below ten percent health." (tell the player to press it). Hammer of the Righteous appears twice. "Swift Judgement ... one more Judgement a minute" is cryptic. "Seal of Fury kept up." fine as a name.
+- paladin-retribution: "Holy Strike, Forever's new baseline Paladin attack added to the client this week" (stale dev note). "this is now the only seal-maintenance line" (changelog). Bare "Seal of Command." after a Righteousness-only line contradicts it.
+- priest-discipline: "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down." garbled. The "Heal: Renew and Prayer of Mending go on the tank; Flash Heal is the emergency button ..." line restates four other lines. Bare "Shadowfiend." first and "Dark Sacrifice trades the healer's own health ..." are not in discipline.md at all; confirm they exist in Forever before coaching them.
+- priest-shadow: "Shadow Word: Death gets bonus crit chance below twenty percent target health from the Early Demise talent." contradicts shadow.md line 58 ("this build no longer takes Early Demise's bonus critical strike chance"). The "Mind Blast:" line is a run-on that buries Mind Blast as a fallback; say it plainly. Belief item: Devouring Plague as "the spec's biggest nuke" (Classic: an Undead DoT).
+- rogue-assassination: bare "Sinister Strike." teaches a Mutilate build to press it; the guide says only without the Mutilate talent. Drop it or add the condition.
+- shaman-elemental: first line "With the talent, Lava Burst trades a Lightning Bolt for slightly more damage per second ... a fraction of a percent." is sim talk and the only mention; elemental.md says Lava Burst is the FIRST line on every cooldown. Bare "Flame Shock." last contradicts "Flame Shock and Earth Shock are not part of the loop".
+- shaman-enhancement: "refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff" is a dev note. "Stormstrike ... eight second cooldown": Classic is 10 seconds; confirm Forever tooltip. Single weapon respected (Windfury Weapon only), good.
+- shaman-restoration: "The instant Healing Wave." still an orphan; Water Shield is listed twice. Drill.resource "heals over time" only fits Riptide. Belief item: "Riptide on the tank first: the most mana-efficient heal" (check the guide/tooltip).
+- warlock-demonology: "Soul Fire is back in the rotation now that the build takes both Decimation points ... about seven percent ... about ten percent in the raid-ready run" is changelog plus sim numbers. "Immolate follows the two curses" while only Bane of Doom is listed. "Searing Pain is the filler ... no Shadow Bolt line sits behind it" then a bare "Shadow Bolt." follows. No pet line in the pet spec.
+- warrior-arms: bare "Heroic Strike." contradicts arms.md ("There is no Heroic Strike rage dump any more"). Bare "Hamstring." drops the condition (only with a Windfury Totem in the group; a loss without). Whirlwind absent (guide never names it).
+
+## Remaining generator patterns
+1. A bare line is emitted for every APL ability even when the guide says it is out or conditional (Moonfire BM-less Balance, Moonfire/Wrath/Claw feral, Feral Charge bear, Flame Shock elemental, Frostfire Bolt fire, Heroic Strike/Hamstring arms, Sinister Strike assassination, Seal of Command ret). Rule: bare only if the guide's rotation section names it positively; otherwise omit or carry the guide's condition.
+2. Changelog and sim sentences still pass the filter: "this week", "now the only", "is back in the rotation", "tracked by slot", "second Holy Light line", "fires itself", "raid-ready run". Block these words and any percent measured by "the search".
+3. Orphan openers: "The instant Healing Wave.", Elemental line 1, Fire "the buff". Require every line to open with a button name.
+4. Duplicate lines for one button (Frenzied Regeneration, Hammer of the Righteous, Water Shield, Divine Favor, Disc Heal sentence).
+5. Order follows the APL, not the guide (bear defensives first, feral Moonfire/Wrath first, balance Moonfire first).
+6. Healer drill.resource says "cheap heals over time carry the tank" for every healer; false for Holy Paladin.
+7. Untested Forever-only claims to prove against the client: Stormstrike 8 second cooldown, Hemorrhage/Ghostly Strike numbers, Shadowfiend/Dark Sacrifice on Disc, Devouring Plague "biggest nuke".
