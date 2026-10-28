@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // historyPageSize is how many stored reviews one history page (and the recent line) carries.
@@ -21,8 +22,10 @@ const historyPageSize = 20
 
 // historySQL is the newest stored review of each fight of the characters in $1, newest
 // first, past the keyset cursor ($2 generated_at, $3 report, $4 fight; a null $2 is the
-// first page), with the pack's spec, boss and kill.
-const historySQL = `
+// first page), with the pack's spec, boss and kill. Only evidence reports are listed
+// (presence.EvidenceReport): a flagged or private report's reviews appear nowhere, as the
+// fight route refuses them.
+var historySQL = `
 with newest as (
   select distinct on (r.report_id, r.fight_index, r.player_key)
          r.report_id, r.fight_index, r.player_key, r.pack_version, r.source, r.generated_at,
@@ -35,9 +38,11 @@ select n.report_id, n.fight_index, n.player_key, n.source, n.generated_at, coale
        coalesce(p.pack->'context'->>'spec', ''), coalesce(p.pack->'context'->>'boss', ''),
        coalesce((p.pack->'context'->>'kill')::boolean, true)
   from newest n
+  join reports rep on rep.id = n.report_id
   left join coach_packs p on p.report_id = n.report_id and p.fight_index = n.fight_index
    and p.player_key = n.player_key and p.pack_version = n.pack_version
- where $2::timestamptz is null or (n.generated_at, n.report_id, n.fight_index) < ($2, $3::text, $4::int)
+ where ` + presence.EvidenceReport("rep") + `
+   and ($2::timestamptz is null or (n.generated_at, n.report_id, n.fight_index) < ($2, $3::text, $4::int))
  order by n.generated_at desc, n.report_id desc, n.fight_index desc
  limit $5`
 
