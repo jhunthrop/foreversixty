@@ -12,7 +12,7 @@
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { fetchMeFresh, type Me } from '../lib/account/api';
-  import { characterSlug, guildHref, guildSettingsHref, type CharacterPath } from '../lib/characters';
+  import { guildHref, guildSettingsHref, type CharacterPath } from '../lib/characters';
   import { SETUP_NAV_ITEM } from '../lib/nav';
   import {
     claimGuild,
@@ -36,7 +36,8 @@
   import { founderOpen } from '../lib/billing/plans';
   import ClaimMemberHandoff from './claim/ClaimMemberHandoff.svelte';
   import ClaimPlanLine from './claim/ClaimPlanLine.svelte';
-  import ClaimSubscribeButton from './claim/ClaimSubscribeButton.svelte';
+  import ClaimNextSteps from './claim/ClaimNextSteps.svelte';
+  import { findMyGuild } from '../lib/guild/my-guild';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { formatMadeOn } from '../lib/guild/invite-link';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -93,7 +94,7 @@
       // Settings answers an officer; the home answers any member. Each is refused with a
       // 403 for everyone else, which is a state here, not a failure.
       const id = guildPage.guild.id;
-      const isMember = membershipIn(session) !== null;
+      const isMember = findMyGuild(session, path) !== null;
       [settings, home] = await Promise.all([
         fetchGuildSettings(id, undefined, (fresh) => (settings = fresh)).catch(() => null),
         isMember
@@ -123,14 +124,7 @@
    * member -- saw a live Claim/Confirm button that only failed once clicked (a 403 from
    * the API), and `guildClaimCopy.notEligible` existed but was never shown.
    */
-  function membershipIn(session: Me | null) {
-    return (
-      session?.guilds.find(
-        (g) => g.region === path.region && g.ruleset === path.ruleset && characterSlug(g.name) === path.slug,
-      ) ?? null
-    );
-  }
-  const membership = $derived(membershipIn(me));
+  const membership = $derived(findMyGuild(me, path));
   const view = $derived(claimView({ me, membership, settings, home }));
   const eligible = $derived(view.viewer === 'eligible');
   const claimState = $derived(view.claim?.state ?? null);
@@ -277,29 +271,7 @@
       {#if settings.claimed_by.battletag === myBattletag}
         <p class="text-[16px]" data-testid="guild-claim-state">{guildClaimCopy.youHold(guildName)}</p>
         {#if claimState !== 'contested'}
-          <section class="flex flex-col gap-2" data-testid="guild-claim-next">
-            <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
-            <!-- Two button rows: the first step is the primary, the second a ghost; full width on a phone. -->
-            <div class="flex flex-col gap-3 md:flex-row">
-              {#if claimPlan !== null && subscribe !== null}
-                <ClaimSubscribeButton guildId={subscribe.id} {claimPlan} label={subscribe.label} />
-              {/if}
-              <a
-                class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 md:w-auto`}
-                href={`${guildBase}#roster`}
-                data-testid="guild-claim-next-roster"
-              >
-                {guildClaimCopy.nextRoster}
-              </a>
-              <a
-                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-full justify-center px-4 md:w-auto`}
-                href={settingsBase}
-                data-testid="guild-claim-next-invite"
-              >
-                {guildClaimCopy.nextInvite}
-              </a>
-            </div>
-          </section>
+          <ClaimNextSteps {subscribe} {claimPlan} {guildBase} {settingsBase} />
         {/if}
         {#if !showReleaseConfirm}
           <button
@@ -364,7 +336,7 @@
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
     {:else if view.viewer === 'signed-out'}
-      <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
+      <SignInPrompt line={guildClaimCopy.signInLine} next={claimPath} testid="guild-claim-signin" />
     {:else if view.viewer === 'stranger'}
       <p class="text-[14px]" data-testid="guild-claim-not-member">
         {guildClaimCopy.notAMember}
@@ -419,7 +391,7 @@
         <ClaimMemberHandoff
           {guildName}
           url={claimLinkFor(path, claimPlan, claimOrigin)}
-          tier={claimPlan?.plan ?? 'guild'}
+          tier={claimPlan?.plan}
         />
       {/if}
       {@render contestOffer()}

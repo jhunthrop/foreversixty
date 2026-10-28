@@ -1,39 +1,41 @@
 <!-- web/src/components/claim/SetupBackToClaim.svelte -->
 <!-- Spec 2026-10-27 §6.2: /setup opened from a claim page (`?next=`, checked by safeNextPath)
-     offers the way back as its one primary, once the account knows a character in that guild. -->
+     offers the way back as its one primary, once the account knows a character in that guild.
+     /v1/me is read fresh and again when the tab regains focus, so a save made on this page (or in
+     the addon) shows the button without a reload. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { fetchMeFresh, type Me } from '../../lib/account/api';
   import { setupReturnTarget } from '../../lib/account/setup-next';
-  import { characterSlug } from '../../lib/characters';
   import { guildClaimCopy } from '../../lib/guild/copy';
+  import { findMyGuild } from '../../lib/guild/my-guild';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
 
-  const target = setupReturnTarget(new URLSearchParams(window.location.search).get('next'));
+  const target = setupReturnTarget(
+    typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('next'),
+  );
   let me = $state<Me | null>(null);
 
   $effect(() => {
     if (target === null) return;
     let live = true;
-    void fetchMeOnce()
-      .catch(() => null)
-      .then((answer) => {
-        if (live) me = answer;
-      });
+    const read = (): void => {
+      void fetchMeFresh((fresh) => {
+        if (live) me = fresh;
+      })
+        .catch(() => null)
+        .then((answer) => {
+          if (live && answer !== null) me = answer;
+        });
+    };
+    read();
+    window.addEventListener('focus', read);
     return () => {
       live = false;
+      window.removeEventListener('focus', read);
     };
   });
 
-  const guildName = $derived(
-    target === null
-      ? null
-      : (me?.guilds.find(
-          (g) =>
-            g.region === target.guild.region &&
-            g.ruleset === target.guild.ruleset &&
-            characterSlug(g.name) === target.guild.slug,
-        )?.name ?? null),
-  );
+  const guildName = $derived(target === null ? null : (findMyGuild(me, target.guild)?.name ?? null));
 </script>
 
 {#if target !== null}

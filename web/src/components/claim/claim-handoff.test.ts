@@ -27,8 +27,7 @@ const NOT_FOUNDER = false;
 describe('plan line', () => {
   it('reads the spec sentence, with the plan name and yearly price', () => {
     const plan = parseClaimPlan('?plan=guild&interval=yearly');
-    expect(plan).not.toBeNull();
-    if (plan === null) return;
+    if (plan === null) throw new Error('plan should parse');
     const expected = specString(SPEC, HEADING, 'Claim page, with `plan`', 0, {
       Guild: GUILD,
       Plan: 'Guild',

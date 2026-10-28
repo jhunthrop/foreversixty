@@ -98,6 +98,7 @@
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import Skeleton from './ui/Skeleton.svelte';
+  import { findMyGuild } from '../lib/guild/my-guild';
   import { GUILD_LOADING } from '../lib/guild/layout';
 
   // Spec §8: "never all seven tabs' data fetched on first paint" extends to their own JS --
@@ -192,12 +193,7 @@
     // the last visit replaces the answer through `apply` (`onFresh`) without a reload.
     const apply = (result: Me | null): Promise<void> | null => {
       if (resolved !== requested) return null;
-      const membership = result?.guilds.find(
-        (g) =>
-          g.region === requested.region &&
-          g.ruleset === requested.ruleset &&
-          characterSlug(g.name) === requested.slug,
-      );
+      const membership = findMyGuild(result, requested) ?? undefined;
       myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
       mySiteSpecs = new Map(
         (result?.characters ?? []).flatMap((c) => (c.spec === undefined ? [] : [[c.key, c.spec] as const])),

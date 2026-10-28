@@ -12,7 +12,7 @@
     url,
     label,
     shareTitle,
-    shareText,
+    shareText = undefined,
     testid,
     note = undefined,
   }: {
@@ -20,7 +20,8 @@
     /** The visible field label. */
     label: string;
     shareTitle: string;
-    shareText: string;
+    /** Left out, the share sheet carries only the link and its title. */
+    shareText?: string;
     /** Prefix for the field's test ids: `-token`, `-url`, `-copy`, `-share`, `-copy-error`. */
     testid: string;
     /** Optional muted line at the end of the button row. */
@@ -39,7 +40,9 @@
 
   async function onShare(): Promise<void> {
     try {
-      await navigator.share({ url, title: shareTitle, text: shareText });
+      await navigator.share(
+        shareText === undefined ? { url, title: shareTitle } : { url, title: shareTitle, text: shareText },
+      );
     } catch {
       // Dismissing the share sheet rejects; nothing to say.
     }

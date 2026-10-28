@@ -7,7 +7,7 @@
   import { guildClaimCopy } from '../../lib/guild/copy';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
 
-  let { guildName, url, tier }: { guildName: string; url: string; tier: GuildTier } = $props();
+  let { guildName, url, tier = undefined }: { guildName: string; url: string; tier?: GuildTier } = $props();
 </script>
 
 <div class="flex flex-col gap-3" data-testid="guild-claim-not-eligible">
@@ -16,7 +16,7 @@
     {url}
     label={checkoutGuildCopy.copyField.labelGuildMaster(guildName)}
     shareTitle={checkoutGuildCopy.share.title(guildName)}
-    shareText={checkoutGuildCopy.share.claimText(guildName, tier)}
+    shareText={tier === undefined ? undefined : checkoutGuildCopy.share.claimText(guildName, tier)}
     testid="guild-claim-handoff"
   />
 </div>
