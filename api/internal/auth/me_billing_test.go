@@ -96,6 +96,68 @@ func TestMe_OwnerGrantStillPremium(t *testing.T) {
 	}
 }
 
+func (h *harness) entitlementsOf(t *testing.T, uid int64) map[string]any {
+	t.Helper()
+	return field(t, h.meRaw(t, uid)["entitlements"])
+}
+
+func (h *harness) grantPremium(t *testing.T, uid int64, end *time.Time) {
+	t.Helper()
+	if err := h.svc.Entitlements.Grant(t.Context(), entitlements.Subject{UserID: &uid},
+		entitlements.PlanPremium, end, nil, "owner", "t", nil); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestMe_GrantWithoutStripeRow(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "opengrant@example.com")
+	h.grantPremium(t, uid, nil)
+	ent := h.entitlementsOf(t, uid)
+	b, _ := ent["billing"].(map[string]any)
+	if b["source"] != "grant" || b["current_period_end"] != nil || ent["personal_portal"] != false {
+		t.Fatalf("entitlements = %+v, want grant, null end, no portal", ent)
+	}
+}
+
+func TestMe_GrantUntilDate(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "datedgrant@example.com")
+	end := time.Now().Add(48 * time.Hour).UTC().Truncate(time.Second)
+	h.grantPremium(t, uid, &end)
+	ent := h.entitlementsOf(t, uid)
+	b, _ := ent["billing"].(map[string]any)
+	if b["source"] != "grant" || b["current_period_end"] != end.Format(time.RFC3339) || ent["personal_portal"] != false {
+		t.Fatalf("entitlements = %+v, want grant ending %s", ent, end.Format(time.RFC3339))
+	}
+}
+
+func TestMe_StripeSourceAndPortal(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "live@example.com")
+	h.seedStripePremium(t, uid, "premium_monthly_launch", 600, time.Now().Add(24*time.Hour))
+	ent := h.entitlementsOf(t, uid)
+	b, _ := ent["billing"].(map[string]any)
+	if b["source"] != "stripe" || ent["personal_portal"] != true {
+		t.Fatalf("entitlements = %+v, want stripe with portal", ent)
+	}
+}
+
+func TestMe_CanceledStripeRowKeepsPortal(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "canceled@example.com")
+	h.seedStripePremium(t, uid, "premium_monthly_launch", 600, time.Now().Add(24*time.Hour))
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`update entitlements set status = 'canceled' where user_id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	ent := h.entitlementsOf(t, uid)
+	b, _ := ent["billing"].(map[string]any)
+	if b["source"] != "stripe" || b["status"] != "canceled" || ent["personal_portal"] != true {
+		t.Fatalf("entitlements = %+v, want canceled stripe row with portal", ent)
+	}
+}
+
 func TestMe_SeatKeysOmittedWithoutFacts(t *testing.T) {
 	h := newHarness(t)
 	uid := h.seedUser(t, "noseat@example.com")

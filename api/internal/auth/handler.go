@@ -418,6 +418,9 @@ type EntitlementsView struct {
 	RosterCheck   bool         `json:"roster_check"`
 	SupporterMark bool         `json:"supporter_mark"`
 	Billing       *BillingView `json:"billing"`
+	// PersonalPortal is true when the account has a Stripe-sourced personal row in any
+	// status, so the billing portal has something to show.
+	PersonalPortal bool `json:"personal_portal"`
 }
 
 func (s *Service) me(w http.ResponseWriter, r *http.Request) {
@@ -548,6 +551,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 	}
 	if b != nil {
 		ev.Billing = personalBillingView(b)
+		ev.PersonalPortal = b.Source == billingSourceStripe
 	}
 	return ev, nil
 }

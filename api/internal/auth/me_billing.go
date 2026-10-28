@@ -16,6 +16,8 @@ const (
 	guildPlanScopeOfficerTools = "officer_tools"
 	// billingStatusCanceled is the ended-row status word BillingView shows.
 	billingStatusCanceled = "canceled"
+	// billingSourceStripe is the Source word of a row Stripe drives.
+	billingSourceStripe = "stripe"
 	// resubscribePath is where an ended seat's comeback link goes.
 	resubscribePath = "/premium/checkout"
 	// plansPath is where an ended seat whose price is unknown links to.
@@ -25,7 +27,9 @@ const (
 // BillingView is the caller's own personal premium subscription state,
 // nil when they have none (spec §1.4).
 type BillingView struct {
-	Plan              string  `json:"plan"`
+	Plan string `json:"plan"`
+	// Source is "stripe" or "grant"; a grant's current_period_end is its end or null.
+	Source            string  `json:"source"`
 	Status            string  `json:"status"`
 	CurrentPeriodEnd  *string `json:"current_period_end"`
 	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
@@ -91,7 +95,7 @@ type SeatViews struct {
 // personalBillingView is the account page's view of the caller's own Premium row.
 func personalBillingView(b *entitlements.Billing) *BillingView {
 	return &BillingView{
-		Plan: b.Plan, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
+		Plan: b.Plan, Source: b.Source, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
 		CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
 		PriceFacts:       catalog.FactsOf(b.PriceLookupKey, b.UnitAmountCents),
 	}
