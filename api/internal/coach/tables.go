@@ -35,11 +35,14 @@ type SpecFidelities interface {
 type FileTables struct {
 	BuildsDir, CoachDir string
 	Specs               SpecFidelities
+	Now                 func() time.Time // the clock for the specs cache; time.Now when nil
 
 	mu      sync.Mutex
 	builds  []clientBuild
 	classes map[classKey]classData
 	rules   map[string]SpecRules
+	worst   map[string]map[string]bool // spec -> worst action names
+	worstAt time.Time
 }
 
 var _ TableSource = (*FileTables)(nil)
@@ -244,23 +247,42 @@ func (f *FileTables) rulesFor(slug string) (SpecRules, error) {
 	return r, nil
 }
 
-// worstActions is the names on the spec's sims WorstActions list.
+// specsTTL is how long the sims per-spec rows are reused: they change once a night.
+const specsTTL = time.Hour
+
+// worstActions is the names on the spec's sims WorstActions list. The sims rows are read
+// once per specsTTL, not per fight.
 func (f *FileTables) worstActions(ctx context.Context, slug string) (map[string]bool, error) {
-	out := map[string]bool{}
 	if f.Specs == nil {
-		return out, nil
+		return map[string]bool{}, nil
 	}
-	specs, err := f.Specs.Specs(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("coach tables: sims specs: %w", err)
-	}
-	for _, s := range specs {
-		if s.Spec != slug {
-			continue
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	now := f.now()
+	if f.worst == nil || now.Sub(f.worstAt) >= specsTTL {
+		specs, err := f.Specs.Specs(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("coach tables: sims specs: %w", err)
 		}
-		for _, w := range s.WorstActions {
-			out[w.Name] = true
+		worst := make(map[string]map[string]bool, len(specs))
+		for _, s := range specs {
+			names := map[string]bool{}
+			for _, w := range s.WorstActions {
+				names[w.Name] = true
+			}
+			worst[s.Spec] = names
 		}
+		f.worst, f.worstAt = worst, now
 	}
-	return out, nil
+	if names, ok := f.worst[slug]; ok {
+		return names, nil
+	}
+	return map[string]bool{}, nil
+}
+
+func (f *FileTables) now() time.Time {
+	if f.Now != nil {
+		return f.Now()
+	}
+	return time.Now()
 }

@@ -11,10 +11,9 @@ import (
 // SpecSlug turns a roster row's display class/spec ("Warrior", "Protection") into the
 // slug logs/engine/mechanics/utility and data/curated/specs.json use ("warrior-
 // protection"): lowercase, spaces to hyphens. This is the same trivial transform
-// logs/engine/rating's own unexported specSlug applies (rating.go) - duplicated here
-// because that function is unexported and this lane may not export it (logs/ is
-// read-only for this lane); it exists only to pick which curated file to load, never to
-// influence scoring math itself, which the engine computes independently.
+// logs/engine/rating's own unexported specSlug applies (rating.go); it exists only to pick
+// which curated file to load, never to influence scoring math itself, which the engine
+// computes independently.
 func SpecSlug(class, spec string) string {
 	return toSlug(class) + "-" + toSlug(spec)
 }
