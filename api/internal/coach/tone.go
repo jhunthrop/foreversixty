@@ -12,10 +12,11 @@ var bannedTone = []string{"fail", "bad", "terrible", "noob", "heal more", "pump"
 
 var toneRE = regexp.MustCompile(`(?i)\b(` + strings.Join(quoteAll(bannedTone), "|") + `)\b`)
 
+// quoteAll escapes each phrase; a space matches any run of whitespace.
 func quoteAll(words []string) []string {
 	out := make([]string, len(words))
 	for i, w := range words {
-		out[i] = regexp.QuoteMeta(w)
+		out[i] = strings.ReplaceAll(regexp.QuoteMeta(w), " ", `\s+`)
 	}
 	return out
 }

@@ -3,9 +3,13 @@ package coach
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"strings"
 	"sync"
 	"unicode"
@@ -26,6 +30,7 @@ const (
 	frontMatterFence     = "---"
 	sectionPrefix        = "## "
 	bulletPrefix         = "- "
+	noLine               = 0
 )
 
 // Section names, in the order a persona file holds them (§8.1).
@@ -40,29 +45,85 @@ var personaSections = []string{sectionWho, sectionKnow, sectionDrills, sectionVo
 
 var frontMatterKeys = []string{"spec", "role", "status", "version", "sources", "reviewed"}
 
+// specKeyRE is the shape of a specs.json key; it keeps path separators out of file names.
+var specKeyRE = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
+
+// PersonaError is a refused persona file: which file, which line, and why.
+type PersonaError struct {
+	File string // empty until LoadPersona fills it in
+	Line int    // 1-based; noLine when the problem is the file as a whole
+	Msg  string
+}
+
+func (e *PersonaError) Error() string {
+	file := e.File
+	if file == "" {
+		file = "persona"
+	}
+	if e.Line == noLine {
+		return fmt.Sprintf("%s: %s", file, e.Msg)
+	}
+	return fmt.Sprintf("%s:%d: %s", file, e.Line, e.Msg)
+}
+
+func personaErr(line int, format string, args ...any) *PersonaError {
+	return &PersonaError{Line: line, Msg: fmt.Sprintf(format, args...)}
+}
+
 // Persona is one spec's coach persona: the system-prompt prose and the drill catalogue.
 type Persona struct {
 	Spec     string
 	Status   PersonaStatus
-	Version  string // personaVersionPrefix + hex sha256 of the file's bytes (§8.3)
+	Version  string // personaVersionPrefix + hex sha256 of the normalised file (§8.3)
 	Sources  []string
 	Reviewed string
 	Body     string            // the four sections, as the system prompt carries them
 	Drills   map[string]string // "drill.core_casts" -> text
 }
 
+// clone copies the slice and map so a caller cannot mutate a cached persona.
+func (p Persona) clone() Persona {
+	p.Sources = slices.Clone(p.Sources)
+	p.Drills = maps.Clone(p.Drills)
+	return p
+}
+
 type frontMatter struct {
 	spec, role, status, version, reviewed string
 	sources                               []string
+	lines                                 map[string]int // key -> line number
 }
 
-// ParsePersona reads and checks one persona file (§8).
+type numberedLine struct {
+	n    int
+	text string
+}
+
+type section struct {
+	line  int // the "## " heading's line
+	lines []numberedLine
+}
+
+// normalise makes the hashed bytes stable across checkouts: LF line endings, no
+// trailing whitespace on a line, exactly one final newline.
+func normalise(data []byte) string {
+	lines := strings.Split(strings.ReplaceAll(string(data), "\r\n", "\n"), "\n")
+	for i, l := range lines {
+		lines[i] = strings.TrimRight(l, " \t\r")
+	}
+	return strings.TrimRight(strings.Join(lines, "\n"), "\n") + "\n"
+}
+
+// ParsePersona reads and checks one persona file (§8). The checks on digits and
+// exclamation marks cover the body only: front matter holds source paths with build
+// numbers and a review date, and is not prose. Every refusal is a *PersonaError.
 func ParsePersona(data []byte) (Persona, error) {
-	fm, body, err := splitFrontMatter(string(data))
+	text := normalise(data)
+	fm, bodyLines, err := splitFrontMatter(text)
 	if err != nil {
 		return Persona{}, err
 	}
-	sections, err := splitSections(body)
+	sections, err := splitSections(bodyLines)
 	if err != nil {
 		return Persona{}, err
 	}
@@ -73,33 +134,60 @@ func ParsePersona(data []byte) (Persona, error) {
 	if err := checkProse(sections); err != nil {
 		return Persona{}, err
 	}
-	sum := sha256.Sum256(data)
+	sum := sha256.Sum256([]byte(text))
 	return Persona{
 		Spec:     fm.spec,
 		Status:   PersonaStatus(fm.status),
 		Version:  personaVersionPrefix + hex.EncodeToString(sum[:]),
 		Sources:  fm.sources,
 		Reviewed: fm.reviewed,
-		Body:     strings.TrimSpace(body),
+		Body:     bodyText(bodyLines),
 		Drills:   drills,
 	}, nil
 }
 
+func bodyText(lines []numberedLine) string {
+	texts := make([]string, len(lines))
+	for i, l := range lines {
+		texts[i] = l.text
+	}
+	return strings.TrimSpace(strings.Join(texts, "\n"))
+}
+
 // LoadPersona reads dir/<spec>.md and checks that it describes that spec.
 func LoadPersona(dir, spec string) (Persona, error) {
+	if !specKeyRE.MatchString(spec) {
+		return Persona{}, fmt.Errorf("persona spec %q is not a specs.json key", spec)
+	}
 	path := filepath.Join(dir, spec+".md")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return Persona{}, fmt.Errorf("read persona %s: %w", path, err)
 	}
-	p, err := ParsePersona(data)
-	if err != nil {
-		return Persona{}, fmt.Errorf("persona %s: %w", path, err)
+	p, fm, err := parseWithFrontMatter(data)
+	if err == nil && p.Spec != spec {
+		err = personaErr(fm.lines["spec"], "front matter spec %q does not match the file name %q", p.Spec, spec)
 	}
-	if p.Spec != spec {
-		return Persona{}, fmt.Errorf("persona %s: front matter spec %q does not match the file name", path, p.Spec)
+	if err != nil {
+		var pe *PersonaError
+		if errors.As(err, &pe) {
+			named := *pe
+			named.File = path
+			return Persona{}, &named
+		}
+		return Persona{}, err
 	}
 	return p, nil
+}
+
+// parseWithFrontMatter is ParsePersona that also returns the parsed front matter.
+func parseWithFrontMatter(data []byte) (Persona, frontMatter, error) {
+	p, err := ParsePersona(data)
+	if err != nil {
+		return Persona{}, frontMatter{}, err
+	}
+	fm, _, _ := splitFrontMatter(normalise(data))
+	return p, fm, nil
 }
 
 // Personas caches loaded personas by spec; a changed file on disk is a new version only
@@ -110,43 +198,68 @@ type Personas struct {
 	cache map[string]Persona
 }
 
-// For returns the persona for spec, loading it on first use.
+// For returns a copy of the persona for spec, loading it on first use. The disk read
+// happens outside the lock; a racing load of the same spec keeps whichever stored first.
 func (p *Personas) For(spec string) (Persona, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	if cached, ok := p.cache[spec]; ok {
+	if cached, ok := p.cached(spec); ok {
 		return cached, nil
 	}
 	loaded, err := LoadPersona(p.Dir, spec)
 	if err != nil {
 		return Persona{}, err
 	}
+	return p.store(spec, loaded), nil
+}
+
+func (p *Personas) cached(spec string) (Persona, bool) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	cached, ok := p.cache[spec]
+	return cached.clone(), ok
+}
+
+func (p *Personas) store(spec string, loaded Persona) Persona {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	if p.cache == nil {
 		p.cache = map[string]Persona{}
 	}
+	if existing, ok := p.cache[spec]; ok {
+		return existing.clone()
+	}
 	p.cache[spec] = loaded
-	return loaded, nil
+	return loaded.clone()
 }
 
-func splitFrontMatter(text string) (frontMatter, string, error) {
+func splitFrontMatter(text string) (frontMatter, []numberedLine, error) {
 	lines := strings.Split(text, "\n")
-	if strings.TrimSpace(lines[0]) != frontMatterFence {
-		return frontMatter{}, "", fmt.Errorf("no front matter")
+	if lines[0] != frontMatterFence {
+		return frontMatter{}, nil, personaErr(1, "no front matter")
 	}
 	for i := 1; i < len(lines); i++ {
-		if strings.TrimSpace(lines[i]) == frontMatterFence {
+		if lines[i] == frontMatterFence {
 			fm, err := parseFrontMatter(lines[1:i])
-			return fm, strings.Join(lines[i+1:], "\n"), err
+			return fm, numbered(lines[i+1:], i+2), err
 		}
 	}
-	return frontMatter{}, "", fmt.Errorf("front matter is not closed")
+	return frontMatter{}, nil, personaErr(1, "front matter is not closed")
+}
+
+func numbered(lines []string, first int) []numberedLine {
+	out := make([]numberedLine, len(lines))
+	for i, l := range lines {
+		out[i] = numberedLine{n: first + i, text: l}
+	}
+	return out
 }
 
 func parseFrontMatter(lines []string) (frontMatter, error) {
 	scalars := map[string]string{}
+	at := map[string]int{}
 	var sources []string
 	inSources := false
-	for _, line := range lines {
+	for i, line := range lines {
+		n := i + 2 // line 1 is the opening fence
 		trimmed := strings.TrimSpace(line)
 		switch {
 		case trimmed == "":
@@ -155,104 +268,113 @@ func parseFrontMatter(lines []string) (frontMatter, error) {
 		default:
 			key, value, ok := strings.Cut(line, ":")
 			if !ok {
-				return frontMatter{}, fmt.Errorf("front matter line %q is not key: value", line)
+				return frontMatter{}, personaErr(n, "front matter line %q is not key: value", line)
 			}
 			key = strings.TrimSpace(key)
 			inSources = key == "sources"
 			scalars[key] = strings.TrimSpace(value)
+			at[key] = n
 		}
 	}
-	return buildFrontMatter(scalars, sources)
+	return buildFrontMatter(scalars, at, sources)
 }
 
-func buildFrontMatter(scalars map[string]string, sources []string) (frontMatter, error) {
+func buildFrontMatter(scalars map[string]string, at map[string]int, sources []string) (frontMatter, error) {
 	for _, key := range frontMatterKeys {
 		if _, ok := scalars[key]; !ok {
-			return frontMatter{}, fmt.Errorf("front matter is missing %q", key)
+			return frontMatter{}, personaErr(noLine, "front matter is missing %q", key)
 		}
 	}
 	fm := frontMatter{
 		spec: scalars["spec"], role: scalars["role"], status: scalars["status"],
-		version: scalars["version"], reviewed: scalars["reviewed"], sources: sources,
+		version: scalars["version"], reviewed: scalars["reviewed"], sources: sources, lines: at,
 	}
-	if fm.spec == "" || fm.reviewed == "" || fm.version == "" {
-		return frontMatter{}, fmt.Errorf("front matter has an empty spec, version or reviewed")
+	for _, key := range []string{"spec", "version", "reviewed"} {
+		if scalars[key] == "" {
+			return frontMatter{}, personaErr(at[key], "front matter %q is empty", key)
+		}
 	}
 	if PersonaStatus(fm.status) != PersonaFull && PersonaStatus(fm.status) != PersonaStarter {
-		return frontMatter{}, fmt.Errorf("unknown status %q", fm.status)
+		return frontMatter{}, personaErr(at["status"], "unknown status %q", fm.status)
 	}
 	if _, ok := Precedence[fm.role]; !ok {
-		return frontMatter{}, fmt.Errorf("unknown role %q", fm.role)
+		return frontMatter{}, personaErr(at["role"], "unknown role %q", fm.role)
 	}
 	return fm, nil
 }
 
-// splitSections returns each section's text by name, requiring the four in order.
-func splitSections(body string) (map[string]string, error) {
-	var names []string
-	texts := map[string][]string{}
-	for _, line := range strings.Split(body, "\n") {
-		if name, ok := strings.CutPrefix(line, sectionPrefix); ok {
-			names = append(names, strings.TrimSpace(name))
+// splitSections returns each section by name, requiring the four in order.
+func splitSections(body []numberedLine) (map[string]section, error) {
+	out := map[string]section{}
+	var current string
+	for _, l := range body {
+		if name, ok := strings.CutPrefix(l.text, sectionPrefix); ok {
+			name = strings.TrimSpace(name)
+			want := ""
+			if len(out) < len(personaSections) {
+				want = personaSections[len(out)]
+			}
+			if name != want {
+				return nil, personaErr(l.n, "section %q where %q is due; the order is %q", name, want, personaSections)
+			}
+			current = name
+			out[name] = section{line: l.n}
 			continue
 		}
-		if len(names) == 0 {
-			if strings.TrimSpace(line) != "" {
-				return nil, fmt.Errorf("text before the first section")
+		if current == "" {
+			if strings.TrimSpace(l.text) != "" {
+				return nil, personaErr(l.n, "text before the first section")
 			}
 			continue
 		}
-		last := names[len(names)-1]
-		texts[last] = append(texts[last], line)
+		s := out[current]
+		s.lines = append(s.lines, l)
+		out[current] = s
 	}
-	if strings.Join(names, "|") != strings.Join(personaSections, "|") {
-		return nil, fmt.Errorf("sections are %q, want %q in order", names, personaSections)
-	}
-	out := map[string]string{}
-	for name, lines := range texts {
-		out[name] = strings.Join(lines, "\n")
+	if len(out) != len(personaSections) {
+		return nil, personaErr(noLine, "has %d of the sections %q", len(out), personaSections)
 	}
 	return out, nil
 }
 
-func parseDrills(section, role string) (map[string]string, error) {
+func parseDrills(s section, role string) (map[string]string, error) {
 	drills := map[string]string{}
-	for _, line := range strings.Split(section, "\n") {
-		if strings.TrimSpace(line) == "" {
+	for _, l := range s.lines {
+		if strings.TrimSpace(l.text) == "" {
 			continue
 		}
-		id, text, err := parseDrillLine(line)
+		id, text, err := parseDrillLine(l)
 		if err != nil {
 			return nil, err
 		}
 		if !isDrillCode(id) {
-			return nil, fmt.Errorf("drill id %q is not %s plus a finding code", id, drillIDPrefix)
+			return nil, personaErr(l.n, "drill id %q is not %s plus a finding code", id, drillIDPrefix)
 		}
 		if _, dup := drills[id]; dup {
-			return nil, fmt.Errorf("drill %q appears twice", id)
+			return nil, personaErr(l.n, "drill %q appears twice", id)
 		}
 		drills[id] = text
 	}
 	for _, code := range Precedence[role] {
 		if id := drillIDPrefix + string(code); drills[id] == "" {
-			return nil, fmt.Errorf("missing drill %q for role %s", id, role)
+			return nil, personaErr(s.line, "missing drill %q for role %s", id, role)
 		}
 	}
 	return drills, nil
 }
 
-func parseDrillLine(line string) (id, text string, err error) {
-	rest, ok := strings.CutPrefix(line, bulletPrefix)
+func parseDrillLine(l numberedLine) (id, text string, err error) {
+	rest, ok := strings.CutPrefix(l.text, bulletPrefix)
 	if !ok {
-		return "", "", fmt.Errorf("drills line %q is not a bullet", line)
+		return "", "", personaErr(l.n, "drills line %q is not a bullet", l.text)
 	}
 	id, text, ok = strings.Cut(rest, ":")
 	id, text = strings.TrimSpace(id), strings.TrimSpace(text)
 	if !ok || text == "" {
-		return "", "", fmt.Errorf("drills line %q is not - drill.<code>: <text>", line)
+		return "", "", personaErr(l.n, "drills line %q is not - drill.<code>: <text>", l.text)
 	}
 	if n := len([]rune(text)); n > maxDrillChars {
-		return "", "", fmt.Errorf("drill %q is %d characters, over %d", id, n, maxDrillChars)
+		return "", "", personaErr(l.n, "drill %q is %d characters, over %d", id, n, maxDrillChars)
 	}
 	return id, text, nil
 }
@@ -271,35 +393,31 @@ func isDrillCode(id string) bool {
 	return false
 }
 
-// checkProse enforces §8.2: no digits outside Drills, no exclamation mark anywhere, and
-// no banned tone word except in the Voice section's rule lines.
-func checkProse(sections map[string]string) error {
+// checkProse enforces §8.2 on the body: no digits outside Drills, no exclamation mark,
+// and no banned tone word except in the Voice section's rule lines.
+func checkProse(sections map[string]section) error {
 	for _, name := range personaSections {
-		text := sections[name]
-		if strings.Contains(text, "!") {
-			return fmt.Errorf("section %q has an exclamation mark", name)
-		}
-		if name != sectionDrills && strings.IndexFunc(text, unicode.IsDigit) >= 0 {
-			return fmt.Errorf("section %q has a digit; prose quotes no numbers", name)
-		}
-		if bad := toneProblems(toneChecked(name, text)); len(bad) > 0 {
-			return fmt.Errorf("section %q uses banned tone %q", name, bad)
+		for _, l := range sections[name].lines {
+			if err := checkProseLine(name, l); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-// toneChecked is the part of a section the tone list applies to: all of it, except the
-// Voice section's "- " rule lines.
-func toneChecked(name, text string) string {
-	if name != sectionVoice {
-		return text
+func checkProseLine(name string, l numberedLine) error {
+	if strings.Contains(l.text, "!") {
+		return personaErr(l.n, "exclamation mark in section %q", name)
 	}
-	var kept []string
-	for _, line := range strings.Split(text, "\n") {
-		if !strings.HasPrefix(line, bulletPrefix) {
-			kept = append(kept, line)
-		}
+	if name != sectionDrills && strings.IndexFunc(l.text, unicode.IsDigit) >= 0 {
+		return personaErr(l.n, "digit in section %q; prose quotes no numbers", name)
 	}
-	return strings.Join(kept, "\n")
+	if name == sectionVoice && strings.HasPrefix(l.text, bulletPrefix) {
+		return nil
+	}
+	if bad := toneProblems(l.text); len(bad) > 0 {
+		return personaErr(l.n, "banned tone %q in section %q", bad, name)
+	}
+	return nil
 }
