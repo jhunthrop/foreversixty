@@ -505,12 +505,23 @@ endpoint, `https://ai-gateway.vercel.sh/v1`. `LLM_MODEL` is a gateway model slug
 `provider/model` form. The key is already in Secret Manager as `LLM_API_KEY`, readable by
 api-runtime.
 
-The model is chosen **by a rule, not by name**: the cheapest model per output token, at the
-gateway's listed prices, among the current S-tier of the owner's benchmark board. Candidates
-seen on 2026-10-27: Kimi K3, GLM-5.3, DeepSeek-V4.1-Flash, MiMo-V2.6-Pro, GLM-5.2,
-DeepSeek-V4-Pro, Kimi K2.6. The builder picks, records the slug and its prices in the plan's
-build notes, and runs the evaluation in §21 before launch. The code names no model, so a switch
-is a config change.
+The model is chosen **by a rule, not by name** (owner, 2026-10-27), from the columns of the
+owner's benchmark board:
+
+1. Start from the board's current S-tier. Candidates seen on 2026-10-27: Kimi K3, GLM-5.3,
+   DeepSeek-V4.1-Flash, MiMo-V2.6-Pro, GLM-5.2, DeepSeek-V4-Pro, Kimi K2.6. Keep only models the
+   Vercel AI Gateway lists.
+2. Rank them by the **Reasoning** column.
+3. Drop any that are weak on **Data Analysis**. The coach reads a structured evidence pack and
+   must not mix up numbers. "Weak" means below the median Data Analysis score of the S-tier
+   candidates on the board that day (see Owner decisions).
+4. Ignore the Coding, Agentic, Browser Use and Design columns and the Overall score.
+5. Of the models left, take the **cheapest by the gateway's output-token price**. A tie goes to
+   the higher Reasoning score.
+
+The builder records the chosen slug, its Reasoning and Data Analysis scores, the board's date,
+and the gateway's `{in}`/`{out}` prices in the plan's build notes. The builder then runs the
+evaluation in §21 before launch. The code names no model, so a switch is a config change.
 
 ### 9.2 The prompt
 
@@ -823,15 +834,16 @@ Profiles add one ~1 KB insert per rated kill row.
 
 ## 21. Left to the builder
 
-- **Choose the model** by the rule in §9.1, from the models the Vercel AI Gateway lists, by
-  output-token price. Record the slug, the provider behind it, its training and retention terms,
-  and the gateway's `{in}`/`{out}` prices in the plan's build notes. Set `LLM_BASE_URL` to
+- **Choose the model** by the rule in §9.1: S-tier, ranked by Reasoning, weak Data Analysis
+  dropped, cheapest remaining by the gateway's output-token price. Record the slug, its
+  Reasoning and Data Analysis scores with the board's date, the provider behind it, its training
+  and retention terms, and the gateway's `{in}`/`{out}` prices in the plan's build notes. Set `LLM_BASE_URL` to
   `https://ai-gateway.vercel.sh/v1` and `LLM_MODEL` to the slug. `LLM_API_KEY` is already in
   Secret Manager and readable by api-runtime. Confirm from the gateway docs where it reports
   per-request cost (usage block or headers), and record it.
 - **Evaluation before launch:** run the same 20 sample fights (mixed specs, including the three
   full personas, a 10-player and a 20-player night, a wipe) through the chosen model and one
-  S-tier mate. Record both outputs, validation pass rates and measured tokens, and update §15.3's
+  S-tier mate (the next model left after step 3 of §9.1). Record both outputs, validation pass rates and measured tokens, and update §15.3's
   estimate. The owner reads both sets. Switch to the mate only if the cheaper model's quality
   is clearly worse.
 - **Order of work:** §13's consumables fix and the rating bump. Then the `<spec>.json` rule files
@@ -918,13 +930,16 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
    damage specs get the most findings.`
 3. **"Top" for healers and tanks.** I chose the rating's overall score. Confirm, or name another
    measure, such as effective HPS.
-4. **The model provider's data terms.** The cheapest S-tier slug on the gateway may route to a
+4. **What counts as "weak on Data Analysis"** in the model rule (§9.1, step 3). I wrote "below
+   the S-tier candidates' median Data Analysis score on the board that day". You may prefer a
+   fixed floor score, or "the bottom two". Confirm or set it.
+5. **The model provider's data terms.** The cheapest S-tier slug on the gateway may route to a
    provider outside the US and EU. I recommend two conditions on the choice: the provider behind
    the slug must not train on API inputs, and must state its retention. Where the gateway offers
    the same model from several providers, pick one that meets both, even at a higher price.
    Approve those conditions, or set your own.
-5. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
+6. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
    and the model provider as processors of fight data sent for coaching. The pack carries no
    names or account data. Approve the addition.
-6. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
+7. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
    or set the numbers once §15.3 is filled with real prices.
