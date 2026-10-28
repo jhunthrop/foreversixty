@@ -64,8 +64,41 @@ func TestNameDict_LowercasePhrasesAreFoundSingleWordsAreNot(t *testing.T) {
 			t.Errorf("%q not found in %v", want, got)
 		}
 	}
-	if got := d.Find("press whirlwind, then bloodthirst; the unused charge and rage"); len(got) != 0 {
-		t.Errorf("lowercase single words found: %v", got)
+	if got := d.Find("the unused charge and rage, a burn phase, fear and haste"); len(got) != 0 {
+		t.Errorf("ordinary lowercase words found: %v", got)
+	}
+}
+
+// A lowercase single-word class spell is still the spell ("press whirlwind"): the validator
+// must catch it as it catches "Whirlwind".
+func TestNameDict_LowercaseSingleWordAbilitiesAreNames(t *testing.T) {
+	d := buildNames(t)
+	for _, probe := range []struct{ prose, want string }{
+		{"Press whirlwind on cooldown.", "Whirlwind"},
+		{"then bloodthirst", "Bloodthirst"},
+		{"use execute below 20", "Execute"},
+		{"weave a slam", "Slam"},
+		{"keep hamstring up", "Hamstring"},
+		{"refresh rend", "Rend"},
+		{"two whirlwinds", "Whirlwind"},
+	} {
+		if got := d.Find(probe.prose); !slices.Contains(got, probe.want) {
+			t.Errorf("%q: %v, want %q", probe.prose, got, probe.want)
+		}
+	}
+}
+
+// ordinaryProseWords is a reviewed list: every entry is a single-word class spell or talent
+// name of the build (else it guards nothing and has rotted), written in lowercase.
+func TestOrdinaryProseWords_AreSingleWordAbilities(t *testing.T) {
+	d := buildNames(t)
+	for w := range ordinaryProseWords {
+		if !d.abilities[w] {
+			t.Errorf("%q is not a single-word ability name of the build", w)
+		}
+		if got := d.Find(w); len(got) != 0 {
+			t.Errorf("%q lowercase is prose, found %v", w, got)
+		}
 	}
 }
 

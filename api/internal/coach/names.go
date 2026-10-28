@@ -39,6 +39,9 @@ var wordRE = regexp.MustCompile(`[\p{L}\p{N}][\p{L}\p{N}'’-]*`)
 // words, for n-gram lookup up to maxNameWords words.
 type NameDict struct {
 	names map[string]string // lowercased words joined by one space -> the name as written
+	// abilities is the lowercased single-word class spell and talent names: a lowercase use
+	// of one counts as the name ("press whirlwind") unless it is ordinary prose.
+	abilities map[string]bool
 }
 
 // nameSpan is one dictionary name found in prose, by byte offsets.
@@ -51,11 +54,15 @@ type nameSpan struct {
 // item names of the build in buildDir, the boss names of the mechanics tables and the
 // consumable and raid buff names of the consumables catalogue.
 func LoadNames(buildDir string, mechanicsTables []mechanics.Table) (*NameDict, error) {
-	d := &NameDict{names: map[string]string{}}
-	loaders := []func(string) ([]string, error){
-		spellNames, talentNames, itemNames, namedRows(spellsFile), namedRows(itemsFile),
+	d := &NameDict{names: map[string]string{}, abilities: map[string]bool{}}
+	for _, load := range []func(string) ([]string, error){spellNames, talentNames} {
+		names, err := load(buildDir)
+		if err != nil {
+			return nil, err
+		}
+		d.addAbilities(names...)
 	}
-	for _, load := range loaders {
+	for _, load := range []func(string) ([]string, error){itemNames, namedRows(spellsFile), namedRows(itemsFile)} {
 		names, err := load(buildDir)
 		if err != nil {
 			return nil, err
@@ -80,6 +87,17 @@ func (d *NameDict) add(names ...string) {
 			continue
 		}
 		d.names[joinKey(words)] = strings.TrimSpace(n)
+	}
+}
+
+// addAbilities puts class spell and talent names in the dictionary and remembers the
+// single-word ones, which count as names in lowercase too.
+func (d *NameDict) addAbilities(names ...string) {
+	d.add(names...)
+	for _, n := range names {
+		if words := splitWords(n); len(words) == 1 && !isPlaceholder(n) {
+			d.abilities[joinKey(words)] = true
+		}
 	}
 }
 
@@ -123,7 +141,7 @@ func (d *NameDict) matchAt(s string, locs [][]int) (nameSpan, int, bool) {
 			words[j] = s[locs[j][0]:locs[j][1]]
 		}
 		canonical, form, ok := d.lookup(words)
-		if ok && countsAsName(canonical, form) {
+		if ok && d.countsAsName(canonical, form) {
 			return nameSpan{Start: locs[0][0], End: locs[n-1][1], Name: canonical}, n, true
 		}
 	}
@@ -131,14 +149,19 @@ func (d *NameDict) matchAt(s string, locs [][]int) (nameSpan, int, bool) {
 }
 
 // countsAsName decides whether prose that matches a dictionary name is a use of that name.
-// A phrase of two or more words counts in any case ("flask of the titans"); a single word
-// counts only when capitalised as the dictionary writes it, so the common words that are
-// also spell names ("rage", "charge", "unused") are prose when lowercase.
-func countsAsName(canonical string, prose []string) bool {
+// A phrase of two or more words counts in any case ("flask of the titans"). A single word
+// counts when capitalised as the dictionary writes it, or, for a class spell or talent, in
+// lowercase too ("press whirlwind") unless it is on ordinaryProseWords ("charge", "haste").
+// Other single words (items, bosses, world names) are prose when lowercase.
+func (d *NameDict) countsAsName(canonical string, prose []string) bool {
 	if len(prose) > 1 {
 		return true
 	}
-	return startsUpper(prose[0]) && capitalsAgree(canonical, prose)
+	if startsUpper(prose[0]) {
+		return capitalsAgree(canonical, prose)
+	}
+	key := joinKey(prose)
+	return d.abilities[key] && !ordinaryProseWords[key]
 }
 
 // lookup finds the name for words, allowing the last word to be possessive ("Sinister
