@@ -1,38 +1,44 @@
-# Log coach v1: what to fix first, from your own log (product design)
+# Log coach v1: a coach for your spec, reading your own log (product design)
 
-Status: product design for the owner, 2026-10-27. Base: the architect's map in
+Status: product design for the owner, 2026-10-27, revised the same day after the owner's
+direction: "I'd rather have the LLM be a coach with the world's best player persona for each
+class and spec." Base: the architect's map in
 `docs/superpowers/specs/2026-10-27-log-coach-feasibility.md` (its §6 v1 slice and §7 risks).
 Player evidence: `design/reviews/2026-10-27-premium-differentiators/README.md` and
 `design/reviews/2026-10-27-launch-pricing/appeal-*.md`. The Premium line this feature unlocks
 is held in `design/specs/2026-10-27-launch-pricing.md` §B5 (`premium.featuresHeld.coach`).
 Decisions marked **(decided)** are the controller's calls of 2026-10-27 and are not open.
 
-This is the product design. Each player-facing surface below still needs its experience spec
-and mock from the `ux-designer`, reviewed by `wow-player`, before it is built (tenet 6). Those
-specs build on the copy patterns and rules here. They do not reopen them.
+This is the product design. Each player-facing surface still needs its experience spec and
+mock from the `ux-designer`, reviewed by `wow-player`, before it is built (tenet 6). Those
+specs build on the shapes, copy patterns and rules here. They do not reopen them.
 
 ---
 
 ## 1. Intent, and why now
 
-The owner's direction: "learn from the best players in the world and create a coach to review
-logs." After a raid, the coach reads one player's fight and says, in WoW words, what to fix
-first: the casts they lost, the buffs they let drop, the consumables they skipped, the death
-that cost the most. It measures against the best logs on the site for the same spec, boss and
-raid size. Where there aren't enough of those yet, it measures against the engine's written
-rotation, and failing that, against what the spell data allows.
+After a raid, a player opens their fight and gets a review from **their spec's coach**: a
+mentor written as the best player of that spec on Forever. The coach says what to fix first
+and why, how the mistakes connect, what they did well, and the one drill to practise. Every
+fact in that review comes from an **evidence pack**: rule-based findings measured from the
+player's own log against the best logs on the site, the engine's written rotation or the
+spell data. A language model writes the words. It never supplies the facts.
 
 Why now:
 
 - **It is what players said they would pay for.** Four of five personas in the
-  differentiator round asked for the same thing: "coach me on my own log." The Fury warrior
-  in the appeal round said he would pay if Premium told him "you clipped 14 Bloodthirsts".
-  The Holy paladin asked for "what to fix after Onyxia". Today's Premium is "more of the free
-  tools", and none of them would buy that alone. The coach is Premium's main differentiator.
-- **We already own nearly all of it.** The parser stores casts with timestamps, aura
-  tracks, resource tracks, deaths and gear. The engine holds a written rotation for every
-  spec. The rating already turns deaths and dropped debuffs into anchored moments. The
-  missing joins are a comparison table, a pure review function and the surfaces.
+  differentiator round asked for "coach me on my own log." The Fury warrior wanted to hear
+  "you clipped 14 Bloodthirsts". The Holy paladin wanted "what to fix after Onyxia". Today's
+  Premium is "more of the free tools", and none of them would buy that on its own. The coach
+  is Premium's main differentiator.
+- **A list of findings tells a player what went wrong. A coach also tells them what to do
+  about it.** It sets the priority, gives the reason, links the mistakes together, gives the
+  encouragement a mentor gives and names one thing to practise. That is the owner's
+  direction, and it is what turns a parse into a lesson.
+- **We already own the facts.** The parser stores casts with timestamps, aura and resource
+  tracks, deaths and gear. The engine holds a written rotation per spec. The rating already
+  turns deaths and dropped debuffs into anchored moments. The missing pieces are the
+  comparison table, the evidence pack, the personas, the model client and the surfaces.
 - **The calendar.** Forever launches on 4 November and raids open on 9 December. The coach
   should be live for the first raid night, and the plans page's held line goes live with it.
 
@@ -40,340 +46,363 @@ Why now:
 
 Goals
 
-- After any logged boss pull, a player can open their own review: up to eight findings,
-  ordered so the first one is what to fix first, each with evidence they can click.
-- Every finding states what it is measured against, in plain words.
-- Every review lists what it couldn't check, and why.
-- Damage dealers get the full set. Healers and tanks get the findings the data supports,
-  framed for their role (§5.3).
-- Free accounts see that the coach found something on their own character (the count and
-  the top finding's title). Premium (`log_coach`) sees all of it.
-- One line in Discord and one line on the account page carry "what to fix first" to the
-  player without them opening a report.
-- 10-, 20- and 40-player raids are equal citizens: each size has its own comparison pool.
+- After any logged boss pull, a player can open their own review: a short opening, one thing
+  to fix first (what, why, drill), up to three more, one or two things done well, and what
+  couldn't be checked. Every item links to its evidence in the report.
+- Every fact in the review (number, spell, time, comparison) is in the evidence pack, and
+  the API checks that before anything is shown.
+- One coach per spec, 27 in all, each honest about what it is: "Your Fury coach".
+- Damage dealers get the full set of findings. Healers and tanks get the findings the data
+  supports, framed for their role (§6.3).
+- Free accounts see the count and the first thing to fix on their own character. Premium
+  (`log_coach`) sees the whole review.
+- One line in Discord and one on the account page carry "what to fix first" to the player.
+- 10-, 20- and 40-player raids each have their own comparison pool.
 
-Non-goals (v1, and named again in §16)
+Non-goals (v1, named again in §22)
 
-- Talents, race and a sim of the player's own character. Forever logs record neither talents
-  nor race (feasibility §1). Personal sim needs the addon-export builder.
+- Talents, race and a sim of the player's own character. Forever logs carry neither talents
+  nor race.
 - Movement, positioning, facing and range.
-- Mechanics beyond the curated tables that already exist.
-- Trends over weeks.
+- Mechanics beyond the curated tables that exist.
+- Trends over weeks, and a coach that remembers past nights.
 - Trash pulls. Gear and consumables are only in the log on boss pulls.
-- A coach that writes free text. Every sentence comes from a copy table filled with numbers
-  from the data. There is no language model in the loop.
+- A chat. The coach writes one review per fight and does not answer questions in v1.
+- Personas of real people.
 
 Anti-goals (a build that does any of these fails review)
 
-- **A finding that is wrong.** If the data can't prove it, it is not a finding. It becomes a
-  line under "Couldn't check", or the finding is left out. Accuracy is absolute (tenet 8).
-- **A finding that shames.** No ranking of raiders against each other. No named finding in a
-  channel anyone else can read. No coaching of another player's character except by their
-  guild's officers. No "heal more" for healers. The copy states facts and never grades the
-  person ("you failed", "bad", "terrible" never appear).
-- **A wall of numbers.** At most eight findings per fight, one per finding type. Each is a
-  title, one line of detail, one basis line and its evidence links. The full numbers sit on
-  the report's existing tabs, one click away through the evidence links (tenet 11).
+- **A finding that is wrong.** If the evidence pack doesn't contain it, the review can't say
+  it. Accuracy is absolute (tenet 8).
+- **A review that shames.** No ranking of raiders against each other, nothing personal in a
+  channel others read, no coaching of another player's character except by their guild's
+  officers, never "heal more", never a grade of the person.
+- **A wall of numbers, or a wall of prose.** The review has a fixed shape with length caps
+  (§9.3). The full numbers stay on the report's own tabs, one click away (tenet 11).
+- **A coach pretending to be someone.** No names, no "pro" claims, no invented biography.
 
 ## 3. Who sees what (decided)
 
 | Viewer | Report page row | Discord | Account page |
 |---|---|---|---|
-| Signed out, or signed in but not the character's owner | Nothing about the coach | Nothing | n/a |
-| Owner of the character, free | The finding count and the top finding's title, plus an upgrade link | Nothing (the Discord line is for Premium members only) | Last raid line: count and top finding's title |
-| Owner of the character, Premium (`log_coach`) | Every finding with detail, basis, comparison, timestamps and evidence. Coach history | `/report` answer: one "what to fix first" line, ephemeral. Raid-night post: one line that names nobody | Last raid line: what to fix first, with a link to the review |
-| Officer of the report's guild, with `officer_views` for that guild, viewing a verified member's row | The full review, marked "Officer view" | Nothing extra (officer coaching stays on the site) | n/a |
+| Signed out, or not the character's owner | Nothing about the coach | Nothing | n/a |
+| Owner of the character, free | The finding count and the title of the first thing to fix, plus an upgrade link | Nothing (the Discord line is for Premium only) | Last raid line: count and the first thing to fix |
+| Owner, Premium (`log_coach`) | The full coach review, and coach history | `/report` answer: one "what to fix first" line, ephemeral. Raid-night post: one sentence that names nobody | Last raid line: what to fix first, with a link |
+| Officer of the report's guild with `officer_views` for that guild, viewing a verified member's row | The full review, marked "Officer view" | Nothing extra | n/a |
 | Moderator | As an officer, on any report they can open | Nothing | n/a |
 
-"Owner of the character" means `auth.Store.OwnsCharacter(user, player_key)` is true: the
-same test the Premium history route uses (`api/internal/rating/handler.go:258`).
+"Owner of the character" means `auth.Store.OwnsCharacter(user, player_key)`, the test the
+Premium history route already uses (`api/internal/rating/handler.go:258`). `log_coach` is a
+standard personal Premium feature (§17.4). A guild seat holder has it.
 
-`log_coach` is a new standard personal Premium feature (§10.4). A guild seat holder has it,
-because seats resolve standard features.
+**Generation cost only follows Premium (decided).** Free teasers, the Discord line and the
+account line are rendered from the evidence pack alone. The model runs only when a Premium
+owner or an officer opens a review (§15).
 
-## 4. The player's experience, per surface
+## 4. How it works
 
-### 4.1 The finding, in one pattern
+```
+fight summary (bucket) ─┐
+coach_profiles pool ────┤                         ┌─ persona file data/curated/coach/<spec>.md
+sim reference ──────────┼─► Evidence pack ────────┼─► model (OpenAI-compatible) ─► review JSON
+spell data, catalogue ──┤   F1–F8 findings,        │                                   │
+curated mechanics ──────┘   strengths, links,      └─ coach rules (system prompt)      ▼
+                            couldn't-check, anchors                       validate against pack
+                                    │                                       │ pass   │ fail
+                                    │                                       ▼        ▼ retry once
+                                    └──────────── rule-only rendering ◄──── fail again, cap hit,
+                                                                            kill switch, error
+```
 
-Every finding on every surface is built from the same four parts, all from one copy table
-(`api/internal/coach/copy.go`):
+1. **The evidence pack** (§7) is built by pure Go code. It holds the eight rule findings
+   (§6), the basis and comparison for each, the strengths (what the player did at or above
+   the comparison), the computed links between findings, the "couldn't check" list and the
+   evidence anchors. It is the single source of truth for the review.
+2. **The model** gets the spec's persona and the coach rules as the system prompt, and the
+   evidence pack as the only user content. It returns the fixed review shape (§9.3) as JSON.
+3. **The validator** (§10) checks every number, spell, boss, time, anchor id, link id and
+   drill id in the output against the pack. If anything fails, the model gets one retry with
+   the failures listed. If that fails too, the player gets the **rule-only rendering**: the
+   same review shape, filled from the pack's own copy table with no model at all.
+4. The result is stored per (report, fight, player, model version, persona version) and
+   generated again only when a version moves (§14).
 
-1. **Title.** What happened, under eight words, with at most one number: `Bloodthirst: 7 casts lost`.
-2. **Detail.** One sentence of fact with the numbers that prove the title, and the one or two
-   worst moments as fight times (`m:ss` from the pull): `31 of a possible 38 with rage in
-   your bar. Longest gaps 1:12–1:25 and 2:40–2:51.`
-3. **Basis.** What it is measured against, in plain words, with the comparison when one
-   exists: `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25
-   Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.`
-4. **Evidence anchors.** Links into the report page that show the proof: the Casts row, the
-   aura row, the death, the resource graph at a time. They are built the way
-   `web/src/lib/rating/moments.ts` builds the rating's moment links today.
+The rule-only rendering always exists. If the model is down, over a cap or switched off, the
+player still gets a correct review in plain words.
 
-Under the findings, every review ends with:
+## 5. The player's experience
 
-- **Couldn't check:** one line per thing the coach could not read, and why. For example:
-  `Talents and race: Forever logs don't record them.` and `Range and movement: the log
-  doesn't say where you stood.` This list is never empty. Talents and race are always on it in v1.
-- **Reviewed:** the date and the coach version, e.g. `Reviewed 28 Oct.`
+### 5.1 The review, on screen
 
-When there are no findings: `Nothing to fix on this pull that the log can show.` The
-"Couldn't check" list follows.
+The web renders a fixed structure. It never renders free prose.
 
-When the basis is too thin for a comparison finding (§6.4), the finding is not shown. A line
-takes its place under "Couldn't check": `Overheal by rank: not enough logs yet — 12 Holy
-priest kills of Onyxia (40) on the site, the coach needs 20.`
+- **Header:** `Your {Spec} coach`, e.g. `Your Fury coach`. For a starter persona (§8.3),
+  `Your Enhancement coach · early version`, with the hint `This coach knows the rotation from
+  our guide. Deeper class knowledge is on the way.` On the rule-only rendering the header is
+  `Your Fury review`, with no persona voice claimed.
+- **Opening:** at most two sentences.
+- **Fix first:** a title, why it matters, and the one drill to practise.
+- **Then:** up to three more items, each with a title and a why.
+- **Doing well:** one or two items.
+- **Couldn't check:** the pack's lines, word for word.
+- **Footer:** `Reviewed 28 Oct · Evidence: Top 25 Fury warriors on Onyxia (40), your log.`
+  The basis labels the pack used, deduplicated.
 
-All figures are rendered from the data at request time. The design and the copy table never
-hard-code a nightly number (the owner's rule).
+Every item carries the evidence anchor ids it used. The web turns each one into a link into
+the report: the Casts row, the aura row, the death, or the resource graph at a time. They are
+built the way `web/src/lib/rating/moments.ts` builds the rating's moment links today.
+Abilities show icon and rank, and items show icon, quality colour and tooltip (tenets 2 and 3).
+Fight times are `m:ss` from the pull.
 
-### 4.2 Worked examples
+States: loading (`Reading the fight…`), the rule-only rendering shown while the coach writes
+(`Your coach is writing…`, then swapped in place without layout shift), a reference still
+preparing, coach busy (§15.4), no findings, not reviewable, the free teaser, officer view, and
+error (`The coach couldn't read this fight just now.`).
+
+### 5.2 The evidence pack's finding pattern (also the rule-only rendering)
+
+Each pack finding renders as four parts from one copy table (`api/internal/coach/copy.go`):
+
+1. **Title:** what happened, under eight words, at most one number: `Bloodthirst: 9 casts lost`.
+2. **Detail:** one sentence of fact with the proving numbers and the worst moments.
+3. **Basis:** what it is measured against, in plain words, with the comparison.
+4. **Evidence anchors.**
+
+The rule-only rendering maps the pack onto the review shape mechanically. The opening is
+`Here is what your log shows for {Boss}.` Fix first is pack rank 1, with its detail as the
+why, and the drill is the persona file's drill for that finding code. Then is ranks 2 to 4.
+Doing well is the top two strengths. Couldn't check is copied as is.
+
+When there are no findings, the opening becomes `Nothing to fix on this pull that the log can
+show.` Doing well and couldn't check follow.
+
+### 5.3 Worked examples
 
 **All values below are invented examples for this document. None of them is a measurement.**
+Each example shows the evidence pack first, then a review the model could write from it.
+Every number, spell and time in the review is in the pack above it.
 
 **Fury warrior, Onyxia (40), kill, 3:52**
 
-| # | Title | Detail | Basis | Evidence |
-|---|---|---|---|---|
-| 1 | `Bloodthirst: 7 casts lost` | `31 of a possible 38 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | Casts row for Bloodthirst; two links to the timeline at 1:12 and 2:40 |
-| 2 | `Rage full for 14 seconds` | `Your rage sat at its cap for 14 s outside Onyxia's air phase, longest at 3:05–3:12. Rage past the cap is lost.` | `Measured against your own rage bar, with the air phase left out. Top 25 Fury warriors here: 3 s.` | Rage graph at 3:05 |
-| 3 | `No flask at the pull` | `You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.` | `From the character sheet in your log, against the site's consumable list for damage dealers.` | Buffs tab, your row |
+Pack findings, ranked:
 
-What to fix first: `Bloodthirst: 7 casts lost`.
+| Rank | Id | Title | Detail | Basis | Anchors |
+|---|---|---|---|---|---|
+| 1 (major) | `f1` | `Bloodthirst: 9 casts lost` | `31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | `a1` Casts row, `a2` 1:12, `a3` 2:40 |
+| 2 (major) | `f6` | `No flask at the pull` | `You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.` | `From the character sheet in your log, against the site's consumable list for damage dealers.` | `a4` Buffs tab |
+| 3 (minor) | `f4` | `Rage full for 14 seconds` | `Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.` | `Measured against your own rage bar, air phase left out. Top 25 Fury warriors here: 3 s.` | `a5` rage graph at 2:41 |
+
+Strengths: `s1` `Alive the whole fight.` `s2` `Battle Shout up 100% of the fight. Top 25: 97%.`
+Links: `l1` (`f1`, `f4`): `The Bloodthirst gap at 2:40–2:51 overlaps the rage cap at 2:41–2:50.`
+Couldn't check: `Talents and race: Forever logs don't record them.` · `Range and movement: the
+log doesn't say where you stood.`
+
+Review:
+- **Opening:** `Solid kill: you were alive the whole fight and Battle Shout was up 100% of it.
+  Almost everything you left behind sits in one button.`
+- **Fix first, `Bloodthirst: 9 casts lost`:** `Bloodthirst is the button the Fury rotation is
+  built around, and 9 of a possible 40 went unused while you had the rage, longest at
+  1:12–1:25. At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.`
+  Drill: `On a target dummy, press Bloodthirst the moment it comes off cooldown, before
+  anything else; Whirlwind and Heroic Strike wait their turn.` Anchors `a1 a2 a3 a5`, link `l1`.
+- **Then:** `No flask at the pull`: `A flask is the cheapest damage you will ever buy; bring
+  one to every 40-player boss.` (`a4`) · `Rage full for 14 seconds`: `When the bar is full,
+  Heroic Strike turns rage into damage instead of losing it.` (`a5`)
+- **Doing well:** `s1`, `s2`, each in one sentence.
 
 **Holy priest, Onyxia (40), kill, 3:52** (efficiency and survival, never "heal more")
 
-| # | Title | Detail | Basis | Evidence |
-|---|---|---|---|---|
-| 1 | `Out of mana from 3:17` | `Your mana stayed under 5% from 3:17 to the kill, 35 s in all.` | `Measured against your own mana bar.` | Mana graph at 3:17 |
-| 2 | `Greater Heal (Rank 4): 44% overheal` | `44% of what Greater Heal (Rank 4) healed was overheal, over 23 casts. Lower ranks cost less mana.` | `Top 21 Holy priests on Onyxia (40): 22% on the same rank.` | Healing tab, the ability row |
-| 3 | `Died at 2:58 to Flame Breath` | `Flame Breath hit for 2,140 at 2:58. No healing potion or Healthstone used in the 10 s before.` | `From your log. Flame Breath is on this boss's list of damage you can avoid.` | Deaths tab, this death |
+| Rank | Id | Title | Detail | Basis | Anchors |
+|---|---|---|---|---|---|
+| 1 (minor) | `f7` | `Died at 3:20 to Flame Breath` | `Flame Breath hit for 2,140 at 3:20. No healing potion or Healthstone used in the 10 s before.` | `From your log. Flame Breath is on this boss's list of damage you can avoid.` | `a1` the death |
+| 2 (minor) | `f4` | `Out of mana from 3:05` | `Your mana stayed under 5% from 3:05 until you died at 3:20, 15 s in all.` | `Measured against your own mana bar.` | `a2` mana graph at 3:05 |
+| 3 (minor) | `f5` | `Greater Heal (Rank 4): 44% overheal` | `44% of what Greater Heal (Rank 4) healed was overheal, over 23 casts. Lower ranks cost less mana.` | `Top 21 Holy priests on Onyxia (40): 22% on the same rank.` | `a3` Healing tab row |
 
-What to fix first: `Died at 2:58 to Flame Breath`.
+Strengths: `s1` `Flask of Distilled Wisdom at the pull.` `s2` `Inner Fire up 100% of the fight.`
+Links: `l1` (`f4`, `f7`): `You died while out of mana.` `l2` (`f5`, `f4`): `Greater Heal
+(Rank 4) is your most-cast heal with the most overheal.`
+
+Review:
+- **Opening:** `Your preparation was right: flask at the pull and Inner Fire up 100% of the
+  fight. This one is about lasting to the end.`
+- **Fix first, `Died at 3:20 to Flame Breath`:** `A dead healer heals nothing for the rest of
+  the pull, and Flame Breath is damage you can step out of. You were also out of mana when it
+  landed, so there was no answer left.` Drill: `Before the pull, pick your spot at her side,
+  never her front, and check it each time she lands.` Anchors `a1 a2`, link `l1`.
+- **Then:** `Out of mana from 3:05`: `The mana ran out 15 s before the death; the fix is upstream,
+  in how you spend it.` (`a2`) · `Greater Heal (Rank 4): 44% overheal`: `Top Holy priests here
+  overheal 22% with this rank. A lower rank costs less mana, and that is where your last 15 s
+  went.` (`a3`, link `l2`)
+- **Doing well:** `s1`, `s2`.
 
 **Protection warrior, Onyxia (40), kill, 3:52**
 
-| # | Title | Detail | Basis | Evidence |
-|---|---|---|---|---|
-| 1 | `Died at 3:30 with Shield Wall ready` | `Onyxia's melee killed you at 3:30. Shield Wall had been ready since the pull.` | `From your log and Shield Wall's cooldown.` | Deaths tab, this death; Casts row for Shield Wall |
-| 2 | `Shield Block up 18% of the fight` | `Shield Block was up for 42 s of 3:52.` | `Top 20 Protection warriors on Onyxia (40): 34%.` | Buffs tab, Shield Block row |
-| 3 | `Sunder Armor: 22 casts of Rank 4` | `Rank 5 is trainable at your level. Rank 4 was cast 22 times.` | `Measured against the spell ranks a level 60 warrior can train.` | Casts row for Sunder Armor (Rank 4) |
+| Rank | Id | Title | Detail | Basis | Anchors |
+|---|---|---|---|---|---|
+| 1 (major) | `f7` | `Died at 2:50 with Shield Wall ready` | `Onyxia's melee killed you at 2:50. Shield Wall had been ready since the pull.` | `From your log and Shield Wall's cooldown.` | `a1` the death, `a2` Shield Wall row |
+| 2 (minor) | `f2` | `Shield Block up 18% of the fight` | `Shield Block was up for 42 s of 3:52.` | `Top 20 Protection warriors on Onyxia (40): 34%.` | `a3` Buffs row |
+| 3 (minor) | `f5` | `Sunder Armor: 22 casts of Rank 4` | `Rank 5 is trainable at your level. Rank 4 was cast 22 times.` | `The spell ranks a level 60 warrior can train.` | `a4` Casts row |
 
-What to fix first: `Died at 3:30 with Shield Wall ready`.
+Strengths: `s1` `Sunder Armor at 5 stacks from 0:21 to the end.` Links: none.
 
-### 4.3 Surface 1 (primary): the report page player row
+Review:
+- **Opening:** `You had Sunder Armor at 5 stacks from 0:21 to the end, so the raid had what it
+  needed from you early. The pull turned on one button you never pressed.`
+- **Fix first, `Died at 2:50 with Shield Wall ready`:** `Shield Wall had been ready since the
+  pull, and a tank who dies takes the raid with them. Pressing it is never wasted.` Drill:
+  `Put Shield Wall on a key you can hit without looking, and say "wall" out loud when your
+  health drops past half on a dummy pull with a friend.` (`a1 a2`)
+- **Then:** `Shield Block up 18% of the fight`: `Top Protection warriors here keep it up 34%;
+  it is your cheapest mitigation.` (`a3`) · `Sunder Armor: 22 casts of Rank 4`: `Rank 5 is
+  trainable at your level; visit your trainer.` (`a4`)
+- **Doing well:** `s1`.
 
-- The player's row in the report's combatant list carries one coach line, but only for
-  viewers who may coach that row (§3). Premium: `What to fix first: Bloodthirst: 7 casts
-  lost · 4 findings`. Free: `4 findings · First: Bloodthirst: 7 casts lost · See them all
-  with Premium`.
-- The line opens the **Coach** panel for that player and fight. It holds the findings in
-  order, the "Couldn't check" list and the "Reviewed" line. Premium also gets a **History**
-  link listing this character's past reviews (§10.2). Where the panel sits (a tab beside
-  Rating, or a drawer from the row) is the ux-designer's call. It belongs on the report page:
-  the report page owns the log, and the coach is a reading of it (one job per page).
-- Abilities carry their icon and rank, and items carry icon, quality colour and tooltip
-  (tenets 2 and 3). Fight times are links (§4.1).
-- States: loading (`Reading the fight…`), a reference still preparing (§9.2), no findings,
-  not reviewable (§7.1), the free teaser, the officer view, and an error (`The coach couldn't
-  read this fight just now.`).
+### 5.4 Surface 1 (primary): the report page player row
 
-### 4.4 Surface 2: Discord (decided: Premium members only, never shaming in a channel)
+- The player's row in the report's combatant list carries one coach line, only for viewers
+  who may coach that row (§3). Premium: `What to fix first: Bloodthirst: 9 casts lost`. Free:
+  `3 findings · First: Bloodthirst: 9 casts lost · See your coach's review with Premium`.
+- The line opens the **Coach** panel for that player and fight (§5.1). Premium also gets a
+  **History** link to the character's past reviews. The panel's placement (a tab beside
+  Rating, or a drawer from the row) is the ux-designer's call. It belongs on the report page,
+  which owns the log (one job per page).
 
-- **`/report` answer (ephemeral).** When the viewer holds `log_coach` and owns a character
-  in the matched log, the answer gains one line for that character's night: `What to fix
-  first: Bloodthirst casts lost — on 5 of 8 bosses. Open your review` (a link to the
-  coach panel on the report page). The line is never in the version `Share in channel`
-  reposts. Share re-renders the answer without it. A viewer with several characters in the
-  log gets one line each, at most three.
-- **Raid-night post (`report_ready`, in the guild channel).** The post is counts only and
-  never names a raider (rule R-A3, `api/internal/notify/report_embed.go`). The coach keeps
-  that rule. When at least one raider in the matched log holds `log_coach` on a character
-  they own, the description gains one sentence that names and counts nobody: `Premium
-  raiders: your coach review of tonight is ready on Forever Sixty and in /report.` The
-  personal "what to fix first" stays in the ephemeral answer and on the site. That is what
-  "Premium members only, never shaming in a channel" comes to under R-A3.
-- **Night line rule.** The top finding across one character's fights that night: the
-  highest severity first, then the finding type that showed on the most bosses, then the
-  earliest boss. It is worded from the finding's title stem without the per-fight number
-  (`Bloodthirst casts lost`), plus `on N of M bosses`.
-- **Timing.** The night line is read from cached reviews (§9). If they are not all cached
-  within the interaction's budget, the line becomes `Your coach review is on the site.` with
-  the link, and the reviews warm in the background. Discord never waits on the coach.
+### 5.5 Surface 2: Discord (decided: Premium only, never shaming in a channel)
 
-### 4.5 Surface 3: the account page's "last raid" line
+- **`/report` answer (ephemeral).** When the viewer holds `log_coach` and owns a character in
+  the matched log, the answer gains one line per character (three at most): `What to fix
+  first: Bloodthirst casts lost — on 5 of 8 bosses. Open your coach's review`. It links to the
+  coach panel. `Share in channel` re-renders without it.
+- **Raid-night post (`report_ready`, in the guild channel).** That post is counts only and
+  never names a raider (rule R-A3, `api/internal/notify/report_embed.go`). The coach keeps the
+  rule. When at least one raider in the log holds `log_coach` on a character they own, the
+  description gains one sentence that names and counts nobody: `Premium raiders: your coach
+  has reviewed tonight on Forever Sixty and in /report.`
+- **Night line rule.** Read from the evidence packs, with no model call. Take the rank-1
+  findings across one character's fights that night. Choose by severity, then by the finding
+  type that showed on the most bosses, then the earliest boss. It is worded from the title stem
+  without the per-fight number, plus `on N of M bosses`.
+- **Timing.** Packs come from cache. If they aren't all cached within the interaction's budget,
+  the line becomes `Your coach's review is on the site.` with the link, and the packs warm in the
+  background. Discord never waits.
+
+### 5.6 Surface 3: the account page's "last raid" line
 
 - One line, for the account's most recent raid. "Last raid" has the definition the addon
-  already uses: the newest evidence report holding a rated boss fight of the character, within
-  `addon.LastRaidWindow` (14 days), read with the same query (`api/internal/addon/inbox_reads.go`).
-  The coach reuses that query rather than inventing a second meaning of "last raid".
-- Premium: `Last raid · Molten Core, Thu 23 Oct · What to fix first: Bloodthirst casts lost,
-  on 5 of 8 bosses · Open`. Free: `Last raid · Molten Core, Thu 23 Oct · 11 findings ·
-  First: Bloodthirst casts lost · See them all with Premium`.
-- No last raid in 14 days: the line is not shown. The account page's character list
-  (`web/src/components/account/CharacterList.svelte`) is the likely home. The ux-designer
-  places it.
-- The account page loads the line separately from the rest of the page (`GET
-  /v1/me/coach/recent`), so a cold cache never slows the page.
+  already uses (`addon.lastRaidFights`: newest evidence report with a rated boss fight, within
+  `addon.LastRaidWindow`, 14 days). It reuses that query.
+- Premium: `Last raid · Molten Core, Thu 23 Oct · What to fix first: Bloodthirst casts lost, on
+  5 of 8 bosses · Open`. Free: `Last raid · Molten Core, Thu 23 Oct · 11 findings · First:
+  Bloodthirst casts lost · See your coach's review with Premium`.
+- It is hidden when there is no raid in 14 days. It loads separately (`GET /v1/me/coach/recent`)
+  so a cold cache never slows the page. It likely sits in
+  `web/src/components/account/CharacterList.svelte`. The ux-designer places it.
 
-## 5. The eight findings
+## 6. The eight findings (the evidence pack's measurements)
 
-### 5.1 Shared rules
+These are unchanged from the rule design. They are now the facts the coach is allowed to use.
 
-- **Reviewable fights.** Boss pulls only (`encounter_id` set), kills and wipes, at least 30 s
-  long. On a wipe, deaths in the last 15 s before the fight ends are part of the wipe and are
-  not reviewed.
-- **Spec and role** come from the roster row (`RosterRow`). A row with no known spec is not
-  reviewed: `We couldn't tell this player's spec from the log.`
-- **Level** comes from the advanced-logging fields (`AdvLevel`). Without it, findings that
-  need the level (F5's rank check, the sim band) go to "Couldn't check".
-- **Time that never counts against a player:** time dead, the curated downtime windows of
-  the encounter (the same windows `rating.ActivityIdleMS` subtracts), and the time before the
-  player's first cast of the fight. The opening wait for threat is not a mistake.
-- **Talent-granted abilities** are assessed only if the player cast them at least once in
-  the same fight. One cast proves they have the talent. Forever logs carry no talents.
-- **Pets and guardians** fold into their owner: `CastRow.OwnerGUID`, and abilities with `Via`.
-- **Per-spec coach data.** Every spec gets a curated file, `data/curated/coach/<spec>.json`.
-  It lists the spec's core cooldown abilities, the auras it owns (its own buffs and debuffs),
-  deliberate downranks, defensive cooldowns and efficiency cooldowns. Every entry carries a
-  `verified` stamp against the client's own tables, like `consumables/catalogue.json` does.
-  A test refuses an unstamped entry. If a spec has no file, or a list is missing, the findings
-  that need it go to "Couldn't check". Nothing is guessed.
-- **Severity** is `major` or `minor`, set by each finding's thresholds below.
-- **Order.** Major before minor. Within a tier, the role's precedence list (§5.3) decides. The
-  first finding is "what to fix first". Findings about things the player doesn't control (raid
-  buffs) are never first.
-- **One finding per type** per fight, so eight at most. Where a type could fire for several
-  abilities (F1, F2), the title names the worst one and the detail names up to two more.
-- **Gain estimates** (`GainEstimate`) stay null in v1 and are never shown. A DPS figure the
-  coach can't prove is a finding that's wrong.
+### 6.1 Shared rules
 
-### 5.2 The findings
+- **Reviewable fights:** boss pulls only (`encounter_id` set), kills and wipes, at least 30 s
+  long. On a wipe, deaths in the last 15 s before the end are part of the wipe and are not
+  reviewed.
+- **Spec and role** come from `RosterRow`. A row with no known spec is not reviewed: `We
+  couldn't tell this player's spec from the log.`
+- **Level** comes from the advanced-logging fields (`AdvLevel`). Without it, F5's rank check
+  and the sim band go to "Couldn't check".
+- **Never counted against a player:** time dead, the encounter's curated downtime (the windows
+  `rating.ActivityIdleMS` subtracts), and the time before their first cast of the fight.
+- **Talent abilities** are assessed only if cast at least once in the same fight. Forever logs
+  carry no talents, and one cast proves the talent.
+- **Pets and guardians** fold into their owner (`CastRow.OwnerGUID`, `Ability.Via`).
+- **Per-spec rule data:** `data/curated/coach/<spec>.json` lists core cooldown abilities, owned
+  auras, deliberate downranks, defensive cooldowns and efficiency cooldowns. Every entry
+  carries a `verified` stamp against the client's tables, and a test refuses an unstamped
+  entry. Missing lists send their findings to "Couldn't check".
+- **Severity** is `major` or `minor`. **Rank** is major before minor, then the role's
+  precedence (§6.3). Raid buffs are never rank 1, because the player doesn't control them.
+- **One finding per type** per fight, eight at most. F1 and F2 name the worst ability in the
+  title and up to two more in the detail.
+- **Gain estimates** stay null and are never shown.
 
-Thresholds are named constants in `api/internal/coach/rules.go`. The values here are the v1
-values.
+### 6.2 The findings
 
-**F1. Core ability under-used** (`core_casts`)
-- *Rule.* For each core ability in the spec's coach file with a cooldown of 4 s to 10 min
-  (`spellconst` `cooldown_ms`; longer cooldowns are saved across the night and are not judged
-  per pull), walk `CastRow.Sequence`. A gap counts as **ready time** when the ability was off
-  cooldown, the player was alive and outside downtime, and the player's resource was at or
-  above the spell's base `cost` in at least one whole second of the per-second
-  `ResourceTrack.Series`. Base cost is an upper bound, because talents can only lower it, so
-  this never invents a lost cast. Each gap first gives up a 1.5 s grace for GCD collisions.
-  Lost casts = floor(sum of remaining ready time / cooldown). "Possible" = actual + lost.
-- *Fires* when lost ≥ 2 and lost ≥ 10% of possible. *Major* at ≥ 20%.
-- *Data.* `CastRow.Sequence`, `ResourceTrack.Series`, deaths, curated downtime, `spellconst`.
-- *Basis.* The cooldown and the player's own resource bar always decide whether it fires. The
-  comparison line comes from the basis order (§6): top logs' casts per minute, else the
-  written rotation's sim casts per minute, else none ("of a possible N" stands alone). The
-  sim comparison is skipped for any ability on that spec's `WorstActions` list on the sim
-  support page (`api/internal/sims/specs.go`), where the sim and real logs disagree.
-- *Disabled* (goes to "Couldn't check") with no coach file, an ability with no `spellconst`
-  row, or no resource track for the player. If an ability's cost is unknown, gaps count
-  without the resource check, and the detail adds `Couldn't check whether you had the rage.`
-- *Roles.* DPS: damage cooldowns (Bloodthirst, Mortal Strike, Aimed Shot, Death Wish…). Tank:
-  threat cooldowns (Shield Slam, and Mangle where the spec has it). Healer: **efficiency
-  cooldowns only** (for example Inner Focus, Mana Tide Totem, Nature's Swiftness), worded as
-  a free or cheaper spell left unused, never as missing healing.
+Thresholds are named constants in `api/internal/coach/rules.go`, with the v1 values below.
 
-**F2. Key buff or debuff uptime** (`uptime`)
-- *Rule.* For each aura the spec's coach file says the player owns: on the boss (debuffs) or
-  on the player (self-buffs), uptime from the first application to the fight's end, leaving
-  out time dead and downtime. A debuff is judged only when the player is its **sole applier**
-  on that target (`AuraTrack.Appliers` holds only the player). Otherwise it goes to "Couldn't
-  check": `Your share of Sunder Armor: 3 warriors applied it, and the log merges them.`
-  (feasibility §7).
-- *Fires* when uptime is ≥ 10 points under the reference and under 90%. *Major* at ≥ 25 points under.
-- *Basis.* Top logs' median, else the written rotation's sim uptime. Spell data has no uptime
-  ceiling, so with neither of those the finding becomes `not enough logs yet`.
-- *Roles.* DPS: own DoTs, debuffs and self-buffs (Corruption, Serpent Sting, Slice and Dice,
-  Battle Shout). Tank: **defensive uptime** (Shield Block, Demoralizing Shout/Roar, Thunder
-  Clap). Tanks have no validated sim, so this needs top logs. Healer: own self-buffs (Inner Fire).
+**F1. Core ability under-used** (`core_casts`). For each core ability with a cooldown of 4 s
+to 10 min, walk `CastRow.Sequence`. A gap counts as ready time when the ability was off
+cooldown, the player was alive and outside downtime, and their resource was at or above the
+spell's base `cost` (`spellconst`) for at least one whole second of `ResourceTrack.Series`.
+Talents only lower costs, so base cost never invents a lost cast. Each gap gives up a 1.5 s
+grace. Lost = floor(remaining ready time / cooldown). Possible = actual + lost. *Fires* at
+lost ≥ 2 and ≥ 10% of possible. *Major* at ≥ 20%. The basis is always the cooldown and the
+player's own bar. The comparison follows the basis order (§11), skipping the sim for abilities
+on the spec's `WorstActions` list (`api/internal/sims/specs.go`). If cost is unknown, the gaps
+count without the resource check, and the detail says `Couldn't check whether you had the
+rage.` *Roles:* DPS damage cooldowns; tank threat cooldowns; healer **efficiency cooldowns
+only** (Inner Focus, Mana Tide Totem, Nature's Swiftness), never framed as missing healing.
 
-**F3. Dead time** (`idle`)
-- *Rule.* `rating.ActivityIdleMS` (alive, outside downtime and assignments, nothing done; the
-  1.5 s gap rule), plus its three longest windows with timestamps. That needs a windows variant
-  of the same code in `logs/engine/rating/activity.go`, sharing its logic rather than copying it.
-- *Fires* at ≥ 10 s and ≥ 5% of counted time. *Major* at ≥ 10%.
-- *Basis.* Top logs' median active %, else the threshold alone ("Measured against your own
-  casts, with downtime left out").
-- *Roles.* DPS and tank. **Off for healers**: waiting so as not to overheal is part of healing (rule g).
+**F2. Key buff or debuff uptime** (`uptime`). Owned auras, uptime from first application to
+the end, excluding time dead and downtime. A debuff is judged only when the player is its
+**sole applier** (`AuraTrack.Appliers`). Otherwise it goes to "Couldn't check": `Your share of
+Sunder Armor: 3 warriors applied it, and the log merges them.` *Fires* ≥ 10 points under the
+reference and under 90%. *Major* at ≥ 25 points under. *Basis:* top logs, else the sim, else
+`not enough logs yet`. *Roles:* DPS own DoTs, debuffs, self-buffs; tank defensive uptime
+(Shield Block, Demoralizing Shout/Roar, Thunder Clap), top logs only; healer own self-buffs.
 
-**F4. Resource waste** (`resource`)
-- *Rule.* Rage and energy: seconds at the cap (`Series` against `Max`) outside downtime and
-  time dead. Mana: seconds under 5% of `Max`, and the first such second as a fight time.
-- *Fires.* Capped ≥ 10 s and ≥ 5% of counted time. Mana under 5% for ≥ 10 s, starting
-  before the last 10% of the fight. *Major* at ≥ 15% capped, or out of mana before 75% of the fight.
-- *Basis.* The player's own bar always, with top logs' median capped seconds when available.
-- *Roles.* DPS and tank rage/energy; casters and healers mana. Healer copy is about running
-  out early (efficiency), never about leftover mana.
+**F3. Dead time** (`idle`). `rating.ActivityIdleMS`, plus its three longest windows (a windows
+variant of the same code in `logs/engine/rating/activity.go`). *Fires* at ≥ 10 s and ≥ 5% of
+counted time. *Major* at ≥ 10%. *Basis:* top logs' median active %, else the threshold.
+*Roles:* DPS and tank. **Off for healers.**
 
-**F5. Ranks** (`ranks`)
-- *DPS and tank rule.* Casts of a rank lower than the highest rank trainable at the player's
-  level, for spells on the spec's rotation (`Rotation.Family`, `spellranks.json`, `trainables/`).
-  Deliberate downranks listed in the coach file are left out. *Fires* at ≥ 3 casts or ≥ 10% of
-  that spell's casts. Always *minor*. *Basis:* the spell ranks a player of that level can train.
-- *Healer rule (rank choice).* Overheal % per heal **rank**: `Ability.Overheal` / `Ability.Total`,
-  and the spell id is the rank. *Fires* when a rank with ≥ 10 casts is ≥ 15 points above the
-  top logs' median for the same rank. *Major* at ≥ 30 points. *Basis:* top logs only. Below
-  the minimum it becomes `not enough logs yet`. The detail may add `Lower ranks cost less
-  mana.` (spell data), and never more than that.
-- *Disabled* without the player's level (DPS/tank rule) or without a top-logs pool (healer rule).
+**F4. Resource waste** (`resource`). Rage and energy: seconds at cap outside downtime and time
+dead. Mana: seconds under 5% of `Max`, and the first such second. *Fires:* capped ≥ 10 s and
+≥ 5%; mana under 5% for ≥ 10 s, starting before the last 10% of the fight. *Major* at ≥ 15%
+capped, or out of mana before 75% of the fight. *Roles:* all. Healer copy is about running out
+early, never about leftover mana.
 
-**F6. Pull preparation** (`preparation`)
-- *Rule.* What the player had at the pull, from the **seeded aura tracks**: segments on the
-  player that start at 0 ms, seeded from COMBATANT_INFO. They are read against the consumables
-  catalogue for the player's role, which is the same fix as §8. Categories: flask, food, weapon
-  oil or stone, combat potion uses (from `Casts`, against `MaxUses`), missing permanent enchants
-  (from the log's gear, through `score_v2.enchanted`), and raid buffs.
-- *Completeness guard.* A category only produces a "missing" finding when the catalogue marks
-  that category `complete`: every buff of that kind in the client is listed and stamped. A
-  food category that lists only some foods would call a fed player unfed. While a category is
-  incomplete it goes to "Couldn't check": `Food: the coach's food list isn't complete yet.`
-  Weapon oils and stones stay in "Couldn't check" until someone verifies how they show in
-  COMBATANT_INFO (feasibility §7).
-- *Raid buffs* (decided, the 10-man rule) are flagged only when a class that provides the buff
-  was in that fight's roster. They are always *minor* and never first, because the player
-  doesn't control them: `Pulled without Arcane Intellect (a mage was in the raid).` The
-  catalogue gains a `raid_buffs` list with the providing class and every rank's spell id.
-- *World buffs* are never a finding. Premium's detail lists them as facts (`World buffs at the
-  pull: Rallying Cry of the Dragonslayer, Songflower Serenade`).
-- *Severity.* Flask, food or a weapon enchant missing: *major* in 40-player raids, *minor* in
-  10 and 20. Potions and raid buffs: *minor*. A missing weapon enchant: *major* in every size.
-- *Disabled* when the fight has no character sheet for the player (no COMBATANT_INFO, a trash
-  pull, or advanced logging off): `Consumables and enchants: your log has no character sheet
-  for this pull.`
+**F5. Ranks** (`ranks`). *DPS and tank:* casts below the highest rank trainable at the
+player's level, for rotation spells (`Rotation.Family`, `spellranks.json`, `trainables/`),
+excluding listed deliberate downranks. Fires at ≥ 3 casts or ≥ 10%. Always minor. *Healer
+(rank choice):* overheal % per heal rank (`Ability.Overheal / Ability.Total`; the spell id is
+the rank). Fires when a rank with ≥ 10 casts is ≥ 15 points over the top logs' median for the
+same rank. Major at ≥ 30. Top logs only. The detail may add `Lower ranks cost less mana.` and
+nothing more.
 
-**F7. Death review** (`death`)
-- *Rule.* The first reviewable death (§5.1): its time, the killing blow, whether that damage is
-  on the encounter's avoidable list (curated mechanics), and the defensive cooldowns from the
-  coach file that were off cooldown at the moment of death. Baseline abilities count once the
-  player is at their trainable level. Talent abilities count only if cast in the same fight. It
-  also states whether a healing potion or Healthstone was used in the 10 s before. That is a
-  fact about casts, never a claim about what was in their bags. It reuses the rating's death
-  `Moments` and anchors.
-- *Fires* on any death before the last 10% of a kill. *Major* before 75% of the fight.
-- *Basis.* `From your log`, plus the cooldown for "ready" claims.
-- *Roles.* All. Tank and healer copy leads with survival: `Died at 3:30 with Shield Wall ready`.
+**F6. Pull preparation** (`preparation`). From the seeded aura tracks (segments on the player
+starting at 0 ms) against the role's consumables catalogue, the shared reader of §13. Covers
+flask, food, weapon oil or stone, combat potion uses against `MaxUses`, missing permanent
+enchants (`score_v2.enchanted`), and raid buffs. **Completeness guard:** a "missing" finding
+only fires for a catalogue category marked `complete`. Otherwise: `Food: the coach's food list
+isn't complete yet.` Weapon oils and stones stay unchecked until their COMBATANT_INFO form is
+verified. **Raid buffs (decided):** flagged only when a class that provides the buff was in
+that fight's roster. They are minor and never rank 1. The catalogue gains `raid_buffs` with
+the providing class and every rank's id. **World buffs** are listed as facts, never a finding.
+*Severity:* flask, food or weapon enchant missing is major in 40-player raids and minor in 10
+and 20. A missing weapon enchant is major in every size. Potions and raid buffs are minor.
+*Disabled* without a character sheet: `Consumables and enchants: your log has no character
+sheet for this pull.`
 
-**F8. Rotation adherence** (`adherence`)
-- *Rule.* `rating.fightAdherence` (the share of casts that are on the shipped rotation; nil
-  under `AdherenceMinCasts`), plus the three off-rotation spells cast most.
-- *Fires* when adherence is ≥ 10 points under the top logs' median, or under 85% when only the
-  written rotation is available. *Major* at ≥ 25 points under.
-- *Basis.* Top logs' median adherence, else `the written {Spec} rotation`.
-- *Roles.* DPS and tank. Off for healers, whose written lists aren't rotations in this sense.
+**F7. Death review** (`death`). The first reviewable death: time, killing blow, whether it is on
+the encounter's avoidable list, and the coach file's defensive cooldowns that were off cooldown
+then. Baseline abilities count at their trainable level. Talent abilities count only if cast
+that fight. Also whether a healing potion or Healthstone was used in the 10 s before (a fact
+about casts, never about bags). It reuses the rating's death `Moments`. *Fires* before the last
+10% of a kill. *Major* before 75%.
 
-### 5.3 Which specs get which findings (v1)
+**F8. Rotation adherence** (`adherence`). `rating.fightAdherence` plus the three most-cast
+off-rotation spells. *Fires* ≥ 10 points under the top logs' median, or under 85% against the
+written rotation alone. *Major* at ≥ 25 points under. *Roles:* DPS and tank. Off for healers.
 
-DPS specs (19): Balance and Feral (cat) druid; Beast Mastery, Marksmanship and Survival hunter
-(Survival is melee in Forever); Arcane, Fire and Frost mage; Retribution paladin; Shadow priest;
-Assassination, Combat and Subtlety rogue; Elemental and Enhancement shaman; Affliction,
-Demonology and Destruction warlock; Arms and Fury warrior.
+### 6.3 Which specs get which findings (v1)
 
-Healer specs (5): Restoration druid, Holy paladin, Discipline priest, Holy priest, Restoration shaman.
-
-Tank specs (3): Feral (bear) druid, Protection paladin, Protection warrior.
+DPS (19): Balance and Feral (cat) druid; Beast Mastery, Marksmanship and Survival hunter
+(Survival is melee in Forever); Arcane, Fire and Frost mage; Retribution paladin; Shadow
+priest; Assassination, Combat and Subtlety rogue; Elemental and Enhancement shaman;
+Affliction, Demonology and Destruction warlock; Arms and Fury warrior.
+Healers (5): Restoration druid, Holy paladin, Discipline priest, Holy priest, Restoration shaman.
+Tanks (3): Feral (bear) druid, Protection paladin, Protection warrior.
 
 | Finding | DPS | Healer | Tank |
 |---|---|---|---|
@@ -386,380 +415,494 @@ Tank specs (3): Feral (bear) druid, Protection paladin, Protection warrior.
 | F7 death | yes | yes, survival first | yes, survival first |
 | F8 adherence | yes | **off** | yes |
 
-Precedence within a severity tier:
-- DPS: F7, F1, F3, F6, F2, F4, F8, F5.
-- Healer: F7, F4, F5, F1, F6, F2.
-- Tank: F7, F2, F1, F3, F6, F4, F8, F5.
+Precedence within a tier: DPS F7, F1, F3, F6, F2, F4, F8, F5. Healer F7, F4, F5, F1, F6, F2.
+Tank F7, F2, F1, F3, F6, F4, F8, F5.
 
-A spec with no coach file still gets F3, F4, F6 and F7, which need no per-spec list. F1, F2
-and F5's DPS rule go to "Couldn't check" for it.
+## 7. The evidence pack
 
-## 6. Where the comparison comes from (decided basis order)
+A JSON document built by `coach.Pack(fight, row, refs, tables)`, which is pure Go. It is the
+model's only input about the fight, and the validator's only allowed source.
 
-### 6.1 The order
+- `context`: spec label, class, role, boss name, raid size, kill or wipe, duration (`m:ss`),
+  level. **No character name, account, guild or realm.** The model addresses the player as "you".
+- `findings[]`, ranked: `id` (`f1`…), `code`, `severity`, `rank`, `title`, `detail`, `basis`
+  (label, kind, n), `comparison` (label, kind, n) when present, `anchors[]` (ids), and `facts`.
+  `facts` lists every number in the finding with its unit and meaning (`{"v": 31, "unit":
+  "casts", "of": "Bloodthirst"}`), every spell (id, name, rank), and every time (`m:ss`).
+- `strengths[]`: measurements at or above their comparison, computed by the same rules. They
+  include uptime ≥ the reference median, no death, every checkable consumable present, adherence
+  ≥ median, casts per minute ≥ median, and overheal ≤ median. Each has `id` (`s1`…), a sentence,
+  facts and anchors. `doingWell` may only use these.
+- `links[]`: deterministic connections between findings, the only connections the review may
+  state. A link has `id` (`l1`…), its two finding ids, a sentence and a kind. v1 kinds: a cast
+  gap that overlaps a resource cap; out of mana before or at a death; a death inside a cast gap
+  (the gap is the death); a rank's overheal on the spec's most-cast heal; a missing consumable
+  on a finding about the resource or survival it covers (flask with mana, healing potion with
+  death). A link exists only when its time windows or ids actually meet in this fight.
+- `couldNotCheck[]`: the lines, verbatim.
+- `anchors[]`: `id` (`a1`…) mapped to the report-page target (kind, spell id, time, death anchor).
+- `allowed`: a precomputed set for the validator. Every number as it may appear (`31`, `9.1`,
+  `44%`, `2,140`, `3:05`, `1:12–1:25`), every spell, item and boss name, and every id.
 
-For each comparison a finding makes, the first one that exists wins:
+Packs are cached by (report, fight, player, pack model version) (§14). The free teaser, the
+night line and the rule-only rendering read only the pack.
 
-1. **Top logs on the site**: the same spec, encounter, difficulty and size, when the pool
-   holds at least 20 kills (§6.3). Basis line: `Top {n} {Spec} {class} on {Boss} ({size}): …`.
-2. **The engine's written rotation** (the sim reference profile, §7). DPS specs only, and only
-   specs whose sim is `validated` on the support page (`sims.Store.Validated`). Basis line:
-   `The written {Spec} rotation, simulated at level {band}: …`.
-3. **Spell data**: cooldowns, costs and ranks. Basis line: `Measured against {Spell}'s
-   {n}-second cooldown…`.
+## 8. Personas (decided)
 
-Facts that compare with nothing (a death, a missing flask) carry `From your log`. Every finding
-names its basis in plain words. The API carries it as data (§10).
+### 8.1 What a persona is
 
-### 6.2 `coach_profiles`, the comparison pool
+One file per spec, `data/curated/coach/<spec>.md`, 27 files. Each is versioned prose with front
+matter: `spec`, `status` (`full` or `starter`), `version`, `sources` (the guide, APL and data
+files it was written from) and `reviewed` (who checked it, when). The persona is **unnamed**:
+"the best Fury warrior on Forever". It is never a real person, and it never claims a biography,
+a guild or a ranking.
 
-Today the per-ability numbers of other players live only in per-fight summaries in the bucket.
-Reading those per request is too slow (feasibility §4). The rater writes a compact profile
-beside each `rating_scores` row instead.
+Sections, in this order:
 
-- **Table** `coach_profiles`, partitioned by range on `fought_at` like `fight_metrics` and
-  `rating_scores`. It is added to the partition job's table list (`api/internal/db/partitions_job.go`).
-- **Columns:** `report_id text, fight_index int, player_key text, class text, spec text, role
-  text, encounter_id int, difficulty int, size int, kill boolean, duration_ms int, phase text,
-  metric numeric, fought_at timestamptz, model_version text, profile jsonb`, primary key
-  `(report_id, fight_index, player_key, fought_at)`.
-- **`metric`** is what "top" means: DPS for damage dealers. For healers and tanks it is the
-  rating's overall score at the current rating model. HPS rewards overheal, and damage taken
-  rewards nothing.
-- **`phase`** is the content phase holding `fought_at`, from `data/curated/phases.json`.
-- **`profile`**: alive ms and counted ms; active %; casts per minute per ability family; uptime %
-  per owned aura (sole applier only); capped % per resource; mana-under-5% ms and first time;
-  overheal % per heal rank; defensive uptime %; adherence; consumables present at the pull.
-  Roughly 1 KB per row.
-- **Written** by the rater, in the same transaction as the rating rows, from the summary already
-  in memory. It is written for kills only, on reports that are ranked (`reports.Ranked`: not
-  private) and evidence (`presence.EvidenceReport`: not flagged). Profiles are removed on the
-  same path that withdraws ranking rows (`Ranker.RemoveReport`: moderation, a report turned
-  private, deletion).
-- **Indexes:** `(encounter_id, difficulty, size, spec, phase, kill, metric desc)` and
-  `(player_key, fought_at desc)`.
-- **Backfill.** The rating model bump in §8 makes the existing backfill re-rate every fight,
-  and that writes profiles for history too.
+1. **Who they are.** One paragraph: what playing this spec at the top looks like on Forever.
+2. **What they know, for Forever's rules.** The rotation's priorities in words, from the
+   site's APL notes and guide. Cooldown windows and how they line up. The mistakes they see
+   most, keyed to finding codes. The consumables and world buffs that matter for the spec. How
+   a 10-player night differs from a 40 (fewer buffs, different expectations). Forever-specific
+   rules (Survival hunters fight in melee; shamans never dual wield; armour at 40).
+3. **Drills.** A short catalogue keyed by finding code (`drill.core_casts`, `drill.death`, …).
+   Each is one or two sentences of something to practise. Drill ids are what the review cites.
+4. **Voice.** Direct, specific, a mentor who has done it. Short sentences. Never a lecture,
+   never "heal more", never shaming, never a grade of the person, no exclamation marks. Praise
+   only what the pack proves.
 
-### 6.3 The comparison itself
+### 8.2 Rules for persona content
 
-- **The pool** for a fight: kills of the same `(encounter_id, difficulty, size, spec, phase)`
-  at the current profile `model_version`, with **one kill per player**: each `player_key`'s
-  best by `metric`. The reviewed player's own key is left out, so nobody is compared with
-  themselves.
-- **The 20-kill minimum** counts those distinct players. Ten clears by one guild's warrior are
-  one kill. This is the existing `MinSample = 20` rule, applied to people.
-- **The comparison set** is the top 25 of the pool by `metric` (all of them between 20 and 25).
-  The coach compares with the **median** of that set, never the best single log.
-- **Names never appear.** The basis says `Top 25 Fury warriors on Onyxia (40)`. No pool member
-  is named or linked in v1.
-- Pool medians per bracket are cached in memory for an hour (§12).
+- Persona knowledge comes from the site's own guides, APLs (`data/curated/apl/<spec>.json`
+  and their per-line notes) and the engine's data. No outside claims.
+- No numbers that change nightly (no scale factors, DPS or counts). Those are the owner's rule
+  for prose, and the validator would reject them anyway (§10).
+- Drills may contain small fixed numbers. Any number in the chosen drill's text is allowed in
+  the output.
+- Each file is reviewed like a guide: `wow-player` reads it as a raider of that spec, and the
+  facts are checked against the APL and guide. The review is recorded in `reviewed`.
 
-### 6.4 When the basis is thin
+### 8.3 Full and starter (decided)
 
-If a comparison finding has no basis at its level (no pool and no validated sim for an uptime;
-no pool for healer overheal), it is not shown. "Couldn't check" says so, with the real count:
-`not enough logs yet — {n} {Spec} kills of {Boss} ({size}) on the site, the coach needs 20.`
-The coach never drops to a weaker standard than the finding's rule allows.
+- **Full at launch (3):** Fury warrior, Holy priest, Protection warrior. These are written by
+  the implementer from the guides, APLs and engine data, then reviewed.
+- **Starter at launch (24):** every other spec. A generator (`tools/coach/persona_starter`)
+  writes a starter from that spec's guide and APL only. It covers the rotation priorities,
+  the consumables list, the default drills per finding code and the shared voice section. A
+  person reads each starter before it ships. A later lane deepens them to full.
+- The player sees which one they have (§5.1): `early version` on starters. No starter claims
+  more than its sources.
+- `persona_version` is the file's content hash. Editing a persona regenerates its reviews on
+  next view (§14).
 
-## 7. The sim reference cache
+## 9. The review
 
-- **What it is.** The spec's written rotation (`data/curated/apl/<spec>.json`) run by the engine
-  at the player's level band. It uses the band's preset gear and the same preset and race the
-  BiS ladder runs for that band. Fight length is rounded to a 30 s bucket. The result's
-  `Summary` gives casts per minute and uptime per aura, averaged per iteration (feasibility §2).
-- **When it is used.** DPS specs whose sim is `validated`, as step 2 of the basis order.
-- **Cache table** `coach_sim_refs`: key `(engine_version, build, spec, band, duration_bucket)`,
-  value the reference profile (the same shape as `coach_profiles.profile`) and `computed_at`.
-  Each key is computed once per engine version. About 3 s of native compute at `ScoreIterations`.
-- **A miss** queues one reference job on the existing jobs runner. The review answers `status:
-  "preparing"`, and the panel says `Reading the fight against the written rotation…` and polls.
-  The review is not cached until the reference is in. A nightly warm for level 60 × the DPS specs
-  × the duration buckets of curated encounters is allowed but optional (§15).
-- **Honesty.** The basis line says "the written rotation", never "the best possible". APLs are
-  curated and some talents are not modelled (feasibility §7).
+### 9.1 The model (decided: the cheapest capable open model)
 
-## 8. Fix first: consumables at the pull (decided)
+The model is chosen **by a rule, not by name**: the cheapest model per output token, among the
+current S-tier of the owner's benchmark board, that has a hosted OpenAI-compatible
+chat-completions endpoint. Candidates seen on 2026-10-27: Kimi K3, GLM-5.3, DeepSeek-V4.1-Flash,
+MiMo-V2.6-Pro, GLM-5.2, DeepSeek-V4-Pro, Kimi K2.6. The builder picks, records the choice and
+its prices in the plan's build notes, and runs the evaluation in §21 before launch. The code
+names no model. `LLM_BASE_URL` and `LLM_MODEL` select it, so a switch is a config change.
 
-`CombatantRow.Consumables` is never filled in production, because neither the API nor the
-companion passes the catalogue into the parser (feasibility §1). So three readers are wrong
-today: `rating.consumablesMissed` (`api/internal/rating/last_raid.go`), `fightDiscipline` /
-`carries` (`api/internal/rating/score_v2.go`) and the engine's `scorePreparation`
-(`logs/engine/rating/preparation.go`). This lane fixes that first, before any coach code:
+### 9.2 The prompt
 
-1. One function in the engine, e.g. `consumables.AtPull(fight, guid, catalogue)`, reads the
-   player's seeded aura tracks (segments on that player starting at 0 ms) against the catalogue
-   and returns what was up at the pull. It needs no companion release.
-2. The three readers use it instead of `CombatantRow.Consumables`. So does the coach's F6.
-   There is one reader of "what did they bring", and it is shared.
-3. Raid buffs follow the same path. `MissingBuffs` is not used anywhere new, because it ignores
-   who was in the raid (feasibility §5).
-4. Bump `ratingengine.DefaultModelVersion`. The existing backfill (`staleFights`) re-rates every
-   stored fight. The preparation and discipline percentile digests are rebuilt from the
-   re-rated rows, so old zeros don't stay in the brackets.
-5. Known-good fixtures pin it: a real Forever pull with a flask and food reads as prepared, and
-   one without reads as missing (tenet 8).
+- **System:** the coach rules (shared by every spec: the output schema, the evidence-only rule,
+  the tone rules, the length caps, and "fixFirst is the pack's rank-1 finding"), then the spec's
+  persona file.
+- **User:** the evidence pack, as JSON.
+- **Output:** JSON matching the schema below. The client asks for JSON mode
+  (`response_format`), and uses the JSON-schema form when the provider supports it. The server
+  validates the shape either way.
+- Temperature low (configurable, default 0.3). One completion per call.
 
-The addon's last-raid "missing consumables" phrase and the rating card's Preparation and
-Discipline become right with this fix, before the coach ships.
+### 9.3 The output shape (decided)
 
-## 9. Computing a review
-
-### 9.1 The pure core
-
-`api/internal/coach`:
-- `Review(fight summary.Summary, row summary.RosterRow, ref References, tables Tables) Review`
-  is a pure function. `Tables` holds the coach file, APL and rotation, `spellconst`,
-  `spellranks`, `trainables`, the consumables catalogue and the encounter's curated mechanics.
-  `References` holds the pool medians and the sim reference, each nil when absent.
-- `Profile(fight, row, tables) Profile`: the same measurements, written to `coach_profiles`
-  by the rater. Both sides call the same measuring code, so the player and the pool are measured
-  identically.
-- `Finding { Code, Severity, Params, Basis {Kind, N, Label}, Evidence []Anchor }`. The stored
-  review keeps codes and params. Copy is rendered at read time from the copy table, so a wording
-  change doesn't invalidate the cache.
-
-### 9.2 On request
-
-1. Check access (§13). Then look up the cache row `(report_id, fight_index, player_key,
-   model_version)` in `coach_reviews`.
-2. On a miss: read the fight summary from the bucket (`sims.fightSummary`), read the pool
-   medians (cached) and the sim reference (cached, or queue it and answer `preparing`), run
-   `Review`, and store the row.
-3. Render for the viewer: the full review for Premium and officers, the count and top title
-   for free owners.
-
-### 9.3 `model_version`
-
-`coach_reviews` and `coach_profiles` carry `model_version` = `coach-v1.` + a short hash of the
-rules version constant, the curated coach files and the consumables catalogue. It is computed
-at startup. Changing a rule, a threshold or any curated list moves the version. Cached reviews
-are then recomputed on the next view, and profiles are rewritten by a backfill that re-runs
-`Profile` over rated fights. Copy-only changes don't move it. One row per key is kept: a new
-version replaces the old.
-
-Reviews are immutable within a version. A review computed on launch day against the sim
-reference keeps that basis until the version moves. The "Reviewed {date}" line makes that
-honest.
-
-## 10. API
-
-### 10.1 Routes
-
-- `GET /v1/reports/{id}/fights/{n}/coach?player={player_key}`: one player's review of one fight.
-- `GET /v1/reports/{id}/coach/night?player={player_key}`: the night line for one character
-  across the report's reviewable fights (for Discord and the account line).
-- `GET /v1/me/coach/recent`: the signed-in account's last-raid line (§4.5), plus, for Premium,
-  the newest 20 stored reviews of its characters (coach history).
-- `GET /v1/characters/{region}/{ruleset}/{name}/coach/history`: Premium, owner only. One
-  character's stored reviews, newest first, 20 per page with a cursor.
-
-### 10.2 Shapes
-
-Review (full):
 ```json
 {
-  "report_id": "…", "fight_index": 3, "player_key": "eu/forever/Kaedra",
-  "spec": "warrior-fury", "role": "dps", "size": 40, "kill": true,
-  "status": "ready",
-  "model_version": "coach-v1.3f9a2c", "reviewed_at": "2026-10-28T09:12:00Z",
-  "access": "full",
-  "findings": [
-    {
-      "code": "core_casts", "severity": "major",
-      "title": "Bloodthirst: 7 casts lost",
-      "detail": "31 of a possible 38 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.",
-      "basis": { "kind": "spell_data", "label": "Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
-                 "comparison": { "kind": "top_logs", "n": 25, "label": "Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0." } },
-      "evidence": [ { "kind": "cast", "spell_id": 23881 }, { "kind": "time", "at_ms": 72000 }, { "kind": "time", "at_ms": 160000 } ],
-      "params": { "spell_id": 23881, "actual": 31, "possible": 38 }
-    }
-  ],
-  "could_not_check": [ { "code": "talents_race", "line": "Talents and race: Forever logs don't record them." } ]
+  "opening": "≤ 2 sentences, ≤ 280 characters",
+  "fixFirst": { "finding": "f1", "title": "≤ 60 chars", "why": "≤ 320 chars", "drill": "drill.core_casts",
+                "drillText": "≤ 240 chars", "anchors": ["a1","a2"], "links": ["l1"] },
+  "thenFix": [ { "finding": "f6", "title": "≤ 60 chars", "why": "≤ 200 chars", "anchors": ["a4"], "links": [] } ],
+  "doingWell": [ { "strength": "s1", "text": "≤ 160 chars", "anchors": [] } ],
+  "couldntCheck": ["verbatim pack lines"]
 }
 ```
-`basis.kind` is one of `top_logs`, `sim`, `spell_data`, `log`. `status` is `ready`,
-`preparing` or `not_reviewable` (with a `reason` line). The values in the example are invented.
 
-Free owner (`access: "teaser"`): `{ status, access, finding_count, top: { title } }`. Nothing
-else is sent. The gate is on the server, never by hiding fields in the client.
+Rules the validator enforces:
+- `fixFirst.finding` is the pack's rank-1 finding. The model explains the priority. It doesn't
+  choose it. That keeps the free teaser, the Discord line and the account line consistent with
+  the full review at no model cost.
+- `thenFix` holds at most three items, distinct pack findings other than rank 1, in any order
+  the model argues for.
+- `doingWell` holds one or two items when the pack has strengths, none when it has none. Each
+  cites a strength id.
+- `couldntCheck` equals the pack's list, word for word, in order.
+- `title` for a finding item equals the pack title, so a player sees the same words on every
+  surface. The `why` is the model's own.
+- A sentence that relates two findings must cite a link id that joins them.
+- `drill` is an id from the persona's drill list. `drillText` may reword the drill but adds no
+  facts.
+- Tone: no exclamation marks; none of a short banned-word list (`fail`, `bad`, `terrible`,
+  `noob`, `heal more`, `pump`, `lazy`, …, in `api/internal/coach/tone.go`); no second player
+  mentioned; no claim about a real person.
 
-### 10.3 Gating and errors
+What the model adds, and the pack alone can't: why the first thing comes first, how the
+findings connect (through the pack's links), the plain-language reason a fix matters, the
+encouragement a mentor gives, and the one drill to practise.
 
-- Access is checked in this order: report visibility, then the row (§13), then the feature.
-  A caller who may not see the report, or may not coach that row, gets the same 404 the rating
-  route gives (`not_found`), so no route leaks a report's existence. A flagged report answers
-  `flagged`, as the rating route does.
-- Free owner: `access: "teaser"`. Premium owner or officer: `full`.
-- `night` and `history` without `log_coach` answer the teaser form, or 403 `no_plan` for history.
+## 10. Validation and fallback (decided)
 
-### 10.4 Entitlement
+1. **Shape:** JSON parses; required fields; caps; ids exist in the pack; the rank-1 rule;
+   `couldntCheck` verbatim; titles equal to the pack's.
+2. **Numbers:** every digit sequence in the prose (integers, decimals, `%`, thousands
+   separators, `m:ss`, `m:ss–m:ss`) is extracted, normalised and looked up in the pack's
+   `allowed` set, plus the chosen drill's text. Number words above "three" are rejected, so a
+   number can't slip past as a word.
+3. **Names:** every spell, item and boss name from the build's name dictionaries found in the
+   prose must be in the pack's `allowed` names. The class and spec names of the reviewed player
+   are allowed.
+4. **Times:** every time must be in the pack. A range must match a pack range.
+5. **Links and tone** as in §9.3.
+
+On failure, the call is retried **once**, with the failures listed back to the model (`These
+were not in the evidence pack: "12 casts", "Whirlwind". Use only the pack.`). On a second
+failure, the player gets the rule-only rendering, which is stored with `source: "rules"` and
+the reason. A failure is logged with the pack and both outputs for review, and never shown.
+
+## 11. Where the comparison comes from (decided basis order)
+
+For each comparison, the first that exists wins:
+
+1. **Top logs on the site**: same spec, encounter, difficulty and size, with at least 20 kills.
+   `Top {n} {Spec} {class} on {Boss} ({size}): …`.
+2. **The engine's written rotation** (the sim reference, §12). DPS specs whose sim is
+   `validated` only (`sims.Store.Validated`). `The written {Spec} rotation, simulated at level
+   {band}: …`.
+3. **Spell data**: cooldowns, costs and ranks. `Measured against {Spell}'s {n}-second cooldown…`.
+
+Uncompared facts carry `From your log`. If a comparison finding has no basis at its level, it
+isn't a finding. "Couldn't check" says `not enough logs yet — {n} {Spec} kills of {Boss}
+({size}) on the site, the coach needs 20.`
+
+### 11.1 `coach_profiles`, the pool
+
+- Partitioned by range on `fought_at` like `fight_metrics` and `rating_scores`. Added to the
+  partition job's tables (`api/internal/db/partitions_job.go`).
+- Columns: `report_id, fight_index, player_key, class, spec, role, encounter_id, difficulty,
+  size, kill, duration_ms, phase, metric, fought_at, model_version, profile jsonb`. Primary
+  key `(report_id, fight_index, player_key, fought_at)`.
+- `metric` is what "top" means: DPS for damage dealers, and the rating's overall score for
+  healers and tanks.
+- `phase` is the content phase of `fought_at` (`data/curated/phases.json`).
+- `profile` holds the same measurements the pack uses: alive and counted ms, active %, casts per
+  minute per family, uptime per owned aura (sole applier only), capped %, mana-under-5% ms and
+  first time, overheal per heal rank, defensive uptime, adherence, and consumables at the pull.
+  About 1 KB.
+- Written by the rater in the rating transaction, for kills on reports that are ranked
+  (`reports.Ranked`) and evidence (`presence.EvidenceReport`). Removed on `Ranker.RemoveReport`.
+- Indexes: `(encounter_id, difficulty, size, spec, phase, kill, metric desc)` and
+  `(player_key, fought_at desc)`.
+- **The comparison:** one best kill per player in the same (encounter, difficulty, size, spec,
+  phase), with the reviewed player left out. At least 20 distinct players. Compared with the
+  **median** of the top 25 by `metric`. Nobody in the pool is ever named or linked.
+  Medians are cached in memory for 1 hour.
+
+## 12. The sim reference cache
+
+The spec's APL run by the engine at the player's level band, with the band's preset gear and
+the same preset and race the BiS ladder uses, at the fight length rounded to 30 s. The result's
+`Summary` gives casts per minute and uptimes. It is used for validated DPS specs only.
+`coach_sim_refs` is keyed `(engine_version, build, spec, band, duration_bucket)`. A miss queues
+a job (about 3 s of compute), and the pack answers `preparing` until the reference is in. A
+nightly warm is optional. The basis line says "the written rotation", never "the best possible".
+
+## 13. Fix first: consumables at the pull (decided)
+
+`CombatantRow.Consumables` is never filled in production (feasibility §1). So
+`rating.consumablesMissed`, `fightDiscipline` / `carries` and the engine's `scorePreparation`
+are wrong today. This lane fixes it before any coach code:
+
+1. One engine function, e.g. `consumables.AtPull(fight, guid, catalogue)`, reads the player's
+   seeded aura tracks against the catalogue. It needs no companion release.
+2. The three readers and the coach's F6 all use it.
+3. Raid buffs use the same path. `MissingBuffs` is not used anywhere new.
+4. Bump `ratingengine.DefaultModelVersion`. The existing backfill re-rates stored fights, and
+   the preparation and discipline digests are rebuilt.
+5. Known-good fixtures pin a real Forever pull with and without a flask.
+
+## 14. Computing, caching and versions
+
+- **Pack:** the cache row `coach_packs (report_id, fight_index, player_key, pack_version)`.
+  `pack_version` = `pack-v1.` + a hash of the rules version constant, the `<spec>.json` rule
+  files and the catalogue.
+- **Review:** the row `coach_reviews (report_id, fight_index, player_key, pack_version,
+  model_version, persona_version)`, holding the output JSON, `source` (`model` or `rules`),
+  token counts, cost and `generated_at`. `model_version` = `LLM_MODEL` + a hash of the coach
+  rules prompt. **One generation per key (decided)**. It is regenerated only when a version
+  moves, on the next view by a viewer entitled to the full review.
+- **A review stored as `rules` because a cap was hit or the switch was off** is generated
+  properly on the next view once the cap or switch allows. One stored as `rules` after two
+  failed validations is not retried until a version moves.
+- Rows are deleted with their report (a foreign key with cascade).
+- **Flow:** check access (§19), then load or build the pack (bucket read of the summary through
+  `sims.fightSummary`, cached medians, sim reference). Free owners get the teaser from the pack
+  here. Premium or officer: load the review. On a miss, return the rule-only rendering with
+  `status: "writing"`, queue the generation on the jobs runner, and the panel polls and swaps
+  the review in place.
+
+## 15. The model client, caps and cost
+
+### 15.1 `api/internal/llm`
+
+A small client for OpenAI-compatible chat completions:
+- Config: `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` from Secret Manager (never logged, and
+  required at startup when the coach is enabled, failing fast with a clear error), plus
+  `LLM_PRICE_IN_PER_MTOK` and `LLM_PRICE_OUT_PER_MTOK` for spend accounting.
+- `Complete(ctx, Request) (Response, error)`: messages, JSON response format, temperature and
+  max tokens (default 1,200). It returns the content and the usage (prompt and completion tokens).
+- Timeouts: 60 s per call, through the request context.
+- Retries: up to 2 on 429, 5xx and network errors, with exponential backoff and jitter,
+  honouring `Retry-After`. Validation retries (§10) are separate and counted once.
+- Spend accounting: each call's usage × configured prices, added to `llm_spend (day, usd,
+  calls)` in one upsert.
+- No provider SDK; plain `net/http` and JSON. The interface is small enough to fake in tests.
+
+### 15.2 Caps (decided, values configurable)
+
+- `COACH_DAILY_SPEND_CAP_USD` (default 25). Once `llm_spend` for the UTC day reaches it, no new
+  generations start that day.
+- `COACH_DAILY_REVIEWS_PER_ACCOUNT` (default 30). This counts generations started for an
+  account (as owner or officer) per UTC day. Cached reviews never count.
+- `COACH_LLM_ENABLED` (default true): the kill switch (§20).
+
+### 15.3 Cost (parametric)
+
+Prices are left as `{in}` and `{out}` in US dollars per million tokens, for the chosen model
+(§9.1). The builder fills them in the build notes.
+
+Token estimate per generated review (assumption, to be measured in the evaluation):
+- Input: about **7,000 tokens**: coach rules about 1,500, persona about 3,000, evidence pack
+  about 2,500.
+- Output: about **800 tokens**.
+- Validation retries: assume 10% of reviews need one, so ×1.1.
+
+Cost per review = 1.1 × (7,000 × `{in}` + 800 × `{out}`) / 1,000,000
+= **0.0077 × `{in}` + 0.00088 × `{out}`** dollars.
+
+| Generated reviews per month | Input tokens | Output tokens | Monthly cost |
+|---|---|---|---|
+| 1 per review | 7,700 | 880 | 0.0077·`{in}` + 0.00088·`{out}` |
+| 1,000 | 7.7 M | 0.88 M | 7.7·`{in}` + 0.88·`{out}` |
+| 10,000 | 77 M | 8.8 M | 77·`{in}` + 8.8·`{out}` |
+| 100,000 | 770 M | 88 M | 770·`{in}` + 88·`{out}` |
+| One heavy Premium raider (≈ 80 fights opened a month) | 0.62 M | 0.07 M | 0.616·`{in}` + 0.0704·`{out}` |
+
+If the provider discounts cached input, the persona and rules (about 4,500 of the 7,000 input
+tokens) are a stable prefix. The real input cost falls accordingly, and the table above is the
+upper bound.
+
+### 15.4 When a cap is hit
+
+The player gets the rule-only rendering with one quiet line above it: `Your coach is busy right
+now. This is the review from your log alone; the coach's version will be here when you next
+open it.` Nothing is queued while the cap holds. The next view after the cap resets generates.
+
+## 16. Personas and voice per surface
+
+The persona speaks only in the Coach panel and the history. The report row teaser, the Discord
+line and the account line use the pack's own titles, in the site's voice, so no surface outside
+the panel speaks as the coach.
+
+## 17. API
+
+### 17.1 Routes
+
+- `GET /v1/reports/{id}/fights/{n}/coach?player={player_key}`: one player's review of one fight.
+- `GET /v1/reports/{id}/coach/night?player={player_key}`: the night line (pack only).
+- `GET /v1/me/coach/recent`: the account's last-raid line, plus the newest 20 stored reviews
+  for Premium.
+- `GET /v1/characters/{region}/{ruleset}/{name}/coach/history`: Premium, owner only. Stored
+  reviews, newest first, 20 per page with a cursor.
+
+### 17.2 Shapes
+
+Full: `{ report_id, fight_index, player_key, spec, role, size, kill, status
+("ready"|"writing"|"preparing"|"not_reviewable"), source ("model"|"rules"), busy (bool),
+persona { label, status ("full"|"starter") }, reviewed_at, review { opening, fixFirst,
+thenFix[], doingWell[], couldntCheck[] }, anchors { "a1": { kind, spell_id?, at_ms?, death? } },
+basis_labels[] }`. Teaser: `{ status, access: "teaser", finding_count, fix_first: { title } }`.
+Nothing else is sent to a free viewer. The gate is on the server.
+
+### 17.3 Gating and errors
+
+Report visibility, then the row (§19), then the feature. A caller who may not see the report
+or coach the row gets the rating route's 404 (`not_found`). A flagged report answers `flagged`.
+History without `log_coach` answers 403 `no_plan`. Responses are `Cache-Control: private,
+no-store`.
+
+### 17.4 Entitlement
 
 Add `FeatureLogCoach Feature = "log_coach"` in `api/internal/entitlements/entitlements.go`.
-`Standard()` already counts it as a personal Premium feature. It must also be added to
-`auth.EntitlementsView` (`log_coach` JSON), to the web's entitlement types and fixtures
-(`web/src/lib/account/api.ts`, `web/src/test-support/billing-fixtures.ts`), and to the
-launch-resolution test's feature list.
+`Standard()` already treats it as personal Premium. Add it to `auth.EntitlementsView`
+(`log_coach`), the web's types and fixtures (`web/src/lib/account/api.ts`,
+`web/src/test-support/billing-fixtures.ts`) and the launch-resolution test's feature list.
 
-### 10.5 Caching
+## 18. Discord and the account line, as built
 
-- The server cache is `coach_reviews` (§9). Responses are `Cache-Control: private, no-store`,
-  because every answer depends on who asks.
-- Pool medians: in memory per `(encounter, difficulty, size, spec, phase, model_version)`, for 1 hour.
-- Sim references: `coach_sim_refs`, per engine version (§7).
+- `discordbot/cmd_report.go` calls the coach service in-process for the night line. `share.go`
+  renders without it.
+- `notify.ReportReady` gains `CoachReady bool`. `guilds.sendReport` sets it when any owned
+  character in the log belongs to an account holding `log_coach`. The embed appends the §5.5
+  sentence.
+- Copy lives in the existing copy files (`discordbot/copy_*.go`, `notify/report_embed.go`).
 
-## 11. The Discord line and the account line, as built
+Performance: a cached pack or review is one indexed read. A pack miss is one bucket read plus
+pure code, a few hundred milliseconds. Generation runs on the jobs runner, off the request.
+Its time depends on the provider, and the panel shows the rule-only rendering meanwhile.
+Profiles add one ~1 KB insert per rated kill row.
 
-- Both use the night-line logic behind `GET /v1/reports/{id}/coach/night` in-process: `discordbot` calls the coach
-  service, not HTTP. Both render the night rule of §4.4.
-- `discordbot/cmd_report.go`: after `reportMessage`, if the viewer holds `log_coach` and owns
-  characters in `ans.Raid.Match.ReportID`, append the line (or the fallback link) to the head
-  embed. `share.go` renders without it.
-- `notify.ReportReady` gains a `CoachReady bool`. `guilds.sendReport` sets it when any owned
-  character in the log belongs to an account holding `log_coach`. The embed appends the one
-  sentence of §4.4 to the description. No names, no counts.
-- Copy for both lives in the existing copy files (`discordbot/copy_*.go`,
-  `notify/report_embed.go`'s `reportCopy`), not in the coach package. The coach supplies the
-  finding stem.
+## 19. Privacy
 
-## 12. Performance and cost
-
-- A cached review is one indexed Postgres read.
-- A miss is one bucket read of the fight summary (the same read `sims.Score` does), plus one
-  cached pool-median lookup and a pure review in memory: about a few hundred milliseconds,
-  dominated by the bucket read.
-- A night line on a cold cache is up to one miss per boss fight. Discord never waits for it
-  (§4.4), and the account page loads it on its own.
-- Sim references cost about 3 s of compute once per (engine version, build, spec, band,
-  duration bucket). That is a bounded set, and it is nothing at Cloud Run prices.
-- Writing `coach_profiles` adds one ~1 KB insert per rated kill row, inside the rater's
-  existing transaction.
-- Nothing is computed at ingest except the profile. A review costs only when someone asks for it.
-
-## 13. Privacy
-
-- **Who may ask.** Only a viewer who may see the report under the existing visibility rule
-  (public and unlisted: anyone; private: owner and moderators; guild: also verified members).
-  The coach needs that rule a third time. Instead of copying it again (rating's `visible`
-  already copies `reports.mayView` by hand), export one `reports.MayView(actor, report,
-  accounts)` and make rating and the coach both call it.
-- **Whose row.** Your own characters (`OwnsCharacter`). Another player's row only as an officer
-  of the report's guild holding `officer_views` for that guild (`Store.CanForGuild`), and only
-  for a verified member of that guild. Moderators as officers. Everyone else sees nothing about
-  the coach on someone else's row: no teaser, no count.
-- **Anonymised accounts.** An anonymised player's row is already left out of public rating
-  views. The coach is shown to that player on their own row and to their guild's officers only.
-  `coach_profiles` stores no names, and comparisons are medians of 20 or more players that never
-  name or link anyone.
-- **Channels.** Nothing personal is ever posted to a channel (§4.4).
+- **Who may ask:** only viewers who may see the report. Export one `reports.MayView(actor,
+  report, accounts)` and use it from rating and the coach, instead of rating's hand copy.
+- **Whose row:** your own characters. Another player's only as an officer of the report's guild
+  with `officer_views` for that guild (`Store.CanForGuild`), for a verified member of that
+  guild. Moderators as officers. Nobody else sees anything about the coach on someone else's row.
+- **Anonymised accounts:** shown only to the player and their guild's officers. Profiles store
+  no names. Comparisons are medians of 20 or more players.
+- **What leaves our systems:** the evidence pack goes to the model provider. It holds spec,
+  boss, size and the numbers of one fight, and **no character name, account, guild, realm or
+  Battle.net data**. The provider must not train on API inputs. Its retention terms are
+  recorded with the model choice (see Owner decisions).
+- **Channels:** nothing personal is ever posted to one.
 - **Private reports** are reviewable by their owner, and never enter the pool.
-- **Retention.** `coach_reviews` rows are deleted with their report (a foreign key with cascade).
-  Profiles are removed on the withdrawal path (§6.2).
 
-## 14. Accuracy rules
+## 20. Accuracy rules
 
-1. Every number on a finding comes from the log, the client's tables or the pool, through
-   `Review`. No number is typed into the copy table.
-2. Every finding carries at least one evidence anchor that shows its proof on the report page.
-   A finding without one is a bug, and a test refuses it.
-3. Every review carries the "Couldn't check" list. Talents and race are on it in v1.
-4. A finding fires only when its rule can be proven from the data. Where part of the proof is
-   missing (cost unknown, shared debuff, incomplete catalogue category), the finding is dropped
-   or narrowed, and the gap is said out loud.
+1. Every number, spell, time and comparison in a review is in the evidence pack, and the
+   validator proves it before the review is shown (§10).
+2. Every pack finding carries at least one evidence anchor, and a test refuses one without.
+3. Every review carries the "Couldn't check" list verbatim. Talents and race are on it in v1.
+4. A finding fires only when the data proves it. Missing proof drops or narrows it, and says so.
 5. Thin basis means no finding: `not enough logs yet`, with the real count.
-6. Curated coach files and catalogue entries carry `verified` stamps against the client's own
-   tables. Known-good fixtures pin the obvious answers: a Fury warrior's Bloodthirst count on a
-   real Forever log, a flask that was there, a death to an avoidable ability. A change that moves
-   a fixture fails the build until a person explains why the new answer is right (tenet 8).
-7. Before the plans page renders the held line, each clause is checked against the shipped coach
-   (§15).
+6. Rule data, catalogue entries and personas are stamped and reviewed. Known-good fixtures pin
+   the obvious answers (a Fury warrior's Bloodthirst count on a real Forever log, a flask that
+   was there, a death to an avoidable ability), and a change that moves one fails the build
+   until a person explains it (tenet 8).
+7. **Fallback:** a review that fails validation twice is replaced by the rule-only rendering.
+   The player never sees an unvalidated sentence.
+8. **Nightly sample:** a job picks 20 reviews generated that day at random (spread across specs
+   where possible). It writes each one's evidence pack, output, source and validation result to
+   `coach_review_samples` and one structured log entry, for the owner to read. It carries no
+   personal data beyond the character name. A moderator route lists them
+   (`GET /v1/admin/coach/samples?day=`).
+9. **Kill switch:** `COACH_LLM_ENABLED=false` forces the rule-only rendering everywhere, at once,
+   with no deploy beyond the config change. Stored model reviews stay in the table but are not
+   served while it is off.
+10. Before the plans page renders the held line, each clause is checked against the shipped
+    coach (§21).
 
-## 15. Left to the builder
+## 21. Left to the builder
 
-- **Order of work:** §8's consumables fix and the rating bump; then coach files for the 27 specs
-  (DPS first) and the catalogue's `complete` flags and `raid_buffs`; then `Profile` and
-  `coach_profiles` in the rater; then `Review` with fixtures; then the API; then the
-  ux-designer specs and the three surfaces; then the plans-page line and the changelog.
-- **Migration number:** the next free number after `0054` when the lane lands
-  (`migration_order_test.go` guards it). Only the deployed API migrates.
-- **Which client build's tables to use for a fight:** the build the log was recorded on when the
-  report records it, else the build active at `fought_at`.
-- **Evidence anchors:** extend `momentHref` with `cast`, `time` and `resource` kinds, using the
-  report page's existing tab and anchor conventions (`cast-key.ts`, the aura and death anchors).
-- **The exact copy strings** within the patterns of §4.1, in one copy table.
-- **The nightly sim-reference warm:** optional.
-- **The held Premium line** (`premium.featuresHeld.coach`). Check each clause: "what to fix
-  first" (§4), "the casts you missed" (F1), "the buffs you let drop" (F2), "the consumables you
-  skipped" (F6, after §8), "learned from the engine" (§7) and "the top logs on the site" (§6).
-  Cut any clause the shipped coach doesn't deliver, and land the line with the changelog entry.
-  The coach covers healers and tanks, so the Premium scope note must say so, per B5 (see Owner
-  decisions).
+- **Choose the model** by the rule in §9.1. Record the model id, endpoint, provider, its
+  training and retention terms, and `{in}`/`{out}` prices in the plan's build notes. Set
+  `LLM_BASE_URL`, `LLM_MODEL`, the prices, and the `LLM_API_KEY` secret.
+- **Evaluation before launch:** run the same 20 sample fights (mixed specs, including the three
+  full personas, a 10-player and a 20-player night, a wipe) through the chosen model and one
+  S-tier mate. Record both outputs, validation pass rates and measured tokens, and update §15.3's
+  estimate. The owner reads both sets. Switch to the mate only if the cheaper model's quality
+  is clearly worse.
+- **Order of work:** §13's consumables fix and the rating bump. Then the `<spec>.json` rule files
+  (DPS first), the catalogue's `complete` flags and `raid_buffs`. Then `Profile` and
+  `coach_profiles` in the rater. Then `Pack` with fixtures and the rule-only rendering. Then the
+  `llm` client, validator, caps and kill switch. Then the three full personas and the starter
+  generator plus a person's read of each starter. Then the API. Then the ux-designer specs and
+  the surfaces. Then the evaluation, then the plans-page line and changelog.
+- **Migration number:** the next free number after `0054` when it lands. Only the deployed API
+  migrates.
+- **Client build tables per fight:** the build the log was recorded on if the report records
+  it, else the build active at `fought_at`.
+- **Anchors:** extend `momentHref` with `cast`, `time` and `resource` kinds, using the report
+  page's existing tab and anchor conventions.
+- **The banned-word list and the number normaliser** (`tone.go`, `validate.go`), with tests.
+- **The held Premium line:** check each clause, "what to fix first", "the casts you missed"
+  (F1), "the buffs you let drop" (F2), "the consumables you skipped" (F6), "learned from the
+  engine" (§12), "the top logs on the site" (§11). Cut any clause the shipped coach doesn't
+  deliver. The scope note changes per B5 (Owner decisions).
 
-## 16. v2
+## 22. v2
 
-- **Talents** from the synced addon export: talent findings and unspent points.
-- **Race**, with it.
-- **Personal sim:** the pull simulated with the player's own gear from the log and race and
-  talents from the export. The gap is split into gear, buffs and execution. DPS first
-  (feasibility §2, `sims.Score`).
-- **Movement and positioning** from the advanced-logging fields.
-- **More curated mechanics:** avoidable damage and interrupt duty for every raid boss.
-- **Trend over weeks:** the same finding across raid nights ("Bloodthirst casts lost: better
-  three weeks running").
-- **Watch a top log:** a link to a public top log in the pool, once naming and anonymity are settled.
-- **Wipe review** for raid leaders (what started the chain), on the guild plan.
+- Talents from the synced addon export, and unspent points.
+- Race.
+- Personal sim: the pull simulated with the player's own gear, race and talents, with the gap
+  split into gear, buffs and execution.
+- Movement and positioning from advanced logging.
+- More curated mechanics: avoidable damage and interrupt duty for every raid boss.
+- Trend over weeks: the same finding across raid nights.
+- **Learn from a player's own history across weeks:** the coach reads its own past packs for
+  the character and says what improved.
+- **Voice and tone per guild:** a guild chooses how blunt its raiders' coaches are.
+- The 24 starter personas deepened to full.
+- Watch a top log: a link to a public pool log, once naming and anonymity are settled.
+- Asking the coach a follow-up question.
+- Wipe review for raid leaders, on the guild plan.
 
 ---
 
-## 17. Builder check
+## 23. Builder check
 
-I re-read this as a builder who has never seen the codebase. These are the questions I would
-have asked, with the answers the codebase or the brief gives.
+Re-read as a builder new to the codebase, with the answers the codebase or the brief gives.
 
-1. *Where do I get the fight data?* From the companion's posted summary JSON in the bucket, read
-   with `sims.fightSummary` (`api/internal/sims/summaries.go`). The rater gets the same summary
-   at `api/internal/reports/ingest.go` (`rate`).
-2. *Is `log_coach` automatically Premium?* `Standard()` returns true for it. But
-   `EntitlementsView`, the web types and fixtures, and the test's feature list are explicit
-   lists, so add it to each (§10.4).
-3. *How do I partition a new table?* Monthly range partitions on `fought_at`, created by
-   `db.EnsurePartitions`. Add the table to the partition job's list (§6.2).
-4. *What is a "player key", and how do I know the viewer owns it?* `region/ruleset/name`, as in
-   `/v1/characters/{region}/{ruleset}/{name}`. Ownership is `auth.Store.OwnsCharacter`.
-5. *Who may see a report?* `reports.mayView` (`api/internal/reports/handler.go`). Rating keeps a
-   hand copy. Export one and use it in both places (§13).
+1. *Where is the fight data?* The posted summary in the bucket, read with `sims.fightSummary`.
+   The rater has it in memory at `reports/ingest.go` `rate`.
+2. *Is `log_coach` automatically Premium?* `Standard()` says yes, but `EntitlementsView`, the web
+   types and fixtures and the test list are explicit (§17.4).
+3. *How do I partition?* Monthly ranges on `fought_at` via `db.EnsurePartitions`. Add the table
+   to the partition job (§11.1).
+4. *Player key and ownership?* `region/ruleset/name`, and `auth.Store.OwnsCharacter`.
+5. *Who may see a report?* `reports.mayView`. Export it and use it in both places (§19).
 6. *What is "evidence"?* `presence.EvidenceReport`: not private, not flagged.
-7. *How do officers qualify?* `entitlements.Store.CanForGuild(guild, user, FeatureOfficerViews)`.
-8. *Can the raid-night post carry a per-player line?* No. R-A3 makes it counts only and names
-   nobody. §4.4 resolves this with a sentence that names nobody, and the personal line goes in
-   the ephemeral `/report`.
-9. *What does `/report` look like today?* `api/internal/discordbot/cmd_report.go`. It is
-   ephemeral, with `Share in channel` only for public logs. The coach line is never shared (§11).
-10. *Does the account page have a "last raid" line now?* No. The definition already exists for
-    the addon (`addon.lastRaidFights`, 14 days, evidence reports). Reuse it (§4.5).
-11. *Which specs can the sim reference cover?* DPS specs only (`sims.Score` skips tanks and
-    healers), and only those marked `validated` in `sim_specs` (§6.1).
-12. *What does "ready with resource" read?* The per-second `ResourceTrack.Series`, and the base
-    `cost` / `cost_type` from `data/builds/<build>/spellconst/<class>.json` (§5.2 F1).
-13. *How are raid buffs listed?* They aren't in the catalogue today. Add `raid_buffs` with
-    provider class and verified ids (§5.2 F6).
-14. *How do phases bound the pool?* `data/curated/phases.json` start dates (§6.2).
-15. *How do I keep the rating and the coach from measuring differently?* `Profile` and `Review`
-    share their measuring code. Idle time reuses `ActivityIdleMS`. Adherence reuses `fightAdherence` (§9.1).
-16. *What happens to existing wrong preparation scores?* The model bump re-rates every stored
-    fight, and the digests are rebuilt (§8).
-17. *Is there a design step before building the surfaces?* Yes. The ux-designer writes the
-    experience spec and mock, and two SHIP verdicts on screenshots come before merge (tenet 6).
+7. *Officers?* `entitlements.Store.CanForGuild(guild, user, FeatureOfficerViews)`.
+8. *Can the channel post carry a per-player line?* No (R-A3). See §5.5.
+9. *Is there an LLM client already?* No. Build `api/internal/llm` (§15.1) on plain `net/http`.
+   Secrets go in Secret Manager like `DISCORD_BOT_TOKEN`.
+10. *Which model, and what does it cost?* By the rule in §9.1. Prices go in the build notes, and
+    §15.3 is parametric.
+11. *Does every provider support JSON-schema output?* No. Ask for JSON mode, use the schema form
+    where supported, and validate on the server always (§9.2).
+12. *What if the free teaser's "first thing" disagrees with the model's priority?* It can't.
+    `fixFirst` must be the pack's rank 1 (§9.3).
+13. *Where do drills come from, and may they hold numbers?* From the persona's drill list, and
+    numbers in the chosen drill's text are allowed (§8.1, §10).
+14. *How are causal claims checked?* Only through pack links, which are deterministic overlaps.
+    A sentence relating two findings must cite one (§7, §9.3).
+15. *Where does generation run?* On the existing jobs runner. The panel shows the rule-only
+    rendering and polls (§14).
+16. *What happens to old wrong preparation scores?* The model bump re-rates, and the digests are
+    rebuilt (§13).
+17. *Account "last raid" line?* New on the web. Reuse `addon.lastRaidFights` (§5.6).
+18. *Which specs get a sim reference?* Validated DPS specs only (§11).
+19. *Raid buff list?* Add `raid_buffs` with provider class to the catalogue (§6.2 F6).
+20. *Design step for surfaces?* The ux-designer spec and mock, and two SHIP verdicts on
+    screenshots (tenet 6).
 
 ## Owner decisions
 
 1. **The held Premium line says "after every raid".** The coach needs a log of the raid. Keep
-   the line as drafted, or change it to "after every logged raid"? (B5 lets the builder cut a
-   clause but not reword it.)
-2. **The Premium scope note.** The coach covers every spec, so B5 requires the note to change
-   when the line renders. Proposed: `Sims cover damage specs; healing and tanking specs are not
-   simulated yet. The coach reviews every spec; damage specs get the most findings.` Approve, or
-   give the wording.
-3. **Who counts as a "top" healer or tank.** I decided on the rating's overall score (HPS rewards
-   overheal, and damage taken rewards nothing). You may want healers ranked by something else,
-   such as effective HPS. Confirm or override.
+   it, or change it to "after every logged raid"?
+2. **The Premium scope note** must change when the line renders (B5). Proposed: `Sims cover
+   damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec;
+   damage specs get the most findings.`
+3. **"Top" for healers and tanks.** I chose the rating's overall score. Confirm, or name another
+   measure, such as effective HPS.
+4. **The model provider's data terms.** The cheapest S-tier model may be hosted by a provider
+   outside the US and EU. I recommend two conditions on the choice: the provider must not train
+   on API inputs, and must state its retention. A model hosted on a US or EU inference provider
+   is an acceptable substitute at a higher price. Approve those conditions, or set your own.
+5. **The privacy page** (legal pages finalised 2026-10-24) should name the model provider as a
+   processor of fight data sent for coaching. The pack carries no names or account data. Approve
+   the addition.
+6. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
+   or set the numbers once §15.3 is filled with real prices.
