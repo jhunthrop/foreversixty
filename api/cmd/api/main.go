@@ -582,7 +582,7 @@ func serve(log *slog.Logger) error {
 	// the same TreeDataDir every other build-scoped read in this file uses. Trees backs
 	// the loot tab's fallback candidate tier (class usability + item level from the
 	// client's own per-class item tables, already loaded above).
-	guildStore := &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, Trees: treeData, APIBaseURL: cfg.APIBaseURL}
+	guildStore := newGuildStore(cfg, pool, treeData)
 	membership := &guilds.MembershipJob{Store: guildStore, Log: log}
 	if err := membership.Run(ctx); err != nil {
 		return fmt.Errorf("guilds membership sweep: %w", err)

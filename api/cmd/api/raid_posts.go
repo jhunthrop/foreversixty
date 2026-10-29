@@ -20,10 +20,19 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // raidPostsDrainPasses is how many bot drain passes follow the schedule run.
 const raidPostsDrainPasses = 5
+
+// raidPostsBudget ends the run cleanly, with its log line, before the job's 5 minute task timeout kills it.
+const raidPostsBudget = 4 * time.Minute
+
+// newGuildStore is the guilds store serve and the job share, so their reads cannot drift.
+func newGuildStore(cfg config.Config, pool *pgxpool.Pool, treeData *trees.Data) *guilds.Store {
+	return &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, Trees: treeData, APIBaseURL: cfg.APIBaseURL}
+}
 
 func runRaidPosts(ctx context.Context, log *slog.Logger) error {
 	cfg, pool, err := start(ctx)
@@ -58,9 +67,13 @@ type raidPostsServices struct {
 // newRaidPostsServices builds the guilds, notify and bot wiring serve uses for the raid router,
 // but starts no drainer goroutine and registers no commands.
 func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (raidPostsServices, error) {
+	treeData, err := trees.Load(cfg.TreeDataDir)
+	if err != nil {
+		return raidPostsServices{}, fmt.Errorf("trees: %w", err)
+	}
 	entStore := &entitlements.Store{Pool: pool}
 	guildService := &guilds.Service{
-		Store:    &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, APIBaseURL: cfg.APIBaseURL},
+		Store:    newGuildStore(cfg, pool, treeData),
 		Accounts: &auth.Store{Pool: pool, Log: log}, Supporters: entStore, Entitlements: entStore,
 		PublicBaseURL: cfg.PublicBaseURL, Log: log,
 	}
@@ -85,6 +98,8 @@ func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logge
 // raidPosts runs the schedule, then the drain passes. A schedule failure does not skip the
 // drain (rows already queued still go out) but fails the job.
 func raidPosts(ctx context.Context, log *slog.Logger, svc raidPostsServices, now time.Time) error {
+	ctx, cancel := context.WithTimeout(ctx, raidPostsBudget)
+	defer cancel()
 	var errs []error
 	run, err := svc.Guilds.RunRaidSchedule(ctx, now)
 	if err != nil {
