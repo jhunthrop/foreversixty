@@ -3,6 +3,7 @@ package discordbot
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // modalInputID is the custom id of the one text input in both modals.
@@ -58,7 +59,12 @@ type wireModalRow struct {
 	} `json:"components"`
 }
 
-// ModalValue is what the member typed into the modal input with that id; empty when absent.
+// maxModalValue bounds what ModalValue returns; callers still validate their own length.
+const maxModalValue = 100
+
+// ModalValue is what the member typed into the modal input with that id, trimmed and cut to
+// maxModalValue runes; empty when absent or malformed. It reads the action-row layout only,
+// not the newer Label-wrapped (type 18) one.
 func (i Interaction) ModalValue(inputID string) string {
 	var d struct {
 		Components []wireModalRow `json:"components"`
@@ -67,7 +73,7 @@ func (i Interaction) ModalValue(inputID string) string {
 	for _, row := range d.Components {
 		for _, c := range row.Components {
 			if c.CustomID == inputID {
-				return c.Value
+				return boundedValue(c.Value)
 			}
 		}
 	}
@@ -81,12 +87,23 @@ type sourceMessage struct {
 	Components json.RawMessage `json:"components"`
 }
 
-// cardFailureRoutes are the card prefixes: a handler error on one keeps the card.
-func cardFailureRoutes() map[string]bool {
-	return map[string]bool{
-		prefixBis: true, prefixChar: true, prefixSignup: true,
-		prefixAttendance: true, prefixReadiness: true, prefixReport: true,
+// cardFailureRoutes are the card prefixes: a handler error on one keeps the card. Read-only.
+var cardFailureRoutes = map[string]bool{
+	prefixBis: true, prefixChar: true, prefixSignup: true,
+	prefixAttendance: true, prefixReadiness: true, prefixReport: true,
+}
+
+// askPart is the card part whose press opens a modal.
+const askPart = "ask"
+
+// opensModal reports a press that only opens a modal: it reads nothing, so it skips the
+// server lookup and gets the whole answer window.
+func opensModal(in Interaction) bool {
+	if in.Type != typeComponent {
+		return false
 	}
+	p, ok := parseCardID(in.CustomID())
+	return ok && cardFailureRoutes[p.Prefix] && p.Part == askPart
 }
 
 // cardFailureReply puts the pressed card back with every pick and says `card.failure`: as the
@@ -121,4 +138,12 @@ func withLead(embeds json.RawMessage, lead string) json.RawMessage {
 		return embeds
 	}
 	return out
+}
+
+func boundedValue(raw string) string {
+	runes := []rune(strings.TrimSpace(raw))
+	if len(runes) > maxModalValue {
+		runes = runes[:maxModalValue]
+	}
+	return string(runes)
 }

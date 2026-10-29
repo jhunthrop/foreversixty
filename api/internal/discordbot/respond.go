@@ -109,7 +109,7 @@ func (s *Service) dispatch(ctx context.Context, w http.ResponseWriter, in Intera
 		s.writeReply(w, failureReply(), respMessage)
 		return
 	}
-	if in.Type == typeCommand && guildFreeCommands()[in.CommandName()] {
+	if opensModal(in) || (in.Type == typeCommand && guildFreeCommands()[in.CommandName()]) {
 		s.answerOrDefer(ctx, w, in, h, update)
 		return
 	}
@@ -213,19 +213,30 @@ func (s *Service) writeDeferral(w http.ResponseWriter, update bool) {
 func (s *Service) replyOf(in Interaction, res handled, update bool) Reply {
 	if res.err != nil {
 		s.log.Error("discordbot", "op", "discord_answer", "outcome", "handler_failed", "interaction", in.ID, "err", res.err)
-		if in.Type != typeCommand && cardFailureRoutes()[customPrefix(in.CustomID())] {
-			return cardFailureReply(in)
-		}
-		rep := failureReply()
-		rep.Update = update
-		return rep
+		return s.failedPress(in, update)
 	}
 	return res.reply
 }
 
-// deliver edits the deferred answer in, unless the token has expired.
+// failedPress is the reply to a press that failed: the card put back with its picks on a card
+// route, the failure sentence otherwise.
+func (s *Service) failedPress(in Interaction, update bool) Reply {
+	if in.Type != typeCommand && cardFailureRoutes[customPrefix(in.CustomID())] {
+		return cardFailureReply(in)
+	}
+	rep := failureReply()
+	rep.Update = update
+	return rep
+}
+
+// deliver edits the deferred answer in, unless the token has expired. A modal can only answer
+// the interaction itself, so one that arrives after the deferral is a failed press.
 func (s *Service) deliver(in Interaction, res handled, update bool) {
 	rep := s.replyOf(in, res, update)
+	if rep.Modal != nil {
+		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "modal_after_deferral", "interaction", in.ID)
+		rep = s.failedPress(in, update)
+	}
 	if s.now().Sub(in.ReceivedAt) > interactionTokenLife {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "expired", "interaction", in.ID)
 		s.dropAfter(rep)
