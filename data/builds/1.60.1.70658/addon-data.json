@@ -80021,20 +80021,20 @@
               ]
             },
             "neck": {
-              "item_id": 10769,
+              "item_id": 7722,
               "source_kind": "dungeon",
-              "source": "Razorfen Downs: Mordresh Fire Eye",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 10769,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Downs: Mordresh Fire Eye"
+                },
                 {
                   "item_id": 23169,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: Scorn"
-                },
-                {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 }
               ]
             },
@@ -80081,14 +80081,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9434,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 10042,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 9434,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -80207,14 +80207,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2043,
-                  "source_kind": "quest",
-                  "source": "The Legend of Stalvan"
-                },
-                {
                   "item_id": 9622,
                   "source_kind": "quest",
                   "source": "Jarl Needs a Blade"
+                },
+                {
+                  "item_id": 6750,
+                  "source_kind": "quest",
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -80293,20 +80293,20 @@
               ]
             },
             "neck": {
-              "item_id": 7722,
+              "item_id": 10769,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane",
+              "source": "Razorfen Downs: Mordresh Fire Eye",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 10769,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
-                },
                 {
                   "item_id": 23169,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: Scorn"
+                },
+                {
+                  "item_id": 7722,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 }
               ]
             },
@@ -80353,14 +80353,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9434,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 10042,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 9434,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -80549,7 +80549,7 @@
         "new_at_band": {
           "alliance": [
             10502,
-            10769,
+            7722,
             4327,
             1716,
             10019,
@@ -80564,7 +80564,7 @@
           ],
           "horde": [
             10502,
-            7722,
+            10769,
             4327,
             1716,
             10019,
@@ -80582,8 +80582,8 @@
           "spell_power": 1.0,
           "intellect": 0.06,
           "crit": 0.042,
-          "hit": 0.183,
-          "spell_haste": -6.799,
+          "hit": 0.187,
+          "spell_haste": -6.93,
           "shadow_power": 0.247,
           "fire_power": 0.753
         }
@@ -80599,14 +80599,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10502,
-                  "source_kind": "crafted",
-                  "source": "Engineering"
-                },
-                {
                   "item_id": 10041,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 10502,
+                  "source_kind": "crafted",
+                  "source": "Engineering"
                 }
               ]
             },
@@ -80617,14 +80617,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 10769,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Downs: Mordresh Fire Eye"
+                },
+                {
                   "item_id": 23169,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: Scorn"
-                },
-                {
-                  "item_id": 11196,
-                  "source_kind": "quest",
-                  "source": "Tremors of the Earth"
                 }
               ]
             },
@@ -80671,14 +80671,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10042,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 17775,
                   "source_kind": "quest",
                   "source": "Twisted Evils"
+                },
+                {
+                  "item_id": 10042,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -80815,22 +80815,22 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -80897,14 +80897,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10769,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
-                },
-                {
                   "item_id": 23169,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: Scorn"
+                },
+                {
+                  "item_id": 11196,
+                  "source_kind": "quest",
+                  "source": "Broken Alliances"
                 }
               ]
             },
@@ -80915,14 +80915,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10027,
+                  "item_id": 254053,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 220905,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 11 · Blood Guard · Horde"
+                  "item_id": 10027,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -80951,14 +80951,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10042,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 17775,
                   "source_kind": "quest",
                   "source": "Twisted Evils"
+                },
+                {
+                  "item_id": 10042,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -81023,14 +81023,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 10009,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
+                },
+                {
                   "item_id": 12256,
                   "source_kind": "vendor",
                   "source": "Vinasia"
-                },
-                {
-                  "item_id": 220906,
-                  "source_kind": "vendor",
-                  "source": "Lady Palanseer"
                 }
               ]
             },
@@ -81095,9 +81095,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 19120,
@@ -81107,20 +81107,20 @@
               ]
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
                 {
                   "item_id": 19120,
                   "source_kind": "quest",
                   "source": "Job Opening: Guard Captain of Revantusk Village"
-                },
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
                 }
               ]
             },
@@ -81165,7 +81165,6 @@
         "new_at_band": {
           "alliance": [
             15999,
-            7722,
             17732,
             11623,
             254065,
@@ -81174,12 +81173,13 @@
             7553,
             19523,
             20534,
-            11302,
+            249469,
             10844,
             17745
           ],
           "horde": [
             15999,
+            7722,
             17732,
             11623,
             254065,
@@ -81188,19 +81188,19 @@
             7553,
             19519,
             20534,
-            11302,
+            249469,
             10844,
             17745
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.052,
+          "intellect": 0.057,
           "crit": 0.091,
-          "hit": 0.454,
-          "spell_haste": -11.708,
-          "shadow_power": 0.256,
-          "fire_power": 0.744
+          "hit": 0.502,
+          "spell_haste": -10.063,
+          "shadow_power": 0.258,
+          "fire_power": 0.742
         }
       },
       {
@@ -81214,14 +81214,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 226909,
-                  "source_kind": "quest",
-                  "source": "Saving the Best for Last"
-                },
-                {
                   "item_id": 231584,
                   "source_kind": "pvp",
                   "source": "PvP rank 17 · Field Marshal · Alliance"
+                },
+                {
+                  "item_id": 226909,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
                 }
               ]
             },
@@ -81327,9 +81327,9 @@
                   "source": "PvP rank 16 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 21318,
-                  "source_kind": "quest",
-                  "source": "Winterfall Activity"
+                  "item_id": 18408,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -81504,14 +81504,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231590,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 17 · Warlord · Horde"
-                },
-                {
                   "item_id": 226909,
                   "source_kind": "quest",
                   "source": "Saving the Best for Last"
+                },
+                {
+                  "item_id": 231590,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 17 · Warlord · Horde"
                 }
               ]
             },
@@ -81545,7 +81545,7 @@
                   "source": "PvP rank 17 · Warlord · Horde"
                 },
                 {
-                  "item_id": 19050,
+                  "item_id": 19059,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -81617,9 +81617,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 21318,
-                  "source_kind": "quest",
-                  "source": "Winterfall Activity"
+                  "item_id": 18408,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -81653,9 +81653,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 227097,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · Legionnaire · Horde"
+                  "item_id": 22747,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -81821,12 +81821,12 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.088,
+          "intellect": 0.097,
           "crit": 0.106,
-          "hit": 0.476,
-          "spell_haste": -3.612,
-          "shadow_power": 0.323,
-          "fire_power": 0.677
+          "hit": 0.478,
+          "spell_haste": -3.787,
+          "shadow_power": 0.322,
+          "fire_power": 0.678
         }
       }
     ],
@@ -111242,7 +111242,6 @@
     "21120": "Defiler's Talisman",
     "21278": "Stormshroud Gloves",
     "21311": "Earth Warder's Vest",
-    "21318": "Earth Warder's Gloves",
     "21517": "Gnomish Turban of Psychic Might",
     "21520": "Ravencrest's Legacy",
     "21522": "Shadowsong's Sorrow",

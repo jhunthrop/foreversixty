@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70658",
-  "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-28T13:33:22Z",
+  "engine_version": "1f542def3",
+  "generated_at": "2026-10-29T13:57:10Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -717,8 +717,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.1341825939999999,
-      "verify_run_seconds": 1.926118048,
+      "weights_run_seconds": 2.075187781,
+      "verify_run_seconds": 3.23488105,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1530,8 +1530,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.1341825939999999,
-      "verify_run_seconds": 2.001747876,
+      "weights_run_seconds": 2.075187781,
+      "verify_run_seconds": 3.258368518,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2361,8 +2361,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.149698086,
-      "verify_run_seconds": 2.210173672,
+      "weights_run_seconds": 2.055800256,
+      "verify_run_seconds": 3.5944061449999998,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3171,8 +3171,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.149698086,
-      "verify_run_seconds": 1.202579912,
+      "weights_run_seconds": 2.055800256,
+      "verify_run_seconds": 1.979522188,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3998,8 +3998,8 @@
         "finger1: Protector's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 1.165314244,
-      "verify_run_seconds": 2.266479961,
+      "weights_run_seconds": 2.077561923,
+      "verify_run_seconds": 3.696815227,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4825,8 +4825,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 1.165314244,
-      "verify_run_seconds": 2.295281175,
+      "weights_run_seconds": 2.077561923,
+      "verify_run_seconds": 3.733092198,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5688,8 +5688,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.296296677,
-      "verify_run_seconds": 3.004328326,
+      "weights_run_seconds": 2.263640851,
+      "verify_run_seconds": 4.833017177,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6563,8 +6563,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.296296677,
-      "verify_run_seconds": 2.7088895649999998,
+      "weights_run_seconds": 2.263640851,
+      "verify_run_seconds": 4.393160231,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7455,8 +7455,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.3180108750000001,
-      "verify_run_seconds": 6.890774886,
+      "weights_run_seconds": 2.276042301,
+      "verify_run_seconds": 11.22003775,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8376,8 +8376,8 @@
         "main_hand: Hand of Edward the Odd",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.3180108750000001,
-      "verify_run_seconds": 7.184441531,
+      "weights_run_seconds": 2.276042301,
+      "verify_run_seconds": 11.552096625,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -9247,8 +9247,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 1.460198285,
-      "verify_run_seconds": 7.322475259,
+      "weights_run_seconds": 2.592330693,
+      "verify_run_seconds": 12.262804508,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10158,8 +10158,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 1.460198285,
-      "verify_run_seconds": 6.902266363,
+      "weights_run_seconds": 2.592330693,
+      "verify_run_seconds": 11.724814131,
       "coverage": {
         "back": {
           "eligible": 389,
