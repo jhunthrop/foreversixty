@@ -1,59 +1,76 @@
 ---
 // web/src/components/Footer.astro
-import communityLinks from '../data/links.json';
+// design/specs/2026-10-28-polish.md section 2: a brand block beside four labelled link
+// columns, the trademark and operator lines small and last. Copy lives in lib/footer-copy.ts.
+// Phone: the columns stay a 2 x 2 grid of 44px rows, never one long column (tenet 4).
+import {
+  FOOTER_COLUMNS,
+  FOOTER_CONTRIBUTE_BUTTON,
+  FOOTER_DISCORD_BUTTON,
+  FOOTER_LEGAL_LINKS,
+  FOOTER_PROMISE,
+  FOOTER_TRADEMARK,
+  footerOperatorLine,
+} from '../lib/footer-copy';
+import DiscordMark from './DiscordMark.astro';
+import GithubMark from './GithubMark.astro';
 import Seal from './Seal.astro';
 
-const footerLinks = [
-  ['About', '/about'],
-  ['Sources', '/sources'],
-  ['Changelog', '/changelog'],
-  ['Contribute', `${communityLinks.githubRepo}/issues`],
-  ['Premium', '/premium'],
-  ['Get set up', '/setup'],
-  ['Terms', '/terms'],
-  ['Privacy', '/privacy'],
-  ['Refunds', '/refunds'],
-] as const;
-
-// The short-label set that misses the 44px hit-target floor on text width alone and needs
-// horizontal padding to clear it -- "About" needed this already; "Terms" and "Privacy" are
-// narrow enough to miss it too (confirmed by tests/e2e/sim-tools-phone.spec.ts's 44px audit
-// at 360px width, which caught "Privacy" falling short), so both join the set rather than
-// growing a chain of per-label equality checks.
-const NEEDS_HIT_TARGET_PADDING = new Set(['About', 'Terms', 'Privacy']);
-// Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side.
-// A frontmatter comment, not an HTML one: an HTML comment ships in every page.
+const LINK_CLASS =
+  'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-nav transition-colors duration-[120ms] hover:text-strong active:text-gold-hover';
+const BUTTON_CLASS =
+  'inline-flex items-center gap-2 h-11 lg:h-9 px-3.5 rounded-control border border-line-warm-strong bg-raised text-[14px] font-semibold text-strong transition-colors duration-[120ms] hover:border-gold-hover hover:text-gold-hover';
 ---
 
-<footer class="mt-auto border-t border-line text-[13px]">
-  <div class="page-column flex flex-col-reverse md:flex-row md:items-start md:justify-between gap-4 md:gap-8 px-[18px] py-6 md:py-7">
-    <div class="flex flex-col gap-2 max-w-[720px]">
-      <div class="inline-flex items-center gap-2">
-        <Seal size={22} gradientId="footer-seal" />
-        <span class="font-display text-[13px] font-bold tracking-[0.10em] uppercase text-strong">
-          Forever Sixty
-        </span>
+<footer class="mt-auto border-t border-white/[.06] bg-[linear-gradient(180deg,rgba(255,255,255,.025),transparent_70%)]">
+  <div class="page-column px-[18px]">
+    <div class="grid gap-8 pt-9 pb-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,4fr)] lg:pt-12 lg:pb-9">
+      <div class="flex flex-col">
+        <div class="inline-flex items-center gap-2.5">
+          <Seal size={30} gradientId="footer-seal" />
+          <span class="font-display text-[17px] font-bold tracking-[0.10em] uppercase text-strong">
+            Forever Sixty
+          </span>
+        </div>
+        <p class="mt-3.5 max-w-[340px] text-[15px] leading-[22px] text-text">{FOOTER_PROMISE}</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href={FOOTER_DISCORD_BUTTON.href} class={BUTTON_CLASS}>
+            <span class="text-[#9aa4ff]">
+              <DiscordMark size={18} />
+            </span>
+            {FOOTER_DISCORD_BUTTON.label}
+          </a>
+          <a href={FOOTER_CONTRIBUTE_BUTTON.href} class={BUTTON_CLASS}>
+            <GithubMark size={16} />
+            {FOOTER_CONTRIBUTE_BUTTON.label}
+          </a>
+        </div>
       </div>
-      <p class="leading-relaxed text-muted">
-        Forever Sixty helps you play your class better. Not affiliated with or endorsed by Blizzard
-        Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
-      </p>
-      <p class="leading-relaxed text-muted">
-        Forever Sixty is operated by Commish LLC. © {new Date().getFullYear()} Commish LLC.
-      </p>
+      <nav aria-label="Footer" class="grid grid-cols-2 gap-x-4 gap-y-7 md:grid-cols-4 lg:gap-x-8">
+        {FOOTER_COLUMNS.map((column) => (
+          <div class="flex min-w-0 flex-col">
+            <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{column.heading}</p>
+            {column.links.map((link) => (
+              <a href={link.href} class={LINK_CLASS}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
     </div>
-    <nav aria-label="Footer" class="flex flex-wrap gap-x-[18px]">
-      {footerLinks.map(([label, href]) => (
-        <a
-          href={href}
-          class:list={[
-            'inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong',
-            NEEDS_HIT_TARGET_PADDING.has(label) && 'px-2',
-          ]}
-        >
-          {label}
-        </a>
-      ))}
-    </nav>
+    <div class="flex flex-col gap-1 border-t border-line-soft pt-[18px] pb-7 lg:flex-row lg:items-center lg:justify-between">
+      <nav aria-label="Legal" class="-mx-2 flex lg:order-last">
+        {FOOTER_LEGAL_LINKS.map((link) => (
+          <a href={link.href} class={`${LINK_CLASS} px-2 text-[13px]`}>
+            {link.label}
+          </a>
+        ))}
+      </nav>
+      <div class="text-[12px] leading-[18px] text-muted">
+        <p>{FOOTER_TRADEMARK}</p>
+        <p>{footerOperatorLine(new Date().getFullYear())}</p>
+      </div>
+    </div>
   </div>
 </footer>
