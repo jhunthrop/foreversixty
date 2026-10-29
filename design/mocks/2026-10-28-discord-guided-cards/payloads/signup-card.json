@@ -7,7 +7,7 @@
       {
         "title": "Onyxia's Lair · Saturday 12 December",
         "description": "You have not signed up yet.",
-        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/21",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1822",
         "fields": [
           {
             "name": "When",
@@ -16,7 +16,8 @@
           },
           {
             "name": "Signed up",
-            "value": "None yet"
+            "value": "None yet",
+            "inline": true
           }
         ],
         "footer": {
@@ -32,18 +33,18 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:raid:21:us/normal/duskstrider",
+            "custom_id": "gsgn:1:raid:1822:us/normal/duskstrider",
             "placeholder": "Choose a raid",
             "options": [
               {
                 "label": "Onyxia's Lair · Sat 12 Dec",
-                "value": "21",
+                "value": "1822",
                 "description": "0 of 40 signed up",
                 "default": true
               },
               {
                 "label": "Molten Core · Tue 15 Dec",
-                "value": "22",
+                "value": "1823",
                 "description": "0 of 40 signed up"
               }
             ]
@@ -55,19 +56,19 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:char:21:us/normal/duskstrider",
+            "custom_id": "gsgn:1:char:1822:us/normal/duskstrider",
             "placeholder": "Choose a character",
             "options": [
               {
                 "label": "Duskstrider",
                 "value": "us/normal/duskstrider",
-                "description": "Hunter · DPS",
+                "description": "Marksmanship Hunter · DPS",
                 "default": true
               },
               {
                 "label": "Zulmara",
                 "value": "us/normal/zulmara",
-                "description": "Hunter · DPS"
+                "description": "Marksmanship Hunter · DPS"
               }
             ]
           }
@@ -80,31 +81,31 @@
             "type": 2,
             "style": 3,
             "label": "In",
-            "custom_id": "gsgn:1:in:21:us/normal/duskstrider"
+            "custom_id": "gsgn:1:in:1822:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "gsgn:1:late:21:us/normal/duskstrider"
+            "custom_id": "gsgn:1:late:1822:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "gsgn:1:bench:21:us/normal/duskstrider"
+            "custom_id": "gsgn:1:bench:1822:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "gsgn:1:out:21:us/normal/duskstrider"
+            "custom_id": "gsgn:1:out:1822:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 5,
             "label": "Raid page",
-            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/21"
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1822"
           }
         ]
       }

@@ -1,0 +1,107 @@
+{
+  "id": "post-partial",
+  "title": "partly signed: 8 of 40, no healer yet",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Onyxia's Lair · Thursday 10 December",
+        "description": "Sign up with the buttons below.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1",
+        "fields": [
+          {
+            "name": "When",
+            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "inline": true
+          },
+          {
+            "name": "Guild time",
+            "value": "8:00 pm CST",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "**8 of 40**",
+            "inline": true
+          },
+          {
+            "name": "Tanks · 1",
+            "value": "\u003c:fs_warrior_protection:1301000000000000028\u003e Kraggor",
+            "inline": true
+          },
+          {
+            "name": "Healers · 0",
+            "value": "None yet",
+            "inline": true
+          },
+          {
+            "name": "Melee · 2",
+            "value": "\u003c:fs_rogue_combat:1301000000000000018\u003e Corvane\n\u003c:fs_warrior_fury:1301000000000000027\u003e Wyrmbane",
+            "inline": true
+          },
+          {
+            "name": "Ranged · 4",
+            "value": "\u003c:fs_hunter_beast_mastery:1301000000000000005\u003e Zulmara\n\u003c:fs_mage_frost:1301000000000000010\u003e Frostwhisk\n\u003c:fs_mage_fire:1301000000000000009\u003e Pyrewisp\n\u003c:fs_warlock_affliction:1301000000000000023\u003e Vexlash",
+            "inline": true
+          },
+          {
+            "name": "Late · 1",
+            "value": "\u003c:fs_warlock_destruction:1301000000000000025\u003e Glimmerfen",
+            "inline": true
+          },
+          {
+            "name": "Out · 1",
+            "value": "Garrowe"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15055189
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 3,
+            "label": "In",
+            "custom_id": "raid:1826:in"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Late",
+            "custom_id": "raid:1826:late"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Bench",
+            "custom_id": "raid:1826:bench"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Out",
+            "custom_id": "raid:1826:out"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Raid page",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    },
+    "nonce": "r1eq.mvszhvbt",
+    "enforce_nonce": true
+  }
+}

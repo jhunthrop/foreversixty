@@ -1,0 +1,112 @@
+{
+  "id": "post-full",
+  "title": "full: 40 of 40, bench and out",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Onyxia's Lair · Thursday 10 December",
+        "description": "Sign up with the buttons below.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1",
+        "fields": [
+          {
+            "name": "When",
+            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "inline": true
+          },
+          {
+            "name": "Guild time",
+            "value": "8:00 pm CST",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "**40 of 40**",
+            "inline": true
+          },
+          {
+            "name": "Tanks · 4",
+            "value": "\u003c:fs_druid_feral_bear:1301000000000000003\u003e Bramblehide\n\u003c:fs_warrior_protection:1301000000000000028\u003e Ironvale\n\u003c:fs_warrior_protection:1301000000000000028\u003e Kraggor\n\u003c:fs_warrior_protection:1301000000000000028\u003e Stonebrow",
+            "inline": true
+          },
+          {
+            "name": "Healers · 10",
+            "value": "\u003c:fs_druid_restoration:1301000000000000004\u003e Mossgrove\n\u003c:fs_druid_restoration:1301000000000000004\u003e Vaelora\n\u003c:fs_paladin_holy:1301000000000000011\u003e Aurelith\n\u003c:fs_paladin_holy:1301000000000000011\u003e Halcyra\n\u003c:fs_priest_holy:1301000000000000015\u003e Dawnmere\n\u003c:fs_priest_discipline:1301000000000000014\u003e Embertide\n\u003c:fs_priest_holy:1301000000000000015\u003e Lightwell\n\u003c:fs_priest_holy:1301000000000000015\u003e Lumen\n\u003c:fs_shaman_restoration:1301000000000000022\u003e Sablewind\n\u003c:fs_shaman_restoration:1301000000000000022\u003e Tidecall",
+            "inline": true
+          },
+          {
+            "name": "Melee · 9",
+            "value": "\u003c:fs_hunter_survival:1301000000000000007\u003e Kelthar\n\u003c:fs_paladin_retribution:1301000000000000013\u003e Sundermark\n\u003c:fs_rogue_combat:1301000000000000018\u003e Corvane\n\u003c:fs_rogue_combat:1301000000000000018\u003e Duskmantle\n\u003c:fs_rogue_combat:1301000000000000018\u003e Hollowmere\n\u003c:fs_rogue_assassination:1301000000000000017\u003e Ravenmoor\n\u003c:fs_shaman_enhancement:1301000000000000021\u003e Ashenra\n\u003c:fs_warrior_fury:1301000000000000027\u003e Briarthorn\n\u003c:fs_warrior_fury:1301000000000000027\u003e Wyrmbane",
+            "inline": true
+          },
+          {
+            "name": "Ranged · 16",
+            "value": "\u003c:fs_druid_balance:1301000000000000001\u003e Thornquill\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Brightshot\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Quillfeather\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Windtalon\n\u003c:fs_hunter_beast_mastery:1301000000000000005\u003e Zulmara\n\u003c:fs_mage_fire:1301000000000000009\u003e Cindrel\n\u003c:fs_mage_frost:1301000000000000010\u003e Frostwhisk\n\u003c:fs_mage_frost:1301000000000000010\u003e Orivane\n\u003c:fs_mage_fire:1301000000000000009\u003e Pyrewisp\n\u003c:fs_mage_frost:1301000000000000010\u003e Selwyn\n\u003c:fs_mage_frost:1301000000000000010\u003e Stormvale\n\u003c:fs_priest_shadow:1301000000000000016\u003e Nightbrand\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Ashgrave\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Grimhollow\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Talvorn\n\u003c:fs_warlock_affliction:1301000000000000023\u003e Vexlash",
+            "inline": true
+          },
+          {
+            "name": "Late · 1",
+            "value": "\u003c:fs_warlock_destruction:1301000000000000025\u003e Glimmerfen",
+            "inline": true
+          },
+          {
+            "name": "Bench · 3",
+            "value": "\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Marrowind\n\u003c:fs_mage_fire:1301000000000000009\u003e Embervale\n\u003c:fs_warlock_affliction:1301000000000000023\u003e Fennrick",
+            "inline": true
+          },
+          {
+            "name": "Out · 2",
+            "value": "Lunetta, Ysolde"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15055189
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 3,
+            "label": "In",
+            "custom_id": "raid:1827:in"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Late",
+            "custom_id": "raid:1827:late"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Bench",
+            "custom_id": "raid:1827:bench"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Out",
+            "custom_id": "raid:1827:out"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Raid page",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    },
+    "nonce": "r1er.mvszhvex",
+    "enforce_nonce": true
+  }
+}

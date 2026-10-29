@@ -4,6 +4,69 @@
   "clock": "2026-12-10T22:00:00Z",
   "message": {
     "content": "**Onyxia's Lair is tomorrow**, \u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e). 33 of 40 signed up so far. [Sign up on Forever Sixty](https://site.test/guild/us/normal/olympus-xxvii/raids/1)",
+    "embeds": [
+      {
+        "title": "Tomorrow: Onyxia's Lair · Thursday 10 December",
+        "description": "Sign up on Forever Sixty.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1",
+        "fields": [
+          {
+            "name": "When",
+            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "inline": true
+          },
+          {
+            "name": "Guild time",
+            "value": "8:00 pm CST",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "**33 of 40**",
+            "inline": true
+          },
+          {
+            "name": "Tanks · 3",
+            "value": "Bramblehide · Feral Bear Druid\nIronvale · Protection Warrior\nKraggor · Protection Warrior",
+            "inline": true
+          },
+          {
+            "name": "Healers · 8",
+            "value": "Mossgrove · Restoration Druid\nVaelora · Restoration Druid\nAurelith · Holy Paladin\nHalcyra · Holy Paladin\nDawnmere · Holy Priest\nEmbertide · Discipline Priest\nLightwell · Holy Priest\nSablewind · Restoration Shaman",
+            "inline": true
+          },
+          {
+            "name": "Melee · 7",
+            "value": "Kelthar · Survival Hunter\nSundermark · Retribution Paladin\nCorvane · Combat Rogue\nDuskmantle · Combat Rogue\nRavenmoor · Assassination Rogue\nAshenra · Enhancement Shaman\nWyrmbane · Fury Warrior",
+            "inline": true
+          },
+          {
+            "name": "Ranged · 13",
+            "value": "Thornquill · Balance Druid\nBrightshot · Marksmanship Hunter\nWindtalon · Marksmanship Hunter\nZulmara · Beast Mastery Hunter\nCindrel · Fire Mage\nFrostwhisk · Frost Mage\nOrivane · Frost Mage\nPyrewisp · Fire Mage\nStormvale · Frost Mage\nNightbrand · Shadow Priest\nGrimhollow · Destruction Warlock\nTalvorn · Destruction Warlock\nVexlash · Affliction Warlock",
+            "inline": true
+          },
+          {
+            "name": "Late · 2",
+            "value": "Hollowmere · Combat Rogue\nGlimmerfen · Destruction Warlock",
+            "inline": true
+          },
+          {
+            "name": "Bench · 3",
+            "value": "Marrowind · Marksmanship Hunter\nQuillfeather · Marksmanship Hunter\nSelwyn · Frost Mage",
+            "inline": true
+          },
+          {
+            "name": "Out · 4",
+            "value": "Fennrick, Garrowe, Lunetta, Ysolde"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15055189
+      }
+    ],
     "allowed_mentions": {
       "parse": []
     }

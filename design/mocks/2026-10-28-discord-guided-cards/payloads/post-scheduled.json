@@ -21,7 +21,8 @@
           },
           {
             "name": "Signed up",
-            "value": "None yet"
+            "value": "None yet",
+            "inline": true
           }
         ],
         "footer": {
@@ -39,25 +40,25 @@
             "type": 2,
             "style": 3,
             "label": "In",
-            "custom_id": "raid:24:in"
+            "custom_id": "raid:1825:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:24:late"
+            "custom_id": "raid:1825:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:24:bench"
+            "custom_id": "raid:1825:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:24:out"
+            "custom_id": "raid:1825:out"
           },
           {
             "type": 2,
@@ -71,7 +72,7 @@
     "allowed_mentions": {
       "parse": []
     },
-    "nonce": "ro.mvsw50jm",
+    "nonce": "r1ep.mvszhv8q",
     "enforce_nonce": true
   }
 }

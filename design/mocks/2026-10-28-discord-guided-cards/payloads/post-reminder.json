@@ -12,25 +12,25 @@
             "type": 2,
             "style": 3,
             "label": "In",
-            "custom_id": "raid:25:in"
+            "custom_id": "raid:1829:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:25:late"
+            "custom_id": "raid:1829:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:25:bench"
+            "custom_id": "raid:1829:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:25:out"
+            "custom_id": "raid:1829:out"
           },
           {
             "type": 2,
@@ -44,7 +44,7 @@
     "allowed_mentions": {
       "parse": []
     },
-    "nonce": "qp.tpuyw0",
+    "nonce": "q1et.tpuyw0",
     "enforce_nonce": true,
     "message_reference": {
       "message_id": "m1",
@@ -70,7 +70,42 @@
           },
           {
             "name": "Signed up",
-            "value": "**33 of 40** · 33 DPS"
+            "value": "**33 of 40**",
+            "inline": true
+          },
+          {
+            "name": "Tanks · 3",
+            "value": "\u003c:fs_druid_feral_bear:1301000000000000003\u003e Bramblehide\n\u003c:fs_warrior_protection:1301000000000000028\u003e Ironvale\n\u003c:fs_warrior_protection:1301000000000000028\u003e Kraggor",
+            "inline": true
+          },
+          {
+            "name": "Healers · 8",
+            "value": "\u003c:fs_druid_restoration:1301000000000000004\u003e Mossgrove\n\u003c:fs_druid_restoration:1301000000000000004\u003e Vaelora\n\u003c:fs_paladin_holy:1301000000000000011\u003e Aurelith\n\u003c:fs_paladin_holy:1301000000000000011\u003e Halcyra\n\u003c:fs_priest_holy:1301000000000000015\u003e Dawnmere\n\u003c:fs_priest_discipline:1301000000000000014\u003e Embertide\n\u003c:fs_priest_holy:1301000000000000015\u003e Lightwell\n\u003c:fs_shaman_restoration:1301000000000000022\u003e Sablewind",
+            "inline": true
+          },
+          {
+            "name": "Melee · 7",
+            "value": "\u003c:fs_hunter_survival:1301000000000000007\u003e Kelthar\n\u003c:fs_paladin_retribution:1301000000000000013\u003e Sundermark\n\u003c:fs_rogue_combat:1301000000000000018\u003e Corvane\n\u003c:fs_rogue_combat:1301000000000000018\u003e Duskmantle\n\u003c:fs_rogue_assassination:1301000000000000017\u003e Ravenmoor\n\u003c:fs_shaman_enhancement:1301000000000000021\u003e Ashenra\n\u003c:fs_warrior_fury:1301000000000000027\u003e Wyrmbane",
+            "inline": true
+          },
+          {
+            "name": "Ranged · 13",
+            "value": "\u003c:fs_druid_balance:1301000000000000001\u003e Thornquill\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Brightshot\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Windtalon\n\u003c:fs_hunter_beast_mastery:1301000000000000005\u003e Zulmara\n\u003c:fs_mage_fire:1301000000000000009\u003e Cindrel\n\u003c:fs_mage_frost:1301000000000000010\u003e Frostwhisk\n\u003c:fs_mage_frost:1301000000000000010\u003e Orivane\n\u003c:fs_mage_fire:1301000000000000009\u003e Pyrewisp\n\u003c:fs_mage_frost:1301000000000000010\u003e Stormvale\n\u003c:fs_priest_shadow:1301000000000000016\u003e Nightbrand\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Grimhollow\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Talvorn\n\u003c:fs_warlock_affliction:1301000000000000023\u003e Vexlash",
+            "inline": true
+          },
+          {
+            "name": "Late · 2",
+            "value": "\u003c:fs_rogue_combat:1301000000000000018\u003e Hollowmere\n\u003c:fs_warlock_destruction:1301000000000000025\u003e Glimmerfen",
+            "inline": true
+          },
+          {
+            "name": "Bench · 3",
+            "value": "\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Marrowind\n\u003c:fs_hunter_marksmanship:1301000000000000006\u003e Quillfeather\n\u003c:fs_mage_frost:1301000000000000010\u003e Selwyn",
+            "inline": true
+          },
+          {
+            "name": "Out · 4",
+            "value": "Fennrick, Garrowe, Lunetta, Ysolde"
           }
         ],
         "footer": {
@@ -88,25 +123,25 @@
             "type": 2,
             "style": 3,
             "label": "In",
-            "custom_id": "raid:25:in"
+            "custom_id": "raid:1829:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:25:late"
+            "custom_id": "raid:1829:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:25:bench"
+            "custom_id": "raid:1829:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:25:out"
+            "custom_id": "raid:1829:out"
           },
           {
             "type": 2,

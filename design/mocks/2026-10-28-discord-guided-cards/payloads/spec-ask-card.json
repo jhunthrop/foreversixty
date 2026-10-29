@@ -1,0 +1,54 @@
+{
+  "id": "spec-ask-card",
+  "title": "In pressed, the spec unknown: the one-select card",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Which spec tonight?",
+        "description": "The pick signs **Aurelith** up as In for Onyxia's Lair, Thu 10 Dec, and is kept for the next raid.",
+        "footer": {
+          "text": "Forever Sixty"
+        },
+        "thumbnail": {
+          "url": "https://site.test/icons/hd/crests/paladin.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 16026810
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gspc:1:pick:1830:in:us/normal/aurelith",
+            "placeholder": "Choose a spec",
+            "options": [
+              {
+                "label": "Holy",
+                "value": "paladin-holy",
+                "description": "Healer"
+              },
+              {
+                "label": "Protection",
+                "value": "paladin-protection",
+                "description": "Tank"
+              },
+              {
+                "label": "Retribution",
+                "value": "paladin-retribution",
+                "description": "DPS"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

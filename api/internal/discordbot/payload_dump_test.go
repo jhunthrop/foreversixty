@@ -1,7 +1,6 @@
 package discordbot
 
 import (
-	"context"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -101,6 +100,7 @@ func TestDumpGuidedPayloads(t *testing.T) {
 	dumpSignupFrames(d)
 	dumpOfficerFrames(d)
 	dumpPostFrames(d)
+	dumpSpecFrames(d)
 }
 
 // hunterBeastMasteryBands is a one-slot band so a Show BiS answer exists for the board's spec.
@@ -199,42 +199,4 @@ func boardRaid(w *postWorld, counts notify.RaidCounts) {
 		f.Post.StartsAt, f.Post.Timezone, f.Post.Counts = boardStart, "America/Chicago", counts
 		f.EndsAt = boardStart.Add(3 * time.Hour)
 	})
-}
-
-// signedCounts is the roster the reminder boards show: 33 of 40.
-func signedCounts() notify.RaidCounts {
-	return notify.RaidCounts{In: signedUpOfForty, DPS: signedUpOfForty}
-}
-
-// dumpPostFrames drives the real drainer through the first post, the reminder as an edit, the
-// reminder as a reply, and the webhook reminder.
-func dumpPostFrames(d frameDumper) {
-	t := d.t
-	w := newPostWorld(t)
-	boardRaid(w, notify.RaidCounts{})
-	w.postedOnce(t)
-	d.write(dumpFrame{ID: "post-scheduled", Title: "posted on scheduling: nobody yet", Message: stamped(marshalled(t, w.callsOf("CreateMessage")[0].Message))})
-
-	boardRaid(w, signedCounts())
-	w.rest.Latest = "m1"
-	w.remindDue(t)
-	edits := w.callsOf("EditMessage")
-	d.write(dumpFrame{ID: "post-tomorrow", Title: "the reminder as an edit of the post", Message: stamped(marshalled(t, edits[len(edits)-1].Message))})
-
-	r := newPostWorld(t)
-	boardRaid(r, signedCounts())
-	r.postedOnce(t)
-	r.rest.Latest, r.rest.ReplyID = "other", "r1"
-	r.remindDue(t)
-	redits := r.callsOf("EditMessage")
-	d.write(dumpFrame{ID: "post-reminder", Title: "the reminder as a reply under the post",
-		Above: stamped(marshalled(t, redits[len(redits)-1].Message)), Message: marshalled(t, r.replies()[0].Message)})
-
-	posted := r.facts.by[r.raidID].Post.RaidPosted
-	hook := webhookOf(t, r.st.Pool, r.gid, r.uid, r.poster) // binding the bot dropped the webhook; testStore also resets w
-	if _, sent, err := hook.RaidReminder(context.Background(), r.gid, posted); err != nil || !sent {
-		t.Fatalf("webhook reminder = %v, %v", sent, err)
-	}
-	contents := r.poster.Contents()
-	d.message("post-reminder-webhook", "the reminder through a webhook", Message{Content: contents[len(contents)-1].Content})
 }
