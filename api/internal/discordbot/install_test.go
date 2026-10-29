@@ -480,42 +480,44 @@ func TestActiveNeedsAChannelAndAPresentBot(t *testing.T) {
 	}
 }
 
-// TestActivePortCarriesThePostDefault pins guilds.DiscordBot's Active to ActiveInstall's rule
-// and the box SetPostDefault remembers on the install.
-func TestActivePortCarriesThePostDefault(t *testing.T) {
+// TestDestinationPortCarriesTheDefaults pins guilds.DiscordBot's Destination to
+// ActiveInstall's rule, the boxes SetDiscordDefaults remembers on the install, and the
+// channel's name.
+func TestDestinationPortCarriesTheDefaults(t *testing.T) {
 	h := newInstallHarness(t)
 	ctx := context.Background()
-	if err := h.svc.SetPostDefault(ctx, h.gid, true); err != nil {
+	if err := h.svc.SetDiscordDefaults(ctx, h.gid, true, true); err != nil {
 		t.Fatalf("no install: %v", err)
 	}
 	h.callback(h.gid, "code=c", h.officerActor())
-	if active, _, err := h.svc.Active(ctx, h.gid); err != nil || active {
-		t.Fatalf("no channel: active %v err %v", active, err)
+	if d, err := h.svc.Destination(ctx, h.gid); err != nil || d != (guilds.BotDestination{}) {
+		t.Fatalf("no channel: %+v err %v", d, err)
 	}
 	if err := h.svc.d.Store.SetChannel(ctx, h.gid, "c1", "raid-signups"); err != nil {
 		t.Fatal(err)
 	}
-	if active, def, err := h.svc.Active(ctx, h.gid); err != nil || !active || !def {
-		t.Fatalf("channel saved: active %v default %v err %v", active, def, err)
+	want := guilds.BotDestination{Active: true, PostDefault: true, RemindDefault: true, ChannelName: "raid-signups"}
+	if d, err := h.svc.Destination(ctx, h.gid); err != nil || d != want {
+		t.Fatalf("channel saved: %+v err %v", d, err)
 	}
-	if err := h.svc.SetPostDefault(ctx, h.gid, false); err != nil {
+	if err := h.svc.SetDiscordDefaults(ctx, h.gid, false, true); err != nil {
 		t.Fatal(err)
 	}
-	if active, def, _ := h.svc.Active(ctx, h.gid); !active || def {
-		t.Fatalf("default off: active %v default %v", active, def)
+	if d, _ := h.svc.Destination(ctx, h.gid); !d.Active || d.PostDefault || !d.RemindDefault {
+		t.Fatalf("post off: %+v", d)
 	}
-	if err := h.svc.SetPostDefault(ctx, h.gid, true); err != nil {
+	if err := h.svc.SetDiscordDefaults(ctx, h.gid, true, false); err != nil {
 		t.Fatal(err)
 	}
-	if active, def, _ := h.svc.Active(ctx, h.gid); !active || !def {
-		t.Fatalf("default on: active %v default %v", active, def)
+	if d, _ := h.svc.Destination(ctx, h.gid); !d.Active || !d.PostDefault || d.RemindDefault {
+		t.Fatalf("remind off: %+v", d)
 	}
 	unusable := ChannelUnusable{Reason: UnusableDeleted}
 	if err := h.svc.d.Store.MarkChannelUnusable(ctx, h.gid, unusable, "Unknown Channel"); err != nil {
 		t.Fatal(err)
 	}
-	if active, def, _ := h.svc.Active(ctx, h.gid); active || def {
-		t.Fatalf("channel unusable: active %v default %v", active, def)
+	if d, _ := h.svc.Destination(ctx, h.gid); d != (guilds.BotDestination{}) {
+		t.Fatalf("channel unusable: %+v", d)
 	}
 }
 

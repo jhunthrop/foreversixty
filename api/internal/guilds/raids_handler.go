@@ -189,7 +189,8 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 	if err := decodeJSON(w, r, &req); err != nil {
 		return
 	}
-	plan, fields := validateRaid(req, time.Now(), nil, true)
+	now := time.Now()
+	plan, fields := validateRaid(req, now, nil, true)
 	if fields != nil {
 		writeInvalid(w, r, fields)
 		return
@@ -214,9 +215,10 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.logger().Info("guilds", "op", "raid_create", "guild_id", guildID, "raids", len(raids), "user_id", actor.UserID)
-	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
-	if ticked(req.PostToDiscord) {
-		s.postCreated(r.Context(), guildID, views)
+	s.rememberDiscordDefaults(r.Context(), guildID, req.PostToDiscord, req.RemindDayBefore)
+	if ticked(req.PostToDiscord) && len(views) > 0 {
+		s.scheduleCreated(r.Context(), guildID, views, remindOr(req.RemindDayBefore, views[0].Discord.RemindDefault), now)
+		views = s.withSchedules(r.Context(), views)
 	}
 	httpx.WriteOK(w, r, http.StatusCreated, map[string][]RaidView{"raids": views})
 }
@@ -230,7 +232,8 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	if err := decodeJSON(w, r, &req); err != nil {
 		return
 	}
-	plan, fields := validateRaid(req, time.Now(), &raid.StartsAt, false)
+	now := time.Now()
+	plan, fields := validateRaid(req, now, &raid.StartsAt, false)
 	if fields != nil {
 		writeInvalid(w, r, fields)
 		return
@@ -248,10 +251,12 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	} else {
 		s.markRaid(r.Context(), updated.ID)
 	}
-	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
+	wasPosted := s.scheduleEdited(r.Context(), guildID, raid, updated, req, now)
+	s.rememberDiscordDefaults(r.Context(), guildID, req.PostToDiscord, req.RemindDayBefore)
 	var post func(RaidView)
-	// Only a time change posts; a title or notes edit never does.
-	if ticked(req.PostToDiscord) && moved {
+	// Only a time change of a raid already posted announces the change; an unposted raid
+	// posts through its schedule, and a title or notes edit never posts.
+	if ticked(req.PostToDiscord) && moved && wasPosted {
 		post = func(v RaidView) { s.postChanged(r.Context(), guildID, v, &was) }
 	}
 	s.writeRaidView(w, r, "raid_update", guildID, updated, post)
@@ -279,6 +284,9 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 			return
 		}
 		s.markRaid(r.Context(), updated.ID)
+		if move.to != RaidPlanned {
+			s.withdrawOnStatus(r.Context(), guildID, updated.ID)
+		}
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,
 			"user_id", auth.ActorFrom(r.Context()).UserID)
 		// The cancel box only pre-ticks from the raid form's default; it never writes it.

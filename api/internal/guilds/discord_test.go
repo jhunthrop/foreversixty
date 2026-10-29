@@ -12,16 +12,20 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
-// fakeDiscord is a scripted guild channel; defaults, when set, records SetGuildPostDefault.
+// fakeDiscord is a scripted guild channel; defaults, when set, records every
+// SetGuildDiscordDefaults as {post, remind}, and the hook remembers them.
 type fakeDiscord struct {
 	enabled  bool
 	hook     *notify.GuildWebhook
-	defaults *[]bool
+	defaults *[][2]bool
 }
 
-func (f fakeDiscord) SetGuildPostDefault(_ context.Context, _ int64, on bool) error {
+func (f fakeDiscord) SetGuildDiscordDefaults(_ context.Context, _ int64, post, remind bool) error {
 	if f.defaults != nil {
-		*f.defaults = append(*f.defaults, on)
+		*f.defaults = append(*f.defaults, [2]bool{post, remind})
+	}
+	if f.hook != nil {
+		f.hook.PostDefault, f.hook.RemindDefault = post, remind
 	}
 	return nil
 }
@@ -129,7 +133,7 @@ func TestRaidViewCarriesTheGuildChannel(t *testing.T) {
 func TestRaidViewCountsAnActiveBotAsConnected(t *testing.T) {
 	w, events, hookDefaults := postingWorld(t)
 	w.h.svc.Discord = fakeDiscord{enabled: true, defaults: hookDefaults}
-	botDefaults := &[]bool{}
+	botDefaults := &[][2]bool{}
 	w.h.svc.Bot = fakeBot{on: true, defaults: botDefaults}
 	raid := w.createRaid(t)
 	if got := w.getRaid(t, raid.ID).Discord; got != (RaidDiscord{Available: true}) {
@@ -141,12 +145,12 @@ func TestRaidViewCountsAnActiveBotAsConnected(t *testing.T) {
 	if got := w.getRaid(t, raid.ID).Discord; got != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) {
 		t.Fatalf("bot only: discord = %+v", got)
 	}
-	created := w.createRaids(t, postingBody(time.Now().Add(9*24*time.Hour).UTC().Truncate(time.Minute).Format(time.RFC3339), 0, "true"))
+	created := w.createRaids(t, postingBody(time.Now().Add(3*24*time.Hour).UTC().Truncate(time.Minute).Format(time.RFC3339), 0, "true"))
 	if created[0].Discord != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) || len(events.posted) != 1 {
 		t.Fatalf("create answer: discord = %+v, posted %d", created[0].Discord, len(events.posted))
 	}
 	// The first create carried the box unticked, the second ticked.
-	if len(*botDefaults) != 2 || (*botDefaults)[0] || !(*botDefaults)[1] {
+	if len(*botDefaults) != 2 || (*botDefaults)[0][0] || !(*botDefaults)[1][0] {
 		t.Fatalf("bot post_default writes = %v", *botDefaults)
 	}
 

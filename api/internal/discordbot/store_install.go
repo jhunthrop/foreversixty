@@ -214,12 +214,6 @@ func (s *Store) RecordPostFailure(ctx context.Context, guildID int64, lastErr st
 		updated_at = now() where guild_id = $1`, guildID, lastErr)
 }
 
-// SetPostDefault stores the raid form's remembered "Post to Discord" box; a guild with no
-// install is left as it is.
-func (s *Store) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
-	return s.exec(ctx, `update guild_discord_installs set post_default = $2 where guild_id = $1`, guildID, on)
-}
-
 // SetDiscordDefaults stores the raid form's two remembered boxes; a guild with no install
 // is left as it is.
 func (s *Store) SetDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error {

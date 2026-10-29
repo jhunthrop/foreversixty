@@ -124,7 +124,7 @@ func TestBindServerCopiesTheWebhookPostDefault(t *testing.T) {
 			t.Fatalf("guild %d: post_default = %v, want %v", c.guild, in.PostDefault, c.want)
 		}
 	}
-	if err := st.SetPostDefault(ctx, ticked, false); err != nil {
+	if err := st.SetDiscordDefaults(ctx, ticked, false, true); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := st.BindServer(ctx, ticked, "srv-ticked", "S", u); err != nil {

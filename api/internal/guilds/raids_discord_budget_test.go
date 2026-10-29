@@ -77,6 +77,8 @@ func TestRaidPostsStopAtTheBudgetAndLogTheSkipped(t *testing.T) {
 	if len(views) != 4 {
 		t.Fatalf("created %d raids", len(views))
 	}
+	// A save posts only the raid within the week; the budget still bounds a longer list.
+	w.h.svc.postCreated(t.Context(), w.gid, views)
 	want := fmt.Sprintf("op=raid_post_skipped guild_id=%d raid_ids=\"[%d %d %d]\"", w.gid, views[1].ID, views[2].ID, views[3].ID)
 	if !strings.Contains(logs.String(), want) {
 		t.Fatalf("logs lack %q:\n%s", want, logs.String())
@@ -88,11 +90,12 @@ func TestCreateRaidAnswersWhenThePostFails(t *testing.T) {
 	poster := &notify.FakePoster{PostErr: &notify.DiscordError{Status: 500, Body: "boom"}}
 	st := realChannel(t, w, poster)
 	views := w.createRaids(t, postingBody(futureStart(), 3, "true"))
-	if len(views) != 4 || len(poster.Posts()) != 4 {
+	// Only the raid within the week posts on the save; the rest wait for the schedule run.
+	if len(views) != 4 || len(poster.Posts()) != 1 {
 		t.Fatalf("views = %d, posts = %d", len(views), len(poster.Posts()))
 	}
 	hook, ok, err := st.Get(t.Context(), w.gid)
-	if err != nil || !ok || hook.Failures != 4 || hook.LastError == nil || *hook.LastError != "boom" {
+	if err != nil || !ok || hook.Failures != 1 || hook.LastError == nil || *hook.LastError != "boom" {
 		t.Fatalf("channel after failed posts = %+v ok=%v err=%v", hook, ok, err)
 	}
 }

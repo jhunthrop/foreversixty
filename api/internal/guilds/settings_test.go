@@ -136,25 +136,31 @@ func TestGetSettingsSetsPrivateCacheControl(t *testing.T) {
 	}
 }
 
-// fakeBot is a scripted DiscordBot; defaults records every SetPostDefault.
+// fakeBot is a scripted DiscordBot; defaults records every SetDiscordDefaults as
+// {post, remind}.
 type fakeBot struct {
-	on          bool
-	bot         *SettingsBot
-	refusal     *BotRefusal
-	active      bool
-	postDefault bool
-	defaults    *[]bool
+	on            bool
+	bot           *SettingsBot
+	refusal       *BotRefusal
+	active        bool
+	postDefault   bool
+	remindDefault bool
+	channelName   string
+	defaults      *[][2]bool
 }
 
 func (f fakeBot) BotAvailable() bool { return f.on }
 
-func (f fakeBot) Active(context.Context, int64) (bool, bool, error) {
-	return f.active, f.active && f.postDefault, nil
+func (f fakeBot) Destination(context.Context, int64) (BotDestination, error) {
+	if !f.active {
+		return BotDestination{}, nil
+	}
+	return BotDestination{Active: true, PostDefault: f.postDefault, RemindDefault: f.remindDefault, ChannelName: f.channelName}, nil
 }
 
-func (f fakeBot) SetPostDefault(_ context.Context, _ int64, on bool) error {
+func (f fakeBot) SetDiscordDefaults(_ context.Context, _ int64, post, remind bool) error {
 	if f.defaults != nil {
-		*f.defaults = append(*f.defaults, on)
+		*f.defaults = append(*f.defaults, [2]bool{post, remind})
 	}
 	return nil
 }

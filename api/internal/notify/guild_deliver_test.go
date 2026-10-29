@@ -116,16 +116,16 @@ func TestGuildDelivererSkipsAGuildWithNoChannelAndANilDeliverer(t *testing.T) {
 	}
 }
 
-func TestGuildStoreSetPostDefault(t *testing.T) {
+func TestGuildStoreSetDefaults(t *testing.T) {
 	ctx := context.Background()
 	st, gid, _ := savedGuild(t)
-	if err := st.SetPostDefault(ctx, gid, true); err != nil {
+	if err := st.SetDefaults(ctx, gid, true, false); err != nil {
 		t.Fatal(err)
 	}
-	if w, _, _ := st.Get(ctx, gid); !w.PostDefault {
-		t.Fatal("post_default not stored")
+	if w, _, _ := st.Get(ctx, gid); !w.PostDefault || w.RemindDefault {
+		t.Fatalf("defaults not stored: post %v remind %v", w.PostDefault, w.RemindDefault)
 	}
-	if err := st.SetPostDefault(ctx, gid+999, true); err != nil {
+	if err := st.SetDefaults(ctx, gid+999, true, true); err != nil {
 		t.Fatalf("no channel = %v", err)
 	}
 }

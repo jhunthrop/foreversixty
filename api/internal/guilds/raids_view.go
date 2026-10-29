@@ -64,11 +64,24 @@ type RaidViewer struct {
 
 // RaidDiscord is the guild's Discord destination on a raid view (Service.raidDiscord):
 // Available when the deployment has connect or the bot on, Connected when the guild's bot is
-// active or it has a webhook channel, PostDefault the guild's remembered "Post to Discord" box.
+// active or it has a webhook channel, PostDefault and RemindDefault the guild's remembered
+// "Post to Discord" and "Remind the day before" boxes. ChannelName is the bot's channel, null
+// for a webhook or when not connected.
 type RaidDiscord struct {
-	Available   bool `json:"available"`
-	Connected   bool `json:"connected"`
-	PostDefault bool `json:"post_default"`
+	Available     bool    `json:"available"`
+	Connected     bool    `json:"connected"`
+	PostDefault   bool    `json:"post_default"`
+	RemindDefault bool    `json:"remind_default"`
+	ChannelName   *string `json:"channel_name"`
+}
+
+// RaidDiscordPost is a raid's posting schedule (spec 2026-10-28 §P.8): when it posts or
+// posted, whether it reminds, and when the reminder went.
+type RaidDiscordPost struct {
+	PostedAt   *time.Time `json:"posted_at"`
+	PostAt     *time.Time `json:"post_at"`
+	RemindedAt *time.Time `json:"reminded_at"`
+	Remind     bool       `json:"remind"`
 }
 
 // RaidView is GET /v1/guilds/{id}/raids/{raid} and each row of the planned list.
@@ -91,6 +104,8 @@ type RaidView struct {
 	NotSigned []RaidCharacter `json:"not_signed"`
 	Viewer    RaidViewer      `json:"viewer"`
 	Discord   RaidDiscord     `json:"discord"`
+	// DiscordPost is the raid's posting schedule; null when it has none.
+	DiscordPost *RaidDiscordPost `json:"discord_post"`
 	// PreDoneStatus is what a done raid returns to when its match is cleared; Match, Night and
 	// Attendance are null until a log is matched (Attendance: officers every row, a member
 	// their own characters').

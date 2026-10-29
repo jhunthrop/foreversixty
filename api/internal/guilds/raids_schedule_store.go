@@ -116,10 +116,12 @@ func (s *Store) MarkSchedulePosted(ctx context.Context, raidID int64, at time.Ti
 		  next_attempt_at = now(), last_error = null where raid_id = $1`, raidID, at)
 }
 
-// MarkScheduleReminded records the reminder as sent, with the reference to withdraw it by.
+// MarkScheduleReminded records the reminder as sent, with the reference to withdraw it by;
+// a zero ref (a bot reminder, or one that reached no channel) keeps no reference.
 func (s *Store) MarkScheduleReminded(ctx context.Context, raidID int64, ref notify.ReminderRef, at time.Time) error {
 	return s.scheduleExec(ctx, fmt.Sprintf("mark raid %d reminded", raidID), `
-		update guild_raid_discord_schedule set reminded_at = $2, reminder_via = $3, reminder_message_id = $4,
+		update guild_raid_discord_schedule set reminded_at = $2, reminder_via = nullif($3, ''),
+		  reminder_message_id = nullif($4, ''),
 		  lease_until = null, attempts = 0, next_attempt_at = now(), last_error = null where raid_id = $1`,
 		raidID, at, ref.Via, ref.MessageID)
 }

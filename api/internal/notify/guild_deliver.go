@@ -37,9 +37,10 @@ func (s *Service) GuildDeliverer() *GuildDeliverer {
 	return &GuildDeliverer{Store: s.GuildStore, Sealer: s.Sealer, Poster: s.Poster, Log: s.Log}
 }
 
-// SetGuildPostDefault remembers the raid form's "Post to Discord" box on the guild's channel.
-func (s *Service) SetGuildPostDefault(ctx context.Context, guildID int64, on bool) error {
-	return s.GuildStore.SetPostDefault(ctx, guildID, on)
+// SetGuildDiscordDefaults remembers the raid form's "Post to Discord" and "Remind the day
+// before" boxes on the guild's channel.
+func (s *Service) SetGuildDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error {
+	return s.GuildStore.SetDefaults(ctx, guildID, post, remind)
 }
 
 // RaidPosted posts the raid_posted embed; a failure is logged, never returned, because

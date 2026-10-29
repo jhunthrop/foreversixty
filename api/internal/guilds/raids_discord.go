@@ -53,24 +53,37 @@ func decodeOptionalJSON(w http.ResponseWriter, r *http.Request, v any) error {
 	return err
 }
 
-// rememberPostDefault stores the box as the guild's remembered default when the save
-// carried it, on the webhook channel and on the bot's install, so whichever posts reads it
-// back. A failure is logged: the raid itself was saved.
-func (s *Service) rememberPostDefault(ctx context.Context, guildID int64, box *bool) {
-	if box == nil {
+// rememberDiscordDefaults stores the two boxes as the guild's remembered defaults when the
+// save carried either, on the webhook channel and on the bot's install, so whichever posts
+// reads them back. A box the save left out keeps the guild's current default. A failure is
+// logged: the raid itself was saved.
+func (s *Service) rememberDiscordDefaults(ctx context.Context, guildID int64, post, remind *bool) {
+	if post == nil && remind == nil {
 		return
 	}
+	current, err := s.raidDiscord(ctx, guildID)
+	if err != nil {
+		s.logDiscordDefaults(guildID, "read", err)
+		return
+	}
+	p, r := current.PostDefault, current.RemindDefault
+	if post != nil {
+		p = *post
+	}
+	if remind != nil {
+		r = *remind
+	}
 	if s.discordOn() {
-		s.logPostDefault(guildID, "webhook", s.Discord.SetGuildPostDefault(ctx, guildID, *box))
+		s.logDiscordDefaults(guildID, "webhook", s.Discord.SetGuildDiscordDefaults(ctx, guildID, p, r))
 	}
 	if s.botOn() {
-		s.logPostDefault(guildID, "bot", s.Bot.SetPostDefault(ctx, guildID, *box))
+		s.logDiscordDefaults(guildID, "bot", s.Bot.SetDiscordDefaults(ctx, guildID, p, r))
 	}
 }
 
-func (s *Service) logPostDefault(guildID int64, destination string, err error) {
+func (s *Service) logDiscordDefaults(guildID int64, destination string, err error) {
 	if err != nil {
-		s.logger().Error("guilds", "op", "raid_post_default", "guild_id", guildID, "destination", destination, "err", err)
+		s.logger().Error("guilds", "op", "raid_discord_defaults", "guild_id", guildID, "destination", destination, "err", err)
 	}
 }
 
@@ -122,23 +135,27 @@ func (s *Service) postContext(ctx context.Context) (context.Context, context.Can
 	return context.WithTimeout(context.WithoutCancel(ctx), budget)
 }
 
-// postCreated posts one raid_posted per created raid, soonest first, within the budget;
-// once it is spent the rest are skipped with one log line.
-func (s *Service) postCreated(ctx context.Context, guildID int64, views []RaidView) {
+// postCreated posts one raid_posted per raid, soonest first, within the budget, and returns
+// the ids it posted; once the budget is spent the rest are skipped with one log line (their
+// schedule rows stay due, so the schedule run posts them).
+func (s *Service) postCreated(ctx context.Context, guildID int64, views []RaidView) []int64 {
 	ctx, cancel := s.postContext(ctx)
 	defer cancel()
 	g, ok := s.postGuild(ctx, guildID, "raid_posted")
 	if !ok {
-		return
+		return nil
 	}
 	sorted := slices.SortedFunc(slices.Values(views), func(a, b RaidView) int { return a.StartsAt.Compare(b.StartsAt) })
+	posted := make([]int64, 0, len(sorted))
 	for i, v := range sorted {
 		if ctx.Err() != nil {
 			s.logSkipped(guildID, sorted[i:])
-			return
+			return posted
 		}
 		s.RaidEvents.RaidPosted(ctx, guildID, s.raidPost(g, v))
+		posted = append(posted, v.ID)
 	}
+	return posted
 }
 
 // logSkipped names the raids whose posts the spent budget left out.

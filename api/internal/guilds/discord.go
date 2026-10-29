@@ -25,8 +25,9 @@ import (
 type DiscordChannels interface {
 	GuildConnectEnabled() bool
 	GuildChannel(ctx context.Context, guildID int64) (notify.GuildWebhook, bool, error)
-	// SetGuildPostDefault remembers the raid form's "Post to Discord" box.
-	SetGuildPostDefault(ctx context.Context, guildID int64, on bool) error
+	// SetGuildDiscordDefaults remembers the raid form's two boxes, "Post to Discord" and
+	// "Remind the day before".
+	SetGuildDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error
 }
 
 // SettingsDiscord is settings.discord: present for a verified officer when the deployment
@@ -82,12 +83,18 @@ type DiscordBot interface {
 	BotAvailable() bool
 	// SettingsBot is the guild's install and the viewer's one-time install refusal.
 	SettingsBot(ctx context.Context, guildID, viewerID int64) (*SettingsBot, *BotRefusal, error)
-	// Active is whether the bot posts the guild's raids: installed with a channel, not
-	// removed in Discord, the channel usable. postDefault is the remembered box, false when
-	// the bot is not active.
-	Active(ctx context.Context, guildID int64) (active, postDefault bool, err error)
-	// SetPostDefault remembers the raid form's "Post to Discord" box on the guild's install.
-	SetPostDefault(ctx context.Context, guildID int64, on bool) error
+	// Destination is whether the bot posts the guild's raids (installed with a channel, not
+	// removed in Discord, the channel usable) and, when it does, its remembered boxes and
+	// channel name; the zero value when it does not.
+	Destination(ctx context.Context, guildID int64) (BotDestination, error)
+	// SetDiscordDefaults remembers the raid form's two boxes on the guild's install.
+	SetDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error
+}
+
+// BotDestination is the bot as the guild's raid destination.
+type BotDestination struct {
+	Active, PostDefault, RemindDefault bool
+	ChannelName                        string
 }
 
 // discordOn reports whether the guild channel exists in this deployment.
@@ -177,12 +184,16 @@ func (s *Service) raidDiscord(ctx context.Context, guildID int64) (RaidDiscord, 
 		return RaidDiscord{}, nil
 	}
 	if s.botOn() {
-		active, postDefault, err := s.Bot.Active(ctx, guildID)
+		dest, err := s.Bot.Destination(ctx, guildID)
 		if err != nil {
 			return RaidDiscord{}, err
 		}
-		if active {
-			return RaidDiscord{Available: true, Connected: true, PostDefault: postDefault}, nil
+		if dest.Active {
+			out := RaidDiscord{Available: true, Connected: true, PostDefault: dest.PostDefault, RemindDefault: dest.RemindDefault}
+			if dest.ChannelName != "" {
+				out.ChannelName = &dest.ChannelName
+			}
+			return out, nil
 		}
 	}
 	if !s.discordOn() {
@@ -192,10 +203,12 @@ func (s *Service) raidDiscord(ctx context.Context, guildID int64) (RaidDiscord, 
 	if err != nil {
 		return RaidDiscord{}, err
 	}
-	return RaidDiscord{Available: true, Connected: connected, PostDefault: connected && w.PostDefault}, nil
+	return RaidDiscord{Available: true, Connected: connected, PostDefault: connected && w.PostDefault,
+		RemindDefault: connected && w.RemindDefault}, nil
 }
 
-// raidViews is Store.RaidViews with the guild's discord block on every view.
+// raidViews is Store.RaidViews with the guild's discord block and each raid's posting
+// schedule on every view.
 func (s *Service) raidViews(ctx context.Context, guildID, viewerID int64, raids []Raid) ([]RaidView, error) {
 	views, err := s.Store.RaidViews(ctx, guildID, viewerID, raids)
 	if err != nil {
@@ -208,9 +221,14 @@ func (s *Service) raidViews(ctx context.Context, guildID, viewerID int64, raids 
 	if err := s.scopeAttendance(ctx, guildID, viewerID, views); err != nil {
 		return nil, err
 	}
+	schedules, err := s.Store.SchedulesOf(ctx, raidIDsOf(views))
+	if err != nil {
+		return nil, err
+	}
 	out := make([]RaidView, len(views))
 	for i, v := range views {
 		v.Discord = discord
+		v.DiscordPost = discordPostOf(schedules, v.ID)
 		out[i] = v
 	}
 	return out, nil

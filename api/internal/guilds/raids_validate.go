@@ -39,6 +39,8 @@ type raidRequest struct {
 	RepeatWeeks     int    `json:"repeat_weeks"`
 	// PostToDiscord is the form's box; nil when the save did not carry it.
 	PostToDiscord *bool `json:"post_to_discord"`
+	// RemindDayBefore is the form's reminder box; nil reads as the guild's remind default.
+	RemindDayBefore *bool `json:"remind_day_before"`
 }
 
 // raidPlan is a validated raidRequest: the first raid's input and the guild's location.

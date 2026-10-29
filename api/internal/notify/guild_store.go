@@ -97,16 +97,6 @@ func (s *GuildStore) Delete(ctx context.Context, guildID int64) error {
 	return nil
 }
 
-// SetPostDefault stores the raid form's remembered "Post to Discord" box; a guild with no
-// channel saved has nothing to remember it on, which is not an error.
-func (s *GuildStore) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
-	_, err := s.Pool.Exec(ctx, `update guild_notification_webhooks set post_default = $2 where guild_id = $1`, guildID, on)
-	if err != nil {
-		return fmt.Errorf("notify: set guild post default %d: %w", guildID, err)
-	}
-	return nil
-}
-
 // SetDefaults stores the raid form's two remembered boxes; a guild with no channel saved
 // has nothing to remember them on, which is not an error.
 func (s *GuildStore) SetDefaults(ctx context.Context, guildID int64, post, remind bool) error {

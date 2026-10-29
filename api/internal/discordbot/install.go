@@ -80,17 +80,24 @@ func (s *Service) ActiveInstall(ctx context.Context, guildID int64) (Install, bo
 	return in, true, nil
 }
 
-// Active implements guilds.DiscordBot: whether the bot posts the guild's raids
-// (ActiveInstall's rule) and, when it does, the remembered "Post to Discord" box.
-func (s *Service) Active(ctx context.Context, guildID int64) (active, postDefault bool, err error) {
+// Destination implements guilds.DiscordBot: whether the bot posts the guild's raids
+// (ActiveInstall's rule) and, when it does, the remembered boxes and the channel's name.
+func (s *Service) Destination(ctx context.Context, guildID int64) (guilds.BotDestination, error) {
 	in, active, err := s.ActiveInstall(ctx, guildID)
-	return active, active && in.PostDefault, err
+	if err != nil || !active {
+		return guilds.BotDestination{}, err
+	}
+	dest := guilds.BotDestination{Active: true, PostDefault: in.PostDefault, RemindDefault: in.RemindDefault}
+	if in.ChannelName != nil {
+		dest.ChannelName = *in.ChannelName
+	}
+	return dest, nil
 }
 
-// SetPostDefault implements guilds.DiscordBot: it remembers the raid form's box on the
-// guild's install; a guild with no install is left as it is.
-func (s *Service) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
-	return s.d.Store.SetPostDefault(ctx, guildID, on)
+// SetDiscordDefaults implements guilds.DiscordBot: it remembers the raid form's two boxes
+// on the guild's install; a guild with no install is left as it is.
+func (s *Service) SetDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error {
+	return s.d.Store.SetDiscordDefaults(ctx, guildID, post, remind)
 }
 
 // SettingsBot implements guilds.DiscordBot.
