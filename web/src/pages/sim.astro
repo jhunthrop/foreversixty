@@ -20,8 +20,15 @@ const COLD_PASTE_SECTION =
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
+    <!-- Polish spec 5.3: the h1 and its one intro line first, the tool tabs under them. The intro
+         is static here, outside the island, so it is the page's one copy of the sentence. -->
+    <div class="flex flex-col gap-2 px-[18px] md:px-0">
+      <h1 class="heading-page">Simulator</h1>
+      <p class="text-muted text-[14px]" data-testid="sim-intro-line">
+        {landingCopy.introLine}
+      </p>
+    </div>
     <SimTabs currentPath="/sim" />
-    <h1 class="heading-page px-[18px] md:px-0">Simulator</h1>
     <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
          own largest early text used to be SourceSwitcher's addon-card body; the layout
          review promotes the Battle.net sign-in to a full-width hero ahead of that card
@@ -68,8 +75,12 @@ const COLD_PASTE_SECTION =
 
          2026-10-28 re-measure (polish lane, the example card removed from the hero branch):
          1256px at 390x844 and 838px at 1440x900 by the same method; the same 24px over each:
-         1280/862. -->
-    <div id="sim" data-sim-mount class="min-h-[1280px] md:min-h-[862px]">
+         1280/862.
+
+         2026-10-28 re-measure (polish lane, task 7: the intro line moved out above the tabs, the
+         damage-specs line moved into the paste box, Run carries a reason line): 1269px at 390x844
+         and 837px at 1440x900 by the same method; the same 24px over each: 1293/861. -->
+    <div id="sim" data-sim-mount class="min-h-[1293px] md:min-h-[861px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's
@@ -77,14 +88,13 @@ const COLD_PASTE_SECTION =
         <div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>
         <div class={COLD_PASTE_SECTION}>
           <h2 class="section-title">{landingCopy.pasteHeroTitle}</h2>
+          <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>
           <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>
           <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
         </div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
-          <p class="text-muted text-[14px]">{landingCopy.introLine}</p>
           <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
             <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
-            <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>
             <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
           </div>
         </section>

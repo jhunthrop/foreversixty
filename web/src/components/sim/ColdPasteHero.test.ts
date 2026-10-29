@@ -20,6 +20,14 @@ describe('ColdPasteHero', () => {
     expect(body).not.toContain('data-testid="sim-cold-paste-error"');
   });
 
+  it('says why Run is off while the box is empty, and carries the damage-specs line above the box', () => {
+    const { body } = render(ColdPasteHero, { props: { busy: false, onrun: () => {} } });
+    expect(body).toContain(landingCopy.pasteHeroRunReason);
+    expect(body.indexOf(landingCopy.scopeCaveat)).toBeLessThan(
+      body.indexOf('data-testid="sim-cold-paste-input"'),
+    );
+  });
+
   it('says the run is local and points the in-game hint at /setup', () => {
     const { body } = render(ColdPasteHero, { props: { busy: false, onrun: () => {} } });
     expect(body).toContain(landingCopy.pasteHeroRunsLocally);

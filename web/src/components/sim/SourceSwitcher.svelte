@@ -32,6 +32,7 @@
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
+  import { button } from '../../lib/ui/button';
   import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
@@ -82,6 +83,17 @@
   // aria-busy while `busy` holds (design 2026-09-22 spec section 3.2). Their label is
   // "Load" whether or not a load is running -- only the look changes.
   const actionBusy = $derived(busy ? `${action} ${BUSY_CLASS}` : action);
+
+  /** Polish spec 5.3: the sentence, then Sign in (primary) and Paste an export (secondary). */
+  const signInButton = button('primary', 'md');
+  const pasteButton = button('secondary', 'md');
+
+  /** Takes the visitor to the cold-paste box above, which owns the paste surface. */
+  function focusPasteBox(): void {
+    const box = document.getElementById(landingCopy.pasteBoxId);
+    box?.scrollIntoView({ block: 'center' });
+    box?.focus();
+  }
 
   const showHero = $derived(heroSignIn && !signedIn);
 
@@ -187,9 +199,6 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
   {#if showHero}
-    <!-- The intro line ahead of every load method: it belongs to the page's own lead. -->
-    <p class="text-muted text-[14px]" data-testid="sim-intro-line">{landingCopy.introLine}</p>
-
     <!-- Finding 2: the hero. Full width, first, with the email-link alternative as text --
          the three paste cards below are secondary. Finding 3: the DPS-only restriction
          lives here too, as the caption under this heading, its only copy on the page for a
@@ -200,11 +209,15 @@
          button. -->
     <div class={card} data-testid="sim-account-card">
       <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
-      <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
       <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-      <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
-        {landingCopy.signInWithBattlenet}
-      </button>
+      <div class="flex flex-wrap gap-3">
+        <button type="button" class={signInButton} onclick={onsignin} data-testid="sim-signin">
+          {landingCopy.signInWithBattlenet}
+        </button>
+        <button type="button" class={pasteButton} onclick={focusPasteBox} data-testid="sim-paste-an-export">
+          {landingCopy.pasteAnExport}
+        </button>
+      </div>
       <EmailLinkAlternative testid="sim-email-link" />
     </div>
 

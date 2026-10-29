@@ -40,34 +40,27 @@ describe('SourceSwitcher', () => {
   describe('heroSignIn, signed out', () => {
     const props = { ...requiredProps, heroSignIn: true };
 
-    it('renders the intro line ahead of the hero card', () => {
+    it('leaves the intro line to the page shell, so the sentence appears once', () => {
       const { body } = render(SourceSwitcher, { props });
-      expect(body).toContain('data-testid="sim-intro-line"');
-      expect(body).toContain(landingCopy.introLine);
+      expect(body).not.toContain('data-testid="sim-intro-line"');
       expect(body).not.toContain('sim-example-result');
-      const introIndex = body.indexOf('data-testid="sim-intro-line"');
-      const accountIndex = body.indexOf('data-testid="sim-account-card"');
-      expect(introIndex).toBeGreaterThan(-1);
-      expect(accountIndex).toBeGreaterThan(introIndex);
     });
 
-    it('renders the restriction once, as the hero card’s own caption, never the old duplicate', () => {
+    it('leaves the DPS-only restriction to the paste box above, never repeating it in the hero card', () => {
       const { body } = render(SourceSwitcher, { props });
-      expect(body).toContain('data-testid="sim-scope-note"');
-      expect(body).toContain(landingCopy.scopeCaveat);
+      expect(body).not.toContain('data-testid="sim-scope-note"');
       expect(body).not.toContain('data-testid="sim-sources-scope-note"');
     });
 
-    it('renders the sign-in action as a secondary button, not a second primary, and the email-link alternative as text', () => {
+    it('renders Sign in as the primary button and Paste an export as the secondary beside it', () => {
       const { body } = render(SourceSwitcher, { props });
-      expect(body).toContain('data-testid="sim-signin"');
+      const signIn = /<button[^>]*data-testid="sim-signin"[^>]*>/.exec(body);
+      const paste = /<button[^>]*data-testid="sim-paste-an-export"[^>]*>/.exec(body);
+      if (signIn === null || paste === null) throw new Error('hero buttons not rendered');
+      expect(signIn[0]).toContain('linear-gradient');
+      expect(paste[0]).not.toContain('linear-gradient');
       expect(body).toContain(landingCopy.signInWithBattlenet);
-      // One primary per view (design system): ColdPasteHero.svelte's Run is the gold
-      // PRIMARY_BUTTON whenever this hero renders, so this button takes the same
-      // secondary look the non-hero branch's identical button already uses.
-      const match = /<button[^>]*data-testid="sim-signin"[^>]*>/.exec(body);
-      if (match === null) throw new Error('no sim-signin button rendered');
-      expect(match[0]).not.toContain('bg-gold');
+      expect(body).toContain(landingCopy.pasteAnExport);
       expect(body).toContain(emailLinkCopy.link);
       expect(body).toContain('href="/login"');
     });

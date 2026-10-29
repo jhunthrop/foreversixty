@@ -14,7 +14,7 @@
      `runPastedInput`): this component only ever reads `code` and calls `onrun` with it,
      exactly once, when it already knows that call will succeed. -->
 <script lang="ts">
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { validateColdPaste } from '../../lib/sim/cold-paste';
   import { BUSY_CLASS } from '../../lib/ui/busy';
@@ -31,6 +31,9 @@
 
   const check = $derived(validateColdPaste(code));
   const error = $derived(check.ok ? null : check.message);
+  /** Run is off for want of a paste: say so, in the line that also carries a bad paste's error. */
+  const reason = $derived(!check.ok && check.message === null ? landingCopy.pasteHeroRunReason : null);
+  const runButton = button('primary', 'md');
 
   function run(): void {
     if (!check.ok || busy) return;
@@ -43,6 +46,7 @@
   data-testid="sim-cold-paste"
 >
   <h2 class="section-title">{landingCopy.pasteHeroTitle}</h2>
+  <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
   <label class="sr-only" for="sim-cold-paste-input">{landingCopy.pasteHeroTitle}</label>
   <textarea
     id="sim-cold-paste-input"
@@ -56,7 +60,7 @@
   <div class="flex flex-wrap items-center gap-3">
     <button
       type="button"
-      class="{PRIMARY_BUTTON_FIXED} px-5 {busy ? BUSY_CLASS : ''}"
+      class="{runButton} {busy ? BUSY_CLASS : ''}"
       disabled={!check.ok || busy}
       aria-busy={busy}
       onclick={run}
@@ -71,8 +75,13 @@
       </a>
     </p>
   </div>
-  {#if error !== null}
-    <p role="alert" class="text-strong text-[13px]" data-testid="sim-cold-paste-error">{error}</p>
-  {/if}
+  <!-- One 20px line, always on the page, so the reason arriving or leaving moves nothing. -->
+  <div class="min-h-5 text-[13px] leading-5">
+    {#if error !== null}
+      <p role="alert" class="text-strong" data-testid="sim-cold-paste-error">{error}</p>
+    {:else if reason !== null}
+      <p class="text-muted" data-testid="sim-cold-paste-reason">{reason}</p>
+    {/if}
+  </div>
   <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
 </section>

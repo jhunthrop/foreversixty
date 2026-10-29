@@ -75,6 +75,12 @@ export const landingCopy = {
   pasteHeroTitle: 'Paste your addon export or a build code',
   pasteHeroPlaceholder: 'FS1:…',
   pasteHeroRun: 'Run',
+  /** The id of the cold-paste textarea: the account card's "Paste an export" button focuses it. */
+  pasteBoxId: 'sim-cold-paste-input',
+  /** The secondary button beside Sign in with Battle.net. */
+  pasteAnExport: 'Paste an export',
+  /** Why Run is off while the box is empty. */
+  pasteHeroRunReason: 'Paste an export to run.',
   /** The addon's copy mode (L8.5 ruling 5): `/fs copy`, then Ctrl+C; the old export command is gone. */
   pasteHeroHintLead: 'In game, type /fs copy, press Ctrl+C, then paste it here, or',
   pasteHeroHintLink: 'get set up',
