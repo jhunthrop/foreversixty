@@ -310,8 +310,10 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           }
           const full = [spec ? spec + ' ' + className : className, level].filter(Boolean).join(' · ');
           const short = [spec || className, level].filter(Boolean).join(' · ');
+          const classLine = [className, level].filter(Boolean).join(' · ');
           document.querySelectorAll('[data-csel-name]').forEach((el) => (el.textContent = name));
           document.querySelectorAll('[data-csel-sub]').forEach((el) => (el.textContent = full));
+          document.querySelectorAll('[data-csel-sub-class]').forEach((el) => (el.textContent = classLine));
           document.querySelectorAll('[data-csel-sub-short]').forEach((el) => (el.textContent = short));
         }
       } catch {

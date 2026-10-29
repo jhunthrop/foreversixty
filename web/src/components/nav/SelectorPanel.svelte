@@ -217,7 +217,7 @@
         <span class="csel-tile is-small">{@render glyph(GLYPHS.person)}</span>
         <span class="csel-arow-text">
           <span class="csel-arow-title">{words.profile}</span>
-          <span class="csel-arow-sub">{words.profileSub(panel.profile.name)}</span>
+          <span class="csel-arow-sub">{words.profileSub}</span>
         </span>
         {@render chevron()}
       </a>
@@ -233,10 +233,13 @@
     <a class="csel-arow" href={panel.plan.href} data-testid="selector-row-plan">
       <span class="csel-tile is-small">{@render glyph(GLYPHS.crown)}</span>
       <span class="csel-arow-text">
-        <span class="csel-arow-title">{words.plan}</span>
+        <span class="csel-arow-line">
+          <span class="csel-arow-title">{words.plan}</span>
+          {#if panel.plan.founder}<span class="csel-tag is-outline">{words.founderTag}</span>{/if}
+        </span>
         <span class="csel-arow-sub">{panel.plan.sub}</span>
+        {#if panel.plan.sub2 !== null}<span class="csel-arow-sub">{panel.plan.sub2}</span>{/if}
       </span>
-      {#if panel.plan.founder}<span class="csel-tag is-outline">{words.founderTag}</span>{/if}
       {@render chevron()}
     </a>
     <button

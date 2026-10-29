@@ -156,7 +156,7 @@ test.describe('the bar at every width', () => {
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/guides');
-    await expect(page.getByTestId('selector-sub')).toHaveText('Fury Warrior · 60');
+    await expect(page.getByTestId('selector-sub')).toHaveText('Warrior · 60');
     await page.setViewportSize({ width: 1279, height: 900 });
     await expect(page.locator('.csel-sub-short')).toHaveText('Fury · 60');
     await expect(page.getByTestId('selector-sub')).toBeHidden();
@@ -170,8 +170,9 @@ test.describe('the bar at every width', () => {
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
     const account = (await selector(page).boundingBox())!;
-    expect(mark.x).toBeGreaterThanOrEqual(328 - 1);
-    expect(account.x + account.width).toBeLessThanOrEqual(1672 + 1);
+    // The page's own content edge: the 1344 column's start (328) plus its 48 px gutter.
+    expect(Math.abs(mark.x - 376)).toBeLessThanOrEqual(1);
+    expect(Math.abs(account.x + account.width - 1624)).toBeLessThanOrEqual(1);
   });
 
   test('a 22-character name keeps the bar one row and ends in an ellipsis, with the whole name in title', async ({
@@ -573,16 +574,16 @@ test.describe('signed out and expired', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('shows Sign in, and opens Add your character with the two sign-in buttons, paste and the addon', async ({
+  test('shows Sign in, and opens Sign in to Forever Sixty with the two sign-in buttons, paste and the addon', async ({
     page,
   }) => {
     await signedOut(page);
     await page.goto('/guides');
     await expect(selector(page)).toHaveAttribute('aria-label', 'Sign in or choose a character');
     await expect(selector(page)).toContainText('Sign in');
-    await expect(selector(page)).toContainText('or paste an export');
+    await expect(selector(page)).toContainText('to see your characters');
     await selector(page).click();
-    await expect(panel(page).getByText('Add your character')).toBeVisible();
+    await expect(panel(page).getByText('Sign in to Forever Sixty')).toBeVisible();
     await expect(panel(page).getByTestId('selector-manage')).toHaveCount(0);
     await expect(panel(page).getByTestId('selector-paste')).toContainText('Paste an export');
     await expect(panel(page).getByTestId('selector-addon')).toContainText('Get the addon');
@@ -673,7 +674,7 @@ test.describe('before the island hydrates', () => {
     const link = page.getByTestId('character-selector-pre');
     await expect(link).toBeVisible();
     await expect(link.locator('.csel-pre-char .csel-name')).toHaveText('Obnoxious Yell');
-    await expect(link.locator('.csel-pre-char .csel-sub')).toHaveText('Fury Warrior');
+    await expect(link.locator('.csel-pre-char .csel-sub')).toHaveText('Warrior');
     await expect(link.locator('.csel-pre-crest')).toHaveCSS('background-image', /crests\/warrior\.webp/);
     expect((await barBox(page))!.height).toBeGreaterThanOrEqual(81);
     expect((await link.boundingBox())!.width).toBe(232);
@@ -764,7 +765,9 @@ test.describe('the phone bar', () => {
     await expect(page.getByTestId('selector-live')).toHaveText('Now using Frostbyte.');
   });
 
-  test('signed out, the Menu leads with Sign in and the sheet says Add your character', async ({ page }) => {
+  test('signed out, the Menu leads with Sign in and the sheet says Sign in to Forever Sixty', async ({
+    page,
+  }) => {
     await signedOut(page);
     await page.goto('/guides');
     await ready(page);
@@ -772,7 +775,7 @@ test.describe('the phone bar', () => {
     await expect(page.getByTestId('menu-character')).toContainText('Sign in');
     await expect(page.getByTestId('menu-character')).toContainText('or paste an export');
     await page.getByTestId('menu-character').click();
-    await expect(panel(page).getByText('Add your character')).toBeVisible();
+    await expect(panel(page).getByText('Sign in to Forever Sixty')).toBeVisible();
     await expect(panel(page).getByTestId('selector-sign-in')).toBeVisible();
   });
 });

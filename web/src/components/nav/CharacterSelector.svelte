@@ -17,6 +17,7 @@
   import { publishSessionGuild } from '../../lib/character-selector/session-guild-dom';
   import {
     closedAriaLabel,
+    closedFaceLine,
     closedSecondLine,
     markTooltip,
     ringMarkOf,
@@ -180,7 +181,7 @@
         <span class="csel-name-bar" data-csel-name></span>
         <span class="csel-text">
           <span class="csel-name" data-csel-name></span>
-          <span class="csel-sub" data-csel-sub></span>
+          <span class="csel-sub" data-csel-sub-class></span>
           <span class="csel-sub-short" data-csel-sub-short></span>
         </span>
         <svg
@@ -281,7 +282,7 @@
         <span class="csel-name" style:color={classColorVar(current.classSlug)} data-testid="selector-name">
           {current.name}
         </span>
-        <span class="csel-sub" data-testid="selector-sub">{closedSecondLine(current, true)}</span>
+        <span class="csel-sub" data-testid="selector-sub">{closedFaceLine(current)}</span>
         <span class="csel-sub-short">{closedSecondLine(current, false)}</span>
       </span>
       <svg

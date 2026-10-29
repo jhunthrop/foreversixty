@@ -236,6 +236,13 @@ export function closedSecondLine(row: SelectorRow, withClass: boolean): string {
     .join(' · ');
 }
 
+/** The bar's closed second line: `{Class} · {level}`, as the account control's mock reads. */
+export function closedFaceLine(row: SelectorRow): string {
+  return [row.className, row.level === undefined ? '' : String(row.level)]
+    .filter((part) => part !== '')
+    .join(' · ');
+}
+
 /** List line 2: `{Spec} {Class} · {level} · {Realm}`, with `· {Ruleset}` unless Normal. */
 export function rowLineTwo(row: SelectorRow): string {
   const specClass = [row.spec, row.className].filter((part) => part !== undefined && part !== '').join(' ');

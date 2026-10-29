@@ -56,7 +56,7 @@ test.describe('the account panel, signed in', () => {
     await expect(panel(page).getByTestId('selector-account-head')).toContainText('Signed in with Battle.net');
     await expect(panel(page).getByTestId('selector-premium-tag')).toHaveText('Premium');
     const labels = await rows(page).locator('.csel-arow-title').allTextContents();
-    expect(labels).toEqual(['Your profile', 'Account', 'Plan', 'Sign out']);
+    expect(labels).toEqual(['Character page', 'Account', 'Plan', 'Sign out']);
     await expect(rows(page).getByTestId('selector-row-profile')).toHaveAttribute(
       'href',
       '/character/us/normal/obnoxious-yell',
@@ -64,7 +64,12 @@ test.describe('the account panel, signed in', () => {
     await expect(rows(page).getByTestId('selector-row-account')).toHaveAttribute('href', '/account');
     await expect(rows(page).getByTestId('selector-row-plan')).toHaveAttribute('href', '/account#plan');
     await expect(rows(page).getByTestId('selector-row-plan')).toContainText('Founder');
-    await expect(rows(page).getByTestId('selector-row-plan')).toContainText(/Premium · renews/);
+    await expect(rows(page).getByTestId('selector-row-plan')).toContainText('Premium · $50/yr');
+    await expect(rows(page).getByTestId('selector-row-plan')).toContainText(/Renews \d+ Oct 2027/);
+    await expect(rows(page).getByTestId('selector-row-account')).toContainText(
+      'Devices, Discord, notifications',
+    );
+    await expect(rows(page).getByTestId('selector-row-profile')).toContainText('Score, gear and fights');
     const head = (await panel(page).getByTestId('selector-account-head').boundingBox())!;
     const list = (await panel(page).getByTestId('selector-list').boundingBox())!;
     const account = (await rows(page).boundingBox())!;
@@ -175,6 +180,57 @@ test.describe('the account panel, signed in', () => {
     await expect(rows(page).getByTestId('selector-row-sign-out')).toBeEnabled();
   });
 
+  test('the closed face reads the class and level, not the spec', async ({ page }) => {
+    await signedInPage(page);
+    await expect(page.getByTestId('selector-sub')).toHaveText('Warrior · 60');
+  });
+
+  test('the Founder tag sits on the Plan label line and the sub keeps one line each', async ({ page }) => {
+    await signedInPage(page, PREMIUM_ME);
+    await control(page).click();
+    const plan = rows(page).getByTestId('selector-row-plan');
+    const label = (await plan.locator('.csel-arow-title').boundingBox())!;
+    const tag = (await plan.locator('.csel-tag').boundingBox())!;
+    expect(Math.abs(label.y + label.height / 2 - (tag.y + tag.height / 2))).toBeLessThanOrEqual(6);
+    for (const line of await plan.locator('.csel-arow-sub').all()) {
+      const box = (await line.boundingBox())!;
+      expect(box.height).toBeLessThanOrEqual(20);
+    }
+  });
+
+  test('the head, the character rows, the paste row and the account rows share one text inset', async ({
+    page,
+  }) => {
+    await signedInPage(page, PREMIUM_ME);
+    await control(page).click();
+    const left = async (selector: string): Promise<number> =>
+      Math.round((await panel(page).locator(selector).first().boundingBox())!.x);
+    const insets = await Promise.all([
+      left('.csel-acct-head .csel-tile'),
+      left('.csel-head-title'),
+      left('.csel-row-main .csel-row-crest'),
+      left('[data-testid="selector-paste"] .csel-action-icon'),
+      left('.csel-arow .csel-tile'),
+    ]);
+    expect(new Set(insets).size).toBe(1);
+  });
+
+  test('the current row carries a tint and a tick, no gold bar on its left edge', async ({ page }) => {
+    await signedInPage(page);
+    await control(page).click();
+    const row = panel(page).locator('.csel-row.is-current');
+    await expect(row).toHaveCSS('border-left-width', '0px');
+    await expect(row.locator('.csel-check')).toBeVisible();
+  });
+
+  test('the bar sits on the page column: seal on the page edge, control on the other', async ({ page }) => {
+    await signedInPage(page);
+    const seal = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
+    const bar = (await control(page).boundingBox())!;
+    expect(Math.round(seal.x)).toBe(96);
+    expect(Math.round(bar.x + bar.width)).toBe(1344);
+  });
+
   test('has no Discord link in the bar', async ({ page }) => {
     await signedInPage(page);
     await expect(page.getByRole('banner').getByRole('link', { name: 'Discord' })).toHaveCount(0);
@@ -223,6 +279,25 @@ test.describe('the account sheet on a phone', () => {
     await expect(rows(page).locator('.csel-arow')).toHaveCount(4);
     const scroll = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
     expect(scroll).toBe(true);
+  });
+
+  test('a 360 x 640 sheet scrolls its list and keeps Sign out on screen', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    const many = Array.from({ length: 8 }, (_, index) => ({
+      ...OBNOXIOUS,
+      name: `Hero ${String.fromCharCode(65 + index)}`,
+    }));
+    await signInWith(page, many, [], PREMIUM_ME);
+    await storePointer(page, armoryPointer(many[0]));
+    await page.goto('/guides');
+    await control(page).click();
+    const signOut = rows(page).getByTestId('selector-row-sign-out');
+    await expect(signOut).toBeInViewport({ ratio: 1 });
+    const sheet = (await panel(page).boundingBox())!;
+    expect(sheet.y).toBeGreaterThanOrEqual(0);
+    expect(sheet.y + sheet.height).toBeLessThanOrEqual(640);
+    const list = panel(page).getByTestId('selector-list');
+    expect(await list.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
   });
 
   test('signed out, the bar button is the gold person glyph named Sign in, and the sheet leads with the buttons', async ({

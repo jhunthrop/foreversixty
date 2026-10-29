@@ -10,10 +10,10 @@ describe('selector account copy', () => {
       email: 'Signed in with an email link',
     });
     expect(account.premiumTag).toBe('Premium');
-    expect(account.profile).toBe('Your profile');
-    expect(account.profileSub('Lightningbolltz')).toBe('Lightningbolltz’s score, gear and fights');
+    expect(account.profile).toBe('Character page');
+    expect(account.profileSub).toBe('Score, gear and fights');
     expect(account.account).toBe('Account');
-    expect(account.accountSub).toBe('Characters, devices, Discord');
+    expect(account.accountSub).toBe('Devices, Discord, notifications');
     expect(account.plan).toBe('Plan');
     expect(account.planSubFree).toBe('Free');
     expect(account.founderTag).toBe(accountPlanCopy.founder.pill);
@@ -30,7 +30,10 @@ describe('selector account copy', () => {
       'Sign in and your characters arrive with their gear, talents and guild.',
     );
     expect(selectorCopy.signInBnet).toBe('Sign in with Battle.net');
-    expect(selectorCopy.signInEmail).toBe('Use an email link');
+    expect(selectorCopy.signInEmail).toBe('Email me a sign-in link');
+    expect(selectorCopy.signedOutHeading).toBe('Sign in to Forever Sixty');
+    expect(selectorCopy.closedSignedOut).toBe('Sign in');
+    expect(selectorCopy.closedSignedOutSub).toBe('to see your characters');
   });
 
   it('no longer carries a header Discord string', () => {

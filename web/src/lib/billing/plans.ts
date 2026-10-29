@@ -89,7 +89,7 @@ export type RaidSize = (typeof RAID_SIZES)[number];
 export const SEAT_MOVE_LOCK_DAYS = 30;
 
 const MONTHS_PER_YEAR = 12;
-const CENTS_PER_DOLLAR = 100;
+export const CENTS_PER_DOLLAR = 100;
 const FOUNDER_WINDOW_CLOSES_MS = Date.parse(FOUNDER_WINDOW_CLOSES);
 
 export function founderOpen(now: Date): boolean {

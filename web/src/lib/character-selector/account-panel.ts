@@ -4,8 +4,11 @@
 // caller passes `/v1/me`, the current account character and the clock, and everything here is
 // read from what the selector already holds (no request).
 import type { Me, MeCharacter } from '../account/api';
-import { accountPlanLine, premiumSource } from '../account/plan-line';
+import { accountPlanLine, premiumSource, type AccountPlanLine } from '../account/plan-line';
+import type { PremiumSource } from '../billing/contract';
+import { CENTS_PER_DOLLAR, formatAmount } from '../billing/plans';
 import { characterHref } from '../characters';
+import { zonedDayMonthYear } from '../dates';
 import { selectorCopy } from './copy';
 
 export interface AccountHead {
@@ -18,13 +21,14 @@ export interface AccountHead {
 
 export interface PlanRow {
   sub: string;
+  /** The second line (`Renews 26 Oct 2027`), only for the account's own plan. */
+  sub2: string | null;
   href: string;
   founder: boolean;
 }
 
 export interface ProfileRow {
   href: string;
-  name: string;
 }
 
 export interface AccountPanel {
@@ -42,22 +46,39 @@ function headOf(me: Me, premium: boolean): AccountHead {
 }
 
 /** `nowMs` is the clock in milliseconds, a number so reactive state can hold it. */
+function ownPlanWords(me: Me): { sub: string; sub2: string } | null {
+  const billing = me.entitlements?.billing ?? null;
+  const end = billing?.current_period_end ?? null;
+  if (billing === null || end === null || billing.amount_cents === null || billing.interval === null) {
+    return null;
+  }
+  const { account } = selectorCopy;
+  const unit = billing.interval === 'monthly' ? account.perMonth : account.perYear;
+  const price = `${formatAmount(billing.amount_cents / CENTS_PER_DOLLAR)}${unit}`;
+  const lead = billing.cancel_at_period_end ? account.ends : account.renews;
+  return { sub: account.planOwn(price), sub2: `${lead} ${zonedDayMonthYear(end)}` };
+}
+
+function planOf(me: Me, source: PremiumSource, line: AccountPlanLine): PlanRow {
+  const { account } = selectorCopy;
+  if (source === 'none')
+    return { sub: account.planSubFree, sub2: null, href: account.freePlanHref, founder: false };
+  const own = source === 'own' ? ownPlanWords(me) : null;
+  return {
+    sub: own?.sub ?? line.line,
+    sub2: own?.sub2 ?? null,
+    href: account.planHref,
+    founder: line.founder,
+  };
+}
+
 export function accountPanelOf(me: Me, current: MeCharacter | null, nowMs: number): AccountPanel {
   const now = new Date(nowMs);
   const source = premiumSource(me, now);
   const line = accountPlanLine(me, now);
-  const free = source === 'none';
-  const { account } = selectorCopy;
   return {
     head: headOf(me, source !== 'none' && source !== 'fallback'),
-    plan: {
-      sub: free ? account.planSubFree : line.line,
-      href: free ? account.freePlanHref : account.planHref,
-      founder: line.founder,
-    },
-    profile:
-      current === null
-        ? null
-        : { href: characterHref(current.region, current.ruleset, current.name), name: current.name },
+    plan: planOf(me, source, line),
+    profile: current === null ? null : { href: characterHref(current.region, current.ruleset, current.name) },
   };
 }

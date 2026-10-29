@@ -51,15 +51,33 @@ describe('accountPanelOf', () => {
   it('a free account: Plan reads Free and goes to /premium', () => {
     expect(accountPanelOf(meWith({}), null, NOW).plan).toEqual({
       sub: 'Free',
+      sub2: null,
       href: '/premium',
       founder: false,
     });
   });
 
-  it('a paid account: Plan reads the account page line verbatim and goes to /account#plan', () => {
+  it('an own plan reads its price over its renewal date and goes to /account#plan', () => {
     const plan = accountPanelOf(meWith({}, OWN), null, NOW).plan;
-    expect(plan.sub).toMatch(/^Premium · renews \d+ Dec 2026/);
+    expect(plan.sub).toBe('Premium · $6/mo');
+    expect(plan.sub2).toMatch(/^Renews \d+ Dec 2026$/);
     expect(plan.href).toBe('/account#plan');
+  });
+
+  it('a yearly plan that stops renewing says Ends', () => {
+    const plan = accountPanelOf(
+      meWith({}, { ...OWN, interval: 'yearly', amount_cents: 5000, cancel_at_period_end: true }),
+      null,
+      NOW,
+    ).plan;
+    expect(plan.sub).toBe('Premium · $50/yr');
+    expect(plan.sub2).toMatch(/^Ends \d+ Dec 2026$/);
+  });
+
+  it('a seat keeps the account page line verbatim with no second line', () => {
+    const plan = accountPanelOf(meWith({}, null, { seat: ME_SEAT }), null, NOW).plan;
+    expect(plan.sub).toMatch(/^Premium · a seat from /);
+    expect(plan.sub2).toBeNull();
   });
 
   it('a founder price carries the Founder tag', () => {
@@ -70,7 +88,6 @@ describe('accountPanelOf', () => {
   it('Your profile exists only for a character saved to the account', () => {
     expect(accountPanelOf(meWith({}), SHAMAN, NOW).profile).toEqual({
       href: '/character/us/normal/lightningbolltz',
-      name: 'Lightningbolltz',
     });
     expect(accountPanelOf(meWith({}), null, NOW).profile).toBeNull();
   });
