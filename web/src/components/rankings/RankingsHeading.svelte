@@ -52,7 +52,7 @@
         <!-- Tag's shape (22 px, 11 px 700 uppercase, 1 px border) in the parse colour; Tag
              itself has four state tones only. -->
         <span
-          class="inline-flex h-[22px] rounded-full items-center border border-current/40 bg-current/10 px-2 text-[11px] font-bold tracking-[.08em] whitespace-nowrap uppercase"
+          class="inline-flex h-[22px] items-center rounded-full border border-current/40 bg-current/10 px-2 text-[11px] font-bold tracking-[.08em] whitespace-nowrap uppercase"
           style:color={step.color}>{step.label}</span
         >
       {/each}

@@ -785,9 +785,13 @@ html[data-pointer='1'] .setup-when-no-pointer {
    for step 2 -- so a signed-in visitor never sees step 1 flip. */
 .setup-chip[data-done='true'] :is(.chip-todo, .chip-label-todo),
 .setup-chip[data-done='false'] :is(.chip-done, .chip-label-done),
-html:not([data-session='1']) .setup-chip[data-hint='session']:not([data-done]) :is(.chip-done, .chip-label-done),
+html:not([data-session='1'])
+  .setup-chip[data-hint='session']:not([data-done])
+  :is(.chip-done, .chip-label-done),
 html[data-session='1'] .setup-chip[data-hint='session']:not([data-done]) :is(.chip-todo, .chip-label-todo),
-html:not([data-pointer='1']) .setup-chip[data-hint='pointer']:not([data-done]) :is(.chip-done, .chip-label-done),
+html:not([data-pointer='1'])
+  .setup-chip[data-hint='pointer']:not([data-done])
+  :is(.chip-done, .chip-label-done),
 html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) :is(.chip-todo, .chip-label-todo),
 .setup-chip[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
   display: none;
