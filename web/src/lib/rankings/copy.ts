@@ -6,8 +6,9 @@ export const encounterPickerCopy = {
   failed: 'Encounters did not load.',
   noneYet: 'No encounters have been ranked yet.',
   tryGuildsProgress: 'The Guilds board ranks guild progress across every encounter and needs none.',
-  guildsButton: 'Guilds',
-  progressButton: 'Progress',
+  openGuildsBoard: 'Open the Guilds board',
+  openProgressBoard: 'Open the Progress board',
+  noEncountersOption: 'No encounters yet',
 } as const;
 
 /** The home page's Rankings panel (spec 2026-09-23 §2 item 3): the top five guilds by

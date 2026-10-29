@@ -66,8 +66,10 @@ test('with no encounter data yet, the Characters board says so and offers the Gu
   await page.goto('/rankings');
 
   await expect(page.getByTestId('rankings-no-encounters')).toHaveText('No encounters have been ranked yet.');
+  await expect(page.getByTestId('filter-encounter')).toBeDisabled();
+  await expect(page.getByTestId('filter-encounter').locator('option')).toHaveText(['No encounters yet']);
   const guildsButton = page.getByTestId('rankings-try-guilds');
-  await expect(guildsButton).toHaveText('Guilds');
+  await expect(guildsButton).toContainText('Open the Guilds board');
 
   await guildsButton.click();
   await expect(page.getByTestId('board-guild')).toHaveAttribute('aria-selected', 'true');
@@ -82,5 +84,5 @@ test('the Guilds board also picks an encounter for speed and execution, not for 
   await page.goto('/rankings?board=guild&kind=speed');
   await expect(page.getByTestId('rankings-no-encounters')).toBeVisible();
   const progressButton = page.getByTestId('rankings-try-guilds');
-  await expect(progressButton).toHaveText('Progress');
+  await expect(progressButton).toContainText('Open the Progress board');
 });

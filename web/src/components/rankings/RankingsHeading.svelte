@@ -43,10 +43,18 @@
         >
       {/if}
     </div>
-    <p class="text-muted flex flex-wrap gap-x-3 gap-y-1 text-[12px]" data-testid="rankings-legend">
+    <p
+      class="text-muted flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px]"
+      data-testid="rankings-legend"
+    >
       {rankingsCopy.legendLead}
       {#each RANK_LEGEND as step (step.label)}
-        <span class="font-mono" style:color={step.color}>{step.label}</span>
+        <!-- Tag's shape (22 px, 11 px 700 uppercase, 1 px border) in the parse colour; Tag
+             itself has four state tones only. -->
+        <span
+          class="inline-flex h-[22px] rounded-full items-center border border-current/40 bg-current/10 px-2 text-[11px] font-bold tracking-[.08em] whitespace-nowrap uppercase"
+          style:color={step.color}>{step.label}</span
+        >
       {/each}
     </p>
   </div>

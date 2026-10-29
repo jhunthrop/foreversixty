@@ -6,7 +6,7 @@
      on a phone it collapses to a one-line summary with a 44 px Filters button that opens the
      two-column panel. Every filter lands in the URL through `onpatch`. -->
 <script lang="ts">
-  import { rankingsCopy } from '../../lib/rankings/copy';
+  import { encounterPickerCopy, rankingsCopy } from '../../lib/rankings/copy';
   import {
     classOptions,
     encounterOptions,
@@ -20,6 +20,7 @@
   import type { EncounterOption } from '../../lib/rankings/api';
   import { GUILD_KINDS, type RankingsState } from '../../lib/rankings/url';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import Switch from '../ui/Switch.svelte';
   import FilterSelect from './FilterSelect.svelte';
 
   let {
@@ -28,6 +29,7 @@
     encounterSlug,
     summary,
     showClassAndSpec,
+    noEncounters,
     onpatch,
     onencounter,
   }: {
@@ -37,6 +39,8 @@
     /** The phone's one-line collapsed form of these filters (lib/rankings/scope.ts). */
     summary: string;
     showClassAndSpec: boolean;
+    /** The encounter list has loaded and is empty, and none is named: the select is disabled. */
+    noEncounters: boolean;
     onpatch: (next: Partial<RankingsState>) => void;
     onencounter: (slug: string) => void;
   } = $props();
@@ -105,8 +109,11 @@
     <FilterSelect
       id="rankings-encounter"
       label={rankingsCopy.encounterLabel}
-      value={encounterSlug}
-      options={encounterOptions(encounters, encounterSlug)}
+      value={noEncounters ? '' : encounterSlug}
+      options={noEncounters
+        ? [{ value: '', label: encounterPickerCopy.noEncountersOption }]
+        : encounterOptions(encounters, encounterSlug)}
+      disabled={noEncounters}
       testid="filter-encounter"
       grow={1.3}
       ownRow={!showClassAndSpec}
@@ -163,16 +170,14 @@
         onchange={(value) => onpatch({ kind: value })}
       />
     {/if}
-    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="size-4"
+    <div class="flex min-h-11 items-center gap-3">
+      <span id="rankings-today-label" class="text-text text-[13px]">{rankingsCopy.todayOnly}</span>
+      <Switch
         checked={filters.since === 'today'}
-        data-testid="filter-today"
-        onchange={(event) =>
-          onpatch({ since: (event.currentTarget as HTMLInputElement).checked ? 'today' : '' })}
+        labelledby="rankings-today-label"
+        testid="filter-today"
+        onchange={(next) => onpatch({ since: next ? 'today' : '' })}
       />
-      {rankingsCopy.todayOnly}
-    </label>
+    </div>
   </div>
 </div>

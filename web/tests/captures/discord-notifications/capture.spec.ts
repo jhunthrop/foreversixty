@@ -540,28 +540,6 @@ atWidths('gold checkbox, Discord row', [WIDTH_DESKTOP], async (page, width) => {
   await cropOf(page, panel(page), `discord-checkbox-focus-${width}.png`);
 });
 
-atWidths('gold checkbox, rankings filter', [WIDTH_DESKTOP], async (page, width) => {
-  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
-  await page.route('**/v1/rankings?**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        ok: true,
-        data: { rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-09-14T00:00:00Z' },
-        error: null,
-        request_id: 'r',
-      }),
-    }),
-  );
-  await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
-  const today = page.getByTestId('filter-today');
-  await today.check();
-  await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-checked-${width}.png`);
-  await focusWithKeyboard(page, today);
-  await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-focus-${width}.png`);
-});
-
 // 24 to 28. The connect lane (experience spec section 3.2, 4.3 and 9, amended 2026-10-25).
 const CONNECT_ON: DiscordMeStages = { initial: null, connect: true };
 const CONNECTED = discordBlock({ source: 'connected', name: null, guild_id: GUILD_ID });

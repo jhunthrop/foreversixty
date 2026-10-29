@@ -47,6 +47,7 @@
   import RankingsFilters from './rankings/RankingsFilters.svelte';
   import RankingsHeading from './rankings/RankingsHeading.svelte';
   import RankingsHero from './rankings/RankingsHero.svelte';
+  import ActionLink from './ui/ActionLink.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -131,6 +132,15 @@
     // put it on top of the defaults once the board knows who is looking.
     early = { ...early, filters: { ...early.filters, ...next } };
     state = changed;
+  }
+
+  const guildsBoardHref = $derived(
+    `/rankings${rankingsSearch({ ...state, board: 'guild', kind: 'progress', page: 1 }, ownDefaults)}`,
+  );
+
+  function openGuildsBoard(event: MouseEvent): void {
+    event.preventDefault();
+    patch({ board: 'guild', kind: 'progress' });
   }
 
   function chooseEncounter(next: string): void {
@@ -317,6 +327,7 @@
       {encounterSlug}
       {summary}
       {showClassAndSpec}
+      noEncounters={aimed && encounters.length === 0 && encounterSlug === ''}
       onpatch={patch}
       onencounter={chooseEncounter}
     />
@@ -327,19 +338,12 @@
           <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
             {encounterPickerCopy.noneYet}
           </p>
-          <p class="text-muted text-[14px]">
-            {encounterPickerCopy.tryGuildsProgress}
-            <button
-              type="button"
-              class={rowLink}
-              data-testid="rankings-try-guilds"
-              onclick={() => patch({ board: 'guild', kind: 'progress' })}
-            >
-              {state.board === 'guild'
-                ? encounterPickerCopy.progressButton
-                : encounterPickerCopy.guildsButton}
-            </button>
-          </p>
+          <p class="text-muted text-[14px]">{encounterPickerCopy.tryGuildsProgress}</p>
+          <ActionLink href={guildsBoardHref} data-testid="rankings-try-guilds" onclick={openGuildsBoard}>
+            {state.board === 'guild'
+              ? encounterPickerCopy.openProgressBoard
+              : encounterPickerCopy.openGuildsBoard}
+          </ActionLink>
         {:else}
           <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
           <ul class="flex flex-col" data-testid="encounter-picker-rows">

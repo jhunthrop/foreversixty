@@ -6,7 +6,7 @@
 // notes; a visitor without the hint sees no skeleton. /v1/me and /v1/devices are held, then
 // released, by hand rather than delayed by a timer, so the loading frame is always on screen.
 // Also: the gold checkbox rule resolves to the gold token on three surfaces (9.2).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import type { HintState } from '../../src/lib/account/layout';
 import { discordBlock, type DiscordMeStages } from './support/discord-notifications';
 import {
@@ -18,8 +18,6 @@ import {
   stubMember,
   type LoadingMeasure,
 } from './support/account-reserve';
-import { gotoHydrated } from './support/hydrated';
-import { openFilters } from './support/rankings-filters';
 
 const HEIGHT = 1000;
 const WARM_MAX_CLS = { 390: 0.05, 1440: 0.03 } as const;
@@ -110,48 +108,4 @@ test.describe('a visitor without the session hint', () => {
       await expect(page.getByTestId('account')).toBeVisible();
     });
   }
-});
-
-/** The gold token as the browser resolves it, through a probe element. */
-async function resolvedGold(page: Page): Promise<string> {
-  return page.evaluate(() => {
-    const probe = document.createElement('span');
-    probe.style.color = 'var(--color-gold)';
-    document.body.append(probe);
-    const resolved = getComputedStyle(probe).color;
-    probe.remove();
-    return resolved;
-  });
-}
-
-const accentOf = (page: Page, testId: string): Promise<string> =>
-  page.getByTestId(testId).evaluate((node) => getComputedStyle(node).accentColor);
-
-test.describe('gold checkboxes', () => {
-  test('accent-color resolves to the gold token on the account page and the rankings filters', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1440, height: HEIGHT });
-    const hold = createHold();
-    await stubMember(page, { initial: discordBlock() }, hold);
-    await gotoHydrated(page, '/account', 'account');
-    const gold = await resolvedGold(page);
-    expect(gold).not.toBe('');
-
-    await page.route('**/v1/rankings?**', (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          ok: true,
-          data: { rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-09-14T00:00:00Z' },
-          error: null,
-          request_id: 'r',
-        }),
-      }),
-    );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
-    await openFilters(page);
-    expect(await accentOf(page, 'filter-today')).toBe(gold);
-  });
 });
