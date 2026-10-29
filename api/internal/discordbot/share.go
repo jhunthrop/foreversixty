@@ -162,6 +162,9 @@ func (s *Service) sharedReply(ctx context.Context, in Interaction, guildID int64
 	}
 	if ok {
 		msg = decorateOwn(row.command, row.opts, msg)
+		if msg, err = s.withGuidedControls(ctx, row.command, row.opts, guildID, who, msg); err != nil {
+			return Reply{}, fmt.Errorf("discordbot: share controls: %w", err)
+		}
 	} else {
 		msg = fallback
 	}

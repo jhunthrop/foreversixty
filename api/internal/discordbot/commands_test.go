@@ -91,7 +91,7 @@ func checkChoices(t *testing.T, cmds []Command) {
 			t.Errorf("option %s type %d", o.Name, o.Type)
 		}
 	}
-	if !cmds[1].Options[0].Required || !cmds[2].Options[0].Required || !cmds[2].Options[0].Autocomplete {
+	if !cmds[1].Options[0].Required || cmds[2].Options[0].Required || !cmds[2].Options[0].Autocomplete {
 		t.Error("required and autocomplete flags")
 	}
 }

@@ -164,7 +164,7 @@ func dispatchCommand(t *testing.T, w *pressWorld, server, name string) string {
 
 func TestUnhandledCommandAnswersTheFailureSentence(t *testing.T) {
 	w := newPressWorld(t)
-	if got := dispatchCommand(t, w, pressServer, "char"); got != commonCopy.Failure {
+	if got := dispatchCommand(t, w, pressServer, "nosuch"); got != commonCopy.Failure {
 		t.Fatalf("answer = %q", got)
 	}
 }

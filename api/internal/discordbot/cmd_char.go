@@ -27,13 +27,16 @@ func (s *Service) cmdChar(ctx context.Context, in Interaction) (Reply, error) {
 		return pressReply(commonCopy.Unbound, false), err
 	}
 	name, _ := in.Option(optName)
-	opts := map[string]string{optName: name}
+	if name == "" {
+		return s.charStart(ctx, in, guildID, viewer)
+	}
+	opts := charOptions(name, false)
 	msg, found, err := s.answerChar(ctx, guildID, viewer, opts)
 	if err != nil {
 		return Reply{}, err
 	}
 	if !found {
-		return pressReply(lookupCopy.NoCharacter, false), nil
+		return s.charUnknownCard(ctx, guildID, viewer, name, false)
 	}
 	button, err := s.offerShare(ctx, in, guildID, "char", opts)
 	if err != nil {

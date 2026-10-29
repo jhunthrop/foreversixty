@@ -53,7 +53,7 @@ func Commands() []Command {
 			stringOption("character", "Which of your characters.", false, true, nil),
 		}},
 		{Name: "char", Description: "A character: item level, readiness and the top 3 upgrades.", Released: true, Options: []CommandOption{
-			stringOption("name", descName, true, true, nil),
+			stringOption("name", descName, false, true, nil),
 		}},
 		{Name: "bis", Description: "Best in slot for a class and spec.", Released: true, Options: []CommandOption{
 			stringOption("class", "The class. Leave out to pick it.", false, false, classChoices),

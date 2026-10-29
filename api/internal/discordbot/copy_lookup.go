@@ -13,8 +13,8 @@ var lookupCopy = struct {
 	UpgradesByDPS, UpgradesByScore string
 	// NoGear stands in the upgrades field when the character has no gear shared.
 	NoGear string
-	// CharacterPage is the card's link button; NoCharacter answers an unknown or private name.
-	CharacterPage, NoCharacter string
+	// CharacterPage is the card's link button.
+	CharacterPage string
 	// BisSlotLead and BisTopLead are /bis's text lines; BisAuthor heads the pick.
 	BisSlotLead, BisTopLead, BisAuthor string
 	// BisOpen and BisAllSlots are the link buttons with and without a slot.
@@ -38,7 +38,6 @@ var lookupCopy = struct {
 	UpgradesByScore: "By Forever Score gained, against the guide build.",
 	NoGear:          "No gear shared yet. Upgrades show once the character is synced.",
 	CharacterPage:   "Character page",
-	NoCharacter:     "No public character by that name.",
 	BisSlotLead:     "{Slot} for a {Spec} {Class}, {band label}:",
 	BisTopLead:      "{Spec} {Class}, {band label}. The five slots where the best item gains the most over the next best:",
 	BisAuthor:       "Best in slot",

@@ -185,7 +185,7 @@ func TestLookupCopyMatchesTheSpec(t *testing.T) {
 	cell := func(label string) []string { return specCell(t, pressHeading, label) }
 	char := cell("`/char`")
 	wantChar := []string{lookupCopy.CharLine, lookupCopy.ItemLevel, lookupCopy.Readiness, lookupCopy.Synced, lookupCopy.TopUpgrades, lookupCopy.UpgradesBand,
-		lookupCopy.UpgradesByDPS, lookupCopy.UpgradesByScore, lookupCopy.NoGear, lookupCopy.CharacterPage, lookupCopy.NoCharacter}
+		lookupCopy.UpgradesByDPS, lookupCopy.UpgradesByScore, lookupCopy.NoGear, lookupCopy.CharacterPage}
 	bis := cell("`/bis`")
 	wantBis := []string{lookupCopy.BisSlotLead, lookupCopy.BisTopLead, lookupCopy.BisAuthor, lookupCopy.BisOpen, lookupCopy.BisAllSlots,
 		bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}
@@ -373,7 +373,10 @@ func TestCharCard(t *testing.T) {
 	})
 	t.Run("private or unknown", func(t *testing.T) {
 		w := newLookupWorld(t)
-		wantReply(t, w.command(t, pressDiscord, "char", map[string]string{"name": "Nobody"}), "No public character by that name.", false)
+		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Nobody"}).Message
+		if m.Content != "No public character named Nobody. Try another name." || len(m.Embeds) != 0 {
+			t.Fatalf("unknown = %+v", m)
+		}
 	})
 }
 
