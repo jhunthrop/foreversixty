@@ -19,17 +19,26 @@
 
   let { values, helper, busy, set }: Props = $props();
 
+  /** The inline switch: a 36 x 20 track with a 14 px thumb, gold when on. The input is the track, so
+   *  the row's label stays the 44 px hit area. The polish lane's shared Switch replaces this. */
+  const SWITCH =
+    'relative h-5 w-9 shrink-0 cursor-pointer appearance-none rounded-full border border-line bg-bg transition-colors ' +
+    "before:absolute before:top-1/2 before:left-0.5 before:h-3.5 before:w-3.5 before:-translate-y-1/2 before:rounded-full before:bg-muted before:transition-transform before:content-[''] " +
+    'checked:border-gold checked:bg-gold checked:before:translate-x-4 checked:before:bg-bg ' +
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed';
+
   const uid = $props.id();
   const postHelperId = `${uid}-post-helper`;
   const remindHelperId = `${uid}-remind-helper`;
   const locked = $derived(remindLocked(values, helper.postRow));
 </script>
 
-<div class="flex min-h-[120px] flex-col sm:min-h-[96px]">
+<div class="-mt-2 flex min-h-[164px] flex-col sm:min-h-[144px]">
   {#if helper.postRow === 'switch'}
     <label class={CHECK_ROW}>
       <input
         type="checkbox"
+        class={SWITCH}
         role="switch"
         checked={values.postToDiscord}
         aria-checked={values.postToDiscord}
@@ -44,7 +53,7 @@
       {helper.post}
     </p>
   {:else if helper.postRow === 'posted'}
-    <p class="text-muted flex min-h-11 items-center text-[13px]" data-testid="raid-form-discord-posted">
+    <p class="text-muted mt-1 text-[13px]" data-testid="raid-form-discord-posted">
       {helper.post}
     </p>
   {:else}
@@ -65,6 +74,7 @@
       <label class="{CHECK_ROW} {locked ? DISABLED_LOOK : ''}">
         <input
           type="checkbox"
+          class={SWITCH}
           role="switch"
           checked={values.remindDayBefore}
           aria-checked={values.remindDayBefore}
@@ -83,7 +93,7 @@
         {helper.remind}
       </p>
     {:else}
-      <p class="text-muted flex min-h-11 items-center text-[13px]" data-testid="raid-form-remind-helper">
+      <p class="text-muted mt-1 text-[13px]" data-testid="raid-form-remind-helper">
         {helper.remind}
       </p>
     {/if}

@@ -220,6 +220,13 @@ describe('parseGuildRaidPath', () => {
     expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/12/')?.raidId).toBe('12');
   });
 
+  it('resolves the guided-cards P.6 example the bot and webhooks post', () => {
+    expect(parseGuildRaidPath('/guild/us/normal/olympus-xxvii/raids/1')).toEqual({
+      guild: { region: 'us', ruleset: 'normal', slug: 'olympus-xxvii' },
+      raidId: '1',
+    });
+  });
+
   it('refuses a non-numeric id, a bare /raids and other suffixes', () => {
     expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/abc')).toBeNull();
     expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids')).toBeNull();

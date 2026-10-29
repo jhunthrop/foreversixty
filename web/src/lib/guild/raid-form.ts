@@ -135,7 +135,7 @@ export function editDefaults(raid: GuildRaidView, timezone: string): RaidFormVal
     timezone,
     notes: raid.notes ?? '',
     repeat: false,
-    postToDiscord: raid.discord.post_default,
+    postToDiscord: raid.discord_post !== null,
     remindDayBefore: raid.discord_post?.remind ?? raid.discord.remind_default,
   };
 }

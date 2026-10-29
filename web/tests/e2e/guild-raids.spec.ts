@@ -539,25 +539,32 @@ test.describe('Post to Discord and the reminder (guided cards P.3)', () => {
   });
 
   for (const viewport of [PHONE, { width: 1440, height: 900 }]) {
-    test(`no layout shift as the defaults load at ${viewport.width}`, async ({ page }) => {
+    test(`the form and its Discord block shift nothing inside the form at ${viewport.width}`, async ({
+      page,
+    }) => {
       await page.setViewportSize(viewport);
       await page.addInitScript(() => {
         const shifts: number[] = [];
         Object.assign(window, { __shifts: shifts });
+        const inForm = (node: Node | null): boolean =>
+          (node instanceof Element ? node : (node?.parentElement ?? null))?.closest(
+            '[data-testid="raid-form-create"]',
+          ) != null;
+        type Shift = { value: number; hadRecentInput: boolean; sources: { node: Node | null }[] };
         new PerformanceObserver((list) => {
-          for (const entry of list.getEntries() as unknown as { value: number; hadRecentInput: boolean }[])
-            if (!entry.hadRecentInput) shifts.push(entry.value);
+          for (const entry of list.getEntries() as unknown as Shift[])
+            if (!entry.hadRecentInput && entry.sources.some((source) => inForm(source.node)))
+              shifts.push(entry.value);
         }).observe({ type: 'layout-shift', buffered: true });
       });
       await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
       await openForm(page);
       await expect(page.getByTestId('raid-form-discord-helper')).toBeVisible();
-      await page.evaluate(() => ((window as unknown as { __shifts: number[] }).__shifts.length = 0));
       await page.waitForTimeout(300);
       const height = await page
         .getByTestId('raid-form-discord')
         .evaluate((node) => node.closest('label')?.parentElement?.getBoundingClientRect().height ?? 0);
-      expect(height).toBeGreaterThanOrEqual(viewport.width < 640 ? 120 : 96);
+      expect(height).toBeGreaterThanOrEqual(viewport.width < 640 ? 164 : 144);
       const shifts = await page.evaluate(() => (window as unknown as { __shifts: number[] }).__shifts);
       expect(shifts.reduce((sum, value) => sum + value, 0)).toBe(0);
     });

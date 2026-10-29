@@ -241,7 +241,7 @@ describe('RaidForm', () => {
     expect(markup).toContain('raid-form-discord-posted');
     expect(text(markup)).toContain(raidCopy.form.posted('#raid-signups'));
     expect(markup).not.toContain('data-testid="raid-form-discord"');
-    expect(tag(markup, 'raid-form-remind')).not.toContain('disabled');
+    expect(tag(markup, 'raid-form-remind')).not.toMatch(/ disabled(=|\s|\/|>)/);
   });
 
   it('edit of a webhook post keeps Post to Discord if the time changes', () => {

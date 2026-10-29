@@ -443,4 +443,22 @@ describe('remind defaults', () => {
     );
     expect(editDefaults(view({ discord_post: null }), CHICAGO).remindDayBefore).toBe(true);
   });
+
+  it('a new raid seeds Post to Discord from the guild default', () => {
+    expect(createDefaults({ ...dflt, discord: BOT }).postToDiscord).toBe(true);
+    expect(createDefaults({ ...dflt, discord: { ...BOT, post_default: false } }).postToDiscord).toBe(false);
+  });
+
+  it('an existing raid without a post is off, whatever the guild default', () => {
+    expect(editDefaults(raid({ discord: BOT, discord_post: null }), CHICAGO).postToDiscord).toBe(false);
+  });
+
+  it('an existing posted raid is on with its own remind', () => {
+    const d = editDefaults(
+      raid({ discord: { ...BOT, post_default: false }, discord_post: posted({ remind: false }) }),
+      CHICAGO,
+    );
+    expect(d.postToDiscord).toBe(true);
+    expect(d.remindDayBefore).toBe(false);
+  });
 });

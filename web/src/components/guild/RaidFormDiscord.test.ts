@@ -51,7 +51,7 @@ describe('RaidFormDiscord', () => {
     expect(text(markup)).toContain(raidCopy.form.postToDiscord);
     const remind = tag(markup, 'raid-form-remind');
     expect(remind).toContain('role="switch"');
-    expect(remind).not.toContain('disabled');
+    expect(remind).not.toMatch(/ disabled(=|\s|\/|>)/);
     expect(text(markup)).toContain(raidCopy.form.remindDayBefore);
     expect(text(markup)).toContain(raidCopy.form.remind);
   });
@@ -61,15 +61,15 @@ describe('RaidFormDiscord', () => {
     const markup = html(off, { postToDiscord: false });
     expect(tag(markup, 'raid-form-discord')).toContain('aria-checked="false"');
     const remind = tag(markup, 'raid-form-remind');
-    expect(remind).toContain('disabled');
+    expect(remind).toMatch(/ disabled(=|\s|\/|>)/);
     expect(remind).toContain('checked');
     expect(remind).toContain('aria-checked="true"');
     expect(text(markup)).toContain(raidCopy.form.remindNeedsPost);
   });
 
   it('reserves its height so the defaults loading shift nothing', () => {
-    expect(html()).toContain('min-h-[120px]');
-    expect(html()).toContain('sm:min-h-[96px]');
+    expect(html()).toContain('min-h-[164px]');
+    expect(html()).toContain('sm:min-h-[144px]');
   });
 
   it('a bot post replaces the switch with the posted line', () => {
@@ -78,14 +78,14 @@ describe('RaidFormDiscord', () => {
     expect(markup).not.toContain('data-testid="raid-form-discord"');
     expect(markup).toContain('data-testid="raid-form-discord-posted"');
     expect(text(markup)).toContain(line);
-    expect(tag(markup, 'raid-form-remind')).not.toContain('disabled');
+    expect(tag(markup, 'raid-form-remind')).not.toMatch(/ disabled(=|\s|\/|>)/);
   });
 
   it('a webhook post keeps the if-the-time-changes box', () => {
     const markup = html({ ...ON, postRow: 'webhookMoved', post: null }, { postToDiscord: false });
     expect(text(markup)).toContain(raidCopy.form.postToDiscordIfMoved);
     expect(tag(markup, 'raid-form-discord')).not.toContain('role="switch"');
-    expect(tag(markup, 'raid-form-remind')).not.toContain('disabled');
+    expect(tag(markup, 'raid-form-remind')).not.toMatch(/ disabled(=|\s|\/|>)/);
   });
 
   it('a sent reminder reads Reminder sent in place of the row', () => {
@@ -96,7 +96,7 @@ describe('RaidFormDiscord', () => {
 
   it('while saving both rows are disabled', () => {
     const markup = html(ON, {}, true);
-    expect(tag(markup, 'raid-form-discord')).toContain('disabled');
-    expect(tag(markup, 'raid-form-remind')).toContain('disabled');
+    expect(tag(markup, 'raid-form-discord')).toMatch(/ disabled(=|\s|\/|>)/);
+    expect(tag(markup, 'raid-form-remind')).toMatch(/ disabled(=|\s|\/|>)/);
   });
 });
