@@ -182,7 +182,9 @@ func TestBisPressesSurviveForgedIDs(t *testing.T) {
 	})
 	t.Run("another version is the stale card", func(t *testing.T) {
 		rep := w.pressBis(t, pressDiscord, "gbis:2:go:warrior:fury:p1:")
-		if rep.Message.Content != staleCard("/bis").Message.Content {
+		// The literal, not staleCard's own output: the doubled slash hid
+		// behind a computed expectation once.
+		if rep.Message.Content != "This card is out of date. Run /bis again." {
 			t.Fatalf("stale = %+v", rep.Message)
 		}
 	})

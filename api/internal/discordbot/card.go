@@ -56,7 +56,9 @@ func parseCardID(id string) (cardPress, bool) {
 // staleCard replaces a card of an older shape in place with the way out. command must be a
 // constant: it is inserted unescaped.
 func staleCard(command string) Reply {
-	content := strings.Replace(guideCopy.CardStale, "{command}", command, 1)
+	// §G.7 writes the slash into the copy, so a caller's "/bis" and "bis"
+	// both render as "/bis": the doubled slash reached every stale card once.
+	content := strings.Replace(guideCopy.CardStale, "{command}", strings.TrimPrefix(command, "/"), 1)
 	return Reply{Update: true, Message: Message{Content: content, Ephemeral: true}}
 }
 
