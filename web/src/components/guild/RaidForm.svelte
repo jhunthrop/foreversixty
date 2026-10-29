@@ -22,6 +22,8 @@
     canRepeat,
     createDefaults,
     discordFormPart,
+    discordHelper,
+    startOf,
     discordSettingsHref,
     durationOptions,
     editDefaults,
@@ -40,7 +42,17 @@
   import { timeZoneOptions } from '../../lib/guild/raid-zones';
   import type { RaidInput } from '../../lib/guild/raids-api';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import RaidFormDiscord from './RaidFormDiscord.svelte';
   import SelectChevron from '../ui/SelectChevron.svelte';
+
+  /** The block is only drawn with a channel; this stands in while there is none. */
+  const CLOSED_DISCORD: GuildRaidDiscord = {
+    available: false,
+    connected: false,
+    post_default: false,
+    remind_default: true,
+    channel_name: null,
+  };
 
   interface Props {
     mode: RaidFormMode;
@@ -108,6 +120,17 @@
     return busy ? raidCopy.form.submitEditing : raidCopy.form.submitEdit;
   });
   const discordPart = $derived(discordFormPart(discord));
+  const discordLines = $derived(
+    discordHelper({
+      values,
+      discord: discord ?? CLOSED_DISCORD,
+      post: raid?.discord_post ?? null,
+      mode,
+      startsAt: startOf(values),
+      now: clock(),
+      timezone: values.timezone,
+    }),
+  );
   const discordLine = splitAtLink(raidCopy.form.connectDiscord, raidCopy.form.connectDiscordLink);
   const keepStartsAt = $derived(mode === 'edit' ? raid?.starts_at : undefined);
 
@@ -333,16 +356,7 @@
   {/if}
 
   {#if discordPart === 'box'}
-    <label class={CHECK_ROW}>
-      <input
-        type="checkbox"
-        checked={values.postToDiscord}
-        disabled={busy}
-        onchange={(event) => set('postToDiscord', event.currentTarget.checked)}
-        data-testid="raid-form-discord"
-      />
-      {mode === 'create' ? raidCopy.form.postToDiscord : raidCopy.form.postToDiscordIfMoved}
-    </label>
+    <RaidFormDiscord {values} helper={discordLines} {busy} {set} />
   {:else if discordPart === 'line'}
     <p class="text-muted text-[13px]" data-testid="raid-form-discord-line">
       {discordLine.before}<a

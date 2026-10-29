@@ -98,6 +98,20 @@ export const raidCopy = {
     repeat: 'Also plan the next 3 weeks at this time',
     postToDiscord: 'Post to Discord',
     postToDiscordIfMoved: 'Post to Discord if the time changes',
+    remindDayBefore: 'Remind the day before',
+    postNow: (channel: string | null): string =>
+      `Posts to ${channel ?? 'your Discord channel'} as soon as you save.`,
+    postLater: (channel: string | null, day: string): string =>
+      `Posts to ${channel ?? 'your Discord channel'} on ${day}, a week before the raid.`,
+    postRepeat: (firstWithinWeek: boolean): string =>
+      firstWithinWeek
+        ? 'Each raid posts a week before it starts; the first posts as soon as you save.'
+        : 'Each raid posts a week before it starts.',
+    postOff: 'This raid will not post to Discord.',
+    remind: 'Posts a reminder 24 hours before the start.',
+    remindNeedsPost: 'Turn on Post to Discord to send a reminder.',
+    posted: (channel: string): string => `Posted to ${channel}. The post updates itself.`,
+    reminded: 'Reminder sent.',
     submitCreate: 'Post the raid',
     submitCreating: 'Posting…',
     submitEdit: 'Save changes',

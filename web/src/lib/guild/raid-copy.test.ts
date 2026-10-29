@@ -23,6 +23,10 @@ import {
 
 const SPEC = new URL('../../../../design/specs/2026-10-26-guild-raids.md', import.meta.url);
 const HEADING = '### 6.1 On the page';
+const SPEC2 = new URL('../../../../design/specs/2026-10-28-discord-guided-cards.md', import.meta.url);
+const HEADING2 = '## P.7 Copy, verbatim';
+const str2 = (key: string, index = 0, fill: Record<string, string> = {}): string =>
+  specString(SPEC2, HEADING2, key, index, fill);
 const cell = (label: string): string[] => specCell(SPEC, HEADING, label);
 const str = (label: string, index = 0, fill: Record<string, string> = {}): string =>
   specString(SPEC, HEADING, label, index, fill);
@@ -132,6 +136,26 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(f.connectDiscordLink).toBe('Settings');
     const e = f.errors;
     expect([e.raid, e.date, e.time, e.cap, e.failed]).toEqual(cell('Form errors'));
+  });
+
+  it('form strings match P.7', () => {
+    const f = raidCopy.form;
+    const ch = { channel: '#raid-signups' };
+    const day = { Weekday: 'Thursday', d: '3', Month: 'December' };
+    expect(f.remindDayBefore).toBe(str2('`form.remindDayBefore`'));
+    expect(f.postNow('#raid-signups')).toBe(str2('`form.postNow`', 0, ch));
+    expect(f.postNow(null)).toBe(str2('`form.postNow`', 1));
+    expect(f.postLater('#raid-signups', 'Thursday 3 December')).toBe(
+      str2('`form.postLater`', 0, { ...ch, ...day }),
+    );
+    expect(f.postLater(null, 'Thursday 3 December')).toBe(str2('`form.postLater`', 1, day));
+    expect(f.postRepeat(true)).toBe(str2('`form.postRepeat`', 0));
+    expect(f.postRepeat(false)).toBe(str2('`form.postRepeat`', 1));
+    expect(f.postOff).toBe(str2('`form.postOff`'));
+    expect(f.remind).toBe(str2('`form.remind`'));
+    expect(f.remindNeedsPost).toBe(str2('`form.remindNeedsPost`'));
+    expect(f.posted('#raid-signups')).toBe(str2('`form.posted`', 0, ch));
+    expect(f.reminded).toBe(str2('`form.reminded`'));
   });
 
   it('has the not-visible, load-error, back-link and changelog lines', () => {

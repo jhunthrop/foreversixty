@@ -21,6 +21,7 @@ import {
   raidUrl,
   repeatStarts,
   stripId,
+  storedRaid,
   stubGuildRaids,
   threePlanned,
   writesTo,
@@ -449,4 +450,133 @@ test('a cancelled raid keeps its row on the Raids tab with the Cancelled chip', 
   await expect(
     page.locator(`[data-testid^="planned-raid-${ONYXIA_ID}-"][data-testid$="-viewer-chip"]:visible`),
   ).toHaveText('In · DPS');
+});
+
+const BOT_CHANNEL = { discordConnected: true, postDefault: true, channelName: 'raid-signups' } as const;
+const LATER_HELPER = raidCopy.form.postLater('#raid-signups', 'Thursday 10 December');
+/** A raid posted through the bot to #raid-signups, before its reminder. */
+const POSTED = {
+  posted_at: '2026-12-01T18:00:00Z',
+  post_at: '2026-12-01T18:00:00Z',
+  reminded_at: null,
+  remind: true,
+};
+
+test.describe('Post to Discord and the reminder (guided cards P.3)', () => {
+  test('Post to Discord is on by default and the reminder under it', async ({ page }) => {
+    await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
+    const form = await openForm(page);
+    const post = page.getByTestId('raid-form-discord');
+    const remind = page.getByTestId('raid-form-remind');
+    await expect(post).toHaveAttribute('role', 'switch');
+    await expect(post).toBeChecked();
+    await expect(post).toHaveAttribute('aria-checked', 'true');
+    await expect(remind).toHaveAttribute('role', 'switch');
+    await expect(remind).toBeChecked();
+    await expect(page.getByTestId('raid-form-discord-helper')).toHaveText(LATER_HELPER);
+    await expect(page.getByTestId('raid-form-remind-helper')).toHaveText(raidCopy.form.remind);
+    await expectNoAxeViolations(page, '[data-testid="raid-form-create"]');
+    await post.focus();
+    await page.keyboard.press('Space');
+    await expect(post).toHaveAttribute('aria-checked', 'false');
+    await expect(form.getByTestId('raid-form-discord-helper')).toHaveText(raidCopy.form.postOff);
+  });
+
+  test('the first raid with no date posts as soon as it is saved', async ({ page }) => {
+    await openRaidsTab(page, { viewer: 'officer', raids: [], ...BOT_CHANNEL });
+    await openForm(page);
+    await expect(page.getByTestId('raid-form-discord-helper')).toHaveText(
+      raidCopy.form.postNow('#raid-signups'),
+    );
+  });
+
+  test('turning Post to Discord off disables the reminder', async ({ page }) => {
+    await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
+    await openForm(page);
+    await page.getByTestId('raid-form-discord').uncheck();
+    const remind = page.getByTestId('raid-form-remind');
+    await expect(remind).toBeDisabled();
+    await expect(remind).toBeChecked();
+    await expect(page.getByTestId('raid-form-remind-helper')).toHaveText(raidCopy.form.remindNeedsPost);
+    await page.getByTestId('raid-form-discord').check();
+    await expect(remind).toBeEnabled();
+    await remind.focus();
+    await page.keyboard.press('Space');
+    await expect(remind).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('the saved values return as the next raid’s defaults', async ({ page }) => {
+    const stub = await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
+    await openForm(page);
+    await page.getByTestId('raid-form-remind').uncheck();
+    await page.getByTestId('raid-form-discord').uncheck();
+    await page.getByTestId('raid-form-submit').click();
+    await expect(page.getByTestId('raid-form-create')).toHaveCount(0);
+    const posts = writesTo(stub, 'POST', /\/raids$/);
+    expect(posts[0].body).toMatchObject({ post_to_discord: false, remind_day_before: false });
+    await openForm(page);
+    await expect(page.getByTestId('raid-form-discord')).not.toBeChecked();
+    await expect(page.getByTestId('raid-form-remind')).not.toBeChecked();
+    await expect(page.getByTestId('raid-form-remind')).toBeDisabled();
+  });
+
+  test('edit of a posted raid shows the posted line', async ({ page }) => {
+    await openRaid(page, { viewer: 'officer', ...BOT_CHANNEL, discordPost: POSTED });
+    await page.getByTestId('raid-officer-edit').click();
+    await expect(page.getByTestId('raid-form-discord-posted')).toHaveText(
+      raidCopy.form.posted('#raid-signups'),
+    );
+    await expect(page.getByTestId('raid-form-discord')).toHaveCount(0);
+    await expect(page.getByTestId('raid-form-remind')).toBeEnabled();
+  });
+
+  test('a sent reminder reads Reminder sent', async ({ page }) => {
+    const discordPost = { ...POSTED, reminded_at: '2026-12-10T02:00:00Z' };
+    await openRaid(page, { viewer: 'officer', ...BOT_CHANNEL, discordPost });
+    await page.getByTestId('raid-officer-edit').click();
+    await expect(page.getByTestId('raid-form-remind-helper')).toHaveText(raidCopy.form.reminded);
+    await expect(page.getByTestId('raid-form-remind')).toHaveCount(0);
+  });
+
+  for (const viewport of [PHONE, { width: 1440, height: 900 }]) {
+    test(`no layout shift as the defaults load at ${viewport.width}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript(() => {
+        const shifts: number[] = [];
+        Object.assign(window, { __shifts: shifts });
+        new PerformanceObserver((list) => {
+          for (const entry of list.getEntries() as unknown as { value: number; hadRecentInput: boolean }[])
+            if (!entry.hadRecentInput) shifts.push(entry.value);
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+      await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
+      await openForm(page);
+      await expect(page.getByTestId('raid-form-discord-helper')).toBeVisible();
+      await page.evaluate(() => ((window as unknown as { __shifts: number[] }).__shifts.length = 0));
+      await page.waitForTimeout(300);
+      const height = await page
+        .getByTestId('raid-form-discord')
+        .evaluate((node) => node.closest('label')?.parentElement?.getBoundingClientRect().height ?? 0);
+      expect(height).toBeGreaterThanOrEqual(viewport.width < 640 ? 120 : 96);
+      const shifts = await page.evaluate(() => (window as unknown as { __shifts: number[] }).__shifts);
+      expect(shifts.reduce((sum, value) => sum + value, 0)).toBe(0);
+    });
+  }
+
+  test('both rows are 44 px at 360', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await openRaidsTab(page, { viewer: 'officer', ...BOT_CHANNEL });
+    await openForm(page);
+    for (const id of ['raid-form-discord', 'raid-form-remind']) {
+      const box = await page.getByTestId(id).locator('xpath=ancestor::label').boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test('a posted raid link opens the raid page', async ({ page }) => {
+    await stubGuildRaids(page, { viewer: 'member', raids: [storedRaid({ id: 1 })] });
+    await page.clock.install({ time: NOW });
+    await gotoHydrated(page, raidUrl(1), 'raid-page');
+    await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
+  });
 });

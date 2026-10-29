@@ -40,7 +40,14 @@ function raid(characters: GuildRaidViewerCharacter[], signups: GuildRaidSignup[]
     signups,
     not_signed: [],
     viewer: { characters },
-    discord: { available: true, connected: false, post_default: false },
+    discord: {
+      available: true,
+      connected: false,
+      post_default: false,
+      remind_default: true,
+      channel_name: null,
+    },
+    discord_post: null,
     ...NO_LOG_YET,
   };
 }

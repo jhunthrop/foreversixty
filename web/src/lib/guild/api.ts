@@ -851,6 +851,8 @@ export interface GuildRaidView extends RaidAttendanceFields {
   not_signed: GuildRaidNotSigned[];
   viewer: { characters: GuildRaidViewerCharacter[] };
   discord: GuildRaidDiscord;
+  /** `null` while no post is scheduled for this raid. */
+  discord_post: GuildRaidDiscordPost | null;
 }
 
 /** The guild channel as the raid view carries it (raids spec §9): `available` is whether the
@@ -859,6 +861,18 @@ export interface GuildRaidDiscord {
   available: boolean;
   connected: boolean;
   post_default: boolean;
+  /** The guild's remembered `Remind the day before` answer. */
+  remind_default: boolean;
+  /** The bot's channel name without the `#`; `null` for a webhook or when not connected. */
+  channel_name: string | null;
+}
+
+/** A raid's scheduled Discord post (`GuildRaidView.discord_post`): each stamp is RFC 3339 or null. */
+export interface GuildRaidDiscordPost {
+  posted_at: string | null;
+  post_at: string | null;
+  reminded_at: string | null;
+  remind: boolean;
 }
 
 export interface GuildZoneView {

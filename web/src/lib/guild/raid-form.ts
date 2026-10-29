@@ -3,7 +3,7 @@
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the payload.
 // The form takes the guild's wall clock; `wallClockToInstant` turns it into the stored UTC instant.
 import type { FilterOption } from '../rankings/options';
-import type { GuildRaidDiscord, GuildRaidView } from './api';
+import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView } from './api';
 import { forYouLine, raidCopy } from './raid-copy';
 import { instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
 import type { RaidInput } from './raids-api';
@@ -40,6 +40,8 @@ export interface RaidFormValues {
   notes: string;
   repeat: boolean;
   postToDiscord: boolean;
+  /** `Remind the day before`; kept when Post to Discord is off. */
+  remindDayBefore: boolean;
 }
 
 /** `1 h`, `1 h 30 min`. */
@@ -95,6 +97,7 @@ export function createDefaults({
 }: CreateDefaultsArgs): RaidFormValues {
   const timezone = guildTimezone ?? viewerTimezone;
   const postDefault = discord?.post_default ?? false;
+  const remindDayBefore = discord?.remind_default ?? true;
   const base = { title: '', notes: '', timezone, repeat: false };
   if (last === null) {
     return {
@@ -104,6 +107,7 @@ export function createDefaults({
       time: FIRST_RAID_TIME,
       duration: DEFAULT_DURATION,
       postToDiscord: postDefault,
+      remindDayBefore,
     };
   }
   const { date, time } = instantToWallClock(nextWeekday(new Date(last.starts_at), now, timezone), timezone);
@@ -114,6 +118,7 @@ export function createDefaults({
     time,
     duration: last.duration_minutes,
     postToDiscord: postDefault,
+    remindDayBefore,
   };
 }
 
@@ -131,6 +136,7 @@ export function editDefaults(raid: GuildRaidView, timezone: string): RaidFormVal
     notes: raid.notes ?? '',
     repeat: false,
     postToDiscord: raid.discord.post_default,
+    remindDayBefore: raid.discord_post?.remind ?? raid.discord.remind_default,
   };
 }
 
@@ -143,7 +149,8 @@ export interface ValidateContext {
   keepStartsAt?: string;
 }
 
-function startOf(values: RaidFormValues): Date | null {
+/** The raid's start instant on the guild's clock; `null` until a date is picked. */
+export function startOf(values: RaidFormValues): Date | null {
   if (values.date === '' || values.time === '') return null;
   try {
     return wallClockToInstant(values.date, values.time, values.timezone);
@@ -206,6 +213,89 @@ export function discordFormPart(discord: GuildRaidDiscord | null): DiscordFormPa
   return discord.connected ? 'box' : 'line';
 }
 
+/** A post goes out at once when the raid starts within this many hours (P.4: 7 days). */
+const POST_HORIZON_HOURS = 168;
+const HOUR_MS = 3_600_000;
+const CHANNEL_NAME_MAX = 60;
+
+/** `#raid-signups`, the name cut at 60 characters and a `…`; `null` for a webhook. */
+export function channelLabel(name: string | null): string | null {
+  if (name === null) return null;
+  return name.length > CHANNEL_NAME_MAX ? `#${name.slice(0, CHANNEL_NAME_MAX)}…` : `#${name}`;
+}
+
+/** `Thursday 3 December`: the day a week before the start, on the guild's calendar. */
+function weekBefore(start: Date, timezone: string): string {
+  const day = new Date(start.getTime() - POST_HORIZON_HOURS * HOUR_MS);
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).formatToParts(day);
+  const at = (type: Intl.DateTimeFormatPartTypes): string => parts.find((p) => p.type === type)?.value ?? '';
+  return `${at('weekday')} ${at('day')} ${at('month')}`;
+}
+
+/** The lines and rows the Discord block draws (spec P.3). */
+export interface DiscordHelper {
+  post: string | null;
+  remind: string;
+  postRow: 'switch' | 'posted' | 'webhookMoved';
+  remindRow: 'live' | 'reminded';
+}
+
+export interface DiscordHelperArgs {
+  values: RaidFormValues;
+  discord: GuildRaidDiscord;
+  post: GuildRaidDiscordPost | null;
+  mode: RaidFormMode;
+  startsAt: Date | null;
+  now: Date;
+  timezone: string;
+}
+
+function postRowOf(discord: GuildRaidDiscord, post: GuildRaidDiscordPost | null, mode: RaidFormMode) {
+  if (mode !== 'edit' || post?.posted_at == null) return 'switch';
+  return discord.channel_name === null ? 'webhookMoved' : 'posted';
+}
+
+function postLine(args: DiscordHelperArgs, channel: string | null): string {
+  const { values, startsAt, now, timezone } = args;
+  if (!values.postToDiscord) return raidCopy.form.postOff;
+  const within = startsAt === null || startsAt.getTime() - now.getTime() <= POST_HORIZON_HOURS * HOUR_MS;
+  if (values.repeat) return raidCopy.form.postRepeat(within);
+  return within
+    ? raidCopy.form.postNow(channel)
+    : raidCopy.form.postLater(channel, weekBefore(startsAt, timezone));
+}
+
+/** Whether the reminder row is switched off for want of a post: only a raid yet to be posted. */
+export function remindLocked(values: RaidFormValues, postRow: DiscordHelper['postRow']): boolean {
+  return postRow === 'switch' && !values.postToDiscord;
+}
+
+/** P.3's choice of helper line and row for the Discord block. */
+export function discordHelper(args: DiscordHelperArgs): DiscordHelper {
+  const channel = channelLabel(args.discord.channel_name);
+  const postRow = postRowOf(args.discord, args.post, args.mode);
+  const remindRow = args.post?.reminded_at != null ? 'reminded' : 'live';
+  const remindLine = remindLocked(args.values, postRow)
+    ? raidCopy.form.remindNeedsPost
+    : raidCopy.form.remind;
+  return {
+    post:
+      postRow === 'switch'
+        ? postLine(args, channel)
+        : postRow === 'posted' && channel !== null
+          ? raidCopy.form.posted(channel)
+          : null,
+    remind: remindRow === 'reminded' ? raidCopy.form.reminded : remindLine,
+    postRow,
+    remindRow,
+  };
+}
+
 /** The Settings line's link: the settings page's Discord section (spec 3.8, `#discord`). */
 export function discordSettingsHref(settingsHref: string): string {
   return `${settingsHref}#discord`;
@@ -226,6 +316,7 @@ export function raidPayload(
     notes: values.notes,
     timezone: values.timezone,
     post_to_discord: values.postToDiscord && discordConnected,
+    remind_day_before: values.remindDayBefore,
   };
   return mode === 'create' ? { ...body, repeat_weeks: values.repeat ? REPEAT_WEEKS : 0 } : body;
 }

@@ -48,7 +48,14 @@ function raid(id: number): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { available: true, connected: false, post_default: false },
+    discord: {
+      available: true,
+      connected: false,
+      post_default: false,
+      remind_default: true,
+      channel_name: null,
+    },
+    discord_post: null,
     ...NO_LOG_YET,
   };
 }
@@ -61,6 +68,7 @@ const input: RaidInput = {
   notes: '',
   timezone: 'America/Chicago',
   post_to_discord: false,
+  remind_day_before: true,
 };
 
 function sentRequest(upstream: ReturnType<typeof vi.fn<GlobalFetch>>, call = 0): Request {

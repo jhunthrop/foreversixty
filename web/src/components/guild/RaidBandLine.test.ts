@@ -224,7 +224,14 @@ function view(characters: ViewerChar[]): GuildRaidView {
     ),
     not_signed: [],
     viewer: { characters },
-    discord: { available: true, connected: false, post_default: false },
+    discord: {
+      available: true,
+      connected: false,
+      post_default: false,
+      remind_default: true,
+      channel_name: null,
+    },
+    discord_post: null,
     ...NO_LOG_YET,
   };
 }

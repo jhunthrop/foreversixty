@@ -42,8 +42,16 @@ function view(
   }).body;
 }
 
-const done = (report = raidReport(), discord = { available: true, connected: true, post_default: false }) =>
-  doneRaid({ report, discord });
+const done = (
+  report = raidReport(),
+  discord = {
+    available: true,
+    connected: true,
+    post_default: false,
+    remind_default: true,
+    channel_name: null,
+  },
+) => doneRaid({ report, discord });
 
 describe('the header', () => {
   it('gives an officer Copy and Post when a webhook is connected', () => {
@@ -60,7 +68,15 @@ describe('the header', () => {
   });
 
   it('says to connect a channel when there is no webhook', () => {
-    const body = view(done(raidReport(), { available: true, connected: false, post_default: false }));
+    const body = view(
+      done(raidReport(), {
+        available: true,
+        connected: false,
+        post_default: false,
+        remind_default: true,
+        channel_name: null,
+      }),
+    );
     expect(text(body)).toContain('Connect a Discord channel in Settings to post raids there.');
     expect(body).toContain(`href="${SETTINGS}"`);
     expect(body).not.toContain('data-testid="raid-report-post"');

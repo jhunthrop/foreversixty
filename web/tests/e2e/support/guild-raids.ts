@@ -23,6 +23,8 @@ import {
 import type {
   GuildRaidRole,
   GuildRaidStatus,
+  GuildRaidDiscord,
+  GuildRaidDiscordPost,
   GuildRaidView,
   GuildRaidsPage,
   GuildSignupState,
@@ -195,6 +197,12 @@ export interface RaidStubOptions {
   discordConnected?: boolean;
   /** `discord.post_default`: the guild's channel posts raids by default. */
   postDefault?: boolean;
+  /** `discord.remind_default`; left out, it is on. */
+  remindDefault?: boolean;
+  /** `discord.channel_name`: the bot's channel; left out, a webhook. */
+  channelName?: string | null;
+  /** `discord_post` on every raid view; left out, none is scheduled. */
+  discordPost?: GuildRaidDiscordPost | null;
   guildTimezone?: string | null;
 }
 
@@ -274,6 +282,9 @@ export class RaidStub {
   discordAvailable: boolean;
   discordConnected: boolean;
   postDefault: boolean;
+  remindDefault: boolean;
+  channelName: string | null;
+  discordPost: GuildRaidDiscordPost | null;
   guildTimezone: string | null;
   readonly writes: RecordedWrite[] = [];
   /** Every raid read, by id, so R1's tests can say none was made. */
@@ -289,6 +300,9 @@ export class RaidStub {
     this.discordAvailable = options.discordAvailable ?? true;
     this.discordConnected = options.discordConnected ?? false;
     this.postDefault = options.postDefault ?? false;
+    this.remindDefault = options.remindDefault ?? true;
+    this.channelName = options.channelName ?? null;
+    this.discordPost = options.discordPost ?? null;
     this.guildTimezone = options.guildTimezone === undefined ? CHICAGO : options.guildTimezone;
   }
 
@@ -347,11 +361,19 @@ export class RaidStub {
           };
         }),
       },
-      discord: {
-        available: this.discordAvailable,
-        connected: this.discordConnected,
-        post_default: this.postDefault,
-      },
+      discord: this.discordView(),
+      discord_post: this.discordPost,
+    };
+  }
+
+  /** The guild channel as the raid view carries it. */
+  discordView(): GuildRaidDiscord {
+    return {
+      available: this.discordAvailable,
+      connected: this.discordConnected,
+      post_default: this.postDefault,
+      remind_default: this.remindDefault,
+      channel_name: this.channelName,
     };
   }
 
@@ -391,11 +413,7 @@ export class RaidStub {
       planned: this.raids.map((r) => this.view(r.id)),
       zones: ZONES,
       guild_timezone: this.guildTimezone,
-      discord: {
-        available: this.discordAvailable,
-        connected: this.discordConnected,
-        post_default: this.postDefault,
-      },
+      discord: this.discordView(),
     };
   }
 
@@ -435,6 +453,8 @@ export class RaidStub {
     const zone = ZONES.find((z) => z.key === body.zone);
     if (zone === undefined) throw new Error(`guild-raids stub: unknown zone ${body.zone}`);
     this.guildTimezone = body.timezone;
+    this.postDefault = body.post_to_discord;
+    this.remindDefault = body.remind_day_before;
     const made = repeatStarts(body.starts_at, body.timezone, body.repeat_weeks ?? 0).map((startsAt) =>
       storedRaid({
         id: this.nextId++,

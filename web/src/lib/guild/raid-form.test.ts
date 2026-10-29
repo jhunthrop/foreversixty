@@ -3,14 +3,16 @@
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the
 // payload in UTC from the guild's wall clock.
 import { describe, expect, it } from 'vitest';
-import type { GuildRaidView } from './api';
+import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView } from './api';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import { raidCopy } from './raid-copy';
 import {
   RAID_CAP,
   canRepeat,
+  channelLabel,
   createDefaults,
   discordFormPart,
+  discordHelper,
   discordSettingsHref,
   durationLabel,
   durationOptions,
@@ -48,7 +50,14 @@ function raid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { available: true, connected: true, post_default: true },
+    discord: {
+      available: true,
+      connected: true,
+      post_default: true,
+      remind_default: true,
+      channel_name: null,
+    },
+    discord_post: null,
     ...NO_LOG_YET,
     ...extra,
   };
@@ -65,6 +74,7 @@ function values(extra: Partial<RaidFormValues> = {}): RaidFormValues {
     notes: '',
     repeat: false,
     postToDiscord: false,
+    remindDayBefore: true,
     ...extra,
   };
 }
@@ -104,7 +114,13 @@ describe('lastPlannedRaid and openRaidCount', () => {
   });
 });
 
-const CONNECTED = { available: true, connected: true, post_default: true };
+const CONNECTED = {
+  available: true,
+  connected: true,
+  post_default: true,
+  remind_default: true,
+  channel_name: null,
+};
 
 describe('createDefaults', () => {
   it('takes the last raid’s zone, weekday, guild time and duration', () => {
@@ -256,6 +272,7 @@ describe('raidPayload', () => {
       notes: '',
       timezone: CHICAGO,
       post_to_discord: true,
+      remind_day_before: true,
       repeat_weeks: 3,
     });
   });
@@ -271,9 +288,33 @@ describe('raidPayload', () => {
 
 describe('discordFormPart', () => {
   it('draws the box when connected, the line when not, nothing when connect is off or unknown', () => {
-    expect(discordFormPart({ available: true, connected: true, post_default: false })).toBe('box');
-    expect(discordFormPart({ available: true, connected: false, post_default: false })).toBe('line');
-    expect(discordFormPart({ available: false, connected: false, post_default: false })).toBe('none');
+    expect(
+      discordFormPart({
+        available: true,
+        connected: true,
+        post_default: false,
+        remind_default: true,
+        channel_name: null,
+      }),
+    ).toBe('box');
+    expect(
+      discordFormPart({
+        available: true,
+        connected: false,
+        post_default: false,
+        remind_default: true,
+        channel_name: null,
+      }),
+    ).toBe('line');
+    expect(
+      discordFormPart({
+        available: false,
+        connected: false,
+        post_default: false,
+        remind_default: true,
+        channel_name: null,
+      }),
+    ).toBe('none');
     expect(discordFormPart(null)).toBe('none');
   });
 
@@ -292,5 +333,114 @@ describe('notesCounter and serverFieldFor', () => {
     expect(serverFieldFor('zone')).toBe('zone');
     expect(serverFieldFor('starts_at')).toBe('time');
     expect(serverFieldFor('notes')).toBeNull();
+  });
+});
+
+const BOT: GuildRaidDiscord = {
+  available: true,
+  connected: true,
+  post_default: true,
+  remind_default: true,
+  channel_name: 'raid-signups',
+};
+const WEBHOOK: GuildRaidDiscord = { ...BOT, channel_name: null };
+const posted = (extra: Partial<GuildRaidDiscordPost> = {}): GuildRaidDiscordPost => ({
+  posted_at: '2026-11-30T18:00:00Z',
+  post_at: '2026-11-30T18:00:00Z',
+  reminded_at: null,
+  remind: true,
+  ...extra,
+});
+
+interface HelperArgs {
+  values?: Partial<RaidFormValues>;
+  discord?: GuildRaidDiscord;
+  post?: GuildRaidDiscordPost | null;
+  mode?: 'create' | 'edit';
+}
+
+function helper({ values: v = {}, discord = BOT, post = null, mode = 'create' }: HelperArgs = {}) {
+  const filled = values({ postToDiscord: true, ...v });
+  const startsAt = new Date(`${filled.date}T${filled.time}:00-06:00`);
+  return discordHelper({ values: filled, discord, post, mode, startsAt, now: NOW, timezone: CHICAGO });
+}
+
+describe('discordHelper', () => {
+  it('within a week posts now, further out names the day, off says so', () => {
+    const channel = '#raid-signups';
+    expect(helper({ values: { date: '2026-12-05' } }).post).toBe(raidCopy.form.postNow(channel));
+    expect(helper({ values: { date: '2026-12-12' } }).post).toBe(
+      raidCopy.form.postLater(channel, 'Saturday 5 December'),
+    );
+    expect(helper({ values: { date: '2026-12-12' }, discord: WEBHOOK }).post).toBe(
+      raidCopy.form.postLater(null, 'Saturday 5 December'),
+    );
+    const off = helper({ values: { postToDiscord: false } });
+    expect(off.post).toBe(raidCopy.form.postOff);
+    expect(off.remind).toBe(raidCopy.form.remindNeedsPost);
+    expect(helper().remind).toBe(raidCopy.form.remind);
+  });
+
+  it('names the guild-zone day a week before the start', () => {
+    const later = helper({ values: { date: '2026-12-10', time: '20:00' } });
+    expect(later.post).toBe(raidCopy.form.postLater('#raid-signups', 'Thursday 3 December'));
+  });
+
+  it('repeat says each raid posts a week before, and whether the first goes now', () => {
+    expect(helper({ values: { repeat: true, date: '2026-12-05' } }).post).toBe(
+      raidCopy.form.postRepeat(true),
+    );
+    expect(helper({ values: { repeat: true, date: '2026-12-20' } }).post).toBe(
+      raidCopy.form.postRepeat(false),
+    );
+  });
+
+  it('edit of a bot post shows the posted line; reminded shows Reminder sent', () => {
+    const edit = helper({ mode: 'edit', post: posted() });
+    expect(edit.postRow).toBe('posted');
+    expect(edit.post).toBe(raidCopy.form.posted('#raid-signups'));
+    expect(edit.remindRow).toBe('live');
+    const done = helper({ mode: 'edit', post: posted({ reminded_at: '2026-12-01T00:00:00Z' }) });
+    expect(done.remindRow).toBe('reminded');
+    expect(done.remind).toBe(raidCopy.form.reminded);
+  });
+
+  it('edit of a webhook post keeps the if-the-time-changes box and a live reminder', () => {
+    const edit = helper({ mode: 'edit', discord: WEBHOOK, post: posted(), values: { postToDiscord: false } });
+    expect(edit.postRow).toBe('webhookMoved');
+    expect(edit.post).toBeNull();
+    expect(edit.remind).toBe(raidCopy.form.remind);
+  });
+
+  it('edit of a raid not yet posted draws the switch like create', () => {
+    const edit = helper({ mode: 'edit', post: posted({ posted_at: null }) });
+    expect(edit.postRow).toBe('switch');
+  });
+
+  it('channel name is cut at 60', () => {
+    expect(channelLabel('x'.repeat(70))).toBe('#' + 'x'.repeat(60) + '…');
+    expect(channelLabel('x'.repeat(60))).toBe('#' + 'x'.repeat(60));
+    expect(channelLabel('raid-signups')).toBe('#raid-signups');
+    expect(channelLabel(null)).toBeNull();
+  });
+});
+
+describe('remind defaults', () => {
+  const dflt = { last: null, now: NOW, guildTimezone: CHICAGO, viewerTimezone: CHICAGO };
+
+  it('create reads the guild default', () => {
+    expect(createDefaults({ ...dflt, discord: { ...BOT, remind_default: false } }).remindDayBefore).toBe(
+      false,
+    );
+    expect(createDefaults({ ...dflt, discord: BOT }).remindDayBefore).toBe(true);
+  });
+
+  it('edit reads the raid’s own answer before the default', () => {
+    const view = (extra: Partial<GuildRaidView>): GuildRaidView =>
+      raid({ discord: { ...BOT, remind_default: true }, ...extra });
+    expect(editDefaults(view({ discord_post: posted({ remind: false }) }), CHICAGO).remindDayBefore).toBe(
+      false,
+    );
+    expect(editDefaults(view({ discord_post: null }), CHICAGO).remindDayBefore).toBe(true);
   });
 });

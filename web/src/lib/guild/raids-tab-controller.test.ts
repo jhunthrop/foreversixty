@@ -13,6 +13,7 @@ const PAYLOAD: RaidInput = {
   notes: '',
   timezone: 'America/Chicago',
   post_to_discord: false,
+  remind_day_before: true,
   repeat_weeks: 0,
 };
 

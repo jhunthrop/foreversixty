@@ -34,13 +34,32 @@ function lastRaid(): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { available: true, connected: true, post_default: true },
+    discord: {
+      available: true,
+      connected: true,
+      post_default: true,
+      remind_default: true,
+      channel_name: null,
+    },
+    discord_post: null,
     ...NO_LOG_YET,
   };
 }
 
-const NOT_CONNECTED: GuildRaidDiscord = { available: true, connected: false, post_default: false };
-const CONNECTED: GuildRaidDiscord = { available: true, connected: true, post_default: true };
+const NOT_CONNECTED: GuildRaidDiscord = {
+  available: true,
+  connected: false,
+  post_default: false,
+  remind_default: true,
+  channel_name: null,
+};
+const CONNECTED: GuildRaidDiscord = {
+  available: true,
+  connected: true,
+  post_default: true,
+  remind_default: true,
+  channel_name: null,
+};
 
 interface FormProps {
   last?: GuildRaidView | null;
@@ -48,6 +67,7 @@ interface FormProps {
   discord?: GuildRaidDiscord | null;
   viewerTimezone?: string;
   mode?: 'create' | 'edit';
+  raid?: GuildRaidView;
 }
 
 function html({
@@ -56,6 +76,7 @@ function html({
   discord = NOT_CONNECTED,
   viewerTimezone = NEW_YORK,
   mode = 'create',
+  raid = lastRaid(),
 }: FormProps = {}): string {
   return render(RaidForm, {
     props: {
@@ -64,7 +85,7 @@ function html({
       guildTimezone: CHICAGO,
       viewerTimezone,
       lastRaid: last,
-      raid: mode === 'edit' ? lastRaid() : undefined,
+      raid: mode === 'edit' ? raid : undefined,
       plannedCount,
       discord,
       settingsHref: '/guild/us/pvp/olympus-xxvii/settings',
@@ -193,12 +214,40 @@ describe('RaidForm', () => {
     }
   });
 
-  it('edits with Save changes, the moved-time label and no repeat', () => {
+  it('edits with Save changes, the switch rows and no repeat', () => {
     const markup = html({ mode: 'edit', discord: CONNECTED });
     const words = text(markup);
     expect(words).toContain(raidCopy.form.submitEdit);
-    expect(words).toContain(raidCopy.form.postToDiscordIfMoved);
+    expect(words).toContain(raidCopy.form.postToDiscord);
+    expect(words).toContain(raidCopy.form.remindDayBefore);
     expect(words).not.toContain(raidCopy.form.repeat);
     expect(tag(markup, 'raid-form-date')).toContain('value="2026-11-26"');
+  });
+
+  it('draws the create switch on, the reminder under it, with the channel in the helper', () => {
+    const discord = { ...CONNECTED, channel_name: 'raid-signups' };
+    const markup = html({ last: lastRaid(), discord });
+    expect(tag(markup, 'raid-form-discord')).toContain('role="switch"');
+    expect(tag(markup, 'raid-form-remind')).toContain('role="switch"');
+    expect(text(markup)).toContain(raidCopy.form.postNow('#raid-signups'));
+    expect(text(markup)).toContain(raidCopy.form.remind);
+  });
+
+  it('edit of a bot post shows the posted line and the live reminder', () => {
+    const discord = { ...CONNECTED, channel_name: 'raid-signups' };
+    const stamp = '2026-11-20T18:00:00Z';
+    const post = { posted_at: stamp, post_at: stamp, reminded_at: null, remind: true };
+    const markup = html({ mode: 'edit', discord, raid: { ...lastRaid(), discord, discord_post: post } });
+    expect(markup).toContain('raid-form-discord-posted');
+    expect(text(markup)).toContain(raidCopy.form.posted('#raid-signups'));
+    expect(markup).not.toContain('data-testid="raid-form-discord"');
+    expect(tag(markup, 'raid-form-remind')).not.toContain('disabled');
+  });
+
+  it('edit of a webhook post keeps Post to Discord if the time changes', () => {
+    const stamp = '2026-11-20T18:00:00Z';
+    const post = { posted_at: stamp, post_at: stamp, reminded_at: null, remind: true };
+    const markup = html({ mode: 'edit', discord: CONNECTED, raid: { ...lastRaid(), discord_post: post } });
+    expect(text(markup)).toContain(raidCopy.form.postToDiscordIfMoved);
   });
 });

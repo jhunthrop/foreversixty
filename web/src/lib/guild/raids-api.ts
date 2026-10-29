@@ -28,6 +28,7 @@ export interface RaidInput {
   /** The guild's IANA zone; the API stores it when it changes. */
   timezone: string;
   post_to_discord: boolean;
+  remind_day_before: boolean;
   repeat_weeks?: 0 | 3;
 }
 

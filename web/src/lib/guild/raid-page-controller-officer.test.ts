@@ -126,6 +126,7 @@ describe('officer actions', () => {
       notes: '',
       timezone: 'America/Chicago',
       post_to_discord: false,
+      remind_day_before: true,
     };
     c.openEdit();
     expect(c.editing).toBe(true);
