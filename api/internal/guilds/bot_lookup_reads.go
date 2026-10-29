@@ -56,12 +56,12 @@ func (s *Service) PublicRosterNames(ctx context.Context, guildID int64, typed st
 	return names, nil
 }
 
-// ActiveBuild is the newest client build the API loaded, the one the site serves.
+// ActiveBuild is the active client build (trees.Data.Active), the one the site serves.
 func (s *Service) ActiveBuild() (string, bool) {
 	if s.Store.Trees == nil {
 		return "", false
 	}
-	b, ok := s.Store.Trees.Latest()
+	b, ok := s.Store.Trees.Active()
 	if !ok {
 		return "", false
 	}

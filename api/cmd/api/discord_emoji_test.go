@@ -95,21 +95,6 @@ func TestDiscordEmojiNeedsBothVariables(t *testing.T) {
 	}
 }
 
-func TestNewestBuildSkipsPrebetaAndOrdersByNumber(t *testing.T) {
-	root := t.TempDir()
-	for _, d := range []string{"forever-prebeta", "1.60.1.9999", "1.60.1.70658", "1.15.9.69722"} {
-		if err := os.Mkdir(filepath.Join(root, d), 0o755); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if got, err := newestBuild(root); err != nil || got != "1.60.1.70658" {
-		t.Fatalf("newest %q err %v", got, err)
-	}
-	if _, err := newestBuild(t.TempDir()); err == nil {
-		t.Fatal("an empty root has a build")
-	}
-}
-
 // fakeIconDir is an icon folder holding a 64 px webp for every spec icon, as the active build's
 // folder does, so the image path is tested without the generated web data.
 func fakeIconDir(t *testing.T) string {

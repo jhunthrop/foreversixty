@@ -405,8 +405,8 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 		return fmt.Errorf("trees: %s: %w", cfg.TreeDataDir, err)
 	}
 	build := "unknown"
-	if latest, ok := treeData.Latest(); ok {
-		build = latest.Version
+	if active, ok := treeData.Active(); ok {
+		build = active.Version
 	} else {
 		log.Warn(dataaddon.JobCommand, "err", "no client build available",
 			"effect", "every gear component reads 0 and no no-logs record names a spec")
@@ -510,21 +510,30 @@ func simEngine(log *slog.Logger) sims.Engine {
 	return &runner.Fixture{}
 }
 
-// inferrer names specs from the newest client build's talent data.
+// activeVersion is the active client build's version for the startup log, "" when none loaded.
+func activeVersion(data *trees.Data) string {
+	b, ok := data.Active()
+	if !ok {
+		return ""
+	}
+	return b.Version
+}
+
+// inferrer names specs from the active client build's talent data.
 func inferrer(data *trees.Data) *spec.Inferrer {
-	b, ok := data.Latest()
+	b, ok := data.Active()
 	if !ok {
 		return spec.New(nil)
 	}
 	return spec.New(b)
 }
 
-// talentLayouts loads the newest build's talent layout, which is what
+// talentLayouts loads the active build's talent layout, which is what
 // turns a fight's recorded talent ids into the engine's positional
 // string. A build with no layout is not fatal: the scorer then refuses
 // every character, which is what it already does for the missing race.
 func talentLayouts(dir string, data *trees.Data, log *slog.Logger) *talents.Layouts {
-	build, ok := data.Latest()
+	build, ok := data.Active()
 	if !ok {
 		log.Warn("sims", "state", "no client build", "effect", "no execution scores")
 		return nil
@@ -564,7 +573,7 @@ func serve(log *slog.Logger) error {
 	for _, skipped := range treeData.Skipped() {
 		log.Warn("trees", "skipped", skipped)
 	}
-	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
+	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions(), "active", activeVersion(treeData), "active_from", treeData.ActiveFrom())
 
 	// Ranking rows are written into monthly partitions, which have to
 	// exist before the first fight of the month closes.

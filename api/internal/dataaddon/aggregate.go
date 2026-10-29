@@ -52,7 +52,7 @@ func exportSpec(data *trees.Data, export string) string {
 	}
 	build, ok := data.Build(decoded.DataBuild)
 	if !ok {
-		if build, ok = data.Latest(); !ok {
+		if build, ok = data.Active(); !ok {
 			return ""
 		}
 	}

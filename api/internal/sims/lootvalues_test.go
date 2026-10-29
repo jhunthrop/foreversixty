@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 const lootBuild = "1.60.1.70291"
@@ -15,9 +17,9 @@ func TestDPSPerPointReadsTheBuildsFile(t *testing.T) {
 	if got, ok := DPSPerPoint(lootBuild, "warrior-arms"); !ok || got != (DPSPoint{Reference: "attack_power", DPS: 0.2222}) {
 		t.Fatalf("warrior-arms = %v, %v; want 0.2222", got, ok)
 	}
-	// The newest loaded build answers for a run that names no build.
+	// The active build answers for a run that names no build.
 	if got, ok := DPSPerPoint("", "mage-fire"); !ok || got.DPS <= 0 || got.Reference != "spell_power" {
-		t.Fatalf("mage-fire in the newest build = %v, %v", got, ok)
+		t.Fatalf("mage-fire in the active build = %v, %v", got, ok)
 	}
 	// The tank specs have no entry.
 	if got, ok := DPSPerPoint(lootBuild, "warrior-protection"); ok {
@@ -25,6 +27,41 @@ func TestDPSPerPointReadsTheBuildsFile(t *testing.T) {
 	}
 	if _, ok := DPSPerPoint("0.0.0.0", "warrior-arms"); ok {
 		t.Fatal("a build with no file has no entries")
+	}
+}
+
+// A build data.yml fetched but no activation moved to (70685 on disk, with no
+// dps-per-point.json yet, active-build.json still naming 70658) must not change the build
+// DPSPerPoint reads by default; activating it does.
+func TestDPSPerPointDefaultsToTheActiveBuildNotTheNewestFolder(t *testing.T) {
+	const active, fetched = "1.60.1.70658", "1.60.1.70685"
+	root := t.TempDir()
+	if err := trees.LinkBuilds(root, repoBuilds, active, fetched); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { SetGearData(nil, "") })
+	wire := func(build string) {
+		t.Helper()
+		if err := trees.WriteActiveBuildFile(root, build); err != nil {
+			t.Fatal(err)
+		}
+		data, err := trees.Load(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		SetGearData(data, root)
+	}
+
+	wire(active)
+	want, wantOK := DPSPerPoint(active, "mage-fire")
+	if got, ok := DPSPerPoint("", "mage-fire"); !wantOK || ok != wantOK || got != want {
+		t.Fatalf("default = %v, %v; want %s's %v, %v", got, ok, active, want, wantOK)
+	}
+
+	wire(fetched)
+	want, wantOK = DPSPerPoint(fetched, "mage-fire")
+	if got, ok := DPSPerPoint("", "mage-fire"); ok != wantOK || got != want {
+		t.Fatalf("default after activation = %v, %v; want %s's %v, %v", got, ok, fetched, want, wantOK)
 	}
 }
 

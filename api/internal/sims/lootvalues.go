@@ -73,8 +73,8 @@ func (p DPSPoint) Scales(weights map[string]float64) bool {
 	return p.Reference != "" && weights[p.Reference] == 1
 }
 
-// DPSPerPoint is spec's entry in build's dps-per-point.json; build "" is the newest loaded
-// build. ok is false when the file has no entry for the spec (the tank specs), the file
+// DPSPerPoint is spec's entry in build's dps-per-point.json; build "" is the active
+// build (trees.Data.Active). ok is false when the file has no entry for the spec (the tank specs), the file
 // cannot be read, or no gear data is wired. Only a successful read is kept: a file that
 // cannot be read or decoded is logged once per build and read again on the next call.
 func DPSPerPoint(build, spec string) (DPSPoint, bool) {
@@ -83,7 +83,7 @@ func DPSPerPoint(build, spec string) (DPSPoint, bool) {
 		return DPSPoint{}, false
 	}
 	if build == "" {
-		b, ok := src.trees.Latest()
+		b, ok := src.trees.Active()
 		if !ok {
 			return DPSPoint{}, false
 		}

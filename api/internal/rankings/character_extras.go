@@ -178,7 +178,7 @@ func exportIsNewer(hasExport bool, capturedAt, importedAt *time.Time) bool {
 }
 
 // raceName is the display name of an export's race slug in the build data the export names,
-// else the newest loaded build; "" when no build data is loaded or the slug is not a race
+// else the active build; "" when no build data is loaded or the slug is not a race
 // there.
 func (s *Store) raceName(dataBuild, slug string) string {
 	if s.Trees == nil || slug == "" {
@@ -186,7 +186,7 @@ func (s *Store) raceName(dataBuild, slug string) string {
 	}
 	build, ok := s.Trees.Build(dataBuild)
 	if !ok {
-		if build, ok = s.Trees.Latest(); !ok {
+		if build, ok = s.Trees.Active(); !ok {
 			return ""
 		}
 	}

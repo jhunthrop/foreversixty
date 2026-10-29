@@ -71,3 +71,49 @@ func TestEraKilozFixtureMatchesTheCheckedInFile(t *testing.T) {
 		t.Fatalf("Encode(era-kiloz) = %q, want the checked-in fixture %q", code, want)
 	}
 }
+
+// encodeEraKilozFrom is the era-kiloz code against the builds under dir, as cmd/api wires it.
+func encodeEraKilozFrom(t *testing.T, dir string) (Tables, string, error) {
+	t.Helper()
+	data, err := trees.Load(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tables, ok, err := LoadTables(dir, data)
+	if err != nil || !ok {
+		t.Fatalf("LoadTables: ok=%v err=%v", ok, err)
+	}
+	in := loadEraKilozInputs(t)
+	in.Build, in.Enchants, in.Suffixes, in.Races = tables.Build, tables.Enchants, tables.Suffixes, tables.Races
+	in.Talent = TalentTable{Build: tables.Trees, ClassID: classIDFor(t, tables.Trees, "warrior")}
+	code, _, err := Encode(in)
+	return tables, code, err
+}
+
+// A build data.yml fetched but no activation moved to (70685 on disk, active-build.json still
+// naming 70658) must not change the stamp; activating it does.
+func TestEncodeStampsTheActiveBuildNotTheNewestFolder(t *testing.T) {
+	const active, fetched = "1.60.1.70658", "1.60.1.70685"
+	root := t.TempDir()
+	if err := trees.LinkBuilds(root, realDataDir, active, fetched); err != nil {
+		t.Fatal(err)
+	}
+	if err := trees.WriteActiveBuildFile(root, active); err != nil {
+		t.Fatal(err)
+	}
+	tables, code, err := encodeEraKilozFrom(t, root)
+	if err != nil || tables.Build != active || !strings.HasPrefix(code, "FS1:"+active+":") {
+		t.Fatalf("build %q code %q err %v, want the active %s", tables.Build, code, err, active)
+	}
+
+	if err := trees.WriteActiveBuildFile(root, fetched); err != nil {
+		t.Fatal(err)
+	}
+	tables, code, err = encodeEraKilozFrom(t, root)
+	if tables.Build != fetched {
+		t.Fatalf("tables after activation = %q, want %s", tables.Build, fetched)
+	}
+	if err == nil && !strings.HasPrefix(code, "FS1:"+fetched+":") {
+		t.Fatalf("code after activation = %q, want the %s stamp", code, fetched)
+	}
+}

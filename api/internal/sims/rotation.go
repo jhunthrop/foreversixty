@@ -62,8 +62,8 @@ type buildRotations struct {
 	familyOf map[string]map[int64]string
 }
 
-// RotationFor is spec's shipped rotation in build at level's band; build "" is the newest
-// loaded build. The band is the addon's own rule (Rotation.lua's bandFor): the highest band
+// RotationFor is spec's shipped rotation in build at level's band; build "" is the active
+// build (trees.Data.Active). The band is the addon's own rule (Rotation.lua's bandFor): the highest band
 // whose level is at or below level, else the lowest band. ok is false when no gear data is
 // wired, the build's files cannot be read, or the build ships no rotation for the spec.
 func RotationFor(build, spec string, level int) (Rotation, bool) {
@@ -72,7 +72,7 @@ func RotationFor(build, spec string, level int) (Rotation, bool) {
 		return Rotation{}, false
 	}
 	if build == "" {
-		b, ok := src.trees.Latest()
+		b, ok := src.trees.Active()
 		if !ok {
 			return Rotation{}, false
 		}

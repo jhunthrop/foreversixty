@@ -214,16 +214,20 @@ func (b *Build) Classes() []Class {
 }
 
 // Data holds every build found under the tree data directory. Only the
-// newest client build is parsed when the directory is loaded; every other
-// build is parsed the first time something asks for it. The image carries
+// active client build (Active) is parsed when the directory is loaded; every
+// other build is parsed the first time something asks for it. The image carries
 // every build the data lane ever fetched (ten directories, each with ten
 // megabytes of item JSON), and parsing them all on a one-vCPU cold start
 // was eleven of the thirteen seconds a visitor waited after an idle gap
-// (2026-10-19); nearly every request reads the newest build alone.
+// (2026-10-19); nearly every request reads the active build alone.
 type Data struct {
 	entries map[string]*entry
-	mu      sync.Mutex // guards skipped once Load has returned
-	skipped []string
+	// active is the build ActiveBuildFile names; activeFrom the file that
+	// named it, "" when Load fell back to the newest folder.
+	active     string
+	activeFrom string
+	mu         sync.Mutex // guards skipped once Load has returned
+	skipped    []string
 }
 
 // entry is one build directory, parsed at most once.
@@ -247,7 +251,7 @@ func (d *Data) load(version string) (*Build, error) {
 
 // Build is the build with that version, parsed now if this is its first
 // use. A build whose files do not parse reads as absent, and the reason
-// joins Skipped so a later look at the startup state sees it; the newest
+// joins Skipped so a later look at the startup state sees it; the active
 // client build never reaches this path, because Load parses it up front
 // and fails on it.
 func (d *Data) Build(version string) (*Build, bool) {
@@ -288,27 +292,10 @@ func (d *Data) Skipped() []string {
 	return append([]string(nil), d.skipped...)
 }
 
-// Latest is the newest build's data, which is what the rankings infer
-// specs from: talent ids are stable across client builds, and a report
-// parsed today is best read against today's trees. The second return is
-// false when no build loaded at all.
-//
-// "Newest" is a numeric comparison of the dot-separated version, not the
-// lexicographic order Versions() returns: build directories are named
-// like "1.15.9.69722", and the patch component is already double-digit,
-// so a plain string sort would rank "1.9" above "1.10".
-func (d *Data) Latest() (*Build, bool) {
-	versions := d.Versions()
-	if len(versions) == 0 {
-		return nil, false
-	}
-	return d.Build(newestVersion(versions))
-}
-
 // isClientBuild reports whether a version looks like a client build string
 // ("1.60.1.69893") rather than a named data set ("forever-prebeta"). Only
-// client builds are comparable as version numbers, and Latest must not hand
-// the rankings a data set that is not the newest client data.
+// client builds are comparable as version numbers, and the newest-folder
+// fallback (resolveActive) must not pick a named data set over client data.
 func isClientBuild(version string) bool {
 	segments := strings.Split(version, ".")
 	if len(segments) < 2 {
@@ -411,11 +398,14 @@ func Load(dir string) (*Data, error) {
 		}
 		d.entries[e.Name()] = &entry{dir: path}
 	}
-	// The newest client build is what nearly every caller reads and what
-	// a save is validated against, so it is parsed here: a build that does
-	// not parse fails the boot rather than the first request.
-	if versions := d.Versions(); len(versions) > 0 {
-		if _, err := d.load(newestVersion(versions)); err != nil {
+	if d.active, d.activeFrom, err = resolveActive(dir, d.Versions()); err != nil {
+		return nil, err
+	}
+	// The active build is what nearly every caller reads, so it is parsed
+	// here: a build that does not parse fails the boot rather than the
+	// first request.
+	if d.active != "" {
+		if _, err := d.load(d.active); err != nil {
 			return nil, err
 		}
 	}

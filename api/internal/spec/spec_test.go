@@ -12,7 +12,7 @@ func testInferrer(t *testing.T) *Inferrer {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, ok := data.Latest()
+	b, ok := data.Active()
 	if !ok {
 		t.Fatal("the fixture build should load")
 	}

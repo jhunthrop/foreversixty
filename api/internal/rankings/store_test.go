@@ -57,7 +57,7 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	build, _ := data.Latest()
+	build, _ := data.Active()
 
 	h := &harness{t: t, pool: pool, reports: &reports.Store{Pool: pool},
 		store: &Store{Pool: pool, Specs: spec.New(build)}}

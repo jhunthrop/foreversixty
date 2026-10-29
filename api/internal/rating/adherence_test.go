@@ -287,7 +287,7 @@ func TestAdherenceExcludesManaShieldAndTranquilizingShot(t *testing.T) {
 func TestEveryCuratedExclusionNameIsAClassFamily(t *testing.T) {
 	const minNames = 30
 	useRepoGearData(t)
-	latest, ok := repoGearData.Latest()
+	latest, ok := repoGearData.Active()
 	if !ok {
 		t.Fatal("no data build loaded")
 	}

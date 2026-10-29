@@ -32,7 +32,7 @@ type Deps struct {
 	Trees  *trees.Data
 	Upload Uploader // nil (or an empty Bucket) means this deployment has no bucket; the run still succeeds and logs why the upload was skipped
 	Bucket string
-	Build  string // the newest data build loaded, logged with the run
+	Build  string // the active data build, logged with the run
 	Now    time.Time
 	Log    Logger
 }

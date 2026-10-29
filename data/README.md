@@ -131,7 +131,9 @@ diffs/<from>__<to>.json         added / removed / changed per entity
 
 The site reads `web/src/data/active-build.json` to decide which build directory to
 publish; it is a one-line file, `{ "build": "<build>" }`, owned by `web/`. Point it at a
-new build only after that build's JSON is committed here.
+new build only after that build's JSON is committed here. The API follows the same file
+(the image carries it as `/data/active-build.json`), so a build fetched here but not yet
+activated never changes what the API serves.
 
 ## Curated Forever facts
 `curated/classes.json` and `curated/races.json` attach `forever_changes` to a row by

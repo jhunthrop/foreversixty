@@ -91,12 +91,12 @@ type Tables struct {
 	Races    RaceTable
 }
 
-// LoadTables resolves the active build (trees.Data's newest client build, the same rule
-// dataaddon's job already uses) and loads its enchant, suffix and race tables. ok is false,
+// LoadTables resolves the active build (trees.Data.Active: the build active-build.json names,
+// the same rule dataaddon's job uses) and loads its enchant, suffix and race tables. ok is false,
 // with a zero Tables, when data holds no build at all — the caller (bnetimport, cmd/api)
 // logs and runs with Battle.net-sourced builds disabled, same as when TreeDataDir is empty.
 func LoadTables(dir string, data *trees.Data) (Tables, bool, error) {
-	active, ok := data.Latest()
+	active, ok := data.Active()
 	if !ok {
 		return Tables{}, false, nil
 	}

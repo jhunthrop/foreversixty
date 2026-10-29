@@ -196,7 +196,7 @@ func TestValidateAcceptsAFullyLoadedBuild(t *testing.T) {
 // A share link's tree_version does not move when a newer build becomes active: it keeps
 // validating against the build it was made on for as long as that build's data is loaded.
 // trees.Load reads every build directory under TREE_DATA_DIR, not just the newest, and
-// Validate resolves in.TreeVersion directly rather than through Data.Latest(). Prove both by
+// Validate resolves in.TreeVersion directly rather than through Data.Active(). Prove both by
 // loading the same fixture data under two version names and validating against the one that
 // is not "latest".
 func TestValidateSucceedsAgainstAnOlderNonActiveTreeVersion(t *testing.T) {
@@ -211,7 +211,7 @@ func TestValidateSucceedsAgainstAnOlderNonActiveTreeVersion(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if latest, ok := data.Latest(); !ok || latest.Version != "2.0.0.1" {
+	if latest, ok := data.Active(); !ok || latest.Version != "2.0.0.1" {
 		t.Fatalf("latest = %+v, ok=%v; want 2.0.0.1 so 1.0.0.1 is genuinely non-active", latest, ok)
 	}
 

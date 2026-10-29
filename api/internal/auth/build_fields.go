@@ -62,7 +62,7 @@ func (s *Store) buildFieldsFromExport(c *Character, export string) {
 	c.Spec = primarySpec(build, decoded.ClassSlug, decoded.Talents.Points)
 }
 
-// treesBuildFor is the client build decoded.DataBuild names, or the newest loaded build
+// treesBuildFor is the client build decoded.DataBuild names, or the active build
 // when that exact version is not loaded (an export a data refresh has moved past, or one
 // with no data build recorded at all). Trees being nil -- no client data loaded at all --
 // is the only case this returns nil.
@@ -75,7 +75,7 @@ func (s *Store) treesBuildFor(dataBuild string) *trees.Build {
 			return b
 		}
 	}
-	b, _ := s.Trees.Latest()
+	b, _ := s.Trees.Active()
 	return b
 }
 

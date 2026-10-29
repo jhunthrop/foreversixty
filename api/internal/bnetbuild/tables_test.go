@@ -2,11 +2,7 @@
 package bnetbuild
 
 import (
-	"os"
 	"path/filepath"
-	"regexp"
-	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -68,55 +64,22 @@ func TestLoadTablesResolvesTheActiveBuild(t *testing.T) {
 	if !ok {
 		t.Fatal("LoadTables must resolve a build from the real data/builds directory")
 	}
-	if want := newestClientBuildDir(t); tables.Build != want {
-		t.Fatalf("Build = %q, want the newest numeric client build, %q", tables.Build, want)
+	if want := activeBuildFromFile(t); tables.Build != want {
+		t.Fatalf("Build = %q, want the build web/src/data/active-build.json names, %q", tables.Build, want)
 	}
 	if tables.Trees == nil || tables.Enchants == nil || tables.Suffixes == nil || tables.Races == nil {
 		t.Fatalf("LoadTables left a table nil: %+v", tables)
 	}
 }
 
-// newestClientBuildDir is the highest-numbered client build directory under realDataDir,
-// the build LoadTables must resolve: the data pipeline lands a new client's tables there
-// before the site activates them, so the expectation is read from the directory, not pinned.
-func newestClientBuildDir(t *testing.T) string {
+// activeBuildFromFile is the build web/src/data/active-build.json names, the build LoadTables
+// must resolve: the data pipeline lands a new client's tables under data/builds before the
+// activation moves the site to them, and a fetched-but-unactivated build changes nothing.
+func activeBuildFromFile(t *testing.T) string {
 	t.Helper()
-	entries, err := os.ReadDir(realDataDir)
+	build, err := trees.ReadActiveBuild(filepath.Join(realDataDir, "..", "..", "web", "src", "data", trees.ActiveBuildFile))
 	if err != nil {
 		t.Fatal(err)
 	}
-	clientBuild := regexp.MustCompile(`^\d+(\.\d+)+$`)
-	var newest string
-	var newestParts []int
-	for _, entry := range entries {
-		if !entry.IsDir() || !clientBuild.MatchString(entry.Name()) {
-			continue
-		}
-		parts := buildParts(entry.Name())
-		if newest == "" || buildLess(newestParts, parts) {
-			newest, newestParts = entry.Name(), parts
-		}
-	}
-	if newest == "" {
-		t.Fatalf("no client build directory under %s", realDataDir)
-	}
-	return newest
-}
-
-func buildParts(version string) []int {
-	fields := strings.Split(version, ".")
-	parts := make([]int, len(fields))
-	for i, field := range fields {
-		parts[i], _ = strconv.Atoi(field)
-	}
-	return parts
-}
-
-func buildLess(a, b []int) bool {
-	for i := 0; i < len(a) && i < len(b); i++ {
-		if a[i] != b[i] {
-			return a[i] < b[i]
-		}
-	}
-	return len(a) < len(b)
+	return build
 }

@@ -56,7 +56,7 @@ make run
 | `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. When set, the sim-run and parse-report jobs post one Discord embed per finished server sim or parsed upload; five consecutive counted failures (a 429 does not count) switch the webhook off. Migration 0047 adds `webhook_name` and backfills `upload_private` true for existing webhooks (new ones default off). |
 | `DISCORD_CLIENT_ID` | no | — | The Discord application's Client ID (public). Together with `DISCORD_CLIENT_SECRET` it turns the one-click Discord connect on (needs `NOTIFY_ENCRYPTION_KEY` too); `/v1/me` then carries `notifications.connect: true`. Both unset leaves connect off (its routes answer 404); exactly one set refuses to start, naming the missing variable. The redirect URI is `API_BASE_URL` + `/v1/notifications/discord/callback`. |
 | `DISCORD_CLIENT_SECRET` | no | — | The Discord application's Client Secret. Lives in Secret Manager; never logged, printed or returned. |
-| `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
+| `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here, and `web/src/data/active-build.json` to `<dir>/active-build.json`: the API's active build (the Battle.net import's tables and FS1 stamp, spec inference, the default DPS-per-point and rotation build, the BiS build) is the build that file names, never merely the newest folder, so a build `data.yml` fetched but `tools/activate-build.sh` has not activated changes nothing. With no file beside the builds it reads the repository's `../../web/src/data/active-build.json` (so `TREE_DATA_DIR=../data/builds` works locally); with neither it falls back to the newest client build folder and logs it. A file naming a build that is not on disk fails the boot. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
 
 Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
 serves everything that does not touch object storage and logs that the ingest, upload, and
@@ -334,8 +334,8 @@ environment and secrets by name (never paste a value):
 
 The raid post's roster marks each sign-up with its spec's icon, uploaded once as the
 application's own emoji (`fs_{class}_{spec}`, one per row of `data/curated/specs.json`; 28 today).
-`discord-emoji` builds 128 px PNGs from the newest build folder's icons under
-`web/public/data/<build>/icons` (generated web data, so run it from a checkout whose
+`discord-emoji` builds 128 px PNGs from the active build's icons (the build
+`web/src/data/active-build.json` names) under `web/public/data/<build>/icons` (generated web data, so run it from a checkout whose
 `web/public/data` holds the active build, not from the image; `--icons <dir>` names another folder) and uploads only the names the application lacks; a second run uploads
 nothing, and `--replace` deletes and uploads them all again after an icon changes. It prints
 names and counts, never the token. Run it once per application (production, then the test

@@ -102,6 +102,10 @@ FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/api /api
 # TREE_DATA_DIR defaults to /data; one directory per client build.
 COPY data/builds /data
+# The file naming the active build, beside the builds, where trees.Load reads it: the same
+# web/src/data/active-build.json tools/activate-build.sh writes and the engine stage reads, so a
+# build data.yml fetched but no activation moved to never changes what the API serves.
+COPY web/src/data/active-build.json /data/active-build.json
 # COACH_DATA_DIR defaults to /coach: the log coach's spec rule files and personas.
 COPY data/curated/coach/ /coach/
 # The native simulator binary. The jobs run /engine/forever-sim; the

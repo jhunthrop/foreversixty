@@ -12,7 +12,7 @@ import (
 // same; a new Trees (or DataDir) works it out again.
 func TestBisBuildIsKeptUntilItsInputsChange(t *testing.T) {
 	repo := realTreesStore(t)
-	latest, ok := repo.Trees.Latest()
+	latest, ok := repo.Trees.Active()
 	if !ok {
 		t.Fatal("no build loaded")
 	}

@@ -216,12 +216,12 @@ func TestClassesAreListedByID(t *testing.T) {
 	}
 }
 
-func TestLatestIsTheNewestBuild(t *testing.T) {
+func TestActiveWithoutAFileIsTheNewestBuild(t *testing.T) {
 	data, err := LoadFixture()
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, ok := data.Latest()
+	b, ok := data.Active()
 	if !ok {
 		t.Fatal("the fixture build should be the latest")
 	}
@@ -229,12 +229,12 @@ func TestLatestIsTheNewestBuild(t *testing.T) {
 	if b.Version != versions[len(versions)-1] {
 		t.Fatalf("latest = %q, want %q", b.Version, versions[len(versions)-1])
 	}
-	if _, ok := (&Data{}).Latest(); ok {
+	if _, ok := (&Data{}).Active(); ok {
 		t.Fatal("no builds means no latest")
 	}
 }
 
-func TestLatestComparesVersionsNumericallyNotLexicographically(t *testing.T) {
+func TestActiveFallbackComparesVersionsNumericallyNotLexicographically(t *testing.T) {
 	// Lexicographically these sort "1.10" < "1.15.10.1" < "1.15.9.69722" <
 	// "1.2" < "1.9", which would pick "1.9" as "latest" - wrong, since the
 	// project's own build directories are dotted version numbers like
@@ -251,7 +251,7 @@ func TestLatestComparesVersionsNumericallyNotLexicographically(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, ok := d.Latest()
+	b, ok := d.Active()
 	if !ok {
 		t.Fatal("expected a latest build")
 	}
@@ -303,7 +303,7 @@ func TestTalentBySpellIDFindsTheTalentTheClientWrites(t *testing.T) {
 	}
 }
 
-func TestLatestPrefersAClientBuildOverANamedDataSet(t *testing.T) {
+func TestActiveFallbackPrefersAClientBuildOverANamedDataSet(t *testing.T) {
 	for _, c := range []struct {
 		versions []string
 		want     string
@@ -336,8 +336,8 @@ func TestLoadParsesOnlyTheNewestBuildUpFront(t *testing.T) {
 	if got := d.Versions(); len(got) != 2 {
 		t.Fatalf("versions = %v, want both directories listed before either is parsed", got)
 	}
-	if latest, ok := d.Latest(); !ok || latest.Version != "1.0.0.2" {
-		t.Fatalf("Latest = %v ok=%v, want 1.0.0.2", latest, ok)
+	if latest, ok := d.Active(); !ok || latest.Version != "1.0.0.2" {
+		t.Fatalf("Active = %v ok=%v, want 1.0.0.2", latest, ok)
 	}
 	if len(d.Skipped()) != 0 {
 		t.Fatalf("skipped = %v before the older build is asked for, want none", d.Skipped())
