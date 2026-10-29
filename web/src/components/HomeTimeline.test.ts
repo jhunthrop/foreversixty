@@ -20,13 +20,13 @@ describe('HomeTimeline', () => {
       },
     });
     expect(html).toContain('data-testid="home-timeline"');
-    expect((html.match(/data-testid="home-timeline-row"/g) ?? []).length).toBe(4);
-    expect(html).toContain('data-status="past"');
+    expect((html.match(/data-testid="home-timeline-row"/g) ?? []).length).toBe(2);
+    expect(html).not.toContain('data-status="past"');
     expect(html).toContain('data-status="next"');
     expect(html).toContain('data-status="future"');
     expect((html.match(/data-testid="home-timeline-dot"/g) ?? []).length).toBe(1);
-    expect(html).toContain('Beta opens');
-    expect(html).toContain('level cap 30');
+    expect(html).toContain('Name reservation');
+    expect(html).toContain('Launch');
     expect(html).toContain('Updated Sept 20');
   });
 
@@ -39,25 +39,24 @@ describe('HomeTimeline', () => {
     expect(html).toContain('aria-label="Key dates timeline"');
   });
 
-  it('mutes a passed date at every width: dimmed row, muted value', async () => {
+  it('drops a passed date: no past row, no dimming', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(HomeTimeline, {
       props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
     });
-    expect(html.match(/data-status="past"/g)).toHaveLength(2);
-    expect(html.match(/class="timeline-value /g)).toHaveLength(4);
-    expect(html).toContain('data-[status=past]:opacity-60');
-    expect(html).not.toMatch(/md:opacity|max-md:opacity/);
+    expect(html).not.toContain('>Deep Dive panel<');
+    expect(html).not.toContain('>Beta opens<');
+    expect(html).not.toContain('opacity-60');
   });
 
-  it('shows the next date first and the past ones last, and carries the entries for the clock script', async () => {
+  it('lists what is still to come in date order and carries the entries for the clock script', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(HomeTimeline, {
       props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
     });
     const statuses = [...html.matchAll(/data-status="([a-z]+)"/g)].map((m) => m[1]);
-    expect(statuses).toEqual(['next', 'future', 'past', 'past']);
-    expect(html.indexOf('>Name reservation<')).toBeLessThan(html.indexOf('>Deep Dive panel<'));
+    expect(statuses).toEqual(['next', 'future']);
+    expect(html.indexOf('>Name reservation<')).toBeLessThan(html.indexOf('>Launch<'));
     expect(html).toContain('data-entries=');
   });
 

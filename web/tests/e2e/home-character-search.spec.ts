@@ -29,7 +29,7 @@ test('on a phone the lookup sits above the beta card', async ({ page }) => {
   test.skip(test.info().project.name !== 'mobile', 'phone layout only');
   await page.goto('/');
   const lookup = await page.getByTestId('home-lookup-cell').boundingBox();
-  const beta = await page.getByTestId('home-example-block').boundingBox();
+  const beta = await page.getByTestId('home-launch-block').boundingBox();
   expect(lookup).not.toBeNull();
   expect(beta).not.toBeNull();
   expect((lookup?.y ?? 0) < (beta?.y ?? 0)).toBe(true);

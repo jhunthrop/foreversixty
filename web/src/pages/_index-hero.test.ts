@@ -27,11 +27,21 @@ const textOf = (markup: string): string =>
     .replace(/\s+/g, ' ')
     .trim();
 
-describe('the landing example card', () => {
-  it('is labelled "Example: Marksmanship Hunter best in slot"', () => {
-    expect(homeHeroStatePanelCopy.exampleLabel).toBe('Example: Marksmanship Hunter best in slot');
-    const label = /data-testid="home-hero-label"[^>]*>([^]*?)<[/]span>/.exec(html)?.[1] ?? '';
-    expect(textOf(label)).toBe(homeHeroStatePanelCopy.exampleLabel);
+describe('the landing launch card', () => {
+  it('has no example label: the card links to the real Hunter list', () => {
+    expect(html).not.toContain('home-hero-label');
+    expect(textOf(html)).not.toMatch(/Example:/);
+    const link = /<a[^>]*data-testid="home-hero-link"[^>]*>/.exec(html)?.[0] ?? '';
+    expect(link).toContain(`href="${homeHeroStatePanelCopy.linkHref}"`);
+  });
+
+  it('shows the countdown as three stat tiles, Days, Hours and Minutes', () => {
+    for (const unit of ['days', 'hours', 'minutes']) {
+      expect(html).toContain(`data-testid="home-hero-countdown-${unit}"`);
+    }
+    expect(textOf(/data-testid="home-hero-countdown"[^]*?home-hero-link/.exec(html)?.[0] ?? '')).toMatch(
+      /Days.*Hours.*Minutes/,
+    );
   });
 
   it('says "levels" in both variants, one phrase shape, and never "bands"', () => {

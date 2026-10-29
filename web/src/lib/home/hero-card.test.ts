@@ -10,6 +10,7 @@ describe('heroCardFor (W.9: the beta card follows the clock)', () => {
       mode: 'beta',
       eyebrow: 'Beta is live',
       tag: 'level cap 30',
+      countdown: null,
       bandsLine: 'Leveling best in slot, levels 10 to 30',
     });
   });
@@ -22,17 +23,32 @@ describe('heroCardFor (W.9: the beta card follows the clock)', () => {
     const card = heroCardFor(dates, at('2026-10-22T08:00:00Z'));
     expect(card.mode).toBe('launch');
     expect(card.eyebrow).toBe('Launch Nov 4 · 15:00 PST');
-    expect(card.tag).toBe('in 13 days');
+    expect(card.tag).toBe('');
+    expect(card.countdown).toEqual({ days: 13, hours: 15, minutes: 0 });
     expect(card.bandsLine).toBe('Leveling best in slot, levels 20, 30, 40, 50, 60');
     expect(card.eyebrow).not.toMatch(/beta is live/i);
     expect(card.tag).not.toContain('cap 30');
   });
 
-  it('counts down to tomorrow and today, then says launched', () => {
-    expect(heroCardFor(dates, at('2026-11-03T10:00:00Z')).tag).toBe('tomorrow');
-    expect(heroCardFor(dates, at('2026-11-04T10:00:00Z')).tag).toBe('today');
+  it('counts down to the launch instant, 15:00 PST, in days, hours and minutes', () => {
+    expect(heroCardFor(dates, at('2026-10-29T22:30:00Z')).countdown).toEqual({
+      days: 6,
+      hours: 0,
+      minutes: 30,
+    });
+    expect(heroCardFor(dates, at('2026-11-04T10:00:00Z')).countdown).toEqual({
+      days: 0,
+      hours: 13,
+      minutes: 0,
+    });
+  });
+
+  it('after launch counts to the first raids, then says the level cap', () => {
     const launched = heroCardFor(dates, at('2026-11-05T10:00:00Z'));
-    expect(launched).toMatchObject({ mode: 'launched', eyebrow: 'Launched Nov 4', tag: 'level cap 60' });
+    expect(launched).toMatchObject({ mode: 'launched', eyebrow: 'Launched Nov 4', tag: 'First raids Dec 9' });
+    expect(launched.countdown).toEqual({ days: 33, hours: 14, minutes: 0 });
+    const after = heroCardFor(dates, at('2026-12-10T10:00:00Z'));
+    expect(after).toMatchObject({ mode: 'launched', tag: 'level cap 60', countdown: null });
   });
 
   it('keeps the beta wording when the data names no launch', () => {

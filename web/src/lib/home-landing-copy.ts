@@ -52,13 +52,16 @@ export const homeHeroStatePanelCopy = {
   /** Between the beta and launch: "Launch Nov 4 · 15:00 PST", and the days left. */
   launchEyebrow: (key: string, note: string | undefined): string =>
     note === undefined || note === '' ? `Launch ${key}` : `Launch ${key} · ${note}`,
-  launchCountdown: (days: number): string =>
-    days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`,
+  /** The three countdown tiles' micro labels. */
+  countdownLabels: { days: 'Days', hours: 'Hours', minutes: 'Minutes' },
   /** Once launch day is over. */
   launchedEyebrow: (key: string): string => `Launched ${key}`,
   launchedTag: 'level cap 60',
-  /** The card's label (P6-10): it says whose list this is, so it is never read as the visitor's own. */
-  exampleLabel: 'Example: Marksmanship Hunter best in slot',
+  /** After launch the tiles count to the first raids. */
+  firstRaidsTag: (key: string): string => `First raids ${key}`,
+  /** The card's link row: the real Hunter list, never a claim about the visitor's own character. */
+  linkTitle: 'Marksmanship Hunter best in slot',
+  linkHref: '/bis/hunter/marksmanship',
   bandsLine: 'Leveling best in slot, levels 20, 30, 40, 50, 60',
 } as const;
 

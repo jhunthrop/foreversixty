@@ -241,7 +241,7 @@ test('the header says "Your character" with one or several characters and has no
   await expect(page.getByText('Add one')).toHaveCount(0);
   await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
   await expect(header.getByRole('button')).toHaveCount(0);
-  await expect(page.getByTestId('home-example-block')).toBeHidden();
+  await expect(page.getByTestId('home-launch-block')).toBeHidden();
   // The flat faction logo, 16 px, beside the faction word.
   const emblem = header.locator('.ch-faction img');
   await expect(emblem).toHaveAttribute('src', '/icons/hd/faction/alliance-logo-64.webp');

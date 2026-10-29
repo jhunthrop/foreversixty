@@ -2,16 +2,17 @@
 // Task L8.2 ruling 7 and fix round 1 item 2: the home page's character search, in the design
 // system's Search form. The routing itself is lib/character-search.ts's (its own test) and
 // the submit is driven end to end by tests/e2e/home-character-search.spec.ts.
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
-import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { BUTTON_PRIMARY } from '../lib/ui/button';
 import CharacterSearch from './CharacterSearch.astro';
 
 let html: string;
 
 beforeAll(async () => {
-  const container = await AstroContainer.create();
+  const container: AstroContainer = await createPageContainer();
   html = await container.renderToString(CharacterSearch);
 });
 
@@ -39,9 +40,9 @@ describe('CharacterSearch', () => {
     expect(html).toMatch(/class="text-muted text-\[14px\]" data-testid="home-character-search-aside"/);
   });
 
-  it('is the design system’s Search: 56px, warm border, gold icon, a "/" hint', () => {
+  it('is the design system’s Search: 52px, warm border, gold icon, a "/" hint', () => {
     const input = classOf(/<input[^>]*class="([^"]*)"/);
-    expect(input).toEqual(expect.arrayContaining(['h-14', 'border-line-warm-strong']));
+    expect(input).toEqual(expect.arrayContaining(['h-[52px]', 'border-line-warm-strong']));
     expect(html).toMatch(/<svg class="text-gold[^"]*"/);
     expect(html).toMatch(/<kbd[^>]*>\/<\/kbd>/);
     expect(html).toContain('aria-keyshortcuts="/"');
@@ -55,23 +56,23 @@ describe('CharacterSearch', () => {
 
   it('makes Look up the filled gold primary button, full width on a phone', () => {
     const button = classOf(/<button[^>]*class="([^"]*)"/);
-    expect(button).toEqual(expect.arrayContaining(PRIMARY_BUTTON_FIXED.split(' ')));
+    expect(button).toEqual(expect.arrayContaining(BUTTON_PRIMARY.split(' ')));
     expect(button).toEqual(expect.arrayContaining(['col-span-2', 'w-full', 'md:col-span-1', 'md:w-auto']));
     expect(/<button[^>]*>([\s\S]*?)<\/button>/.exec(html)?.[1]?.trim()).toBe(copy.submit);
   });
 
-  it('stacks on a phone: the name full width, region and ruleset side by side at 44px', () => {
+  it('stacks on a phone: the name full width, region and ruleset side by side on the 52px Select', () => {
     expect(classOf(/<form class="([^"]*)"/)).toEqual(expect.arrayContaining(['grid', 'grid-cols-2']));
     for (const name of ['region', 'ruleset']) {
       expect(classOf(new RegExp(`<select[^>]*name="${name}"[^>]*class="([^"]*)"`))).toEqual(
-        expect.arrayContaining(['h-11', 'md:h-14']),
+        expect.arrayContaining(['h-[52px]', 'appearance-none']),
       );
     }
   });
 
   it('starts on US and Normal', () => {
-    expect(html).toMatch(/<option value="us" selected/);
-    expect(html).toMatch(/<option value="normal" selected/);
+    expect(html).toMatch(/<option value="us"[^>]* selected/);
+    expect(html).toMatch(/<option value="normal"[^>]* selected/);
   });
 });
 
