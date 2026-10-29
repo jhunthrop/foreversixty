@@ -51,10 +51,10 @@ describe('PriceBlock', () => {
     expect((await renderBlock('premium')).querySelector('[data-testid=cost-line]')).toBeNull();
   });
 
-  it('guild price figure 22/24 px, premium 28/32', async () => {
+  it('guild price figure 22/24 px, premium 44/52 (polish spec 3.3)', async () => {
     const guild = classesOf((await renderBlock('raid_guild')).querySelector('.amount'));
     expect(guild).toEqual(expect.arrayContaining(['text-[22px]', 'md:text-[24px]']));
     const premium = classesOf((await renderBlock('premium')).querySelector('.amount'));
-    expect(premium).toEqual(expect.arrayContaining(['text-[28px]', 'md:text-[32px]']));
+    expect(premium).toEqual(expect.arrayContaining(['text-[44px]', 'md:text-[52px]']));
   });
 });

@@ -86,9 +86,11 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
             <span class="tick" aria-hidden="true">
               ✓
             </span>
-            {item.icon && (
-              <img class="icon" src={item.icon} width="20" height="20" alt="" onerror={HIDE_ON_ERROR} />
-            )}
+            <span class="well-icon">
+              {item.icon && (
+                <img class="icon" src={item.icon} width="20" height="20" alt="" onerror={HIDE_ON_ERROR} />
+              )}
+            </span>
             <span>{item.text}</span>
           </li>
         ))}
@@ -198,9 +200,6 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
     padding: 12px 0;
     border-top: 1px solid var(--color-line-soft);
   }
-  .then li:first-child {
-    margin-top: 4px;
-  }
   .then-title {
     margin: 0;
     font-size: 15px;
@@ -217,7 +216,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin-top: 6px;
+    margin-top: 8px;
   }
   .well li {
     display: flex;
@@ -226,6 +225,11 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
     font-size: 14px;
     line-height: 20px;
     color: var(--color-text);
+  }
+  .well-icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
   }
   .tick {
     flex: none;

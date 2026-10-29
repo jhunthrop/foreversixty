@@ -81,13 +81,14 @@ test('on launch day the founder row shows, prices are founder prices and the lis
   await openAt(page, LAUNCH_DAY);
   await expect(page.getByTestId('founder-row')).toContainText(plansPageCopy.founder.open);
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
-  await expect(page.getByTestId('price-premium').locator('.list-line:visible')).toHaveText(
-    '$50 after 6 Jan 2027',
+  await expect(page.getByTestId('price-premium').locator('.founder-line:visible')).toHaveText(
+    'Founder price until 6 Jan 2027, then $50.',
   );
+  await expect(page.getByTestId('premium-founder-tag')).toBeVisible();
   await expect(page.locator('s:visible')).toHaveCount(0);
   await page.getByLabel(plansPageCopy.interval.labels.monthly).check();
-  await expect(page.getByTestId('price-raid_guild').locator('.list-line:visible')).toHaveText(
-    '$25 a month after 6 Jan 2027',
+  await expect(page.getByTestId('price-raid_guild').locator('.founder-line:visible')).toHaveText(
+    'Founder price until 6 Jan 2027, then $25 a month.',
   );
 });
 
@@ -135,16 +136,15 @@ test('the founder window ends at the instant, to the second', async ({ page }) =
   await openAt(page, AT_CLOSE);
   await expect(page.getByTestId('founder-row')).toBeHidden();
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', false)}`);
-  await expect(page.getByTestId('price-premium').locator('.list-line:visible')).toHaveCount(0);
+  await expect(page.getByTestId('price-premium').locator('.founder-line:visible')).toHaveCount(0);
+  await expect(page.getByTestId('premium-founder-tag')).toBeHidden();
 });
 
-test('at 360 the Free card comes first, once, with the free list and the promise, before Premium', async ({
-  page,
-}) => {
+test('at 360 the Free card comes first, once, with the free list, before Premium', async ({ page }) => {
   await page.setViewportSize(PHONE);
   await openAt(page, DECEMBER);
   await expect(page.getByTestId('free-summary')).toHaveCount(0);
-  await expect(page.locator('#free')).toContainText(plansPageCopy.free.promise);
+  await expect(page.locator('#free')).not.toContainText('This list never shrinks.');
   const order = await page.locator('[data-plan]').evaluateAll((nodes) =>
     nodes
       .filter((node) => node.getBoundingClientRect().height > 0)

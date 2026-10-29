@@ -18,8 +18,11 @@ const guild = PLANS[plan].guild;
 // precondition, not slack: the founder line is about 270 px of 12 px text against about 282 px of
 // card text width at 360, and 277 px at 1024-1279. Capture row 18 checks 360 and 1024 for a wrap;
 // a wrap goes back to the ux-designer for a new height rather than smaller type.
-const blockClass = guild ? 'h-[144px] md:h-[152px]' : 'h-[86px] md:h-[84px]';
-const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-[32px]';
+// Premium's block carries the loudest figure on the page (polish spec 2026-10-28 §3.3: 44 px phone,
+// 52 px desktop, heading face): 44 + (4 + 16) + 16 = 80 on phone, 52 + (2 + 14) + 16 = 84 from 768.
+// Free's price cell is the same height (PlanCard.astro), so the two cards' rows line up.
+const blockClass = guild ? 'h-[144px] md:h-[152px]' : 'h-[82px] md:h-[86px]';
+const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[44px] md:text-[52px]';
 ---
 
 <div class:list={['price-block', blockClass]} data-testid={`price-${plan}`}>
@@ -29,13 +32,12 @@ const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-
       const cost = costLine(plan, interval, founder);
       return (
         <div class="price-state" data-iv={interval} data-fd={founderKey(founder)}>
-          <p class="price-line">
+          <p class:list={['price-line', guild ? 'price-line-guild' : 'price-line-hero']}>
             <span class:list={['amount tabular', amountClass]}>{cell.amount}</span>
             <span class="suffix">{cell.suffix}</span>
           </p>
-          <p class="list-line">{cell.listLine}</p>
-          <p class="second-line">{cell.secondLine}</p>
           {cell.founderLine && <p class="founder-line">{cell.founderLine}</p>}
+          <p class="second-line">{cell.secondLine}</p>
           {cost && (
             <p
               class="cost-line text-text mt-[6px] h-[54px] text-[13px] leading-[18px]"
@@ -56,8 +58,14 @@ const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-
     align-items: baseline;
     gap: 6px;
     margin: 0;
+  }
+  .price-line-guild {
     height: 32px;
     line-height: 32px;
+  }
+  .price-line-hero {
+    height: 44px;
+    line-height: 44px;
   }
   .amount {
     font-family: var(--font-heading);
@@ -68,12 +76,6 @@ const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-
     font-size: 15px;
     color: var(--color-muted);
     margin-right: 2px;
-  }
-  .list-line {
-    margin: 0;
-    font-size: 13px;
-    line-height: 16px;
-    color: var(--color-muted);
   }
   .second-line {
     margin: 0;
@@ -88,9 +90,13 @@ const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-
     color: var(--color-gold);
   }
   @media (min-width: 768px) {
-    .price-line {
+    .price-line-guild {
       height: 34px;
       line-height: 34px;
+    }
+    .price-line-hero {
+      height: 52px;
+      line-height: 52px;
     }
     .founder-line {
       margin-top: 2px;

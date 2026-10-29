@@ -2,7 +2,7 @@
 // What a priced plan card needs from the plan table and the page copy, in one place, so the
 // card, its price block and its buttons cannot disagree. No price literal: amounts come from
 // lib/billing/plans.
-import { listPriceAfterFounder, priceFor } from '../../lib/billing/plan-costs';
+import { listPrice, priceFor } from '../../lib/billing/plan-costs';
 import { perMemberLine, perRaiderLine, plansPageCopy } from '../../lib/billing/plans-page-copy';
 import {
   GUILD_TRIAL_DAYS,
@@ -51,7 +51,6 @@ export function buttonLabel(plan: PlanKey, interval: Interval, founder: boolean)
 
 export interface PriceCell {
   amount: string;
-  listLine: string | null;
   suffix: string;
   secondLine: string;
   founderLine: string | null;
@@ -62,11 +61,10 @@ export function priceCell(plan: PlanKey, interval: Interval, founder: boolean): 
   const yearly = priceFor(plan, 'yearly', founder);
   return {
     amount: formatAmount(priceFor(plan, interval, founder)),
-    listLine: founder ? listPriceAfterFounder(plan, interval) : null,
     suffix: price.suffix[interval],
     secondLine:
       interval === 'yearly' ? price.perMonth(yearly) : price.orYearly(formatPrice(yearly, 'yearly')),
-    founderLine: founder ? price.founder : null,
+    founderLine: founder ? price.founderUntil(listPrice(plan, interval)) : null,
   };
 }
 

@@ -1,0 +1,138 @@
+{
+  "zone": "Molten Core",
+  "answer": {
+    "report_id": "fixture2abcd",
+    "fight_index": 3,
+    "player_key": "us/hardcore/baelgrim",
+    "spec": "Fury",
+    "role": "dps",
+    "size": 40,
+    "kill": true,
+    "status": "ready",
+    "source": "model",
+    "busy": false,
+    "access": "full",
+    "persona": {
+      "label": "Your Fury coach",
+      "status": "full"
+    },
+    "reviewed_at": "2026-10-25T02:10:00Z",
+    "review": {
+      "opening": "Solid kill: you were alive the whole fight and Battle Shout was up 100% of it. Almost everything you left behind sits in one button.",
+      "fixFirst": {
+        "finding": "f1",
+        "title": "Bloodthirst: 9 casts lost",
+        "why": "Bloodthirst is the button the Fury rotation is built around, and 9 casts went unused while you had the rage, longest at 1:12–1:25. At 2:44–2:58 you sat on a full bar instead, so that one gap cost you two Bloodthirsts.",
+        "drill": "drill.core_casts",
+        "drillText": "On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
+        "anchors": ["a1", "a2", "a3", "a5"],
+        "links": [
+          {
+            "id": "l1",
+            "sentence": "The Bloodthirst gap at 2:44–2:58 overlaps the rage cap at 2:45–2:59."
+          }
+        ]
+      },
+      "thenFix": [
+        {
+          "finding": "f2",
+          "title": "No flask at the pull",
+          "why": "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss.",
+          "anchors": ["a4"],
+          "links": []
+        },
+        {
+          "finding": "f3",
+          "title": "Rage full for 14 seconds",
+          "why": "When the bar is full, Heroic Strike turns rage into damage instead of losing it.",
+          "anchors": ["a5"],
+          "links": [
+            {
+              "id": "l1",
+              "sentence": "The Bloodthirst gap at 2:44–2:58 overlaps the rage cap at 2:45–2:59."
+            }
+          ]
+        }
+      ],
+      "doingWell": [
+        {
+          "strength": "s1",
+          "text": "You were alive the whole fight.",
+          "anchors": []
+        },
+        {
+          "strength": "s4",
+          "text": "Battle Shout was up 100% of the fight, against 97% for the top 25.",
+          "anchors": ["a8"]
+        }
+      ],
+      "couldntCheck": [
+        "Talents and race: Forever logs don't record them.",
+        "Range and movement: the log doesn't say where you stood.",
+        "Weapon oils and stones: the coach can't read them from your log yet.",
+        "Combat potions: the coach's potion list isn't complete yet."
+      ]
+    },
+    "anchors": {
+      "a1": {
+        "kind": "cast",
+        "spell_id": 23894,
+        "spell_name": "Bloodthirst"
+      },
+      "a10": {
+        "kind": "cast",
+        "spell_id": 1680,
+        "spell_name": "Whirlwind"
+      },
+      "a11": {
+        "kind": "cast",
+        "spell_id": 25286,
+        "spell_name": "Heroic Strike"
+      },
+      "a2": {
+        "kind": "time",
+        "at_ms": 72000,
+        "to_ms": 85000
+      },
+      "a3": {
+        "kind": "time",
+        "at_ms": 164000,
+        "to_ms": 178000
+      },
+      "a4": {
+        "kind": "buffs"
+      },
+      "a5": {
+        "kind": "resource",
+        "at_ms": 165000,
+        "to_ms": 179000
+      },
+      "a6": {
+        "kind": "cast",
+        "spell_id": 2687,
+        "spell_name": "Bloodrage"
+      },
+      "a7": {
+        "kind": "cast",
+        "spell_id": 1680,
+        "spell_name": "Whirlwind"
+      },
+      "a8": {
+        "kind": "aura",
+        "spell_id": 6673,
+        "spell_name": "Battle Shout"
+      },
+      "a9": {
+        "kind": "cast",
+        "spell_id": 23894,
+        "spell_name": "Bloodthirst"
+      }
+    },
+    "basis_labels": [
+      "Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
+      "Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 6.2.",
+      "From the character sheet in your log, against the site's consumable list for damage dealers.",
+      "Measured against your own rage bar."
+    ]
+  }
+}

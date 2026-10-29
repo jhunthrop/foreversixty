@@ -60,9 +60,7 @@ describe('plansPageCopy against spec 6.1', () => {
       copy.free.audience,
       copy.free.price,
       copy.free.note,
-      copy.free.signIn,
       ...copy.free.features,
-      copy.free.promise,
     ]);
   });
 
@@ -75,14 +73,14 @@ describe('plansPageCopy against spec 6.1', () => {
     expect(row('Price block')).toEqual([
       copy.price.suffix.yearly,
       copy.price.suffix.monthly,
-      '{list} after 6 Jan 2027',
-      '{list} a month after 6 Jan 2027',
+      'Founder price until 6 Jan 2027, then {list}.',
+      'Founder price until 6 Jan 2027, then {list} a month.',
       '{perMonth} a month, billed yearly',
       formatAmount(PLANS.premium.founderYearly / 12),
       formatAmount(PLANS.guild.founderYearly / 12),
       'Or {yearly price}.',
-      copy.price.founder,
     ]);
+    expect(copy.price.founderUntil('{list}')).toBe('Founder price until 6 Jan 2027, then {list}.');
     expect(copy.price.perMonth(PLANS.premium.founderYearly)).toBe(perMonthLine(PLANS.premium.founderYearly));
     expect(copy.price.orYearly('{yearly price}')).toBe('Or {yearly price}.');
   });
@@ -245,9 +243,11 @@ describe('plansPageCopy guild region against spec B5', () => {
     expect(copy.coachSample.caption).toBe(cell('caption')[0]);
     expect(copy.coachSample.ariaLabel).toBe(cell('ariaLabel')[0]);
     const [kill] = cell('context(');
-    const slots = { spec: 'Fury', cls: 'Warrior', size: '40' };
-    expect(copy.coachSample.context('Fury', 'Warrior', 40, true)).toBe(fill(kill ?? '', slots));
-    expect(copy.coachSample.context('Fury', 'Warrior', 40, false)).toBe(
+    const slots = { spec: 'Fury', cls: 'Warrior', zone: 'Molten Core', size: '40' };
+    expect(copy.coachSample.context('Fury', 'Warrior', 'Molten Core', 40, true)).toBe(
+      fill(kill ?? '', slots),
+    );
+    expect(copy.coachSample.context('Fury', 'Warrior', 'Molten Core', 40, false)).toBe(
       fill(kill ?? '', slots).replace('kill', 'wipe'),
     );
     expect(copy.coachSample.fixFirst).toBe(coachCopy.labelFixFirst);

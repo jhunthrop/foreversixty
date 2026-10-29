@@ -16,10 +16,14 @@ export function priceFor(plan: PlanKey, interval: Interval, founder: boolean): n
   return entryPrice(PLANS[plan], interval, founder);
 }
 
+/** The list price with its interval: `$50`, `$6 a month`. */
+export function listPrice(plan: PlanKey, interval: Interval): string {
+  return `${formatAmount(priceFor(plan, interval, false))}${interval === 'monthly' ? ' a month' : ''}`;
+}
+
 /** The list price shown beside a founder price: `$50 after 6 Jan 2027`, `$6 a month after 6 Jan 2027`. */
 export function listPriceAfterFounder(plan: PlanKey, interval: Interval): string {
-  const amount = formatAmount(priceFor(plan, interval, false));
-  return `${amount}${interval === 'monthly' ? ' a month' : ''} after ${FOUNDER_LAST_DAY}`;
+  return `${listPrice(plan, interval)} after ${FOUNDER_LAST_DAY}`;
 }
 
 /** The Raid guild price divided by each raid size, in `RAID_SIZES` order. */

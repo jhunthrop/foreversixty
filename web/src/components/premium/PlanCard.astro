@@ -45,6 +45,9 @@ const cardId = plan === 'free' ? 'free' : undefined;
   <Name class="plan-name heading-plan">{block.name}</Name>
   {plan === 'premium' ? (
     <div class="audience-cell" data-part="audience">
+      <span class="pill pill-site founder-tag" data-fd="open" data-testid="premium-founder-tag">
+        {plansPageCopy.founder.label}
+      </span>
       <p class="audience" data-default>
         {block.audience}
       </p>
@@ -68,22 +71,20 @@ const cardId = plan === 'free' ? 'free' : undefined;
   )}
 
   <div class="action-slot min-h-11">
-    {priced ? (
-      INTERVALS.flatMap((interval) =>
-        FOUNDER_STATES.map((founder) => (
-          <a
-            href={checkoutHref(priced, interval)}
-            class={buttonClass}
-            data-iv={interval}
-            data-fd={founderKey(founder)}
-          >
-            {buttonLabel(priced, interval, founder)}
-          </a>
-        )),
-      )
-    ) : (
-      <p class="free-note">{free.signIn}</p>
-    )}
+    {priced
+      ? INTERVALS.flatMap((interval) =>
+          FOUNDER_STATES.map((founder) => (
+            <a
+              href={checkoutHref(priced, interval)}
+              class={buttonClass}
+              data-iv={interval}
+              data-fd={founderKey(founder)}
+            >
+              {buttonLabel(priced, interval, founder)}
+            </a>
+          )),
+        )
+      : null}
     {plan === 'premium' && (
       <a href="/account#plan" class={ownedButtonClass} data-owned>
         {premiumSourceCopy.buttons.seePlan}
@@ -123,7 +124,6 @@ const cardId = plan === 'free' ? 'free' : undefined;
         </li>
       ))}
     </ul>
-    {plan === 'free' && <p class="promise">{free.promise}</p>}
     {plan === 'premium' && (
       <p class="scope" data-testid="premium-scope">
         {plansPageCopy.premium.scope}
@@ -134,6 +134,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
 
 <style>
   .plan-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 12px 20px 20px;
@@ -146,6 +147,12 @@ const cardId = plan === 'free' ? 'free' : undefined;
       inset 0 1px 0 var(--card-highlight),
       0 0 0 1px rgba(229, 185, 85, 0.12),
       0 18px 48px rgba(229, 185, 85, 0.1);
+  }
+  /* The Founder tag sits top-right while the founder window is open (spec §3.3). */
+  .founder-tag {
+    position: absolute;
+    top: 14px;
+    right: 20px;
   }
   .plan-name {
     margin: 0;
@@ -194,15 +201,15 @@ const cardId = plan === 'free' ? 'free' : undefined;
     display: none;
   }
   .free-price {
-    height: 86px;
+    height: 82px;
   }
   .free-amount {
     margin: 0;
-    height: 32px;
-    line-height: 32px;
+    height: 44px;
+    line-height: 44px;
     font-family: var(--font-heading);
     font-weight: 800;
-    font-size: 28px;
+    font-size: 44px;
     color: var(--color-strong);
   }
   .action-slot {
@@ -262,12 +269,6 @@ const cardId = plan === 'free' ? 'free' : undefined;
     line-height: 18px;
     color: var(--color-muted);
   }
-  .promise {
-    margin: 12px 0 0;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-strong);
-  }
   @media (min-width: 768px) {
     .plan-card {
       padding: 12px 20px 20px;
@@ -305,11 +306,12 @@ const cardId = plan === 'free' ? 'free' : undefined;
       display: block;
     }
     .free-price {
-      height: 84px;
+      height: 86px;
     }
     .free-amount {
-      height: 34px;
-      line-height: 34px;
+      height: 52px;
+      line-height: 52px;
+      font-size: 52px;
     }
   }
   /* Capture-row note (rows 15 and 17, not yet run): written for the old four-column row; the rows

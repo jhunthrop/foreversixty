@@ -7,6 +7,7 @@ import { perMemberAmount, perRaiderAmounts } from './plan-costs';
 import { coachCopy } from '../coach/copy';
 import {
   GUILD_TIER_MEMBER_LIMIT,
+  FOUNDER_LAST_DAY,
   FOUNDER_PRICE_UNTIL,
   GUILD_TRIAL_DAYS,
   PLANS,
@@ -76,7 +77,6 @@ export const plansPageCopy = {
     audience: 'For every player',
     price: '$0',
     note: 'No card, no trial, no end date.',
-    signIn: 'Sign in with Battle.net from the top of any page.',
     features: [
       'Addon export and import',
       'BiS lists for every spec and level band',
@@ -86,14 +86,13 @@ export const plansPageCopy = {
       'Rankings and the tier list',
       'Class guides',
     ],
-    promise: 'This list never shrinks.',
   },
   premium: {
     name: 'Premium',
     audience: 'For one player',
     support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
     features: [
-      'Coach: after every logged raid, what to fix first — the casts you missed, the buffs you let drop, the consumables you skipped — learned from the engine and from the top logs on the site.',
+      'Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.',
       `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
       'Close the tab. Server sims keep running, and the site tells you when they finish.',
       `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
@@ -130,7 +129,8 @@ export const plansPageCopy = {
     suffix: { yearly: ' /year', monthly: ' /month' } as Record<Interval, string>,
     perMonth: (yearlyUsd: number): string => perMonthLine(yearlyUsd),
     orYearly: (yearlyPrice: string): string => `Or ${yearlyPrice}.`,
-    founder: 'Founder price, kept while you stay subscribed.',
+    founderUntil: (listPrice: string): string =>
+      `Founder price until ${FOUNDER_LAST_DAY}, then ${listPrice}.`,
     perMember,
     perRaider,
   },
@@ -147,8 +147,8 @@ export const plansPageCopy = {
   coachSample: {
     tag: 'Sample',
     label: 'What the coach says after a raid',
-    context: (spec: string, cls: string, size: number, kill: boolean): string =>
-      `${spec} ${cls} · ${size}-player ${kill ? 'kill' : 'wipe'}`,
+    context: (spec: string, cls: string, zone: string, size: number, kill: boolean): string =>
+      `${spec} ${cls} · ${zone} · ${size}-player ${kill ? 'kill' : 'wipe'}`,
     fixFirst: coachCopy.labelFixFirst,
     then: coachCopy.labelThen,
     doingWell: coachCopy.labelWell,

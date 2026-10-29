@@ -1,7 +1,7 @@
 // web/src/lib/billing/plan-costs.test.ts
 import { describe, expect, it } from 'vitest';
 import { FOUNDER_LAST_DAY, type Interval, type PlanKey } from './plans';
-import { listPriceAfterFounder, perMemberAmount, perRaiderAmounts, priceFor } from './plan-costs';
+import { listPrice, listPriceAfterFounder, perMemberAmount, perRaiderAmounts, priceFor } from './plan-costs';
 
 const TWELVE_AMOUNTS: ReadonlyArray<[PlanKey, Interval, boolean, number]> = [
   ['premium', 'monthly', false, 6],
@@ -41,6 +41,13 @@ describe('cost amounts (B3.3)', () => {
 describe('priceFor', () => {
   it.each(TWELVE_AMOUNTS)('%s %s founder=%s is %d', (plan, interval, founder, usd) => {
     expect(priceFor(plan, interval, founder)).toBe(usd);
+  });
+});
+
+describe('listPrice', () => {
+  it('is the list amount with its interval', () => {
+    expect(listPrice('premium', 'yearly')).toBe('$50');
+    expect(listPrice('premium', 'monthly')).toBe('$6 a month');
   });
 });
 

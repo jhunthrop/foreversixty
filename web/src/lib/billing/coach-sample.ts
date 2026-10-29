@@ -1,10 +1,12 @@
 // web/src/lib/billing/coach-sample.ts
-// The sample coach review in /premium's third column (polish spec 2026-10-28 section 3.3): one
-// real coach answer, the Fury model fixture, cut down to what a visitor should read. Its words
-// are the coach's own and are never edited here; drill text, link sentences, evidence chips and
-// the "couldn't check" lines are left out. The page labels it a sample (plans-page-copy.ts).
+// The sample coach review in /premium's third column (polish spec 2026-10-28 section 3.3): the
+// coach's Fury model answer (web/src/fixtures/coach/fury-model.json) as src/data/premium-coach-
+// sample.json, which differs from it only by the player's ruling that the sample's figures agree
+// (coach-sample.test.ts pins the whole difference), plus the zone the context line names. Cut down
+// to what a visitor should read: drill text, link sentences, evidence chips and the "couldn't
+// check" lines are left out. The page labels it a sample (plans-page-copy.ts).
 import classes from '../../data/classes.json';
-import fixture from '../../fixtures/coach/fury-model.json';
+import sample from '../../data/premium-coach-sample.json';
 import { firstSpellId } from '../coach/chips';
 import { normalizeFightCoach } from '../coach/normalize';
 import type { CoachAnchor, CoachFull } from '../coach/types';
@@ -27,6 +29,7 @@ export interface SampleWell {
 
 export interface CoachSampleView {
   readonly classSlug: string;
+  readonly zone: string;
   readonly title: string;
   readonly context: string;
   readonly opening: string;
@@ -36,7 +39,7 @@ export interface CoachSampleView {
 }
 
 export function loadCoachSampleAnswer(): CoachFull {
-  const answer = normalizeFightCoach(fixture);
+  const answer = normalizeFightCoach(sample.answer);
   if (answer === null || answer.access === 'teaser') {
     throw new Error('coach sample: fury-model.json is not a full coach answer');
   }
@@ -65,8 +68,9 @@ export function coachSampleView(answer: CoachFull, iconOf: IconOf): CoachSampleV
   const { review, anchors } = answer;
   return {
     classSlug: cls.slug,
+    zone: sample.zone,
     title: answer.persona.label,
-    context: plansPageCopy.coachSample.context(answer.spec, cls.name, answer.size, answer.kill),
+    context: plansPageCopy.coachSample.context(answer.spec, cls.name, sample.zone, answer.size, answer.kill),
     opening: review.opening,
     fixFirst: review.fixFirst === null ? null : line(review.fixFirst, anchors, iconOf),
     then: review.thenFix.map((item) => line(item, anchors, iconOf)),
