@@ -188,7 +188,7 @@ func TestLookupCopyMatchesTheSpec(t *testing.T) {
 		lookupCopy.UpgradesByDPS, lookupCopy.UpgradesByScore, lookupCopy.NoGear, lookupCopy.CharacterPage, lookupCopy.NoCharacter}
 	bis := cell("`/bis`")
 	wantBis := []string{lookupCopy.BisSlotLead, lookupCopy.BisTopLead, lookupCopy.BisAuthor, lookupCopy.BisOpen, lookupCopy.BisAllSlots,
-		lookupCopy.BisNeedsSpec, bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}
+		bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}
 	item := cell("Item embed")
 	wantItem := append([]string{lookupCopy.ItemLineOne, lookupCopy.ItemLineTwo}, qualityWords...)
 	share := cell("Share")

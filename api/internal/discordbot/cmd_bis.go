@@ -41,15 +41,16 @@ func (s *Service) cmdBis(ctx context.Context, in Interaction) (Reply, error) {
 	if err != nil || !bound {
 		return pressReply(commonCopy.Unbound, false), err
 	}
+	specText, _ := in.Option(optSpec)
+	if specText == "" {
+		return s.bisCardReply(ctx, in, guildID, viewer, false)
+	}
 	opts, ok, err := s.resolveBis(ctx, in, guildID, viewer)
 	if err != nil {
 		return Reply{}, err
 	}
 	if !ok {
-		if viewer == nil {
-			return pressReply(lookupCopy.BisNeedsSpec, false, s.linkButton()), nil
-		}
-		return pressReply(lookupCopy.BisNeedsSpec, false), nil
+		return s.bisCardReply(ctx, in, guildID, viewer, true)
 	}
 	msg, found, err := s.answerBis(ctx, guildID, viewer, opts)
 	if err != nil {
@@ -67,8 +68,15 @@ func (s *Service) cmdBis(ctx context.Context, in Interaction) (Reply, error) {
 	return Reply{Message: msg}, nil
 }
 
+// bisCardReply opens the /bis card.
+func (s *Service) bisCardReply(ctx context.Context, in Interaction, guildID int64, viewer *int64, unknownSpec bool) (Reply, error) {
+	msg, err := s.bisCardFor(ctx, in, guildID, viewer, unknownSpec)
+	return Reply{Message: msg}, err
+}
+
 // mainFacts is what /bis defaults from: the viewer's main character in the guild.
 type mainFacts struct {
+	name  string
 	spec  specs.Spec
 	level *int
 }
@@ -84,20 +92,7 @@ func (s *Service) resolveBis(ctx context.Context, in Interaction, guildID int64,
 	if err != nil {
 		return nil, false, err
 	}
-	var (
-		chosen specs.Spec
-		ok     bool
-	)
-	switch {
-	case specText != "":
-		chosen, ok = resolveSpec(class, specText)
-	case class != "" && hasMain && main.spec.ClassSlug == class:
-		chosen, ok = main.spec, true
-	case class != "":
-		chosen, ok = firstSpecOf(class)
-	case hasMain:
-		chosen, ok = main.spec, true
-	}
+	chosen, ok := resolveSpec(class, specText)
 	if !ok {
 		return nil, false, nil
 	}
@@ -138,7 +133,7 @@ func (s *Service) mainOf(ctx context.Context, guildID int64, viewer *int64) (mai
 		return mainFacts{}, false, nil
 	}
 	sp, _ := specByKey(key)
-	out := mainFacts{spec: sp}
+	out := mainFacts{spec: sp, name: main.Name}
 	if parts := strings.SplitN(main.CharacterKey, "/", 3); len(parts) == 3 {
 		card, found, err := s.d.Characters.CharacterCard(ctx, parts[0], parts[1], parts[2])
 		if err != nil {
@@ -168,16 +163,6 @@ func resolveSpec(class, text string) (specs.Spec, bool) {
 		return specs.Spec{}, false
 	}
 	return found[0], true
-}
-
-// firstSpecOf is the class's first spec in the catalogue.
-func firstSpecOf(class string) (specs.Spec, bool) {
-	for _, sp := range specs.All {
-		if sp.ClassSlug == class {
-			return sp, true
-		}
-	}
-	return specs.Spec{}, false
 }
 
 // answerBis is the /bis answer for resolved options. It is the same for every viewer: the

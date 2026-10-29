@@ -90,21 +90,15 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		w.port.candidates = []guilds.SignupCandidate{{CharacterKey: "us/normal/brakka", Name: "Brakka", Class: "warrior", Spec: "Fury", Verified: true, Main: true}}
 		w.cards.cards["brakka"] = rankings.Character{Character: rankings.CharacterRef{Key: "us/normal/brakka", Region: "us",
 			Ruleset: "normal", Name: "Brakka", Class: "warrior", Level: ref(60)}}
-		m := w.command(t, pressDiscord, "bis", map[string]string{"slot": "head"}).Message
+		m := w.command(t, pressDiscord, "bis", map[string]string{"spec": "fury", "slot": "head"}).Message
 		if m.Content != "Head for a Fury Warrior, level 60 Phase 1 raid:" {
 			t.Fatalf("lead = %q", m.Content)
 		}
-		bare := w.command(t, pressDiscord, "bis", map[string]string{"slot": "head", "phase": "60"}).Message
+		bare := w.command(t, pressDiscord, "bis", map[string]string{"spec": "fury", "slot": "head", "phase": "60"}).Message
 		if bare.Content != "Head for a Fury Warrior, level 60:" || bare.Embeds[0].Title != "Pick head" ||
 			!strings.Contains(bare.Embeds[0].URL, "preset=bare") {
 			t.Fatalf("bare = %+v", bare)
 		}
-	})
-	t.Run("unlinked without a class", func(t *testing.T) {
-		w := newBisWorld(t)
-		wantReply(t, w.command(t, "d-stranger", "bis", map[string]string{"slot": "head"}),
-			"Name a class and spec, or link Discord to use your character.", false,
-			wantButton{linkCopy.LinkButton, w.svc.linkStartURL()})
 	})
 }
 

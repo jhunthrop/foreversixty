@@ -19,8 +19,6 @@ var lookupCopy = struct {
 	BisSlotLead, BisTopLead, BisAuthor string
 	// BisOpen and BisAllSlots are the link buttons with and without a slot.
 	BisOpen, BisAllSlots string
-	// BisNeedsSpec answers a /bis with nothing to resolve the spec from.
-	BisNeedsSpec string
 	// BisFooter closes a /bis answer.
 	BisFooter string
 	// ItemLineOne and ItemLineTwo are an item embed's description.
@@ -46,7 +44,6 @@ var lookupCopy = struct {
 	BisAuthor:       "Best in slot",
 	BisOpen:         "Open on Forever Sixty",
 	BisAllSlots:     "All 17 slots",
-	BisNeedsSpec:    "Name a class and spec, or link Discord to use your character.",
 	BisFooter:       "{Spec} {Class} · {band label} · Forever Sixty",
 	ItemLineOne:     "{Slot} · {Quality} · item level {n}",
 	ItemLineTwo:     "{delta} · {source}",

@@ -56,8 +56,8 @@ func Commands() []Command {
 			stringOption("name", descName, true, true, nil),
 		}},
 		{Name: "bis", Description: "Best in slot for a class and spec.", Released: true, Options: []CommandOption{
-			stringOption("class", "The class. Yours if left out.", false, false, classChoices),
-			stringOption("spec", "The spec. Yours if left out.", false, true, nil),
+			stringOption("class", "The class. Leave out to pick it.", false, false, classChoices),
+			stringOption("spec", "The spec. Leave out to pick it.", false, true, nil),
 			stringOption("slot", "One slot. The top five if left out.", false, false, slotChoices),
 			stringOption("phase", "Level band or Phase 1 raid.", false, false, phaseChoices),
 		}},

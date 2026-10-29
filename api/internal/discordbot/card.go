@@ -18,6 +18,9 @@ const (
 	prefixReport     = "grep"
 )
 
+// cardFooter is the footer of every card embed.
+const cardFooter = "Forever Sixty"
+
 // cardMinFields is prefix, version and part: the fewest fields a card id has.
 const cardMinFields = 3
 
