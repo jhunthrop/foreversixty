@@ -39,9 +39,14 @@ func TestFeralAndFeralBearHaveTheirOwnIcons(t *testing.T) {
 	}
 }
 
-// Every icon exists in the active build's folder (generated data; skipped when the checkout has
-// not built it, which CI's data job does).
+// Every icon exists in the active build's folder. The folder is generated data that a fixture
+// sync (FOREVER_DATA=fixture) replaces with a 200-file subset, so the check runs only when
+// RAIDSPEC_ICONS=check names a checkout with the real build synced; CI's API job has no
+// web data at all and skips.
 func TestEveryIconExistsInTheActiveBuild(t *testing.T) {
+	if os.Getenv("RAIDSPEC_ICONS") != "check" {
+		t.Skip("set RAIDSPEC_ICONS=check on a checkout with the real build's web data synced")
+	}
 	dir := filepath.Join("..", "..", "..", "web", "public", "data", activeIconBuild, "icons")
 	if _, err := os.Stat(dir); err != nil {
 		t.Skipf("no icon folder at %s", dir)
