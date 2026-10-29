@@ -108,12 +108,12 @@ describe('isSimulatedSpec', () => {
   });
 });
 
-describe("siblingSpecNames", () => {
-  it("lists the other specs of the class in tree order", () => {
-    expect(siblingSpecNames("warrior-arms")).toEqual(["Fury", "Protection"]);
+describe('siblingSpecNames', () => {
+  it('lists the other specs of the class in tree order', () => {
+    expect(siblingSpecNames('warrior-arms')).toEqual(['Fury', 'Protection']);
   });
 
-  it("is empty for an unknown spec", () => {
-    expect(siblingSpecNames("nonsense")).toEqual([]);
+  it('is empty for an unknown spec', () => {
+    expect(siblingSpecNames('nonsense')).toEqual([]);
   });
 });

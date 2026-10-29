@@ -25,7 +25,7 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
   import { specOf } from '../../lib/sim/character';
-    import { specLabel } from '../../lib/sim/spec-label';
+  import { specLabel } from '../../lib/sim/spec-label';
   import PlannerDps from './PlannerDps.svelte';
   import StatTile from '../ui/StatTile.svelte';
   import Select from '../ui/Select.svelte';
@@ -172,7 +172,12 @@
          stretch to the tallest one, so the rail reads as one row of equal tiles. "Sim this
          build" is its own button in the rail, above the Share panel. -->
     <div class="planner-header-facts" data-testid="planner-facts">
-      <StatTile label="Points left" value={String(MAX_POINTS - store.spent)} figureTestid="planner-remaining" tone="gold" />
+      <StatTile
+        label="Points left"
+        value={String(MAX_POINTS - store.spent)}
+        figureTestid="planner-remaining"
+        tone="gold"
+      />
       <StatTile label="Spent" value={`${store.spent}/${MAX_POINTS}`} figureTestid="planner-spent" />
       <StatTile label="Level" value={String(store.level)} figureTestid="planner-level" />
       <PlannerDps

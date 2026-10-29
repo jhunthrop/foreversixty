@@ -19,9 +19,7 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await showLastTalent(page);
-  // One point short: no figure. Fix round 1, item 2.a: the dynamic "{n} points to go" count
-  // now lives under "Points left" (so it never repeats the DPS figure's own number); the
-  // facts rail's DPS slot reads a plain, static explainer instead.
+  // One point short: no figure, and the DPS slot reads a plain explainer (never a point count).
   await expect(page.getByTestId('planner-dps')).toHaveText('—');
   await expect(page.getByTestId('planner-dps-error')).toHaveText('DPS appears once your points are spent.');
   await page.waitForTimeout(600);
