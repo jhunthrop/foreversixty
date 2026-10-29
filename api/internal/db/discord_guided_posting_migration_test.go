@@ -47,7 +47,17 @@ func TestMigrationBackfillsBotPosts(t *testing.T) {
 	if _, err := pool.Exec(ctx, `insert into guild_raid_discord_posts (raid_id, guild_id, channel_id) values ($1, $2, 'c1')`, raid, gid); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := pool.Exec(ctx, `insert into guild_notification_webhooks (guild_id, token_box, channel_id, post_default)
+		values ($1, '\x00', 'c1', false)`, gid); err != nil {
+		t.Fatal(err)
+	}
 	migrateTo(t, url, guidedPostingVersion)
+
+	var hookPost, hookRemind bool
+	if err := pool.QueryRow(ctx, `select post_default, remind_default from guild_notification_webhooks where guild_id = $1`, gid).
+		Scan(&hookPost, &hookRemind); err != nil || !hookPost || !hookRemind {
+		t.Fatalf("webhook defaults %v %v err %v", hookPost, hookRemind, err)
+	}
 
 	var remind, posted, samePostAt, postDefault, remindDefault bool
 	if err := pool.QueryRow(ctx, `select remind, posted_at is not null, post_at = posted_at

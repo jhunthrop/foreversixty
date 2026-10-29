@@ -216,3 +216,42 @@ func TestFailAndReleaseSchedule(t *testing.T) {
 		t.Fatal("a released row was not claimable")
 	}
 }
+
+func TestRemindFlippedOffAndOnIsStillClaimed(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	start := now.Add(23 * time.Hour)
+	id := w.raid(t, start, "planned")
+	postedAt := start.Add(-72 * time.Hour)
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, postedAt, true); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.MarkSchedulePosted(ctx, id, postedAt); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.SetScheduleRemind(ctx, id, false); err != nil {
+		t.Fatal(err)
+	}
+	if len(claimed(t, w.st, now)) != 0 {
+		t.Fatal("a row with remind off was claimed")
+	}
+	if err := w.st.SetScheduleRemind(ctx, id, true); err != nil {
+		t.Fatal(err)
+	}
+	if due := claimed(t, w.st, now); len(due) != 1 || due[0].Kind != dueReminder {
+		t.Fatalf("after re-enabling: %+v", due)
+	}
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, postedAt, false); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, postedAt, true); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.ReleaseSchedule(ctx, id); err != nil {
+		t.Fatal(err)
+	}
+	if len(claimed(t, w.st, now)) != 1 {
+		t.Fatal("an upsert flip lost the reminder")
+	}
+}

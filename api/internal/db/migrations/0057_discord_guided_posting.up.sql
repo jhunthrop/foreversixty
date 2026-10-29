@@ -26,6 +26,7 @@ create table guild_raid_discord_schedule (
   reminded_at timestamptz,
   reminder_via text check (reminder_via in ('bot','webhook')),
   reminder_message_id text,
+  check ((reminder_via is null) = (reminder_message_id is null)),
   lease_until timestamptz,
   attempts int not null default 0,
   next_attempt_at timestamptz not null default now(),
@@ -33,7 +34,8 @@ create table guild_raid_discord_schedule (
   created_at timestamptz not null default now()
 );
 create index guild_raid_discord_schedule_due_idx on guild_raid_discord_schedule (next_attempt_at)
-  where posted_at is null or reminded_at is null;
+  where posted_at is null or (remind and reminded_at is null);
+create index guild_raid_discord_schedule_guild_idx on guild_raid_discord_schedule (guild_id);
 
 -- Ruling 6: every post the bot already made counts as posted, so an edited old raid never posts twice.
 insert into guild_raid_discord_schedule (raid_id, guild_id, post_at, remind, posted_at, created_at)
