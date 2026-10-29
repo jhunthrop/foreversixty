@@ -1,0 +1,135 @@
+{
+ "Kind": "char",
+ "Class": "hunter",
+ "Spec": "Beast Mastery",
+ "Faction": "alliance",
+ "Title": "Zulmara",
+ "Kicker": "Level 60 Beast Mastery Hunter · Olympus XXVII",
+ "Subtitle": "63.5",
+ "Footer": "Gold: gain over what is worn, level 60 Phase 1 raid",
+ "FooterRight": "Synced 8 Dec 2026",
+ "Level": 60,
+ "Band": "level 60 Phase 1 raid",
+ "Guild": "Olympus XXVII",
+ "Slots": [
+  {
+   "Slot": "head",
+   "Name": "Outlaw's Collar",
+   "Quality": 4,
+   "Icon": "inv_misc_bandana_03",
+   "ItemLevel": 65,
+   "Gain": "Gain not modelled yet"
+  },
+  {
+   "Slot": "neck",
+   "Name": "Amulet of the Darkmoon",
+   "Quality": 4,
+   "Icon": "inv_jewelry_necklace_14",
+   "ItemLevel": 65
+  },
+  {
+   "Slot": "shoulder",
+   "Name": "Darkspear Pauldrons",
+   "Quality": 4,
+   "Icon": "inv_shoulder_06",
+   "ItemLevel": 65
+  },
+  {
+   "Slot": "back",
+   "Name": "Shifting Cloak",
+   "Quality": 4,
+   "Icon": "inv_misc_cape_20",
+   "ItemLevel": 62,
+   "Gain": "+2.0 DPS"
+  },
+  {
+   "Slot": "chest",
+   "Name": "Shadowcraft Tunic",
+   "Quality": 3,
+   "Icon": "inv_chest_leather_07",
+   "ItemLevel": 63,
+   "Gain": "+11.0 DPS"
+  },
+  {
+   "Slot": "wrist",
+   "Name": "Forest Stalker's Bracers",
+   "Quality": 4,
+   "Icon": "inv_bracer_12",
+   "ItemLevel": 65,
+   "Gain": "+4.7 DPS"
+  },
+  {
+   "Slot": "hands",
+   "Name": "Raider Gloves",
+   "Quality": 4,
+   "Icon": "inv_gauntlets_27",
+   "ItemLevel": 65
+  },
+  {
+   "Slot": "waist",
+   "Name": "Belt of Preserved Heads",
+   "Quality": 3,
+   "Icon": "inv_belt_14",
+   "ItemLevel": 70
+  },
+  {
+   "Slot": "legs",
+   "Name": "Marshal's Chain Legplates",
+   "Quality": 4,
+   "Icon": "inv_pants_mail_17",
+   "ItemLevel": 71,
+   "Gain": "+9.3 DPS"
+  },
+  {
+   "Slot": "feet",
+   "Name": "Shadowcraft Boots",
+   "Quality": 3,
+   "Icon": "inv_boots_08",
+   "ItemLevel": 59,
+   "Gain": "Gain not modelled yet"
+  },
+  {
+   "Slot": "finger1",
+   "Name": "Signet Ring of the Bronze Dragonflight",
+   "Quality": 4,
+   "Icon": "inv_jewelry_ring_40",
+   "ItemLevel": 80
+  },
+  {
+   "Slot": "finger2",
+   "Name": "Masons Fraternity Ring",
+   "Quality": 3,
+   "Icon": "inv_jewelry_ring_03",
+   "ItemLevel": 49,
+   "Gain": "+4.1 DPS"
+  },
+  {
+   "Slot": "trinket1",
+   "Name": "Frozen Heart of the Mountain",
+   "Quality": 3,
+   "Icon": "inv_misc_gem_sapphire_01",
+   "ItemLevel": 55
+  },
+  {
+   "Slot": "trinket2",
+   "Empty": true,
+   "Gain": "Upgrade available"
+  },
+  {
+   "Slot": "main_hand",
+   "Name": "Legionite Glaive",
+   "Quality": 3,
+   "Icon": "inv_spear_05",
+   "ItemLevel": 63
+  },
+  {
+   "Slot": "ranged",
+   "Name": "Dark Iron Rifle",
+   "Quality": 3,
+   "Icon": "inv_weapon_rifle_08",
+   "ItemLevel": 55,
+   "Gain": "+23.1 DPS"
+  }
+ ],
+ "TwoHand": true
+}

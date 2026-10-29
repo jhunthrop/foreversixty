@@ -41,3 +41,9 @@ func CachePrivateNoStore(w http.ResponseWriter) {
 	w.Header().Set("Cache-Control", "private, no-store")
 	w.Header().Set("Vary", "Cookie, Authorization")
 }
+
+// CachePublicImmutable marks a read whose URL names its content for good (a build's item
+// tile): any cache may keep it a year and never revalidate.
+func CachePublicImmutable(w http.ResponseWriter) {
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+}

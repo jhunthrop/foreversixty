@@ -403,3 +403,37 @@ BIS_ARGS ?= -all
 bis: simdb
 	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
 	go run ./sim/cmd/leveling-bis $(BIS_ARGS)
+
+.PHONY: sheet-fonts
+# sheet-fonts fetches the Discord character sheet's faces (spec
+# design/specs/2026-10-29-discord-gear-panel.md, Part C) into
+# api/internal/sheet/fonts, where the renderer go:embeds them: Barlow 400 and
+# 600 and Cinzel 700, full Latin TTFs. The site's woff2 files are cut to the
+# site's own glyphs and x/image cannot read woff2, so the TTFs come from the
+# Fontsource CDN at the exact version web/package-lock.json installs, and the
+# OFL licence from that same version's npm package. Run once and commit; it
+# never runs in CI.
+SHEET_FONTS_DIR := api/internal/sheet/fonts
+sheet-fonts:
+	@mkdir -p $(SHEET_FONTS_DIR)
+	@set -e; tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
+	for spec in barlow:400:Barlow-Regular barlow:600:Barlow-SemiBold cinzel:700:Cinzel-Bold; do \
+	  pkg=$${spec%%:*}; rest=$${spec#*:}; weight=$${rest%%:*}; file=$${rest#*:}; \
+	  ver=$$(node -p "require('./web/package-lock.json').packages['node_modules/@fontsource/$$pkg'].version"); \
+	  curl -sfL -o $(SHEET_FONTS_DIR)/$$file.ttf "https://cdn.jsdelivr.net/fontsource/fonts/$$pkg@$$ver/latin-$$weight-normal.ttf"; \
+	  echo "$$file.ttf  @fontsource/$$pkg@$$ver latin $$weight"; \
+	  (cd "$$tmp" && npm pack --silent "@fontsource/$$pkg@$$ver" >/dev/null && tar -xzf "fontsource-$$pkg-$$ver.tgz" package/LICENSE); \
+	  cp "$$tmp/package/LICENSE" $(SHEET_FONTS_DIR)/OFL-$$pkg.txt; \
+	done
+
+.PHONY: sheet-assets
+# sheet-assets copies the sheet's site art into api/internal/sheet/assets,
+# byte for byte (spec Part C: copied, never redrawn; the package's tests
+# compare hashes with web/public): the nine 128 px HD crests, the two 72 px
+# faction marks, and the 400 px seal.
+SHEET_ASSETS_DIR := api/internal/sheet/assets
+sheet-assets:
+	@mkdir -p $(SHEET_ASSETS_DIR)/crests $(SHEET_ASSETS_DIR)/faction
+	cp web/public/icons/hd/crests/*.webp $(SHEET_ASSETS_DIR)/crests/
+	cp web/public/icons/hd/faction/alliance.webp web/public/icons/hd/faction/horde.webp $(SHEET_ASSETS_DIR)/faction/
+	cp web/public/seal-400.png $(SHEET_ASSETS_DIR)/seal-400.png

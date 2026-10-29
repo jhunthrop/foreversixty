@@ -1,0 +1,127 @@
+{
+ "Kind": "bis",
+ "Class": "hunter",
+ "Spec": "Beast Mastery",
+ "Faction": "alliance",
+ "Title": "Beast Mastery Hunter",
+ "Kicker": "Best in slot",
+ "Subtitle": "Phase 1 raid",
+ "Footer": "Updated 29 Oct 2026",
+ "Level": 60,
+ "Band": "level 60 Phase 1 raid",
+ "Slots": [
+  {
+   "Slot": "head",
+   "Name": "Beastmaster's Cap",
+   "Quality": 4,
+   "Icon": "inv_helmet_24",
+   "Meta": "Quest: Saving the Best for Last · requires level 58"
+  },
+  {
+   "Slot": "neck",
+   "Name": "Amulet of the Darkmoon",
+   "Quality": 4,
+   "Icon": "inv_jewelry_necklace_14",
+   "Meta": "Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
+  },
+  {
+   "Slot": "shoulder",
+   "Name": "Darkspear Pauldrons",
+   "Quality": 4,
+   "Icon": "inv_shoulder_06",
+   "Meta": "Vendor: Creeg Bothunk"
+  },
+  {
+   "Slot": "back",
+   "Name": "Cape of the Black Baron",
+   "Quality": 3,
+   "Icon": "inv_misc_cape_20",
+   "Meta": "Stratholme · Baron Rivendare"
+  },
+  {
+   "Slot": "chest",
+   "Name": "Dawn Armor",
+   "Quality": 4,
+   "Icon": "inv_chest_leather_08",
+   "Meta": "Crafted: Leatherworking"
+  },
+  {
+   "Slot": "wrist",
+   "Name": "Beastmaster's Bindings",
+   "Quality": 3,
+   "Icon": "inv_bracer_17",
+   "Meta": "Quest: An Earnest Proposition · requires level 58"
+  },
+  {
+   "Slot": "hands",
+   "Name": "Raider Gloves",
+   "Quality": 4,
+   "Icon": "inv_gauntlets_27",
+   "Meta": "Vendor: Creeg Bothunk"
+  },
+  {
+   "Slot": "waist",
+   "Name": "Belt of Preserved Heads",
+   "Quality": 3,
+   "Icon": "inv_belt_14",
+   "Meta": "Quest: A Collection of Heads · requires level 58"
+  },
+  {
+   "Slot": "legs",
+   "Name": "Sentinel's Chain Leggings",
+   "Quality": 4,
+   "Icon": "inv_pants_03",
+   "Meta": "Vendor: Illiyana Moonblaze"
+  },
+  {
+   "Slot": "feet",
+   "Name": "Beastmaster's Treads",
+   "Quality": 4,
+   "Icon": "inv_boots_plate_07",
+   "Meta": "Vendor: Mokvar"
+  },
+  {
+   "Slot": "finger1",
+   "Name": "Signet Ring of the Bronze Dragonflight",
+   "Quality": 4,
+   "Icon": "inv_jewelry_ring_40",
+   "Meta": "Vendor: Anachronos"
+  },
+  {
+   "Slot": "finger2",
+   "Name": "Cutthroat's Signet",
+   "Quality": 3,
+   "Icon": "inv_jewelry_ring_01",
+   "Meta": "Vendor: Pix Xizzix"
+  },
+  {
+   "Slot": "trinket1",
+   "Name": "Frozen Heart of the Mountain",
+   "Quality": 3,
+   "Icon": "inv_misc_gem_sapphire_01",
+   "Meta": "Crafted: Enchanting"
+  },
+  {
+   "Slot": "trinket2",
+   "Name": "Molten Heart of the Mountain",
+   "Quality": 3,
+   "Icon": "inv_misc_gem_ruby_01",
+   "Meta": "Crafted: Enchanting"
+  },
+  {
+   "Slot": "main_hand",
+   "Name": "Legionite Glaive",
+   "Quality": 3,
+   "Icon": "inv_spear_05",
+   "Meta": "Crafted: Blacksmithing"
+  },
+  {
+   "Slot": "ranged",
+   "Name": "Hyper Deluxe Sniper Rifle Mk XVII",
+   "Quality": 4,
+   "Icon": "inv_weapon_rifle_05",
+   "Meta": "Crafted: Engineering"
+  }
+ ],
+ "TwoHand": true
+}
