@@ -112,14 +112,14 @@ describe('AccountDiscordBlock', () => {
     );
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(text(body)).toContain(notificationsCopy.eventUploadPrivate);
-    expect(tagOf(body, 'discord-event-private-row')).toContain('padding-left: 70px');
+    expect(tagOf(body, 'discord-event-private-row')).toContain('padding-left: 46px');
     expect(isDisabled(body, 'discord-event-private')).toBe(false);
   });
 
-  it('saved: channel id, a secondary test button and a danger Remove, no filled button', () => {
+  it('saved: no channel id, a secondary test button and a danger Remove, no filled button', () => {
     const body = html(meWith(true, { discord: discordBlock() }));
     expect(text(body)).toContain('Posts through “Raid pings”');
-    expect(text(body)).toContain(notificationsCopy.channelLine('1098765432101234567'));
+    expect(text(body)).not.toContain('Channel 1098');
     expect(text(body)).not.toContain('1098765432101234567');
     expect(body).toContain('data-testid="discord-test"');
     expect(body).toContain('data-testid="discord-remove"');
@@ -135,9 +135,10 @@ describe('AccountDiscordBlock', () => {
     expect(body.replace(/<!--.*?-->/g, '').replace(/<[^>]+>/g, '')).toContain(`${named.lead} ${named.name}`);
   });
 
-  it('saved without a name: the unnamed line', () => {
+  it('saved without a name: the channel line, and never an id', () => {
     const body = html(meWith(true, { discord: discordBlock({ name: null }) }));
-    expect(text(body)).toContain(notificationsCopy.destinationUnnamed);
+    expect(text(body)).toContain(notificationsCopy.destinationChannel);
+    expect(text(body)).not.toContain('Channel 1198');
     expect(text(body)).not.toContain('Posts through');
   });
 
@@ -376,11 +377,10 @@ describe('saved, connected', () => {
   const connected = discordBlock({ source: 'connected', name: null, guild_id: GUILD_ID });
   const body = html(meWith(true, connectOn(connected)));
 
-  it('says Connected to a Discord channel over the shortened channel id', () => {
-    expect(text(body)).toContain('Connected to a Discord channel');
-    expect(text(body)).toContain(notificationsCopy.channelLine(connected.channel_id));
+  it('says it posts to a channel in your server, with no channel id', () => {
+    expect(text(body)).toContain(notificationsCopy.destinationChannel);
+    expect(text(body)).not.toContain(notificationsCopy.channelLine(connected.channel_id));
     expect(text(body)).not.toContain('Posts through');
-    expect(text(body)).not.toContain(notificationsCopy.destinationUnnamed);
   });
 
   it('never shows the Discord-side name', () => {
@@ -410,7 +410,7 @@ describe('saved, connected', () => {
 
   it('draws the same panel when connect is off', () => {
     expect(text(html(meWith(true, { connect: false, discord: connected })))).toContain(
-      'Connected to a Discord channel',
+      notificationsCopy.destinationChannel,
     );
   });
 });

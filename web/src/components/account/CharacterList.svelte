@@ -11,12 +11,14 @@
   import { battlenetStartUrl } from '../../lib/account/api';
   import { characterListCopy } from '../../lib/account/character-list-copy';
   import { characterHref } from '../../lib/characters';
+  import { button } from '../../lib/ui/button';
   import { relativeTime } from '../../lib/dates';
   import CharacterRow from '../character/CharacterRow.svelte';
   import CharacterRowLink from './CharacterRowLink.svelte';
   import CoachLastRaidLine from './CoachLastRaidLine.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
-  import StatePanel from '../ui/StatePanel.svelte';
+  import CardHead from '../ui/CardHead.svelte';
+  import Tag from '../ui/Tag.svelte';
 
   let {
     characters,
@@ -59,31 +61,31 @@
 
 {#snippet importedAside()}
   {#if bnetImportedAt !== undefined}
-    <span data-testid="bnet-imported">
+    <span class="text-muted" data-testid="bnet-imported">
       {characterListCopy.importedFrom(relativeTime(new Date(bnetImportedAt)))}
       <a href={REFRESH_HREF}>{characterListCopy.refreshFromBattlenet}</a>
     </span>
   {/if}
 {/snippet}
 
-<StatePanel
-  label={characterListCopy.heading}
-  aside={bnetImportedAt === undefined ? undefined : importedAside}
-  testid="account-characters"
->
+<section class="card-surface overflow-hidden" data-testid="account-characters">
+  <CardHead glyph="user" title={characterListCopy.heading} aside={importedAside} />
   <CoachLastRaidLine premium={logCoach} />
   {#if characters.length === 0}
-    <EmptyState
-      message={characterListCopy.empty}
-      action={{ label: characterListCopy.getSetUp, href: characterListCopy.getSetUpHref }}
-      secondary={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
-      testid="account-characters-empty"
-    />
+    <div class="border-line-soft border-t px-5 py-4">
+      <EmptyState
+        message={characterListCopy.empty}
+        action={{ label: characterListCopy.getSetUp, href: characterListCopy.getSetUpHref }}
+        secondary={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
+        testid="account-characters-empty"
+      />
+    </div>
   {:else}
-    <ul class="flex flex-col">
+    <ul class="m-0 flex list-none flex-col p-0">
       {#each characters as character (character.key)}
         <CharacterRow
           {character}
+          settingsRow
           descriptor="full"
           guildLine
           href={characterHref(character.region, character.ruleset, character.name)}
@@ -91,19 +93,17 @@
         >
           {#snippet action()}
             {#if currentKey === character.key}
-              <span class="pill pill-site" data-testid="character-current-pill"
-                >{characterListCopy.current}</span
-              >
+              <Tag testid="character-current-pill">{characterListCopy.current}</Tag>
             {/if}
             {#if mainKey === character.key}
-              <span class="pill pill-site" data-testid="character-main-pill">{characterListCopy.main}</span>
+              <Tag tone="muted" testid="character-main-pill">{characterListCopy.main}</Tag>
             {:else if onSetMain !== undefined}
               <button
                 type="button"
-                class="text-nav border-line-warm rounded-control inline-flex min-h-11 items-center border px-3 text-[13px] font-semibold md:min-h-10"
+                class={button('secondary', 'sm')}
                 onclick={() => void setMain(character.key)}
                 disabled={settingMain !== ''}
-                aria-busy={settingMain === character.key}
+                aria-busy={settingMain === character.key ? 'true' : undefined}
                 data-testid="character-set-main"
               >
                 {characterListCopy.setAsMain}
@@ -116,15 +116,17 @@
     </ul>
   {/if}
   {#if setMainError !== ''}
-    <p class="text-[13px]" role="alert" data-testid="character-set-main-error">{setMainError}</p>
+    <p class="text-wipe px-5 py-2 text-[13px]" role="alert" data-testid="character-set-main-error">
+      {setMainError}
+    </p>
   {/if}
   {#if characters.length > 0}
-    <p class="text-muted text-[13px]">
+    <p class="text-muted border-line-soft border-t px-5 py-4 text-[13px]">
       {characterListCopy.introBattlenetLine}
-      <a class="text-text underline" href="/setup">{characterListCopy.introInstallAddonLink}</a>
+      <a class="text-gold underline" href="/setup">{characterListCopy.introInstallAddonLink}</a>
       {characterListCopy.introAddonTail}
-      <a class="text-text underline" href="/setup#paste">{characterListCopy.introPasteLink}</a>
+      <a class="text-gold underline" href="/setup#paste">{characterListCopy.introPasteLink}</a>
       {characterListCopy.introPasteTail}
     </p>
   {/if}
-</StatePanel>
+</section>

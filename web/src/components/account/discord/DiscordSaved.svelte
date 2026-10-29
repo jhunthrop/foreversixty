@@ -1,7 +1,7 @@
 <!-- web/src/components/account/discord/DiscordSaved.svelte -->
 <!-- A saved webhook's card body (saved, switched off, lapsed): destination, notice, the events
      and the actions, in the spec's per-state order (3.2). Switched off puts the events last and
-     the replace row right under the notice; saved keeps the replace row last. Both hide the row
+     the replace row right under the notice; saved puts the replace row above the actions. Both hide the row
      while the remove question is open. -->
 <script lang="ts">
   import type { DiscordEvents, DiscordNotifications } from '../../../lib/account/api';
@@ -44,7 +44,8 @@
 {#snippet eventRows()}
   <DiscordEventRows
     events={discord.events}
-    disabled={busy !== null || state === 'lapsed'}
+    disabled={busy !== null}
+    inactive={state === 'lapsed' || state === 'disabled'}
     busy={busy === 'events'}
     showNote={state !== 'lapsed'}
     onToggle={onToggleEvents}
@@ -60,6 +61,9 @@
   {onStuck}
 />
 {#if state !== 'disabled'}{@render eventRows()}{/if}
+{#if state === 'saved' && !confirming}
+  <DiscordReplace variant="row" source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
+{/if}
 <div class="border-line-soft flex flex-col border-t px-5 py-4">
   <DiscordActions
     {state}
@@ -71,9 +75,6 @@
     {onRemove}
     {onCancel}
   />
-  <DiscordStatusLine {status} />
+  <DiscordStatusLine {status} reserve={false} />
 </div>
-{#if state === 'saved' && !confirming}
-  <DiscordReplace variant="row" source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
-{/if}
 {#if state === 'disabled'}{@render eventRows()}{/if}

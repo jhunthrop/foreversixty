@@ -58,6 +58,9 @@
   import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { button } from '../lib/ui/button';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../lib/ui/link';
+  import { ROW } from '../lib/ui/row';
   import { relativeTime, viewerZone } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
@@ -65,7 +68,13 @@
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
+  import AccountTitle from './account/AccountTitle.svelte';
+  import CardHead from './ui/CardHead.svelte';
+  import Glyph from './ui/Glyph.svelte';
+  import IconTile from './ui/IconTile.svelte';
   import LoadError from './ui/LoadError.svelte';
+  import SettingsRow from './ui/SettingsRow.svelte';
+  import Switch from './ui/Switch.svelte';
   import StatePanel from './ui/StatePanel.svelte';
   import {
     SIGNED_OUT_MIN_H,
@@ -403,8 +412,7 @@
       window.location.assign(result.portal_url);
     });
 
-  const onAnonymize = (event: Event): void => {
-    const wanted = (event.currentTarget as HTMLInputElement).checked;
+  const onAnonymize = (wanted: boolean): void => {
     void run(async () => {
       await setAnonymize(wanted);
       if (me !== null) me = { ...me, user: { ...me.user, anonymize: wanted } };
@@ -584,34 +592,32 @@
       <AccountLoading />
     {:else if status === 'failed'}
       <div class="account-header-reserve">
-        <h1 class="heading-page">{accountPageCopy.title}</h1>
+        <AccountTitle />
       </div>
       <LoadError message={error} onRetry={() => session.refresh()} testid="account-load-error" />
     {:else if !signedIn}
       <div class="account-header-reserve">
-        <h1 class="heading-page">{accountPageCopy.title}</h1>
+        <AccountTitle />
       </div>
       <div class="session-reserve {SIGNED_OUT_MIN_H}">
         <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
       </div>
     {:else}
       <div class="reveal flex flex-col gap-8">
-        <!-- Page header (brief 2026-09-22 §B1): title left, identity line + Sign out right
-             at lg, stacked under the title on phone. -->
-        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <h1 class="heading-page">{accountPageCopy.title}</h1>
-          <div
-            class="flex flex-wrap items-center gap-x-4 gap-y-2 lg:justify-end"
-            data-testid="account-identity"
-          >
-            <p class="text-strong text-[14px]">{displayName}</p>
-            <p class="text-muted text-[13px]">{signedInMethod}</p>
-            <button
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4"
-              onclick={onSignOut}
-              disabled={busy}
-            >
-              {accountPageCopy.signOut}
+        <!-- Page header (polish spec 4.3): eyebrow and title left; at lg the identity tile, the
+             BattleTag over the sign-in method, and Sign out right, stacked under the title on phone. -->
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <AccountTitle />
+          <div class="flex items-center gap-3" data-testid="account-identity">
+            <IconTile glyph="user" />
+            <div class="flex min-w-0 flex-col">
+              <p class="text-strong text-[15px] leading-5 font-semibold [overflow-wrap:anywhere]">
+                {displayName}
+              </p>
+              <p class="text-muted text-[13px] leading-5">{signedInMethod}</p>
+            </div>
+            <button class="{button('secondary', 'sm')} ml-2" onclick={onSignOut} disabled={busy}>
+              <Glyph name="signout" />{accountPageCopy.signOut}
             </button>
           </div>
         </div>
@@ -639,28 +645,44 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
-          <div class="flex flex-col gap-8 lg:col-span-8" data-testid="account-left-col">
+        <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8">
+          <div class="flex flex-col gap-8" data-testid="account-left-col">
             {#if hero !== null}
               <!-- The current character (brief §B4, loosened §3.1): shown whenever the
                    compact chip's pointer matches a listed character; the render below is
                    shown only when that character has one -- an addon-only import still gets
                    a hero band, just without art. -->
-              <div
-                class="border-line-soft flex flex-col-reverse items-start gap-4 overflow-hidden border-b bg-[var(--color-bg)] pb-6 lg:flex-row lg:items-end lg:justify-between"
+              <section
+                class="card-surface flex flex-col-reverse items-start gap-4 overflow-hidden px-5 py-5 md:px-6 lg:flex-row lg:items-end lg:justify-between"
                 data-testid="account-hero"
               >
-                <div class="flex flex-col gap-1">
-                  <h2 class="label text-muted mb-1">{accountPageCopy.currentCharacterLabel}</h2>
+                <div class="flex min-w-0 flex-1 flex-col gap-4 self-stretch">
+                  <h2 class="text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase">
+                    {accountPageCopy.currentCharacterLabel}
+                  </h2>
                   <CharacterIdentity
                     character={hero}
-                    size="lg"
+                    size="xxl"
                     descriptor="full"
                     supporter={isSupporter}
                     href={characterHref(hero.region, hero.ruleset, hero.name)}
                     testid="account-hero"
                   />
-                  {#if heroPath !== null}
+                  {#if hero.build === undefined}
+                    <div
+                      class="border-line-card flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-dashed px-4 py-3"
+                      data-testid="account-hero-no-export"
+                    >
+                      <p class="text-text min-w-0 flex-1 text-[14px]">{accountPageCopy.noExportPrompt}</p>
+                      <a
+                        class={button('primary')}
+                        href={characterListCopy.pasteHref}
+                        data-testid="account-hero-paste"
+                      >
+                        {characterListCopy.pasteAnExport}
+                      </a>
+                    </div>
+                  {:else if heroPath !== null}
                     <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0">
                       <CharacterHandoffLinks path={heroPath} buttons />
                       <a
@@ -686,7 +708,7 @@
                     data-testid="account-hero-render"
                   />
                 {/if}
-              </div>
+              </section>
             {/if}
 
             <div id="characters">
@@ -700,12 +722,15 @@
               />
             </div>
 
-            <StatePanel label="Your reports" testid="account-reports">
-              <MyReports heading={false} nightDates />
-            </StatePanel>
+            <section class="card-surface overflow-hidden" data-testid="account-reports">
+              <CardHead glyph="chart" title={accountPageCopy.reportsLabel} />
+              <div class="border-line-soft border-t px-5 py-4">
+                <MyReports heading={false} nightDates />
+              </div>
+            </section>
           </div>
 
-          <div class="flex flex-col gap-8 lg:col-span-4" data-testid="account-rail-col">
+          <div class="flex flex-col gap-8" data-testid="account-rail-col">
             {#if heroPath !== null}
               <!-- Hidden (not unmounted: the panel's own fetch decides) until a rating exists. -->
               <div hidden={!ratingsShown} data-testid="account-ratings-slot">
@@ -722,26 +747,31 @@
             {/if}
 
             <div id="devices">
-              <StatePanel
-                label={accountPageCopy.devicesLabel}
-                updated={devicesUpdated}
-                testid="account-devices"
-              >
+              <section class="card-surface overflow-hidden" data-testid="account-devices">
+                <CardHead glyph="device" title={accountPageCopy.devicesLabel}>
+                  {#snippet aside()}
+                    {#if devicesUpdated !== ''}
+                      <span class="text-muted" data-testid="account-devices-updated">
+                        Updated {devicesUpdated}
+                      </span>
+                    {/if}
+                  {/snippet}
+                </CardHead>
                 {#if devices.length === 0}
-                  <p class="text-muted text-[14px]">{accountPageCopy.noDevices}</p>
+                  <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]">
+                    {accountPageCopy.noDevices}
+                  </p>
                 {:else}
-                  <ul class="flex flex-col">
+                  <ul class="m-0 flex list-none flex-col p-0">
                     {#each devices as device (device.id)}
-                      <li
-                        class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2"
-                      >
+                      <li class="{ROW} justify-between gap-y-2">
                         {#if revoking === device.id}
-                          <span class="text-[14px]" data-testid="revoke-question">
+                          <span class="min-w-0 flex-1 text-[14px]" data-testid="revoke-question">
                             {devicesCopy.revokeQuestion(device.name)}
                           </span>
                           <span class="flex gap-2">
                             <button
-                              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                              class={button('danger', 'sm')}
                               onclick={() => {
                                 revoking = null;
                                 onRevoke(device.id);
@@ -752,7 +782,7 @@
                               {devicesCopy.revoke}
                             </button>
                             <button
-                              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                              class={button('ghost', 'sm')}
                               onclick={() => (revoking = null)}
                               data-testid="revoke-cancel"
                             >
@@ -760,12 +790,12 @@
                             </button>
                           </span>
                         {:else}
-                          <span class="text-[14px]">
+                          <span class="min-w-0 flex-1 text-[15px] font-semibold">
                             {device.name}
-                            <span class="text-muted">· {device.platform}</span>
+                            <span class="text-muted text-[13px] font-normal">· {device.platform}</span>
                           </span>
                           <button
-                            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                            class={button('secondary', 'sm')}
                             onclick={() => (revoking = device.id)}
                             disabled={busy}
                             data-testid="revoke"
@@ -777,57 +807,63 @@
                     {/each}
                   </ul>
                 {/if}
-                {#if pairedDevice !== null}
-                  <p class="text-[14px]" data-testid="pairing-success">
-                    {pairingCopy.success(pairedDevice.name)}
-                  </p>
-                {:else if pairing === null}
-                  <!-- No companion yet: the download is the button, the code a text link under it. -->
-                  {#if devices.length === 0}
-                    <a
-                      class="{PRIMARY_BUTTON_FIXED} w-fit px-5"
-                      href={accountPageCopy.downloadCompanionHref}
-                      data-testid="account-download-companion"
+                <div class="border-line-soft flex flex-col items-start gap-1 border-t px-5 py-4">
+                  {#if pairedDevice !== null}
+                    <p class="text-[14px]" data-testid="pairing-success">
+                      {pairingCopy.success(pairedDevice.name)}
+                    </p>
+                  {:else if pairing === null}
+                    <!-- No companion yet: the download is the button, the code a text link under it. -->
+                    {#if devices.length === 0}
+                      <a
+                        class={button('secondary')}
+                        href={accountPageCopy.downloadCompanionHref}
+                        data-testid="account-download-companion"
+                      >
+                        {accountPageCopy.downloadCompanion}
+                      </a>
+                    {/if}
+                    <button
+                      class={ACTION_LINK}
+                      onclick={onPair}
+                      disabled={busy}
+                      data-testid="account-get-pairing-code"
                     >
-                      {accountPageCopy.downloadCompanion}
-                    </a>
+                      {pairingEntryLabel(devices.length, accountPageCopy.pairADevice)}<Glyph
+                        name="chevron"
+                        class={ACTION_LINK_CHEVRON}
+                      />
+                    </button>
+                  {:else}
+                    <p class="text-muted text-[13px]" data-testid="pairing-fallback-line">
+                      {devicesCopy.codeFallbackLine}
+                    </p>
+                    <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
+                      {pairing.code}
+                    </p>
+                    <p class="text-muted text-[13px]">
+                      Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
+                    </p>
                   {/if}
-                  <button
-                    class="text-nav inline-flex min-h-11 w-fit items-center text-[13px] underline md:min-h-0"
-                    onclick={onPair}
-                    disabled={busy}
-                    data-testid="account-get-pairing-code"
-                  >
-                    {pairingEntryLabel(devices.length, accountPageCopy.pairADevice)}
-                  </button>
-                {:else}
-                  <p class="text-muted text-[13px]" data-testid="pairing-fallback-line">
-                    {devicesCopy.codeFallbackLine}
-                  </p>
-                  <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
-                    {pairing.code}
-                  </p>
-                  <p class="text-muted text-[13px]">
-                    Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
-                  </p>
-                {/if}
-              </StatePanel>
+                </div>
+              </section>
             </div>
 
-            <StatePanel label={accountPageCopy.youLabel} testid="account-you" id="you" class="scroll-mt-20">
-              <label class="flex min-h-11 items-center gap-3 text-[14px]">
-                <input
-                  type="checkbox"
-                  checked={me!.user.anonymize}
-                  onchange={onAnonymize}
-                  disabled={busy}
-                  data-testid="anonymize"
-                />
-                {accountPageCopy.pseudonymLabel}
-              </label>
-              <p class="text-muted text-[13px]">{accountPageCopy.pseudonymNote}</p>
-              <AccountDiscordLink {me} />
-            </StatePanel>
+            <section class="card-surface scroll-mt-20 overflow-hidden" id="you" data-testid="account-you">
+              <CardHead glyph="user" title={accountPageCopy.youLabel} />
+              <SettingsRow label={accountPageCopy.pseudonymLabel} sub={accountPageCopy.pseudonymNote}>
+                {#snippet control(labelId)}
+                  <Switch
+                    checked={me!.user.anonymize}
+                    labelledby={labelId}
+                    disabled={busy}
+                    onchange={onAnonymize}
+                    testid="anonymize"
+                  />
+                {/snippet}
+              </SettingsRow>
+              <div class="px-5 [&:not(:empty)]:pt-4 [&:not(:empty)]:pb-5"><AccountDiscordLink {me} /></div>
+            </section>
 
             <div id="plan" class="flex flex-col gap-4">
               {#if me!.guilds.length > 0}

@@ -61,7 +61,7 @@ test.describe('state 5, nothing connected', () => {
     await expect(id(page, 'bot-webhook')).toHaveText(guildBotCopy.webhookPath);
     await expect(id(page, 'bot-webhook')).toHaveAttribute('href', GUILD_CONNECT_HREF);
     await expect(section(page)).toContainText(guildBotCopy.webhookPathNote);
-    await expect(section(page).locator('a.bg-gold')).toHaveCount(1);
+    await expect(section(page).locator('a[class*="linear-gradient"]')).toHaveCount(1);
   });
 
   test('with the bot off, G1 draws exactly as shipped', async ({ page }) => {

@@ -19,6 +19,9 @@
     busy,
     gateId,
     disabled = false,
+    removeLabel = notificationsCopy.remove,
+    removingLabel = notificationsCopy.removing,
+    sendGlyph = true,
     onTest,
     onAskRemove,
     onRemove,
@@ -31,6 +34,11 @@
     busy: 'save' | 'events' | 'test' | 'remove' | null;
     gateId?: string;
     disabled?: boolean;
+    /** The remove button's words; the guild section keeps Remove, the account card says Unlink Discord. */
+    removeLabel?: string;
+    removingLabel?: string;
+    /** The send glyph on the test button; the guild section is too narrow for it at 360 px. */
+    sendGlyph?: boolean;
     onTest: () => void;
     onAskRemove: () => void;
     onRemove: () => void;
@@ -52,11 +60,7 @@
       onclick={onRemove}
       data-testid="discord-remove-confirm"
     >
-      {#if busy === 'remove'}<Spinner />{/if}{label(
-        notificationsCopy.remove,
-        busy === 'remove',
-        notificationsCopy.removing,
-      )}
+      {#if busy === 'remove'}<Spinner />{/if}{label(removeLabel, busy === 'remove', removingLabel)}
     </button>
     <button class={button('ghost')} disabled={off} onclick={onCancel} data-testid="discord-remove-cancel">
       {notificationsCopy.cancel}
@@ -73,7 +77,7 @@
         onclick={onTest}
         data-testid="discord-test"
       >
-        {#if busy === 'test'}<Spinner />{:else}<Glyph name="send" />{/if}{label(
+        {#if busy === 'test'}<Spinner />{:else if sendGlyph}<Glyph name="send" />{/if}{label(
           state === 'disabled' ? notificationsCopy.testAndSwitchOn : notificationsCopy.test,
           busy === 'test',
           notificationsCopy.testing,
@@ -81,7 +85,7 @@
       </button>
     {/if}
     <button class={button('danger')} disabled={off} onclick={onAskRemove} data-testid="discord-remove">
-      {notificationsCopy.remove}
+      {removeLabel}
     </button>
   </div>
 {/if}

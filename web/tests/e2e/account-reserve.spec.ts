@@ -137,7 +137,6 @@ test.describe('gold checkboxes', () => {
     await gotoHydrated(page, '/account', 'account');
     const gold = await resolvedGold(page);
     expect(gold).not.toBe('');
-    expect(await accentOf(page, 'anonymize')).toBe(gold);
 
     await page.route('**/v1/rankings?**', (route) =>
       route.fulfill({

@@ -8,7 +8,7 @@
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
 
@@ -38,7 +38,7 @@
     <p class="text-[14px]">{guildBotCopy.offer}</p>
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4 whitespace-nowrap"
+      class="{button('secondary')}"
       testid="bot-add"
       href={installHref}
       {busy}
@@ -51,7 +51,7 @@
   <div class="flex flex-col items-start">
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class="{PRIMARY_BUTTON_FIXED} px-5 whitespace-nowrap"
+      class="{button('primary')}"
       testid="bot-add"
       href={installHref}
       {busy}

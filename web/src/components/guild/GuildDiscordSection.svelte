@@ -35,7 +35,7 @@
     type DiscordStatus,
   } from '../../lib/guild/discord-settings';
   import { guildDiscordState } from '../../lib/guild/discord-state';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
   import GuildDiscordAdd from './GuildDiscordAdd.svelte';
@@ -289,7 +289,7 @@
     <div class="flex flex-col items-start">
       <DiscordConnectLink
         label={notificationsCopy.connect}
-        class="{PRIMARY_BUTTON_FIXED} px-5 whitespace-nowrap"
+        class="{button('primary')}"
         testid="discord-connect"
         href={connectHref}
         busy={busy !== null}

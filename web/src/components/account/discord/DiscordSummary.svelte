@@ -1,6 +1,6 @@
 <!-- web/src/components/account/discord/DiscordSummary.svelte -->
 <!-- What a saved webhook says about itself: a destination row (hash tile; where it posts as the
-     label, the shortened channel id under it, `Open in Discord` beside it), the 1 to 4 failure
+     label, never an id; `Open in Discord` beside it), the 1 to 4 failure
      warning, and the switched-off or lapsed notice. The name is Discord's own text: the copy
      module cuts it at 40 characters and it is rendered as escaped text only. -->
 <script lang="ts">
@@ -42,31 +42,18 @@
   // The copy module owns the sentence and its quotes.
   const named = $derived(name === '' ? null : notificationsCopy.destinationNamed(name));
   const destination = $derived(
-    connected
-      ? `${notificationsCopy.destinationConnected.lead} ${notificationsCopy.destinationConnected.name}`
-      : named !== null
-        ? `${named.lead} ${named.name}`
-        : notificationsCopy.destinationUnnamed,
+    named === null ? notificationsCopy.destinationChannel : `${named.lead} ${named.name}`,
   );
   const openUrl = $derived(openInDiscordUrl(discord));
-  const lineTwo = $derived(notificationsCopy.channelLine(discord.channel_id));
-  const idAt = $derived(lineTwo.lastIndexOf(' ') + 1);
   const warning = $derived(state === 'saved' ? failureWarning(discord) : null);
 </script>
 
 <div data-testid="discord-destination">
   <SettingsRow label={destination} glyph="hash" controlBelow={true}>
-    {#snippet below()}
-      <span class="text-muted text-[12px]"
-        >{lineTwo.slice(0, idAt)}<span class="text-text font-mono whitespace-nowrap tabular-nums"
-          >{lineTwo.slice(idAt)}</span
-        ></span
-      >
-    {/snippet}
     {#snippet control()}
       {#if openUrl !== null}
         <a
-          class={button('secondary', 'sm')}
+          class={button('secondary', 'sm', true)}
           href={openUrl}
           target="_blank"
           rel="noopener"

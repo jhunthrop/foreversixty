@@ -111,7 +111,7 @@ test.describe('paste form', () => {
     const seen = await openAccount(page, { initial: null, afterPut: SAVED });
     await pasteAndSave(page, VALID_URL);
     await expect(page.getByTestId('discord-destination')).toContainText(namedLine('Raid pings'));
-    await expect(page.getByTestId('discord-destination')).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(page.getByTestId('discord-destination')).not.toContainText('Channel 1198');
     expect(seen.puts).toEqual([{ webhook_url: VALID_URL, events: BOTH_EVENTS }]);
     await expect(status(page)).toContainText(copy.savedFirst);
     await expect(page.getByTestId('discord-test')).toBeFocused();
@@ -158,7 +158,7 @@ test.describe('saved webhook', () => {
     await page.waitForTimeout(PAST_SAVED_CLEAR_MS);
     await expect(status(page)).toContainText(copy.testSent);
     await page.getByTestId('discord-remove').click();
-    await expect(status(page)).toHaveText('');
+    await expect(status(page)).toHaveCount(0);
   });
 
   test('a test Discord refuses shows its words as an alert', async ({ page }) => {
@@ -191,7 +191,7 @@ test.describe('saved webhook', () => {
     ]);
     expect(JSON.stringify(seen.puts)).not.toContain('webhook_url');
     await expect(premiumRow(page)).toContainText('On · 1 event');
-    await expect(status(page)).toHaveText('', { timeout: SAVED_CLEAR_TIMEOUT_MS });
+    await expect(status(page)).toHaveCount(0, { timeout: SAVED_CLEAR_TIMEOUT_MS });
   });
 
   test('one to four failures show the warning with Discord’s last error', async ({ page }) => {
@@ -201,20 +201,20 @@ test.describe('saved webhook', () => {
     await expect(panel(page)).toContainText(lastError ?? '');
   });
 
-  test('the destination reads the webhook name over the shortened channel id', async ({ page }) => {
+  test('the destination reads the webhook name and never the channel id', async ({ page }) => {
     await openAccount(page, { initial: SAVED });
     const destination = page.getByTestId('discord-destination');
     await expect(destination).toContainText(namedLine('Raid pings'));
-    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(destination).not.toContainText('Channel 1198');
     await expect(destination).not.toContainText(CHANNEL_ID);
   });
 
   test('a webhook without a name reads the unnamed line', async ({ page }) => {
     await openAccount(page, { initial: discordBlock({ name: null }) });
     const destination = page.getByTestId('discord-destination');
-    await expect(destination).toContainText(copy.destinationUnnamed);
+    await expect(destination).toContainText(copy.destinationChannel);
     await expect(destination).not.toContainText('Posts through');
-    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(destination).not.toContainText('Channel 1198');
   });
 
   test('a name with markup and markdown is plain text, cut at 40 characters', async ({ page }) => {
@@ -531,10 +531,8 @@ test.describe('a connected channel (connect lane)', () => {
   test('the destination, the Open in Discord link, the reconnect link with its note', async ({ page }) => {
     await openAccount(page, { initial: CONNECTED, connect: true });
     const destination = page.getByTestId('discord-destination');
-    await expect(destination).toContainText(
-      `${copy.destinationConnected.lead} ${copy.destinationConnected.name}`,
-    );
-    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(destination).toContainText(copy.destinationChannel);
+    await expect(destination).not.toContainText('Channel 1198');
     await expect(destination).not.toContainText('Posts through');
     const open = destination.getByTestId('discord-open');
     await expect(open).toHaveText(copy.openInDiscord);

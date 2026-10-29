@@ -94,7 +94,7 @@ In `Account.svelte`, the right rail (`lg:col-span-4`), as the **last child of th
 | 1 | Panel label row | gold dot, `Discord` | `StatePanel` |
 | 2 | Intro | `Get a message in a Discord channel when a server sim finishes or a log finishes parsing.` | 13 px `--muted`. Omitted in the replace view. |
 | 3 | Connect button (primary) | `Connect a Discord channel` | An `<a href="<API origin>/v1/notifications/discord/connect">` styled as `PRIMARY_BUTTON_FIXED` (`h-11`, 44 px, `px-5`, gold fill, `--bg` text). A link, not a `<button>`: it is a navigation, middle-click and long-press work. Same tab. Not full width: it hugs its label (about 232 px). The only filled gold element. |
-| 4 | Explanation (amended 2026-10-25, connect lane re-check) | `Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You must manage webhooks in it. We keep only that webhook, encrypted.` | 13 px `--muted`, 8 px under the button, up to four lines. It says what Discord will show and what we keep, and nothing else. (amended 2026-10-25, first-use fixes) The reworded text is 172 characters against 168 and must still wrap to four lines at 360 and 390 and stay inside the caps (340/340/320). The owner picked a voice channel because Discord's picker lists voice channels; `text channel, not a voice channel` is the only guard we have. If the capture shows five lines, the budget is 360 at 360 and 390 px and the cap at 1440 stays 320; the words do not change. |
+| 4 | Explanation (amended 2026-10-25, connect lane re-check) | `Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You need Manage Webhooks permission in that server. We keep only that webhook, encrypted.` | 13 px `--muted`, 8 px under the button, up to four lines. It says what Discord will show and what we keep, and nothing else. (amended 2026-10-25, first-use fixes) The reworded text is 172 characters against 168 and must still wrap to four lines at 360 and 390 and stay inside the caps (340/340/320). The owner picked a voice channel because Discord's picker lists voice channels; `text channel, not a voice channel` is the only guard we have. If the capture shows five lines, the budget is 360 at 360 and 390 px and the cap at 1440 stays 320; the words do not change. |
 | 5 | Status line (amended 2026-10-25, connect lane re-check) | reserved 21 px (one line), empty until a return outcome (4.3); a two- or three-line outcome (`failed`, the stuck line) grows the line and pushes `Paste a webhook URL instead` down | 13 px, `--text` for `denied`, `--wipe` for `failed`; `role="status"` for denied, `role="alert"` for failed. |
 | 6 | Paste disclosure | `Paste a webhook URL instead` | Link-button, 13 px `--text`, underline, `min-h-11`, `aria-controls` the paste view. Activating it swaps the panel's body for the paste view with focus on the URL input. |
 
@@ -261,10 +261,10 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Where | String |
 |---|---|
 | Connect button (amended 2026-10-25, connect lane) | `Connect a Discord channel`; pending `Opening Discord…` |
-| Connect explanation (amended 2026-10-25, first-use fixes) | `Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You must manage webhooks in it. We keep only that webhook, encrypted.` |
+| Connect explanation (amended 2026-10-25, first-use fixes) | `Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You need Manage Webhooks permission in that server. We keep only that webhook, encrypted.` |
 | Paste disclosure (amended 2026-10-25, connect lane) | `Paste a webhook URL instead` |
 | Back to connect (amended 2026-10-25, connect lane) | `Connect a Discord channel instead` |
-| Destination, connected (amended 2026-10-25, connect lane) | line one `Connected to` `a Discord channel`; line two `Channel` `{first 4 digits}…{last 4 digits}`. Never the Discord-side webhook name |
+| Destination, connected (amended 2026-10-28, polish task 4, player ruling) | line one `Posts to a channel in your Discord server`; no id and no line two. Never the Discord-side webhook name |
 | Reconnect link and note (amended 2026-10-25, connect lane) | `Connect a different channel` / `Connecting again replaces this channel and removes its webhook from Discord.` |
 | Return, connected (amended 2026-10-25, connect lane) | `Connected. Send a test message to see it in your channel.` Stays until the next action (amended 2026-10-25, first-use fixes; 4.3). |
 | Return, denied (amended 2026-10-25, connect lane) | `Cancelled in Discord. Nothing was connected.` |
@@ -284,13 +284,13 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Event 1 | `A server sim finishes` |
 | Event 2 | `A combat log you upload finishes parsing` |
 | Event 3 (amended 2026-10-25, follow-up lane) | `Include private logs` |
-| Events note (amended 2026-10-25, follow-up lane) | `Off, private logs never post. On, everyone in the channel sees the log's name and “Only you”.` |
+| Events note (amended 2026-10-28, polish task 4, player ruling) | `Off: private logs are never posted. On: the channel sees the log's name and “Only you”.` |
 | Save | `Save webhook`; pending `Saving…` |
 | Cancel | `Cancel` |
 | Destination, with a name (amended 2026-10-25, follow-up lane) | line one `Posts through` `“{name}”`; line two `Channel` `{first 4 digits}…{last 4 digits}` (for example `Posts through “Raid pings”` / `Channel 1198…4568`) |
-| Destination, no name (amended 2026-10-25, follow-up lane) | line one `Posts to a Discord channel`; line two as above |
+| Destination, no name (amended 2026-10-28, polish task 4, player ruling) | line one `Posts to a channel in your Discord server`; no line two |
 | Test | `Send test message`; pending `Sending…` |
-| Remove | `Remove`; pending `Removing…` |
+| Remove | `Unlink Discord`; pending `Unlinking…` (amended 2026-10-28, polish task 4, player ruling) |
 | Replace (pasted) (amended 2026-10-25, connect lane) | `Use a different webhook` |
 | Saved status | `Saved. Send a test message to see it in your channel.` after a first save (stays until the next action, like the connected line: it is a prompt to act; controller ruling 2026-10-25, first-use fixes); `Saved.` after an event change (4 s) |
 | Test sent | `Sent. Check the channel.`; after switching on `Sent. Posts are on again.` Both stay until the next action (amended 2026-10-25, first-use fixes; 4.3). |

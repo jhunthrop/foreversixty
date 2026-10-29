@@ -60,8 +60,6 @@ export const notificationsCopy = {
   label: 'Discord',
   /** The micro label over the card title. */
   headLabel: 'Notifications',
-  /** The state tag in the card head (spec 4.3): saved and on, lapsed, switched off. */
-  stateTag: { connected: 'Connected', paused: 'Paused', attention: 'Needs attention' },
   intro: 'Get a message in a Discord channel when a server sim finishes or a log finishes parsing.',
   fieldLabel: 'Webhook URL',
   placeholder: 'https://discord.com/api/webhooks/…',
@@ -76,15 +74,15 @@ export const notificationsCopy = {
   eventSimFinished: 'A server sim finishes',
   eventUploadParsed: 'A combat log you upload finishes parsing',
   eventUploadPrivate: 'Include private logs',
-  eventsNote: "Off, private logs never post. On, everyone in the channel sees the log's name and “Only you”.",
+  eventsNote: 'Off: private logs are never posted. On: the channel sees the log\'s name and “Only you”.',
   save: 'Save webhook',
   saving: 'Saving…',
   cancel: 'Cancel',
   test: 'Send test message',
   testing: 'Sending…',
   testAndSwitchOn: 'Test and switch on',
-  remove: 'Remove',
-  removing: 'Removing…',
+  remove: 'Unlink Discord',
+  removing: 'Unlinking…',
   removeQuestionPasted:
     'Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.',
   removeQuestionConnected: 'Remove this connection? Posts stop and we delete its webhook from Discord.',
@@ -93,7 +91,7 @@ export const notificationsCopy = {
   connect: 'Connect a Discord channel',
   connecting: 'Opening Discord…',
   connectExplanation:
-    'Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You must manage webhooks in it. We keep only that webhook, encrypted.',
+    'Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You need Manage Webhooks permission in that server. We keep only that webhook, encrypted.',
   pasteInstead: 'Paste a webhook URL instead',
   connectInstead: 'Connect a Discord channel instead',
   reconnect: 'Connect a different channel',
@@ -104,7 +102,8 @@ export const notificationsCopy = {
     'Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.',
   connectStuck: 'Discord did not open. Try again, or paste a webhook URL instead.',
   openInDiscord: 'Open in Discord',
-  destinationConnected: { lead: 'Connected to', name: 'a Discord channel' },
+  /** A connected or unnamed webhook: no channel id is shown (player ruling, polish task 4). */
+  destinationChannel: 'Posts to a channel in your Discord server',
   seePlans: 'See plans',
 
   savedFirst: 'Saved. Send a test message to see it in your channel.',
@@ -126,7 +125,6 @@ export const notificationsCopy = {
     lead: 'Posts through',
     name: `“${shortenName(name)}”`,
   }),
-  destinationUnnamed: 'Posts to a Discord channel',
   /** Line two of the destination: the first and last four digits of the channel id. */
   channelLine: (channelId: string): string => {
     const digits = CHANNEL_DIGITS_SHOWN;

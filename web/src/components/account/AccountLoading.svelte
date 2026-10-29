@@ -3,7 +3,7 @@
      props: every height comes from CSS (global.css's "account loading reserve" block) keyed on
      the hints Base.astro sets on <html> before paint. -->
 <script lang="ts">
-  import { accountPageCopy } from '../../lib/account/account-page-copy';
+  import AccountTitle from './AccountTitle.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 </script>
 
@@ -15,13 +15,13 @@
        session cookie and this can only resolve to the sign-in prompt, so that page ends
        under its one button instead of reserving panels of black. -->
 <div class="account-header-reserve">
-  <h1 class="heading-page">{accountPageCopy.title}</h1>
+  <AccountTitle />
 </div>
-<div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
-  <div class="lg:col-span-8">
+<div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8">
+  <div>
     <Skeleton lines={3} minHeight="account-left-skeleton" testid="account-left-skeleton" />
   </div>
-  <div class="account-rail-skeleton flex flex-col gap-8 lg:col-span-4" data-testid="account-rail-skeleton">
+  <div class="account-rail-skeleton flex flex-col gap-8" data-testid="account-rail-skeleton">
     <Skeleton lines={3} minHeight="account-devices-skeleton" testid="account-devices-skeleton" />
     <Skeleton lines={3} minHeight="account-you-skeleton" testid="account-you-skeleton" />
     <div class="flex flex-col gap-4">

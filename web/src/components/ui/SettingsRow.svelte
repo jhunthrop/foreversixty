@@ -76,6 +76,8 @@
   const phoneIndent = $derived(glyph === undefined ? '' : 'max-[479px]:pl-[46px]');
 </script>
 
+<!-- The element is a real button whenever it has a click handler (tag above); the compiler cannot see that. -->
+<!-- svelte-ignore a11y_no_static_element_interactions, a11y_click_events_have_key_events -->
 <svelte:element
   this={tag}
   href={tag === 'a' ? href : undefined}
@@ -87,7 +89,7 @@
   aria-busy={loading ? 'true' : undefined}
   data-testid={testid}
   class="{ROW} {interactive ? ROW_INTERACTIVE : ''}"
-  style:padding-left={nested ? '70px' : undefined}
+  style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
   {#if glyph !== undefined}<IconTile {glyph} size={32} {tone} />{/if}
   <span class="flex min-w-0 flex-1 flex-col">

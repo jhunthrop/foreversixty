@@ -561,143 +561,143 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 html[data-discord-link='unlinked'] {
-  --account-link-floor: 135px;
+  --account-link-floor: 175px;
 }
 html[data-discord-link='suggested'] {
-  --account-link-floor: 140px;
+  --account-link-floor: 155px;
 }
 html[data-discord-link='linked'] {
-  --account-link-floor: 120px;
+  --account-link-floor: 135px;
 }
 html[data-session='1'] .account-header-reserve {
-  min-height: 83px;
+  min-height: 110px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 496px);
+  min-height: max(var(--account-left-reserve, 0px), 550px);
 }
 .account-devices-skeleton {
-  min-height: 249px;
+  min-height: 290px;
 }
 .account-you-skeleton {
-  min-height: calc(185px + var(--account-link-floor, 0px));
+  min-height: calc(190px + var(--account-link-floor, 0px));
 }
 .account-plan-skeleton {
-  min-height: 535px;
+  min-height: 525px;
 }
 .account-rail-skeleton {
-  --account-rail-floor: 1033px;
+  --account-rail-floor: 1069px;
 }
 html[data-discord='free'] .account-rail-skeleton {
-  --account-rail-floor: 1229px;
+  --account-rail-floor: 1265px;
 }
 html[data-discord='free'] .account-discord-skeleton {
   display: flex;
   min-height: 180px;
 }
 html[data-discord='connect'] .account-rail-skeleton {
-  --account-rail-floor: 1409px;
+  --account-rail-floor: 1445px;
 }
 html[data-discord='connect'] .account-discord-skeleton {
   display: flex;
   min-height: 360px;
 }
 html[data-discord='form'] .account-rail-skeleton {
-  --account-rail-floor: 1814px;
+  --account-rail-floor: 1850px;
 }
 html[data-discord='form'] .account-discord-skeleton {
   display: flex;
   min-height: 765px;
 }
 html[data-discord='saved'] .account-rail-skeleton {
-  --account-rail-floor: 1684px;
+  --account-rail-floor: 1735px;
 }
 html[data-discord='saved'] .account-discord-skeleton {
   display: flex;
-  min-height: 635px;
+  min-height: 650px;
 }
 html[data-discord='off'] .account-rail-skeleton {
-  --account-rail-floor: 1794px;
+  --account-rail-floor: 1850px;
 }
 html[data-discord='off'] .account-discord-skeleton {
   display: flex;
-  min-height: 745px;
+  min-height: 765px;
 }
 html[data-discord='lapsed'] .account-rail-skeleton {
-  --account-rail-floor: 1669px;
+  --account-rail-floor: 1665px;
 }
 html[data-discord='lapsed'] .account-discord-skeleton {
   display: flex;
-  min-height: 620px;
+  min-height: 580px;
 }
 @media (min-width: 1024px) {
   html[data-discord-link='unlinked'] {
-    --account-link-floor: 115px;
+    --account-link-floor: 155px;
   }
   html[data-discord-link='suggested'] {
-    --account-link-floor: 120px;
+    --account-link-floor: 155px;
   }
   html[data-discord-link='linked'] {
-    --account-link-floor: 115px;
+    --account-link-floor: 135px;
   }
   html[data-session='1'] .account-header-reserve {
-    min-height: 44px;
+    min-height: 60px;
   }
   .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 371px);
+    min-height: max(var(--account-left-reserve, 0px), 410px);
   }
   .account-devices-skeleton {
-    min-height: 233px;
+    min-height: 270px;
   }
   .account-you-skeleton {
-    min-height: calc(193px + var(--account-link-floor, 0px));
+    min-height: calc(170px + var(--account-link-floor, 0px));
   }
   .account-plan-skeleton {
-    min-height: 455px;
+    min-height: 445px;
   }
   .account-rail-skeleton {
-    --account-rail-floor: 945px;
+    --account-rail-floor: 949px;
   }
   html[data-discord='free'] .account-rail-skeleton {
-    --account-rail-floor: 1141px;
+    --account-rail-floor: 1145px;
   }
   html[data-discord='free'] .account-discord-skeleton {
     display: flex;
     min-height: 180px;
   }
   html[data-discord='connect'] .account-rail-skeleton {
-    --account-rail-floor: 1301px;
+    --account-rail-floor: 1305px;
   }
   html[data-discord='connect'] .account-discord-skeleton {
     display: flex;
     min-height: 340px;
   }
   html[data-discord='form'] .account-rail-skeleton {
-    --account-rail-floor: 1716px;
+    --account-rail-floor: 1700px;
   }
   html[data-discord='form'] .account-discord-skeleton {
     display: flex;
-    min-height: 755px;
+    min-height: 735px;
   }
   html[data-discord='saved'] .account-rail-skeleton {
-    --account-rail-floor: 1561px;
+    --account-rail-floor: 1495px;
   }
   html[data-discord='saved'] .account-discord-skeleton {
     display: flex;
-    min-height: 600px;
+    min-height: 530px;
   }
   html[data-discord='off'] .account-rail-skeleton {
-    --account-rail-floor: 1671px;
+    --account-rail-floor: 1610px;
   }
   html[data-discord='off'] .account-discord-skeleton {
     display: flex;
-    min-height: 710px;
+    min-height: 645px;
   }
   html[data-discord='lapsed'] .account-rail-skeleton {
-    --account-rail-floor: 1541px;
+    --account-rail-floor: 1500px;
   }
   html[data-discord='lapsed'] .account-discord-skeleton {
     display: flex;
-    min-height: 580px;
+    min-height: 535px;
   }
 }
 /* account loading reserve:end */

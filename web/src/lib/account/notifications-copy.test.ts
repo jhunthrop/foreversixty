@@ -67,12 +67,7 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['connectExplanation', notificationsCopy.connectExplanation, spec('Connect explanation')],
   ['pasteInstead', notificationsCopy.pasteInstead, spec('Paste disclosure')],
   ['connectInstead', notificationsCopy.connectInstead, spec('Back to connect')],
-  ['destinationConnectedLead', notificationsCopy.destinationConnected.lead, spec('Destination, connected')],
-  [
-    'destinationConnectedName',
-    notificationsCopy.destinationConnected.name,
-    spec('Destination, connected', 1),
-  ],
+  ['destinationChannel', notificationsCopy.destinationChannel, spec('Destination, connected')],
   ['reconnect', notificationsCopy.reconnect, spec('Reconnect link and note')],
   ['reconnectNote', notificationsCopy.reconnectNote, spec('Reconnect link and note', 1)],
   ['returnConnected', notificationsCopy.returnConnected, spec('Return, connected')],
@@ -179,7 +174,7 @@ describe('notificationsCopy against the spec text, read from the spec', () => {
     const [lead, quoted] = specCell('Destination, with a name');
     const named = notificationsCopy.destinationNamed('Raid pings');
     expect(`${named.lead} ${named.name}`).toBe(`${lead} ${quoted?.replace('{name}', 'Raid pings')}`);
-    expect(notificationsCopy.destinationUnnamed).toBe(specCell('Destination, no name')[0]);
+    expect(notificationsCopy.destinationChannel).toBe(specCell('Destination, no name')[0]);
     expect(notificationsCopy.channelLine('1198765432101234568')).toBe('Channel 1198…4568');
   });
 

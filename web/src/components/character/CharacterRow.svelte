@@ -11,6 +11,7 @@
   import type { Snippet } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { buildSourcePill, hasBuild } from '../../lib/account/build-pill';
+  import { ROW, ROW_HOVER } from '../../lib/ui/row';
   import CharacterGuildLine from './CharacterGuildLine.svelte';
   import CharacterIdentity from './CharacterIdentity.svelte';
 
@@ -26,6 +27,7 @@
     descriptorTestid,
     testid,
     action,
+    settingsRow = false,
   }: {
     character: MeCharacter;
     descriptor?: 'full' | 'realm' | 'none';
@@ -42,6 +44,8 @@
     descriptorTestid?: string;
     testid?: string;
     action?: Snippet;
+    /** The account Characters card: a settings row (56 px, 40 px crest, hover ground), not a bordered list item. */
+    settingsRow?: boolean;
   } = $props();
 
   const pill = $derived(buildSourcePill(character.build));
@@ -50,7 +54,9 @@
 </script>
 
 <li
-  class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-3 text-[14px] last:border-b-0"
+  class={settingsRow
+    ? `${ROW} ${ROW_HOVER} gap-y-2 py-3 text-[14px]`
+    : 'border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-3 text-[14px] last:border-b-0'}
   data-testid={testid}
 >
   <!-- basis-full on a phone: the identity takes the whole first line and the actions wrap
@@ -59,7 +65,7 @@
   <div class="min-w-0 basis-full md:flex-1 md:basis-0">
     <CharacterIdentity
       {character}
-      size="md"
+      size={settingsRow ? 'row' : 'md'}
       {descriptor}
       {href}
       {onNameClick}

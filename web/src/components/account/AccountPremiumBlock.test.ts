@@ -174,6 +174,13 @@ describe('AccountPremiumBlock plan headline', () => {
     expect(renderPlan(PLAN)).not.toContain('account-founder');
   });
 
+  it('says cancel anytime under a renewing own plan, and not when it is ending', () => {
+    expect(text(renderPlan(PLAN))).toContain('Cancel anytime in Manage billing.');
+    const ending = { ...PLAN, head: { ...PLAN.head, when: { label: 'Ends', date: '20 Dec 2026' } } };
+    expect(text(renderPlan(ending))).not.toContain('Cancel anytime');
+    expect(text(renderPlan({ ...PLAN, billingButton: null }))).not.toContain('Cancel anytime');
+  });
+
   it('the free state links to the plans', () => {
     const html = renderPlan(
       { ...PLAN, line: 'Not on Premium.', head: { name: 'Free', when: null, extra: null } },

@@ -6,6 +6,9 @@
 export const ROW =
   'border-line-soft flex min-h-14 w-full flex-wrap items-center gap-x-[14px] gap-y-1 border-t px-5 py-[10px] text-left';
 
+/** The hover ground alone, for a row that holds its own links and buttons (a character row). */
+export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-row-hover';
+
 export const ROW_INTERACTIVE =
   'cursor-pointer transition-colors duration-[120ms] hover:bg-row-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
 

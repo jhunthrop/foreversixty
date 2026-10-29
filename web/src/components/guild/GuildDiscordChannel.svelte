@@ -109,6 +109,9 @@
     {busy}
     {gateId}
     disabled={frozen}
+    removeLabel={guildDiscordCopy.remove}
+    removingLabel={guildDiscordCopy.removing}
+    sendGlyph={false}
     {onTest}
     {onAskRemove}
     {onRemove}

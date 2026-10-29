@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1561px] lg:min-h-[945px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1651px] lg:min-h-[949px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -46,7 +46,7 @@ export interface BucketPx {
 export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' | 'lapsed';
 
 /** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
-export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 83 };
+export const HEADER_ROW_H: BucketPx = { lg: 60, stack: 110 };
 
 /** The Characters panel's last-raid coach line (experience spec 2026-10-28-log-coach 3.3): 57 px
  *  (two 13 px / 20 px lines, 16 px padding, 1 px rule: a long zone wraps at 1440), 77 px on the phone's three (the free line), held in every state, plus the panel's 16 px (`gap-4`)
@@ -59,12 +59,12 @@ const PANEL_GAP_PX = 16;
 /** An empty Characters panel with the coach line, an empty Your reports panel and the 32 px gap between them
  *  (298 / 403 measured before the coach line existed). */
 export const LEFT_FLOOR: BucketPx = {
-  lg: 298 + COACH_LAST_RAID_RESERVE.lg + PANEL_GAP_PX,
-  stack: 403 + COACH_LAST_RAID_RESERVE.stack + PANEL_GAP_PX,
+  lg: 337 + COACH_LAST_RAID_RESERVE.lg + PANEL_GAP_PX,
+  stack: 457 + COACH_LAST_RAID_RESERVE.stack + PANEL_GAP_PX,
 };
 
-/** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 390 / 472 on the empty fixture account at 1440 / 390). */
-const PLAN_EMPTY_FLOOR: BucketPx = { lg: 390, stack: 470 };
+/** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 380 / 460 on the empty fixture account at 1440 / 390). */
+const PLAN_EMPTY_FLOOR: BucketPx = { lg: 380, stack: 460 };
 
 /**
  * What the tallest Plan card adds to the free one (polish task 4): a seat holder with a personal
@@ -82,8 +82,8 @@ export const PLAN_NO_PLAN_ROW_RESERVE = 20;
 
 /** The rail's panels with nothing extra in them (Devices, You, Plan at its tallest headline). */
 export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>> = {
-  devices: { lg: 233, stack: 249 },
-  you: { lg: 193, stack: 185 },
+  devices: { lg: 270, stack: 290 },
+  you: { lg: 170, stack: 190 },
   plan: {
     lg: PLAN_EMPTY_FLOOR.lg + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE,
     stack: PLAN_EMPTY_FLOOR.stack + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE,
@@ -95,10 +95,10 @@ export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
   free: { lg: 180, stack: 180 },
   connect: { lg: 340, stack: 360 },
-  form: { lg: 755, stack: 765 },
-  saved: { lg: 600, stack: 635 },
-  off: { lg: 710, stack: 745 },
-  lapsed: { lg: 580, stack: 620 },
+  form: { lg: 735, stack: 765 },
+  saved: { lg: 530, stack: 650 },
+  off: { lg: 645, stack: 765 },
+  lapsed: { lg: 535, stack: 580 },
 };
 
 /** What `data-discord-link` on `<html>` says the You panel's Discord link row will be. */
@@ -107,9 +107,9 @@ export type LinkHintState = 'none' | 'unlinked' | 'suggested' | 'linked';
 /** The link row's height in the You panel, its gap included (experience spec 2026-10-27-discord-bot 3.2). */
 export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
-  unlinked: { lg: 115, stack: 135 },
-  suggested: { lg: 120, stack: 140 },
-  linked: { lg: 115, stack: 120 },
+  unlinked: { lg: 155, stack: 175 },
+  suggested: { lg: 155, stack: 155 },
+  linked: { lg: 135, stack: 135 },
 };
 
 /** Read back by the pre-paint script in Base.astro. */

@@ -17,15 +17,15 @@
     class?: string;
   }
 
-  /** 28 / 36 / 44px, and 64px -> 84px from `lg` for the home hero (home rebuild spec §3.B.1). */
-  const SIZE_PX = { sm: 28, md: 36, lg: 44 } as const;
+  /** 28 / 36 / 44px (a list row is 40, the account hero 72), and 64px -> 84px from `lg` for the home hero (home rebuild spec §3.B.1). */
+  const SIZE_PX = { sm: 28, md: 36, row: 40, lg: 44, xxl: 72 } as const;
   const XL_BOX = 'h-16 w-16 lg:h-[84px] lg:w-[84px]';
 
   let {
     character,
     size,
     testid,
-  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'lg' | 'xl'; testid: string } = $props();
+  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'row' | 'lg' | 'xxl' | 'xl'; testid: string } = $props();
 </script>
 
 {#if character.class === undefined}

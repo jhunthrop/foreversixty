@@ -17,12 +17,12 @@
   import { groupChannels, preselectAfterUnusable, preselectChannel } from '../../lib/guild/discord-bot-state';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import FilterSelect from '../rankings/FilterSelect.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
   import GuildBotRemoveQuestion from './GuildBotRemoveQuestion.svelte';
 
-  const OUTLINE = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`;
+  const OUTLINE = button('secondary');
   const CHANNEL_UNUSABLE = 'channel_unusable';
   const PLAN_REQUIRED = 'guild_plan_required';
   const SELECT_ID = 'guild-bot-channel';
@@ -218,7 +218,7 @@
         </button>
       {:else}
         <button
-          class="{PRIMARY_BUTTON_FIXED} px-4 {saveOff ? 'cursor-not-allowed opacity-50' : ''}"
+          class="{button('primary')} {saveOff ? 'cursor-not-allowed opacity-50' : ''}"
           disabled={saveOff}
           aria-busy={saving}
           onclick={() => void save()}

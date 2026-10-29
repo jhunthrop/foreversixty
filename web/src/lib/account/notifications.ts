@@ -179,11 +179,17 @@ export interface StateTag {
   dot: boolean;
 }
 
-/** The card head's state tag (polish spec 4.3): saved and on, lapsed, switched off; none when empty or free. */
-export function stateTagFor(state: DiscordBlockKey): StateTag | null {
-  const words = notificationsCopy.stateTag;
-  if (state === 'saved') return { text: words.connected, tone: 'success', dot: true };
-  if (state === 'lapsed') return { text: words.paused, tone: 'muted', dot: false };
-  if (state === 'disabled') return { text: words.attention, tone: 'danger', dot: false };
-  return null;
+/**
+ * The card head's state tag (polish spec 4.3): the Plan card's Discord row words, so the two read
+ * alike (player ruling): `On · 2 events`, `Off · needs attention`, `Paused · plan lapsed`. None
+ * when nothing is saved.
+ */
+export function stateTagFor(me: Me): StateTag | null {
+  const block = blockState(me);
+  if (block.state === 'disabled') return { text: premiumRowValue(me), tone: 'danger', dot: false };
+  if (block.state === 'lapsed') return { text: premiumRowValue(me), tone: 'muted', dot: false };
+  if (block.state !== 'saved') return null;
+  return enabledEvents(block.discord) > 0
+    ? { text: premiumRowValue(me), tone: 'success', dot: true }
+    : { text: premiumRowValue(me), tone: 'muted', dot: false };
 }

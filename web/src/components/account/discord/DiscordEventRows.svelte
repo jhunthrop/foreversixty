@@ -14,24 +14,28 @@
   let {
     events,
     disabled = false,
+    inactive = false,
     busy = false,
     showNote = true,
     onToggle,
   }: {
     events: DiscordEvents;
     disabled?: boolean;
+    /** The block is not live (switched off, lapsed): greyed rows, switches off the tab order. */
+    inactive?: boolean;
     busy?: boolean;
     showNote?: boolean;
     onToggle: (next: DiscordEvents) => Promise<boolean> | boolean;
   } = $props();
 
   const rows = [
-    { key: 'sim_finished', label: notificationsCopy.eventSimFinished, testid: 'discord-event-sim' },
-    { key: 'upload_parsed', label: notificationsCopy.eventUploadParsed, testid: 'discord-event-upload' },
+    { key: 'sim_finished', label: notificationsCopy.eventSimFinished, testid: 'discord-event-sim', glyph: 'server' },
+    { key: 'upload_parsed', label: notificationsCopy.eventUploadParsed, testid: 'discord-event-upload', glyph: 'chart' },
     {
       key: 'upload_private',
       label: notificationsCopy.eventUploadPrivate,
       testid: 'discord-event-private',
+      glyph: 'lock',
       child: true,
     },
   ] as const;
@@ -43,7 +47,7 @@
 
   /** The private switch modifies the log switch: it cannot be changed while that one is off. */
   const isDisabled = (key: keyof DiscordEvents): boolean =>
-    (disabled && pending?.key !== key) || (key === 'upload_private' && !events.upload_parsed);
+    inactive || (disabled && pending?.key !== key) || (key === 'upload_private' && !events.upload_parsed);
 
   async function change(key: keyof DiscordEvents, value: boolean): Promise<void> {
     pending = { key, value };
@@ -65,9 +69,10 @@
   {#each rows as row (row.key)}
     <SettingsRow
       label={row.label}
+      glyph={row.glyph}
       nested={'child' in row}
       sub={'child' in row && showNote ? notificationsCopy.eventsNote : undefined}
-      disabled={'child' in row && !events.upload_parsed}
+      disabled={inactive || ('child' in row && !events.upload_parsed)}
       testid="{row.testid}-row"
     >
       {#snippet control(labelId)}

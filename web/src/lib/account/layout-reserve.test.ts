@@ -117,12 +117,12 @@ describe('global.css agrees with layout.ts', () => {
 describe('the floors', () => {
   it('sum the rail as three panels, two gaps and the Discord block under Plan', () => {
     expect(railFloor('none', 'lg')).toBe(
-      233 + 193 + 390 + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE + 64,
+      270 + 170 + 380 + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE + 64,
     );
     expect(railFloor('form', 'lg')).toBe(
-      233 +
-        193 +
-        390 +
+      270 +
+        170 +
+        380 +
         PLAN_HEADLINE_RESERVE.lg +
         PLAN_NO_PLAN_ROW_RESERVE +
         64 +
@@ -130,19 +130,19 @@ describe('the floors', () => {
         DISCORD_FLOORS.form.lg,
     );
     expect(railFloor('connect', 'stack')).toBe(
-      249 + 185 + 470 + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE + 64 + 16 + 360,
+      290 + 190 + 460 + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE + 64 + 16 + 360,
     );
   });
 
   it('reserve the Plan card for its tallest head: a seat holder with a Billing history button and a wrapped line 2', () => {
     expect(PLAN_HEADLINE_RESERVE).toEqual({ lg: 45, stack: 45 });
     expect(PLAN_NO_PLAN_ROW_RESERVE).toBe(20);
-    expect(RAIL_FLOORS.plan).toEqual({ lg: 390 + 45 + 20, stack: 470 + 45 + 20 });
+    expect(RAIL_FLOORS.plan).toEqual({ lg: 380 + 45 + 20, stack: 460 + 45 + 20 });
   });
 
   it('count the Characters panel coach line once, in the left floor', () => {
     expect(COACH_LAST_RAID_RESERVE).toEqual({ lg: 57, stack: 77 });
-    expect(LEFT_FLOOR).toEqual({ lg: 298 + 57 + 16, stack: 403 + 77 + 16 });
+    expect(LEFT_FLOOR).toEqual({ lg: 337 + 57 + 16, stack: 457 + 77 + 16 });
   });
 
   it('take the taller column at lg and stack the two below it', () => {

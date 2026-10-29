@@ -41,6 +41,8 @@ export const accountPlanCopy = {
     until: 'Until',
     price: (amountCents: number, interval: Interval): string => formatCents(amountCents, interval),
     thenSeat: (guild: string): string => `Then a seat from ${guild}`,
+    /** Under a renewing plan with its own subscription (player ruling, polish task 4). */
+    cancelAnytime: 'Cancel anytime in Manage billing.',
     seatFrom: (guild: string): string => `A seat from ${guild}`,
   },
   founder: {

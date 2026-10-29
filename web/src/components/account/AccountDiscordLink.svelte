@@ -18,7 +18,7 @@
   } from '../../lib/account/discord-link-return';
   import { ACCOUNT_DISCORD_LINK_RESERVE } from '../../lib/account/layout';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import DiscordConnectLink from './discord/DiscordConnectLink.svelte';
 
   /** `Unlinked.` stays this long; a return's line stays until the next action. */
@@ -30,7 +30,7 @@
   const ANCHOR = '#you';
   const CANCEL = '[data-testid="discord-unlink-cancel"]';
   const GAP_PX = 16;
-  const OUTLINE = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`;
+  const OUTLINE = button('secondary');
 
   interface Line {
     message: string;
@@ -128,7 +128,7 @@
     if (event.key === 'Escape' && confirming && !busy) cancel();
   }
 
-  const linkClass = $derived(suggested === null ? OUTLINE : `${PRIMARY_BUTTON_FIXED} px-5`);
+  const linkClass = $derived(suggested === null ? OUTLINE : button('primary'));
   const settledMinHeight = ACCOUNT_DISCORD_LINK_RESERVE.linked.lg - GAP_PX;
 </script>
 

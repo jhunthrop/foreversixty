@@ -47,7 +47,11 @@ const TONES: Readonly<Record<ButtonTone, string>> = {
 
 const SIZES: Readonly<Record<ButtonSize, string>> = { md: BUTTON_MD, sm: BUTTON_SM };
 
-/** One button class string: `button('danger', 'md')`. */
-export function button(tone: ButtonTone, size: ButtonSize = 'md'): string {
-  return `${TONES[tone]} ${SIZES[size]}`;
+/** The label in sentence case (a button that names a place, such as Open in Discord), not the uppercase default. */
+const SENTENCE_LABEL = 'text-[13px] font-bold tracking-[.01em]';
+
+/** One button class string: `button('danger', 'md')`; `sentence` swaps the uppercase label for sentence case. */
+export function button(tone: ButtonTone, size: ButtonSize = 'md', sentence = false): string {
+  const classes = `${TONES[tone]} ${SIZES[size]}`;
+  return sentence ? classes.replace('button-label', SENTENCE_LABEL) : classes;
 }

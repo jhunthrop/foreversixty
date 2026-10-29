@@ -76,4 +76,11 @@ describe('button recipes', () => {
     expect(button('danger')).toBe(`${BUTTON_DANGER} ${BUTTON_MD}`);
     expect(button('primary', 'sm')).toBe(`${BUTTON_PRIMARY} ${BUTTON_SM}`);
   });
+
+  it('sentence case swaps the uppercase label for a sentence-case one', () => {
+    const sentence = button('secondary', 'sm', true);
+    expect(sentence).not.toContain('button-label');
+    expect(sentence).toContain('text-[13px] font-bold');
+    expect(button('secondary', 'sm')).toContain('button-label');
+  });
 });

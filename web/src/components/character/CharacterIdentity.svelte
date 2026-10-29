@@ -17,7 +17,14 @@
 
   /** 14 / 15 / 18px, spec 2026-09-23 §2.2; xl is the home hero's 34px display name (design
    *  system: the home hero h1 exception; spec 2026-10-10-home-signed-in-panel §3.B). */
-  const NAME_SIZE = { sm: 'text-[14px]', md: 'text-[15px]', lg: 'text-[18px]', xl: 'text-[34px]' } as const;
+  const NAME_SIZE = {
+    sm: 'text-[14px]',
+    md: 'text-[15px]',
+    row: 'text-[15px]',
+    lg: 'text-[18px]',
+    xxl: 'text-[30px]',
+    xl: 'text-[34px]',
+  } as const;
   /** The xl name is capped at two lines (then an ellipsis) and its box always reserves both,
    *  so a header switch from a one-line to a two-line name never moves what sits below. */
   const XL_NAME_CAP = 'line-clamp-2 leading-[1.1] break-words';
@@ -38,7 +45,7 @@
     supporter = false,
   }: {
     character: MeCharacter;
-    size: 'sm' | 'md' | 'lg' | 'xl';
+    size: 'sm' | 'md' | 'row' | 'lg' | 'xxl' | 'xl';
     descriptor: 'full' | 'realm' | 'none';
     href?: string;
     /** Wraps the name in an `<h1>` -- spec 2026-09-24 Ruling 5: the signed-in home hero's
@@ -73,7 +80,7 @@
   // 2026-10-28 §4.4's): the account hero band is the one place CharacterIdentity's own name
   // needs it; a row or chip name is never that prominent.
   const nameClass = $derived(
-    size === 'lg' || size === 'xl'
+    size === 'lg' || size === 'xxl' || size === 'xl'
       ? `w-fit ${NAME_SIZE[size]} heading-face${size === 'xl' ? ` ${XL_NAME_CAP}` : ''}`
       : `w-fit ${NAME_SIZE[size]} font-semibold`,
   );

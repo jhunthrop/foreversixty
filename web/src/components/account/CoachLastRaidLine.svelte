@@ -66,7 +66,7 @@
 </script>
 
 <div
-  class="border-line-soft flex min-h-[77px] items-start border-b py-2 text-[13px] leading-5 md:min-h-[57px]"
+  class="border-line-soft flex min-h-[77px] items-start border-t px-5 py-2 text-[13px] leading-5 md:min-h-[57px]"
   role="status"
   aria-label={LAST_RAID_LABEL}
   aria-live="polite"

@@ -18,8 +18,8 @@
   }: {
     glyph: GlyphName;
     tone?: TileTone;
-    /** The micro label over the title. */
-    label: string;
+    /** The micro label over the title; omitted, the title stands alone. */
+    label?: string;
     title: string;
     /** Beside the title (a Founder tag). */
     titleSnippet?: Snippet;
@@ -32,7 +32,9 @@
 <div class="flex flex-wrap items-center gap-x-3 gap-y-2 px-5 py-4" data-testid={testid}>
   <IconTile {glyph} {tone} />
   <div class="flex min-w-0 flex-1 flex-col gap-1">
-    <span class="text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase">{label}</span>
+    {#if label !== undefined}
+      <span class="text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase">{label}</span>
+    {/if}
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
       <h2 class="heading-plan">{title}</h2>
       {@render titleSnippet?.()}

@@ -4,10 +4,15 @@
 
 export const accountPageCopy = {
   title: 'Your account',
+  /** The micro label over the page title. */
+  eyebrow: 'Account',
   signedInWithBattlenet: 'Signed in with Battle.net',
   signedInByEmail: 'Signed in by email',
   signOut: 'Sign out',
   devicesLabel: 'Devices',
+  reportsLabel: 'Your reports',
+  /** The current-character card's prompt when it has no export (polish spec 4.3). */
+  noExportPrompt: 'No export yet. Paste one from the addon to see gear, talents and your score.',
   youLabel: 'You',
   guildLabel: 'Guild',
   planLabel: 'Plan',

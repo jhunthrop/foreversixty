@@ -11,6 +11,9 @@ export const guildDiscordCopy = {
   explanation:
     "Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post this guild's raids there. You must manage webhooks in it. We keep only that webhook, encrypted.",
   destination: { lead: 'Posts raids to', name: 'a Discord channel' },
+  /** The guild keeps its own Remove: the account card's is Unlink Discord (player ruling, polish task 4). */
+  remove: 'Remove',
+  removing: 'Removing…',
   removeQuestion: 'Remove this channel? Raids stop posting here and we delete its webhook from Discord.',
   returnConnected: 'Connected. Send a test message to see it in the channel.',
   returnDenied: notificationsCopy.returnDenied,

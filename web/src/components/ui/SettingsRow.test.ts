@@ -67,6 +67,10 @@ describe('SettingsRow', () => {
     expect(row({})).not.toContain('padding-left');
   });
 
+  it('a nested row with a tile indents the tile to 46 px', () => {
+    expect(row({ nested: true, glyph: 'lock' })).toContain('padding-left: 46px');
+  });
+
   it('muted value: --muted ink and no chevron even with a link', () => {
     const body = row({ value: 'Premium only', muted: true, href: '/premium' });
     expect(body).toMatch(/text-muted"[^>]*data-testid="settings-row-value">Premium only/);

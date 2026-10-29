@@ -15,6 +15,7 @@ import {
   premiumRowLinked,
   premiumRowValue,
   premiumRowVisible,
+  stateTagFor,
   webhookInputError,
 } from './notifications';
 
@@ -267,5 +268,46 @@ describe('connectUrl', () => {
 
   it('defaults to the configured API base', () => {
     expect(connectUrl()).toMatch(/^https?:\/\/.+\/v1\/notifications\/discord\/connect$/);
+  });
+});
+
+describe('stateTagFor', () => {
+  const NBSP = '\u00A0';
+
+  it('is none when nothing is saved, free or empty', () => {
+    expect(stateTagFor(me(false, null))).toBeNull();
+    expect(stateTagFor(me(true, null))).toBeNull();
+    expect(stateTagFor(me(true))).toBeNull();
+  });
+
+  it('reads like the Plan card row: on with its event count is a success tag with a dot', () => {
+    expect(stateTagFor(me(true, discordBlock()))).toEqual({
+      text: premiumRowValue(me(true, discordBlock())),
+      tone: 'success',
+      dot: true,
+    });
+    expect(premiumRowValue(me(true, discordBlock()))).toBe(`On${NBSP}·${NBSP}2${NBSP}events`);
+  });
+
+  it('saved with no event chosen is a quiet muted tag', () => {
+    const none = discordBlock({
+      events: { sim_finished: false, upload_parsed: false, upload_private: false },
+    });
+    expect(stateTagFor(me(true, none))).toMatchObject({ tone: 'muted', dot: false });
+  });
+
+  it('switched off is a danger tag in the needs-attention words', () => {
+    const off = discordBlock({ disabled_reason: 'failed five times' });
+    expect(stateTagFor(me(true, off))).toEqual({
+      text: premiumRowValue(me(true, off)),
+      tone: 'danger',
+      dot: false,
+    });
+    expect(premiumRowValue(me(true, off))).toContain('needs attention');
+  });
+
+  it('lapsed is a muted tag in the paused words', () => {
+    expect(stateTagFor(me(false, discordBlock()))).toMatchObject({ tone: 'muted', dot: false });
+    expect(premiumRowValue(me(false, discordBlock()))).toContain('Paused');
   });
 });

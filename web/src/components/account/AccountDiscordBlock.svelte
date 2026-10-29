@@ -63,7 +63,7 @@
   let fieldFailure = $state<Extract<ActionResult, { ok: false }> | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const stateTag = $derived(stateTagFor(block.state));
+  const stateTag = $derived(stateTagFor(me));
   const connectOn = $derived(connectAvailable(me));
   const showForm = $derived(block.state === 'empty' || (replacing && block.state !== 'lapsed'));
   const showConnect = $derived(showForm && connectOn && !pasteView);

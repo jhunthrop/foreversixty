@@ -103,13 +103,13 @@ test.describe('unlinked', () => {
     await expect(row(page)).toContainText(copy.lead);
     await expect(link(page)).toHaveText(copy.link);
     await expect(link(page)).toHaveAttribute('href', START_URL);
-    await expect(link(page)).not.toHaveClass(/bg-gold/);
+    await expect(link(page)).not.toHaveClass(/linear-gradient/);
   });
 
   test('suggested: the guild lead and the one fill', async ({ page }) => {
     await openAccount(page, { suggested: GUILD_NAME });
     await expect(row(page)).toContainText(copy.leadSuggested(GUILD_NAME));
-    await expect(link(page)).toHaveClass(/bg-gold/);
+    await expect(link(page)).toHaveClass(/linear-gradient/);
   });
 
   test('absent when the deployment has the bot off', async ({ page }) => {

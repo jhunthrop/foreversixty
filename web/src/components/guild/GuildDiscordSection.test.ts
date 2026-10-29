@@ -102,7 +102,7 @@ describe('GuildDiscordSection', () => {
       'href="https://discord.com/channels/1087654321098765432/1198765432101234568"',
     );
     expect(text(body)).toContain(notificationsCopy.test);
-    expect(text(body)).toContain(notificationsCopy.remove);
+    expect(text(body)).toContain(guildDiscordCopy.remove);
     expect(tag(body, 'discord-replace')).toContain(`href="${guildDiscordConnectUrl(GUILD)}"`);
     expect(text(body)).toContain(notificationsCopy.reconnectNote);
     expect(filled(body)).toBe(0);

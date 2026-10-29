@@ -127,6 +127,9 @@
   const billingLabel = $derived(
     plan?.billingButton === 'manage' ? premiumSourceCopy.buttons.manage : premiumSourceCopy.buttons.history,
   );
+  const showCancelNote = $derived(
+    plan?.billingButton === 'manage' && plan.head.when?.label === accountPlanCopy.head.renews,
+  );
   const showBilling = $derived(plan?.billingButton != null && onBilling !== undefined);
   const showSeePlans = $derived(seePlans && plan?.ended == null);
 </script>
@@ -158,7 +161,7 @@
     {/snippet}
   </CardHead>
   {#if plan !== undefined}
-    <div class="flex flex-col gap-2 px-5 pb-4" data-testid="account-plan-headline">
+    <div class="-mt-2 flex flex-col gap-1 px-5 pb-4" data-testid="account-plan-headline">
       {#if plan.ended !== null}
         <!-- Spec 3.3: the ended sentence takes the plan line's place, with the gold come-back link. -->
         <p class="text-[14px]" data-testid="account-seat-ended">
@@ -169,6 +172,11 @@
         <p class="sr-only" data-testid="account-billing-row">{plan.line}</p>
         {#if plan.head.extra !== null}
           <p class="text-muted text-[13px]" data-testid="account-plan-extra">{plan.head.extra}</p>
+        {/if}
+        {#if showCancelNote}
+          <p class="text-muted text-[13px]" data-testid="account-cancel-note">
+            {accountPlanCopy.head.cancelAnytime}
+          </p>
         {/if}
       {/if}
       {#if pastDue}

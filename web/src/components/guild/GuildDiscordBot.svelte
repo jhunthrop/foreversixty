@@ -11,14 +11,14 @@
   import { botFailureWarning } from '../../lib/guild/discord-bot-state';
   import type { GuildBotView } from '../../lib/guild/discord-bot-view';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordNotice from '../account/discord/DiscordNotice.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
   import GuildBotRemoveQuestion from './GuildBotRemoveQuestion.svelte';
   import GuildDiscordChannelPick from './GuildDiscordChannelPick.svelte';
 
-  const OUTLINE = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`;
+  const OUTLINE = button('secondary');
   const DIM = 'cursor-not-allowed opacity-50';
 
   let {
@@ -114,7 +114,7 @@
   <div class="flex flex-col">
     <div class="flex flex-wrap items-center gap-3">
       <button
-        class="{PRIMARY_BUTTON_FIXED} px-4 {dimmed}"
+        class="{button('primary')} {dimmed}"
         disabled={off || gated}
         aria-describedby={gateId}
         onclick={onChange}
@@ -146,7 +146,7 @@
   <div class="flex flex-col">
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class="{PRIMARY_BUTTON_FIXED} w-fit px-5 whitespace-nowrap"
+      class="{button('primary')} w-fit"
       testid="bot-add"
       href={installHref}
       {gated}
