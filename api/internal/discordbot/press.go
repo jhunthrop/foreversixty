@@ -208,23 +208,35 @@ func (s *Service) notMember(ctx context.Context, a signupAsk) (Reply, error) {
 	return a.reply(fill(pressCopy.NotMember, "{Guild}", memberText(name)), setup), nil
 }
 
-// signUp calls the site's sign-up for c, with its spec's role, and words the outcome.
+// signUp signs c up, unless the state asks for a spec the character has never picked: then it
+// answers "Which spec tonight?" instead (spec 2026-10-28 §P.10.2).
 func (s *Service) signUp(ctx context.Context, a signupAsk, c guilds.SignupCandidate) (Reply, error) {
+	if needsSpec(a.State, c) {
+		return s.specAsk(ctx, a, c)
+	}
+	rep, _, err := s.commitSignup(ctx, a, c, "")
+	return rep, err
+}
+
+// commitSignup calls the site's sign-up for c with role ("" is the character's default) and
+// words the outcome; signed is false when the sign-up was refused (the answer says why).
+func (s *Service) commitSignup(ctx context.Context, a signupAsk, c guilds.SignupCandidate, role string) (rep Reply, signed bool, err error) {
 	res, err := s.d.Guilds.SignUp(ctx, guilds.SignupCommand{
-		GuildID: a.GuildID, RaidID: a.RaidID, ActorID: a.UserID, CharacterKey: c.CharacterKey, State: a.State,
+		GuildID: a.GuildID, RaidID: a.RaidID, ActorID: a.UserID, CharacterKey: c.CharacterKey, State: a.State, Role: role,
 	})
 	switch {
 	case err == nil:
-		return s.outcome(ctx, a, res), nil
+		return s.outcome(ctx, a, res), true, nil
 	case errors.Is(err, guilds.ErrNotMember):
-		return s.notMember(ctx, a)
+		rep, err = s.notMember(ctx, a)
+		return rep, false, err
 	case errors.Is(err, guilds.ErrCharacterNotVerified):
-		return a.reply(fill(pressCopy.WaitingOne, "{Name}", memberText(c.Name))), nil
+		return a.reply(fill(pressCopy.WaitingOne, "{Name}", memberText(c.Name))), false, nil
 	}
 	if text, ok := signupRefusal(err); ok {
-		return a.reply(text), nil
+		return a.reply(text), false, nil
 	}
-	return Reply{}, fmt.Errorf("discordbot: signup: %w", err)
+	return Reply{}, false, fmt.Errorf("discordbot: signup: %w", err)
 }
 
 // signupRefusal is the sentence of a refusal the sign-up service answers.
@@ -245,8 +257,9 @@ func signupRefusal(err error) (string, bool) {
 func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupResult) Reply {
 	raid := []string{"{Name}", memberText(res.Character.Name), "{Role}", roleWord(res.Character.Role),
 		"{Title}", memberText(res.Raid.Title), "{Date}", raidDay(res.Raid)}
+	change := changeSpecButtons(a.State, a.RaidID, res.Character)
 	if res.Unchanged {
-		return a.reply(alreadySentence(a.State, raid))
+		return a.reply(alreadySentence(a.State, raid), change...)
 	}
 	moved := ""
 	if res.Moved != nil {
@@ -256,14 +269,14 @@ func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupRes
 	case guilds.SignupIn:
 		lead := fill(pressCopy.InSaved, raid...)
 		if moved != "" {
-			return a.reply(lead + moved)
+			return a.reply(lead+moved, change...)
 		}
-		return a.reply(lead + countClause(res.Raid))
+		return a.reply(lead+countClause(res.Raid), change...)
 	case guilds.SignupLate:
 		text := fill(pressCopy.LateSaved, raid...) + moved
-		return a.reply(text, linkButton(pressCopy.NoteButton, s.noteURL(ctx, a.RaidID)))
+		return a.reply(text, append(change, linkButton(pressCopy.NoteButton, s.noteURL(ctx, a.RaidID)))...)
 	case guilds.SignupBench:
-		return a.reply(fill(pressCopy.BenchSaved, raid...))
+		return a.reply(fill(pressCopy.BenchSaved, raid...), change...)
 	}
 	return a.reply(fill(pressCopy.OutSaved, raid...))
 }

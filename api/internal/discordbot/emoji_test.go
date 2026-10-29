@@ -15,6 +15,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 )
 
@@ -148,6 +150,38 @@ func (c *countingEmoji) CreateAppEmoji(context.Context, string, string) (AppEmoj
 	return AppEmoji{}, nil
 }
 func (c *countingEmoji) DeleteAppEmoji(context.Context, string) error { return nil }
+
+// The drainer draws the roster with the bot's spec emoji; with no emoji API, as text lines.
+func TestTheDrainedPostDrawsSpecEmoji(t *testing.T) {
+	for _, withEmoji := range []bool{true, false} {
+		w := newPostWorld(t)
+		if withEmoji {
+			w.svc.emoji = &EmojiRegistry{API: &countingEmoji{items: []AppEmoji{{ID: "42", Name: "fs_paladin_holy"}}}}
+		}
+		w.facts.edit(w.raidID, func(f *guilds.RaidPostFacts) {
+			f.Post.Roster = []notify.RosterLine{{Name: "Aurelith", Class: "paladin", Spec: "Holy", Role: "healer", State: "in"}}
+		})
+		w.enqueue(t, w.raidID)
+		w.drain(t)
+		creates := w.callsOf("CreateMessage")
+		if len(creates) != 1 {
+			t.Fatalf("creates %d", len(creates))
+		}
+		healers := ""
+		for _, f := range creates[0].Message.Embeds[0].Fields {
+			if f.Name == "Healers · 1" {
+				healers = f.Value
+			}
+		}
+		want := "Aurelith · Holy Paladin"
+		if withEmoji {
+			want = "<:fs_paladin_holy:42> Aurelith"
+		}
+		if healers != want {
+			t.Fatalf("emoji %v: healers %q", withEmoji, healers)
+		}
+	}
+}
 
 func TestEmojiRegistryReadsOnceAndRereadsHourlyWhileMissing(t *testing.T) {
 	now := time.Date(2026, 12, 10, 2, 0, 0, 0, time.UTC)

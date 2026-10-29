@@ -71,7 +71,7 @@ func TestSignupCommand(t *testing.T) {
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
 		w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
 		rep := w.signupCmd(t, opt(optStatus, "bench"), opt(optRaid, fmt.Sprint(w.raidID)), opt(optCharacter, keyDusk))
-		wantReply(t, rep, "Duskstrider is on the Bench for Onyxia's Lair, "+w.day()+".", false)
+		wantReply(t, rep, "Duskstrider is on the Bench for Onyxia's Lair, "+w.day()+".", false, changeSpecButton(w, keyDusk))
 		rep = w.signupCmd(t, opt(optStatus, "out"), opt(optCharacter, "zulmara"))
 		wantReply(t, rep, "Zulmara is Out for Onyxia's Lair, "+w.day()+".", false)
 	})
@@ -92,7 +92,7 @@ func TestSignupCommand(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		wantReply(t, rep, pressCopy.NotLinked, false, wantButton{linkCopy.LinkButton, w.svc.linkStartURL()})
+		wantReply(t, rep, pressCopy.NotLinked, false, wantButton{label: linkCopy.LinkButton, url: w.svc.linkStartURL()})
 	})
 	t.Run("an unknown status or raid fails", func(t *testing.T) {
 		w := newPressWorld(t)

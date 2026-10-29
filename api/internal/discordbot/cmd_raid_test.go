@@ -55,7 +55,7 @@ func TestRaidCommandStates(t *testing.T) {
 	})
 	t.Run("unlinked", func(t *testing.T) {
 		w := newPressWorld(t)
-		wantReply(t, w.raidCmdAs(t, "d-stranger"), segment(6), false, wantButton{linkCopy.LinkButton, w.svc.linkStartURL()})
+		wantReply(t, w.raidCmdAs(t, "d-stranger"), segment(6), false, wantButton{label: linkCopy.LinkButton, url: w.svc.linkStartURL()})
 	})
 	t.Run("non-member", func(t *testing.T) {
 		w := newPressWorld(t)

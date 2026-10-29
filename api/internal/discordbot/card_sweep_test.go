@@ -65,6 +65,7 @@ func sweepFrames(t *testing.T) []Message {
 	}
 	// Each world truncates the database, so every world's frames are drawn before the next.
 	frames = append(frames, signupFrames(t)...)
+	frames = append(frames, specFrames(t)...)
 	frames = append(frames, newOfficerWorld(t).run(t, pressDiscord, "char").Message)
 	return append(frames, lookupFrames(t)...)
 }
@@ -78,6 +79,17 @@ func signupFrames(t *testing.T) []Message {
 	later := w.addRaid(t, w.gid, w.raidStart.Add(24*time.Hour))
 	raidPick := w.signupCardPress(t, fmt.Sprintf("gsgn:1:raid:%d:%s", w.raidID, keyZulmara), fmt.Sprint(later))
 	return []Message{bare, raidPick.Message}
+}
+
+// specFrames are the spec card an In asks, the outcome its pick answers and the Change spec card.
+func specFrames(t *testing.T) []Message {
+	t.Helper()
+	w := newPressWorld(t)
+	paladin(t, w)
+	ask := w.press(t, "in").Message
+	done := w.mustSpecPress(t, specPickID(w, "in", keyZulmara), "paladin-holy").Message
+	change := w.mustSpecPress(t, fmt.Sprintf("gspc:1:chg:%d:%s", w.raidID, keyZulmara)).Message
+	return []Message{ask, done, change}
 }
 
 // lookupFrames are the /char card a typed name redraws and a /bis range frame.

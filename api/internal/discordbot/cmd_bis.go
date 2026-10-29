@@ -121,7 +121,7 @@ func (s *Service) mainOf(ctx context.Context, guildID int64, viewer *int64) (mai
 	}
 	sp, _ := specByKey(key)
 	out := mainFacts{spec: sp, name: main.Name}
-	if parts := strings.SplitN(main.CharacterKey, "/", 3); len(parts) == 3 {
+	if parts := strings.SplitN(main.CharacterKey, "/", 3); len(parts) == 3 && s.d.Characters != nil {
 		card, found, err := s.d.Characters.CharacterCard(ctx, parts[0], parts[1], parts[2])
 		if err != nil {
 			return mainFacts{}, false, fmt.Errorf("discordbot: bis main level: %w", err)

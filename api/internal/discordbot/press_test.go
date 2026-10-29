@@ -25,6 +25,10 @@ func (f *fakeGuilds) SignUp(context.Context, guilds.SignupCommand) (guilds.Signu
 	return guilds.SignupResult{}, errors.New("fakeGuilds: no sign-ups")
 }
 
+func (f *fakeGuilds) SaveRaidSpec(context.Context, guilds.RaidSpecCommand) (guilds.RaidSpecResult, error) {
+	return guilds.RaidSpecResult{}, errors.New("fakeGuilds: no specs")
+}
+
 func (f *fakeGuilds) SignupCandidates(context.Context, int64, int64) ([]guilds.SignupCandidate, error) {
 	return nil, nil
 }
@@ -142,8 +146,21 @@ func (w *pressWorld) addRaid(t *testing.T, guildID int64, starts time.Time) int6
 	return id
 }
 
-// addChar puts a hunter of userID on guildID's roster, verified or pending.
+// pressSpec is the raid spec addChar's hunters bring: known, so a press signs up at once.
+const pressSpec = "hunter-marksmanship"
+
+// addChar puts a hunter of userID on guildID's roster, verified or pending, with its raid spec
+// picked (addCharNoSpec leaves it unknown, so In, Late and Bench ask it first).
 func (w *pressWorld) addChar(t *testing.T, guildID, userID int64, key, name string, verified bool) {
+	t.Helper()
+	w.addCharNoSpec(t, guildID, userID, key, name, verified)
+	if _, err := w.st.Pool.Exec(context.Background(), `update guild_characters set raid_spec = $1 where character_key = $2`, pressSpec, key); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// addCharNoSpec is addChar with no raid spec picked.
+func (w *pressWorld) addCharNoSpec(t *testing.T, guildID, userID int64, key, name string, verified bool) {
 	t.Helper()
 	ctx := context.Background()
 	if _, err := w.st.Pool.Exec(ctx, `insert into characters (key, region, ruleset, name, class, user_id)
@@ -237,7 +254,13 @@ func spec(t *testing.T, row string, index int, fill map[string]string) string {
 	return specString(t, pressHeading, row, index, fill)
 }
 
-type wantButton struct{ label, url string }
+// wantButton is a link button (url), or with id a Secondary button such as Change spec.
+type wantButton struct{ label, url, id string }
+
+// changeSpecButton is the Change spec button under an outcome for key.
+func changeSpecButton(w *pressWorld, key string) wantButton {
+	return wantButton{label: guideCopy.SpecChange, id: fmt.Sprintf("gspc:1:chg:%d:%s", w.raidID, key)}
+}
 
 func wantReply(t *testing.T, rep Reply, text string, update bool, buttons ...wantButton) {
 	t.Helper()
@@ -253,6 +276,12 @@ func wantReply(t *testing.T, rep Reply, text string, update bool, buttons ...wan
 		t.Fatalf("components = %+v, want %+v", got, buttons)
 	}
 	for i, b := range buttons {
+		if b.id != "" {
+			if got[i].Style != StyleSecondary || got[i].Label != b.label || got[i].CustomID != b.id {
+				t.Fatalf("button %d = %+v, want %+v", i, got[i], b)
+			}
+			continue
+		}
 		if got[i].Style != StyleLink || got[i].Label != b.label || got[i].URL != b.url {
 			t.Fatalf("button %d = %+v, want %+v", i, got[i], b)
 		}
@@ -320,7 +349,7 @@ func TestPressFlowSentences(t *testing.T) {
 			act:  func(t *testing.T, w *pressWorld) Reply { return w.pressAs(t, "d-stranger", w.raidID, "in") },
 			want: func(*pressWorld) string { return spec(t, "Press: not linked", 0, nil) },
 			buttons: func(w *pressWorld) []wantButton {
-				return []wantButton{{linkCopy.LinkButton, w.svc.linkStartURL()}}
+				return []wantButton{{label: linkCopy.LinkButton, url: w.svc.linkStartURL()}}
 			}},
 		{name: "cancelled", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
@@ -339,7 +368,7 @@ func TestPressFlowSentences(t *testing.T) {
 				return spec(t, "Press: refusals", 3, map[string]string{"Guild": "Olympus XXVII"})
 			},
 			buttons: func(*pressWorld) []wantButton {
-				return []wantButton{{pressCopy.SetupButton, pressPublic + "/setup"}}
+				return []wantButton{{label: pressCopy.SetupButton, url: pressPublic + "/setup"}}
 			}},
 		{name: "one pending", setup: func(t *testing.T, w *pressWorld) {
 			w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", false)
@@ -351,18 +380,22 @@ func TestPressFlowSentences(t *testing.T) {
 			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", false)
 		}, want: func(*pressWorld) string { return spec(t, "Press: refusals", 6, nil) }},
 		{name: "one verified In", setup: zulmara,
-			want: func(w *pressWorld) string { return inSentence(w, "1") }},
+			want:    func(w *pressWorld) string { return inSentence(w, "1") },
+			buttons: func(w *pressWorld) []wantButton { return []wantButton{changeSpecButton(w, keyZulmara)} }},
 		{name: "late", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "late") },
 			want: func(w *pressWorld) string {
 				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day()})
 			},
-			buttons: func(w *pressWorld) []wantButton { return []wantButton{{pressCopy.NoteButton, w.raidURL() + "#signup"}} }},
+			buttons: func(w *pressWorld) []wantButton {
+				return []wantButton{changeSpecButton(w, keyZulmara), {label: pressCopy.NoteButton, url: w.raidURL() + "#signup"}}
+			}},
 		{name: "bench", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "bench") },
 			want: func(w *pressWorld) string {
 				return spec(t, "Press: outcomes", 3, map[string]string{"Name": "Zulmara", "Title": title, "Date": w.day()})
-			}},
+			},
+			buttons: func(w *pressWorld) []wantButton { return []wantButton{changeSpecButton(w, keyZulmara)} }},
 		{name: "out", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "out") },
 			want: func(w *pressWorld) string {
@@ -379,13 +412,14 @@ func TestPressFlowSentences(t *testing.T) {
 			want: func(w *pressWorld) string {
 				return strings.TrimSuffix(inSentence(w, "1"), " 1 of 40 signed up.") +
 					spec(t, "Press: outcomes", 5, map[string]string{"Other": "Duskstrider"})
-			}},
+			},
+			buttons: func(w *pressWorld) []wantButton { return []wantButton{changeSpecButton(w, keyZulmara)} }},
 		{name: "already", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
 			w.press(t, "in")
 		}, want: func(w *pressWorld) string {
 			return spec(t, "Press: outcomes", 6, map[string]string{"Name": "Zulmara", "State": "In", "Role": "DPS", "Title": title, "Date": w.day()})
-		}},
+		}, buttons: func(w *pressWorld) []wantButton { return []wantButton{changeSpecButton(w, keyZulmara)} }},
 		{name: "rate limited", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
 			w.gs.SignupLimiter = httpx.NewKeyLimiter(1, time.Minute)
@@ -462,7 +496,7 @@ func TestSelectOrderAndCap(t *testing.T) {
 		t.Fatalf("options = %d", len(sel.Options))
 	}
 	first := sel.Options[0]
-	if first.Label != "Char17" || first.Description != "Hunter · DPS"+pressCopy.OptionMain || first.Value != "us/normal/char17" {
+	if first.Label != "Char17" || first.Description != "Marksmanship Hunter · DPS"+pressCopy.OptionMain || first.Value != "us/normal/char17" {
 		t.Fatalf("first option = %+v", first)
 	}
 	if sel.Options[1].Label != "Char01" || strings.HasSuffix(sel.Options[1].Description, pressCopy.OptionMain) {
@@ -552,7 +586,7 @@ func TestASelectWithNoUsableOptionLinksTheRaidPage(t *testing.T) {
 		{CharacterKey: long + "a", Name: "A", Class: "hunter", Role: "dps", Verified: true},
 		{CharacterKey: long + "b", Name: "B", Class: "hunter", Role: "dps", Verified: true},
 	}
-	wantReply(t, w.press(t, "in"), pressCopy.Failure, false, wantButton{postCopy.RaidPage, w.raidURL()})
+	wantReply(t, w.press(t, "in"), pressCopy.Failure, false, wantButton{label: postCopy.RaidPage, url: w.raidURL()})
 }
 
 func TestAFailedPickStillReplacesTheSelect(t *testing.T) {

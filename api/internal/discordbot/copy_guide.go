@@ -55,6 +55,16 @@ type guideStrings struct {
 
 	CardStale   string
 	CardFailure string
+
+	// The spec card, "Which spec tonight?" (spec 2026-10-28 §P.10). SpecKept starts with a space:
+	// it is appended to the outcome sentence (alone, the space is trimmed).
+	SpecTitle       string
+	SpecLead        string
+	SpecLeadChange  string
+	SpecPlaceholder string
+	SpecKept        string
+	SpecChange      string
+	SpecStale       string
 }
 
 var guideCopy = guideStrings{
@@ -111,4 +121,12 @@ var guideCopy = guideStrings{
 
 	CardStale:   "This card is out of date. Run /{command} again.",
 	CardFailure: commonCopy.Failure,
+
+	SpecTitle:       "Which spec tonight?",
+	SpecLead:        "The pick signs **{Name}** up as {State} for {Title}, {Date}, and is kept for the next raid.",
+	SpecLeadChange:  "The pick changes the spec **{Name}** brings to {Title}, {Date}, and is kept for the next raid.",
+	SpecPlaceholder: "Choose a spec",
+	SpecKept:        " {Spec} is kept for {Name}.",
+	SpecChange:      "Change spec",
+	SpecStale:       "This card is out of date. Press the button on the raid post again.",
 }

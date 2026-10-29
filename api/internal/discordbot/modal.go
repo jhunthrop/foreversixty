@@ -90,8 +90,12 @@ type sourceMessage struct {
 // cardFailureRoutes are the card prefixes: a handler error on one keeps the card. Read-only.
 var cardFailureRoutes = map[string]bool{
 	prefixBis: true, prefixChar: true, prefixSignup: true,
-	prefixAttendance: true, prefixReadiness: true, prefixReport: true,
+	prefixAttendance: true, prefixReadiness: true, prefixReport: true, prefixSpec: true,
 }
+
+// cardFailureLeads are the cards whose failure is said in the embed's lead, not a content line:
+// /bis says card.failure, the spec card pressCopy.Failure (spec 2026-10-28 §P.10.6).
+var cardFailureLeads = map[string]string{prefixBis: guideCopy.CardFailure, prefixSpec: pressCopy.Failure}
 
 // askPart is the card part whose press opens a modal.
 const askPart = "ask"
@@ -117,12 +121,20 @@ func cardFailureReply(in Interaction) Reply {
 		return rep
 	}
 	msg := Message{Ephemeral: true, echo: &src}
-	if customPrefix(in.CustomID()) == prefixBis {
-		msg.echo = &sourceMessage{Embeds: withLead(src.Embeds, guideCopy.CardFailure), Components: src.Components}
+	if lead, ok := cardFailureLeads[customPrefix(in.CustomID())]; ok && hasEmbeds(src.Embeds) {
+		msg.echo = &sourceMessage{Embeds: withLead(src.Embeds, lead), Components: src.Components}
+	} else if ok {
+		msg.Content = lead
 	} else {
 		msg.Content = guideCopy.CardFailure
 	}
 	return Reply{Update: true, Message: msg}
+}
+
+// hasEmbeds reports a pressed message that carried at least one embed.
+func hasEmbeds(embeds json.RawMessage) bool {
+	var list []json.RawMessage
+	return json.Unmarshal(embeds, &list) == nil && len(list) > 0
 }
 
 // withLead replaces the first embed's description, leaving every other field as sent.

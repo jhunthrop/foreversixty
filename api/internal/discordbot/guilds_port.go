@@ -21,6 +21,8 @@ type GuildService interface {
 	RaidPostFacts(ctx context.Context, raidID int64) (guilds.RaidPostFacts, bool, error)
 	// SignUp is the site's own sign-up, with its per-account limit.
 	SignUp(ctx context.Context, cmd guilds.SignupCommand) (guilds.SignupResult, error)
+	// SaveRaidSpec stores the spec the actor's own character brings to the guild's raids.
+	SaveRaidSpec(ctx context.Context, cmd guilds.RaidSpecCommand) (guilds.RaidSpecResult, error)
 	// SignupCandidates is the account's characters in the guild, its main first.
 	SignupCandidates(ctx context.Context, guildID, userID int64) ([]guilds.SignupCandidate, error)
 	// PlannedRaids is the guild's calendar at now, soonest first.
