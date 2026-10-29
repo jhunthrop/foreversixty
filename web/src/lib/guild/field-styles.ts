@@ -17,6 +17,16 @@ export const TEXTAREA_CHROME = `${FIELD_SKIN} px-3 py-2.5 leading-5`;
 /** A checkbox row's label. */
 export const CHECK_ROW = 'flex min-h-11 items-center gap-3 text-[14px]';
 
+/** An inline switch: a 36 x 20 track with a 14 px thumb on a native checkbox, so the row's label
+ *  stays the 44 px hit area. `SWITCH_ON` adds the gold track and the thumb at the right; a switch
+ *  that cannot be used (disabled by another switch) leaves it off and reads neutral. */
+export const SWITCH_CHROME =
+  'relative h-5 w-9 shrink-0 cursor-pointer appearance-none rounded-full border border-line bg-bg transition-colors motion-reduce:transition-none ' +
+  "before:absolute before:top-1/2 before:left-0.5 before:h-3.5 before:w-3.5 before:-translate-y-1/2 before:rounded-full before:bg-muted before:transition-transform motion-reduce:before:transition-none before:content-[''] " +
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed';
+export const SWITCH_ON =
+  'checked:border-gold checked:bg-gold checked:before:translate-x-4 checked:before:bg-bg';
+
 /** The shared disabled look, for a row whose control cannot be used at all (not merely busy). */
 export const DISABLED_LOOK = 'cursor-not-allowed opacity-50';
 

@@ -64,6 +64,8 @@ describe('RaidFormDiscord', () => {
     expect(remind).toMatch(/ disabled(=|\s|\/|>)/);
     expect(remind).toContain('checked');
     expect(remind).toContain('aria-checked="true"');
+    expect(remind).not.toContain('checked:bg-gold');
+    expect(tag(markup, 'raid-form-discord')).toContain('checked:bg-gold');
     expect(text(markup)).toContain(raidCopy.form.remindNeedsPost);
   });
 

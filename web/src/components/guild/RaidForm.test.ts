@@ -141,6 +141,12 @@ describe('RaidForm', () => {
     expect(tag(markup, 'raid-form-title')).toContain(`placeholder="Onyxia's Lair"`);
   });
 
+  it('draws the repeat row as a switch', () => {
+    const markup = html();
+    expect(tag(markup, 'raid-form-repeat')).toContain('role="switch"');
+    expect(tag(markup, 'raid-form-repeat')).toContain('aria-checked="false"');
+  });
+
   it('starts a first raid with Choose a raid, 20:00, no date and 3 h', () => {
     const markup = html();
     expect(markup).toContain(raidCopy.placeholders.chooseRaid);

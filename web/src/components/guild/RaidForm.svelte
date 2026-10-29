@@ -13,6 +13,8 @@
     FIELD_CHROME,
     INLINE_LINK,
     SELECT_CHROME,
+    SWITCH_CHROME,
+    SWITCH_ON,
     TEXTAREA_CHROME,
   } from '../../lib/guild/field-styles';
   import { raidCopy } from '../../lib/guild/raid-copy';
@@ -339,6 +341,9 @@
       <label class="{CHECK_ROW} {repeatAllowed ? '' : DISABLED_LOOK}" data-testid="raid-form-repeat-label">
         <input
           type="checkbox"
+          class="{SWITCH_CHROME} {SWITCH_ON}"
+          role="switch"
+          aria-checked={values.repeat && repeatAllowed}
           checked={values.repeat && repeatAllowed}
           disabled={busy || !repeatAllowed}
           aria-describedby={repeatLine === null ? undefined : id('repeat-helper')}
