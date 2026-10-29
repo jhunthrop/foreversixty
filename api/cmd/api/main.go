@@ -36,6 +36,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
@@ -705,6 +706,9 @@ func serve(log *slog.Logger) error {
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	deps.DiscordBot = newDiscordBot(ctx, cfg, pool, deps, accounts, log)
+	// The Discord panel's item tiles (spec 2026-10-29 §A.4): public item art, drawn from the
+	// image's /data/{build}/icons.
+	deps.Tiles = sheet.NewTiles(cfg.TreeDataDir, sheet.TreesItems{Data: treeData}, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})

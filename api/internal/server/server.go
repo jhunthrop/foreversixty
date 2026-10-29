@@ -20,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
@@ -64,6 +65,8 @@ type Deps struct {
 	DiscordBot *discordbot.Service
 	// Coach serves the log coach's routes; nil leaves them unmounted.
 	Coach *coach.Service
+	// Tiles serves the Discord panel's item tiles; nil leaves the route unmounted.
+	Tiles *sheet.Tiles
 
 	TrustedProxyHops int
 }
@@ -137,6 +140,9 @@ func NewRouter(d Deps) http.Handler {
 	if d.Coach != nil {
 		coach.Mount(mux, d.Coach)
 		coach.MountLines(mux, d.Coach)
+	}
+	if d.Tiles != nil {
+		d.Tiles.Mount(mux)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
