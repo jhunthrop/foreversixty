@@ -1,0 +1,64 @@
+{
+  "id": "attendance-select",
+  "title": "/attendance, an officer: the lowest-attendance select",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Zulmara · attendance",
+        "description": "Came 7 of 8 · 26 of 30 raids",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/roster",
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 11195250
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gatt:1:pick:",
+            "placeholder": "Look up a member",
+            "options": [
+              {
+                "label": "Thalwyn",
+                "value": "Thalwyn",
+                "description": "Came 3 of 8 · 10 of 30 raids"
+              },
+              {
+                "label": "Vexlash",
+                "value": "Vexlash",
+                "description": "Came 5 of 8 · 20 of 30 raids"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Type a name",
+            "custom_id": "gatt:1:ask:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Roster",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/roster"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

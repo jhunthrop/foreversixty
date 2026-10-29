@@ -1,0 +1,12 @@
+{
+  "id": "signup-card-in",
+  "title": "a status press: In",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "content": "Duskstrider is In as DPS for Onyxia's Lair, Sat 12 Dec. 1 of 40 signed up.",
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

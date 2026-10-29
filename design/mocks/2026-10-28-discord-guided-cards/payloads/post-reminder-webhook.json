@@ -1,0 +1,11 @@
+{
+  "id": "post-reminder-webhook",
+  "title": "the reminder through a webhook",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "content": "**Onyxia's Lair is tomorrow**, \u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e). 33 of 40 signed up so far. [Sign up on Forever Sixty](https://site.test/guild/us/normal/olympus-xxvii/raids/1)",
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

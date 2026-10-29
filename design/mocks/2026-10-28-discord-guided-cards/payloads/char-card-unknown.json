@@ -1,0 +1,47 @@
+{
+  "id": "char-card-unknown",
+  "title": "a name that is nobody",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "content": "No public character named Nobody. Try another name.",
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 3,
+            "label": "Type a name",
+            "custom_id": "gchar:1:ask:"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gchar:1:pick:",
+            "placeholder": "Another of your characters",
+            "options": [
+              {
+                "label": "Zulmara",
+                "value": "Zulmara",
+                "description": "Beast Mastery Hunter · Level 60"
+              },
+              {
+                "label": "Duskstrider",
+                "value": "Duskstrider",
+                "description": "Fury Warrior · Level 58"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

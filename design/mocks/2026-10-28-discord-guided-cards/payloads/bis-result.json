@@ -1,0 +1,52 @@
+{
+  "id": "bis-result",
+  "title": "Show BiS: the card becomes the typed answer",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
+    "embeds": [
+      {
+        "title": "Pick head",
+        "description": "Head · Epic · item level 61\n+9.2 DPS",
+        "url": "https://site.test/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+        "footer": {
+          "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
+        },
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_helmet_01.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 10696174
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:9DSMzv2lia9MD4JlYLFIOhf6z3JIszrGh2Awbgopqe8"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Change picks",
+            "custom_id": "gbis:1:chg:hunter:beast-mastery:p1:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "All 17 slots",
+            "url": "https://site.test/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "id": "report-select",
+  "title": "/report: the Another night select",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Report: Onyxia's Lair · Thursday 10 December",
+        "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "fields": [
+          {
+            "name": "Kill order",
+            "value": "1. Onyxia 1:42 after 3 wipes"
+          },
+          {
+            "name": "Most deaths",
+            "value": "Pyrewisp 4 · Windtalon 3 · Vexlash 2"
+          },
+          {
+            "name": "Consumables",
+            "value": "3 short before the raid"
+          },
+          {
+            "name": "Loot",
+            "value": "10 items. The first 8:"
+          }
+        ],
+        "color": 8377482
+      },
+      {
+        "title": "Item",
+        "description": "Epic · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Item",
+        "description": "Epic · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Item",
+        "description": "Epic · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 10696174
+      },
+      {
+        "title": "Item",
+        "description": "Rare · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 28893
+      },
+      {
+        "title": "Item",
+        "description": "Rare · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 28893
+      },
+      {
+        "title": "Item",
+        "description": "Rare · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 28893
+      },
+      {
+        "title": "Item",
+        "description": "Uncommon · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "color": 2031360
+      },
+      {
+        "title": "Item",
+        "description": "Uncommon · item level 74\nto Pyrewisp · Onyxia",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report",
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "thumbnail": {
+          "url": "https://site.test/data/1.60.1.99999/icons/inv_x.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 2031360
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:agORqEIRahCCjL2_BN5LyDqDXgOdQJEXHlxkltomREo"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Open the report",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7#report"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "grep:1:raid:",
+            "placeholder": "Another night",
+            "options": [
+              {
+                "label": "Onyxia's Lair · Fri 11 Dec",
+                "value": "7",
+                "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min",
+                "default": true
+              },
+              {
+                "label": "Molten Core · Fri 4 Dec",
+                "value": "6",
+                "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

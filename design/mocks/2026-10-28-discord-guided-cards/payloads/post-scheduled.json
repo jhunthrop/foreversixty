@@ -1,0 +1,77 @@
+{
+  "id": "post-scheduled",
+  "title": "posted on scheduling: nobody yet",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Onyxia's Lair · Thursday 10 December",
+        "description": "Sign up with the buttons below.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1",
+        "fields": [
+          {
+            "name": "When",
+            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "inline": true
+          },
+          {
+            "name": "Guild time",
+            "value": "8:00 pm CST",
+            "inline": true
+          },
+          {
+            "name": "Signed up",
+            "value": "None yet"
+          }
+        ],
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15055189
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 3,
+            "label": "In",
+            "custom_id": "raid:24:in"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Late",
+            "custom_id": "raid:24:late"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Bench",
+            "custom_id": "raid:24:bench"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Out",
+            "custom_id": "raid:24:out"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Raid page",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    },
+    "nonce": "ro.mvsw50jm",
+    "enforce_nonce": true
+  }
+}

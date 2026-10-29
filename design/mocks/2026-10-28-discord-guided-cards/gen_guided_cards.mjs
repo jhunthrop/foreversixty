@@ -9,7 +9,12 @@
 // payloads with the roster of spec §P.9 (crest application emoji drawn as the crest image), and
 // the Which spec tonight? card of §P.10 closes the set.
 // Run this file with Node 22 or later (it strips the kit's TypeScript types); boards land here.
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -706,6 +711,68 @@ frames.push(
   ),
 );
 
+// ---------------------------------------------------------------------------------------------
+// The real frames. payloads/<frame>.json is what the bot's own handlers and drainer answered
+// (api/internal/discordbot/payload_dump_test.go, run with GUIDED_PAYLOADS_DIR); each is drawn
+// again as <frame>-real through the same kit and post-pass, so a board and its real payload
+// can be laid side by side. Frames with no board (char, signup, officer cards) are drawn too.
+const PAYLOADS = path.join(HERE, "payloads");
+/** Which select the board shows open, by frame: the real frame opens the same one. */
+const OPEN_SELECT = {
+  "bis-card-1-class": 0,
+  "bis-card-2-spec": 1,
+  "bis-card-3-range": 2,
+};
+
+/** Discord's own look of a select: the default option shown, a disabled select greyed, one list open. */
+function realSelect(c, open) {
+  const chosen = (c.options ?? []).find((o) => o.default);
+  let shown = c.placeholder ?? "";
+  if (c.disabled) shown = DISABLED + shown;
+  else if (chosen) shown = CHOSEN + chosen.label;
+  if (open) shown = OPEN + shown;
+  const opts = c.disabled
+    ? []
+    : (c.options ?? []).map((o) =>
+        o.default ? { ...o, description: CHOSEN + (o.description ?? "") } : o,
+      );
+  return { ...c, placeholder: shown, options: opts };
+}
+
+function realMessage(message, openIndex) {
+  let seen = 0;
+  const components = (message.components ?? []).map((r) => ({
+    ...r,
+    components: r.components.map((c) =>
+      c.type === 3 ? realSelect(c, seen++ === openIndex) : c,
+    ),
+  }));
+  return { ...message, components };
+}
+
+function realFrame(file) {
+  const raw = JSON.parse(readFileSync(path.join(PAYLOADS, file), "utf8"));
+  if (!raw.message) return undefined; // a modal: nothing to draw
+  const board = frames.find((f) => f.id === raw.id);
+  const open = OPEN_SELECT[raw.id] ?? -1;
+  return {
+    id: raw.id + "-real",
+    title: "real payload: " + raw.title,
+    clock: board?.clock ?? raw.clock,
+    above: raw.above ? realMessage(raw.above, -1) : undefined,
+    reply: board?.reply,
+    message: realMessage(raw.message, open),
+  };
+}
+
+if (existsSync(PAYLOADS))
+  for (const file of readdirSync(PAYLOADS)
+    .filter((n) => n.endsWith(".json"))
+    .sort()) {
+    const real = realFrame(file);
+    if (real) frames.push(real);
+  }
+
 const EXTRA_CSS =
   "<style>" +
   ".select .chosen{color:#dbdee1}" +
@@ -808,6 +875,14 @@ const HTML_EXT = ".html";
 const PNG_EXT = ".png";
 const LOAD = "load";
 const MSG = "#msg";
+
+// MOCK_JSON_DIR=<dir> also writes each frame's message as JSON, for diffing board against payload.
+if (process.env.MOCK_JSON_DIR)
+  for (const f of frames)
+    writeFileSync(
+      path.join(process.env.MOCK_JSON_DIR, f.id + ".json"),
+      JSON.stringify({ message: f.message, above: f.above }, null, 2),
+    );
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 2 });

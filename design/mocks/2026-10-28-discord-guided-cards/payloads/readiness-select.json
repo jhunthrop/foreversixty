@@ -1,0 +1,36 @@
+{
+  "id": "readiness-select",
+  "title": "/readiness: the Another raid select",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Readiness · Onyxia's Lair · Saturday 31 October",
+        "description": "Everyone signed In or Late is ready.",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/readiness",
+        "footer": {
+          "text": "Olympus XXVII · Forever Sixty"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 15055189
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Readiness board",
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/readiness"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}
