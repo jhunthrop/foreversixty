@@ -2,7 +2,6 @@ package discordbot
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -72,24 +71,12 @@ func (s *Service) autocompleteReadiness(ctx context.Context, in Interaction) ([]
 	if err != nil || !bound || viewer == nil {
 		return []Choice{}, err
 	}
-	officer, err := s.isOfficer(ctx, guildID, *viewer)
+	officer, err := s.d.Guilds.IsOfficer(ctx, guildID, *viewer)
 	if err != nil || !officer {
 		return []Choice{}, err
 	}
 	_, typed := in.Focused()
 	return s.raidChoices(ctx, guildID, typed)
-}
-
-// isOfficer reports whether the viewer's rank sees the officer reads.
-func (s *Service) isOfficer(ctx context.Context, guildID, viewer int64) (bool, error) {
-	_, err := s.d.Guilds.LowestAttendance(ctx, guildID, viewer, 1)
-	if err == nil {
-		return true, nil
-	}
-	if errors.Is(err, guilds.ErrOfficerOnly) {
-		return false, nil
-	}
-	return false, fmt.Errorf("discordbot: officer check: %w", err)
 }
 
 // reportNightRow is the "Another night" select under a report: the guild's last done raids the

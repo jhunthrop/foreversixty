@@ -78,6 +78,21 @@ func TestEveryCardHoldsDiscordsLimits(t *testing.T) {
 		}
 	}
 
+	routed := map[string]bool{}
+	for _, prefix := range prefixes {
+		routed[prefix] = true
+	}
+	for prefix := range cardFailureRoutes {
+		if !routed[prefix] {
+			t.Errorf("%s is failure-routed but has no component route", prefix)
+		}
+	}
+	for prefix := range updates {
+		if !routed[prefix] && !legacyComponentPrefixes[prefix] {
+			t.Errorf("%s is an update route but has no component route", prefix)
+		}
+	}
+
 	seen := map[string]bool{}
 	for i, m := range sweepFrames(t) {
 		assertCardLimits(t, m)

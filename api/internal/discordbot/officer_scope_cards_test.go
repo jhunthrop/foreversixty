@@ -141,3 +141,44 @@ func TestReportNightSelect(t *testing.T) {
 func readinessFailing(raid guilds.Raid) guilds.ReadinessAnswer {
 	return guilds.ReadinessAnswer{Raid: &raid, Signed: 11, Failing: 2, Rows: []string{"Vexlash · Short", "Thalwyn · Short"}}
 }
+
+// TestReportShareKeepsTheNightRow: the presser's own copy keeps the select after the Shared
+// button; the public follow-up carries no select.
+func TestReportShareKeepsTheNightRow(t *testing.T) {
+	w := newOfficerWorld(t)
+	w.addChar(t, w.gid, w.uid, "us/normal/zulmara", "Zulmara", true)
+	last := onyxiaReport(false, true)
+	w.og.report = last
+	w.og.reports = map[int64]*guilds.ReportAnswer{7: last}
+	w.og.done = []guilds.Raid{
+		{ID: 7, Title: last.Raid.Title, StartsAt: last.Raid.StartsAt},
+		{ID: 6, Title: "Molten Core", StartsAt: last.Raid.StartsAt.Add(-7 * 24 * time.Hour)},
+	}
+	older := onyxiaReport(false, false)
+	older.Raid.ID = 6
+	w.og.reports[6] = older
+	answer := w.run(t, pressDiscord, "report").Message
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": answer.Components[0][0].CustomID})
+	in.Token = "tok-night"
+	rep, err := w.svc.share(t.Context(), in)
+	if err != nil || rep.After == nil {
+		t.Fatalf("share = %+v %v", rep, err)
+	}
+	own := rep.Message.Components
+	if len(own) != 2 || own[0][0].Label != "Shared" || !own[0][0].Disabled || own[1][0].CustomID != repPickID {
+		t.Fatalf("own copy = %+v", own)
+	}
+	rep.After(t.Context())
+	for _, c := range w.rest.Calls() {
+		if c.Method != "FollowUp" {
+			continue
+		}
+		for _, row := range c.Message.Components {
+			for _, comp := range row {
+				if comp.Kind == KindStringSelect {
+					t.Fatalf("public follow-up carries a select: %+v", comp)
+				}
+			}
+		}
+	}
+}

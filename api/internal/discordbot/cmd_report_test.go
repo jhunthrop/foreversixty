@@ -44,6 +44,10 @@ func (o *officerGuilds) DoneRaids(ctx context.Context, guildID int64, publicOnly
 	return o.pressGuilds.DoneRaids(ctx, guildID, publicOnly, limit)
 }
 
+func (o *officerGuilds) IsOfficer(context.Context, int64, int64) (bool, error) {
+	return o.lowestErr == nil, nil
+}
+
 func (o *officerGuilds) RaidReadiness(_ context.Context, _, _, raidID int64) (guilds.ReadinessAnswer, error) {
 	if o.readyErr != nil {
 		return guilds.ReadinessAnswer{}, o.readyErr
