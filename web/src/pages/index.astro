@@ -366,7 +366,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             {homeAroundTheSiteCopy.seeAll}
           </a>
           <div class="p-[18px]">
-            <RecentReports client:visible compact heading={false} />
+            <RecentReports client:idle-after-load compact heading={false} />
           </div>
         </Panel>
         <Panel title={homeAroundTheSiteCopy.guildsLabel}>
@@ -374,7 +374,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             {homeAroundTheSiteCopy.seeAll}
           </a>
           <div class="p-[18px]">
-            <HomeTopGuilds client:visible />
+            <HomeTopGuilds client:idle-after-load />
           </div>
         </Panel>
       </section>
