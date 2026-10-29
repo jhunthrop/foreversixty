@@ -2,6 +2,8 @@ package notify
 
 import (
 	"context"
+	"errors"
+	"strings"
 	"testing"
 	"time"
 )
@@ -127,5 +129,45 @@ func TestGuildStoreSetDefaults(t *testing.T) {
 	}
 	if err := st.SetDefaults(ctx, gid+999, true, true); err != nil {
 		t.Fatalf("no channel = %v", err)
+	}
+}
+
+// The raid-posts job's sends return a refusal so the schedule retries it; the save-time
+// paths (RaidPosted, ReportReady, Deliver) keep reporting it as not posted.
+func TestJobSendsReturnARefusal(t *testing.T) {
+	ctx := context.Background()
+	r := newGuildRig(t)
+	refused := &DiscordError{Status: 500, Body: "boom"}
+	r.poster.PostErr, r.poster.ContentErr = refused, refused
+
+	sent, err := r.d.SendRaidPost(ctx, r.gid, onyxiaThursday())
+	var notSent *NotSentError
+	if sent || !errors.As(err, &notSent) || !errors.Is(err, refused) {
+		t.Fatalf("SendRaidPost = %v, %v", sent, err)
+	}
+	_, sent, err = r.d.RaidReminder(ctx, r.gid, onyxiaThursday())
+	if sent || !errors.As(err, &notSent) {
+		t.Fatalf("RaidReminder = %v, %v", sent, err)
+	}
+	if strings.Contains(err.Error(), "guild-token") {
+		t.Fatal("the refusal holds the webhook token")
+	}
+	if w := r.hook(t); w.Failures != 2 {
+		t.Fatalf("failures = %d, want 2", w.Failures)
+	}
+	if posted, err := r.d.ReportReady(ctx, r.gid, onyxiaReport()); posted || err != nil {
+		t.Fatalf("ReportReady = %v, %v", posted, err)
+	}
+	if err := r.d.Deliver(ctx, r.gid, eventRaidPosted, Embed{}); err != nil {
+		t.Fatalf("Deliver = %v", err)
+	}
+
+	r.poster.PostErr = nil
+	if sent, err := r.d.SendRaidPost(ctx, r.gid, onyxiaThursday()); !sent || err != nil {
+		t.Fatalf("landed: SendRaidPost = %v, %v", sent, err)
+	}
+	var none *GuildDeliverer
+	if sent, err := none.SendRaidPost(ctx, r.gid, onyxiaThursday()); sent || err != nil {
+		t.Fatalf("nil deliverer: %v, %v", sent, err)
 	}
 }

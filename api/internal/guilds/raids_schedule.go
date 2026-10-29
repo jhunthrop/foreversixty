@@ -36,14 +36,6 @@ const (
 	outcomeFailed
 )
 
-// remindOr is the save's reminder box, else the guild's remembered default.
-func remindOr(box *bool, guildDefault bool) bool {
-	if box != nil {
-		return *box
-	}
-	return guildDefault
-}
-
 func raidIDsOf(views []RaidView) []int64 {
 	ids := make([]int64, len(views))
 	for i, v := range views {
@@ -269,26 +261,65 @@ func (r ScheduleRun) count(o dueOutcome) ScheduleRun {
 	return r
 }
 
-// runDue sends one claimed row's post or reminder.
+// RaidPostSender is a RaidEvents that can also post for the raid-posts job and say whether
+// the post landed; a send that did not land is an error, so the row is retried. A RaidEvents
+// without it posts through RaidPosted, whose failures are only logged.
+type RaidPostSender interface {
+	SendRaidPost(ctx context.Context, guildID int64, e notify.RaidPosted) (sent bool, err error)
+}
+
+var _ RaidPostSender = (*notify.GuildDeliverer)(nil)
+
+// runDue sends one claimed row's post or reminder: only while the raid is still planned and
+// the row still holds this claim's lease, renewed just before the send.
 func (s *Service) runDue(ctx context.Context, d DueSchedule, now time.Time) dueOutcome {
 	facts, found, err := s.RaidPostFacts(ctx, d.RaidID)
 	if err != nil {
 		return s.failDue(ctx, d, now, err)
 	}
-	if !found {
-		if err := s.Store.ReleaseSchedule(ctx, d.RaidID); err != nil {
-			s.logSchedule("raid_schedule_release", d.RaidID, err)
-		}
+	if !found || facts.Status != RaidPlanned {
+		s.releaseDue(ctx, d.RaidID)
+		return outcomeSkipped
+	}
+	held, err := s.Store.RenewScheduleLease(ctx, d.RaidID, d.LeaseUntil)
+	if err != nil {
+		s.logSchedule("raid_schedule_renew", d.RaidID, err)
+		return outcomeSkipped
+	}
+	if !held {
 		return outcomeSkipped
 	}
 	if d.Kind == duePost {
-		s.RaidEvents.RaidPosted(ctx, d.GuildID, facts.Post.RaidPosted)
-		if err := s.Store.MarkSchedulePosted(ctx, d.RaidID, now); err != nil {
-			s.logSchedule("raid_schedule_posted", d.RaidID, err)
-		}
-		return outcomePosted
+		return s.sendPost(ctx, d, facts.Post.RaidPosted, now)
 	}
-	ref, sent, err := s.RaidEvents.RaidReminder(ctx, d.GuildID, facts.Post.RaidPosted)
+	return s.sendReminder(ctx, d, facts.Post.RaidPosted, now)
+}
+
+func (s *Service) releaseDue(ctx context.Context, raidID int64) {
+	if err := s.Store.ReleaseSchedule(ctx, raidID); err != nil {
+		s.logSchedule("raid_schedule_release", raidID, err)
+	}
+}
+
+// sendPost posts a due raid and marks it posted; a post that did not land is retried.
+func (s *Service) sendPost(ctx context.Context, d DueSchedule, e notify.RaidPosted, now time.Time) dueOutcome {
+	if sender, ok := s.RaidEvents.(RaidPostSender); ok {
+		if _, err := sender.SendRaidPost(ctx, d.GuildID, e); err != nil {
+			return s.failDue(ctx, d, now, err)
+		}
+	} else {
+		s.RaidEvents.RaidPosted(ctx, d.GuildID, e)
+	}
+	if err := s.Store.MarkSchedulePosted(ctx, d.RaidID, now); err != nil {
+		s.logSchedule("raid_schedule_posted", d.RaidID, err)
+	}
+	return outcomePosted
+}
+
+// sendReminder sends a due reminder and marks it reminded; a reminder that did not land is
+// retried, and one that reached no channel is marked so it is not retried every run.
+func (s *Service) sendReminder(ctx context.Context, d DueSchedule, e notify.RaidPosted, now time.Time) dueOutcome {
+	ref, sent, err := s.RaidEvents.RaidReminder(ctx, d.GuildID, e)
 	if err != nil {
 		return s.failDue(ctx, d, now, err)
 	}

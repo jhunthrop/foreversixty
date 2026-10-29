@@ -21,8 +21,9 @@ const (
 	reminderFresh = 12 * time.Hour
 	// scheduleLease keeps two runners off one row.
 	scheduleLease = 2 * time.Minute
-	// scheduleBatch is how many rows one claim takes.
-	scheduleBatch = 50
+	// scheduleBatch is how many rows one claim takes: few enough that a batch of slow sends
+	// (each bounded by the poster's timeout) ends well inside scheduleLease.
+	scheduleBatch = 10
 )
 
 // postAtFor is when a raid starting at startsAt posts: now when it is within the horizon,
@@ -51,11 +52,13 @@ const (
 	dueReminder
 )
 
-// DueSchedule is a claimed row and what is due on it.
+// DueSchedule is a claimed row and what is due on it. LeaseUntil is the lease the claim
+// took, the key RenewScheduleLease compares against.
 type DueSchedule struct {
 	RaidSchedule
-	Kind     dueKind
-	Attempts int
+	Kind       dueKind
+	Attempts   int
+	LeaseUntil time.Time
 }
 
 const scheduleColumns = `s.raid_id, s.guild_id, s.post_at, s.remind, s.posted_at, s.reminded_at,
@@ -187,7 +190,7 @@ func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int)
 		  order by d.next_attempt_at
 		  limit $2
 		  for update of d skip locked)
-		returning `+scheduleColumns+`, s.attempts`,
+		returning `+scheduleColumns+`, s.attempts, s.lease_until`,
 		now, limit, scheduleLease.Seconds(), reminderLead.Seconds(), (reminderLead + reminderFresh).Seconds())
 	if err != nil {
 		return nil, fmt.Errorf("guilds: claim due schedules: %w", err)
@@ -196,7 +199,8 @@ func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int)
 	var out []DueSchedule
 	for rows.Next() {
 		var attempts int
-		rs, err := scanSchedule(rows, &attempts)
+		var lease time.Time
+		rs, err := scanSchedule(rows, &attempts, &lease)
 		if err != nil {
 			return nil, fmt.Errorf("guilds: scan due schedule: %w", err)
 		}
@@ -204,9 +208,24 @@ func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int)
 		if rs.PostedAt == nil {
 			kind = duePost
 		}
-		out = append(out, DueSchedule{RaidSchedule: rs, Kind: kind, Attempts: attempts})
+		out = append(out, DueSchedule{RaidSchedule: rs, Kind: kind, Attempts: attempts, LeaseUntil: lease})
 	}
 	return out, rows.Err()
+}
+
+// RenewScheduleLease extends a claimed row's lease just before its send, only while the row
+// still holds the lease this claim took; false means another runner took it since, and the
+// send is skipped. The new lease is the later of the claimed one and the wall clock plus
+// scheduleLease, so it never shortens.
+func (s *Store) RenewScheduleLease(ctx context.Context, raidID int64, claimed time.Time) (bool, error) {
+	tag, err := s.Pool.Exec(ctx, `
+		update guild_raid_discord_schedule
+		set lease_until = greatest($2::timestamptz, now() + make_interval(secs => $3))
+		where raid_id = $1 and lease_until = $2`, raidID, claimed, scheduleLease.Seconds())
+	if err != nil {
+		return false, fmt.Errorf("guilds: renew lease of raid %d: %w", raidID, err)
+	}
+	return tag.RowsAffected() == 1, nil
 }
 
 // FailSchedule counts a failed send, keeps its message and holds the row until retryAt.

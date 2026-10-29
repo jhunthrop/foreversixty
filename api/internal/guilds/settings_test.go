@@ -152,10 +152,11 @@ type fakeBot struct {
 func (f fakeBot) BotAvailable() bool { return f.on }
 
 func (f fakeBot) Destination(context.Context, int64) (BotDestination, error) {
-	if !f.active {
-		return BotDestination{}, nil
+	d := BotDestination{Active: f.active, PostDefault: f.postDefault, RemindDefault: f.remindDefault}
+	if f.active {
+		d.ChannelName = f.channelName
 	}
-	return BotDestination{Active: true, PostDefault: f.postDefault, RemindDefault: f.remindDefault, ChannelName: f.channelName}, nil
+	return d, nil
 }
 
 func (f fakeBot) SetDiscordDefaults(_ context.Context, _ int64, post, remind bool) error {

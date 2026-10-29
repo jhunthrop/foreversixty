@@ -52,6 +52,39 @@ func (d *GuildDeliverer) RaidPosted(ctx context.Context, guildID int64, e RaidPo
 	d.deliverQuietly(ctx, guildID, eventRaidPosted, RaidPostedEmbed(e, d.clock()))
 }
 
+// SendRaidPost posts the raid_posted embed for the raid-posts job, which retries: a post the
+// channel was found for but that did not land returns a *NotSentError. False with no error
+// means no channel, or it is switched off.
+func (d *GuildDeliverer) SendRaidPost(ctx context.Context, guildID int64, e RaidPosted) (bool, error) {
+	if d == nil {
+		return false, nil
+	}
+	embed := RaidPostedEmbed(e, d.clock())
+	return d.deliverWith(ctx, guildID, eventRaidPosted, func(ctx context.Context, url string) error {
+		return d.Poster.Post(ctx, url, embed)
+	})
+}
+
+// NotSentError is a send the guild's channel was found for that did not land: Discord
+// refused it, or its context ended first. It never holds the URL or token.
+type NotSentError struct{ Err error }
+
+func (e *NotSentError) Error() string {
+	return "notify: the guild's channel did not take the post: " + e.Err.Error()
+}
+
+func (e *NotSentError) Unwrap() error { return e.Err }
+
+// quietly is the save-time contract: a send that did not land is already logged and
+// counted on the channel, so it is reported as not posted, never as an error.
+func quietly(sent bool, err error) (bool, error) {
+	var notSent *NotSentError
+	if errors.As(err, &notSent) {
+		return false, nil
+	}
+	return sent, err
+}
+
 // RaidChanged posts the raid_changed embed (moved or cancelled); see RaidPosted.
 func (d *GuildDeliverer) RaidChanged(ctx context.Context, guildID int64, e RaidChanged) {
 	if d == nil {
@@ -84,7 +117,8 @@ func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event strin
 }
 
 // RaidReminder posts the day-before reminder through the guild's webhook and returns the
-// reference to withdraw it by. False with no error means no channel, or it is switched off.
+// reference to withdraw it by. False with no error means no channel, or it is switched off;
+// a reminder that did not land returns a *NotSentError, so the job retries it.
 func (d *GuildDeliverer) RaidReminder(ctx context.Context, guildID int64, e RaidPosted) (ReminderRef, bool, error) {
 	if d == nil {
 		return ReminderRef{}, false, nil
@@ -135,14 +169,16 @@ func (d *GuildDeliverer) openURL(ctx context.Context, guildID int64) (string, bo
 	return url, true, nil
 }
 
-// deliver is Deliver that also says whether the post reached the channel.
+// deliver is Deliver that also says whether the post reached the channel; a post that did
+// not land is false with no error (quietly).
 func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event string, embed Embed) (bool, error) {
-	return d.deliverWith(ctx, guildID, event, func(ctx context.Context, url string) error {
+	return quietly(d.deliverWith(ctx, guildID, event, func(ctx context.Context, url string) error {
 		return d.Poster.Post(ctx, url, embed)
-	})
+	}))
 }
 
-// deliverWith sends through send once the channel is found, then applies the five-failure rule.
+// deliverWith sends through send once the channel is found, then applies the five-failure
+// rule. A send that did not land returns a *NotSentError.
 func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event string, send func(ctx context.Context, url string) error) (bool, error) {
 	url, found, err := d.openURL(ctx, guildID)
 	if err != nil || !found {
@@ -154,7 +190,7 @@ func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event s
 	if postErr != nil && ctx.Err() != nil {
 		// The request's shared budget ended the post; that says nothing about the channel.
 		d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "raid_post_skipped")
-		return false, nil
+		return false, &NotSentError{Err: postErr}
 	}
 	if err := d.record(ctx, guildID, event, postErr); err != nil {
 		if postErr == nil {
@@ -165,7 +201,10 @@ func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event s
 		}
 		return false, err
 	}
-	return postErr == nil, nil
+	if postErr != nil {
+		return false, &NotSentError{Err: postErr}
+	}
+	return true, nil
 }
 
 // record applies the five-failure rule to the guild's channel on a context that outlives

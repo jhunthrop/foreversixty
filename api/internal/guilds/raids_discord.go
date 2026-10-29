@@ -55,30 +55,47 @@ func decodeOptionalJSON(w http.ResponseWriter, r *http.Request, v any) error {
 
 // rememberDiscordDefaults stores the two boxes as the guild's remembered defaults when the
 // save carried either, on the webhook channel and on the bot's install, so whichever posts
-// reads them back. A box the save left out keeps the guild's current default. A failure is
-// logged: the raid itself was saved.
+// reads them back. A box the save left out keeps that destination's own current default. A
+// failure is logged: the raid itself was saved.
 func (s *Service) rememberDiscordDefaults(ctx context.Context, guildID int64, post, remind *bool) {
 	if post == nil && remind == nil {
 		return
 	}
-	current, err := s.raidDiscord(ctx, guildID)
-	if err != nil {
-		s.logDiscordDefaults(guildID, "read", err)
-		return
-	}
-	p, r := current.PostDefault, current.RemindDefault
-	if post != nil {
-		p = *post
-	}
-	if remind != nil {
-		r = *remind
-	}
 	if s.discordOn() {
-		s.logDiscordDefaults(guildID, "webhook", s.Discord.SetGuildDiscordDefaults(ctx, guildID, p, r))
+		s.rememberOnWebhook(ctx, guildID, post, remind)
 	}
 	if s.botOn() {
-		s.logDiscordDefaults(guildID, "bot", s.Bot.SetDiscordDefaults(ctx, guildID, p, r))
+		s.rememberOnInstall(ctx, guildID, post, remind)
 	}
+}
+
+func (s *Service) rememberOnWebhook(ctx context.Context, guildID int64, post, remind *bool) {
+	w, connected, err := s.Discord.GuildChannel(ctx, guildID)
+	if err != nil || !connected {
+		// No channel saved has nothing to remember the boxes on.
+		s.logDiscordDefaults(guildID, "webhook", err)
+		return
+	}
+	p, r := boxOr(post, w.PostDefault), boxOr(remind, w.RemindDefault)
+	s.logDiscordDefaults(guildID, "webhook", s.Discord.SetGuildDiscordDefaults(ctx, guildID, p, r))
+}
+
+func (s *Service) rememberOnInstall(ctx context.Context, guildID int64, post, remind *bool) {
+	d, err := s.Bot.Destination(ctx, guildID)
+	if err != nil {
+		s.logDiscordDefaults(guildID, "bot", err)
+		return
+	}
+	p, r := boxOr(post, d.PostDefault), boxOr(remind, d.RemindDefault)
+	s.logDiscordDefaults(guildID, "bot", s.Bot.SetDiscordDefaults(ctx, guildID, p, r))
+}
+
+// boxOr is the save's box, else the destination's current default.
+func boxOr(box *bool, current bool) bool {
+	if box != nil {
+		return *box
+	}
+	return current
 }
 
 func (s *Service) logDiscordDefaults(guildID int64, destination string, err error) {

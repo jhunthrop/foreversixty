@@ -74,21 +74,27 @@ func (s *Service) BotAvailable() bool {
 // not said it was removed, and the channel is not unusable.
 func (s *Service) ActiveInstall(ctx context.Context, guildID int64) (Install, bool, error) {
 	in, found, err := s.d.Store.InstallFor(ctx, guildID)
-	if err != nil || !found || in.ChannelID == nil || in.RemovedInDiscord || in.ChannelUnusable != nil {
+	if err != nil || !found || !in.canPost() {
 		return Install{}, false, err
 	}
 	return in, true, nil
 }
 
+// canPost is ActiveInstall's rule for an install that exists.
+func (in Install) canPost() bool {
+	return in.ChannelID != nil && !in.RemovedInDiscord && in.ChannelUnusable == nil
+}
+
 // Destination implements guilds.DiscordBot: whether the bot posts the guild's raids
-// (ActiveInstall's rule) and, when it does, the remembered boxes and the channel's name.
+// (ActiveInstall's rule), the install's remembered boxes whenever there is an install (so a
+// save that carries one box keeps the other), and the channel's name when active.
 func (s *Service) Destination(ctx context.Context, guildID int64) (guilds.BotDestination, error) {
-	in, active, err := s.ActiveInstall(ctx, guildID)
-	if err != nil || !active {
+	in, found, err := s.d.Store.InstallFor(ctx, guildID)
+	if err != nil || !found {
 		return guilds.BotDestination{}, err
 	}
-	dest := guilds.BotDestination{Active: true, PostDefault: in.PostDefault, RemindDefault: in.RemindDefault}
-	if in.ChannelName != nil {
+	dest := guilds.BotDestination{Active: in.canPost(), PostDefault: in.PostDefault, RemindDefault: in.RemindDefault}
+	if dest.Active && in.ChannelName != nil {
 		dest.ChannelName = *in.ChannelName
 	}
 	return dest, nil

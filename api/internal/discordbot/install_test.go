@@ -489,8 +489,12 @@ func TestDestinationPortCarriesTheDefaults(t *testing.T) {
 	if err := h.svc.SetDiscordDefaults(ctx, h.gid, true, true); err != nil {
 		t.Fatalf("no install: %v", err)
 	}
-	h.callback(h.gid, "code=c", h.officerActor())
 	if d, err := h.svc.Destination(ctx, h.gid); err != nil || d != (guilds.BotDestination{}) {
+		t.Fatalf("no install: %+v err %v", d, err)
+	}
+	h.callback(h.gid, "code=c", h.officerActor())
+	// Not active yet, but the install's boxes are read, so a one-box save keeps the other.
+	if d, err := h.svc.Destination(ctx, h.gid); err != nil || d != (guilds.BotDestination{PostDefault: true, RemindDefault: true}) {
 		t.Fatalf("no channel: %+v err %v", d, err)
 	}
 	if err := h.svc.d.Store.SetChannel(ctx, h.gid, "c1", "raid-signups"); err != nil {
@@ -516,7 +520,7 @@ func TestDestinationPortCarriesTheDefaults(t *testing.T) {
 	if err := h.svc.d.Store.MarkChannelUnusable(ctx, h.gid, unusable, "Unknown Channel"); err != nil {
 		t.Fatal(err)
 	}
-	if d, _ := h.svc.Destination(ctx, h.gid); d != (guilds.BotDestination{}) {
+	if d, _ := h.svc.Destination(ctx, h.gid); d != (guilds.BotDestination{PostDefault: true}) {
 		t.Fatalf("channel unusable: %+v", d)
 	}
 }

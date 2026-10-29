@@ -84,8 +84,8 @@ type DiscordBot interface {
 	// SettingsBot is the guild's install and the viewer's one-time install refusal.
 	SettingsBot(ctx context.Context, guildID, viewerID int64) (*SettingsBot, *BotRefusal, error)
 	// Destination is whether the bot posts the guild's raids (installed with a channel, not
-	// removed in Discord, the channel usable) and, when it does, its remembered boxes and
-	// channel name; the zero value when it does not.
+	// removed in Discord, the channel usable), the install's remembered boxes whenever there
+	// is an install, and the channel name when active; the zero value without an install.
 	Destination(ctx context.Context, guildID int64) (BotDestination, error)
 	// SetDiscordDefaults remembers the raid form's two boxes on the guild's install.
 	SetDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error

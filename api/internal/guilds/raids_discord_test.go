@@ -26,6 +26,25 @@ type recordingRaidEvents struct {
 	notPosted bool
 	// reportErr makes ReportReady fail outright.
 	reportErr error
+	// postErr and reminderErr make the job's SendRaidPost and RaidReminder refuse.
+	postErr, reminderErr error
+}
+
+// SendRaidPost is the job's post: recorded with the save-time posts.
+func (f *recordingRaidEvents) SendRaidPost(_ context.Context, _ int64, e notify.RaidPosted) (bool, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.postErr != nil {
+		return false, f.postErr
+	}
+	f.posted = append(f.posted, e)
+	return true, nil
+}
+
+func (f *recordingRaidEvents) refuse(post, reminder error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.postErr, f.reminderErr = post, reminder
 }
 
 func (f *recordingRaidEvents) ReportReady(_ context.Context, _ int64, e notify.ReportReady) (bool, error) {
@@ -53,6 +72,9 @@ func (f *recordingRaidEvents) RaidChanged(_ context.Context, _ int64, e notify.R
 func (f *recordingRaidEvents) RaidReminder(_ context.Context, _ int64, e notify.RaidPosted) (notify.ReminderRef, bool, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
+	if f.reminderErr != nil {
+		return notify.ReminderRef{}, false, f.reminderErr
+	}
 	f.reminders = append(f.reminders, e)
 	return notify.ReminderRef{Via: notify.ReminderViaWebhook, MessageID: "1"}, true, nil
 }
