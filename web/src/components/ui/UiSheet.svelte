@@ -116,7 +116,7 @@
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-rows">
     <h2 id="sheet-rows" class="heading-section">Settings rows</h2>
-    <div class="grid max-w-[1100px] gap-6 md:grid-cols-2">
+    <div class="grid gap-6 md:grid-cols-2">
       <div class="flex flex-col gap-2">
         {@render label('default, hover, focus-visible, active')}
         <div class="card-surface overflow-hidden" data-testid="sheet-rows">
