@@ -24,7 +24,7 @@ const ALLOWED = new Map<string, number>([
   ['components/Upload.svelte', 7], // file and folder names, /combatlog, the chosen file name
   ['components/AddonPasteBox.svelte', 1], // the addon export paste box
   ['components/ui/CopyLinkField.svelte', 1], // a link to copy
-  ['components/planner/SharePanel.svelte', 3], // the copy-as-text string, a field id, the share link
+  ['components/planner/SharePanel.svelte', 2], // a field id, the share link (the copy-as-text summary is a sentence, in Barlow)
   ['components/planner/ImportBox.svelte', 1], // the talent code paste box
   ['components/report/QueriesView.svelte', 2], // the SQL box and its result cells
   ['components/report/MechanicsMode.svelte', 2], // <code> the forever-logs command

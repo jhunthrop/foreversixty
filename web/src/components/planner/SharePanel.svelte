@@ -372,7 +372,7 @@
        panel. The computed string itself is visible (not just copied blind), same as the
        share link above. -->
   <div class="flex flex-wrap items-center gap-3">
-    <span class="text-muted font-mono text-[13px]" data-testid="planner-text-summary">{textSummary}</span>
+    <span class="text-muted text-[13px] tabular-nums" data-testid="planner-text-summary">{textSummary}</span>
     <button
       type="button"
       class={NEUTRAL_BUTTON}
