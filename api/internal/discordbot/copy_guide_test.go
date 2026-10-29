@@ -87,7 +87,11 @@ func checkIndexedRows(t *testing.T, g guideStrings) {
 
 // guideStringsOf is every string in g, arrays included, found by reflection so a new field is
 // covered without editing the test.
-func guideStringsOf(g guideStrings) []string {
+// guideStringsOf collects every string in the copy table, so a field added
+// later is covered without editing the test. A field of any other kind
+// fails the test rather than slipping past it.
+func guideStringsOf(t *testing.T, g guideStrings) []string {
+	t.Helper()
 	var out []string
 	v := reflect.ValueOf(g)
 	for i := 0; i < v.NumField(); i++ {
@@ -99,14 +103,20 @@ func guideStringsOf(g guideStrings) []string {
 			for j := 0; j < f.Len(); j++ {
 				out = append(out, f.Index(j).String())
 			}
+		default:
+			t.Fatalf("guideStrings.%s is a %s; guideStringsOf reads only strings and string arrays", v.Type().Field(i).Name, f.Kind())
 		}
 	}
 	return out
 }
 
+// minGuideStrings guards against the reflection reading an empty table:
+// §G.7 holds well over this many strings.
+const minGuideStrings = 40
+
 func TestGuideCopyHasNoBannedWords(t *testing.T) {
-	all := guideStringsOf(guideCopy)
-	if len(all) < 40 {
+	all := guideStringsOf(t, guideCopy)
+	if len(all) < minGuideStrings {
 		t.Fatalf("only %d strings found", len(all))
 	}
 	for _, s := range all {
