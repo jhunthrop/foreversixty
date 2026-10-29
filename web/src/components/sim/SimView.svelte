@@ -563,7 +563,7 @@
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
   <!-- The spine bar is the one current-character band on this page (the old chip said the
        same character a second time, 44px below it); it reserves CHIP_HEIGHT itself. -->
-  <CurrentCharacterBar spine currentDoor="sim" {restored} cardName={stripCardName} />
+  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} cardName={stripCardName} />
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->

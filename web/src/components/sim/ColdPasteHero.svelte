@@ -14,6 +14,7 @@
      `runPastedInput`): this component only ever reads `code` and calls `onrun` with it,
      exactly once, when it already knows that call will succeed. -->
 <script lang="ts">
+  import ActionLink from '../ui/ActionLink.svelte';
   import { button } from '../../lib/ui/button';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { validateColdPaste } from '../../lib/sim/cold-paste';
@@ -57,10 +58,12 @@
     bind:value={code}
     disabled={busy}
     data-testid="sim-cold-paste-input"></textarea>
-  <div class="flex flex-wrap items-center gap-3">
+  <!-- Run with its reason or error right beside it; the row is Run's 44px, so the line arriving or
+       leaving moves nothing. -->
+  <div class="flex items-center gap-3">
     <button
       type="button"
-      class="{runButton} {busy ? BUSY_CLASS : ''}"
+      class="{runButton} shrink-0 {busy ? BUSY_CLASS : ''}"
       disabled={!check.ok || busy}
       aria-busy={busy}
       onclick={run}
@@ -68,20 +71,19 @@
     >
       {landingCopy.pasteHeroRun}
     </button>
-    <p class="text-muted text-[12px]">
-      {landingCopy.pasteHeroHintLead}
-      <a href="/setup" class="text-nav underline" data-testid="sim-cold-paste-setup">
-        {landingCopy.pasteHeroHintLink}
-      </a>
-    </p>
-  </div>
-  <!-- One 20px line, always on the page, so the reason arriving or leaving moves nothing. -->
-  <div class="min-h-5 text-[13px] leading-5">
-    {#if error !== null}
-      <p role="alert" class="text-strong" data-testid="sim-cold-paste-error">{error}</p>
-    {:else if reason !== null}
-      <p class="text-muted" data-testid="sim-cold-paste-reason">{reason}</p>
-    {/if}
+    <div class="min-w-0 text-[13px] leading-5">
+      {#if error !== null}
+        <p role="alert" class="text-strong" data-testid="sim-cold-paste-error">{error}</p>
+      {:else if reason !== null}
+        <p class="text-muted" data-testid="sim-cold-paste-reason">{reason}</p>
+      {/if}
+    </div>
   </div>
   <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
+  <div class="flex flex-wrap items-center gap-x-2">
+    <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>
+    <ActionLink href="/setup" class="text-muted! hover:text-nav!" data-testid="sim-cold-paste-setup">
+      {landingCopy.pasteHeroHintLink}
+    </ActionLink>
+  </div>
 </section>

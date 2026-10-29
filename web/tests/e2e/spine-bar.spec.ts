@@ -94,11 +94,19 @@ test.describe('the spine bar opens every door on the current character', () => {
 // is exactly the one visitor shape this line greets, so hiding it made the line permanently
 // unreachable rather than merely not pre-reserving space for it.
 test('the bar shows the signed-out, no-pointer line with two links, on a fresh visit', async ({ page }) => {
-  await page.goto('/sim');
+  await page.goto('/sim/gear');
   await expect(page.getByTestId('current-character-bar-signed-out')).toBeVisible();
   // Scoped to the bar: the page's own panels may carry sign-in links of their own, so a
   // page-wide lookup could be a strict-mode violation.
   const bar = page.getByTestId('current-character-bar');
   await expect(bar.getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute('href', '/login');
   await expect(bar.getByRole('link', { name: 'Paste an export' })).toHaveAttribute('href', '/setup#paste');
+});
+
+test('the simulator leaves the bare sign-in line out; its account card carries the buttons', async ({
+  page,
+}) => {
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-signin')).toBeVisible();
+  await expect(page.getByTestId('current-character-bar-signed-out')).toHaveCount(0);
 });

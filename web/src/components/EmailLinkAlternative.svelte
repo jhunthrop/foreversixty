@@ -6,10 +6,27 @@
 <script lang="ts">
   import { emailLinkCopy } from '../lib/account/signin-copy';
 
-  let { testid = 'email-link-alternative' }: { testid?: string } = $props();
+  import ActionLink from './ui/ActionLink.svelte';
+
+  let {
+    testid = 'email-link-alternative',
+    action = false,
+  }: {
+    testid?: string;
+    /** True where the link is a standalone action (the sim's account card): an `ActionLink`
+     *  after the muted "or", rather than an underlined link in the sentence. */
+    action?: boolean;
+  } = $props();
 </script>
 
-<p class="text-muted text-[13px]" data-testid={testid}>
-  {emailLinkCopy.lead}
-  <a class="text-nav underline" href={emailLinkCopy.href}>{emailLinkCopy.link}</a>
-</p>
+{#if action}
+  <p class="text-muted flex items-center gap-1 text-[13px]" data-testid={testid}>
+    {emailLinkCopy.lead}
+    <ActionLink href={emailLinkCopy.href}>{emailLinkCopy.link}</ActionLink>
+  </p>
+{:else}
+  <p class="text-muted text-[13px]" data-testid={testid}>
+    {emailLinkCopy.lead}
+    <a class="text-nav underline" href={emailLinkCopy.href}>{emailLinkCopy.link}</a>
+  </p>
+{/if}

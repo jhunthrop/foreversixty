@@ -218,7 +218,7 @@
           {landingCopy.pasteAnExport}
         </button>
       </div>
-      <EmailLinkAlternative testid="sim-email-link" />
+      <EmailLinkAlternative testid="sim-email-link" action />
     </div>
 
     <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>

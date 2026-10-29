@@ -82,8 +82,8 @@ export const landingCopy = {
   /** Why Run is off while the box is empty. */
   pasteHeroRunReason: 'Paste an export to run.',
   /** The addon's copy mode (L8.5 ruling 5): `/fs copy`, then Ctrl+C; the old export command is gone. */
-  pasteHeroHintLead: 'In game, type /fs copy, press Ctrl+C, then paste it here, or',
-  pasteHeroHintLink: 'get set up',
+  pasteHeroHintLead: 'In game, type /fs copy, press Ctrl+C, then paste it here.',
+  pasteHeroHintLink: 'Get set up',
   /** Said once the paste decodes, ahead of Run -- the one reassurance a cold visitor needs
    *  before trusting a number this page produced with no account and no upload. */
   pasteHeroRunsLocally: 'Runs on your machine; nothing is uploaded until you choose to save.',

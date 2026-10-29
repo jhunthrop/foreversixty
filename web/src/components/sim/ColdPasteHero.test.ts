@@ -35,6 +35,17 @@ describe('ColdPasteHero', () => {
     expect(body).toContain(landingCopy.pasteHeroHintLink);
   });
 
+  it('puts the reason right after Run and the get-set-up link last', () => {
+    const { body } = render(ColdPasteHero, { props: { busy: false, onrun: () => {} } });
+    const run = body.indexOf('data-testid="sim-cold-paste-run"');
+    const reason = body.indexOf(landingCopy.pasteHeroRunReason);
+    expect(run).toBeLessThan(reason);
+    expect(reason).toBeLessThan(body.indexOf(landingCopy.pasteHeroRunsLocally));
+    expect(body.indexOf('data-testid="sim-cold-paste-setup"')).toBeGreaterThan(
+      body.indexOf(landingCopy.pasteHeroRunsLocally),
+    );
+  });
+
   it('disables the textarea and shows the busy look while a load/run is in flight', () => {
     const { body } = render(ColdPasteHero, { props: { busy: true, onrun: () => {} } });
     const input = /<textarea[^>]*data-testid="sim-cold-paste-input"[^>]*>/.exec(body);
