@@ -21,12 +21,15 @@ const (
 func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) {
 	status, _ := in.Option(optStatus)
 	state := strings.ToLower(strings.TrimSpace(status))
-	if !knownSignUpState(state) {
+	if state != "" && !knownSignUpState(state) {
 		return pressReply(pressCopy.Failure, false), nil
 	}
 	a, refused, ok := s.resolveAsker(ctx, in, false)
 	if !ok {
 		return refused, nil
+	}
+	if state == "" {
+		return s.signupCardReply(ctx, in, a), nil
 	}
 	a.State = state
 	a.CharacterKey, _ = in.Option(optCharacter)
@@ -52,6 +55,15 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 	}
 	a.RaidID = raidID
 	return s.runFlow(ctx, in, a), nil
+}
+
+// signupCardReply is a /signup with no status: the card, or the failure sentence on an error.
+func (s *Service) signupCardReply(ctx context.Context, in Interaction, a signupAsk) Reply {
+	rep, err := s.signupStart(ctx, in, a)
+	if err != nil {
+		return s.saveFailed(in, false, err)
+	}
+	return rep
 }
 
 // memberGate answers an account with no verified character in the guild with the member

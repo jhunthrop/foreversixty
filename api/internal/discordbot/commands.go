@@ -48,7 +48,7 @@ func Commands() []Command {
 	return []Command{
 		{Name: "raid", Description: "Your guild's next raid. Sign up from the answer.", Released: true},
 		{Name: "signup", Description: "Sign up for a raid without the post.", Released: true, Options: []CommandOption{
-			stringOption("status", "In, Late, Bench or Out.", true, false, statusChoices),
+			stringOption("status", descSignupStatus, false, false, statusChoices),
 			stringOption("raid", descRaidOption, false, true, nil),
 			stringOption("character", "Which of your characters.", false, true, nil),
 		}},

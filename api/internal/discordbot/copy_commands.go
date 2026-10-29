@@ -31,5 +31,6 @@ var commandCopy = struct {
 const (
 	descRaidOption       = "Which raid. The next one if left out."
 	descReportRaidOption = "Which raid. The last one if left out."
+	descSignupStatus     = "In, Late, Bench or Out. Leave out to pick on a card."
 	descName             = "A character name. Yours if left out."
 )

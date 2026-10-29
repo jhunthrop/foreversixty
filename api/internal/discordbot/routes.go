@@ -40,7 +40,7 @@ func (s *Service) commandRoutes() map[string]Handler {
 // componentRoutes maps a custom id's prefix (the part before the first colon)
 // to its handler.
 func (s *Service) componentRoutes() map[string]Handler {
-	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: s.bisPress(), prefixChar: s.charPress()}
+	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: s.bisPress(), prefixChar: s.charPress(), prefixSignup: s.signupPress()}
 }
 
 // autocompleteRoutes maps a command's name to its suggester.
@@ -54,7 +54,7 @@ func (s *Service) autocompleteRoutes() map[string]Autocomplete {
 // updateComponents names the custom-id prefixes whose press edits the message
 // it sits on, so a slow one is deferred as type 6, not type 5.
 func updateComponents() map[string]bool {
-	return map[string]bool{pickIDPrefix: true, shareIDPrefix: true, prefixBis: true, prefixChar: true}
+	return map[string]bool{pickIDPrefix: true, shareIDPrefix: true, prefixBis: true, prefixChar: true, prefixSignup: true}
 }
 
 // customPrefix is the route key of a custom id.

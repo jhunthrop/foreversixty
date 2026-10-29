@@ -3,8 +3,10 @@ package discordbot
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // cmdRaid answers /raid: the guild's next raid as its post shows it, the description replaced
@@ -53,9 +55,8 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: raid moved: %w", err)
 	}
-	state := PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, movedFrom, now)
-	msg := PostMessage(postFor(facts, state, movedFrom), facts.RaidURL, facts.NightURL, now)
-	msg.Embeds[0].Description = ownStateSentence(next.Own, cands)
+	msg := PostMessage(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), facts.RaidURL, facts.NightURL, now)
+	msg.Embeds[0] = s.raidAnswerEmbed(ctx, facts, movedFrom, next.Own, cands)
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }
@@ -87,4 +88,17 @@ func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) s
 		template = pair[1]
 	}
 	return fill(template, "{Name}", name, "{Role}", roleWord(own.Role))
+}
+
+// postStateOf is the state the raid's post shows now.
+func (s *Service) postStateOf(facts guilds.RaidPostFacts, movedFrom *time.Time) notify.RaidPostState {
+	return PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, movedFrom, s.now())
+}
+
+// raidAnswerEmbed is the raid's post embed with its description replaced by the viewer's own
+// state: the /raid answer, and the embed of the /signup card.
+func (s *Service) raidAnswerEmbed(_ context.Context, facts guilds.RaidPostFacts, movedFrom *time.Time, own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) notify.Embed {
+	embed := notify.RaidPostEmbed(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), s.now())
+	embed.Description = ownStateSentence(own, cands)
+	return embed
 }
