@@ -198,12 +198,12 @@ test.describe('the bar tag', () => {
 test.describe('the bar widths', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop bar only');
 
-  test('1024 to 1149 the tag leaves the bar; from 1150 it fits with no overflow', async ({ page }) => {
+  test('the tag stays in the bar at every desktop width, with no overflow', async ({ page }) => {
     await signIn(page, FREE_ME);
     for (const [width, shown] of [
-      [1024, false],
-      [1100, false],
-      [1149, false],
+      [1024, true],
+      [1100, true],
+      [1149, true],
       [1150, true],
       [1280, true],
       [2000, true],

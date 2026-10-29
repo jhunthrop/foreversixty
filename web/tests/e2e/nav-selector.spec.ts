@@ -147,7 +147,7 @@ test.describe('the bar at every width', () => {
           .locator('a.site-door')
           .evaluateAll((links) =>
             // One row: every shown door (the Premium tag too, 40 px against the doors' 44) shares
-            // a vertical centre; the tag is not drawn from 1024 to 1149.
+            // a vertical centre.
             links
               .map((link) => link.getBoundingClientRect())
               .filter((box) => box.height > 0)

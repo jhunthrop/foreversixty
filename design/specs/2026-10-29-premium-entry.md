@@ -23,7 +23,7 @@ Mocks: `design/mocks/2026-10-29-premium-entry/`. The generator `gen_premium_entr
 
 | Viewer | Question | Answer with no scroll |
 |---|---|---|
-| Signed out or free, 1150 to 2000 | “What do I get if I pay, and is the free site complete?” | The `Premium` tag at the right end of the doors. One click lands on `/premium`, whose band says `Everything a player needs is free, and the free list never shrinks.` |
+| Signed out or free, 1024 to 2000 | “What do I get if I pay, and is the free site complete?” | The `Premium` tag at the right end of the doors. One click lands on `/premium`, whose band says `Everything a player needs is free, and the free list never shrinks.` |
 | Free, 360 | Same | The Menu sheet's last row is the `Premium` tag. The account sheet's `Plan` row reads `Free` with `See plans`. |
 | Free, on a report, the sim or guild billing | “What would Premium do for this?” | The link beside the feature opens `/premium` with that feature's line highlighted at one third of the viewport. |
 | Premium from any source | Nothing to ask | No tag, no `See plans`, no contextual link. The plan row shows the plan as today. |
@@ -38,7 +38,7 @@ Mocks: `design/mocks/2026-10-29-premium-entry/`. The generator `gen_premium_entr
 6. The words are `Premium`, `See plans` and `Premium plan`. Never `Go Premium`, `Unlock`, `Pro`, `Limited time` or an exclamation mark. No lock icon, no banner, no modal.
 7. Free stays free. Nothing that is free today gains a Premium mention.
 
-## 3. The nav tag (desktop, from 1150)
+## 3. The nav tag (desktop, from 1024)
 
 Board: `renders/premium-entry-header-1440.png`, `premium-entry-header-2000.png`.
 
@@ -61,7 +61,7 @@ Board: `renders/premium-entry-header-1440.png`, `premium-entry-header-2000.png`.
 
 Keyboard: one Tab stop after `Get set up`, before the search button. Enter follows the link. The door-panel wiring ignores it (`data-door="premium"` has no toggle and no panel).
 
-**Width.** From 1024 to 1149 the tag is `display: none` in the bar and moves into the menu: the account control's panel, whose `Plan` row carries `See plans` for a free account (§6); a signed-out visitor has the footer's `Premium` link. From 1150 the tag is in the bar. The breakpoint is written once, in `Header.astro`'s style. Measured on the build (signed in, `Lightningbolltz`, 2026-10-29): no overflow and no wrap at any width; at 1150 the doors end at 791 and the account control starts at 878. At 1024 the bar, without the tag, keeps 151 px of slack, so the tag (77 px plus the 13 px gap) would fit there too; the collapse is kept as the persona round asked.
+**Width.** The tag stays in the bar at every desktop width, from 1024 up (coordinator ruling, 2026-10-29, on the measurement). Measured on the build (signed in, `Lightningbolltz`): without the tag the 1024 bar keeps 151 px of slack and the tag needs 77 px plus the 13 px gap; with it there is no overflow and no wrap at any width. Below 1024 it is the Menu's last row (§5).
 
 ## 4. Hiding it for Premium accounts, with no layout shift
 
@@ -149,7 +149,7 @@ No other string changes.
 
 ## 11. Phone and desktop
 
-Never collapses: the tag from 1150 for a free or signed-out viewer; the Menu row; `See plans` on a free Plan row at every width. Collapses: from 1024 to 1149 the tag leaves the bar. Below 1024 it is the Menu's last row. At 2000 the tag sits inside the 1344 column with the doors, never at the window edge.
+Never collapses: the tag at every desktop width from 1024 for a free or signed-out viewer; the Menu row; `See plans` on a free Plan row at every width. Below 1024 it is the Menu's last row. At 2000 the tag sits inside the 1344 column with the doors, never at the window edge.
 
 ## 12. Acceptance (screenshots the implementer attaches)
 
@@ -159,8 +159,8 @@ Never collapses: the tag from 1150 for a free or signed-out viewer; the Menu row
 | A2 | 1440 | free, signed in: tag visible; account panel open showing `Plan` · `Free` · `See plans` |
 | A3 | 1440 | Premium (owner's grant account): no tag; account panel open with today's plan row |
 | A4 | 2000 | free: tag in the 1344 column |
-| A5 | 1150 | signed in as a 15-character name: no overflow, no wrap |
-| A6 | 1100 | tag absent from the bar |
+| A5 | 1024 | signed in as a 15-character name: the tag in the bar, no overflow, no wrap |
+| A6 | 1024 and 1100 | free and signed out: the tag in the bar after `Get set up`, no overflow |
 | A7 | 1440 | tag hover, focus-visible and current (`/premium`) |
 | A8 | 390 and 360 | free: Menu open with the `Premium` row last, no chevron; account sheet with `See plans` |
 | A9 | 390 | Premium: Menu with no `Premium` row |
@@ -188,7 +188,7 @@ Checklist:
 
 1. Signed-out visitors see the tag (Warcraft Logs shows `Subscribe` to everyone). The alternative is free accounts only.
 2. A guild officer whose guild pays but who holds no seat has no personal Premium, so the tag shows for them.
-3. From 1024 to 1149 the tag leaves the bar rather than squeezing the doors.
+3. The tag stays in the bar at every desktop width (ruled 2026-10-29 on the 1024 measurement: 151 px of slack against about 90 px needed); the persona round's 1024 to 1149 collapse is dropped.
 
 ## 14. Mocks
 

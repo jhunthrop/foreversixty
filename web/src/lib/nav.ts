@@ -4,7 +4,7 @@
 // this; Header.test.ts asserts against it directly, so a reordering shows up as a data-level
 // test failure rather than a markup diff.
 
-import communityLinks from '../data/links.json';
+import communityLinks from '../data/links.json' with { type: 'json' };
 
 /** The Guild panel's last row: the site's one header link to the community Discord. */
 export const DISCORD_ROW_LABEL = 'Forever Sixty Discord';

@@ -52,7 +52,7 @@ async function settle(page: Page): Promise<void> {
   await page.evaluate(() => document.fonts.ready);
 }
 
-for (const width of [1440, 2000, 390]) {
+for (const width of [1440, 2000, 1024, 390]) {
   for (const state of ['signed-out', 'free', 'premium'] as const) {
     test(`header ${state} ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
