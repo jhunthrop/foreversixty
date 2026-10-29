@@ -1,0 +1,240 @@
+package discordbot
+
+import (
+	"context"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"regexp"
+	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
+)
+
+// payloadDirEnv names the folder TestDumpGuidedPayloads writes into. Unset, the test skips, so
+// a normal run never writes files. The committed copies live in
+// design/mocks/2026-10-28-discord-guided-cards/payloads (see README there).
+const payloadDirEnv = "GUIDED_PAYLOADS_DIR"
+
+// boardClock is the instant every dumped card is drawn at (the boards' clock).
+var boardClock = time.Date(2026, time.December, 10, 22, 0, 0, 0, time.UTC)
+
+// signedUpOfForty is the roster size the reminder boards show: 33 of 40.
+const signedUpOfForty = 33
+
+// dumpFrame is one frame file: the board id it answers to, the message the handler produced
+// (as Discord is sent it), a message above it when the frame is a reply, and a modal when the
+// answer opens one.
+type dumpFrame struct {
+	ID      string          `json:"id"`
+	Title   string          `json:"title"`
+	Clock   time.Time       `json:"clock"`
+	Message json.RawMessage `json:"message,omitempty"`
+	Above   json.RawMessage `json:"above,omitempty"`
+	Modal   json.RawMessage `json:"modal,omitempty"`
+}
+
+type frameDumper struct {
+	t   *testing.T
+	dir string
+}
+
+func marshalled(t *testing.T, v any) json.RawMessage {
+	t.Helper()
+	raw, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raw
+}
+
+func (d frameDumper) write(f dumpFrame) {
+	d.t.Helper()
+	f.Clock = boardClock
+	raw, err := json.MarshalIndent(f, "", "  ")
+	if err != nil {
+		d.t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(d.dir, f.ID+".json"), append(raw, '\n'), 0o600); err != nil {
+		d.t.Fatal(err)
+	}
+}
+
+// stamped pins every embed timestamp of a drained post to the board clock, which the drainer
+// takes from the machine's clock.
+var stampPattern = regexp.MustCompile(`"timestamp":"[^"]+"`)
+
+func stamped(raw json.RawMessage) json.RawMessage {
+	return stampPattern.ReplaceAll(raw, []byte(`"timestamp":"`+boardClock.Format(time.RFC3339)+`"`))
+}
+
+func (d frameDumper) message(id, title string, m Message) {
+	d.t.Helper()
+	d.write(dumpFrame{ID: id, Title: title, Message: marshalled(d.t, m)})
+}
+
+func (d frameDumper) reply(id, title string, rep Reply) {
+	d.t.Helper()
+	if rep.Modal != nil {
+		d.write(dumpFrame{ID: id, Title: title, Modal: marshalled(d.t, rep.Modal)})
+		return
+	}
+	d.message(id, title, rep.Message)
+}
+
+// TestDumpGuidedPayloads writes the real handler answer of every guided-card and raid-post
+// board scenario to $GUIDED_PAYLOADS_DIR, one <frame>.json each, for the mock generator to draw
+// beside the designer's boards.
+func TestDumpGuidedPayloads(t *testing.T) {
+	dir := os.Getenv(payloadDirEnv)
+	if dir == "" {
+		t.Skip(payloadDirEnv + " is not set")
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	d := frameDumper{t: t, dir: dir}
+	dumpBisFrames(d)
+	dumpCharFrames(d)
+	dumpSignupFrames(d)
+	dumpOfficerFrames(d)
+	dumpPostFrames(d)
+}
+
+// hunterBeastMasteryBands is a one-slot band so a Show BiS answer exists for the board's spec.
+func hunterBeastMasteryBands() []map[string]any {
+	return []map[string]any{{"band": 60, "faction": "alliance", "slots": []map[string]any{
+		{"slot": "head", "item_id": 100, "item_name": "Pick head", "alternatives": []map[string]any{
+			{"item_id": 200, "item_name": "Worn head", "dps_delta": -9.2}}},
+	}}}
+}
+
+func dumpBisFrames(d frameDumper) {
+	t := d.t
+	w := newBisWorld(t)
+	w.svc.now = func() time.Time { return boardClock }
+	writeBis(t, w.lg.dir, "hunter-beast-mastery", hunterBeastMasteryBands())
+	stranger := "d-stranger"
+	press := func(user, id string, values ...string) Message { return w.pressBis(t, user, id, values...).Message }
+
+	d.message("bis-card-1-class", "not linked: the bare card", w.bisCardOf(t, stranger, nil))
+	d.message("bis-card-2-spec", "after the class pick", press(stranger, "gbis:1:c:::p1:", "hunter"))
+	ready := press(stranger, "gbis:1:s:hunter::p1:", "beast-mastery")
+	d.message("bis-card-3-range", "after the spec pick", ready)
+	d.message("bis-card-4-ready", "every pick made", ready)
+	d.message("bis-card-nudge", "Show BiS before a spec", press(stranger, "gbis:1:go:hunter::p1:"))
+
+	linkMain(w)
+	d.message("bis-card-main", "linked: picked from the main", w.bisCardOf(t, pressDiscord, nil))
+	// The board's changed card is the main's Beast Mastery card with Marksmanship at level 50.
+	press(pressDiscord, "gbis:1:s:hunter:beast-mastery:p1:", "marksmanship")
+	d.message("bis-card-main-changed", "linked, a pick changed",
+		press(pressDiscord, "gbis:1:r:hunter:marksmanship:p1:", "50"))
+	d.reply("bis-card-stale", "a press on a card of an older shape", w.card(t, stranger, "gbis:2:c:::p1:", "hunter"))
+	d.message("bis-result", "Show BiS: the card becomes the typed answer",
+		press(pressDiscord, "gbis:1:go:hunter:beast-mastery:p1:"))
+}
+
+func dumpCharFrames(d frameDumper) {
+	t := d.t
+	w := newLookupWorld(t)
+	w.svc.now = func() time.Time { return boardClock }
+	d.reply("char-card-unlinked", "/char, not linked: asks", w.command(t, "d-stranger", "char", nil))
+	linkTwoChars(w)
+	d.reply("char-card-own", "/char, linked: the main and the own-characters select", w.command(t, pressDiscord, "char", nil))
+	d.reply("char-card-modal", "Someone else: the name field", w.card(t, pressDiscord, charAskID))
+	d.reply("char-card-unknown", "a name that is nobody", w.modal(t, pressDiscord, charNameID, "Nobody"))
+}
+
+func dumpSignupFrames(d frameDumper) {
+	t := d.t
+	w := newPressWorld(t)
+	w.svc.now = func() time.Time { return boardClock }
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	w.addChar(t, w.gid, w.uid, "us/normal/duskstrider", "Duskstrider", true)
+	second := w.addRaid(t, w.gid, w.raidStart.Add(72*time.Hour))
+	w.exec(t, `update guild_raids set title = 'Molten Core', starts_at = $2 where id = $1`, second, boardClock.Add(120*time.Hour))
+	w.exec(t, `update guild_raids set starts_at = $2 where id = $1`, w.raidID, boardClock.Add(48*time.Hour))
+	card := w.bareSignup(t)
+	d.reply("signup-card", "/signup, two raids and two characters", card)
+	d.reply("signup-card-in", "a status press: In", w.signupCardPress(t, buttonsOf(card.Message)[0].CustomID))
+}
+
+func dumpOfficerFrames(d frameDumper) {
+	t := d.t
+	w := newOfficerWorld(t)
+	w.svc.now = func() time.Time { return boardClock }
+	w.addChar(t, w.gid, w.uid, "us/normal/zulmara", "Zulmara", true)
+	officerLowest(w)
+	raids := plannedRaids()
+	w.og.planned = raids
+	w.og.readiness = readinessFor(raids[0], 20)
+	w.og.raidReady = map[int64]guilds.ReadinessAnswer{4: readinessFailing(raids[1])}
+	last := onyxiaReport(true, true)
+	older := onyxiaReport(false, false)
+	older.Raid.ID, older.Raid.Title = 6, "Molten Core"
+	w.og.report = last
+	w.og.reports = map[int64]*guilds.ReportAnswer{7: last, 6: older}
+	w.og.done = []guilds.Raid{
+		{ID: 7, Title: last.Raid.Title, StartsAt: last.Raid.StartsAt},
+		{ID: 6, Title: "Molten Core", StartsAt: last.Raid.StartsAt.Add(-7 * 24 * time.Hour)},
+	}
+	d.reply("attendance-select", "/attendance, an officer: the lowest-attendance select", w.run(t, pressDiscord, "attendance"))
+	d.reply("attendance-modal", "Type a name: the name field", w.attendanceCard(t, attAskID))
+	d.reply("attendance-pick", "an officer's pick", w.attendanceCard(t, attPickID, "Thalwyn"))
+	d.reply("readiness-select", "/readiness: the Another raid select", w.run(t, pressDiscord, "readiness"))
+	d.reply("readiness-pick", "a raid picked", w.attendanceCard(t, rdyPickID, "4"))
+	d.reply("report-select", "/report: the Another night select", w.run(t, pressDiscord, "report"))
+	d.reply("report-pick", "a night picked", w.attendanceCard(t, repPickID, "6"))
+}
+
+// boardStart is the boards' raid: Thursday 10 December 2026, 8:00 pm in Chicago.
+var boardStart = time.Date(2026, time.December, 11, 2, 0, 0, 0, time.UTC)
+
+// boardRaid pins the raid the post worlds hold to the boards' night.
+func boardRaid(w *postWorld, counts notify.RaidCounts) {
+	w.facts.edit(w.raidID, func(f *guilds.RaidPostFacts) {
+		f.Post.StartsAt, f.Post.Timezone, f.Post.Counts = boardStart, "America/Chicago", counts
+		f.EndsAt = boardStart.Add(3 * time.Hour)
+	})
+}
+
+// signedCounts is the roster the reminder boards show: 33 of 40.
+func signedCounts() notify.RaidCounts {
+	return notify.RaidCounts{In: signedUpOfForty, DPS: signedUpOfForty}
+}
+
+// dumpPostFrames drives the real drainer through the first post, the reminder as an edit, the
+// reminder as a reply, and the webhook reminder.
+func dumpPostFrames(d frameDumper) {
+	t := d.t
+	w := newPostWorld(t)
+	boardRaid(w, notify.RaidCounts{})
+	w.postedOnce(t)
+	d.write(dumpFrame{ID: "post-scheduled", Title: "posted on scheduling: nobody yet", Message: stamped(marshalled(t, w.callsOf("CreateMessage")[0].Message))})
+
+	boardRaid(w, signedCounts())
+	w.rest.Latest = "m1"
+	w.remindDue(t)
+	edits := w.callsOf("EditMessage")
+	d.write(dumpFrame{ID: "post-tomorrow", Title: "the reminder as an edit of the post", Message: stamped(marshalled(t, edits[len(edits)-1].Message))})
+
+	r := newPostWorld(t)
+	boardRaid(r, signedCounts())
+	r.postedOnce(t)
+	r.rest.Latest, r.rest.ReplyID = "other", "r1"
+	r.remindDue(t)
+	redits := r.callsOf("EditMessage")
+	d.write(dumpFrame{ID: "post-reminder", Title: "the reminder as a reply under the post",
+		Above: stamped(marshalled(t, redits[len(redits)-1].Message)), Message: marshalled(t, r.replies()[0].Message)})
+
+	posted := r.facts.by[r.raidID].Post.RaidPosted
+	hook := webhookOf(t, r.st.Pool, r.gid, r.uid, r.poster) // binding the bot dropped the webhook; testStore also resets w
+	if _, sent, err := hook.RaidReminder(context.Background(), r.gid, posted); err != nil || !sent {
+		t.Fatalf("webhook reminder = %v, %v", sent, err)
+	}
+	contents := r.poster.Contents()
+	d.message("post-reminder-webhook", "the reminder through a webhook", Message{Content: contents[len(contents)-1].Content})
+}
