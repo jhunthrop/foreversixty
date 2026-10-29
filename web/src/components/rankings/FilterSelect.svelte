@@ -60,9 +60,9 @@
   <span class="relative block has-[select:disabled]:opacity-50">
     <select
       {id}
-      class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover {compact
+      class="border-line-card text-strong rounded-control hover:border-gold/30 focus-visible:outline-gold bg-white/[.045] {compact
         ? 'h-11 md:h-8'
-        : 'h-11'} w-full min-w-0 cursor-pointer appearance-none truncate border pr-8 pl-3 text-[13px] transition-colors duration-[120ms] disabled:cursor-not-allowed"
+        : 'h-11'} w-full min-w-0 cursor-pointer appearance-none truncate border pr-10 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed"
       {value}
       {disabled}
       aria-busy={busy ? 'true' : undefined}
