@@ -29,7 +29,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
   <div class="persona">
     <ClassCrest slug={view.classSlug} size={44} />
     <div>
-      <p class="persona-title heading-face">{view.title}</p>
+      <p class="persona-title heading-name">{view.title}</p>
       <p class="persona-context">{view.context}</p>
     </div>
   </div>
@@ -50,7 +50,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
             onerror={HIDE_ON_ERROR}
           />
         )}
-        <p class="fix-title heading-face" data-testid="coach-sample-fix-title">
+        <p class="fix-title heading-name" data-testid="coach-sample-fix-title">
           {view.fixFirst.title}
         </p>
       </div>
@@ -150,7 +150,6 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
     font-size: 18px;
     line-height: 22px;
     color: var(--color-strong);
-    text-transform: uppercase;
   }
   .persona-context {
     margin: 0;

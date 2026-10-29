@@ -99,7 +99,7 @@
     </a>
   {:else if saveOpen}
     <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.saveTitleLabel}</span>
+      <span class="quiet-label">{simCopy.saveTitleLabel}</span>
       <input
         type="text"
         bind:value={saveTitle}

@@ -64,16 +64,16 @@
             >
           </span>
           <span
-            class="{delta.rising ? 'text-kill' : 'text-muted'} text-right font-mono text-[13px] md:order-last"
+            class="{delta.rising ? 'text-kill' : 'text-muted'} numeric text-right text-[13px] md:order-last"
             >{delta.text}</span
           >
           <span class="text-muted col-span-2 pl-7 text-[13px] whitespace-nowrap md:col-span-1 md:pl-0"
             >{onBoss(move.encounter)}<span class="md:hidden">{SEP}</span><span
-              class="text-text font-mono text-[14px] md:hidden"
+              class="text-text numeric text-[14px] md:hidden"
               >{moveFigures(move.metric, move.before, move.after)}</span
             ></span
           >
-          <span class="text-text hidden font-mono text-[14px] whitespace-nowrap md:inline"
+          <span class="text-text numeric hidden text-[14px] whitespace-nowrap md:inline"
             >{moveFigures(move.metric, move.before, move.after)}</span
           >
         </li>

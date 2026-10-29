@@ -111,7 +111,7 @@
             {bulkCopy.notInSimulator}
           </span>
         {/if}
-        <span class="tabular text-muted ml-auto font-mono text-[12px]">{row.item.item_level}</span>
+        <span class="text-muted numeric ml-auto text-[12px]">{row.item.item_level}</span>
       </label>
       <button
         type="button"

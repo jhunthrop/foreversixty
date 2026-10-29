@@ -161,7 +161,7 @@
                   <span class="flex-1 font-semibold">{componentLabel(part.name)}</span>
                   {#if !part.excluded}
                     <span class="tabular text-muted text-[12px]">weight {Math.round(part.weight)}%</span>
-                    <span class="text-gold tabular w-10 text-right font-mono font-bold"
+                    <span class="text-gold numeric w-10 text-right font-bold"
                       >{Math.round(part.score ?? 0)}</span
                     >
                   {:else}

@@ -68,7 +68,7 @@
             {#if !pending}
               <!-- One inline box: a flex child would drop the unit's leading space ("$120a year"). -->
               <span class="ml-2" data-testid="checkout-plan-price"
-                ><span class="text-strong font-mono text-[20px] font-medium tabular-nums">{amount}</span><span
+                ><span class="text-strong numeric text-[20px] font-medium">{amount}</span><span
                   class="text-muted text-[14px]">{intervalUnit(interval)}</span
                 ></span
               >

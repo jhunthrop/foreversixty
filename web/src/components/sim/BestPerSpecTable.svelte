@@ -23,10 +23,10 @@
         data-testid={`sim-best-per-spec-${row.spec}`}
       >
         <span class="text-strong truncate font-semibold">{specDisplayName(row.spec)}</span>
-        <span class="tabular text-text text-right font-mono text-[13px]">
+        <span class="text-text numeric text-right text-[13px]">
           {formatAmount(Math.round(row.dps))} DPS
         </span>
-        <span class="tabular text-muted text-right font-mono text-[12px]">
+        <span class="text-muted numeric text-right text-[12px]">
           {formatDate(new Date(row.createdAt))}
         </span>
       </li>

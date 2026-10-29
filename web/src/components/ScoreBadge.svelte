@@ -31,7 +31,7 @@
 
 {#if score !== null}
   <span
-    class="tabular font-mono leading-none font-bold {SIZE[size]}"
+    class="numeric leading-none font-bold {SIZE[size]}"
     style={color === null ? undefined : `color: ${color}`}
     title={label ?? undefined}
     data-testid="score-badge">{score}</span

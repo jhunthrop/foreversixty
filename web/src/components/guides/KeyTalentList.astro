@@ -37,7 +37,7 @@ const { build, entries } = Astro.props;
                 )}
                 <span class="key-talent-name">{talent.name}</span>
                 {talent.rank !== undefined && talent.maxRank !== undefined && (
-                  <span class="key-talent-rank font-mono tabular">{`${talent.rank}/${talent.maxRank}`}</span>
+                  <span class="key-talent-rank numeric">{`${talent.rank}/${talent.maxRank}`}</span>
                 )}
               </span>
             ))}

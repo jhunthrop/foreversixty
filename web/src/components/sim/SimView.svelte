@@ -832,10 +832,8 @@
                every state -- same anchor, same classes, same test id and href, now visible
                only once a character has actually reached the engine. -->
           <div class="flex justify-end px-[18px] md:px-0">
-            <a
-              class="tabular text-muted font-mono text-[12px]"
-              href="/sim/specs"
-              data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
+            <a class="text-muted numeric text-[12px]" href="/sim/specs" data-testid="sim-engine-version"
+              >{engineLabel(ENGINE_VERSION)}</a
             >
           </div>
           {#if store.settings.preset === 'custom'}

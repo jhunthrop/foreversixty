@@ -29,7 +29,7 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
   <span class="label">{bisCopy.thisSetLabel}</span>
   {tank === undefined ? (
     <span class="this-set-figure-row">
-      <span class="font-mono tabular this-set-figure">{setDps.toFixed(1)}</span>
+      <span class="figure-stat this-set-figure">{setDps.toFixed(1)}</span>
       <span class="this-set-figure-caption">
         {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
       </span>
@@ -40,7 +40,7 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
         {tank.figures.map((figure) => (
           <span class="tank-figure" title={figure.title} data-testid={`bis-tank-figure-${figure.id}`}>
             <span class="tank-figure-label">{figure.label}</span>
-            <span class="font-mono tabular tank-figure-value">{figure.value}</span>
+            <span class="numeric tank-figure-value">{figure.value}</span>
           </span>
         ))}
       </span>

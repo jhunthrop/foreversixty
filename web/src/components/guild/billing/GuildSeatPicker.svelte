@@ -66,7 +66,7 @@
     </button>
   {:else}
     <label class="flex flex-col gap-1" for={selectId}>
-      <span id={`${selectId}-label`} class="label text-muted">{title}</span>
+      <span id={`${selectId}-label`} class="quiet-label">{title}</span>
       <span class="relative block">
         <select
           id={selectId}

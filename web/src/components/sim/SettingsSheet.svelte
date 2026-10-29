@@ -96,7 +96,7 @@
   <div class="grid grid-cols-2 gap-3 p-3 pt-0 md:grid-cols-4">
     <div class="flex min-w-0 flex-col gap-1">
       <label class="flex min-w-0 flex-col gap-1">
-        <span class="label text-muted">{simCopy.variation}</span>
+        <span class="quiet-label">{simCopy.variation}</span>
         <select
           class={control}
           {disabled}
@@ -116,7 +116,7 @@
 
     <div class="flex min-w-0 flex-col gap-1">
       <label class="flex min-w-0 flex-col gap-1">
-        <span class="label text-muted">{simCopy.targetLevel}</span>
+        <span class="quiet-label">{simCopy.targetLevel}</span>
         <select
           class={control}
           {disabled}
@@ -136,7 +136,7 @@
 
     <div class="flex min-w-0 flex-col gap-1">
       <label class="flex min-w-0 flex-col gap-1">
-        <span class="label text-muted">{simCopy.targetArmor}</span>
+        <span class="quiet-label">{simCopy.targetArmor}</span>
         <input
           type="number"
           min="0"
@@ -163,7 +163,7 @@
 
     <div class="flex min-w-0 flex-col gap-1">
       <label class="flex min-w-0 flex-col gap-1">
-        <span class="label text-muted">{simCopy.targetType}</span>
+        <span class="quiet-label">{simCopy.targetType}</span>
         <select
           class={control}
           {disabled}

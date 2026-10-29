@@ -159,7 +159,7 @@
                 {#if (source.bosses ?? []).length > 0}
                   <span class="text-muted text-[12px]">{bulkCopy.sourcesWholeRaid}</span>
                 {/if}
-                <span class="tabular text-muted font-mono text-[12px]">
+                <span class="text-muted numeric text-[12px]">
                   {triedCount(itemsOfSource(source), items, known)}
                 </span>
               </label>
@@ -181,7 +181,7 @@
                        (`loot.ts`'s `bossName`) -- the one thing both databases agree on,
                        without inventing a kind ("Chest") neither one states. -->
                   <span class="flex-1">{bossName(source, boss)}</span>
-                  <span class="tabular text-muted font-mono text-[12px]">
+                  <span class="text-muted numeric text-[12px]">
                     {triedCount(boss.items, items, known)}
                   </span>
                 </label>

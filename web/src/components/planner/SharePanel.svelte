@@ -342,7 +342,7 @@
 <section class="flex w-full flex-col gap-3" data-testid="share-panel">
   <div class="flex flex-wrap items-end gap-3">
     <label class="flex flex-col gap-1">
-      <span class="label text-muted">Title</span>
+      <span class="quiet-label">Title</span>
       <input
         type="text"
         maxlength={MAX_TITLE_LENGTH}

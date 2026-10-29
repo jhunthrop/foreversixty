@@ -121,7 +121,7 @@
         {#each facts as fact, index (index)}
           {#if index > 0}<span class="text-muted"
               ><span aria-hidden="true">{FACT_SEPARATOR}</span><span class="sr-only">,</span></span
-            >{/if}{#if fact.figure !== null}<span class="font-mono">{fact.figure}</span>{/if}{fact.rest}
+            >{/if}{#if fact.figure !== null}<span class="numeric">{fact.figure}</span>{/if}{fact.rest}
         {/each}
       </p>
     {/if}

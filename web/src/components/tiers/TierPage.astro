@@ -151,19 +151,19 @@ const stampTitle =
             ) : (
               <div class="tier-list" data-role={role}>
                 <div class="tier-heads" aria-hidden="true">
-                  <span class="label">{tiersCopy.headers.rank}</span>
-                  <span class="label"></span>
-                  <span class="label">{tiersCopy.headers.spec}</span>
-                  <span class="label">{tiersCopy.headers.bar[role]}</span>
-                  <span class="label tier-head-num">{tiersCopy.headers.number[role]}</span>
+                  <span class="quiet-label">{tiersCopy.headers.rank}</span>
+                  <span class="quiet-label"></span>
+                  <span class="quiet-label">{tiersCopy.headers.spec}</span>
+                  <span class="quiet-label">{tiersCopy.headers.bar[role]}</span>
+                  <span class="quiet-label tier-head-num">{tiersCopy.headers.number[role]}</span>
                   {role === 'tank' && (
                     <>
-                      <span class="label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
-                      <span class="label tier-head-num">{tiersCopy.headers.threat}</span>
+                      <span class="quiet-label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
+                      <span class="quiet-label tier-head-num">{tiersCopy.headers.threat}</span>
                     </>
                   )}
-                  <span class="label tier-head-num">{tiersCopy.headers.gap[role]}</span>
-                  <span class="label"></span>
+                  <span class="quiet-label tier-head-num">{tiersCopy.headers.gap[role]}</span>
+                  <span class="quiet-label"></span>
                 </div>
                 <ol class="tier-panel" data-testid="tier-list">
                   {roleHasTiers(role)
@@ -444,7 +444,8 @@ const stampTitle =
     background: color-mix(in srgb, var(--color-gold) 8%, transparent);
   }
   .tier-tab-count {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
     font-size: 11px;
     color: var(--color-muted);
   }
@@ -583,7 +584,8 @@ const stampTitle =
   .tier-count {
     grid-area: count;
     justify-self: end;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
     font-size: 11px;
     color: var(--color-muted);
   }

@@ -77,7 +77,7 @@
               />
               <span class="sr-only">{point.talent.name}</span>
             {/if}
-            <span class="tabular text-muted font-mono text-[11px] leading-[14px]">
+            <span class="text-muted numeric text-[11px] leading-[14px]">
               {point.level}
             </span>
           </li>
@@ -96,7 +96,7 @@
     <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
       <span>Point order</span>
       <span class="flex items-center gap-3">
-        <span class="tabular text-muted font-mono text-[12px]">{store.order.length}</span>
+        <span class="text-muted numeric text-[12px]">{store.order.length}</span>
         <span class="when-closed text-muted" aria-hidden="true">Show</span>
         <span class="when-open text-muted" aria-hidden="true">Hide</span>
       </span>
@@ -107,7 +107,7 @@
   {:else}
     <header class="flex items-center justify-between gap-3">
       <h2 class="section-title">Point order</h2>
-      <span class="tabular text-muted font-mono text-[13px]">{store.order.length}</span>
+      <span class="text-muted numeric text-[13px]">{store.order.length}</span>
     </header>
     {@render list()}
   {/if}

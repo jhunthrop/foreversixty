@@ -222,7 +222,7 @@
         <p class="text-muted">Drop <code class="text-text font-mono">WoWCombatLog.txt</code> here, or</p>
       {:else}
         <p class="text-text font-mono break-all">{file.name}</p>
-        <p class="text-muted tabular font-mono" data-testid="upload-size">
+        <p class="text-muted numeric" data-testid="upload-size">
           {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
         </p>
       {/if}
@@ -236,7 +236,7 @@
 
     {#if file !== null}
       <div class="flex flex-col gap-1">
-        <label class="label text-muted" for="upload-title">Title</label>
+        <label class="quiet-label" for="upload-title">Title</label>
         <input
           id="upload-title"
           class={FIELD}
@@ -250,7 +250,7 @@
       </div>
 
       <fieldset class="flex flex-col gap-2" disabled={locked}>
-        <legend class="label text-muted mb-2">Who can open it</legend>
+        <legend class="quiet-label mb-2">Who can open it</legend>
         <div class="flex flex-wrap gap-2">
           {#each VISIBILITIES as option (option.id)}
             <label
@@ -316,7 +316,7 @@
       >
         <div class="bg-gold h-full" style={`width: ${percent}%`}></div>
       </div>
-      <p class="text-muted tabular font-mono text-[13px]">
+      <p class="text-muted numeric text-[13px]">
         {phase === 'finishing' ? 'Finishing' : `${percent}%`}
       </p>
     </div>

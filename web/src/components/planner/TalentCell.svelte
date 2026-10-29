@@ -163,7 +163,7 @@
        stays free to hang outside the cell by its own -4px offset at every width, the same
        as it always has at lg. -->
   <span
-    class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] whitespace-nowrap ${CELL_PILL[state]}`}
+    class={`rounded-pill bg-bg numeric absolute -right-1 -bottom-1 border px-1 text-[11px] leading-[14px] whitespace-nowrap ${CELL_PILL[state]}`}
   >
     {rank}/{talent.max_rank}
   </span>
@@ -241,7 +241,7 @@
         class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
       >
         <span class="text-strong heading-name text-[14px]">{talent.name}</span>
-        <span class="tabular text-muted font-mono text-[12px]">
+        <span class="text-muted numeric text-[12px]">
           Rank {rank} of {talent.max_rank}
         </span>
         {#if rank > 0}

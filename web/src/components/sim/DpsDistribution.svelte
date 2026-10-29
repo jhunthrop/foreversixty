@@ -53,7 +53,7 @@
     {#each rows as [key, value] (key)}
       <div class="border-line-soft flex justify-between gap-3 border-b py-1 last:border-b-0">
         <dt class="text-muted text-[13px]">{key}</dt>
-        <dd class="tabular text-strong m-0 font-mono text-[13px]">{value}</dd>
+        <dd class="text-strong numeric m-0 text-[13px]">{value}</dd>
       </div>
     {/each}
   </dl>

@@ -402,11 +402,11 @@
             <li
               class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
-              <span class="tabular font-mono font-semibold">{build.talent_split}</span>
+              <span class="numeric font-semibold">{build.talent_split}</span>
               {#if seenBuildSpec(data.character.class, build) !== ''}<span class="text-muted text-[13px]"
                   >{seenBuildSpec(data.character.class, build)}</span
                 >{/if}
-              <span class="text-muted tabular font-mono text-[13px]"
+              <span class="text-muted numeric text-[13px]"
                 >first seen {formatDayMonthYear(new Date(build.first_seen))}</span
               >
             </li>

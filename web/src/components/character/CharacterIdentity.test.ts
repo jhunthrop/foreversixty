@@ -54,12 +54,13 @@ describe('CharacterIdentity', () => {
     });
     expect(md.body).toContain('<a');
     expect(md.body).toContain('href="/character/x"');
-    expect(md.body).not.toContain('heading-face');
+    expect(md.body).not.toContain('heading-name');
 
     const lg = render(CharacterIdentity, {
       props: { character: CHAR, size: 'lg', descriptor: 'none', href: '/character/x' },
     });
-    expect(lg.body).toContain('heading-face');
+    // heading-name, not heading-face: a character name keeps its own case (type pass 2026-10-29).
+    expect(lg.body).toContain('heading-name');
   });
 
   it('uses a caller-chosen portrait test id prefix, defaulting to "character"', () => {

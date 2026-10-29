@@ -33,7 +33,7 @@
   <div class="flex flex-wrap items-baseline justify-between gap-3">
     <h2 class="section-title">{simCopy.yourSims}</h2>
     <label class="flex items-center gap-2 text-[13px]">
-      <span class="label text-muted">{simCopy.historyFilter}</span>
+      <span class="quiet-label">{simCopy.historyFilter}</span>
       <select
         class="border-line-warm rounded-control bg-raised text-text min-h-11 border px-2 text-[13px] md:min-h-9"
         value={kind}
@@ -83,7 +83,7 @@
             >
               {headlineOf(row)}
             </span>
-            <span class="tabular text-muted text-left font-mono text-[12px] md:text-right md:text-[13px]">
+            <span class="text-muted numeric text-left text-[12px] md:text-right md:text-[13px]">
               {formatDate(new Date(row.created_at))}
             </span>
           </a>

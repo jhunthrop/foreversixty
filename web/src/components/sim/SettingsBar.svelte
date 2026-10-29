@@ -102,7 +102,7 @@
   <div class="flex flex-wrap items-end gap-4 md:gap-5">
     <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.fightStyle}</span>
+        <span class="quiet-label">{simCopy.fightStyle}</span>
         <select
           class={control}
           {disabled}
@@ -136,7 +136,7 @@
 
     <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.fightLength}</span>
+        <span class="quiet-label">{simCopy.fightLength}</span>
         <select
           class={control}
           {disabled}
@@ -165,14 +165,14 @@
              below carries so existing tests and e2e still find the control regardless of
              which branch renders. -->
         <div class="flex flex-col gap-1">
-          <span class="label text-muted">{simCopy.targets}</span>
+          <span class="quiet-label">{simCopy.targets}</span>
           <span class={`${control} flex items-center`} data-testid="sim-targets">
             {toolFixCopy.targetsTimeline(targetsInfo.first, targetsInfo.max)}
           </span>
         </div>
       {:else}
         <label class="flex flex-col gap-1">
-          <span class="label text-muted">{simCopy.targets}</span>
+          <span class="quiet-label">{simCopy.targets}</span>
           <select
             class={control}
             {disabled}
@@ -193,7 +193,7 @@
 
     <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.buffs}</span>
+        <span class="quiet-label">{simCopy.buffs}</span>
         <select
           class={control}
           {disabled}
@@ -244,7 +244,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.rotation}</span>
+      <span class="quiet-label">{simCopy.rotation}</span>
       {#if simulatedSpec}
         <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
           <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>

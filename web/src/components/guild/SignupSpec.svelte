@@ -98,7 +98,7 @@
       <span>{chosenSpec?.name ?? ''}{SEP}{raidCopy.spec.change}</span>
     </button>
   {:else}
-    <label for={id} class="label text-muted" data-testid={`${id}-label`}>{raidCopy.spec.title}</label>
+    <label for={id} class="quiet-label" data-testid={`${id}-label`}>{raidCopy.spec.title}</label>
   {/if}
   <div id={panelId} hidden={collapsed}>
     <div class="mt-1 flex items-center gap-2">

@@ -348,7 +348,7 @@
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
-    <span class="text-muted tabular font-mono text-[12px]"
+    <span class="text-muted numeric text-[12px]"
       ><span class="mr-1 inline-block w-3 transition-transform" class:rotate-90={open} aria-hidden="true"
         >›</span
       >{rank}</span
@@ -358,7 +358,7 @@
       <!-- A parse is for the whole fight: under a window or a table filter the figure beside
          it is a subtotal, and the whole-fight percentile would be read as its rank. -->
       <span
-        class="tabular font-mono text-[12px]"
+        class="numeric text-[12px]"
         class:text-muted={percentile === null || parseWithheld}
         style={percentile === null || parseWithheld
           ? undefined
@@ -375,7 +375,7 @@
             parseFallback === 'filter'
               ? ''
               : parseFallback}</span
-          >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
+          >{:else}<span class="quiet-label mr-1 md:hidden">Parse</span>{Math.round(
             percentile.percentile,
           )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
       </span>
@@ -408,14 +408,14 @@
       {/if}
     </span>
 
-    <span class="text-muted tabular hidden text-right font-mono text-[12px] md:inline" data-testid="row-share"
+    <span class="text-muted numeric hidden text-right text-[12px] md:inline" data-testid="row-share"
       >{share.toFixed(1)}%</span
     >
     <span class="row-start-2 md:col-span-1 md:row-auto {showParse ? 'col-span-4' : 'col-span-3'}">
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 
-    <span class="tabular flex flex-col text-right font-mono leading-tight" data-testid="row-amount">
+    <span class="numeric flex flex-col text-right leading-tight" data-testid="row-amount">
       <span title={exact === null && !actor.measured ? undefined : 'Measured from the fight’s events'}
         >{amountMark}{formatAmountLike(shownEffective, columnMax)}</span
       >
@@ -435,19 +435,19 @@
          It sits here in source order rather than after the two cells it replaces because a
          grid places its row-3 items in source order, and it is display:none above `md`, so
          where it sits costs the desktop grid nothing. -->
-    <span class="text-muted label col-span-2 row-start-3 md:hidden" data-testid="phone-labels">
-      <span class="tabular font-mono">{activeText}</span> active
+    <span class="quiet-label col-span-2 row-start-3 md:hidden" data-testid="phone-labels">
+      <span class="numeric">{activeText}</span> active
     </span>
     <!-- One element, both layouts: a column under ActorTable's "Per sec" heading above
          `md`, and the same figure saying what it is once that heading is gone. -->
     <span
-      class="text-muted tabular col-span-2 row-start-3 text-right font-mono text-[13px] md:col-span-1 md:row-auto"
+      class="text-muted numeric col-span-2 row-start-3 text-right text-[13px] md:col-span-1 md:row-auto"
       data-testid="row-per-second"
     >
       <span class="flex flex-col leading-tight">
         <span title={actor.time_ms === undefined ? undefined : 'Per second of the pulls this player was in'}
           >{formatPerSecond(shownEffective, actor.time_ms ?? durationMs)}<span
-            class="label font-body ml-1.5 md:hidden">per sec</span
+            class="quiet-label ml-1.5 md:hidden">per sec</span
           ></span
         >
         {#if actor.active_ms > 0 && actor.active_ms < durationMs}
@@ -460,10 +460,7 @@
         {/if}
       </span>
     </span>
-    <span
-      class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-      data-testid="row-active"
-    >
+    <span class="text-muted numeric hidden text-right text-[13px] md:inline" data-testid="row-active">
       {activeText}
     </span>
   </button>
@@ -521,7 +518,7 @@
                   class="inline-block h-[8px] w-[8px] rounded-[2px]"
                   style={`background: ${part.token}`}
                   aria-hidden="true"
-                ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
+                ></span>{part.name} <span class="numeric">{part.pct.toFixed(0)}%</span></span
               >{/each}</span
           >{/if}
       </p>
@@ -538,40 +535,29 @@
           aria-labelledby="row-abilities-caption-{actor.guid}"
         >
           <thead>
-            <tr class="label text-muted border-line-soft border-b">
+            <tr class="quiet-label border-line-soft border-b">
               <th
                 scope="col"
-                class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)]"
+                class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1 pr-3 pl-2 text-left shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)]"
                 >Ability</th
               >
-              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
-                >Amount</th
+              <th scope="col" class="py-1 pr-3 text-right" title="Effective amount in this window">Amount</th>
+              <th scope="col" class="py-1 pr-3 text-right" title="Share of this row's total">Share</th>
+              <th scope="col" class="w-[16%] min-w-[72px] py-1 pr-3" aria-label="Share, drawn"></th>
+              <th scope="col" class="py-1 pr-3 text-right" title="Hits and ticks that landed">Hits</th>
+              <th scope="col" class="py-1 pr-3 text-right" title="Share of the hits that were critical"
+                >Crit</th
               >
-              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
-                >Share</th
-              >
-              <th scope="col" class="w-[16%] min-w-[72px] py-1 pr-3 font-normal" aria-label="Share, drawn"
-              ></th>
-              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
-                >Hits</th
-              >
+              <th scope="col" class="py-1 pr-3 text-right" title="Amount per hit">Avg</th>
+              <th scope="col" class="py-1 pr-3 text-right" title="Largest single hit">Max</th>
               <th
                 scope="col"
-                class="py-1 pr-3 text-right font-normal"
-                title="Share of the hits that were critical">Crit</th
-              >
-              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
-              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
-              <th
-                scope="col"
-                class="min-w-[160px] py-1 text-left font-normal md:min-w-[220px] md:text-right"
+                class="min-w-[160px] py-1 text-left md:min-w-[220px] md:text-right"
                 title="A heal: how much of it was over. Damage: what did not land, by kind"
                 >{healing ? 'Over' : 'Not landed'}</th
               >
               {#if onChart !== undefined && !phone}
-                <th scope="col" class="py-1 pl-3 text-right font-normal"
-                  ><span class="sr-only">On the chart</span></th
-                >
+                <th scope="col" class="py-1 pl-3 text-right"><span class="sr-only">On the chart</span></th>
               {/if}
             </tr>
           </thead>
@@ -588,7 +574,7 @@
                       title="Cast by this pet or guardian, counted on its owner's row">· {ability.via}</span
                     >{/if}{#if sameName.has(ability.name)}
                     <span
-                      class="text-muted ml-1 font-mono text-[11px]"
+                      class="text-muted numeric ml-1 text-[11px]"
                       title={ability.spell_id === 0
                         ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
                         : `Two spells share this name; this is spell id ${ability.spell_id}`}
@@ -602,13 +588,13 @@
                     <span class="block">{@render chartButton(ability)}</span>{/if}</td
                 >
                 <td
-                  class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  class="numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   title={detailTitle}
                   aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
                 >
                   {detailMark}{formatAmount(ability.effective)}
                 </td>
-                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
                 >
                 <td class="py-1.5 pr-3">
@@ -621,21 +607,20 @@
                     >
                   {/if}
                 </td>
-                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                  >{detailMark}{hits}</td
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap">{detailMark}{hits}</td
                 >
-                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   >{#if hits > 0}{formatPercent((ability.crits / hits) * 100)}{/if}</td
                 >
-                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   >{#if hits > 0 && ability.effective > 0}{formatAmount(ability.effective / hits)}{/if}</td
                 >
-                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
                 >
                 <!-- Wraps: a long list of what did not land must not push the table past its box. -->
                 <td
-                  class="text-muted tabular max-w-[200px] py-1.5 text-left font-mono text-[12px] break-words md:max-w-none md:min-w-[220px] md:text-right md:whitespace-nowrap"
+                  class="text-muted numeric max-w-[200px] py-1.5 text-left text-[12px] break-words md:max-w-none md:min-w-[220px] md:text-right md:whitespace-nowrap"
                   >{abilityNotes(ability).join(' · ')}</td
                 >
                 {#if onChart !== undefined && !phone}
@@ -654,16 +639,14 @@
       >
         <caption class="label text-muted pb-1 text-left">{pairsLabel}</caption>
         <thead>
-          <tr class="label text-muted border-line-soft border-b">
-            <th scope="col" class="py-1 pr-3 text-left font-normal">Name</th>
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
-              >Amount</th
-            >
-            <th scope="col" class="py-1 text-right font-normal" title="Share of this row's total">Share</th>
+          <tr class="quiet-label border-line-soft border-b">
+            <th scope="col" class="py-1 pr-3 text-left">Name</th>
+            <th scope="col" class="py-1 pr-3 text-right" title="Effective amount in this window">Amount</th>
+            <th scope="col" class="py-1 text-right" title="Share of this row's total">Share</th>
             {#if targetsOverheal}
               <th
                 scope="col"
-                class="py-1 pl-3 text-right font-normal"
+                class="py-1 pl-3 text-right"
                 title="Healing this unit did not need: cast at full health, or more than the hole">Over</th
               >
             {/if}
@@ -674,21 +657,21 @@
             <tr class="border-line-soft border-b">
               <td class="py-1.5 pr-3"
                 >{target.name}{#if target.count > 1}
-                  <span class="text-muted tabular font-mono text-[12px]">×{target.count}</span>{/if}</td
+                  <span class="text-muted numeric text-[12px]">×{target.count}</span>{/if}</td
               >
               <td
-                class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                class="numeric py-1.5 pr-3 text-right whitespace-nowrap"
                 title={detailTitle}
                 aria-label={approximateAriaLabel(approximate, formatAmount(target.total))}
               >
                 {detailMark}{formatAmount(target.total)}
               </td>
-              <td class="text-muted tabular py-1.5 text-right font-mono whitespace-nowrap"
+              <td class="text-muted numeric py-1.5 text-right whitespace-nowrap"
                 >{targetsTotal === 0 ? '' : formatPercent((target.total / targetsTotal) * 100)}</td
               >
               {#if targetsOverheal}
                 <td
-                  class="text-muted tabular py-1.5 pl-3 text-right font-mono whitespace-nowrap"
+                  class="text-muted numeric py-1.5 pl-3 text-right whitespace-nowrap"
                   data-testid="target-overheal"
                   >{target.overheal === undefined || target.overheal === 0
                     ? ''

@@ -110,7 +110,7 @@
         {homeUpgradesCopy.everySlotMatches(bandLabel)}
       </p>
     {:else}
-      <div class="upgrades-table-header" data-testid="home-upgrades-table">
+      <div class="upgrades-table-header quiet-label" data-testid="home-upgrades-table">
         <span class="upgrades-table-header-slot">{homeUpgradesCopy.slotHeader}</span>
         <span>{homeUpgradesCopy.youWearHeader}</span>
         <span></span>
@@ -171,10 +171,6 @@
     column-gap: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--color-line-soft, #222);
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--color-muted, #999);
   }
   .upgrades-table-header-gain {
     text-align: right;

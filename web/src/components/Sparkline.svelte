@@ -66,9 +66,7 @@
   </div>
   <div class="flex items-baseline justify-between gap-3" aria-hidden="true" data-testid={testids.dates}>
     <span class="text-text text-[12px]" data-testid={testids.caption}>{line.caption}</span>
-    <span class="text-muted tabular font-mono text-[12px]" data-testid={testids.lastLabel}
-      >{line.lastLabel}</span
-    >
+    <span class="text-muted numeric text-[12px]" data-testid={testids.lastLabel}>{line.lastLabel}</span>
   </div>
   <table class="sr-only" data-testid={testids.table}>
     <caption>{tableCaption}</caption>

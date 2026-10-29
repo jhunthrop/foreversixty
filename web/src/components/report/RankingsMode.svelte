@@ -136,7 +136,7 @@
     <p class="text-muted text-[14px]">Trash is not ranked. Pick an encounter to see its rankings.</p>
   {:else}
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <label class="label text-muted flex items-center gap-2" for="rankings-metric">
+      <label class="quiet-label flex items-center gap-2" for="rankings-metric">
         Metric
         <select
           id="rankings-metric"
@@ -150,7 +150,7 @@
           {/each}
         </select>
       </label>
-      <label class="label text-muted flex items-center gap-2" for="rankings-spec">
+      <label class="quiet-label flex items-center gap-2" for="rankings-spec">
         Spec
         <select
           id="rankings-spec"
@@ -179,15 +179,15 @@
       <p class="text-[14px]" role="alert">{error}</p>
     {:else if page !== null}
       <p class="text-muted text-[13px]">
-        <span class="tabular font-mono">{page.total}</span> ranked {page.total === 1 ? 'kill' : 'kills'} of
+        <span class="numeric">{page.total}</span> ranked {page.total === 1 ? 'kill' : 'kills'} of
         {fight.name} on this ruleset, every report counted · updated
-        <span class="tabular font-mono">{page.updated_at.slice(0, 10)}</span>
+        <span class="numeric">{page.updated_at.slice(0, 10)}</span>
         {#if !fight.kill}
           · <span class="text-wipe">this pull was a wipe</span>, and only kills are ranked
         {/if}
       </p>
       <div
-        class="text-muted label hidden grid-cols-[40px_minmax(120px,1.4fr)_minmax(100px,1fr)_88px_96px_72px] gap-x-3 px-2 pb-1 md:grid"
+        class="quiet-label hidden grid-cols-[40px_minmax(120px,1.4fr)_minmax(100px,1fr)_88px_96px_72px] gap-x-3 px-2 pb-1 md:grid"
       >
         <span>#</span>
         <span>Player</span>
@@ -204,7 +204,7 @@
             class:bg-card-top={row.report_id === reportId}
             data-testid={row.report_id === reportId ? 'rankings-mine' : 'rankings-row'}
           >
-            <span class="text-muted tabular font-mono text-[12px]">{row.rank}</span>
+            <span class="text-muted numeric text-[12px]">{row.rank}</span>
             <span class="flex min-w-0 items-center gap-2">
               {#if characterLinkHref !== null}
                 <a
@@ -238,13 +238,9 @@
               {/if}
               {row.player.spec}
             </span>
-            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-              >{row.talent_split}</span
-            >
-            <span class="tabular hidden text-right font-mono md:inline"
-              >{formatAmount(Math.round(row.value))}</span
-            >
-            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
+            <span class="text-muted numeric hidden text-right text-[13px] md:inline">{row.talent_split}</span>
+            <span class="numeric hidden text-right md:inline">{formatAmount(Math.round(row.value))}</span>
+            <span class="text-muted numeric hidden text-right text-[13px] md:inline">
               {#if row.report_id === reportId}
                 {formatDuration(row.duration_ms)}
               {:else}
@@ -262,11 +258,11 @@
                  they are replaced by a strip where each says what it is. The value takes
                  the word from the metric picker above, not a word of its own. -->
             <span
-              class="text-muted label col-span-full flex flex-wrap gap-x-3 gap-y-1 md:hidden"
+              class="quiet-label col-span-full flex flex-wrap gap-x-3 gap-y-1 md:hidden"
               data-testid="ranking-figures"
             >
               {#each figuresFor(row) as figure (figure.label)}
-                <span>{figure.label} <span class="tabular font-mono">{figure.value}</span></span>
+                <span>{figure.label} <span class="numeric">{figure.value}</span></span>
               {/each}
             </span>
             {#if row.state !== 'ok'}

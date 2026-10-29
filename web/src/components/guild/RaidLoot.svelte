@@ -46,7 +46,7 @@
       <div class="flex flex-col" data-testid="raid-loot-group">
         {#if filled.length > 1}
           <h4 class="label text-muted pb-1">
-            {group.boss} <span class="font-mono tabular-nums">{group.awards.length}</span>
+            {group.boss} <span class="numeric">{group.awards.length}</span>
           </h4>
         {/if}
         <ul>

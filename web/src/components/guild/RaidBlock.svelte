@@ -28,9 +28,7 @@
   <h3 class="section-title flex items-baseline gap-2">
     <span
       >{heading}{#if tail !== null}{SPACE}<span class="whitespace-nowrap">{tail}</span>{/if}</span
-    >{#if count !== null && count > 0}<span class="text-muted font-mono text-[13px] tabular-nums"
-        >{count}</span
-      >{/if}
+    >{#if count !== null && count > 0}<span class="text-muted numeric text-[13px]">{count}</span>{/if}
   </h3>
   {@render children()}
 </div>

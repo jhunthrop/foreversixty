@@ -183,7 +183,7 @@
   const ITEMS = 'min-w-0 break-words lg:col-start-2 lg:row-start-1';
   const META = 'text-muted min-w-0 text-[13px] lg:col-start-3 lg:row-start-1';
   const GAP =
-    'tabular col-start-2 row-start-1 text-right font-mono text-[13px] leading-5 whitespace-nowrap lg:col-start-4 lg:row-start-1';
+    'col-start-2 row-start-1 text-right numeric text-[13px] leading-5 whitespace-nowrap lg:col-start-4 lg:row-start-1';
   /** A known name: the /bis item marking, its tooltip host, underlined on hover where there is a
    *  fine pointer that hovers (fix round 4 item C: a tap never leaves it underlined); the focus
    *  ring is the site's 2px gold `:focus-visible` outline. */

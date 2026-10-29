@@ -150,8 +150,8 @@ describe('the outcome cell', () => {
     expect(flat).toContain('Boss pulls 2 of 4');
     expect(view(ALL)).toContain('data-testid="raid-attendance-heads"');
     const compact = view([row('Wanderer', { pulls_present: 3 }), row('Full')]);
-    expect(compact).toContain('text-text font-mono text-[13px]">3/4');
-    expect(compact).toContain('text-muted font-mono text-[13px]">4/4');
+    expect(compact).toContain('text-text numeric text-[13px]">3/4');
+    expect(compact).toContain('text-muted numeric text-[13px]">4/4');
   });
 
   it('says Bench or Out, muted, for a bench-and-out row instead of a pull count', () => {

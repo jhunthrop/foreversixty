@@ -34,9 +34,7 @@
 <section class="flex flex-col gap-2" aria-labelledby="guild-planned-heading" data-testid="guild-planned">
   <h3 id="guild-planned-heading" class="label text-muted">
     {raidCopy.subheads.planned}
-    {#if sorted.length > 0}<span class="font-mono tabular-nums" data-testid="guild-planned-count"
-        >{sorted.length}</span
-      >{/if}
+    {#if sorted.length > 0}<span class="numeric" data-testid="guild-planned-count">{sorted.length}</span>{/if}
   </h3>
   {#if sorted.length === 0}
     <p class="text-muted text-[13px]" data-testid="guild-planned-empty">

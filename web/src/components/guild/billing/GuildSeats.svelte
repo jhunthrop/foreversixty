@@ -29,7 +29,7 @@
   <div class="flex flex-col gap-2" data-testid="guild-seats">
     <div class="flex items-baseline gap-3">
       <h3 class="section-title">{copy.heading}</h3>
-      <span class="text-muted font-mono text-[12px]" data-testid="guild-seats-count">
+      <span class="text-muted numeric text-[12px]" data-testid="guild-seats-count">
         {copy.given(Math.min(givenCount(seats), total), total)}
       </span>
     </div>

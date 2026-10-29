@@ -74,7 +74,7 @@ describe('RaidMatchPicker', () => {
     expect(text(body)).toContain(
       `${ZONE} Uploaded Thu 10 Dec, 11:42 pm by Kraggor · 9 pulls · 1 kill · 2 h 41 min`,
     );
-    expect(body).toMatch(/font-mono whitespace-nowrap">(<!--[^>]*-->)*Thu 10 Dec, 11:42 pm/);
+    expect(body).toMatch(/numeric whitespace-nowrap">(<!--[^>]*-->)*Thu 10 Dec, 11:42 pm/);
     expect(body).toContain('text-strong text-[14px] font-semibold whitespace-nowrap');
   });
 

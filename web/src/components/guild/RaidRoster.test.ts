@@ -103,7 +103,7 @@ describe('RaidRoster', () => {
     );
   });
 
-  it('heads every group with the 11 px label, its count in mono', () => {
+  it('heads every group with the 11 px label, its count in tabular numerals', () => {
     const body = html();
     expect(body).not.toContain('section-title text-[15px]');
     expect(body).toMatch(/<h3 class="label text-muted"[^>]*data-testid="raid-roster-late-heading"/);

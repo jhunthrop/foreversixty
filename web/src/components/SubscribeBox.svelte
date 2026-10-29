@@ -59,7 +59,7 @@
 </script>
 
 <form class="flex flex-col gap-2" onsubmit={submit} data-testid="subscribe">
-  <label class="label text-muted" for="subscribe-email">Email updates</label>
+  <label class="quiet-label" for="subscribe-email">Email updates</label>
   <div class="flex flex-wrap gap-2">
     <input
       id="subscribe-email"

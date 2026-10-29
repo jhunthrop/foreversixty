@@ -27,10 +27,10 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
 <div class="this-set-panel" data-testid="bis-this-set" data-role="healer">
   <span class="label">{bisCopy.thisSetLabel}</span>
   <span class="this-set-figure-row">
-    <span class="font-mono tabular this-set-figure" data-testid="bis-healer-figure">
+    <span class="figure-stat this-set-figure" data-testid="bis-healer-figure">
       {healer.figure}
     </span>
-    <span class="font-mono this-set-unit">{healer.unit}</span>
+    <span class="numeric this-set-unit">{healer.unit}</span>
   </span>
   <span class="this-set-caption" data-testid="bis-healer-caption">
     {healer.caption}
@@ -43,7 +43,7 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
       {healer.metrics.map((metric) => (
         <div class="this-set-metric" title={metric.line} data-testid={`bis-healer-${metric.key}`}>
           <dt class="label">{metric.label}</dt>
-          <dd class="font-mono tabular">{metric.value}</dd>
+          <dd class="numeric">{metric.value}</dd>
           <dd class="sr-only">{metric.line}</dd>
         </div>
       ))}

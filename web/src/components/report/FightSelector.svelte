@@ -83,7 +83,7 @@
           {fightTitle(fight)}
         </span>
         <span
-          class="tabular shrink-0 font-mono text-[12px] font-semibold {fight.in_progress
+          class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
             ? 'text-gold'
             : fight.kind !== 'encounter'
               ? 'text-muted'
@@ -100,7 +100,7 @@
           {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
         </span>
       </span>
-      <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">
+      <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
         <span>{formatClock(fight.start)}</span>
         <!-- A trash row's name already says its length ("Trash · 3:26"): once is enough. -->
         {#if fight.kind === 'encounter'}<span>{formatDuration(fight.duration_ms)}</span>{/if}
@@ -162,7 +162,7 @@
             onclick={() => pick(ALL_FIGHTS)}
           >
             <span class="text-strong flex-1 font-semibold">All boss pulls</span>
-            <span class="text-muted tabular font-mono text-[12px]">{encounters.length} pulls</span>
+            <span class="text-muted numeric text-[12px]">{encounters.length} pulls</span>
           </button>
         </li>
       {/if}
@@ -188,12 +188,11 @@
                 <span class="text-muted min-w-0 flex-1 truncate leading-tight" title={`Trash · ${row.zone}`}
                   >Trash · {row.zone}</span
                 >
-                <span
-                  class="text-muted tabular shrink-0 font-mono text-[12px]"
-                  title="Trash: how many enemies died">{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
+                <span class="text-muted numeric shrink-0 text-[12px]" title="Trash: how many enemies died"
+                  >{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
                 >
               </span>
-              <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">
+              <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
                 <span>{formatDuration(row.duration_ms)}</span>
                 {#if row.deaths > 0}
                   <span class="text-death" title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}

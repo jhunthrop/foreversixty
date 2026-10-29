@@ -146,7 +146,7 @@
           />
         {/if}
         <span>{tree.name}</span>
-        <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
+        <span class="text-muted numeric ml-2">{store.split[i] ?? 0}</span>
       </button>
     {/each}
   </div>
@@ -206,10 +206,7 @@
         >
           {tree.name}
         </h2>
-        <span
-          class="tabular text-gold ml-auto shrink-0 font-mono text-[15px]"
-          data-testid={`tree-points-${tree.id}`}
-        >
+        <span class="text-gold numeric ml-auto shrink-0 text-[15px]" data-testid={`tree-points-${tree.id}`}>
           {store.split[i] ?? 0}
         </span>
       </header>

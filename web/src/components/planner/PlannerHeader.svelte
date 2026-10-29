@@ -140,7 +140,7 @@
 
     <div class="planner-header-controls">
       <div class="planner-header-select-field">
-        <label class="label text-muted" for="planner-class-select">Class</label>
+        <label class="quiet-label" for="planner-class-select">Class</label>
 
         <Select
           id="planner-class-select"
@@ -151,7 +151,7 @@
         />
       </div>
       <div class="planner-header-select-field">
-        <label class="label text-muted" for="planner-race-select">Race</label>
+        <label class="quiet-label" for="planner-race-select">Race</label>
         <Select
           id="planner-race-select"
           compact

@@ -396,7 +396,7 @@ test('a code that spends a locked tier drops it, and the dropped count renders a
 
   const note = page.getByTestId('planner-code-note');
   await expect(note).toContainText('minus 1 that no legal order reaches');
-  await expect(note.locator('span.font-mono')).toHaveText('1');
+  await expect(note.locator('span.numeric')).toHaveText('1');
 });
 
 test('a code naming a class with no talent data fails clean, and switching class does not replay it', async ({

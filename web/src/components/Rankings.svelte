@@ -374,11 +374,11 @@
             <li
               class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
-              <span class="tabular font-mono text-[12px]">{row.rank}</span>
+              <span class="numeric text-[12px]">{row.rank}</span>
               <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
                 >{row.guild.name}</a
               >
-              <span class="tabular text-right font-mono">{formatAmount(Math.round(row.value))}</span>
+              <span class="numeric text-right">{formatAmount(Math.round(row.value))}</span>
             </li>
           {/each}
         </ul>
@@ -402,7 +402,7 @@
         >
           Previous
         </button>
-        <span class="text-muted tabular font-mono text-[13px]">Page {state.page} of {lastPage}</span>
+        <span class="text-muted numeric text-[13px]">Page {state.page} of {lastPage}</span>
         <button
           type="button"
           class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"

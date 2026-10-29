@@ -115,7 +115,7 @@
     />
   {:else}
     <div class="flex items-center gap-3" data-testid="guild-loot-boss-picker">
-      <span class="label text-muted">Boss</span>
+      <span class="quiet-label">Boss</span>
       <span
         class="border-gold text-gold inline-flex h-9 items-center rounded-md border px-3 text-[13px] font-bold"
       >
@@ -174,7 +174,7 @@
                   {candidateLine(candidate, attendanceSource)}
                   <!-- One unbreakable chunk, and nothing at all for an empty slot. -->
                   {#if candidateGainLabel(candidate) !== ''}<span
-                      class="text-muted tabular font-mono text-[11px] whitespace-nowrap"
+                      class="text-muted numeric text-[11px] whitespace-nowrap"
                       data-testid="guild-loot-candidate-gain">{candidateGainLabel(candidate)}</span
                     >{/if}
                 </span>

@@ -273,7 +273,7 @@
          for the one remaining case (character/talentPoints both absent) where the count is
          simply unknown. -->
       {#if split > 0 && levelNote === ''}
-        <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
+        <span class="text-strong numeric" data-testid="sim-talent-count">{split} points</span>
       {/if}
       <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
          does not. `h-11` gives the link itself a real 44px box (what the touch-target check

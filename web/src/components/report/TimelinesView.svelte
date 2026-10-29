@@ -241,9 +241,7 @@
 {:else}
   <div class="flex flex-col gap-1" data-testid="timelines">
     <p class="text-muted label flex flex-wrap items-center gap-x-3">
-      <span class="tabular font-mono"
-        >{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span
-      >
+      <span class="numeric">{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span>
       <span
         ><span class="bg-text mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
         ></span>cast</span
@@ -290,7 +288,7 @@
     >
       <span></span>
       <span
-        class="text-muted tabular relative block h-[14px] font-mono text-[10px] [&>span:nth-child(even)]:hidden md:[&>span:nth-child(even)]:inline"
+        class="text-muted numeric relative block h-[14px] text-[10px] [&>span:nth-child(even)]:hidden md:[&>span:nth-child(even)]:inline"
       >
         {#each axis as at (at)}
           <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{formatDuration(at)}</span
@@ -393,7 +391,7 @@
         <ol class="mt-1 flex flex-wrap gap-x-4 gap-y-1">
           {#each auraOrder as name, index (name)}
             <li class="flex items-center gap-1">
-              <span class="text-muted tabular font-mono text-[11px]">{index + 1}</span>
+              <span class="text-muted numeric text-[11px]">{index + 1}</span>
               <span class="inline-block h-[3px] w-[14px]" style={`background: hsl(${hueOf(name)} 65% 62%)`}
               ></span>
               {name}

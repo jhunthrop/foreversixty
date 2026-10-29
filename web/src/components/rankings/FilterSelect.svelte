@@ -56,7 +56,7 @@
   for={id}
   data-testid={testid === undefined ? undefined : `${testid}-field`}
 >
-  <span class={labelHidden ? 'sr-only' : 'label text-muted'}>{label}</span>
+  <span class={labelHidden ? 'sr-only' : 'quiet-label'}>{label}</span>
   <span class="relative block has-[select:disabled]:opacity-50">
     <select
       {id}

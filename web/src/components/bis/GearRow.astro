@@ -319,10 +319,10 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     background: color-mix(in srgb, var(--color-gold, #c9a35e) 6%, transparent);
   }
   .gear-row-slot-label {
+    /* The quiet-label recipe (global.css): a table's row label. */
     padding-top: 2px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: var(--text-meta);
+    font-weight: 600;
     color: var(--color-muted, #999);
   }
   .gear-row-empty {

@@ -58,7 +58,7 @@
     <div class="flex flex-col gap-2" data-testid="guild-progression-tier">
       <div class="text-muted flex justify-between text-[13px]">
         <span>Named encounters down this tier</span>
-        <span class="tabular font-mono text-[14px]"
+        <span class="numeric text-[14px]"
           >{tier.down} · {progression.encounters.map((e) => e.name).join(', ') || '—'}</span
         >
       </div>
@@ -136,7 +136,7 @@
         {#each progression.unnamed as zone (zone.zone)}
           <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
             <span class="flex-1 text-[14px] font-semibold">{zone.zone}</span>
-            <span class="text-muted tabular font-mono text-[13px]">{counted(zone.pulls, 'pull')} logged</span>
+            <span class="text-muted numeric text-[13px]">{counted(zone.pulls, 'pull')} logged</span>
             <span class="text-muted text-[12px]">no named encounters yet</span>
           </div>
         {/each}
@@ -158,9 +158,9 @@
             {splitUnitName(row.player.name).name}
           </a>
           <span class="text-muted min-w-0 truncate text-[13px]">{labels.what}</span>
-          <span class="tabular ml-auto font-mono text-[14px]" title={labels.hover}>{labels.value}</span>
+          <span class="numeric ml-auto text-[14px]" title={labels.hover}>{labels.value}</span>
           <span
-            class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+            class="text-muted numeric hidden text-right text-[13px] md:inline"
             title={executionTitle(row.execution_score)}
           >
             {executionLabel(row.execution_score)}

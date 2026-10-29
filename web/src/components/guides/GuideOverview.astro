@@ -88,7 +88,8 @@ const { strengthsHtml, weaknessesHtml, raidHtml } = Astro.props;
     left: 0;
     top: 0;
     font-weight: 700;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
   }
   .overview-strengths .overview-list :global(li)::before {
     content: '+';

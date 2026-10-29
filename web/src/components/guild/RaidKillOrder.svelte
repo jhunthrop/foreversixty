@@ -23,12 +23,11 @@
           class="{ROW_LINK} flex min-h-11 items-baseline gap-3 px-1 py-2.5"
           data-testid="raid-kill-row"
         >
-          <span class="text-muted w-4 font-mono text-[13px]">{index + 1}</span>
+          <span class="text-muted numeric w-4 text-[13px]">{index + 1}</span>
           <span class="{text.time === null ? 'text-muted' : 'text-strong'} text-[14px] font-semibold"
             >{entry.name}</span
           >
-          {#if text.time !== null}<span class="text-text ml-auto font-mono text-[14px]">{text.time}</span
-            >{/if}
+          {#if text.time !== null}<span class="text-text numeric ml-auto text-[14px]">{text.time}</span>{/if}
           <span class="text-muted text-[13px] {text.time === null ? 'ml-auto' : ''}"
             >{#if text.firstPull}<span class="text-kill">{text.note}</span
               >{:else}{text.note}{/if}{text.deaths}</span

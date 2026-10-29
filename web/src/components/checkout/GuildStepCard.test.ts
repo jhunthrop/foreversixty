@@ -109,8 +109,8 @@ describe('GuildStepCard you row and facts', () => {
     expect(body).not.toContain('on the roster');
     const known = plain(html([guild({ verified_count: 12, roster_count: 31 })])).replace(/\s+/g, ' ');
     expect(known).toContain('12 verified · ,31 on the roster · ,No plan');
-    expect(html([guild({ verified_count: 12 })])).toMatch(/<span class="font-mono">12<\/span> verified/);
-    expect(html([guild({})])).not.toMatch(/font-mono">No one/);
+    expect(html([guild({ verified_count: 12 })])).toMatch(/<span class="numeric">12<\/span> verified/);
+    expect(html([guild({})])).not.toMatch(/numeric">No one/);
   });
 
   it('an older /v1/me draws identity and Open the guild only', () => {

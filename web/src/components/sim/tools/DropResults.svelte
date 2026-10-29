@@ -108,7 +108,7 @@
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
   <p class="text-muted text-[12px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
 
-  <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
+  <p class="text-strong numeric text-[14px]" data-testid="sim-equipped-line">
     {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
     ± {formatMargin(confidenceBand(result.equipped))}
   </p>
@@ -123,7 +123,7 @@
           <span class="text-muted text-[12px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
         </header>
         {#if wins.length > 0}
-          <p class="tabular text-gold font-mono text-[13px]" data-testid="sim-drops-best">
+          <p class="text-gold numeric text-[13px]" data-testid="sim-drops-best">
             {bulkCopy.dropsBest}: {deltaLabel(wins[0].combo.delta)}
           </p>
         {/if}
@@ -139,10 +139,10 @@
                 {treeVersion}
                 classSlug={result.request.character.class}
               />
-              <span class="tabular text-gold ml-auto font-mono text-[13px]">
+              <span class="text-gold numeric ml-auto text-[13px]">
                 {deltaLabel(row.combo.delta)}
               </span>
-              <span class="tabular text-muted font-mono text-[12px]">{row.percent.toFixed(1)}%</span>
+              <span class="text-muted numeric text-[12px]">{row.percent.toFixed(1)}%</span>
             </li>
           {/each}
         </ul>
@@ -177,7 +177,7 @@
               {treeVersion}
               classSlug={result.request.character.class}
             />
-            <span class="tabular text-gold ml-auto font-mono text-[13px]">
+            <span class="text-gold numeric ml-auto text-[13px]">
               {deltaLabel(row.combo.delta)}
             </span>
             <!-- Task 7: two controls on one row now, so they get their own flex-wrap group

@@ -16,7 +16,7 @@ const { stats } = Astro.props;
       class="rounded-pill bg-raised border-line inline-flex items-center gap-2 border px-3 py-1 text-[13px] font-semibold"
       data-testid={`stat-pill-${index}`}
     >
-      <span class="tabular text-gold font-mono text-[11px]">{index + 1}</span>
+      <span class="text-gold numeric text-[11px]">{index + 1}</span>
       <span>{stat}</span>
     </li>
   ))}

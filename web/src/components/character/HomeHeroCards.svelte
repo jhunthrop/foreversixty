@@ -152,7 +152,7 @@
         {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
       </span>
       {#if simFigures.bandDps !== null && ctx !== null}
-        <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+        <span class="text-muted numeric text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
           >{homeHeroCardsCopy.simulatorBandLine(simFigures.bandDps)}</span
         >
       {/if}
@@ -160,7 +160,7 @@
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {homeHeroCardsCopy.simulatorBandOnlyFigure(simFigures.bandDps)}
       </span>
-      <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+      <span class="text-muted numeric text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
         >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
       >
       <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>

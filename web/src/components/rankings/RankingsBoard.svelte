@@ -29,7 +29,7 @@
     placement === 'pinned' ? (page.character_rank?.row ?? null) : null,
   );
   const crest = $derived(showRowCrests(page.rows));
-  const columnClass = 'label text-muted';
+  const columnClass = 'quiet-label';
 </script>
 
 <div class="bg-raised border-line rounded-panel overflow-hidden border" data-testid="ranking-board">

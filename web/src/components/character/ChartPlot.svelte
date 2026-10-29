@@ -168,7 +168,7 @@
           dy="0.32em"
           text-anchor="end"
           font-size="11"
-          class="font-mono"
+          class="numeric"
           fill="var(--color-muted)">{tick.value}</text
         >
       {/each}
@@ -263,7 +263,7 @@
           y={plot.top + plot.height + 18}
           text-anchor={tick.anchor}
           font-size="11"
-          class="font-mono"
+          class="numeric"
           fill="var(--color-muted)"
           data-testid="history-x-label">{tick.label}</text
         >

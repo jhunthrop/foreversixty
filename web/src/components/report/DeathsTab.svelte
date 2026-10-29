@@ -325,10 +325,10 @@
           </span>
           {#if death.label}
             <span class="text-muted text-[13px]" data-testid="death-label"
-              >{death.label} · <span class="tabular font-mono">{formatDuration(inPull(death))}</span></span
+              >{death.label} · <span class="numeric">{formatDuration(inPull(death))}</span></span
             >
           {:else}
-            <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
+            <span class="text-muted numeric text-[13px]">{formatDuration(death.at_ms)}</span>
           {/if}
           {#if alreadyDead.length > 0}
             <span class="text-muted text-[13px]" data-testid="death-already-dead"
@@ -351,12 +351,12 @@
                 : death.killing_blow.spell_name === ''
                   ? 'Melee'
                   : death.killing_blow.spell_name} ·
-              <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
+              <span class="numeric">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
                 <span
                   class="text-muted"
                   title="Overkill: the part of that hit beyond the health they had left. The hit is counted whole here."
-                  >(<span class="tabular font-mono">{formatAmount(death.killing_blow.overkill)}</span> overkill)</span
+                  >(<span class="numeric">{formatAmount(death.killing_blow.overkill)}</span> overkill)</span
                 >
               {/if}
             </span>
@@ -368,7 +368,7 @@
               title="Their full health bar, for reading the hits against"
             >
               max health
-              <span class="tabular font-mono"
+              <span class="numeric"
                 >{formatAmount(Math.max(...death.last.map((hit) => hit.max_hp ?? 0)))}</span
               >
             </span>
@@ -376,7 +376,7 @@
           {#if death.release_ms}
             <span class="text-muted text-[13px]">
               released after
-              <span class="tabular font-mono">{formatDuration(death.release_ms - death.at_ms)}</span>
+              <span class="numeric">{formatDuration(death.release_ms - death.at_ms)}</span>
             </span>
           {/if}
         </div>
@@ -389,12 +389,12 @@
             <p class="text-muted text-[13px]" data-testid="death-unlogged">
               The log shows no lethal hit: the last recorded hit left them at
               {#if blowPct(death, card) !== null}
-                <span class="tabular font-mono">{Math.round(blowPct(death, card) ?? 0)}%</span>,
+                <span class="numeric">{Math.round(blowPct(death, card) ?? 0)}%</span>,
               {:else}
                 unknown health,
               {/if}
               and they died
-              <span class="tabular font-mono">{beforeDeath(death, death.killing_blow.at_ms).slice(1)}</span> later.
+              <span class="numeric">{beforeDeath(death, death.killing_blow.at_ms).slice(1)}</span> later.
             </p>
           {/if}
 
@@ -404,15 +404,13 @@
                 {death.heals === undefined ? 'Last hits' : 'Last hits and heals'}
               </caption>
               <thead>
-                <tr class="text-muted label">
-                  <th class="w-14 py-1 pr-2 text-left font-bold md:w-auto" title="Seconds before the death"
-                    >Before</th
-                  >
-                  <th class="py-1 pr-3 text-left font-bold">Ability</th>
-                  <th class="hidden py-1 pr-3 text-left font-bold md:table-cell">From</th>
-                  <th class="w-20 py-1 pr-3 text-right font-bold md:w-auto">Amount</th>
+                <tr class="quiet-label">
+                  <th class="w-14 py-1 pr-2 text-left md:w-auto" title="Seconds before the death">Before</th>
+                  <th class="py-1 pr-3 text-left">Ability</th>
+                  <th class="hidden py-1 pr-3 text-left md:table-cell">From</th>
+                  <th class="w-20 py-1 pr-3 text-right md:w-auto">Amount</th>
                   <th
-                    class="w-24 py-1 text-left font-bold md:w-auto"
+                    class="w-24 py-1 text-left md:w-auto"
                     title="Health left after the hit; blank when the log's reading cannot be believed (it rose above the reading before it with no heal between)"
                     >Health after</th
                   >
@@ -424,9 +422,8 @@
                     {@const heal = event.heal}
                     {@const healed = card.pcts[i]}
                     <tr class="border-line-soft border-b" data-testid="death-heal">
-                      <td
-                        class="text-muted tabular py-1 pr-3 font-mono"
-                        title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
+                      <td class="text-muted numeric py-1 pr-3" title={formatDurationPrecise(heal.at_ms)}
+                        >{beforeDeath(death, heal.at_ms)}</td
                       >
                       <td class="text-kill py-1 pr-3 break-words md:truncate" title={heal.spell_name}
                         >{heal.spell_name}<span class="text-muted block text-[11px] md:hidden"
@@ -436,7 +433,7 @@
                       <td class="text-muted hidden truncate py-1 pr-3 md:table-cell"
                         >{splitUnitName(heal.source_name).name}</td
                       >
-                      <td class="text-kill tabular py-1 pr-3 text-right font-mono"
+                      <td class="text-kill numeric py-1 pr-3 text-right"
                         >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
                           <span class="text-muted block text-[11px] md:inline" title="Overhealing"
                             >({formatAmount(heal.overheal)} over)</span
@@ -458,7 +455,7 @@
                                 style={`width: ${healed}%`}
                               ></span>
                             </span>
-                            <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
+                            <span class="text-muted numeric w-[36px] text-right text-[12px]"
                               >{Math.round(healed)}%</span
                             >
                           </span>
@@ -472,9 +469,8 @@
                          left health behind keeps its own figure, as the sentence above says. -->
                     {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
                     <tr class="border-line-soft border-b">
-                      <td
-                        class="text-muted tabular py-1 pr-3 font-mono"
-                        title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
+                      <td class="text-muted numeric py-1 pr-3" title={formatDurationPrecise(hit.at_ms)}
+                        >{beforeDeath(death, hit.at_ms)}</td
                       >
                       <td
                         class="py-1 pr-3 break-words md:truncate"
@@ -490,7 +486,7 @@
                         >{sourceName(hit.source_guid, hit.source_name)}</td
                       >
                       <td
-                        class="tabular py-1 pr-3 text-right font-mono"
+                        class="numeric py-1 pr-3 text-right"
                         class:text-muted={landed(hit) === 0}
                         title={landed(hit) === 0 ? 'Absorbed in full: nothing landed' : undefined}
                         >{formatAmount(landed(hit))}{#if (hit.absorbed ?? 0) > 0}
@@ -517,7 +513,7 @@
                                 style={`width: ${pct}%`}
                               ></span>
                             </span>
-                            <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
+                            <span class="text-muted numeric w-[36px] text-right text-[12px]"
                               >{Math.round(pct)}%</span
                             >
                           </span>
@@ -547,9 +543,8 @@
                 {#each death.auras_lost.filter((aura) => aura.at_ms < death.at_ms - 50) as aura, i (`${aura.spell_id}-${i}`)}
                   {#if i > 0},{/if}
                   {aura.name}
-                  <span
-                    class="text-muted tabular font-mono text-[12px]"
-                    title={formatDurationPrecise(aura.at_ms)}>{beforeDeath(death, aura.at_ms)}</span
+                  <span class="text-muted numeric text-[12px]" title={formatDurationPrecise(aura.at_ms)}
+                    >{beforeDeath(death, aura.at_ms)}</span
                   >
                 {/each}
               {/if}

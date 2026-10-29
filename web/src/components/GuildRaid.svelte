@@ -258,8 +258,8 @@
           <p class="text-[15px] md:col-span-2" data-testid="raid-when">
             <span class="block md:inline">{when.date}</span><span class="hidden md:inline">{SEP}</span><span
               class="{pastLines ? 'inline' : 'block md:inline'} whitespace-nowrap"
-              ><span class="font-mono">{when.start}</span>&#32;{raidCopy.page.timeTo}&#32;<span
-                class="font-mono">{when.end}</span
+              ><span class="numeric">{when.start}</span>&#32;{raidCopy.page.timeTo}&#32;<span class="numeric"
+                >{when.end}</span
               ></span
             ><span class={pastLines ? 'inline' : 'block md:inline'}
               ><span class={pastLines ? 'inline' : 'hidden md:inline'}>{SEP}</span
@@ -279,7 +279,7 @@
                   >
                 {/if}
                 <span
-                  ><span class="{countText} font-mono text-[15px]">{count.line}</span><span
+                  ><span class="{countText} numeric text-[15px]">{count.line}</span><span
                     class="text-muted text-[13px]">{SEP}{count.breakdown}</span
                   ></span
                 >

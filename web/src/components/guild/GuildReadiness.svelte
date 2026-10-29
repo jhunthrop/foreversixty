@@ -227,31 +227,30 @@
       style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
       data-testid="guild-readiness-header"
     >
-      <span class="label text-muted">Raider</span>
+      <span class="quiet-label">Raider</span>
       <span
-        class="label text-muted"
+        class="quiet-label"
         style="cursor:help"
         title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
         >Gear gap</span
       >
       <span
-        class="label text-muted"
+        class="quiet-label"
         style="cursor:help"
         title="Weapon, chest, cloak and boots checked for an enchant">Enchants</span
       >
       <span
-        class="label text-muted"
+        class="quiet-label"
         style="cursor:help"
         title="Flasks, food and potions in bags. Only members who share their bags are checked."
         >Consumables</span
       >
-      <span class="label text-muted" style="cursor:help" title="Spent points vs 51 at level 60"
-        >Talent points</span
+      <span class="quiet-label" style="cursor:help" title="Spent points vs 51 at level 60">Talent points</span
       >
-      <span class="label text-muted" style="cursor:help" title="This character vs the roster's own median"
+      <span class="quiet-label" style="cursor:help" title="This character vs the roster's own median"
         >Item level</span
       >
-      <span class="label text-muted">Last synced</span>
+      <span class="quiet-label">Last synced</span>
       <span></span>
     </div>{/if}
 
@@ -276,7 +275,7 @@
               data-testid="guild-readiness-dash">{DASH}</span
             >{/each}
         {:else}
-          <span class={`tabular font-mono text-[12px] ${gearGapTextClass(row)}`}>{gearGapLabel(row)}</span>
+          <span class={`numeric text-[12px] ${gearGapTextClass(row)}`}>{gearGapLabel(row)}</span>
           {#if enchantKind(row) === 'consent'}
             <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
           {:else}
@@ -294,7 +293,7 @@
           {:else}
             <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
           {/if}
-          <span class={`tabular font-mono text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
+          <span class={`numeric text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
             >{itemLevelLabel(row)}</span
           >
         {/if}
@@ -333,7 +332,7 @@
         {#if row.no_export}
           <div class="flex flex-wrap gap-4">
             {#each NO_EXPORT_CELLS as cell (cell)}<span class={CHIP}
-                ><span class="label text-muted">{cell}</span><span
+                ><span class="quiet-label">{cell}</span><span
                   class="text-muted"
                   data-testid="guild-readiness-dash">{DASH}</span
                 ></span
@@ -342,12 +341,12 @@
         {:else}
           <div class="flex flex-wrap gap-4">
             <span class={CHIP}
-              ><span class="label text-muted">Gear gap</span><span class={gearGapTextClass(row)}
+              ><span class="quiet-label">Gear gap</span><span class={gearGapTextClass(row)}
                 >{gearGapLabel(row)}</span
               ></span
             >
             <span class={CHIP}>
-              <span class="label text-muted">Enchants</span>
+              <span class="quiet-label">Enchants</span>
               {#if enchantKind(row) === 'consent'}
                 {enchantLabel(row)}
               {:else}
@@ -357,7 +356,7 @@
               {/if}
             </span>
             <span class={CHIP}>
-              <span class="label text-muted">Consumables</span>
+              <span class="quiet-label">Consumables</span>
               {#if consumablesKind(row) === 'consent'}
                 {consumablesLabel(row)}
               {:else}
@@ -365,7 +364,7 @@
               {/if}
             </span>
             <span class={CHIP}>
-              <span class="label text-muted">Talent points</span>
+              <span class="quiet-label">Talent points</span>
               {#if talentPointsKind(row) === 'warn'}
                 <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
               {:else}
@@ -373,7 +372,7 @@
               {/if}
             </span>
             <span class={CHIP}>
-              <span class="label text-muted">Item level</span>
+              <span class="quiet-label">Item level</span>
               <span class={itemLevelTextClass(itemLevelKind(row))}>{itemLevelLabel(row)}</span>
             </span>
           </div>

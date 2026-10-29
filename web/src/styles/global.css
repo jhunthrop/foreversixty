@@ -80,13 +80,32 @@ label:has(input[type='checkbox']:disabled) {
 }
 
 @utility label {
-  /* The micro-label is the body face (Barlow 700) wherever it sits, an h2 or h3 included: the
-     base h1-h3 rule would otherwise set it in the heading face. */
+  /* The micro-label: tracked caps, kept for a card's eyebrow (YOUR CHARACTER, TALENTS, PLAN) and
+     never for a form field's label or a table's column header, which are quiet-label (below).
+     It is the body face (Barlow 700) wherever it sits, an h2 or h3 included: the base h1-h3 rule
+     would otherwise set it in the heading face. */
   font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 700;
+}
+
+/* The quiet label (type pass 2026-10-29): a form field's label and a data table's column header,
+   grey sentence case at the meta size, semibold, regular tracking. The copy's own case shows, so
+   copy is written in sentence case ("Character name", "You wear"). Scoped rules that cannot take
+   the class (a th inside prose) repeat these four declarations and name this recipe. */
+@utility quiet-label {
+  font-family: var(--font-body);
+  font-size: var(--text-meta);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-muted);
+  /* A header row's cells take the row's weight, not the browser's bold th. */
+  & :where(th) {
+    font-weight: inherit;
+  }
 }
 
 /* The heading face (polish spec 2026-10-28 section 4.4, direction B Forge): Barlow Condensed
@@ -97,19 +116,13 @@ label:has(input[type='checkbox']:disabled) {
    - heading-section: a page-level section heading, 26;
    - section-title: a card or block title, 18 (the card title); its line-height is inherited,
      as it always was, so a block's reserved heights (skeletons, layout reserves) hold;
-   - heading-plan: a plan name, 24;
+   - heading-plan: a value or title inside a card (a plan name, a card head's title), 24, in the
+     case its copy has (type pass 2026-10-29: section titles are uppercase, card values are not);
    - heading-name: a name or label set in the heading face inline at its own size, the case its
      copy has (talent, roster, spec and class names; the size comes from the call
      site's text-[*] class).
    Headline figures take figure-stat (28) and figure-price (44 / 52), the same face at 800 with
-   tabular numerals; tables stay in --font-mono. */
-@utility heading-face {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  letter-spacing: var(--tracking-heading);
-  text-transform: uppercase;
-}
-
+   tabular numerals. Every other number, date, count or stat is `numeric` (below). */
 @utility heading-hero {
   font-family: var(--font-heading);
   font-weight: 800;
@@ -158,7 +171,6 @@ label:has(input[type='checkbox']:disabled) {
   font-family: var(--font-heading);
   font-weight: 800;
   letter-spacing: var(--tracking-heading);
-  text-transform: uppercase;
   font-size: var(--text-plan-name);
   line-height: 1;
   color: var(--color-strong);
@@ -221,6 +233,16 @@ label:has(input[type='checkbox']:disabled) {
 }
 
 @utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A number, date, count, stat or timer in UI text (type pass 2026-10-29, polish spec 4.4): the
+   body face with tabular numerals, so digits align in columns and timers without a code face.
+   The body face is explicit so a number inside a mono or heading-face parent still reads as
+   ours. --font-mono is for literal code only (export strings, slash commands, build strings,
+   anything a player copies); src/styles/mono-face.test.ts holds that list. */
+@utility numeric {
+  font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
 }
 
@@ -401,10 +423,10 @@ label:has(input[type='checkbox']:disabled) {
     font-size: 16px;
     margin: 24px 0 8px;
   }
+  /* The quiet-label recipe. */
   .prose-forever th {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--text-meta);
+    font-weight: 600;
     color: var(--color-muted);
   }
 }

@@ -101,7 +101,7 @@
 
 {#snippet firstLink(row: Row, noted: boolean)}
   {#if lead === 'date'}
-    <a class="{rowLink} text-muted tabular truncate font-mono text-[13px]" href={bossHref(row)}
+    <a class="{rowLink} text-muted numeric truncate text-[13px]" href={bossHref(row)}
       >{formatDayMonthYear(new Date(row.fought_at))}</a
     >
   {:else if noted}
@@ -124,7 +124,7 @@
   {/if}
   <ul class="flex flex-col" data-testid={testid}>
     <li
-      class={`label text-muted border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID}`}
+      class={`quiet-label border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID}`}
       aria-hidden="true"
       data-testid="character-table-header"
     >
@@ -161,21 +161,21 @@
             >{specName(row.spec ?? '')}</span
           >{/if}
         <span
-          class="tabular text-right font-mono text-[13px]"
+          class="numeric text-right text-[13px]"
           style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
           aria-label={percentileAriaLabel(row.percentile)}
         >
           {row.percentile === undefined ? '' : Math.round(row.percentile)}
         </span>
         <a
-          class="{rowLink} tabular justify-end text-right font-mono"
+          class="{rowLink} numeric justify-end text-right"
           href={`/reports/${row.report_id}?fight=${row.fight_index}`}
           aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
         >
           {formatAmount(Math.round(row.value))}
         </a>
         <span
-          class="text-muted tabular hidden font-mono text-[13px] md:ml-2 md:inline"
+          class="text-muted numeric hidden text-[13px] md:ml-2 md:inline"
           data-testid="character-fight-date"
           >{lead === 'date' ? '' : formatDayMonthYear(new Date(row.fought_at))}</span
         >

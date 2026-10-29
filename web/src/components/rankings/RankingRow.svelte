@@ -55,12 +55,12 @@
 {#snippet build(extra: string, buildTestid: string)}
   {#if buildLink !== null}
     <a
-      class="text-text relative z-10 font-mono text-[13px] underline-offset-4 hover:underline {extra}"
+      class="text-text numeric relative z-10 text-[13px] underline-offset-4 hover:underline {extra}"
       href={buildLink}
       data-testid={buildTestid}>{row.talent_split}</a
     >
   {:else}
-    <span class="text-muted font-mono text-[13px] {extra}">{row.talent_split}</span>
+    <span class="text-muted numeric text-[13px] {extra}">{row.talent_split}</span>
   {/if}
 {/snippet}
 
@@ -69,7 +69,7 @@
   data-own={own ? 'true' : undefined}
   data-testid={testid}
 >
-  <span class="font-mono text-[12px]" style:color={rankColor(row.rank, total)} data-testid="ranking-rank"
+  <span class="numeric text-[12px]" style:color={rankColor(row.rank, total)} data-testid="ranking-rank"
     >{row.rank}</span
   >
 
@@ -125,29 +125,26 @@
       · {row.guild.region.toUpperCase()}
     {/if}
   </span>
-  <span class="text-muted text-right font-mono text-[13px] {WIDE_ONLY}">{row.size}</span>
-  <span class="text-right font-mono" data-testid="ranking-value">{formatAmount(Math.round(row.value))}</span>
+  <span class="text-muted numeric text-right text-[13px] {WIDE_ONLY}">{row.size}</span>
+  <span class="numeric text-right" data-testid="ranking-value">{formatAmount(Math.round(row.value))}</span>
 
   {#if row.execution_score === null}
     <span
-      class="text-muted text-right font-mono text-[13px] {TABLE_UP}"
+      class="text-muted numeric text-right text-[13px] {TABLE_UP}"
       title={executionTitle(null)}
       aria-label={executionTitle(null)}
       data-testid="ranking-execution">{executed}</span
     >
   {:else}
     <a
-      class="relative z-10 hidden min-h-11 items-center justify-end text-right font-mono text-[13px] min-[600px]:inline-flex min-[600px]:min-h-0 min-[600px]:self-stretch"
+      class="numeric relative z-10 hidden min-h-11 items-center justify-end text-right text-[13px] min-[600px]:inline-flex min-[600px]:min-h-0 min-[600px]:self-stretch"
       href={executionHref(row.report_id, row.fight_index)}
       title={executionTitle(row.execution_score)}
       data-testid="ranking-execution">{executed}</a
     >
   {/if}
-  <span class="text-muted text-right font-mono text-[13px] {WIDE_ONLY}"
-    >{formatDuration(row.duration_ms)}</span
-  >
-  <span class="text-muted text-right font-mono text-[13px] {TABLE_UP}">{rankingDate(row.fought_at, now)}</span
-  >
+  <span class="text-muted numeric text-right text-[13px] {WIDE_ONLY}">{formatDuration(row.duration_ms)}</span>
+  <span class="text-muted numeric text-right text-[13px] {TABLE_UP}">{rankingDate(row.fought_at, now)}</span>
   {@render build(`${TABLE_UP} text-right`, 'ranking-build')}
   <a
     class="text-gold hover:text-gold-hover relative z-10 inline-flex min-h-11 items-center justify-end text-[13px] font-semibold min-[600px]:min-h-0 min-[600px]:self-stretch"

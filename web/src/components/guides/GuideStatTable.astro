@@ -86,14 +86,14 @@ function dpsText(value: number | undefined): string {
                         <span class="stat-bar-fill" style={`width:${barWidth(row.value, row.perPercent)}%`} />
                       </span>
                     )}
-                    <span class="tabular font-mono stat-num">
+                    <span class="numeric stat-num">
                       {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
                     </span>
                   </span>
                 )}
               </td>
               <td class="stat-num-cell">
-                <span class="tabular font-mono stat-num">{dpsText(row.dpsPerPoint)}</span>
+                <span class="numeric stat-num">{dpsText(row.dpsPerPoint)}</span>
               </td>
             </tr>
           ))}

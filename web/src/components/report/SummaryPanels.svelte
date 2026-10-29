@@ -85,7 +85,7 @@
     </h2>
     <ul class="flex flex-col">
       <li
-        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
+        class="quiet-label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
         aria-hidden="true"
       >
         <span>Ability</span>
@@ -99,25 +99,24 @@
           class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
         >
           <span class="truncate font-semibold" title={row.name}>{row.name}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{row.share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
+          <span class="text-muted numeric text-right text-[12px] whitespace-nowrap"
+            >{row.share.toFixed(1)}%<span class="quiet-label ml-1 md:hidden">share</span></span
           >
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
             ></span></span
           >
           <span
-            class="tabular text-right font-mono whitespace-nowrap"
+            class="numeric text-right whitespace-nowrap"
             title={approximate
               ? 'Prorated inside the window from the whole fight’s split; the Damage Taken tab measures it'
               : undefined}
-            >{approximate ? '~' : ''}{formatAmount(row.total)}<span class="label font-body ml-1 md:hidden"
+            >{approximate ? '~' : ''}{formatAmount(row.total)}<span class="quiet-label ml-1 md:hidden"
               >amount</span
             ></span
           >
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{formatPerSecond(row.total, durationMs)}<span class="label font-body ml-1 md:hidden"
-              >per sec</span
+          <span class="text-muted numeric text-right text-[12px] whitespace-nowrap"
+            >{formatPerSecond(row.total, durationMs)}<span class="quiet-label ml-1 md:hidden">per sec</span
             ></span
           >
         </li>
@@ -147,7 +146,7 @@
           <li
             class="grid min-h-8 grid-cols-[52px_minmax(0,1fr)] items-center gap-x-2 gap-y-0.5 py-1 text-[13px] md:grid-cols-[52px_minmax(0,1fr)_minmax(0,1.6fr)]"
           >
-            <span class="text-muted tabular font-mono text-[12px]">{formatDuration(death.at_ms)}</span>
+            <span class="text-muted numeric text-[12px]">{formatDuration(death.at_ms)}</span>
             <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}
               >{#if onSelectPlayer}<button
                   type="button"
@@ -169,9 +168,7 @@
                     ? 'Melee'
                     : death.killing_blow.spell_name} ·
                 {splitUnitName(death.killing_blow.source_name).name} ·
-                <span class="tabular font-mono whitespace-nowrap"
-                  >{formatAmount(death.killing_blow.amount)}</span
-                >
+                <span class="numeric whitespace-nowrap">{formatAmount(death.killing_blow.amount)}</span>
               {/if}
             </span>
           </li>

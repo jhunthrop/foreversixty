@@ -84,7 +84,7 @@
             {/if}
           </span>
           <span
-            class={`tabular w-8 text-right font-mono font-bold ${player.insufficient ? 'text-muted' : 'text-gold'}`}
+            class={`numeric w-8 text-right font-bold ${player.insufficient ? 'text-muted' : 'text-gold'}`}
             data-testid="rating-panel-overall"
             title={player.insufficient ? ratingCopy.insufficientNote(player.insufficient_reason) : undefined}
             >{player.insufficient ? '—' : Math.round(player.overall)}</span

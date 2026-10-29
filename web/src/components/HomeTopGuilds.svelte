@@ -64,14 +64,14 @@
       <li
         class="border-line-soft grid min-h-9 grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-2 border-b py-1 text-[13px] last:border-b-0"
       >
-        <span class="text-muted tabular font-mono text-[12px]">{row.rank}</span>
+        <span class="text-muted numeric text-[12px]">{row.rank}</span>
         <a
           class="{rowLink} truncate font-semibold"
           href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
         >
           {row.guild.name}
         </a>
-        <span class="text-muted tabular font-mono text-[12px]">
+        <span class="text-muted numeric text-[12px]">
           {homeTopGuildsCopy.bosses(Math.round(row.value))}
         </span>
       </li>

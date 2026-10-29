@@ -81,9 +81,9 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
                             a structure that stops existing at 1024px. The three column
                             labels stay plain, visible text -- sighted users lose nothing. */}
     <div class="the-list-header">
-      <span class="label">{bisCopy.slotHeaderLabel}</span>
-      <span class="label">{bisCopy.pickHeaderLabel}</span>
-      <span class="label">
+      <span class="quiet-label">{bisCopy.slotHeaderLabel}</span>
+      <span class="quiet-label">{bisCopy.pickHeaderLabel}</span>
+      <span class="quiet-label">
         {view.info.scoreUnit === 'tank_score'
           ? tankCopy.runnersUpHeaderLabel
           : bisCopy.runnersUpHeaderLabel(view.info.unit)}
@@ -115,9 +115,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
         <div class="footer-group">
           <span class="footer-group-name">
             {group.label}{' '}
-            <span class="font-mono tabular footer-group-count">
-              {bisCopy.groupCountSuffix(group.items.length)}
-            </span>
+            <span class="numeric footer-group-count">{bisCopy.groupCountSuffix(group.items.length)}</span>
           </span>
           <span class="footer-group-items">
             {group.items.map((item) => (

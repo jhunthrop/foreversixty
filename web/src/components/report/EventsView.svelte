@@ -103,7 +103,7 @@
         {kind.label}
       </label>
     {/each}
-    <label class="label text-muted flex items-center gap-2" for="events-search">
+    <label class="quiet-label flex items-center gap-2" for="events-search">
       Find
       <input
         id="events-search"
@@ -117,7 +117,7 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    <span class="tabular font-mono">{matching.length}</span> events
+    <span class="numeric">{matching.length}</span> events
     {#if stream === null}
       are listed, from the summary: casts, auras going up and down, the hits and heals before each death, and
       the deaths, each in the class colour of the player it is about. An aura applied while the same aura is
@@ -132,7 +132,7 @@
           onclick={() => void runStream()}>Load every hit and heal in this window</button
         >
         from the fight’s events.{/if}{:else}: casts, auras and deaths from the summary, and
-      <span class="tabular font-mono"
+      <span class="numeric"
         >{all.filter((event) => event.kind === 'damage' || event.kind === 'heal').length}</span
       >
       hits and heals from the fight’s events{stream.length === all.length ? '' : ' in scope'}.{/if}
@@ -152,7 +152,7 @@
         <li
           class="border-line-soft grid min-h-11 grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-2 border-b px-2 py-1 text-[14px] md:grid-cols-[68px_minmax(0,1fr)_auto] md:gap-3"
         >
-          <span class="text-muted tabular font-mono text-[12px]">{formatDuration(event.atMs)}</span>
+          <span class="text-muted numeric text-[12px]">{formatDuration(event.atMs)}</span>
           <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol
                by Deadclasslol", and a truncated line cuts exactly that. -->
           <span
@@ -160,7 +160,7 @@
             style={`color: ${classColorVar(classOf.get(event.guid))}`}
             title="Coloured by the class of the player the line is about">{event.text}</span
           >
-          <span class="tabular text-right font-mono text-[13px]">
+          <span class="numeric text-right text-[13px]">
             {event.amount === undefined ? '' : formatAmount(event.amount)}
           </span>
         </li>

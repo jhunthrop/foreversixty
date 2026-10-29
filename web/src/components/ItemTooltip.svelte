@@ -69,7 +69,7 @@
         {model.name}
       </span>
       {#if model.itemLevel > 0}
-        <span class="tabular text-muted font-mono text-[11px]">Item Level {model.itemLevel}</span>
+        <span class="text-muted numeric text-[11px]">Item Level {model.itemLevel}</span>
       {/if}
       {#if model.unique}
         <span class="text-muted text-[11px]">Unique</span>

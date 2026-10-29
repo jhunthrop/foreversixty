@@ -372,7 +372,7 @@
     {:else}
       <!-- A grid, not a table: three numbers and a name at 360px read better stacked than
            they do as columns that must each keep a header. -->
-      <div class="text-muted label hidden grid-cols-[minmax(0,1fr)_96px_96px_96px] gap-x-3 px-2 pb-1 md:grid">
+      <div class="quiet-label hidden grid-cols-[minmax(0,1fr)_96px_96px_96px] gap-x-3 px-2 pb-1 md:grid">
         <span>Ability</span>
         <span class="text-right">{aHead}</span>
         <span class="text-right">{bHead}</span>
@@ -386,7 +386,7 @@
             <span class="truncate"
               >{row.name}{#if row.via}<span class="text-muted ml-1 text-[11px]">· {row.via}</span
                 >{/if}{#if row.id !== undefined}<span
-                  class="text-muted ml-1 font-mono text-[11px]"
+                  class="text-muted numeric ml-1 text-[11px]"
                   data-testid="compare-ability-id"
                   title={row.id === 0
                     ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
@@ -394,20 +394,18 @@
                   >{row.id === 0 ? 'swing' : `#${row.id}`}</span
                 >{/if}</span
             >
-            <span class="tabular text-right font-mono md:col-start-2"
+            <span class="numeric text-right md:col-start-2"
               >{row.a === null ? '—' : splitMark + formatAmount(row.a)}<span
-                class="label font-body text-muted ml-1.5 md:hidden">{aHead}</span
+                class="quiet-label ml-1.5 md:hidden">{aHead}</span
               ></span
             >
-            <span class="text-muted tabular col-start-1 text-left font-mono md:col-start-3 md:text-right"
+            <span class="text-muted numeric col-start-1 text-left md:col-start-3 md:text-right"
               >{row.b === null ? '—' : splitMark + formatAmount(row.b)}<span
-                class="label font-body ml-1.5 md:hidden">{bHead}</span
+                class="quiet-label ml-1.5 md:hidden">{bHead}</span
               ></span
             >
-            <span
-              class="tabular text-right font-mono"
-              class:text-gold={row.delta >= 0}
-              data-testid="ability-delta">{splitSigned(row.delta)}</span
+            <span class="numeric text-right" class:text-gold={row.delta >= 0} data-testid="ability-delta"
+              >{splitSigned(row.delta)}</span
             >
           </li>
         {/each}
@@ -433,15 +431,15 @@
       >{splitUnitName(line.name).name}</span
     >
     <span
-      class="tabular text-right font-mono"
+      class="numeric text-right"
       class:text-gold={line.a >= line.b}
       title={versusPlayer ? 'This player less the other one' : 'This fight less the compared fight'}
       data-testid="compare-card-delta">{signed(line.a - line.b)}</span
     >
     <span class="text-muted col-span-2 text-[12px]"
-      ><span class="tabular font-mono">{mark}{formatAmount(line.a)}</span>
+      ><span class="numeric">{mark}{formatAmount(line.a)}</span>
       {versusPlayer ? 'in this pull' : 'this fight'} ·
-      <span class="tabular font-mono">{mark}{formatAmount(line.b)}</span>
+      <span class="numeric">{mark}{formatAmount(line.b)}</span>
       {versusPlayer ? `for ${playerName(line.guid === basePlayer ? vs : basePlayer)}` : 'compared with'}</span
     >
     <span class="col-span-2">
@@ -487,7 +485,7 @@
   </p>
 
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-    <label class="label text-muted flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-with">
+    <label class="quiet-label flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-with">
       Compare with
       <select
         id="compare-with"
@@ -518,7 +516,7 @@
         {/if}
       </select>
     </label>
-    <label class="label text-muted flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-vs">
+    <label class="quiet-label flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-vs">
       Or a player
       <select
         id="compare-vs"
@@ -533,7 +531,7 @@
         {/each}
       </select>
     </label>
-    <label class="label text-muted flex items-center gap-2" for="compare-metric">
+    <label class="quiet-label flex items-center gap-2" for="compare-metric">
       Metric
       <select
         id="compare-metric"
@@ -549,7 +547,7 @@
     </label>
     {#if rightWhole !== null}
       {#if phases.length > 0}
-        <label class="label text-muted flex items-center gap-2" for="compare-phase">
+        <label class="quiet-label flex items-center gap-2" for="compare-phase">
           Phase
           <select
             id="compare-phase"
@@ -618,19 +616,19 @@
         </caption>
         <thead>
           <tr class="border-line-soft border-b text-left">
-            <th scope="col" class="label text-muted bg-bg sticky left-0 px-2 py-2 font-bold">Player</th>
-            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
+            <th scope="col" class="quiet-label bg-bg sticky left-0 px-2 py-2">Player</th>
+            <th scope="col" class="quiet-label px-2 py-2 text-right">
               This fight
               <span class="block truncate text-[11px] normal-case"
                 >{fightLabel(currentFight, leftWindow)}</span
               >
             </th>
-            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
+            <th scope="col" class="quiet-label px-2 py-2 text-right">
               Compared with
               <span class="block truncate text-[11px] normal-case">{fightLabel(rightFight, rightWindow)}</span
               >
             </th>
-            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">Difference</th>
+            <th scope="col" class="quiet-label px-2 py-2 text-right">Difference</th>
             <th scope="col"><span class="sr-only">Abilities</span></th>
           </tr>
         </thead>
@@ -644,10 +642,10 @@
               >
                 {splitUnitName(line.name).name}
               </td>
-              <td class="tabular px-2 py-2 text-right font-mono">{mark}{formatAmount(line.a)}</td>
-              <td class="text-muted tabular px-2 py-2 text-right font-mono">{mark}{formatAmount(line.b)}</td>
+              <td class="numeric px-2 py-2 text-right">{mark}{formatAmount(line.a)}</td>
+              <td class="text-muted numeric px-2 py-2 text-right">{mark}{formatAmount(line.b)}</td>
               <td
-                class="tabular w-[96px] px-2 py-2 text-right font-mono"
+                class="numeric w-[96px] px-2 py-2 text-right"
                 class:text-gold={line.a >= line.b}
                 data-testid="compare-delta"
               >

@@ -74,8 +74,7 @@
         <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and the founder
              list price is plain text below. -->
         <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
-          <span class="text-strong tabular font-mono text-[20px]"
-            >{formatAmount(priceFor(key, interval, founder))}</span
+          <span class="text-strong numeric text-[20px]">{formatAmount(priceFor(key, interval, founder))}</span
           ><span>{intervalUnit(interval)}</span>
         </span>
         {#if founder}

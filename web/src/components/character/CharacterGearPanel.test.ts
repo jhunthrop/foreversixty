@@ -407,7 +407,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
       expect.arrayContaining(['col-start-1', 'row-start-1', 'leading-5']),
     );
     expect(classesOf(head, 'character-gear-gap')).toEqual(
-      expect.arrayContaining(['col-start-2', 'row-start-1', 'text-right', 'font-mono', 'leading-5']),
+      expect.arrayContaining(['col-start-2', 'row-start-1', 'text-right', 'numeric', 'leading-5']),
     );
     expect(classesOf(head, 'character-gear-line')).toEqual(
       expect.arrayContaining(['col-span-2', 'row-start-2']),

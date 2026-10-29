@@ -113,17 +113,17 @@ describe('the band', () => {
   it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {
     const live = between(html(), 'raid-when', 'guild-tabs');
     expect(live).toMatch(
-      /whitespace-nowrap text-gold">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="font-mono">2<\/span>/,
+      /whitespace-nowrap text-gold">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="numeric">2<\/span>/,
     );
     expect(live).toContain('bg-gold absolute');
     const cancelled = between(ready(plannedRaid({ status: 'cancelled' })), 'raid-when', 'guild-tabs');
     expect(cancelled).not.toContain('text-gold');
     expect(cancelled).not.toContain('bg-gold');
     expect(cancelled).toMatch(
-      /whitespace-nowrap text-muted">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="font-mono">2<\/span>/,
+      /whitespace-nowrap text-muted">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="numeric">2<\/span>/,
     );
     expect(cancelled).toContain('bg-muted absolute');
-    expect(cancelled).toMatch(/text-muted font-mono text-\[15px\]">23 of 40 signed up/);
+    expect(cancelled).toMatch(/text-muted numeric text-\[15px\]">23 of 40 signed up/);
     const controller = new RaidPageController(DEPS, ROUTE, {
       guild: GUILD,
       access: 'member',
@@ -134,7 +134,7 @@ describe('the band', () => {
       props: { path: ROUTE, controller, now: new Date('2026-12-11T02:30:00Z'), viewerTimezone: CHICAGO },
     }).body;
     expect(between(started, 'raid-when', 'guild-tabs')).toMatch(
-      /whitespace-nowrap text-muted">(<!--[^>]*-->)*started (<!--[^>]*-->)*<span class="font-mono">30<\/span>/,
+      /whitespace-nowrap text-muted">(<!--[^>]*-->)*started (<!--[^>]*-->)*<span class="numeric">30<\/span>/,
     );
   });
 

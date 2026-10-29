@@ -227,7 +227,7 @@
     </p>
   {:else if diff !== null}
     <div class="flex flex-col gap-1">
-      <span class="tabular text-gold font-mono text-[22px]" data-testid="band-compare-set-dps">
+      <span class="text-gold numeric text-[22px]" data-testid="band-compare-set-dps">
         {bandFigureLine}
       </span>
       <span class="text-muted text-[12px]">{bandCompareCopy.setDpsCaption(bandLabel)}</span>
@@ -237,7 +237,7 @@
       {#if diff.diffCount === 0}
         <span class="font-semibold" style="color: var(--color-kill)">{bandCompareCopy.matches}</span>
       {:else}
-        <span class="tabular text-gold font-mono">{diff.diffCount}</span>
+        <span class="text-gold numeric">{diff.diffCount}</span>
         {bandCompareCopy.differsSuffix}
       {/if}
     </p>

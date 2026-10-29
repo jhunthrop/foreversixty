@@ -70,7 +70,7 @@
     <span class={specPillClass(row.state)} data-testid="spec-state">{specStateLabel(row.state)}</span>
   </div>
 
-  <p class="tabular text-strong font-mono text-[13px]" data-testid="spec-figure">{figure}</p>
+  <p class="text-strong numeric text-[13px]" data-testid="spec-figure">{figure}</p>
   <p class="text-muted text-[13px]">{specStateNote(row.state)}</p>
 
   {#if !compact && rotationSteps.length > 0}
@@ -105,7 +105,7 @@
     <div class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.specWorstActions}</span>
       {#each row.worst_actions.slice(0, 3) as action (action.name)}
-        <span class="tabular text-muted font-mono text-[12px]">
+        <span class="text-muted numeric text-[12px]">
           {resolveActionName(action.name, actionNames)}
           {action.actual_casts}
           {simCopy.specCast}, {action.sim_casts}
@@ -116,6 +116,6 @@
   {/if}
 
   {#if !compact && footer !== ''}
-    <p class="tabular text-muted mt-auto font-mono text-[12px]" data-testid="spec-footer">{footer}</p>
+    <p class="text-muted numeric mt-auto text-[12px]" data-testid="spec-footer">{footer}</p>
   {/if}
 </article>

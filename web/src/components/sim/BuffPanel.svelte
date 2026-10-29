@@ -65,7 +65,7 @@
       <details class="border-line-soft rounded-panel border" data-testid={`sim-buff-group-${group}`}>
         <summary class="label text-nav flex min-h-11 cursor-pointer items-center gap-2 px-3 md:min-h-9">
           <span>{simCopy.buffGroupLabel[group] ?? group}</span>
-          <span class="tabular text-muted font-mono text-[12px]">{countIn(group)}/{rows.length}</span>
+          <span class="text-muted numeric text-[12px]">{countIn(group)}/{rows.length}</span>
         </summary>
         <ul class="grid grid-cols-1 gap-1 p-3 pt-0 md:grid-cols-2">
           {#each rows as row (row.id)}

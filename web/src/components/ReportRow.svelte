@@ -56,7 +56,7 @@
   <a {href} class="report-title text-strong text-[16px] font-semibold">{title}</a>
   <span class="text-muted flex flex-wrap items-center gap-x-2 text-[13px]">
     {#if character !== undefined}
-      <span class="tabular font-mono" data-testid="report-row-when">{when}</span>
+      <span class="numeric" data-testid="report-row-when">{when}</span>
       {#if character === null}
         <span class="opacity-75" data-testid="report-row-character">{NOT_CREDITED_LABEL}</span>
       {:else}

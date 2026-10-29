@@ -1700,8 +1700,8 @@
         data-testid="report-subtitle"
       >
         {#if facts.zone !== ''}{facts.zone} ·{/if}
-        {#if fights.length > 0}<span class="tabular font-mono whitespace-nowrap">{facts.date}</span> ·{/if}
-        <span class="tabular font-mono whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
+        {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
+        <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
           {SUBTITLE_SEPARATOR}{meta.status}{/if}
         <!-- The bundled sample was logged by no one the site knows: no credit line. -->
         {#if !isSampleReport(reportId)}
@@ -1722,9 +1722,9 @@
               >{outcomeLabel(fight, fight.kill ? '' : phaseReached(summary?.phases))}</span
             >
           {/if}
-          <span class="tabular font-mono">{formatDuration(fight.duration_ms)}</span>
+          <span class="numeric">{formatDuration(fight.duration_ms)}</span>
           {#if fight.deaths > 0}
-            · <span class="text-death tabular font-mono">{fight.deaths}</span>
+            · <span class="text-death numeric">{fight.deaths}</span>
             {fight.deaths === 1 ? 'death' : 'deaths'}
           {/if}{/if}
       </p>
@@ -1752,8 +1752,7 @@
         {#if missingFight === MISSING_FIGHT}
           This link names a fight the page cannot read, so the first fight is showing.
         {:else}
-          This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight
-          is showing.
+          This report has no fight <span class="numeric">{missingFight}</span>, so the first fight is showing.
         {/if}
       </p>
     {/if}
@@ -1824,7 +1823,7 @@
               class="border-line rounded-panel bg-raised flex items-center justify-between gap-3 border p-3"
               data-testid="chart-collapsed"
             >
-              <span class="tabular text-muted font-mono text-[12px]">{chartSummaryLabel}</span>
+              <span class="text-muted numeric text-[12px]">{chartSummaryLabel}</span>
               <button
                 type="button"
                 class="{SECONDARY_BUTTON} border-line-warm text-text px-3"

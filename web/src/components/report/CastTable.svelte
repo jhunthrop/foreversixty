@@ -197,15 +197,15 @@
         data-testid="cast-rhythm"
         title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
       >
-        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !scaled}
-          · <span class="tabular font-mono">{cancelledTotal}</span> cancelled{/if} ·
-        <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
-        <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
-        <span class="tabular font-mono">{formatDuration(rhythm.gap.from)}</span>
+        <span class="numeric">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !scaled}
+          · <span class="numeric">{cancelledTotal}</span> cancelled{/if} ·
+        <span class="numeric">{perMinute(rhythm.casts)}</span> a minute · longest gap
+        <span class="numeric">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
+        <span class="numeric">{formatDuration(rhythm.gap.from)}</span>
       </p>
     {/if}
     <div
-      class="text-muted label hidden grid-cols-[minmax(150px,1.3fr)_minmax(170px,1.5fr)_64px_64px_64px_72px_80px_minmax(0,2fr)] gap-x-3 px-2 pb-1 md:grid"
+      class="quiet-label hidden grid-cols-[minmax(150px,1.3fr)_minmax(170px,1.5fr)_64px_64px_64px_72px_80px_minmax(0,2fr)] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>Caster</span>
       <span>Spell</span>
@@ -250,7 +250,7 @@
                 data-testid="cast-via">· via {via}</span
               >{/if}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
               <span
-                class="text-muted ml-1 font-mono text-[11px]"
+                class="text-muted numeric ml-1 text-[11px]"
                 title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span
               >{/if}</span
           >
@@ -261,17 +261,17 @@
                these cells are divs, with no column header for a screen reader to associate
                them with at any width. -->
           <span
-            class="tabular text-right font-mono"
+            class="numeric text-right"
             {title}
             aria-label={approximateAriaLabel(scaled, `${row.succeeded} cast`)}
           >
-            {mark}{row.succeeded}<span class="label font-body ml-1.5 md:hidden">cast</span>
+            {mark}{row.succeeded}<span class="quiet-label ml-1.5 md:hidden">cast</span>
           </span>
-          <span class="tabular text-muted text-right font-mono text-[13px]" data-testid="cast-per-minute">
-            {perMinute(row.succeeded)}<span class="label font-body ml-1.5 md:hidden">a minute</span>
+          <span class="text-muted numeric text-right text-[13px]" data-testid="cast-per-minute">
+            {perMinute(row.succeeded)}<span class="quiet-label ml-1.5 md:hidden">a minute</span>
           </span>
           <span
-            class="tabular text-muted text-right font-mono"
+            class="text-muted numeric text-right"
             {title}
             aria-label={approximateAriaLabel(
               scaled,
@@ -281,13 +281,13 @@
             {#if failedKnown(row)}{mark}{refused(row)}{:else}<span
                 title="Only the player whose client wrote this log has failed casts in it; this player's are not recorded"
                 >—</span
-              >{/if}<span class="label font-body ml-1.5 md:hidden">failed</span>
+              >{/if}<span class="quiet-label ml-1.5 md:hidden">failed</span>
           </span>
           <!-- The summary keeps whole-fight cast starts with no instants, so until the window's
                own cast lines are read it cannot say which casts inside it were cut short; a
                prorated count named the wrong spells, and a dash names nothing wrongly. -->
           <span
-            class="tabular text-muted text-right font-mono"
+            class="text-muted numeric text-right"
             title={scaled
               ? 'Cancelled casts are being read from this window’s own cast lines'
               : 'Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none'}
@@ -296,14 +296,14 @@
               : `${cancelled(row)} cancelled`}
             data-testid="cast-cancelled"
           >
-            {scaled ? '—' : cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span>
+            {scaled ? '—' : cancelled(row)}<span class="quiet-label ml-1.5 md:hidden">cancelled</span>
           </span>
           <span
-            class="tabular text-muted text-right font-mono text-[13px]"
+            class="text-muted numeric text-right text-[13px]"
             title={castTimeTitle}
             aria-label={wholeFightAriaLabel(true, `${castTimeText(row.cast_time_ms)} cast time`)}
           >
-            {castTimeMark}{castTimeText(row.cast_time_ms)}<span class="label font-body ml-1.5 md:hidden"
+            {castTimeMark}{castTimeText(row.cast_time_ms)}<span class="quiet-label ml-1.5 md:hidden"
               >casting, total</span
             >
           </span>

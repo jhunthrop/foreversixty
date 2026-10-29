@@ -63,7 +63,7 @@
             style={`color:${classColorVar(row.class)}`}
             title={row.name}>{row.name}</span
           >
-          <span class="text-strong font-mono text-[13px] md:order-2">{deathCount(row)}</span>
+          <span class="text-strong numeric text-[13px] md:order-2">{deathCount(row)}</span>
           <span class="col-span-3 flex items-center gap-3 pl-8 md:contents">
             <span
               class="{BAR_TRACK} inline-block w-full max-w-[160px] flex-1 md:order-1 lg:max-w-[96px] xl:max-w-[160px]"

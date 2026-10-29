@@ -41,7 +41,7 @@
   {#if here !== null}
     <p class="text-[13px]">
       <span class="font-semibold" style={`color: ${here.textColor}`}>{here.label}</span>
-      <span class="text-muted tabular font-mono text-[12px]">{here.range}</span>
+      <span class="text-muted numeric text-[12px]">{here.range}</span>
     </p>
   {:else}
     <div class="grid grid-cols-5 gap-[2px] text-center">
@@ -68,7 +68,7 @@
       <span class="truncate text-[12px] font-semibold" style={`color: ${segment.textColor}`}
         >{segment.label}</span
       >
-      <span class="text-muted tabular font-mono text-[11px] whitespace-nowrap">{segment.range}</span>
+      <span class="text-muted numeric text-[11px] whitespace-nowrap">{segment.range}</span>
       {#if isHere}<span class="sr-only">{scoreCopy.currentTier}</span>{/if}
     </li>
   {/each}

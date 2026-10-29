@@ -54,7 +54,7 @@
     onsubmit={onSubmit}
   >
     <div class="col-span-2 flex flex-col gap-2 md:col-span-1">
-      <label class="label text-muted" for="guild-lookup-name">{copy.nameLabel}</label>
+      <label class="quiet-label" for="guild-lookup-name">{copy.nameLabel}</label>
       <input
         id="guild-lookup-name"
         name="name"
@@ -67,7 +67,7 @@
       />
     </div>
     <div class="flex flex-col gap-2">
-      <label class="label text-muted" for="guild-lookup-region">{copy.regionLabel}</label>
+      <label class="quiet-label" for="guild-lookup-region">{copy.regionLabel}</label>
       <select id="guild-lookup-region" name="region" bind:value={region} class={FIELD}>
         {#each REGIONS as option (option)}
           <option value={option}>{option.toUpperCase()}</option>
@@ -75,7 +75,7 @@
       </select>
     </div>
     <div class="flex flex-col gap-2">
-      <label class="label text-muted" for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
+      <label class="quiet-label" for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
       <select id="guild-lookup-ruleset" name="ruleset" bind:value={ruleset} class={FIELD}>
         {#each RULESETS as option (option.id)}
           <option value={option.id}>{option.label}</option>

@@ -142,7 +142,7 @@
               ></span></span
             >
             <span
-              class="tabular text-right font-mono"
+              class="numeric text-right"
               title={`Uptime on ${entry.targets} bosses over the time they were up`}
               >{formatPercent(entry.pct)}</span
             >
@@ -153,7 +153,7 @@
   {/if}
   <div class="flex flex-col" data-testid="aura-table">
     <div
-      class="text-muted label hidden grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
+      class="quiet-label hidden grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>Aura</span>
       <span>On</span>
@@ -184,7 +184,7 @@
                 <span class="text-muted ml-1 text-[11px] font-normal">unnamed in the log</span
                 >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
                 <span
-                  class="text-muted ml-1 font-mono text-[11px]"
+                  class="text-muted numeric ml-1 text-[11px]"
                   title="Two spells share this name; this is spell id {track.spell_id}"
                   >#{track.spell_id}</span
                 >{/if}</span
@@ -245,14 +245,14 @@
           <!-- The heading row above is `hidden` below `md`, so each figure carries the word
                it was filed under. The testid stays on the number alone: it is the figure
                report-tables.spec.ts pins, not the word beside it. -->
-          <span class="tabular text-right font-mono">
+          <span class="numeric text-right">
             <span data-testid="aura-uptime">{formatPercent(shareOf(track))}</span><span
-              class="label font-body text-muted ml-1.5 md:hidden">uptime</span
+              class="quiet-label ml-1.5 md:hidden">uptime</span
             >
           </span>
-          <span class="text-muted tabular text-right font-mono text-[13px]"
+          <span class="text-muted numeric text-right text-[13px]"
             ><span data-testid="aura-applied">{track.applications}</span><span
-              class="label font-body ml-1.5 md:hidden">applied</span
+              class="quiet-label ml-1.5 md:hidden">applied</span
             ></span
           >
         </li>

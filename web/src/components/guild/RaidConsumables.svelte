@@ -48,7 +48,7 @@
   const hasBuffs = $derived(consumables.log_has_buffs);
   /** Three columns with or without buff data, so `Before` holds its x (spec 3.4). */
   const COLUMNS = 'md:grid-cols-[minmax(180px,1fr)_120px_minmax(0,1.5fr)]';
-  const LEAD = 'label text-muted text-[11px] md:hidden';
+  const LEAD = 'quiet-label md:hidden';
 </script>
 
 <RaidBlock heading={attendanceCopy.report.consumables} count={ordered.length} testid="raid-consumables">
@@ -62,8 +62,8 @@
     data-testid="raid-consumables-heads"
   >
     <span></span>
-    <span class="label text-muted text-[11px]">{attendanceCopy.consumables.before}</span>
-    {#if hasBuffs}<span class="label text-muted text-[11px]">{attendanceCopy.consumables.inTheLog}</span>{/if}
+    <span class="quiet-label">{attendanceCopy.consumables.before}</span>
+    {#if hasBuffs}<span class="quiet-label">{attendanceCopy.consumables.inTheLog}</span>{/if}
   </div>
   <ul bind:this={list}>
     {#each shown as row (row.character_key)}

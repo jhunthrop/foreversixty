@@ -54,8 +54,8 @@ describe('CheckoutBand', () => {
     expect(textOf(html('raid_guild', 'monthly', false), 'checkout-plan-price')).toBe('$25 a month');
   });
 
-  it('the price is tabular JetBrains Mono', () => {
-    expect(html('guild')).toMatch(/class="[^"]*font-mono[^"]*tabular-nums[^"]*"[^>]*>\$120</);
+  it('the price is the body face with tabular numerals (type pass: no code face on UI numbers)', () => {
+    expect(html('guild')).toMatch(/class="[^"]*numeric[^"]*"[^>]*>\$120</);
   });
 
   it('Raid guild renders its own size line and price, not the Guild one', () => {

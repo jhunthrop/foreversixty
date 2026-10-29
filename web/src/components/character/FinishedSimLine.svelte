@@ -142,7 +142,7 @@
     text-underline-offset: 4px;
   }
   .fsl-figure {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
     color: var(--color-strong);
   }

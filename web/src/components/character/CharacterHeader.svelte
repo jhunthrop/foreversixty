@@ -590,7 +590,6 @@
     font-size: var(--ch-name-size);
     font-weight: 800;
     letter-spacing: var(--tracking-heading);
-    text-transform: uppercase;
     line-height: 1.2;
     overflow: hidden;
     display: -webkit-box;
@@ -676,7 +675,7 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: 6px 18px;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
     font-size: 26px;
     font-weight: 500;

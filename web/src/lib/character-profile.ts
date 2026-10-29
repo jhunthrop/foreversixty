@@ -86,7 +86,7 @@ export const characterTableCopy = {
  * margin on top of the 12px column gap puts it 16px after the amount there.
  */
 export function executionCellClass(scored: boolean): string {
-  return `flex min-h-11 min-w-11 max-md:ml-1 items-center justify-end text-right tabular font-mono text-[13px]${scored ? '' : ' text-muted'}`;
+  return `flex min-h-11 min-w-11 max-md:ml-1 items-center justify-end text-right numeric text-[13px]${scored ? '' : ' text-muted'}`;
 }
 
 /** The amount column's header: "HPS" or "DPS" when every row is one metric, else both. */

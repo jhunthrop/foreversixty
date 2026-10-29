@@ -336,7 +336,7 @@
   </div>
 
   <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
-    <span class="label text-muted">Filter</span>
+    <span class="quiet-label">Filter</span>
     <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
       Role: {filters.role === 'all' ? 'All' : filters.role}
     </button>
@@ -374,7 +374,7 @@
     aria-label="Sort"
     data-testid="guild-roster-sort"
   >
-    <span class="label text-muted">Sort</span>
+    <span class="quiet-label">Sort</span>
     {#each sortChips as chip (chip.key)}
       <button
         class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}

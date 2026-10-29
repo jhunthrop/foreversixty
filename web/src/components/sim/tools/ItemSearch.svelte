@@ -141,7 +141,7 @@
           <span class={`flex-1 text-[14px] font-semibold ${rarityClassFor(item.quality)}`}>
             {item.name}{legendaryVariantLabel(item.id) === '' ? '' : ` (${legendaryVariantLabel(item.id)})`}
           </span>
-          <span class="tabular text-muted font-mono text-[12px]">{item.item_level}</span>
+          <span class="text-muted numeric text-[12px]">{item.item_level}</span>
           <button
             type="button"
             class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"

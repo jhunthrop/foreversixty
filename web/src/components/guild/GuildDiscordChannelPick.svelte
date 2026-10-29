@@ -165,7 +165,7 @@
   <p class="text-[14px]" data-testid="bot-channels-empty">{guildBotCopy.picker.empty(server)}</p>
 {:else if listState === 'error'}
   <div class="flex flex-col gap-2">
-    <span class="label text-muted">{guildBotCopy.picker.label}</span>
+    <span class="quiet-label">{guildBotCopy.picker.label}</span>
     <p class="text-wipe text-[13px]" role="alert" data-testid="bot-channels-error">
       {guildBotCopy.picker.loadFailed}
     </p>

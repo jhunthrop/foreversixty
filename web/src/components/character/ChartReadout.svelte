@@ -50,14 +50,14 @@
       class="flex items-baseline gap-2"
       style={readout.color === null ? undefined : `color: ${readout.color}`}
     >
-      <span class="tabular font-mono text-[28px] leading-8 font-semibold" data-testid="history-readout-value"
+      <span class="numeric text-[28px] leading-8 font-semibold" data-testid="history-readout-value"
         >{readout.value}</span
       >
       {#if readout.word !== ''}
         <span class="text-[15px] font-semibold" data-testid="history-readout-word">{readout.word}</span>
       {/if}
     </p>
-    <p class="text-muted tabular font-mono text-[12px]" data-testid="history-readout-detail">
+    <p class="text-muted numeric text-[12px]" data-testid="history-readout-detail">
       {readout.detail}
     </p>
   </div>

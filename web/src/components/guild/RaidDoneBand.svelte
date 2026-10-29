@@ -124,7 +124,7 @@
         aria-hidden="true"
         ><span class="bg-muted absolute inset-y-0 left-0" style:width={`${fill}%`}></span></span
       >
-    {/if}<span class="text-strong font-mono text-[15px] whitespace-nowrap">{cameRatio(night)}</span><span
+    {/if}<span class="text-strong numeric text-[15px] whitespace-nowrap">{cameRatio(night)}</span><span
       class="text-muted text-[13px]"
       >{#each nightFacts(night) as fact (fact)}{SEP}<Figures text={fact} />{/each}</span
     >

@@ -83,7 +83,7 @@
               class="text-gold tabular text-[36px] leading-none font-bold md:text-[48px]"
               data-testid="character-rating-overall">{Math.round(overall)}</span
             >
-            <span class="text-muted tabular font-mono text-[14px]">{ratingCopy.outOf100}</span>
+            <span class="text-muted numeric text-[14px]">{ratingCopy.outOf100}</span>
           </span>
           {#if segments.some((segment) => segment.width > 0)}
             <span

@@ -157,7 +157,7 @@
                 aria-hidden="true"
               ></span>
             </span>
-            <span class="tabular text-strong ml-auto font-mono text-[13px]">
+            <span class="text-strong numeric ml-auto text-[13px]">
               {row.weight.toFixed(2)}
               <span class="text-muted">± {formatWeightError(row.error)}</span>
               {#if !significant}

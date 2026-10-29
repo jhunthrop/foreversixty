@@ -90,7 +90,7 @@
 {#snippet when(row: MatchCandidate)}
   {@const stamp = stampParts(new Date(row.uploaded_at), viewerTimezone, guildTimezone, locale)}
   <span class="text-[13px]"
-    ><span class="text-muted">{copy.uploaded}</span>&#32;<span class="font-mono whitespace-nowrap"
+    ><span class="text-muted">{copy.uploaded}</span>&#32;<span class="numeric whitespace-nowrap"
       >{stamp.when}</span
     >{#if stamp.guildTime !== null}&#32;<span class="text-muted whitespace-nowrap">{stamp.guildTime}</span
       >{/if}</span
@@ -180,7 +180,7 @@
             </span>
             <span class="hidden md:inline">{@render when(row)}</span>
             <span class="hidden text-[13px] md:inline">{pickerFigures(row.pulls, row.kills)}</span>
-            <span class="hidden font-mono text-[13px] md:inline">{durationLabel(row.duration_ms)}</span>
+            <span class="numeric hidden text-[13px] md:inline">{durationLabel(row.duration_ms)}</span>
           </div>
           {#if elsewhere !== null && row.matched_raid !== null}
             <!-- Outside the radio, so its link is not a control inside one. -->

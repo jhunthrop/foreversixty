@@ -27,7 +27,7 @@
 
 <div class="mx-[18px] flex flex-wrap items-end gap-3 md:mx-0">
   <label class="flex min-w-0 flex-1 flex-col gap-1 md:max-w-[420px]">
-    <span class="label text-muted">{simCopy.reportTitleLabel}</span>
+    <span class="quiet-label">{simCopy.reportTitleLabel}</span>
     <input
       type="text"
       class="border-line-warm rounded-control bg-raised text-text h-11 w-full border px-3 text-[14px]"

@@ -74,21 +74,21 @@
        is an afterthought" complaint the review named. -->
   <div class="flex flex-col gap-1">
     <span class="label text-muted">Level</span>
-    <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
+    <span class="text-strong numeric text-[20px] leading-11" data-testid="planner-level">
       {store.level}
     </span>
   </div>
 
   <div class="flex flex-col gap-1">
     <span class="label text-muted">Points left</span>
-    <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
+    <span class="text-gold numeric text-[20px] leading-11" data-testid="planner-remaining">
       {MAX_POINTS - store.spent}
     </span>
   </div>
 
   <div class="flex flex-col gap-1">
     <span class="label text-muted">Spent</span>
-    <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-spent">
+    <span class="text-strong numeric text-[20px] leading-11" data-testid="planner-spent">
       {store.spent}/{MAX_POINTS}
     </span>
   </div>

@@ -64,7 +64,7 @@
 
 {#if signedIn}
   <div class="flex flex-col gap-2" data-testid="addon-paste-save">
-    <label class="label text-muted" for="addon-paste-name">{addonCopy.pasteNameLabel}</label>
+    <label class="quiet-label" for="addon-paste-name">{addonCopy.pasteNameLabel}</label>
     <input
       id="addon-paste-name"
       class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"

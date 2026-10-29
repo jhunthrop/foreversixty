@@ -84,7 +84,7 @@
       onclick={() => onpick(pill.id)}
     >
       {pill.label}
-      <span class="text-muted tabular font-mono text-[11px] font-normal tracking-normal">{pill.count}</span>
+      <span class="text-muted numeric text-[11px] font-normal tracking-normal">{pill.count}</span>
     </button>
   {/each}
 </div>

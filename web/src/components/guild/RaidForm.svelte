@@ -188,7 +188,7 @@
 {/snippet}
 
 {#snippet label(field: string, text: string)}
-  <label class="label text-muted" for={id(field)}>{text}</label>
+  <label class="quiet-label" for={id(field)}>{text}</label>
 {/snippet}
 
 <form
@@ -328,7 +328,7 @@
         data-testid="raid-form-notes"></textarea>
       {#if notesLeft !== null}
         <span
-          class="text-muted pointer-events-none absolute right-3 bottom-2 font-mono text-[12px] tabular-nums"
+          class="text-muted numeric pointer-events-none absolute right-3 bottom-2 text-[12px]"
           data-testid="raid-form-notes-counter">{notesLeft}</span
         >
       {/if}

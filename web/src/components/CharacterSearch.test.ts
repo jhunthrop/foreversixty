@@ -21,15 +21,13 @@ function classOf(pattern: RegExp): string[] {
 }
 
 describe('CharacterSearch', () => {
-  it('labels all three fields in the label role, CHARACTER NAME, REGION and RULESET', () => {
+  it('labels all three fields in the quiet field-label recipe, Character name, Region and Ruleset', () => {
     for (const [id, label] of [
       ['home-character-search-name', copy.nameLabel],
       ['home-character-search-region', copy.regionLabel],
       ['home-character-search-ruleset', copy.rulesetLabel],
     ]) {
-      expect(html).toMatch(
-        new RegExp(`<label class="label text-muted"[^>]*for="${id}"[^>]*>${label}</label>`),
-      );
+      expect(html).toMatch(new RegExp(`<label class="quiet-label"[^>]*for="${id}"[^>]*>${label}</label>`));
     }
   });
 

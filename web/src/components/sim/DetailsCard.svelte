@@ -44,7 +44,7 @@
   <dl class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 text-[13px]">
     {#each rows as row (row.id)}
       <dt class="text-muted">{row.label}</dt>
-      <dd class="tabular text-strong text-right font-mono" data-testid={`sim-details-${row.id}`}>
+      <dd class="text-strong numeric text-right" data-testid={`sim-details-${row.id}`}>
         {row.value}
       </dd>
     {/each}

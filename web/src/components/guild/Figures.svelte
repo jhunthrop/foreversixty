@@ -9,6 +9,6 @@
 </script>
 
 <span class="whitespace-nowrap {extra}"
-  >{#each parts as part, index (index)}{#if part.figure}<span class="font-mono">{part.text}</span
+  >{#each parts as part, index (index)}{#if part.figure}<span class="numeric">{part.text}</span
       >{:else}{part.text}{/if}{/each}</span
 >

@@ -513,7 +513,7 @@
         </p>
       </div>
       <form class="flex flex-col gap-3" onsubmit={onEmail} data-testid="email-form">
-        <label class="label text-muted" for="account-email">Or a sign-in link by email</label>
+        <label class="quiet-label" for="account-email">Or a sign-in link by email</label>
         <div class="flex flex-col gap-3 sm:flex-row">
           <input
             id="account-email"

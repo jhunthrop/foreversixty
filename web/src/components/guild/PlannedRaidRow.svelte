@@ -36,7 +36,7 @@
     aria-hidden="true"
   >
     <span class="label text-muted leading-none">{view.weekday}</span>
-    <span class="text-strong font-mono text-[22px] leading-tight tabular-nums">{view.day}</span>
+    <span class="text-strong numeric text-[22px] leading-tight">{view.day}</span>
     <span class="label text-muted leading-none">{view.month}</span>
   </span>
 {/snippet}
@@ -84,17 +84,15 @@
         >{/if}
     </span>
     <span class="min-w-0">
-      <span class="sr-only">{`${view.fullDate}, `}</span><span
-        class="text-text block font-mono text-[14px] tabular-nums">{view.time}</span
+      <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text numeric block text-[14px]"
+        >{view.time}</span
       >
       {#if view.guildTime !== null}<span class="text-muted block text-[12px]">{view.guildTime}</span>{/if}
-      <span class="block font-mono text-[12px] tabular-nums {countdownTone}">{view.countdown}</span>
+      <span class="numeric block text-[12px] {countdownTone}">{view.countdown}</span>
     </span>
     <span class="flex min-w-0 flex-col gap-1">
       <span class="flex items-center gap-2" data-testid={`${testid}-desktop-count`}
-        ><span class="font-mono text-[15px] tabular-nums {countTone}">{view.count}</span>{@render bar(
-          'w-24 shrink-0',
-        )}</span
+        ><span class="numeric text-[15px] {countTone}">{view.count}</span>{@render bar('w-24 shrink-0')}</span
       >
       <span class="text-muted truncate text-[12px]">{view.breakdown}</span>
     </span>
@@ -114,14 +112,13 @@
         <span class="flex shrink-0 items-center gap-1.5">{@render chips('phone')}</span>
       </span>
       <span class="text-[12px]">
-        <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text font-mono tabular-nums"
-          >{view.time}</span
+        <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text numeric">{view.time}</span
         >{#if view.guildTime !== null}<span class="text-muted">{SEP}{view.guildTime}</span>{/if}<span
-          class="font-mono tabular-nums {countdownTone}">{SEP}{view.countdown}</span
+          class="numeric {countdownTone}">{SEP}{view.countdown}</span
         >
       </span>
       <span class="flex min-w-0 items-center gap-2">
-        <span class="font-mono text-[13px] tabular-nums {countTone}">{view.count}</span>
+        <span class="numeric text-[13px] {countTone}">{view.count}</span>
         {@render bar('w-16 shrink-0')}
       </span>
       <span class="text-muted block text-[12px] leading-4" data-testid={`${testid}-phone-breakdown`}

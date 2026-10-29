@@ -152,7 +152,7 @@
       {#if gate === 'ask'}
         {@render askButton()}
       {:else}
-        {@render figureValue('font-mono text-[20px] leading-11')}
+        {@render figureValue('numeric text-[20px] leading-11')}
       {/if}
       <!-- The bar's one primary button: simming a build is one of the planner's own jobs
            (build review round 1, finding 5), a real action rather than an underlined link.
@@ -167,9 +167,8 @@
     <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
          once a run is ready, and removing the line while the next run was pending made the
          whole summary bar one line shorter on every talent click, which moved the trees. -->
-    <span
-      class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
-      data-testid="planner-dps-error">{dpsNote}</span
+    <span class="text-muted numeric block h-[18px] text-[12px] leading-[18px]" data-testid="planner-dps-error"
+      >{dpsNote}</span
     >
     {#if ownGearCaveat}
       <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">

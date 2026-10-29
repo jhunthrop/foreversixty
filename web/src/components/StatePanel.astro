@@ -28,7 +28,7 @@ const { title, rows, updated, sample = false } = Astro.props;
       <div
         class={`grid grid-cols-[110px_1fr] gap-3 py-[9px] text-[14px] items-baseline ${i < rows.length - 1 ? 'border-b border-line-soft' : ''}`}
       >
-        <dt class={`font-mono tabular ${r.highlight ? 'text-gold' : 'text-muted'}`}>{r.key}</dt>
+        <dt class={`numeric ${r.highlight ? 'text-gold' : 'text-muted'}`}>{r.key}</dt>
         <dd class="m-0">
           <span class="text-strong font-semibold">{r.value}</span>
           {r.note && <span class="text-muted"> {r.note}</span>}

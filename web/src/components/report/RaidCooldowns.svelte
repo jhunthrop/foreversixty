@@ -174,7 +174,7 @@
           <span class="truncate font-semibold">{row.name}</span>
           {#if pulls.length > 0}
             <span
-              class="tabular text-right font-mono text-[12px]"
+              class="numeric text-right text-[12px]"
               class:text-wipe={across.used < pulls.length}
               class:text-muted={across.used === pulls.length}
               title={across.missed.length === 0
@@ -183,8 +183,7 @@
               data-testid="raid-cooldown-pulls">{across.used}/{pulls.length}</span
             >
           {:else}
-            <span class="text-muted tabular text-right font-mono text-[12px]" title="Times used"
-              >{row.uses.length}</span
+            <span class="text-muted numeric text-right text-[12px]" title="Times used">{row.uses.length}</span
             >
           {/if}
           <span
@@ -238,7 +237,7 @@
         </li>
       {/each}
       <li
-        class="text-muted tabular grid grid-cols-[minmax(0,1fr)] gap-3 py-1 font-mono text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
+        class="text-muted numeric grid grid-cols-[minmax(0,1fr)] gap-3 py-1 text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
         data-testid="raid-cooldowns-axis"
       >
         <span class="relative block h-7 md:col-start-3">

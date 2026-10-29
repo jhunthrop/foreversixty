@@ -342,7 +342,7 @@
           ></span>{deaths.length === 1 ? 'a death' : `${deaths.length} deaths`}</span
         >{/if}</span
     >
-    <span class="tabular text-muted font-mono text-[12px]" data-testid="window-label" aria-live="polite">
+    <span class="text-muted numeric text-[12px]" data-testid="window-label" aria-live="polite">
       {#if hoverMs !== null && hoverValue !== null}
         <span class="text-text mr-3" data-testid="chart-readout"
           >{formatDuration(hoverMs)}{#if series.length > 0}
@@ -382,7 +382,7 @@
     ></canvas>
     {#if peak > 0}
       <div
-        class="text-muted pointer-events-none absolute inset-y-0 left-0 flex w-11 flex-col items-end justify-between py-0.5 pr-1 text-right font-mono text-[10px] leading-none"
+        class="text-muted numeric pointer-events-none absolute inset-y-0 left-0 flex w-11 flex-col items-end justify-between py-0.5 pr-1 text-right text-[10px] leading-none"
         data-testid="chart-scale"
         aria-hidden="true"
       >
@@ -411,7 +411,7 @@
           <!-- The name is clipped to its own band: a long curated name on a short phase
                ends in an ellipsis rather than running into the next band's name. -->
           <span
-            class="text-muted absolute top-0 overflow-hidden font-mono text-[10px] leading-none text-ellipsis whitespace-nowrap"
+            class="text-muted numeric absolute top-0 overflow-hidden text-[10px] leading-none text-ellipsis whitespace-nowrap"
             style={`left: calc(${from}% + 2px); max-width: calc(${width}% - 4px)`}
             data-testid="phase-band">{phase.name}</span
           >
@@ -431,7 +431,7 @@
            row folded into one select, full width on phone with the sliders under it, and
            sized to its own content beside them at md and up. Its first option is the whole
            fight, so a separate reset button would just repeat it. -->
-      <label class="text-muted label flex min-h-11 items-center gap-2 md:min-h-0" for="window-select">
+      <label class="quiet-label flex min-h-11 items-center gap-2 md:min-h-0" for="window-select">
         {reportCopy.window}
         <select
           id="window-select"
@@ -446,7 +446,7 @@
         </select>
       </label>
     {/if}
-    <label class="label text-muted flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-start">
+    <label class="quiet-label flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-start">
       Start
       <input
         id="window-start"
@@ -464,7 +464,7 @@
         }}
       />
     </label>
-    <label class="label text-muted flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-end">
+    <label class="quiet-label flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-end">
       End
       <input
         id="window-end"

@@ -39,7 +39,7 @@
 </script>
 
 <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="filter-bar">
-  <label class="label text-muted flex items-center gap-2" for="filter-target">
+  <label class="quiet-label flex items-center gap-2" for="filter-target">
     Target
     <select
       id="filter-target"
@@ -54,7 +54,7 @@
     </select>
   </label>
 
-  <label class="label text-muted flex items-center gap-2" for="filter-ability">
+  <label class="quiet-label flex items-center gap-2" for="filter-ability">
     Ability
     <select
       id="filter-ability"

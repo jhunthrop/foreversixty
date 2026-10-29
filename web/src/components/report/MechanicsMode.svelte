@@ -366,8 +366,8 @@
                   {@const worst = mostOftenHit(row.players)}
                   <li class="border-line-soft border-b px-2 py-2 text-[14px]">
                     <span class="font-semibold">{row.name}</span>
-                    hit someone on <span class="tabular font-mono">{row.pulls_hit ?? 0}</span>
-                    of <span class="tabular font-mono">{boss.pulls}</span>
+                    hit someone on <span class="numeric">{row.pulls_hit ?? 0}</span>
+                    of <span class="numeric">{boss.pulls}</span>
                     {boss.pulls === 1 ? 'pull' : 'pulls'}
                     {#if worst !== undefined}
                       · most often {splitUnitName(worst.name).name}
@@ -389,14 +389,14 @@
       <section class="flex flex-col gap-1" data-testid="mechanics-melee">
         <h2 class="label text-muted">Melee swings</h2>
         <p class="text-muted text-[13px]">
-          <span class="text-text tabular font-mono">{formatAmount(melee.damage)}</span> damage to
-          <span class="tabular font-mono">{melee.players}</span>
+          <span class="text-text numeric">{formatAmount(melee.damage)}</span> damage to
+          <span class="numeric">{melee.players}</span>
           {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
-            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span
-              class="tabular font-mono">{formatAmount(melee.most.damage)}</span
+            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span class="numeric"
+              >{formatAmount(melee.most.damage)}</span
             >){#if melee.others.players > 0}, the other
-              <span class="tabular font-mono">{formatAmount(melee.others.damage)}</span> on
-              <span class="tabular font-mono">{melee.others.players}</span>
+              <span class="numeric">{formatAmount(melee.others.damage)}</span> on
+              <span class="numeric">{melee.others.players}</span>
               {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. A swing lands on
           whoever holds the enemy, so no table judges it; the Damage Taken tab splits it by source.
           <a
@@ -419,7 +419,7 @@
               {splitUnitName(player.name).name}
             </h3>
             <p class="text-[13px]">
-              <span class="tabular font-mono">{formatAmount(player.damage)}</span> avoidable damage
+              <span class="numeric">{formatAmount(player.damage)}</span> avoidable damage
               {#if nightMode}
                 <span
                   class="text-muted"
@@ -427,12 +427,11 @@
                   >· share per pull only</span
                 >
               {:else if takenOf(player.guid) > 0}
-                · <span class="tabular font-mono"
-                  >{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span
-                > of what they took
+                · <span class="numeric">{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span> of what
+                they took
               {/if}
               {#if player.placed > 0}
-                · <span class="tabular font-mono">{formatAmount(player.placed)}</span> placed on others
+                · <span class="numeric">{formatAmount(player.placed)}</span> placed on others
               {/if}
             </p>
             {#if player.hits.length === 0}
@@ -447,18 +446,18 @@
                      one row; a key on the row alone threw on the duplicate and blanked the page. -->
                 {#each player.hits as entry (`${mechanicRowKey(entry.row)}${entry.others === undefined ? '' : '-placed'}`)}
                   <li class:text-death={entry.hit.killed}>
-                    {entry.row.name} · <span class="tabular font-mono">{entry.hit.hits}</span>
+                    {entry.row.name} · <span class="numeric">{entry.hit.hits}</span>
                     {entry.hit.hits === 1 ? 'hit' : 'hits'}{entry.others === undefined ? '' : ' on'}
                     {#if entry.others !== undefined}
-                      <span class="tabular font-mono">{entry.others}</span>
+                      <span class="numeric">{entry.others}</span>
                       {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
-                    <span class="tabular font-mono">{formatAmount(entry.hit.damage)}</span>
+                    <span class="numeric">{formatAmount(entry.hit.damage)}</span>
                     damage{#if (entry.hit.absorbed ?? 0) > 0}
                       <span class="text-muted"
-                        >(<span class="tabular font-mono">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed)</span
+                        >(<span class="numeric">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed)</span
                       >{/if}
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
-                    {#if !nightMode}· first at <span class="tabular font-mono"
+                    {#if !nightMode}· first at <span class="numeric"
                         >{formatDuration(entry.hit.first_ms)}</span
                       >{/if}
                     {#if entry.hit.killed}· {entry.others === undefined
@@ -469,7 +468,7 @@
                           .role}'s to take; where it lands is theirs to set"
                         >the {entry.row.role}'s to place</span
                       >{/if}
-                    {#if entry.hit.pulls}· on <span class="tabular font-mono">{entry.hit.pulls}</span>
+                    {#if entry.hit.pulls}· on <span class="numeric">{entry.hit.pulls}</span>
                       {entry.hit.pulls === 1 ? 'pull' : 'pulls'}{/if}
                   </li>
                 {/each}
@@ -477,7 +476,7 @@
             {/if}
             {#if player.unavoidable.damage > 0}
               <p class="text-muted text-[13px]">
-                Unavoidable: <span class="tabular font-mono">{formatAmount(player.unavoidable.damage)}</span>
+                Unavoidable: <span class="numeric">{formatAmount(player.unavoidable.damage)}</span>
                 damage from {player.unavoidable.names.join(', ')}.
               </p>
             {/if}
@@ -523,14 +522,14 @@
               <span class="text-text font-semibold"
                 >{ability.name}{#if unclassifiedNameShared(ability)}
                   <span
-                    class="text-muted ml-1 font-mono text-[11px]"
+                    class="text-muted numeric ml-1 text-[11px]"
                     title="Two things share this name; this is spell id {ability.spell_id}"
                     >#{ability.spell_id}</span
                   >{/if}</span
               >
               <span
-                >· <span class="tabular font-mono">{formatAmount(ability.damage)}</span> damage to players ·
-                <span class="tabular font-mono">{ability.players}</span>
+                >· <span class="numeric">{formatAmount(ability.damage)}</span> damage to players ·
+                <span class="numeric">{ability.players}</span>
                 {ability.players === 1 ? 'player' : 'players'} hit</span
               >
               <a
@@ -559,7 +558,7 @@
               <span class="text-text font-semibold">{splitUnitName(death.name).name}</span>
               <span
                 >{death.label ? `${death.label} · ` : ''}at
-                <span class="tabular font-mono">{formatDuration(death.at_ms)}</span>
+                <span class="numeric">{formatDuration(death.at_ms)}</span>
                 · {death.by}</span
               >
               <a

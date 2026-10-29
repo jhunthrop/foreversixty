@@ -105,7 +105,7 @@
    *  its 60px (L8.5 fix round 2 item 8). */
   const ROW =
     'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px] max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px] max-[400px]:gap-x-2 max-[340px]:grid-cols-[80px_minmax(0,1fr)_56px]';
-  const CUE = 'tabular text-right font-mono text-[12px] font-semibold whitespace-nowrap';
+  const CUE = 'text-right numeric text-[12px] font-semibold whitespace-nowrap';
   /** The marked row's cue below 340px: under the label, on the row's second line. */
   const CUE_UNDER_LABEL = 'max-[340px]:col-start-1 max-[340px]:row-start-2 max-[340px]:text-left';
 
@@ -137,7 +137,7 @@
             data-testid="forever-score-headline"
           >
             <ScoreBadge score={forever.score} tier={forever.tier} size="xl" />
-            <span class="text-muted tabular font-mono text-[14px]">{scoreCopy.outOf(SCORE_MAX)}</span>
+            <span class="text-muted numeric text-[14px]">{scoreCopy.outOf(SCORE_MAX)}</span>
             {#if tier !== null}<span
                 class="text-[15px] font-semibold"
                 style={`color: ${tierTextColor(forever.tier)}`}
@@ -172,7 +172,7 @@
                         style={`width: ${share(points, max)}%${marked ? `; background-color: ${NEEDS_WORK_COLOR}` : ''}`}
                       ></span></span
                     >
-                    <span class="text-muted tabular text-right font-mono whitespace-nowrap"
+                    <span class="text-muted numeric text-right whitespace-nowrap"
                       ><span class="max-[400px]:hidden">{scoreCopy.ofMax(points, max)}</span><span
                         class="min-[400px]:hidden">{scoreCopy.ofMaxShort(points, max)}</span
                       ></span
@@ -285,7 +285,7 @@
             <li class={ROW} data-testid={`forever-score-empty-${component.key}`}>
               <span class="text-muted">{component.label}</span>
               <span class="bg-line-soft h-2" aria-hidden="true"></span>
-              <span class="text-muted tabular text-right font-mono">{scoreCopy.emptyPart}</span>
+              <span class="text-muted numeric text-right">{scoreCopy.emptyPart}</span>
               <span class="max-[340px]:hidden"></span>
             </li>
           {/each}

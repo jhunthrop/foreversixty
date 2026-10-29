@@ -67,7 +67,7 @@
       </button>
     {/if}
     <div class="flex flex-wrap items-center gap-3">
-      <span class="label text-muted">Invite link</span>
+      <span class="quiet-label">Invite link</span>
       <span class="text-muted text-[12px]">Anyone with this link can join as a member.</span>
     </div>
     <GuildInviteLink {guildId} testidPrefix="guild-officer-invite" />

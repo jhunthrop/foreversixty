@@ -192,15 +192,15 @@
       data-testid="actor-total"
     >
       <span class="text-muted label {showParse ? 'md:col-span-3' : 'md:col-span-2'}">Total</span>
-      <span class="tabular hidden text-right font-mono text-[12px] md:inline">100%</span>
+      <span class="numeric hidden text-right text-[12px] md:inline">100%</span>
       <span class="hidden md:inline"></span>
       <span
-        class="tabular text-right font-mono"
+        class="numeric text-right"
         title={amountApproximate ? 'Prorated with its rows, the same way' : undefined}
         >{amountApproximate ? '~' : ''}{formatAmountLike(total, Math.max(peak, total))}</span
       >
       <span
-        class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+        class="text-muted numeric hidden text-right text-[13px] md:inline"
         title="Over the whole window. A row divides by its player's own time in it, so a player who died reads higher per second than the total"
         >{formatPerSecond(total, durationMs)}</span
       >
@@ -236,11 +236,11 @@
         data-testid="actor-mitigated"
         title="What did not land, measured from the fight’s events: absorbed by shields, blocked, and hits avoided outright"
       >
-        Mitigated: <span class="tabular font-mono">{formatAmount(mitigated.absorbed)}</span>
+        Mitigated: <span class="numeric">{formatAmount(mitigated.absorbed)}</span>
         absorbed ·
-        <span class="tabular font-mono">{formatAmount(mitigated.blocked)}</span>
+        <span class="numeric">{formatAmount(mitigated.blocked)}</span>
         blocked ·
-        <span class="tabular font-mono">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
+        <span class="numeric">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
           ? ` (${mitigated.byType})`
           : ''}
       </p>

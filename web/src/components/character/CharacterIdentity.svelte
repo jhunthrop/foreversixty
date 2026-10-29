@@ -81,7 +81,7 @@
   // needs it; a row or chip name is never that prominent.
   const nameClass = $derived(
     size === 'lg' || size === 'xxl' || size === 'xl'
-      ? `w-fit max-w-full [overflow-wrap:anywhere] ${NAME_SIZE[size]} heading-face${size === 'xl' ? ` ${XL_NAME_CAP}` : ''}`
+      ? `w-fit max-w-full [overflow-wrap:anywhere] ${NAME_SIZE[size]} heading-name${size === 'xl' ? ` ${XL_NAME_CAP}` : ''}`
       : `w-fit ${NAME_SIZE[size]} font-semibold`,
   );
   const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);

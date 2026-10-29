@@ -116,7 +116,7 @@ const MEASURE = 'max-w-[70ch]';
               >
                 <span class="flex items-baseline gap-2">
                   <strong>{component.label}</strong>
-                  <span class="text-muted tabular font-mono text-[13px]">
+                  <span class="text-muted numeric text-[13px]">
                     {scoreCopy.upTo(COMPONENT_MAX[component.key])}
                   </span>
                 </span>
@@ -274,16 +274,16 @@ const MEASURE = 'max-w-[70ch]';
           <table class="w-full min-w-[420px] border-collapse text-[13px]" data-testid="ratings-weights">
             <thead>
               <tr>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-left">
+                <th scope="col" class="quiet-label border-line-soft border-b px-2 py-2 text-left">
                   Component
                 </th>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                <th scope="col" class="quiet-label border-line-soft border-b px-2 py-2 text-right">
                   DPS
                 </th>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                <th scope="col" class="quiet-label border-line-soft border-b px-2 py-2 text-right">
                   Healer
                 </th>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                <th scope="col" class="quiet-label border-line-soft border-b px-2 py-2 text-right">
                   Tank
                 </th>
               </tr>
@@ -294,11 +294,9 @@ const MEASURE = 'max-w-[70ch]';
                   <th scope="row" class="border-line-soft border-b px-2 py-2 text-left font-semibold">
                     {row.component}
                   </th>
-                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.dps}</td>
-                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">
-                    {row.healer}
-                  </td>
-                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.tank}</td>
+                  <td class="border-line-soft border-b px-2 py-2 text-right numeric">{row.dps}</td>
+                  <td class="border-line-soft border-b px-2 py-2 text-right numeric">{row.healer}</td>
+                  <td class="border-line-soft border-b px-2 py-2 text-right numeric">{row.tank}</td>
                 </tr>
               ))}
             </tbody>

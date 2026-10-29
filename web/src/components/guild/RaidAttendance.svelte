@@ -75,7 +75,7 @@
         data-testid="raid-attendance-outcome">{outcomeText(row)}</span
       >
       <span class="flex items-center gap-2">
-        <span class="label text-muted text-[11px] whitespace-nowrap md:hidden">{bossPullsHead}</span>
+        <span class="quiet-label whitespace-nowrap md:hidden">{bossPullsHead}</span>
         <span class="text-text text-[13px]"
           ><Figures text={pullsOf(row.pulls_present, row.pulls_total)} /></span
         >
@@ -131,7 +131,7 @@
       <!-- Bench and out: which one, muted, in place of a pull count (UX 20, WP 17). -->
       <span class="text-muted text-[13px]">{raidCopy.segments[row.signed]}</span>
     {:else}
-      <span class="{missed(row) ? 'text-text' : 'text-muted'} font-mono text-[13px]"
+      <span class="{missed(row) ? 'text-text' : 'text-muted'} numeric text-[13px]"
         >{pullsRatio(row.pulls_present, row.pulls_total)}</span
       >
     {/if}
@@ -151,13 +151,13 @@
       class="hidden gap-x-4 px-2 md:grid md:grid-cols-[minmax(200px,1.4fr)_132px_minmax(180px,1fr)_120px_112px]"
       data-testid="raid-attendance-heads"
     >
-      <span class="label text-muted col-start-4 text-[11px]">{bossPullsHead}</span>
+      <span class="quiet-label col-start-4">{bossPullsHead}</span>
     </div>
   {/if}
   {#each groups as group (group.key)}
     <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-attendance-${group.key}`}>
       <h3 class="label text-muted flex items-baseline justify-between gap-3">
-        <span>{group.label} <span class="font-mono tabular-nums">{group.rows.length}</span></span>
+        <span>{group.label} <span class="numeric">{group.rows.length}</span></span>
         {#if group.key === 'present'}<span class="text-[11px] whitespace-nowrap md:hidden"
             >{bossPullsHead}</span
           >{/if}

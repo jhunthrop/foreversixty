@@ -271,12 +271,12 @@
 >
   <div class="flex flex-wrap items-baseline gap-2">
     <span
-      class={`tabular font-mono text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
+      class={`numeric text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
       data-testid="sim-dps"
     >
       {figure}
     </span>
-    <span class="tabular text-muted font-mono text-[14px]" data-testid="sim-error">{band}</span>
+    <span class="text-muted numeric text-[14px]" data-testid="sim-error">{band}</span>
   </div>
   <span class="text-muted text-[13px]" data-testid="sim-saved-encounter">{encounterText}</span>
   {#if stale}
@@ -287,7 +287,7 @@
     </span>
   {/if}
   {#if result.request.source.captured_at !== ''}
-    <span class="tabular text-muted font-mono text-[13px]" data-testid="sim-saved-date">{savedDate}</span>
+    <span class="text-muted numeric text-[13px]" data-testid="sim-saved-date">{savedDate}</span>
   {/if}
 </section>
 

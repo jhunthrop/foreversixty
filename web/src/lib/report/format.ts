@@ -1,7 +1,7 @@
 // web/src/lib/report/format.ts
 // Every number the report prints goes through here, so a duration reads the same in the
-// fight selector, the chart axis and a death's timestamp. Numbers render in --font-mono
-// with `tabular`, per design/DESIGN-SYSTEM.md.
+// fight selector, the chart axis and a death's timestamp. Numbers render in the body face
+// with tabular numerals (the `numeric` utility), per design/DESIGN-SYSTEM.md.
 
 import type { Phase, Taunt } from './types';
 

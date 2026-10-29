@@ -45,7 +45,7 @@ const rows = shownRows.map((row, index) => ({
             aria-hidden="true"
           />
         )}
-        <span class="font-mono tabular text-[12px] text-muted" data-part="key">
+        <span class="numeric text-[12px] text-muted" data-part="key">
           {row.key}
         </span>
       </div>
@@ -106,7 +106,7 @@ const rows = shownRows.map((row, index) => ({
       dot.setAttribute('aria-hidden', 'true');
       head.append(dot);
     }
-    head.append(part('font-mono tabular text-[12px] text-muted', row.key, 'key'));
+    head.append(part('numeric text-[12px] text-muted', row.key, 'key'));
     const children: HTMLElement[] = [
       head,
       part('timeline-value text-[13px] font-semibold text-strong', row.value, 'value'),

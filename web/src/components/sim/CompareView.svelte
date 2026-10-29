@@ -44,7 +44,7 @@
     class="border-line bg-raised rounded-panel mx-[18px] border md:mx-0"
     data-testid="compare-abilities"
   >
-    <div class={`${abilityRow} label text-muted hidden md:grid`}>
+    <div class={`${abilityRow} quiet-label hidden md:grid`}>
       <span>{simCopy.compareAbility}</span>
       <span class="text-right">{simCopy.compareActualCasts}</span>
       <span class="text-right">{simCopy.compareSimCasts}</span>
@@ -57,11 +57,11 @@
     {#each comparison.abilities as row (row.spellId)}
       <div class={abilityRow} data-testid={`compare-ability-${row.spellId}`}>
         <span class="text-strong min-w-0 truncate font-semibold">{row.name}</span>
-        <span class="tabular text-right font-mono">{row.actualCasts}</span>
-        <span class="tabular text-muted text-right font-mono">{row.simCasts}</span>
-        <span class="tabular hidden text-right font-mono md:inline">{amount(row.actualDamage)}</span>
-        <span class="tabular text-muted hidden text-right font-mono md:inline">{amount(row.simDamage)}</span>
-        <span class="text-muted label col-span-3 md:hidden">
+        <span class="numeric text-right">{row.actualCasts}</span>
+        <span class="text-muted numeric text-right">{row.simCasts}</span>
+        <span class="numeric hidden text-right md:inline">{amount(row.actualDamage)}</span>
+        <span class="text-muted numeric hidden text-right md:inline">{amount(row.simDamage)}</span>
+        <span class="quiet-label col-span-3 md:hidden">
           {amount(row.actualDamage)}
           {simCopy.compareActual} · {amount(row.simDamage)}
           {simCopy.compareSimulated}
@@ -72,7 +72,7 @@
 
   <section class="border-line bg-raised rounded-panel mx-[18px] border md:mx-0" data-testid="compare-auras">
     <div
-      class="border-line-soft label text-muted grid min-h-11 grid-cols-[minmax(0,1fr)_72px_72px] items-center gap-x-3 border-b px-3 py-2"
+      class="border-line-soft quiet-label grid min-h-11 grid-cols-[minmax(0,1fr)_72px_72px] items-center gap-x-3 border-b px-3 py-2"
     >
       <span>{simCopy.compareBuff}</span>
       <span class="text-right">{simCopy.compareActual}</span>
@@ -88,8 +88,8 @@
         data-testid={`compare-aura-${row.spellId}`}
       >
         <span class="text-strong min-w-0 truncate font-semibold">{row.name}</span>
-        <span class="tabular text-right font-mono">{pct(row.actualUptimeMs, actualDuration)}</span>
-        <span class="tabular text-muted text-right font-mono">{pct(row.simUptimeMs, simDuration)}</span>
+        <span class="numeric text-right">{pct(row.actualUptimeMs, actualDuration)}</span>
+        <span class="text-muted numeric text-right">{pct(row.simUptimeMs, simDuration)}</span>
       </div>
     {/each}
   </section>

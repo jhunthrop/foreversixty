@@ -147,17 +147,17 @@
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
   <p class="text-muted text-[13px]">
-    <span class="tabular font-mono">{roster.length}</span>
+    <span class="numeric">{roster.length}</span>
     {roster.length === 1 ? 'player' : 'players'} ·
-    <span class="tabular font-mono">{summary.deaths.length}</span> deaths ·
-    <span class="tabular font-mono">{formatDuration(durationMs)}</span>
+    <span class="numeric">{summary.deaths.length}</span> deaths ·
+    <span class="numeric">{formatDuration(durationMs)}</span>
     {#if missingBuffs > 0}
-      · <span class="tabular font-mono">{missingBuffs}</span> missing a raid buff at pull
+      · <span class="numeric">{missingBuffs}</span> missing a raid buff at pull
     {/if}
   </p>
 
   <div class="flex flex-col">
-    <div class="text-muted label hidden {grid} gap-x-3 px-2 pb-1 md:grid">
+    <div class="quiet-label hidden {grid} gap-x-3 px-2 pb-1 md:grid">
       {#if showParse}<span
           title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
           >Parse</span
@@ -181,7 +181,7 @@
         >
           {#if showParse}
             <span
-              class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
+              class="numeric col-start-2 row-start-1 text-right text-[12px] md:col-auto md:row-auto md:text-left"
               class:text-muted={percentile === null || parseWithheld}
               style={percentile === null || parseWithheld
                 ? undefined
@@ -195,7 +195,7 @@
                   parseFallback,
                 )
                   ? ''
-                  : parseFallback}{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
+                  : parseFallback}{:else}<span class="quiet-label mr-1 md:hidden">Parse</span>{Math.round(
                   percentile.percentile,
                 )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
             </span>
@@ -240,36 +240,27 @@
           <!-- Total on top, per-second underneath: a raid leader compares totals across
                the roster, and a player compares their per-second figure with their
                parse. Both are the window's own numbers. -->
-          <span
-            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
-            data-testid="roster-damage"
-          >
+          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-damage">
             <span>{formatAmountLike(row.damage_done, columnMax.damage_done)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.damage_done, durationMs)}/s</span>
           </span>
-          <span
-            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
-            data-testid="roster-healing"
-          >
+          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-healing">
             <span>{formatAmountLike(row.healing_done, columnMax.healing_done)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.healing_done, durationMs)}/s</span>
           </span>
-          <span
-            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
-            data-testid="roster-taken"
-          >
+          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-taken">
             <span>{formatAmountLike(row.damage_taken, columnMax.damage_taken)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.damage_taken, durationMs)}/s</span>
           </span>
           <span
-            class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+            class="text-muted numeric hidden text-right text-[13px] md:inline"
             title={activeTitle}
             aria-label={wholeFightAriaLabel(approximate, formatPercent(row.activity_pct))}
             data-testid="roster-active"
           >
             {activeMark}{formatPercent(row.activity_pct)}
           </span>
-          <span class="tabular hidden text-right font-mono md:inline" class:text-death={row.deaths > 0}
+          <span class="numeric hidden text-right md:inline" class:text-death={row.deaths > 0}
             >{row.deaths}</span
           >
 
@@ -279,13 +270,13 @@
                mark, its title and its composed accessible name: a card layout that dropped
                them would be claiming a precision the summary does not have. -->
           <span
-            class="text-muted label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden"
+            class="quiet-label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden"
             data-testid="roster-figures"
           >
             {#each figuresFor(row) as figure (figure.label)}
               <span>
                 {figure.label}
-                <span class="tabular font-mono normal-case" title={figure.title} aria-label={figure.ariaLabel}
+                <span class="numeric normal-case" title={figure.title} aria-label={figure.ariaLabel}
                   >{figure.value}</span
                 >
               </span>
@@ -353,7 +344,7 @@
             <span class="font-semibold" title={display.title}>{display.text}</span>
             <span class="text-muted text-[13px]">
               {combatant.spec ?? classOf.get(combatant.guid) ?? '—'} · item level
-              <span class="tabular font-mono">{combatant.item_level ?? 0}</span>
+              <span class="numeric">{combatant.item_level ?? 0}</span>
             </span>
             <button
               type="button"
@@ -362,12 +353,11 @@
               data-testid="combatant-gear"
               onclick={() => (gearOpen = gearOpen === combatant.guid ? null : combatant.guid)}
             >
-              <span class="tabular font-mono">{combatant.gear.filter((item) => item.ID > 0).length}</span
-              >&nbsp;items
+              <span class="numeric">{combatant.gear.filter((item) => item.ID > 0).length}</span>&nbsp;items
             </button>
             {#if combatant.missing_buffs.length > 0}
               <span class="pill pill-sample">
-                missing <span class="tabular font-mono">{combatant.missing_buffs.length}</span> buffs
+                missing <span class="numeric">{combatant.missing_buffs.length}</span> buffs
               </span>
             {/if}
             {#if link}

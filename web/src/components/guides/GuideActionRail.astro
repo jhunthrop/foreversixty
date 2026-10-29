@@ -45,7 +45,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
         {trees.map((tree) => (
           <div class="guide-rail-tree">
             <span class="guide-rail-tree-name">
-              {tree.name} <span class="font-mono tabular">{tree.points}</span>
+              {tree.name} <span class="numeric">{tree.points}</span>
             </span>
             <div
               class="guide-rail-tree-grid"
@@ -64,9 +64,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
                     loading="eager"
                     decoding="async"
                   />
-                  {talent.rank > 0 && (
-                    <span class="font-mono tabular guide-rail-tree-rank">{talent.rank}</span>
-                  )}
+                  {talent.rank > 0 && <span class="numeric guide-rail-tree-rank">{talent.rank}</span>}
                 </span>
               ))}
             </div>
@@ -131,13 +129,13 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
           {statRows.map((row, index) => (
             <div class="guide-rail-stat-row">
               <span class="guide-rail-stat-label">
-                <span class="font-mono tabular guide-rail-stat-index">{index + 1}</span>
+                <span class="numeric guide-rail-stat-index">{index + 1}</span>
                 {row.label}
               </span>
               {row.value === undefined ? (
                 <span class="text-muted guide-rail-stat-value">Not significant</span>
               ) : (
-                <span class="font-mono tabular guide-rail-stat-value">
+                <span class="numeric guide-rail-stat-value">
                   {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
                 </span>
               )}

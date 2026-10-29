@@ -134,7 +134,7 @@
       data-testid="guild-transfer-confirm"
     >
       <label class="flex flex-col gap-1" for="guild-transfer-select">
-        <span id="guild-transfer-label" class="label text-muted">{copy.transferTo}</span>
+        <span id="guild-transfer-label" class="quiet-label">{copy.transferTo}</span>
         <span class="relative block">
           <select
             id="guild-transfer-select"

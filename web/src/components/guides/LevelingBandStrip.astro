@@ -44,7 +44,7 @@ const chipRows = levelingChipRows(decoded);
     return (
       <div class="leveling-row" data-testid={`guide-leveling-row-${row.band}`}>
         <div class="leveling-row-top">
-          <span class="font-mono tabular leveling-row-band">{row.bandLabel}</span>
+          <span class="numeric leveling-row-band">{row.bandLabel}</span>
           <span class="leveling-row-points">{row.pointsLabel}</span>
           <a class="leveling-row-link" href={row.plannerHref}>
             {guidesCopy.loadInPlanner}
@@ -67,7 +67,7 @@ const chipRows = levelingChipRows(decoded);
                   decoding="async"
                 />
                 <span class="leveling-chip-name">{chip.name}</span>
-                <span class="font-mono tabular leveling-chip-rank">{`${chip.rank}/${chip.maxRank}`}</span>
+                <span class="numeric leveling-chip-rank">{`${chip.rank}/${chip.maxRank}`}</span>
               </li>
             ))}
           </ul>

@@ -34,7 +34,7 @@ function renderField(withNote = false, variant: Variant = {}): string {
 describe('CopyLinkField on a card (spec §5.5, gate fixes G3 to G5)', () => {
   it('the default is the invite render: visible label, raised ground, fitted buttons', () => {
     const body = renderField();
-    expect(body).toContain('<span class="label text-muted">Invite link</span>');
+    expect(body).toContain('<span class="quiet-label">Invite link</span>');
     expect(body).toMatch(/<input[^>]*bg-raised/);
     expect(body).toMatch(/<div class="flex flex-wrap items-center gap-3">/);
     expect(body).toMatch(/w-fit px-4"[^>]*data-testid="guild-invite-copy"/);

@@ -47,13 +47,13 @@ function html(
 }
 
 describe('the night line', () => {
-  it('reads the ratio and the facts, figures in mono', () => {
+  it('reads the ratio and the facts, figures in tabular numerals', () => {
     const body = html(doneRaid());
     expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
       '22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
     );
-    expect(body).toContain('font-mono text-[15px] whitespace-nowrap">22 of 23 came');
-    expect(body).toMatch(/<span class="font-mono">41<\/span>(<!--.*?-->)* min/);
+    expect(body).toContain('numeric text-[15px] whitespace-nowrap">22 of 23 came');
+    expect(body).toMatch(/<span class="numeric">41<\/span>(<!--.*?-->)* min/);
   });
 
   it('leaves a zero clause out and fills the bar by came over signed', () => {

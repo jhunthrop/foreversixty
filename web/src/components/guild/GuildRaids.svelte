@@ -241,7 +241,7 @@
           >
             <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
             <span class="text-muted tabular text-[13px]">{raidNightDay(row.created_at)}</span>
-            <span class="text-muted tabular font-mono text-[13px]">{minutes(row.duration_ms)}</span>
+            <span class="text-muted numeric text-[13px]">{minutes(row.duration_ms)}</span>
             <FactLine
               facts={raidTallyParts(row, bossIds)}
               class="text-muted tabular ml-auto text-right text-[13px]"
@@ -276,7 +276,7 @@
                   <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
                     {#if fight.name !== null}
                       <span class="min-w-[120px] text-[13px]">{fight.name} · pull {fight.index + 1}</span>
-                      <span class="text-muted tabular font-mono text-[12px]">{clock(fight.duration_ms)}</span>
+                      <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
                       <span
                         class="pill"
                         class:pill-kill={fight.kill}

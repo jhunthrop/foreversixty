@@ -24,7 +24,7 @@
     <div class="overflow-x-auto">
       <table class="w-full min-w-[420px] text-[13px]">
         <thead>
-          <tr class="text-muted label">
+          <tr class="quiet-label">
             <th class="px-2 py-1 text-left">{simCopy.sampleTimeHeading}</th>
             <th class="px-2 py-1 text-left">{simCopy.sampleCastHeading}</th>
             <th class="px-2 py-1 text-left">{simCopy.sampleTargetHeading}</th>
@@ -43,7 +43,7 @@
               }`}
               data-testid={`sim-sample-row-${row.key}`}
             >
-              <td class="tabular px-2 py-1 font-mono">
+              <td class="numeric px-2 py-1">
                 {row.time}{#if row.prePull}<span class="text-muted ml-1 text-[11px]"
                     >{simCopy.samplePrePull}</span
                   >{/if}
@@ -51,7 +51,7 @@
               <td class="px-2 py-1 font-semibold">{row.name}</td>
               <td class="text-muted px-2 py-1">{row.target}</td>
               {#each log.columns as column (column)}
-                <td class="tabular px-2 py-1 text-right font-mono">{row.resources[column] ?? ''}</td>
+                <td class="numeric px-2 py-1 text-right">{row.resources[column] ?? ''}</td>
               {/each}
             </tr>
           {/each}

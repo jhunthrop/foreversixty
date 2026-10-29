@@ -65,7 +65,7 @@
           title={failed || items !== null ? 'Not in this build’s item data' : 'Loading'}>Item {piece.ID}</span
         >
       {/if}
-      <span class="text-muted tabular ml-auto shrink-0 font-mono text-[12px]">{piece.ItemLevel}</span>
+      <span class="text-muted numeric ml-auto shrink-0 text-[12px]">{piece.ItemLevel}</span>
       {#if piece.Enchants && piece.Enchants.some((id) => id > 0)}
         <span class="text-muted shrink-0 text-[11px]" title="Enchanted">ench</span>
       {/if}

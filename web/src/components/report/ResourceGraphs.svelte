@@ -194,7 +194,7 @@
                words instead of a graph that would otherwise draw nothing and explain
                nothing. -->
             <p
-              class="text-muted tabular flex flex-wrap items-baseline gap-x-3 font-mono text-[11px]"
+              class="text-muted numeric flex flex-wrap items-baseline gap-x-3 text-[11px]"
               data-testid="resource-totals-only"
             >
               <span title="The whole fight's total gain, summed across every source"
@@ -284,7 +284,7 @@
               </svg>
             </span>
             {#if readouts[`${track.guid}-${track.power_type}`]}
-              <span class="text-strong tabular font-mono text-[11px]" data-testid="resource-readout"
+              <span class="text-strong numeric text-[11px]" data-testid="resource-readout"
                 >{readouts[`${track.guid}-${track.power_type}`]}</span
               >
             {/if}
@@ -293,8 +293,8 @@
                "the figures" sees the peak beside the cap, the time at it and the waste. -->
             <span
               class={track.max !== undefined && track.max > 0
-                ? 'text-muted tabular flex flex-wrap items-baseline gap-x-3 font-mono text-[11px]'
-                : 'text-muted tabular flex justify-between font-mono text-[11px]'}
+                ? 'text-muted numeric flex flex-wrap items-baseline gap-x-3 text-[11px]'
+                : 'text-muted numeric flex justify-between text-[11px]'}
               data-testid={track.max !== undefined && track.max > 0 ? 'resource-cap-figures' : undefined}
             >
               <span title="The top of the line">peak {formatAmount(peak)}</span>
@@ -324,7 +324,7 @@
           {/if}
         </span>
         <span
-          class="text-muted tabular text-right font-mono text-[13px]"
+          class="text-muted numeric text-right text-[13px]"
           {title}
           aria-label={wholeFightAriaLabel(true, zeroText(track.zero_ms))}
           data-testid="resource-zero"
@@ -335,7 +335,7 @@
     {/each}
   </ul>
   <p class="text-muted text-[12px]">
-    Fight length in this window: <span class="tabular font-mono">{formatDuration(durationMs)}</span>.
+    Fight length in this window: <span class="numeric">{formatDuration(durationMs)}</span>.
   </p>
   <p class="text-muted text-[12px]" data-testid="resource-wholefight-note">
     Time empty and power wasted are marked {mark} because the summary tracks them for the whole fight only; the

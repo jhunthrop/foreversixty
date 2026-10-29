@@ -116,7 +116,7 @@
 >
   <div class="flex flex-wrap items-center gap-4">
     {#if combinationTool}
-      <span class="tabular text-strong font-mono text-[14px]" data-testid="sim-combo-count">
+      <span class="text-strong numeric text-[14px]" data-testid="sim-combo-count">
         {countLabel}
       </span>
     {/if}
@@ -214,7 +214,7 @@
   {/if}
 
   {#if store.progressLine !== ''}
-    <p class="tabular text-muted font-mono text-[13px]" data-testid="sim-stage-progress">
+    <p class="text-muted numeric text-[13px]" data-testid="sim-stage-progress">
       {store.progressLine}
     </p>
   {/if}

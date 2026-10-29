@@ -73,7 +73,7 @@
 
 <div class="flex flex-col gap-2" data-testid={`${testid}-token`}>
   <label class="flex flex-col gap-1 text-[13px]">
-    <span class={labelVisible ? 'label text-muted' : 'sr-only'}>{label}</span>
+    <span class={labelVisible ? 'quiet-label' : 'sr-only'}>{label}</span>
     <input
       class={`border-line-warm ${fieldGround} rounded-control text-text h-11 w-full min-w-0 px-3 font-mono text-[13px]`}
       type="text"

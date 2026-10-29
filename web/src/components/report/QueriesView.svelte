@@ -133,13 +133,13 @@
 
   <p class="text-muted text-[12px]" data-testid="query-window">
     A starting point is written for the window on screen,
-    <span class="tabular font-mono">{formatDuration(current.startMs)}</span>
+    <span class="numeric">{formatDuration(current.startMs)}</span>
     to
-    <span class="tabular font-mono">{formatDuration(current.endMs)}</span>. Pick one again after brushing the
-    chart to move its bounds.
+    <span class="numeric">{formatDuration(current.endMs)}</span>. Pick one again after brushing the chart to
+    move its bounds.
   </p>
 
-  <label class="label text-muted" for="query-sql">Query</label>
+  <label class="quiet-label" for="query-sql">Query</label>
   <textarea
     id="query-sql"
     class="border-line-warm bg-raised rounded-control text-text min-h-[140px] border p-3 font-mono text-[13px]"
@@ -165,9 +165,9 @@
     {#if note !== ''}
       {note}
     {:else if result !== null}
-      <span class="tabular font-mono">{rowsFound}</span>
+      <span class="numeric">{rowsFound}</span>
       {rowsFound === 1 ? 'row' : 'rows'} in
-      <span class="tabular font-mono">{Math.round(result.elapsedMs)}</span> ms{wasCold
+      <span class="numeric">{Math.round(result.elapsedMs)}</span> ms{wasCold
         ? '. That run included the one-time load.'
         : '.'}
     {/if}
@@ -186,7 +186,7 @@
           <thead>
             <tr>
               {#each result.columns as column, index (index)}
-                <th class="label text-muted border-line-soft border-b px-2 py-1 text-left">{column}</th>
+                <th class="quiet-label border-line-soft border-b px-2 py-1 text-left">{column}</th>
               {/each}
             </tr>
           </thead>
@@ -204,8 +204,8 @@
     {/if}
     {#if rowsFound > rowsShown}
       <p class="text-muted text-[12px]" data-testid="query-truncated">
-        The first <span class="tabular font-mono">{rowsShown}</span> of
-        <span class="tabular font-mono">{rowsFound}</span> rows are shown. Add a LIMIT or a GROUP BY to narrow it.
+        The first <span class="numeric">{rowsShown}</span> of
+        <span class="numeric">{rowsFound}</span> rows are shown. Add a LIMIT or a GROUP BY to narrow it.
       </p>
     {/if}
   {/if}

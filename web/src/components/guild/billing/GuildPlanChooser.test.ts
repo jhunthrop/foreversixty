@@ -25,13 +25,13 @@ const checked = (body: string, tier: string): boolean =>
   new RegExp(`<input[^>]*checked[^>]*value="${tier}"`).test(body);
 
 describe('GuildPlanChooser', () => {
-  it('sets only the figures in mono and shows the list price as plain text', () => {
+  it('sets only the figures in tabular numerals and shows the list price as plain text', () => {
     const body = html({ now: OPEN });
     const price =
       /data-testid="guild-billing-option-guild-price">([\s\S]*?)<\/span>\s*<span class="text-muted/.exec(
         body,
       )?.[1] ?? '';
-    expect(price).toMatch(/<span class="text-strong tabular font-mono text-\[20px\]">\$120<\/span>/);
+    expect(price).toMatch(/<span class="text-strong numeric text-\[20px\]">\$120<\/span>/);
     expect(body).not.toContain('<s ');
     expect(body).toMatch(/guild-billing-option-guild-list">\$150 after 6 Jan 2027</);
     expect(price).toMatch(/<span> a year<\/span>/);

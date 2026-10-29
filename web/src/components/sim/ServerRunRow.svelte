@@ -101,11 +101,11 @@
         </span>
       </span>
     {:else if isDone}
-      <span class="text-strong font-mono text-[15px]">{headlineOf(row)}</span>
+      <span class="text-strong numeric text-[15px]">{headlineOf(row)}</span>
     {:else}
       <span class="text-wipe text-[14px]">{serverRunsCopy.failedLine(row.failure_reason)}</span>
     {/if}
-    <time class="text-muted font-mono text-[12px]" datetime={stampSource} title={stampTitle}>{ageLine}</time>
+    <time class="text-muted numeric text-[12px]" datetime={stampSource} title={stampTitle}>{ageLine}</time>
     {#if rerun === 'failed'}
       <p class="text-wipe basis-full text-[13px]" role="alert">{serverRunsCopy.runAgainFailed}</p>
     {:else if rerun === 'lapsed'}

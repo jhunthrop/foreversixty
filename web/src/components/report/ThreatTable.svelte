@@ -416,7 +416,7 @@
     {/if}
   </p>
   {#if groups.length > 0}
-    <label class="label text-muted flex flex-wrap items-center gap-2" for="threat-target">
+    <label class="quiet-label flex flex-wrap items-center gap-2" for="threat-target">
       Enemy
       <select
         id="threat-target"
@@ -437,7 +437,7 @@
   {#if lines.length === 0}
     <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
   {:else}
-    <div class={`text-muted label hidden gap-x-3 px-2 pb-1 md:grid ${rowGrid}`}>
+    <div class={`quiet-label hidden gap-x-3 px-2 pb-1 md:grid ${rowGrid}`}>
       <span>{picked === undefined ? 'Unit' : 'Player'}</span>
       {#if ranked}<span title="Threat generated, against the highest row">Threat</span>{/if}
       <span
@@ -473,7 +473,7 @@
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
             {splitUnitName(row.name).name}{#if picked === undefined && copies.has(row.guid)}
-              <span class="text-muted ml-1 font-mono text-[11px]" title="Another unit of the same name"
+              <span class="text-muted numeric ml-1 text-[11px]" title="Another unit of the same name"
                 >#{copyOf.get(row.guid)}</span
               >{/if}
           </span>
@@ -487,32 +487,31 @@
           {/if}
           <!-- The phone has no header row, so the figure says what it is. -->
           <span
-            class={`tabular text-right font-mono ${ranked ? '' : 'text-muted'}`}
+            class={`numeric text-right ${ranked ? '' : 'text-muted'}`}
             {title}
             data-testid="threat-standing"
             aria-label={approximateAriaLabel(scaled, formatAmount(Math.round(row.threat)))}
           >
-            {mark}{formatAmount(Math.round(row.threat))}<span class="label font-body ml-1.5 md:hidden"
+            {mark}{formatAmount(Math.round(row.threat))}<span class="quiet-label ml-1.5 md:hidden"
               >{showBuilt ? 'standing' : 'threat'}</span
             >
           </span>
           {#if showBuilt}
             <span
-              class="text-muted tabular text-right font-mono"
+              class="text-muted numeric text-right"
               title="Threat this player built inside the window"
               data-testid="threat-built"
             >
-              {formatAmount(Math.round(row.built ?? 0))}<span class="label font-body ml-1.5 md:hidden"
-                >built</span
+              {formatAmount(Math.round(row.built ?? 0))}<span class="quiet-label ml-1.5 md:hidden">built</span
               >
             </span>
           {/if}
           {#if ranked && shares(row)}
             <span
-              class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
+              class="text-muted numeric col-span-2 text-right text-[13px] md:col-span-1"
               data-testid="threat-share"
               >{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}<span
-                class="label font-body ml-1.5 md:hidden">share</span
+                class="quiet-label ml-1.5 md:hidden">share</span
               ></span
             >
           {:else if ranked}
@@ -559,9 +558,8 @@
           <li
             class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 border-b px-2 py-2 text-[14px]"
           >
-            <span
-              class="text-muted tabular font-mono text-[13px]"
-              title="On the pull's clock, whatever the window">{formatDuration(taunt.at_ms)}</span
+            <span class="text-muted numeric text-[13px]" title="On the pull's clock, whatever the window"
+              >{formatDuration(taunt.at_ms)}</span
             >
             <span aria-hidden="true" class="text-muted">·</span>
             <span>

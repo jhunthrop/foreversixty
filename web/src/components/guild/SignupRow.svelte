@@ -316,7 +316,7 @@
         />
         {#if counter !== null}
           <span
-            class="text-muted pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 font-mono text-[12px] tabular-nums"
+            class="text-muted numeric pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[12px]"
             data-testid={`signup-counter-${key}`}>{counter}</span
           >
         {/if}

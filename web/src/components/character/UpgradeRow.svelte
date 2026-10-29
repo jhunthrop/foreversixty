@@ -119,7 +119,7 @@
       {bisCopy.notSimCheckedTag}
     </span>
   {:else}
-    <span class="upgrade-row-gain font-mono" data-testid={`home-upgrade-gain-${upgrade.slot}`}>
+    <span class="upgrade-row-gain numeric" data-testid={`home-upgrade-gain-${upgrade.slot}`}>
       {gainLabel}
     </span>
   {/if}
@@ -137,10 +137,10 @@
   .upgrade-row:last-child {
     border-bottom: none;
   }
+  /* The quiet-label recipe (global.css): a table's row label. */
   .upgrade-row-slot {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: var(--text-meta);
+    font-weight: 600;
     color: var(--color-muted, #999);
   }
   .upgrade-row-cell {

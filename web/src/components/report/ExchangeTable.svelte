@@ -206,13 +206,13 @@
     {#each bySource as entry (entry.name)}
       <span
         ><span class="font-semibold">{splitUnitName(entry.name).name}</span>
-        <span class="tabular font-mono">{mark}{entry.count}</span></span
+        <span class="numeric">{mark}{entry.count}</span></span
       >
     {/each}
   </p>
   <div class="flex flex-col" data-testid="exchange-table">
     <div
-      class="text-muted label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid"
+      class="quiet-label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>By</span>
       <span>With</span>
@@ -230,11 +230,7 @@
           <span class="truncate">{row.spell_name}</span>
           <span class="text-muted truncate text-[13px]">{splitUnitName(row.target_name).name}</span>
           <span class="text-muted truncate text-[13px]">{row.extra_spell_name}</span>
-          <span
-            class="tabular text-right font-mono"
-            {title}
-            aria-label={wholeFightAriaLabel(true, String(row.count))}
-          >
+          <span class="numeric text-right" {title} aria-label={wholeFightAriaLabel(true, String(row.count))}>
             {mark}{row.count}
           </span>
         </li>
@@ -252,12 +248,11 @@
           >
             <span class="font-semibold">{entry.name}</span>
             <span class="text-muted text-[13px]">
-              cast <span class="tabular font-mono">{entry.cast}</span> · stopped
-              <span class="tabular font-mono">{entry.stopped}</span>{#if scopedToSome}
-                <span class="text-muted"
-                  >&nbsp;(<span class="tabular font-mono">{entry.own}</span> in this scope)</span
+              cast <span class="numeric">{entry.cast}</span> · stopped
+              <span class="numeric">{entry.stopped}</span>{#if scopedToSome}
+                <span class="text-muted">&nbsp;(<span class="numeric">{entry.own}</span> in this scope)</span
                 >{/if} ·
-              <span class="text-wipe tabular font-mono">{entry.cast - entry.stopped}</span> went through
+              <span class="text-wipe numeric">{entry.cast - entry.stopped}</span> went through
             </span>
           </li>
         {/each}
@@ -274,12 +269,11 @@
           >
             <span class="font-semibold">{entry.name}</span>
             <span class="text-muted text-[13px]">
-              landed on the raid <span class="tabular font-mono">{entry.applied}</span> times · dispelled
-              <span class="tabular font-mono">{entry.dispelled}</span>{#if scopedToSome}
-                <span class="text-muted"
-                  >&nbsp;(<span class="tabular font-mono">{entry.own}</span> in this scope)</span
+              landed on the raid <span class="numeric">{entry.applied}</span> times · dispelled
+              <span class="numeric">{entry.dispelled}</span>{#if scopedToSome}
+                <span class="text-muted">&nbsp;(<span class="numeric">{entry.own}</span> in this scope)</span
                 >{/if} ·
-              <span class="text-wipe tabular font-mono">{entry.applied - entry.dispelled}</span> ran their course
+              <span class="text-wipe numeric">{entry.applied - entry.dispelled}</span> ran their course
             </span>
           </li>
         {/each}

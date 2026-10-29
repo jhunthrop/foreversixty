@@ -88,11 +88,7 @@ const switchCss =
     )}
     <div class="gbis-pills" role="group" aria-label={guidesCopy.levelRange}>
       {bis.bands.map((b) => (
-        <label
-          for={`gbis-band-${b.band}`}
-          class="gbis-pill font-mono tabular"
-          data-testid={`guide-bis-pill-${b.band}`}
-        >
+        <label for={`gbis-band-${b.band}`} class="gbis-pill numeric" data-testid={`guide-bis-pill-${b.band}`}>
           {guidesCopy.levelRangeLabel(b.band)}
         </label>
       ))}
@@ -233,12 +229,11 @@ const switchCss =
   .gbis-panel {
     display: none;
   }
+  /* The quiet-label recipe (global.css): a table's row header. */
   .gbis-slot {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-nav);
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: var(--color-muted);
     white-space: nowrap;
     vertical-align: middle;
   }

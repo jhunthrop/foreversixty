@@ -27,7 +27,7 @@
     data-testid={`${testid}-summary`}
   >
     <h2 id={headingId} class="section-title">{heading}</h2>
-    {#if count !== null}<span class="text-muted font-mono text-[13px]">{count}</span>{/if}
+    {#if count !== null}<span class="text-muted numeric text-[13px]">{count}</span>{/if}
     <svg
       class="text-muted size-4 shrink-0 transition-transform group-open:rotate-180"
       viewBox="0 0 16 16"

@@ -142,12 +142,12 @@
   <div class="flex min-w-0 flex-1 flex-col gap-1">
     <div class="flex flex-wrap items-baseline gap-2">
       <span
-        class={`tabular font-mono text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
+        class={`numeric text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
         data-testid="sim-dps"
       >
         {figure}
       </span>
-      <span class="tabular text-muted font-mono text-[14px]" data-testid="sim-error">{band}</span>
+      <span class="text-muted numeric text-[14px]" data-testid="sim-error">{band}</span>
       <span class="label text-muted">{simCopy.dps}</span>
       {#if staleVersion}
         <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(staleVersion)}</span>
@@ -166,7 +166,7 @@
       >
         <div class="bg-gold h-full transition-[width] duration-120" style={`width:${percent}%`}></div>
       </div>
-      <p class="text-muted tabular font-mono text-[12px]" data-testid="sim-progress">{progressLine}</p>
+      <p class="text-muted numeric text-[12px]" data-testid="sim-progress">{progressLine}</p>
     {/if}
 
     {#if loadingEngine}

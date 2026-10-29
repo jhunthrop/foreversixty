@@ -50,7 +50,7 @@
     data-testid="character-not-found-form"
   >
     <div class="col-span-2 flex flex-col gap-2 md:col-span-1">
-      <label class="label text-muted" for="character-not-found-name">{scoreCopy.notFoundLookupLabel}</label>
+      <label class="quiet-label" for="character-not-found-name">{scoreCopy.notFoundLookupLabel}</label>
       <input
         id="character-not-found-name"
         name="name"
@@ -62,7 +62,7 @@
       />
     </div>
     <div class="flex flex-col gap-2">
-      <label class="label text-muted" for="character-not-found-region">{lookup.regionLabel}</label>
+      <label class="quiet-label" for="character-not-found-region">{lookup.regionLabel}</label>
       <select id="character-not-found-region" name="region" class="{FIELD} h-11 md:h-14">
         {#each REGIONS as region (region)}
           <option value={region} selected={region === path.region}>
@@ -72,7 +72,7 @@
       </select>
     </div>
     <div class="flex flex-col gap-2">
-      <label class="label text-muted" for="character-not-found-ruleset">{lookup.rulesetLabel}</label>
+      <label class="quiet-label" for="character-not-found-ruleset">{lookup.rulesetLabel}</label>
       <select id="character-not-found-ruleset" name="ruleset" class="{FIELD} h-11 md:h-14">
         {#each RULESETS as ruleset (ruleset.id)}
           <option value={ruleset.id} selected={ruleset.id === path.ruleset}>

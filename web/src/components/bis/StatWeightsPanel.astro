@@ -52,17 +52,17 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   <p class="stat-weights-caption text-muted">{caption}</p>
   <div class="stat-weights-table" role="table">
     <div class="stat-weights-header" role="row">
-      <span class="label" role="columnheader">
+      <span class="quiet-label" role="columnheader">
         Stat
       </span>
       <span aria-hidden="true"></span>
-      <span class="label stat-weights-num-header" role="columnheader">
+      <span class="quiet-label stat-weights-num-header" role="columnheader">
         Scale
       </span>
-      <span class="label stat-weights-num-header" role="columnheader">
+      <span class="quiet-label stat-weights-num-header" role="columnheader">
         Per point
       </span>
-      <span class="label stat-weights-num-header" role="columnheader">
+      <span class="quiet-label stat-weights-num-header" role="columnheader">
         Error
       </span>
     </div>
@@ -79,17 +79,23 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
         <span class="stat-weights-bar" aria-hidden="true">
           {row.significant && <span class="stat-weights-bar-fill" style={`width:${row.barPercent}%`} />}
         </span>
-        <span class="font-mono tabular stat-weights-num" role="cell">
-          {row.significant ? row.scaleFactor.toFixed(2) : bisCopy.weightsNotSignificant}
-        </span>
-        <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
-          {row.significant && row.dpsPerPoint !== undefined
-            ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}`
-            : ''}
-        </span>
-        <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
-          {row.significant ? `±${row.scaleError.toFixed(2)}` : ''}
-        </span>
+        {row.significant ? (
+          <>
+            <span class="numeric stat-weights-num" role="cell">
+              {row.scaleFactor.toFixed(2)}
+            </span>
+            <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
+              {row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}` : ''}
+            </span>
+            <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
+              {`±${row.scaleError.toFixed(2)}`}
+            </span>
+          </>
+        ) : (
+          <span class="stat-weights-num stat-weights-not-significant" role="cell" aria-colspan="3">
+            {bisCopy.weightsNotSignificant}
+          </span>
+        )}
       </div>
     ))}
   </div>
@@ -182,6 +188,13 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   .stat-weights-num-muted {
     font-size: 11px;
     color: var(--color-muted);
+  }
+  /* An insignificant stat reads one muted line across the three figure columns, never a
+     wrapped word in the 56px scale column. */
+  .stat-weights-not-significant {
+    grid-column: 3 / -1;
+    color: var(--color-muted);
+    white-space: nowrap;
   }
   .stat-weights-hit-cap {
     margin: 4px 0 0;

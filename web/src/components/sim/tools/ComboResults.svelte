@@ -170,7 +170,7 @@
     <p class="text-strong text-[13px]" role="status">{bulkCopy.partial}</p>
   {/if}
 
-  <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
+  <p class="text-strong numeric text-[14px]" data-testid="sim-equipped-line">
     {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
     <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
   </p>
@@ -212,7 +212,7 @@
          changes CSS placement, never how many cells exist. -->
     <div role="table" class="flex flex-col">
       <div
-        class="text-muted grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 px-2 pb-1 text-[11px] tracking-wide uppercase md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto]"
+        class="quiet-label grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 px-2 pb-1 md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto]"
         role="row"
       >
         <span role="columnheader">{bulkCopy.resultsRank}</span>
@@ -247,7 +247,7 @@
           data-testid="sim-combo-row"
         >
           <span
-            class="tabular text-muted font-mono text-[12px]"
+            class="text-muted numeric text-[12px]"
             role="cell"
             aria-label={`${bulkCopy.resultsRank} ${row.rank}`}
           >
@@ -262,21 +262,21 @@
             />
           </span>
           <span
-            class="tabular text-strong ml-auto font-mono text-[13px]"
+            class="text-strong numeric ml-auto text-[13px]"
             role="cell"
             aria-label={`${bulkCopy.resultsDps} ${Math.round(row.combo.dps.mean).toLocaleString('en-US')}`}
           >
             {Math.round(row.combo.dps.mean).toLocaleString('en-US')}
           </span>
           <span
-            class="tabular text-gold ml-auto font-mono text-[13px]"
+            class="text-gold numeric ml-auto text-[13px]"
             role="cell"
             aria-label={`${bulkCopy.resultsDelta} ${deltaLabel(row.combo.delta)}`}
           >
             {deltaLabel(row.combo.delta)}
           </span>
           <span
-            class="tabular text-muted ml-auto font-mono text-[12px]"
+            class="text-muted numeric ml-auto text-[12px]"
             role="cell"
             aria-label={`${bulkCopy.resultsPercent} ${row.percent.toFixed(1)}%`}
           >
@@ -326,7 +326,7 @@
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
             <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
             <span class="text-text flex-1 text-[13px]">{row.name}</span>
-            <span class="tabular text-gold font-mono text-[13px]">
+            <span class="text-gold numeric text-[13px]">
               {signedGainLabel(row.gain)}
             </span>
           </li>

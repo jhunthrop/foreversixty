@@ -383,13 +383,13 @@ describe('CharacterRatingPanel Forever Score card', () => {
     );
     // The caption: 12px Barlow (the body face), the left of the date row; the newest date at the
     // right edge. Fix round 3 item 12: the caption in the text colour at every size, with
-    // ", 3 readings" under five points; the newest date stays mono muted.
+    // ", 3 readings" under five points; the newest date stays muted, in tabular numerals.
     const row = /<div class="([^"]*)"[^>]*data-testid="forever-score-history-dates"[\s\S]*?<\/div>/.exec(
       body,
     );
     expect(row?.[1].split(' ')).toEqual(expect.arrayContaining(['flex', 'justify-between']));
     expect(row?.[0]).toMatch(
-      /<span class="text-text text-\[12px\]" data-testid="forever-score-history-caption">Up 330 since 10 Nov, 3 readings<\/span>[\s\S]*<span class="text-muted tabular font-mono text-\[12px\]" data-testid="forever-score-history-last">9 Dec</,
+      /<span class="text-text text-\[12px\]" data-testid="forever-score-history-caption">Up 330 since 10 Nov, 3 readings<\/span>[\s\S]*<span class="text-muted numeric text-\[12px\]" data-testid="forever-score-history-last">9 Dec</,
     );
     // The table equivalent stays.
     expect(body).toMatch(/<table class="sr-only" data-testid="forever-score-history-table"/);

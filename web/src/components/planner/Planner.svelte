@@ -133,7 +133,7 @@
     if (plannerLoad.deadPointer) clearCurrent();
   });
 
-  // A parsed count inside one of these renders in a tabular, monospace span, the same as every
+  // A parsed count inside one of these renders in a `numeric` span, the same as every
   // other number the planner shows (OrderStrip, SummaryBar, BandCompare, TalentCell).
   // This stays a small discriminated union rather than a plain string so the template can wrap
   // just the digits with a real element -- `decoded.message` (current-character-planner.ts's
@@ -911,8 +911,8 @@
   {#if codeNote !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
       {#if codeNote.kind === 'tree-count'}
-        That code has <span class="tabular font-mono">{codeNote.got}</span> talent trees; a build has
-        <span class="tabular font-mono">{codeNote.want}</span>.
+        That code has <span class="numeric">{codeNote.got}</span> talent trees; a build has
+        <span class="numeric">{codeNote.want}</span>.
       {:else if codeNote.kind === 'reconstructed'}
         {#if codeNote.gearOnly}
           {plannerCopy.noTalentRanksNote}
@@ -921,7 +921,7 @@
           the lowest-tier-first order that reaches the same tree.
         {:else}
           Talents loaded from a character, minus
-          <span class="tabular font-mono">{codeNote.dropped}</span>
+          <span class="numeric">{codeNote.dropped}</span>
           that no legal order reaches. The order is a reconstruction: the game does not record the order points
           were spent in.
         {/if}

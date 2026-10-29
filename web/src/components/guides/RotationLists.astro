@@ -28,7 +28,7 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
         <ListTag class="rotation-list">
           {group.items.map((item, index) => (
             <li class="rotation-item" data-testid={`guide-rotation-${group.id}-${index}`}>
-              {group.numbered && <span class="rotation-num font-mono tabular">{index + 1}</span>}
+              {group.numbered && <span class="rotation-num numeric">{index + 1}</span>}
               {item.icon === undefined && group.items.some((other) => other.icon !== undefined) && (
                 <span class="rotation-icon-spacer" aria-hidden="true" />
               )}
@@ -47,7 +47,7 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
                 <span class="rotation-name">
                   {item.name}
                   {item.rank !== undefined && (
-                    <span class="rotation-rank font-mono tabular">{`Rank ${item.rank}`}</span>
+                    <span class="rotation-rank numeric">{`Rank ${item.rank}`}</span>
                   )}
                 </span>
                 {item.clause !== '' && <span class="rotation-clause">{item.clause}</span>}

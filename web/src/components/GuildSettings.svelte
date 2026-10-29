@@ -215,7 +215,7 @@
       {/if}
     {/if}
     <section class="flex flex-col gap-3">
-      <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
+      <label class="quiet-label" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <p class="text-muted text-[13px]">{settingsWords.visibilityHelp}</p>
       <select
         id="guild-visibility"
@@ -232,7 +232,7 @@
       </select>
     </section>
     <section class="flex flex-col gap-3">
-      <label class="label text-muted" for="guild-officer-threshold">{settingsWords.officerRank}</label>
+      <label class="quiet-label" for="guild-officer-threshold">{settingsWords.officerRank}</label>
       <p class="text-muted text-[13px]">{settingsWords.officerRankHelp}</p>
       <div class="flex flex-wrap items-center gap-3">
         <input

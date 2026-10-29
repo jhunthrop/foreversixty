@@ -54,7 +54,7 @@
 </script>
 
 {#snippet label(text: string)}
-  <span class="text-muted font-mono text-[11px]">{text}</span>
+  <span class="text-muted numeric text-[11px]">{text}</span>
 {/snippet}
 
 <div class="flex flex-col gap-12 pb-16" data-testid="ui-sheet">
@@ -233,23 +233,23 @@
     <h2 id="sheet-select" class="heading-section">Select</h2>
     <div class="grid max-w-[720px] gap-4 sm:grid-cols-2" data-testid="sheet-selects">
       <div class="flex flex-col gap-2">
-        <label class="label text-muted" for="sheet-region">default</label>
+        <label class="quiet-label" for="sheet-region">default</label>
         <Select id="sheet-region" bind:value={region} options={REGIONS} testid="sheet-select" />
       </div>
       <div class="flex flex-col gap-2" data-force="hover">
-        <label class="label text-muted" for="sheet-region-hover">hover</label>
+        <label class="quiet-label" for="sheet-region-hover">hover</label>
         <Select id="sheet-region-hover" value="us" options={REGIONS} />
       </div>
       <div class="flex flex-col gap-2" data-force="focus-visible">
-        <label class="label text-muted" for="sheet-region-focus">focus-visible</label>
+        <label class="quiet-label" for="sheet-region-focus">focus-visible</label>
         <Select id="sheet-region-focus" value="us" options={REGIONS} />
       </div>
       <div class="flex flex-col gap-2">
-        <label class="label text-muted" for="sheet-region-compact">filter bar (44 px)</label>
+        <label class="quiet-label" for="sheet-region-compact">filter bar (44 px)</label>
         <Select id="sheet-region-compact" bind:value={region} options={REGIONS} compact />
       </div>
       <div class="flex flex-col gap-2">
-        <label class="label text-muted" for="sheet-region-empty">empty</label>
+        <label class="quiet-label" for="sheet-region-empty">empty</label>
         <Select
           id="sheet-region-empty"
           bind:value={emptyRegion}
@@ -258,7 +258,7 @@
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label class="label text-muted" for="sheet-region-error">error</label>
+        <label class="quiet-label" for="sheet-region-error">error</label>
         <Select
           id="sheet-region-error"
           value=""
@@ -268,7 +268,7 @@
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label class="label text-muted" for="sheet-region-off">disabled</label>
+        <label class="quiet-label" for="sheet-region-off">disabled</label>
         <Select id="sheet-region-off" value="us" options={REGIONS} disabled />
       </div>
     </div>

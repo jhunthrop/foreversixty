@@ -168,7 +168,7 @@
       {/if}
 
       {#if (reportState.mode === 'analyze' && !nightMode) || (nightMode && reportState.mode !== 'mechanics')}
-        <label class="text-muted label flex items-center gap-2" for="report-source">
+        <label class="quiet-label flex items-center gap-2" for="report-source">
           Source
           <select
             id="report-source"
@@ -195,7 +195,7 @@
              control fired. -->
         <!-- Visible, like Source's own label above: a bare select next to "Source" read as
              a second copy of it (finding 3) -- naming this one "Table" is the whole fix. -->
-        <label class="text-muted label flex items-center gap-2 lg:hidden" for="report-tab-select">
+        <label class="quiet-label flex items-center gap-2 lg:hidden" for="report-tab-select">
           {reportCopy.table}
           <select
             id="report-tab-select"

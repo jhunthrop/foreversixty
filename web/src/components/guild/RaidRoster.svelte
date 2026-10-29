@@ -107,7 +107,7 @@
 
 {#snippet heading(label: string, n: number, testid: string)}
   <h3 class="label text-muted" data-testid={testid}>
-    {label} <span class="font-mono tabular-nums">{n}</span>
+    {label} <span class="numeric">{n}</span>
   </h3>
 {/snippet}
 
@@ -247,7 +247,7 @@
   >
     <div class="flex items-baseline gap-3">
       <h2 id="raid-roster-heading" class="section-title">{raidCopy.subheads.signups}</h2>
-      <span class="text-muted font-mono text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
+      <span class="text-muted numeric text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
     </div>
     {@render body()}
   </section>
