@@ -59,7 +59,7 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 			t.Fatalf("footer = %q", m.Embeds[2].Footer)
 		}
 		row := m.Components[0]
-		if len(row) != 2 || row[0].Label != lookupCopy.Share || row[1].Label != lookupCopy.BisOpen || row[1].URL != page {
+		if len(row) != 3 || row[0].Label != lookupCopy.Share || row[1].Label != guideCopy.BisChange || row[2].Label != lookupCopy.BisOpen || row[2].URL != page {
 			t.Fatalf("row = %+v", row)
 		}
 	})
@@ -81,7 +81,7 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		if !strings.HasPrefix(m.Embeds[0].Description, "Main hand · Epic · item level 61\n+30.0 DPS · ") {
 			t.Fatalf("first = %q", m.Embeds[0].Description)
 		}
-		if m.Components[0][1].Label != lookupCopy.BisAllSlots {
+		if m.Components[0][2].Label != lookupCopy.BisAllSlots {
 			t.Fatalf("row = %+v", m.Components[0])
 		}
 	})

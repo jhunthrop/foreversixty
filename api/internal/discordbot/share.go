@@ -163,7 +163,7 @@ func (s *Service) sharedReply(ctx context.Context, in Interaction, guildID int64
 	if !ok {
 		msg = fallback
 	}
-	msg = withShare(msg, shareButton(token, true))
+	msg = withShare(decorateOwn(row.command, row.opts, msg), shareButton(token, true))
 	msg.Ephemeral = true
 	return Reply{Message: msg, Update: true}, nil
 }

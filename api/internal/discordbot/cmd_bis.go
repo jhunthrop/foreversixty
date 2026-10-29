@@ -52,20 +52,7 @@ func (s *Service) cmdBis(ctx context.Context, in Interaction) (Reply, error) {
 	if !ok {
 		return s.bisCardReply(ctx, in, guildID, viewer, true)
 	}
-	msg, found, err := s.answerBis(ctx, guildID, viewer, opts)
-	if err != nil {
-		return Reply{}, err
-	}
-	if !found {
-		return failureReply(), nil
-	}
-	button, err := s.offerShare(ctx, in, guildID, "bis", opts)
-	if err != nil {
-		return Reply{}, err
-	}
-	msg = withShare(msg, button)
-	msg.Ephemeral = true
-	return Reply{Message: msg}, nil
+	return s.bisAnswer(ctx, in, guildID, viewer, opts, false)
 }
 
 // bisCardReply opens the /bis card.
