@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestSignedUpValueGrammar(t *testing.T) {
+func TestSignedValueIsTheBoldCountAlone(t *testing.T) {
 	cases := []struct {
 		name      string
 		c         RaidCounts
@@ -14,17 +14,14 @@ func TestSignedUpValueGrammar(t *testing.T) {
 		sizeKnown bool
 		want      string
 	}{
-		{"full", RaidCounts{In: 20, Late: 3, Tanks: 3, Healers: 6, DPS: 12, Bench: 3, Out: 3}, 40, true,
-			"**23 of 40** · 3 tanks · 6 healers · 12 DPS · 3 late\nBench 3 · Out 3"},
-		{"singular", RaidCounts{In: 2, Tanks: 1, Healers: 1}, 10, true, "**2 of 10** · 1 tank · 1 healer"},
-		{"unknown size", RaidCounts{In: 23, Tanks: 3}, 0, false, "**23 signed up** · 3 tanks"},
-		{"one line", RaidCounts{In: 5}, 10, true, "**5 of 10**"},
-		{"only bench", RaidCounts{Bench: 2}, 10, true, "None yet\nBench 2"},
+		{"full", RaidCounts{In: 20, Late: 3, Tanks: 3, Healers: 6, DPS: 12, Bench: 3, Out: 3}, 40, true, "**23 of 40**"},
+		{"unknown size", RaidCounts{In: 23, Tanks: 3}, 0, false, "**23 signed up**"},
+		{"only bench", RaidCounts{Bench: 2, Out: 1}, 10, true, "None yet"},
 		{"none", RaidCounts{}, 10, true, "None yet"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := SignedUpValue(c.c, c.size, c.sizeKnown); got != c.want {
+			if got := SignedValue(c.c, c.size, c.sizeKnown); got != c.want {
 				t.Fatalf("got %q want %q", got, c.want)
 			}
 		})
@@ -84,13 +81,22 @@ func TestDoneKillsCapAtSix(t *testing.T) {
 	}
 }
 
-func TestWebhookPostKeepsCountsAndNoButtons(t *testing.T) {
+func TestWebhookPostListsTheRosterAsText(t *testing.T) {
 	in := onyxiaThursday()
-	in.Counts = RaidCounts{In: 20, Late: 3, Bench: 3, Out: 3}
+	in.Counts = RaidCounts{In: 1, Late: 1, Out: 1}
+	in.Roster = []RosterLine{
+		{Name: "Aurelith", Class: "paladin", Spec: "Holy", Role: "healer", State: "in"},
+		{Name: "Hollowmere", Class: "rogue", Role: "dps", State: "late"},
+		{Name: "Ysolde", Class: "priest", Spec: "Shadow", Role: "dps", State: "out"},
+	}
 	e := RaidPostedEmbed(in, fixedFinish)
-	last := e.Fields[len(e.Fields)-1]
-	if e.Description != "Sign up on Forever Sixty." || last.Name != "Signed up" || last.Inline ||
-		last.Value != "**23 of 40** · 3 late\nBench 3 · Out 3" {
-		t.Fatalf("webhook post = %+v", e)
+	byName := map[string]string{}
+	for _, f := range e.Fields {
+		byName[f.Name] = f.Value
+	}
+	if e.Description != "Sign up on Forever Sixty." || byName["Signed up"] != "**2 of 40**" ||
+		byName["Healers · 1"] != "Aurelith · Holy Paladin" || byName["Late · 1"] != "Hollowmere · Rogue" ||
+		byName["Out · 1"] != "Ysolde" || byName["Tanks · 0"] != "None yet" {
+		t.Fatalf("webhook post = %+v", e.Fields)
 	}
 }

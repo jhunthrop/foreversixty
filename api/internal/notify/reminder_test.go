@@ -172,8 +172,13 @@ func TestWebhookReminderPostsAndDeletes(t *testing.T) {
 		t.Fatalf("post = %s ?%s", h.methods[0], h.queries[0])
 	}
 	body := h.bodies[0]
-	if _, has := body["embeds"]; has {
-		t.Fatalf("a reminder carries no embed: %v", body)
+	// §P.9.7: the webhook post in the Tomorrow state rides under the line, with no components.
+	embeds, _ := body["embeds"].([]any)
+	if len(embeds) != 1 || embeds[0].(map[string]any)["title"] != "Tomorrow: Onyxia's Lair · Thursday 10 December" {
+		t.Fatalf("a reminder carries one Tomorrow embed: %v", body["embeds"])
+	}
+	if _, has := body["components"]; has {
+		t.Fatalf("a webhook reminder carries components: %v", body)
 	}
 	mentions, _ := json.Marshal(body["allowed_mentions"])
 	if body["content"] != WebhookReminderContent(onyxiaThursday()) || string(mentions) != `{"parse":[]}` {

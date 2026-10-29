@@ -111,6 +111,7 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 		RaidID:  v.ID,
 		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + RaidPagePath(GuildPagePath(g), v.ID),
 		Counts:  notify.RaidCounts(v.Counts),
+		Roster:  rosterLines(v.Signups),
 	}
 	if v.GuildTimezone != nil {
 		in.Timezone = *v.GuildTimezone
@@ -122,6 +123,16 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 		in.Size, in.SizeKnown = *v.Size, true
 	}
 	return in
+}
+
+// rosterLines are the sign-ups as the post lists them (spec 2026-10-28 §P.9): name, class,
+// spec, role and state of every row.
+func rosterLines(signups []SignupView) []notify.RosterLine {
+	out := make([]notify.RosterLine, len(signups))
+	for i, sg := range signups {
+		out[i] = notify.RosterLine{Name: sg.Name, Class: sg.Class, Spec: sg.Spec, Role: sg.Role, State: sg.State}
+	}
+	return out
 }
 
 // postGuild reads the guild the posts name; ok is false (and the failure logged) when it

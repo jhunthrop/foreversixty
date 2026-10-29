@@ -1,6 +1,9 @@
 package notify
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // The destinations a raid reminder can have been sent through.
 const (
@@ -39,4 +42,13 @@ func reminderCount(in RaidPosted) string {
 // WebhookReminderContent is the reminder through a webhook: no buttons, so a link to the raid.
 func WebhookReminderContent(in RaidPosted) string {
 	return ReminderLine(in) + " " + fmt.Sprintf(raidCopy.ReminderWebhookLink, in.RaidURL)
+}
+
+// WebhookReminderEmbed is the webhook post in the Tomorrow state under the reminder: the title
+// post.tomorrowTitle, the webhook's description, and the roster as it stands in text lines, the
+// only up-to-date roster a webhook guild has in Discord (spec 2026-10-28 §P.9.7).
+func WebhookReminderEmbed(in RaidPosted, now time.Time) Embed {
+	e := RaidPostEmbed(RaidPost{RaidPosted: in, State: PostTomorrow}, now)
+	e.Description = raidCopy.Descriptions[PostWebhook]
+	return e
 }

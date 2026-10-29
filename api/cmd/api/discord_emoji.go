@@ -1,0 +1,99 @@
+// api/cmd/api/discord_emoji.go
+//
+// discord-emoji uploads the raid roster's spec marks (spec 2026-10-28 §P.9.1) as application
+// emoji: one 128 px PNG per specs.json row, drawn from the active build's icon folder. It uploads
+// only the names the application lacks, so it is safe to re-run; --replace deletes and uploads
+// them all again after an icon changes. It prints names and counts, never the token. Run it from
+// a checkout (the icons are generated web data, not in the image), once per application.
+package main
+
+import (
+	"context"
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"regexp"
+	"slices"
+	"strconv"
+	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+)
+
+// defaultDataRoot is web/public/data seen from the api directory, where the command is run.
+const defaultDataRoot = "../web/public/data"
+
+// buildDirRE is a client build folder ("1.60.1.70658"); "forever-prebeta" lacks seven icons
+// and is never the source.
+var buildDirRE = regexp.MustCompile(`^\d+(\.\d+)+$`)
+
+// emojiAPIFactory builds the application-emoji client; tests swap it for a fake.
+type emojiAPIFactory func(applicationID, botToken string) discordbot.EmojiAPI
+
+func productionEmojiAPI(applicationID, botToken string) discordbot.EmojiAPI {
+	return discordbot.NewHTTPREST(applicationID, botToken)
+}
+
+func runDiscordEmoji(ctx context.Context, args []string, getenv func(string) string, newAPI emojiAPIFactory, out io.Writer) error {
+	fs := flag.NewFlagSet("discord-emoji", flag.ContinueOnError)
+	fs.SetOutput(out)
+	icons := fs.String("icons", "", "the icon folder (default: the newest build under "+defaultDataRoot+")")
+	replace := fs.Bool("replace", false, "delete and upload every spec emoji again")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	appID, token := strings.TrimSpace(getenv("DISCORD_APPLICATION_ID")), strings.TrimSpace(getenv("DISCORD_BOT_TOKEN"))
+	if appID == "" || token == "" {
+		return errors.New("discord-emoji: DISCORD_APPLICATION_ID and DISCORD_BOT_TOKEN are required")
+	}
+	dir := *icons
+	if dir == "" {
+		build, err := newestBuild(defaultDataRoot)
+		if err != nil {
+			return err
+		}
+		dir = filepath.Join(defaultDataRoot, build, "icons")
+	}
+	fmt.Fprintf(out, "icons from %s\n", dir)
+	images, err := discordbot.EmojiImages(dir)
+	if err != nil {
+		return err
+	}
+	_, err = discordbot.SyncEmoji(ctx, newAPI(appID, token), images, *replace, out)
+	return err
+}
+
+// newestBuild is the highest client build folder under root, the active build the site serves.
+func newestBuild(root string) (string, error) {
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return "", fmt.Errorf("discord-emoji: read %s: %w", root, err)
+	}
+	var builds []string
+	for _, e := range entries {
+		if e.IsDir() && buildDirRE.MatchString(e.Name()) {
+			builds = append(builds, e.Name())
+		}
+	}
+	if len(builds) == 0 {
+		return "", fmt.Errorf("discord-emoji: no build folder under %s", root)
+	}
+	slices.SortFunc(builds, compareVersions)
+	return builds[len(builds)-1], nil
+}
+
+// compareVersions orders dotted versions number by number.
+func compareVersions(a, b string) int {
+	pa, pb := strings.Split(a, "."), strings.Split(b, ".")
+	for i := 0; i < len(pa) && i < len(pb); i++ {
+		na, _ := strconv.Atoi(pa[i])
+		nb, _ := strconv.Atoi(pb[i])
+		if na != nb {
+			return na - nb
+		}
+	}
+	return len(pa) - len(pb)
+}

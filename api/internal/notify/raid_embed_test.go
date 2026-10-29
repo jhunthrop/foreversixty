@@ -24,7 +24,7 @@ const (
 	raidLink   = `"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",`
 	raidFoot   = `"footer":{"text":"Olympus XXVII · Forever Sixty"},"thumbnail":{"url":"https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc"},"timestamp":"2026-10-25T18:30:00Z",`
 	raidWhen   = `{"name":"When","value":"\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)","inline":true}`
-	raidSigned = `{"name":"Signed up","value":"**23 of 40**"}`
+	raidSigned = `{"name":"Signed up","value":"**23 of 40**","inline":true}`
 )
 
 func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {

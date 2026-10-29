@@ -126,7 +126,7 @@ func (d *GuildDeliverer) RaidReminder(ctx context.Context, guildID int64, e Raid
 	}
 	var ref ReminderRef
 	sent, err := d.deliverWith(ctx, guildID, eventRaidReminder, failureUntallied, func(ctx context.Context, url string) error {
-		id, err := d.Poster.PostContent(ctx, url, WebhookReminderContent(e))
+		id, err := d.Poster.PostContent(ctx, url, WebhookReminderContent(e), WebhookReminderEmbed(e, d.clock()))
 		ref = ReminderRef{Via: ReminderViaWebhook, MessageID: id}
 		return err
 	})

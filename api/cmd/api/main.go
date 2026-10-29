@@ -134,6 +134,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "discord-emoji":
+			if err := runDiscordEmoji(context.Background(), os.Args[2:], os.Getenv, productionEmojiAPI, os.Stdout); err != nil {
+				log.Error("discord-emoji", "err", err)
+				os.Exit(1)
+			}
+			return
 		case "stripe-archive-prices":
 			if err := runStripeArchivePrices(context.Background(), log, os.Args[2:]); err != nil {
 				log.Error("stripe-archive-prices", "err", err)

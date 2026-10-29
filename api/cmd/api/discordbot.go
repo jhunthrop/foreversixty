@@ -32,9 +32,11 @@ func botEnabled(cfg config.Config, deps server.Deps, log *slog.Logger) bool {
 // botDeps is the wiring serve and the raid-posts job share; serve adds the character and coach
 // views the interactions answer with.
 func botDeps(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log *slog.Logger) discordbot.Deps {
+	rest := discordbot.NewHTTPREST(cfg.DiscordApplicationID, cfg.DiscordBotToken)
 	return discordbot.Deps{
 		Store:         &discordbot.Store{Pool: pool, Log: log},
-		REST:          discordbot.NewHTTPREST(cfg.DiscordApplicationID, cfg.DiscordBotToken),
+		REST:          rest,
+		Emoji:         rest,
 		OAuth:         discordbot.NewHTTPOAuth(cfg.DiscordClientID, cfg.DiscordClientSecret, notify.CallbackURL(cfg.APIBaseURL)),
 		PublicKey:     cfg.DiscordPublicKey,
 		ApplicationID: cfg.DiscordApplicationID, CommandsGuildID: cfg.DiscordCommandsGuildID,

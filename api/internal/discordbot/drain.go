@@ -53,9 +53,11 @@ type PostFacts interface {
 // leased, so two drainers never hold one row, and every write of a claim is guarded on its
 // lease.
 type Drainer struct {
-	Store                 *Store
-	REST                  REST
-	Facts                 PostFacts
+	Store *Store
+	REST  REST
+	Facts PostFacts
+	// Marks are the spec emoji the roster draws (spec 2026-10-28 §P.9.1); nil draws text lines.
+	Marks                 MarkSource
 	Now                   func() time.Time
 	Tick, Debounce, Lease time.Duration
 	// StopWithin is how long a stop lets the drain's last work run once its context ends;
@@ -70,6 +72,11 @@ type Drainer struct {
 	globalTill time.Time
 	// authTill is the 401 hold's end; one error line is logged per hold.
 	authTill time.Time
+}
+
+// MarkSource is where the drainer reads the spec emoji ids: the bot's EmojiRegistry.
+type MarkSource interface {
+	Marks(ctx context.Context) notify.Marks
 }
 
 // Run drains every Tick until ctx ends. The row in flight when ctx ends still lands; the
@@ -183,6 +190,9 @@ func postFor(facts guilds.RaidPostFacts, state notify.RaidPostState, movedFrom *
 // send creates the post the first time and edits it after; it answers the message id. The
 // create carries the row's nonce, so a create whose answer was lost is not made twice.
 func (d *Drainer) send(ctx context.Context, p Post, post notify.RaidPost, facts guilds.RaidPostFacts, now time.Time) (string, error) {
+	if d.Marks != nil {
+		post.Marks = d.Marks.Marks(ctx)
+	}
 	msg := PostMessage(post, facts.RaidURL, facts.NightURL, now)
 	if p.MessageID == nil {
 		msg.Nonce = postNonce(p)

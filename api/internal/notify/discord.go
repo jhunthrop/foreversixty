@@ -55,8 +55,9 @@ type Poster interface {
 	// Delete removes the webhook at Discord (DELETE on its URL). A 404 is
 	// success: it is already gone.
 	Delete(ctx context.Context, webhookURL string) error
-	// PostContent sends a plain text message that mentions no one and returns its id.
-	PostContent(ctx context.Context, webhookURL, content string) (messageID string, err error)
+	// PostContent sends a text message, with any embeds under it, that mentions no one and
+	// returns its id.
+	PostContent(ctx context.Context, webhookURL, content string, embeds ...Embed) (messageID string, err error)
 	// DeleteMessage removes one message the webhook posted. A 404 is success.
 	DeleteMessage(ctx context.Context, webhookURL, messageID string) error
 }
@@ -164,11 +165,13 @@ func newMessage(avatarURL string, embed Embed) messageJSON {
 	}
 }
 
-// contentJSON is the plain text request body: no embeds, and a mention list that pings no one.
+// contentJSON is the text request body, with any embeds under it, and a mention list that
+// pings no one.
 type contentJSON struct {
 	Username        string          `json:"username"`
 	AvatarURL       string          `json:"avatar_url,omitempty"`
 	Content         string          `json:"content"`
+	Embeds          []embedJSON     `json:"embeds,omitempty"`
 	AllowedMentions allowedMentions `json:"allowed_mentions"`
 }
 
@@ -224,16 +227,20 @@ func (p *HTTPPoster) Post(ctx context.Context, webhookURL string, embed Embed) e
 	return statusError(res)
 }
 
-// PostContent sends one text message and returns the id Discord gave it.
-func (p *HTTPPoster) PostContent(ctx context.Context, webhookURL, content string) (string, error) {
+// PostContent sends one text message, with any embeds under it, and returns the id Discord gave it.
+func (p *HTTPPoster) PostContent(ctx context.Context, webhookURL, content string, embeds ...Embed) (string, error) {
 	target, err := withQuery(webhookURL, "wait", "true")
 	if err != nil {
 		return "", err
 	}
-	body, err := json.Marshal(contentJSON{
+	msg := contentJSON{
 		Username: Username, AvatarURL: p.avatarURL, Content: content,
 		AllowedMentions: allowedMentions{Parse: []string{}},
-	})
+	}
+	for _, e := range embeds {
+		msg.Embeds = append(msg.Embeds, e.wire())
+	}
+	body, err := json.Marshal(msg)
 	if err != nil {
 		return "", fmt.Errorf("notify: encode message: %w", err)
 	}
@@ -412,16 +419,19 @@ type FakePoster struct {
 }
 
 // ContentCall is one recorded FakePoster.PostContent.
-type ContentCall struct{ URL, Content string }
+type ContentCall struct {
+	URL, Content string
+	Embeds       []Embed
+}
 
 // MessageDeleteCall is one recorded FakePoster.DeleteMessage.
 type MessageDeleteCall struct{ URL, MessageID string }
 
 // PostContent records the message and answers ContentID (or ContentErr).
-func (f *FakePoster) PostContent(_ context.Context, webhookURL, content string) (string, error) {
+func (f *FakePoster) PostContent(_ context.Context, webhookURL, content string, embeds ...Embed) (string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	f.contents = append(f.contents, ContentCall{URL: webhookURL, Content: content})
+	f.contents = append(f.contents, ContentCall{URL: webhookURL, Content: content, Embeds: embeds})
 	if f.ContentErr != nil {
 		return "", f.ContentErr
 	}

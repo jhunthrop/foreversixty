@@ -36,7 +36,10 @@ type Deps struct {
 	// Coach words the log coach's fix-first line in /report. Nil: no coach lines.
 	Coach  CoachLines
 	Notify *notify.Service
-	Log    *slog.Logger
+	// Emoji is the application-emoji API the roster's spec marks are read from; nil draws the
+	// roster as text lines.
+	Emoji EmojiAPI
+	Log   *slog.Logger
 	// Background runs work that outlives a request. Nil means in-process
 	// goroutines tracked by Drain; see Background.
 	Background Background
@@ -106,6 +109,8 @@ type Service struct {
 	candidates candidateCache
 	// sources is the BiS build's loot.json, for item source lines (item_source.go).
 	sources sourceBook
+	// emoji holds the spec emoji ids the roster draws (emoji.go).
+	emoji *EmojiRegistry
 	// stopDrainer ends the post drainer StartDrainer began; nil when none runs.
 	stopDrainer func(ctx context.Context) error
 }
@@ -118,6 +123,9 @@ func New(d Deps) *Service {
 	}
 	if s.bg == nil {
 		s.bg = &inProcess{}
+	}
+	if d.Emoji != nil {
+		s.emoji = &EmojiRegistry{API: d.Emoji, Log: s.log}
 	}
 	s.commands, s.components = s.commandRoutes(), s.componentRoutes()
 	if d.Notify != nil {
@@ -159,7 +167,7 @@ func (s *Service) StartDrainer(stop context.Context, d *Drainer) {
 
 // NewDrainer is a drainer over the service's store and REST client, reading facts from facts.
 func (s *Service) NewDrainer(facts PostFacts) *Drainer {
-	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Log: s.log}
+	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Marks: s.emoji, Log: s.log}
 }
 
 // serverGuild is the guild the interaction's server is installed for.

@@ -3,8 +3,8 @@ package notify
 import (
 	"fmt"
 	"net/url"
-	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const (
@@ -50,17 +50,9 @@ var raidCopy = struct {
 	StruckFormat    string // %s a struck-through value
 	GuildTimeName   string
 	SignedName      string
-	SignedLead      string // %d signed up, %d the raid size (the bold first clause)
+	SignedLead      string // %d signed up, %d the raid size (roster.signed)
 	SignedLeadOpen  string // %d signed up, size unknown
 	SignedNone      string
-	Tank, Tanks     string // Tanks takes %d
-	Healer, Healers string // Healers takes %d
-	DPSClause       string // %d
-	LateClause      string // %d
-	BenchClause     string // %d
-	OutClause       string // %d
-	ClauseJoin      string
-	LineJoin        string
 	CameName        string
 	CameOf          string // %d came, %d of
 	KillsName       string
@@ -96,16 +88,6 @@ var raidCopy = struct {
 	SignedLead:     "**%d of %d**",
 	SignedLeadOpen: "**%d signed up**",
 	SignedNone:     "None yet",
-	Tank:           "1 tank",
-	Tanks:          "%d tanks",
-	Healer:         "1 healer",
-	Healers:        "%d healers",
-	DPSClause:      "%d DPS",
-	LateClause:     "%d late",
-	BenchClause:    "Bench %d",
-	OutClause:      "Out %d",
-	ClauseJoin:     " · ",
-	LineJoin:       "\n",
 	CameName:       "Came",
 	CameOf:         "%d of %d",
 	KillsName:      "Kills",
@@ -134,6 +116,8 @@ type RaidPosted struct {
 	Counts            RaidCounts
 	Size              int
 	SizeKnown         bool
+	// Roster is every sign-up as the post lists it (spec 2026-10-28 §P.9).
+	Roster []RosterLine
 }
 
 // RaidChanged is a raid moved (Was set) or cancelled; StartsAt is the current start.
@@ -155,6 +139,8 @@ type RaidPost struct {
 	// Came of CameOf, and the kills, are a done raid's.
 	Came, CameOf int
 	Kills        []KillLine
+	// Marks are the bot's spec emoji; nil (every webhook post) draws the roster as text lines.
+	Marks Marks
 }
 
 // RaidPostedEmbed is the raid_posted message (the webhook post, never edited).
@@ -177,7 +163,18 @@ func RaidPostEmbed(p RaidPost, now time.Time) Embed {
 	e.Color = stateColor(p.State)
 	e.Description = raidCopy.Descriptions[p.State]
 	e.Fields = postFields(p)
+	if hasRoster(p.State) {
+		e.Fields = append(e.Fields, rosterFields(p.Roster, p.Marks, embedChars(e))...)
+	}
 	return e
+}
+
+// hasRoster reports the states that list the roster: every one but Cancelled and Done (§P.9.6).
+func hasRoster(s RaidPostState) bool { return s != PostCancelled && s != PostDone }
+
+// embedChars is what Discord counts toward an embed's 6000.
+func embedChars(e Embed) int {
+	return utf8.RuneCountInString(e.Title+e.Description+e.Footer+e.Author) + fieldsChars(e.Fields)
 }
 
 func statePrefix(s RaidPostState) string {
@@ -256,67 +253,23 @@ func whenValue(at time.Time) string {
 	return fmt.Sprintf(raidCopy.WhenFormat, at.Unix(), at.Unix())
 }
 
-// signedField is the full-width counts field.
+// signedField is the bold count alone, inline beside When (spec 2026-10-28 §P.9.2).
 func signedField(in RaidPosted) EmbedField {
-	return EmbedField{Name: raidCopy.SignedName, Value: SignedUpValue(in.Counts, in.Size, in.SizeKnown)}
+	return raidField(raidCopy.SignedName, SignedValue(in.Counts, in.Size, in.SizeKnown))
 }
 
-// SignedUpValue is the counts field's two lines: the G1 grammar, then Bench and Out.
-func SignedUpValue(c RaidCounts, size int, sizeKnown bool) string {
+// SignedValue is roster.signed: `**33 of 40**` (In plus Late), `**33 signed up**` for a raid of
+// unknown size, `None yet` with nobody In or Late.
+func SignedValue(c RaidCounts, size int, sizeKnown bool) string {
 	signed := c.In + c.Late
-	if signed == 0 && c.Bench == 0 && c.Out == 0 {
-		return raidCopy.SignedNone
-	}
-	lead := raidCopy.SignedNone
 	switch {
-	case signed > 0 && sizeKnown:
-		lead = fmt.Sprintf(raidCopy.SignedLead, signed, size)
-	case signed > 0:
-		lead = fmt.Sprintf(raidCopy.SignedLeadOpen, signed)
+	case signed == 0:
+		return raidCopy.SignedNone
+	case sizeKnown:
+		return fmt.Sprintf(raidCopy.SignedLead, signed, size)
 	}
-	lines := []string{joinClauses(append([]string{lead}, roleClauses(c)...))}
-	if second := joinClauses(offClauses(c)); second != "" {
-		lines = append(lines, second)
-	}
-	return strings.Join(lines, raidCopy.LineJoin)
+	return fmt.Sprintf(raidCopy.SignedLeadOpen, signed)
 }
-
-func roleClauses(c RaidCounts) []string {
-	var out []string
-	if c.Tanks > 0 {
-		out = append(out, plural(c.Tanks, raidCopy.Tank, raidCopy.Tanks))
-	}
-	if c.Healers > 0 {
-		out = append(out, plural(c.Healers, raidCopy.Healer, raidCopy.Healers))
-	}
-	if c.DPS > 0 {
-		out = append(out, fmt.Sprintf(raidCopy.DPSClause, c.DPS))
-	}
-	if c.Late > 0 {
-		out = append(out, fmt.Sprintf(raidCopy.LateClause, c.Late))
-	}
-	return out
-}
-
-func offClauses(c RaidCounts) []string {
-	var out []string
-	if c.Bench > 0 {
-		out = append(out, fmt.Sprintf(raidCopy.BenchClause, c.Bench))
-	}
-	if c.Out > 0 {
-		out = append(out, fmt.Sprintf(raidCopy.OutClause, c.Out))
-	}
-	return out
-}
-
-func plural(n int, one, many string) string {
-	if n == 1 {
-		return one
-	}
-	return fmt.Sprintf(many, n)
-}
-
-func joinClauses(parts []string) string { return strings.Join(parts, raidCopy.ClauseJoin) }
 
 // guildLocation loads the guild's zone, falling back to UTC.
 func guildLocation(name string) *time.Location {

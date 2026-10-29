@@ -203,7 +203,9 @@ func (cancelAfterPost) Lookup(context.Context, string) (LookupResult, error) {
 
 func (cancelAfterPost) Delete(context.Context, string) error { return nil }
 
-func (cancelAfterPost) PostContent(context.Context, string, string) (string, error) { return "", nil }
+func (cancelAfterPost) PostContent(context.Context, string, string, ...Embed) (string, error) {
+	return "", nil
+}
 
 func (cancelAfterPost) DeleteMessage(context.Context, string, string) error { return nil }
 
