@@ -22,7 +22,7 @@ export const FOOTER_DISCORD_BUTTON: FooterLink = {
 };
 
 export const FOOTER_CONTRIBUTE_BUTTON: FooterLink = {
-  label: 'Contribute',
+  label: 'Report a bug',
   href: `${communityLinks.githubRepo}/issues`,
 };
 
@@ -35,6 +35,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: 'Best in slot', href: '/bis' },
       { label: 'Talent planner', href: '/planner' },
       { label: 'Simulator', href: '/sim' },
+      { label: 'Tier list', href: '/tiers' },
     ],
   },
   {
@@ -43,7 +44,6 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: 'Upload a log', href: '/logs' },
       { label: 'Your reports', href: '/reports' },
       { label: 'Rankings', href: '/rankings' },
-      { label: 'Tier list', href: '/tiers' },
     ],
   },
   {
@@ -55,12 +55,12 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
     ],
   },
   {
-    heading: 'Forever Sixty',
+    heading: 'About',
     links: [
-      { label: 'About', href: '/about' },
       { label: 'Premium', href: '/premium' },
+      { label: 'About', href: '/about' },
       { label: 'Changelog', href: '/changelog' },
-      { label: 'Sources', href: '/sources' },
+      { label: 'Data sources', href: '/sources' },
     ],
   },
 ];

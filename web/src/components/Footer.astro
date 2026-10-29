@@ -24,7 +24,7 @@ const BUTTON_CLASS =
 
 <footer class="mt-auto border-t border-white/[.06] bg-[linear-gradient(180deg,rgba(255,255,255,.025),transparent_70%)]">
   <div class="page-column px-[18px]">
-    <div class="grid gap-8 pt-9 pb-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,4fr)] lg:pt-12 lg:pb-9">
+    <div class="grid gap-8 pt-9 pb-5 lg:grid-cols-[minmax(0,1.7fr)_repeat(4,minmax(0,1fr))] lg:pt-12 lg:pb-9">
       <div class="flex flex-col">
         <div class="inline-flex items-center gap-2.5">
           <Seal size={30} gradientId="footer-seal" />
@@ -46,7 +46,7 @@ const BUTTON_CLASS =
           </a>
         </div>
       </div>
-      <nav aria-label="Footer" class="grid grid-cols-2 gap-x-4 gap-y-7 md:grid-cols-4 lg:gap-x-8">
+      <nav aria-label="Footer" class="grid grid-cols-2 gap-x-4 gap-y-7 md:grid-cols-4 lg:contents">
         {FOOTER_COLUMNS.map((column) => (
           <div class="flex min-w-0 flex-col">
             <p class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{column.heading}</p>
@@ -60,15 +60,15 @@ const BUTTON_CLASS =
       </nav>
     </div>
     <div class="flex flex-col gap-1 border-t border-line-soft pt-[18px] pb-7 lg:flex-row lg:items-center lg:justify-between">
-      <nav aria-label="Legal" class="-mx-2 flex lg:order-last">
+      <nav aria-label="Legal" class="-mx-3.5 lg:-mx-2 flex lg:order-last">
         {FOOTER_LEGAL_LINKS.map((link) => (
-          <a href={link.href} class={`${LINK_CLASS} px-2 text-[13px]`}>
+          <a href={link.href} class={`${LINK_CLASS} px-3.5 lg:px-2 text-[13px]`}>
             {link.label}
           </a>
         ))}
       </nav>
       <div class="text-[12px] leading-[18px] text-muted">
-        <p>{FOOTER_TRADEMARK}</p>
+        <p class="[text-wrap:pretty]">{FOOTER_TRADEMARK}</p>
         <p>{footerOperatorLine(new Date().getFullYear())}</p>
       </div>
     </div>

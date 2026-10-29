@@ -46,12 +46,7 @@ describe('Footer', () => {
   });
 
   it('has the four labelled columns of the spec in order', () => {
-    expect(FOOTER_COLUMNS.map((column) => column.heading)).toEqual([
-      'Play',
-      'Logs',
-      'Guilds',
-      'Forever Sixty',
-    ]);
+    expect(FOOTER_COLUMNS.map((column) => column.heading)).toEqual(['Play', 'Logs', 'Guilds', 'About']);
   });
 
   it('renders every column and legal link with its href', async () => {
@@ -67,9 +62,9 @@ describe('Footer', () => {
     }
   });
 
-  it('carries the Discord invite and the Contribute issues link as buttons', async () => {
+  it('carries the Discord invite and the Report a bug issues link as buttons', async () => {
     const html = await renderFooter();
     expect(html).toMatch(/<a[^>]*href="https:\/\/discord\.gg\/[^"]+"[^>]*>[\s\S]*?Join the Discord/);
-    expect(html).toMatch(/<a[^>]*href="[^"]+\/issues"[^>]*>[\s\S]*?Contribute/);
+    expect(html).toMatch(/<a[^>]*href="[^"]+\/issues"[^>]*>[\s\S]*?Report a bug/);
   });
 });
