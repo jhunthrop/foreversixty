@@ -77,7 +77,7 @@
 </script>
 
 <!-- The element is a real button whenever it has a click handler (tag above); the compiler cannot see that. -->
-<!-- svelte-ignore a11y_no_static_element_interactions, a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <svelte:element
   this={tag}
   href={tag === 'a' ? href : undefined}
