@@ -36,8 +36,10 @@ type Install struct {
 	ChannelUnusable *ChannelUnusable
 	// PostDefault is the raid form's remembered "Post to Discord" box.
 	PostDefault bool
-	InstalledBy *int64
-	UpdatedAt   time.Time
+	// RemindDefault is the raid form's remembered "Remind the day before" box.
+	RemindDefault bool
+	InstalledBy   *int64
+	UpdatedAt     time.Time
 }
 
 // BindOutcome is the answer to BindServer.
@@ -56,14 +58,14 @@ type BindResult struct {
 }
 
 const installColumns = `guild_id, server_id, server_name, channel_id, channel_name, failures,
-	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, post_default, installed_by, updated_at`
+	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, post_default, remind_default, installed_by, updated_at`
 
 func scanInstall(row pgx.Row) (Install, error) {
 	var in Install
 	var reason *string
 	var missing []string
 	err := row.Scan(&in.GuildID, &in.ServerID, &in.ServerName, &in.ChannelID, &in.ChannelName,
-		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.PostDefault, &in.InstalledBy, &in.UpdatedAt)
+		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.PostDefault, &in.RemindDefault, &in.InstalledBy, &in.UpdatedAt)
 	if reason != nil {
 		in.ChannelUnusable = &ChannelUnusable{Reason: *reason, Missing: append([]string{}, missing...)}
 	}
@@ -110,10 +112,12 @@ func (s *Store) bindOnce(ctx context.Context, guildID int64, serverID, serverNam
 	case !errors.Is(err, pgx.ErrNoRows):
 		return BindResult{}, fmt.Errorf("discordbot: bind read server: %w", err)
 	}
-	// A new install starts from the webhook's remembered box, so a guild that posted by default
-	// keeps doing so once the bot takes over the posts.
-	_, err = tx.Exec(ctx, `insert into guild_discord_installs (guild_id, server_id, server_name, installed_by, post_default)
-		values ($1, $2, $3, $4, coalesce((select post_default from guild_notification_webhooks where guild_id = $1), false))`,
+	// A new install starts from the webhook's remembered boxes, so a guild keeps its choices
+	// once the bot takes over the posts; with no webhook both start on.
+	_, err = tx.Exec(ctx, `insert into guild_discord_installs (guild_id, server_id, server_name, installed_by, post_default, remind_default)
+		values ($1, $2, $3, $4,
+		  coalesce((select post_default from guild_notification_webhooks where guild_id = $1), true),
+		  coalesce((select remind_default from guild_notification_webhooks where guild_id = $1), true))`,
 		guildID, serverID, serverName, by)
 	return s.commit(ctx, tx, BindResult{Outcome: BindInstalled}, err)
 }
@@ -214,6 +218,13 @@ func (s *Store) RecordPostFailure(ctx context.Context, guildID int64, lastErr st
 // install is left as it is.
 func (s *Store) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
 	return s.exec(ctx, `update guild_discord_installs set post_default = $2 where guild_id = $1`, guildID, on)
+}
+
+// SetDiscordDefaults stores the raid form's two remembered boxes; a guild with no install
+// is left as it is.
+func (s *Store) SetDiscordDefaults(ctx context.Context, guildID int64, post, remind bool) error {
+	return s.exec(ctx, `update guild_discord_installs set post_default = $2, remind_default = $3
+		where guild_id = $1`, guildID, post, remind)
 }
 
 func (s *Store) exec(ctx context.Context, query string, args ...any) error {

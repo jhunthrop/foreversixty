@@ -41,7 +41,7 @@ func TestGuildStoreSaveGetBoxDelete(t *testing.T) {
 		t.Fatalf("Get = %v, %v", ok, err)
 	}
 	if w.ChannelID != "555" || w.DiscordGuildID == nil || *w.DiscordGuildID != "4242" || w.ConnectedBy == nil ||
-		*w.ConnectedBy != uid || w.Failures != 0 || w.DisabledReason != nil || w.LastError != nil || w.PostDefault {
+		*w.ConnectedBy != uid || w.Failures != 0 || w.DisabledReason != nil || w.LastError != nil || !w.PostDefault || !w.RemindDefault {
 		t.Fatalf("stored = %+v", w)
 	}
 	box, err := st.TokenBox(ctx, gid)
@@ -181,5 +181,23 @@ func TestCreateStateRoundTripsKind(t *testing.T) {
 	}
 	if cs, _, _ := st.TakeConnectState(ctx, "s3"); cs.Kind != StateKindBotInstall || cs.GuildID != gid {
 		t.Fatalf("install state = %+v", cs)
+	}
+}
+
+func TestDefaultsStartOnAndAreRemembered(t *testing.T) {
+	ctx := context.Background()
+	st, gid, _ := savedGuild(t)
+	if err := st.SetDefaults(ctx, gid, false, true); err != nil {
+		t.Fatal(err)
+	}
+	w, _, err := st.Get(ctx, gid)
+	if err != nil || w.PostDefault || !w.RemindDefault {
+		t.Fatalf("after SetDefaults(false,true) = %+v, %v", w, err)
+	}
+	if err := st.SetDefaults(ctx, gid, true, false); err != nil {
+		t.Fatal(err)
+	}
+	if w, _, _ = st.Get(ctx, gid); !w.PostDefault || w.RemindDefault {
+		t.Fatalf("after SetDefaults(true,false) = %+v", w)
 	}
 }

@@ -28,7 +28,9 @@ type GuildWebhook struct {
 	ConnectedBy    *int64
 	// PostDefault is the raid form's remembered "Post to Discord" box.
 	PostDefault bool
-	UpdatedAt   time.Time
+	// RemindDefault is the raid form's remembered "Remind the day before" box.
+	RemindDefault bool
+	UpdatedAt     time.Time
 }
 
 // GuildSaveInput is everything Save writes.
@@ -61,10 +63,10 @@ func (s *GuildStore) Save(ctx context.Context, in GuildSaveInput) error {
 func (s *GuildStore) Get(ctx context.Context, guildID int64) (GuildWebhook, bool, error) {
 	w := GuildWebhook{GuildID: guildID}
 	err := s.Pool.QueryRow(ctx, `
-		select channel_id, discord_guild_id, failures, disabled_reason, last_error, connected_by, post_default, updated_at
+		select channel_id, discord_guild_id, failures, disabled_reason, last_error, connected_by, post_default, remind_default, updated_at
 		from guild_notification_webhooks where guild_id = $1`, guildID).
 		Scan(&w.ChannelID, &w.DiscordGuildID, &w.Failures, &w.DisabledReason, &w.LastError,
-			&w.ConnectedBy, &w.PostDefault, &w.UpdatedAt)
+			&w.ConnectedBy, &w.PostDefault, &w.RemindDefault, &w.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return GuildWebhook{}, false, nil
 	}
@@ -101,6 +103,17 @@ func (s *GuildStore) SetPostDefault(ctx context.Context, guildID int64, on bool)
 	_, err := s.Pool.Exec(ctx, `update guild_notification_webhooks set post_default = $2 where guild_id = $1`, guildID, on)
 	if err != nil {
 		return fmt.Errorf("notify: set guild post default %d: %w", guildID, err)
+	}
+	return nil
+}
+
+// SetDefaults stores the raid form's two remembered boxes; a guild with no channel saved
+// has nothing to remember them on, which is not an error.
+func (s *GuildStore) SetDefaults(ctx context.Context, guildID int64, post, remind bool) error {
+	_, err := s.Pool.Exec(ctx, `update guild_notification_webhooks set post_default = $2, remind_default = $3
+		where guild_id = $1`, guildID, post, remind)
+	if err != nil {
+		return fmt.Errorf("notify: set guild defaults %d: %w", guildID, err)
 	}
 	return nil
 }

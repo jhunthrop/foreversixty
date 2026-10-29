@@ -495,8 +495,14 @@ func TestActivePortCarriesThePostDefault(t *testing.T) {
 	if err := h.svc.d.Store.SetChannel(ctx, h.gid, "c1", "raid-signups"); err != nil {
 		t.Fatal(err)
 	}
-	if active, def, err := h.svc.Active(ctx, h.gid); err != nil || !active || def {
+	if active, def, err := h.svc.Active(ctx, h.gid); err != nil || !active || !def {
 		t.Fatalf("channel saved: active %v default %v err %v", active, def, err)
+	}
+	if err := h.svc.SetPostDefault(ctx, h.gid, false); err != nil {
+		t.Fatal(err)
+	}
+	if active, def, _ := h.svc.Active(ctx, h.gid); !active || def {
+		t.Fatalf("default off: active %v default %v", active, def)
 	}
 	if err := h.svc.SetPostDefault(ctx, h.gid, true); err != nil {
 		t.Fatal(err)

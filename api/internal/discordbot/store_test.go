@@ -116,7 +116,7 @@ func TestBindServerCopiesTheWebhookPostDefault(t *testing.T) {
 		guild  int64
 		server string
 		want   bool
-	}{{ticked, "srv-ticked", true}, {bare, "srv-bare", false}} {
+	}{{ticked, "srv-ticked", true}, {bare, "srv-bare", true}} {
 		if _, err := st.BindServer(ctx, c.guild, c.server, "S", u); err != nil {
 			t.Fatal(err)
 		}
@@ -332,5 +332,36 @@ func TestTakeRefusalReadsOnceAndExpires(t *testing.T) {
 	}
 	if got, err := st.TakeRefusal(ctx, u, g); err != nil || got != nil {
 		t.Fatalf("expired take = %v err=%v", got, err)
+	}
+}
+
+func TestDefaultsStartOnAndAreRemembered(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	gid := seedGuild(t, st.Pool, "Defaults")
+	if _, err := st.BindServer(ctx, gid, "srv-defaults", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	in, _, _ := st.InstallFor(ctx, gid)
+	if !in.PostDefault || !in.RemindDefault {
+		t.Fatalf("new install = %+v, want both on", in)
+	}
+	if err := st.SetDiscordDefaults(ctx, gid, false, true); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ = st.InstallFor(ctx, gid); in.PostDefault || !in.RemindDefault {
+		t.Fatalf("after SetDiscordDefaults(false,true) = %+v", in)
+	}
+	hooked := seedGuild(t, st.Pool, "Hooked")
+	webhookOf(t, st.Pool, hooked, u, &notify.FakePoster{})
+	if _, err := st.Pool.Exec(ctx, `update guild_notification_webhooks set post_default = false, remind_default = false where guild_id = $1`, hooked); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.BindServer(ctx, hooked, "srv-hooked", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ = st.InstallFor(ctx, hooked); in.PostDefault || in.RemindDefault {
+		t.Fatalf("install from a webhook with both off = %+v", in)
 	}
 }

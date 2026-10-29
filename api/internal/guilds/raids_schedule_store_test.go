@@ -1,0 +1,218 @@
+package guilds
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
+)
+
+type scheduleWorld struct {
+	st  *Store
+	gid int64
+	uid int64
+}
+
+func newScheduleWorld(t *testing.T) scheduleWorld {
+	t.Helper()
+	pool := testPool(t)
+	return scheduleWorld{
+		st:  &Store{Pool: pool},
+		gid: seedGuild(t, pool, "Sched"),
+		uid: seedUser(t, pool, "sched@example.com"),
+	}
+}
+
+func (w scheduleWorld) raid(t *testing.T, startsAt time.Time, status string) int64 {
+	t.Helper()
+	var id int64
+	if err := w.st.Pool.QueryRow(context.Background(), `
+		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, status, created_by)
+		values ($1, 'raid:onyxias-lair', 'Ony', $2, 180, $3, $4) returning id`,
+		w.gid, startsAt, status, w.uid).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+func claimed(t *testing.T, st *Store, now time.Time) []DueSchedule {
+	t.Helper()
+	due, err := st.ClaimDueSchedules(context.Background(), now, scheduleBatch)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return due
+}
+
+func TestPostAtFor(t *testing.T) {
+	now := time.Date(2026, 11, 1, 12, 0, 0, 0, time.UTC)
+	if got := postAtFor(now.Add(3*24*time.Hour), now); !got.Equal(now) {
+		t.Fatalf("near start posts now, got %v", got)
+	}
+	far := now.Add(10 * 24 * time.Hour)
+	if got := postAtFor(far, now); !got.Equal(far.Add(-postHorizon)) {
+		t.Fatalf("far start posts 7 days before, got %v", got)
+	}
+}
+
+func TestScheduleDueWindows(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+
+	unposted := w.raid(t, now.Add(48*time.Hour), "planned")
+	cancelled := w.raid(t, now.Add(48*time.Hour), "cancelled")
+	locked := w.raid(t, now.Add(48*time.Hour), "locked")
+	for _, id := range []int64{unposted, cancelled, locked} {
+		if err := w.st.UpsertSchedule(ctx, id, w.gid, now.Add(-time.Minute), true); err != nil {
+			t.Fatal(err)
+		}
+	}
+	due := claimed(t, w.st, now)
+	if len(due) != 1 || due[0].RaidID != unposted || due[0].Kind != duePost {
+		t.Fatalf("due = %+v, want one post for raid %d", due, unposted)
+	}
+	if again := claimed(t, w.st, now); len(again) != 0 {
+		t.Fatalf("a leased row was claimed again: %+v", again)
+	}
+
+	// A raid posted 3 days ahead is due its reminder 23 h before the start.
+	start := now.Add(23 * time.Hour)
+	reminded := w.raid(t, start, "planned")
+	quiet := w.raid(t, start, "planned")
+	fresh := w.raid(t, start, "planned")
+	for _, c := range []struct {
+		id       int64
+		remind   bool
+		postedAt time.Time
+	}{
+		{reminded, true, start.Add(-72 * time.Hour)},
+		{quiet, false, start.Add(-72 * time.Hour)},
+		{fresh, true, start.Add(-30 * time.Hour)},
+	} {
+		if err := w.st.UpsertSchedule(ctx, c.id, w.gid, c.postedAt, c.remind); err != nil {
+			t.Fatal(err)
+		}
+		if err := w.st.MarkSchedulePosted(ctx, c.id, c.postedAt); err != nil {
+			t.Fatal(err)
+		}
+	}
+	due = claimed(t, w.st, now)
+	if len(due) != 1 || due[0].RaidID != reminded || due[0].Kind != dueReminder {
+		t.Fatalf("due = %+v, want one reminder for raid %d", due, reminded)
+	}
+}
+
+func TestTwoClaimsSplitRows(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	for range 4 {
+		if err := w.st.UpsertSchedule(ctx, w.raid(t, now.Add(24*time.Hour), "planned"), w.gid, now.Add(-time.Minute), false); err != nil {
+			t.Fatal(err)
+		}
+	}
+	first, second := make(chan []DueSchedule, 1), make(chan []DueSchedule, 1)
+	for _, out := range []chan []DueSchedule{first, second} {
+		go func() {
+			due, err := w.st.ClaimDueSchedules(ctx, now, scheduleBatch)
+			if err != nil {
+				t.Error(err)
+			}
+			out <- due
+		}()
+	}
+	a, b := <-first, <-second
+	if len(a)+len(b) != 4 {
+		t.Fatalf("claims took %d + %d rows, want 4 in all with none twice", len(a), len(b))
+	}
+	seen := map[int64]bool{}
+	for _, d := range append(a, b...) {
+		if seen[d.RaidID] {
+			t.Fatalf("raid %d claimed twice", d.RaidID)
+		}
+		seen[d.RaidID] = true
+	}
+}
+
+func TestUpsertKeepsAPostedRow(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	id := w.raid(t, now.Add(5*24*time.Hour), "planned")
+	first := now.Add(-time.Hour)
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, first, false); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.MarkSchedulePosted(ctx, id, first); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, now.Add(48*time.Hour), true); err != nil {
+		t.Fatal(err)
+	}
+	got, err := w.st.SchedulesOf(ctx, []int64{id})
+	if err != nil {
+		t.Fatal(err)
+	}
+	rs := got[id]
+	if !rs.PostAt.Equal(first) || rs.PostedAt == nil || !rs.PostedAt.Equal(first) || !rs.Remind {
+		t.Fatalf("schedule = %+v", rs)
+	}
+	if err := w.st.DeleteUnpostedSchedule(ctx, id); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := w.st.SchedulesOf(ctx, []int64{id}); len(got) != 1 {
+		t.Fatal("a posted row was deleted")
+	}
+}
+
+func TestResetReturnsTheOldReminder(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	id := w.raid(t, now.Add(30*time.Hour), "planned")
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, now, true); err != nil {
+		t.Fatal(err)
+	}
+	ref := notify.ReminderRef{Via: notify.ReminderViaWebhook, MessageID: "m1"}
+	if err := w.st.MarkScheduleReminded(ctx, id, ref, now); err != nil {
+		t.Fatal(err)
+	}
+	got, err := w.st.ResetScheduleReminder(ctx, id)
+	if err != nil || got == nil || *got != ref {
+		t.Fatalf("first reset = %v, %v", got, err)
+	}
+	if got, err := w.st.ResetScheduleReminder(ctx, id); err != nil || got != nil {
+		t.Fatalf("second reset = %v, %v", got, err)
+	}
+}
+
+func TestFailAndReleaseSchedule(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	id := w.raid(t, now.Add(24*time.Hour), "planned")
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, now.Add(-time.Minute), false); err != nil {
+		t.Fatal(err)
+	}
+	if len(claimed(t, w.st, now)) != 1 {
+		t.Fatal("expected a claim")
+	}
+	if err := w.st.FailSchedule(ctx, id, now.Add(time.Hour), "boom"); err != nil {
+		t.Fatal(err)
+	}
+	if len(claimed(t, w.st, now)) != 0 {
+		t.Fatal("a failed row was due before its retry time")
+	}
+	due := claimed(t, w.st, now.Add(2*time.Hour))
+	if len(due) != 1 || due[0].Attempts != 1 {
+		t.Fatalf("after retry time: %+v", due)
+	}
+	if err := w.st.ReleaseSchedule(ctx, id); err != nil {
+		t.Fatal(err)
+	}
+	if len(claimed(t, w.st, now.Add(2*time.Hour))) != 1 {
+		t.Fatal("a released row was not claimable")
+	}
+}
