@@ -267,6 +267,8 @@
     margin: 0;
   }
   .planner-header-suffix {
+    /* A meta line inside the h1: the body face, not the heading face's caps. */
+    font-family: var(--font-body);
     color: var(--color-muted);
     font-weight: 600;
     font-size: 14px;

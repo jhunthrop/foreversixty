@@ -21,6 +21,6 @@
   class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4"
   data-testid={`spec-unsimulated-${spec.spec}`}
 >
-  <h3 class="text-[15px] font-semibold" style={`color: ${colour}`}>{specLabel(spec.spec)}</h3>
+  <h3 class="heading-name text-[15px]" style={`color: ${colour}`}>{specLabel(spec.spec)}</h3>
   <p class="text-muted text-[13px]">{simCopy.specsUnsimulatedBody}</p>
 </article>

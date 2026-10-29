@@ -35,7 +35,7 @@
 </script>
 
 <section class={`${CARD} measure-form flex flex-col gap-2 p-5`} data-testid="premium-owned">
-  <h2 bind:this={titleEl} tabindex="-1" class="text-strong m-0 text-[15px] font-semibold outline-none">
+  <h2 bind:this={titleEl} tabindex="-1" class="heading-name text-strong m-0 text-[15px] outline-none">
     {view.title}
   </h2>
   <p class="m-0 flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="premium-owned-line">

@@ -250,7 +250,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
          while the section gap is 48px from md up. -->
     <div class="flex flex-col gap-8 md:gap-12 px-[18px] md:px-0 pb-8 -mt-2">
       <div class="flex flex-col gap-[14px] md:-mb-4" data-testid="home-timeline-wrap">
-        <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">Dates</h2>
+        <h2 class="section-title">Dates</h2>
         <HomeTimeline dates={dates} />
       </div>
 
@@ -261,9 +261,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
            global.css -- so a `display:none` swap here costs no layout shift either way. -->
       <section class="flex flex-col gap-[14px]" data-signed-out-only data-testid="home-class-picker-large">
         <div class="flex items-baseline justify-between">
-          <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">
-            {homeClassPickerCopy.bestInSlotByClassHeading}
-          </h2>
+          <h2 class="section-title">{homeClassPickerCopy.bestInSlotByClassHeading}</h2>
           <span class="flex items-baseline gap-4">
             <a
               href={homeClassPickerCopy.tierListHref}
@@ -321,9 +319,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
            a signed-in visitor's own class already has its answer in the hero. -->
       <section class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-another-class">
         <div class="flex items-baseline justify-between">
-          <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">
-            {homeClassPickerCopy.anotherClassHeading}
-          </h2>
+          <h2 class="section-title">{homeClassPickerCopy.anotherClassHeading}</h2>
           <span class="flex items-baseline gap-4">
             <a
               href={homeClassPickerCopy.tierListHref}

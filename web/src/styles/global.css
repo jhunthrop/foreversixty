@@ -37,6 +37,9 @@
   h2,
   h3 {
     font-family: var(--font-heading);
+    /* 800, the heading face's one loaded weight: a bare h1-h3 would otherwise ask for 700 and
+       fetch a second file (Barlow Condensed 700 stays declared for a deliberate use). */
+    font-weight: 800;
     color: var(--color-strong);
   }
   :focus-visible {
@@ -77,6 +80,9 @@ label:has(input[type='checkbox']:disabled) {
 }
 
 @utility label {
+  /* The micro-label is the body face (Barlow 700) wherever it sits, an h2 or h3 included: the
+     base h1-h3 rule would otherwise set it in the heading face. */
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -92,8 +98,8 @@ label:has(input[type='checkbox']:disabled) {
    - section-title: a card or block title, 18 (the card title); its line-height is inherited,
      as it always was, so a block's reserved heights (skeletons, layout reserves) hold;
    - heading-plan: a plan name, 24;
-   - heading-name: a name or label set in the heading face inline at its own size, 700, the
-     case its copy has (talent, roster, spec and class names; the size comes from the call
+   - heading-name: a name or label set in the heading face inline at its own size, the case its
+     copy has (talent, roster, spec and class names; the size comes from the call
      site's text-[*] class).
    Headline figures take figure-stat (28) and figure-price (44 / 52), the same face at 800 with
    tabular numerals; tables stay in --font-mono. */
@@ -160,7 +166,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility heading-name {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: var(--tracking-heading);
 }
 

@@ -82,7 +82,7 @@ const confidenceCopy: Record<Confidence, string> = {
     <div class:list={[hasAside ? 'flex min-w-0 flex-col gap-6 lg:max-w-(--measure-reading)' : 'contents']}>
       {!hideHeader && (
         <header class="border-line flex flex-col gap-2 border-b pb-5">
-          <h1 class="text-[28px] font-bold tracking-[0.02em]">{title}</h1>
+          <h1 class="heading-page">{title}</h1>
           <div class="text-muted flex flex-wrap items-center gap-3 text-[13px]">
             <UpdatedStamp date={updated} />
             {confidencePlacement === 'header' && (

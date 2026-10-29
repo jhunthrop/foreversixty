@@ -66,7 +66,7 @@
   data-testid={`spec-${row.spec}`}
 >
   <div class="flex flex-wrap items-center gap-2">
-    <h3 class="text-[15px] font-semibold" style={`color: ${colour}`}>{specLabel(row.spec)}</h3>
+    <h3 class="heading-name text-[15px]" style={`color: ${colour}`}>{specLabel(row.spec)}</h3>
     <span class={specPillClass(row.state)} data-testid="spec-state">{specStateLabel(row.state)}</span>
   </div>
 

@@ -360,7 +360,7 @@
         {:else}
           {#each nightBosses as boss (boss.key)}
             <div class="flex flex-col gap-1">
-              <h3 class="text-strong text-[13px] font-semibold">{boss.name}</h3>
+              <h3 class="heading-name text-strong text-[13px]">{boss.name}</h3>
               <ul class="flex flex-col">
                 {#each boss.rows as row (mechanicRowKey(row))}
                   {@const worst = mostOftenHit(row.players)}
@@ -415,7 +415,7 @@
             class="border-line rounded-panel bg-raised flex flex-col gap-2 border p-3"
             data-testid={`mechanics-player-${player.guid}`}
           >
-            <h3 class="font-semibold" style={`color: ${classColorVar(classOf.get(player.guid))}`}>
+            <h3 class="heading-name" style={`color: ${classColorVar(classOf.get(player.guid))}`}>
               {splitUnitName(player.name).name}
             </h3>
             <p class="text-[13px]">

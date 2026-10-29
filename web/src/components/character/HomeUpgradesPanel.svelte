@@ -77,7 +77,7 @@
   class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between"
   data-testid="home-upgrades-header"
 >
-  <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{homeUpgradesCopy.heading}</h2>
+  <h2 class="section-title">{homeUpgradesCopy.heading}</h2>
   {#if fullListHref !== undefined}
     <a href={fullListHref} class="text-gold text-[12px] font-bold tracking-[0.12em] uppercase">
       {fullListLabel}
