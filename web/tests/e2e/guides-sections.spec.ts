@@ -109,7 +109,7 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('stat-priority-pills')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear$/,
+        /^Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();

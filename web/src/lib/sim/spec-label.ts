@@ -47,6 +47,15 @@ export function classDisplayName(classSlug: string): string {
   return classRows.find((entry) => entry.slug === classSlug)?.name ?? classSlug;
 }
 
+/** The display names of the other specs of the same class, in list order; empty for an unknown spec. */
+export function siblingSpecNames(spec: string): readonly string[] {
+  const row = specRow(spec);
+  if (row === null) return [];
+  return SPECS.filter((entry) => entry.class_slug === row.class_slug && entry.spec !== spec).map(
+    (entry) => entry.name,
+  );
+}
+
 /** The class slug, for classColorVar and the planner. Empty for an unknown spec. */
 export function classOfSpec(spec: string): string {
   return specRow(spec)?.class_slug ?? '';

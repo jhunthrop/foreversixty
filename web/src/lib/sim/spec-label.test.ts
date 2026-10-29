@@ -9,6 +9,7 @@ import {
   nonDpsSpecs,
   specDisplayName,
   specLabel,
+  siblingSpecNames,
   specRow,
 } from './spec-label';
 
@@ -104,5 +105,15 @@ describe('isSimulatedSpec', () => {
   it('fails closed for a spec string the canonical list does not carry', () => {
     expect(isSimulatedSpec('warrior-gladiator')).toBe(false);
     expect(isSimulatedSpec('')).toBe(false);
+  });
+});
+
+describe("siblingSpecNames", () => {
+  it("lists the other specs of the class in tree order", () => {
+    expect(siblingSpecNames("warrior-arms")).toEqual(["Fury", "Protection"]);
+  });
+
+  it("is empty for an unknown spec", () => {
+    expect(siblingSpecNames("nonsense")).toEqual([]);
   });
 });

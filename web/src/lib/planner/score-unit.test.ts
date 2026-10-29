@@ -43,8 +43,9 @@ describe('plannerScoreCopy', () => {
     expect(plannerScoreCopy.bandFigure(40.9088, 'dps')).toBe('40.9 DPS');
   });
 
-  it('promises the same live figure for every role', () => {
-    expect(plannerScoreCopy.waiting()).toBe('live when the build reaches 51 points');
+  it('names the role in the waiting line and never a point count', () => {
+    expect(plannerScoreCopy.waiting('dps')).toBe('DPS appears once your points are spent.');
+    expect(plannerScoreCopy.waiting('hps')).toBe('HPS appears once your points are spent.');
   });
 
   it("prints the figure in the role's own digits", () => {

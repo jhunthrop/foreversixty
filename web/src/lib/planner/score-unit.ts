@@ -42,9 +42,9 @@ export const plannerScoreCopy = {
   /** The ask-first button on a constrained device. */
   show: (unit: SlotScoreUnit): string =>
     unit === 'dps' ? simCopy.plannerDpsShow : `Show ${SCORE_LABEL[unit]}`,
-  /** Under the figure while the build is unfinished: every role is simmed live once the
-   *  build reaches 51 points, so every role says the same thing. */
-  waiting: (): string => simCopy.plannerDpsLiveCaption,
+  /** Under the figure while the build is unfinished: "DPS appears once your points are
+   *  spent." Never a point count, which a level-9 character could not reach. */
+  waiting: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} appears once your points are spent.`,
   /** The live run failed or came back without the role's figure: "HPS estimate unavailable
    *  for this build." */
   failed: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} estimate unavailable for this build.`,

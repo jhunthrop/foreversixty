@@ -31,7 +31,7 @@
   import { levelReached } from '../../lib/planner/derive';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
-  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { siblingSpecNames, specDisplayName } from '../../lib/sim/spec-label';
   import { specKeyFor } from '../../lib/addon/score';
   import Skeleton from '../ui/Skeleton.svelte';
 
@@ -219,7 +219,11 @@
     <Skeleton lines={1} rowHeight="h-5" testid="band-compare-skeleton" />
   {:else if file === null || bandEntry === undefined}
     <p class="text-muted text-[13px]" data-testid="band-compare-empty">
-      {bandCompareCopy.noLevelingList(specKey !== null ? specDisplayName(specKey) : '')}
+      {bandCompareCopy.noLevelBuild(
+        store.level,
+        specKey !== null ? specDisplayName(specKey) : '',
+        specKey !== null ? siblingSpecNames(specKey) : [],
+      )}
     </p>
   {:else if diff !== null}
     <div class="flex flex-col gap-1">

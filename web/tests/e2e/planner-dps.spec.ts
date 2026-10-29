@@ -23,8 +23,7 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   // now lives under "Points left" (so it never repeats the DPS figure's own number); the
   // facts rail's DPS slot reads a plain, static explainer instead.
   await expect(page.getByTestId('planner-dps')).toHaveText('—');
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('live when the build reaches 51 points');
-  await expect(page.getByTestId('planner-remaining-note')).toHaveText('1 point to go');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('DPS appears once your points are spent.');
   await page.waitForTimeout(600);
   expect(simAssetRequests).toEqual([]);
 
@@ -36,8 +35,7 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   // (dimmed) rather than blanking -- "a number that vanishes and reappears on every click is
   // worse than a stale number that dims" is the whole design decision this asserts.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('live when the build reaches 51 points');
-  await expect(page.getByTestId('planner-remaining-note')).toHaveText('1 point to go');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('DPS appears once your points are spent.');
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—');
 
   // Spending it again settles into a fresh estimate of its own.

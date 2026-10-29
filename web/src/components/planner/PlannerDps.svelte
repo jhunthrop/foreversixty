@@ -13,7 +13,7 @@
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
   import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
-  import PlannerFact from './PlannerFact.svelte';
+  import StatTile from '../ui/StatTile.svelte';
 
   let {
     live,
@@ -57,7 +57,7 @@
      *  score. The live run asks the engine for the role's own figure (`role_metrics`), so a
      *  DPS number is never relabelled as HPS. */
     unit?: SlotScoreUnit;
-    /** True inside the header's facts rail: the figure is a `PlannerFact` tile (heading-face
+    /** True inside the header's facts rail: the figure is a `StatTile` (heading-face
      *  figure, the note wrapping under it on a phone) instead of the embed's mono column. */
     tile?: boolean;
   } = $props();
@@ -83,7 +83,7 @@
   const dpsNote = $derived(
     gate === 'unfinished'
       ? unfinishedNote === 'static'
-        ? plannerScoreCopy.waiting()
+        ? plannerScoreCopy.waiting(unit)
         : simCopy.plannerDpsPointsToGo(pointsLeft)
       : gate === 'ask'
         ? simCopy.plannerDpsShowNote
@@ -121,9 +121,9 @@
 {#if tile}
   <!-- Polish spec 5.1: a tile like its neighbours. The note wraps under the figure instead of
        running off the right edge (it is nowrap in the embed below); two lines are reserved
-       below 640px, where the half-width tile wraps "live when the build reaches 51 points",
+       below 640px, where the half-width tile wraps "DPS appears once your points are spent.",
        and one from there up, so the answer arriving moves nothing. -->
-  <PlannerFact label={plannerScoreCopy.label(unit)} figureClass="min-h-11">
+  <StatTile label={plannerScoreCopy.label(unit)} figureClass="min-h-11">
     {#snippet figure()}
       {#if gate === 'ask'}
         {@render askButton()}
@@ -137,7 +137,7 @@
         data-testid="planner-dps-error">{dpsNote}</span
       >
     {/snippet}
-  </PlannerFact>
+  </StatTile>
 {:else}
   <!-- One column, like Level and Points beside it: caption, then the value row, then the line
        that qualifies it. "Sim this build" sits IN the value row rather than beside the column,

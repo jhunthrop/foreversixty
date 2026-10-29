@@ -25,10 +25,9 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
   import { specOf } from '../../lib/sim/character';
-  import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
-  import { specLabel } from '../../lib/sim/spec-label';
+    import { specLabel } from '../../lib/sim/spec-label';
   import PlannerDps from './PlannerDps.svelte';
-  import PlannerFact from './PlannerFact.svelte';
+  import StatTile from '../ui/StatTile.svelte';
   import Select from '../ui/Select.svelte';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
 
@@ -168,35 +167,14 @@
 
     <!-- The facts rail (spec 4.C, polish spec 5.1): four tiles -- Points left, Spent, Level and
          the role's score -- in a 2 x 2 grid on a phone, one wrapping row from 1100px. Each grid
-         child is `min-w-0` (PlannerFact) and the grid is the column's full width below 640px,
-         so nothing runs past the viewport; the DPS note wraps under its figure. "Sim this
+         child is `min-w-0` (StatTile) and the grid is the column's full width below 640px,
+         so nothing runs past the viewport; the DPS note wraps under its figure. The tiles
+         stretch to the tallest one, so the rail reads as one row of equal tiles. "Sim this
          build" is its own button in the rail, above the Share panel. -->
     <div class="planner-header-facts" data-testid="planner-facts">
-      <PlannerFact label="Points left">
-        {#snippet figure()}
-          <span class="tabular text-gold" data-testid="planner-remaining">{MAX_POINTS - store.spent}</span>
-        {/snippet}
-        {#snippet note()}
-          <!-- A fixed 14px line even when empty, so the tile never changes height as the
-               build fills in. -->
-          <span
-            class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px] whitespace-nowrap"
-            data-testid="planner-remaining-note"
-          >
-            {gate === 'unfinished' ? simCopy.plannerDpsPointsToGo(MAX_POINTS - store.spent) : ''}
-          </span>
-        {/snippet}
-      </PlannerFact>
-      <PlannerFact label="Spent">
-        {#snippet figure()}
-          <span class="tabular" data-testid="planner-spent">{store.spent}/{MAX_POINTS}</span>
-        {/snippet}
-      </PlannerFact>
-      <PlannerFact label="Level">
-        {#snippet figure()}
-          <span class="tabular" data-testid="planner-level">{store.level}</span>
-        {/snippet}
-      </PlannerFact>
+      <StatTile label="Points left" value={String(MAX_POINTS - store.spent)} figureTestid="planner-remaining" tone="gold" />
+      <StatTile label="Spent" value={`${store.spent}/${MAX_POINTS}`} figureTestid="planner-spent" />
+      <StatTile label="Level" value={String(store.level)} figureTestid="planner-level" />
       <PlannerDps
         unit={scoreUnit}
         {live}
@@ -284,6 +262,12 @@
      so line 1 loses the dot it would end on. */
   .planner-header-sep {
     display: none;
+    /* The dot is a meta mark, not a heading letter: the suffix's own 14px muted body face. */
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-muted);
   }
   .planner-header-suffix {
     display: block;
@@ -347,6 +331,7 @@
        one wrapping row. */
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
     width: 100%;
     gap: 12px;
   }
@@ -362,6 +347,7 @@
     .planner-header-facts {
       display: flex;
       flex-wrap: wrap;
+      align-items: stretch;
     }
   }
 </style>

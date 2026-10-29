@@ -149,7 +149,14 @@ export const bandCompareCopy = {
   /** "your level's range" only to a visitor who has a character; anyone else gets the band's own name. */
   headingAside: (bandLabel: string, hasCharacter: boolean): string =>
     hasCharacter ? "your level's range" : `the ${bandLabel} level range`,
-  noLevelingList: (specName: string): string => `No leveling list for ${specName} yet.`,
+  /** "No level 9 build for Arms. Pick Fury or Protection." -- the level and the class's other specs come from data. */
+  noLevelBuild: (level: number, specName: string, otherSpecs: readonly string[]): string => {
+    const head = `No level ${level} build for ${specName}.`;
+    if (otherSpecs.length === 0) return head;
+    const last = otherSpecs.at(-1);
+    const names = otherSpecs.length === 1 ? last : `${otherSpecs.slice(0, -1).join(', ')} or ${last}`;
+    return `${head} Pick ${names}.`;
+  },
   setDpsCaption: (bandLabel: string): string =>
     `the ${bandLabel} level range's own gear set, fully equipped — not your build`,
   differs: (n: number): string => `${n} of your points differ from this build`,
