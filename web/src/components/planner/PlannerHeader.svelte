@@ -28,6 +28,8 @@
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { specLabel } from '../../lib/sim/spec-label';
   import PlannerDps from './PlannerDps.svelte';
+  import PlannerFact from './PlannerFact.svelte';
+  import Select from '../ui/Select.svelte';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
 
   let {
@@ -69,11 +71,14 @@
         ),
   );
 
-  const specSuffix = $derived(
-    hasLeadingTree && store.talentIndex !== null
-      ? ` · ${specLabel(specOf(store.talentIndex, [...store.order]))}`
-      : '',
-  );
+  /** The h1's second half, one entry per segment: race, level, and the spec once a tree leads. */
+  const suffixParts = $derived([
+    store.raceRow?.name ?? '',
+    `Level ${store.level}`,
+    ...(hasLeadingTree && store.talentIndex !== null
+      ? [specLabel(specOf(store.talentIndex, [...store.order]))]
+      : []),
+  ]);
 
   // The bar's one refusal line already carries the planner's own refusals (an illegal move,
   // a read-only build); a failed live estimate is the same kind of fact, so it goes in the
@@ -81,6 +86,19 @@
   // the rest of the facts rail).
   const statusLine = $derived(store.refusal ?? (live.state === 'error' ? live.message : null) ?? '');
   const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
+  // `Select` binds a value of its own. The store is the truth: the pickers mirror it, and only a
+  // choice that differs from it (and names something) reaches `selectClass` / `selectRace` -- a
+  // bound select that wrote its initial, option-less '' back would reset the build on mount.
+  let classValue = $derived(store.classSlug);
+  let raceValue = $derived(store.raceSlug);
+  $effect(() => {
+    if (classValue !== '' && classValue !== store.classSlug) store.selectClass(classValue);
+  });
+  $effect(() => {
+    if (raceValue !== '' && raceValue !== store.raceSlug) store.selectRace(raceValue);
+  });
+  const classOptions = $derived(store.classes.map((row) => ({ value: row.slug, label: row.name })));
+  const raceOptions = $derived(store.legalRaces.map((row) => ({ value: row.slug, label: row.name })));
 </script>
 
 <div class="planner-header" data-testid="planner-header">
@@ -103,9 +121,16 @@
       />
       <div class="planner-header-titles">
         <h1 class="planner-header-h1 heading-page" style={`color:${color}`} data-testid="planner-header-h1">
-          {plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
+          <span class="planner-header-seg"
+            >{plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
+            <span class="planner-header-sep">·</span></span
+          >
           <span class="planner-header-suffix">
-            · {store.raceRow?.name ?? ''} · Level {store.level}{specSuffix}
+            {#each suffixParts as part, index (index)}
+              <span class="planner-header-seg">{part}{index < suffixParts.length - 1 ? ' ·' : ''}</span>
+              <!-- eslint-disable-next-line svelte/no-useless-mustaches -- the one breakable space between segments -->
+              {' '}
+            {/each}
           </span>
         </h1>
         {#if originLine !== ''}
@@ -116,79 +141,62 @@
     </div>
 
     <div class="planner-header-controls">
-      <label class="planner-header-select-label">
-        <span class="label text-muted">Class</span>
-        <!-- A function binding rather than a plain `value` attribute: the value has to be
-             applied after the options exist, and Svelte only does that for bindings. -->
-        <select
-          class="planner-header-select planner-header-select-class"
-          bind:value={() => store.classSlug, (slug) => store.selectClass(slug)}
+      <div class="planner-header-select-field">
+        <label class="label text-muted" for="planner-class-select">Class</label>
+
+        <Select
+          id="planner-class-select"
+          compact
+          options={classOptions}
+          bind:value={classValue}
           disabled={store.readOnly}
-        >
-          {#each store.classes as row (row.slug)}
-            <option value={row.slug}>{row.name}</option>
-          {/each}
-        </select>
-      </label>
-      <label class="planner-header-select-label">
-        <span class="label text-muted">Race</span>
-        <select
-          class="planner-header-select planner-header-select-race"
-          bind:value={() => store.raceSlug, (slug) => store.selectRace(slug)}
+        />
+      </div>
+      <div class="planner-header-select-field">
+        <label class="label text-muted" for="planner-race-select">Race</label>
+        <Select
+          id="planner-race-select"
+          compact
+          options={raceOptions}
+          bind:value={raceValue}
           disabled={store.readOnly}
-          data-testid="planner-race-select"
-        >
-          {#each store.legalRaces as row (row.slug)}
-            <option value={row.slug}>{row.name}</option>
-          {/each}
-        </select>
-      </label>
+          testid="planner-race-select"
+        />
+      </div>
       <span class="planner-header-faction-note">{plannerHeaderCopy.factionFollowsRace}</span>
     </div>
 
-    <!-- The facts rail (spec §4.C, moved here by fix round 1 item 2.a; fix round 5: a
-       compact row, not a stretched grid -- the mock's own panel wraps tight around its
-       four facts, 36px apart, not a 4-column grid stretched to the header box's own full
-       width with acres of empty space past DPS). Points left, Spent, Level and DPS sit
-       inside the header's own panel as its bottom row -- the same four facts
-       `SummaryBar.svelte` has always computed, just relocated. "Sim this build" is no
-       longer bundled with the DPS figure here; it is its own outlined gold button in the
-       rail, above the Share panel. -->
-    <div class="planner-header-facts items-start" data-testid="planner-facts">
-      <div class="flex flex-col gap-1">
-        <span class="label text-muted">Points left</span>
-        <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
-          {MAX_POINTS - store.spent}
-        </span>
-        <!-- Fix round 6 (e2e: the facts rail's own height-stability tests, caught on
-             mobile): `repeat(2, auto)` sizes each grid COLUMN from the widest content any
-             row puts in it -- DPS's own long "live when the build reaches 51 points" note
-             (column 2) forces column 1 down to barely wider than "42" while that note is
-             showing, and without `whitespace-nowrap` here too, THIS note wrapped to a
-             second line in that narrow column, inflating the whole panel's height exactly
-             until DPS's own note goes short (`± N`) or empty and column 1 gets its width
-             back. `whitespace-nowrap` (matching `PlannerDps.svelte`'s own identical fix)
-             means this note overflows its cell rather than wraps it -- the cell's own
-             height never moves, whatever column 1 is given. -->
-        <span
-          class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px] whitespace-nowrap"
-          data-testid="planner-remaining-note"
-        >
-          {gate === 'unfinished' ? simCopy.plannerDpsPointsToGo(MAX_POINTS - store.spent) : ''}
-        </span>
-      </div>
-      <div class="flex flex-col gap-1">
-        <span class="label text-muted">Spent</span>
-        <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-spent">
-          {store.spent}/{MAX_POINTS}
-        </span>
-      </div>
-      <div class="flex flex-col gap-1">
-        <span class="label text-muted">Level</span>
-        <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
-          {store.level}
-        </span>
-      </div>
+    <!-- The facts rail (spec 4.C, polish spec 5.1): four tiles -- Points left, Spent, Level and
+         the role's score -- in a 2 x 2 grid on a phone, one wrapping row from 1100px. Each grid
+         child is `min-w-0` (PlannerFact) and the grid is the column's full width below 640px,
+         so nothing runs past the viewport; the DPS note wraps under its figure. "Sim this
+         build" is its own button in the rail, above the Share panel. -->
+    <div class="planner-header-facts" data-testid="planner-facts">
+      <PlannerFact label="Points left">
+        {#snippet figure()}
+          <span class="tabular text-gold" data-testid="planner-remaining">{MAX_POINTS - store.spent}</span>
+        {/snippet}
+        {#snippet note()}
+          <!-- A fixed 14px line even when empty, so the tile never changes height as the
+               build fills in. -->
+          <span
+            class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px] whitespace-nowrap"
+            data-testid="planner-remaining-note"
+          >
+            {gate === 'unfinished' ? simCopy.plannerDpsPointsToGo(MAX_POINTS - store.spent) : ''}
+          </span>
+        {/snippet}
+      </PlannerFact>
+      <PlannerFact label="Spent">
+        {#snippet figure()}
+          <span class="tabular" data-testid="planner-spent">{store.spent}/{MAX_POINTS}</span>
+        {/snippet}
+      </PlannerFact>
+      <PlannerFact label="Level">
+        {#snippet figure()}
+          <span class="tabular" data-testid="planner-level">{store.level}</span>
+        {/snippet}
+      </PlannerFact>
       <PlannerDps
         unit={scoreUnit}
         {live}
@@ -197,6 +205,7 @@
         onshow={onshowdps}
         showSimLink={false}
         unfinishedNote="static"
+        tile
       />
     </div>
     <p
@@ -266,7 +275,19 @@
   .planner-header-h1 {
     margin: 0;
   }
+  /* A separator dot never starts a line: it is glued to the segment before it, and a segment
+     never breaks inside itself. */
+  .planner-header-seg {
+    white-space: nowrap;
+  }
+  /* Phone: the class and "talents" on line 1, "Human · Level 9" as a 14px muted line under it,
+     so line 1 loses the dot it would end on. */
+  .planner-header-sep {
+    display: none;
+  }
   .planner-header-suffix {
+    display: block;
+    margin-top: 4px;
     /* A meta line inside the h1: the body face, not the heading face's caps. */
     font-family: var(--font-body);
     color: var(--color-muted);
@@ -274,6 +295,15 @@
     font-size: 14px;
     letter-spacing: 0.1em;
     text-transform: none;
+  }
+  @media (min-width: 640px) {
+    .planner-header-sep {
+      display: inline;
+    }
+    .planner-header-suffix {
+      display: inline;
+      margin-top: 0;
+    }
   }
   .planner-header-origin {
     margin: 0;
@@ -293,68 +323,45 @@
     gap: 14px;
     flex-wrap: wrap;
   }
-  .planner-header-select-label {
+  /* The server-rendered selects hold no options until the talent data lands, so a select that
+     sizes to its widest option is only as wide as its padding and arrow and then jumps to its
+     hydrated width. That widened pair once pushed the faction note onto its own row below 560px
+     and shifted everything under the controls by 33px (0.086 of layout shift on /planner at
+     360px). A fixed field width, wider than any class or race name at 15px, holds the row the
+     same before and after the data arrives. */
+  .planner-header-select-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
-  }
-  .planner-header-select {
-    height: 44px;
-    box-sizing: border-box;
-    padding: 0 12px;
-    border-radius: var(--radius-control);
-    border: 1px solid var(--color-line);
-    background: transparent;
-    color: var(--color-text);
-    font-size: 13px;
-    font-family: var(--font-body);
-  }
-  /* The server-rendered selects hold no options until the talent data lands, so a select is only
-     as wide as its padding and arrow (46px) and then jumps to its hydrated width. That widened
-     pair pushed the faction note onto its own row below 560px and shifted everything under the
-     controls by 33px (0.086 of layout shift on /planner at 360px). A select is as wide as its
-     widest option, so these floors are the hydrated widths for the default class (Warrior)
-     at 13px Barlow: all nine classes, and the nine races a Warrior may be. The row is then
-     the same height before and after the data arrives. */
-  .planner-header-select-class {
-    min-width: 92px;
-  }
-  .planner-header-select-race {
-    min-width: 99px;
+    width: 152px;
   }
   .planner-header-faction-note {
     font-size: 13px;
     color: var(--color-muted);
   }
   .planner-header-facts {
-    /* Fix round 5: fit-content, not a full-width stretch -- the mock's own compact panel,
-       wrapping tight around its facts rather than a grid stretched to the header's full
-       column width with empty space past DPS.
-
-       Fix round 6, item 4 (player review): a real 2x2 grid below 1100px, not organic
-       flex-wrap -- DPS alone wrapping to its own orphan row (three facts fit one row, the
-       fourth didn't) read as a layout bug because it was one: `flex-wrap` breaks wherever
-       the row runs out of space, not at a deliberate point. `repeat(2, auto)` always pairs
-       Points left/Spent and Level/DPS, 36px apart either way; `width: fit-content` only
-       matters at the single-row tier, so it is scoped there too. */
+    /* Polish spec 5.1: the rail is its tiles -- no panel around them. Below 640px a 2 x 2 grid
+       of equal columns that is the column's full width (`minmax(0, 1fr)` lets a tile shrink
+       below its content, which is what the old `auto` columns could not: the DPS note forced
+       the grid past the viewport). From 640px the grid hugs its tiles, two by two; from 1100px
+       one wrapping row. */
     display: grid;
-    grid-template-columns: repeat(2, auto);
-    /* The 2x2 tier hugs its facts too: signed out at 1024 the header's left column is the
-       whole content width, and a grid left to stretch spread two facts across 870px. */
-    width: fit-content;
-    max-width: 100%;
-    justify-content: start;
-    gap: 36px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-    background: color-mix(in srgb, var(--color-raised) 90%, transparent);
-    padding: 14px 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 12px;
+  }
+  @media (min-width: 640px) {
+    .planner-header-facts {
+      grid-template-columns: repeat(2, auto);
+      width: fit-content;
+      max-width: 100%;
+      justify-content: start;
+    }
   }
   @media (min-width: 1100px) {
     .planner-header-facts {
       display: flex;
       flex-wrap: wrap;
-      width: fit-content;
     }
   }
 </style>

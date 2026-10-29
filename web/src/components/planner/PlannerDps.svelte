@@ -13,6 +13,7 @@
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
   import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
+  import PlannerFact from './PlannerFact.svelte';
 
   let {
     live,
@@ -24,6 +25,7 @@
     showSimLink = true,
     unfinishedNote = 'dynamic',
     unit = 'dps',
+    tile = false,
   }: {
     live: LiveDps;
     /** Unused when `showSimLink` is false (the planner rebuild's header facts rail -- the
@@ -55,6 +57,9 @@
      *  score. The live run asks the engine for the role's own figure (`role_metrics`), so a
      *  DPS number is never relabelled as HPS. */
     unit?: SlotScoreUnit;
+    /** True inside the header's facts rail: the figure is a `PlannerFact` tile (heading-face
+     *  figure, the note wrapping under it on a phone) instead of the embed's mono column. */
+    tile?: boolean;
   } = $props();
 
   // `off` with a figure still held is a build that stopped being simmed -- a point came out,
@@ -64,7 +69,7 @@
   // a failed run (a cancel keeps the figure that is still in flight), but a number left over
   // from a build the engine could not run this time -- most often a spec switch -- is not a
   // stale version of the current answer, it is an answer to a different question.
-  const figure = $derived(
+  const figureText = $derived(
     live.state !== 'error' && live.estimate.mean > 0
       ? plannerScoreCopy.figure(live.estimate.mean, unit)
       : '—',
@@ -75,7 +80,7 @@
       : '',
   );
   // The line under the figure says why there is no fresh number, when there is not one.
-  const note = $derived(
+  const dpsNote = $derived(
     gate === 'unfinished'
       ? unfinishedNote === 'static'
         ? plannerScoreCopy.waiting()
@@ -86,78 +91,90 @@
   );
 </script>
 
-<!-- One column, like Level and Points beside it: caption, then the value row, then the line
-     that qualifies it. "Sim this build" sits IN the value row rather than beside the column,
-     and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
-     line taller than its neighbours leaves every caption and every value on one baseline. -->
-<div class="flex flex-col gap-1">
-  <span class="label text-muted">{plannerScoreCopy.label(unit)}</span>
-  <!-- A column below md, one row from md: with the figure and the button side by side on a
-       phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
-       (planner-dps.spec.ts read the button a row above the figure on CI). Stacked, the
-       phone layout has nothing left to wrap. -->
-  <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
-    {#if gate === 'ask'}
-      <!-- The same 44px the figure occupies, so asking moves nothing. -->
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
-        onclick={onshow}
-        data-testid="planner-dps-show"
-      >
-        {plannerScoreCopy.show(unit)}
-      </button>
-    {:else}
-      <!-- min-w-[7ch]: the summary bar's row wrap (SummaryBar.svelte) reads this column's own
-           width, which would otherwise shrink for the em dash and grow again for a real
-           figure -- the same swap "keeps its height through a run" (planner-dps.spec.ts)
-           guards against. Reserving for a wide figure up front (Task 5, spec 2026-09-25 §6,
-           which widened "Left" to "Points left" and used up the row's spare width) keeps this
-           column's own width constant across that swap instead of only its note line's. -->
+{#snippet askButton()}
+  <!-- The same 44px the figure occupies, so asking moves nothing. -->
+  <button
+    type="button"
+    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+    onclick={onshow}
+    data-testid="planner-dps-show"
+  >
+    {plannerScoreCopy.show(unit)}
+  </button>
+{/snippet}
+
+{#snippet figureValue(figureClass: string)}
+  <!-- min-w-[7ch]: the row wrap reads this column's own width, which would otherwise shrink for
+       the em dash and grow again for a real figure -- the same swap "keeps its height through
+       a run" (planner-dps.spec.ts) guards against. -->
+  <span
+    class={`tabular inline-block min-w-[7ch] ${figureClass} ${
+      stale || live.state === 'error' || live.estimate.mean === 0 ? 'text-muted' : 'text-gold'
+    }`}
+    data-testid="planner-dps"
+    title={`${plannerScoreCopy.label(unit)}: ${plannerScoreCopy.ratePhrase(unit)}`}
+  >
+    {figureText}
+  </span>
+{/snippet}
+
+{#if tile}
+  <!-- Polish spec 5.1: a tile like its neighbours. The note wraps under the figure instead of
+       running off the right edge (it is nowrap in the embed below); two lines are reserved
+       below 640px, where the half-width tile wraps "live when the build reaches 51 points",
+       and one from there up, so the answer arriving moves nothing. -->
+  <PlannerFact label={plannerScoreCopy.label(unit)} figureClass="min-h-11">
+    {#snippet figure()}
+      {#if gate === 'ask'}
+        {@render askButton()}
+      {:else}
+        {@render figureValue('')}
+      {/if}
+    {/snippet}
+    {#snippet note()}
       <span
-        class={`tabular inline-block min-w-[7ch] font-mono text-[20px] leading-11 ${
-          stale || live.state === 'error' || live.estimate.mean === 0 ? 'text-muted' : 'text-gold'
-        }`}
-        data-testid="planner-dps"
-        title={`${plannerScoreCopy.label(unit)}: ${plannerScoreCopy.ratePhrase(unit)}`}
+        class="tabular text-muted block min-h-[28px] font-mono text-[11px] leading-[14px] sm:min-h-[14px]"
+        data-testid="planner-dps-error">{dpsNote}</span
       >
-        {figure}
+    {/snippet}
+  </PlannerFact>
+{:else}
+  <!-- One column, like Level and Points beside it: caption, then the value row, then the line
+       that qualifies it. "Sim this build" sits IN the value row rather than beside the column,
+       and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
+       line taller than its neighbours leaves every caption and every value on one baseline. -->
+  <div class="flex flex-col gap-1">
+    <span class="label text-muted">{plannerScoreCopy.label(unit)}</span>
+    <!-- A column below md, one row from md: with the figure and the button side by side on a
+         phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
+         (planner-dps.spec.ts read the button a row above the figure on CI). -->
+    <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
+      {#if gate === 'ask'}
+        {@render askButton()}
+      {:else}
+        {@render figureValue('font-mono text-[20px] leading-11')}
+      {/if}
+      <!-- The bar's one primary button: simming a build is one of the planner's own jobs
+           (build review round 1, finding 5), a real action rather than an underlined link.
+           PRIMARY_BUTTON_FIXED, not the shrinking PRIMARY_BUTTON: no other control in this
+           lane shrinks its target on desktop. -->
+      {#if showSimLink}
+        <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
+          {simCopy.simThisBuild}
+        </a>
+      {/if}
+    </div>
+    <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
+         once a run is ready, and removing the line while the next run was pending made the
+         whole summary bar one line shorter on every talent click, which moved the trees. -->
+    <span
+      class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
+      data-testid="planner-dps-error">{dpsNote}</span
+    >
+    {#if ownGearCaveat}
+      <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">
+        {poolQualityCopy.plannerDpsOwnGearNote}
       </span>
     {/if}
-    <!-- The bar's one primary button (build review round 1, finding 5): simming a build is
-         one of the planner's own jobs, so it reads as a real action, at least as strong as
-         Share, rather than a plain underlined link beside a dash. PRIMARY_BUTTON_FIXED, not
-         the shrinking PRIMARY_BUTTON: no other control in this lane shrinks its target on
-         desktop, and a summary-bar row is exactly where a mouse-only "it's fine above 44px on
-         desktop" argument would first break the pattern. -->
-    {#if showSimLink}
-      <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
-        {simCopy.simThisBuild}
-      </a>
-    {/if}
   </div>
-  <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
-       once a run is ready, and removing the line while the next run was pending made the
-       whole summary bar one line shorter on every talent click, which moved the trees.
-
-       Fix round 4 found `unfinishedNote="static"`'s own caption -- `simCopy.
-       plannerDpsLiveCaption`, "live when the build reaches 51 points" -- wrapping to a
-       silently-overflowing second line inside the old facts rail's narrow, stretched grid
-       column. Fix round 5 replaced that grid with a fit-content row (`PlannerHeader.svelte`),
-       so this slot's own column now sizes to its longest content instead of a fixed
-       narrow width -- `whitespace-nowrap` keeps it on the one line the mock's own 11px
-       note always was, rather than carrying the old two-line reserve forward into a layout
-       that no longer forces a wrap. The 'dynamic' embed (`SummaryBar.svelte`, which never
-       reaches this string's length) keeps its own original 12px/18px box, untouched. -->
-  <span
-    class={unfinishedNote === 'static'
-      ? 'tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px] whitespace-nowrap'
-      : 'tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]'}
-    data-testid="planner-dps-error">{note}</span
-  >
-  {#if ownGearCaveat}
-    <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">
-      {poolQualityCopy.plannerDpsOwnGearNote}
-    </span>
-  {/if}
-</div>
+{/if}
