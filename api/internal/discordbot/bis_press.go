@@ -79,7 +79,7 @@ type bisSeat struct {
 }
 
 // bisSeatOf reads the presser; ok is false with the answer to give when the server is unbound.
-func (s *Service) bisSeatOf(ctx context.Context, in Interaction) (bisSeat, Reply, bool, error) {
+func (s *Service) bisSeatOf(ctx context.Context, in Interaction, withMain bool) (bisSeat, Reply, bool, error) {
 	guildID, viewer, bound, err := s.lookupCaller(ctx, in)
 	if err != nil {
 		return bisSeat{}, Reply{}, false, err
@@ -87,11 +87,18 @@ func (s *Service) bisSeatOf(ctx context.Context, in Interaction) (bisSeat, Reply
 	if !bound {
 		return bisSeat{}, pressReply(commonCopy.Unbound, true), false, nil
 	}
-	main, err := s.mainPicks(ctx, guildID, viewer)
-	if err != nil {
-		return bisSeat{}, Reply{}, false, err
+	seat := bisSeat{guildID: guildID, viewer: viewer}
+	if withMain {
+		seat, err = s.seatWithMain(ctx, seat)
 	}
-	return bisSeat{guildID, viewer, main}, Reply{}, true, nil
+	return seat, Reply{}, err == nil, err
+}
+
+// seatWithMain reads the presser's main. Presses that answer for picks already made skip it.
+func (s *Service) seatWithMain(ctx context.Context, seat bisSeat) (bisSeat, error) {
+	main, err := s.mainPicks(ctx, seat.guildID, seat.viewer)
+	seat.main = main
+	return seat, err
 }
 
 // bisCardUpdate re-renders the card in place.
@@ -109,9 +116,9 @@ func picked(in Interaction) string {
 }
 
 // bisPresser runs a card part for the presser's seat.
-func (s *Service) bisPresser(run func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error)) cardPart {
+func (s *Service) bisPresser(withMain bool, run func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error)) cardPart {
 	return func(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-		seat, refused, ok, err := s.bisSeatOf(ctx, in)
+		seat, refused, ok, err := s.bisSeatOf(ctx, in, withMain)
 		if err != nil || !ok {
 			return refused, err
 		}
@@ -120,7 +127,7 @@ func (s *Service) bisPresser(run func(ctx context.Context, in Interaction, seat 
 }
 
 func (s *Service) bisPickClass(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(true, func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		p = bisPicksOf([]string{picked(in), "", p.Range, p.Slot})
 		if seat.main != nil && p.Class != "" && p.Class == seat.main.Picks.Class {
 			p.Spec = seat.main.Picks.Spec
@@ -131,7 +138,7 @@ func (s *Service) bisPickClass(ctx context.Context, in Interaction, press cardPr
 }
 
 func (s *Service) bisPickSpec(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(true, func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		p = bisPicksOf([]string{p.Class, picked(in), p.Range, p.Slot})
 		lead := bisLeadFor(p, seat.main, seat.viewer != nil)
 		if p.Spec != "" {
@@ -142,7 +149,7 @@ func (s *Service) bisPickSpec(ctx context.Context, in Interaction, press cardPre
 }
 
 func (s *Service) bisPickRange(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(true, func(_ context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		p = bisPicksOf([]string{p.Class, p.Spec, picked(in), p.Slot})
 		return s.bisCardUpdate(seat, p, bisLeadFor(p, seat.main, seat.viewer != nil)), nil
 	})(ctx, in, press)
@@ -150,7 +157,7 @@ func (s *Service) bisPickRange(ctx context.Context, in Interaction, press cardPr
 
 // bisShow is Show BiS: the answer when a spec is picked, else the nudge with every pick kept.
 func (s *Service) bisShow(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(false, func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		key, hasSpec := p.specKey()
 		if hasSpec {
 			return s.bisAnswer(ctx, in, seat.guildID, seat.viewer, bisOptions(key, p), true)
@@ -159,6 +166,10 @@ func (s *Service) bisShow(ctx context.Context, in Interaction, press cardPress) 
 		if p.Class == "" {
 			lead = guideCopy.BisNudgeBoth
 		}
+		seat, err := s.seatWithMain(ctx, seat)
+		if err != nil {
+			return Reply{}, err
+		}
 		return s.bisCardUpdate(seat, p, lead), nil
 	})(ctx, in, press)
 }
@@ -166,7 +177,7 @@ func (s *Service) bisShow(ctx context.Context, in Interaction, press cardPress) 
 // bisUseMain answers for the main's spec and range. The main is read from the link, never
 // from the id.
 func (s *Service) bisUseMain(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(true, func(ctx context.Context, in Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		if seat.main == nil {
 			rep := failureReply()
 			rep.Update = true
@@ -181,7 +192,7 @@ func (s *Service) bisUseMain(ctx context.Context, in Interaction, press cardPres
 
 // bisChange reopens the card with the answer's picks.
 func (s *Service) bisChange(ctx context.Context, in Interaction, press cardPress) (Reply, error) {
-	return s.bisPresser(func(_ context.Context, _ Interaction, seat bisSeat, p bisPicks) (Reply, error) {
+	return s.bisPresser(true, func(_ context.Context, _ Interaction, seat bisSeat, p bisPicks) (Reply, error) {
 		return s.bisCardUpdate(seat, p, bisLeadFor(p, seat.main, seat.viewer != nil)), nil
 	})(ctx, in, press)
 }

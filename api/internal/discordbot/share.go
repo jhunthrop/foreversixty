@@ -160,10 +160,12 @@ func (s *Service) sharedReply(ctx context.Context, in Interaction, guildID int64
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: share render: %w", err)
 	}
-	if !ok {
+	if ok {
+		msg = decorateOwn(row.command, row.opts, msg)
+	} else {
 		msg = fallback
 	}
-	msg = withShare(decorateOwn(row.command, row.opts, msg), shareButton(token, true))
+	msg = withShare(msg, shareButton(token, true))
 	msg.Ephemeral = true
 	return Reply{Message: msg, Update: true}, nil
 }

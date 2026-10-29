@@ -152,6 +152,42 @@ func TestUseMainOnlyWhenAPickDiffers(t *testing.T) {
 	}
 }
 
+func TestBisPressesSurviveForgedIDs(t *testing.T) {
+	w := newBisWorld(t)
+	linkMain(w)
+	forged := []string{
+		"gbis:1:go:warrior:bear:99:boots:x",
+		"gbis:1:s:warrior:bear:99:boots:x",
+		"gbis:1:me:warrior:bear:99:boots:x",
+		"gbis:1:go:paladin:fury:p1:head",
+		"gbis:1:go",
+		"gbis:1:go:::::::",
+		"gbis:1:chg:nonsense:nonsense:nonsense:nonsense",
+	}
+	for _, id := range forged {
+		t.Run(id, func(t *testing.T) {
+			for _, user := range []string{pressDiscord, "d-stranger"} {
+				rep := w.pressBis(t, user, id, "bear")
+				if len(rep.Message.Embeds) == 0 && rep.Message.Content == "" {
+					t.Fatalf("empty answer: %+v", rep)
+				}
+			}
+		})
+	}
+	t.Run("a forged spec re-renders the nudge with the class kept", func(t *testing.T) {
+		m := w.pressBis(t, "d-stranger", "gbis:1:go:warrior:bear:99:boots:x").Message
+		if leadOf(m) != guideCopy.BisNudgeSpec || defaultOf(m.Components[0][0]) != "warrior" || defaultOf(m.Components[2][0]) != "p1" {
+			t.Fatalf("card = %+v", m.Embeds[0])
+		}
+	})
+	t.Run("another version is the stale card", func(t *testing.T) {
+		rep := w.pressBis(t, pressDiscord, "gbis:2:go:warrior:fury:p1:")
+		if rep.Message.Content != staleCard("/bis").Message.Content {
+			t.Fatalf("stale = %+v", rep.Message)
+		}
+	})
+}
+
 func TestShareFromACardKeepsTheControls(t *testing.T) {
 	w := newBisWorld(t)
 	answer := w.pressBis(t, pressDiscord, "gbis:1:go:warrior:fury:p1:").Message
