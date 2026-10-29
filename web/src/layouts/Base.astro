@@ -1,6 +1,6 @@
 ---
 // web/src/layouts/Base.astro
-// The three self-hosted faces and Barlow's size-adjusted fallback live in
+// The self-hosted faces and their size-adjusted fallbacks live in
 // ../styles/fonts.css, which carries the reasoning for all of it. They are a shared module
 // rather than an import list here because src/planner-island.ts needs exactly the same set:
 // planner-island.css is the only stylesheet the API's server-rendered /b/{id} page links,
@@ -14,11 +14,17 @@ import '../styles/fonts.css';
 // unpreloaded 600 arrives late enough to shift them (final whole-branch review, Lighthouse
 // rounds 1-3 — layout-shifts kept naming barlow-latin-600-normal.woff2's load as the
 // footer's own shift, on whichever page's font timing happened to expose it that run).
+// Barlow Condensed 800 is the heading face's heaviest weight, the one every h1 and section
+// title paints in (polish spec 2026-10-28 section 4.4: the single heaviest weight
+// preloaded); 700 is only the smaller inline names and is left to load on use. Cinzel is no
+// longer preloaded: after the polish lane it sets the wordmark alone, a fixed-width,
+// flex-shrink-0 lockup at the bar's left whose swap moves nothing after it (measured in the
+// lane's task-1 report), and its bytes no longer compete with the heading face's.
 //
 // The data-og attributes are the selectors src/worker.ts rewrites through HTMLRewriter when
 // it serves a shell page for an id that did not exist at build time. Renaming one silently
 // stops that page's unfurl from updating, so src/pages/_shells.test.ts asserts they exist.
-import cinzel700Url from '../assets/fonts/cinzel-700-subset.woff2?url';
+import barlowCondensed800Url from '../assets/fonts/barlow-condensed-800-subset.woff2?url';
 import barlow400Url from '../assets/fonts/barlow-400-subset.woff2?url';
 import barlow600Url from '../assets/fonts/barlow-600-subset.woff2?url';
 import '../styles/global.css';
@@ -70,7 +76,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <title data-og="title">{fullTitle}</title>
     <meta name="description" content={description} data-og="description" />
     <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
-    <link rel="preload" href={cinzel700Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={barlowCondensed800Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

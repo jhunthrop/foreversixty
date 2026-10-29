@@ -1,15 +1,17 @@
 # Font subsets
 
-`glyphs.txt` in this directory is the explicit glyph inventory for the five self-hosted font
-subsets committed under `web/src/assets/fonts/`: Cinzel 700, Barlow 400/600/700, JetBrains
-Mono 500. `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
+`glyphs.txt` in this directory is the explicit glyph inventory for the seven self-hosted font
+subsets committed under `web/src/assets/fonts/`: Cinzel 700 (the wordmark), Barlow
+400/600/700 (body), Barlow Condensed 700/800 (headings, added by the 2026-10-28 polish lane)
+and JetBrains Mono 500. `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
 directly (no more `@import '@fontsource/...'`); see that file's header comment for why.
 
 ## Why
 
 Lighthouse's simulated-throttling LCP budgets in `web/lighthouserc.json` charge for every
-byte fetched before the hero text paints. On every page that is these five font files, ~105
-KB total, because `fonts.css` loads all five regardless of page. Fontsource's `latin`
+byte fetched before the hero text paints. On every page that was these five font files, ~105
+KB total (seven files and ~144 KB since the heading face), because `fonts.css` declares every
+face for every page. Fontsource's `latin`
 subsets already drop non-Latin scripts, but still carry glyphs this English-only site never
 renders (combining diacritics, the OE ligature, guillemets, the Euro and trademark signs,
 dotless i, breve/ring/tilde as standalone characters). Subsetting to exactly the glyphs the
@@ -54,7 +56,7 @@ python3 -m venv /tmp/fonts-venv
 /tmp/fonts-venv/bin/pip install fonttools==4.61.1 brotli
 ```
 
-Then, from `web/`, for each of the five faces:
+Then, from `web/`, for each of the seven faces:
 
 ```sh
 VENV=/tmp/fonts-venv/bin
@@ -73,6 +75,14 @@ $VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-600-normal.w
 $VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-700-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
   --output-file=src/assets/fonts/barlow-700-subset.woff2
+
+$VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2 \
+  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/fonts/barlow-condensed-700-subset.woff2
+
+$VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-800-normal.woff2 \
+  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/fonts/barlow-condensed-800-subset.woff2
 
 $VENV/pyftsubset node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
@@ -106,3 +116,18 @@ npx vitest run src/assets/fonts/fonts.generated.test.ts
 `glyphs.txt`, with one documented exception list for characters absent from the _source_
 `@fontsource` files themselves (`→` `←` `†` and the narrow no-break space `U+202F` — none of
 Cinzel/Barlow/JetBrains Mono's `latin` files have ever had these glyphs, subsetting or not).
+
+## The heading hero subset and the fallback metrics
+
+`scripts/hero-font.py` cuts the home hero's capitals out of the committed Barlow Condensed 800
+subset into the inline `src/styles/hero-font.css` (rerun it after regenerating that subset or
+changing the hero headline). `scripts/fallback-metrics.mjs` computes the size-adjusted
+fallback descriptors in `src/styles/fonts.css` from a subset and a system face; rerun it after
+regenerating Barlow or Barlow Condensed and compare against the committed numbers:
+
+```sh
+node scripts/fallback-metrics.mjs src/assets/fonts/barlow-400-subset.woff2 \
+  /System/Library/Fonts/HelveticaNeue.ttc HelveticaNeue
+node scripts/fallback-metrics.mjs src/assets/fonts/barlow-condensed-800-subset.woff2 \
+  "/System/Library/Fonts/Supplemental/Arial Narrow Bold.ttf"
+```

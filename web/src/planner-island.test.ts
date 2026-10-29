@@ -105,7 +105,15 @@ describe('planner-island.css', () => {
   // down. An exact list rather than a `toContain` each, so a face that quietly stops being
   // emitted fails here and so does one nobody meant to ship.
   it('declares a face for every family tokens.css names', () => {
-    expect(declaredFontFamilies(css)).toEqual(['Barlow', 'Barlow Fallback', 'Cinzel', 'JetBrains Mono']);
+    expect(declaredFontFamilies(css)).toEqual([
+      'Barlow',
+      'Barlow Condensed',
+      'Barlow Condensed Fallback',
+      'Barlow Condensed Fallback Arial',
+      'Barlow Fallback',
+      'Cinzel',
+      'JetBrains Mono',
+    ]);
   });
 
   // A fallback face without the metric overrides is just Arial under another name, and the
@@ -113,6 +121,13 @@ describe('planner-island.css', () => {
   it('keeps the size-adjusted metrics on the Barlow fallback face', () => {
     expect(css).toMatch(/size-adjust:\s*95\.78%/);
     expect(css).toMatch(/ascent-override:\s*104\.41%/);
+  });
+
+  // The heading face's fallback (polish spec 2026-10-28 section 4.4): Arial Narrow Bold sized to
+  // Barlow Condensed 800's em-box, the weight every heading paints in.
+  it('keeps the size-adjusted metrics on the Barlow Condensed fallback face', () => {
+    expect(css).toMatch(/size-adjust:\s*94\.78%/);
+    expect(css).toMatch(/ascent-override:\s*105\.51%/);
   });
 
   // Two regressions in one assertion. A relative `url()` would resolve against

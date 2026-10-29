@@ -1,6 +1,6 @@
 // web/src/assets/fonts/fonts.generated.test.ts
-// Guards the five committed font subsets (Cinzel 700, Barlow 400/600/700, JetBrains Mono
-// 500) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
+// Guards the seven committed font subsets (Cinzel 700, Barlow 400/600/700, Barlow Condensed
+// 700/800, JetBrains Mono 500) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
 // web/fonts/README.md for the exact `pyftsubset` command and web/src/styles/fonts.css for
 // why self-authored @font-face rules replaced the @fontsource imports).
 //
@@ -34,12 +34,14 @@ const SUBSETS = [
   { label: 'Barlow 400', file: 'barlow-400-subset.woff2' },
   { label: 'Barlow 600', file: 'barlow-600-subset.woff2' },
   { label: 'Barlow 700', file: 'barlow-700-subset.woff2' },
+  { label: 'Barlow Condensed 700', file: 'barlow-condensed-700-subset.woff2' },
+  { label: 'Barlow Condensed 800', file: 'barlow-condensed-800-subset.woff2' },
   { label: 'JetBrains Mono 500', file: 'jetbrains-mono-500-subset.woff2' },
 ];
 
 // Rightwards arrow, leftwards arrow, dagger, narrow no-break space: present in
 // web/fonts/glyphs.txt (the last one is in the task's baseline punctuation list) but absent
-// from all three typefaces' @fontsource `latin` source files (verified with fontTools
+// from every typeface's @fontsource `latin` source files (verified with fontTools
 // against the un-subsetted files, not just these subsets) -- so no subset can contain them
 // either. See glyphs.txt's own comment for the source locations of the three that are
 // actually used in copy today.

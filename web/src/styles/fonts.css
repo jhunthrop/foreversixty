@@ -7,10 +7,11 @@
    share link points at. One module rather than two import lists: two would drift the moment
    someone adds a weight.
 
-   Cinzel (display), Barlow (body), and JetBrains Mono (numbers) are the three faces
-   design/DESIGN-SYSTEM.md specifies -- see that doc for the exact weight ranges and where
-   each is used. All three carry `font-display: swap`, so first paint always uses the
-   fallback stack in tokens.css and the real face swaps in once it downloads, rather than
+   Barlow Condensed (headings), Barlow (body), JetBrains Mono (tables) and Cinzel (the
+   wordmark only) are the four faces design/DESIGN-SYSTEM.md specifies -- see that doc for the
+   exact weight ranges and where each is used (polish spec 2026-10-28 section 4.4, direction B
+   Forge, moved every heading off Cinzel). All four carry `font-display: swap`, so first
+   paint always uses the fallback stack in tokens.css and the real face swaps in once it downloads, rather than
    blocking render or being skipped entirely.
 
    Each face below is declared against web/src/assets/fonts/<family>-<weight>-subset.woff2,
@@ -18,25 +19,24 @@
    entry point (which this file imported until the web-font-subsets lane). The five latin
    subsets Fontsource ships cover far more than this English-only site ever renders --
    combining diacritics, the Euro and trademark signs, guillemets, OE/dotless-i -- and still
-   charge for every one of them on every page load, since all five faces are loaded by both
-   routes above. web/fonts/glyphs.txt is the explicit inventory of every character the site
+   charge for every one of them on every page load, since every face is loaded by both routes
+   above. web/fonts/glyphs.txt is the explicit inventory of every character the site
    can render (printable ASCII, the full Latin-1 Supplement block, and the handful of
    typographic punctuation/arrows/dagger/angle-quote actually used in copy, found by
    web/scripts/check-glyph-coverage.mjs scanning a fixture build's HTML and JS bundles plus
    the markdown and game-data content). web/fonts/README.md has the exact `pyftsubset`
    command, and web/src/assets/fonts/fonts.generated.test.ts pins each subset's cmap against
    that inventory so a glyph the site needs is never silently missing from the subset. All
-   five subsets keep hinting and every OpenType layout feature (kerning, mark positioning)
+   seven subsets keep hinting and every OpenType layout feature (kerning, mark positioning)
    exactly as Fontsource's source file has them -- subsetting only drops unused glyphs, cmap
    entries and the table bytes that existed solely to serve them; hhea/OS2 vertical metrics
    (ascent, descent, lineGap) are verified byte-identical to the source in that same test, so
-   the Barlow Fallback face below still matches exactly.
+   the fallback faces below still match exactly.
 
    No font is preloaded here; src/layouts/Base.astro preloads the three faces every page
-   paints with (Cinzel 700, Barlow 400/600) -- see that file for why those three and not the
-   other two. That preloading decision is unchanged by subsetting: the three preloaded URLs
-   just point at the smaller subset files now, at the same hashed-URL mechanism Vite already
-   gave the Fontsource imports. */
+   paints with first (Barlow Condensed 800, Barlow 400/600) -- see that file for why those
+   three and not the others. The preloaded URLs point at the subset files, at the same
+   hashed-URL mechanism Vite gives every other asset import. */
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
@@ -66,6 +66,20 @@
   src: url('../assets/fonts/barlow-700-subset.woff2') format('woff2');
 }
 @font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-700-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-800-subset.woff2') format('woff2');
+}
+@font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 500;
@@ -91,5 +105,53 @@
   size-adjust: 95.78%;
   ascent-override: 104.41%;
   descent-override: 20.88%;
+  line-gap-override: 0%;
+}
+
+/* Barlow Condensed's size-adjusted fallbacks, the same move as `Barlow Fallback` above for the
+   heading face: every page's h1 and section titles are set in it, so a naive swap would
+   reflow them. Headings only ever paint at 700 or 800, so each fallback is the system's bold
+   condensed (or bold) face -- never a synthesized bold -- with one rule per weight, because
+   the two weights' advance widths differ (800 is wider) while their vertical metrics match.
+   Arial Narrow comes first (the closer width); where it is not installed its local() fails
+   and the stack in tokens.css moves on to the Arial-based family. The numbers are computed by
+   `node scripts/fallback-metrics.mjs` (capsize's createFontStack over @capsizecss/unpack, the
+   method that reproduces `Barlow Fallback`'s 95.78/104.41/20.88 exactly) against
+   src/assets/fonts/barlow-condensed-{700,800}-subset.woff2 and macOS's
+   Supplemental/Arial Narrow Bold.ttf and Arial Bold.ttf, 2026-10-28. */
+@font-face {
+  font-family: 'Barlow Condensed Fallback';
+  font-weight: 700;
+  src: local('Arial Narrow Bold'), local('ArialNarrow-Bold');
+  size-adjust: 92.74%;
+  ascent-override: 107.82%;
+  descent-override: 21.56%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Barlow Condensed Fallback';
+  font-weight: 800;
+  src: local('Arial Narrow Bold'), local('ArialNarrow-Bold');
+  size-adjust: 94.78%;
+  ascent-override: 105.51%;
+  descent-override: 21.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Barlow Condensed Fallback Arial';
+  font-weight: 700;
+  src: local('Arial Bold'), local('Arial-BoldMT');
+  size-adjust: 76.04%;
+  ascent-override: 131.5%;
+  descent-override: 26.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Barlow Condensed Fallback Arial';
+  font-weight: 800;
+  src: local('Arial Bold'), local('Arial-BoldMT');
+  size-adjust: 77.71%;
+  ascent-override: 128.68%;
+  descent-override: 25.74%;
   line-gap-override: 0%;
 }
