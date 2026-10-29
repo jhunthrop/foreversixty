@@ -2,8 +2,10 @@
 // real band (data.mjs). These are the reference payloads: the handler tests compare the bot's
 // own output against the same shapes, and the boards draw exactly these.
 import {
-  BUILD, PAGE1, PAGE2, QUALITY_WORDS, SLOT_LABELS, bisRows, charRows, signedDPS,
+  BUILD, NOT_MODELLED, PAGE1, PAGE2, QUALITY_WORDS, SLOT_LABELS, bisRows, charRows, signedDPS,
 } from "./data.mjs";
+
+export { NOT_MODELLED };
 
 export const SITE = "https://foreversixty.gg";
 export const API = "https://api.foreversixty.gg";
@@ -15,8 +17,6 @@ export const T = { ROW: 1, BUTTON: 2, SELECT: 3, SECTION: 9, TEXT: 10, THUMB: 11
 const crest = (cls) => SITE + "/icons/hd/crests/" + cls + ".webp";
 export const tileURL = (id) => `${API}/v1/discord/tiles/${BUILD}/${id}.png`;
 const PAGE = SITE + "/bis/hunter/beast-mastery?faction=alliance&preset=raid#band-alliance-60";
-const itemLink = (id) =>
-  `${SITE}/bis/hunter/beast-mastery?faction=alliance&item=${id}&preset=raid#band-alliance-60`;
 const CHAR_URL = SITE + "/character/us/normal/zulmara";
 
 const text = (content) => ({ type: T.TEXT, content });
@@ -24,8 +24,9 @@ const text = (content) => ({ type: T.TEXT, content });
 // the bot reads the real ones at start, as it does the 28 spec emoji.
 const Q_EMOJI = ["poor", "common", "uncommon", "rare", "epic", "legendary"];
 const dot = (q) => (q >= 0 && q < Q_EMOJI.length ? `<:fs_q_${Q_EMOJI[q]}:13026${String(q).padStart(14, "0")}> ` : "");
-const nameLine = (it, url) => `${dot(it.quality)}**[${it.name}](${url})**`;
-export const NOT_MODELLED = "Gain not modelled yet";
+// The name is plain bold text, never a link: Discord draws every link in its link blue, which
+// hid the quality colour the dot gives (persona ruling, revision 2).
+const nameLine = (it) => `${dot(it.quality)}**${it.name}**`;
 const sep = (spacing = 1) => ({ type: T.SEP, divider: true, spacing });
 const thumb = (url, description) => ({ type: T.THUMB, media: { url }, description });
 const section = (content, accessory) => ({ type: T.SECTION, components: [text(content)], accessory });
@@ -48,7 +49,7 @@ function bisSlot(r, rows) {
   }
   if (r.empty) return text(`**${label}** · no pick for this range.`);
   const gain = r.unmodelled ? NOT_MODELLED : r.gain;
-  return section(`${nameLine(r, itemLink(r.id))}\n${slotLine(label, gain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label)));
+  return section(`${nameLine(r)}\n${slotLine(label, gain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label)));
 }
 
 const BIS_HEAD = "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance";
@@ -94,7 +95,7 @@ export function bisSlotPanel(d, slotKey) {
   const alts = r.alternatives.slice(0, 2).map((a) => {
     const delta = r.unmodelled || a.unmodelled ? NOT_MODELLED : Math.abs(a.delta) >= 0.05 ? signedDPS(a.delta) : undefined;
     return section(
-      `${nameLine(a, itemLink(a.id))}\n${slotLine(label, delta)}\n${facts(a, a.source)}`,
+      `${nameLine(a)}\n${slotLine(label, delta)}\n${facts(a, a.source)}`,
       thumb(tileURL(a.id), tileAlt(a, label)),
     );
   });
@@ -108,7 +109,7 @@ export function bisSlotPanel(d, slotKey) {
         components: [
           section(`### ${label} · Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance`, thumb(crest("hunter"), "Hunter crest")),
           sep(),
-          section(`${nameLine(r, itemLink(r.id))}\n${slotLine(label, pickGain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label))),
+          section(`${nameLine(r)}\n${slotLine(label, pickGain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label))),
           sep(),
           text("-# The next best"),
           ...alts,
@@ -132,10 +133,9 @@ export function averageItemLevel(d, crows) {
 function upgradeSection(c) {
   const label = SLOT_LABELS[c.slot];
   const p = c.pick;
-  const url = CHAR_URL + "#gear-slot-" + c.slot;
-  const gain = c.empty ? "fills an empty slot" : c.gainShown;
+  const gain = c.gainShown;
   const replaces = c.empty ? "" : `\n-# Replaces ${c.worn.name}, item level ${c.worn.ilvl}`;
-  return section(`${nameLine(p, url)}\n${slotLine(label, gain)}\n${facts(p, p.source)}${replaces}`, thumb(tileURL(p.id), tileAlt(p, label)));
+  return section(`${nameLine(p)}\n${slotLine(label, gain)}\n${facts(p, p.source)}${replaces}`, thumb(tileURL(p.id), tileAlt(p, label)));
 }
 
 /** Upgrades in the order the panel lists them: empty slots first, then the largest gain. */

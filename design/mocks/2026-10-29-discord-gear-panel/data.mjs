@@ -203,6 +203,7 @@ export function bisRows(d) {
       slot: s.slot,
       ...itemFacts(d, s.item_id, s.item_name),
       gain,
+      score: s.score,
       unmodelled: s.effect_unmodelled === true,
       source,
       sourceShort: sourceShort(d.loot, s.item_id, s.source_kind, FACTION, source),
@@ -224,6 +225,16 @@ export const WORN_CHOICE = {
 };
 export const WORN_EMPTY = ["trinket2"];
 
+export const NOT_MODELLED = "Gain not modelled yet";
+const WEAPON_SLOTS = ["main_hand", "off_hand", "ranged"];
+
+/** The pick's gain over an empty slot: score x reference_dps_per_point, else undefined. */
+function emptyGain(d, slot, r) {
+  if (r.unmodelled || WEAPON_SLOTS.includes(slot) || r.score == null) return undefined;
+  const per = d.band.reference_dps_per_point;
+  return per == null ? undefined : r.score * per;
+}
+
 export function charRows(d, rows) {
   const out = new Map();
   for (const [slot, r] of rows) {
@@ -232,7 +243,12 @@ export function charRows(d, rows) {
       continue;
     }
     if (WORN_EMPTY.includes(slot)) {
-      out.set(slot, { slot, empty: true, pick: r });
+      // An empty slot's gain is the pick's whole stat-weight score in DPS (the site's own
+      // upgrades.ts rule, worn score 0); a sim-decided pick (an on-use trinket, no score), a
+      // weapon or an unmodelled effect has no trustworthy figure and says so.
+      const gainValue = emptyGain(d, slot, r);
+      const gainShown = gainValue === undefined ? NOT_MODELLED : signedDPS(gainValue);
+      out.set(slot, { slot, empty: true, pick: r, gainValue, gainShown });
       continue;
     }
     const k = WORN_CHOICE[slot];
@@ -242,7 +258,7 @@ export function charRows(d, rows) {
     }
     const alt = r.alternatives[k];
     // A pick whose effect the sim cannot model has no trustworthy gain: it says so instead.
-    const gainShown = r.unmodelled ? "Gain not modelled yet" : signedDPS(-alt.delta);
+    const gainShown = r.unmodelled ? NOT_MODELLED : signedDPS(-alt.delta);
     out.set(slot, { slot, worn: alt, pick: r, gainValue: -alt.delta, gain: signedDPS(-alt.delta), gainShown });
   }
   return out;

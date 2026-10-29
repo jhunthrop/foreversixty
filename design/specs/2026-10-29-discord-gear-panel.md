@@ -81,7 +81,7 @@ Not in the docs, so not guessed:
 
 | Viewer, surface | Question | Visible with no scroll, phone client (390) and desktop client (640) |
 |---|---|---|
-| Anyone, `/bis` with a spec | "What is the best item in each slot, and where do I get it?" | Phone: the header (spec, class, band, faction, crest) and the first three to four slots, each with its dot, linked name, slot, gain and source. Desktop: all nine slots of page 1. |
+| Anyone, `/bis` with a spec | "What is the best item in each slot, and where do I get it?" | Phone: the header (spec, class, band, faction, crest) and the first three to four slots, each with its dot, bold name, slot, gain and source. Desktop: all nine slots of page 1. |
 | Anyone, `/bis slot:{slot}` | "What is best in this slot, and what comes next?" | The pick and both alternatives |
 | A player, `/char` | "What should this character replace first?" | The character line, item level and readiness, and the first three upgrades, each saying what it replaces |
 
@@ -90,7 +90,7 @@ Tenet 14: the panel leads with the class and the band, or the character. The fir
 ## A.2 References, and what we borrow
 
 - **The in-game character frame.** Borrowed: the slot order. Left column Head, Neck, Shoulder, Back, Chest, Wrist. Right column Hands, Waist, Legs, Feet, Ring 1, Ring 2, Trinket 1, Trinket 2. Bottom Main hand, Off hand, Ranged. The two pages follow it.
-- **Wowhead's BiS table and our BiS page's "The list".** Borrowed: one row per slot with the slot, the icon, the linked name and the page's own source words. Not borrowed: runners-up, which stay on the page (`All 17 slots`).
+- **Wowhead's BiS table and our BiS page's "The list".** Borrowed: one row per slot with the slot, the icon, the name and the page's own source words. Not borrowed: runners-up, which stay on the page (`All 17 slots`).
 - **The game's item tooltip.** Borrowed: the name led by its quality colour, with quality and item level as a quiet line under it.
 - **Our `/char` card today.** Borrowed unchanged: the character line, item level, readiness and synced. Added: what each upgrade replaces.
 - **Discord's Section pattern.** Borrowed: one Section per item, with the icon tile as the Thumbnail accessory, drawn on the right by Discord.
@@ -100,16 +100,16 @@ Tenet 14: the panel leads with the class and the band, or the character. The fir
 Each item row is one Section (type 9) holding one Text Display and a Thumbnail accessory: 3 components.
 
 ```
-{quality dot} **[{Item name}]({link})**
+{quality dot} **{Item name}**
 {Slot}[ · {gain}]
 -# {Quality} · item level {n} · {source line}
 -# Replaces {worn name}, item level {n}          (/char only; absent for an empty slot)
 ```
 
-- **Line 1, the row's one primary element.** It is the quality dot (§A.4.1), a space, then the name: bold and a masked link. Discord draws link text in its link blue #00a8fc. The colour is carried by the dot beside it and the ring on the tile. When the dot emoji is not loaded, line 1 is the name alone.
+- **Line 1, the row's one primary element.** It is the quality dot (§A.4.1), a space, then the name in plain bold text, **never a link** (ruling A10: Discord draws every link in its link blue #00a8fc, which hid the quality colour). The colour is carried by the dot beside it and the ring on the tile. When the dot emoji is not loaded, line 1 is the name alone. The panel's link button (`All 17 slots`, `Open on Forever Sixty`, `Character page`) opens the page.
 - **Line 2, body size.** The slot (the `/bis` slot choice's name: `Ring 1`, `Ring 2`, `Trinket 1`, `Trinket 2`, the same words the sheet's alt text uses), then ` · ` and the gain **only when there is one**:
   - `/bis`: `signedDPS(-alternatives[0].dps_delta)` when its absolute value is at least 0.05. A tie or a slot with no alternative shows the slot alone. The retired `ties the next best` never appears.
-  - `/char`: the band's measured gain over the worn item, or `fills an empty slot` (§A.5.3).
+  - `/char`: the band's measured gain over the worn item. An empty slot shows its real gain, the pick's stat-weight score in DPS (`score x reference_dps_per_point`, the site's `upgrades.ts` rule with nothing worn), or `Gain not modelled yet` where no figure exists: a sim-decided pick with no score (an on-use trinket), a weapon, or an unmodelled effect (ruling A11).
   - Tank: `+{x.x} points`.
   - **A pick with `effect_unmodelled: true`** (its proc, on-use or set effect is not in the sim) shows `Gain not modelled yet` in place of any figure, because the figure would leave out the effect that makes it the pick. In this band that is Head (Beastmaster's Cap), Feet (Beastmaster's Treads) and Ring 1 (Signet Ring of the Bronze Dragonflight). In the slot form, an alternative carrying the flag reads the same.
 - **Line 3, Discord subtext** (`-# `, 13 px, #949ba4): quality word, item level, and the source line from `sourceLine`, in full, never cut. Each part is left out when unknown.
@@ -120,8 +120,8 @@ Each item row is one Section (type 9) holding one Text Display and a Thumbnail a
   - A quest with no `min_level` shows `Quest: {name}`.
   - The site's `questSourceLabel` changes in the same lane, so the panel and the page read alike.
 - **Line 4 (`/char`), subtext:** `Replaces {worn name}, item level {n}`. Without a known level: `Replaces {worn name}`. Without a name: no line.
-- **Escaping.** Names go through `memberText`. Inside a masked link, `[`, `]`, `(` and `)` are backslash-escaped.
-- **Links:** `/bis` uses `itemLink(page, id)`; `/char` uses `{character URL}#gear-slot-{slot}`.
+- **Escaping.** Names go through `memberText`, so `*`, `_`, `[` and `]` in a name stay inside the bold.
+- **No item links.** The rows carry no link; the message's link button opens the page.
 
 The `ItemEmbed` grammar is retired for `/bis` and `/char`. `/report` keeps it until its own amendment.
 
@@ -203,16 +203,18 @@ Ephemeral, flags 32832.
    2. **Separator**.
    3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` (tank: `-# By Forever Score gained, against the guide build.`).
    4. **Up to five upgrade rows** (§A.3; `maxUpgrades` = 5), ordered:
-      1. Empty slots that have a pick, in frame order (`fills an empty slot`).
+      1. Empty slots that have a pick, in frame order, each with its real gain or `Gain not modelled yet` (§A.3).
       2. Measured gains, largest first.
       3. Picks whose gain is not modelled (`Gain not modelled yet`), in frame order.
 
-      Zulmara's list: Trinket 2 (empty), Ranged +23.1, Chest +11.0, Legs +9.3, Wrist +4.7, then four more.
+      Zulmara's list: Trinket 2 (empty, `Gain not modelled yet`: Molten Heart of the Mountain is sim-decided, no score), Ranged +23.1, Chest +11.0, Legs +9.3, Wrist +4.7, then four more.
    5. When more exist: `-# {n} more upgrades on the character page.` (`-# 1 more upgrade on the character page.`).
 2. **Action row 1**: `Share in channel`, `Someone else`, `Character page` (Link).
 3. **Action row 2**, with two or more verified characters: `Another of your characters`.
 
 An empty slot whose band names a pick is kept even though `VerdictFor` gives no `GainDps`. A test pins Zulmara's empty Trinket 2 first.
+
+The `/bis` panel's lead keeps saying each gain is over the next best item; the `/char` sheet's gold legend says its figures are the gain over what is worn (ruling B6).
 
 ### A.5.4 Fully geared, no gear, unknown
 
@@ -228,11 +230,11 @@ Every component counts, nested ones included. The counts come from `payloads/*.j
 
 | Message | Count | Total | Text |
 |---|---|---|---|
-| `/bis` page 1 | Container 1 + header Section 3 + Separator 1 + 9 x 3 + row 1 + 4 buttons | 37 | 2,342 |
-| `/bis` page 1 after a failed share | the above + the failure Text Display | **38** | 2,373 |
-| `/bis` page 2 | 1 + 3 + 1 + 7 x 3 + 1 + 1 + 4 | 32 | 1,840 |
-| `/bis slot:` | 1 + 3 + 1 + 3 + 1 + 1 + 6 + 1 + 3 | 20 | 823 |
-| `/char` | 1 + 3 + 1 + 1 + 15 + 1 + 4 + 2 | 28 | 1,528 |
+| `/bis` page 1 | Container 1 + header Section 3 + Separator 1 + 9 x 3 + row 1 + 4 buttons | 37 | 1,355 |
+| `/bis` page 1 after a failed share | the above + the failure Text Display | **38** | 1,386 |
+| `/bis` page 2 | 1 + 3 + 1 + 7 x 3 + 1 + 1 + 4 | 32 | 1,070 |
+| `/bis slot:` | 1 + 3 + 1 + 3 + 1 + 1 + 6 + 1 + 3 | 20 | 493 |
+| `/char` | 1 + 3 + 1 + 1 + 15 + 1 + 4 + 2 | 28 | 1,172 |
 | `/char` no gear | | 12 | 241 |
 | Shared `/bis`, shared `/char` | | 5, 6 | 72, 185 |
 
@@ -272,7 +274,7 @@ The `/bis` card counts 14 components.
 | State | What the player sees |
 |---|---|
 | Default | §A.5 |
-| A link pressed | Discord's external-link confirm, then the page (band, faction, preset, `#gear-slot-{slot}` for `/char`). Keyboard focus reaches links and buttons in order. On touch, the whole name is the link. |
+| A link button pressed | Discord's external-link confirm, then the page (band, faction, preset). Keyboard focus reaches the buttons in order. Item names are not links (ruling A10). |
 | Page button | Discord's spinner, type 7 within 3 s, the other page in place, Share unchanged |
 | A press on a legacy card after deploy | The V2 frame replaces it in place (§A.7 rule 2); never a 400 |
 | Press after 15 minutes | As the guided cards (§G.6) |
@@ -281,7 +283,7 @@ The `/bis` card counts 14 components.
 | Band missing | `Could not load that. Try again.` |
 | Item unknown to the build | Question-mark tile, the data's name, no dot, no quality word or item level |
 
-There is no hover. The masked link opens the item on our page, whose shared tooltip is the real item (tenet 2).
+There is no hover. The link button opens our page, whose shared tooltip is the real item (tenet 2).
 
 # Part B. The character sheet on `Share in channel`
 
@@ -448,7 +450,6 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `char.upgrades.title` | `**Top upgrades** · {band label}` |
 | `char.upgrades.byDPS` | `-# By DPS gained, against the guide build.` |
 | `char.upgrades.byScore` | `-# By Forever Score gained, against the guide build.` |
-| `char.upgrades.empty` | `fills an empty slot` |
 | `char.upgrades.more` | `-# {n} more upgrades on the character page.`; for one `-# 1 more upgrade on the character page.` |
 | `char.upgrades.none` | `Every slot already wears the guide's pick for {band label}.` |
 | `char.noGear` | `No gear shared yet. Upgrades show once the character is synced.` (unchanged) |
@@ -479,14 +480,14 @@ Retired:
 - `lookupCopy.BisTopLead`, `BisSlotLead`, `BisFooter`, and `BisAuthor` on items
 - `ItemLineOne` and `ItemLineTwo` for `/bis` and `/char`
 - `TopUpgrades`, `UpgradesBand`, `UpgradesByDPS` and `UpgradesByScore`
-- the revision-1 strings `ties the next best` and `same DPS as the pick`
+- the revision-1 strings `ties the next best` and `same DPS as the pick`, and `fills an empty slot` (ruling A11)
 - `topSlots = 5` and `maxUpgrades = 3`
 
 # Rulings
 
 A1. Two pages in the character frame's order (page 1 Head to Legs, page 2 Feet to Ranged). Seventeen rows at 3 components each are 51. The coordinator closed owner question 4: the owner asked for the character screen.
 
-A2. No hover in Discord. The masked link opens the item on our page, whose tooltip is the real item.
+A2. No hover in Discord. The link button opens our page, whose tooltip is the real item.
 
 A3. Quality on the tile's ring, because V2 has one accent colour per container.
 
@@ -501,6 +502,10 @@ A7. Quality colour on the name comes from an application-emoji dot (§A.4.1). Re
 A8. A gain shows only when there is one. A pick whose effect the sim cannot model says `Gain not modelled yet`, never a figure that leaves the effect out.
 
 A9. Quest lines show the level a player must be (`min_level`). The data holds both fields; the quest's own level misled.
+
+A10. (Coordinator, after the persona round.) Item names are plain bold text, not links: Discord draws every link blue, which hid the quality the dot gives. The panel's link button opens the page.
+
+A11. (Coordinator, after the persona round.) An empty `/char` slot shows its real gain, or `Gain not modelled yet` for a pick the sim cannot model (an on-use trinket); `fills an empty slot` is retired.
 
 B1. The sheet goes only on the public share.
 
@@ -539,7 +544,7 @@ C1. One Go renderer in the API: attachment for the sheet, cached endpoint for th
 3. **`/bis slot:`.** The pick, `-# The next best`, two alternatives with U+2212 deltas or none, `Gain not modelled yet` for an unmodelled pick or alternative, three buttons.
 4. **`/char`.** Header clauses present and absent, member-only clauses, the order empty, measured, unmodelled; at most five; `Replaces` with and without a level; `more` singular and plural; no gear and no upgrade; tank in points.
 5. **Sources.** `Quest: Saving the Best for Last · requires level 58` (`min_level`, not `level` 60). No `min_level` gives `Quest: {name}`. The site's `questSourceLabel` test changes in step.
-6. **Escaping.** Brackets, parentheses and `*` in names stay inside the masked link.
+6. **Escaping.** Brackets, parentheses and `*` in names stay inside the bold, and no row carries a link.
 7. **Text guard.** The longest real band never triggers it; a synthetic band does and ends at 3,800 or below.
 8. **Emoji.** With the six `fs_q_*` loaded, line 1 leads with the dot. With one missing, that quality's lines have no dot, and `emoji_missing` names it. `api discord-emoji` uploads only missing names and prints no token.
 9. **Share.** Multipart with `sheet.png` and the alt; the gallery `attachment://sheet.png`; a page-2 share renders all 17; a `/bis slot:` share posts the slot panel with no file; a render error posts the no-sheet panel and logs `sheet_render`; a follow-up error restores the live button with the failure Text Display.

@@ -3,7 +3,7 @@
   "title": "/bis: Feet to Ranged",
   "budget": {
     "components": 32,
-    "text": 1840
+    "text": 1070
   },
   "message": {
     "flags": 32832,
@@ -38,7 +38,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **[Beastmaster's Treads](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226881&preset=raid#band-alliance-60)**\nFeet · Gain not modelled yet\n-# Epic · item level 60 · Vendor: Mokvar"
+                "content": "<:fs_q_epic:1302600000000000004> **Beastmaster's Treads**\nFeet · Gain not modelled yet\n-# Epic · item level 60 · Vendor: Mokvar"
               }
             ],
             "accessory": {
@@ -54,7 +54,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **[Signet Ring of the Bronze Dragonflight](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=234202&preset=raid#band-alliance-60)**\nRing 1 · Gain not modelled yet\n-# Epic · item level 80 · Vendor: Anachronos"
+                "content": "<:fs_q_epic:1302600000000000004> **Signet Ring of the Bronze Dragonflight**\nRing 1 · Gain not modelled yet\n-# Epic · item level 80 · Vendor: Anachronos"
               }
             ],
             "accessory": {
@@ -70,7 +70,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **[Cutthroat's Signet](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272408&preset=raid#band-alliance-60)**\nRing 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
+                "content": "<:fs_q_rare:1302600000000000003> **Cutthroat's Signet**\nRing 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
               }
             ],
             "accessory": {
@@ -86,7 +86,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **[Frozen Heart of the Mountain](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=249469&preset=raid#band-alliance-60)**\nTrinket 1\n-# Rare · item level 55 · Crafted: Enchanting"
+                "content": "<:fs_q_rare:1302600000000000003> **Frozen Heart of the Mountain**\nTrinket 1\n-# Rare · item level 55 · Crafted: Enchanting"
               }
             ],
             "accessory": {
@@ -102,7 +102,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **[Molten Heart of the Mountain](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=249470&preset=raid#band-alliance-60)**\nTrinket 2\n-# Rare · item level 55 · Crafted: Enchanting"
+                "content": "<:fs_q_rare:1302600000000000003> **Molten Heart of the Mountain**\nTrinket 2\n-# Rare · item level 55 · Crafted: Enchanting"
               }
             ],
             "accessory": {
@@ -118,7 +118,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **[Legionite Glaive](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=250619&preset=raid#band-alliance-60)**\nMain hand\n-# Rare · item level 63 · Crafted: Blacksmithing"
+                "content": "<:fs_q_rare:1302600000000000003> **Legionite Glaive**\nMain hand\n-# Rare · item level 63 · Crafted: Blacksmithing"
               }
             ],
             "accessory": {
@@ -138,7 +138,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **[Hyper Deluxe Sniper Rifle Mk XVII](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=279273&preset=raid#band-alliance-60)**\nRanged\n-# Epic · item level 65 · Crafted: Engineering"
+                "content": "<:fs_q_epic:1302600000000000004> **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged\n-# Epic · item level 65 · Crafted: Engineering"
               }
             ],
             "accessory": {
