@@ -2,7 +2,6 @@
 title: Refund policy
 description: How refunds work and what happens to your subscription when one is issued.
 updated: 2026-10-24
-confidence: confirmed
 sources:
   - label: This site
     url: https://foreversixty.gg/refunds

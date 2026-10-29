@@ -12,7 +12,9 @@ interface Props {
   description?: string;
   path: string;
   updated: Date;
-  confidence: Confidence;
+  /** Absent for a page with no provenance claim (the legal pages): the layout then draws
+   *  neither the confidence sentence nor its separator. */
+  confidence?: Confidence;
   sources: Source[];
   /** 'header' (default, unchanged): the confidence sentence sits under the title, as every
    *  `pages` collection entry still shows it. 'footer' (guides only, spec 5): it moves to a
@@ -85,7 +87,7 @@ const confidenceCopy: Record<Confidence, string> = {
           <h1 class="heading-page">{title}</h1>
           <div class="text-muted flex flex-wrap items-center gap-3 text-[13px]">
             <UpdatedStamp date={updated} />
-            {confidencePlacement === 'header' && (
+            {confidence !== undefined && confidencePlacement === 'header' && (
               <>
                 <span>·</span>
                 <span>{confidenceCopy[confidence]}</span>
@@ -97,7 +99,7 @@ const confidenceCopy: Record<Confidence, string> = {
       <div class:list={['prose-forever text-[16px] leading-[1.6]', wideProse && 'prose-wide']}>
         <slot />
       </div>
-      {confidencePlacement === 'footer' && !hideConfidenceNote && (
+      {confidence !== undefined && confidencePlacement === 'footer' && !hideConfidenceNote && (
         <p class="text-muted text-[13px]" data-testid="confidence-footer-note">
           {confidenceCopy[confidence]}
         </p>

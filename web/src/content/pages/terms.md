@@ -2,7 +2,6 @@
 title: Subscription terms
 description: What Premium and the guild plan are, how billing works, and how to cancel.
 updated: 2026-10-24
-confidence: confirmed
 sources:
   - label: This site
     url: https://foreversixty.gg/terms

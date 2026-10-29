@@ -68,4 +68,22 @@ describe('Content layout', () => {
     expect(footerNoteIndex).toBeLessThan(sourcesIndex);
     expect(html).toContain('Reported by one outlet');
   });
+
+  it('draws no status and no separator for a page with no confidence (the legal pages)', async () => {
+    const c = await createPageContainer();
+    const html = await c.renderToString(Content, {
+      props: {
+        title: 'Privacy policy',
+        path: '/privacy',
+        updated: new Date('2026-10-28T00:00:00Z'),
+        sources: [{ label: 'This site', url: 'https://foreversixty.gg/privacy', kind: 'site' }],
+      },
+      slots: { default: '<p>body</p>' },
+    });
+    expect(html).toContain('Updated Oct 28');
+    expect(html).not.toContain('Confirmed by Blizzard');
+    expect(html).not.toContain('Reported by one outlet');
+    expect(html).not.toContain('Our inference');
+    expect(html).not.toMatch(/Updated Oct 28[^<]*<\/[^>]+>\s*<span>·<\/span>/);
+  });
 });

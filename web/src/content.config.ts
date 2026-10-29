@@ -15,7 +15,8 @@ export const factSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1).max(200).optional(),
   updated: z.coerce.date(),
-  confidence: z.enum(confidences).default('confirmed'),
+  /** Absent on a page that makes no claim about the world (the legal pages): no status line. */
+  confidence: z.enum(confidences).optional(),
   sources: z.array(sourceSchema).min(1),
 });
 

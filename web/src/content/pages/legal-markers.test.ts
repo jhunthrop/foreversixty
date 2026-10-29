@@ -18,6 +18,9 @@ describe('legal pages', () => {
       expect(text).not.toMatch(/OWNER:/);
       expect(text).not.toContain('legal-draft-banner');
     });
+    it(`${file} carries no confidence status`, () => {
+      expect(text).not.toMatch(/^confidence:/m);
+    });
     it(`${file} names Commish LLC and the support address`, () => {
       expect(text).toContain('Commish LLC');
       expect(text).toContain('help@foreversixty.gg');
