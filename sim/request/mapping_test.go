@@ -254,3 +254,35 @@ func TestThePinnedEngineCarriesTheParityFields(t *testing.T) {
 		t.Fatal("the pinned engine's RaidSimResult has no sample_iteration")
 	}
 }
+
+// Each warlock spec names its own demon: the engine summons whatever the
+// options say, so a spec that silently inherited another's demon would
+// sim its pet talents (Improved Imp, Improved Sayaad) and Master
+// Demonologist against the wrong pet.
+func TestEachWarlockSpecSimsItsOwnDemon(t *testing.T) {
+	cases := []struct {
+		spec string
+		want proto.WarlockOptions_Summon
+	}{
+		{"warlock-affliction", proto.WarlockOptions_Succubus},
+		{"warlock-demonology", proto.WarlockOptions_Succubus},
+		{"warlock-destruction", proto.WarlockOptions_Succubus},
+	}
+	for _, tc := range cases {
+		t.Run(tc.spec, func(t *testing.T) {
+			apply, ok := specOptions[tc.spec]
+			if !ok {
+				t.Fatalf("specOptions carries no %s", tc.spec)
+			}
+			p := &proto.Player{}
+			apply(p)
+			opts := p.GetWarlock().GetOptions()
+			if got := opts.GetSummon(); got != tc.want {
+				t.Errorf("%s summons %v, want %v", tc.spec, got, tc.want)
+			}
+			if got := opts.GetArmor(); got != proto.WarlockOptions_DemonArmor {
+				t.Errorf("%s wears %v, want Demon Armor", tc.spec, got)
+			}
+		})
+	}
+}

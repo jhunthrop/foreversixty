@@ -598,7 +598,8 @@ var aplFS embed.FS
 // its specs from one set of options - the fork has one hunter, mage,
 // rogue and warlock package, and one DPS warrior package for Arms and
 // Fury - so those specs share a function here rather than repeating
-// it. A spec the fork models on its own gets its own.
+// it. A spec the fork models on its own gets its own. The warlock specs
+// share one function but each names its own demon (warlockOptions).
 var specOptions = map[string]func(*proto.Player){
 	"druid-balance":        balanceDruidOptions,
 	"druid-feral":          feralDruidOptions,
@@ -622,9 +623,9 @@ var specOptions = map[string]func(*proto.Player){
 	"shaman-elemental":     elementalShamanOptions,
 	"shaman-enhancement":   enhancementShamanOptions,
 	"shaman-restoration":   restorationShamanOptions,
-	"warlock-affliction":   warlockOptions,
-	"warlock-demonology":   warlockOptions,
-	"warlock-destruction":  warlockOptions,
+	"warlock-affliction":   warlockOptions(proto.WarlockOptions_Succubus),
+	"warlock-demonology":   warlockOptions(proto.WarlockOptions_Succubus),
+	"warlock-destruction":  warlockOptions(proto.WarlockOptions_Succubus),
 	"warrior-arms":         warriorOptions,
 	"warrior-fury":         warriorOptions,
 	"warrior-protection":   tankWarriorOptions,
@@ -766,13 +767,27 @@ func restorationShamanOptions(p *proto.Player) {
 	}}
 }
 
-func warlockOptions(p *proto.Player) {
-	p.Spec = &proto.Player_Warlock{Warlock: &proto.Warlock{
-		Options: &proto.WarlockOptions{
-			Armor:  proto.WarlockOptions_DemonArmor,
-			Summon: proto.WarlockOptions_Succubus,
-		},
-	}}
+// warlockOptions is one warlock spec's options: Demon Armor and the
+// demon that spec sims with. The fork models all three specs in one
+// package, but the demon is a per-spec choice - Master Demonologist's
+// school, Improved Imp against Improved Sayaad and the pet's own damage
+// all differ by demon - so each spec's entry in specOptions names its
+// own.
+//
+// Each named demon is the one that measured best at the spec's guide
+// builds on the band-60 BiS sets (engine c89e838c6, 10,000 iterations,
+// seed 1; .superpowers/sdd/2026-10-28-warlock-sims/fix-report.md). The
+// Succubus leads for all three on the raid character, and for Affliction
+// and Destruction bare as well.
+func warlockOptions(summon proto.WarlockOptions_Summon) func(*proto.Player) {
+	return func(p *proto.Player) {
+		p.Spec = &proto.Player_Warlock{Warlock: &proto.Warlock{
+			Options: &proto.WarlockOptions{
+				Armor:  proto.WarlockOptions_DemonArmor,
+				Summon: summon,
+			},
+		}}
+	}
 }
 
 func warriorOptions(p *proto.Player) {
