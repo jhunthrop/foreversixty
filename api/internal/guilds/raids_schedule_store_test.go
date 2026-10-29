@@ -196,11 +196,12 @@ func TestFailAndReleaseSchedule(t *testing.T) {
 	if err := w.st.UpsertSchedule(ctx, id, w.gid, now.Add(-time.Minute), false); err != nil {
 		t.Fatal(err)
 	}
-	if len(claimed(t, w.st, now)) != 1 {
+	first := claimed(t, w.st, now)
+	if len(first) != 1 {
 		t.Fatal("expected a claim")
 	}
-	if err := w.st.FailSchedule(ctx, id, now.Add(time.Hour), "boom"); err != nil {
-		t.Fatal(err)
+	if ok, err := w.st.FailSchedule(ctx, id, first[0].LeaseUntil, now.Add(time.Hour), "boom"); err != nil || !ok {
+		t.Fatalf("fail = %v, %v", ok, err)
 	}
 	if len(claimed(t, w.st, now)) != 0 {
 		t.Fatal("a failed row was due before its retry time")
@@ -209,8 +210,8 @@ func TestFailAndReleaseSchedule(t *testing.T) {
 	if len(due) != 1 || due[0].Attempts != 1 {
 		t.Fatalf("after retry time: %+v", due)
 	}
-	if err := w.st.ReleaseSchedule(ctx, id); err != nil {
-		t.Fatal(err)
+	if ok, err := w.st.ReleaseSchedule(ctx, id, due[0].LeaseUntil); err != nil || !ok {
+		t.Fatalf("release = %v, %v", ok, err)
 	}
 	if len(claimed(t, w.st, now.Add(2*time.Hour))) != 1 {
 		t.Fatal("a released row was not claimable")
@@ -239,7 +240,8 @@ func TestRemindFlippedOffAndOnIsStillClaimed(t *testing.T) {
 	if err := w.st.SetScheduleRemind(ctx, id, true); err != nil {
 		t.Fatal(err)
 	}
-	if due := claimed(t, w.st, now); len(due) != 1 || due[0].Kind != dueReminder {
+	due := claimed(t, w.st, now)
+	if len(due) != 1 || due[0].Kind != dueReminder {
 		t.Fatalf("after re-enabling: %+v", due)
 	}
 	if err := w.st.UpsertSchedule(ctx, id, w.gid, postedAt, false); err != nil {
@@ -248,8 +250,8 @@ func TestRemindFlippedOffAndOnIsStillClaimed(t *testing.T) {
 	if err := w.st.UpsertSchedule(ctx, id, w.gid, postedAt, true); err != nil {
 		t.Fatal(err)
 	}
-	if err := w.st.ReleaseSchedule(ctx, id); err != nil {
-		t.Fatal(err)
+	if ok, err := w.st.ReleaseSchedule(ctx, id, due[0].LeaseUntil); err != nil || !ok {
+		t.Fatalf("release = %v, %v", ok, err)
 	}
 	if len(claimed(t, w.st, now)) != 1 {
 		t.Fatal("an upsert flip lost the reminder")

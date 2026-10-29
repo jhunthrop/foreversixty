@@ -213,30 +213,73 @@ func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int)
 	return out, rows.Err()
 }
 
-// RenewScheduleLease extends a claimed row's lease just before its send, only while the row
-// still holds the lease this claim took; false means another runner took it since, and the
-// send is skipped. The new lease is the later of the claimed one and the wall clock plus
-// scheduleLease, so it never shortens.
-func (s *Store) RenewScheduleLease(ctx context.Context, raidID int64, claimed time.Time) (bool, error) {
-	tag, err := s.Pool.Exec(ctx, `
+// The lease writes below are compare-and-set on the lease the caller holds (`lease_until =
+// held`): a row whose lease moved belongs to another runner and is left alone, reported as
+// false.
+
+// RenewScheduleLease extends a held lease just before a send and returns the new one; false
+// means another runner took the row since, and the send is skipped. The new lease is the
+// later of the held one and the wall clock plus scheduleLease, so it never shortens.
+func (s *Store) RenewScheduleLease(ctx context.Context, raidID int64, held time.Time) (time.Time, bool, error) {
+	var renewed time.Time
+	err := s.Pool.QueryRow(ctx, `
 		update guild_raid_discord_schedule
 		set lease_until = greatest($2::timestamptz, now() + make_interval(secs => $3))
-		where raid_id = $1 and lease_until = $2`, raidID, claimed, scheduleLease.Seconds())
+		where raid_id = $1 and lease_until = $2
+		returning lease_until`, raidID, held, scheduleLease.Seconds()).Scan(&renewed)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return time.Time{}, false, nil
+	}
 	if err != nil {
-		return false, fmt.Errorf("guilds: renew lease of raid %d: %w", raidID, err)
+		return time.Time{}, false, fmt.Errorf("guilds: renew lease of raid %d: %w", raidID, err)
+	}
+	return renewed, true, nil
+}
+
+// leaseWrite runs a compare-and-set update whose $1 is the raid and $2 the held lease.
+func (s *Store) leaseWrite(ctx context.Context, what, query string, args ...any) (bool, error) {
+	tag, err := s.Pool.Exec(ctx, query, args...)
+	if err != nil {
+		return false, fmt.Errorf("guilds: %s: %w", what, err)
 	}
 	return tag.RowsAffected() == 1, nil
 }
 
 // FailSchedule counts a failed send, keeps its message and holds the row until retryAt.
-func (s *Store) FailSchedule(ctx context.Context, raidID int64, retryAt time.Time, lastErr string) error {
-	return s.scheduleExec(ctx, fmt.Sprintf("fail schedule of raid %d", raidID), `
-		update guild_raid_discord_schedule set attempts = attempts + 1, next_attempt_at = $2,
-		  last_error = $3, lease_until = null where raid_id = $1`, raidID, retryAt, lastErr)
+func (s *Store) FailSchedule(ctx context.Context, raidID int64, held, retryAt time.Time, lastErr string) (bool, error) {
+	return s.leaseWrite(ctx, fmt.Sprintf("fail schedule of raid %d", raidID), `
+		update guild_raid_discord_schedule set attempts = attempts + 1, next_attempt_at = $3,
+		  last_error = $4, lease_until = null where raid_id = $1 and lease_until = $2`, raidID, held, retryAt, lastErr)
 }
 
-// ReleaseSchedule drops the lease without counting an attempt.
-func (s *Store) ReleaseSchedule(ctx context.Context, raidID int64) error {
-	return s.scheduleExec(ctx, fmt.Sprintf("release schedule of raid %d", raidID),
-		`update guild_raid_discord_schedule set lease_until = null where raid_id = $1`, raidID)
+// ReleaseSchedule drops a held lease without counting an attempt.
+func (s *Store) ReleaseSchedule(ctx context.Context, raidID int64, held time.Time) (bool, error) {
+	return s.leaseWrite(ctx, fmt.Sprintf("release schedule of raid %d", raidID),
+		`update guild_raid_discord_schedule set lease_until = null where raid_id = $1 and lease_until = $2`, raidID, held)
+}
+
+// scheduleSentUnmarked is last_error on a row whose post went out but could not be marked:
+// HoldSentSchedule's mark, which RecoverSentSchedules completes.
+const scheduleSentUnmarked = "sent; not yet marked posted"
+
+// HoldSentSchedule keeps a row whose post went out but could not be marked posted: its lease
+// runs to the raid's start, so no runner claims and posts it again, and it is flagged for
+// RecoverSentSchedules.
+func (s *Store) HoldSentSchedule(ctx context.Context, raidID int64, held, until time.Time) (bool, error) {
+	return s.leaseWrite(ctx, fmt.Sprintf("hold sent schedule of raid %d", raidID), `
+		update guild_raid_discord_schedule set lease_until = $3, last_error = $4
+		where raid_id = $1 and lease_until = $2 and posted_at is null`, raidID, held, until, scheduleSentUnmarked)
+}
+
+// RecoverSentSchedules marks posted at now every row HoldSentSchedule held, and returns how
+// many it marked; the raid-posts job runs it first, so a later run is the mark's only retry.
+func (s *Store) RecoverSentSchedules(ctx context.Context, now time.Time) (int64, error) {
+	tag, err := s.Pool.Exec(ctx, `
+		update guild_raid_discord_schedule set posted_at = $1, lease_until = null, attempts = 0,
+		  next_attempt_at = now(), last_error = null
+		where posted_at is null and last_error = $2`, now, scheduleSentUnmarked)
+	if err != nil {
+		return 0, fmt.Errorf("guilds: recover sent schedules: %w", err)
+	}
+	return tag.RowsAffected(), nil
 }
