@@ -324,6 +324,7 @@ environment and secrets by name (never paste a value):
     gcloud run jobs create raid-posts \
       --image <the API image> --region us-east1 --args raid-posts \
       --cpu 1 --memory 512Mi --task-timeout 5m \
+      --service-account api-runtime@foreversixty.iam.gserviceaccount.com \
       --set-env-vars "$(tr '\n' ',' < .env.job)" \
       --set-secrets DATABASE_URL=DATABASE_URL:latest,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:latest,NOTIFY_ENCRYPTION_KEY=NOTIFY_ENCRYPTION_KEY:latest,DISCORD_CLIENT_SECRET=DISCORD_CLIENT_SECRET:latest,DISCORD_BOT_TOKEN=DISCORD_BOT_TOKEN:latest
 
