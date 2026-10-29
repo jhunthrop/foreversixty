@@ -30,6 +30,21 @@ func specString(t *testing.T, heading, label string, index int, fill map[string]
 	return text
 }
 
+const (
+	guideSpecPath    = "../../../design/specs/2026-10-28-discord-guided-cards.md"
+	guideSpecHeading = "## G.7 Copy, verbatim"
+)
+
+// guideString is one backticked segment of a §G.7 row, found by its backticked key label.
+func guideString(t *testing.T, label string, index int) string {
+	t.Helper()
+	segments := spectable.Cell(t, guideSpecPath, guideSpecHeading, label)
+	if index >= len(segments) {
+		t.Fatalf("spec %q row %q has no segment %d", guideSpecHeading, label, index)
+	}
+	return segments[index]
+}
+
 func TestSpecTableReadsTheCopy(t *testing.T) {
 	if got := specString(t, "### 6.2 In Discord", "Any failure", 0, nil); got != commonCopy.Failure {
 		t.Fatalf("failure sentence = %q", got)

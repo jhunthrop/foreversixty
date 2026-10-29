@@ -37,6 +37,8 @@ type SelectOption struct {
 	Label       string `json:"label"`
 	Value       string `json:"value"`
 	Description string `json:"description,omitempty"`
+	// Default shows the option as the select's current pick when the card is drawn again.
+	Default bool `json:"default,omitempty"`
 }
 
 // Component is a button or a string select; Kind decides which fields count.
