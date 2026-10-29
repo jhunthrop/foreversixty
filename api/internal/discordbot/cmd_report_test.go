@@ -18,6 +18,9 @@ type officerGuilds struct {
 	reportSeen []int64 // the viewer ids ReportFor was asked for
 	records    []guilds.AttendanceRecord
 	recordsErr error
+	byName     map[string]guilds.AttendanceRecord // AttendanceFor answers these for a typed name
+	lowest     []guilds.AttendanceRecord
+	lowestErr  error
 	readiness  guilds.ReadinessAnswer
 	readyErr   error
 }
@@ -39,8 +42,18 @@ func (o *officerGuilds) ReportFor(ctx context.Context, guildID, viewerID int64, 
 	return ans, true, nil
 }
 
-func (o *officerGuilds) AttendanceFor(context.Context, int64, int64, string) ([]guilds.AttendanceRecord, error) {
+func (o *officerGuilds) AttendanceFor(_ context.Context, _, _ int64, name string) ([]guilds.AttendanceRecord, error) {
+	if rec, ok := o.byName[name]; ok && o.recordsErr == nil {
+		return []guilds.AttendanceRecord{rec}, nil
+	}
+	if name != "" && o.byName != nil && o.recordsErr == nil {
+		return nil, guilds.ErrNoSuchMember
+	}
 	return o.records, o.recordsErr
+}
+
+func (o *officerGuilds) LowestAttendance(context.Context, int64, int64, int) ([]guilds.AttendanceRecord, error) {
+	return o.lowest, o.lowestErr
 }
 
 func (o *officerGuilds) NextRaidReadiness(context.Context, int64, int64, time.Time) (guilds.ReadinessAnswer, error) {
@@ -60,7 +73,7 @@ type officerWorld struct {
 func newOfficerWorld(t *testing.T) *officerWorld {
 	t.Helper()
 	pw := newPressWorld(t)
-	og := &officerGuilds{pressGuilds: pw.port}
+	og := &officerGuilds{pressGuilds: pw.port, lowestErr: guilds.ErrOfficerOnly}
 	pw.svc = New(Deps{Store: pw.st, REST: pw.rest, Guilds: og, PublicBaseURL: pressPublic, APIBaseURL: pressAPI, Log: slog_(pw.log)})
 	return &officerWorld{pressWorld: pw, og: og}
 }

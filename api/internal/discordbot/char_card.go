@@ -38,9 +38,12 @@ func charOptions(name string, guided bool) map[string]string {
 }
 
 // charModal is the name field behind Type a name and Someone else.
-func charModal() *Modal {
+func charModal() *Modal { return nameModal(prefixChar, guideCopy.ModalCharTitle) }
+
+// nameModal is the one-field character name dialog of a card; its submit is the card's name part.
+func nameModal(prefix, title string) *Modal {
 	return &Modal{
-		CustomID: cardCustomID(prefixChar, "name"), Title: guideCopy.ModalCharTitle,
+		CustomID: cardCustomID(prefix, "name"), Title: title,
 		InputLabel: guideCopy.ModalLabel, Placeholder: guideCopy.ModalPlaceholder,
 		MinLength: charNameMin, MaxLength: charNameMax,
 	}

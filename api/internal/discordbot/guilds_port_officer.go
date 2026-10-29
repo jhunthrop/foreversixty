@@ -17,6 +17,8 @@ type OfficerReads interface {
 	DoneRaids(ctx context.Context, guildID int64, publicOnly bool, limit int) ([]guilds.Raid, error)
 	// AttendanceFor is the viewer's own records, or the named character's.
 	AttendanceFor(ctx context.Context, guildID, viewerID int64, name string) ([]guilds.AttendanceRecord, error)
+	// LowestAttendance is the officer's list of members who came least, lowest first; others get ErrOfficerOnly.
+	LowestAttendance(ctx context.Context, guildID, viewerID int64, limit int) ([]guilds.AttendanceRecord, error)
 	// AttendanceNames is the roster's names for an officer; empty for anyone else.
 	AttendanceNames(ctx context.Context, guildID, viewerID int64, typed string, limit int) ([]string, error)
 	// NextRaidReadiness is the next raid's readiness board for an officer.

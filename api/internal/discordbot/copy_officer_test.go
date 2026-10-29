@@ -19,6 +19,9 @@ func (f *fakeGuilds) DoneRaids(context.Context, int64, bool, int) ([]guilds.Raid
 func (f *fakeGuilds) AttendanceFor(context.Context, int64, int64, string) ([]guilds.AttendanceRecord, error) {
 	return nil, nil
 }
+func (f *fakeGuilds) LowestAttendance(context.Context, int64, int64, int) ([]guilds.AttendanceRecord, error) {
+	return nil, nil
+}
 func (f *fakeGuilds) AttendanceNames(context.Context, int64, int64, string, int) ([]string, error) {
 	return nil, nil
 }
