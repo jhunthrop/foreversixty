@@ -243,7 +243,7 @@ const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
 const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
 
 const updatedStamp = dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at));
-const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
+const metaLine = guidesCopy.headerMeta(role, updatedStamp);
 ---
 
 <Content

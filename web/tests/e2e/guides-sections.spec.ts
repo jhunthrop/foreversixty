@@ -61,7 +61,7 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-status-note')).toHaveCount(1);
       await expect(page.getByTestId('guide-status-note')).toContainText('The beta stops at level 30.');
       await expect(page.getByTestId('guide-header-meta')).toContainText(
-        /DPS · Updated \d{1,2} [A-Z][a-z]{2} · built on client 1\.60\.1\.\d+ · beta-tested to level 30, level 60 simulated/,
+        /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );
       await expect(page.locator('.class-header-summary')).toContainText('Frost is the Mage control');
       await noSidewaysScroll(page);
@@ -271,22 +271,17 @@ test.describe('table of contents', () => {
     await expect(rail.locator('[aria-current="location"]')).toHaveCount(1);
   });
 
-  test('phone: the hero folds Rotation and stats into a disclosure', async ({ page }) => {
+  test('phone: Rotation and Stat priority sit under the Build card with no disclosure', async ({ page }) => {
     await page.setViewportSize(PHONE);
     await page.goto(PAGE);
-    const toggle = page.getByTestId('guide-rail-fold-toggle');
-    await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveText('Rotation and stats');
-    await expect(page.getByTestId('guide-rail-rotation')).toBeHidden();
-    await toggle.click();
+    await expect(page.getByTestId('guide-rail-fold-toggle')).toHaveCount(0);
     await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
     await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
   });
 
-  test('desktop: the hero shows all three cards and no fold toggle', async ({ page }) => {
+  test('desktop: the hero shows all three cards', async ({ page }) => {
     await page.setViewportSize(DESKTOP);
     await page.goto(PAGE);
-    await expect(page.getByTestId('guide-rail-fold-toggle')).toBeHidden();
     await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
     await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
   });

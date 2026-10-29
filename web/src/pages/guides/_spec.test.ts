@@ -101,7 +101,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html.match(/data-testid="guide-status-note"/g)).toHaveLength(1);
     expect(html).toContain('The beta stops at level 30.');
     expect(html).toMatch(
-      /DPS · Updated \d{1,2} [A-Z][a-z]{2} · built on client 1\.60\.1\.\d+ · beta-tested to level 30, level 60 simulated/,
+      /DPS · Updated \d{1,2} [A-Z][a-z]{2}</,
     );
     // The header summary is the Overview's own sentence, not the frontmatter description.
     expect(html).toContain('Frost is the Mage control and survivability spec');

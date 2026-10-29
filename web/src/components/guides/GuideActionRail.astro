@@ -83,26 +83,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
     />
   </div>
 
-  <input
-    type="checkbox"
-    id="guide-rail-fold"
-    class="guide-rail-fold-input sr-only"
-    aria-controls="guide-rail-fold-body"
-  />
-  <label for="guide-rail-fold" class="guide-rail-fold-toggle" data-testid="guide-rail-fold-toggle">
-    {guidesCopy.railFoldLabel}
-    <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" class="guide-rail-fold-chevron">
-      <path
-        d="M2 4l4 4 4-4"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
-  </label>
-  <div class="guide-rail-fold-body" id="guide-rail-fold-body">
+  <div class="guide-rail-cards">
     {hasRotation && (
       <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
         <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
@@ -346,14 +327,10 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
     color: var(--color-strong);
   }
 
-  /* Phone: the Rotation and Stat cards (both repeated in full below) fold into one disclosure so
-     the Overview starts within the first screen. From 640px up the wrapper is invisible and the
-     cards are grid items as before. */
-  .guide-rail-fold-input,
-  .guide-rail-fold-toggle {
-    display: none;
-  }
-  .guide-rail-fold-body {
+  /* The Rotation and Stat cards are grid items at every width (the wrapper is invisible);
+     on a phone they stack full width under the Build card, never behind a disclosure
+     (tenet 4: they are the point). */
+  .guide-rail-cards {
     display: contents;
   }
   .guide-rail {
@@ -364,37 +341,6 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
        first thing under Talents) goes so the Overview starts on the first screen. */
     .guide-rail-trees {
       display: none;
-    }
-    .guide-rail-fold-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 48px;
-      padding: 0 20px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--color-strong);
-      background: var(--color-raised);
-      border: 1px solid var(--color-line);
-      border-radius: var(--radius-panel);
-      cursor: pointer;
-    }
-    .guide-rail-fold-input:focus-visible + .guide-rail-fold-toggle {
-      outline: 2px solid var(--color-gold);
-      outline-offset: 2px;
-    }
-    .guide-rail-fold-input:checked + .guide-rail-fold-toggle .guide-rail-fold-chevron {
-      transform: rotate(180deg);
-    }
-    .guide-rail-fold-body {
-      display: none;
-    }
-    .guide-rail-fold-input:checked ~ .guide-rail-fold-body {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
     }
   }
 

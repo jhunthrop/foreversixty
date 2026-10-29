@@ -43,8 +43,8 @@ export const guidesCopy = {
   statusNote:
     "The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.",
   statusNoteLabel: 'About this guide',
-  headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string, build: string): string =>
-    `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated} · built on client ${build} · beta-tested to level 30, level 60 simulated`,
+  headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
+    `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated}`,
   strengths: 'Strengths',
   weaknesses: 'Weaknesses',
   inARaid: 'In a raid',
@@ -97,7 +97,6 @@ export const guidesCopy = {
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
   levelRangePoints: (points: number, band: number): string =>
     band === 60 ? `${points} points` : `${points} to ${points + 9} points`,
-  railFoldLabel: 'Rotation and stats',
   tocBarLabel: 'On this page',
   tocBarHint: 'Jump to a section',
   alliancePicksHeading: 'Alliance',
