@@ -52,7 +52,7 @@ Forever Sixty.
 These terms are governed by the laws of the State of Arkansas. Any dispute that cannot be
 settled by email is heard in the state or federal courts located in Arkansas.
 
-## Battlenet-sourced data
+## Battle.net-sourced data
 
 Battle.net-sourced data is never sold. Blizzard's Developer API Terms of Use
 forbid paywalling data or features that come from their API, and this site would keep that
