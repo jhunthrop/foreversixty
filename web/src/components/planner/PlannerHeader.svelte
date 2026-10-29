@@ -23,9 +23,9 @@
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
-  import { MAX_POINTS } from '../../lib/planner/types';
   import { specOf } from '../../lib/sim/character';
   import { specLabel } from '../../lib/sim/spec-label';
+  import { FACT_FIGURE_CLASS } from '../../lib/planner/styles';
   import PlannerDps from './PlannerDps.svelte';
   import StatTile from '../ui/StatTile.svelte';
   import Select from '../ui/Select.svelte';
@@ -84,6 +84,7 @@
   // same line rather than a second one (SummaryBar.svelte's own reasoning, moved here with
   // the rest of the facts rail).
   const statusLine = $derived(store.refusal ?? (live.state === 'error' ? live.message : null) ?? '');
+  const pointsLeft = $derived(Math.max(0, store.pointsAvailable - store.spent));
   const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
   // `Select` binds a value of its own. The store is the truth: the pickers mirror it, and only a
   // choice that differs from it (and names something) reaches `selectClass` / `selectRace` -- a
@@ -174,17 +175,28 @@
     <div class="planner-header-facts" data-testid="planner-facts">
       <StatTile
         label="Points left"
-        value={String(MAX_POINTS - store.spent)}
+        value={String(pointsLeft)}
         figureTestid="planner-remaining"
+        figureClass={FACT_FIGURE_CLASS}
         tone="gold"
       />
-      <StatTile label="Spent" value={`${store.spent}/${MAX_POINTS}`} figureTestid="planner-spent" />
-      <StatTile label="Level" value={String(store.level)} figureTestid="planner-level" />
+      <StatTile
+        label="Spent"
+        value={`${store.spent}/${store.pointsAvailable}`}
+        figureTestid="planner-spent"
+        figureClass={FACT_FIGURE_CLASS}
+      />
+      <StatTile
+        label="Level"
+        value={String(store.level)}
+        figureTestid="planner-level"
+        figureClass={FACT_FIGURE_CLASS}
+      />
       <PlannerDps
         unit={scoreUnit}
         {live}
         {gate}
-        pointsLeft={MAX_POINTS - store.spent}
+        {pointsLeft}
         onshow={onshowdps}
         showSimLink={false}
         unfinishedNote="static"
@@ -267,6 +279,9 @@
      so line 1 loses the dot it would end on. */
   .planner-header-sep {
     display: none;
+    /* Raised onto the heading face's baseline: a 14px mark sits low beside a larger caps line. */
+    position: relative;
+    top: -0.18em;
     /* The dot is a meta mark, not a heading letter: the suffix's own 14px muted body face. */
     font-family: var(--font-body);
     font-size: 14px;

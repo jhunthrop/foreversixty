@@ -125,3 +125,7 @@ const TREE_ROW_COLUMN_CLASSES: Record<number, string> = {
 export function treeRowColumnsClass(treeCount: number): string {
   return TREE_ROW_COLUMN_CLASSES[treeCount] ?? TREE_ROW_COLUMN_CLASSES[3];
 }
+
+/** The figure row every tile in the header facts rail shares: as tall as the DPS tile Show DPS button,
+ *  so the four figures and labels sit on one line each and no tile carries dead space under its label. */
+export const FACT_FIGURE_CLASS = 'min-h-11';

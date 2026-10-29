@@ -8,6 +8,7 @@ import {
   equippedItems,
   levelForIndex,
   levelReached,
+  pointsAvailableAt,
   pointsPerTree,
   ranksByTalent,
   splitLabel,
@@ -32,6 +33,16 @@ describe('levels', () => {
     expect(levelReached([])).toBe(9);
     expect(levelReached([1001])).toBe(10);
     expect(levelReached(repeat(1001, 3))).toBe(12);
+  });
+});
+
+describe('pointsAvailableAt', () => {
+  it('earns no point below level 10, one per level after, and caps at the build size', () => {
+    expect(pointsAvailableAt(9)).toBe(0);
+    expect(pointsAvailableAt(1)).toBe(0);
+    expect(pointsAvailableAt(10)).toBe(1);
+    expect(pointsAvailableAt(30)).toBe(21);
+    expect(pointsAvailableAt(60)).toBe(51);
   });
 });
 

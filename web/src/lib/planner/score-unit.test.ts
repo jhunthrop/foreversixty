@@ -43,9 +43,9 @@ describe('plannerScoreCopy', () => {
     expect(plannerScoreCopy.bandFigure(40.9088, 'dps')).toBe('40.9 DPS');
   });
 
-  it('names the role in the waiting line and never a point count', () => {
-    expect(plannerScoreCopy.waiting('dps')).toBe('DPS appears once your points are spent.');
-    expect(plannerScoreCopy.waiting('hps')).toBe('HPS appears once your points are spent.');
+  it('keeps the role word out of the waiting line and never a point count', () => {
+    expect(plannerScoreCopy.waiting).toBe('Appears once your points are spent.');
+    expect(plannerScoreCopy.waiting).not.toMatch(/DPS|HPS/);
   });
 
   it("prints the figure in the role's own digits", () => {

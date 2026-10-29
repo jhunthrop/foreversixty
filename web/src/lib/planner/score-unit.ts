@@ -42,9 +42,10 @@ export const plannerScoreCopy = {
   /** The ask-first button on a constrained device. */
   show: (unit: SlotScoreUnit): string =>
     unit === 'dps' ? simCopy.plannerDpsShow : `Show ${SCORE_LABEL[unit]}`,
-  /** Under the figure while the build is unfinished: "DPS appears once your points are
-   *  spent." Never a point count, which a level-9 character could not reach. */
-  waiting: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} appears once your points are spent.`,
+  /** Under the figure while the build is unfinished. The tile's label already names the
+   *  role, so the line never repeats it; and never a point count, which a level-9 character
+   *  could not reach. */
+  waiting: 'Appears once your points are spent.',
   /** The live run failed or came back without the role's figure: "HPS estimate unavailable
    *  for this build." */
   failed: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} estimate unavailable for this build.`,

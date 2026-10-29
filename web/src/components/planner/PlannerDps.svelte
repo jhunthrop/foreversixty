@@ -9,7 +9,7 @@
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { FACT_FIGURE_CLASS, PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
   import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
@@ -83,7 +83,7 @@
   const dpsNote = $derived(
     gate === 'unfinished'
       ? unfinishedNote === 'static'
-        ? plannerScoreCopy.waiting(unit)
+        ? plannerScoreCopy.waiting
         : simCopy.plannerDpsPointsToGo(pointsLeft)
       : gate === 'ask'
         ? simCopy.plannerDpsShowNote
@@ -121,9 +121,9 @@
 {#if tile}
   <!-- Polish spec 5.1: a tile like its neighbours. The note wraps under the figure instead of
        running off the right edge (it is nowrap in the embed below); two lines are reserved
-       below 640px, where the half-width tile wraps "DPS appears once your points are spent.",
+       below 640px, where the half-width tile wraps "Appears once your points are spent.",
        and one from there up, so the answer arriving moves nothing. -->
-  <StatTile label={plannerScoreCopy.label(unit)} figureClass="min-h-11">
+  <StatTile label={plannerScoreCopy.label(unit)} figureClass={FACT_FIGURE_CLASS}>
     {#snippet figure()}
       {#if gate === 'ask'}
         {@render askButton()}
@@ -133,7 +133,7 @@
     {/snippet}
     {#snippet note()}
       <span
-        class="tabular text-muted block min-h-[28px] font-mono text-[11px] leading-[14px] sm:min-h-[14px]"
+        class="tabular text-muted block min-h-[36px] basis-full text-[13px] leading-[18px] sm:min-h-[18px] sm:basis-auto"
         data-testid="planner-dps-error">{dpsNote}</span
       >
     {/snippet}

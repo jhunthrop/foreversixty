@@ -45,6 +45,10 @@
       <span data-testid={figureTestid}>{value}</span>
     {/if}
   </div>
-  <span class="text-muted text-[11px] font-bold tracking-[.08em] uppercase">{label}</span>
-  {#if note !== undefined}{@render note()}{/if}
+  <!-- The note shares the label's line where there is room (a figure-only neighbour then has no
+       taller sibling to be stretched to) and drops under it on a phone, where it wraps. -->
+  <div class="flex flex-wrap items-center gap-x-3">
+    <span class="text-muted text-[11px] font-bold tracking-[.08em] uppercase">{label}</span>
+    {#if note !== undefined}{@render note()}{/if}
+  </div>
 </div>

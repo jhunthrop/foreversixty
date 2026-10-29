@@ -6,6 +6,7 @@ import type { TalentIndex } from './rules';
 import {
   BASE_LEVEL,
   FIRST_POINT_LEVEL,
+  MAX_POINTS,
   SLOTS,
   type Gear,
   type Item,
@@ -23,6 +24,12 @@ export function levelForIndex(index: number): number {
 /** The level a build has reached; 9 before the first point. */
 export function levelReached(order: number[]): number {
   return BASE_LEVEL + order.length;
+}
+
+/** The talent points a character of `level` has earned: none below the first-point level, one
+ *  per level from there, never more than a build can spend. */
+export function pointsAvailableAt(level: number): number {
+  return Math.min(MAX_POINTS, Math.max(0, level - BASE_LEVEL));
 }
 
 export function ranksByTalent(order: number[]): Map<number, number> {

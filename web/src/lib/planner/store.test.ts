@@ -55,6 +55,17 @@ describe('level', () => {
     expect(store.level).toBe(10);
   });
 
+  it('offers every point to a bare build and only the earned ones to a character', () => {
+    const store = loaded();
+    expect(store.pointsAvailable).toBe(51);
+    store.setCharacterLevel(9);
+    expect(store.pointsAvailable).toBe(0);
+    store.setCharacterLevel(24);
+    expect(store.pointsAvailable).toBe(15);
+    store.setCharacterLevel(null);
+    expect(store.pointsAvailable).toBe(51);
+  });
+
   it('works on a read-only build too -- it is not a mutation `editable()` can refuse', () => {
     const store = loaded({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human', readOnly: true });
     store.setCharacterLevel(24);

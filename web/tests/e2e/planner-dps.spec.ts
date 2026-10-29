@@ -21,7 +21,7 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   await showLastTalent(page);
   // One point short: no figure, and the DPS slot reads a plain explainer (never a point count).
   await expect(page.getByTestId('planner-dps')).toHaveText('—');
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('DPS appears once your points are spent.');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('Appears once your points are spent.');
   await page.waitForTimeout(600);
   expect(simAssetRequests).toEqual([]);
 
@@ -33,7 +33,7 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   // (dimmed) rather than blanking -- "a number that vanishes and reappears on every click is
   // worse than a stale number that dims" is the whole design decision this asserts.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('DPS appears once your points are spent.');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('Appears once your points are spent.');
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—');
 
   // Spending it again settles into a fresh estimate of its own.

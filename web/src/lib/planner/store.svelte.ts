@@ -9,6 +9,7 @@ import {
   activeSetBonuses,
   equippedItems,
   levelReached,
+  pointsAvailableAt,
   pointsPerTree,
   ranksByTalent,
   splitLabel as deriveSplitLabel,
@@ -40,6 +41,7 @@ import type {
   StatKey,
   TalentFile,
 } from './types';
+import { MAX_POINTS } from './types';
 
 /** Shown when someone tries to edit a build opened from a share link. */
 export const READ_ONLY_REASON = 'This build was opened from a share link; fork it to edit';
@@ -222,6 +224,11 @@ export function createPlannerStore(init: PlannerInit) {
      *  always shown (fix round 2, wow-player review finding 1). */
     get level() {
       return characterLevel ?? levelReached(order);
+    },
+    /** The points the build may hold: all of them for a bare build, the character's earned
+     *  points once a real level is loaded (a shared build longer than that keeps its own size). */
+    get pointsAvailable() {
+      return characterLevel === null ? MAX_POINTS : Math.max(pointsAvailableAt(characterLevel), order.length);
     },
     get split() {
       return split;

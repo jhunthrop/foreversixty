@@ -144,11 +144,17 @@ function article(word: string): string {
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own
  *  level band's published build. */
+/** "Level 60" or "Levels 20 to 29": the band's label (`60`, `20 to 29`) as a phrase that reads in a sentence. */
+export const bandPhrase = (bandLabel: string): string =>
+  /^\d+$/.test(bandLabel) ? `Level ${bandLabel}` : `Levels ${bandLabel}`;
+
+const lowerBandPhrase = (bandLabel: string): string => bandPhrase(bandLabel).toLowerCase();
+
 export const bandCompareCopy = {
-  heading: (bandLabel: string): string => `${bandLabel} build`,
+  heading: (bandLabel: string): string => `${bandPhrase(bandLabel)} build`,
   /** "your level's range" only to a visitor who has a character; anyone else gets the band's own name. */
   headingAside: (bandLabel: string, hasCharacter: boolean): string =>
-    hasCharacter ? "your level's range" : `the ${bandLabel} level range`,
+    hasCharacter ? "your level's range" : `the ${lowerBandPhrase(bandLabel)} range`,
   /** "No level 9 build for Arms. Pick Fury or Protection." -- the level and the class's other specs come from data. */
   noLevelBuild: (level: number, specName: string, otherSpecs: readonly string[]): string => {
     const head = `No level ${level} build for ${specName}.`;
@@ -158,14 +164,14 @@ export const bandCompareCopy = {
     return `${head} Pick ${names}.`;
   },
   setDpsCaption: (bandLabel: string): string =>
-    `the ${bandLabel} level range's own gear set, fully equipped — not your build`,
+    `the ${lowerBandPhrase(bandLabel)} range's own gear set, fully equipped — not your build`,
   differs: (n: number): string => `${n} of your points differ from this build`,
   /** The same sentence as `differs`, minus its own leading number -- `BandCompare.svelte`
    *  renders the count in its own mono/gold span and this text beside it, rather than
    *  string-surgery on `differs`' own output. */
   differsSuffix: 'of your points differ from this build',
   matches: 'Matches',
-  loadButton: (bandLabel: string): string => `Load the ${bandLabel} build`,
+  loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>
     points < of
@@ -181,5 +187,5 @@ export const bandCompareCopy = {
   /** Rebuild spec §4.E.4: one more line in the talent cell's own existing tooltip, once a
    *  band has loaded and this cell's rank differs from it. */
   bandRankTooltipLine: (bandLabel: string, bandRank: number, maxRank: number): string =>
-    `${bandLabel} build: ${bandRank} of ${maxRank}`,
+    `${bandPhrase(bandLabel)} build: ${bandRank} of ${maxRank}`,
 } as const;
