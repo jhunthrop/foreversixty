@@ -40,6 +40,8 @@ interface Props {
   /** The spec guides say what is simulated once, in the status note at the top, so the footer
    *  confidence line ("Our inference from what has been said") is left off. */
   hideConfidenceNote?: boolean;
+  /** False for the legal pages: they state no fact about the world, so no Sources footer. */
+  showSources?: boolean;
 }
 const {
   title,
@@ -53,7 +55,8 @@ const {
   wide = false,
   wideProse = false,
   hideConfidenceNote = false,
-} = Astro.props;
+  showSources = true,
+} =Astro.props;
 // A page that fills the `aside` slot (the spec guides' table of contents) gets a wider main
 // with the article column and a sticky rail beside it at lg; below lg the rail is simply
 // not rendered by the slot's own classes, so the page keeps whatever inline version it has.
@@ -104,7 +107,7 @@ const confidenceCopy: Record<Confidence, string> = {
           {confidenceCopy[confidence]}
         </p>
       )}
-      <SourcesList sources={sources} />
+      {showSources && <SourcesList sources={sources} />}
     </div>
     {hasAside && (
       <aside class="hidden lg:sticky lg:top-6 lg:block lg:self-start" data-testid="content-aside">

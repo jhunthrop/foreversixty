@@ -342,8 +342,8 @@ label:has(input[type='checkbox']:disabled) {
     text-decoration-color: color-mix(in srgb, var(--color-gold) 50%, transparent);
   }
   .prose-forever h2 {
-    font-size: 18px;
-    letter-spacing: 0.06em;
+    font-size: var(--text-h2);
+    letter-spacing: var(--tracking-heading);
     text-transform: uppercase;
     margin: 28px 0 10px;
   }

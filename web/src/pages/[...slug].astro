@@ -20,6 +20,7 @@ if (html === undefined) throw new Error(`page ${page.id} has no rendered body`);
   updated={page.data.updated}
   confidence={page.data.confidence}
   sources={page.data.sources}
+  showSources={page.data.confidence !== undefined}
 >
   <LegalBody slug={page.id} html={html} section={coachPrivacySection()} />
 </Content>

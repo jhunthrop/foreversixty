@@ -77,6 +77,7 @@ describe('Content layout', () => {
         path: '/privacy',
         updated: new Date('2026-10-28T00:00:00Z'),
         sources: [{ label: 'This site', url: 'https://foreversixty.gg/privacy', kind: 'site' }],
+        showSources: false,
       },
       slots: { default: '<p>body</p>' },
     });
@@ -84,6 +85,7 @@ describe('Content layout', () => {
     expect(html).not.toContain('Confirmed by Blizzard');
     expect(html).not.toContain('Reported by one outlet');
     expect(html).not.toContain('Our inference');
+    expect(html).not.toContain('>Sources<');
     expect(html).not.toMatch(/Updated Oct 28[^<]*<\/[^>]+>\s*<span>·<\/span>/);
   });
 });
