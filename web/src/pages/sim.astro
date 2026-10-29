@@ -7,7 +7,6 @@ import { CHIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import { landingCopy } from '../lib/sim/landing-copy';
 import SimTabs from '../components/sim/SimTabs.astro';
-import ExampleResultCard from '../components/sim/ExampleResultCard.svelte';
 import IslandScript from '../components/IslandScript.astro';
 
 const COLD_PASTE_SECTION =
@@ -26,12 +25,8 @@ const COLD_PASTE_SECTION =
     <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
          own largest early text used to be SourceSwitcher's addon-card body; the layout
          review promotes the Battle.net sign-in to a full-width hero ahead of that card
-         (Finding 2), with an intro line and a static example result above it (Finding 5),
-         so those are what now paints first for a signed-out visitor and what this shell
-         reproduces ahead of hydration. `ExampleResultCard` is rendered here with no
-         `client:*` directive -- static, prerendered markup, identical to what the island
-         renders, with no risk of the two drifting apart the way two hand-copied strings
-         could. The hero card's own heading and two lines mirror
+         (Finding 2), with an intro line above it, so those are what now paints first for a
+         signed-out visitor and what this shell reproduces ahead of hydration. The hero card's own heading and two lines mirror
          `SourceSwitcher.svelte`'s hero branch exactly (same classes, same copy) for the
          same reason the original trick nested its paragraph in the real card's own markup:
          an identical wrap width keeps the box pixel-stable across hydration. The button and
@@ -69,8 +64,12 @@ const COLD_PASTE_SECTION =
          measured 1384.5px at 390x844 (phone) and 947px at 1440 wide (desktop) for the
          signed-out default view -- both down from the cold-paste pass's 1688/1038.5
          figures. Reserved 24px over each (lane-common's own CI-Linux-fonts-wrap-wider
-         buffer): 1409/971. -->
-    <div id="sim" data-sim-mount class="min-h-[1409px] md:min-h-[971px]">
+         buffer): 1409/971.
+
+         2026-10-28 re-measure (polish lane, the example card removed from the hero branch):
+         1256px at 390x844 and 838px at 1440x900 by the same method; the same 24px over each:
+         1280/862. -->
+    <div id="sim" data-sim-mount class="min-h-[1280px] md:min-h-[862px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's
@@ -83,7 +82,6 @@ const COLD_PASTE_SECTION =
         </div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
           <p class="text-muted text-[14px]">{landingCopy.introLine}</p>
-          <ExampleResultCard />
           <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
             <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
             <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>

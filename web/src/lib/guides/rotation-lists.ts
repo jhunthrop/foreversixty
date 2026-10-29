@@ -7,8 +7,8 @@
 // more in the client's spell constants. Nothing here is typed per guide.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { CollapsedLine } from '../bis/rotation-collapse';
+import { repoRoot, spellIcons } from '../data/build-files';
 
 export interface RotationItem {
   /** Absent for a step that names no spell ("Then follow the priority list"). */
@@ -191,16 +191,11 @@ export function rotationListsFrom(
 
 // --- disk readers ---------------------------------------------------------------------------
 
-function repoRoot(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-}
-
 interface SpellConstFile {
   spells: Record<string, { name: string; rank: number; cooldown_ms: number; category_cooldown_ms: number }>;
 }
 
 const constCache = new Map<string, SpellConstFile | undefined>();
-let iconCache: { build: string; icons: Record<string, string> } | undefined;
 
 function spellConst(build: string, classSlug: string): SpellConstFile | undefined {
   const key = `${build}::${classSlug}`;
@@ -212,14 +207,6 @@ function spellConst(build: string, classSlug: string): SpellConstFile | undefine
     );
   }
   return constCache.get(key);
-}
-
-function spellIcons(build: string): Record<string, string> {
-  if (iconCache?.build === build) return iconCache.icons;
-  const file = path.join(repoRoot(), 'data/builds', build, 'spellicons.json');
-  const icons = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as Record<string, string>) : {};
-  iconCache = { build, icons };
-  return icons;
 }
 
 /** A spell lookup over the build's spell constants and icon table. */

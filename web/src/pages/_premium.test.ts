@@ -35,11 +35,11 @@ describe('the plans page promises nothing unshipped (§B8.9)', () => {
 const classesOf = (el: Element | null | undefined): string[] => (el?.className ?? '').split(/\s+/);
 
 describe('the plans page region A', () => {
-  it('region A holds Free, Premium, example in that order', async () => {
+  it('region A holds Free, Premium, the sample coach review in that order', async () => {
     const region = (await renderPremium()).querySelector('[data-region=a]');
     const order = [...(region?.children ?? [])].map((n) => n.getAttribute('data-plan'));
-    expect(order).toEqual(['free', 'premium', 'example']);
-    expect(region?.querySelector('[data-plan=example] [data-testid=premium-example]')).not.toBeNull();
+    expect(order).toEqual(['free', 'premium', 'coach-sample']);
+    expect(region?.querySelector('[data-plan=coach-sample] [data-testid=coach-sample]')).not.toBeNull();
   });
 
   it('Free renders once', async () => {
@@ -51,13 +51,14 @@ describe('the plans page region A', () => {
     expect(classesOf(doc.querySelector('[data-region=a]'))).toEqual(
       expect.arrayContaining(['grid', 'md:grid-cols-2', 'lg:grid-cols-3', 'md:gap-4']),
     );
-    expect(classesOf(doc.querySelector('[data-region=a] > [data-plan=example]'))).toEqual(
+    expect(classesOf(doc.querySelector('[data-region=a] > [data-plan=coach-sample]'))).toEqual(
       expect.arrayContaining(['md:col-span-2', 'md:max-w-[480px]', 'lg:col-span-1', 'lg:max-w-none']),
     );
   });
 
   it('no four-column grid', async () => {
-    expect((await renderPremium()).body.innerHTML).not.toMatch(/grid-cols-4|repeat\(4/);
+    // The page's own main: the footer's link columns are not this page's plan grid.
+    expect((await renderPremium()).querySelector('main')?.innerHTML).not.toMatch(/grid-cols-4|repeat\(4/);
   });
 
   it('keeps one island, the layout character selector', async () => {
@@ -96,14 +97,14 @@ describe('the plans page region B', () => {
   });
 
   // Each plan card is a subgrid of PLAN_CARD_ROWS rows, so whatever shares its row set from 1024
-  // (region A's example, region B's history promise) must span the same rows, or auto-placement
+  // (region A's sample, region B's history promise) must span the same rows, or auto-placement
   // drops it into the card's first row and stretches the name row.
   it("row-set neighbours span the plan cards' rows", async () => {
     const doc = await renderPremium();
     for (const plan of ['free', 'premium', 'guild', 'raid_guild']) {
       expect(doc.querySelector(`article[data-plan=${plan}]`)?.children, plan).toHaveLength(PLAN_CARD_ROWS);
     }
-    for (const cell of ['example', 'history']) {
+    for (const cell of ['coach-sample', 'history']) {
       expect(classesOf(doc.querySelector(`[data-plan=${cell}]`)), cell).toContain(
         `lg:row-span-${PLAN_CARD_ROWS}`,
       );

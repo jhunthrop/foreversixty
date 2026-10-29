@@ -35,6 +35,7 @@ export const billingBlockCopy = {
   manageBilling: 'Manage billing',
   renews: 'Renews',
   ends: 'Ends',
+  pastDueTag: 'Payment failed',
   pastDueBanner: 'Your last payment failed. Update your card to keep access.',
   guildBilledBy: (name: string): string => `Billed by ${name}`,
   guildNotSubscribed: 'This guild is not on the guild plan yet.',

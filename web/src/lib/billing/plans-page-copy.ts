@@ -1,10 +1,10 @@
 // web/src/lib/billing/plans-page-copy.ts
 // Every visible string on /premium except the checkout chooser (billing/copy.ts), verbatim from
-// design/specs/2026-10-27-launch-pricing.md section 6.1 as amended by B5 (the example strings come
-// from the premium-examples.json sidecar). No exclamation marks, no urgency. Price
+// design/specs/2026-10-27-launch-pricing.md section 6.1 as amended by B5 (the sample coach review's
+// frame is design/specs/2026-10-28-polish.md section 3.6). No exclamation marks, no urgency. Price
 // text is built from ./plans, never written here.
 import { perMemberAmount, perRaiderAmounts } from './plan-costs';
-import { serverRunCaptionTemplates } from './premium-example-copy';
+import { coachCopy } from '../coach/copy';
 import {
   GUILD_TIER_MEMBER_LIMIT,
   FOUNDER_PRICE_UNTIL,
@@ -142,12 +142,18 @@ export const plansPageCopy = {
   // Defined but appended to nothing until the trial email ships (B10 ruling 1); that lane appends it
   // to `trial` and the Trial rule and flips the guard test.
   trialEmail: `We email you ${TRIAL_REMINDER_DAYS} days before the trial ends.`,
-  examples: {
-    serverRun: {
-      label: 'EXAMPLE · A REAL SERVER RUN',
-      caption: serverRunCaptionTemplates,
-      link: 'Open this result',
-    },
+  // The sample coach review in column 3 (polish spec 2026-10-28 section 3.6). The review's own
+  // words come from the coach fixture; only the frame is written here.
+  coachSample: {
+    tag: 'Sample',
+    label: 'What the coach says after a raid',
+    context: (spec: string, cls: string, size: number, kill: boolean): string =>
+      `${spec} ${cls} · ${size}-player ${kill ? 'kill' : 'wipe'}`,
+    fixFirst: coachCopy.labelFixFirst,
+    then: coachCopy.labelThen,
+    doingWell: coachCopy.labelWell,
+    caption: 'A sample review. Yours is written from your own log after every raid you upload.',
+    ariaLabel: 'A sample coach review',
   },
   historyPromise:
     'If a guild plan ends, its raids, attendance, loot and reports stay readable for good, and officers can export attendance and loot as CSV at any time.',
@@ -229,5 +235,3 @@ export const plansPageCopy = {
 
 export const perMemberLine = plansPageCopy.price.perMember;
 export const perRaiderLine = plansPageCopy.price.perRaider;
-
-export { serverRunCaption } from './premium-example-copy';

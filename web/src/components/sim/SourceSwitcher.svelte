@@ -33,7 +33,6 @@
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
-  import ExampleResultCard from './ExampleResultCard.svelte';
 
   let {
     busy,
@@ -188,11 +187,8 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
   {#if showHero}
-    <!-- Finding 5: the intro line and a static example of a finished sim, ahead of every
-         load method -- neither paragraph is orphaned: the intro belongs to the page's own
-         lead, and the example card is its own bordered panel, never a bare floating line. -->
+    <!-- The intro line ahead of every load method: it belongs to the page's own lead. -->
     <p class="text-muted text-[14px]" data-testid="sim-intro-line">{landingCopy.introLine}</p>
-    <ExampleResultCard />
 
     <!-- Finding 2: the hero. Full width, first, with the email-link alternative as text --
          the three paste cards below are secondary. Finding 3: the DPS-only restriction

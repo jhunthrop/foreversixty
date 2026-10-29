@@ -56,12 +56,6 @@ export const landingCopy = {
   introLine:
     'Paste a gear export, a build link or a logged fight -- or sign in with Battle.net -- and see the DPS, free and in your browser.',
 
-  /** Finding 5: an example of a finished sim, so a signed-out visitor sees the shape of
-   *  the result before committing to a load method. The caption sentence is the card's own
-   *  (`serverRunCaption()`), read from the captured run, never typed here. */
-  exampleCaption: 'EXAMPLE · A REAL SERVER RUN',
-  exampleHint: 'Compare specs side by side once you have simmed more than one.',
-
   /** Finding 4: the compact "spec, best DPS, when" summary above a signed-in character's
    *  sim history, shown once they have sims in two or more specs. */
   bestPerSpecTitle: 'Best per spec',

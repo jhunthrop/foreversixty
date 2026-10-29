@@ -1,0 +1,255 @@
+---
+// web/src/components/premium/PremiumCoachSample.astro
+// Column 3 of /premium's plans row: one sample coach review (polish spec 2026-10-28 section 3.3).
+// Static markup rendered at build from the coach's own Fury fixture; no script, no request beyond
+// its spell icons. It is labelled `Sample` in its first line and its caption, so it never reads
+// as a real player's review. No drill, no evidence chips, no link lines.
+import { coachSampleView, loadCoachSampleAnswer, type CoachSampleView } from '../../lib/billing/coach-sample';
+import { buildSpellIconOf } from '../../lib/billing/coach-sample-icons';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import ClassCrest from '../ClassCrest.astro';
+
+interface Props {
+  view?: CoachSampleView;
+}
+const { view = coachSampleView(loadCoachSampleAnswer(), buildSpellIconOf()) } = Astro.props;
+const copy = plansPageCopy.coachSample;
+// A failed icon is hidden, never a broken-image glyph; its box stays (spec 3.5).
+const HIDE_ON_ERROR = "this.style.visibility='hidden'";
+---
+
+<article class="sample card-surface-quiet" data-testid="coach-sample" aria-label={copy.ariaLabel}>
+  <p class="label-row">
+    <span class="pill pill-sample" data-testid="coach-sample-tag">
+      {copy.tag}
+    </span>
+    <span class="micro">{copy.label}</span>
+  </p>
+
+  <div class="persona">
+    <ClassCrest slug={view.classSlug} size={44} />
+    <div>
+      <p class="persona-title heading-face">{view.title}</p>
+      <p class="persona-context">{view.context}</p>
+    </div>
+  </div>
+
+  <p class="opening">{view.opening}</p>
+
+  {view.fixFirst && (
+    <section class="fix-first" data-testid="coach-sample-fix-first">
+      <h3 class="micro gold">{copy.fixFirst}</h3>
+      <div class="fix-head">
+        {view.fixFirst.icon && (
+          <img
+            class="icon icon-lg"
+            src={view.fixFirst.icon}
+            width="36"
+            height="36"
+            alt=""
+            onerror={HIDE_ON_ERROR}
+          />
+        )}
+        <p class="fix-title heading-face" data-testid="coach-sample-fix-title">
+          {view.fixFirst.title}
+        </p>
+      </div>
+      <p class="body">{view.fixFirst.why}</p>
+    </section>
+  )}
+
+  {view.then.length > 0 && (
+    <section data-testid="coach-sample-then">
+      <h3 class="micro">{copy.then}</h3>
+      <ul class="then">
+        {view.then.map((item) => (
+          <li>
+            <div class="then-head">
+              {item.icon && (
+                <img class="icon" src={item.icon} width="24" height="24" alt="" onerror={HIDE_ON_ERROR} />
+              )}
+              <p class="then-title">{item.title}</p>
+            </div>
+            <p class="then-why">{item.why}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {view.doingWell.length > 0 && (
+    <section data-testid="coach-sample-well">
+      <h3 class="micro kill">{copy.doingWell}</h3>
+      <ul class="well">
+        {view.doingWell.map((item) => (
+          <li>
+            <span class="tick" aria-hidden="true">
+              ✓
+            </span>
+            {item.icon && (
+              <img class="icon" src={item.icon} width="20" height="20" alt="" onerror={HIDE_ON_ERROR} />
+            )}
+            <span>{item.text}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <p class="caption" data-testid="coach-sample-caption">
+    {copy.caption}
+  </p>
+</article>
+
+<style>
+  .sample {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+  }
+  .label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
+  .micro {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .gold {
+    color: var(--color-gold);
+  }
+  .kill {
+    color: var(--color-kill);
+  }
+  .persona {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .persona-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 22px;
+    color: var(--color-strong);
+    text-transform: uppercase;
+  }
+  .persona-context {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .opening {
+    margin: 0;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--color-text);
+  }
+  .fix-first {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 16px;
+    border-left: 2px solid var(--color-gold);
+  }
+  .fix-head,
+  .then-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .fix-title {
+    margin: 0;
+    text-transform: none;
+    font-size: 19px;
+    line-height: 24px;
+    font-weight: 700;
+    color: var(--color-strong);
+  }
+  .body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--color-text);
+  }
+  .icon {
+    flex: none;
+    border-radius: 3px;
+    background: var(--color-card-top);
+  }
+  .icon-lg {
+    border: 1px solid var(--color-gold-deep);
+    box-shadow: var(--glow-gold);
+  }
+  .then,
+  .well {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .then li {
+    padding: 12px 0;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .then li:first-child {
+    margin-top: 4px;
+  }
+  .then-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .then-why {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--color-text);
+  }
+  .well {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .well li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+  }
+  .tick {
+    flex: none;
+    font-size: 14px;
+    color: var(--color-kill);
+  }
+  .caption {
+    margin: auto 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-line-soft);
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 768px) {
+    .sample {
+      padding: 24px;
+      max-width: 640px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .sample {
+      max-width: none;
+    }
+  }
+</style>

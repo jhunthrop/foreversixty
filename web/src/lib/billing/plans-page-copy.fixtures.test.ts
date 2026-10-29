@@ -39,7 +39,6 @@ describe('plans-page figures follow their sources', () => {
   afterEach(() => {
     vi.doUnmock('../sim/precision');
     vi.doUnmock('./plans');
-    vi.doUnmock('../../data/premium-examples.json');
     vi.resetModules();
   });
 
@@ -67,26 +66,7 @@ describe('plans-page figures follow their sources', () => {
         },
       };
     });
-    vi.doMock('../../data/premium-examples.json', () => ({
-      default: {
-        serverRun: {
-          simId: 'swap1',
-          characterName: 'Swapname',
-          level: 58,
-          specLabel: 'Arms Warrior',
-          preset: true,
-          placeholder: false,
-          combinations: 1234,
-          ranAt: '2027-02-03T12:00:00Z',
-        },
-      },
-    }));
-    const {
-      plansPageCopy: c,
-      serverRunCaption,
-      perRaiderLine,
-      perMemberLine,
-    } = await import('./plans-page-copy');
+    const { plansPageCopy: c, perRaiderLine, perMemberLine } = await import('./plans-page-copy');
     expect(c.premium.features[1]).toContain('7,777');
     expect(c.premium.features[1]).toContain('333');
     expect(c.premium.features[3]).toContain('222,222');
@@ -95,15 +75,10 @@ describe('plans-page figures follow their sources', () => {
     expect(perRaiderLine('yearly', true)).toBe(
       '$10 per raider a year in a 30-person raid, $20 in a 15, $60 in a 5.',
     );
-    expect(serverRunCaption()).toContain('level-58 Arms Warrior');
-    expect(serverRunCaption()).toContain('1,234');
-    expect(serverRunCaption()).toContain('3 Feb 2027');
     expectGuildFiguresFollow(c, perMemberLine);
     const model = await import('../../components/premium/model');
     expect(model.costLine('raid_guild', 'yearly', true)).toContain('30-person');
     expect(model.costLine('guild', 'yearly', true)).toBe('$3 per member a year at 30 members.');
     expectModelPricesFollow(model);
-    const { landingCopy } = await import('../sim/landing-copy');
-    expect(landingCopy.exampleCaption).toBe(c.examples.serverRun.label);
   });
 });

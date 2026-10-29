@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { fillSlots, specCell, specKeyCell } from '../../test-support/spec-table';
-import { exampleCaption, serverRunExample } from './premium-examples';
+import { coachCopy } from '../coach/copy';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
 import {
   FOUNDER_PRICE_UNTIL,
@@ -16,10 +16,11 @@ import {
   formatAmount,
   perMonthLine,
 } from './plans';
-import { plansPageCopy as copy, perMemberLine, perRaiderLine, serverRunCaption } from './plans-page-copy';
+import { plansPageCopy as copy, perMemberLine, perRaiderLine } from './plans-page-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
 const row = (label: string): string[] => specCell(SPEC, '### 6.1', label);
+const POLISH_SPEC = new URL('../../../../design/specs/2026-10-28-polish.md', import.meta.url);
 const B5 = '### B5. Copy, verbatim';
 const key = (k: string): string[] => specKeyCell(SPEC, B5, k);
 const fill = fillSlots;
@@ -237,28 +238,24 @@ describe('plansPageCopy guild region against spec B5', () => {
     expect(copy.raidGuild.name).toBe(row('Raid guild card')[0]);
   });
   it('howItWorks', () => expect(copy.howItWorks).toBe(key('howItWorks')[0]));
-  it('example label and link', () => {
-    expect(copy.examples.serverRun.label).toBe(key('examples.serverRun.label')[0]);
-    expect(copy.examples.serverRun.link).toBe(key('examples.serverRun.link')[0]);
-  });
-  it('caption.preset and caption.ownGear follow the B5 templates', () => {
-    const f = {
-      characterName: 'Kraggor',
-      level: '60',
-      specLabel: 'Fury Warrior',
-      combinations: '4,812',
-      ranAt: '27 Oct 2026',
-    };
-    const slots = { ...f, 'ranAt as d MMM yyyy': f.ranAt };
-    expect(copy.examples.serverRun.caption.preset(f)).toBe(
-      fill(key('examples.serverRun.caption.preset')[0] ?? '', slots),
+  it('the sample coach review follows polish spec 3.6', () => {
+    const cell = (k: string): string[] => specCell(POLISH_SPEC, '### 3.6', `\`coachSample.${k}`);
+    expect(copy.coachSample.tag).toBe(cell('tag')[0]);
+    expect(copy.coachSample.label).toBe(cell('label')[0]);
+    expect(copy.coachSample.caption).toBe(cell('caption')[0]);
+    expect(copy.coachSample.ariaLabel).toBe(cell('ariaLabel')[0]);
+    const [kill] = cell('context(');
+    const slots = { spec: 'Fury', cls: 'Warrior', size: '40' };
+    expect(copy.coachSample.context('Fury', 'Warrior', 40, true)).toBe(fill(kill ?? '', slots));
+    expect(copy.coachSample.context('Fury', 'Warrior', 40, false)).toBe(
+      fill(kill ?? '', slots).replace('kill', 'wipe'),
     );
-    expect(copy.examples.serverRun.caption.ownGear(f)).toBe(
-      fill(key('examples.serverRun.caption.ownGear')[0] ?? '', slots),
-    );
+    expect(copy.coachSample.fixFirst).toBe(coachCopy.labelFixFirst);
+    expect(copy.coachSample.then).toBe(coachCopy.labelThen);
+    expect(copy.coachSample.doingWell).toBe(coachCopy.labelWell);
   });
-  it('serverRunCaption reads the data file through the templates', () => {
-    expect(serverRunCaption()).toBe(exampleCaption(serverRunExample, copy.examples.serverRun.caption));
+  it('has no server-run example strings', () => {
+    expect(copy).not.toHaveProperty('examples');
   });
 });
 

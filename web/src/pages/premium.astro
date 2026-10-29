@@ -8,7 +8,7 @@ import Base from '../layouts/Base.astro';
 import GuildRules from '../components/premium/GuildRules.astro';
 import IntervalControl from '../components/premium/IntervalControl.astro';
 import PlanCard from '../components/premium/PlanCard.astro';
-import PremiumExampleCard from '../components/premium/PremiumExampleCard.astro';
+import PremiumCoachSample from '../components/premium/PremiumCoachSample.astro';
 import { checkoutCopy } from '../lib/billing/copy';
 import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
 import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
@@ -67,15 +67,15 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
 
       <div class="regions">
         <!-- Region A, for your character (§B3.2): no heading, the band asks the question. Free and
-             Premium are one subgrid row set; the example spans that row set from 1024. -->
+             Premium are one subgrid row set; the sample coach review spans that row set from 1024. -->
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-region="a">
           <PlanCard plan="free" />
           <PlanCard plan="premium" />
           <div
             class="grid md:col-span-2 md:max-w-[480px] lg:col-span-1 lg:row-span-6 lg:max-w-none"
-            data-plan="example"
+            data-plan="coach-sample"
           >
-            <PremiumExampleCard />
+            <PremiumCoachSample />
           </div>
         </div>
 
@@ -251,13 +251,13 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       line-height: 1.45;
     }
     /* The band's inner column takes the site gutter, so its edge is the cards' edge (UX 10).
-       16 px on top, not 28: the heading face's 44 px h1 (polish spec 2026-10-28 §4.4) is 17.6 px
+       12 px on top, not 28: the heading face's 44 px h1 (polish spec 2026-10-28 §4.4) is 17.6 px
        taller than the 22 px Cinzel line it replaced, and Free's and Premium's buttons must still
-       end above y 520 and the band link above y 300 at 1280 x 800 (spec §3.1, unchanged); Task 5
-       re-lays this band. */
+       end above y 520 and the band link above y 300 at 1280 x 800 (spec §3.1, unchanged); the sample
+       column leaves the band as it was. */
     .hero {
       gap: 8px;
-      padding: 16px var(--page-gutter) 12px;
+      padding: 12px var(--page-gutter) 12px;
     }
     .body {
       gap: 32px;

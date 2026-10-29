@@ -33,6 +33,16 @@ export const accountPlanCopy = {
     givenBy: (name: string): string =>
       `Given by ${name}. It lasts while the guild's plan does; nothing is billed to you.`,
   },
+  /** The plan card's head (polish spec 4.3): the plan name and the date it renews or ends. */
+  head: {
+    names: { premium: 'Premium', free: 'Free', seat: 'Guild seat' },
+    renews: 'Renews',
+    ends: 'Ends',
+    until: 'Until',
+    price: (amountCents: number, interval: Interval): string => formatCents(amountCents, interval),
+    thenSeat: (guild: string): string => `Then a seat from ${guild}`,
+    seatFrom: (guild: string): string => `A seat from ${guild}`,
+  },
   founder: {
     pill: 'Founder',
     title: 'Founder price, kept while your plan stays active.',

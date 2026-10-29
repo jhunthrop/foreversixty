@@ -1,9 +1,8 @@
 // web/tests/captures/launch-pricing/capture-premium-value.spec.ts
 // Capture rows 15 to 22 (design/specs/2026-10-27-launch-pricing.md Amendment 2026-10-27b, B9): the
-// plans page's Region A and Region B, the band link, the failed example image, the /sim landing
-// card, and the full page beside the premium-value board. PNGs go to
+// plans page's Region A and Region B, the band link, and the full page beside the premium-value board. PNGs go to
 // design/reviews/2026-10-27-launch-pricing/. Row 18 also prints the founder-line wrap check and
-// the CLS of the example card and the 54 px cost-line box into cls-premium-value-<width>.json.
+// the CLS of the sample card and the 54 px cost-line box into cls-premium-value-<width>.json.
 // Same run as capture.spec.ts (see playwright.capture.config.ts).
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -13,20 +12,11 @@ import { plansPageCopy } from '../../../src/lib/billing/plans-page-copy';
 import { readLayoutShift, trackLayoutShift } from '../../e2e/support/cls';
 import { COST_BOX_PX, founderLineBoxes, guildPriceBoxes } from '../../e2e/support/premium-layout';
 import { MOCK_DIR, atWidths, cropOf, fresh, settle, sideBySide, sizeTo } from '../support/capture-kit';
-import {
-  DECEMBER,
-  clearStorageOnLoad,
-  file,
-  openPlans,
-  overlayDiff,
-  shoot,
-  target,
-} from './plans-capture-kit';
+import { DECEMBER, file, openPlans, overlayDiff, shoot, target } from './plans-capture-kit';
 
 const ALL = [360, 390, 1024, 1440, 2000];
 const PAIR = [390, 1440];
 const REGION_B_WIDTHS = [360, 390, 1024, 1440];
-const SIM_WIDTHS = [360, 390, 1440];
 const BOARD_WIDTHS = [1024, 1440, 2000];
 const BOARD_FILE: Record<number, string> = {
   1024: 'premium-value-1024.html',
@@ -88,14 +78,6 @@ atWidths('18 region B, Monthly and after the founder window', REGION_B_WIDTHS, a
   expect(cls).toBeLessThanOrEqual(CLS_CAP);
 });
 
-atWidths('19 /sim landing with the real example card', SIM_WIDTHS, async (page, width) => {
-  await sizeTo(page, width);
-  await clearStorageOnLoad(page);
-  await page.goto('/sim');
-  await settle(page);
-  await shoot(page, 19, 'sim-landing', width, page.getByTestId('sim-example-result').first());
-});
-
 test('20 band link: default, hover, focus-visible, activated @1440', async ({ page }) => {
   await openPlans(page, 1440, DECEMBER);
   const link = page.getByTestId('band-guild-link');
@@ -115,12 +97,6 @@ test('20 band link: default, hover, focus-visible, activated @1440', async ({ pa
     page.getByRole('heading', { level: 2, name: plansPageCopy.guildRegion.heading }),
   ).toBeInViewport();
   await page.screenshot({ path: file(20, 'activated', 1440) });
-});
-
-atWidths('21 example image blocked', PAIR, async (page, width) => {
-  await page.route('**/premium/example-server-run.*', (route) => route.abort());
-  await openPlans(page, width, DECEMBER);
-  await shoot(page, 21, 'image-failed', width, page.getByTestId('premium-example'));
 });
 
 for (const width of BOARD_WIDTHS) {

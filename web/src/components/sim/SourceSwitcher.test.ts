@@ -40,11 +40,11 @@ describe('SourceSwitcher', () => {
   describe('heroSignIn, signed out', () => {
     const props = { ...requiredProps, heroSignIn: true };
 
-    it('renders the intro line and the static example ahead of the hero card', () => {
+    it('renders the intro line ahead of the hero card', () => {
       const { body } = render(SourceSwitcher, { props });
       expect(body).toContain('data-testid="sim-intro-line"');
       expect(body).toContain(landingCopy.introLine);
-      expect(body).toContain('data-testid="sim-example-result"');
+      expect(body).not.toContain('sim-example-result');
       const introIndex = body.indexOf('data-testid="sim-intro-line"');
       const accountIndex = body.indexOf('data-testid="sim-account-card"');
       expect(introIndex).toBeGreaterThan(-1);

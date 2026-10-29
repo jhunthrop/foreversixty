@@ -9,14 +9,6 @@ import { FOUNDER_WINDOW_CLOSES, PLAN_ORDER, formatPrice } from '../../src/lib/bi
 import { PREMIUM_SOURCE_KEY } from '../../src/lib/account/premium-hint';
 import { plansPageCopy } from '../../src/lib/billing/plans-page-copy';
 import {
-  captionFields,
-  exampleHref,
-  isPlaceholder,
-  serverRunExample,
-} from '../../src/lib/billing/premium-examples';
-import { serverRunCaption, serverRunCaptionTemplates } from '../../src/lib/billing/premium-example-copy';
-import { EXAMPLE_IMAGE_HEIGHT, EXAMPLE_IMAGE_WIDTH } from '../../src/lib/billing/example-image';
-import {
   COST_BOX_PX,
   cardHeights,
   founderLineBoxes,
@@ -24,7 +16,6 @@ import {
   guildPriceBoxes,
   type GuildPriceBoxes,
 } from './support/premium-layout';
-import { API } from './support/local-stack';
 import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';
 import {
   PREMIUM_GRANT_OPEN_ENDED,
@@ -43,7 +34,6 @@ const FIRST_SCREEN = { width: 1280, height: 800 };
 const BUTTONS_END_ABOVE_PX = 520;
 const BAND_LINK_ABOVE_PX = 300;
 const HEADING_TOP_TOLERANCE_PX = 40;
-const SUBPIXEL_PX = 1;
 const FOUNDER_LINE_WIDTHS = [360, 1024] as const;
 const GUILD_WIDTHS = [360, 768, 1024, 1440] as const;
 /** The three stored Premium hints: the page must hold its layout with and without one. */
@@ -161,7 +151,7 @@ test('at 360 the Free card comes first, once, with the free list and the promise
       .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
       .map((node) => node.getAttribute('data-plan')),
   );
-  expect(order).toEqual(['free', 'premium', 'example', 'guild', 'raid_guild', 'history']);
+  expect(order).toEqual(['free', 'premium', 'coach-sample', 'guild', 'raid_guild', 'history']);
 });
 
 // Spec B3.2 (premium-value amendment): from 1024 Premium sits in region A and the two guild
@@ -314,55 +304,57 @@ test('no loot-council example is on the page', async ({ page }) => {
   await openAt(page, DECEMBER);
   const text = (await page.locator('main').textContent()) ?? '';
   expect(text).not.toMatch(/EXAMPLE · A REAL LOOT COUNCIL/i);
-  await expect(page.getByTestId('premium-example')).toHaveCount(1);
+  await expect(page.getByTestId('coach-sample')).toHaveCount(1);
 });
 
-test('the example card reads the data file: label, caption template, link, image box', async ({ page }) => {
+test('the sample coach review is labelled Sample first and in its caption', async ({ page }) => {
   await openAt(page, DECEMBER);
-  const template = serverRunExample.preset
-    ? serverRunCaptionTemplates.preset
-    : serverRunCaptionTemplates.ownGear;
-  const caption = template(captionFields(serverRunExample));
-  expect(serverRunCaption(serverRunExample)).toBe(caption);
-  const card = page.getByTestId('premium-example');
-  await expect(card.getByTestId('premium-example-caption')).toHaveText(caption);
-  await expect(card.locator('[data-part="label"]')).toHaveText(plansPageCopy.examples.serverRun.label);
-  const link = card.getByTestId('premium-example-link');
-  await expect(link).toHaveText(plansPageCopy.examples.serverRun.link);
-  await expect(link).toHaveAttribute('href', exampleHref(serverRunExample));
-  const image = card.locator('img');
-  await expect(image).toHaveAttribute('width', String(EXAMPLE_IMAGE_WIDTH));
-  await expect(image).toHaveAttribute('height', String(EXAMPLE_IMAGE_HEIGHT));
-  await expect(image).toHaveAttribute('alt', caption);
+  const card = page.getByTestId('coach-sample');
+  await expect(card).toHaveCount(1);
+  await expect(card).toHaveAttribute('aria-label', plansPageCopy.coachSample.ariaLabel);
+  expect(((await card.textContent()) ?? '').trim().startsWith(plansPageCopy.coachSample.tag)).toBe(true);
+  await expect(card.getByTestId('coach-sample-tag')).toHaveText(plansPageCopy.coachSample.tag);
+  await expect(card.getByTestId('coach-sample-caption')).toHaveText(plansPageCopy.coachSample.caption);
 });
 
-test('the example image box is reserved at 4:3 whether or not the picture loads', async ({ page }) => {
-  await page.route('**/premium/example-server-run.*', (route) => route.abort());
+test("at 1280 x 800 the sample's Fix first title ends above y 800", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   await openAt(page, DECEMBER);
-  const box = page.getByTestId('premium-example').locator('[data-part="image"]');
-  const { width, height } = await box.evaluate((node) => node.getBoundingClientRect());
-  expect(Math.abs(height - (width * 3) / 4)).toBeLessThanOrEqual(SUBPIXEL_PX);
+  const box = await page.getByTestId('coach-sample-fix-title').boundingBox();
+  expect(box).not.toBeNull();
+  expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(800);
 });
 
-const SHIP = process.env.SHIP === '1';
-
-test('the example ships real data, not the placeholder', () => {
-  if (!SHIP && isPlaceholder(serverRunExample)) {
-    test
-      .info()
-      .annotations.push({ type: 'placeholder', description: 'premium-examples.json is a placeholder' });
-    test.skip(true, 'placeholder data; set SHIP=1 to make this a failure');
+test("the three region A cards are equal height from 1024 and the caption sits on the sample's bottom edge", async ({
+  page,
+}) => {
+  for (const width of [1024, 1440, 2000]) {
+    await page.setViewportSize({ width, height: 900 });
+    await openAt(page, DECEMBER);
+    const [free, premium, sample] = await Promise.all(
+      ['plan-free', 'plan-premium', 'coach-sample'].map((id) => page.getByTestId(id).boundingBox()),
+    );
+    expect(Math.abs((free?.height ?? 0) - (sample?.height ?? 1)), `free vs sample at ${width}`).toBeLessThan(
+      1,
+    );
+    expect(
+      Math.abs((premium?.height ?? 0) - (sample?.height ?? 1)),
+      `premium vs sample at ${width}`,
+    ).toBeLessThan(1);
+    const caption = await page.getByTestId('coach-sample-caption').boundingBox();
+    const gap = (sample?.y ?? 0) + (sample?.height ?? 0) - ((caption?.y ?? 0) + (caption?.height ?? 0));
+    expect(gap, `caption gap at ${width}`).toBeLessThanOrEqual(25);
   }
-  expect(
-    isPlaceholder(serverRunExample),
-    'premium-examples.json is still the placeholder — run the PV19 capture before shipping',
-  ).toBe(false);
 });
 
-test('Open this result answers 200 signed out', async ({ request }) => {
-  test.skip(!SHIP && isPlaceholder(serverRunExample), 'placeholder data; set SHIP=1 to run');
-  const response = await request.get(`${API}/v1/sims/${encodeURIComponent(serverRunExample.simId)}`);
-  expect(response.status()).toBe(200);
+test('the server-run example is gone from /premium and /sim', async ({ page }) => {
+  for (const path of ['/premium', '/sim']) {
+    await page.goto(path);
+    const text = (await page.locator('body').textContent()) ?? '';
+    expect(text, path).not.toContain('EXAMPLE · A REAL SERVER RUN');
+    expect(text, path).not.toContain('Open this result');
+    expect(text, path).not.toContain('1,245 DPS');
+  }
 });
 
 test('the founder line sets on one line at 360 and 1024', async ({ page }) => {
@@ -403,10 +395,10 @@ for (const { name, stored } of PREMIUM_STATES) {
   });
 }
 
-test('the band link and Open this result are 44px tall from 768 up', async ({ page }) => {
+test('the band link is 44px tall from 768 up', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await openAt(page, DECEMBER);
-  for (const link of [page.getByTestId('band-guild-link'), page.getByTestId('premium-example-link')]) {
+  for (const link of [page.getByTestId('band-guild-link')]) {
     expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(MIN_TAP_PX);
   }
 });

@@ -5,6 +5,7 @@
 // renders the Free card (no button; its slot holds the sign-in line).
 import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { BUTTON_MD, BUTTON_PRIMARY } from '../../lib/ui/button';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
 import { CARD, CARD_SURFACE } from '../../lib/ui/card';
@@ -22,11 +23,11 @@ const { free } = plansPageCopy;
 const block = plan === 'free' ? free : planBlock(plan);
 const priced = plan === 'free' ? null : plan;
 const guild = priced !== null && PLANS[priced].guild;
-// Gold on this page belongs to Premium's button; the guild buttons are plain (spec §B3.3, §B6).
-const buttonTone = guild
-  ? 'border-line-warm-strong text-text active:bg-card-top'
-  : 'plan-button-gold border-gold text-gold';
-const buttonClass = `${SECONDARY_BUTTON_FIXED} plan-button ${buttonTone} w-full justify-center text-center`;
+// Premium's button is the page's one filled element; the guild buttons are plain (polish spec
+// 2026-10-28 §3.3, launch-pricing §B6).
+const buttonClass = guild
+  ? `${SECONDARY_BUTTON_FIXED} plan-button border-line-warm-strong text-text active:bg-card-top w-full justify-center text-center`
+  : `${BUTTON_PRIMARY} ${BUTTON_MD} plan-button w-full text-center`;
 // The owned state's neutral link: never gold, even on the gold card.
 const ownedButtonClass = `${SECONDARY_BUTTON_FIXED} plan-button plan-owned border-line-warm-strong text-strong w-full justify-center text-center`;
 const OWNED_SOURCES = Object.entries(premiumSourceCopy.premiumCard);
@@ -138,6 +139,14 @@ const cardId = plan === 'free' ? 'free' : undefined;
     padding: 12px 20px 20px;
     scroll-margin-top: 16px;
   }
+  /* Premium is the gold card (polish spec 2026-10-28 §3.3). */
+  .plan-card[data-plan='premium'] {
+    border-color: rgba(229, 185, 85, 0.45);
+    box-shadow:
+      inset 0 1px 0 var(--card-highlight),
+      0 0 0 1px rgba(229, 185, 85, 0.12),
+      0 18px 48px rgba(229, 185, 85, 0.1);
+  }
   .plan-name {
     margin: 0;
     line-height: 24px;
@@ -207,10 +216,6 @@ const cardId = plan === 'free' ? 'free' : undefined;
     min-height: 44px;
     padding: 8px 10px;
     line-height: 1.25;
-  }
-  /* Spec 4: the card button's hover ground. */
-  .plan-button-gold:hover {
-    background: rgba(229, 185, 85, 0.08);
   }
   /* One subgrid cell: the guild cards' trial line, Premium's support line, blank on Free. */
   .slot {
