@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polish Review</title>
+<style>
+  :root { --bg:#0b0d12; --card:#12161f; --line:#232a37; --text:#e8e6df; --muted:#9aa3b2; --gold:#e5b955; --accent:#f5d27a; }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding:0 16px 64px }
+  main { max-width:1680px; margin:0 auto }
+  h1 { font-size:28px; margin:32px 0 6px; letter-spacing:.01em }
+  h2 { font-size:20px; margin:40px 0 12px; padding-top:20px; border-top:1px solid var(--line) }
+  h3 { font-size:15px; margin:18px 0 8px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em }
+  p { max-width:72ch; color:var(--muted) }
+  .grid { display:grid; gap:18px }
+  .two { grid-template-columns:repeat(auto-fit, minmax(520px, 1fr)) }
+  .three { grid-template-columns:repeat(auto-fit, minmax(380px, 1fr)) }
+  figure { margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px }
+  figure img { display:block; width:100%; height:auto; border-radius:6px; background:#000 }
+  figcaption { font-size:13px; color:var(--muted); padding:8px 4px 2px }
+  .pick { border-color:var(--gold); box-shadow:0 0 0 1px rgba(229,185,85,.25) }
+  .pill { display:inline-block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#0b0d12; background:var(--accent); border-radius:999px; padding:3px 9px; margin-left:8px; vertical-align:middle }
+  table { border-collapse:collapse; margin:10px 0; font-size:14px }
+  th, td { text-align:left; padding:6px 12px 6px 0; border-bottom:1px solid var(--line); vertical-align:top }
+  th { color:var(--muted); font-weight:600 }
+  .phone { max-width:420px }
+  a { color:var(--accent) }
+  @media (max-width:600px){ .two, .three { grid-template-columns:1fr } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Polish review · 28 Oct</h1>
+  <p>Mocks from <code>design/specs/2026-10-28-polish.md</code>. Pick a direction in §1; everything else is built the same way in either. Nothing is built until you say so.</p>
+
+  <h2>1. Two directions — pick one</h2>
+  <p>Both are modern and gaming and both drop Cinzel from headings (it stays in the wordmark only). <strong>A · Frost</strong> is cooler and sharper (Rajdhani headings, Inter body, steel surfaces, tight radii, sentence-case buttons). <strong>B · Forge</strong> is warmer and heavier (Barlow Condensed 800 headings over today's Barlow body, gold-edged surfaces with glow, rounder radii, uppercase buttons). The designer recommends <strong>B</strong>: it keeps the body face and every tuned line length, adds about 45 KB of fonts, and is the raid-tool and launcher voice.</p>
+
+  <h3>Home hero + header</h3>
+  <div class="grid two">
+    <figure><img src="renders/dirA-home-1440.png" alt="Direction A home at 1440"><figcaption>A · Frost — 1440</figcaption></figure>
+    <figure class="pick"><img src="renders/dirB-home-1440.png" alt="Direction B home at 1440"><figcaption>B · Forge — 1440 <span class="pill">recommended</span></figcaption></figure>
+  </div>
+  <h3>Account · Plan and Discord blocks</h3>
+  <div class="grid two">
+    <figure><img src="renders/dirA-account-1440.png" alt="Direction A account at 1440"><figcaption>A · Frost — 1440</figcaption></figure>
+    <figure class="pick"><img src="renders/dirB-account-1440.png" alt="Direction B account at 1440"><figcaption>B · Forge — 1440</figcaption></figure>
+  </div>
+  <h3>/premium plans row</h3>
+  <div class="grid two">
+    <figure><img src="renders/dirA-premium-1440.png" alt="Direction A premium at 1440"><figcaption>A · Frost — 1440</figcaption></figure>
+    <figure class="pick"><img src="renders/dirB-premium-1440.png" alt="Direction B premium at 1440"><figcaption>B · Forge — 1440</figcaption></figure>
+  </div>
+  <h3>Phone (390)</h3>
+  <div class="grid three">
+    <figure class="phone"><img src="renders/dirA-home-phone.png" alt="A home phone"><figcaption>A · home</figcaption></figure>
+    <figure class="phone pick"><img src="renders/dirB-home-phone.png" alt="B home phone"><figcaption>B · home</figcaption></figure>
+    <figure class="phone"><img src="renders/dirA-account-phone.png" alt="A account phone"><figcaption>A · account</figcaption></figure>
+    <figure class="phone pick"><img src="renders/dirB-account-phone.png" alt="B account phone"><figcaption>B · account</figcaption></figure>
+    <figure class="phone"><img src="renders/dirA-premium-phone.png" alt="A premium phone"><figcaption>A · premium</figcaption></figure>
+    <figure class="phone pick"><img src="renders/dirB-premium-phone.png" alt="B premium phone"><figcaption>B · premium</figcaption></figure>
+  </div>
+
+  <h2>2. Header: the account control</h2>
+  <p>The character selector becomes the account control: same closed face (crest, name, spec and level), its panel gains an account head on top and Account, your characters, your plan and Sign out at the bottom. The community Discord link leaves the header for the footer and the Guild menu. Signed out, the right end is Sign in with Battle.net.</p>
+  <div class="grid two">
+    <figure><img src="renders/polish-header-1440.png" alt="Header at 1440"><figcaption>1440</figcaption></figure>
+    <figure><img src="renders/polish-header-2000.png" alt="Header at 2000"><figcaption>2000</figcaption></figure>
+    <figure class="phone"><img src="renders/polish-header-phone.png" alt="Header phone"><figcaption>390</figcaption></figure>
+  </div>
+
+  <h2>3. Footer</h2>
+  <p>A brand block (seal, name, the one-line promise, Join the Discord) beside four labelled link columns; the trademark and operator lines small and last.</p>
+  <div class="grid two">
+    <figure><img src="renders/polish-footer-1440.png" alt="Footer at 1440"><figcaption>1440</figcaption></figure>
+    <figure><img src="renders/polish-footer-2000.png" alt="Footer at 2000"><figcaption>2000</figcaption></figure>
+    <figure class="phone"><img src="renders/polish-footer-phone.png" alt="Footer phone"><figcaption>390</figcaption></figure>
+  </div>
+
+  <h2>4. Components: before and after</h2>
+  <p>One component set replaces the plain rows, native checkboxes, bare underlined links and outline-only buttons: settings rows with an icon slot, switches, button recipes, tags, icon and stat tiles, selects, action links. Applied first to the account page's Plan and Discord blocks.</p>
+  <div class="grid two">
+    <figure><img src="renders/polish-account-compare.png" alt="Account blocks before and after"><figcaption>Production today (left) beside the rebuilt blocks (right)</figcaption></figure>
+    <figure><img src="renders/polish-components.png" alt="Every component state"><figcaption>Every state of each new control</figcaption></figure>
+  </div>
+
+  <h2>5. /premium without the example card</h2>
+  <p>The empty example card is gone. Column 3 becomes a static sample coach review rendered at build time from a real fixture, labelled <em>Sample</em> in its first line and caption (the coach is live and is the first Premium benefit). The copy of the example on the /sim landing is deleted, not replaced. The boards in §1 show the row.</p>
+
+  <h2>6. Polish inventory: blockers per surface</h2>
+  <p>The full ranked list (blockers / should / polish, each with the exact change) is §5 of the spec. Blockers found on the live site:</p>
+  <table>
+    <tr><th>Surface</th><th>Blockers</th><th>Surface</th><th>Blockers</th></tr>
+    <tr><td>Header</td><td>1</td><td>Get set up</td><td>1</td></tr>
+    <tr><td>Footer</td><td>1</td><td>Account</td><td>1</td></tr>
+    <tr><td>Planner</td><td>1</td><td>Premium</td><td>1</td></tr>
+    <tr><td>Guide</td><td>2</td><td>Rankings</td><td>1</td></tr>
+    <tr><td>Simulator</td><td>1</td><td>Legal pages</td><td>2</td></tr>
+    <tr><td>Home</td><td>1</td><td>BiS, report, guild, 404, logs, tier list, guides index, about</td><td>0</td></tr>
+  </table>
+  <p>Two need a check before building on them: the home page's Recent reports and Top guilds were still skeletons 1.5 s after the network went idle (a slow API or a real gap — an e2e with empty and failing reads will tell), and the legal pages' headers read "Confirmed by Blizzard or by multiple sources" from the content layout's status line.</p>
+
+  <h2>7. What happens after your pick</h2>
+  <p>Tokens and the heading face land first (one commit, both directions are the same components), then the header and footer, then the account blocks, then the /premium row, then the inventory in rank order. Each piece goes through the two reviewer gates on captures of the live site and is pushed to main on its own.</p>
+</main>
+</body>
+</html>
