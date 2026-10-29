@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70658",
-  "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-28T13:10:07Z",
+  "engine_version": "1f542def3",
+  "generated_at": "2026-10-29T13:17:28Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -701,8 +701,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.106651023,
-      "verify_run_seconds": 0.691491925,
+      "weights_run_seconds": 2.184117773,
+      "verify_run_seconds": 1.123563572,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1495,8 +1495,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.106651023,
-      "verify_run_seconds": 0.749542546,
+      "weights_run_seconds": 2.184117773,
+      "verify_run_seconds": 1.134842668,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2328,8 +2328,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.300268159,
-      "verify_run_seconds": 0.733668205,
+      "weights_run_seconds": 2.183586841,
+      "verify_run_seconds": 1.248118052,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3172,8 +3172,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.300268159,
-      "verify_run_seconds": 0.764830275,
+      "weights_run_seconds": 2.183586841,
+      "verify_run_seconds": 1.216049045,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4056,8 +4056,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 1.364624955,
-      "verify_run_seconds": 0.852998874,
+      "weights_run_seconds": 2.301192777,
+      "verify_run_seconds": 1.340936189,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4938,8 +4938,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.364624955,
-      "verify_run_seconds": 0.855766418,
+      "weights_run_seconds": 2.301192777,
+      "verify_run_seconds": 1.373289306,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5792,8 +5792,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.43650775,
-      "verify_run_seconds": 1.030252941,
+      "weights_run_seconds": 2.52143307,
+      "verify_run_seconds": 1.709605969,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6653,8 +6653,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.43650775,
-      "verify_run_seconds": 0.960693755,
+      "weights_run_seconds": 2.52143307,
+      "verify_run_seconds": 1.557456124,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7609,8 +7609,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 1.44424621,
-      "verify_run_seconds": 3.443417901,
+      "weights_run_seconds": 2.431611917,
+      "verify_run_seconds": 5.385337283,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8567,8 +8567,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 1.44424621,
-      "verify_run_seconds": 3.2070003209999998,
+      "weights_run_seconds": 2.431611917,
+      "verify_run_seconds": 5.235724636,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9551,8 +9551,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 0.860948491,
-      "verify_run_seconds": 3.163675437,
+      "weights_run_seconds": 1.473231553,
+      "verify_run_seconds": 5.097512683,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10523,8 +10523,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 0.860948491,
-      "verify_run_seconds": 2.365928101,
+      "weights_run_seconds": 1.473231553,
+      "verify_run_seconds": 3.860406459,
       "coverage": {
         "back": {
           "eligible": 391,
