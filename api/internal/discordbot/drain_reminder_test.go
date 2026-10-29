@@ -350,6 +350,79 @@ func TestAMoveWhileTheReminderIsInFlightWithdrawsIt(t *testing.T) {
 	}
 }
 
+func TestAMoveAndTheReArmedReminderInOneClaim(t *testing.T) {
+	w := replied(t)
+	was := w.facts.by[w.raidID].Post.StartsAt
+	w.facts.edit(w.raidID, func(f *guilds.RaidPostFacts) {
+		f.Post.StartsAt = f.Post.StartsAt.Add(time.Hour)
+		f.EndsAt = f.EndsAt.Add(time.Hour)
+	})
+	w.rest.Latest, w.rest.ReplyID = "m1", "r2"
+	w.markAndDrain(t, func(ctx context.Context) {
+		w.st.MarkRaidMoved(ctx, w.raidID, was)
+		if err := w.st.MarkReminderDue(ctx, w.raidID); err != nil {
+			t.Fatal(err)
+		}
+	})
+	if d := w.callsOf("DeleteMessage"); len(d) != 1 || d[0].MessageID != "r1" {
+		t.Fatalf("deletes = %+v, want r1 withdrawn", d)
+	}
+	if replies := w.replies(); len(replies) != 2 {
+		t.Fatalf("replies = %d, want the first and one new", len(replies))
+	}
+	if r := w.reminderRow(t); r.due || r.messageID == nil || *r.messageID != "r2" || r.remindedAt == nil {
+		t.Fatalf("row = %+v", r)
+	}
+}
+
+func TestAReminderNotRecordedIsNotFinished(t *testing.T) {
+	w := newPostWorld(t)
+	w.postedOnce(t)
+	w.rest.Latest, w.rest.ReplyID = "other", "r1"
+	var once sync.Once
+	w.rest.OnCall = func(c RESTCall) {
+		if c.Method == "CreateMessage" && c.Message.ReplyTo != "" {
+			once.Do(func() {
+				// Another drainer took the row while Discord answered.
+				if _, err := w.st.Pool.Exec(context.Background(), `update guild_raid_discord_posts
+					set lease_until = $2 where raid_id = $1`, w.raidID, w.clock.now().Add(-time.Hour)); err != nil {
+					t.Error(err)
+				}
+			})
+		}
+	}
+	w.remindDue(t)
+	r, _ := w.row(t, w.raidID)
+	if rr := w.reminderRow(t); !rr.due || !r.dirty || rr.remindedAt != nil || r.attempts != 0 {
+		t.Fatalf("an unrecorded reminder was finished: row %+v, reminder %+v", r, rr)
+	}
+	w.drain(t)
+	replies := w.replies()
+	if len(replies) != 2 || replies[0].Message.Nonce != replies[1].Message.Nonce {
+		t.Fatalf("the retried reply = %+v, want the same nonce", replies)
+	}
+	if rr := w.reminderRow(t); rr.due || rr.messageID == nil || rr.remindedAt == nil {
+		t.Fatalf("row after the retry = %+v", rr)
+	}
+}
+
+func TestAReminderPastTheStartIsDroppedUnsent(t *testing.T) {
+	w := newPostWorld(t)
+	w.postedOnce(t)
+	w.clock.advance(w.facts.by[w.raidID].Post.StartsAt.Sub(w.clock.now()) + time.Minute)
+	w.rest.Latest = "other"
+	w.remindDue(t)
+	if len(w.replies()) != 0 || len(w.callsOf("LatestMessageID")) != 0 {
+		t.Fatalf("a started raid was reminded: %+v", w.rest.Calls())
+	}
+	if title := w.lastEditTitle(t); strings.HasPrefix(title, "Tomorrow: ") {
+		t.Fatalf("title = %q", title)
+	}
+	if r := w.reminderRow(t); r.due {
+		t.Fatalf("row = %+v", r)
+	}
+}
+
 func TestTheReminderReplyCarriesANonce(t *testing.T) {
 	w := replied(t)
 	r := w.replies()[0].Message

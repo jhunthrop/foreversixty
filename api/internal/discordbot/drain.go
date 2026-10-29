@@ -155,6 +155,11 @@ func (d *Drainer) drainRow(ctx context.Context, p Post, now time.Time) {
 	}
 	state := PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, p.MovedFrom, now)
 	messageID, look, err := d.sendPost(ctx, p, facts, state, now)
+	if errors.Is(err, ErrLeaseLost) {
+		// Another drainer holds the row now; it redoes the work, so nothing is counted here.
+		d.logIfErr(err, "post_finish", p.RaidID)
+		return
+	}
 	if err != nil {
 		d.refused(ctx, p, now, err)
 		return
