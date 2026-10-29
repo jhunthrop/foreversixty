@@ -77,7 +77,7 @@
         >
           ← {guildClaimCopy.backToGuild('')}
         </a>
-        <h1 class="section-title text-[18px]">{guildClaimCopy.heading('')}</h1>
+        <h1 class="heading-page">{guildClaimCopy.heading('')}</h1>
         {@render chunkPending(claimLazy, 'guild-claim-chunk', GUILD_LOADING.claim.minHeight)}
       </div>
     {/if}
@@ -86,7 +86,7 @@
       <settingsLazy.current path={settingsPath} />
     {:else}
       <div class="flex flex-col gap-6 {GUILD_BANDLESS_TOP}">
-        <h1 class="section-title text-[18px]">{guildSettingsCopy.heading}</h1>
+        <h1 class="heading-page">{guildSettingsCopy.heading}</h1>
         {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
       </div>
     {/if}

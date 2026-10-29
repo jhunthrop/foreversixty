@@ -59,11 +59,7 @@
         {/if}
       </span>
       <span class="flex min-w-0 flex-col">
-        <h2
-          id={nameId}
-          tabindex="-1"
-          class="font-display text-strong m-0 truncate text-[16px] font-bold outline-none"
-        >
+        <h2 id={nameId} tabindex="-1" class="heading-name text-strong m-0 truncate text-[16px] outline-none">
           {guild.name}
         </h2>
         {#if realmLine !== null}

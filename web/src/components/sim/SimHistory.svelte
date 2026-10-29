@@ -31,7 +31,7 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-history">
   <div class="flex flex-wrap items-baseline justify-between gap-3">
-    <h2 class="section-title text-[15px]">{simCopy.yourSims}</h2>
+    <h2 class="section-title">{simCopy.yourSims}</h2>
     <label class="flex items-center gap-2 text-[13px]">
       <span class="label text-muted">{simCopy.historyFilter}</span>
       <select

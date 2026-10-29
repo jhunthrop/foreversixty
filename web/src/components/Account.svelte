@@ -584,12 +584,12 @@
       <AccountLoading />
     {:else if status === 'failed'}
       <div class="account-header-reserve">
-        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+        <h1 class="heading-page">{accountPageCopy.title}</h1>
       </div>
       <LoadError message={error} onRetry={() => session.refresh()} testid="account-load-error" />
     {:else if !signedIn}
       <div class="account-header-reserve">
-        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+        <h1 class="heading-page">{accountPageCopy.title}</h1>
       </div>
       <div class="session-reserve {SIGNED_OUT_MIN_H}">
         <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
@@ -599,7 +599,7 @@
         <!-- Page header (brief 2026-09-22 §B1): title left, identity line + Sign out right
              at lg, stacked under the title on phone. -->
         <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+          <h1 class="heading-page">{accountPageCopy.title}</h1>
           <div
             class="flex flex-wrap items-center gap-x-4 gap-y-2 lg:justify-end"
             data-testid="account-identity"

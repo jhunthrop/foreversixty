@@ -43,8 +43,8 @@ function escapeHtml(text: string): string {
 export function reportSkeletonHtml(title?: string): string {
   const heading =
     title === undefined
-      ? `<h1 class="section-title min-h-[26px] text-[18px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${block('h-5 w-56')}</h1>`
-      : `<h1 class="section-title min-h-[26px] text-[18px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${escapeHtml(title)}</h1>`;
+      ? `<h1 class="heading-page min-h-[34px] md:min-h-[44px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${block('h-5 w-56')}</h1>`
+      : `<h1 class="heading-page min-h-[34px] md:min-h-[44px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${escapeHtml(title)}</h1>`;
   return [
     '<div class="report-skeleton flex flex-col gap-4 px-[18px] md:px-0" data-testid="report-skeleton" aria-busy="true">',
     '<p class="sr-only" role="status">Loading the report.</p>',

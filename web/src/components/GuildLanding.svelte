@@ -43,7 +43,7 @@
 
 <div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-[22px] md:gap-8" data-testid="guild-landing">
   <header class="flex flex-col gap-2">
-    <h1 class="section-title text-[24px]">{copy.heading}</h1>
+    <h1 class="heading-page">{copy.heading}</h1>
     <p class="text-muted text-[15px]">{copy.lead}</p>
   </header>
 

@@ -30,7 +30,7 @@
 
 <div class="reveal flex flex-col gap-5" data-testid="character-not-found" id="character">
   <header class="flex flex-col gap-2">
-    <h1 class="section-title text-[22px]" data-testid="character-name">
+    <h1 class="heading-page" data-testid="character-name">
       {known ? name : scoreCopy.notFoundTitle}
     </h1>
     <p class="text-[15px]" data-testid="character-not-found-line">

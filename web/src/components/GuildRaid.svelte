@@ -143,7 +143,7 @@
   </span>
   <div class="flex items-center gap-4 lg:gap-[18px]">
     <FactionCrest faction={c.guild?.faction ?? null} src={c.guild?.mark ?? null} />
-    <h1 class="font-display text-strong text-[22px] font-bold">{guildName}</h1>
+    <h1 class="heading-page">{guildName}</h1>
   </div>
 {/snippet}
 
@@ -246,7 +246,7 @@
             />
           </div>
         {:else}
-          <h1 class="font-display text-strong text-[22px] font-bold md:col-span-2" data-testid="raid-title">
+          <h1 class="heading-page md:col-span-2" data-testid="raid-title">
             {raid.title}{#if raid.title !== raid.zone_name}<span
                 class="text-muted font-sans text-[15px] font-normal whitespace-nowrap"
                 >{SEP}{raid.zone_name}</span
@@ -398,7 +398,7 @@
         aria-labelledby="raid-notes-heading"
         data-testid="raid-notes"
       >
-        <h2 id="raid-notes-heading" class="section-title text-[18px]">{raidCopy.subheads.notes}</h2>
+        <h2 id="raid-notes-heading" class="section-title">{raidCopy.subheads.notes}</h2>
         {@render notesBody()}
       </section>
     {/if}

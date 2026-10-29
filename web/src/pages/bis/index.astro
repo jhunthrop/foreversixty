@@ -30,7 +30,7 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
           {landingCopy.eyebrow}
         </p>
         <div class="hero-head">
-          <h1 class="h1">{landingCopy.h1}</h1>
+          <h1 class="h1 heading-page">{landingCopy.h1}</h1>
           {updated && (
             <span class="stamp">
               <UpdatedStamp date={updated} />
@@ -52,7 +52,7 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
         <BisLandingHeader config={config} />
       </div>
       <div class="grid-wrap" id="bis-classes">
-        <h2 class="grid-heading" data-grid-heading data-testid="bis-grid-heading">
+        <h2 class="grid-heading section-title" data-grid-heading data-testid="bis-grid-heading">
           <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
           <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>
         </h2>
@@ -122,11 +122,6 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
   }
   .h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--color-strong);
   }
   .job {
     margin: 0;
@@ -162,12 +157,6 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
   }
   .grid-heading {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-strong);
   }
   .grid {
     display: grid;

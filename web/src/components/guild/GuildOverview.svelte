@@ -166,7 +166,7 @@
       data-testid="guild-overview-card-roster"
     >
       <div class="flex items-center justify-between">
-        <h3 class="section-title text-[16px]">Roster</h3>
+        <h3 class="section-title">Roster</h3>
         <button
           class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
           onclick={() => onSelectTab('roster')}>See all</button
@@ -189,7 +189,7 @@
     data-testid="guild-overview-card-raids"
   >
     <div class="flex items-center justify-between">
-      <h3 class="section-title text-[16px]">This week's raid nights</h3>
+      <h3 class="section-title">This week's raid nights</h3>
       <button
         class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
         onclick={() => onSelectTab('raids')}>See all</button
@@ -229,7 +229,7 @@
     data-testid="guild-overview-card-progression"
   >
     <div class="flex items-center justify-between">
-      <h3 class="section-title text-[16px]">Progression</h3>
+      <h3 class="section-title">Progression</h3>
       <button
         class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
         onclick={() => onSelectTab('progression')}>See all</button
@@ -248,7 +248,7 @@
       data-testid="guild-overview-card-readiness"
     >
       <div class="flex items-center justify-between">
-        <h3 class="section-title text-[16px]">Readiness</h3>
+        <h3 class="section-title">Readiness</h3>
         <button
           class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
           onclick={() => onSelectTab('readiness')}>See all</button
@@ -270,7 +270,7 @@
       data-testid="guild-overview-card-loot"
     >
       <div class="flex items-center justify-between">
-        <h3 class="section-title text-[16px]">Loot</h3>
+        <h3 class="section-title">Loot</h3>
         <button
           class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
           onclick={() => onSelectTab('loot')}>See all</button

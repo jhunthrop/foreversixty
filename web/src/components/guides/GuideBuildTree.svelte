@@ -70,7 +70,7 @@
   <div class="reveal grid grid-cols-1 gap-4 md:grid-cols-3" data-testid="guide-tree-columns">
     {#each talentIndex.trees as tree (tree.id)}
       <div class="flex flex-col gap-2">
-        <h3 class="section-title text-[14px]">{tree.name}</h3>
+        <h3 class="section-title">{tree.name}</h3>
         <TreeGrid {store} {tree} readOnly />
       </div>
     {/each}

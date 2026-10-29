@@ -67,7 +67,7 @@
 </script>
 
 <section class="flex flex-col gap-3" data-testid="character-in-game">
-  <h2 class="section-title text-[18px]">{scoreCopy.inGameHeading}</h2>
+  <h2 class="section-title">{scoreCopy.inGameHeading}</h2>
   <!-- Below 900px the line sits under the mock; from 900px beside it. -->
   <div class="flex flex-col gap-3 min-[900px]:flex-row min-[900px]:items-center min-[900px]:gap-6">
     <!-- The game's own tooltip frame: a dark translucent fill, a 1px grey-blue border, a 4px

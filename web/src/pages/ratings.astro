@@ -62,7 +62,7 @@ const MEASURE = 'max-w-[70ch]';
 >
   <main id="main" tabindex="-1" class="flex flex-col gap-8 px-[18px] py-8 md:gap-10 md:px-0">
     <header class="flex flex-col gap-2">
-      <h1 class="section-title text-[18px]">{scoreCopy.explainerPageTitle}</h1>
+      <h1 class="heading-page">{scoreCopy.explainerPageTitle}</h1>
       <nav aria-label={scoreCopy.explainerJumpLabel} data-testid="ratings-jump">
         <ul class="flex flex-wrap items-center gap-x-3">
           <li>
@@ -84,7 +84,7 @@ const MEASURE = 'max-w-[70ch]';
 
     <section id="forever-score" class="flex scroll-mt-6 flex-col gap-6" data-testid="ratings-forever-score">
       <header class={`flex flex-col gap-2 ${MEASURE}`}>
-        <h2 class="section-title text-[18px]">{scoreCopy.explainerHeading}</h2>
+        <h2 class="section-title">{scoreCopy.explainerHeading}</h2>
         <p class="text-muted text-[13px]" data-testid="ratings-forever-caption">
           {scoreCopy.explainerScoreCaption}
         </p>
@@ -178,7 +178,7 @@ const MEASURE = 'max-w-[70ch]';
       data-testid="ratings-performance-rating"
     >
       <header class={`flex flex-col gap-2 ${MEASURE}`}>
-        <h2 class="section-title text-[18px]">{scoreCopy.explainerRatingHeading}</h2>
+        <h2 class="section-title">{scoreCopy.explainerRatingHeading}</h2>
         <p class="text-muted text-[13px]" data-testid="ratings-rating-caption">
           {scoreCopy.explainerRatingCaption}
         </p>
@@ -202,7 +202,7 @@ const MEASURE = 'max-w-[70ch]';
       </div>
 
       <div class={`flex flex-col gap-2 ${MEASURE}`}>
-        <h3 class="section-title text-[16px]">How ratings work</h3>
+        <h3 class="section-title">How ratings work</h3>
         <p class="text-muted text-[14px] leading-relaxed" data-testid="ratings-visibility">
           A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no
           cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history,

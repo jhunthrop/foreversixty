@@ -103,7 +103,7 @@
 </script>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-landing">
-  <h2 class="section-title text-[15px]">{simCopy.yourCharacters}</h2>
+  <h2 class="section-title">{simCopy.yourCharacters}</h2>
   <!-- 2026-09-26 layout pass, Finding 3: the one copy of the DPS-only restriction on /sim,
        as the caption under this heading -- SimView.svelte no longer renders its own copy,
        and the source switcher's hero card (SourceSwitcher.svelte) carries the identical

@@ -107,7 +107,7 @@
 
 {#snippet addonCard()}
   <div class={card}>
-    <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
+    <h2 class="section-title">{simCopy.sourceAddonTitle}</h2>
     <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
     <label class="sr-only" for="sim-addon">{simCopy.sourceAddonTitle}</label>
     <textarea
@@ -140,7 +140,7 @@
 
 {#snippet buildCard()}
   <div class={card}>
-    <h2 class="section-title text-[15px]">{simCopy.sourceBuildTitle}</h2>
+    <h2 class="section-title">{simCopy.sourceBuildTitle}</h2>
     <p class="text-muted text-[13px]">{simCopy.sourceBuildBody}</p>
     <label class="sr-only" for="sim-build">{simCopy.sourceBuildTitle}</label>
     <input
@@ -164,7 +164,7 @@
 
 {#snippet fightCard()}
   <div class={card}>
-    <h2 class="section-title text-[15px]">{simCopy.sourceFightTitle}</h2>
+    <h2 class="section-title">{simCopy.sourceFightTitle}</h2>
     <p class="text-muted text-[13px]">{simCopy.sourceFightBody}</p>
     <label class="sr-only" for="sim-fight">{simCopy.sourceFightTitle}</label>
     <input
@@ -203,7 +203,7 @@
          secondary `action` look the non-hero branch below already uses for the identical
          button. -->
     <div class={card} data-testid="sim-account-card">
-      <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
+      <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
       <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
       <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
       <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
@@ -228,7 +228,7 @@
       {@render fightCard()}
 
       <div class={card} data-testid="sim-account-card">
-        <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
+        <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
         {#if signedIn && hasCharacters}
           <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
             {simCopy.backToCharacters}

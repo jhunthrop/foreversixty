@@ -42,7 +42,7 @@
   class="border-line bg-card-top rounded-panel mx-[18px] flex flex-col gap-3 border p-4 md:mx-0"
   data-testid="sim-cold-paste"
 >
-  <h2 class="section-title text-[15px]">{landingCopy.pasteHeroTitle}</h2>
+  <h2 class="section-title">{landingCopy.pasteHeroTitle}</h2>
   <label class="sr-only" for="sim-cold-paste-input">{landingCopy.pasteHeroTitle}</label>
   <textarea
     id="sim-cold-paste-input"

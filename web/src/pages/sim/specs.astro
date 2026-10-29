@@ -24,7 +24,7 @@ import IslandScript from '../../components/IslandScript.astro';
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <SimTabs currentPath="/sim/specs" />
-    <h1 class="section-title px-[18px] text-[18px] md:px-0">Spec support</h1>
+    <h1 class="heading-page px-[18px] md:px-0">Spec support</h1>
     <ScopeNote />
     <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
          specs-intro was the measured LCP element (its render was gated on hydration);
@@ -61,7 +61,7 @@ import IslandScript from '../../components/IslandScript.astro';
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-3">
-            <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
+            <h2 class="section-title px-[18px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
             <div class={SPEC_GRID_CLASSES} data-testid="specs-grid" aria-hidden="true">
               {specSkeletonSlots().map(() => (
                 <div class={SPEC_CARD_SKELETON_CLASSES} />
@@ -69,7 +69,7 @@ import IslandScript from '../../components/IslandScript.astro';
             </div>
           </div>
           <div class="flex flex-col gap-3">
-            <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
+            <h2 class="section-title px-[18px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
             <div class={SPEC_GRID_CLASSES} data-testid="specs-grid-unsimulated" aria-hidden="true">
               {unsimulatedSpecSkeletonSlots().map(() => (
                 <div class={SPEC_CARD_SKELETON_CLASSES} />

@@ -40,7 +40,7 @@
   class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
   data-testid="sim-rotation-card"
 >
-  <h2 class="section-title text-[15px]">{simCopy.rotationCard}</h2>
+  <h2 class="section-title">{simCopy.rotationCard}</h2>
   {#if simulated}
     <p class="text-[13px]">{simCopy.rotationCardBody(name)}</p>
     <RotationDisclosure

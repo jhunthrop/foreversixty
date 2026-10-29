@@ -131,7 +131,7 @@
 
   {#if summary.length > 0}
     <section class="border-line rounded-panel border p-3" data-testid="sim-slot-summary">
-      <h3 class="section-title text-[14px]">{bulkCopy.slotSummary}</h3>
+      <h3 class="section-title">{bulkCopy.slotSummary}</h3>
       <p class="text-muted text-[12px]">{bulkCopy.slotSummaryNote}</p>
       <ul class="flex flex-col">
         {#each summary as row (`${row.slot}-${row.item_id}`)}

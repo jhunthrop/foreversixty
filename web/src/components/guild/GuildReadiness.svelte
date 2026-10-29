@@ -192,7 +192,7 @@
 
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
   <div class="flex items-center justify-between gap-3">
-    <h2 class="section-title text-[18px]">Readiness</h2>
+    <h2 class="section-title">Readiness</h2>
     {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
   </div>
   {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} raidGuild={officerTools} />{/if}

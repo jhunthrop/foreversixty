@@ -33,7 +33,7 @@
 <div class="flex flex-wrap items-end justify-between gap-x-4 gap-y-2" data-testid="rankings-heading">
   <div class="flex flex-col gap-0.5">
     <div class="flex flex-wrap items-baseline gap-x-4">
-      <h2 class="section-title text-[18px]" data-testid="rankings-scope">{scope}</h2>
+      <h2 class="section-title" data-testid="rankings-scope">{scope}</h2>
       {#if canChooseAnother}
         <button
           type="button"

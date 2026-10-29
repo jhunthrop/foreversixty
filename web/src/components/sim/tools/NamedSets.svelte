@@ -84,7 +84,7 @@
   class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
   data-testid="sim-named-sets"
 >
-  <h3 class="section-title text-[14px]">{bulkCopy.setsTitle}</h3>
+  <h3 class="section-title">{bulkCopy.setsTitle}</h3>
   <p class="text-muted text-[12px]">{bulkCopy.setsIntro}</p>
 
   {#each rows as set (set.name)}

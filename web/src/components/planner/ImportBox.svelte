@@ -93,7 +93,7 @@
       <span class="when-open text-muted" aria-hidden="true">Hide</span>
     </summary>
   {:else}
-    <h2 class="section-title text-[15px]">{addonCopy.importTitle}</h2>
+    <h2 class="section-title">{addonCopy.importTitle}</h2>
   {/if}
   <textarea
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"

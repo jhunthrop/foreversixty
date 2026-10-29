@@ -109,11 +109,11 @@
     'flex flex-col gap-[6px] p-[14px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150';
 
   /** Fix round 1 item B.4 (ux-designer): the card's own answer is the one primary element and
-   *  reads at the design system's "stat figure" treatment (`design/DESIGN-SYSTEM.md`'s type
-   *  table: "Display | Cinzel 600-800 | ... stat figures 22px") -- Cinzel, uppercase, 22px,
+   *  reads at the design system's headline-figure treatment (`design/DESIGN-SYSTEM.md`'s type
+   *  table; polish spec 2026-10-28 §4.4 moved figures to Barlow Condensed 800) -- 22px here,
    *  not the `text-[15px] font-semibold` body-text size the mock's own three cards never use
    *  for their headline number. The line underneath it stays Barlow 12px muted, unchanged. */
-  const CARD_FIGURE_CLASS = 'font-display text-[22px] font-bold uppercase tracking-[0.01em] text-strong';
+  const CARD_FIGURE_CLASS = 'figure-stat text-[22px] text-strong';
 </script>
 
 <div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
@@ -126,7 +126,7 @@
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
     {:else if bandStatus === 'loading'}
       <!-- Fix round 1 item C.9 (tenet 13, no layout shift): sized for the ready figure's own
-           22px Cinzel line (`CARD_FIGURE_CLASS`). -->
+           22px figure line (`CARD_FIGURE_CLASS`). -->
       <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-talents-skeleton" />
     {:else if bandStatus === 'no-list-yet'}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>

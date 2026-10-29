@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex min-w-0 flex-col gap-3" data-testid={testid}>
-  <h3 class="section-title flex items-baseline gap-2 text-[15px]">
+  <h3 class="section-title flex items-baseline gap-2">
     <span
       >{heading}{#if tail !== null}{SPACE}<span class="whitespace-nowrap">{tail}</span>{/if}</span
     >{#if count !== null && count > 0}<span class="text-muted font-mono text-[13px] tabular-nums"

@@ -71,7 +71,7 @@
 </script>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" id="server-runs" data-testid="server-runs">
-  <h2 class="section-title flex h-6 items-center text-[15px]">{serverRunsCopy.heading}</h2>
+  <h2 class="section-title flex h-6 items-center">{serverRunsCopy.heading}</h2>
   {#if failed}
     <div class="border-line bg-raised rounded-panel server-runs-rows-reserve flex items-center border px-3.5">
       <LoadError message={serverRunsCopy.loadFailed} onRetry={onretry} testid="server-runs-error" />

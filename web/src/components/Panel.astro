@@ -15,9 +15,7 @@ const showHeader = Boolean(title) || sample || hasAside;
 <section class={`flex flex-col gap-4 ${cls}`}>
   {showHeader && (
     <div class="flex items-baseline justify-between">
-      {title && (
-        <Heading class={level === 3 ? 'section-title text-[15px]' : 'section-title'}>{title}</Heading>
-      )}
+      {title && <Heading class="section-title">{title}</Heading>}
       <div class="flex items-center gap-3 ml-auto">
         {sample && <span class="pill pill-sample">Sample</span>}
         <slot name="aside" />

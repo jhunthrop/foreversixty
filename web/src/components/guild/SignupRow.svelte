@@ -151,7 +151,7 @@
   >
     <span class="opacity-60"><ClassCrestRing characterClass={character.class} size={32} /></span>
     <div class="min-w-0">
-      <p class="font-display text-muted text-[14px]">{character.name}</p>
+      <p class="heading-name text-muted text-[14px]">{character.name}</p>
       <p class="text-muted text-[13px]">{raidCopy.waitingCharacter}</p>
     </div>
   </li>
@@ -167,7 +167,7 @@
       <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
         <ClassCrestRing characterClass={character.class} size={32} />
         <div class="min-w-0">
-          <p class="font-display truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
+          <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
           <p class="text-muted truncate text-[12px]">{character.spec}</p>

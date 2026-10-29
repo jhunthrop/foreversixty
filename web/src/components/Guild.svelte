@@ -831,7 +831,7 @@
           </span>
           <div class="flex items-center gap-4 lg:gap-[18px]">
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
-            <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
+            <h1 class="heading-page">{data.guild.name}</h1>
           </div>
           <p class="text-muted text-[13px]" data-testid="guild-header-facts">
             <FactLine

@@ -42,7 +42,7 @@
   aria-labelledby="raid-your-night-heading"
   data-testid="raid-your-night"
 >
-  <h2 id="raid-your-night-heading" class="section-title text-[15px]">{copy.head}</h2>
+  <h2 id="raid-your-night-heading" class="section-title">{copy.head}</h2>
   <ul class="mt-1">
     {#each rows as row (row.character_key)}
       {@const facts = yourNightFacts(row, report, raid.guild_timezone, locale)}
@@ -54,7 +54,7 @@
           <div class="flex min-w-0 items-center gap-3">
             <ClassCrestRing characterClass={row.class} size={32} />
             <div class="min-w-0">
-              <p class="font-display truncate text-[14px]" style={`color:${classColorVar(row.class)}`}>
+              <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(row.class)}`}>
                 {row.name}
               </p>
               <p class="text-muted truncate text-[12px]">{row.spec}</p>
@@ -91,7 +91,7 @@
       >
         <span class="opacity-60"><ClassCrestRing characterClass={character.class} size={32} /></span>
         <div class="min-w-0">
-          <p class="font-display text-muted text-[14px]">{character.name}</p>
+          <p class="heading-name text-muted text-[14px]">{character.name}</p>
           <p class="text-muted text-[13px]">{raidCopy.waitingCharacter}</p>
         </div>
       </li>

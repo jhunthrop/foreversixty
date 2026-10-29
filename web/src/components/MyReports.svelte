@@ -82,7 +82,7 @@
 </script>
 
 <section class="flex flex-col gap-3" data-testid="my-reports">
-  {#if heading}<h2 class="section-title text-[18px]">Your reports</h2>{/if}
+  {#if heading}<h2 class="section-title">Your reports</h2>{/if}
   {#if guilds.length > 0}
     <!-- Horizontally scrolling on phone, same rule every other pill row on the site
            follows (spec §7); never wraps, so every pill keeps its 44px hit height. -->

@@ -30,7 +30,7 @@
 </script>
 
 <section class="flex flex-col gap-2" data-testid="guild-claim-next">
-  <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
+  <h2 class="section-title">{guildClaimCopy.nextHeading}</h2>
   <!-- The first step is the one fill, the others ghosts; full width on a phone. -->
   <div class="flex flex-col gap-3 md:flex-row">
     {#if claimPlan !== null && subscribe !== null}

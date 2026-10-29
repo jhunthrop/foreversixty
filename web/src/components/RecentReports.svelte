@@ -60,7 +60,7 @@
 </script>
 
 <section class="flex flex-col gap-3" data-testid="recent-reports">
-  {#if heading}<h2 class="section-title text-[18px]">{recentReportsCopy.heading}</h2>{/if}
+  {#if heading}<h2 class="section-title">{recentReportsCopy.heading}</h2>{/if}
   {#if status === 'loading'}
     <!-- One line over a reserved sentence's height, not a screenful of rows: the feed's ready
          state is its empty sentence (RECENT_REPORTS_LOADING_MIN_H), and the sample row under it

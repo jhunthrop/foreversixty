@@ -70,7 +70,7 @@
 
 {#if historyShown(list)}
   <section bind:this={section} id={SECTION_ID} class="flex flex-col gap-2" data-testid="coach-history-list">
-    <h2 class="section-title text-[18px]">{coachCopy.titleGeneric}</h2>
+    <h2 class="section-title">{coachCopy.titleGeneric}</h2>
     {#if list.status === 'error'}
       <LoadError message={coachCopy.error} onRetry={loadFirst} testid="coach-history-error" />
     {:else}

@@ -100,7 +100,7 @@
   </section>
 
   <section class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0">
-    <h3 class="section-title text-[14px]">{bulkCopy.weightsPick}</h3>
+    <h3 class="section-title">{bulkCopy.weightsPick}</h3>
     <p class="text-muted text-[12px]" data-testid="sim-weights-reference">
       {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
     </p>

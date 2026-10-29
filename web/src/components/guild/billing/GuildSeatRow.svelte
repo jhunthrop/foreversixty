@@ -166,7 +166,7 @@
         <ClassCrestRing characterClass={seat.holder.class} size={32} />
         <div class="flex min-w-0 flex-col">
           <span
-            class="font-display truncate text-[14px] font-bold"
+            class="heading-name truncate text-[14px]"
             style={`color: ${classColorVar(seat.holder.class)}`}
             data-testid={`guild-seat-${seat.slot}-name`}>{seat.holder.name}</span
           >
@@ -180,7 +180,7 @@
         <ClassCrestRing characterClass={seat.offeree.class} size={32} />
         <div class="flex min-w-0 flex-col">
           <span
-            class="font-display truncate text-[14px] font-bold"
+            class="heading-name truncate text-[14px]"
             style={`color: ${classColorVar(seat.offeree.class)}`}
             data-testid={`guild-seat-${seat.slot}-name`}>{seat.offeree.name}</span
           >

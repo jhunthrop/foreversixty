@@ -38,7 +38,7 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
           <i class="eyebrow-rule" aria-hidden="true"></i>
           {copy.band.eyebrow}
         </p>
-        <h1 class="h1">{copy.band.heading}</h1>
+        <h1 class="h1 heading-page">{copy.band.heading}</h1>
         <p class="lede">{copy.band.lede}</p>
         <p class="founder-row" data-fd="open" data-testid="founder-row">
           <span class="pill pill-site">{copy.founder.label}</span>
@@ -81,7 +81,7 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
 
         <!-- Region B, for guild leaders (§B3.3): the band's guild link lands here. -->
         <section id="guild-leaders" class="mt-7 scroll-mt-4 md:mt-10" aria-labelledby="guild-leaders-heading">
-          <h2 id="guild-leaders-heading" class="section-title">
+          <h2 id="guild-leaders-heading" class="heading-section">
             {copy.guildRegion.heading}
           </h2>
           <p class="text-text mt-2 max-w-[720px] text-[14px] leading-[1.5]">{copy.guildRegion.lede}</p>
@@ -106,7 +106,7 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       <p class="foot">{copy.foot}</p>
 
       <section class="faq">
-        <h2 class="section-title">FAQ</h2>
+        <h2 class="heading-section">FAQ</h2>
         {copy.faq.map((entry) => (
           <details>
             <summary>{entry.question}</summary>
@@ -171,11 +171,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
   }
   .h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-strong);
   }
   .lede {
     margin: 0;

@@ -34,7 +34,7 @@ const { title, description, href, status, linkLabel, testid, buttonLabel } = Ast
     </span>
     {status && <span class={`pill pill-${status.kind}`}>{status.label}</span>}
   </div>
-  <span class="font-display text-[15px] font-bold">{title}</span>
+  <span class="section-title">{title}</span>
   <span class="text-[13px] leading-snug text-muted">{description}</span>
   {buttonLabel && (
     <span

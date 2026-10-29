@@ -26,7 +26,7 @@
     class="focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden"
     data-testid={`${testid}-summary`}
   >
-    <h2 id={headingId} class="section-title text-[18px]">{heading}</h2>
+    <h2 id={headingId} class="section-title">{heading}</h2>
     {#if count !== null}<span class="text-muted font-mono text-[13px]">{count}</span>{/if}
     <svg
       class="text-muted size-4 shrink-0 transition-transform group-open:rotate-180"

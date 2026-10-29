@@ -319,7 +319,7 @@
 
   {#if summary.length > 0}
     <section class="border-line rounded-panel border p-3" data-testid="sim-slot-summary">
-      <h3 class="section-title text-[14px]">{bulkCopy.slotSummary}</h3>
+      <h3 class="section-title">{bulkCopy.slotSummary}</h3>
       <p class="text-muted text-[12px]">{bulkCopy.slotSummaryNote}</p>
       <ul class="flex flex-col">
         {#each summary as row (`${row.slot}-${row.item_id}`)}
@@ -356,7 +356,7 @@
   <SaveSimForm {onsave} titleFor={saveTitleFor} {canSave} />
 
   <section class="border-line rounded-panel border p-3" data-testid="sim-rules">
-    <h3 class="section-title text-[14px]">{bulkCopy.rulesTitle}</h3>
+    <h3 class="section-title">{bulkCopy.rulesTitle}</h3>
     <ul class="text-muted flex list-disc flex-col gap-1 pl-5 text-[12px]">
       {#each bulkCopy.rules as rule (rule)}
         <li>{rule}</li>

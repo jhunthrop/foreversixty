@@ -111,7 +111,7 @@
     >
       <div class="flex items-center gap-3">
         <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} testid="guild-join-crest" />
-        <h1 class="section-title text-[18px]" data-testid="guild-join-name">{guild.name}</h1>
+        <h1 class="heading-page" data-testid="guild-join-name">{guild.name}</h1>
       </div>
       <p class="text-[14px]" data-testid="guild-join-invited">
         {guildJoinCopy.invitedYou(guild.name, realm)}

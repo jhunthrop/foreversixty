@@ -160,7 +160,7 @@
   class="flex scroll-mt-20 flex-col gap-5"
   data-testid="guild-settings-billing"
 >
-  <h2 class="section-title text-[18px]">Billing</h2>
+  <h2 class="section-title">Billing</h2>
   <div bind:this={statusEl} role="status" tabindex="-1" class="text-muted text-[13px] empty:hidden">
     {#if flow.notice === 'unconfirmed'}
       <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>

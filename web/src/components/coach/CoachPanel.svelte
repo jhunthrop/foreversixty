@@ -130,7 +130,7 @@
         <h2
           id="coach-panel-heading"
           tabindex="-1"
-          class="font-display text-strong text-[17px] leading-6 font-bold outline-none"
+          class="section-title leading-6 outline-none"
           data-testid="coach-title"
         >
           {title}

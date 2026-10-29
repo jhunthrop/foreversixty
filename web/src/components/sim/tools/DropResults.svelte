@@ -114,7 +114,7 @@
   </p>
 
   <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">
-    <h3 class="section-title text-[14px]">{bulkCopy.dropsByBoss}</h3>
+    <h3 class="section-title">{bulkCopy.dropsByBoss}</h3>
     {#each byBoss as [origin, group] (origin)}
       {@const wins = group.filter(isUpgrade)}
       <div class="border-line rounded-panel border p-3">
@@ -160,7 +160,7 @@
   </section>
 
   <section class="border-line rounded-panel border p-3" data-testid="sim-drops-flat">
-    <h3 class="section-title text-[14px]">{bulkCopy.dropsEveryUpgrade}</h3>
+    <h3 class="section-title">{bulkCopy.dropsEveryUpgrade}</h3>
     {#if upgrades.length === 0}
       <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
     {:else}

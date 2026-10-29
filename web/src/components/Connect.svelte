@@ -127,11 +127,11 @@
 
 <div class="flex flex-col gap-4" data-testid="connect" data-state={state}>
   {#if state === 'loading'}
-    <h1 class="section-title text-[18px]">{connectCopy.title}</h1>
+    <h1 class="heading-page">{connectCopy.title}</h1>
     <p class="text-muted text-[14px]">{connectCopy.checking}</p>
     <div class="h-[88px]" aria-hidden="true"></div>
   {:else if state === 'signedOut'}
-    <h1 class="section-title text-[18px]">{connectCopy.title}</h1>
+    <h1 class="heading-page">{connectCopy.title}</h1>
     <p class="text-[14px]">{connectCopy.signedOutLead}</p>
     <div
       class="border-line-warm bg-bg rounded-control flex h-[88px] flex-col justify-center gap-1 border px-4"
@@ -187,7 +187,7 @@
       {/if}
     </div>
   {:else if state === 'pending' && device !== null}
-    <h1 class="section-title text-[18px]">{connectCopy.pendingTitle(device.name, who)}</h1>
+    <h1 class="heading-page">{connectCopy.pendingTitle(device.name, who)}</h1>
     <p class="text-[14px]">{connectCopy.pendingBody}</p>
     <dl
       class="border-line-warm bg-bg rounded-control grid h-[88px] grid-cols-[auto_1fr] content-center gap-x-4 gap-y-0.5 border px-4 text-[14px]"
@@ -239,7 +239,7 @@
       >
         <path d="M4 12.5l5 5 11-11" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
-      <h1 class="section-title text-[18px]">{connectCopy.successTitle}</h1>
+      <h1 class="heading-page">{connectCopy.successTitle}</h1>
     </div>
     <p class="text-[14px]">{connectCopy.successBody}</p>
     <div class="flex flex-wrap gap-3">
@@ -255,7 +255,7 @@
       </a>
     </div>
   {:else if state === 'cancelled'}
-    <h1 class="section-title text-[18px]">{connectCopy.cancelledTitle}</h1>
+    <h1 class="heading-page">{connectCopy.cancelledTitle}</h1>
     <p class="text-[14px]">{connectCopy.cancelledBody}</p>
     <a
       class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong justify-center self-start px-4"
@@ -266,7 +266,7 @@
       {connectCopy.close}
     </a>
   {:else if state === 'expired'}
-    <h1 class="section-title text-[18px]">{connectCopy.expiredTitle}</h1>
+    <h1 class="heading-page">{connectCopy.expiredTitle}</h1>
     <p class="text-[14px]">{connectCopy.expiredBody}</p>
     <a
       class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong justify-center self-start px-4"
@@ -276,7 +276,7 @@
       {connectCopy.backHome}
     </a>
   {:else if state === 'used'}
-    <h1 class="section-title text-[18px]">{connectCopy.usedTitle}</h1>
+    <h1 class="heading-page">{connectCopy.usedTitle}</h1>
     <p class="text-[14px]">{connectCopy.usedBody}</p>
     <a
       class="{PRIMARY_BUTTON_FIXED} justify-center self-start px-5"
@@ -286,7 +286,7 @@
       {connectCopy.openReports}
     </a>
   {:else}
-    <h1 class="section-title text-[18px]">{connectCopy.failedTitle}</h1>
+    <h1 class="heading-page">{connectCopy.failedTitle}</h1>
     <p class="text-[14px]" role="alert">{connectCopy.failedBody}</p>
     <button
       class="{PRIMARY_BUTTON_FIXED} justify-center self-start px-5"

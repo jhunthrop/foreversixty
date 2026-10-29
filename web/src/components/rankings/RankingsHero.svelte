@@ -25,7 +25,7 @@
       {rankingsCopy.eyebrow}
     </p>
     <div class="rk-head">
-      <h1 class="rk-h1" data-testid="rankings-h1">{rankingsCopy.h1}</h1>
+      <h1 class="rk-h1 heading-page" data-testid="rankings-h1">{rankingsCopy.h1}</h1>
       {#if updated !== null}
         <span class="rk-stamp text-muted text-[12px]" data-testid="rankings-updated"
           >{rankingsCopy.updated(updated)}</span
@@ -84,11 +84,6 @@
   }
   .rk-h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--color-strong);
   }
   .rk-job {
     margin: 0;

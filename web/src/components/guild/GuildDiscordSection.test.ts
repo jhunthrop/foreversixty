@@ -75,7 +75,7 @@ describe('GuildDiscordSection', () => {
     for (const discord of [NOT_CONNECTED, CONNECTED, SWITCHED_OFF]) {
       const body = html(discord);
       expect(body).toMatch(/<section id="discord" class="[^"]*scroll-mt-20/);
-      expect(body).toContain(`<h2 class="section-title text-[18px]">${guildDiscordCopy.heading}</h2>`);
+      expect(body).toContain(`<h2 class="section-title">${guildDiscordCopy.heading}</h2>`);
       expect(body).not.toContain('rounded-panel');
     }
   });

@@ -35,7 +35,7 @@
   class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
   data-testid="sim-consumables"
 >
-  <h3 class="section-title text-[14px]">{bulkCopy.tryEach}</h3>
+  <h3 class="section-title">{bulkCopy.tryEach}</h3>
   <p class="text-muted text-[12px]">{bulkCopy.consumableCandidates}</p>
   <ul class="flex flex-wrap gap-3">
     {#each offered as id (id)}

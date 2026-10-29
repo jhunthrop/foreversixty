@@ -396,7 +396,7 @@
 
     {#if data.builds_seen.length > 0}
       <section class="flex flex-col gap-2">
-        <h2 class="section-title text-[18px]">Builds seen at pull</h2>
+        <h2 class="section-title">Builds seen at pull</h2>
         <ul class="flex flex-col" data-testid="character-builds">
           {#each data.builds_seen as build (`${build.talent_split}-${build.first_seen}`)}
             <li

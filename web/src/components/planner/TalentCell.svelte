@@ -124,7 +124,7 @@
          drops --color-muted on --color-card-top from ~5.9:1 to ~2:1 (axe color-contrast) --
          real text a low-vision reader still needs to make out. The frame and pill already
          carry the locked state; the mark itself stays fully legible. -->
-    <span class="text-muted font-display text-[13px] font-bold" aria-hidden="true">
+    <span class="text-muted heading-name text-[13px]" aria-hidden="true">
       {talent.name.slice(0, 2)}
     </span>
   {:else}
@@ -240,7 +240,7 @@
         style:left={`${shift}px`}
         class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
       >
-        <span class="text-strong font-display text-[14px] font-bold">{talent.name}</span>
+        <span class="text-strong heading-name text-[14px]">{talent.name}</span>
         <span class="tabular text-muted font-mono text-[12px]">
           Rank {rank} of {talent.max_rank}
         </span>

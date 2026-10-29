@@ -77,7 +77,7 @@
   aria-busy={source.status === 'loading' ? 'true' : undefined}
   data-testid="character-history-section"
 >
-  <h2 class="section-title text-[18px]">{historyCopy.heading}</h2>
+  <h2 class="section-title">{historyCopy.heading}</h2>
   <p class="text-muted text-[13px]" data-testid="history-caption">{historyCopy.caption}</p>
   <div class="bg-raised border-line rounded-panel border p-4 md:p-5">
     {#if source.status === 'loading'}

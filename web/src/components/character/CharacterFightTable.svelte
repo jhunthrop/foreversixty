@@ -115,7 +115,7 @@
 
 <section class="flex flex-col gap-2">
   {#if heading}
-    <h2 class="section-title text-[18px]">{title}</h2>
+    <h2 class="section-title">{title}</h2>
     <p class="text-muted text-[12px]" data-testid="character-execution-definition">
       {characterTableCopy.executionDefinition}
     </p>

@@ -58,7 +58,7 @@
   aria-labelledby="raid-signup-heading"
   data-testid="raid-signup-strip"
 >
-  <h2 id="raid-signup-heading" class="section-title text-[15px]">{raidCopy.subheads.yourSignup}</h2>
+  <h2 id="raid-signup-heading" class="section-title">{raidCopy.subheads.yourSignup}</h2>
   {#if cancelled}
     <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{raidCopy.raidStates.cancelled}</p>
   {:else}

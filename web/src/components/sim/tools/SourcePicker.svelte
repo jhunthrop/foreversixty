@@ -112,7 +112,7 @@
     {@const shown = visibility.shown}
     {#if visibility.ticked && group.sources.length > 0}
       <div class="flex flex-col gap-1">
-        <h3 class="section-title text-[13px]">{SOURCE_KIND_LABELS[group.kind]}</h3>
+        <h3 class="section-title">{SOURCE_KIND_LABELS[group.kind]}</h3>
         {#if visibility.allGated}
           <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void":
                a ticked kind whose every source is gated used to render nothing here at

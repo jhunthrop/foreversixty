@@ -76,7 +76,7 @@ describe('the plans page region B', () => {
     const s = guildSection(await renderPremium());
     expect(s.tagName).toBe('SECTION');
     expect(s.querySelector('h2')?.textContent?.trim()).toBe(plansPageCopy.guildRegion.heading);
-    expect(classesOf(s.querySelector('h2'))).toContain('section-title');
+    expect(classesOf(s.querySelector('h2'))).toContain('heading-section');
     expect(s.textContent).toContain(plansPageCopy.guildRegion.lede);
     expect(s.textContent).toContain(plansPageCopy.guildRegion.members);
     const row = [...s.querySelectorAll('[data-guild-row] > *')].map((n) => n.getAttribute('data-plan'));

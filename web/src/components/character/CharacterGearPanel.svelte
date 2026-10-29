@@ -268,10 +268,9 @@
 {#snippet title()}
   <h2 class={HEADING} tabindex="-1" bind:this={heading} data-testid="character-gear-title">
     {#if summary === null}
-      <span class="section-title text-[18px]" data-testid="character-gear-heading">{gearCopy.heading}</span>
+      <span class="section-title" data-testid="character-gear-heading">{gearCopy.heading}</span>
     {:else}
-      <span class="section-title gear-dot-after text-[18px]" data-testid="character-gear-heading"
-        >{gearCopy.heading}</span
+      <span class="section-title gear-dot-after" data-testid="character-gear-heading">{gearCopy.heading}</span
       >
       <span
         class="text-strong font-body text-[15px] font-semibold max-[480px]:block max-[480px]:basis-full"
@@ -295,9 +294,7 @@
     <ExportNotRead {capturedAt} {owned} />
     <div class="flex flex-col">
       <h2 class={HEADING} tabindex="-1" bind:this={heading} data-testid="character-gear-title">
-        <span class="section-title text-[18px]" data-testid="character-gear-heading"
-          >{notReadCopy.bestInSlot(band)}</span
-        >
+        <span class="section-title" data-testid="character-gear-heading">{notReadCopy.bestInSlot(band)}</span>
       </h2>
       <ul
         class="mt-4 flex flex-col"

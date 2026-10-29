@@ -436,10 +436,7 @@
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
             <span class="flex min-w-0 items-center gap-2">
-              <span
-                class="font-display text-[14px] font-bold"
-                style={`color:${classColorVar(row.class ?? '')}`}
-              >
+              <span class="heading-name text-[14px]" style={`color:${classColorVar(row.class ?? '')}`}>
                 {row.name}
               </span>
               {#if row.supporter === true}<SupporterChip />{/if}
@@ -527,7 +524,7 @@
           <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
             <span class="flex min-w-0 items-center gap-2">
               <span
-                class="font-display min-w-0 text-[14px] font-bold lg:truncate"
+                class="heading-name min-w-0 text-[14px] lg:truncate"
                 style={`color:${classColorVar(row.class ?? '')}`}
                 title={`${row.name}${pinned ? ' (you)' : ''}`}
                 data-testid="guild-roster-name"
@@ -664,7 +661,7 @@
           <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
             <!-- Class-coloured at 70 percent, not grey: the row stays secondary by colour alone. -->
             <span
-              class="font-display text-nav text-[14px] font-bold"
+              class="heading-name text-nav text-[14px]"
               style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)};opacity:.7`}
               data-testid="guild-roster-entry-name">{entry.name}</span
             >

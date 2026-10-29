@@ -15,7 +15,7 @@
        session cookie and this can only resolve to the sign-in prompt, so that page ends
        under its one button instead of reserving panels of black. -->
 <div class="account-header-reserve">
-  <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+  <h1 class="heading-page">{accountPageCopy.title}</h1>
 </div>
 <div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
   <div class="lg:col-span-8">

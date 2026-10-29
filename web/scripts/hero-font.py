@@ -1,35 +1,33 @@
-"""Subset Cinzel 700 to exactly the glyphs the homepage hero headline can show.
+"""Subset Barlow Condensed 800 to exactly the glyphs the homepage hero headline can show.
 
-The homepage's LCP element is the signed-out hero `<h1 class="font-display">`
-in src/pages/index.astro -- see that file and web-home-lcp/web-home-chunks'
-lane reports for the measurement. Cinzel is loaded with `font-display: swap`
-and a size-matched fallback (styles/fonts.css), so there is no layout shift,
-but Chrome does not count text painted in the fallback face as an LCP
-candidate: the LCP lands when the real Cinzel file finishes downloading and
-paints, ~450ms after first paint even with every script blocked.
+The homepage's LCP element is the signed-out hero `<h1>` in src/pages/index.astro -- see
+that file and web-home-lcp/web-home-chunks' lane reports for the measurement. The heading
+face (Barlow Condensed, polish spec 2026-10-28 section 4.4, direction B) is loaded with
+`font-display: swap` over a size-adjusted fallback (styles/fonts.css), so there is no layout
+shift, but Chrome does not count text painted in the fallback face as an LCP candidate: the
+LCP would land when the real face finishes downloading and paints.
 
-The fix is not to bundle differently -- it is to make the hero's own glyphs
-available at first paint. This script reads the exact strings the hero
-headline can show (currently just `homeHeroCopy.headline` in
-home-landing-copy.ts; home-panel-copy.ts is also scanned for any
-`*headline*`-named field so a future signed-in variant is picked up
-automatically, though none exists today -- its strings render in the body
-face, not the hero's Cinzel face), subsets the real Cinzel 700 woff2 to only
-those characters with fonttools, and writes a tiny inline `@font-face` for a
-`Cinzel Hero` family that `index.astro` declares in its own `<head>` (not
-Base.astro -- no other page should pay for it) with `font-display: block`.
-The hero's `text-strong text-[22px] font-bold` metrics are untouched; only
-the font-family list gains `'Cinzel Hero'` ahead of `Cinzel` and the fallback,
-so a glyph this subset is missing (there should be none) still falls back to
-the same Cinzel face, never a visual defect -- just back to swap timing for
-that one glyph.
+The fix is not to bundle differently -- it is to make the hero's own glyphs available at
+first paint. This script reads the exact strings the hero headline can show (currently just
+`homeHeroCopy.headline` in home-landing-copy.ts; home-panel-copy.ts is also scanned for any
+`*headline*`-named field so a future signed-in variant is picked up automatically), takes
+their capitals (the hero is set `text-transform: uppercase`, so the capitals are the only
+glyphs it paints; carrying the lowercase too would more than double the bytes inlined ahead
+of the LCP), subsets the committed Barlow Condensed 800 subset (src/assets/fonts, itself cut from
+@fontsource/barlow-condensed by the command in fonts/README.md) to only those characters
+with fonttools, and writes a tiny inline `@font-face` for a `Barlow Condensed Hero` family
+that `index.astro` declares in its own `<head>` (not Base.astro -- no other page should pay
+for it) with `font-display: block`. The hero's metrics are untouched; only the font-family
+list gains `'Barlow Condensed Hero'` ahead of the heading stack, so a glyph this subset is
+missing (there should be none) still falls back to the same face, never a visual defect --
+just back to swap timing for that one glyph.
 
 Usage:
     python3 scripts/hero-font.py            # regenerate src/styles/hero-font.css
     python3 scripts/hero-font.py --check    # fail if the copy needs a glyph the
                                              # committed subset does not have
 
-Run from web/. Requires fontTools (`python3 -c "import fontTools"`).
+Run from web/. Requires fontTools and brotli (`python3 -c "import fontTools, brotli"`).
 """
 
 from __future__ import annotations
@@ -46,13 +44,14 @@ COPY_FILES = [
     WEB_ROOT / "src/lib/home-landing-copy.ts",
     WEB_ROOT / "src/lib/home-panel-copy.ts",
 ]
-# The only field actually painted in the hero's Cinzel face today.
+# The only field actually painted in the hero's heading face today.
 HERO_FIELD_PATTERN = re.compile(r"headline", re.IGNORECASE)
 # Group 1 is the key, group 2 the quote character, group 3 the literal's body.
 KEY_STRING_PATTERN = re.compile(r"""(\w+)\s*:\s*(['"])((?:\\.|(?!\2).)*)\2""")
 OUTPUT_CSS = WEB_ROOT / "src/styles/hero-font.css"
-SOURCE_FONT = WEB_ROOT / "node_modules/@fontsource/cinzel/files/cinzel-latin-700-normal.woff2"
-FONT_FAMILY = "Cinzel Hero"
+SOURCE_FONT = WEB_ROOT / "src/assets/fonts/barlow-condensed-800-subset.woff2"
+FONT_FAMILY = "Barlow Condensed Hero"
+FONT_WEIGHT = 800
 
 GENERATED_BANNER = (
     "/* GENERATED FILE -- do not hand-edit.\n"
@@ -76,7 +75,8 @@ def required_chars() -> set[str]:
         for match in KEY_STRING_PATTERN.finditer(text):
             key, _quote, value = match.group(1), match.group(2), match.group(3)
             if HERO_FIELD_PATTERN.search(key):
-                chars.update(value)
+                # Capitals only: the hero is set text-transform: uppercase.
+                chars.update(value.upper())
     if not chars:
         raise SystemExit(
             "hero-font.py found no headline-named field in "
@@ -94,7 +94,7 @@ def subset_font(chars: set[str]) -> bytes:
     if not SOURCE_FONT.exists():
         raise SystemExit(f"hero-font.py: source font not found at {SOURCE_FONT}")
     with tempfile.TemporaryDirectory() as tmp:
-        out_path = pathlib.Path(tmp) / "cinzel-hero-subset.woff2"
+        out_path = pathlib.Path(tmp) / "heading-hero-subset.woff2"
         subprocess.run(
             [
                 sys.executable,
@@ -103,12 +103,17 @@ def subset_font(chars: set[str]) -> bytes:
                 str(SOURCE_FONT),
                 f"--unicodes={unicodes_arg(chars)}",
                 "--flavor=woff2",
-                # Cinzel 700's only layout features are GSUB 'locl' and GPOS 'kern'/'mark'
-                # (checked with fontTools.ttLib against the source woff2). Dropping 'kern'
-                # shifts every glyph after the first by a fraction of a pixel -- harmless to
-                # the eye but it broke this subset's pixel-identity against full Cinzel, so
-                # all three are kept explicitly rather than fontTools' unrelated default set.
-                "--layout-features=locl,kern,mark",
+                # Barlow Condensed 800 carries GSUB liga/locl (plus figure features the
+                # hero's letters never reach) and GPOS kern (checked with fontTools.ttLib
+                # against the source woff2). Dropping 'kern' would shift every glyph after
+                # the first by a fraction of a pixel against the full face, so the three
+                # that can touch the headline are kept explicitly.
+                "--layout-features=kern,liga,locl",
+                # Barlow Condensed carries TrueType hinting; the hero paints at 40 px and
+                # above, where hinting changes nothing a reader can see, and the hinting
+                # programs are 60% of these glyphs' bytes (3884 hinted against 1552), all of
+                # it inlined ahead of the LCP.
+                "--no-hinting",
                 f"--output-file={out_path}",
             ],
             check=True,
@@ -128,7 +133,7 @@ def render_css(font_bytes: bytes, chars: set[str]) -> str:
         "@font-face {\n"
         f"  font-family: '{FONT_FAMILY}';\n"
         "  font-style: normal;\n"
-        "  font-weight: 700;\n"
+        f"  font-weight: {FONT_WEIGHT};\n"
         "  font-display: block;\n"
         f"  src: url(data:font/woff2;base64,{b64}) format('woff2');\n"
         "}\n"

@@ -106,7 +106,7 @@
     </div>
   {:else}
     <header class="flex items-center justify-between gap-3">
-      <h2 class="section-title text-[15px]">Point order</h2>
+      <h2 class="section-title">Point order</h2>
       <span class="tabular text-muted font-mono text-[13px]">{store.order.length}</span>
     </header>
     {@render list()}

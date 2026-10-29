@@ -54,7 +54,7 @@
     {#if slotRows.length > 0}
       <div class="border-line rounded-panel border p-3">
         <header class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="section-title text-[14px]">{SLOT_LABELS[slot]}</h3>
+          <h3 class="section-title">{SLOT_LABELS[slot]}</h3>
           <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
             <input
               type="checkbox"

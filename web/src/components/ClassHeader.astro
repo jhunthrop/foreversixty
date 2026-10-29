@@ -134,7 +134,7 @@ const bandTextVariants = bands.map((band) => ({
   <div class="class-header-identity">
     <ClassCrest slug={classSlug} size={64} />
     <div class="class-header-titles">
-      <TitleTag class="class-header-h1" style={`color:${color}`} {...headingRole}>
+      <TitleTag class="class-header-h1 heading-page" style={`color:${color}`} {...headingRole}>
         {minimal && titleOverride !== undefined ? titleOverride : `${specName} ${className}`}{' '}
         {!minimal && (
           <span class="class-header-suffix">
@@ -284,11 +284,6 @@ const bandTextVariants = bands.map((band) => ({
   }
   .class-header-h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    line-height: 1.1;
-    font-weight: 700;
-    text-transform: none;
   }
   .class-header-suffix {
     color: var(--color-muted);

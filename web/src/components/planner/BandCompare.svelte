@@ -199,7 +199,7 @@
        the exact click that crosses a band boundary (planner-dps.spec.ts's own "never moves
        the trees" case) -- a real, if small, CLS regression this panel must not introduce. -->
   <header class="flex items-baseline justify-between gap-3">
-    <h2 class="section-title text-[15px] whitespace-nowrap">{bandCompareCopy.heading(bandLabel)}</h2>
+    <h2 class="section-title whitespace-nowrap">{bandCompareCopy.heading(bandLabel)}</h2>
     <span class="text-muted text-[12px] whitespace-nowrap"
       >{bandCompareCopy.headingAside(bandLabel, characterLevel !== null)}</span
     >

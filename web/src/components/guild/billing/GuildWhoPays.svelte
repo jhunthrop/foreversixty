@@ -103,7 +103,7 @@
 </script>
 
 <div bind:this={rootEl} class="flex flex-col gap-2" data-testid="guild-whopays">
-  <h3 class="section-title text-[15px]">{copy.heading}</h3>
+  <h3 class="section-title">{copy.heading}</h3>
   <p class="text-muted text-[13px]">{copy.help}</p>
   {#if waiting && transfer !== null}
     <div class="flex flex-wrap items-center gap-3">

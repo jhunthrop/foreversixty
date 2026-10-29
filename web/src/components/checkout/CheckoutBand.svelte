@@ -59,12 +59,12 @@
           <i class="bg-gold mr-2.5 inline-block h-px w-7 align-middle" aria-hidden="true"></i>
           {copy.band.label}
         </p>
-        <h1 class="font-display text-strong m-0 text-[22px] leading-[1.2] font-bold">{title}</h1>
+        <h1 class="heading-page m-0">{title}</h1>
       </div>
       {#if showSummary}
         <div class="flex flex-col gap-1 text-[13px] lg:max-w-[440px]" data-testid="checkout-plan-summary">
           <p class="m-0 flex min-h-[26px] flex-wrap items-baseline">
-            <span class="font-display text-strong text-[15px] font-bold">{planName}</span>
+            <span class="heading-plan">{planName}</span>
             {#if !pending}
               <!-- One inline box: a flex child would drop the unit's leading space ("$120a year"). -->
               <span class="ml-2" data-testid="checkout-plan-price"

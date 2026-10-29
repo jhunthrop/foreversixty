@@ -246,7 +246,7 @@
     data-testid="raid-roster"
   >
     <div class="flex items-baseline gap-3">
-      <h2 id="raid-roster-heading" class="section-title text-[18px]">{raidCopy.subheads.signups}</h2>
+      <h2 id="raid-roster-heading" class="section-title">{raidCopy.subheads.signups}</h2>
       <span class="text-muted font-mono text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
     </div>
     {@render body()}

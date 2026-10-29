@@ -102,7 +102,7 @@
 
 <section class="flex flex-col gap-4" data-testid="guild-loot-tab">
   <div class="flex items-center justify-between gap-3">
-    <h2 class="section-title text-[18px]">Loot</h2>
+    <h2 class="section-title">Loot</h2>
     {#if memberReadOnly || officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span
       >{/if}
   </div>
@@ -136,7 +136,7 @@
           <!-- Below lg the awarded line is its own full-width row under the title (a chip that
                grows with its text); at lg it sits right of it. Undo is the winner row's alone. -->
           <div class="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
-            <span class="font-display min-w-0 text-[15px] font-bold"
+            <span class="heading-name min-w-0 text-[15px]"
               >{item.name}{#if (item.copies ?? 1) > 1}
                 <span class="text-muted text-[12px]" data-testid={`guild-loot-copies-${item.item_id}`}
                   >x{item.copies}</span

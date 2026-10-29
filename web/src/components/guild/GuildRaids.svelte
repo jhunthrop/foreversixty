@@ -182,7 +182,7 @@
 
 <section class="flex flex-col gap-2" data-testid="guild-raids-tab">
   <div class="flex items-center justify-between gap-3" data-testid="guild-raids-header">
-    <h2 class="section-title text-[18px]">Raids</h2>
+    <h2 class="section-title">Raids</h2>
     <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
     {#if officer && showPlanned && !formOpen}
       <button

@@ -62,7 +62,7 @@
   class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4"
   data-testid="addon-paste-box"
 >
-  {#if heading}<h2 class="section-title text-[15px]">{addonCopy.pasteTitle}</h2>{/if}
+  {#if heading}<h2 class="section-title">{addonCopy.pasteTitle}</h2>{/if}
   <textarea
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
     rows="2"

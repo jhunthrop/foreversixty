@@ -58,7 +58,7 @@
   class="border-line rounded-panel mx-[18px] flex flex-col gap-3 border p-3 md:mx-0"
   data-testid="sim-item-search"
 >
-  <h3 class="section-title text-[14px]">{bulkCopy.searchLabel}</h3>
+  <h3 class="section-title">{bulkCopy.searchLabel}</h3>
 
   <div class="flex flex-wrap gap-2">
     <input

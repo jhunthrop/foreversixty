@@ -70,7 +70,7 @@
      grid. -->
 <div class="flex flex-col gap-6">
   <div class="flex flex-col gap-3">
-    <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
+    <h2 class="section-title px-[18px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
     {#if rows === null}
       <div class={grid} data-testid="specs-grid">
         <!-- The error message takes the FIRST skeleton card's own slot rather than adding a
@@ -108,7 +108,7 @@
   </div>
 
   <div class="flex flex-col gap-3">
-    <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
+    <h2 class="section-title px-[18px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
     <div class={grid} data-testid="specs-grid-unsimulated">
       {#each unsimulatedSpecs as spec (spec.spec)}
         <UnsimulatedSpecCard {spec} />

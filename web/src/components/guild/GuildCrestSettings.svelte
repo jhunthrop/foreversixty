@@ -126,7 +126,7 @@
 </script>
 
 <section class="border-line-soft flex flex-col gap-4 border-b pb-6" data-testid="guild-crest-settings">
-  <h2 class="section-title text-[18px]">{guildCrestCopy.heading}</h2>
+  <h2 class="section-title">{guildCrestCopy.heading}</h2>
 
   <div class="flex items-center gap-4">
     {#if previewUrl !== null}

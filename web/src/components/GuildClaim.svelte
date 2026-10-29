@@ -197,7 +197,7 @@
   <a class="text-nav w-fit text-[13px]" href={guildHref(path.region, path.ruleset, guildName || path.slug)}>
     ← {guildClaimCopy.backToGuild(guildName)}
   </a>
-  <h1 class="section-title text-[18px]" data-testid="guild-claim-heading">
+  <h1 class="heading-page" data-testid="guild-claim-heading">
     {holdsClaim ? guildClaimCopy.headingHeld(guildName) : guildClaimCopy.heading(guildName)}
   </h1>
   {#if status === 'loading' || status === 'failed'}
@@ -398,7 +398,7 @@
     {/if}
 
     <section class="flex flex-col gap-2" data-testid="guild-claim-rules">
-      <h2 class="section-title text-[16px]">{guildClaimCopy.rulesHeading}</h2>
+      <h2 class="section-title">{guildClaimCopy.rulesHeading}</h2>
       <ul class="text-muted flex flex-col gap-1 text-[13px]">
         {#each guildClaimCopy.rules as rule (rule)}
           <li>{rule}</li>

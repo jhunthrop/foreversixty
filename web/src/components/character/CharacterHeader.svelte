@@ -586,9 +586,11 @@
   .ch-name {
     max-width: 100%;
     margin: 0;
-    font-family: var(--font-display);
+    font-family: var(--font-heading);
     font-size: var(--ch-name-size);
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
     line-height: 1.2;
     overflow: hidden;
     display: -webkit-box;

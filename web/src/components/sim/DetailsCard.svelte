@@ -40,7 +40,7 @@
   class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
   data-testid="sim-details-card"
 >
-  <h2 class="section-title text-[15px]">{simCopy.details}</h2>
+  <h2 class="section-title">{simCopy.details}</h2>
   <dl class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 text-[13px]">
     {#each rows as row (row.id)}
       <dt class="text-muted">{row.label}</dt>

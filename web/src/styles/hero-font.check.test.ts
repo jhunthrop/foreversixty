@@ -1,11 +1,12 @@
 // web/src/styles/hero-font.check.test.ts
-// Guards src/styles/hero-font.css, the committed Cinzel 700 subset scripts/hero-font.py
-// generates for the homepage hero (see that script's module docstring for the full why).
-// If a headline-named field in the home copy modules ever needs a character the committed
-// subset does not have, that glyph would silently fall back to the full Cinzel face for
-// anyone who hits this page before Cinzel finishes downloading -- not a visual defect
-// (same face), but it would quietly reopen the LCP gap this subset exists to close. This
-// test fails loudly instead, naming the fix.
+// Guards src/styles/hero-font.css, the committed Barlow Condensed 800 subset
+// scripts/hero-font.py generates for the homepage hero (see that script's module docstring
+// for the full why). If a headline-named field in the home copy modules ever needs a
+// character the committed subset does not have, that glyph would silently fall back to the
+// full Barlow Condensed face for anyone who hits this page before it finishes downloading --
+// not a visual defect (same face), but it would quietly reopen the LCP gap this subset exists
+// to close. This test fails loudly instead, naming the fix. The hero is set uppercase
+// (`text-transform`), so the glyphs it paints, and the subset carries, are the copy's capitals.
 //
 // Pure TypeScript on purpose: CI has no fontTools, so the test reads the code points the
 // generator records in the stylesheet's header rather than shelling out to the script.
@@ -41,7 +42,9 @@ function requiredCodePoints(): Set<number> {
   headlineStrings(landingCopy, '', strings);
   headlineStrings(panelCopy, '', strings);
   const points = new Set<number>();
-  for (const text of strings) for (const char of text) points.add(char.codePointAt(0) ?? 0);
+  for (const text of strings) {
+    for (const char of text.toUpperCase()) points.add(char.codePointAt(0) ?? 0);
+  }
   return points;
 }
 
@@ -55,6 +58,12 @@ function subsetCodePoints(): Set<number> {
 describe('hero-font subset', () => {
   it('names at least one headline to subset for', () => {
     expect(requiredCodePoints().size).toBeGreaterThan(0);
+  });
+
+  it('subsets the heading face at the weight the hero paints (Barlow Condensed 800)', () => {
+    const css = readFileSync(cssPath, 'utf8');
+    expect(css).toContain("font-family: 'Barlow Condensed Hero';");
+    expect(css).toContain('font-weight: 800;');
   });
 
   it('has every glyph the hero headline currently needs', () => {

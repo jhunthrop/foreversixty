@@ -59,7 +59,7 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
         <i class="guides-index-eyebrow-rule" aria-hidden="true"></i>
         {guidesCopy.eyebrow}
       </p>
-      <h1 class="guides-index-h1">Guides</h1>
+      <h1 class="guides-index-h1 heading-page">Guides</h1>
       <UpdatedStamp date={updated} />
       <p class="guides-index-honesty">{guidesCopy.indexHonestyLine}</p>
       <div id="guides-signed-in-callout" data-testid="guides-signed-in-callout-root">
@@ -136,9 +136,6 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
   }
   .guides-index-h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--color-strong);
   }
   .guides-index-honesty {
     margin: 0;

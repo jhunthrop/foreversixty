@@ -105,7 +105,7 @@
   <!-- Focus lands here on open, whatever state the list is in (the button that opened it is gone). -->
   <h2
     id="raid-match-heading"
-    class="section-title text-[15px]"
+    class="section-title"
     tabindex="-1"
     bind:this={heading}
     use:focusOnMount

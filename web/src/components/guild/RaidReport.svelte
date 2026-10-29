@@ -101,7 +101,7 @@
   data-testid="raid-report"
 >
   <div class="flex flex-wrap items-center justify-between gap-3">
-    <h2 id="raid-report-heading" class="section-title text-[18px]">{attendanceCopy.report.head}</h2>
+    <h2 id="raid-report-heading" class="section-title">{attendanceCopy.report.head}</h2>
     {#if officer}
       <div class="flex flex-wrap items-center gap-3">
         <button type="button" class={RAID_BUTTON} onclick={copyForDiscord} data-testid="raid-report-copy"

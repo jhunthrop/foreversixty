@@ -15,7 +15,7 @@ const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
 ---
 
 <footer class="border-t border-line pt-5 flex flex-col gap-3">
-  <h2 class="section-title text-[14px]">Sources</h2>
+  <h2 class="section-title">Sources</h2>
   <ul class="flex flex-col gap-2 list-none p-0 m-0">
     {unique.map((s) => (
       <li class="flex items-start gap-3 text-[14px]">

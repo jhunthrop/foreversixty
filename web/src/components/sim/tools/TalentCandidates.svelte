@@ -174,7 +174,7 @@
   class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
   data-testid="sim-talent-candidates"
 >
-  <h3 class="section-title text-[14px]">{bulkCopy.talentsSaved}</h3>
+  <h3 class="section-title">{bulkCopy.talentsSaved}</h3>
 
   {#if own !== null}
     <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">

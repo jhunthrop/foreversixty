@@ -144,7 +144,7 @@
   aria-labelledby="raid-attendance-heading"
   data-testid="raid-attendance"
 >
-  <h2 id="raid-attendance-heading" class="section-title text-[18px]">{attendanceCopy.attendance.head}</h2>
+  <h2 id="raid-attendance-heading" class="section-title">{attendanceCopy.attendance.head}</h2>
   <p class="text-text text-[14px]" data-testid="raid-attendance-summary">{attendanceSummary(night)}</p>
   {#if groups.some((group) => !group.compact)}
     <div

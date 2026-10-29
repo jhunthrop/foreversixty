@@ -48,18 +48,18 @@ describe('CharacterIdentity', () => {
     expect(body).not.toContain('<a');
   });
 
-  it('renders the name as a link with href, in the display face only at lg', () => {
+  it('renders the name as a link with href, in the heading face only at lg', () => {
     const md = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'none', href: '/character/x', nameTestid: 'n' },
     });
     expect(md.body).toContain('<a');
     expect(md.body).toContain('href="/character/x"');
-    expect(md.body).not.toContain('font-display');
+    expect(md.body).not.toContain('heading-face');
 
     const lg = render(CharacterIdentity, {
       props: { character: CHAR, size: 'lg', descriptor: 'none', href: '/character/x' },
     });
-    expect(lg.body).toContain('font-display');
+    expect(lg.body).toContain('heading-face');
   });
 
   it('uses a caller-chosen portrait test id prefix, defaulting to "character"', () => {

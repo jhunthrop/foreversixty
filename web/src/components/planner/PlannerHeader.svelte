@@ -102,7 +102,7 @@
         data-testid="planner-header-crest"
       />
       <div class="planner-header-titles">
-        <h1 class="planner-header-h1" style={`color:${color}`} data-testid="planner-header-h1">
+        <h1 class="planner-header-h1 heading-page" style={`color:${color}`} data-testid="planner-header-h1">
           {plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
           <span class="planner-header-suffix">
             · {store.raceRow?.name ?? ''} · Level {store.level}{specSuffix}
@@ -265,11 +265,6 @@
   }
   .planner-header-h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    line-height: 1.1;
-    font-weight: 700;
-    text-transform: none;
   }
   .planner-header-suffix {
     color: var(--color-muted);

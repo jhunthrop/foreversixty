@@ -162,7 +162,7 @@
 </script>
 
 <div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-6" data-testid="guild-settings">
-  <h1 class="section-title text-[18px]">
+  <h1 class="heading-page">
     {guildName === '' ? guildSettingsCopy.heading : `${guildName} · ${guildSettingsCopy.heading}`}
   </h1>
   {#if status === 'loading' || status === 'failed'}
@@ -262,7 +262,7 @@
       </div>
     </section>
     <section class="flex flex-col gap-3">
-      <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>
+      <h2 class="section-title">{guildSettingsCopy.inviteHeading}</h2>
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
       {#if guildId !== null}
         <GuildInviteLink

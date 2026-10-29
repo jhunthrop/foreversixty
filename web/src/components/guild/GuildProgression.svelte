@@ -50,7 +50,7 @@
 </script>
 
 <section class="flex flex-col gap-6" data-testid="guild-progression-tab">
-  <h2 class="section-title text-[18px]">Progression</h2>
+  <h2 class="section-title">Progression</h2>
   {#if progression === null}
     <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
   {:else}
@@ -82,7 +82,7 @@
         class="border-line-soft bg-raised flex flex-col gap-3 rounded-md border p-5"
         data-testid="guild-progression-encounter"
       >
-        <h3 class="section-title text-[16px]">{encounter.name} · pulls to kill</h3>
+        <h3 class="section-title">{encounter.name} · pulls to kill</h3>
         {#if encounter.first_kill_at !== null}
           <p class="text-[13px]">
             First kill {dayWord(new Date(encounter.first_kill_at))} · best kill time {clock(
@@ -132,7 +132,7 @@
         class="border-line-soft bg-raised flex flex-col gap-2 rounded-md border p-5"
         data-testid="guild-progression-unnamed"
       >
-        <h3 class="section-title text-[16px]">Barrow Deeps / Hyjal Summit</h3>
+        <h3 class="section-title">Barrow Deeps / Hyjal Summit</h3>
         {#each progression.unnamed as zone (zone.zone)}
           <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
             <span class="flex-1 text-[14px] font-semibold">{zone.zone}</span>
@@ -146,7 +146,7 @@
 
   {#if encounterBests.length > 0}
     <div class="flex flex-col gap-2" data-testid="guild-roster-best">
-      <h3 class="section-title text-[16px]">Roster bests</h3>
+      <h3 class="section-title">Roster bests</h3>
       {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
         {@const labels = rosterBestLabels(row)}
         <div class="border-line-soft flex items-center gap-3 border-b py-1.5">

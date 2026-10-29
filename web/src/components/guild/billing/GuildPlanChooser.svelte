@@ -70,7 +70,7 @@
           checked={tier === key}
           onchange={() => (picked = key)}
         />
-        <span class="section-title text-[15px]">{copy.chooser.tierName(key)}</span>
+        <span class="section-title">{copy.chooser.tierName(key)}</span>
         <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and the founder
              list price is plain text below. -->
         <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>

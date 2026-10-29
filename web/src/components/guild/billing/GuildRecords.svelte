@@ -15,7 +15,7 @@
 </script>
 
 <div class="flex flex-col gap-2" data-testid="guild-records">
-  <h3 class="section-title text-[15px]">{copy.records.heading}</h3>
+  <h3 class="section-title">{copy.records.heading}</h3>
   <p class="text-muted text-[13px]">{copy.records.body}</p>
   <div class="flex flex-col gap-2 md:flex-row">
     {#each DOWNLOADS as download (download.kind)}

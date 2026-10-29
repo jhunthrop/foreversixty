@@ -56,7 +56,7 @@
   class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
   data-testid="sim-buff-panel"
 >
-  <h2 class="section-title text-[15px]">{simCopy.buffPanel}</h2>
+  <h2 class="section-title">{simCopy.buffPanel}</h2>
   <p class="text-muted text-[12px]">{simCopy.buffPanelNote}</p>
 
   {#each BUFF_GROUPS as group (group)}

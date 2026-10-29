@@ -262,7 +262,7 @@
 {/snippet}
 
 <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
-  <h1 class="section-title" data-testid="sim-saved-title">{heading}</h1>
+  <h1 class="heading-page" data-testid="sim-saved-title">{heading}</h1>
 </div>
 
 <section

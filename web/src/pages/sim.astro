@@ -22,7 +22,7 @@ const COLD_PASTE_SECTION =
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <SimTabs currentPath="/sim" />
-    <h1 class="section-title px-[18px] text-[18px] md:px-0">Simulator</h1>
+    <h1 class="heading-page px-[18px] md:px-0">Simulator</h1>
     <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
          own largest early text used to be SourceSwitcher's addon-card body; the layout
          review promotes the Battle.net sign-in to a full-width hero ahead of that card
@@ -77,7 +77,7 @@ const COLD_PASTE_SECTION =
              "Your server runs" box, reserved before the island paints (spec 2026-10-24 3.7). -->
         <div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>
         <div class={COLD_PASTE_SECTION}>
-          <h2 class="section-title text-[15px]">{landingCopy.pasteHeroTitle}</h2>
+          <h2 class="section-title">{landingCopy.pasteHeroTitle}</h2>
           <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>
           <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
         </div>
@@ -85,7 +85,7 @@ const COLD_PASTE_SECTION =
           <p class="text-muted text-[14px]">{landingCopy.introLine}</p>
           <ExampleResultCard />
           <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
-            <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
+            <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
             <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>
             <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
           </div>

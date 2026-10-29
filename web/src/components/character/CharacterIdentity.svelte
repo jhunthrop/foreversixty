@@ -69,10 +69,13 @@
         ? `${rulesetLabel(character.ruleset)} · ${character.region.toUpperCase()}`
         : '',
   );
-  // Display font only at lg (spec 2026-09-23 §2.2): the account hero band is the one place
-  // CharacterIdentity's own name needs it; a row or chip name is never that prominent.
+  // The heading face only at lg and xl (spec 2026-09-23 §2.2; the face is polish spec
+  // 2026-10-28 §4.4's): the account hero band is the one place CharacterIdentity's own name
+  // needs it; a row or chip name is never that prominent.
   const nameClass = $derived(
-    `w-fit ${NAME_SIZE[size]} ${size === 'xl' ? `font-bold ${XL_NAME_CAP}` : 'font-semibold'}${size === 'lg' || size === 'xl' ? ' [font-family:var(--font-display)]' : ''}`,
+    size === 'lg' || size === 'xl'
+      ? `w-fit ${NAME_SIZE[size]} heading-face${size === 'xl' ? ` ${XL_NAME_CAP}` : ''}`
+      : `w-fit ${NAME_SIZE[size]} font-semibold`,
   );
   const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);
 </script>

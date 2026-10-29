@@ -17,7 +17,7 @@ const { placement = 'inline' } = Astro.props;
 
 {placement === 'rail' ? (
   <nav aria-label="Sections in this guide" class="flex flex-col gap-2" data-testid="guide-toc-rail">
-    <h2 class="section-title text-[13px]">On this page</h2>
+    <h2 class="section-title">On this page</h2>
     <ol class="m-0 flex list-none flex-col gap-1 p-0 text-[13px]">
       {SPEC_SECTIONS.map((section) => (
         <li>

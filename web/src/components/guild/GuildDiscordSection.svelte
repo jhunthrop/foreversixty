@@ -237,7 +237,7 @@
   class="flex scroll-mt-20 flex-col gap-3 {held}"
   data-testid="guild-settings-discord"
 >
-  <h2 class="section-title text-[18px]">{guildDiscordCopy.heading}</h2>
+  <h2 class="section-title">{guildDiscordCopy.heading}</h2>
   {#if readOnly}<GuildPlanGate tab="discord" settingsHref="#billing" sentence={gateLead} />{/if}
   {#snippet addParts(variant: 'nothing' | 'offer')}
     <GuildDiscordAdd

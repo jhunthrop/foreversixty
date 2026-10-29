@@ -132,13 +132,13 @@
        requirement, which takes precedence over reserving permanent dead space for a
        panel that is supposed not to exist for that character. -->
   <section class="flex flex-col gap-2" data-testid="character-rating-loading" aria-hidden="true">
-    {#if heading}<h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>{/if}
+    {#if heading}<h2 class="section-title">{ratingCopy.panelHeading}</h2>{/if}
     <div class="bg-line-soft h-24 w-full animate-pulse rounded"></div>
   </section>
 {:else if status === 'ready' && data !== null}
   <section class="flex flex-col gap-2" data-testid="character-rating">
     {#if heading}
-      <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
+      <h2 class="section-title">{ratingCopy.panelHeading}</h2>
       <p class="text-muted text-[13px]" data-testid="character-rating-caption">
         {ratingCopy.panelCaption(owned)}
       </p>

@@ -1520,7 +1520,7 @@
   <div class="reveal" data-testid="report-processing" data-state={status}>
     <header class="flex flex-col gap-1 px-[18px] md:px-0">
       <div class="flex flex-wrap items-center gap-2">
-        <h1 class="section-title text-[18px]" data-testid="report-title">
+        <h1 class="heading-page" data-testid="report-title">
           {#if status === 'waiting' && meta !== null}{heading}{:else}{meta?.title ||
               meta?.zone ||
               reportCopy.yourUpload}{/if}
@@ -1616,9 +1616,7 @@
     >
       <div class="contents md:flex md:flex-wrap md:items-center md:gap-2">
         <h1
-          class="section-title min-w-0 text-[20px] md:overflow-visible md:text-[18px] md:whitespace-normal {isSampleReport(
-            reportId,
-          )
+          class="heading-page min-w-0 md:overflow-visible md:whitespace-normal {isSampleReport(reportId)
             ? 'max-md:break-words'
             : 'truncate'}"
           title={heading}

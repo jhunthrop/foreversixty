@@ -49,7 +49,7 @@
     data-testid="planner-share-section"
   >
     <header class="flex flex-wrap items-center justify-between gap-3">
-      <h2 class="section-title text-[15px]">{plannerCopy.shareTitle}</h2>
+      <h2 class="section-title">{plannerCopy.shareTitle}</h2>
       <div class="flex flex-wrap items-center gap-3">
         {#if confirmingReset}
           <span class="text-muted text-[13px]">Clear every point in this build?</span>
