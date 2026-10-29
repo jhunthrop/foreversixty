@@ -107,9 +107,12 @@ func (s *Store) SetScheduleRemind(ctx context.Context, raidID int64, remind bool
 }
 
 // DeleteUnpostedSchedule drops a row whose post has not gone out; a posted row stays.
+// A row sent but not yet marked (scheduleSentUnmarked) stays: deleting it would
+// let a later re-tick create a fresh row and post the raid a second time.
 func (s *Store) DeleteUnpostedSchedule(ctx context.Context, raidID int64) error {
 	return s.scheduleExec(ctx, fmt.Sprintf("delete schedule of raid %d", raidID),
-		`delete from guild_raid_discord_schedule where raid_id = $1 and posted_at is null`, raidID)
+		`delete from guild_raid_discord_schedule where raid_id = $1 and posted_at is null
+		   and last_error is distinct from $2`, raidID, scheduleSentUnmarked)
 }
 
 // MarkSchedulePosted records the post as sent and clears its lease and retry state.

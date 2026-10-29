@@ -167,6 +167,28 @@ func TestUpsertKeepsAPostedRow(t *testing.T) {
 	}
 }
 
+// A row sent but not yet marked posted survives an untick: deleting it would let a
+// later re-tick create a fresh row and post the raid again.
+func TestDeleteKeepsASentUnmarkedRow(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := time.Now().UTC().Add(5 * time.Second)
+	id := w.raid(t, now.Add(30*time.Hour), "planned")
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, now, true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.st.Pool.Exec(ctx,
+		`update guild_raid_discord_schedule set last_error = $2 where raid_id = $1`, id, scheduleSentUnmarked); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.st.DeleteUnpostedSchedule(ctx, id); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := w.st.SchedulesOf(ctx, []int64{id}); len(got) != 1 {
+		t.Fatal("a sent, unmarked row was deleted")
+	}
+}
+
 func TestResetReturnsTheOldReminder(t *testing.T) {
 	ctx := context.Background()
 	w := newScheduleWorld(t)
