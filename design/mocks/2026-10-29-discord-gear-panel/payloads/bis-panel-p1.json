@@ -1,0 +1,216 @@
+{
+  "id": "bis-panel-p1",
+  "title": "/bis: Head to Legs",
+  "budget": {
+    "components": 37,
+    "text": 2069
+  },
+  "message": {
+    "flags": 32832,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Head to Legs, 9 of 17 slots. Each gain is over the next best item."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Beastmaster's Cap](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226887&preset=raid#band-alliance-60)**\nHead · ties the next best\n-# Epic · item level 60 · Quest: Saving the Best for Last · Level 60"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226887.png"
+              },
+              "description": "Beastmaster's Cap, Epic head item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Amulet of the Darkmoon](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=19491&preset=raid#band-alliance-60)**\nNeck · +0.3 DPS\n-# Epic · item level 65 · Quest: 1200 Tickets - Amulet of the Darkmoon · Level 60"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/19491.png"
+              },
+              "description": "Amulet of the Darkmoon, Epic neck item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Darkspear Pauldrons](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272105&preset=raid#band-alliance-60)**\nShoulder · ties the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/272105.png"
+              },
+              "description": "Darkspear Pauldrons, Epic shoulder item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Cape of the Black Baron](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=13340&preset=raid#band-alliance-60)**\nBack · +0.9 DPS\n-# Rare · item level 63 · Stratholme · Baron Rivendare"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/13340.png"
+              },
+              "description": "Cape of the Black Baron, Rare back item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Dawn Armor](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=252483&preset=raid#band-alliance-60)**\nChest · +5.4 DPS\n-# Epic · item level 61 · Crafted: Leatherworking"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/252483.png"
+              },
+              "description": "Dawn Armor, Epic chest item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Beastmaster's Bindings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226885&preset=raid#band-alliance-60)**\nWrist · ties the next best\n-# Rare · item level 65 · Quest: An Earnest Proposition · Level 60"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226885.png"
+              },
+              "description": "Beastmaster's Bindings, Rare wrist item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Raider Gloves](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272099&preset=raid#band-alliance-60)**\nHands · ties the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/272099.png"
+              },
+              "description": "Raider Gloves, Epic hands item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Belt of Preserved Heads](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=20216&preset=raid#band-alliance-60)**\nWaist · +0.4 DPS\n-# Rare · item level 70 · Quest: A Collection of Heads · Level 60"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/20216.png"
+              },
+              "description": "Belt of Preserved Heads, Rare waist item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Sentinel's Chain Leggings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237819&preset=raid#band-alliance-60)**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/237819.png"
+              },
+              "description": "Sentinel's Chain Leggings, Epic legs item"
+            }
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:ETsckh0MUHCXRpYAXQoDPcxTEKAbZTDvN6CED4pY-QQ"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Feet to Ranged",
+            "custom_id": "gbis:1:pg:hunter:beast-mastery:p1::2"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Change picks",
+            "custom_id": "gbis:1:chg:hunter:beast-mastery:p1:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "All 17 slots",
+            "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&preset=raid#band-alliance-60"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

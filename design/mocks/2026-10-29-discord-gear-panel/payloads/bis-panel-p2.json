@@ -1,0 +1,188 @@
+{
+  "id": "bis-panel-p2",
+  "title": "/bis: Feet to Ranged",
+  "budget": {
+    "components": 32,
+    "text": 1656
+  },
+  "message": {
+    "flags": 32832,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Feet to Ranged, 8 of 17 slots. Each gain is over the next best item."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Beastmaster's Treads](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226881&preset=raid#band-alliance-60)**\nFeet · ties the next best\n-# Epic · item level 60 · Vendor: Mokvar"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226881.png"
+              },
+              "description": "Beastmaster's Treads, Epic feet item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Signet Ring of the Bronze Dragonflight](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=234202&preset=raid#band-alliance-60)**\nRing 1 · +5.0 DPS\n-# Epic · item level 80 · Vendor: Anachronos"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/234202.png"
+              },
+              "description": "Signet Ring of the Bronze Dragonflight, Epic ring 1 item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Cutthroat's Signet](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272408&preset=raid#band-alliance-60)**\nRing 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/272408.png"
+              },
+              "description": "Cutthroat's Signet, Rare ring 2 item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Frozen Heart of the Mountain](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=249469&preset=raid#band-alliance-60)**\nTrinket 1\n-# Rare · item level 55 · Crafted: Enchanting"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/249469.png"
+              },
+              "description": "Frozen Heart of the Mountain, Rare trinket 1 item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Molten Heart of the Mountain](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=249470&preset=raid#band-alliance-60)**\nTrinket 2 · ties the next best\n-# Rare · item level 55 · Crafted: Enchanting"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/249470.png"
+              },
+              "description": "Molten Heart of the Mountain, Rare trinket 2 item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Legionite Glaive](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=250619&preset=raid#band-alliance-60)**\nMain hand · ties the next best\n-# Rare · item level 63 · Crafted: Blacksmithing"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/250619.png"
+              },
+              "description": "Legionite Glaive, Rare main hand item"
+            }
+          },
+          {
+            "type": 10,
+            "content": "**Off hand** · none: Legionite Glaive is two-handed."
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**[Hyper Deluxe Sniper Rifle Mk XVII](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=279273&preset=raid#band-alliance-60)**\nRanged · ties the next best\n-# Epic · item level 65 · Crafted: Engineering"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/279273.png"
+              },
+              "description": "Hyper Deluxe Sniper Rifle Mk XVII, Epic ranged item"
+            }
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:ETsckh0MUHCXRpYAXQoDPcxTEKAbZTDvN6CED4pY-QQ"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Head to Legs",
+            "custom_id": "gbis:1:pg:hunter:beast-mastery:p1::1"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Change picks",
+            "custom_id": "gbis:1:chg:hunter:beast-mastery:p1:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "All 17 slots",
+            "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&preset=raid#band-alliance-60"
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}
