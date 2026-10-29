@@ -284,12 +284,22 @@ const switchCss =
     .gbis-source-inline {
       display: block;
     }
-    .gbis-pills,
     .gbis-factions {
       flex-wrap: nowrap;
       overflow-x: auto;
       max-width: 100%;
       scrollbar-width: none;
+    }
+    /* The level bands sit in two rows (3 + 2), every target 44 px, nothing clipped. */
+    .gbis-pills {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .gbis-pills .gbis-pill {
+      justify-content: center;
+      padding: 0 4px;
+      text-align: center;
+      font-size: 12px;
     }
     .gbis-controls {
       flex-direction: column;
