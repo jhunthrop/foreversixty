@@ -148,7 +148,7 @@ export const addonCopy = {
   /** The truth of how a character reaches the site, said once and the way the addon's welcome says
    *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
   setupHowItArrives:
-    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (Try an export, below).',
+    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
   /** Under the step 3 title: which of the three steps can be skipped. */
   setupCompanionNote:
     'Sends your character automatically and logs live. Without it, paste an export after each change.',
@@ -186,7 +186,7 @@ export const addonCopy = {
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
   /** Said under the download while the release carries no Mac bundle (companion.yml has the
    *  darwin targets off): the repo declines a "macOS next". */
-  setupCompanionPlatforms: (available: string): string => `${available}. Mac is not supported yet.`,
+  setupCompanionPlatforms: (available: string): string => `${available} only; Mac is not supported yet.`,
   /** The primary download button: "Download for Windows". */
   setupCompanionDownload: (platform: string): string => `Download for ${platform}`,
   /** A 2x crop of the 0.2.11 companion's Status page, the Logging state credited to a fictional
@@ -209,8 +209,6 @@ export const addonCopy = {
   /** What an export is, first thing inside its disclosure. */
   setupTryExportBody:
     'Paste what the addon saved (type /fs copy in game) to see your character without the companion.',
-  disclosureOpen: 'Show',
-  disclosureClose: 'Hide',
 
   // --- /setup: what the addon does in the game (Task L8.3) ---
   /** One row per surface of the addon-v2 spec's §4, in its order; `title` is the spec's own

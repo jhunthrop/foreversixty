@@ -92,7 +92,7 @@ for (const size of SIZES) {
         'Sign in with Battle.net inside the companion; it connects itself.',
       );
       await expect(page.getByTestId('setup-companion-platforms')).toHaveText(
-        'Windows. Mac is not supported yet.',
+        'Windows only; Mac is not supported yet.',
       );
       await page.getByTestId('setup-companion-capture').scrollIntoViewIfNeeded();
       await expect(page.getByTestId('setup-companion-capture').locator('img')).toBeVisible();

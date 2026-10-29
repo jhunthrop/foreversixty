@@ -13,7 +13,8 @@ import SetupStepLine from '../components/SetupStepLine.svelte';
 import { companionPlatformsLine } from '../lib/setup/progress';
 import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { button } from '../lib/ui/button';
+import Disclosure from '../components/ui/Disclosure.astro';
 import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
@@ -29,8 +30,8 @@ export const DATA_CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706707'
 export const DATA_WAGO_URL = 'https://addons.wago.io/addons/foreversixtydata';
 export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
-// The step's one gold button is CurseForge; Wago and the zip are quiet links beside it.
-const quietLinks = [
+// CurseForge is the step's button; Wago and the zip are secondary buttons beside it in one row.
+const otherInstalls = [
   { label: addonCopy.installWago, href: WAGO_URL },
   { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
 ];
@@ -42,7 +43,7 @@ const dataLinks = [
 ];
 
 const downloadUrl = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
-// The first download is the step's one gold button; any other platform is a quiet link.
+// The first download is the step's button; any other platform is a secondary button beside it.
 const [primaryDownload, ...otherDownloads] = companion.downloads;
 const platformsLine = companionPlatformsLine(companion.downloads.map((entry) => entry.platform));
 const capture = addonCopy.setupCompanionCapture;
@@ -53,13 +54,10 @@ const flows = [
   { title: addonCopy.inGameTitle, body: addonCopy.inGameBody },
 ];
 
-// One button per step; only the first undone step's is gold, the others stay outlined until their
-// turn (global.css, .setup-btn; SetupProgress.svelte says which step is first).
-const STEP_BUTTON = `${SECONDARY_BUTTON_FIXED} setup-btn border-line-warm-strong text-strong w-fit px-5`;
-const DISCLOSURE = 'border-line rounded-control border';
-const SUMMARY =
-  'label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none';
-const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2';
+// One button per step; only the first undone step's is primary, the others stay secondary until
+// their turn (global.css, .setup-btn; SetupProgress.svelte says which step is first).
+const STEP_BUTTON = `${button('secondary', 'md')} setup-btn w-fit`;
+const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto min-h-11 py-2 !whitespace-normal text-center`;
 ---
 
 <Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup">
@@ -89,19 +87,15 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
 
     <Panel title={addonCopy.setupStep2Title}>
       <div id="addon" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap gap-3">
           <a class={STEP_BUTTON} data-step="2" href={CURSEFORGE_URL} rel="noopener">
             {addonCopy.installCurseForge}
           </a>
-          <ul class="flex flex-wrap gap-x-6 gap-y-0">
-            {quietLinks.map((link) => (
-              <li>
-                <a class={QUIET_LINK} href={link.href} rel="noopener">
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          {otherInstalls.map((link) => (
+            <a class={SECONDARY_ACTION} href={link.href} rel="noopener">
+              {link.label}
+            </a>
+          ))}
         </div>
         <p class="text-pretty text-muted text-[13px] leading-relaxed" data-testid="setup-data-addon">
           {addonCopy.installDataHint}
@@ -119,63 +113,34 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
              the data addon's own links and the build number, and the manual (what the addon does
              in the game, its commands, the handshake and the flows). A link to #paste, or to a
              step's anchor, opens the disclosure that holds it (the script below). -->
-        <details class={DISCLOSURE} data-testid="setup-try-export">
-          <summary class={SUMMARY}>
-            {addonCopy.setupTryExport}
-            <span class="when-closed text-muted" aria-hidden="true">
-              {addonCopy.disclosureOpen}
-            </span>
-            <span class="when-open text-muted" aria-hidden="true">
-              {addonCopy.disclosureClose}
-            </span>
-          </summary>
+        <Disclosure title={addonCopy.setupTryExport} testid="setup-try-export">
           <div class="flex flex-col gap-3 px-4 pb-4">
             <p class="text-pretty text-muted text-[14px] leading-relaxed" data-testid="setup-export-what">
               {addonCopy.setupTryExportBody}
             </p>
             <AddonPasteBox client:idle heading={false} />
           </div>
-        </details>
+        </Disclosure>
 
-        <details class={DISCLOSURE} data-testid="setup-manual-install">
-          <summary class={SUMMARY}>
-            {addonCopy.setupManualInstall}
-            <span class="when-closed text-muted" aria-hidden="true">
-              {addonCopy.disclosureOpen}
-            </span>
-            <span class="when-open text-muted" aria-hidden="true">
-              {addonCopy.disclosureClose}
-            </span>
-          </summary>
+        <Disclosure title={addonCopy.setupManualInstall} testid="setup-manual-install" open>
           <div class="flex flex-col gap-3 px-4 pb-4">
             <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.installDataLead}</p>
-            <ul class="flex flex-col gap-0 md:flex-row md:flex-wrap md:gap-x-6">
+            <div class="flex flex-wrap gap-3">
               {dataLinks.map((link) => (
-                <li>
-                  <a class={QUIET_LINK} href={link.href} rel="noopener">
-                    {link.label}
-                  </a>
-                </li>
+                <a class={SECONDARY_ACTION} href={link.href} rel="noopener">
+                  {link.label}
+                </a>
               ))}
-            </ul>
+            </div>
             <p class="text-pretty text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
           </div>
-        </details>
+        </Disclosure>
 
         <!-- Task L8.3: what the addon does in the game, one row per surface of the addon-v2
              spec's §4 in its order, with crops of real client captures (lazy, each in a box
              of its own aspect so nothing below moves as they load); then the /fs commands
              and the companion handshake. A surface with no capture shows no image. -->
-        <details class={DISCLOSURE} data-testid="setup-everything">
-          <summary class={SUMMARY}>
-            {addonCopy.setupEverything}
-            <span class="when-closed text-muted" aria-hidden="true">
-              {addonCopy.disclosureOpen}
-            </span>
-            <span class="when-open text-muted" aria-hidden="true">
-              {addonCopy.disclosureClose}
-            </span>
-          </summary>
+        <Disclosure title={addonCopy.setupEverything} testid="setup-everything">
           <div class="flex flex-col gap-5 px-4 pb-4">
             <section
               class="flex flex-col gap-5 pt-2"
@@ -242,7 +207,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
               </div>
             </div>
           </div>
-        </details>
+        </Disclosure>
       </div>
     </Panel>
 
@@ -251,7 +216,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
         <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-note">
           {addonCopy.setupCompanionNote}
         </p>
-        <div class="flex flex-col gap-2" data-testid="setup-companion-downloads">
+        <div class="flex flex-wrap gap-3" data-testid="setup-companion-downloads">
           <a
             class={STEP_BUTTON}
             data-step="3"
@@ -261,17 +226,11 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
           >
             {addonCopy.setupCompanionDownload(primaryDownload.platform)}
           </a>
-          {otherDownloads.length > 0 && (
-            <ul class="flex flex-wrap gap-x-6">
-              {otherDownloads.map((entry) => (
-                <li>
-                  <a class={QUIET_LINK} href={downloadUrl(entry.asset)} rel="noopener">
-                    {addonCopy.setupCompanionDownload(entry.platform)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
+          {otherDownloads.map((entry) => (
+            <a class={SECONDARY_ACTION} href={downloadUrl(entry.asset)} rel="noopener">
+              {addonCopy.setupCompanionDownload(entry.platform)}
+            </a>
+          ))}
         </div>
         {platformsLine !== null && (
           <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-platforms">
@@ -285,34 +244,37 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
           {addonCopy.setupCompanionPair}
         </p>
         <SetupStepLine step="companion" client:idle />
-        <div
-          class="setup-capture border-line-soft rounded-control bg-raised relative w-full overflow-hidden border"
-          style={`max-width: 800px; --capture-ratio: ${capture.width} / ${capture.height}; --capture-phone-ratio: ${capture.phoneWidth} / ${capture.phoneHeight}`}
-          data-testid="setup-companion-capture"
-        >
+        <div class="flex flex-col gap-2">
+          <div
+            class="setup-capture border-line-soft rounded-control bg-raised relative w-full overflow-hidden border"
+            style={`max-width: 800px; --capture-ratio: ${capture.width} / ${capture.height}; --capture-phone-ratio: ${capture.phoneWidth} / ${capture.phoneHeight}`}
+            data-testid="setup-companion-capture"
+          >
+            <picture class="block h-full w-full">
+              <source
+                media="(max-width: 639px)"
+                srcset={capture.phoneSrc}
+                width={capture.phoneWidth}
+                height={capture.phoneHeight}
+              />
+              <img
+                class="block h-full w-full object-contain"
+                src={capture.src}
+                width={capture.width}
+                height={capture.height}
+                alt={capture.alt}
+                decoding="async"
+              />
+            </picture>
+          </div>
+          <!-- Below the picture, never over it: the companion's own SETTINGS tab and text sit in its corners. -->
           <span
-            class="pill pill-sample absolute top-2 right-2 z-10"
+            class="pill pill-sample in-[html[data-session='1']]:hidden w-fit"
             data-session-hide
             data-testid="setup-companion-capture-label"
           >
             {capture.exampleLabel}
           </span>
-          <picture class="block h-full w-full">
-            <source
-              media="(max-width: 639px)"
-              srcset={capture.phoneSrc}
-              width={capture.phoneWidth}
-              height={capture.phoneHeight}
-            />
-            <img
-              class="block h-full w-full object-contain"
-              src={capture.src}
-              width={capture.width}
-              height={capture.height}
-              alt={capture.alt}
-              decoding="async"
-            />
-          </picture>
         </div>
       </div>
     </Panel>

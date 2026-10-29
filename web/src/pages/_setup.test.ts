@@ -65,8 +65,6 @@ const STRING_COPY_KEYS = [
   'setupAddonDoneLine',
   'setupHowItWorks',
   'setupCompanionPair',
-  'disclosureOpen',
-  'disclosureClose',
 ] as const;
 
 let html: string;
@@ -447,7 +445,7 @@ describe('/setup first-run copy', () => {
 
   it('says once, the way the addon welcome does, how a character reaches the site', () => {
     expect(addonCopy.setupHowItArrives).toBe(
-      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (Try an export, below).',
+      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
     );
     expect(html.split(addonCopy.setupHowItArrives).length - 1).toBe(1);
   });
@@ -514,12 +512,12 @@ describe('/setup as three steps (W.9)', () => {
     }
   });
 
-  it('puts the export box, the manual install and the manual behind three collapsed disclosures', () => {
+  it('puts the export box, the manual install and the manual behind three disclosures, the manual install open', () => {
     expect(html.match(/<details/g)).toHaveLength(3);
     for (const testid of ['setup-try-export', 'setup-manual-install', 'setup-everything']) {
       const open = new RegExp(`<details[^>]*data-testid="${testid}"[^>]*>`).exec(html)?.[0] ?? '';
       expect(open, testid).not.toBe('');
-      expect(open).not.toContain(' open');
+      expect(/ open[ >=]/.test(open), testid).toBe(testid === 'setup-manual-install');
     }
     const tryExport = html.indexOf('data-testid="setup-try-export"');
     expect(html.indexOf('id="paste"')).toBeGreaterThan(tryExport);
@@ -575,10 +573,10 @@ describe('/setup as three steps (W.9)', () => {
 
   it('says Mac is not supported while the release carries no Mac bundle', () => {
     const step3 = html.slice(html.indexOf('id="companion"'));
-    expect(step3).toContain('Windows. Mac is not supported yet.');
+    expect(step3).toContain('Windows only; Mac is not supported yet.');
     expect(step3).not.toMatch(/macOS next/i);
     expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
-    expect(companionPlatformsLine(['Windows'])).toBe('Windows. Mac is not supported yet.');
+    expect(companionPlatformsLine(['Windows'])).toBe('Windows only; Mac is not supported yet.');
   });
 
   it('says which of the steps is optional', () => {

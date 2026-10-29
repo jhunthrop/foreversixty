@@ -95,22 +95,13 @@ async function routeEmptyCharacter(page: Page): Promise<void> {
   );
 }
 
-/** The visible step buttons whose background is the gold fill, by step number. */
+/** The visible step buttons drawn as the primary recipe (the gold gradient), by step number. */
 async function goldSteps(page: Page): Promise<string[]> {
-  const gold = await page.evaluate(() => {
-    const token = getComputedStyle(document.documentElement).getPropertyValue('--color-gold').trim();
-    const probe = document.createElement('span');
-    probe.style.color = token;
-    document.body.append(probe);
-    const rgb = getComputedStyle(probe).color;
-    probe.remove();
-    return rgb;
-  });
   const found: string[] = [];
   for (const button of await page.locator('.setup-btn').all()) {
     if (!(await button.isVisible())) continue;
-    const background = await button.evaluate((el) => getComputedStyle(el).backgroundColor);
-    if (background === gold) found.push((await button.getAttribute('data-step')) ?? '?');
+    const image = await button.evaluate((el) => getComputedStyle(el).backgroundImage);
+    if (image.includes('linear-gradient')) found.push((await button.getAttribute('data-step')) ?? '?');
   }
   return found;
 }
@@ -167,7 +158,7 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['1']);
       await chipRowIsOneLine(page);
       await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(
-        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (Try an export, below).',
+        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
       );
       await expect(page.getByTestId('setup-companion-note')).toHaveText(
         'Sends your character automatically and logs live. Without it, paste an export after each change.',
@@ -228,9 +219,8 @@ for (const size of SIZES) {
       await page.goto('/');
       await page.clock.resume();
       await settle(page);
-      await expect(page.getByTestId('home-hero-label')).toHaveText(
-        'Example: Marksmanship Hunter best in slot',
-      );
+      await expect(page.getByTestId('home-hero-label')).toHaveCount(0);
+      await expect(page.getByTestId('home-hero-link')).toContainText('Marksmanship Hunter best in slot');
       await expect(page.getByTestId('home-hero-bands')).toHaveText(
         'Leveling best in slot, levels 20, 30, 40, 50, 60',
       );

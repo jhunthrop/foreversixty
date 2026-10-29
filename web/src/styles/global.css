@@ -806,8 +806,11 @@ html:not([data-setup-first])[data-session='1'] .setup-btn[data-step='2'],
 html[data-setup-first='1'] .setup-btn[data-step='1'],
 html[data-setup-first='2'] .setup-btn[data-step='2'],
 html[data-setup-first='3'] .setup-btn[data-step='3'] {
-  background: var(--color-gold);
-  border-color: var(--color-gold);
+  background: linear-gradient(180deg, #f0cc6c, #c99a3a);
+  border-color: transparent;
+  box-shadow:
+    inset 0 0 0 1px var(--color-gold-deep),
+    0 6px 20px rgba(229, 185, 85, 0.22);
   color: var(--color-bg);
 }
 html:not([data-setup-first]):not([data-session='1']) .setup-btn[data-step='1']:hover,
@@ -815,8 +818,7 @@ html:not([data-setup-first])[data-session='1'] .setup-btn[data-step='2']:hover,
 html[data-setup-first='1'] .setup-btn[data-step='1']:hover,
 html[data-setup-first='2'] .setup-btn[data-step='2']:hover,
 html[data-setup-first='3'] .setup-btn[data-step='3']:hover {
-  background: var(--color-gold-hover);
-  border-color: var(--color-gold-hover);
+  filter: brightness(1.08);
   color: var(--color-bg);
 }
 

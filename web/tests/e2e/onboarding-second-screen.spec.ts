@@ -80,12 +80,13 @@ for (const size of SIZES) {
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Install from CurseForge' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
-      await expect(page.getByText('Windows. Mac is not supported yet.')).toBeVisible();
+      await expect(page.getByText('Windows only; Mac is not supported yet.')).toBeVisible();
       await expect(page.getByTestId('setup-line-signin')).toBeHidden();
-      for (const id of ['setup-try-export', 'setup-manual-install', 'setup-everything']) {
+      for (const id of ['setup-try-export', 'setup-everything']) {
         await expect(page.getByTestId(id)).not.toHaveAttribute('open', '');
       }
-      await expect(page.getByText('Current data build')).toBeHidden();
+      await expect(page.getByTestId('setup-manual-install')).toHaveAttribute('open', '');
+      await expect(page.getByText('Current data build')).toBeVisible();
       await page.screenshot({ path: join(SHOTS, `w9-setup-signed-out-${size.name}.png`), fullPage: true });
     });
 
@@ -224,7 +225,8 @@ for (const size of SIZES) {
       await settle(page);
       const card = page.getByTestId('home-hero-card');
       await expect(card).toContainText('Launch Nov 4 · 15:00 PST');
-      await expect(card).toContainText('in 12 days');
+      await expect(page.getByTestId('home-hero-countdown-days')).toContainText('12');
+      await expect(page.getByTestId('home-hero-countdown')).toContainText('Minutes');
       await expect(card).not.toContainText('Beta is live');
       await expect(
         page.getByTestId('home-news-item').filter({ has: page.locator('[href*="simulator-tools"]') }),
