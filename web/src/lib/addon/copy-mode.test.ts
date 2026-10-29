@@ -32,9 +32,9 @@ describe('the site’s instruction for the addon’s copy mode (L8.5 ruling 5)',
     expect(addonCopy.flowOutBody).toBe(
       'In game, type /fs copy, press Ctrl+C, then paste it into the planner’s Import from addon box.',
     );
-    expect(landingCopy.pasteHeroHintLead).toBe(
-      'In game, type /fs copy, press Ctrl+C, then paste it here, or',
-    );
+    // The lead once ran on into a bare sign-in link ("…here, or"); the polish lane's Task 8
+    // removed that link, so the sentence closes.
+    expect(landingCopy.pasteHeroHintLead).toBe('In game, type /fs copy, press Ctrl+C, then paste it here.');
   });
 
   it('leaves no "Copy my character" button or /fs export command anywhere in the site’s copy', () => {
