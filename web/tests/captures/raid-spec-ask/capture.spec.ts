@@ -60,6 +60,8 @@ for (const width of WIDTHS) {
     await open(page, width, false);
     await part(page, 'segments', '-late').click();
     await part(page, 'status').getByText('Saved').waitFor();
+    await page.getByTestId(`${stripId('spec', VIEWER_MEMBER)}-toggle`).click();
+    await part(page, 'spec').waitFor({ state: 'visible' });
     await shoot(page, 'change', width);
   });
 }

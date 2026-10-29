@@ -11,6 +11,13 @@ export const NOTE_MAX = 140;
 export const NOTE_COUNTER_FROM = 120;
 /** The role select's visually hidden label and accessible name (spec 3.3). */
 export const ROLE_FIELD_LABEL = 'Role';
+/** A pressed In, Late or Bench that waits for the spec pick is dropped after this long out of focus. */
+export const SPEC_ASK_IDLE_MS = 60_000;
+/** The spec block's height on an unsigned row, so pressing a state shifts nothing below it: the
+ *  ask measured at 360 is 116 px (label, the 44 px select, a two-line lead) and 100 px from md (one-line lead), pinned by the e2e 'shifts nothing' test; the
+ *  saved control is the 44 px button + 8 top. */
+export const SPEC_RESERVE_ASK = 'min-h-[116px] md:min-h-[100px]';
+export const SPEC_RESERVE_SAVED = 'min-h-[52px]';
 /** How long `Saved.` stays. */
 export const SAVED_LINE_MS = 4000;
 

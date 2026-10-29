@@ -337,7 +337,7 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 | `roster.continued` | U+200B (a continuation field's name) |
 | `roster.empty` | `None yet` |
 | `roster.line` | `{emoji} {Name}`; no spec `{Name} · {Class}`; no class `{Name}` |
-| `roster.textLine` | `{Name} · {Spec}` (the full spec name); no spec `{Name} · {Class}` |
+| `roster.textLine` | `{Name} · {Spec} {Class}` (the full spec name and the class, `Aurelith · Holy Paladin`); no spec `{Name} · {Class}` |
 | `roster.more` | `and {n} more` |
 | `roster.outJoin` | `, ` |
 
@@ -371,7 +371,7 @@ Decision: each line starts with the spec's own talent-tab icon, uploaded once as
 - Images: 28 PNGs, 64 x 64, transparent, converted from the webp by `make discord-emoji` into `api/internal/discordbot/emoji/{class}_{spec}.png`, committed and embedded with `go:embed`. Each stays under Discord's 256 KiB.
 - Setup step: the subcommand `api discord-emoji` beside `stripe-setup`. It reads `GET /applications/{application id}/emojis`, uploads each missing `fs_{class}_{spec}` with `POST /applications/{application id}/emojis` (name and a `data:image/png;base64,...` image), and prints each name and id, never the token. It is idempotent: a second run uploads nothing. `--replace` deletes and re-uploads all 28 after an icon changes or a build adds a spec. It runs once per application: production, then the test application. A build that adds a spec adds its row to `specs.json`, and the next run uploads only that one.
 - The bot at start reads the same list once and holds `fs_{class}_{spec}` to id in memory. While any of the 28 is missing (a failed read, or setup not yet run), it re-reads at most once an hour, logs `emoji_missing` with the names, and draws the text line for those specs.
-- Text line (an emoji missing, or any webhook message, §P.9.7): `{Name} · {Spec}`, the full spec name, no mark.
+- Text line (an emoji missing, or any webhook message, §P.9.7): `{Name} · {Spec} {Class}`, the full spec name and the class word (owner ruling 2026-10-28: Holy, Protection, Restoration and Frost each belong to two classes), no mark.
 
 ### P.9.2 Layout, field by field
 
@@ -393,7 +393,7 @@ Desktop reading (`post-tomorrow-desktop`, `post-full-desktop`): row 1 is When, G
 
 `{emoji} {Name}`, one per line, nothing else. `{Name}` is the sign-up row's name through `memberText`. The emoji is the row's spec icon (§P.9.1). There is no short spec word anywhere: the icon says the spec in the post, and the text line writes the full spec name.
 
-No spec on the row (a sign-up made before the spec ask existed, or by an officer): no mark exists, so the line is the text line with the class, `{Name} · {Class}`. No class on the row: `{Name}` alone, sorted after every class. The text line (§P.9.1) is `{Name} · {Spec}`, or `{Name} · {Class}` with no spec. The class word appears only when the spec is unknown.
+No spec on the row (a sign-up made before the spec ask existed, or by an officer): no mark exists, so the line is the text line with the class, `{Name} · {Class}`. No class on the row: `{Name}` alone, sorted after every class. The text line (§P.9.1) is `{Name} · {Spec} {Class}`, or `{Name} · {Class}` with no spec. In the emoji line the class word appears only when the spec is unknown.
 
 Sort within a group, Late and Bench: class in the game's order (`classChoices`: Druid, Hunter, Mage, Paladin, Priest, Rogue, Shaman, Warlock, Warrior), then name, case-insensitive. A class's specs therefore sit together by name, and a raid leader counts five mages at a glance. Out sorts by name alone, because it has no mark to group by.
 
@@ -408,7 +408,7 @@ A long name may wrap inside a 3-column field on the desktop client; the icon sta
 
 ### P.9.5 Limits and overflow
 
-- A field holds at most 16 lines. The longest line is 60 characters (46 for the emoji markup, `<:fs_hunter_beast_mastery:` plus a 19-digit id plus `>`, a space, 12 for a WoW name, which has no markdown specials to escape, a newline), so 16 lines are at most 960 characters, under the 1024 field limit. The text line is at most 29 characters (12, ` · `, 13 for `Beast Mastery` or `Assassination`, a newline).
+- A field holds at most 16 lines. The longest line is 60 characters (46 for the emoji markup, `<:fs_hunter_beast_mastery:` plus a 19-digit id plus `>`, a space, 12 for a WoW name, which has no markdown specials to escape, a newline), so 16 lines are at most 960 characters, under the 1024 field limit. The text line is at most 37 characters (12, ` · `, 13 for `Beast Mastery` or `Assassination`, a space, 7 for `Warlock` or `Paladin`, a newline).
 - A group over 16 lines continues in one more inline field directly after it, named U+200B (zero-width space; Discord refuses an empty name), so it reads as the same list. A group over 32 lines draws 31 and then `and {n} more`.
 - Late and Bench draw at most 10 lines; the tenth becomes `and {n} more`.
 - Out: names joined by `, ` until the next name would pass 1024 characters; then `, and {n} more`.
@@ -502,9 +502,10 @@ Reference: the same question as the Discord card, on the surface the member is a
 | Part | Spec |
 |---|---|
 | Where | The raid page sign-up, for In, Late and Bench, after the character is known; shown only when `raid_spec` is unknown for that character in this guild. Out never asks. |
-| Control | One select: label `spec.title` (`Which spec tonight?`), placeholder `spec.placeholder` (`Choose a spec`), options the class's specs by full name (`spec.option`) in catalogue order, each with the spec's own icon (`/data/{build}/icons/{icon}.webp`, 20 px, no missing-icon flash). With a saved spec the select is shown with it chosen and `spec.change` (`Change spec`) as its label link. |
+| Control | One select: label `spec.title` (`Which spec tonight?`), placeholder `spec.placeholder` (`Choose a spec`), options the class's specs by full name (`spec.option`) in catalogue order. A native select cannot draw an icon per option, so the chosen spec's own icon (`/data/{build}/icons/{icon}.webp`, 20 px, in a reserved box, no missing-icon flash) sits beside the control. With a saved spec the control collapses to a 44 px text button `{Spec} · Change spec` (`aria-expanded`) that reveals the select (the saved spec chosen) and the `spec.lead.change` line; a pick collapses it and returns focus to the button. |
 | Copy | The Discord card's keys, verbatim: `spec.title`, `spec.lead` (`spec.lead.change` with a saved spec), `spec.placeholder`, `spec.kept`, `spec.change`. No new strings. |
 | Save | One write path with the Discord card: `guild_characters.raid_spec` after the character is re-checked as the member's, then the sign-up with that spec's role. The pick commits the sign-up, as on the card; there is no separate save button. |
+| Pending press | In, Late or Bench pressed with no saved spec saves nothing: the segment reads pending (dashed outline, `aria-busy`, not checked) until the pick. Escape, or 60 s out of focus, drops it; a reload shows the row unsigned. An unsigned row reserves the block's height (116 px at 360, 100 px from md, 52 px with a saved spec) so the press shifts nothing below it. |
 | States | Default: closed select. Hover, focus-visible and active as the site's select. Disabled while saving. Error: `That did not save. Try again.` under the select; the sign-up is not made. Keyboard: native select, arrow keys and Enter; touch: the native picker. 44 px tall at 360. |
 | Unlinked members | Unchanged: the link nudge (`pressCopy.NotLinked` and `Link Discord`); no spec ask until linked. |
 | Roster | The next edit of the post draws the line with the new spec's icon. |
@@ -543,7 +544,7 @@ P4. The reminder carries the post's own buttons and is deleted on cancel, lock o
 
 P5. The switch is the existing checkbox with `role="switch"`. No new control (tenet 10).
 
-P6. The mark is the spec's own talent-tab icon as an application emoji (§P.9.1), by the owner's direction at 22:10 ("like existing discord tools"). It says class and spec in one 20 px image, fits a 3-column field, needs no server permission, and degrades to `{Name} · {Spec}`. Rejected: the class crest plus a short spec word, the first draw, which doubled every line.
+P6. The mark is the spec's own talent-tab icon as an application emoji (§P.9.1), by the owner's direction at 22:10 ("like existing discord tools"). It says class and spec in one 20 px image, fits a 3-column field, needs no server permission, and degrades to `{Name} · {Spec} {Class}`. Rejected: the class crest plus a short spec word, the first draw, which doubled every line.
 
 P7. Four groups, not three: DPS splits into Melee and Ranged by spec. The owner asked for the roster "like existing discord bots", and Raid-Helper's classic template splits them the same way, because a raid leader places melee and ranged differently. The first draw of a single DPS column needed four columns at 20 DPS, and the continuation under `Tanks` read as tanks. Rejected: one DPS column with continuations.
 
@@ -578,7 +579,7 @@ P13. The raid page asks the spec too (§P.10.7): the same select and copy, saved
 13. The payload dump (`payload-dump.go.txt`) gains every card frame and both reminder forms, so the reviewers' boards render from the real handlers.
 14. Roster: the post's fields are `When`, `Guild time`, `Signed up` (inline, `roster.signed`), then `Tanks`, `Healers`, `Melee`, `Ranged`, `Late`, `Bench` (inline) and `Out` (full width) per §P.9.2; nobody In or Late draws no groups; an empty group draws `None yet`; lines sort by class then name, Out by name; Melee and Ranged split per §P.9.4, a spec-less Rogue in Melee and a spec-less Mage in Ranged.
 15. Roster limits: a 17-line group draws a U+200B continuation; a 40-line group draws 31 lines and `and 9 more`; Bench at 11 draws 9 and `and 2 more`; every field value at most 1024; at most 25 fields; 120 sign-ups keep the embed under 6000 through the guard.
-16. Marks: with the emoji map loaded each line is `<:fs_{class}_{spec}:{id}> {Name}`; with a spec missing from the map, that spec's lines are the text line `{Name} · {Spec}`; a row with no spec is `{Name} · {Class}`; every webhook roster is text lines; the emoji names are exactly the 28 `specs.json` slugs with hyphens as underscores, each icon file exists in the active build's icon folder, and no short spec word exists in the code; `api discord-emoji` against a stub uploads only the missing names and prints no token.
+16. Marks: with the emoji map loaded each line is `<:fs_{class}_{spec}:{id}> {Name}`; with a spec missing from the map, that spec's lines are the text line `{Name} · {Spec} {Class}`; a row with no spec is `{Name} · {Class}`; every webhook roster is text lines; the emoji names are exactly the 28 `specs.json` slugs with hyphens as underscores, each icon file exists in the active build's icon folder, and no short spec word exists in the code; `api discord-emoji` against a stub uploads only the missing names and prints no token.
 17. Spec card: the options are the class's specs by full name (`Beast Mastery`, `Retribution`, never a short word); an In press with no spec known answers the card (type 4 from the post, type 7 after the character select), with title, lead, colour, crest and the class's specs; an Out press never asks; a pick saves `raid_spec`, signs up with that spec's role and answers the outcome plus `spec.kept` and `Change spec`; a forged key answers `pressCopy.Failure`; a locked raid answers its sentence; `Change spec` never changes the state; the next press with the spec saved signs up with no card.
 
 ## Site tests
@@ -607,6 +608,6 @@ Site captures, added to the bot spec's §9: the raid form's Discord block (creat
 
 1. Melee and Ranged in place of one DPS column (ruling P7). It follows Raid-Helper, but the brief said Tanks, Healers, DPS. Keep the split?
 2. Feral and Feral Bear share one icon, so their two emoji look the same in the roster, and the Melee and Tanks groups tell them apart. Keep it (the game's own icon), or draw a distinct mark for Feral Bear?
-3. The text fallback is `{Name} · {Spec}` as ruled, so a webhook line reads `Aurelith · Holy` with no class word; Holy, Protection, Restoration and Frost each belong to two classes. Add the class word (`Aurelith · Holy Paladin`) on webhooks only, or keep it as ruled?
+3. Answered (owner, 2026-10-28): the text fallback carries the class word, `{Name} · {Spec} {Class}` (`Aurelith · Holy Paladin`), on every text line.
 4. A row with no spec (only sign-ups made before the spec ask) draws `{Name} · {Class}` with no icon. Fine, or ask officers to set it?
 3. The site has no control for a character's spec today. The coordinator's "spec from what the character has set on the site" therefore means only what the Discord card saves, or the logs. Should the raid page's own sign-up ask the spec too, so a site-only member is never a bare name?

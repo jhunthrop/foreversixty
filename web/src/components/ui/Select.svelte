@@ -18,37 +18,47 @@
     value = $bindable(''),
     options,
     id,
+    name,
     label,
     placeholder,
     compact = false,
     disabled = false,
     error,
+    describedBy,
     testid,
   }: {
     value?: string;
     options: readonly SelectOption[];
     id: string;
+    /** The form field name, for a select inside a plain form. */
+    name?: string;
     /** The accessible name when no visible `<label for>` exists. */
     label?: string;
     placeholder?: string;
     compact?: boolean;
     disabled?: boolean;
     error?: string;
+    /** Ids of lines that describe the field (read with the error line). */
+    describedBy?: string;
     testid?: string;
   } = $props();
 
   const errorId = $derived(`${id}-error`);
+  const describedIds = $derived(
+    [describedBy, error === undefined ? undefined : errorId].filter(Boolean).join(' ') || undefined,
+  );
 </script>
 
 <div class="flex flex-col gap-1">
   <div class="relative">
     <select
       {id}
+      {name}
       bind:value
       {disabled}
       aria-label={label}
       aria-invalid={error === undefined ? undefined : 'true'}
-      aria-describedby={error === undefined ? undefined : errorId}
+      aria-describedby={describedIds}
       data-testid={testid}
       class="rounded-control border-line-card text-strong hover:border-gold/30 focus-visible:outline-gold w-full cursor-pointer appearance-none border bg-white/[.045] pr-10 pl-3 text-[15px] font-semibold transition-colors duration-[120ms] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45 {compact
         ? 'h-11'

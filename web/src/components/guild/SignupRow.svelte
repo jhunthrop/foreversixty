@@ -7,12 +7,21 @@
   import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
-  import { pressAsksSpec, savedSpec, showsSpecSelect, specOfClass } from '../../lib/guild/raid-spec';
+  import {
+    pressAsksSpec,
+    savedSpec,
+    showsSpecSelect,
+    specOfClass,
+    specsForClass,
+  } from '../../lib/guild/raid-spec';
   import { createSerialSave } from '../../lib/guild/serial-save';
   import {
     NOTE_MAX,
     ROLE_FIELD_LABEL,
     SAVED_LINE_MS,
+    SPEC_ASK_IDLE_MS,
+    SPEC_RESERVE_ASK,
+    SPEC_RESERVE_SAVED,
     failureLine,
     initialRole,
     noteCounter,
@@ -64,8 +73,11 @@
   let roleChoice = $state<GuildRaidRole | null>(null);
   let noteEdit = $state<string | null>(null);
   let busy = $state(false);
-  /** In, Late or Bench was pressed with no saved spec: the pick, not the press, signs up. */
-  let awaitingSpec = $state(false);
+  /** In, Late or Bench was pressed with no saved spec: the pick, not the press, signs up. Until
+   *  then the segment reads pending and nothing is saved. */
+  let askedState = $state<GuildSignupState | null>(null);
+  let rowEl = $state<HTMLLIElement | undefined>(undefined);
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
   /** The spec picked and in flight; `null` once the props carry the saved one. */
   let specChoice = $state<string | null>(null);
   let status = $state<RowStatus | null>(null);
@@ -79,15 +91,53 @@
   const shownNote = $derived(noteEdit ?? savedNote);
   const counter = $derived(noteCounter(shownNote));
   const saved = $derived(savedSpec(character));
-  const showSpec = $derived(showsSpecSelect(character.class, shownState));
+  const specState = $derived(askedState ?? shownState);
+  const showSpec = $derived(showsSpecSelect(character.class, specState));
+  /** An unsigned row keeps the room the spec block takes, so a press shifts nothing below it. */
+  const reservesSpec = $derived(character.state === null && specsForClass(character.class).length > 1);
   const chosenSpec = $derived(specChoice ?? saved?.spec ?? '');
   const specLead = $derived(
     saved === null
-      ? raidCopy.spec.lead(character.name, raidCopy.segments[shownState ?? 'in'], raidTitle, raidDate)
+      ? raidCopy.spec.lead(character.name, raidCopy.segments[specState ?? 'in'], raidTitle, raidDate)
       : raidCopy.spec.leadChange(character.name, raidTitle, raidDate),
   );
 
-  $effect(() => () => clearTimeout(savedTimer));
+  $effect(() => () => {
+    clearTimeout(savedTimer);
+    clearTimeout(idleTimer);
+  });
+
+  function cancelAsk(): void {
+    clearTimeout(idleTimer);
+    askedState = null;
+  }
+
+  function armIdle(): void {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(cancelAsk, SPEC_ASK_IDLE_MS);
+  }
+
+  /** While a pick is owed: focus inside the row holds the press; leaving it for 60 s, or Escape,
+   *  drops it (nothing was saved, so there is nothing to revert on the server). */
+  $effect(() => {
+    if (askedState === null || rowEl === undefined) return;
+    const row = rowEl;
+    const hold = (): void => clearTimeout(idleTimer);
+    const leave = (event: FocusEvent): void => {
+      if (!row.contains(event.relatedTarget as Node | null)) armIdle();
+    };
+    const escape = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') cancelAsk();
+    };
+    row.addEventListener('focusin', hold);
+    row.addEventListener('focusout', leave);
+    row.addEventListener('keydown', escape);
+    return () => {
+      row.removeEventListener('focusin', hold);
+      row.removeEventListener('focusout', leave);
+      row.removeEventListener('keydown', escape);
+    };
+  });
 
   function showSaved(choice: SignupChoice): void {
     clearTimeout(savedTimer);
@@ -144,7 +194,7 @@
   });
 
   function save(): void {
-    if (awaitingSpec) return;
+    if (askedState !== null) return;
     status = null;
     onClearNotice();
     void saver.request();
@@ -155,9 +205,14 @@
   }
 
   function pickState(state: GuildSignupState): void {
+    if (pressAsksSpec(character, state)) {
+      askedState = state;
+      status = null;
+      armIdle();
+      return;
+    }
+    cancelAsk();
     pendingState = state;
-    awaitingSpec = pressAsksSpec(character, state);
-    if (awaitingSpec) status = null;
     save();
   }
 
@@ -166,7 +221,8 @@
     if (spec === null) return;
     specChoice = slug;
     roleChoice = spec.role;
-    awaitingSpec = false;
+    if (askedState !== null) pendingState = askedState;
+    cancelAsk();
     save();
   }
 
@@ -201,6 +257,7 @@
   </li>
 {:else}
   <li
+    bind:this={rowEl}
     class="border-line-soft border-b pt-3 last:border-b-0"
     aria-busy={busy}
     data-testid={`signup-row-${key}`}
@@ -220,6 +277,7 @@
       <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
         <SignupSegments
           value={shownState}
+          pending={askedState}
           name={character.name}
           size="strip"
           {disabled}
@@ -271,9 +329,16 @@
         chosen={chosenSpec}
         saved={saved !== null}
         lead={specLead}
-        disabled={disabled || busy}
+        {busy}
+        {disabled}
         onPick={pickSpec}
       />
+    {:else if reservesSpec}
+      <div
+        class={saved === null ? SPEC_RESERVE_ASK : SPEC_RESERVE_SAVED}
+        aria-hidden="true"
+        data-testid={`signup-spec-reserve-${key}`}
+      ></div>
     {/if}
     <div class="min-h-5 pt-0.5 pb-2 text-[13px] leading-5" data-testid={`signup-status-${key}`}>
       {#key status}

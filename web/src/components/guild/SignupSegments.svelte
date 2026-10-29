@@ -9,6 +9,7 @@
 
   let {
     value,
+    pending = null,
     name,
     size,
     disabled = false,
@@ -17,6 +18,8 @@
     testid = 'signup-segments',
   }: {
     value: GuildSignupState | null;
+    /** Pressed but not saved (the spec pick is owed): drawn as pending, never as checked. */
+    pending?: GuildSignupState | null;
     name: string;
     /** `strip` is 44 px everywhere; `band` is 44 px on phone and 36 px from md. */
     size: 'band' | 'strip';
@@ -36,12 +39,14 @@
   // The checked ground is visible against the rest's `--raised` (spec 3.3, amended 2026-10-27, review round).
   const CHECKED_IN = 'text-strong bg-kill/15 shadow-[inset_0_-2px_0_var(--color-kill)]';
   const CHECKED_OUT = 'text-strong bg-line-warm shadow-[inset_0_-2px_0_var(--color-muted)]';
+  const PENDING = 'text-text outline-gold outline-2 -outline-offset-2 outline-dashed';
   const SIZE = { strip: 'h-11', band: 'h-11 md:h-9' } as const;
 
   function segmentClass(state: GuildSignupState, index: number): string {
     const divider = index > 0 ? 'border-line border-l' : '';
     const checked = value === state ? (state === 'in' || state === 'late' ? CHECKED_IN : CHECKED_OUT) : REST;
-    return [BASE, SIZE[size], divider, checked].filter(Boolean).join(' ');
+    const waiting = pending === state ? PENDING : '';
+    return [BASE, SIZE[size], divider, checked, waiting].filter(Boolean).join(' ');
   }
 
   function select(state: GuildSignupState): void {
@@ -74,6 +79,7 @@
       type="button"
       role="radio"
       aria-checked={value === state ? 'true' : 'false'}
+      aria-busy={pending === state ? 'true' : undefined}
       tabindex={index === tabStop ? 0 : -1}
       {disabled}
       class={segmentClass(state, index)}

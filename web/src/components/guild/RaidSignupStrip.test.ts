@@ -197,11 +197,23 @@ describe('RaidSignupStrip', () => {
       expect(markup).toMatch(/<img[^>]*data-testid="signup-spec-us-forever-aurelith-icon"/);
     });
 
-    it('does not ask an unsigned row or an Out row until a state is pressed', () => {
-      expect(html({ view: raid([character('Aurelith', { class: 'paladin' })]) })).not.toContain(
-        'signup-spec-',
+    it('does not ask an unsigned row or an Out row, and reserves the block on the unsigned one', () => {
+      const unsigned = html({ view: raid([character('Aurelith', { class: 'paladin' })]) });
+      expect(unsigned).not.toContain('<select data-testid="signup-spec-');
+      expect(unsigned).not.toMatch(/<select[^>]*signup-spec-/);
+      expect(unsigned).toContain('signup-spec-reserve-us-forever-aurelith');
+      const out = html({ view: raid([{ ...PALADIN, state: 'out' }]) });
+      expect(out).not.toMatch(/<select[^>]*signup-spec-/);
+      expect(out).not.toContain('signup-spec-reserve-');
+    });
+
+    it('collapses a saved spec into the toggle, closed', () => {
+      const markup = html({ view: raid([{ ...PALADIN, raid_spec: 'paladin-retribution' }]) });
+      expect(markup).toMatch(
+        /<button[^>]*aria-expanded="false"[^>]*data-testid="signup-spec-us-forever-aurelith-toggle"/,
       );
-      expect(html({ view: raid([{ ...PALADIN, state: 'out' }]) })).not.toContain('signup-spec-');
+      expect(text(markup)).toContain(`Retribution · ${raidCopy.spec.change}`);
+      expect(markup).toMatch(/<div id="signup-spec-us-forever-aurelith-panel" hidden/);
     });
 
     it('disables the select with the row when the raid is locked', () => {
