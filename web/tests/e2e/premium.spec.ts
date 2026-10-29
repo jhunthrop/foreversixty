@@ -294,7 +294,7 @@ test('forbidden words stay off the page, and the coach line is the first Premium
   const text = (await page.locator('main').textContent()) ?? '';
   expect(text).not.toMatch(/chip in|retention|compare more than/i);
   expect(text).not.toContain('!');
-  expect(text).toContain(plansPageCopy.premium.features[0]);
+  expect(text).toContain(plansPageCopy.premium.features[0]?.text ?? 'missing');
   expect(text).not.toContain(plansPageCopy.trialEmail);
   const trialText = await page.locator('.slot, .row:has([data-rule-term]) dd').allTextContents();
   expect(trialText.join(' ')).not.toMatch(/email you/i);

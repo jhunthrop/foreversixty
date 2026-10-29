@@ -145,7 +145,14 @@ test.describe('the bar at every width', () => {
         const doors = await page
           .getByTestId('primary-nav')
           .locator('a.site-door')
-          .evaluateAll((links) => links.map((link) => Math.round(link.getBoundingClientRect().top)));
+          .evaluateAll((links) =>
+            // One row: every shown door (the Premium tag too, 40 px against the doors' 44) shares
+            // a vertical centre; the tag is not drawn from 1024 to 1149.
+            links
+              .map((link) => link.getBoundingClientRect())
+              .filter((box) => box.height > 0)
+              .map((box) => Math.round(box.top + box.height / 2)),
+          );
         expect(new Set(doors).size).toBe(1);
       }
     });

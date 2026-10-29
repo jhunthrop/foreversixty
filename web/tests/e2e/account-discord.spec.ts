@@ -138,7 +138,10 @@ test.describe('paste form', () => {
     await pasteAndSave(page, VALID_URL);
     const error = page.getByTestId('discord-webhook-error');
     await expect(error).toContainText(copy.notEntitled);
-    await expect(error.getByRole('link', { name: copy.seePlans })).toHaveAttribute('href', '/premium#notifications');
+    await expect(error.getByRole('link', { name: copy.seePlans })).toHaveAttribute(
+      'href',
+      '/premium#notifications',
+    );
     await expect(input(page)).toBeFocused();
   });
 });
@@ -352,7 +355,10 @@ test.describe('switched off, lapsed, free', () => {
     await openAccount(page, { initial: null, entitled: false });
     const free = page.getByTestId('discord-free');
     await expect(free).toContainText(copy.freeSentence);
-    await expect(free.getByRole('link', { name: copy.seePlans })).toHaveAttribute('href', '/premium#notifications');
+    await expect(free.getByRole('link', { name: copy.seePlans })).toHaveAttribute(
+      'href',
+      '/premium#notifications',
+    );
     await expect(page.getByTestId('discord-state-tag')).toHaveCount(0);
     await expect(page.getByTestId('account-discord').locator('form')).toHaveCount(0);
     await expect(premiumRow(page).getByText(premiumRowCopy.off, { exact: true })).toBeVisible();

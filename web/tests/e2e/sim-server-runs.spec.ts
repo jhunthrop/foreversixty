@@ -176,7 +176,10 @@ test('a lapsed plan answers Run again with the Premium line and See plans', asyn
   await page.getByTestId('server-run-again-failed-run').click();
   const row = page.getByTestId('server-run-failed-run');
   await expect(row).toContainText(serverRunsCopy.planLapsed);
-  await expect(row.getByRole('link', { name: serverRunsCopy.seePlans })).toHaveAttribute('href', '/premium#server-sims');
+  await expect(row.getByRole('link', { name: serverRunsCopy.seePlans })).toHaveAttribute(
+    'href',
+    '/premium#server-sims',
+  );
   await expect(page.getByTestId('server-run-again-failed-run')).toBeEnabled();
 });
 
