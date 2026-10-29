@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 )
 
 // Raid form bounds (spec §3.5) and the sign-up note bound (migration 0050).
@@ -177,11 +179,17 @@ type signupRequest struct {
 	State string `json:"state"`
 	Role  string `json:"role"`
 	Note  string `json:"note"`
+	// Spec, when set, is a specs.json key saved as the character's raid spec before the sign-up,
+	// whose role the sign-up then takes (spec 2026-10-28 §P.10.7).
+	Spec string `json:"spec"`
 }
 
 // validateSignup checks a sign-up body; role may be empty (the spec's default applies).
 func validateSignup(req signupRequest) (signupRequest, map[string]string) {
 	fields := map[string]string{}
+	if _, ok := raidspec.ByKey(req.Spec); req.Spec != "" && !ok {
+		fields["spec"] = "Choose a spec."
+	}
 	switch req.State {
 	case SignupIn, SignupLate, SignupBench, SignupOut:
 	default:

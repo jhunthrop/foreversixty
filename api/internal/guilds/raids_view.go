@@ -55,6 +55,9 @@ type ViewerCharacter struct {
 	Verified     bool    `json:"verified"`
 	State        *string `json:"state"`
 	Role         string  `json:"role"`
+	// RaidSpec is the picked raid spec (a specs.json key, "paladin-holy"); null until picked,
+	// when the raid page asks "Which spec tonight?" (spec 2026-10-28 §P.10.7).
+	RaidSpec *string `json:"raid_spec"`
 }
 
 // RaidViewer is who is asking.
@@ -247,6 +250,10 @@ func viewerCharacter(c raidRosterChar, sg Signup, signed bool) ViewerCharacter {
 		CharacterKey: c.CharacterKey, Name: c.Name, Class: c.Class, Spec: c.Spec,
 		Verified: c.verified, Role: c.defaultRole(),
 	}
+	if c.raidSpec != "" {
+		spec := c.raidSpec
+		vcx.RaidSpec = &spec
+	}
 	if signed {
 		state := sg.State
 		vcx.State, vcx.Role = &state, sg.Role
@@ -330,7 +337,7 @@ func sortRaidCharacters(s []RaidCharacter) {
 // (internal/spec); every other spec is DPS. Protection is a tank for warriors and paladins
 // alike; Holy, Discipline and Restoration heal for every class that has them.
 var (
-	tankSpecs   = map[string]bool{"protection": true, "feral combat": true, "feral": true, "guardian": true}
+	tankSpecs   = map[string]bool{"protection": true, "feral bear": true, "feral combat": true, "feral": true, "guardian": true}
 	healerSpecs = map[string]bool{"holy": true, "discipline": true, "restoration": true}
 )
 

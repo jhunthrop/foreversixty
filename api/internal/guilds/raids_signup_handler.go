@@ -68,8 +68,19 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 		writeInvalid(w, r, fields)
 		return
 	}
+	actorID := auth.ActorFrom(r.Context()).UserID
+	if req.Spec != "" {
+		// The spec's role is the sign-up's: saved first, the sign-up then takes its default.
+		req.Role = ""
+		if _, err := s.SaveRaidSpec(r.Context(), RaidSpecCommand{
+			GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec,
+		}); err != nil {
+			s.writeSignupErr(w, r, err)
+			return
+		}
+	}
 	res, err := s.signUp(r.Context(), SignupCommand{
-		GuildID: guildID, RaidID: raid.ID, ActorID: auth.ActorFrom(r.Context()).UserID,
+		GuildID: guildID, RaidID: raid.ID, ActorID: actorID,
 		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note,
 	}, false)
 	if err != nil {
@@ -101,6 +112,8 @@ func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err err
 		httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 	case errors.Is(err, ErrRaidLocked):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_locked", "sign-ups for this raid are locked", nil)
+	case errors.Is(err, ErrSpecNotOfClass):
+		writeInvalid(w, r, map[string]string{"spec": "Choose a spec of that character's class."})
 	case errors.Is(err, ErrRaidCancelled):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_cancelled", "this raid was cancelled", nil)
 	default:

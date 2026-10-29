@@ -58,8 +58,11 @@ type SignupCandidate struct {
 	Class        string
 	Spec         string
 	Role         string
-	Verified     bool
-	Main         bool
+	// RaidSpec is the picked raid spec (a specs.json key), "" when never picked: the bot asks
+	// "Which spec tonight?" before an In, Late or Bench while it is empty (spec §P.10.2).
+	RaidSpec string
+	Verified bool
+	Main     bool
 }
 
 // SignupResult is the raid as it now stands, the character answered for, the character R3
@@ -267,7 +270,7 @@ func (s *Service) SignupCandidates(ctx context.Context, guildID, userID int64) (
 func (c raidRosterChar) candidate(role string, main bool) SignupCandidate {
 	return SignupCandidate{
 		CharacterKey: c.CharacterKey, Name: c.Name, Class: c.Class, Spec: c.Spec,
-		Role: role, Verified: c.verified, Main: main,
+		Role: role, RaidSpec: c.raidSpec, Verified: c.verified, Main: main,
 	}
 }
 

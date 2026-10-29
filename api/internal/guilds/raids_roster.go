@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
@@ -17,6 +18,24 @@ type raidRosterChar struct {
 	userID   int64
 	verified bool
 	role     string // the newest logged fight's role, "" when none
+	// raidSpec is the spec the player picked for this guild's raids (a specs.json key), "" when
+	// never picked. It wins over the logs: applyRaidSpec makes it the snapshot's spec and role.
+	raidSpec string
+}
+
+// applyRaidSpec makes the picked raid spec the character's spec (its catalogue name, the form
+// sign-ups store) and role (spec 2026-10-28 §P.10.1); the class comes from the spec when the
+// logs and the character row name none. A key the catalogue no longer names changes nothing.
+func (c raidRosterChar) applyRaidSpec() raidRosterChar {
+	sp, ok := raidspec.ByKey(c.raidSpec)
+	if !ok {
+		return c
+	}
+	c.Spec, c.role = sp.Name, sp.Role
+	if c.Class == "" {
+		c.Class = sp.Class
+	}
+	return c
 }
 
 // defaultRole is the role a sign-up takes when the request names none: the newest logged
@@ -41,7 +60,8 @@ func raidRosterOn(ctx context.Context, q dbQuerier, guildID int64, key string) (
 	rows, err := q.Query(ctx, `
 		select gc.character_key, gc.user_id, gc.verified_at is not null,
 		       coalesce(nullif(c.name, ''), nullif(ae.name, ''), split_part(gc.character_key, '/', 3)),
-		       lower(coalesce(fm.class, c.class, '')), coalesce(fm.spec, ''), coalesce(fm.role, '')
+		       lower(coalesce(fm.class, c.class, '')), coalesce(fm.spec, ''), coalesce(fm.role, ''),
+		       coalesce(gc.raid_spec, '')
 		from guild_characters gc
 		left join characters c on c.key = gc.character_key
 		left join addon_exports ae on ae.character_key = gc.character_key
@@ -59,10 +79,10 @@ func raidRosterOn(ctx context.Context, q dbQuerier, guildID int64, key string) (
 	out := []raidRosterChar{}
 	for rows.Next() {
 		var c raidRosterChar
-		if err := rows.Scan(&c.CharacterKey, &c.userID, &c.verified, &c.Name, &c.Class, &c.Spec, &c.role); err != nil {
+		if err := rows.Scan(&c.CharacterKey, &c.userID, &c.verified, &c.Name, &c.Class, &c.Spec, &c.role, &c.raidSpec); err != nil {
 			return nil, fmt.Errorf("guilds: raid roster: %w", err)
 		}
-		out = append(out, c)
+		out = append(out, c.applyRaidSpec())
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: raid roster: %w", err)
