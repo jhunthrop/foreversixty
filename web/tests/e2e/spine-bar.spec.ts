@@ -88,19 +88,14 @@ test.describe('the spine bar opens every door on the current character', () => {
   });
 });
 
-// Fixed after this spec first found it broken (see the ledger, "Task 10 follow-up"): the
-// signed-out branch no longer sits inside `.chip-slot` (CurrentCharacterBar.svelte) -- that
-// class is hidden pre-paint whenever neither `data-pointer` nor `data-session` is set, which
-// is exactly the one visitor shape this line greets, so hiding it made the line permanently
-// unreachable rather than merely not pre-reserving space for it.
-test('the bar shows the signed-out, no-pointer line with two links, on a fresh visit', async ({ page }) => {
+// The tool pages (/sim/gear and its siblings) say it once, as /sim does: the bare signed-out
+// sentence and its underlined links are left out, and the Your characters card keeps the buttons.
+test('a tool page leaves the bare sign-in line out; its account card carries the buttons', async ({
+  page,
+}) => {
   await page.goto('/sim/gear');
-  await expect(page.getByTestId('current-character-bar-signed-out')).toBeVisible();
-  // Scoped to the bar: the page's own panels may carry sign-in links of their own, so a
-  // page-wide lookup could be a strict-mode violation.
-  const bar = page.getByTestId('current-character-bar');
-  await expect(bar.getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute('href', '/login');
-  await expect(bar.getByRole('link', { name: 'Paste an export' })).toHaveAttribute('href', '/setup#paste');
+  await expect(page.getByTestId('sim-signin').first()).toBeVisible();
+  await expect(page.getByTestId('current-character-bar-signed-out')).toHaveCount(0);
 });
 
 test('the simulator leaves the bare sign-in line out; its account card carries the buttons', async ({

@@ -225,7 +225,7 @@
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
   <!-- The spine bar is the one current-character band on the tool pages; it reserves
        CHIP_HEIGHT itself and bulk-skeleton.ts's `chipSlot` reserves the same band before hydration. -->
-  <CurrentCharacterBar spine currentDoor="sim" {restored} />
+  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} />
   {#if store.character !== null && !switcherOpen}
     <CharacterStrip
       character={store.character}
