@@ -24,10 +24,17 @@ describe('Tag', () => {
     ['success', 'text-kill'],
     ['muted', 'text-muted'],
     ['danger', 'text-wipe'],
+    ['warn', 'text-ember'],
   ])('%s tone uses %s', (tone, ink) => {
     const body = tag({ tone });
     expect(body).toContain(ink);
     expect(body).toContain(`data-tone="${tone}"`);
+  });
+
+  it('warn is a 12% fill with a 40% border', () => {
+    const body = tag({ tone: 'warn' });
+    expect(body).toContain('bg-ember/12');
+    expect(body).toContain('border-ember/40');
   });
 
   it('defaults to gold', () => {

@@ -125,16 +125,19 @@ describe('guildRowPlanLine', () => {
     you_are_billing_contact: false,
   };
 
-  it('reads Guild plan, then Raid guild plan for the raid tier', () => {
-    expect(guildRowPlanLine(plan, ZONE)).toBe('Guild plan · renews 12 Dec 2026');
-    expect(guildRowPlanLine({ ...plan, tier: 'raid_guild' }, ZONE)).toBe(
-      'Raid guild plan · renews 12 Dec 2026',
-    );
+  it('reads the verb and date alone, whatever the tier (the tag names it)', () => {
+    expect(guildRowPlanLine(plan, ZONE)).toBe('Renews 12 Dec 2026');
+    expect(guildRowPlanLine({ ...plan, tier: 'raid_guild' }, ZONE)).toBe('Renews 12 Dec 2026');
+    expect(guildRowPlanLine({ ...plan, cancel_at_period_end: true }, ZONE)).toBe('Ends 12 Dec 2026');
+  });
+
+  it('reads Active when the plan has no date', () => {
+    expect(guildRowPlanLine({ ...plan, current_period_end: null }, ZONE)).toBe('Active');
   });
 
   it('adds the seat note when the account holds one', () => {
     expect(guildRowPlanLine({ ...plan, you_hold_seat: true }, ZONE)).toBe(
-      'Guild plan · renews 12 Dec 2026 · you hold a seat',
+      'Renews 12 Dec 2026 · you hold a seat',
     );
   });
 });

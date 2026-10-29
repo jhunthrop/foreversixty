@@ -223,12 +223,14 @@ function characterCount(characters: number): string {
   return `all ${characters} of your characters`;
 }
 
+const LEAVE_GUILD = 'Leave guild';
+
 export const guildConsentCopy = {
   heading: 'My guilds',
   roster: 'Roster only',
   gear: 'Gear',
   gearBags: 'Gear and bags',
-  leave: 'Leave',
+  leave: LEAVE_GUILD,
   left: 'Left.',
   leaveConfirmLine: (guildName: string, characters: number): string =>
     `Leave ${guildName}? This removes ${characterCount(characters)} from its roster.`,
@@ -250,7 +252,7 @@ export const guildConsentCopy = {
   leaveLosesOfficer: (guildName: string): string => `You lose your officer tools in ${guildName}.`,
   /** The label on the consent select, which sets what the guild sees of this account. */
   shareLabel: 'Share with this guild',
-  leaveConfirmButton: 'Leave guild',
+  leaveConfirmButton: LEAVE_GUILD,
   leaveCancel: 'Cancel',
   consentSaved: (characters: number): string => `Saved. Applies to ${characterCount(characters)}.`,
 } as const;

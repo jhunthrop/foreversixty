@@ -3,7 +3,7 @@
      optional glowing dot. For a state (Founder, Connected, Current, Main); source pills stay
      `pill`. -->
 <script lang="ts" module>
-  export type TagTone = 'gold' | 'success' | 'muted' | 'danger';
+  export type TagTone = 'gold' | 'success' | 'muted' | 'danger' | 'warn';
 </script>
 
 <script lang="ts">
@@ -14,6 +14,8 @@
     success: 'text-kill border-kill/40 bg-kill/10',
     muted: 'text-muted border-line bg-white/[.04]',
     danger: 'text-wipe border-wipe/40 bg-wipe/10',
+    // The site has no separate warning hue; ember is its amber (a state to look at, not a failure).
+    warn: 'text-ember border-ember/40 bg-ember/12',
   };
 
   let {

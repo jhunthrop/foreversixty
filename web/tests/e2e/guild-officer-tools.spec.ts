@@ -386,7 +386,7 @@ test.describe('the account page guild rows', () => {
         .getByTestId('account-guild-plan'),
     ).toHaveCount(0);
     await expect(lines.nth(0)).toHaveText('Officer tools · until 12 Dec 2026');
-    await expect(lines.nth(1)).toHaveText('Guild plan · renews 31 Dec 2026');
+    await expect(lines.nth(1)).toHaveText('Renews 31 Dec 2026');
     await expect(guildSettingsLinkOf(lines.nth(0))).toHaveAttribute('href', GUILD_SETTINGS_PATH);
     await expect(guildSettingsLinkOf(lines.nth(1))).toHaveAttribute('href', SETTINGS_GUILD_PATH);
     await expect(page.getByTestId('account-premium-block').getByText('Officer tools')).toHaveCount(0);

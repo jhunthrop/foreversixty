@@ -41,9 +41,8 @@ describe('account page rows', () => {
       spec('Seat ended', 0, { Guild: 'Olympus', 'd MMM': '5 Dec' }),
     );
     expect(copy.seatEnded.action(4000, 'yearly')).toBe(spec('Seat ended', 1, { price: '$40 a year' }));
-    expect(copy.guildRow.plan).toBe(spec('Guild row', 0));
-    expect(copy.guildRow.raidPlan).toBe(spec('Guild row', 1));
-    expect(copy.guildRow.youHoldSeat).toBe(spec('Guild row', 2));
+    expect(copy.guildRow.youHoldSeat).toBe(spec('Guild row', 0));
+    expect(copy.guildRow.active).toBe(spec('Guild row', 1));
   });
 });
 

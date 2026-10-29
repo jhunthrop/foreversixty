@@ -180,14 +180,18 @@ export function accountPlanLine(me: Me, now: Date, zone?: string): AccountPlanLi
   };
 }
 
-/** A guild row's line: the plan words under the tier's own name, plus the seat note when this account holds one. */
+/**
+ * A guild block's plan value: the verb and date (`Renews 12 Dec 2026`), `Active` with no date, plus
+ * the seat note when this account holds one. The tier is the plan tag beside the guild name, so
+ * the words never repeat it.
+ */
 export function guildRowPlanLine(plan: GuildBillingView, zone?: string): string {
   const base = guildPlanLine(plan, zone);
-  const named =
-    plan.tier === 'raid_guild'
-      ? base.replace(settingsWords.guildPlan, accountPlanCopy.guildRow.raidPlan)
-      : base;
-  return plan.you_hold_seat ? `${named}${accountPlanCopy.guildRow.youHoldSeat}` : named;
+  const prefix = `${settingsWords.guildPlan} · `;
+  const value = base === settingsWords.guildPlan ? accountPlanCopy.guildRow.active : base;
+  const bare = value.startsWith(prefix) ? value.slice(prefix.length) : value;
+  const sentence = `${bare.charAt(0).toUpperCase()}${bare.slice(1)}`;
+  return plan.you_hold_seat ? `${sentence}${accountPlanCopy.guildRow.youHoldSeat}` : sentence;
 }
 
 /**

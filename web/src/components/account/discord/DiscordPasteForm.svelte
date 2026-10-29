@@ -58,7 +58,7 @@
       {/each}
     </ol>
     <div class="flex flex-col">
-      <label class="label text-muted mb-2" for="discord-webhook">{notificationsCopy.fieldLabel}</label>
+      <label class="quiet-label mb-2" for="discord-webhook">{notificationsCopy.fieldLabel}</label>
       <input
         type="text"
         name="discord-webhook"

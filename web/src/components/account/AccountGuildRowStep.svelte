@@ -23,7 +23,7 @@
 {#if part === 'plan' && plan !== null}
   <Tag tone={guild.plan ? 'gold' : 'muted'} testid="account-guild-plan-tag">{plan}</Tag>
 {:else if part === 'mark' && mark !== null}
-  <Tag tone="danger" testid="account-guild-not-verified">{mark}</Tag>
+  <Tag tone="warn" testid="account-guild-not-verified">{mark}</Tag>
 {:else if part === 'line' && next !== null}
   <SettingsRow
     glyph="card"

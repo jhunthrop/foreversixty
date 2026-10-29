@@ -57,9 +57,9 @@ export const accountPlanCopy = {
     actionNoPrice: 'Come back',
   },
   guildRow: {
-    plan: `${PLANS.guild.name} plan`,
-    raidPlan: `${PLANS.raid_guild.name} plan`,
     youHoldSeat: ' · you hold a seat',
+    /** The plan row's value when the plan has no date to show. */
+    active: 'Active',
     notVerified: 'Not verified',
     /** The plan tag in a guild block's name line. */
     planTag: { guild: PLANS.guild.name, raid_guild: PLANS.raid_guild.name, none: 'No plan' },

@@ -85,12 +85,7 @@
   <AccountGuildRowStep {guild} part="line" />
   {#if !asking}
     <div class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-1 border-t px-5 py-4">
-      <button
-        class={button('danger', 'md', true)}
-        onclick={onask}
-        {disabled}
-        data-testid="account-guild-leave"
-      >
+      <button class={button('danger')} onclick={onask} {disabled} data-testid="account-guild-leave">
         {guildConsentCopy.leave}
       </button>
       <span class="text-muted min-h-[21px] text-[13px]" aria-live="polite">

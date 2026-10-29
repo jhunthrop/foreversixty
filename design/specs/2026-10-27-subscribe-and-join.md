@@ -410,7 +410,7 @@ Under today's `Only the guild master can subscribe the guild, release the claim 
 
 ### 6.5 Account page guild rows (`account-guild-row`)
 
-After the guild name: `Not verified`, 13 px muted, when the account has no verified character there. When `subscribe.step` is not `on_plan`: `{Guild} has no plan.` 13 px muted and the inline link `See the next step` to the checkout guild step with `plan={fits}&interval=yearly` and `#guild-{id}`, where `{fits}` is `raid_guild` above 25 verified members, else `guild`. On a plan: today's `AccountGuildPlanLine`. Polish 2026-10-29: the row is a card block (name in the heading face, a plan `Tag` (`Guild`, `Raid guild` or `No plan`), a danger `Not verified` tag, then settings rows: `Share with this guild` as a `Select`, `Guild settings` (value = the plan line) or `See the next step` (sub = the no-plan sentence) as link rows, `Leave` as `BUTTON_DANGER`).
+After the guild name: `Not verified`, 13 px muted, when the account has no verified character there. When `subscribe.step` is not `on_plan`: `{Guild} has no plan.` 13 px muted and the inline link `See the next step` to the checkout guild step with `plan={fits}&interval=yearly` and `#guild-{id}`, where `{fits}` is `raid_guild` above 25 verified members, else `guild`. On a plan: today's `AccountGuildPlanLine`. Polish 2026-10-29: the row is a card block (name in the heading face, a plan `Tag` (`Guild`, `Raid guild` or `No plan`), a warn `Not verified` tag, then settings rows: `Share with this guild` as a `Select`, `Guild settings` (value = the date, `Renews 31 Dec 2026`; the tier is only in the tag) or `See the next step` (sub = the no-plan sentence) as link rows, `Leave guild` as `BUTTON_DANGER`, the Unlink Discord size).
 
 ### 6.6 Discord bot
 
