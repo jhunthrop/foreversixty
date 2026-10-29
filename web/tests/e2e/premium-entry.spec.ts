@@ -237,25 +237,36 @@ test.describe('the bar widths', () => {
 test.describe('the phone Menu row', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('free: Premium is the last row, 52 px, the tag at the left and no chevron', async ({ page }) => {
+  test('free: the tag shares the last row with Get set up, right-aligned, 52 px, no chevron', async ({
+    page,
+  }) => {
     await signIn(page, FREE_ME);
     await page.goto('/');
     await page.getByTestId('menu-button').click();
     await expect(tag(page)).toBeVisible();
     await expect(page.locator('#primary-nav > :last-child')).toHaveAttribute('data-door', 'premium');
+    const setup = (await page.locator('#primary-nav [data-door="setup"]').boundingBox())!;
     const row = (await tag(page).boundingBox())!;
-    const pill = (await tag(page).locator('.pill').boundingBox())!;
+    const menu = (await page.getByTestId('primary-nav').boundingBox())!;
+    // One row: the same top and height, Get set up at the menu's left edge, the tag at its right.
+    expect(Math.abs(row.y - setup.y)).toBeLessThanOrEqual(1);
     expect(row.height).toBeGreaterThanOrEqual(MENU_ROW_MIN);
-    expect(pill.x - row.x).toBeLessThan(24);
+    expect(setup.height).toBeGreaterThanOrEqual(MENU_ROW_MIN);
+    expect(Math.abs(setup.x - menu.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(row.x + row.width - (menu.x + menu.width))).toBeLessThanOrEqual(1);
+    expect(setup.x + setup.width).toBeLessThan(row.x);
     await expect(tag(page).locator('svg')).toHaveCount(0);
   });
 
-  test('Premium: no row', async ({ page }) => {
+  test('Premium: no tag; Get set up keeps the whole row', async ({ page }) => {
     await storeHint(page, 'own');
     await signIn(page, GRANT_ME);
     await page.goto('/');
     await page.getByTestId('menu-button').click();
     await expect(tag(page)).toBeHidden();
+    const setup = (await page.locator('#primary-nav [data-door="setup"]').boundingBox())!;
+    const menu = (await page.getByTestId('primary-nav').boundingBox())!;
+    expect(Math.abs(setup.width - menu.width)).toBeLessThanOrEqual(1);
   });
 });
 

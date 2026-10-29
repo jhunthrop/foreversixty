@@ -24,7 +24,7 @@ Mocks: `design/mocks/2026-10-29-premium-entry/`. The generator `gen_premium_entr
 | Viewer | Question | Answer with no scroll |
 |---|---|---|
 | Signed out or free, 1024 to 2000 | “What do I get if I pay, and is the free site complete?” | The `Premium` tag at the right end of the doors. One click lands on `/premium`, whose band says `Everything a player needs is free, and the free list never shrinks.` |
-| Free, 360 | Same | The Menu sheet's last row is the `Premium` tag. The account sheet's `Plan` row reads `Free` with `See plans`. |
+| Free, 360 | Same | The Menu sheet's last row is `Get set up` with the `Premium` tag at its right. The account sheet's `Plan` row reads `Free` with `See plans`. |
 | Free, on a report, the sim or guild billing | “What would Premium do for this?” | The link beside the feature opens `/premium` with that feature's line highlighted at one third of the viewport. |
 | Premium from any source | Nothing to ask | No tag, no `See plans`, no contextual link. The plan row shows the plan as today. |
 
@@ -78,7 +78,7 @@ CLS on the bar stays 0. The Lighthouse budget (`cumulative-layout-shift` 0.05, `
 
 Board: `renders/premium-entry-phone.png`.
 
-The Menu keeps search, the four doors and `Get set up` (polish §1.3). The `Premium` link is its last row, after `Get set up`. Row: 52 px minimum, 18 px side padding, the `.pill.pill-site` tag `Premium` at the left and nothing at the right: no chevron (the tag is the row's whole content). The whole row is the link. Hover and active: `--row-hover` ground. Focus-visible: 2 px gold ring, inset 2 px. The same pre-paint rule hides the row. It is the same element as the bar's tag; `Header.astro`'s style restyles it below 1024.
+The Menu keeps search, the four doors and `Get set up` (polish §1.3). The `Premium` link shares the Menu's last row with `Get set up` (wow-player ruling, 2026-10-29: a pill alone at the bottom looked stranded). `Get set up` stays at the left as it was, its bordered box filling the row; the `.pill.pill-site` tag `Premium` is right-aligned in the same row, 12 px after it, with no chevron. The row is 52 px. The tag's link is its own target (the whole tag box, 52 px tall). Hover and active: `--row-hover` ground on the tag's box. Focus-visible: 2 px gold ring, inset 2 px. The same pre-paint rule hides the tag, and then `Get set up` takes the whole row. It is the same element as the bar's tag; `Header.astro`'s style restyles it below 1024.
 
 ## 6. The account panel's Plan row
 
@@ -149,7 +149,7 @@ No other string changes.
 
 ## 11. Phone and desktop
 
-Never collapses: the tag at every desktop width from 1024 for a free or signed-out viewer; the Menu row; `See plans` on a free Plan row at every width. Below 1024 it is the Menu's last row. At 2000 the tag sits inside the 1344 column with the doors, never at the window edge.
+Never collapses: the tag at every desktop width from 1024 for a free or signed-out viewer; the Menu's `Get set up` row; `See plans` on a free Plan row at every width. Below 1024 it is right-aligned in the Menu's `Get set up` row. At 2000 the tag sits inside the 1344 column with the doors, never at the window edge.
 
 ## 12. Acceptance (screenshots the implementer attaches)
 
@@ -162,7 +162,7 @@ Never collapses: the tag at every desktop width from 1024 for a free or signed-o
 | A5 | 1024 | signed in as a 15-character name: the tag in the bar, no overflow, no wrap |
 | A6 | 1024 and 1100 | free and signed out: the tag in the bar after `Get set up`, no overflow |
 | A7 | 1440 | tag hover, focus-visible and current (`/premium`) |
-| A8 | 390 and 360 | free: Menu open with the `Premium` row last, no chevron; account sheet with `See plans` |
+| A8 | 390 and 360 | free: Menu open with the `Premium` tag right-aligned in the `Get set up` row, no chevron; account sheet with `See plans` |
 | A9 | 390 | Premium: Menu with no `Premium` row |
 | A10 | 1440 and 390 | `/premium#coach`, `#server-sims` (three lines tinted), `#premium` landings |
 | A11 | 1440 | `/sim` free signed in: the muted `Run on our servers · Premium plan` link, quieter than `Run sim`; Premium: today's button |
@@ -177,7 +177,7 @@ Checklist:
 - [ ] Hidden for own, seat, grant and fallback; shown signed out and free.
 - [ ] Hidden before first paint from the hint; `hold` (visibility) after paint; never a `display` toggle after paint.
 - [ ] `/premium`'s duplicate `data-premium` head script deleted; Base owns it.
-- [ ] Menu row last, 52 px, the tag at the left, no chevron.
+- [ ] Menu: the tag right-aligned in the `Get set up` row, 52 px, no chevron.
 - [ ] Plan row `See plans` only for `none`; one link; href `/premium#premium`.
 - [ ] Every link in §7 carries its anchor; sim `Get premium` replaced.
 - [ ] Anchors in §8 exist; highlight changes no box; no new JavaScript on `/premium`.
@@ -196,7 +196,7 @@ Checklist:
 |---|---|---|
 | `renders/premium-entry-header-1440.png` | 1440 | signed out, free and Premium bars; the tag's hover, focus and current states (the board predates the persona round: the build's default tag is quieter, and the Plan row reads `See plans`) |
 | `renders/premium-entry-header-2000.png` | 2000 | the tag inside the centred column |
-| `renders/premium-entry-phone.png` | 390 | Menu free and Premium; the account sheet free (the board predates the persona round: the build has no chevron on the Menu row and reads `See plans`) |
+| `renders/premium-entry-phone.png` | 390 | Menu free and Premium; the account sheet free (the board predates the persona round: the build puts the tag at the right of the `Get set up` row, with no chevron, and reads `See plans`) |
 | `renders/premium-entry-account-1440.png` | 1440 | the account panel free beside Premium |
 | `renders/premium-entry-upsell-1440.png` | 1440 | the sim run control free and Premium (superseded for free: a muted text link, §7); the `/premium#server-sims` landing |
 

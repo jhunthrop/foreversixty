@@ -218,13 +218,30 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     outline-offset: 2px;
     background: none;
   }
-  /* Section 5: below 1024 the same element is the Menu's last row, the tag at the left. */
+  /* Section 5: below 1024 the same element shares the Menu's last row with Get set up: Get set
+     up at the left as it was, the tag right-aligned, one 52 px row, no chevron. The groups keep
+     their full-width rows; a Premium account's row is Get set up alone, as before. */
   @media (max-width: 1023px) {
+    .site-doors {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 12px;
+    }
+    .site-doors > :global(.site-group) {
+      flex: 0 0 100%;
+    }
+    .site-door-setup {
+      flex: 1 1 auto;
+      min-height: 52px;
+    }
     .site-door-premium {
       display: flex;
+      flex: none;
+      justify-content: flex-end;
       min-height: 52px;
       margin-top: 12px;
-      padding: 0 18px;
+      padding: 0 4px 0 8px;
       border-radius: 4px;
     }
     .site-door-premium:hover,
