@@ -1,6 +1,7 @@
 package discordbot
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 
@@ -84,14 +85,30 @@ func checkIndexedRows(t *testing.T, g guideStrings) {
 	}
 }
 
-func TestGuideCopyHasNoBannedWords(t *testing.T) {
-	g := guideCopy
-	all := []string{
-		g.BisAuthor, g.BisLeadUnlinked, g.BisLeadNone, g.BisLeadMain, g.BisLeadClass, g.BisLeadReady,
-		g.BisLeadSlot, g.BisLeadUnknownSpec, g.BisNudgeSpec, g.BisNudgeBoth, g.CharLeadUnlinked,
-		g.CharLeadNone, g.CharUnknown, g.CardStale, g.CardFailure, g.AttendanceUnknown,
+// guideStringsOf is every string in g, arrays included, found by reflection so a new field is
+// covered without editing the test.
+func guideStringsOf(g guideStrings) []string {
+	var out []string
+	v := reflect.ValueOf(g)
+	for i := 0; i < v.NumField(); i++ {
+		f := v.Field(i)
+		switch f.Kind() {
+		case reflect.String:
+			out = append(out, f.String())
+		case reflect.Array:
+			for j := 0; j < f.Len(); j++ {
+				out = append(out, f.Index(j).String())
+			}
+		}
 	}
-	all = append(all, g.BisRangeDesc[:]...)
+	return out
+}
+
+func TestGuideCopyHasNoBannedWords(t *testing.T) {
+	all := guideStringsOf(guideCopy)
+	if len(all) < 40 {
+		t.Fatalf("only %d strings found", len(all))
+	}
 	for _, s := range all {
 		low := strings.ToLower(s)
 		if strings.Contains(low, "soon") || strings.Contains(s, "!") || strings.Contains(low, "unlock") {

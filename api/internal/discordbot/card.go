@@ -50,7 +50,8 @@ func parseCardID(id string) (cardPress, bool) {
 	return p, true
 }
 
-// staleCard replaces a card of an older shape in place with the way out.
+// staleCard replaces a card of an older shape in place with the way out. command must be a
+// constant: it is inserted unescaped.
 func staleCard(command string) Reply {
 	content := strings.Replace(guideCopy.CardStale, "{command}", command, 1)
 	return Reply{Update: true, Message: Message{Content: content, Ephemeral: true}}
