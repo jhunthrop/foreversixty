@@ -6,7 +6,7 @@
 // disabled select, one select opened at a time, and the reply chip over a reminder. The result
 // frame is the real handler payload bis-top from the kit's payloads.json with the amendment's
 // Change picks button added; the post frames start from the real post-open and post-webhook
-// payloads with the roster of spec §P.9 (crest application emoji drawn as the crest image), and
+// payloads with the roster of spec §P.9 (spec-icon application emoji drawn from the real icon files), and
 // the Which spec tonight? card of §P.10 closes the set.
 // Run this file with Node 22 or later (it strips the kit's TypeScript types); boards land here.
 import {
@@ -285,8 +285,8 @@ frames.push({
 
 // ---------------------------------------------------------------------------------------------
 // Raid posts with the roster (spec §P.9). The roster is drawn by the rules the builder follows:
-// four groups (Tanks, Healers, Melee, Ranged) as inline fields, each line "{crest emoji} {Name}
-// · {short spec}", sorted by class in the game's order then by name, at most 16 lines a field
+// four groups (Tanks, Healers, Melee, Ranged) as inline fields, each line "{spec icon emoji}
+// {Name}", sorted by class in the game's order then by name, at most 16 lines a field
 // and two fields a group; then Late and Bench inline, and Out full width as names A to Z.
 
 /** The game's class order (classChoices); the roster sorts by it, then by name. */
@@ -301,38 +301,21 @@ const CLASS_ORDER = [
   "warlock",
   "warrior",
 ];
-/** §P.9.3: the short spec words, keyed by the spec's catalogue name. */
-const SHORT_SPEC = {
-  Balance: "Balance",
-  Feral: "Feral",
-  "Feral Bear": "Bear",
-  Restoration: "Resto",
-  "Beast Mastery": "BM",
-  Marksmanship: "MM",
-  Survival: "Surv",
-  Arcane: "Arcane",
-  Fire: "Fire",
-  Frost: "Frost",
-  Holy: "Holy",
-  Protection: "Prot",
-  Retribution: "Ret",
-  Discipline: "Disc",
-  Shadow: "Shadow",
-  Assassination: "Assa",
-  Combat: "Combat",
-  Subtlety: "Sub",
-  Elemental: "Ele",
-  Enhancement: "Enh",
-  Affliction: "Aff",
-  Demonology: "Demo",
-  Destruction: "Destro",
-  Arms: "Arms",
-  Fury: "Fury",
-};
+/** §P.9.1: the specs, from data/curated/specs.json; the emoji is the spec's own talent-tab icon. */
+const SPECS = JSON.parse(
+  readFileSync(path.join(ROOT, "data/curated/specs.json"), "utf8"),
+);
+/** The build whose icon folder is the source (web/public/data/{build}/icons/{icon}.webp). */
+const ICON_BUILD = "1.60.1.70658";
+const ICON_ROUTE = "/spec-icons/";
+const emojiName = (sp) => "fs_" + sp.spec.replaceAll("-", "_");
+const specRow = (cls, name) =>
+  SPECS.find((sp) => sp.class_slug === cls && sp.name === name);
 /** Mock application-emoji ids; the bot reads the real ones from GET /applications/{id}/emojis. */
 const EMOJI_ID = Object.fromEntries(
-  CLASS_ORDER.map((c, i) => [c, String(1301000000000000001n + BigInt(i))]),
+  SPECS.map((sp, i) => [emojiName(sp), String(1301000000000000001n + BigInt(i))]),
 );
+const ICON_OF = Object.fromEntries(SPECS.map((sp) => [emojiName(sp), sp.icon]));
 const MIDDOT = " · ";
 const FIELD_LINES = 16;
 const LIST_LINES = 10;
@@ -346,25 +329,19 @@ const classOf = (r) => r.at(1);
 const specOf = (r) => r.at(2);
 const roleOf = (r) => r.at(3);
 const stateOf = (r) => r.at(4);
-const shortOf = (r) => SHORT_SPEC[specOf(r)] ?? "";
+const markOf = (r) => {
+  const sp = specRow(classOf(r), specOf(r));
+  return sp ? emojiName(sp) : undefined;
+};
 
-/** One roster line: the crest emoji, or (no emoji) the class word after the spec. */
+/** One roster line: the spec icon then the name (§P.9.3). */
 const emojiLine = (r) =>
-  LT +
-  ":fs_" +
-  classOf(r) +
-  ":" +
-  EMOJI_ID[classOf(r)] +
-  GT +
-  " " +
-  nameOf(r) +
-  (shortOf(r) ? MIDDOT + shortOf(r) : "");
+  LT + ":" + markOf(r) + ":" + EMOJI_ID[markOf(r)] + GT + " " + nameOf(r);
+/** No emoji (a webhook, a missing emoji): the name then the full spec name; no spec, the class. */
 const textLine = (r) =>
-  nameOf(r) +
-  MIDDOT +
-  (shortOf(r) ? shortOf(r) + " " : "") +
-  titleCase(classOf(r));
-const rosterLine = (r, emoji) => (emoji ? emojiLine(r) : textLine(r));
+  nameOf(r) + MIDDOT + (specOf(r) ? specOf(r) : titleCase(classOf(r)));
+const rosterLine = (r, emoji) =>
+  emoji && markOf(r) ? emojiLine(r) : textLine(r);
 const classRank = (r) => CLASS_ORDER.indexOf(classOf(r));
 const byName = (a, b) =>
   nameOf(a).localeCompare(nameOf(b), "en", { sensitivity: "base" });
@@ -641,7 +618,7 @@ frames.push({
 });
 
 // The reminder through a webhook (no bot, never edited): the line and the masked link, then the
-// roster as it stands, the class written out because a webhook draws no application emoji.
+// roster as it stands, the full spec name because a webhook draws no application emoji.
 const raidURL = SITE + "/guild/us/normal/olympus-xxvii/raids/1";
 const webhookReminder = rosterPost(ROSTER_33, REMINDER_CLOCK, {
   tomorrow: true,
@@ -790,12 +767,12 @@ const OPEN_MARK = /<span>⁥/g;
 const DISABLED_SELECT = /<div class="select(?: open)?"><span>⁤([^<]*)<\/span>/g;
 const CHOSEN_VALUE = /<span>⁣([^<]*)<\/span>/g;
 const CHOSEN_OPTION = /<div class="option"><b>([^<]*)<\/b><small>⁣/g;
-const EMOJI = /&lt;:fs_([a-z]+):\d+&gt;/g;
-const emojiImg = (_m, cls) =>
+const EMOJI = /&lt;:(fs_[a-z_]+):\d+&gt;/g;
+const emojiImg = (_m, name) =>
   '<img class="emoji" src="' +
   SITE +
-  "/icons/hd/crests/" +
-  cls +
+  ICON_ROUTE +
+  ICON_OF[name] +
   '.webp" alt="">';
 const ICON_PATH = /^\/data\/([^/]+)\/(icons\/.+)/;
 const SPAN = "<span>";
@@ -809,7 +786,7 @@ const chosenValue = (_m, label) => '<span class="chosen">' + label + SPAN_END;
 const chosenOption = (_m, label) =>
   '<div class="option sel"><b>' + label + "</b><small>";
 
-/** Draws what the kit lacks: the chosen value, the disabled select, one list open, the crest emoji. */
+/** Draws what the kit lacks: the chosen value, the disabled select, one list open, the spec-icon emoji. */
 const postPass = (html) =>
   html
     .replace(CLOSED_LIST, closedSelect)
@@ -824,7 +801,9 @@ const BUILDS = path.join(ROOT, "data", "builds");
 const PUBLIC = path.join(WEB, "public");
 const iconFile = (match) => path.join(BUILDS, match[1], match[2]);
 const localFile = (url) =>
-  ICON_PATH.test(url.pathname)
+  url.pathname.startsWith(ICON_ROUTE)
+    ? path.join(PUBLIC, "data", ICON_BUILD, "icons", url.pathname.slice(ICON_ROUTE.length))
+    : ICON_PATH.test(url.pathname)
     ? iconFile(ICON_PATH.exec(url.pathname))
     : path.join(PUBLIC, url.pathname);
 

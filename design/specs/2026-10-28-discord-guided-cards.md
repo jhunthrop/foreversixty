@@ -1,6 +1,6 @@
 # Discord bot amendment: guided cards for bare commands, and raids that post themselves: experience spec
 
-Author: ux-designer, 2026-10-28; amended the same night with §P.9 (the roster on the post) and §P.10 (Which spec tonight?). Amends `design/specs/2026-10-27-discord-bot.md` (the bot spec): §3.3.2, §3.3.3, §4.2, §6.2, §8 and §9; and `design/specs/2026-10-26-guild-raids.md` (G1) §3.5 item 8. Tenets: `docs/tenets.md` 1, 2, 7, 10, 14.
+Author: ux-designer, 2026-10-28; amended the same night with §P.9 (the roster on the post) and §P.10 (Which spec tonight?), then at 22:10 with the spec icon as the roster mark (§P.9.1, §P.9.3) and the raid page's spec ask (§P.10.7). Amends `design/specs/2026-10-27-discord-bot.md` (the bot spec): §3.3.2, §3.3.3, §4.2, §6.2, §8 and §9; and `design/specs/2026-10-26-guild-raids.md` (G1) §3.5 item 8. Tenets: `docs/tenets.md` 1, 2, 7, 10, 14.
 
 Source, part G (the owner, 2026-10-28, after using the live bot, verbatim): "instead of making these long option input commands, can we respond with cards that guide the user? For example, if they just type /bis, we should come back with a card to select class spec and range." What the owner saw: `/bis` with no arguments answered only-you with `Name a class and spec, or link Discord to use your character.` and a `Link Discord` button; the option list read class, spec, slot, phase.
 
@@ -8,7 +8,7 @@ Source, part P (the owner the same night, through the coordinator): the raid for
 
 Source, part P roster (the owner, 2026-10-28 20:10, on the review page): the raid post must show who is signed up, by class and spec, like existing Discord bots. §P.9 and §P.10.
 
-Mock: `design/mocks/2026-10-28-discord-guided-cards/gen_guided_cards.mjs`. It renders through the reviewers' render kit (`web/tests/captures/discord-bot/discord-render.ts`) and extends it, inside the mock only, with three things the kit lacks: a select showing its chosen option (Discord's `default: true`), a disabled select, and one list open per frame. The result frame is the real handler payload `bis-top` from the kit's `payloads.json` plus this amendment's `Change picks`; the post frames start from the real `post-open` and `post-webhook` payloads, with the §P.9 roster drawn by the same rules the builder follows, and the crest emoji drawn as the crest image. Every board is drawn at 640 (desktop client) and 390 (phone client), as `capture-messages.spec.ts` does. Boards, each `-desktop.png` and `-phone.png`:
+Mock: `design/mocks/2026-10-28-discord-guided-cards/gen_guided_cards.mjs`. It renders through the reviewers' render kit (`web/tests/captures/discord-bot/discord-render.ts`) and extends it, inside the mock only, with three things the kit lacks: a select showing its chosen option (Discord's `default: true`), a disabled select, and one list open per frame. The result frame is the real handler payload `bis-top` from the kit's `payloads.json` plus this amendment's `Change picks`; the post frames start from the real `post-open` and `post-webhook` payloads, with the §P.9 roster drawn by the same rules the builder follows, and the spec-icon emoji drawn from the real icon files at 20 px. Every board is drawn at 640 (desktop client) and 390 (phone client), as `capture-messages.spec.ts` does. Boards, each `-desktop.png` and `-phone.png`:
 
 | Board | What it shows |
 |---|---|
@@ -221,6 +221,7 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `spec.placeholder` | `Choose a spec` (shared with `bis.placeholder.spec`) |
 | `spec.kept` | ` {Spec} is kept for {Name}.` (appended to the outcome sentence; alone, without the leading space) |
 | `spec.change` | `Change spec` |
+| `spec.option` | The option label is the spec's full catalogue name (`Beast Mastery`, `Retribution`); never a short word (§P.9.3) |
 | `spec.stale` | `This card is out of date. Press the button on the raid post again.` |
 
 Retired: `Name a class and spec, or link Discord to use your character.` (`lookupCopy.BisNeedsSpec`).
@@ -253,7 +254,7 @@ Reading of "edits the original when nothing changed" (this spec's, ruling P3): w
 |---|---|---|
 | Officer, the raid form | "Will this go to Discord, and when?" | `Post to Discord`, on, with the helper `Posts to #raid-signups as soon as you save.` directly under it, above the form's actions. |
 | Raider, the channel, the day before | "Is that raid tomorrow, and am I in?" | The post retitled `Tomorrow: Onyxia's Lair · Thursday 10 December`, or a one-line reply with the four buttons. One press answers their own state ephemerally, as on the post. |
-| Raid leader, the channel | "Who is in, and what is the comp?" | `Signed up` `**33 of 40**` in the post's first row, then `Tanks`, `Healers`, `Melee` (and on desktop `Ranged`, `Late`, `Bench`) with a crest and a spec on every line (§P.9). The desktop client shows the groups' headers and first lines on the first screen; the phone shows `Signed up`, Tanks and Healers. |
+| Raid leader, the channel | "Who is in, and what is the comp?" | `Signed up` `**33 of 40**` in the post's first row, then `Tanks`, `Healers`, `Melee` (and on desktop `Ranged`, `Late`, `Bench`) with the spec icon and the name on every line (§P.9). The desktop client shows the groups' headers and first lines on the first screen; the phone shows `Signed up`, Tanks and Healers. |
 
 ## P.3 The form (amends G1 §3.5 item 8)
 
@@ -335,11 +336,10 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 | `roster.out` | `Out · {n}` |
 | `roster.continued` | U+200B (a continuation field's name) |
 | `roster.empty` | `None yet` |
-| `roster.line` | `{emoji} {Name} · {Short}`; no spec `{emoji} {Name}`; no class `{Name}` |
-| `roster.textLine` | `{Name} · {Short} {Class}`; no spec `{Name} · {Class}` |
+| `roster.line` | `{emoji} {Name}`; no spec `{Name} · {Class}`; no class `{Name}` |
+| `roster.textLine` | `{Name} · {Spec}` (the full spec name); no spec `{Name} · {Class}` |
 | `roster.more` | `and {n} more` |
 | `roster.outJoin` | `, ` |
-| `roster.short` | The §P.9.3 table, verbatim |
 
 ## P.8 Contract
 
@@ -349,25 +349,29 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 - The bot store gains, per raid, `post_at`, `remind`, `reminder_message_id` and `reminded_at`. The drain sends the post at `post_at` and the reminder at the start minus 24 h, through the same per-raid worker as edits (bot spec §3.3.1).
 - `guild_characters` gains `raid_spec` (text, null), migration `0058_raid_spec`. Written only by the spec card and `Change spec` (§P.10), after the key is re-checked against the presser's verified characters. The roster read prefers it over the newest logged fight's spec.
 - The post builder reads, per raid, every sign-up row's name, class, spec, role and state (all already on `guild_raid_signups`); `RaidPosted` gains `Roster []RosterLine` beside `Counts`.
-- The bot holds the nine application emoji ids in memory (§P.9.1); no table stores them.
+- The bot holds the 28 application emoji ids in memory (§P.9.1); no table stores them.
 
 ## P.9 The roster on the post
 
 Source (the owner, 2026-10-28 20:10, on the review page's raid-post boards, verbatim): "we should show what classes and specs are signed up like existing discord bots". Then: "how do we know what someone is if they're not on the site yet?" The coordinator's answer is binding and is encoded here and in §P.10: sign-ups need a linked Discord account (today's `pressCopy.NotLinked` answer and its `Link Discord` button stay); a linked member's character gives the class (the guild roster export); the spec is the character's saved spec, else asked once (§P.10). Guest sign-ups for unlinked people are out of scope until the owner asks.
 
-Reference: Raid-Helper's sign-up embed, the bot raid leaders already read. Borrowed: one column per role group, each headed with its count, one line per player with a class mark and the name, Late, Bench and Absence listed under the columns. Not borrowed: per-spec emoji soup, the numbered sign-up order, the pings, and the "Absence" word (ours is `Out`, the button's word). Also borrowed, from the in-game raid frames: grouping a raid by what each player does, not by when they pressed.
+Reference: Raid-Helper's sign-up embed, the bot raid leaders already read. Borrowed: one column per role group, each headed with its count, one line per player with the spec icon and the name, Late, Bench and Absence listed under the columns. Not borrowed: a row of several emoji per player, the numbered sign-up order, the pings, and the "Absence" word (ours is `Out`, the button's word). Also borrowed, from the in-game raid frames: grouping a raid by what each player does, not by when they pressed.
 
-### P.9.1 The class mark: the crest as an application emoji
+### P.9.1 The mark: the spec's own icon as an application emoji
 
-Decision: each line starts with the class's circular ringed HD crest, uploaded once as an application-owned custom emoji. Tenet: one crest language.
+Source (the owner, 2026-10-28 22:10, on the roster boards, verbatim): "we should just show the spec icon beside the name like existing discord tools." This replaces the class crest as the mark. The line is the spec icon, then the name; no class crest, no short spec word.
 
-- Why not Unicode: there is no glyph per class; coloured squares break the crest language and fail colour-blind readers. Why not the class word alone: it doubles the line's width and wraps every line in a 3-column embed (`post-reminder-webhook` shows the cost).
-- Why application emoji, not server emoji: an application emoji works in every server the bot posts in, needs no Manage Expressions permission, and uses none of a server's emoji slots. An application may own 2000; this uses 9.
-- Names: `fs_druid`, `fs_hunter`, `fs_mage`, `fs_paladin`, `fs_priest`, `fs_rogue`, `fs_shaman`, `fs_warlock`, `fs_warrior`. Markup in a field value: `<:fs_hunter:{emoji id}>`. Discord draws it at the line's height (about 20 px in an embed field).
-- Images: nine 128 x 128 transparent PNGs rendered from `web/public/icons/hd/crests/{class}.webp` (the one source) by `make discord-emoji` into `api/internal/discordbot/emoji/{class}.png`, committed and embedded with `go:embed`. Each stays under Discord's 256 KiB.
-- Setup step: a subcommand `api discord-emoji` beside `stripe-setup`. It reads `GET /applications/{application id}/emojis`, uploads each missing `fs_{class}` with `POST /applications/{application id}/emojis` (name and a `data:image/png;base64,…` image), and prints each name and id, never the token. It is idempotent: a second run uploads nothing. `--replace` deletes and re-uploads all nine after a crest changes. It runs once per application: production, then the test application.
-- The bot at start reads the same list once and holds `fs_{class}` to id in memory. While any of the nine is missing (a failed read, or setup not yet run), it re-reads at most once an hour, logs `emoji_missing` with the class names, and draws the text line for those classes.
-- Text line (an emoji missing, or any webhook message, §P.9.7): `{Name} · {Short} {Class}`, the class word after the spec, no mark.
+Decision: each line starts with the spec's own talent-tab icon, uploaded once as an application-owned custom emoji. Reference: Raid-Helper and the in-game talent frame, where a spec is its icon (Starfall for Balance, the Bear Form icon for Feral).
+
+- Why not the crest: a crest says the class and the line then needs a spec word; the spec icon says both, because every spec's icon is its own and the spec belongs to one class. Why not Unicode: there is no glyph per spec. Why not the word alone: it wraps lines in a 3-column embed.
+- Why application emoji, not server emoji: an application emoji works in every server the bot posts in, needs no Manage Expressions permission, and uses none of a server's emoji slots. An application may own 2000; this uses 28.
+- Source of the images: `data/curated/specs.json`, each spec's `icon` field (`spell_nature_starfall` for Balance). The file is `web/public/data/{build}/icons/{icon}.webp`, where `{build}` is the active Forever build's folder (today `1.60.1.70658`; every spec's icon exists there, and the older `forever-prebeta` folder lacks seven, so it is never the source). The files are 64 x 64, the game's own icons; the images are not redrawn or upscaled.
+- Count: one emoji per row of `specs.json`, **28**: Druid 4 (Balance, Feral, Feral Bear, Restoration), Hunter 3, Mage 3, Paladin 3, Priest 3, Rogue 3, Shaman 3, Warlock 3, Warrior 3. Forever's new combos are counted in: Survival hunters, Enhancement and Elemental shamans with the Forever rules, and Feral Bear as its own spec. Feral and Feral Bear share one icon (`ability_racial_bearform`) and so share one image under two names; the owner may want a distinct mark (see the questions).
+- Names: `fs_{class}_{spec}` from the row's `spec` slug with hyphens turned to underscores: `fs_druid_balance`, `fs_druid_feral`, `fs_druid_feral_bear`, `fs_druid_restoration`, `fs_hunter_beast_mastery`, `fs_hunter_marksmanship`, `fs_hunter_survival`, and so on for every row. The longest is `fs_hunter_beast_mastery` (23 characters, under Discord's 32). Markup in a field value: `<:fs_hunter_survival:{emoji id}>`. Discord draws it at the line's height (about 20 px in an embed field).
+- Images: 28 PNGs, 64 x 64, transparent, converted from the webp by `make discord-emoji` into `api/internal/discordbot/emoji/{class}_{spec}.png`, committed and embedded with `go:embed`. Each stays under Discord's 256 KiB.
+- Setup step: the subcommand `api discord-emoji` beside `stripe-setup`. It reads `GET /applications/{application id}/emojis`, uploads each missing `fs_{class}_{spec}` with `POST /applications/{application id}/emojis` (name and a `data:image/png;base64,...` image), and prints each name and id, never the token. It is idempotent: a second run uploads nothing. `--replace` deletes and re-uploads all 28 after an icon changes or a build adds a spec. It runs once per application: production, then the test application. A build that adds a spec adds its row to `specs.json`, and the next run uploads only that one.
+- The bot at start reads the same list once and holds `fs_{class}_{spec}` to id in memory. While any of the 28 is missing (a failed read, or setup not yet run), it re-reads at most once an hour, logs `emoji_missing` with the names, and draws the text line for those specs.
+- Text line (an emoji missing, or any webhook message, §P.9.7): `{Name} · {Spec}`, the full spec name, no mark.
 
 ### P.9.2 Layout, field by field
 
@@ -387,25 +391,13 @@ Desktop reading (`post-tomorrow-desktop`, `post-full-desktop`): row 1 is When, G
 
 ### P.9.3 The line
 
-`{emoji} {Name} · {Short}`, one per line, nothing else. `{Name}` is the sign-up row's name through `memberText`. `{Short}` is the spec's short word from this table, the words raid leaders already type:
+`{emoji} {Name}`, one per line, nothing else. `{Name}` is the sign-up row's name through `memberText`. The emoji is the row's spec icon (§P.9.1). There is no short spec word anywhere: the icon says the spec in the post, and the text line writes the full spec name.
 
-| Spec | Short | Spec | Short | Spec | Short |
-|---|---|---|---|---|---|
-| Balance | `Balance` | Feral | `Feral` | Feral Bear | `Bear` |
-| Restoration | `Resto` | Beast Mastery | `BM` | Marksmanship | `MM` |
-| Survival | `Surv` | Arcane | `Arcane` | Fire | `Fire` |
-| Frost | `Frost` | Holy | `Holy` | Protection | `Prot` |
-| Retribution | `Ret` | Discipline | `Disc` | Shadow | `Shadow` |
-| Assassination | `Assa` | Combat | `Combat` | Subtlety | `Sub` |
-| Elemental | `Ele` | Enhancement | `Enh` | Affliction | `Aff` |
-| Demonology | `Demo` | Destruction | `Destro` | Arms | `Arms` |
-| Fury | `Fury` | | | | |
+No spec on the row (a sign-up made before the spec ask existed, or by an officer): no mark exists, so the line is the text line with the class, `{Name} · {Class}`. No class on the row: `{Name}` alone, sorted after every class. The text line (§P.9.1) is `{Name} · {Spec}`, or `{Name} · {Class}` with no spec. The class word appears only when the spec is unknown.
 
-No spec on the row: `{emoji} {Name}`. No class on the row: `{Name}` alone, sorted after every class. The text line (§P.9.1) is `{Name} · {Short} {Class}`, or `{Name} · {Class}` with no spec.
+Sort within a group, Late and Bench: class in the game's order (`classChoices`: Druid, Hunter, Mage, Paladin, Priest, Rogue, Shaman, Warlock, Warrior), then name, case-insensitive. A class's specs therefore sit together by name, and a raid leader counts five mages at a glance. Out sorts by name alone, because it has no mark to group by.
 
-Sort within a group, Late and Bench: class in the game's order (`classChoices`: Druid, Hunter, Mage, Paladin, Priest, Rogue, Shaman, Warlock, Warrior), then name, case-insensitive. Like crests sit together, so a raid leader counts five mages at a glance. Out sorts by name alone, because it has no mark to group by.
-
-A long name with a long spec may wrap inside a 3-column field on the desktop client (`Duskmantle · Combat` in `post-full-desktop`). That is Discord's wrap; the crest stays at the start of the line.
+A long name may wrap inside a 3-column field on the desktop client; the icon stays at the start of the line. The icon is never the only carrier of the spec for a screen reader: Discord reads the emoji's name (`fs_druid_balance`), and the post's text fallback and the raid page carry the words.
 
 ### P.9.4 The groups
 
@@ -416,7 +408,7 @@ A long name with a long spec may wrap inside a 3-column field on the desktop cli
 
 ### P.9.5 Limits and overflow
 
-- A field holds at most 16 lines. The longest line is 56 characters (33 for the emoji markup, a space, 12 for a WoW name, which has no markdown specials to escape, 3 for ` · `, 6 for the longest short spec, a newline), so 16 lines are at most 896 characters, under the 1024 field limit.
+- A field holds at most 16 lines. The longest line is 60 characters (46 for the emoji markup, `<:fs_hunter_beast_mastery:` plus a 19-digit id plus `>`, a space, 12 for a WoW name, which has no markdown specials to escape, a newline), so 16 lines are at most 960 characters, under the 1024 field limit. The text line is at most 29 characters (12, ` · `, 13 for `Beast Mastery` or `Assassination`, a newline).
 - A group over 16 lines continues in one more inline field directly after it, named U+200B (zero-width space; Discord refuses an empty name), so it reads as the same list. A group over 32 lines draws 31 and then `and {n} more`.
 - Late and Bench draw at most 10 lines; the tenth becomes `and {n} more`.
 - Out: names joined by `, ` until the next name would pass 1024 characters; then `, and {n} more`.
@@ -450,7 +442,7 @@ The question: "As what are you coming?", asked once, only when we do not know.
 
 ### P.10.1 Where the spec comes from
 
-1. The character's saved raid spec: new column `guild_characters.raid_spec` (text, null when unset; the spec's catalogue name, as `fight_metrics.spec` stores it). Only this card and its `Change spec` button write it. It is per guild membership, because a character can heal for one guild and tank for another.
+1. The character's saved raid spec: new column `guild_characters.raid_spec` (text, null when unset; the spec's catalogue name, as `fight_metrics.spec` stores it). Only this card, its `Change spec` button and the raid page's spec select (§P.10.7) write it. It is per guild membership, because a character can heal for one guild and tank for another.
 2. Else the newest logged fight's spec (today's `raidRoster` read).
 3. Else unknown.
 
@@ -471,7 +463,7 @@ So a member's first In costs two taps (the button, the spec); every press after 
 Part G's grammar (§G.4.1) applies.
 
 - Embed: no author. Title `spec.title`. Description `spec.lead` (`spec.lead.change` when opened from `Change spec`). Colour the class colour (`--color-class-*` as an integer). Thumbnail the class's ringed HD crest. Footer `Forever Sixty` and the timestamp.
-- Row 1, the only row: one string select. Placeholder `spec.placeholder`. Options: the class's specs from `specs.All` in catalogue order (two to four); label the spec name, description the role word (`bis.role`); value the spec slug. With a saved spec (opened from `Change spec`), that option carries `default: true`.
+- Row 1, the only row: one string select. Placeholder `spec.placeholder`. Options: the class's specs from `specs.All` in catalogue order (two to four); label the full spec name (`spec.option`), description the role word (`bis.role`); value the spec slug. With a saved spec (opened from `Change spec`), that option carries `default: true`.
 - No buttons. One question with no default commits on the pick (§G.3 rule 2), so there is no Success button.
 - Custom id: `gspc:1:ask:{raid}:{state}:{character key}` (`gspc:1:ask:1:in:us/normal/aurelith`, 34 characters; a test asserts every id under 100).
 
@@ -500,6 +492,24 @@ Part G's grammar (§G.4.1) applies.
 | A card of an older shape (unknown `{version}`) | `spec.stale` in place |
 | Rate limited | `pressCopy.RateLimited` in place; nothing saved |
 | Keyboard and touch | Discord's own select: arrow keys and Enter, or a tap; nothing of ours |
+
+### P.10.7 The raid page asks too (`raid-signup-spec`)
+
+Source (the owner, 2026-10-28 22:10): the raid page's own sign-up asks the spec as well, so every sign-up has one, whichever door it came through.
+
+Reference: the same question as the Discord card, on the surface the member is already on. Component: the raid page's existing sign-up control, with one native select added under the status buttons; no new control (tenet 10).
+
+| Part | Spec |
+|---|---|
+| Where | The raid page sign-up, for In, Late and Bench, after the character is known; shown only when `raid_spec` is unknown for that character in this guild. Out never asks. |
+| Control | One select: label `spec.title` (`Which spec tonight?`), placeholder `spec.placeholder` (`Choose a spec`), options the class's specs by full name (`spec.option`) in catalogue order, each with the spec's own icon (`/data/{build}/icons/{icon}.webp`, 20 px, no missing-icon flash). With a saved spec the select is shown with it chosen and `spec.change` (`Change spec`) as its label link. |
+| Copy | The Discord card's keys, verbatim: `spec.title`, `spec.lead` (`spec.lead.change` with a saved spec), `spec.placeholder`, `spec.kept`, `spec.change`. No new strings. |
+| Save | One write path with the Discord card: `guild_characters.raid_spec` after the character is re-checked as the member's, then the sign-up with that spec's role. The pick commits the sign-up, as on the card; there is no separate save button. |
+| States | Default: closed select. Hover, focus-visible and active as the site's select. Disabled while saving. Error: `That did not save. Try again.` under the select; the sign-up is not made. Keyboard: native select, arrow keys and Enter; touch: the native picker. 44 px tall at 360. |
+| Unlinked members | Unchanged: the link nudge (`pressCopy.NotLinked` and `Link Discord`); no spec ask until linked. |
+| Roster | The next edit of the post draws the line with the new spec's icon. |
+
+Acceptance: a site e2e signs up with no saved spec and sees the select; picking saves `raid_spec`, returns the outcome with `spec.kept`; the next sign-up on either surface asks nothing. The implementer attaches the raid page's sign-up at 360 and 1440 with the select closed, open and with a saved spec. This row's board is the Discord card (`spec-ask-card`); the site control follows the site's select and needs its own captures before merge.
 
 # Rulings
 
@@ -533,7 +543,7 @@ P4. The reminder carries the post's own buttons and is deleted on cancel, lock o
 
 P5. The switch is the existing checkbox with `role="switch"`. No new control (tenet 10).
 
-P6. The class mark is the ringed HD crest as an application emoji (§P.9.1). It keeps the one crest language in Discord, fits a 3-column field, needs no server permission, and degrades to the class word.
+P6. The mark is the spec's own talent-tab icon as an application emoji (§P.9.1), by the owner's direction at 22:10 ("like existing discord tools"). It says class and spec in one 20 px image, fits a 3-column field, needs no server permission, and degrades to `{Name} · {Spec}`. Rejected: the class crest plus a short spec word, the first draw, which doubled every line.
 
 P7. Four groups, not three: DPS splits into Melee and Ranged by spec. The owner asked for the roster "like existing discord bots", and Raid-Helper's classic template splits them the same way, because a raid leader places melee and ranged differently. The first draw of a single DPS column needed four columns at 20 DPS, and the continuation under `Tanks` read as tanks. Rejected: one DPS column with continuations.
 
@@ -546,6 +556,8 @@ P10. The spec is asked once, on the first In, Late or Bench press whose spec is 
 P11. The webhook reminder carries the roster in text lines, because a webhook post is never edited and has no living roster to point at.
 
 P12. Unlinked members cannot sign up from Discord (the coordinator's answer). Guest sign-ups wait for the owner.
+
+P13. The raid page asks the spec too (§P.10.7): the same select and copy, saved to `guild_characters.raid_spec`, so every sign-up has a spec and every roster line an icon.
 
 # Acceptance
 
@@ -566,8 +578,8 @@ P12. Unlinked members cannot sign up from Discord (the coordinator's answer). Gu
 13. The payload dump (`payload-dump.go.txt`) gains every card frame and both reminder forms, so the reviewers' boards render from the real handlers.
 14. Roster: the post's fields are `When`, `Guild time`, `Signed up` (inline, `roster.signed`), then `Tanks`, `Healers`, `Melee`, `Ranged`, `Late`, `Bench` (inline) and `Out` (full width) per §P.9.2; nobody In or Late draws no groups; an empty group draws `None yet`; lines sort by class then name, Out by name; Melee and Ranged split per §P.9.4, a spec-less Rogue in Melee and a spec-less Mage in Ranged.
 15. Roster limits: a 17-line group draws a U+200B continuation; a 40-line group draws 31 lines and `and 9 more`; Bench at 11 draws 9 and `and 2 more`; every field value at most 1024; at most 25 fields; 120 sign-ups keep the embed under 6000 through the guard.
-16. Marks: with the emoji map loaded each line is `<:fs_{class}:{id}> {Name} · {Short}`; with a class missing from the map, that class's lines are text lines; every webhook roster is text lines; the short words equal §P.9.3; `api discord-emoji` against a stub uploads only the missing names and prints no token.
-17. Spec card: an In press with no spec known answers the card (type 4 from the post, type 7 after the character select), with title, lead, colour, crest and the class's specs; an Out press never asks; a pick saves `raid_spec`, signs up with that spec's role and answers the outcome plus `spec.kept` and `Change spec`; a forged key answers `pressCopy.Failure`; a locked raid answers its sentence; `Change spec` never changes the state; the next press with the spec saved signs up with no card.
+16. Marks: with the emoji map loaded each line is `<:fs_{class}_{spec}:{id}> {Name}`; with a spec missing from the map, that spec's lines are the text line `{Name} · {Spec}`; a row with no spec is `{Name} · {Class}`; every webhook roster is text lines; the emoji names are exactly the 28 `specs.json` slugs with hyphens as underscores, each icon file exists in the active build's icon folder, and no short spec word exists in the code; `api discord-emoji` against a stub uploads only the missing names and prints no token.
+17. Spec card: the options are the class's specs by full name (`Beast Mastery`, `Retribution`, never a short word); an In press with no spec known answers the card (type 4 from the post, type 7 after the character select), with title, lead, colour, crest and the class's specs; an Out press never asks; a pick saves `raid_spec`, signs up with that spec's role and answers the outcome plus `spec.kept` and `Change spec`; a forged key answers `pressCopy.Failure`; a locked raid answers its sentence; `Change spec` never changes the state; the next press with the spec saved signs up with no card.
 
 ## Site tests
 
@@ -586,7 +598,7 @@ The mock boards above, then the same frames rendered from the real handlers' `pa
 | D15 | `/signup` bare with two raids and two characters, a status press | x | x |
 | D16 | `/attendance` officer select, `/readiness` and `/report` with their selects | x | x |
 | D17 | A raid saved within 7 days posting at once; the `Tomorrow` edit; the reply reminder; a webhook reminder; a cancel deleting the reminder | x | x |
-| D18 | The roster post at 8 of 40, 33 of 40 and 40 of 40, in a server where the bot has never posted (the application emoji render without any server permission); one class's emoji deleted (the text line); the phone client's inline layout | x | x |
+| D18 | The roster post at 8 of 40, 33 of 40 and 40 of 40, in a server where the bot has never posted (the application emoji render without any server permission); one spec's emoji deleted (the text line); the phone client's inline layout | x | x |
 | D19 | `In` with no spec known: the card, the pick, the outcome, `Change spec`, the next press with no card | x | x |
 
 Site captures, added to the bot spec's §9: the raid form's Discord block (create, create with repeat, switch off, edit posted) at 360, 390 and 1440.
@@ -594,5 +606,7 @@ Site captures, added to the bot spec's §9: the raid form's Discord block (creat
 ## Questions only the owner can answer (part P roster)
 
 1. Melee and Ranged in place of one DPS column (ruling P7). It follows Raid-Helper, but the brief said Tanks, Healers, DPS. Keep the split?
-2. The short spec words (§P.9.3: `BM`, `MM`, `Surv`, `Assa`, `Destro`, `Resto`, `Bear`). Any your guild would not say?
+2. Feral and Feral Bear share one icon, so their two emoji look the same in the roster, and the Melee and Tanks groups tell them apart. Keep it (the game's own icon), or draw a distinct mark for Feral Bear?
+3. The text fallback is `{Name} · {Spec}` as ruled, so a webhook line reads `Aurelith · Holy` with no class word; Holy, Protection, Restoration and Frost each belong to two classes. Add the class word (`Aurelith · Holy Paladin`) on webhooks only, or keep it as ruled?
+4. A row with no spec (only sign-ups made before the spec ask) draws `{Name} · {Class}` with no icon. Fine, or ask officers to set it?
 3. The site has no control for a character's spec today. The coordinator's "spec from what the character has set on the site" therefore means only what the Discord card saves, or the logs. Should the raid page's own sign-up ask the spec too, so a site-only member is never a bare name?
