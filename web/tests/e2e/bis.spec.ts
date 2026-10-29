@@ -322,6 +322,8 @@ test.describe('the band row at 390', () => {
 
   test('shows all five bands, 44 px tall, with the selected one visible', async ({ page }) => {
     await page.goto('/bis/mage/fire#band-alliance-60');
+    // The anchor scrolls the band's panel into view; the header's band row is above it.
+    await page.evaluate(() => window.scrollTo(0, 0));
     for (const band of [20, 30, 40, 50, 60]) {
       const pill = page.locator(`[data-testid="bis-band-pill-alliance-${band}"]:visible`);
       await expect(pill).toBeInViewport({ ratio: 1 });
