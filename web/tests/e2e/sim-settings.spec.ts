@@ -159,7 +159,7 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   // BUFFS 4/30, ... ON THE TARGET 0/24, ... WEAPON OILS AND STONES 0/48".
   await page.getByTestId('sim-preset').selectOption('custom');
   const groupCount = async (group: string): Promise<number> => {
-    const text = await page.getByTestId(`sim-buff-group-${group}`).locator('span.tabular').textContent();
+    const text = await page.getByTestId(`sim-buff-group-${group}`).locator('span.numeric').textContent();
     return Number((text ?? '0/0').split('/')[0]);
   };
   expect(await groupCount('raid-buffs')).toBeGreaterThan(4);
