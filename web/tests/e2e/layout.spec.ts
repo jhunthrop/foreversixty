@@ -29,19 +29,6 @@ test.describe('phone layout', () => {
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
     });
   }
-
-  test('the Discord link clears 44px', async ({ page }) => {
-    await page.goto('/');
-    // On a phone the Discord link waits behind the header's Menu button.
-    await page.getByTestId('menu-button').click();
-    // The header's link, by name: the home page's changelog teaser also links an entry titled
-    // "Discord notifications", which an unscoped substring match would pick up too.
-    const discord = await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Discord', exact: true })
-      .boundingBox();
-    expect(discord?.height ?? 0).toBeGreaterThanOrEqual(44);
-  });
 });
 
 test('a content page carries the same character selector as every other page', async ({ page }) => {
@@ -52,7 +39,7 @@ test('a content page carries the same character selector as every other page', a
   await page.goto('/guides');
   await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
   await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
-  await expect(page.getByTestId('selector-sign-in')).toHaveAttribute('href', /\/login/);
+  await expect(page.getByTestId('selector-sign-in-email')).toHaveAttribute('href', /\/login/);
 });
 
 // Owner rule (wide-screen): one centred site column for the whole site. Base.astro wraps every

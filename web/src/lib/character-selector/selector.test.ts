@@ -358,10 +358,12 @@ describe('row copy', () => {
     expect(closedSecondLine(row({ spec: undefined }), false)).toBe('Warrior · 60');
   });
 
-  it('writes the aria label with the mark sentence before the action', () => {
-    expect(closedAriaLabel(row(), null)).toBe('Obnoxious Yell, Fury Warrior, level 60. Change character.');
+  it('writes the aria label with the mark sentence before the account tail', () => {
+    expect(closedAriaLabel(row(), null)).toBe(
+      'Obnoxious Yell, Fury Warrior, level 60. Your characters and account',
+    );
     expect(closedAriaLabel(row(), 'stale')).toBe(
-      'Obnoxious Yell, Fury Warrior, level 60. Sync is stale. Change character.',
+      'Obnoxious Yell, Fury Warrior, level 60. Sync is stale. Your characters and account',
     );
   });
 

@@ -281,12 +281,11 @@ export function markTooltip(mark: RingMark, row: SelectorRow | null): string {
   return selectorCopy.markTooltip[mark];
 }
 
-/** `{Name}, {Spec} {Class}, level {n}. {Mark sentence} Change character.` */
+/** `{Name}, {Spec} {Class}, level {n}. Your characters and account` plus the mark sentence. */
 export function closedAriaLabel(row: SelectorRow, mark: RingMark | null): string {
   const specClass = [row.spec, row.className].filter((part) => part !== undefined && part !== '').join(' ');
-  const identity = [row.name, specClass, row.level === undefined ? '' : `level ${row.level}`]
+  const desc = [specClass, row.level === undefined ? '' : `level ${row.level}`]
     .filter((part) => part !== '')
     .join(', ');
-  const markSentence = mark === null ? '' : ` ${selectorCopy.markAria[mark]}`;
-  return `${identity}.${markSentence} Change character.`;
+  return selectorCopy.account.controlAria(row.name, desc, mark === null ? '' : selectorCopy.markAria[mark]);
 }

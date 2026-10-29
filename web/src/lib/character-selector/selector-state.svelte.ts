@@ -10,6 +10,7 @@ import { settlePointerForSession } from '../account/session-pointer';
 import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../current-character';
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
+import { accountPanelOf, type AccountPanel } from './account-panel';
 import { accountNameOf, buildSelectorModel, closedKindOf, type ClosedKind, type SelectorModel } from './rows';
 import { currentGuildOf, type SessionGuild } from './session-guild';
 
@@ -28,6 +29,8 @@ export interface SelectorState {
   readonly accountName: string;
   /** The readable half of the session cookie is present: someone is probably signed in. */
   readonly sessionHint: boolean;
+  /** The head, Plan and profile rows of a signed-in account; null until `/v1/me` answered, and signed out. */
+  readonly accountPanel: AccountPanel | null;
   /** The session's first verified guild once `/v1/me` answered; null signed out or without one. */
   readonly sessionGuild: SessionGuild | null;
   /** Re-reads the pointer, the chosen keys and the clock (the list is about to be shown). */
@@ -93,6 +96,16 @@ export function createSelectorState(): SelectorState {
 
   const accountName = $derived(loadStatus === 'ready' && session.data ? accountNameOf(session.data) : '');
 
+  const accountPanel = $derived(
+    loadStatus === 'ready' && session.data
+      ? accountPanelOf(
+          session.data,
+          model.current?.kind === 'account' ? (model.current.character ?? null) : null,
+          nowMs,
+        )
+      : null,
+  );
+
   const sessionGuild = $derived(loadStatus === 'ready' ? currentGuildOf(session.data, pointer) : null);
 
   // Until the browser has been read, and while a signed-in visitor's character is still
@@ -118,6 +131,9 @@ export function createSelectorState(): SelectorState {
     },
     get sessionHint() {
       return sessionHint;
+    },
+    get accountPanel() {
+      return accountPanel;
     },
     get sessionGuild() {
       return sessionGuild;

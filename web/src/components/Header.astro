@@ -1,6 +1,5 @@
 ---
 // web/src/components/Header.astro
-import communityLinks from '../data/links.json';
 import classes from '../data/classes.json';
 import { readSpecCatalog } from '../lib/bis/load';
 import {
@@ -14,7 +13,6 @@ import {
 } from '../lib/nav';
 import { guideClasses } from '../lib/nav-guides';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
-import DiscordMark from './DiscordMark.astro';
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
@@ -38,9 +36,9 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
 // Styling lives in styles/nav.css (spec 2026-10-09-nav-character-selector.md), not in
 // utility classes, so the bar's breakpoints are in one readable place. Desktop (1024 and up):
 // wordmark, the four doors (each with a hover panel, spec 2026-10-15-grouped-header.md), the
-// Get set up as a plain fifth door, the character selector, Discord. Below 1024: one 56px
+// Get set up as a plain fifth door, the account control (the character selector). Below 1024: one 56px
 // bar -- wordmark, the selector's crest, a Menu button -- with the character row, the four
-// groups as headed sections, Get set up and Discord opening beneath it. The compact character lookup (HeaderSearch.astro,
+// groups as headed sections and Get set up opening beneath it. The compact character lookup (HeaderSearch.astro,
 // Task L8.2 fix round 2 item 7) is a magnifier button in the bar from 1024 and the Menu's
 // first row below it; the processed script at the end wires it and the "/" key (`.site-menu`; the selector island renders the
 // character row, which nav.css places first in the Menu). The only script is the few lines
@@ -55,18 +53,6 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
   <div class="site-right">
     <HeaderSearch place="bar" />
     <slot name="session" />
-    <a
-      href={communityLinks.discordInvite}
-      class="site-discord"
-      aria-label="Discord"
-      data-testid="discord-link"
-    >
-      <DiscordMark />
-      <span class="site-discord-label">Discord</span>
-      <span class="site-tip" role="tooltip">
-        Discord
-      </span>
-    </a>
   </div>
   <button
     type="button"
@@ -147,13 +133,9 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
         {SETUP_NAV_ITEM.label}
       </a>
     </nav>
-    <a href={communityLinks.discordInvite} class="site-menu-discord">
-      <DiscordMark />
-      Discord
-    </a>
   </div>
   <script is:inline define:vars={{ openEvent: OPEN_SELECTOR_EVENT }}>
-    // The phone menu: the bar stays one 56px row and the character row, doors and Discord
+    // The phone menu: the bar stays one 56px row and the character row and doors
     // open beneath it (CSS keys off data-menu-open). Plain DOM, no island. Opening the
     // character sheet from the Menu's first row closes the Menu behind it.
     (() => {

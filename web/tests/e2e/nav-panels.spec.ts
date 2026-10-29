@@ -164,7 +164,7 @@ test.describe('the current page', () => {
     await expect(door(page, 'logs')).toHaveAttribute('aria-current', 'page');
     await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
     await expect(page.locator('#site-panel-guild a[href^="/guild"]')).toHaveCount(5);
-    for (const link of await page.locator('#site-panel-guild a').all()) {
+    for (const link of await page.locator('#site-panel-guild a:not([href^="https:"])').all()) {
       await expect(link).toHaveAttribute('href', /^\/guild(#\w+)?$/);
     }
   });

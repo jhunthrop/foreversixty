@@ -9,17 +9,30 @@
   import { FILTER_AFTER_CHARACTERS, VISIBLE_ROWS } from '../../lib/character-selector/config';
   import { filterRows, type SelectorModel, type SelectorRow as Row } from '../../lib/character-selector/rows';
   import type { LoadStatus } from '../../lib/character-selector/selector-state.svelte';
+  import { battlenetStartUrl } from '../../lib/account/api';
+  import type { AccountPanel } from '../../lib/character-selector/account-panel';
   import SelectorPaste from './SelectorPaste.svelte';
   import SelectorRow from './SelectorRow.svelte';
 
   const SWIPE_CLOSE_PX = 40;
   const SKELETON_ROWS = 3;
+  /** Stroke paths on a 24px grid for the account rows' tiles. */
+  const GLYPHS = {
+    person: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 3.6-7 8-7s8 3 8 7',
+    sliders: 'M4 7h9M17 7h3M4 17h3M11 17h9M15 4v6M9 14v6',
+    crown: 'M4 18l-1-10 5 4 4-7 4 7 5-4-1 10zM4 21h16',
+    signOut: 'M10 4H5v16h5M14 8l-4 4 4 4M10 12h10',
+  } as const;
 
   let {
     model,
     loadStatus,
     sheet,
     retryingKey,
+    account,
+    signingOut,
+    signOutFailed,
+    onsignout,
     onchoose,
     onpaste,
     onretry,
@@ -30,6 +43,11 @@
     loadStatus: LoadStatus;
     sheet: boolean;
     retryingKey: string | null;
+    /** The signed-in account's head and rows; null signed out or until `/v1/me` answered. */
+    account: AccountPanel | null;
+    signingOut: boolean;
+    signOutFailed: boolean;
+    onsignout: () => void;
     onchoose: (row: Row) => void;
     onpaste: (input: string) => Promise<boolean>;
     onretry: (row: Row) => void;
@@ -59,6 +77,7 @@
   );
   const offerSignIn = $derived(model.session === 'signed-out' || model.session === 'expired');
   const showManage = $derived(!signedOutEmpty);
+  const signInHref = battlenetStartUrl(window.location.pathname + window.location.search);
 
   function rowButtons(): HTMLButtonElement[] {
     return listEl === undefined ? [] : [...listEl.querySelectorAll<HTMLButtonElement>('[data-row-main]')];
@@ -148,6 +167,101 @@
   }
 </script>
 
+{#snippet glyph(path: string)}
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.9"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d={path}></path>
+  </svg>
+{/snippet}
+
+{#snippet chevron()}
+  <svg
+    class="csel-arow-chev"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M9 6l6 6-6 6"></path>
+  </svg>
+{/snippet}
+
+{#snippet signInButtons()}
+  <div class="csel-signin" data-testid="selector-sign-in">
+    <a class="csel-cta" href={signInHref} data-testid="selector-sign-in-bnet">{selectorCopy.signInBnet}</a>
+    <a class="csel-cta is-secondary" href={selectorCopy.signInHref} data-testid="selector-sign-in-email"
+      >{selectorCopy.signInEmail}</a
+    >
+  </div>
+{/snippet}
+
+{#snippet accountRows(panel: AccountPanel)}
+  {@const words = selectorCopy.account}
+  <div class="csel-arows" data-testid="selector-account-rows">
+    {#if panel.profile !== null}
+      <a class="csel-arow" href={panel.profile.href} data-testid="selector-row-profile">
+        <span class="csel-tile is-small">{@render glyph(GLYPHS.person)}</span>
+        <span class="csel-arow-text">
+          <span class="csel-arow-title">{words.profile}</span>
+          <span class="csel-arow-sub">{words.profileSub(panel.profile.name)}</span>
+        </span>
+        {@render chevron()}
+      </a>
+    {/if}
+    <a class="csel-arow" href={words.accountHref} data-testid="selector-row-account">
+      <span class="csel-tile is-small">{@render glyph(GLYPHS.sliders)}</span>
+      <span class="csel-arow-text">
+        <span class="csel-arow-title">{words.account}</span>
+        <span class="csel-arow-sub">{words.accountSub}</span>
+      </span>
+      {@render chevron()}
+    </a>
+    <a class="csel-arow" href={panel.plan.href} data-testid="selector-row-plan">
+      <span class="csel-tile is-small">{@render glyph(GLYPHS.crown)}</span>
+      <span class="csel-arow-text">
+        <span class="csel-arow-title">{words.plan}</span>
+        <span class="csel-arow-sub">{panel.plan.sub}</span>
+      </span>
+      {#if panel.plan.founder}<span class="csel-tag is-outline">{words.founderTag}</span>{/if}
+      {@render chevron()}
+    </a>
+    <button
+      type="button"
+      class="csel-arow is-quiet"
+      disabled={signingOut}
+      aria-busy={signingOut}
+      data-testid="selector-row-sign-out"
+      onclick={onsignout}
+    >
+      <span class="csel-tile is-small is-quiet">
+        {#if signingOut}<i class="csel-spinner" aria-hidden="true"></i>{:else}{@render glyph(
+            GLYPHS.signOut,
+          )}{/if}
+      </span>
+      <span class="csel-arow-text">
+        <span class="csel-arow-title">{signingOut ? words.signingOut : words.signOut}</span>
+      </span>
+    </button>
+    {#if signOutFailed}
+      <p class="csel-arow-error" role="alert" data-testid="selector-sign-out-failed">{words.signOutFailed}</p>
+    {/if}
+  </div>
+{/snippet}
+
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   class="csel-panel"
@@ -167,7 +281,21 @@
   >
     <span></span>
   </div>
-  <div class="csel-head">
+  {#if account !== null}
+    <div class="csel-acct-head" data-testid="selector-account-head">
+      <span class="csel-tile">{@render glyph(GLYPHS.person)}</span>
+      <span class="csel-acct-id">
+        <span class="csel-acct-name" data-testid="selector-account-name">{account.head.name}</span>
+        <span class="csel-acct-via">{selectorCopy.account.signedInWith[account.head.via]}</span>
+      </span>
+      {#if account.head.premium}
+        <span class="csel-tag" data-testid="selector-premium-tag"
+          ><i aria-hidden="true"></i>{selectorCopy.account.premiumTag}</span
+        >
+      {/if}
+    </div>
+  {/if}
+  <div class="csel-head" class:is-signout={signedOutEmpty}>
     <span class="csel-head-title">{heading}</span>
     {#if showManage}
       <a class="csel-manage" href={selectorCopy.manageHref} data-testid="selector-manage">
@@ -189,6 +317,11 @@
       </svg>
     </button>
   </div>
+
+  {#if signedOutEmpty}
+    <p class="csel-signout-body" data-testid="selector-signed-out-body">{selectorCopy.signedOutBody}</p>
+    {@render signInButtons()}
+  {/if}
 
   {#if showFilter}
     <div class="csel-filter">
@@ -315,27 +448,10 @@
       </span>
     </a>
   {/if}
-  {#if offerSignIn}
-    <a class="csel-action is-quiet" href={selectorCopy.signInHref} data-testid="selector-sign-in">
-      <span class="csel-action-icon">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="8" r="4"></circle>
-          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
-        </svg>
-      </span>
-      <span>
-        <span class="csel-action-title">{selectorCopy.signInTitle}</span>
-        <span class="csel-action-sub">{selectorCopy.signInSub}</span>
-      </span>
-    </a>
+  {#if offerSignIn && !signedOutEmpty}
+    {@render signInButtons()}
+  {/if}
+  {#if account !== null}
+    {@render accountRows(account)}
   {/if}
 </div>

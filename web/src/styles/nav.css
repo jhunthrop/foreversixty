@@ -169,6 +169,16 @@
     flex-shrink: 0;
     color: var(--color-gold);
   }
+  .site-panel-discord {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin: 0 -2px;
+    border-radius: 6px;
+    background: rgb(88 101 242 / 0.16);
+    color: #9aa4ff;
+  }
   .site-panel-text {
     display: flex;
     flex: 1;
@@ -234,45 +244,11 @@
     flex-shrink: 0;
   }
   .site-menu-character,
-  .site-menu-discord,
   .site-menu-button {
     display: none;
   }
 
-  /* Discord: a quiet link, the real mark, no border. Below 1440 the label becomes a tooltip. */
-  .site-discord {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 6px;
-    color: var(--color-nav);
-    font-weight: 600;
-    font-size: 13px;
-  }
-  .site-discord:hover {
-    color: var(--color-strong);
-  }
-  .site-tip {
-    display: none;
-    position: absolute;
-    z-index: 30;
-    top: calc(100% + 4px);
-    right: 0;
-    padding: 6px 9px;
-    border: 1px solid var(--color-line-warm);
-    border-radius: 4px;
-    background: #161c2a;
-    color: var(--color-text);
-    font-size: 12px;
-    font-weight: 400;
-    white-space: nowrap;
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.65);
-    pointer-events: none;
-  }
-
-  /* 1280 to 1439: Discord is the mark alone. Four doors (spec 2026-10-15 section 5) give the
+  /* 1280 to 1439: four doors (spec 2026-10-15 section 5) give the
      row back the room the lookup took, so the gaps are the nav spec's again and the lookup
      keeps its "/" hint. */
   @media (max-width: 1439px) {
@@ -283,18 +259,6 @@
     .site-doors {
       gap: 20px;
       letter-spacing: 0.1em;
-    }
-    .site-discord {
-      width: 44px;
-      justify-content: center;
-      padding: 0;
-    }
-    .site-discord-label {
-      display: none;
-    }
-    .site-discord:hover .site-tip,
-    .site-discord:focus-visible .site-tip {
-      display: block;
     }
   }
   @media (max-width: 1279px) {
@@ -320,9 +284,6 @@
     }
     .site-right {
       gap: 4px;
-    }
-    .site-discord {
-      width: 40px;
     }
   }
   @media (max-width: 1099px) {
@@ -354,9 +315,6 @@
     }
     .site-right {
       display: contents;
-    }
-    .site-right > .site-discord {
-      display: none;
     }
     .site-menu-button {
       grid-column: 3;
@@ -470,19 +428,6 @@
     .site-group[data-group='guides'] .site-menu-list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-    .site-menu-discord {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      height: 44px;
-      margin-top: 8px;
-      border: 1px solid var(--color-line-warm);
-      border-radius: 4px;
-      color: var(--color-text);
-      font-weight: 600;
-      font-size: 13px;
-    }
   }
 
   /* ------------------------------------------------------- character selector */
@@ -494,19 +439,21 @@
     align-items: center;
     gap: 10px;
     width: 232px;
-    height: 44px;
-    padding: 0 12px 0 6px;
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
-    background: var(--color-raised);
+    height: 48px;
+    /* The pill is 4px taller than the 44px the bar was drawn around; the bar keeps its height. */
+    margin: -2px 0;
+    padding: 0 12px 0 5px;
+    border: 1px solid var(--color-line-card);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.035);
     color: var(--color-strong);
     font: inherit;
     text-align: left;
     text-decoration: none;
   }
   .csel-btn:hover {
-    border-color: var(--color-line-warm-strong);
-    background: #101624;
+    border-color: rgb(229 185 85 / 0.45);
+    background: rgb(255 255 255 / 0.06);
     color: var(--color-strong);
   }
   .csel-btn:hover .csel-chev {
@@ -514,7 +461,12 @@
   }
   .csel-btn[aria-expanded='true'] {
     border-color: var(--color-gold);
-    background: #101624;
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: var(--glow-gold);
+  }
+  .csel-btn:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
   }
   .csel-btn[aria-expanded='true'] .csel-chev {
     transform: rotate(180deg);
@@ -527,13 +479,13 @@
   .csel-crestbox {
     position: relative;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
   .csel-crest {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 999px;
     object-fit: cover;
     background-color: var(--color-raised);
@@ -564,7 +516,7 @@
   .csel-badge {
     display: none;
     position: absolute;
-    left: 25px;
+    left: 28px;
     bottom: 3px;
     width: 14px;
     height: 14px;
@@ -607,8 +559,8 @@
     color: var(--color-muted);
   }
   .csel-skeleton-ring {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 999px;
     flex-shrink: 0;
   }
@@ -616,11 +568,17 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 999px;
-    border: 1.5px dashed #5a5546;
-    color: var(--color-muted);
+    background: rgb(229 185 85 / 0.14);
+    color: var(--color-gold);
+  }
+  /* Signed out the whole pill is gold-edged, also in the pre-paint link before hydration. */
+  .csel-btn.is-signed-out,
+  html:not([data-pointer-class]):not([data-session]) .csel-btn.csel-pre {
+    border-color: rgb(229 185 85 / 0.45);
+    background: rgb(229 185 85 / 0.08);
   }
   .csel-skeleton {
     background: linear-gradient(90deg, #161c2a, #1c2433, #161c2a);
@@ -772,7 +730,9 @@
       grid-column: 2;
       grid-row: 1;
       width: auto;
+      height: 44px;
       min-width: 44px;
+      margin: 0;
       gap: 4px;
       padding: 0;
       justify-content: center;
@@ -794,13 +754,16 @@
       width: 36px;
       height: 36px;
     }
-    .csel-btn.is-signed-out .csel-ghost {
+    .csel-btn.is-signed-out .csel-ghost,
+    .csel-pre .csel-pre-out .csel-ghost {
       width: 36px;
       height: 36px;
+      box-shadow: 0 0 0 1px rgb(229 185 85 / 0.45);
+      background: rgb(229 185 85 / 0.1);
     }
     .csel-btn.is-signed-out .csel-ghost svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
     .csel-badge {
       display: grid;
@@ -869,13 +832,17 @@
   .csel-panel {
     position: absolute;
     z-index: 20;
-    top: calc(100% + 10px);
+    top: calc(100% + 8px);
     right: 0;
-    width: 392px;
-    border: 1px solid var(--color-line-warm);
-    border-radius: 6px;
-    background: var(--color-raised);
-    box-shadow: 0 18px 40px rgb(0 0 0 / 0.7);
+    width: 380px;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-panel);
+    background: var(--surface-card);
+    box-shadow:
+      inset 0 1px 0 var(--card-highlight),
+      var(--shadow-card);
     text-align: left;
   }
   .csel-scrim,
@@ -959,11 +926,11 @@
     border-left: 2px solid transparent;
   }
   .csel-row.is-current {
-    background: rgb(229 185 85 / 0.1);
+    background: var(--row-hover);
     border-left-color: var(--color-gold);
   }
   .csel-row:hover:not(.is-current) {
-    background: #101624;
+    background: var(--row-hover);
     border-left-color: var(--c);
   }
   .csel-row-main {
@@ -1225,6 +1192,196 @@
     color: var(--color-wipe);
   }
 
+  /* The account control's panel (spec 2026-10-28-polish 1.3): head, rows, signed-out buttons. */
+  .csel-tile {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--tile);
+    color: var(--tile-ink);
+  }
+  .csel-tile.is-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .csel-tile.is-quiet {
+    background: rgb(255 255 255 / 0.05);
+    color: var(--color-muted);
+  }
+  .csel-acct-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .csel-acct-id {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+  }
+  .csel-acct-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .csel-acct-via {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .csel-tag {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid rgb(229 185 85 / 0.45);
+    border-radius: 6px;
+    background: rgb(229 185 85 / 0.12);
+    color: var(--color-gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .csel-tag i {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-gold);
+    box-shadow: 0 0 8px rgb(229 185 85 / 0.8);
+  }
+  .csel-tag.is-outline {
+    background: none;
+  }
+  .csel-arows {
+    padding: 6px 0;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .csel-arow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 52px;
+    padding: 8px 18px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .csel-arow:hover {
+    background: var(--row-hover);
+  }
+  .csel-arow:active {
+    background: rgb(229 185 85 / 0.1);
+  }
+  .csel-arow:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+  }
+  .csel-arow:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+  .csel-arow-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+  }
+  .csel-arow-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .csel-arow-sub {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .csel-arow-chev {
+    flex-shrink: 0;
+    color: var(--color-muted);
+  }
+  .csel-arow-error {
+    margin: 0;
+    padding: 0 18px 8px 62px;
+    font-size: 13px;
+    color: var(--color-wipe);
+  }
+  .csel-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 999px;
+  }
+  .csel-signout-body {
+    margin: 0;
+    padding: 0 18px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--color-text);
+  }
+  .csel-head.is-signout {
+    border-bottom: 0;
+    height: auto;
+    min-height: 44px;
+    padding: 6px 18px 4px;
+  }
+  .csel-head.is-signout .csel-head-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: var(--tracking-button);
+    text-transform: uppercase;
+    color: var(--color-strong);
+  }
+  .csel-signin {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 18px 16px;
+  }
+  .csel-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-control);
+    background: linear-gradient(180deg, #f0c968, #d9a93c);
+    color: #1a1204;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: var(--tracking-button);
+    text-transform: uppercase;
+  }
+  .csel-cta:hover {
+    filter: brightness(1.06);
+  }
+  .csel-cta:focus-visible {
+    outline: 2px solid var(--color-strong);
+    outline-offset: 2px;
+  }
+  .csel-cta.is-secondary {
+    border-color: var(--color-line-card);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--color-strong);
+  }
+
   /* The sheet: below 1024 the same panel is a modal bottom sheet. */
   @media (max-width: 1023px) {
     .csel-scrim {
@@ -1242,7 +1399,8 @@
       bottom: 0;
       left: 0;
       width: auto;
-      max-height: 86dvh;
+      max-height: 88dvh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       border-bottom: 0;

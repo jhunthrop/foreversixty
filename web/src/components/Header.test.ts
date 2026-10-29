@@ -2,6 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import classes from '../data/classes.json';
+import communityLinks from '../data/links.json';
 import Header from './Header.astro';
 
 async function renderDoc(path: string): Promise<Document> {
@@ -74,6 +75,7 @@ describe('Header', () => {
       ['Roster', '/guild#roster'],
       ['Loot council', '/guild#loot'],
       ['Guild logs', '/guild#raids'],
+      ['Forever Sixty Discord', communityLinks.discordInvite],
     ]);
     expect(doc.querySelector('#site-panel-guild [data-guild-name]')?.textContent).toBe('Your guild');
     expect(doc.querySelector('#site-panel-guild .site-panel-foot')?.getAttribute('href')).toBe(
@@ -126,12 +128,15 @@ describe('Header', () => {
     expect(html).not.toContain('>The addon<');
   });
 
-  it('renders the session slot next to Discord', async () => {
-    const html = await renderHeader('/');
-    const discordAt = html.indexOf('Discord');
-    const headerCloseAt = html.lastIndexOf('</header>');
-    expect(discordAt).toBeGreaterThan(-1);
-    expect(discordAt).toBeLessThan(headerCloseAt);
+  it('has no Discord link in the bar or the Menu; the Guild panel carries the one row', async () => {
+    const doc = await renderDoc('/');
+    expect(doc.querySelector('.site-discord, .site-menu-discord, [data-testid="discord-link"]')).toBeNull();
+    const rows = [...doc.querySelectorAll('a[href*="discord.gg"]')];
+    expect(rows).toHaveLength(2);
+    for (const row of rows) {
+      expect(row.closest('#site-panel-guild, [data-menu-list="guild"]')).not.toBeNull();
+      expect(row.textContent).toContain('Forever Sixty Discord');
+    }
   });
 
   it('renders a collapsed Menu button that controls the menu panel holding the doors', async () => {
@@ -141,15 +146,10 @@ describe('Header', () => {
     expect(html.indexOf('id="site-menu"')).toBeLessThan(html.indexOf('id="primary-nav"'));
   });
 
-  it('never says Leveling BiS and labels the Discord link for screen readers', async () => {
+  it('never says Leveling BiS and keeps the selector slot in the bar', async () => {
     const html = await renderHeader('/');
     expect(html).not.toContain('Leveling BiS');
-    expect(html).toMatch(/<a[^>]*aria-label="Discord"/);
-  });
-
-  it('has a slot for the selector in the bar, before Discord', async () => {
-    const html = await renderHeader('/');
-    expect(html.indexOf('site-right')).toBeLessThan(html.indexOf('site-discord'));
+    expect(html).toContain('site-right');
     expect(html.indexOf('site-menu"')).toBeLessThan(html.indexOf('primary-nav'));
   });
 

@@ -4,6 +4,11 @@
 // this; Header.test.ts asserts against it directly, so a reordering shows up as a data-level
 // test failure rather than a markup diff.
 
+import communityLinks from '../data/links.json';
+
+/** The Guild panel's last row: the site's one header link to the community Discord. */
+export const DISCORD_ROW_LABEL = 'Forever Sixty Discord';
+
 export interface NavItem {
   readonly label: string;
   readonly href: string;
@@ -11,6 +16,8 @@ export interface NavItem {
 
 export interface NavRow extends NavItem {
   readonly description: string;
+  /** A tinted brand tile in place of the line icon (the Guild panel's Discord row). */
+  readonly mark?: 'discord';
 }
 
 export interface NavGroup extends NavItem {
@@ -90,6 +97,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         label: 'Guild logs',
         href: '/guild#raids',
         description: 'Reports from guild members, raid night by raid night',
+      },
+      {
+        label: DISCORD_ROW_LABEL,
+        href: communityLinks.discordInvite,
+        description: 'Find a guild, ask about the site, report a bug.',
+        mark: 'discord',
       },
     ],
     foot: { label: 'Guild settings', href: '/guild#settings' },

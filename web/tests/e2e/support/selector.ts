@@ -77,12 +77,22 @@ export async function signInWith(
   page: Page,
   characters: FixtureCharacter[],
   guilds: Record<string, unknown>[] = [],
+  /** Extra `/v1/me` fields (entitlements, seat ...); `user` merges over the fixture's. */
+  extra: { user?: Record<string, unknown> } & Record<string, unknown> = {},
 ): Promise<void> {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       envelope({
-        user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+        ...extra,
+        user: {
+          id: 1,
+          battletag: 'Fixture#1',
+          email: null,
+          role: 'user',
+          anonymize: false,
+          ...extra.user,
+        },
         characters: characters.map(meCharacter),
         guilds,
       }),

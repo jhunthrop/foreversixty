@@ -98,16 +98,17 @@ test.describe('the doors', () => {
     await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
   });
 
-  test('Discord shows its label at 1440 and the mark with a tooltip below', async ({ page }) => {
+  test('the bar has no Discord link; the Guild panel carries the one community row', async ({ page }) => {
     await signedOut(page);
     await page.goto('/');
-    const discord = page.getByTestId('discord-link');
-    await expect(discord).toHaveAttribute('aria-label', 'Discord');
-    await expect(discord.locator('.site-discord-label')).toBeVisible();
-    await page.setViewportSize({ width: 1439, height: 900 });
-    await expect(discord.locator('.site-discord-label')).toBeHidden();
-    await discord.hover();
-    await expect(page.getByRole('tooltip', { name: 'Discord' })).toBeVisible();
+    await headerWired(page);
+    await expect(page.getByTestId('discord-link')).toHaveCount(0);
+    await expect(page.getByRole('banner').locator('.site-right a')).toHaveCount(0);
+    await page.getByTestId('primary-nav').getByRole('link', { name: 'Guild', exact: true }).hover();
+    const row = page.getByTestId('site-panel-row-forever-sixty-discord');
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('Find a guild, ask about the site, report a bug.');
+    await expect(row).toHaveAttribute('href', /discord\.gg\//);
   });
 });
 
@@ -161,16 +162,16 @@ test.describe('the bar at every width', () => {
     await expect(page.getByTestId('selector-sub')).toBeHidden();
   });
 
-  test('the wordmark and Discord sit on the 1344px content edges at 2000', async ({ page }) => {
+  test('the wordmark and the account control sit on the 1344px content edges at 2000', async ({ page }) => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 2000, height: 900 });
     await page.goto('/guides');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
-    const discord = (await page.getByTestId('discord-link').boundingBox())!;
+    const account = (await selector(page).boundingBox())!;
     expect(mark.x).toBeGreaterThanOrEqual(328 - 1);
-    expect(discord.x + discord.width).toBeLessThanOrEqual(1672 + 1);
+    expect(account.x + account.width).toBeLessThanOrEqual(1672 + 1);
   });
 
   test('a 22-character name keeps the bar one row and ends in an ellipsis, with the whole name in title', async ({
@@ -216,7 +217,7 @@ test.describe('the list', () => {
     await expect(panel(page).getByTestId('selector-manage')).toHaveAttribute('href', '/account#characters');
     const box = (await panel(page).boundingBox())!;
     const trigger = (await selector(page).boundingBox())!;
-    expect(box.width).toBe(392);
+    expect(box.width).toBe(380);
     expect(Math.round(box.x + box.width)).toBe(Math.round(trigger.x + trigger.width));
   });
 
@@ -246,7 +247,10 @@ test.describe('the list', () => {
     await page.goto('/guides');
     await ready(page);
     await expect(page.getByTestId('selector-mark')).toHaveAttribute('data-mark', 'stale');
-    await expect(selector(page)).toHaveAttribute('aria-label', /Sync is stale\. Change character\.$/);
+    await expect(selector(page)).toHaveAttribute(
+      'aria-label',
+      /Sync is stale\. Your characters and account$/,
+    );
     await selector(page).hover();
     await expect(page.getByRole('tooltip', { name: /Last synced 19 days ago/ })).toBeVisible();
   });
@@ -569,7 +573,7 @@ test.describe('signed out and expired', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('shows Sign in, and opens Add your character with paste, the addon and a quiet sign-in', async ({
+  test('shows Sign in, and opens Add your character with the two sign-in buttons, paste and the addon', async ({
     page,
   }) => {
     await signedOut(page);
@@ -582,7 +586,13 @@ test.describe('signed out and expired', () => {
     await expect(panel(page).getByTestId('selector-manage')).toHaveCount(0);
     await expect(panel(page).getByTestId('selector-paste')).toContainText('Paste an export');
     await expect(panel(page).getByTestId('selector-addon')).toContainText('Get the addon');
-    await expect(panel(page).getByTestId('selector-sign-in')).toHaveAttribute('href', '/login');
+    await expect(panel(page).getByTestId('selector-signed-out-body')).toHaveText(
+      'Sign in and your characters arrive with their gear, talents and guild.',
+    );
+    await expect(panel(page).getByTestId('selector-sign-in-bnet')).toHaveText('Sign in with Battle.net');
+    await expect(panel(page).getByTestId('selector-sign-in-bnet')).toHaveAttribute('href', /battlenet/);
+    await expect(panel(page).getByTestId('selector-sign-in-email')).toHaveAttribute('href', '/login');
+    await expect(panel(page).getByTestId('selector-account-rows')).toHaveCount(0);
   });
 
   test('a pasted export with no session is the current row, with the not-saved note and a sign-in', async ({
@@ -612,7 +622,7 @@ test.describe('signed out and expired', () => {
     await page.goto('/guides');
     await ready(page);
     await expect(page.getByTestId('selector-mark')).toHaveAttribute('data-mark', 'session');
-    await expect(selector(page)).toHaveAttribute('aria-label', /Signed out\. Change character\.$/);
+    await expect(selector(page)).toHaveAttribute('aria-label', /Signed out\. Your characters and account$/);
     await selector(page).click();
     await expect(panel(page)).toContainText('Your session ended. Sign in to see your other characters.');
     await expect(panel(page).getByTestId('selector-sign-in')).toBeVisible();
@@ -690,7 +700,7 @@ test.describe('the phone bar', () => {
     await expect(page.getByTestId('selector-name')).toBeHidden();
   });
 
-  test('the Menu leads with the full name, then the four groups, then Discord', async ({ page }) => {
+  test('the Menu leads with the full name, then the four groups, with no Discord row', async ({ page }) => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/guides');
@@ -700,6 +710,7 @@ test.describe('the phone bar', () => {
     await expect(row).toContainText('Obnoxious Yell');
     await expect(row).toContainText('Fury Warrior · 60');
     await expect(page.locator('#site-menu h2.site-menu-heading')).toHaveText(GROUPS);
+    await expect(page.locator('#site-menu .site-menu-discord')).toHaveCount(0);
     const rowBox = (await row.boundingBox())!;
     const navBox = (await page.getByTestId('primary-nav').boundingBox())!;
     expect(rowBox.y + rowBox.height).toBeLessThanOrEqual(navBox.y);

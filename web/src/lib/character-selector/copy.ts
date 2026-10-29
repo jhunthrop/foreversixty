@@ -1,6 +1,8 @@
 // web/src/lib/character-selector/copy.ts
 // Every visible and spoken string of the nav character selector, verbatim from section 6 of
 // design/specs/2026-10-09-nav-character-selector.md. One module so a wording change is one edit.
+import { accountPlanCopy } from '../billing/account-plan-copy';
+
 export const selectorCopy = {
   listHeading: 'Your characters',
   manage: 'Manage',
@@ -24,8 +26,9 @@ export const selectorCopy = {
   addonTitle: 'Get the addon',
   addonSub: 'Export a character from the game.',
   addonHref: '/setup',
-  signInTitle: 'Sign in',
-  signInSub: 'Email or Battle.net. Keeps your characters.',
+  signedOutBody: 'Sign in and your characters arrive with their gear, talents and guild.',
+  signInBnet: 'Sign in with Battle.net',
+  signInEmail: 'Use an email link',
   signInHref: '/login',
   /** The closed control of a signed-in account with no character yet. */
   accountSub: 'No characters yet',
@@ -48,7 +51,6 @@ export const selectorCopy = {
   sourceAddon: 'Addon',
   sourceBnet: 'Battle.net',
   sourcePasted: 'Pasted export',
-  discord: 'Discord',
   menuSignInSub: 'or paste an export',
   failedLine: (age: string): string => `Battle.net refresh failed · last good ${age}`,
   markTooltip: {
@@ -60,6 +62,27 @@ export const selectorCopy = {
     stale: 'Sync is stale.',
     failed: 'Sync failed.',
     session: 'Signed out.',
+  },
+  /** The account control's panel rows (spec 2026-10-28-polish section 1.6). */
+  account: {
+    signedInWith: { bnet: 'Signed in with Battle.net', email: 'Signed in with an email link' },
+    premiumTag: 'Premium',
+    profile: 'Your profile',
+    profileSub: (name: string): string => `${name}’s score, gear and fights`,
+    account: 'Account',
+    accountSub: 'Characters, devices, Discord',
+    accountHref: '/account',
+    plan: 'Plan',
+    planSubFree: 'Free',
+    planHref: '/account#plan',
+    freePlanHref: '/premium',
+    founderTag: accountPlanCopy.founder.pill,
+    signOut: 'Sign out',
+    signingOut: 'Signing out…',
+    signOutFailed: 'Could not sign out. Try again.',
+    /** `mark` is a ring-mark sentence ("Sync is stale.") that sits before the action. */
+    controlAria: (name: string, desc: string, mark = ''): string =>
+      `${name}, ${desc}. ${mark === '' ? '' : `${mark} `}Your characters and account`,
   },
   nowUsing: (name: string): string => `Now using ${name}.`,
 } as const;

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import communityLinks from '../data/links.json';
 import {
   GUILD_GROUP_INDEX,
   NAV_GROUPS,
@@ -39,6 +40,7 @@ describe('nav groups', () => {
       ['Roster', '/guild#roster'],
       ['Loot council', '/guild#loot'],
       ['Guild logs', '/guild#raids'],
+      ['Forever Sixty Discord', communityLinks.discordInvite],
     ]);
     expect(guides.rows).toEqual([]);
   });
@@ -51,6 +53,13 @@ describe('nav groups', () => {
     expect(guides.foot).toEqual({ label: 'All guides', href: '/guides' });
     expect(tools.foot).toBeUndefined();
     expect(logs.foot).toBeUndefined();
+  });
+
+  it('ends the Guild panel with the Discord row, the one community link in the header', () => {
+    const last = guild.rows.at(-1)!;
+    expect(last.description).toBe('Find a guild, ask about the site, report a bug.');
+    expect(last.mark).toBe('discord');
+    expect(NAV_GROUPS.flatMap((group) => group.rows).filter((row) => row.mark === 'discord')).toHaveLength(1);
   });
 
   it('names the setup nav item "Get set up" at /setup', () => {

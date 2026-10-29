@@ -29,9 +29,9 @@ test.describe('desktop header', () => {
     await page.goto('/');
     const mark = await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox();
     const nav = await page.getByTestId('primary-nav').boundingBox();
-    const discord = await page.getByRole('banner').getByRole('link', { name: 'Discord' }).boundingBox();
+    const account = await page.getByTestId('selector-root').boundingBox();
     expect(mark!.x + mark!.width).toBeLessThanOrEqual(nav!.x);
-    expect(nav!.x + nav!.width).toBeLessThanOrEqual(discord!.x);
+    expect(nav!.x + nav!.width).toBeLessThanOrEqual(account!.x);
     await expect(page.getByTestId('menu-button')).toBeHidden();
   });
 });
@@ -137,6 +137,6 @@ test.describe('sign in on every page', () => {
     await page.goto('/guides');
     await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
     await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
-    await expect(page.getByTestId('selector-sign-in')).toHaveAttribute('href', /\/login/);
+    await expect(page.getByTestId('selector-sign-in-email')).toHaveAttribute('href', /\/login/);
   });
 });

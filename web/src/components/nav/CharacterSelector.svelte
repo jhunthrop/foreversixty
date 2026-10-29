@@ -10,7 +10,7 @@
      crest and the name are where they will be when the island swaps in the button. -->
 <script lang="ts">
   import { tick } from 'svelte';
-  import { battlenetStartUrl } from '../../lib/account/api';
+  import { battlenetStartUrl, signOut } from '../../lib/account/api';
   import { browserChooseDeps, chooseCharacter, choosePointer } from '../../lib/character-selector/choose';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { OPEN_SELECTOR_EVENT } from '../../lib/character-selector/config';
@@ -36,6 +36,8 @@
   let open = $state(false);
   let sheet = $state(false);
   let retryingKey = $state<string | null>(null);
+  let signingOut = $state(false);
+  let signOutFailed = $state(false);
   let announcement = $state('');
   let root: HTMLElement | undefined = $state();
   let trigger: HTMLButtonElement | undefined = $state();
@@ -142,6 +144,18 @@
     announcement = selectorCopy.nowUsing(result.account?.name ?? result.pointer.label.split(' · ')[0]);
     close(true);
     return true;
+  }
+
+  async function onSignOut(): Promise<void> {
+    signingOut = true;
+    signOutFailed = false;
+    try {
+      await signOut();
+      window.location.reload();
+    } catch {
+      signingOut = false;
+      signOutFailed = true;
+    }
   }
 
   function onRetry(row: SelectorRow): void {
@@ -399,6 +413,10 @@
       loadStatus={selector.loadStatus}
       {sheet}
       {retryingKey}
+      account={selector.accountPanel}
+      {signingOut}
+      {signOutFailed}
+      onsignout={onSignOut}
       onchoose={onChoose}
       onpaste={onPaste}
       onretry={onRetry}
