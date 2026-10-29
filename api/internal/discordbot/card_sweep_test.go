@@ -1,6 +1,8 @@
 package discordbot
 
 import (
+	"context"
+	"fmt"
 	"sort"
 	"strings"
 	"testing"
@@ -59,10 +61,54 @@ func sweepFrames(t *testing.T) []Message {
 		w.attendanceCard(t, attPickID, "Thalwyn").Message,
 		w.attendanceCard(t, rdyPickID, "4").Message,
 		w.attendanceCard(t, repPickID, "6").Message,
+		w.attendanceModal(t, "Vexlash").Message,
 	}
-	signup := newOfficerWorld(t)
-	signup.addChar(t, signup.gid, signup.uid, "us/normal/zulmara", "Zulmara", true)
-	return append(frames, signup.run(t, pressDiscord, "signup").Message, newOfficerWorld(t).run(t, pressDiscord, "char").Message)
+	// Each world truncates the database, so every world's frames are drawn before the next.
+	frames = append(frames, signupFrames(t)...)
+	frames = append(frames, newOfficerWorld(t).run(t, pressDiscord, "char").Message)
+	return append(frames, lookupFrames(t)...)
+}
+
+// signupFrames are the bare /signup card and the card a raid pick redraws.
+func signupFrames(t *testing.T) []Message {
+	t.Helper()
+	w := newOfficerWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	bare := w.run(t, pressDiscord, "signup").Message
+	later := w.addRaid(t, w.gid, w.raidStart.Add(24*time.Hour))
+	raidPick := w.signupCardPress(t, fmt.Sprintf("gsgn:1:raid:%d:%s", w.raidID, keyZulmara), fmt.Sprint(later))
+	return []Message{bare, raidPick.Message}
+}
+
+// lookupFrames are the /char card a typed name redraws and a /bis range frame.
+func lookupFrames(t *testing.T) []Message {
+	t.Helper()
+	lookup := newLookupWorld(t)
+	linkTwoChars(lookup)
+	charName := lookup.modal(t, pressDiscord, charNameID, "Zulmara").Message
+	bisRange := newBisWorld(t).pressBis(t, pressDiscord, "gbis:1:r:warrior:fury:p1:", "50").Message
+	return []Message{charName, bisRange}
+}
+
+// cardModals are the modals each card's ask part opens, keyed by prefix: derived by pressing
+// ask on every routed card, so a new modal is checked without being listed here. ask reads
+// nothing, so an empty Service answers it.
+func cardModals(t *testing.T) map[string]*Modal {
+	t.Helper()
+	s := &Service{}
+	routes := s.componentRoutes()
+	out := map[string]*Modal{}
+	for _, prefix := range cardPrefixes(s) {
+		in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": cardCustomID(prefix, askPart)})
+		rep, err := routes[prefix](context.Background(), in)
+		if err != nil {
+			t.Fatalf("%s ask: %v", prefix, err)
+		}
+		if rep.Modal != nil {
+			out[prefix] = rep.Modal
+		}
+	}
+	return out
 }
 
 func TestEveryCardHoldsDiscordsLimits(t *testing.T) {
@@ -115,17 +161,20 @@ func TestEveryCardHoldsDiscordsLimits(t *testing.T) {
 }
 
 func TestCardModalsHoldDiscordsLimits(t *testing.T) {
-	for prefix, modal := range map[string]*Modal{prefixChar: charModal(), prefixAttendance: attendanceModal()} {
-		if !cardFailureRoutes[prefix] || modal.CustomID != cardCustomID(prefix, "name") ||
-			utf8.RuneCountInString(modal.CustomID) > maxCustomIDLen || utf8.RuneCountInString(modal.Title) > 45 ||
-			utf8.RuneCountInString(modal.InputLabel) > 45 || utf8.RuneCountInString(modal.Placeholder) > 100 {
-			t.Errorf("%s modal = %+v", prefix, modal)
+	modals := cardModals(t)
+	// The two cards that ask for a typed name today; a card losing its modal fails here.
+	for _, prefix := range []string{prefixChar, prefixAttendance} {
+		if modals[prefix] == nil {
+			t.Errorf("%s ask opened no modal", prefix)
 		}
 	}
 	routes := (&Service{}).componentRoutes()
-	for _, prefix := range []string{prefixChar, prefixAttendance} {
-		if routes[prefix] == nil {
-			t.Errorf("%s does not route a modal submit", prefix)
+	for prefix, modal := range modals {
+		if !cardFailureRoutes[prefix] || modal.CustomID != cardCustomID(prefix, "name") ||
+			customPrefix(modal.CustomID) != prefix || routes[prefix] == nil ||
+			utf8.RuneCountInString(modal.CustomID) > maxCustomIDLen || utf8.RuneCountInString(modal.Title) > 45 ||
+			utf8.RuneCountInString(modal.InputLabel) > 45 || utf8.RuneCountInString(modal.Placeholder) > 100 {
+			t.Errorf("%s modal = %+v", prefix, modal)
 		}
 	}
 }
