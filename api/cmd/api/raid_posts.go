@@ -1,0 +1,106 @@
+// api/cmd/api/raid_posts.go
+//
+// raid-posts is the Cloud Scheduler job that runs every ten minutes: it sends the raid posts
+// and day-before reminders that have come due, then brings the bot's posts up to date. It is
+// the clock that works while the service is cold. It logs counts only.
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"log/slog"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/server"
+)
+
+// raidPostsDrainPasses is how many bot drain passes follow the schedule run.
+const raidPostsDrainPasses = 5
+
+func runRaidPosts(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	svc, err := newRaidPostsServices(cfg, pool, log)
+	if err != nil {
+		return err
+	}
+	return raidPosts(ctx, log, svc, time.Now())
+}
+
+// raidScheduler sends the posts and reminders that are due (guilds.Service).
+type raidScheduler interface {
+	RunRaidSchedule(ctx context.Context, now time.Time) (guilds.ScheduleRun, error)
+}
+
+// raidDrainer runs one bot drain pass (discordbot.Drainer).
+type raidDrainer interface {
+	DrainOnce(ctx context.Context) error
+}
+
+// raidPostsServices is what the job runs. Drainer is nil when the bot is not configured; tests
+// build it with fakes.
+type raidPostsServices struct {
+	Guilds  raidScheduler
+	Drainer raidDrainer
+}
+
+// newRaidPostsServices builds the guilds, notify and bot wiring serve uses for the raid router,
+// but starts no drainer goroutine and registers no commands.
+func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (raidPostsServices, error) {
+	entStore := &entitlements.Store{Pool: pool}
+	guildService := &guilds.Service{
+		Store:    &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, APIBaseURL: cfg.APIBaseURL},
+		Accounts: &auth.Store{Pool: pool, Log: log}, Supporters: entStore, Entitlements: entStore,
+		PublicBaseURL: cfg.PublicBaseURL, Log: log,
+	}
+	deps := server.Deps{Guilds: guildService}
+	if n := newNotifyService(cfg, pool, entStore, log); n != nil {
+		deps.Notify = n
+		wireGuildRaidChannel(n, guildService)
+	}
+	svc := raidPostsServices{Guilds: guildService}
+	if !botEnabled(cfg, deps, log) {
+		return svc, nil
+	}
+	d := botDeps(cfg, pool, deps, log)
+	bot := discordbot.New(d)
+	guildService.Bot = bot
+	guildService.RaidEvents = raidRouterFor(bot, deps)
+	guildService.RaidPosts = d.Store
+	svc.Drainer = bot.NewDrainer(guildService)
+	return svc, nil
+}
+
+// raidPosts runs the schedule, then the drain passes. A schedule failure does not skip the
+// drain (rows already queued still go out) but fails the job.
+func raidPosts(ctx context.Context, log *slog.Logger, svc raidPostsServices, now time.Time) error {
+	var errs []error
+	run, err := svc.Guilds.RunRaidSchedule(ctx, now)
+	if err != nil {
+		errs = append(errs, fmt.Errorf("schedule: %w", err))
+	}
+	if svc.Drainer != nil {
+		for i := 0; i < raidPostsDrainPasses && ctx.Err() == nil; i++ {
+			if err := svc.Drainer.DrainOnce(ctx); err != nil {
+				errs = append(errs, fmt.Errorf("drain: %w", err))
+				break
+			}
+		}
+	}
+	log.Info("raid-posts", "posted", run.Posted, "reminded", run.Reminded, "failed", run.Failed)
+	if err := errors.Join(errs...); err != nil {
+		return fmt.Errorf("raid-posts: %w", err)
+	}
+	return nil
+}

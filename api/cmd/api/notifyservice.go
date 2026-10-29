@@ -73,12 +73,17 @@ func wireNotify(cfg config.Config, pool *pgxpool.Pool, ents notify.Entitlementer
 		return
 	}
 	accounts.Notifications = deps.Notify
-	// The guild raid channel: notify asks guilds for an officer's standing, guilds
-	// reads the channel back for the settings payload and the raid view.
-	deps.Notify.Guilds = deps.Guilds
-	deps.Guilds.Discord = deps.Notify
-	// The raid posts follow the channel: none while the deployment has connect off.
-	if poster := deps.Notify.GuildDeliverer(); poster != nil && deps.Notify.GuildConnectEnabled() {
-		deps.Guilds.RaidEvents = poster
+	wireGuildRaidChannel(deps.Notify, deps.Guilds)
+}
+
+// wireGuildRaidChannel connects notify and guilds: notify asks guilds for an officer's
+// standing, guilds reads the channel back for the settings payload and the raid view, and the
+// raid posts follow the channel (none while the deployment has connect off). serve and the
+// raid-posts job wire it the same way.
+func wireGuildRaidChannel(n *notify.Service, g *guilds.Service) {
+	n.Guilds = g
+	g.Discord = n
+	if poster := n.GuildDeliverer(); poster != nil && n.GuildConnectEnabled() {
+		g.RaidEvents = poster
 	}
 }

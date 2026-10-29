@@ -313,6 +313,31 @@ nightly the same way `sim-validate` already is:
 delivered (design spec §2.8): it is a backstop, not the primary path — the webhook itself
 (`POST /v1/billing/webhook`) does the real-time work.
 
+`raid-posts` is the guild raids' clock: deferred posts (a raid saved more than a week ahead
+posts a week before) and the day-before reminders go out every ten minutes, even when the
+service is cold. It runs the raid schedule, then up to five bot drain passes (only when the bot
+is configured), logs `posted`, `reminded` and `failed` counts, and exits non-zero on a
+schedule error. It migrates at start like every job, so it must run the deployed image; CI only
+moves an existing job to the new image, so create it once by hand. It takes the service's
+environment and secrets by name (never paste a value):
+
+    gcloud run jobs create raid-posts \
+      --image <the API image> --region us-east1 --args raid-posts \
+      --cpu 1 --memory 512Mi --task-timeout 5m \
+      --set-env-vars "$(tr '\n' ',' < .env.job)" \
+      --set-secrets DATABASE_URL=DATABASE_URL:latest,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:latest,NOTIFY_ENCRYPTION_KEY=NOTIFY_ENCRYPTION_KEY:latest,DISCORD_CLIENT_SECRET=DISCORD_CLIENT_SECRET:latest,DISCORD_BOT_TOKEN=DISCORD_BOT_TOKEN:latest
+
+    gcloud scheduler jobs create http raid-posts-every-10m \
+      --schedule "*/10 * * * *" --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/raid-posts:run" \
+      --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
+
+`.env.job` must carry the non-secret variables the service has (`PUBLIC_BASE_URL`,
+`API_BASE_URL`, `DISCORD_CLIENT_ID`, `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`). Without
+the bot's variables the job still posts through webhooks.
+
+Accepted, not swept: if an admin deletes a bot post in Discord after its day-before reminder
+reply went out, that reply's buttons stay pressable and nothing withdraws it.
+
 The performance ratings lane adds `rating-backfill`: it rates every fight in every
 complete report that has no rating yet, in bounded batches, and is safe to re-run and to
 run beside live ingest (new uploads are rated as they land). Run it once after the

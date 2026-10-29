@@ -146,6 +146,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "raid-posts":
+			if err := runRaidPosts(context.Background(), log); err != nil {
+				log.Error("raid-posts", "err", err)
+				os.Exit(1)
+			}
+			return
 		case "stripe-reconcile":
 			if err := runStripeReconcile(context.Background(), log); err != nil {
 				log.Error("stripe-reconcile", "err", err)
