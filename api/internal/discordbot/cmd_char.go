@@ -36,7 +36,11 @@ func (s *Service) cmdChar(ctx context.Context, in Interaction) (Reply, error) {
 		return Reply{}, err
 	}
 	if !found {
-		return s.charUnknownCard(ctx, guildID, viewer, name, false)
+		own, err := s.ownChars(ctx, guildID, viewer)
+		if err != nil {
+			return Reply{}, err
+		}
+		return s.charUnknownCard(name, viewer, own, false), nil
 	}
 	button, err := s.offerShare(ctx, in, guildID, "char", opts)
 	if err != nil {

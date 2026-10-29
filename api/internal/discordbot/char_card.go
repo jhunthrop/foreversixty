@@ -124,74 +124,109 @@ func (s *Service) charAskCard(content string, linked bool, own []ownChar, update
 	return Reply{Message: Message{Content: content, Ephemeral: true, Components: rows}, Update: update}
 }
 
-// charUnknownCard says no public character has the typed name and asks again.
-func (s *Service) charUnknownCard(ctx context.Context, guildID int64, viewer *int64, typed string, update bool) (Reply, error) {
-	own, err := s.ownChars(ctx, guildID, viewer)
-	if err != nil {
-		return Reply{}, err
+// charUnknownCard says no public character has the typed name and asks again. A name with
+// nothing in it gets the plain lead instead of "named .".
+func (s *Service) charUnknownCard(typed string, viewer *int64, own []ownChar, update bool) Reply {
+	if strings.TrimSpace(typed) == "" {
+		return s.charLeadCard(viewer, own, update)
 	}
 	content := fill(guideCopy.CharUnknown, "{typed}", memberText(truncateRunes(typed, charNameMax)))
-	return s.charAskCard(content, viewer != nil, own, update), nil
+	return s.charAskCard(content, viewer != nil, own, update)
 }
 
-// charStart is a bare /char: the main's card, or the ask card.
+// charLeadCard asks "Which character?" with the lead that fits the viewer.
+func (s *Service) charLeadCard(viewer *int64, own []ownChar, update bool) Reply {
+	lead := guideCopy.CharLeadNone
+	if viewer == nil {
+		lead = guideCopy.CharLeadUnlinked
+	}
+	return s.charAskCard(lead, viewer != nil, own, update)
+}
+
+// charStart is a bare /char: the main's card, or the ask card when there is no main or it no
+// longer resolves.
 func (s *Service) charStart(ctx context.Context, in Interaction, guildID int64, viewer *int64) (Reply, error) {
 	own, err := s.ownChars(ctx, guildID, viewer)
 	if err != nil {
 		return Reply{}, err
 	}
-	switch {
-	case viewer == nil:
-		return s.charAskCard(guideCopy.CharLeadUnlinked, false, nil, false), nil
-	case len(own) == 0:
-		return s.charAskCard(guideCopy.CharLeadNone, true, nil, false), nil
+	if len(own) == 0 {
+		return s.charLeadCard(viewer, own, false), nil
 	}
-	return s.guidedChar(ctx, in, guildID, viewer, own[0].Name, false)
+	rep, found, err := s.charAnswer(ctx, in, guildID, viewer, own, own[0].Name, false)
+	if err != nil || found {
+		return rep, err
+	}
+	return s.charLeadCard(viewer, own, false), nil
 }
 
 // guidedChar is the /char answer for a name with Share, Someone else and the own-characters
-// select; a name that does not resolve draws the ask card instead.
-func (s *Service) guidedChar(ctx context.Context, in Interaction, guildID int64, viewer *int64, name string, update bool) (Reply, error) {
+// select; a name that does not resolve draws the ask card instead. own is the viewer's
+// characters, read once by the caller.
+func (s *Service) guidedChar(ctx context.Context, in Interaction, guildID int64, viewer *int64, own []ownChar, name string, update bool) (Reply, error) {
+	rep, found, err := s.charAnswer(ctx, in, guildID, viewer, own, name, update)
+	if err != nil || found {
+		return rep, err
+	}
+	return s.charUnknownCard(name, viewer, own, update), nil
+}
+
+// charAnswer is guidedChar's answer; found is false when the name is empty or resolves to no
+// public character, and nothing is stored for Share then.
+func (s *Service) charAnswer(ctx context.Context, in Interaction, guildID int64, viewer *int64, own []ownChar, name string, update bool) (Reply, bool, error) {
+	if strings.TrimSpace(name) == "" {
+		return Reply{}, false, nil
+	}
 	opts := charOptions(name, true)
 	msg, found, err := s.answerChar(ctx, guildID, viewer, opts)
-	if err != nil {
-		return Reply{}, err
-	}
-	if !found {
-		return s.charUnknownCard(ctx, guildID, viewer, name, update)
+	if err != nil || !found {
+		return Reply{}, false, err
 	}
 	button, err := s.offerShare(ctx, in, guildID, "char", opts)
 	if err != nil {
-		return Reply{}, err
+		return Reply{}, false, err
 	}
-	msg, err = s.withGuidedControls(ctx, "char", opts, guildID, viewer, msg)
-	if err != nil {
-		return Reply{}, err
-	}
-	msg = withShare(msg, button)
+	msg = withShare(withOwnControls(msg, own, name), button)
 	msg.Ephemeral = true
-	return Reply{Message: msg, Update: update}, nil
+	return Reply{Message: msg, Update: update}, true, nil
 }
 
 // withGuidedControls adds Someone else and the select to the presser's own copy of a guided
 // /char answer; any other answer is returned as it is. The public follow-up never gets them.
 func (s *Service) withGuidedControls(ctx context.Context, command string, opts map[string]string, guildID int64, viewer *int64, msg Message) (Message, error) {
-	if command != "char" || opts[optGuided] != guidedOn || len(msg.Components) == 0 || len(msg.Components[0]) == 0 {
+	if command != "char" || opts[optGuided] != guidedOn {
 		return msg, nil
 	}
 	own, err := s.ownChars(ctx, guildID, viewer)
 	if err != nil {
 		return Message{}, err
 	}
+	return withOwnControls(msg, own, opts[optName]), nil
+}
+
+// withOwnControls puts Someone else just before the answer's link button (Character page,
+// wherever Share sits) and the own-characters select under row 1 when there are two or more
+// characters.
+func withOwnControls(msg Message, own []ownChar, shown string) Message {
+	if len(msg.Components) == 0 {
+		return msg
+	}
 	rows := append([]ActionRow(nil), msg.Components...)
 	row := rows[0]
-	last := len(row) - 1
-	rows[0] = append(append(append(ActionRow(nil), row[:last]...), askButton(guideCopy.CharSomeoneElse, StyleSecondary)), row[last:]...)
+	at := len(row)
+	for i, c := range row {
+		if c.Style == StyleLink {
+			at = i
+			break
+		}
+	}
+	someoneElse := askButton(guideCopy.CharSomeoneElse, StyleSecondary)
+	rows[0] = append(append(append(ActionRow(nil), row[:at]...), someoneElse), row[at:]...)
 	if len(own) >= 2 {
-		rows = append(rows, ActionRow{ownSelect(own, opts[optName])})
+		rows = append(rows, ActionRow{ownSelect(own, shown)})
 	}
 	msg.Components = rows
-	return msg, nil
+	return msg
 }
 
 // charPress answers the presses on a /char card. ask only opens the modal: it does no I/O
@@ -214,6 +249,10 @@ func (s *Service) charLookup(nameOf func(Interaction) string) cardPart {
 		if !bound {
 			return pressReply(commonCopy.Unbound, true), nil
 		}
-		return s.guidedChar(ctx, in, guildID, viewer, nameOf(in), true)
+		own, err := s.ownChars(ctx, guildID, viewer)
+		if err != nil {
+			return Reply{}, err
+		}
+		return s.guidedChar(ctx, in, guildID, viewer, own, nameOf(in), true)
 	}
 }
