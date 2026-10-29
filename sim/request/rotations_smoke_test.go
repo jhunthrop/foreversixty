@@ -197,7 +197,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{OtherID: 13}":      noPotionWarning,
 		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
 	},
-	"warlock-demonology": {"{OtherID: 13}": noPotionWarning},
+	"warlock-demonology": {
+		"{OtherID: 13}":    noPotionWarning,
+		"{SpellID: 19028}": "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
+	},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
 		"{SpellID: 412758}":  "Shadow Bolt's spellIsKnown(412758) gate (rotation-accuracy program, 2026-09-28) checks Incinerate's rank-1 id directly; this build takes no Incinerate talent, so the id it checks is as unregistered as 1293813 above.",
