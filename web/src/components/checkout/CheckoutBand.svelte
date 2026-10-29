@@ -97,14 +97,14 @@
   }
   /* plan=premium carries only its h1, so the band hugs it (row 2) instead of keeping the guild
      summary's reserve. The head script marks the URL before first paint, so the static band and
-     the hydrated one are the same box: checkout-layout.ts PREMIUM_BAND_PX (phone 12 + h1 26.4 +
-     12; from 768 28 + label 16.5 + 8 + h1 26.4 + 24). */
+     the hydrated one are the same box: checkout-layout.ts PREMIUM_BAND_PX (phone 12 + h1 34 +
+     12; from 768 28 + label 16.5 + 8 + h1 44 + 24). */
   :global(html[data-checkout-band='premium']) .checkout-band-row {
-    min-height: 51px;
+    min-height: 58px;
   }
   @media (min-width: 768px) {
     :global(html[data-checkout-band='premium']) .checkout-band-row {
-      min-height: 103px;
+      min-height: 121px;
     }
   }
 </style>

@@ -6,19 +6,21 @@
 
 /**
  * The band: the same box for a guild plan, Premium, an invalid link and the moment before the
- * URL is read. From the classes (line-height 1.5, label 11 px): phone 24 + h1 26.4 + 8 + summary
- * 97.5 (size line on two lines) = 155.9; md 52 + label/h1 50.9 + 8 + summary 78 = 188.9; lg 52 +
- * summary 97.5 (Guild's size line wraps in the 440 px column) = 149.5. Estimates: Task 25's CLS
- * e2e asserts the band height before and after the summary appears.
+ * URL is read. The h1 is the heading face's page h1 (polish spec 2026-10-28 §4.4: 34 px phone,
+ * 44 px from 768, line-height 1) and the plan name its 24 px plan line; measured on the built
+ * page (Task 25's CLS e2e asserts the band height before and after the summary appears): phone
+ * 162.5, md 205.5, lg 149.5 (the lg row is the summary column, whose height the heading face
+ * leaves as it was).
  */
-export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[190px] lg:min-h-[150px]';
+export const CHECKOUT_BAND_RESERVE = 'min-h-[163px] md:min-h-[206px] lg:min-h-[150px]';
 
 /**
  * plan=premium's band: its h1 alone (with the label from 768), so it hugs its content (gate fix,
- * row 2) instead of the guild summary's reserve. CheckoutBand.svelte's CSS carries these figures
- * under `html[data-checkout-band='premium']`, set by checkout.astro's head script before paint.
+ * row 2) instead of the guild summary's reserve: phone 12 + h1 34 + 12; from 768 28 + label 16.5
+ * + 8 + h1 44 + 24. CheckoutBand.svelte's CSS carries these figures under
+ * `html[data-checkout-band='premium']`, set by checkout.astro's head script before paint.
  */
-export const PREMIUM_BAND_PX = { phone: 51, md: 103 } as const;
+export const PREMIUM_BAND_PX = { phone: 58, md: 121 } as const;
 
 /** The attribute the head script sets on <html> to `premium` for a plan=premium checkout URL. */
 export const CHECKOUT_BAND_ATTRIBUTE = 'data-checkout-band';
@@ -47,7 +49,7 @@ export const GUILD_SKELETON_CARD = 'h-[260px] md:h-[156px]';
 
 /** The pixel figures behind the classes above, for the pre-paint frame reserve below. */
 export const CHECKOUT_FRAME_PX = {
-  band: { phone: 156, md: 190, lg: 150 },
+  band: { phone: 163, md: 206, lg: 150 },
   /** The guild step's top padding (pt-5 / md:pt-8). */
   stepTop: { phone: 20, md: 32 },
   lead: { phone: 63, md: 42 },

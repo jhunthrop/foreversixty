@@ -1098,7 +1098,7 @@ test.describe('loot: Award asks first and can be undone', () => {
     expect(fit.size).toBe('14px');
     expect(fit.transform).toBe('none');
     // The title's box and the chip's box do not intersect; the chip is under the title, full width.
-    const title = await panel.locator('span.font-display').first().boundingBox();
+    const title = await panel.locator('span.heading-name').first().boundingBox();
     const box = await chip.boundingBox();
     const undo = await page.getByTestId(`guild-loot-row-undo-${item.item_id}`).boundingBox();
     expect(title && box && undo).toBeTruthy();

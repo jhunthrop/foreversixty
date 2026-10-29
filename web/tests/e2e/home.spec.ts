@@ -34,7 +34,9 @@ test('homepage states the one fixed sentence (tenet 14) and stops, not a marketi
   await page.goto('/');
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
-  const heading = (await h1.innerText()).trim();
+  // textContent, not innerText: the heading face sets the hero uppercase (polish spec
+  // 2026-10-28 §4.4), and the sentence under test is the copy, not its rendered case.
+  const heading = ((await h1.textContent()) ?? '').trim();
   // Home rebuild spec §1 / tenet 14: the one fixed sentence, never a slogan -- short, and
   // it never ends with "!" or "?".
   expect(heading.length).toBeLessThanOrEqual(90);

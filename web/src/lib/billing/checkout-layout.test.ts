@@ -19,7 +19,7 @@ import {
 
 describe('checkout layout reserves', () => {
   it('the band holds one box at phone, tablet and desktop', () => {
-    expect(CHECKOUT_BAND_RESERVE).toBe('min-h-[156px] md:min-h-[190px] lg:min-h-[150px]');
+    expect(CHECKOUT_BAND_RESERVE).toBe('min-h-[163px] md:min-h-[206px] lg:min-h-[150px]');
   });
 
   it('the body holds the PremiumOwnedPanel, not just the 21 px message line', () => {
@@ -48,12 +48,12 @@ describe('the pixel table matches the classes', () => {
 });
 
 describe('guildFrameReserve', () => {
-  it('phone: band 156 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 260 + 12 a card', () => {
-    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 370, perCardPx: 272 });
+  it('phone: band 163 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 260 + 12 a card', () => {
+    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 377, perCardPx: 272 });
   });
 
-  it('md: band 190 + 32 + lead 42 + 16 + 63 + 64 - 12, then 156 + 12 a card', () => {
-    expect(guildFrameReserve('md')).toEqual({ fixedPx: 395, perCardPx: 168 });
+  it('md: band 206 + 32 + lead 42 + 16 + 63 + 64 - 12, then 156 + 12 a card', () => {
+    expect(guildFrameReserve('md')).toEqual({ fixedPx: 411, perCardPx: 168 });
   });
 
   it('lg: the band is 150, the rest as md', () => {

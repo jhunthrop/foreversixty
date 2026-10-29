@@ -250,10 +250,13 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       font-size: 15px;
       line-height: 1.45;
     }
-    /* The band's inner column takes the site gutter, so its edge is the cards' edge (UX 10). */
+    /* The band's inner column takes the site gutter, so its edge is the cards' edge (UX 10).
+       18 px on top, not 28: the heading face's 44 px h1 (polish spec 2026-10-28 §4.4) is 17.6 px
+       taller than the 22 px Cinzel line it replaced, and Free's and Premium's buttons must still
+       end above y 520 at 1280 x 800 (spec §3.1, unchanged); Task 5 re-lays this band. */
     .hero {
       gap: 8px;
-      padding: 28px var(--page-gutter) 12px;
+      padding: 18px var(--page-gutter) 12px;
     }
     .body {
       gap: 32px;
