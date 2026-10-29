@@ -19,7 +19,14 @@
 
   type ForcedState = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
-  const STATES: readonly ForcedState[] = ['default', 'hover', 'focus-visible', 'active', 'disabled', 'loading'];
+  const STATES: readonly ForcedState[] = [
+    'default',
+    'hover',
+    'focus-visible',
+    'active',
+    'disabled',
+    'loading',
+  ];
   const TONES: readonly ButtonTone[] = ['primary', 'secondary', 'ghost', 'danger'];
   const TONE_WORDS: Readonly<Record<ButtonTone, string>> = {
     primary: 'Subscribe',
@@ -59,9 +66,7 @@
           <div class="flex flex-col gap-2">
             {@render label(state)}
             {#if state === 'loading'}
-              <button class={button(tone)} disabled aria-busy="true"
-                ><Spinner />{TONE_WORDS[tone]}</button
-              >
+              <button class={button(tone)} disabled aria-busy="true"><Spinner />{TONE_WORDS[tone]}</button>
             {:else if state === 'disabled'}
               <button class={button(tone)} disabled>{TONE_WORDS[tone]}</button>
             {:else}
@@ -122,7 +127,12 @@
         <div class="card-surface overflow-hidden" data-testid="sheet-rows">
           <SettingsRow label="Server sims" glyph="server" value="On · 3 runs this month" href="#sim" />
           <div data-force="hover">
-            <SettingsRow label="History charts" glyph="chart" value="Open on your main character" href="#history" />
+            <SettingsRow
+              label="History charts"
+              glyph="chart"
+              value="Open on your main character"
+              href="#history"
+            />
           </div>
           <div data-force="focus-visible">
             <SettingsRow label="Supporter mark" glyph="star" value="Shown on your characters" href="#mark" />
@@ -155,9 +165,18 @@
               />
             {/snippet}
           </SettingsRow>
-          <SettingsRow label="Include private logs" glyph="lock" sub="Off: private logs are never posted." nested>
+          <SettingsRow
+            label="Include private logs"
+            glyph="lock"
+            sub="Off: private logs are never posted."
+            nested
+          >
             {#snippet control(labelId)}
-              <Switch checked={privateSwitch} labelledby={labelId} onchange={(next) => (privateSwitch = next)} />
+              <Switch
+                checked={privateSwitch}
+                labelledby={labelId}
+                onchange={(next) => (privateSwitch = next)}
+              />
             {/snippet}
           </SettingsRow>
         </div>
@@ -231,7 +250,12 @@
       </div>
       <div class="flex flex-col gap-2">
         <label class="label text-muted" for="sheet-region-empty">empty</label>
-        <Select id="sheet-region-empty" bind:value={emptyRegion} options={REGIONS} placeholder="Choose a region" />
+        <Select
+          id="sheet-region-empty"
+          bind:value={emptyRegion}
+          options={REGIONS}
+          placeholder="Choose a region"
+        />
       </div>
       <div class="flex flex-col gap-2">
         <label class="label text-muted" for="sheet-region-error">error</label>

@@ -29,8 +29,18 @@
   } = $props();
 
   const rows = [
-    { key: 'sim_finished', label: notificationsCopy.eventSimFinished, testid: 'discord-event-sim', glyph: 'server' },
-    { key: 'upload_parsed', label: notificationsCopy.eventUploadParsed, testid: 'discord-event-upload', glyph: 'chart' },
+    {
+      key: 'sim_finished',
+      label: notificationsCopy.eventSimFinished,
+      testid: 'discord-event-sim',
+      glyph: 'server',
+    },
+    {
+      key: 'upload_parsed',
+      label: notificationsCopy.eventUploadParsed,
+      testid: 'discord-event-upload',
+      glyph: 'chart',
+    },
     {
       key: 'upload_private',
       label: notificationsCopy.eventUploadPrivate,

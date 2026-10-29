@@ -38,7 +38,7 @@
     <p class="text-[14px]">{guildBotCopy.offer}</p>
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class="{button('secondary')}"
+      class={button('secondary')}
       testid="bot-add"
       href={installHref}
       {busy}
@@ -51,7 +51,7 @@
   <div class="flex flex-col items-start">
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class="{button('primary')}"
+      class={button('primary')}
       testid="bot-add"
       href={installHref}
       {busy}

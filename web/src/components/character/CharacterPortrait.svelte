@@ -25,7 +25,8 @@
     character,
     size,
     testid,
-  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'row' | 'lg' | 'xxl' | 'xl'; testid: string } = $props();
+  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'row' | 'lg' | 'xxl' | 'xl'; testid: string } =
+    $props();
 </script>
 
 {#if character.class === undefined}

@@ -289,7 +289,7 @@
     <div class="flex flex-col items-start">
       <DiscordConnectLink
         label={notificationsCopy.connect}
-        class="{button('primary')}"
+        class={button('primary')}
         testid="discord-connect"
         href={connectHref}
         busy={busy !== null}

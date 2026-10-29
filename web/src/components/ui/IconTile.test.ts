@@ -23,7 +23,9 @@ describe('IconTile', () => {
     ['discord', 'bg-[rgba(88,101,242,.16)] text-[#9aa4ff]'],
     ['muted', 'text-muted'],
   ])('%s tone', (tone, classes) => {
-    const body = render(IconTile, { props: { glyph: 'hash', tone: tone as 'gold' | 'discord' | 'muted' } }).body;
+    const body = render(IconTile, {
+      props: { glyph: 'hash', tone: tone as 'gold' | 'discord' | 'muted' },
+    }).body;
     expect(body).toContain(classes);
     expect(body).toContain(`data-tone="${tone}"`);
   });

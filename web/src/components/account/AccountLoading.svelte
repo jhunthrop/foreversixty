@@ -17,7 +17,9 @@
 <div class="account-header-reserve">
   <AccountTitle />
 </div>
-<div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8">
+<div
+  class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8"
+>
   <div>
     <Skeleton lines={3} minHeight="account-left-skeleton" testid="account-left-skeleton" />
   </div>

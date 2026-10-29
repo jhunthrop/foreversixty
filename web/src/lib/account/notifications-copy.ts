@@ -74,7 +74,7 @@ export const notificationsCopy = {
   eventSimFinished: 'A server sim finishes',
   eventUploadParsed: 'A combat log you upload finishes parsing',
   eventUploadPrivate: 'Include private logs',
-  eventsNote: 'Off: private logs are never posted. On: the channel sees the log\'s name and “Only you”.',
+  eventsNote: "Off: private logs are never posted. On: the channel sees the log's name and “Only you”.",
   save: 'Save webhook',
   saving: 'Saving…',
   cancel: 'Cancel',
