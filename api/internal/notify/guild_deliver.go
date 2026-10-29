@@ -54,13 +54,13 @@ func (d *GuildDeliverer) RaidPosted(ctx context.Context, guildID int64, e RaidPo
 
 // SendRaidPost posts the raid_posted embed for the raid-posts job, which retries: a post the
 // channel was found for but that did not land returns a *NotSentError. False with no error
-// means no channel, or it is switched off.
+// means no channel, or it is switched off. A failure is the job's to count (failureUntallied).
 func (d *GuildDeliverer) SendRaidPost(ctx context.Context, guildID int64, e RaidPosted) (bool, error) {
 	if d == nil {
 		return false, nil
 	}
 	embed := RaidPostedEmbed(e, d.clock())
-	return d.deliverWith(ctx, guildID, eventRaidPosted, func(ctx context.Context, url string) error {
+	return d.deliverWith(ctx, guildID, eventRaidPosted, failureUntallied, func(ctx context.Context, url string) error {
 		return d.Poster.Post(ctx, url, embed)
 	})
 }
@@ -118,13 +118,14 @@ func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event strin
 
 // RaidReminder posts the day-before reminder through the guild's webhook and returns the
 // reference to withdraw it by. False with no error means no channel, or it is switched off;
-// a reminder that did not land returns a *NotSentError, so the job retries it.
+// a reminder that did not land returns a *NotSentError, so the job retries it. A failure is
+// the job's to count (failureUntallied).
 func (d *GuildDeliverer) RaidReminder(ctx context.Context, guildID int64, e RaidPosted) (ReminderRef, bool, error) {
 	if d == nil {
 		return ReminderRef{}, false, nil
 	}
 	var ref ReminderRef
-	sent, err := d.deliverWith(ctx, guildID, eventRaidReminder, func(ctx context.Context, url string) error {
+	sent, err := d.deliverWith(ctx, guildID, eventRaidReminder, failureUntallied, func(ctx context.Context, url string) error {
 		id, err := d.Poster.PostContent(ctx, url, WebhookReminderContent(e))
 		ref = ReminderRef{Via: ReminderViaWebhook, MessageID: id}
 		return err
@@ -172,14 +173,27 @@ func (d *GuildDeliverer) openURL(ctx context.Context, guildID int64) (string, bo
 // deliver is Deliver that also says whether the post reached the channel; a post that did
 // not land is false with no error (quietly).
 func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event string, embed Embed) (bool, error) {
-	return quietly(d.deliverWith(ctx, guildID, event, func(ctx context.Context, url string) error {
+	return quietly(d.deliverWith(ctx, guildID, event, failureTallied, func(ctx context.Context, url string) error {
 		return d.Poster.Post(ctx, url, embed)
 	}))
 }
 
+// failureTally says whether a send that did not land counts toward the channel's
+// five-failure rule.
+type failureTally bool
+
+const (
+	// failureTallied is the save path's: a refused post counts toward switching the channel off.
+	failureTallied failureTally = true
+	// failureUntallied is the raid-posts job's: the job caps its own retries on the schedule
+	// row, so one refused raid retried never switches the guild's channel off. The failure
+	// is still kept as the channel's last error.
+	failureUntallied failureTally = false
+)
+
 // deliverWith sends through send once the channel is found, then applies the five-failure
-// rule. A send that did not land returns a *NotSentError.
-func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event string, send func(ctx context.Context, url string) error) (bool, error) {
+// rule as tally says. A send that did not land returns a *NotSentError.
+func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event string, tally failureTally, send func(ctx context.Context, url string) error) (bool, error) {
 	url, found, err := d.openURL(ctx, guildID)
 	if err != nil || !found {
 		return false, err
@@ -192,7 +206,7 @@ func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event s
 		d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "raid_post_skipped")
 		return false, &NotSentError{Err: postErr}
 	}
-	if err := d.record(ctx, guildID, event, postErr); err != nil {
+	if err := d.record(ctx, guildID, event, tally, postErr); err != nil {
 		if postErr == nil {
 			// The post landed; failing the caller over a bookkeeping error would have it retry
 			// and post twice.
@@ -208,8 +222,9 @@ func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event s
 }
 
 // record applies the five-failure rule to the guild's channel on a context that outlives
-// a cancelled request, so a post that happened is never left unrecorded.
-func (d *GuildDeliverer) record(ctx context.Context, guildID int64, event string, postErr error) error {
+// a cancelled request, so a post that happened is never left unrecorded; an untallied
+// failure keeps its text without counting.
+func (d *GuildDeliverer) record(ctx context.Context, guildID int64, event string, tally failureTally, postErr error) error {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), posterTimeout)
 	defer cancel()
 	if postErr == nil {
@@ -217,9 +232,10 @@ func (d *GuildDeliverer) record(ctx context.Context, guildID int64, event string
 		return d.Store.RecordSuccess(ctx, guildID)
 	}
 	f := failureOf(postErr)
-	disabled, err := d.Store.RecordFailure(ctx, guildID, f.text, f.counts)
+	counts := f.counts && bool(tally)
+	disabled, err := d.Store.RecordFailure(ctx, guildID, f.text, counts)
 	d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "failed",
-		"status", f.status, "disabled", disabled)
+		"status", f.status, "counted", counts, "disabled", disabled)
 	return err
 }
 

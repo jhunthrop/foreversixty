@@ -322,3 +322,21 @@ func TestDefaultsAreRememberedAndRead(t *testing.T) {
 		t.Fatalf("absent remind box: discord_post = %+v", p)
 	}
 }
+
+// An edit never rewrites the remembered defaults: editing a switch-off raid keeps the guild's.
+func TestAnEditKeepsTheRememberedDefaults(t *testing.T) {
+	w, _, writes := postingWorld(t)
+	hook := &notify.GuildWebhook{ChannelID: "1", PostDefault: true, RemindDefault: true}
+	w.h.svc.Discord = fakeDiscord{enabled: true, hook: hook, defaults: writes}
+	botWrites := &[][2]bool{}
+	w.h.svc.Bot = fakeBot{on: true, active: true, postDefault: true, remindDefault: true, defaults: botWrites}
+	raid := w.createRaids(t, scheduleBody(startIn(3*day), 0, "", ""))[0]
+	hookBefore, botBefore := len(*writes), len(*botWrites)
+	w.patchTo(t, raid.ID, startIn(3*day), "false", "false")
+	if len(*writes) != hookBefore || len(*botWrites) != botBefore {
+		t.Fatalf("an edit wrote defaults: webhook %v, bot %v", *writes, *botWrites)
+	}
+	if d := w.getRaid(t, raid.ID).Discord; !d.PostDefault || !d.RemindDefault {
+		t.Fatalf("after an off/off edit: discord = %+v", d)
+	}
+}

@@ -137,7 +137,9 @@ func (s *Store) MarkScheduleReminded(ctx context.Context, raidID int64, ref noti
 func (s *Store) ResetScheduleReminder(ctx context.Context, raidID int64) (*notify.ReminderRef, error) {
 	var via, msg *string
 	err := s.Pool.QueryRow(ctx, `
-		update guild_raid_discord_schedule n set reminded_at = null, reminder_via = null, reminder_message_id = null
+		update guild_raid_discord_schedule n set reminded_at = null, reminder_via = null, reminder_message_id = null,
+		  attempts = case when n.posted_at is null then n.attempts else 0 end,
+		  next_attempt_at = case when n.posted_at is null then n.next_attempt_at else now() end
 		from guild_raid_discord_schedule o
 		where n.raid_id = $1 and o.raid_id = n.raid_id
 		returning o.reminder_via, o.reminder_message_id`, raidID).Scan(&via, &msg)
@@ -255,6 +257,14 @@ func (s *Store) FailSchedule(ctx context.Context, raidID int64, held, retryAt ti
 		  last_error = $4, lease_until = null where raid_id = $1 and lease_until = $2`, raidID, held, retryAt, lastErr)
 }
 
+// GiveUpSchedule counts a last failed send and keeps its message; the row is never due
+// again (next_attempt_at is infinity) until UpsertSchedule plans an unposted raid afresh.
+func (s *Store) GiveUpSchedule(ctx context.Context, raidID int64, held time.Time, lastErr string) (bool, error) {
+	return s.leaseWrite(ctx, fmt.Sprintf("give up schedule of raid %d", raidID), `
+		update guild_raid_discord_schedule set attempts = attempts + 1, next_attempt_at = 'infinity',
+		  last_error = $3, lease_until = null where raid_id = $1 and lease_until = $2`, raidID, held, lastErr)
+}
+
 // ReleaseSchedule drops a held lease without counting an attempt.
 func (s *Store) ReleaseSchedule(ctx context.Context, raidID int64, held time.Time) (bool, error) {
 	return s.leaseWrite(ctx, fmt.Sprintf("release schedule of raid %d", raidID),
@@ -277,6 +287,8 @@ func (s *Store) HoldSentSchedule(ctx context.Context, raidID int64, held, until 
 // RecoverSentSchedules marks posted at now every row HoldSentSchedule held, and returns how
 // many it marked; the raid-posts job runs it first, so a later run is the mark's only retry.
 func (s *Store) RecoverSentSchedules(ctx context.Context, now time.Time) (int64, error) {
+	// posted_at is the recovery's now, not the send's time: a late recovery can push the raid
+	// past the reminder's 36 h cutoff and skip its reminder, which is accepted.
 	tag, err := s.Pool.Exec(ctx, `
 		update guild_raid_discord_schedule set posted_at = $1, lease_until = null, attempts = 0,
 		  next_attempt_at = now(), last_error = null

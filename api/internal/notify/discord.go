@@ -79,6 +79,14 @@ func (e *DiscordError) Error() string { return fmt.Sprintf("discord: status %d: 
 // RateLimited reports a 429, which never counts toward the failure limit.
 func (e *DiscordError) RateLimited() bool { return e.Status == http.StatusTooManyRequests }
 
+// Refused reports whether err holds a 4xx other than a 429: Discord refused the send itself
+// (a gone webhook, a bad payload, no permission), and sending it again will not land.
+func Refused(err error) bool {
+	var de *DiscordError
+	return errors.As(err, &de) && !de.RateLimited() &&
+		de.Status >= http.StatusBadRequest && de.Status < http.StatusInternalServerError
+}
+
 var (
 	urlPattern     = regexp.MustCompile(`https?://\S*`)
 	webhookSegment = regexp.MustCompile(`/?api/(?:v\d+/)?webhooks/\S*`)

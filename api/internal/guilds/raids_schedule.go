@@ -23,6 +23,8 @@ const (
 	// scheduleRetryBase is the first wait after a failed send; it doubles up to the cap.
 	scheduleRetryBase = 2 * time.Minute
 	scheduleRetryCap  = time.Hour
+	// scheduleMaxAttempts is how many failed sends a row takes before it is given up.
+	scheduleMaxAttempts = 5
 	// scheduleErrorMax bounds the failure text kept on the row.
 	scheduleErrorMax = 500
 )
@@ -311,10 +313,19 @@ func (s *Service) releaseDue(ctx context.Context, raidID int64, held time.Time) 
 	}
 }
 
-// sendPost posts a due raid and marks it posted; a post that did not land is retried.
+// errPostReachedNoChannel is a due post that found no channel to post to (none saved, or
+// switched off): it is retried like a refusal, never marked posted.
+var errPostReachedNoChannel = errors.New("guilds: the raid post reached no channel")
+
+// sendPost posts a due raid and marks it posted; a post that did not land, or reached no
+// channel, is retried.
 func (s *Service) sendPost(ctx context.Context, d DueSchedule, lease time.Time, e notify.RaidPosted, now time.Time) dueOutcome {
 	if sender, ok := s.RaidEvents.(RaidPostSender); ok {
-		if _, err := sender.SendRaidPost(ctx, d.GuildID, e); err != nil {
+		sent, err := sender.SendRaidPost(ctx, d.GuildID, e)
+		if err == nil && !sent {
+			err = errPostReachedNoChannel
+		}
+		if err != nil {
 			return s.failDue(ctx, d.RaidID, d.Attempts, lease, now, err)
 		}
 	} else {
@@ -392,15 +403,25 @@ func trackedRef(ref notify.ReminderRef, sent bool) notify.ReminderRef {
 	return notify.ReminderRef{}
 }
 
-// failDue holds a failed row back for scheduleBackoff and counts it; a lease another runner
-// took since is left alone.
+// failDue holds a failed row back for scheduleBackoff and counts it. The last of
+// scheduleMaxAttempts, or a refusal Discord will repeat (a non-429 4xx), gives the row up
+// instead: it keeps the error and is not retried until an edit plans it again. A lease
+// another runner took since is left alone.
 func (s *Service) failDue(ctx context.Context, raidID int64, attempts int, held, now time.Time, cause error) dueOutcome {
 	msg := cause.Error()
 	if len(msg) > scheduleErrorMax {
 		msg = msg[:scheduleErrorMax]
 	}
-	s.logger().Warn("guilds", "op", "raid_schedule_send", "raid_id", raidID, "attempts", attempts+1, "err", msg)
-	if _, err := s.Store.FailSchedule(ctx, raidID, held, now.Add(scheduleBackoff(attempts)), msg); err != nil {
+	giveUp := attempts+1 >= scheduleMaxAttempts || notify.Refused(cause)
+	s.logger().Warn("guilds", "op", "raid_schedule_send", "raid_id", raidID, "attempts", attempts+1,
+		"gave_up", giveUp, "err", msg)
+	var err error
+	if giveUp {
+		_, err = s.Store.GiveUpSchedule(ctx, raidID, held, msg)
+	} else {
+		_, err = s.Store.FailSchedule(ctx, raidID, held, now.Add(scheduleBackoff(attempts)), msg)
+	}
+	if err != nil {
 		s.logSchedule("raid_schedule_fail", raidID, err)
 	}
 	return outcomeFailed

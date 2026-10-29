@@ -118,6 +118,25 @@ func TestGuildDelivererSkipsAGuildWithNoChannelAndANilDeliverer(t *testing.T) {
 	}
 }
 
+func TestRefused(t *testing.T) {
+	cases := []struct {
+		err  error
+		want bool
+	}{
+		{&NotSentError{Err: &DiscordError{Status: 404, Body: "Unknown Webhook"}}, true},
+		{&DiscordError{Status: 400, Body: "bad"}, true},
+		{&DiscordError{Status: 429, Body: "slow down"}, false},
+		{&DiscordError{Status: 500, Body: "boom"}, false},
+		{ErrTimeout, false},
+		{nil, false},
+	}
+	for _, c := range cases {
+		if got := Refused(c.err); got != c.want {
+			t.Errorf("Refused(%v) = %v, want %v", c.err, got, c.want)
+		}
+	}
+}
+
 func TestGuildStoreSetDefaults(t *testing.T) {
 	ctx := context.Background()
 	st, gid, _ := savedGuild(t)
@@ -152,14 +171,18 @@ func TestJobSendsReturnARefusal(t *testing.T) {
 	if strings.Contains(err.Error(), "guild-token") {
 		t.Fatal("the refusal holds the webhook token")
 	}
-	if w := r.hook(t); w.Failures != 2 {
-		t.Fatalf("failures = %d, want 2", w.Failures)
+	// The job caps its own retries: its refusals keep the text but never count toward five.
+	if w := r.hook(t); w.Failures != 0 || w.LastError == nil || *w.LastError != "boom" {
+		t.Fatalf("after the job's refusals = %+v, want no failures counted", w)
 	}
 	if posted, err := r.d.ReportReady(ctx, r.gid, onyxiaReport()); posted || err != nil {
 		t.Fatalf("ReportReady = %v, %v", posted, err)
 	}
 	if err := r.d.Deliver(ctx, r.gid, eventRaidPosted, Embed{}); err != nil {
 		t.Fatalf("Deliver = %v", err)
+	}
+	if w := r.hook(t); w.Failures != 2 {
+		t.Fatalf("save-path failures = %d, want 2", w.Failures)
 	}
 
 	r.poster.PostErr = nil

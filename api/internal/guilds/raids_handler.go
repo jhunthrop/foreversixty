@@ -251,8 +251,9 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	} else {
 		s.markRaid(r.Context(), updated.ID)
 	}
+	// An edit never touches the remembered defaults: the boxes on an edit form read the raid's
+	// own schedule row, so remembering them would let a backfilled raid flip the guild's.
 	wasPosted := s.scheduleEdited(r.Context(), guildID, raid, updated, req, now)
-	s.rememberDiscordDefaults(r.Context(), guildID, req.PostToDiscord, req.RemindDayBefore)
 	var post func(RaidView)
 	// Only a time change of a raid already posted announces the change; an unposted raid
 	// posts through its schedule, and a title or notes edit never posts.

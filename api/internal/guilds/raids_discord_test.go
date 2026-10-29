@@ -28,13 +28,15 @@ type recordingRaidEvents struct {
 	reportErr error
 	// postErr and reminderErr make the job's SendRaidPost and RaidReminder refuse.
 	postErr, reminderErr error
+	// noChannel makes the job's SendRaidPost answer that the post reached no channel.
+	noChannel bool
 }
 
 // SendRaidPost is the job's post: recorded with the save-time posts.
 func (f *recordingRaidEvents) SendRaidPost(_ context.Context, _ int64, e notify.RaidPosted) (bool, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	if f.postErr != nil {
+	if f.postErr != nil || f.noChannel {
 		return false, f.postErr
 	}
 	f.posted = append(f.posted, e)
@@ -149,6 +151,7 @@ func TestPatchRaidPostsOnlyATimeChange(t *testing.T) {
 	raid := w.createRaid(t)
 	old := raid.StartsAt.UTC()
 	w.as(w.officer)
+	writesBefore := len(*defaults)
 	patch := func(body string) {
 		t.Helper()
 		if res := w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), body); res.StatusCode != http.StatusOK {
@@ -174,12 +177,9 @@ func TestPatchRaidPostsOnlyATimeChange(t *testing.T) {
 		got.Title != "Ony night" {
 		t.Fatalf("moved post = %+v", got)
 	}
-	var posts []bool
-	for _, d := range *defaults {
-		posts = append(posts, d[0])
-	}
-	if want := []bool{false, true, false, true}; fmt.Sprint(posts) != fmt.Sprint(want) {
-		t.Fatalf("post_default writes = %v, want %v", posts, want)
+	// An edit never touches the remembered defaults; only a create does.
+	if len(*defaults) != writesBefore {
+		t.Fatalf("edits wrote defaults: %v", (*defaults)[writesBefore:])
 	}
 }
 
