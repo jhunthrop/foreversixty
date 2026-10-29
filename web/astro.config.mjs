@@ -157,7 +157,8 @@ export default defineConfig({
     // report pages people actually link to are /reports/<id>, which cannot be enumerated
     // at build time.
     sitemap({
-      filter: (page) => !page.endsWith('/b-unavailable') && !page.endsWith('/reports'),
+      filter: (page) =>
+        !page.endsWith('/b-unavailable') && !page.endsWith('/reports') && !page.endsWith('/design-sheet'),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

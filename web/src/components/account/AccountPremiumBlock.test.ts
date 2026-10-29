@@ -115,7 +115,7 @@ describe('AccountPremiumBlock', () => {
     it('reads muted Sparkline only when not entitled', () => {
       const html = renderBlock(mockEntitlements({ history: false }), [CHARACTER]);
       expect(text(html)).toContain('History charts Sparkline only');
-      expect(html).toContain('text-muted">Sparkline only<');
+      expect(html).toMatch(/text-muted[^>]*data-testid="settings-row-value">Sparkline only</);
       expect(html).not.toContain('account-premium-history-link');
     });
   });
@@ -149,6 +149,7 @@ describe('AccountPremiumBlock', () => {
 
 describe('AccountPremiumBlock plan headline', () => {
   const PLAN: AccountPlanLine = {
+    head: { name: 'Premium', when: { label: 'Renews', date: '20 Dec 2026' }, extra: '$6 a month' },
     line: 'Premium · renews 20 Dec 2026 · $6 a month',
     line2: null,
     founder: false,
@@ -165,15 +166,20 @@ describe('AccountPremiumBlock plan headline', () => {
   it('reads the plan line and a Founder pill with a title and a screen-reader tail', () => {
     const html = renderPlan({ ...PLAN, founder: true });
     expect(text(html)).toContain('Premium · renews 20 Dec 2026 · $6 a month');
-    expect(html).toContain('pill pill-site');
+    expect(html).toContain('data-testid="account-founder"');
+    expect(html).toContain('<h2 class="heading-plan">Premium</h2>');
+    expect(text(html)).toContain('Renews 20 Dec 2026');
     expect(html).toContain('title="Founder price, kept while your plan stays active."');
     expect(html).toMatch(/class="sr-only"> ?Founder price, kept while your plan stays active\./);
     expect(renderPlan(PLAN)).not.toContain('account-founder');
   });
 
   it('the free state links to the plans', () => {
-    const html = renderPlan({ ...PLAN, line: 'Not on Premium.' }, true);
-    expect(html).toContain('href="/premium"');
+    const html = renderPlan(
+      { ...PLAN, line: 'Not on Premium.', head: { name: 'Free', when: null, extra: null } },
+      true,
+    );
+    expect(html).toMatch(/<a class="[^"]*bg-\[linear-gradient[^"]*" href="\/premium"/);
     expect(renderPlan(PLAN)).not.toContain('href="/premium"');
   });
 

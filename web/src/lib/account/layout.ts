@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1377px] lg:min-h-[829px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1561px] lg:min-h-[945px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -63,17 +63,17 @@ export const LEFT_FLOOR: BucketPx = {
   stack: 403 + COACH_LAST_RAID_RESERVE.stack + PANEL_GAP_PX,
 };
 
-/** The Plan panel with the free plan line only (measured on the empty fixture account). */
-const PLAN_EMPTY_FLOOR: BucketPx = { lg: 219, stack: 211 };
+/** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 390 / 472 on the empty fixture account at 1440 / 390). */
+const PLAN_EMPTY_FLOOR: BucketPx = { lg: 390, stack: 470 };
 
 /**
- * What the tallest Plan headline adds to the free panel (a seat holder with a personal portal):
- * the `Billing history` button row (12 px flex gap + the 44 px fixed button), line 2 under the plan
- * line (4 px gap + 20 px per 13 px line; two lines at 1440, three at 390 where the seat note
- * wraps). The past-due alert and a grant's line 2 are never taller. The panel never draws shorter
- * than the stored reserve says, so only a first load with nothing stored sees this floor.
+ * What the tallest Plan card adds to the free one (polish task 4): a seat holder with a personal
+ * portal draws the plan note under the head, the given-by line 2 and the Billing history button
+ * where the free card draws See plans. Measured 431 against 390 at 1440 and 513 against 472 at 390
+ * on the fixture account, so 41 px at both widths, held at 45. The card never draws shorter than
+ * the stored reserve says, so only a first load with nothing stored sees this floor.
  */
-export const PLAN_HEADLINE_RESERVE: BucketPx = { lg: 12 + 44 + 4 + 2 * 20, stack: 12 + 44 + 4 + 3 * 20 };
+export const PLAN_HEADLINE_RESERVE: BucketPx = { lg: 45, stack: 45 };
 
 /** One 13 px `{Guild} has no plan.` line under a guild row in the Plan panel (20 px line). The
  *  reserve holds one row; an account with more no-plan guilds grows the panel, which is not a
@@ -90,15 +90,15 @@ export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>>
   },
 };
 
-/** The Discord block's height by the state `/v1/me` puts it in; `none` and `free` draw no panel. */
+/** The Discord block's height by the state `/v1/me` puts it in; `none` draws no card. */
 export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
-  free: { lg: 44, stack: 44 },
-  connect: { lg: 320, stack: 340 },
-  form: { lg: 650, stack: 640 },
-  saved: { lg: 500, stack: 490 },
-  off: { lg: 565, stack: 555 },
-  lapsed: { lg: 480, stack: 470 },
+  free: { lg: 180, stack: 180 },
+  connect: { lg: 340, stack: 360 },
+  form: { lg: 755, stack: 765 },
+  saved: { lg: 600, stack: 635 },
+  off: { lg: 710, stack: 745 },
+  lapsed: { lg: 580, stack: 620 },
 };
 
 /** What `data-discord-link` on `<html>` says the You panel's Discord link row will be. */

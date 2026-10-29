@@ -1,10 +1,15 @@
 <!-- web/src/components/account/discord/DiscordEventRows.svelte -->
-<!-- "Post when": the two event checkboxes (the anonymize row's markup), the indented private-logs
-     modifier (disabled, value kept, while the log box is off) and the note under it.
-     `onToggle` answers whether the change took; a refusal puts the box back. -->
+<!-- "Post when": the two event switches and the nested private-logs switch (disabled, value kept,
+     while the log switch is off), each a SettingsRow with a Switch. The private row carries the
+     note as its sub. A press shows its new position at once, at 60 %, until `onToggle` answers
+     whether the change took; a refusal puts the switch back. -->
 <script lang="ts">
   import type { DiscordEvents } from '../../../lib/account/api';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
+  import SettingsRow from '../../ui/SettingsRow.svelte';
+  import Switch from '../../ui/Switch.svelte';
+
+  const uid = $props.id();
 
   let {
     events,
@@ -31,35 +36,50 @@
     },
   ] as const;
 
-  /** The private box modifies the log box: it cannot be changed while that one is off. */
-  const isDisabled = (key: keyof DiscordEvents): boolean =>
-    disabled || (key === 'upload_private' && !events.upload_parsed);
+  /** The switch just pressed, with the position it asked for, until the save answers. */
+  let pending = $state<{ key: keyof DiscordEvents; value: boolean } | null>(null);
 
-  async function change(event: Event, key: keyof DiscordEvents): Promise<void> {
-    const box = event.currentTarget as HTMLInputElement;
-    const accepted = await onToggle({ ...events, [key]: box.checked });
-    if (!accepted) box.checked = events[key];
+  const shown = (key: keyof DiscordEvents): boolean => (pending?.key === key ? pending.value : events[key]);
+
+  /** The private switch modifies the log switch: it cannot be changed while that one is off. */
+  const isDisabled = (key: keyof DiscordEvents): boolean =>
+    (disabled && pending?.key !== key) || (key === 'upload_private' && !events.upload_parsed);
+
+  async function change(key: keyof DiscordEvents, value: boolean): Promise<void> {
+    pending = { key, value };
+    try {
+      await onToggle({ ...events, [key]: value });
+    } finally {
+      pending = null;
+    }
   }
 </script>
 
-<fieldset class="m-0 flex flex-col border-0 p-0" aria-busy={busy}>
-  <legend class="label text-muted mb-1 p-0">{notificationsCopy.eventsLabel}</legend>
+<div class="flex flex-col" role="group" aria-labelledby="{uid}-legend" aria-busy={busy}>
+  <p
+    id="{uid}-legend"
+    class="text-muted border-line-soft border-t px-5 pt-4 pb-2 text-[11px] leading-none font-bold tracking-[.14em] uppercase"
+  >
+    {notificationsCopy.eventsLabel}
+  </p>
   {#each rows as row (row.key)}
-    {@const off = isDisabled(row.key)}
-    <label
-      class="flex min-h-11 items-center gap-3 text-[14px] {'child' in row ? 'ml-7' : ''} {off
-        ? 'text-muted'
-        : ''}"
+    <SettingsRow
+      label={row.label}
+      nested={'child' in row}
+      sub={'child' in row && showNote ? notificationsCopy.eventsNote : undefined}
+      disabled={'child' in row && !events.upload_parsed}
+      testid="{row.testid}-row"
     >
-      <input
-        type="checkbox"
-        checked={events[row.key]}
-        disabled={off}
-        onchange={(event) => change(event, row.key)}
-        data-testid={row.testid}
-      />
-      {row.label}
-    </label>
+      {#snippet control(labelId)}
+        <Switch
+          checked={shown(row.key)}
+          labelledby={labelId}
+          disabled={isDisabled(row.key)}
+          saving={pending?.key === row.key}
+          onchange={(next) => change(row.key, next)}
+          testid={row.testid}
+        />
+      {/snippet}
+    </SettingsRow>
   {/each}
-  {#if showNote}<p class="text-muted text-[13px]">{notificationsCopy.eventsNote}</p>{/if}
-</fieldset>
+</div>

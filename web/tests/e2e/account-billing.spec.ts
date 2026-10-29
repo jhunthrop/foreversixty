@@ -70,9 +70,7 @@ test('not subscribed: plain text with a link to the plans, no upsell tone', asyn
   );
   await page.goto('/account');
   await expect(page.getByTestId('account')).toContainText('Not on Premium');
-  await expect(
-    page.getByTestId('account-billing-row').getByRole('link', { name: 'See plans' }),
-  ).toHaveAttribute('href', '/premium');
+  await expect(page.getByTestId('account-see-plans')).toHaveAttribute('href', '/premium');
 });
 
 test('active subscription: shows the renewal date and a working manage-billing button', async ({ page }) => {
@@ -173,14 +171,14 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     'href',
     '/character/us/hardcore/elyra-duskvale',
   );
-  await expect(page.getByTestId('account-premium-history-link')).toHaveText('Open on your main character');
+  await expect(page.getByTestId('account-premium-history-link')).toContainText('Open on your main character');
   await expect(page.getByTestId('account-premium-history-link')).toHaveAttribute(
     'href',
     '/character/us/hardcore/elyra-duskvale#history',
   );
-  await expect(page.getByTestId('account-premium-notifications')).toHaveText(
+  await expect(page.getByTestId('account-premium-notifications')).toContainText(
     // Not entitled to notifications: the free wording (launch pricing spec §6 amendment).
-    /Discord notifications\s*Premium\s*only$/,
+    /Discord notifications\s*Premium\s*only/,
   );
   await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();

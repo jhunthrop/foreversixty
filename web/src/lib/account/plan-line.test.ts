@@ -40,6 +40,11 @@ describe('accountPlanLine', () => {
     expect(out).toEqual({
       line: 'Premium · renews 20 Dec 2026 · $6 a month',
       line2: null,
+      head: {
+        name: 'Premium',
+        when: { label: 'Renews', date: '20 Dec 2026' },
+        extra: '$6 a month',
+      },
       founder: false,
       billingButton: 'manage',
       ended: null,
@@ -85,6 +90,7 @@ describe('accountPlanLine', () => {
     expect(accountPlanLine(meWith({}), NOW, ZONE)).toEqual({
       line: 'Not on Premium.',
       line2: null,
+      head: { name: 'Free', when: null, extra: null },
       founder: false,
       billingButton: null,
       ended: null,

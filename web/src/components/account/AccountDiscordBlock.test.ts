@@ -7,7 +7,6 @@ import { describe, expect, it } from 'vitest';
 import type { Me } from '../../lib/account/api';
 import { removeQuestionFor } from '../../lib/account/notifications';
 import { notificationsCopy } from '../../lib/account/notifications-copy';
-import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { mockEntitlements } from '../../test-support/billing-fixtures';
 import { GUILD_ID, discordBlock } from '../../test-support/notifications-api';
 import AccountDiscordBlock from './AccountDiscordBlock.svelte';
@@ -16,10 +15,6 @@ import DiscordConnect from './discord/DiscordConnect.svelte';
 import DiscordPasteForm from './discord/DiscordPasteForm.svelte';
 
 const TOKEN = 'abcDEF_secret-token-9';
-
-// The paste state's HTML as it shipped before the connect lane (Svelte's comment markers removed):
-// with connect off the block must still draw exactly this.
-const PASTE_STATE_BEFORE_CONNECT = `<div id="discord" class="scroll-mt-20" role="presentation"><div class="bg-raised border-line rounded-panel flex flex-col gap-4 border px-4 py-4 md:px-6 md:py-5" data-testid="account-discord"><div class="flex items-center gap-[10px]"><span class="bg-gold h-2 w-2 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]" aria-hidden="true"></span> <span class="label text-gold">Discord</span> </div>  <form class="flex flex-col gap-4" novalidate=""><p class="text-muted text-[13px]">Get a message in a Discord channel when a server sim finishes or a log finishes parsing.</p> <ol class="text-muted m-0 flex list-decimal flex-col gap-1 pl-5 text-[13px] marker:tabular-nums"><li data-testid="discord-step-1">In Discord, open the channel's settings, then Integrations, then Webhooks.</li><li data-testid="discord-step-2">Choose New Webhook, name it something you will recognize, then Copy Webhook URL.</li><li data-testid="discord-step-3">Paste it below.</li></ol> <div class="flex flex-col"><label class="label text-muted mb-2" for="discord-webhook">Webhook URL</label> <input type="text" name="discord-webhook" id="discord-webhook" class="bg-raised rounded-control text-text h-11 w-full border px-3 text-[15px] border-line-warm" inputmode="url" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="https://discord.com/api/webhooks/…" aria-describedby="discord-webhook-error discord-webhook-help" aria-invalid="false" value=""/> <div class="text-wipe min-h-[21px] pt-1 text-[13px]" id="discord-webhook-error" data-testid="discord-webhook-error"></div> <p id="discord-webhook-help" class="text-muted text-[13px]">We store the URL encrypted, never show it again, and delete it with your account.</p></div> <fieldset class="m-0 flex flex-col border-0 p-0" aria-busy="false"><legend class="label text-muted mb-1 p-0">Post when</legend> <label class="flex min-h-11 items-center gap-3 text-[14px]  "><input type="checkbox" checked="" data-testid="discord-event-sim"/> A server sim finishes</label><label class="flex min-h-11 items-center gap-3 text-[14px]  "><input type="checkbox" checked="" data-testid="discord-event-upload"/> A combat log you upload finishes parsing</label><label class="flex min-h-11 items-center gap-3 text-[14px] ml-7 "><input type="checkbox" data-testid="discord-event-private"/> Include private logs</label> <p class="text-muted text-[13px]">Off, private logs never post. On, everyone in the channel sees the log's name and “Only you”.</p></fieldset> <div class="flex flex-wrap items-center gap-x-4"><button type="submit" class="${PRIMARY_BUTTON_FIXED} px-5" aria-busy="false" data-testid="discord-save">Save webhook</button> </div></form></div></div>`;
 
 function meWith(entitled: boolean, discord: Me['notifications']): Me {
   return {
@@ -47,20 +42,29 @@ function uncommented(body: string): string {
 }
 
 function filledControls(body: string): number {
-  return (body.match(/<(?:button|a)[^>]*bg-gold[^>]*>/g) ?? []).length;
+  return (body.match(/<(?:button|a)[^>]*bg-\[linear-gradient[^>]*>/g) ?? []).length;
 }
 
 function filledButtons(body: string): number {
-  return (body.match(/<button[^>]*bg-gold[^>]*>/g) ?? []).length;
+  return (body.match(/<button[^>]*bg-\[linear-gradient[^>]*>/g) ?? []).length;
 }
 
+/** The opening tag of the element carrying a data-testid. */
+function tagOf(body: string, testid: string): string {
+  return new RegExp(`<[a-z]+[^>]*data-testid="${testid}"[^>]*>`).exec(body)?.[0] ?? '';
+}
+
+const isOn = (body: string, testid: string): boolean => tagOf(body, testid).includes('aria-checked="true"');
+const isDisabled = (body: string, testid: string): boolean => tagOf(body, testid).includes('disabled=""');
+
 describe('AccountDiscordBlock', () => {
-  it('free: the sentence and See plans, no panel', () => {
+  it('free: the card head, the sentence and See plans as an action link, no tag, no form', () => {
     const body = html(meWith(false, { discord: null }));
     expect(body).toContain('data-testid="discord-free"');
     expect(text(body)).toContain(notificationsCopy.freeSentence);
     expect(body).toContain('href="/premium"');
-    expect(body).not.toContain('account-discord"');
+    expect(body).toContain('account-discord"');
+    expect(body).not.toContain('discord-state-tag');
     expect(body).not.toContain('<form');
   });
 
@@ -75,7 +79,7 @@ describe('AccountDiscordBlock', () => {
     expect(html(meWith(true, { discord: null }))).toContain('id="discord"');
   });
 
-  it('empty: the paste form with both boxes on and the only filled button', () => {
+  it('empty: the paste form with both switches on and the only filled button', () => {
     const body = html(meWith(true, { discord: null }));
     expect(body).toContain('data-testid="account-discord"');
     expect(text(body)).toContain(notificationsCopy.intro);
@@ -85,9 +89,10 @@ describe('AccountDiscordBlock', () => {
     expect(body).toContain('discord-step-3');
     expect(body).toContain('id="discord-webhook"');
     expect(body).toContain('data-testid="discord-webhook-error"');
-    expect(body).toMatch(/<input[^>]*checked[^>]*discord-event-sim/);
-    expect(body).toMatch(/<input[^>]*checked[^>]*discord-event-upload/);
-    expect(body).not.toMatch(/<input[^>]*checked[^>]*discord-event-private/);
+    expect(isOn(body, 'discord-event-sim')).toBe(true);
+    expect(isOn(body, 'discord-event-upload')).toBe(true);
+    expect(isOn(body, 'discord-event-private')).toBe(false);
+    expect(tagOf(body, 'discord-event-sim')).toContain('role="switch"');
     expect(text(body)).toContain(notificationsCopy.eventsNote);
     expect(filledButtons(body)).toBe(1);
     expect(body).not.toContain('discord-replace');
@@ -100,18 +105,18 @@ describe('AccountDiscordBlock', () => {
     expect(body.indexOf('discord-webhook-error')).toBeLessThan(body.indexOf(notificationsCopy.trustHelper));
   });
 
-  it('empty: the three rows in order, the private box indented and enabled while the log box is on', () => {
+  it('empty: the three rows in order, the private switch nested and enabled while the log switch is on', () => {
     const body = html(meWith(true, { discord: null }));
     const order = ['discord-event-sim', 'discord-event-upload', 'discord-event-private'].map((id) =>
       body.indexOf(id),
     );
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(text(body)).toContain(notificationsCopy.eventUploadPrivate);
-    expect(body).toMatch(/class="[^"]*ml-7[^"]*"[^>]*>\s*<input[^>]*discord-event-private/);
-    expect(body).not.toMatch(/<input[^>]*disabled[^>]*discord-event-private/);
+    expect(tagOf(body, 'discord-event-private-row')).toContain('padding-left: 70px');
+    expect(isDisabled(body, 'discord-event-private')).toBe(false);
   });
 
-  it('saved: channel id, two outline buttons, no filled button', () => {
+  it('saved: channel id, a secondary test button and a danger Remove, no filled button', () => {
     const body = html(meWith(true, { discord: discordBlock() }));
     expect(text(body)).toContain('Posts through “Raid pings”');
     expect(text(body)).toContain(notificationsCopy.channelLine('1098765432101234567'));
@@ -148,12 +153,12 @@ describe('AccountDiscordBlock', () => {
     expect(text(body)).toContain('…”');
   });
 
-  it('saved: the private box is disabled, value kept, while the log box is off', () => {
+  it('saved: the private switch is disabled, value kept, while the log switch is off', () => {
     const events = { sim_finished: true, upload_parsed: false, upload_private: true };
     const body = html(meWith(true, { discord: discordBlock({ events }) }));
-    expect(body).toMatch(/<input[^>]*disabled[^>]*discord-event-private/);
-    expect(body).toMatch(/<input[^>]*checked[^>]*discord-event-private/);
-    expect(body).not.toMatch(/<input[^>]*disabled[^>]*discord-event-sim/);
+    expect(isDisabled(body, 'discord-event-private')).toBe(true);
+    expect(isOn(body, 'discord-event-private')).toBe(true);
+    expect(isDisabled(body, 'discord-event-sim')).toBe(false);
     expect(text(body)).toContain(notificationsCopy.eventsNote);
   });
 
@@ -199,7 +204,7 @@ describe('AccountDiscordBlock', () => {
     expect(body).toContain('discord-replace');
   });
 
-  it('switched off: four lines in the notice, the replace link inside it, before the actions and events', () => {
+  it('switched off: the notice, then the replace row, before the actions and events', () => {
     const body = html(
       meWith(true, {
         discord: discordBlock({
@@ -214,10 +219,10 @@ describe('AccountDiscordBlock', () => {
       notificationsCopy.switchedOff,
       'Last error from Discord',
       notificationsCopy.switchedOffFix,
-      'discord-replace',
     ].map((part) => body.indexOf(part, notice));
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(order.every((at) => at > notice)).toBe(true);
+    expect(body.indexOf('discord-replace')).toBeGreaterThan(order[2] ?? 0);
     expect(body.indexOf('discord-test')).toBeGreaterThan(body.indexOf('discord-replace'));
     expect(body.indexOf('discord-event-sim')).toBeGreaterThan(body.indexOf('discord-test'));
   });
@@ -230,15 +235,15 @@ describe('AccountDiscordBlock', () => {
     expect(text(body)).toContain(notificationsCopy.switchedOffFix);
   });
 
-  it('lapsed: gold notice, disabled boxes, Remove only', () => {
+  it('lapsed: gold notice, disabled switches, Remove only', () => {
     const body = html(meWith(false, { discord: discordBlock() }));
     expect(body).toContain('border-gold');
     expect(text(body)).toContain(notificationsCopy.lapsedTitle);
     expect(text(body)).toContain(notificationsCopy.lapsedBody);
     expect(body).toContain('href="/premium"');
-    expect(body).toMatch(/<input[^>]*disabled[^>]*discord-event-sim/);
-    expect(body).toMatch(/<input[^>]*disabled[^>]*discord-event-upload/);
-    expect(body).toMatch(/<input[^>]*disabled[^>]*discord-event-private/);
+    for (const id of ['discord-event-sim', 'discord-event-upload', 'discord-event-private'])
+      expect(isDisabled(body, id)).toBe(true);
+    expect(tagOf(body, 'discord-state-tag')).toContain('data-tone="muted"');
     expect(text(body)).not.toContain(notificationsCopy.eventsNote);
     expect(body).toContain('discord-remove');
     expect(body).not.toContain('discord-test"');
@@ -258,21 +263,22 @@ type Notifications = NonNullable<Me['notifications']>;
 
 const connectOn = (discord: Notifications['discord']): Notifications => ({ connect: true, discord });
 
-describe('connect off: the paste state is unchanged', () => {
+describe('connect off: the paste state', () => {
   it.each<[string, Notifications]>([
     ['connect false', { connect: false, discord: null }],
     ['no connect key', { discord: null }],
-  ])('draws the shipped HTML (%s)', (_name, notifications) => {
-    expect(uncommented(html(meWith(true, notifications)))).toBe(PASTE_STATE_BEFORE_CONNECT);
+  ])('draws the paste form with no connect control (%s)', (_name, notifications) => {
+    const body = uncommented(html(meWith(true, notifications)));
+    expect(body).toContain('<form');
+    expect(body).toContain('data-testid="discord-save"');
+    expect(body).not.toContain('discord-connect');
   });
 
-  it('quiet (a seat offer holds the page fill): Save webhook is a gold outline, not a fill', () => {
+  it('quiet (a seat offer holds the page fill): Save webhook is a secondary button, not a fill', () => {
     const me = meWith(true, { connect: false, discord: null });
     const body = render(AccountDiscordBlock, { props: { me, quiet: true } }).body;
     expect(filledButtons(body)).toBe(0);
-    expect(body).toMatch(
-      /<button[^>]*class="[^"]*border-gold text-gold[^"]*"[^>]*data-testid="discord-save"/,
-    );
+    expect(tagOf(body, 'discord-save')).toContain('border-line-card');
   });
 
   it('has no connect control, disclosure or back link', () => {
@@ -299,19 +305,19 @@ describe('connect state', () => {
 
   it('is a plain same-tab link to the connect route, styled as the one filled control', () => {
     expect(body).toMatch(
-      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*bg-gold[^>]*data-testid="discord-connect"/,
+      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*bg-\[linear-gradient[^>]*data-testid="discord-connect"/,
     );
     expect(filledControls(body)).toBe(1);
     expect(body).not.toContain('target=');
   });
 
-  it('draws no paste form, steps, field or checkboxes', () => {
+  it('draws no paste form, steps, field or switches', () => {
     for (const part of ['<form', 'discord-step-1', 'id="discord-webhook"', 'discord-event-sim'])
       expect(body).not.toContain(part);
   });
 
   it('uses no Discord branding', () => {
-    expect(body).not.toMatch(/blurple|5865f2|<svg|<img/i);
+    expect(body).not.toMatch(/blurple|5865f2|<img/i);
   });
 
   it('is never shown to a free member', () => {

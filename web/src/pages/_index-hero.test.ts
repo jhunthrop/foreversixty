@@ -6,7 +6,7 @@ import type { experimental_AstroContainer as AstroContainer } from 'astro/contai
 import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import dates from '../data/dates.json';
-import { homeHeroStatePanelCopy } from '../lib/home-landing-copy';
+import { homeHeroCopy, homeHeroStatePanelCopy } from '../lib/home-landing-copy';
 import { heroCardFor } from '../lib/home/hero-card';
 import { dotIndex, timelineDisplayRows, timelineRows } from '../lib/home/timeline';
 import Index from './index.astro';
@@ -53,5 +53,19 @@ describe('the landing example card', () => {
     const later = timelineDisplayRows(timelineRows(dates, new Date('2026-10-22T08:00:00Z')));
     expect(later[dotIndex(later) ?? 0].value).toBe('Name reservation');
     expect(dotIndex([])).toBeNull();
+  });
+});
+
+describe('the hero headline', () => {
+  it('is two-tone: the lead in --strong and the accent word in gold', () => {
+    const h1 = /<h1[^>]*>([^]*?)<[/]h1>/.exec(html)?.[1] ?? '';
+    expect(h1).toMatch(/<span class="text-strong">Play your class<[/]span>/);
+    expect(h1).toMatch(/<span class="gold-text"[^>]*>better[.]<[/]span>/);
+    expect(textOf(h1)).toBe(homeHeroCopy.headline);
+  });
+
+  it('keeps the heading recipe and no longer paints the whole line gold', () => {
+    expect(/<h1[^>]*>/.exec(html)?.[0]).toContain('heading-hero');
+    expect(/<h1[^>]*>/.exec(html)?.[0]).not.toContain('gold-text');
   });
 });

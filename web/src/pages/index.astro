@@ -118,10 +118,11 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                 {homeHeroCopy.eyebrow}
               </p>
               <h1
-                class="gold-text heading-hero max-w-[640px]"
+                class="heading-hero max-w-[640px]"
                 style="font-family: 'Barlow Condensed Hero', var(--font-heading);"
               >
-                {homeHeroCopy.headline}
+                <span class="text-strong">{homeHeroCopy.headlineLead}</span>{' '}
+                <span class="gold-text">{homeHeroCopy.headlineAccent}</span>
               </h1>
               <p class="max-w-[560px] text-[15px] leading-relaxed text-[#c9c2b2]">{homeHeroCopy.sentence}</p>
               <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical

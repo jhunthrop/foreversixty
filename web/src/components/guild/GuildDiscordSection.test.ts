@@ -68,7 +68,8 @@ function channel(confirming: boolean, status: DiscordStatus | null = null): stri
 const text = (body: string): string => body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 const tag = (body: string, testid: string): string =>
   new RegExp(`<[a-z]+[^>]*data-testid="${testid}"[^>]*>`).exec(body)?.[0] ?? '';
-const filled = (body: string): number => (body.match(/<(?:button|a)[^>]*bg-gold[^>]*>/g) ?? []).length;
+const filled = (body: string): number =>
+  (body.match(/<(?:button|a)[^>]*(?:bg-gold|bg-\[linear-gradient)[^>]*>/g) ?? []).length;
 
 describe('GuildDiscordSection', () => {
   it('is the #discord flat section with the Discord heading in every state', () => {
@@ -126,7 +127,7 @@ describe('GuildDiscordSection', () => {
     expect(text(body)).toContain('Last error from Discord: Unknown Webhook.');
     expect(text(body)).toContain(notificationsCopy.switchedOffFix);
     expect(filled(body)).toBe(1);
-    expect(tag(body, 'discord-test')).toContain('bg-gold');
+    expect(tag(body, 'discord-test')).toContain('bg-[linear-gradient');
     expect(text(body)).toContain(notificationsCopy.testAndSwitchOn);
     expect(body.indexOf('discord-replace')).toBeLessThan(body.indexOf('discord-test'));
   });
@@ -148,11 +149,9 @@ describe('GuildDiscordSection', () => {
     for (const discord of [CONNECTED, SWITCHED_OFF]) {
       const body = html(discord, { officerTools: false });
       const test = tag(body, 'discord-test');
-      expect(test).toContain('disabled');
+      expect(test).toContain('disabled=""');
       expect(test).toContain('aria-describedby="officer-tools-gate-discord"');
-      expect(test).toContain('opacity-50');
-      expect(tag(body, 'discord-remove')).not.toContain('opacity-50');
-      expect(tag(body, 'discord-remove')).not.toContain('disabled');
+      expect(tag(body, 'discord-remove')).not.toContain('disabled=""');
       expect(tag(body, 'discord-replace')).not.toContain('href=');
     }
   });

@@ -2,13 +2,15 @@
 <!-- The actions row: Send test message (or Test and switch on, the one filled button of a
      switched-off panel) and Remove, or the remove question with its own Remove and Cancel.
      `gateId` (the guild's officer-read-only) disables both test buttons and describes them by
-     that sentence; Remove stays live. `disabled` (a frozen claim) turns every button off. -->
+     that sentence; Remove stays live. `disabled` (a frozen claim) turns every button off. The
+     buttons are the shared recipes: test is secondary (primary when it switches posts back on),
+     Remove is danger, the question's Cancel is ghost. -->
 <script lang="ts">
   import type { DiscordBlockKey } from '../../../lib/account/notifications';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../../lib/planner/styles';
-
-  const OUTLINE = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`;
+  import { button } from '../../../lib/ui/button';
+  import Glyph from '../../ui/Glyph.svelte';
+  import Spinner from '../../ui/Spinner.svelte';
 
   let {
     state,
@@ -38,48 +40,47 @@
   const label = (text: string, pending: boolean, busyText: string): string => (pending ? busyText : text);
   const off = $derived(busy !== null || disabled);
   const testOff = $derived(off || gateId !== undefined);
-  // The gate's and the freeze's off state is the shared disabled look; a busy row keeps its look.
-  const DIM = 'cursor-not-allowed opacity-50';
-  const testDim = $derived(disabled || gateId !== undefined ? DIM : '');
-  const allDim = $derived(disabled ? DIM : '');
 </script>
 
 {#if confirming}
   <p class="text-[14px]">{removeQuestion}</p>
   <div class="flex flex-wrap gap-3">
-    <button class="{OUTLINE} {allDim}" disabled={off} onclick={onRemove} data-testid="discord-remove-confirm">
-      {label(notificationsCopy.remove, busy === 'remove', notificationsCopy.removing)}
+    <button
+      class={button('danger')}
+      disabled={off}
+      aria-busy={busy === 'remove' ? 'true' : undefined}
+      onclick={onRemove}
+      data-testid="discord-remove-confirm"
+    >
+      {#if busy === 'remove'}<Spinner />{/if}{label(
+        notificationsCopy.remove,
+        busy === 'remove',
+        notificationsCopy.removing,
+      )}
     </button>
-    <button class="{OUTLINE} {allDim}" disabled={off} onclick={onCancel} data-testid="discord-remove-cancel">
+    <button class={button('ghost')} disabled={off} onclick={onCancel} data-testid="discord-remove-cancel">
       {notificationsCopy.cancel}
     </button>
   </div>
 {:else}
   <div class="flex flex-wrap gap-3">
-    {#if state === 'disabled'}
+    {#if state === 'disabled' || state === 'saved'}
       <button
-        class="{PRIMARY_BUTTON_FIXED} px-5 {testDim}"
+        class={button(state === 'disabled' ? 'primary' : 'secondary')}
         disabled={testOff}
         aria-describedby={gateId}
-        aria-busy={busy === 'test'}
+        aria-busy={busy === 'test' ? 'true' : undefined}
         onclick={onTest}
         data-testid="discord-test"
       >
-        {label(notificationsCopy.testAndSwitchOn, busy === 'test', notificationsCopy.testing)}
-      </button>
-    {:else if state === 'saved'}
-      <button
-        class="{OUTLINE} {testDim}"
-        disabled={testOff}
-        aria-describedby={gateId}
-        aria-busy={busy === 'test'}
-        onclick={onTest}
-        data-testid="discord-test"
-      >
-        {label(notificationsCopy.test, busy === 'test', notificationsCopy.testing)}
+        {#if busy === 'test'}<Spinner />{:else}<Glyph name="send" />{/if}{label(
+          state === 'disabled' ? notificationsCopy.testAndSwitchOn : notificationsCopy.test,
+          busy === 'test',
+          notificationsCopy.testing,
+        )}
       </button>
     {/if}
-    <button class="{OUTLINE} {allDim}" disabled={off} onclick={onAskRemove} data-testid="discord-remove">
+    <button class={button('danger')} disabled={off} onclick={onAskRemove} data-testid="discord-remove">
       {notificationsCopy.remove}
     </button>
   </div>

@@ -935,27 +935,28 @@
                   </ul>
                 </StatePanel>
               {/if}
-              <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
-                <div class="flex flex-col gap-3">
+              <AccountPremiumBlock
+                plan={planLine}
+                pastDue={billing?.status === 'past_due' && planLine?.billingButton === 'manage'}
+                {busy}
+                onBilling={onManageBilling}
+                seePlans={!onPremium(me)}
+                entitlements={me?.entitlements}
+                characters={me?.characters ?? []}
+                mainKey={me?.main_character_key}
+                serverRunsThisMonth={me?.server_sims?.runs_this_month}
+                notifications={me !== null && premiumRowVisible(me)
+                  ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
+                  : null}
+              >
+                {#snippet offer()}
                   {#if shownOffer !== null}
-                    <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
+                    <div class="px-5 pb-4">
+                      <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
+                    </div>
                   {/if}
-                  <AccountPremiumBlock
-                    plan={planLine}
-                    pastDue={billing?.status === 'past_due' && planLine?.billingButton === 'manage'}
-                    {busy}
-                    onBilling={onManageBilling}
-                    seePlans={!onPremium(me)}
-                    entitlements={me?.entitlements}
-                    characters={me?.characters ?? []}
-                    mainKey={me?.main_character_key}
-                    serverRunsThisMonth={me?.server_sims?.runs_this_month}
-                    notifications={me !== null && premiumRowVisible(me)
-                      ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
-                      : null}
-                  />
-                </div>
-              </StatePanel>
+                {/snippet}
+              </AccountPremiumBlock>
               {#if me !== null}
                 <AccountDiscordBlock {me} quiet={(me.seat_offer ?? null) !== null} />
               {/if}

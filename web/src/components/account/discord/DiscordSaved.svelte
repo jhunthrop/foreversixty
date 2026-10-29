@@ -1,8 +1,8 @@
 <!-- web/src/components/account/discord/DiscordSaved.svelte -->
-<!-- A saved webhook's panel body (saved, switched off, lapsed): destination, notice, the events
+<!-- A saved webhook's card body (saved, switched off, lapsed): destination, notice, the events
      and the actions, in the spec's per-state order (3.2). Switched off puts the events last and
-     `Use a different webhook` inside the notice; saved keeps it under the status line. Both hide
-     the link while the remove question is open. -->
+     the replace row right under the notice; saved keeps the replace row last. Both hide the row
+     while the remove question is open. -->
 <script lang="ts">
   import type { DiscordEvents, DiscordNotifications } from '../../../lib/account/api';
   import { removeQuestionFor, sourceOf, type DiscordBlockKey } from '../../../lib/account/notifications';
@@ -60,8 +60,7 @@
   {onStuck}
 />
 {#if state !== 'disabled'}{@render eventRows()}{/if}
-<!-- 8 px under the actions row; the replace link's own 44 px hit area is the rest -->
-<div class="flex flex-col">
+<div class="border-line-soft flex flex-col border-t px-5 py-4">
   <DiscordActions
     {state}
     {confirming}
@@ -73,8 +72,8 @@
     {onCancel}
   />
   <DiscordStatusLine {status} />
-  {#if state === 'saved' && !confirming}
-    <DiscordReplace source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
-  {/if}
 </div>
+{#if state === 'saved' && !confirming}
+  <DiscordReplace variant="row" source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
+{/if}
 {#if state === 'disabled'}{@render eventRows()}{/if}

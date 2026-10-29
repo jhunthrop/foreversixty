@@ -1,0 +1,24 @@
+import { render } from 'svelte/server';
+import { describe, expect, it } from 'vitest';
+import StatTile from './StatTile.svelte';
+
+describe('StatTile', () => {
+  const body = render(StatTile, { props: { value: '88', label: 'Forever Score', testid: 'tile' } }).body;
+
+  it('sets the figure in the heading face at the stat size over a micro label', () => {
+    expect(body).toMatch(/figure-stat[^>]*>88</);
+    expect(body.indexOf('88')).toBeLessThan(body.indexOf('Forever Score'));
+    expect(body).toContain('text-[11px] font-bold tracking-[.08em] uppercase');
+  });
+
+  it('is a quiet tile: 12 14 padding, control radius, soft line', () => {
+    expect(body).toContain('rounded-control');
+    expect(body).toContain('px-[14px] py-3');
+    expect(body).toContain('border-line-soft');
+    expect(body).toContain('bg-white/[.03]');
+  });
+
+  it('carries its testid', () => {
+    expect(body).toContain('data-testid="tile"');
+  });
+});

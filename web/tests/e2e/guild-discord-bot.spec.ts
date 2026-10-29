@@ -220,7 +220,11 @@ test.describe('installed', () => {
     );
     await expect(id(page, 'bot-open')).toHaveAttribute('rel', 'noopener');
     await expect(id(page, 'bot-linked-members')).toHaveText(guildBotCopy.installed.linkedMembers(9, 31));
-    await expect(section(page).locator('button.bg-gold, a.bg-gold')).toHaveCount(0);
+    await expect(
+      section(page).locator(
+        'button.bg-gold, a.bg-gold, button[class*="linear-gradient"], a[class*="linear-gradient"]',
+      ),
+    ).toHaveCount(0);
   });
 
   test('the linked-members line in its three forms', async ({ page }) => {
@@ -281,7 +285,11 @@ test.describe('webhook only', () => {
     const seen = await open(page, { discord: WEBHOOK_AND_BOT });
     await expect(id(page, 'bot-offer')).toContainText(guildBotCopy.offer);
     await expect(id(page, 'bot-add')).toHaveAttribute('href', BOT_INSTALL_HREF);
-    await expect(section(page).locator('a.bg-gold, button.bg-gold')).toHaveCount(0);
+    await expect(
+      section(page).locator(
+        'button.bg-gold, a.bg-gold, button[class*="linear-gradient"], a[class*="linear-gradient"]',
+      ),
+    ).toHaveCount(0);
     await id(page, 'discord-test').click();
     await expect(section(page).getByRole('status')).toHaveText(copy.testSent);
     expect(seen.base.tests).toBe(1);

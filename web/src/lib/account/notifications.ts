@@ -172,3 +172,18 @@ export function openInDiscordUrl(
     return null;
   return `https://discord.com/channels/${guild}/${discord.channel_id}`;
 }
+
+export interface StateTag {
+  text: string;
+  tone: 'success' | 'muted' | 'danger';
+  dot: boolean;
+}
+
+/** The card head's state tag (polish spec 4.3): saved and on, lapsed, switched off; none when empty or free. */
+export function stateTagFor(state: DiscordBlockKey): StateTag | null {
+  const words = notificationsCopy.stateTag;
+  if (state === 'saved') return { text: words.connected, tone: 'success', dot: true };
+  if (state === 'lapsed') return { text: words.paused, tone: 'muted', dot: false };
+  if (state === 'disabled') return { text: words.attention, tone: 'danger', dot: false };
+  return null;
+}

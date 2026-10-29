@@ -1,15 +1,12 @@
 <!-- web/src/components/account/discord/DiscordFree.svelte -->
-<!-- Not on Premium and nothing saved: one sentence and See plans, no panel, no lock. The 44 px
-     row is the paragraph's; the link is inline so its focus ring hugs the words. -->
+<!-- Not on Premium and nothing saved: the card's one sentence and See plans as an action link
+     (polish spec 4.3), no lock and no tag. -->
 <script lang="ts">
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
+  import ActionLink from '../../ui/ActionLink.svelte';
 </script>
 
-<p class="text-muted flex min-h-11 items-center text-[13px]" data-testid="discord-free">
-  <span>
-    {notificationsCopy.freeSentence}
-    <a class="text-text hover:text-gold-hover underline" href="/premium" data-testid="discord-free-link"
-      >{notificationsCopy.seePlans}</a
-    >
-  </span>
-</p>
+<div class="flex flex-col items-start gap-1 px-5 pb-4" data-testid="discord-free">
+  <p class="text-muted text-[14px]">{notificationsCopy.freeSentence}</p>
+  <ActionLink href="/premium" data-testid="discord-free-link">{notificationsCopy.seePlans}</ActionLink>
+</div>

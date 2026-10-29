@@ -18,9 +18,10 @@
     type ReturnOutcome,
   } from '../../lib/account/discord-actions';
   import { createFocusQueue, consumeReturn } from '../../lib/account/discord-return.svelte';
-  import { blockState, connectAvailable } from '../../lib/account/notifications';
+  import { blockState, connectAvailable, stateTagFor } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
-  import StatePanel from '../ui/StatePanel.svelte';
+  import CardHead from '../ui/CardHead.svelte';
+  import Tag from '../ui/Tag.svelte';
   import DiscordConnect from './discord/DiscordConnect.svelte';
   import DiscordFree from './discord/DiscordFree.svelte';
   import DiscordPasteForm from './discord/DiscordPasteForm.svelte';
@@ -62,6 +63,7 @@
   let fieldFailure = $state<Extract<ActionResult, { ok: false }> | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
+  const stateTag = $derived(stateTagFor(block.state));
   const connectOn = $derived(connectAvailable(me));
   const showForm = $derived(block.state === 'empty' || (replacing && block.state !== 'lapsed'));
   const showConnect = $derived(showForm && connectOn && !pasteView);
@@ -203,43 +205,62 @@
 
 {#if block.state !== 'off' && !settling}
   <div id="discord" class="scroll-mt-20" onkeydown={onKeydown} role="presentation">
-    {#if block.state === 'free'}
-      <DiscordFree />
-    {:else}
-      <StatePanel label={notificationsCopy.label} testid="account-discord">
-        {#if showConnect}
-          <DiscordConnect {status} {replacing} onStuck={showStuck} onPaste={showPaste} onCancel={cancel} />
-        {:else if showForm}
-          {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
-          <DiscordPasteForm
-            bind:webhook
-            bind:events={formEvents}
-            error={fieldFailure?.message ?? null}
-            offerPlans={fieldFailure?.target === 'plans'}
-            saving={busy === 'save'}
-            {replacing}
-            secondary={quiet}
-            onSubmit={submit}
-            onCancel={cancel}
-            onConnect={connectOn ? showConnectView : undefined}
-          />
-        {:else if 'discord' in block}
-          <DiscordSaved
-            state={block.state}
-            discord={block.discord}
-            {confirming}
-            {busy}
-            {status}
-            onToggleEvents={changeEvents}
-            onTest={test}
-            onAskRemove={askRemove}
-            onRemove={remove}
-            onCancel={cancel}
-            onReplace={startReplace}
-            onStuck={showStuck}
-          />
+    <section class="card-surface overflow-hidden" data-testid="account-discord">
+      <CardHead
+        glyph="discord"
+        tone="discord"
+        label={notificationsCopy.headLabel}
+        title={notificationsCopy.label}
+      >
+        {#snippet aside()}
+          {#if stateTag !== null}
+            <Tag tone={stateTag.tone} dot={stateTag.dot} testid="discord-state-tag">{stateTag.text}</Tag>
+          {/if}
+        {/snippet}
+      </CardHead>
+      {#if block.state === 'free'}
+        <DiscordFree />
+      {:else if showConnect}
+        <DiscordConnect
+          {status}
+          {replacing}
+          {quiet}
+          onStuck={showStuck}
+          onPaste={showPaste}
+          onCancel={cancel}
+        />
+      {:else if showForm}
+        {#if block.state === 'empty' && status !== null}
+          <div class="px-5"><DiscordStatusLine {status} /></div>
         {/if}
-      </StatePanel>
-    {/if}
+        <DiscordPasteForm
+          bind:webhook
+          bind:events={formEvents}
+          error={fieldFailure?.message ?? null}
+          offerPlans={fieldFailure?.target === 'plans'}
+          saving={busy === 'save'}
+          {replacing}
+          secondary={quiet}
+          onSubmit={submit}
+          onCancel={cancel}
+          onConnect={connectOn ? showConnectView : undefined}
+        />
+      {:else if 'discord' in block}
+        <DiscordSaved
+          state={block.state}
+          discord={block.discord}
+          {confirming}
+          {busy}
+          {status}
+          onToggleEvents={changeEvents}
+          onTest={test}
+          onAskRemove={askRemove}
+          onRemove={remove}
+          onCancel={cancel}
+          onReplace={startReplace}
+          onStuck={showStuck}
+        />
+      {/if}
+    </section>
   </div>
 {/if}

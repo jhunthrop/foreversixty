@@ -66,7 +66,11 @@ test.describe('11 · deleted', () => {
     );
     await expect(id(page, 'bot-choose-channel')).toHaveText(guildBotCopy.channelUnusable.choose);
     await expect(id(page, 'bot-open')).toHaveCount(0);
-    await expect(section(page).locator('a.bg-gold, button.bg-gold')).toHaveCount(1);
+    await expect(
+      section(page).locator(
+        'button.bg-gold, a.bg-gold, button[class*="linear-gradient"], a[class*="linear-gradient"]',
+      ),
+    ).toHaveCount(1);
     await expectNoDestination(page);
   });
 

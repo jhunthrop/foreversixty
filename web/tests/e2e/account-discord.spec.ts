@@ -126,7 +126,7 @@ test.describe('paste form', () => {
   test('the form shows the three numbered steps above the field', async ({ page }) => {
     await openAccount(page, { initial: null });
     for (const [index, step] of copy.howSteps.entries()) {
-      await expect(page.getByTestId(`discord-step-${index + 1}`)).toHaveText(step);
+      await expect(page.getByTestId(`discord-step-${index + 1}`)).toContainText(step);
     }
     const lastStepTop = (await page.getByTestId('discord-step-3').boundingBox())?.y ?? Infinity;
     const fieldTop = (await input(page).boundingBox())?.y ?? 0;
@@ -304,7 +304,7 @@ test.describe('switched off, lapsed, free', () => {
     await expect(notice).toContainText(copy.switchedOff);
     await expect(notice).toContainText(copy.lastError('Unknown Webhook'));
     await expect(notice).toContainText(copy.switchedOffFix);
-    await expect(notice.getByTestId('discord-replace')).toHaveText(copy.replace);
+    await expect(page.getByTestId('discord-replace')).toContainText(copy.replace);
     await expect(page.getByRole('button', { name: copy.testAndSwitchOn })).toBeVisible();
     await expect(premiumRow(page)).toContainText(premiumRowCopy.offNeedsAttention);
     await expect(premiumRow(page)).not.toContainText('failed five times');
@@ -353,7 +353,8 @@ test.describe('switched off, lapsed, free', () => {
     const free = page.getByTestId('discord-free');
     await expect(free).toContainText(copy.freeSentence);
     await expect(free.getByRole('link', { name: copy.seePlans })).toHaveAttribute('href', '/premium');
-    await expect(panel(page)).toHaveCount(0);
+    await expect(page.getByTestId('discord-state-tag')).toHaveCount(0);
+    await expect(page.getByTestId('account-discord').locator('form')).toHaveCount(0);
     await expect(premiumRow(page).getByText(premiumRowCopy.off, { exact: true })).toBeVisible();
     await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   });
@@ -376,7 +377,7 @@ test.describe('Premium row', () => {
     await openAccount(page, { initial: SAVED });
     await expect(premiumRow(page)).toContainText('Discord notifications');
     const link = page.getByTestId('account-premium-notifications-link');
-    await expect(link).toHaveText('On · 2 events');
+    await expect(link).toContainText('On · 2 events');
     await expect(link).toHaveAttribute('href', '#discord');
   });
 });
@@ -540,7 +541,7 @@ test.describe('a connected channel (connect lane)', () => {
     await expect(open).toHaveAttribute('href', `https://discord.com/channels/${GUILD_ID}/${CHANNEL_ID}`);
     await expect(open).toHaveAttribute('target', '_blank');
     const reconnect = page.getByTestId('discord-replace');
-    await expect(reconnect).toHaveText(copy.reconnect);
+    await expect(reconnect).toContainText(copy.reconnect);
     await expect(reconnect).toHaveAttribute('href', CONNECT_HREF);
     await expect(page.getByTestId('discord-replace-note')).toHaveText(copy.reconnectNote);
     const html = await page.content();

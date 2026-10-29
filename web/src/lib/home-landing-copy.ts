@@ -10,6 +10,9 @@
 // hero's sentence, so it stays the one source rather than a second copy of the same words
 // here).
 
+const HEADLINE_LEAD = 'Play your class';
+const HEADLINE_ACCENT = 'better.';
+
 export const homeHeroCopy = {
   eyebrow: 'World of Warcraft: Forever',
   // Tenet 14 / design/DESIGN-SYSTEM.md principle 1's one fixed sentence -- not a pitch, the
@@ -17,7 +20,10 @@ export const homeHeroCopy = {
   // included (home rebuild spec §1); this is also the hero H1's exact glyph set that
   // scripts/hero-font.py subsets into hero-font.css, so a change here needs that script
   // re-run (`python3 scripts/hero-font.py` from web/).
-  headline: 'Play your class better.',
+  headline: `${HEADLINE_LEAD} ${HEADLINE_ACCENT}`,
+  // The mock's two-tone split (polish spec 4.4): the lead in --strong, the accent word in gold.
+  headlineLead: HEADLINE_LEAD,
+  headlineAccent: HEADLINE_ACCENT,
   sentence:
     'Pick your class for its best-in-slot list, talents and rotation, or sign in and your own characters arrive with their gear, talents and guild.',
   addonAltLabel: 'or paste an addon export',

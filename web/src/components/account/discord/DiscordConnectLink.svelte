@@ -7,6 +7,7 @@
      frozen claim) draws a link that goes nowhere: no href, aria-disabled, out of the tab order,
      described by `describedBy`. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { connectUrl } from '../../../lib/account/notifications';
   import { createOpeningWatchdog } from '../../../lib/account/opening-watchdog';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
@@ -20,6 +21,7 @@
     gated = false,
     describedBy,
     onStuck,
+    content,
   }: {
     label: string;
     class: string;
@@ -29,6 +31,8 @@
     gated?: boolean;
     describedBy?: string;
     onStuck: () => void;
+    /** Draws the link's inside (the row variant); it receives the label to show. Default: the label text. */
+    content?: Snippet<[string]>;
   } = $props();
 
   let opening = $state(false);
@@ -75,6 +79,10 @@
     onclick={onClick}
     data-testid={testid}
   >
-    {opening ? notificationsCopy.connecting : label}
+    {#if content !== undefined}
+      {@render content(opening ? notificationsCopy.connecting : label)}
+    {:else}
+      {opening ? notificationsCopy.connecting : label}
+    {/if}
   </a>
 {/if}

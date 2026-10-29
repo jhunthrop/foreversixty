@@ -136,7 +136,7 @@
               >{ratingCopy.insufficient}</span
             >
           {:else}
-            <span class="text-gold tabular text-[28px] font-bold" data-testid="rating-overall"
+            <span class="text-gold figure-stat" data-testid="rating-overall"
               >{Math.round(player.overall)}</span
             >
           {/if}

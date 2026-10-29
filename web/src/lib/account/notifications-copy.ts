@@ -58,6 +58,10 @@ const WARNING_CHECK = 'Send a test message to check.';
 
 export const notificationsCopy = {
   label: 'Discord',
+  /** The micro label over the card title. */
+  headLabel: 'Notifications',
+  /** The state tag in the card head (spec 4.3): saved and on, lapsed, switched off. */
+  stateTag: { connected: 'Connected', paused: 'Paused', attention: 'Needs attention' },
   intro: 'Get a message in a Discord channel when a server sim finishes or a log finishes parsing.',
   fieldLabel: 'Webhook URL',
   placeholder: 'https://discord.com/api/webhooks/…',

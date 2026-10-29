@@ -128,7 +128,7 @@ const accentOf = (page: Page, testId: string): Promise<string> =>
   page.getByTestId(testId).evaluate((node) => getComputedStyle(node).accentColor);
 
 test.describe('gold checkboxes', () => {
-  test('accent-color resolves to the gold token on the Discord row, the account page and the rankings filters', async ({
+  test('accent-color resolves to the gold token on the account page and the rankings filters', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: HEIGHT });
@@ -137,7 +137,6 @@ test.describe('gold checkboxes', () => {
     await gotoHydrated(page, '/account', 'account');
     const gold = await resolvedGold(page);
     expect(gold).not.toBe('');
-    expect(await accentOf(page, 'discord-event-sim')).toBe(gold);
     expect(await accentOf(page, 'anonymize')).toBe(gold);
 
     await page.route('**/v1/rankings?**', (route) =>

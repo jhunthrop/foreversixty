@@ -1,0 +1,16 @@
+---
+// web/src/pages/design-sheet.astro
+// The component sheet (polish spec 4.2, design/DESIGN-SYSTEM.md "Component set"): every shared
+// control in each state. A reference and the page the ui-components e2e drives; not a
+// destination, so it is noindex and out of the sitemap.
+import UiSheet from '../components/ui/UiSheet.svelte';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Design sheet" description="Every shared control in each of its states." path="/design-sheet">
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="flex flex-col gap-8 px-[18px] py-10 md:px-0">
+    <h1 class="heading-page">Design sheet</h1>
+    <UiSheet client:load />
+  </main>
+</Base>

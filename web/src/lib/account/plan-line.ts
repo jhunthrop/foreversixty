@@ -7,6 +7,7 @@ import type { PremiumSource } from '../billing/contract';
 import { billingBlockCopy } from '../billing/copy';
 import { guildPlanLine } from '../billing/guild-billing-copy';
 import { premiumSourceCopy } from '../billing/premium-source-copy';
+import { zonedDayMonthYear } from '../dates';
 import { settingsWords } from '../guild/settings-view';
 import type { BillingView, GuildBillingView, Me } from './api';
 
@@ -20,7 +21,16 @@ export interface EndedSeatLine {
 
 export type BillingButton = 'manage' | 'history';
 
+/** The plan card's head: the name, the date it renews or ends, and one muted note. */
+export interface PlanHead {
+  name: string;
+  when: { label: string; date: string } | null;
+  /** The price, or what follows the plan (`Then a seat from X`); null when there is nothing to add. */
+  extra: string | null;
+}
+
 export interface AccountPlanLine {
+  head: PlanHead;
   line: string;
   line2: string | null;
   founder: boolean;
@@ -128,11 +138,42 @@ function endedSeatLine(me: Me, zone?: string): EndedSeatLine | null {
   };
 }
 
+function headWords(source: PremiumSource, me: Me, zone?: string): PlanHead {
+  const words = accountPlanCopy.head;
+  const billing = liveBilling(me);
+  const end = billing?.current_period_end ?? null;
+  const date = end === null ? null : zonedDayMonthYear(end, zone);
+  if ((source === 'own' || source === 'own_then_seat') && billing !== null && date !== null) {
+    const price =
+      billing.amount_cents === null || billing.interval === null
+        ? null
+        : words.price(billing.amount_cents, billing.interval);
+    const label = billing.cancel_at_period_end || source === 'own_then_seat' ? words.ends : words.renews;
+    const seat = me.seat ?? null;
+    const extra = source === 'own_then_seat' && seat !== null ? words.thenSeat(seat.guild_name) : price;
+    return { name: words.names.premium, when: { label, date }, extra };
+  }
+  if (source === 'grant') {
+    return {
+      name: words.names.premium,
+      when: date === null ? null : { label: words.until, date },
+      extra: null,
+    };
+  }
+  if (source === 'seat') {
+    const guild = me.seat?.guild_name;
+    return { name: words.names.seat, when: null, extra: guild === undefined ? null : words.seatFrom(guild) };
+  }
+  if (source === 'fallback') return { name: words.names.premium, when: null, extra: null };
+  return { name: words.names.free, when: null, extra: null };
+}
+
 export function accountPlanLine(me: Me, now: Date, zone?: string): AccountPlanLine {
   const source = premiumSource(me, now);
   const owns = source === 'own' || source === 'own_then_seat';
   return {
     ...sourceWords(source, me, zone),
+    head: headWords(source, me, zone),
     founder: owns && me.entitlements?.billing?.founder === true,
     billingButton: billingButton(source, me),
     ended: source === 'none' ? endedSeatLine(me, zone) : null,
