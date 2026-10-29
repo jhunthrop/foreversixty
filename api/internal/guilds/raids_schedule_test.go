@@ -16,6 +16,17 @@ import (
 // startIn is a start d from now, on the minute.
 func startIn(d time.Duration) time.Time { return time.Now().Add(d).UTC().Truncate(time.Minute) }
 
+// subMicro is the sub-microsecond part nanoClock adds.
+const subMicro = 789 * time.Nanosecond
+
+// nanoClock is the wall clock with a sub-microsecond part on every platform. Linux's clock
+// carries nanoseconds and darwin's stops at microseconds, so a test that reads back a time
+// it wrote fails in CI only, unless its clock carries nanoseconds on darwin too.
+func nanoClock() time.Time { return time.Now().UTC().Truncate(time.Microsecond).Add(subMicro) }
+
+// stored is t as a timestamptz column reads it back: microseconds, the rest truncated.
+func stored(t time.Time) time.Time { return t.Truncate(time.Microsecond) }
+
 const day = 24 * time.Hour
 
 // scheduleBody is a create body at start with both Discord boxes; an empty value leaves the

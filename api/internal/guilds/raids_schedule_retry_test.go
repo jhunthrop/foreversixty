@@ -170,7 +170,7 @@ func refuseMarks(t *testing.T, w raidWorld) (clear func()) {
 func TestAFailedMarkHoldsTheSentPost(t *testing.T) {
 	w, events, _ := postingWorld(t)
 	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
-	at := time.Now().Add(4 * day)
+	at := nanoClock().Add(4 * day)
 	clear := refuseMarks(t, w)
 	if got := w.run(t, at); got.Posted != 1 || len(events.posted) != 1 {
 		t.Fatalf("run = %+v, posted %d", got, len(events.posted))
@@ -189,7 +189,7 @@ func TestAFailedMarkHoldsTheSentPost(t *testing.T) {
 	recoverAt := at.Add(2*day + time.Hour)
 	w.run(t, recoverAt)
 	rs, _ = w.scheduleOf(t, raid.ID)
-	if rs.PostedAt == nil || !rs.PostedAt.Equal(recoverAt) || len(events.posted) != 1 {
+	if rs.PostedAt == nil || !rs.PostedAt.Equal(stored(recoverAt)) || len(events.posted) != 1 {
 		t.Fatalf("recovered row: posted %v, posts %d", rs.PostedAt, len(events.posted))
 	}
 }

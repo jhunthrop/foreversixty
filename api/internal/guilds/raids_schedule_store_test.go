@@ -136,10 +136,33 @@ func TestTwoClaimsSplitRows(t *testing.T) {
 	}
 }
 
+// A schedule time reads back at microseconds, the rest truncated: a test comparing a
+// written time with a read one compares stored(written). nanoClock carries the
+// sub-microsecond part on darwin too, so such a comparison fails locally as it does in CI.
+func TestScheduleTimesReadBackAtMicroseconds(t *testing.T) {
+	ctx := context.Background()
+	w := newScheduleWorld(t)
+	now := nanoClock()
+	if now.Sub(stored(now)) != subMicro {
+		t.Fatalf("nanoClock %v carries no sub-microsecond part", now)
+	}
+	id := w.raid(t, now.Add(5*24*time.Hour), "planned")
+	if err := w.st.UpsertSchedule(ctx, id, w.gid, now, false); err != nil {
+		t.Fatal(err)
+	}
+	got, err := w.st.SchedulesOf(ctx, []int64{id})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if at := got[id].PostAt; !at.Equal(stored(now)) || at.Equal(now) {
+		t.Fatalf("post_at read back %v, want %v (written %v)", at, stored(now), now)
+	}
+}
+
 func TestUpsertKeepsAPostedRow(t *testing.T) {
 	ctx := context.Background()
 	w := newScheduleWorld(t)
-	now := time.Now().UTC().Add(5 * time.Second)
+	now := nanoClock().Add(5 * time.Second)
 	id := w.raid(t, now.Add(5*24*time.Hour), "planned")
 	first := now.Add(-time.Hour)
 	if err := w.st.UpsertSchedule(ctx, id, w.gid, first, false); err != nil {
@@ -156,7 +179,7 @@ func TestUpsertKeepsAPostedRow(t *testing.T) {
 		t.Fatal(err)
 	}
 	rs := got[id]
-	if !rs.PostAt.Equal(first) || rs.PostedAt == nil || !rs.PostedAt.Equal(first) || !rs.Remind {
+	if !rs.PostAt.Equal(stored(first)) || rs.PostedAt == nil || !rs.PostedAt.Equal(stored(first)) || !rs.Remind {
 		t.Fatalf("schedule = %+v", rs)
 	}
 	if err := w.st.DeleteUnpostedSchedule(ctx, id); err != nil {
