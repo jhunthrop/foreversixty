@@ -151,12 +151,23 @@ func fieldsChars(fields []EmbedField) int {
 
 func rosterFieldsWithin(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField {
 	var fields []EmbedField
+	// Fields 4 to 6 (the groups, Late, Bench) are drawn only once someone is In or Late (§P.9.2).
 	if countState(roster, rosterIn)+countState(roster, rosterLate) > 0 {
 		for i, g := range rosterGroups {
 			rows := inGroup(roster, g)
 			fields = append(fields, groupFields(fmt.Sprintf(g.label, len(rows)), lines(rows, marks), lim.group[i])...)
 		}
+		fields = append(fields, listFields(roster, marks, lim)...)
 	}
+	if out := outNames(roster); len(out) > 0 {
+		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
+	}
+	return fields
+}
+
+// listFields are Late and Bench, each only when someone is in it.
+func listFields(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField {
+	var fields []EmbedField
 	for _, list := range []struct {
 		label, state string
 		most         int
@@ -165,9 +176,6 @@ func rosterFieldsWithin(roster []RosterLine, marks Marks, lim rosterLimits) []Em
 			fields = append(fields, EmbedField{Name: fmt.Sprintf(list.label, len(rows)),
 				Value: fitValue(capped(lines(rows, marks), list.most)), Inline: true})
 		}
-	}
-	if out := outNames(roster); len(out) > 0 {
-		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
 	}
 	return fields
 }

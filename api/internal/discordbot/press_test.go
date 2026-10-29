@@ -68,6 +68,8 @@ type pressGuilds struct {
 	*guilds.Service
 	candidates []guilds.SignupCandidate
 	signUpErr  error
+	// saveSpecErr, when set, is every SaveRaidSpec's answer (spec_card_test.go).
+	saveSpecErr error
 	// candidateReads counts SignupCandidates calls.
 	candidateReads int
 }

@@ -25,6 +25,7 @@ var extraJobs = append([]jobCommand{
 // not move them; main runs them through the same table runner.
 var setupCommands = []jobCommand{
 	{discordEmojiCommand, runDiscordEmojiCommand},
+	{"stripe-setup", func(ctx context.Context, log *slog.Logger, _ []string) error { return runStripeSetup(ctx, log) }},
 }
 
 // allCommands is every table-run command: the jobs, then the setup commands.

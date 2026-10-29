@@ -3,12 +3,16 @@ package main
 import (
 	"bytes"
 	"context"
+	"image"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/HugoSmits86/nativewebp"
+
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 )
 
 const emojiCmdToken = "cmd-secret-bot-token"
@@ -47,10 +51,7 @@ func emojiEnv(key string) string {
 }
 
 func TestDiscordEmojiUploadsOnlyTheMissingAndPrintsNoToken(t *testing.T) {
-	icons := filepath.Join("..", "..", "..", "web", "public", "data", "1.60.1.70658", "icons")
-	if _, err := os.Stat(icons); err != nil {
-		t.Skipf("no icon folder at %s", icons)
-	}
+	icons := fakeIconDir(t)
 	stub := &stubEmojiAPI{held: map[string]string{"fs_mage_frost": "77"}}
 	var gotApp, gotToken string
 	factory := func(app, token string) discordbot.EmojiAPI {
@@ -75,13 +76,16 @@ func TestDiscordEmojiUploadsOnlyTheMissingAndPrintsNoToken(t *testing.T) {
 	}
 }
 
-func TestDiscordEmojiIsASetupCommand(t *testing.T) {
-	for _, job := range setupCommands {
-		if job.name == "discord-emoji" {
-			return
+func TestTheSetupCommandsAreRouted(t *testing.T) {
+	routed := map[string]bool{}
+	for _, job := range allCommands() {
+		routed[job.name] = true
+	}
+	for _, name := range []string{"discord-emoji", "stripe-setup"} {
+		if !routed[name] {
+			t.Errorf("%s is not routed", name)
 		}
 	}
-	t.Fatal("discord-emoji is not routed")
 }
 
 func TestDiscordEmojiNeedsBothVariables(t *testing.T) {
@@ -104,4 +108,25 @@ func TestNewestBuildSkipsPrebetaAndOrdersByNumber(t *testing.T) {
 	if _, err := newestBuild(t.TempDir()); err == nil {
 		t.Fatal("an empty root has a build")
 	}
+}
+
+// fakeIconDir is an icon folder holding a 64 px webp for every spec icon, as the active build's
+// folder does, so the image path is tested without the generated web data.
+func fakeIconDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	img := image.NewNRGBA(image.Rect(0, 0, 64, 64))
+	for i := range img.Pix {
+		img.Pix[i] = byte(i)
+	}
+	var buf bytes.Buffer
+	if err := nativewebp.Encode(&buf, img, nil); err != nil {
+		t.Fatal(err)
+	}
+	for _, sp := range raidspec.All() {
+		if err := os.WriteFile(filepath.Join(dir, sp.Icon+".webp"), buf.Bytes(), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return dir
 }

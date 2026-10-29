@@ -247,7 +247,10 @@ func (s *Service) specPicked(ctx context.Context, in Interaction, p cardPress) (
 		return rep, err // a refusal sentence: nothing was saved
 	}
 	if err := s.saveSpec(ctx, seat, sp); err != nil {
-		return Reply{}, err
+		// The sign-up stands, so the answer is its outcome; only the "kept" clause, which would
+		// be untrue, is left out. The next press asks the spec again.
+		s.log.Error("discordbot", "op", "discord_spec", "outcome", "save_failed", "raid_id", seat.ask.RaidID, "err", err)
+		return rep, nil
 	}
 	rep.Message.Content += fill(guideCopy.SpecKept, "{Spec}", sp.Name, "{Name}", memberText(seat.char.Name))
 	return rep, nil

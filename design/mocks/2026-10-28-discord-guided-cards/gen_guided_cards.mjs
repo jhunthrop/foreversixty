@@ -337,9 +337,12 @@ const markOf = (r) => {
 /** One roster line: the spec icon then the name (§P.9.3). */
 const emojiLine = (r) =>
   LT + ":" + markOf(r) + ":" + EMOJI_ID[markOf(r)] + GT + " " + nameOf(r);
-/** No emoji (a webhook, a missing emoji): the name then the full spec name; no spec, the class. */
+/** No emoji (a webhook, a missing emoji): the name, the full spec name and the class; no spec, the class. */
 const textLine = (r) =>
-  nameOf(r) + MIDDOT + (specOf(r) ? specOf(r) : titleCase(classOf(r)));
+  nameOf(r) +
+  MIDDOT +
+  (specOf(r) ? specOf(r) + " " : "") +
+  titleCase(classOf(r));
 const rosterLine = (r, emoji) =>
   emoji && markOf(r) ? emojiLine(r) : textLine(r);
 const classRank = (r) => CLASS_ORDER.indexOf(classOf(r));

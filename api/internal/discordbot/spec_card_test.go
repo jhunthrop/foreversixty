@@ -249,3 +249,23 @@ func TestASpecFailureKeepsTheCard(t *testing.T) {
 		t.Fatal("rate limit is a refusal")
 	}
 }
+
+func (p *pressGuilds) SaveRaidSpec(ctx context.Context, cmd guilds.RaidSpecCommand) (guilds.RaidSpecResult, error) {
+	if p.saveSpecErr != nil {
+		return guilds.RaidSpecResult{}, p.saveSpecErr
+	}
+	return p.Service.SaveRaidSpec(ctx, cmd)
+}
+
+// A save that fails after the sign-up stood answers the outcome without spec.kept, and logs.
+func TestAFailedSpecSaveStillAnswersTheSignUp(t *testing.T) {
+	w := newPressWorld(t)
+	paladin(t, w)
+	w.port.saveSpecErr = errors.New("boom")
+	rep := w.mustSpecPress(t, specPickID(w, "in", keyZulmara), "paladin-holy")
+	want := "Zulmara is In as Healer for Onyxia's Lair, " + w.day() + ". 1 of 40 signed up."
+	wantReply(t, rep, want, true, changeSpecButton(w, keyZulmara))
+	if w.signups(t) != 1 || w.raidSpecOf(t, keyZulmara) != "" || !strings.Contains(w.log.String(), "save_failed") {
+		t.Fatalf("signups %d spec %q log %s", w.signups(t), w.raidSpecOf(t, keyZulmara), w.log.String())
+	}
+}

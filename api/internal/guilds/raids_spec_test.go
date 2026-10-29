@@ -104,3 +104,27 @@ func TestPutSignupSavesTheSpec(t *testing.T) {
 	unknown := w.putSignup(raid.ID, memberKeyA, `{"state":"in","spec":"nope"}`)
 	expectError(t, unknown, http.StatusUnprocessableEntity, "invalid")
 }
+
+// A locked raid's PUT with a spec changes nothing: no raid spec saved, the row's role unmoved.
+func TestPutSignupWithASpecOnALockedRaidChangesNothing(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	if _, err := w.svcSignUp(w.cmd(raid.ID, w.member, memberKeyA, SignupIn)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.h.pool.Exec(context.Background(), `update guild_raids set status = 'locked' where id = $1`, raid.ID); err != nil {
+		t.Fatal(err)
+	}
+	w.as(w.member)
+	res := w.putSignup(raid.ID, memberKeyA, `{"state":"in","spec":"warrior-protection"}`)
+	expectError(t, res, http.StatusConflict, "raid_locked")
+	var spec *string
+	if err := w.h.pool.QueryRow(context.Background(), `select raid_spec from guild_characters where character_key = $1`, memberKeyA).
+		Scan(&spec); err != nil || spec != nil {
+		t.Fatalf("raid_spec = %v err %v", spec, err)
+	}
+	signups, err := w.h.svc.Store.RaidSignups(context.Background(), raid.ID)
+	if err != nil || len(signups) != 1 || signups[0].Role != RoleDPS || signups[0].State != SignupIn {
+		t.Fatalf("rows = %+v err %v", signups, err)
+	}
+}

@@ -8,6 +8,7 @@
 package guilds
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"time"
@@ -69,26 +70,47 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actorID := auth.ActorFrom(r.Context()).UserID
+	cmd := SignupCommand{
+		GuildID: guildID, RaidID: raid.ID, ActorID: actorID,
+		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note,
+	}
+	spec := RaidSpecCommand{GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec}
 	if req.Spec != "" {
-		// The spec's role is the sign-up's: saved first, the sign-up then takes its default.
-		req.Role = ""
-		if _, err := s.SaveRaidSpec(r.Context(), RaidSpecCommand{
-			GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec,
-		}); err != nil {
+		// The spec is checked first and saved only once the sign-up stands, so a refused sign-up
+		// (a locked or cancelled raid) changes nothing; the sign-up takes the spec's role.
+		_, sp, err := s.raidSpecTarget(r.Context(), spec)
+		if err != nil {
 			s.writeSignupErr(w, r, err)
 			return
 		}
+		cmd.Role = sp.Role
 	}
-	res, err := s.signUp(r.Context(), SignupCommand{
-		GuildID: guildID, RaidID: raid.ID, ActorID: actorID,
-		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note,
-	}, false)
+	res, err := s.signUp(r.Context(), cmd, false)
 	if err != nil {
 		s.writeSignupErr(w, r, err)
 		return
 	}
+	if req.Spec != "" {
+		res.Raid = s.saveSignupSpec(r.Context(), spec, cmd, res.Raid)
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, signupAnswerView{Raid: res.Raid, Moved: res.Moved})
+}
+
+// saveSignupSpec saves the spec of a sign-up that stood and answers the raid as it now reads
+// (the viewer's raid_spec set). A failed save is logged and the sign-up's own view returned:
+// the sign-up stands, and the page asks the spec again next time.
+func (s *Service) saveSignupSpec(ctx context.Context, spec RaidSpecCommand, cmd SignupCommand, view RaidView) RaidView {
+	if _, err := s.SaveRaidSpec(ctx, spec); err != nil {
+		s.logger().Error("guilds", "op", "raid_spec", "guild_id", spec.GuildID, "raid_id", spec.RaidID, "err", err)
+		return view
+	}
+	fresh, err := s.signupRaidView(ctx, cmd)
+	if err != nil {
+		s.logger().Error("guilds", "op", "raid_spec_view", "guild_id", spec.GuildID, "raid_id", spec.RaidID, "err", err)
+		return view
+	}
+	return fresh
 }
 
 // writeSignupErr answers a failed sign-up in the shapes the PUT route has always used.

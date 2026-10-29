@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"image"
 	"image/png"
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/webp"
@@ -74,7 +76,11 @@ type SyncReport struct{ Uploaded, Kept, Deleted int }
 // spec emoji it holds and uploads them all again. It is safe to re-run: a second run uploads
 // nothing. It prints names and counts only, never a credential.
 func SyncEmoji(ctx context.Context, api EmojiAPI, images []EmojiImage, replace bool, out io.Writer) (SyncReport, error) {
-	held, err := api.ListAppEmoji(ctx)
+	var held []AppEmoji
+	err := retryRateLimited(ctx, func() (err error) {
+		held, err = api.ListAppEmoji(ctx)
+		return err
+	})
 	if err != nil {
 		return SyncReport{}, fmt.Errorf("discordbot: list emoji: %w", err)
 	}
@@ -86,7 +92,7 @@ func SyncEmoji(ctx context.Context, api EmojiAPI, images []EmojiImage, replace b
 	for _, img := range images {
 		id, exists := have[img.Name]
 		if exists && replace {
-			if err := api.DeleteAppEmoji(ctx, id); err != nil {
+			if err := retryRateLimited(ctx, func() error { return api.DeleteAppEmoji(ctx, id) }); err != nil {
 				return rep, fmt.Errorf("discordbot: delete emoji %s: %w", img.Name, err)
 			}
 			rep.Deleted++
@@ -98,7 +104,10 @@ func SyncEmoji(ctx context.Context, api EmojiAPI, images []EmojiImage, replace b
 			continue
 		}
 		data := "data:image/png;base64," + base64.StdEncoding.EncodeToString(img.PNG)
-		if _, err := api.CreateAppEmoji(ctx, img.Name, data); err != nil {
+		if err := retryRateLimited(ctx, func() error {
+			_, err := api.CreateAppEmoji(ctx, img.Name, data)
+			return err
+		}); err != nil {
 			return rep, fmt.Errorf("discordbot: upload emoji %s: %w", img.Name, err)
 		}
 		rep.Uploaded++
@@ -106,4 +115,21 @@ func SyncEmoji(ctx context.Context, api EmojiAPI, images []EmojiImage, replace b
 	}
 	fmt.Fprintf(out, "%d uploaded, %d kept, %d deleted, %d specs\n", rep.Uploaded, rep.Kept, rep.Deleted, len(images))
 	return rep, nil
+}
+
+// retryRateLimited runs call, and once more after Discord's retry_after when it answers 429.
+func retryRateLimited(ctx context.Context, call func() error) error {
+	err := call()
+	var api *APIError
+	if !errors.As(err, &api) || !api.RateLimited() {
+		return err
+	}
+	wait := time.NewTimer(api.RetryAfter)
+	defer wait.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-wait.C:
+	}
+	return call()
 }

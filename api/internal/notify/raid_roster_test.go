@@ -76,6 +76,14 @@ func TestRosterCopyMatchesTheSpec(t *testing.T) {
 		signed[1] != "**{n} signed up**" || raidCopy.SignedLeadOpen != "**%d signed up**" || signed[2] != raidCopy.SignedNone {
 		t.Errorf("roster.signed %q", signed)
 	}
+	text := guidedCell(t, "roster.textLine")
+	holy, _ := raidspec.ByKey("paladin-holy")
+	if got := textLine("Aurelith", "paladin", holy, true); got != strings.NewReplacer("{Name}", "Aurelith", "{Spec}", "Holy", "{Class}", "Paladin").Replace(text[0]) {
+		t.Errorf("roster.textLine = %q, spec %q", got, text[0])
+	}
+	if got := textLine("Aurelith", "paladin", raidspec.Spec{}, false); got != strings.NewReplacer("{Name}", "Aurelith", "{Class}", "Paladin").Replace(text[len(text)-1]) {
+		t.Errorf("roster.textLine no spec = %q, spec %q", got, text[len(text)-1])
+	}
 	if rosterCopy.Continued != "​" {
 		t.Error("continuation name")
 	}
@@ -119,7 +127,7 @@ func TestRosterFieldsFollowTheLayout(t *testing.T) {
 }
 
 func TestNobodyInOrLateDrawsNoGroups(t *testing.T) {
-	e := rosterPost([]RosterLine{line("Garrowe", "warrior", "Arms", "dps", "out")}, allMarks())
+	e := rosterPost([]RosterLine{line("Garrowe", "warrior", "Arms", "dps", "out"), line("Selwyn", "mage", "Frost", "dps", "bench")}, allMarks())
 	if got := strings.Join(fieldNames(e), ","); got != "When,Guild time,Signed up,Out · 1" || e.Fields[2].Value != "None yet" {
 		t.Fatalf("fields %s", got)
 	}

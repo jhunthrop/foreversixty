@@ -128,12 +128,6 @@ func main() {
 				os.Exit(1)
 			}
 			return
-		case "stripe-setup":
-			if err := runStripeSetup(context.Background(), log); err != nil {
-				log.Error("stripe-setup", "err", err)
-				os.Exit(1)
-			}
-			return
 		case "stripe-archive-prices":
 			if err := runStripeArchivePrices(context.Background(), log, os.Args[2:]); err != nil {
 				log.Error("stripe-archive-prices", "err", err)

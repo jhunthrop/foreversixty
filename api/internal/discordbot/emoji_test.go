@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"image"
 	"image/png"
 	"net/http"
 	"net/http/httptest"
@@ -14,6 +15,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/HugoSmits86/nativewebp"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -30,6 +33,9 @@ type fakeEmojiDiscord struct {
 	creates int
 	deletes int
 	auth    []string
+	// limitOnce answers the next POST with a 429 (retry after 10 ms); goneIDs answer DELETE 10014.
+	limitOnce bool
+	goneIDs   map[string]bool
 }
 
 func (f *fakeEmojiDiscord) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +50,13 @@ func (f *fakeEmojiDiscord) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			items = append(items, AppEmoji{ID: id, Name: name})
 		}
 		_ = json.NewEncoder(w).Encode(map[string]any{"items": items})
+	case r.Method == http.MethodPost && r.URL.Path == base && f.limitOnce:
+		f.limitOnce = false
+		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = w.Write([]byte(`{"message":"You are being rate limited.","retry_after":0.01,"global":false}`))
+	case r.Method == http.MethodDelete && f.goneIDs[strings.TrimPrefix(r.URL.Path, base+"/")]:
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(`{"message":"Unknown Emoji","code":10014}`))
 	case r.Method == http.MethodPost && r.URL.Path == base:
 		var body struct{ Name, Image string }
 		_ = json.NewDecoder(r.Body).Decode(&body)
@@ -115,12 +128,22 @@ func TestSyncEmojiUploadsOnlyTheMissing(t *testing.T) {
 	}
 }
 
-func TestEmojiImagesAre128PixelPNGs(t *testing.T) {
-	dir := filepath.Join("..", "..", "..", "web", "public", "data", "1.60.1.70658", "icons")
-	if _, err := os.Stat(dir); err != nil {
-		t.Skipf("no icon folder at %s", dir)
+// A 429 waits Discord's retry_after and tries once more; an emoji already gone deletes cleanly.
+func TestSyncEmojiRetriesARateLimitOnce(t *testing.T) {
+	rest, fake := newEmojiREST(t)
+	fake.limitOnce = true
+	rep, err := SyncEmoji(context.Background(), rest, fakeImages(), false, &bytes.Buffer{})
+	if err != nil || rep.Uploaded != 28 || fake.creates != 28 {
+		t.Fatalf("sync %+v err %v creates %d", rep, err, fake.creates)
 	}
-	images, err := EmojiImages(dir)
+	fake.goneIDs = map[string]bool{"gone": true}
+	if err := rest.DeleteAppEmoji(context.Background(), "gone"); err != nil {
+		t.Fatalf("10014 = %v", err)
+	}
+}
+
+func TestEmojiImagesAre128PixelPNGs(t *testing.T) {
+	images, err := EmojiImages(fakeIconDir(t))
 	if err != nil || len(images) != 28 {
 		t.Fatalf("%d images, err %v", len(images), err)
 	}
@@ -212,4 +235,25 @@ func TestEmojiRegistryReadsOnceAndRereadsHourlyWhileMissing(t *testing.T) {
 	if (*EmojiRegistry)(nil).Marks(ctx) != nil {
 		t.Fatal("a nil registry has marks")
 	}
+}
+
+// fakeIconDir is an icon folder holding a 64 px webp for every spec icon, as the active build's
+// folder does, so the image path is tested without the generated web data.
+func fakeIconDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	img := image.NewNRGBA(image.Rect(0, 0, 64, 64))
+	for i := range img.Pix {
+		img.Pix[i] = byte(i)
+	}
+	var buf bytes.Buffer
+	if err := nativewebp.Encode(&buf, img, nil); err != nil {
+		t.Fatal(err)
+	}
+	for _, sp := range raidspec.All() {
+		if err := os.WriteFile(filepath.Join(dir, sp.Icon+".webp"), buf.Bytes(), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return dir
 }

@@ -56,9 +56,17 @@ func (r *HTTPREST) CreateAppEmoji(ctx context.Context, name, imageDataURI string
 	return out, nil
 }
 
+// codeUnknownEmoji is Discord's answer for an emoji that no longer exists.
+const codeUnknownEmoji = 10014
+
 // DeleteAppEmoji is DELETE /applications/{id}/emojis/{emoji}; one already gone is success.
 func (r *HTTPREST) DeleteAppEmoji(ctx context.Context, id string) error {
-	return alreadyGone(r.do(ctx, call{method: http.MethodDelete, path: r.emojiPath() + "/" + url.PathEscape(id), botAuth: true}))
+	err := r.do(ctx, call{method: http.MethodDelete, path: r.emojiPath() + "/" + url.PathEscape(id), botAuth: true})
+	var api *APIError
+	if errors.As(err, &api) && api.Code == codeUnknownEmoji {
+		return nil
+	}
+	return err
 }
 
 // The registry's timings: a list read is bounded, and while any spec's emoji is missing the
