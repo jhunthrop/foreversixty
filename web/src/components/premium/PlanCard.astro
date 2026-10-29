@@ -10,7 +10,16 @@ import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
 import { CARD, CARD_SURFACE } from '../../lib/ui/card';
 import PriceBlock from './PriceBlock.astro';
-import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trialParts } from './model';
+import {
+  FOUNDER_STATES,
+  buttonLabel,
+  checkoutHref,
+  featureLines,
+  founderKey,
+  isFirstOfAnchor,
+  planBlock,
+  trialParts,
+} from './model';
 
 interface Props {
   plan: PlanKey | 'free';
@@ -32,7 +41,9 @@ const buttonClass = guild
 const ownedButtonClass = `${SECONDARY_BUTTON_FIXED} plan-button plan-owned border-line-warm-strong text-strong w-full justify-center text-center`;
 const OWNED_SOURCES = Object.entries(premiumSourceCopy.premiumCard);
 const trial = trialParts();
-const cardId = plan === 'free' ? 'free' : undefined;
+// The account panel's Plan row lands on the Premium card (spec 2026-10-29-premium-entry section 8).
+const cardId = plan === 'free' || plan === 'premium' ? plan : undefined;
+const lines = featureLines(block.features);
 ---
 
 <article
@@ -108,8 +119,12 @@ const cardId = plan === 'free' ? 'free' : undefined;
 
   <div class="feature-block">
     <ul class="features">
-      {block.features.map((line) => (
-        <li class="feature">
+      {lines.map((line, index) => (
+        <li
+          class="feature"
+          id={isFirstOfAnchor(lines, index) ? (line.anchor ?? undefined) : undefined}
+          data-anchor={line.anchor ?? undefined}
+        >
           <svg class="tick" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
             <path
               d="M2.5 7.5l3 3 6-7"
@@ -120,7 +135,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
               stroke-linejoin="round"
             />
           </svg>
-          <span>{line}</span>
+          <span>{line.text}</span>
         </li>
       ))}
     </ul>
@@ -256,14 +271,29 @@ const cardId = plan === 'free' ? 'free' : undefined;
     font-size: 14px;
     color: var(--color-text);
   }
+  /* Every line carries the landing highlight's padding and radius at all times, so the
+     highlight changes no box (spec 2026-10-29-premium-entry section 8). The landing margin is a
+     third of the viewport, and never less than the coach line's depth in the card (about 260 px
+     at every width, measured), so the card's name stays in view on a 360 px phone (A15). */
   .feature {
     display: flex;
     gap: 8px;
     align-items: flex-start;
     min-height: 32px;
-    padding-block: 6px;
+    padding: 6px 8px;
     border-top: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
     line-height: 20px;
+    scroll-margin-top: max(33vh, 280px);
+  }
+  /* The landing highlight: the lines whose data-anchor matches the :target, a tint and an inset
+     2 px gold rule (a shadow, not a border, so nothing reflows). No animation, no script. */
+  .features:has(#coach:target) [data-anchor='coach'],
+  .features:has(#server-sims:target) [data-anchor='server-sims'],
+  .features:has(#history:target) [data-anchor='history'],
+  .features:has(#notifications:target) [data-anchor='notifications'] {
+    background: rgba(229, 185, 85, 0.08);
+    box-shadow: inset 2px 0 0 var(--color-gold);
   }
   .tick {
     flex: none;

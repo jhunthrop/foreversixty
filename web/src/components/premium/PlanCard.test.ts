@@ -36,7 +36,9 @@ describe('PlanCard, Premium', () => {
     const doc = await renderCard('premium');
     const items = [...doc.querySelectorAll('ul li')];
     expect(items).toHaveLength(7);
-    expect(items.map((li) => li.textContent?.trim())).toEqual([...plansPageCopy.premium.features]);
+    expect(items.map((li) => li.textContent?.trim())).toEqual(
+      plansPageCopy.premium.features.map((line) => line.text),
+    );
     const scope = doc.querySelector('[data-testid=premium-scope]');
     expect(scope?.textContent?.trim()).toBe(plansPageCopy.premium.scope);
     expect(scope?.querySelector('svg')).toBeNull();

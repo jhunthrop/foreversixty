@@ -2,7 +2,16 @@
 import { describe, expect, it } from 'vitest';
 import { GUILD_TRIAL_DAYS, PLANS, formatPrice, perMonthLine } from '../../lib/billing/plans';
 import { perMemberLine, perRaiderLine, plansPageCopy } from '../../lib/billing/plans-page-copy';
-import { buttonLabel, checkoutHref, costLine, founderKey, planBlock, priceCell, trialParts } from './model';
+import {
+  buttonLabel,
+  checkoutHref,
+  costLine,
+  featureLines,
+  founderKey,
+  planBlock,
+  priceCell,
+  trialParts,
+} from './model';
 
 describe('checkoutHref', () => {
   it('carries the plan and interval and no guild id', () => {
@@ -66,7 +75,7 @@ describe('trialParts', () => {
 describe('planBlock and founderKey', () => {
   it('puts the coach line first in the Premium features', () => {
     expect(planBlock('premium').features).toBe(plansPageCopy.premium.features);
-    expect(planBlock('premium').features[0]).toMatch(/^Coach: /);
+    expect(featureLines(planBlock('premium').features)[0]?.text).toMatch(/^Coach: /);
   });
 
   it('maps each plan to its copy block', () => {

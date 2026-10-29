@@ -47,6 +47,15 @@ function perRaider(interval: Interval, founder: boolean): string {
 
 const TRIAL_CANCEL = `Cancel before day ${GUILD_TRIAL_DAYS + 1} and nothing is charged`;
 
+/** The `/premium` anchors a contextual link lands on (spec 2026-10-29-premium-entry section 8). */
+export type PremiumAnchor = 'coach' | 'server-sims' | 'history' | 'notifications';
+
+export interface PremiumFeature {
+  readonly text: string;
+  /** The first line of an anchor carries its id; every line of it carries `data-anchor`. */
+  readonly anchor: PremiumAnchor | null;
+}
+
 export const plansPageCopy = {
   title: 'Plans',
   description:
@@ -91,15 +100,38 @@ export const plansPageCopy = {
     name: 'Premium',
     audience: 'For one player',
     support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
+    // Each line's `/premium` anchor (spec 2026-10-29-premium-entry section 8): a contextual link
+    // lands on its line, and every line of one anchor is highlighted together.
     features: [
-      'Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.',
-      `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
-      'Close the tab. Server sims keep running, and the site tells you when they finish.',
-      `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
-      'See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.',
-      'A message in your own Discord channel when a server sim finishes or a log is parsed.',
-      "A Supporter mark beside your name on your characters and in your guild's roster.",
-    ] as readonly string[],
+      {
+        text: 'Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.',
+        anchor: 'coach',
+      },
+      {
+        text: `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
+        anchor: 'server-sims',
+      },
+      {
+        text: 'Close the tab. Server sims keep running, and the site tells you when they finish.',
+        anchor: 'server-sims',
+      },
+      {
+        text: `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
+        anchor: 'server-sims',
+      },
+      {
+        text: 'See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.',
+        anchor: 'history',
+      },
+      {
+        text: 'A message in your own Discord channel when a server sim finishes or a log is parsed.',
+        anchor: 'notifications',
+      },
+      {
+        text: "A Supporter mark beside your name on your characters and in your guild's roster.",
+        anchor: null,
+      },
+    ] as readonly PremiumFeature[],
     scope:
       'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
   },

@@ -120,26 +120,26 @@ describe('plansPageCopy guard', () => {
 describe('plansPageCopy Premium against spec B5', () => {
   it('premium.support', () => expect(copy.premium.support).toBe(key('premium.support')[0]));
   it('the coach line is the first Premium benefit', () => {
-    expect(copy.premium.features[0]).toBe(key('premium.features[0]')[0]);
-    expect(copy.premium.features[0]).toMatch(/^Coach: after every logged raid, /);
+    expect(copy.premium.features[0]?.text).toBe(key('premium.features[0]')[0]);
+    expect(copy.premium.features[0]?.text).toMatch(/^Coach: after every logged raid, /);
   });
   it('premium.features[1] from CAPS', () =>
-    expect(copy.premium.features[1]).toBe(
+    expect(copy.premium.features[1]?.text).toBe(
       fill(key('premium.features[1]')[0] ?? '', {
         'CAPS.server': count(CAPS.server),
         'CAPS.browser': count(CAPS.browser),
       }),
     ));
-  it('premium.features[2]', () => expect(copy.premium.features[2]).toBe(key('premium.features[2]')[0]));
+  it('premium.features[2]', () => expect(copy.premium.features[2]?.text).toBe(key('premium.features[2]')[0]));
   it('premium.features[3] from LANE_ITERATION_CEILING', () =>
-    expect(copy.premium.features[3]).toBe(
+    expect(copy.premium.features[3]?.text).toBe(
       fill(key('premium.features[3]')[0] ?? '', {
         'LANE_ITERATION_CEILING.server': count(LANE_ITERATION_CEILING.server),
         'LANE_ITERATION_CEILING.browser': count(LANE_ITERATION_CEILING.browser),
       }),
     ));
   it.each([4, 5, 6])('premium.features[%i]', (i) =>
-    expect(copy.premium.features[i]).toBe(key(`premium.features[${i}]`)[0]),
+    expect(copy.premium.features[i]?.text).toBe(key(`premium.features[${i}]`)[0]),
   );
   it('has exactly seven features', () => expect(copy.premium.features).toHaveLength(7));
   it('premium.scope says the coach covers every spec', () =>
