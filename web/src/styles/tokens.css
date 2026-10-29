@@ -83,7 +83,17 @@
   --color-rarity-rare-text: #3d94f0;
   --color-rarity-epic-text: #b866f5;
 
+  /* Cinzel is the wordmark's face and nothing else's (the seal and the wordmark are the logo,
+     design/logo): Header.astro, Footer.astro and their Seal lockups. Every heading, title and
+     headline figure is --font-heading (polish spec 2026-10-28 section 4.4, direction B Forge);
+     src/styles/heading-face.test.ts fails on any other use of --font-display. */
   --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  /* The heading face: Barlow Condensed 700/800, uppercase, .01em (the heading-* utilities in
+     global.css). Its two size-adjusted fallbacks (fonts.css) are Arial Narrow Bold, then Arial
+     Bold where Narrow is not installed, so the swap moves no line. */
+  --font-heading:
+    'Barlow Condensed', 'Barlow Condensed Fallback', 'Barlow Condensed Fallback Arial', 'Arial Narrow', Arial,
+    sans-serif;
   /* 'Barlow Fallback' (defined in Base.astro) is a size-adjusted Helvetica Neue/Arial that
      matches Barlow's em-box, so the `font-display: swap` in Base.astro doesn't reflow text
      when the real face loads -- see Base.astro for the full explanation and how the
@@ -102,7 +112,54 @@
   --measure-wide: 900px;
   --measure-aside: 1024px;
 
-  --radius-panel: 6px;
-  --radius-control: 4px;
-  --radius-pill: 3px;
+  /* Radii, direction B (polish spec 4.4): cards / buttons, inputs, tiles / tags. */
+  --radius-panel: 12px;
+  --radius-control: 8px;
+  --radius-pill: 6px;
+
+  /* The type scale, direction B (polish spec 4.4). A `-phone` value applies below md (768px);
+     the heading-* and figure-* utilities in global.css pair the two. Body 15/22 is the
+     paragraph default where a surface sets one; the html base stays the browser's 16px so no
+     existing line moves. */
+  --text-hero: 52px;
+  --text-hero-phone: 40px;
+  --text-h1: 44px;
+  --text-h1-phone: 34px;
+  --text-h2: 26px;
+  --text-card-title: 18px;
+  --text-plan-name: 24px;
+  --text-price: 52px;
+  --text-price-phone: 44px;
+  --text-stat: 28px;
+  --text-body: 15px;
+  --text-body--line-height: 22px;
+  --text-meta: 13px;
+  --text-micro: 11px;
+  /* The heading face's one tracking, and the button label's (uppercase 13px 700 .07em). */
+  --tracking-heading: 0.01em;
+  --tracking-button: 0.07em;
+
+  /* Surfaces, direction B (polish spec 4.2). The card is a warm gradient over near-black with
+     a gold-tinted border, a 1px inset top highlight on primary cards, and a deep shadow;
+     `surface-card` and `surface-band` in global.css paint them. The spec's own names
+     (--surface-card, --card-highlight, --glow-gold, --row-hover, --tile, --tile-ink) are the
+     values; the Tailwind-namespaced twins below (border-line-card, bg-tile, text-tile-ink,
+     bg-row-hover, shadow-card, shadow-glow-gold) read them, so there is one value each. */
+  --surface-card: linear-gradient(180deg, rgba(229, 185, 85, 0.075), rgba(229, 185, 85, 0.012) 45%), #0d0f15;
+  /* The band: an ember radial glow over a warm near-black, the sky the home hero sits in. */
+  --surface-band:
+    radial-gradient(1100px 380px at 72% -10%, rgba(214, 110, 40, 0.28), transparent 70%),
+    linear-gradient(180deg, #14100b, #07090d);
+  --card-highlight: rgba(245, 210, 122, 0.45);
+  --glow-gold: 0 0 26px rgba(229, 185, 85, 0.32);
+  --row-hover: rgba(229, 185, 85, 0.06);
+  --tile: rgba(229, 185, 85, 0.12);
+  --tile-ink: #f5d27a;
+  --color-line-card: rgba(229, 185, 85, 0.17);
+  --color-card-highlight: var(--card-highlight);
+  --color-row-hover: var(--row-hover);
+  --color-tile: var(--tile);
+  --color-tile-ink: var(--tile-ink);
+  --shadow-card: 0 16px 38px rgba(0, 0, 0, 0.55);
+  --shadow-glow-gold: var(--glow-gold);
 }

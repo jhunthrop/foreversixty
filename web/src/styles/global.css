@@ -36,7 +36,7 @@
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-heading);
     color: var(--color-strong);
   }
   :focus-visible {
@@ -83,13 +83,135 @@ label:has(input[type='checkbox']:disabled) {
   font-weight: 700;
 }
 
-@utility section-title {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+/* The heading face (polish spec 2026-10-28 section 4.4, direction B Forge): Barlow Condensed
+   800, uppercase, .01em, at the B scale in tokens.css. Each utility is a whole recipe, never
+   stacked on another, so two font-sizes never compete for one element:
+   - heading-hero: the home hero, 40px phone / 52px from md;
+   - heading-page: a page's h1, 34 / 44;
+   - heading-section: a page-level section heading, 26;
+   - section-title: a card or block title, 18 (the card title); its line-height is inherited,
+     as it always was, so a block's reserved heights (skeletons, layout reserves) hold;
+   - heading-plan: a plan name, 24;
+   - heading-name: a name or label set in the heading face inline at its own size, 700, the
+     case its copy has (talent, roster, spec and class names; the size comes from the call
+     site's text-[*] class).
+   Headline figures take figure-stat (28) and figure-price (44 / 52), the same face at 800 with
+   tabular numerals; tables stay in --font-mono. */
+@utility heading-face {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
+}
+
+@utility heading-hero {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  font-size: var(--text-hero-phone);
+  line-height: 1;
+  @media (min-width: 768px) {
+    font-size: var(--text-hero);
+  }
+}
+
+@utility heading-page {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  font-size: var(--text-h1-phone);
+  line-height: 1;
   color: var(--color-strong);
+  @media (min-width: 768px) {
+    font-size: var(--text-h1);
+  }
+}
+
+@utility heading-section {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  font-size: var(--text-h2);
+  line-height: 1.1;
+  color: var(--color-strong);
+}
+
+@utility section-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  font-size: var(--text-card-title);
+  color: var(--color-strong);
+}
+
+@utility heading-plan {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  font-size: var(--text-plan-name);
+  line-height: 1;
+  color: var(--color-strong);
+}
+
+@utility heading-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: var(--tracking-heading);
+}
+
+@utility figure-stat {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: var(--text-stat);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility figure-price {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: var(--text-price-phone);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  @media (min-width: 768px) {
+    font-size: var(--text-price);
+  }
+}
+
+/* The button label, direction B: uppercase 13px 700 .07em in the body face. */
+@utility button-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+}
+
+/* The card surface (polish spec 4.2): gradient, gold-tinted border, panel radius, the inset
+   top highlight and the deep shadow. card-surface-quiet drops the highlight. */
+@utility card-surface {
+  background: var(--surface-card);
+  border: 1px solid var(--color-line-card);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 1px 0 var(--card-highlight),
+    var(--shadow-card);
+}
+
+@utility card-surface-quiet {
+  background: var(--surface-card);
+  border: 1px solid var(--color-line-card);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+}
+
+/* The band's ember sky (polish spec 4.4, direction B). */
+@utility surface-band {
+  background: var(--surface-band);
 }
 
 @utility tabular {

@@ -77,22 +77,43 @@ Rare and epic are too dark to read as small text on `--color-raised` `#0d111a`: 
 
 ## Typography
 
-| Role    | Face               | Fallback                          | Notes                                                                                                                                                                                                                                                                                        |
-| ------- | ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Display | Cinzel 600–800     | Trajan Pro, Georgia, serif        | Wordmark 20px, section titles 18px uppercase with 0.10em tracking, card titles 15–17px, stat figures 22px. Never above 22px on content pages. The home hero is the one exception: its h1 ("Play your class better." signed out, the character's name in class colour signed in) is 34px 700. |
-| Body    | Barlow 400–700     | Helvetica Neue, Arial, sans-serif | 14–15px body, 13px secondary, 17px search placeholder                                                                                                                                                                                                                                        |
-| Numbers | JetBrains Mono 500 | SF Mono, Menlo, monospace         | Dates, timers, counts, keyboard hints; `font-variant-numeric: tabular-nums`                                                                                                                                                                                                                  |
-| Labels  | Barlow 700         |                                   | 11px, uppercase, 0.14em tracking, muted or gold                                                                                                                                                                                                                                              |
+Direction B · Forge (polish spec `design/specs/2026-10-28-polish.md` §4.4, picked by the owner 2026-10-28). Tokens: `--font-heading`, `--font-body`, `--font-mono`, `--font-display` and the `--text-*` scale in `web/src/styles/tokens.css`; recipes: the `heading-*`, `section-title`, `figure-*` and `button-label` utilities in `web/src/styles/global.css`.
 
-Self-host all three faces (Google Fonts license permits it) so no third-party request happens on page load.
+| Role     | Face                                      | Fallback                                                                                 | Notes                                                                                                                                                                        |
+| -------- | ----------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Heading  | Barlow Condensed 700/800                  | `Barlow Condensed Fallback` (Arial Narrow Bold, size-adjusted), then the Arial Bold twin | Uppercase, `.01em`. 800 for every heading and headline figure (the preloaded weight); 700 for names set inline in the face (talent, roster, spec and class names).           |
+| Wordmark | Cinzel 700                                | Trajan Pro, Georgia, serif                                                               | The wordmark only (header, footer and their seal lockups; the logo). Never a heading. `heading-face.test.ts` fails on any other use.                                         |
+| Body     | Barlow 400–700                            | `Barlow Fallback` (Helvetica Neue, size-adjusted), Arial, sans-serif                     | 15/22 body, 13px meta, 17px search placeholder                                                                                                                               |
+| Numbers  | Barlow Condensed 800 / JetBrains Mono 500 | as above / SF Mono, Menlo, monospace                                                     | Headline figures (prices, stat tiles, countdowns) in the heading face; tables, dates, timers, counts and keyboard hints stay mono with `font-variant-numeric: tabular-nums`. |
+| Labels   | Barlow 700                                |                                                                                          | 11px micro, uppercase, 0.14em tracking, muted or gold                                                                                                                        |
+| Buttons  | Barlow 700                                |                                                                                          | Uppercase 13px `.07em` (`button-label`)                                                                                                                                      |
+
+The scale (desktop / phone, phone below 768px):
+
+| Step       | Size    | Recipe            | Use                          |
+| ---------- | ------- | ----------------- | ---------------------------- |
+| Hero       | 52 / 40 | `heading-hero`    | The home hero h1             |
+| Page h1    | 44 / 34 | `heading-page`    | Every page's h1              |
+| h2         | 26      | `heading-section` | A page-level section heading |
+| Card title | 18      | `section-title`   | A card's or block's title    |
+| Plan name  | 24      | `heading-plan`    | A plan's name                |
+| Price      | 52 / 44 | `figure-price`    | A plan's headline price      |
+| Stat       | 28      | `figure-stat`     | A `StatTile` figure          |
+| Body       | 15 / 22 | `text-body`       | Paragraphs                   |
+| Meta       | 13      | `text-meta`       | Secondary lines              |
+| Micro      | 11      | `label`           | Micro-labels                 |
+
+Self-host every face (the licences permit it) so no third-party request happens on page load: latin subsets in `web/src/assets/fonts` (`web/fonts/README.md`), `font-display: swap` over the size-adjusted fallbacks so the swap moves no line. Base.astro preloads Barlow Condensed 800 and Barlow 400/600; the home hero's capitals are inlined as `Barlow Condensed Hero` (`scripts/hero-font.py`).
 
 ## Spacing and shape
 
 - Page gutter 48px desktop, 18px phone. Content max width 1344px.
 - Section gap 32px desktop, 22px phone. Inside panels 16–20px.
 - Grid gaps 12–16px. Row dividers 1px `--border-soft`.
-- Radii: panels and cards 6px, buttons and inputs 4px, pills 3px, avatars 999px.
-- Cards carry a 1px top inner highlight `rgba(229,185,85,.35)` and a 1px `--border`.
+- Radii (`--radius-panel` / `--radius-control` / `--radius-pill`): panels and cards 12px, buttons, inputs and tiles 8px, tags 6px, avatars 999px.
+- Cards (`card-surface`): `--surface-card` (a warm gold gradient over `#0d0f15`), 1px `--color-line-card` (`rgba(229,185,85,.17)`), a 1px inset top highlight `--card-highlight` (`rgba(245,210,122,.45)`, primary cards only; `card-surface-quiet` drops it) and `--shadow-card` (`0 16px 38px rgba(0,0,0,.55)`).
+- Gold glow `--glow-gold` (`0 0 26px rgba(229,185,85,.32)`) on the filled primary, a switch that is on and the open account control. Hovered rows `--row-hover` (`rgba(229,185,85,.06)`). Icon tiles `--tile` / `--tile-ink` (`rgba(229,185,85,.12)` / `#f5d27a`).
+- Bands (`surface-band`): `--surface-band`, an ember radial glow over `#14100b` fading to `--bg`.
 - Hit targets: 44px minimum on phone; buttons 36–48px tall.
 
 ## Components in the mockup
