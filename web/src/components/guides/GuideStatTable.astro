@@ -11,8 +11,7 @@
 // (per 1% for haste, which has no rating in this client). A stat the sweep cannot tell from zero
 // reads "Not significant" here and in the hero.
 import { band60Weights } from '../../lib/guides/class-dps';
-import { expertiseCapLine } from '../../lib/bis/expertise-cap';
-import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
+import { guideExpertiseCapLine, guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { guidesCopy } from '../../lib/guides/copy';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideTableBox from './GuideTableBox.astro';
@@ -37,7 +36,7 @@ const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
 const anchor = rows.find((row) => row.value !== undefined && !row.perPercent)?.label;
 const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
-const expertiseCap = expertiseCapLine(band60?.expertiseToCap);
+const expertiseCap = guideExpertiseCapLine(band60?.expertiseToCap);
 const unitRow = rows.find(
   (row) => row.value !== undefined && !row.perPercent && row.dpsPerPoint !== undefined,
 );

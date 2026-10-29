@@ -76,8 +76,9 @@ interface Props {
    *  default `"{specName} {className}"` (a guide/BiS page always names a specific spec; a
    *  class landing names none). Ignored unless `minimal` is also true. */
   titleOverride?: string;
-  /** A guide's one fact line under the summary ("DPS · Updated 22 Oct · built on client ..."),
-   *  with the spec's own icon before it. Shown in `minimal` mode only. */
+  /** A guide's one fact line under the summary ("DPS · Updated 22 Oct"), with the spec's own
+   *  icon before it and the optional `metaTag` slot (a `Tag`) after it. Shown in `minimal`
+   *  mode only. */
   metaLine?: string;
   metaIcon?: string;
   /** False for the second of the BiS page's two faction-toggled copies: the served HTML has one
@@ -167,6 +168,7 @@ const bandTextVariants = bands.map((band) => ({
             />
           )}
           <span>{metaLine}</span>
+          <slot name="metaTag" />
         </p>
       )}
     </div>

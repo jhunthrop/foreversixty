@@ -22,6 +22,7 @@
 // at the top says once what is simulated, so the sections do not hedge.
 import { getCollection } from 'astro:content';
 import ArtPanel from '../../../components/ArtPanel.astro';
+import Tag from '../../../components/ui/Tag.svelte';
 import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
 import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
 import GuideBisTable from '../../../components/guides/GuideBisTable.astro';
@@ -272,7 +273,11 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
         summaryOverride={overview.summary !== '' ? overview.summary : entry.data.description}
         metaLine={metaLine}
         metaIcon={specIcon}
-      />
+      >
+        <Tag slot="metaTag" tone="muted">
+          {guidesCopy.betaTag}
+        </Tag>
+      </ClassHeader>
       {buildCode !== undefined && (
         <div class="guide-rail-wrap">
           <GuideActionRail
@@ -289,8 +294,8 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   </Fragment>
   <SpecTableOfContents />
   <SpecTableOfContents slot="aside" placement="rail" />
-  <GuideStatusNote />
   <Fragment set:html={overviewHeadingHtml} />
+  <GuideStatusNote />
   {hasOverviewBlocks ? (
     <GuideOverview strengthsHtml={strengthsHtml} weaknessesHtml={weaknessesHtml} raidHtml={raidHtml} />
   ) : (

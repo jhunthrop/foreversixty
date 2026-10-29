@@ -140,7 +140,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-stat-table"');
     expect(html).toMatch(
-      /data-testid="guide-stat-table-hit-cap"[^>]*>Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
+      /data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
     );
     expect(html).toContain('DPS per point');
     // The unit line names the top per-point stat at 60, and the nightly sim decides which one

@@ -1,11 +1,11 @@
 // web/src/lib/guides/hit-cap-line.ts
-// The Stat priority block's headline, worded the way a guide gives it: "Hit to cap: 16% ·
+// The Stat priority block's headline, worded the way a guide gives it: "Hit cap: 16% ·
 // 3% from Elemental Precision, 13% from gear". The numbers are the same ones the BiS page's rail
 // prints (`hitCapLine`), so the two pages cannot disagree; only the sentence differs. The talent
 // that supplies the school hit is named from the build, never typed per guide.
 import { bisCopy } from '../bis/copy';
 import { formatCapPercent } from '../bis/hit-cap';
-import type { BisHitToCap } from '../bis/types';
+import type { BisExpertiseToCap, BisHitToCap } from '../bis/types';
 import type { DecodedTreeView } from './build-tree';
 import { guidesCopy } from './copy';
 
@@ -59,5 +59,17 @@ export function guideHitCapLine(
         ? guidesCopy.hitToCap(specials)
         : guidesCopy.hitToCapWhite(specials, formatCapPercent(hitToCap.white)),
     title: bisCopy.hitToCapTitle,
+  };
+}
+
+/** The guide's expertise line ("Expertise cap: 6.5% (dodge)"); the BiS rail keeps its own wording. */
+export function guideExpertiseCapLine(
+  expertiseToCap: BisExpertiseToCap | null | undefined,
+): GuideHitCapLine | undefined {
+  if (expertiseToCap === null || expertiseToCap === undefined) return undefined;
+  const parry = expertiseToCap.parry === undefined ? undefined : formatCapPercent(expertiseToCap.parry);
+  return {
+    text: guidesCopy.expertiseCap(formatCapPercent(expertiseToCap.dodge), parry),
+    title: bisCopy.expertiseToCapTitle,
   };
 }

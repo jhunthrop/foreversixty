@@ -43,6 +43,8 @@ export const guidesCopy = {
   statusNote:
     "The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.",
   statusNoteLabel: 'About this guide',
+  /** The muted tag beside `Updated` in the header: the guide is simulated, the beta is not over. */
+  betaTag: 'Beta',
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
     `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated}`,
   strengths: 'Strengths',
@@ -76,16 +78,19 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit to cap: 16% · 3% from Elemental Precision, 13% from gear". */
+  /** The Stat priority headline: "Hit cap: 16% · 3% from Elemental Precision, 13% from gear". */
   hitToCap: (
     percent: string,
     split?: { talentPercent: string; talent: string; gearPercent: string },
   ): string =>
     split === undefined
-      ? `Hit to cap: ${percent}%`
-      : `Hit to cap: ${percent}% · ${split.talentPercent}% from ${split.talent}, ${split.gearPercent}% from gear`,
+      ? `Hit cap: ${percent}%`
+      : `Hit cap: ${percent}% · ${split.talentPercent}% from ${split.talent}, ${split.gearPercent}% from gear`,
   hitToCapWhite: (percent: string, white: string): string =>
-    `Hit to cap: ${percent}% · ${white}% for white swings`,
+    `Hit cap: ${percent}% (special attacks), ${white}% (white swings)`,
+  /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a tank. */
+  expertiseCap: (dodge: string, parry: string | undefined): string =>
+    `Expertise cap: ${dodge}% (dodge)${parry === undefined ? '' : `, ${parry}% (parry)`}`,
   notSignificantNote: (labels: string, plural: boolean): string =>
     `${labels} shows as "Not significant": the simulator cannot tell ${plural ? 'them' : 'it'} from zero.`,
   weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,

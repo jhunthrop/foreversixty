@@ -7,7 +7,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
 import { bandEntry, loadBisFile } from '../../lib/bis/load';
-import { expertiseCapLine } from '../../lib/bis/expertise-cap';
+import { guideExpertiseCapLine } from '../../lib/guides/hit-cap-line';
 import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideStatTable from './GuideStatTable.astro';
@@ -102,7 +102,7 @@ describe('GuideStatTable', () => {
   it('prints the expertise-to-cap line exactly when the band publishes the key', async () => {
     const file = loadBisFile('warrior-fury', BUILD);
     if (file === null) throw new Error('warrior-fury BiS file missing');
-    const expected = expertiseCapLine(bandEntry(file, 60, 'alliance')?.expertise_to_cap);
+    const expected = guideExpertiseCapLine(bandEntry(file, 60, 'alliance')?.expertise_to_cap);
 
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {

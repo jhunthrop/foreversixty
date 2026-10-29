@@ -1,7 +1,7 @@
 // web/src/lib/guides/hit-cap-line.test.ts
 import { describe, expect, it } from 'vitest';
 import type { DecodedTalentView, DecodedTreeView } from './build-tree';
-import { guideHitCapLine, schoolHitTalent } from './hit-cap-line';
+import { guideExpertiseCapLine, guideHitCapLine, schoolHitTalent } from './hit-cap-line';
 
 function tree(...talents: [string, number][]): DecodedTreeView {
   const views = talents.map(
@@ -24,12 +24,12 @@ function tree(...talents: [string, number][]): DecodedTreeView {
 }
 
 describe('guideHitCapLine', () => {
-  it('splits a caster’s cap into talent and gear: "Hit to cap: 16% · 3% from Elemental Precision, 13% from gear"', () => {
+  it('splits a caster’s cap into talent and gear: "Hit cap: 16% · 3% from Elemental Precision, 13% from gear"', () => {
     const line = guideHitCapLine(
       { kind: 'spell', baseline: 0, spell: 16, school: { names: ['Frost'], hit: 3, to_cap: 13 } },
       'Elemental Precision',
     );
-    expect(line?.text).toBe('Hit to cap: 16% · 3% from Elemental Precision, 13% from gear');
+    expect(line?.text).toBe('Hit cap: 16% · 3% from Elemental Precision, 13% from gear');
   });
 
   it('says "talents" when the build names no school-hit talent', () => {
@@ -39,18 +39,18 @@ describe('guideHitCapLine', () => {
       spell: 16,
       school: { names: ['Frost'], hit: 3, to_cap: 13 },
     });
-    expect(line?.text).toBe('Hit to cap: 16% · 3% from talents, 13% from gear');
+    expect(line?.text).toBe('Hit cap: 16% · 3% from talents, 13% from gear');
   });
 
   it('leaves the split off when no talent adds hit', () => {
-    expect(guideHitCapLine({ kind: 'spell', baseline: 0, spell: 16 })?.text).toBe('Hit to cap: 16%');
+    expect(guideHitCapLine({ kind: 'spell', baseline: 0, spell: 16 })?.text).toBe('Hit cap: 16%');
   });
 
   it('words a melee cap, with the white-swing distance for a dual wielder', () => {
     expect(guideHitCapLine({ baseline: 0, specials: 9, white: 28 })?.text).toBe(
-      'Hit to cap: 9% · 28% for white swings',
+      'Hit cap: 9% (special attacks), 28% (white swings)',
     );
-    expect(guideHitCapLine({ baseline: 0, specials: 6.5 })?.text).toBe('Hit to cap: 6.5%');
+    expect(guideHitCapLine({ baseline: 0, specials: 6.5 })?.text).toBe('Hit cap: 6.5%');
   });
 
   it('is undefined when the band publishes no cap', () => {
@@ -67,5 +67,15 @@ describe('schoolHitTalent', () => {
   it('ignores one with no points and returns undefined when there is none', () => {
     expect(schoolHitTalent([tree(['Elemental Precision', 0])])).toBeUndefined();
     expect(schoolHitTalent([])).toBeUndefined();
+  });
+});
+
+describe('guideExpertiseCapLine', () => {
+  it('words the dodge cap, with parry for a tank', () => {
+    expect(guideExpertiseCapLine({ dodge: 6.5 })?.text).toBe('Expertise cap: 6.5% (dodge)');
+    expect(guideExpertiseCapLine({ dodge: 5.5, parry: 14 })?.text).toBe(
+      'Expertise cap: 5.5% (dodge), 14% (parry)',
+    );
+    expect(guideExpertiseCapLine(null)).toBeUndefined();
   });
 });
