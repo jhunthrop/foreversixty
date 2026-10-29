@@ -62,16 +62,22 @@ func TestDiscordEmojiUploadsOnlyTheMissingAndPrintsNoToken(t *testing.T) {
 	if err := runDiscordEmoji(context.Background(), []string{"--icons", icons}, emojiEnv, factory, &out); err != nil {
 		t.Fatal(err)
 	}
-	if len(stub.created) != 27 || gotApp != "app1" || gotToken != emojiCmdToken {
+	// 27 spec marks (one is held already) and the six quality dots.
+	if len(stub.created) != 33 || gotApp != "app1" || gotToken != emojiCmdToken {
 		t.Fatalf("created %d app %q", len(stub.created), gotApp)
 	}
 	if err := runDiscordEmoji(context.Background(), []string{"--icons", icons}, emojiEnv, factory, &out); err != nil {
 		t.Fatal(err)
 	}
-	if len(stub.created) != 27 {
-		t.Fatalf("a second run uploaded %d", len(stub.created)-27)
+	if len(stub.created) != 33 {
+		t.Fatalf("a second run uploaded %d", len(stub.created)-33)
 	}
-	if strings.Contains(out.String(), emojiCmdToken) || !strings.Contains(out.String(), "0 uploaded, 28 kept") {
+	for _, name := range []string{"fs_q_poor", "fs_q_common", "fs_q_uncommon", "fs_q_rare", "fs_q_epic", "fs_q_legendary"} {
+		if stub.held[name] == "" {
+			t.Errorf("%s was not uploaded", name)
+		}
+	}
+	if strings.Contains(out.String(), emojiCmdToken) || !strings.Contains(out.String(), "0 uploaded, 34 kept") {
 		t.Fatalf("output:\n%s", out.String())
 	}
 }

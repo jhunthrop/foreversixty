@@ -1,7 +1,9 @@
 // api/cmd/api/discord_emoji.go
 //
 // discord-emoji uploads the raid roster's spec marks (spec 2026-10-28 §P.9.1) as application
-// emoji: one 128 px PNG per specs.json row, drawn from the active build's icon folder. It uploads
+// emoji: one 128 px PNG per specs.json row, drawn from the active build's icon folder; and the
+// six item-quality dots the gear panel leads each name with (spec 2026-10-29 §A.4.1,
+// fs_q_poor to fs_q_legendary), drawn in Go in the site's quality colours. It uploads
 // only the names the application lacks, so it is safe to re-run; --replace deletes and uploads
 // them all again after an icon changes. It prints names and counts, never the token. Run it from
 // a checkout (the icons are generated web data, not in the image), once per application.
@@ -19,6 +21,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -66,10 +69,26 @@ func runDiscordEmoji(ctx context.Context, args []string, getenv func(string) str
 		dir = filepath.Join(defaultDataRoot, build, "icons")
 	}
 	fmt.Fprintf(out, "icons from %s\n", dir)
-	images, err := discordbot.EmojiImages(dir)
+	images, err := emojiImages(dir)
 	if err != nil {
 		return err
 	}
 	_, err = discordbot.SyncEmoji(ctx, newAPI(appID, token), images, *replace, out)
 	return err
+}
+
+// emojiImages is every emoji the application holds: the spec marks, then the quality dots.
+func emojiImages(iconsDir string) ([]discordbot.EmojiImage, error) {
+	images, err := discordbot.EmojiImages(iconsDir)
+	if err != nil {
+		return nil, err
+	}
+	dots, err := sheet.QualityDots()
+	if err != nil {
+		return nil, err
+	}
+	for _, d := range dots {
+		images = append(images, discordbot.EmojiImage{Name: d.Name, PNG: d.PNG})
+	}
+	return images, nil
 }
