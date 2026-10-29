@@ -1,7 +1,10 @@
 <!-- web/src/components/ui/CardHead.svelte -->
 <!-- The card head (polish spec 4.2 CARD_HEAD): an IconTile 36, a micro label over a heading-face
      title, and an optional right slot (a Tag or a 13 px meta). The title is the card's heading
-     (`h2`), so the page keeps its outline; `titleTestid` and `labelTestid` keep today's hooks. -->
+     (`h2`), so the page keeps its outline; `titleTestid` and `labelTestid` keep today's hooks.
+     Under a micro label the title is the card's value (Plan: "Premium") and keeps its copy's
+     case; alone it is the card's title ("Devices") and reads uppercase, as every section title
+     does (polish spec 4.5 rule 2). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GlyphName } from '../../lib/ui/glyphs';
@@ -36,7 +39,7 @@
       <span class="text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase">{label}</span>
     {/if}
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-      <h2 class="heading-plan">{title}</h2>
+      <h2 class={label === undefined ? 'heading-plan uppercase' : 'heading-plan'}>{title}</h2>
       {@render titleSnippet?.()}
     </div>
   </div>
