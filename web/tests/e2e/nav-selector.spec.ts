@@ -18,7 +18,7 @@ import {
 
 const GROUPS = ['Tools', 'Logs', 'Guild', 'Guides'];
 /** The bar's doors: the four groups, then Get set up as a plain fifth door. */
-const DOORS = [...GROUPS, 'Get set up'];
+const DOORS = [...GROUPS, 'Get set up', 'Premium'];
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
 const FROSTBYTE: FixtureCharacter = {

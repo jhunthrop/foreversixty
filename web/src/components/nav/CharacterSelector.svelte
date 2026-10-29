@@ -15,6 +15,7 @@
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { OPEN_SELECTOR_EVENT } from '../../lib/character-selector/config';
   import { publishSessionGuild } from '../../lib/character-selector/session-guild-dom';
+  import { applySessionPremium } from '../../lib/premium-nav';
   import {
     closedAriaLabel,
     closedFaceLine,
@@ -93,6 +94,13 @@
   $effect(() => {
     if (selector.loadStatus !== 'ready') return;
     publishSessionGuild(selector.sessionGuild);
+  });
+
+  // The header's Premium tag (spec 2026-10-29-premium-entry section 4): a Premium account whose
+  // tag the pre-paint hint did not hide holds its box (visibility), so nothing shifts.
+  $effect(() => {
+    if (selector.loadStatus !== 'ready') return;
+    applySessionPremium(selector.accountPanel?.source ?? null);
   });
 
   function openSelector(): void {

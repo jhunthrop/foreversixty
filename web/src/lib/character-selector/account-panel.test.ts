@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { FOUNDER_PREMIUM_FACTS, ME_SEAT, mockEntitlements } from '../../test-support/billing-fixtures';
 import type { BillingView, Me, MeCharacter } from '../account/api';
+import type { PremiumSource } from '../billing/contract';
 import { accountPanelOf } from './account-panel';
+import { selectorCopy } from './copy';
 
 const NOW = Date.parse('2026-11-12T12:00:00Z');
 const OWN: BillingView = {
@@ -48,13 +50,31 @@ describe('accountPanelOf', () => {
     expect(accountPanelOf(meWith({}), null, NOW).head.premium).toBe(false);
   });
 
-  it('a free account: Plan reads Free and goes to /premium', () => {
+  it('a free account: Plan reads Free with See plans and goes to the Premium card', () => {
     expect(accountPanelOf(meWith({}), null, NOW).plan).toEqual({
       sub: 'Free',
       sub2: null,
-      href: '/premium',
+      href: '/premium#premium',
       founder: false,
+      seePlans: true,
     });
+    expect(selectorCopy.account.seePlans).toBe('See plans');
+  });
+
+  // Spec 2026-10-29-premium-entry section 6: See plans for `none` only, across all six sources.
+  const BY_SOURCE: [PremiumSource, Me][] = [
+    ['own', meWith({}, OWN)],
+    ['own_then_seat', meWith({}, OWN, { seat: ME_SEAT })],
+    ['grant', meWith({}, { ...OWN, source: 'grant', amount_cents: null, interval: null })],
+    ['seat', meWith({}, null, { seat: ME_SEAT })],
+    ['fallback', { ...meWith({}), entitlements: mockEntitlements({ server_sims: true }) }],
+    ['none', meWith({})],
+  ];
+  it.each(BY_SOURCE)('%s: See plans only when free, and the panel names the source', (source, me) => {
+    const panel = accountPanelOf(me, null, NOW);
+    expect(panel.source).toBe(source);
+    expect(panel.plan.seePlans).toBe(source === 'none');
+    expect(panel.plan.href).toBe(source === 'none' ? '/premium#premium' : '/account#plan');
   });
 
   it('an own plan reads its price over its renewal date and goes to /account#plan', () => {

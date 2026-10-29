@@ -140,6 +140,10 @@ export const GUILD_OVERVIEW_TAB = 'overview';
  *  setup stays on the primary bar); also the guild claim flow's link. */
 export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
+/** The bar's gold Premium tag after Get set up: a link with no panel and no chevron, hidden for
+ *  an account with Premium from any source (spec 2026-10-29-premium-entry sections 3 and 4). */
+export const PREMIUM_NAV_ITEM: NavItem = { label: 'Premium', href: '/premium' };
+
 /**
  * True for the item's own page and any sub-path of it (`/sim` matches `/sim/gear`), so a
  * tool's own sub-pages (the sim tab strip, a saved permalink) still mark the top-level nav

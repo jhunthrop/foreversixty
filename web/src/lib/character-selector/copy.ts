@@ -2,6 +2,7 @@
 // Every visible and spoken string of the nav character selector, verbatim from section 6 of
 // design/specs/2026-10-09-nav-character-selector.md. One module so a wording change is one edit.
 import { accountPlanCopy } from '../billing/account-plan-copy';
+import { PREMIUM_LINKS } from '../billing/premium-links';
 
 export const selectorCopy = {
   listHeading: 'Your characters',
@@ -81,7 +82,9 @@ export const selectorCopy = {
     renews: 'Renews',
     ends: 'Ends',
     planHref: '/account#plan',
-    freePlanHref: '/premium',
+    freePlanHref: PREMIUM_LINKS.card,
+    /** The free Plan row's one action, gold before its chevron (spec 2026-10-29-premium-entry 6). */
+    seePlans: 'See plans',
     founderTag: accountPlanCopy.founder.pill,
     signOut: 'Sign out',
     signingOut: 'Signing out…',

@@ -82,7 +82,7 @@ test.describe('the account panel, signed in', () => {
     await control(page).click();
     await expect(panel(page).getByTestId('selector-premium-tag')).toHaveCount(0);
     await expect(rows(page).getByTestId('selector-row-plan')).toContainText('Free');
-    await expect(rows(page).getByTestId('selector-row-plan')).toHaveAttribute('href', '/premium');
+    await expect(rows(page).getByTestId('selector-row-plan')).toHaveAttribute('href', '/premium#premium');
   });
 
   test('closes on Escape with focus back on the control, and on a second click', async ({ page }) => {

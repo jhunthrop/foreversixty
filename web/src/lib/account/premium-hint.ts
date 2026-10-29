@@ -8,7 +8,7 @@ export const PREMIUM_SOURCE_KEY = 'fs.premiumSource';
 export const ME_GUILD_COUNT_KEY = 'fs.meGuildCount';
 export type StoredPremiumSource = 'own' | 'seat' | 'grant';
 
-/** The three words the session stores; `/premium`'s head script accepts only these. */
+/** The three words the session stores; Base.astro's head script accepts only these. */
 export const STORED_SOURCES: readonly string[] = ['own', 'seat', 'grant'];
 /** Spec §5.7: the skeleton always draws at least one card. */
 export const MIN_GUILD_COUNT = 1;

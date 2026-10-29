@@ -26,7 +26,7 @@ describe('the plans page band', () => {
 describe('the plans page promises nothing unshipped (§B8.9)', () => {
   it('renders no chip-in and no trial email, and renders the coach line', async () => {
     const text = (await renderPremium()).body.textContent ?? '';
-    expect(text).toContain(plansPageCopy.premium.features[0]);
+    expect(text).toContain(plansPageCopy.premium.features[0]?.text ?? 'missing');
     expect(text).not.toMatch(/chip in/i);
     expect(text).not.toMatch(/email you/i);
   });
@@ -187,15 +187,29 @@ describe('the Premium card when the account has Premium', () => {
     expect(source).toMatch(/\.audience,\s*\.audience-cell\s*\{\s*margin-bottom: 8px;/);
   });
 
-  describe('the head script', () => {
-    const run = async (storageOf: () => Storage): Promise<string | undefined> => {
+  describe('the head script (Base.astro owns it; spec 2026-10-29-premium-entry section 4)', () => {
+    const runOn = async (storageOf: () => Storage, html = '<html>'): Promise<DOMStringMap> => {
       const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
-      const doc = new JSDOM('<!doctype html><html></html>').window.document;
+      const doc = new JSDOM(`<!doctype html>${html}</html>`).window.document;
       // The script reads the `localStorage` and `document` globals: hand it fakes of both.
       const lazyStorage = { getItem: (key: string) => storageOf().getItem(key) };
       new Function('localStorage', 'document', text)(lazyStorage, doc);
-      return doc.documentElement.dataset.premium;
+      return doc.documentElement.dataset;
     };
+    const run = async (storageOf: () => Storage): Promise<string | undefined> =>
+      (await runOn(storageOf)).premium;
+
+    it.each(SOURCES)('%s hides the header Premium tag before paint', async (word) => {
+      expect((await runOn(storing(word))).premiumNav).toBe('hide');
+    });
+
+    it('server sims from the cached /v1/me (the fallback) hide the tag too', async () => {
+      expect((await runOn(storing(null), '<html data-server-sims="1">')).premiumNav).toBe('hide');
+    });
+
+    it('no hint and no server sims: the tag shows', async () => {
+      expect((await runOn(storing(null))).premiumNav).toBeUndefined();
+    });
     const storing = (value: string | null) => (): Storage => ({ getItem: () => value }) as unknown as Storage;
 
     it.each(SOURCES)('%s sets the attribute', async (word) => {
@@ -212,5 +226,48 @@ describe('the Premium card when the account has Premium', () => {
       };
       expect(await run(throwing)).toBeUndefined();
     });
+  });
+});
+
+describe('the /premium anchors (spec 2026-10-29-premium-entry section 8)', () => {
+  it('every anchor a link lands on exists once', async () => {
+    const doc = await renderPremium();
+    for (const id of ['premium', 'coach', 'server-sims', 'history', 'notifications', 'guild-leaders']) {
+      expect(doc.querySelectorAll(`[id="${id}"]`)).toHaveLength(1);
+    }
+    expect(doc.getElementById('premium')?.getAttribute('data-plan')).toBe('premium');
+  });
+
+  it('each anchor is a Premium feature line, and server-sims marks lines 2 to 4', async () => {
+    const card = (await renderPremium()).querySelector('[data-region=a] [data-plan=premium]')!;
+    const lines = [...card.querySelectorAll('li.feature')];
+    expect(lines.map((li) => li.getAttribute('data-anchor'))).toEqual([
+      'coach',
+      'server-sims',
+      'server-sims',
+      'server-sims',
+      'history',
+      'notifications',
+      null,
+    ]);
+    expect(lines.map((li) => li.id)).toEqual([
+      'coach',
+      'server-sims',
+      '',
+      '',
+      'history',
+      'notifications',
+      '',
+    ]);
+  });
+
+  it('the landing highlight is CSS on :target, a shadow rule, and the page ships no script file', async () => {
+    const source = readFileSync(new URL('../components/premium/PlanCard.astro', import.meta.url), 'utf8');
+    for (const id of ['coach', 'server-sims', 'history', 'notifications']) {
+      expect(source).toContain(`.features:has(#${id}:target) [data-anchor='${id}']`);
+    }
+    expect(source).toContain('box-shadow: inset 2px 0 0 var(--color-gold)');
+    expect(source).toMatch(/\.feature \{[^}]*padding: 6px 8px;[^}]*border-radius: var\(--radius-control\);/);
+    expect((await renderPremium()).querySelectorAll('script[src*="_astro"]')).toHaveLength(0);
   });
 });

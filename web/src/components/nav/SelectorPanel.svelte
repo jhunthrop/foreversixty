@@ -183,9 +183,9 @@
   </svg>
 {/snippet}
 
-{#snippet chevron()}
+{#snippet chevron(gold = false)}
   <svg
-    class="csel-arow-chev"
+    class={['csel-arow-chev', gold && 'is-gold']}
     width="16"
     height="16"
     viewBox="0 0 24 24"
@@ -240,7 +240,11 @@
         <span class="csel-arow-sub">{panel.plan.sub}</span>
         {#if panel.plan.sub2 !== null}<span class="csel-arow-sub">{panel.plan.sub2}</span>{/if}
       </span>
-      {@render chevron()}
+      {#if panel.plan.seePlans}
+        <!-- Text inside the one link, not a second control: the name reads Plan, Free, See plans. -->
+        <span class="csel-see-plans" data-testid="selector-plan-see-plans">{words.seePlans}</span>
+      {/if}
+      {@render chevron(panel.plan.seePlans)}
     </a>
     <button
       type="button"
@@ -458,3 +462,21 @@
     {@render accountRows(account)}
   {/if}
 </div>
+
+<style>
+  /* The free Plan row's one action (spec 2026-10-29-premium-entry section 6): the only gold
+     below the character list, turning to the hover gold with the row. */
+  .csel-see-plans {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-gold);
+  }
+  .csel-arow-chev.is-gold {
+    color: var(--color-gold);
+  }
+  :global(.csel-arow:hover) > .csel-see-plans,
+  :global(.csel-arow:hover) > .csel-arow-chev.is-gold {
+    color: var(--color-gold-hover);
+  }
+</style>

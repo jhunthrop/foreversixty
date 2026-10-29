@@ -11,7 +11,6 @@ import PlanCard from '../components/premium/PlanCard.astro';
 import PremiumCoachSample from '../components/premium/PremiumCoachSample.astro';
 import { checkoutCopy } from '../lib/billing/copy';
 import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
-import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
 ---
 
@@ -22,14 +21,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     // server decides, so only the display can be stale.
     // No "before" state: founder prices apply from launch until the window closes.
     document.documentElement.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
-  </script>
-  <script slot="head" is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: STORED_SOURCES }}>
-    try {
-      const source = localStorage.getItem(key);
-      if (sources.includes(source)) document.documentElement.dataset.premium = source;
-    } catch {
-      // Storage blocked: the card keeps its default state.
-    }
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
     <div class="band full-bleed">

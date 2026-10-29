@@ -3,6 +3,7 @@ import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import classes from '../data/classes.json';
 import communityLinks from '../data/links.json';
+import { PREMIUM_NAV_ITEM } from '../lib/nav';
 import Header from './Header.astro';
 
 async function renderDoc(path: string): Promise<Document> {
@@ -15,6 +16,28 @@ async function renderHeader(path: string): Promise<string> {
 }
 
 describe('Header', () => {
+  it('ends the doors with the Premium tag after Get set up: a plain link with no panel (spec 2026-10-29-premium-entry 3)', async () => {
+    const doc = await renderDoc('/');
+    const nav = doc.getElementById('primary-nav')!;
+    const last = nav.lastElementChild!;
+    expect(last.previousElementSibling?.getAttribute('data-door')).toBe('setup');
+    expect(last.getAttribute('data-door')).toBe('premium');
+    expect(last.getAttribute('href')).toBe(PREMIUM_NAV_ITEM.href);
+    expect(last.hasAttribute('aria-haspopup')).toBe(false);
+    expect(last.hasAttribute('aria-current')).toBe(false);
+    const tag = last.querySelector('.pill.pill-site');
+    expect(tag?.textContent?.trim()).toBe(PREMIUM_NAV_ITEM.label);
+    expect(last.querySelectorAll('svg, i')).toHaveLength(0);
+    expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium' });
+  });
+
+  it('marks the Premium tag current on /premium and its checkout', async () => {
+    for (const path of ['/premium', '/premium/checkout']) {
+      const doc = await renderDoc(path);
+      expect(doc.querySelector('[data-door="premium"]')?.getAttribute('aria-current')).toBe('page');
+    }
+  });
+
   it('renders the four group doors in order, each a real link with its popup attributes, then Get set up as a plain door', async () => {
     const doc = await renderDoc('/');
     const doors = [...doc.querySelectorAll('a.site-door')];
@@ -24,12 +47,13 @@ describe('Header', () => {
       ['Guild', '/guild'],
       ['Guides', '/guides'],
       ['Get set up', '/setup'],
+      ['Premium', '/premium'],
     ]);
-    const setup = doors.at(-1)!;
+    const setup = doors.at(-2)!;
     expect(setup.getAttribute('data-door')).toBe('setup');
     expect(setup.hasAttribute('aria-haspopup')).toBe(false);
     expect(setup.classList.contains('site-door-setup')).toBe(true);
-    for (const door of doors.slice(0, -1)) {
+    for (const door of doors.slice(0, -2)) {
       const key = door.getAttribute('data-door');
       expect(door.getAttribute('aria-haspopup')).toBe('true');
       expect(door.getAttribute('aria-expanded')).toBe('false');
@@ -120,10 +144,12 @@ describe('Header', () => {
     expect(doc.querySelectorAll('#site-menu .site-menu-list a[href^="/guides/"]').length).toBe(9);
   });
 
-  it('renders no Reference disclosure and no Premium link', async () => {
+  it('renders no Reference disclosure, and Premium only as the one tag (never a door)', async () => {
     const html = await renderHeader('/');
+    const doc = await renderDoc('/');
     expect(html).not.toContain('<details');
-    expect(html).not.toContain('>Premium<');
+    expect(doc.querySelectorAll('a[href^="/premium"]')).toHaveLength(1);
+    expect(doc.querySelector('a[href="/premium"] > .pill-site')).not.toBeNull();
     expect(html).not.toContain('>Classes<');
     expect(html).not.toContain('>The addon<');
   });

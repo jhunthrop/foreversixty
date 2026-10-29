@@ -25,6 +25,8 @@ export interface PlanRow {
   sub2: string | null;
   href: string;
   founder: boolean;
+  /** The gold `See plans` word before the chevron: a free account only (`source === 'none'`). */
+  seePlans: boolean;
 }
 
 export interface ProfileRow {
@@ -32,6 +34,8 @@ export interface ProfileRow {
 }
 
 export interface AccountPanel {
+  /** Who pays for the account's Premium; the header's Premium tag follows it. */
+  source: PremiumSource;
   head: AccountHead;
   plan: PlanRow;
   /** Null when the current character is not saved to the account. */
@@ -62,13 +66,20 @@ function ownPlanWords(me: Me): { sub: string; sub2: string } | null {
 function planOf(me: Me, source: PremiumSource, line: AccountPlanLine): PlanRow {
   const { account } = selectorCopy;
   if (source === 'none')
-    return { sub: account.planSubFree, sub2: null, href: account.freePlanHref, founder: false };
+    return {
+      sub: account.planSubFree,
+      sub2: null,
+      href: account.freePlanHref,
+      founder: false,
+      seePlans: true,
+    };
   const own = source === 'own' ? ownPlanWords(me) : null;
   return {
     sub: own?.sub ?? line.line,
     sub2: own?.sub2 ?? null,
     href: account.planHref,
     founder: line.founder,
+    seePlans: false,
   };
 }
 
@@ -77,6 +88,7 @@ export function accountPanelOf(me: Me, current: MeCharacter | null, nowMs: numbe
   const source = premiumSource(me, now);
   const line = accountPlanLine(me, now);
   return {
+    source,
     head: headOf(me, source !== 'none' && source !== 'fallback'),
     plan: planOf(me, source, line),
     profile: current === null ? null : { href: characterHref(current.region, current.ruleset, current.name) },
