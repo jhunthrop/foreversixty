@@ -122,11 +122,9 @@
       <div class="planner-header-titles">
         <h1 class="planner-header-h1 heading-page" style={`color:${color}`} data-testid="planner-header-h1">
           <span class="planner-header-seg"
-            >{plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
-            <span class="planner-header-sep">·</span></span
-          >
-          <span class="planner-header-suffix">
-            {#each suffixParts as part, index (index)}
+            >{plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}</span
+          ><span class="planner-header-suffix">
+            <span class="planner-header-sep">·&nbsp;</span>{#each suffixParts as part, index (index)}
               <span class="planner-header-seg">{part}{index < suffixParts.length - 1 ? ' ·' : ''}</span>
               <!-- eslint-disable-next-line svelte/no-useless-mustaches -- the one breakable space between segments -->
               {' '}
@@ -276,18 +274,10 @@
     white-space: nowrap;
   }
   /* Phone: the class and "talents" on line 1, "Human · Level 9" as a 14px muted line under it,
-     so line 1 loses the dot it would end on. */
+     so line 1 loses the dot it would end on. From 640 the suffix follows on the same line, its
+     leading dot glued into it (no breakable space between "talents" and the dot). */
   .planner-header-sep {
     display: none;
-    /* Raised onto the heading face's baseline: a 14px mark sits low beside a larger caps line. */
-    position: relative;
-    top: -0.18em;
-    /* The dot is a meta mark, not a heading letter: the suffix's own 14px muted body face. */
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--color-muted);
   }
   .planner-header-suffix {
     display: block;
@@ -299,6 +289,7 @@
     font-size: 14px;
     letter-spacing: 0.1em;
     text-transform: none;
+    vertical-align: baseline;
   }
   @media (min-width: 640px) {
     .planner-header-sep {
@@ -307,6 +298,7 @@
     .planner-header-suffix {
       display: inline;
       margin-top: 0;
+      margin-inline-start: 0.5em;
     }
   }
   .planner-header-origin {

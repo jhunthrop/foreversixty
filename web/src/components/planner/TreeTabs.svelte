@@ -21,6 +21,7 @@
   import { SPECS } from '../../lib/sim/specs';
   import { gridSize } from '../../lib/planner/grid';
   import { yieldToMain } from '../../lib/planner/yield';
+  import { scrollFade, updateScrollFade } from '../../lib/scroll-fade';
   import TreeGrid from './TreeGrid.svelte';
 
   let {
@@ -72,6 +73,15 @@
     return SPECS.find((row) => row.class_slug === store.classSlug && row.tree_index === treeIndex)?.icon;
   }
 
+  let tablist = $state<HTMLDivElement | undefined>();
+  // The open tab scrolls into view in the strip (never the page), and the fades follow.
+  $effect(() => {
+    if (tablist === undefined) return;
+    const open = tablist.querySelectorAll<HTMLElement>('[role="tab"]')[activeTree];
+    open?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    updateScrollFade(tablist);
+  });
+
   // The roving tabindex keeps the unselected tabs out of the tab order, so arrow keys are the
   // only way to reach them: without this a keyboard could never open the second tree. Moving
   // selects, which is the automatic-activation half of the ARIA tabs pattern -- switching
@@ -96,45 +106,52 @@
    never a tab stop -- and is there to satisfy the compiler's a11y rule that an element
    carrying an interactive role and a key handler declare a tabindex; -1 declares one
    without adding a stop, and it matches what TreeGrid's `role="grid"` does. -->
-<div
-  role="tablist"
-  tabindex={-1}
-  aria-label="Talent trees"
-  class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
-  onkeydown={onTabKeys}
->
-  {#each talentIndex.trees as tree, i (tree.id)}
-    {@const icon = specIconFor(i)}
-    <button
-      type="button"
-      role="tab"
-      id={`tree-tab-${tree.id}`}
-      aria-selected={activeTree === i}
-      aria-controls={`tree-panel-${tree.id}`}
-      tabindex={activeTree === i ? 0 : -1}
-      class="{SECONDARY_BUTTON} flex-1 justify-center gap-2 {activeTree === i
-        ? 'border-gold text-gold'
-        : 'border-line text-nav'}"
-      onclick={() => (activeTree = i)}
-    >
-      {#if icon !== undefined}
-        <!-- `loading="eager"` (fix round 3, ux-designer review): the phone tab strip's own
+<div class="tabs-wrap relative mx-[18px] md:hidden">
+  <div
+    role="tablist"
+    tabindex={-1}
+    aria-label="Talent trees"
+    class="border-line-soft flex gap-2 overflow-x-auto overscroll-x-contain border-b pb-2"
+    data-testid="tree-tablist"
+    bind:this={tablist}
+    use:scrollFade
+    onkeydown={onTabKeys}
+  >
+    {#each talentIndex.trees as tree, i (tree.id)}
+      {@const icon = specIconFor(i)}
+      <button
+        type="button"
+        role="tab"
+        id={`tree-tab-${tree.id}`}
+        aria-selected={activeTree === i}
+        aria-controls={`tree-panel-${tree.id}`}
+        tabindex={activeTree === i ? 0 : -1}
+        class="{SECONDARY_BUTTON} flex-1 shrink-0 justify-center gap-2 {activeTree === i
+          ? 'border-gold text-gold'
+          : 'border-line text-nav'}"
+        onclick={() => (activeTree = i)}
+      >
+        {#if icon !== undefined}
+          <!-- `loading="eager"` (fix round 3, ux-designer review): the phone tab strip's own
              spec icon -- see TalentCell.svelte's identical comment on why these small icons
              are not deferred. -->
-        <img
-          src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
-          alt=""
-          width="28"
-          height="28"
-          loading="eager"
-          decoding="async"
-          class="rounded-control border-line h-7 w-7 border"
-        />
-      {/if}
-      <span>{tree.name}</span>
-      <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
-    </button>
-  {/each}
+          <img
+            src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
+            alt=""
+            width="28"
+            height="28"
+            loading="eager"
+            decoding="async"
+            class="rounded-control border-line h-7 w-7 border"
+          />
+        {/if}
+        <span>{tree.name}</span>
+        <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
+      </button>
+    {/each}
+  </div>
+  <div class="tabs-fade tabs-fade-start" aria-hidden="true"></div>
+  <div class="tabs-fade tabs-fade-end" aria-hidden="true"></div>
 </div>
 
 <div class="grid grid-cols-1 gap-4 px-[18px] md:px-0 {treeColumnsClass}" data-testid="tree-columns">
@@ -211,6 +228,28 @@
 </div>
 
 <style>
+  /* 24px edge fades over the clipped side of the phone tab strip (polish spec 5.3). */
+  .tabs-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+  }
+  .tabs-fade-start {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg), transparent);
+  }
+  .tabs-fade-end {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg), transparent);
+  }
+  .tabs-wrap[data-fade-start] .tabs-fade-start,
+  .tabs-wrap[data-fade-end] .tabs-fade-end {
+    opacity: 1;
+  }
   /* TreeGrid's box: a cell is h-11/w-11, 48px from md and 56px from lg, with an 8px gap. */
   .tree-reserve {
     --cell: 44px;

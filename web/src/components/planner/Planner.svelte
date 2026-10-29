@@ -62,6 +62,7 @@
   import PlannerHeaderBand from './PlannerHeaderBand.svelte';
   import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
+  import { watchMedia } from '../../lib/watch-media';
   import TreeTabs from './TreeTabs.svelte';
 
   let {
@@ -615,15 +616,12 @@
   // Standalone-gated: Top Gear's inline "add a build" (TalentCandidates.svelte) mounts this
   // same component inside its own layout and must not grow a collapse of its own.
   let phoneViewport = $state(false);
-  $effect(() => {
-    const query = window.matchMedia('(max-width: 767px)');
-    const read = (): void => {
-      phoneViewport = query.matches;
-    };
-    read();
-    query.addEventListener('change', read);
-    return () => query.removeEventListener('change', read);
-  });
+  $effect(() => watchMedia('(max-width: 767px)', (matches) => (phoneViewport = matches)));
+  // From xl the page is two columns and the rail runs longer than the trees, so Import moves out
+  // of the rail to sit under the trees (polish round 9): one instance, mounted in one place.
+  let splitColumns = $state(false);
+  $effect(() => watchMedia('(min-width: 1280px)', (matches) => (splitColumns = matches)));
+  const importUnderTrees = $derived(standalone && splitColumns);
   const collapsesOnPhone = $derived(standalone && phoneViewport);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
@@ -866,6 +864,22 @@
     }
   });
 </script>
+
+{#snippet importBox(importClass: string)}
+  <ImportBox
+    talents={store.talentIndex}
+    activeBuild={activeBuild.build}
+    onimport={(build, pastedCode) => {
+      store.loadImported(build);
+      loadedCharacter = null;
+      buildOrigin = null;
+      void recordPastedExport(pastedCode);
+    }}
+    onwrongclass={standalone ? switchClassForImport : undefined}
+    phone={collapsesOnPhone}
+    class={importClass}
+  />
+{/snippet}
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
@@ -1171,6 +1185,9 @@
             <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-tree-source">
               {treeSourceNotice(store.treeVersion)}
             </p>
+            {#if importUnderTrees && !store.readOnly && railReady}
+              {@render importBox('')}
+            {/if}
           </div>
 
           <!-- Fix round 6 (player review, item 2's own addendum): a real two-column grid
@@ -1238,24 +1255,12 @@
                 <PlannerToolbar {store} {live} bind:confirmingReset />
               </div>
 
-              {#if !store.readOnly}
+              {#if !store.readOnly && !importUnderTrees}
                 <!-- A read-only build (opened from a share link) has nowhere for an imported
                  build to go until it is forked, so the box only mounts once the toolbar
                  above already shows Reset and Share rather than "Fork it to spend points
                  of your own." -->
-                <ImportBox
-                  talents={store.talentIndex}
-                  activeBuild={activeBuild.build}
-                  onimport={(build, pastedCode) => {
-                    store.loadImported(build);
-                    loadedCharacter = null;
-                    buildOrigin = null;
-                    void recordPastedExport(pastedCode);
-                  }}
-                  onwrongclass={standalone ? switchClassForImport : undefined}
-                  phone={collapsesOnPhone}
-                  class="order-2 mx-[18px] md:mx-0 lg:order-4"
-                />
+                {@render importBox('order-2 mx-[18px] md:mx-0 lg:order-4')}
               {/if}
             {/if}
           </div>

@@ -67,6 +67,31 @@ test.describe('planner on a phone', () => {
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeHidden();
   });
 
+  // Polish spec 5.3: a clipped tab strip says so with a 24px fade on the hidden edge, and the
+  // open tab is scrolled into view when it is chosen.
+  test('a tab strip that overflows fades the clipped edge and scrolls the open tab into view', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 200, height: 800 });
+    await page.goto('/planner');
+    const tablist = page.getByTestId('tree-tablist');
+    const wrap = tablist.locator('..');
+    await expect(page.getByRole('tab')).toHaveCount(2);
+    expect(await tablist.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    await expect(wrap).toHaveAttribute('data-fade-end', '');
+    await expect(wrap).not.toHaveAttribute('data-fade-start', '');
+    await page.getByRole('tab').nth(1).click();
+    const last = page.getByRole('tab').nth(1);
+    await expect(wrap).not.toHaveAttribute('data-fade-end', '');
+    await expect(wrap).toHaveAttribute('data-fade-start', '');
+    const inside = await last.evaluate((tab) => {
+      const edge = tab.parentElement?.getBoundingClientRect();
+      const box = tab.getBoundingClientRect();
+      return edge !== undefined && box.right <= edge.right + 1 && box.left >= edge.left - 1;
+    });
+    expect(inside).toBe(true);
+  });
+
   // The roving tabindex takes the unselected tabs out of the tab order, so arrow keys are the
   // only way a keyboard can reach anything past the first tab at all.
   test('arrow keys move between the tabs and open the panel they land on', async ({ page }) => {
