@@ -41,7 +41,11 @@ const manualLinks = [
 ];
 
 // The "how it arrives" line carries the export disclosure's title as a link that opens that disclosure.
-const [arrivesLead, arrivesTail] = addonCopy.setupHowItArrives.split(addonCopy.setupTryExport);
+// The pointer phrase around the link never breaks: the spaces beside the link are non-breaking and the link is nowrap.
+const NO_BREAK_SPACE = '\u00A0';
+const [arrivesLeadRaw, arrivesTailRaw] = addonCopy.setupHowItArrives.split(addonCopy.setupTryExport);
+const arrivesLead = arrivesLeadRaw.replace(/ $/, NO_BREAK_SPACE);
+const arrivesTail = arrivesTailRaw.replace(/^ /, NO_BREAK_SPACE);
 
 const downloadUrl = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
 // The first download is the step's button; any other platform is a secondary button beside it.
@@ -103,7 +107,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
         </p>
         <p class="text-pretty text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
           {arrivesLead}
-          <a href="#paste" data-open-disclosure="setup-try-export">
+          <a href="#paste" class="whitespace-nowrap" data-open-disclosure="setup-try-export">
             {addonCopy.setupTryExport}
           </a>
           {arrivesTail}

@@ -436,7 +436,11 @@ describe('/setup first-run copy', () => {
   it('makes "Try an export" in that line a link that opens its disclosure', () => {
     const line = html.slice(html.indexOf('data-testid="setup-how-it-arrives"'));
     expect(line.slice(0, line.indexOf('</p>'))).toContain(
-      `<a href="#paste" data-open-disclosure="setup-try-export">${addonCopy.setupTryExport}</a>`,
+      `<a href="#paste" class="whitespace-nowrap" data-open-disclosure="setup-try-export">${addonCopy.setupTryExport}</a>`,
+    );
+    // The phrase around the link never breaks: non-breaking spaces on both sides of it.
+    expect(line.slice(0, line.indexOf('</p>'))).toMatch(
+      /\(see\u00A0<a [^>]*>Try an export<\/a>\u00A0below\)\./,
     );
     expect(html).toContain('data-testid="setup-try-export"');
   });
@@ -445,7 +449,7 @@ describe('/setup first-run copy', () => {
     expect(addonCopy.setupHowItArrives).toBe(
       'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
     );
-    expect(html.split('No companion? Paste an export instead (see ').length - 1).toBe(1);
+    expect(html.split('No companion? Paste an export instead (see\u00A0').length - 1).toBe(1);
   });
 
   it('drops the Blizzard status sentence from step 1', () => {
