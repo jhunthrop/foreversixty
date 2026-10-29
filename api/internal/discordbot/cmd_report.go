@@ -325,9 +325,11 @@ func (s *Service) lootEmbeds(r *guilds.ReportView, link string) []notify.Embed {
 	}
 	build, haveBuild := s.d.Guilds.ActiveBuild()
 	out := make([]notify.Embed, 0, len(awards))
-	for _, a := range awards {
+	for i, a := range awards {
 		source := fill(officerCopy.LootTo, "{Name}", notify.Collapse(a.Name), "{Boss}", notify.Collapse(a.boss))
-		facts := ItemFacts{ID: a.ItemID, Name: a.ItemName, Quality: a.Quality, Source: source, URL: link}
+		// The award's index joins the id: the same item can drop twice in one night.
+		key := strconv.Itoa(a.ItemID) + "-" + strconv.Itoa(i)
+		facts := ItemFacts{ID: a.ItemID, Name: a.ItemName, Quality: a.Quality, Source: source, URL: itemLink(link, key)}
 		if haveBuild { // without a build there is no item table and no icon path: name and quality only
 			if it, ok := s.d.Guilds.BuildItem(build, a.Class, a.ItemID); ok {
 				facts.ItemLevel = it.ItemLevel

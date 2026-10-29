@@ -3,7 +3,9 @@ package discordbot
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
@@ -220,7 +222,24 @@ type bisView struct {
 
 // facts is an item of the band with the BiS page's own source line for its kind.
 func (v bisView) facts(id int, name, kind, raw string) ItemFacts {
-	return v.s.itemFacts(v.build, v.spec.ClassSlug, id, name, v.s.sourceLine(id, kind, v.faction, raw), v.page)
+	return v.s.itemFacts(v.build, v.spec.ClassSlug, id, name, v.s.sourceLine(id, kind, v.faction, raw), itemLink(v.page, strconv.Itoa(id)))
+}
+
+// itemLinkParam is the query value that keeps each item embed's link its own.
+const itemLinkParam = "item"
+
+// itemLink is page with key in its query: Discord folds consecutive embeds that share a URL
+// into one card, so five picks linking the same band page showed as one item. key must be
+// unique among the message's embeds.
+func itemLink(page, key string) string {
+	u, err := url.Parse(page)
+	if err != nil {
+		return page
+	}
+	q := u.Query()
+	q.Set(itemLinkParam, key)
+	u.RawQuery = q.Encode()
+	return u.String()
 }
 
 // slotEmbeds are the pick under "Best in slot" and its first two alternatives with their deltas.

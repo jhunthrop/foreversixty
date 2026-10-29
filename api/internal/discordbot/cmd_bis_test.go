@@ -1,10 +1,12 @@
 package discordbot
 
 import (
+	"net/url"
 	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 )
 
@@ -48,13 +50,14 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 			t.Fatalf("reply = %+v", m)
 		}
 		if m.Embeds[0].Author != "Best in slot" || m.Embeds[0].Description != "Head · Epic · item level 61\nSource head" ||
-			m.Embeds[0].URL != page || m.Embeds[0].Color != 10696174 {
+			!sameBandPage(m.Embeds[0].URL, page) || m.Embeds[0].Color != 10696174 {
 			t.Fatalf("pick = %+v", m.Embeds[0])
 		}
 		if m.Embeds[1].Author != "" || m.Embeds[1].Description != "Head · Epic · item level 61\n−15.0 DPS · PvP rank 14 · Lieutenant Commander · Alliance" ||
 			m.Embeds[2].Description != "Head\n−18.0 DPS · Blacksmithing" {
 			t.Fatalf("alternatives = %+v", m.Embeds[1:])
 		}
+		assertDistinctEmbedURLs(t, m.Embeds)
 		if m.Embeds[2].Footer != "Fury Warrior · level 60 Phase 1 raid · Forever Sixty" {
 			t.Fatalf("footer = %q", m.Embeds[2].Footer)
 		}
@@ -78,6 +81,7 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 			got != "Pick main_hand,Pick finger1,Pick head,Pick legs,Pick neck" {
 			t.Fatalf("order = %s", got)
 		}
+		assertDistinctEmbedURLs(t, m.Embeds)
 		if !strings.HasPrefix(m.Embeds[0].Description, "Main hand · Epic · item level 61\n+30.0 DPS · ") {
 			t.Fatalf("first = %q", m.Embeds[0].Description)
 		}
@@ -100,6 +104,32 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 			t.Fatalf("bare = %+v", bare)
 		}
 	})
+}
+
+// assertDistinctEmbedURLs fails when two embeds share a URL: Discord folds consecutive embeds
+// with one URL into a single card, and five picks once showed as one item.
+func assertDistinctEmbedURLs(t *testing.T, embeds []notify.Embed) {
+	t.Helper()
+	seen := map[string]bool{}
+	for _, e := range embeds {
+		if e.URL == "" || seen[e.URL] {
+			t.Fatalf("embed URL %q is empty or repeated among %d embeds", e.URL, len(embeds))
+		}
+		seen[e.URL] = true
+	}
+}
+
+// sameBandPage reports whether link opens page: the same path, fragment and query apart from
+// the per-item key.
+func sameBandPage(link, page string) bool {
+	l, err1 := url.Parse(link)
+	p, err2 := url.Parse(page)
+	if err1 != nil || err2 != nil || l.Path != p.Path || l.Fragment != p.Fragment || l.Query().Get(itemLinkParam) == "" {
+		return false
+	}
+	q := l.Query()
+	q.Del(itemLinkParam)
+	return q.Encode() == p.Query().Encode()
 }
 
 func TestBisSpecAutocompleteFiltersByClass(t *testing.T) {

@@ -214,6 +214,7 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	if fields[segment(2)] != "Pyrewisp 4 · Windtalon 3 · Vexlash 2" || fields[segment(3)] != "3 short before the raid" {
 		t.Fatalf("officer fields = %v", fields)
 	}
+	assertDistinctEmbedURLs(t, officer.Message.Embeds)
 	if !hasShare(officer) || len(officer.Message.Embeds) > 9 {
 		t.Fatal("a public log offers no Share")
 	}
