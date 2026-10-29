@@ -10,6 +10,9 @@ import (
 type Reply struct {
 	Message Message
 	Update  bool
+	// Modal, when set, opens a dialog instead of sending a message (response type 9). Its
+	// handler must do no I/O, so it answers inside the window; a modal is never deferred.
+	Modal *Modal
 	// After runs once the answer has gone to Discord, off the request: a follow-up message
 	// needs the interaction acknowledged first. Nil runs nothing. When the answer could not be
 	// delivered, After still runs, under a context marked dropped (answerDropped): it must then

@@ -13,6 +13,7 @@ const (
 	typeCommand      = 2
 	typeComponent    = 3
 	typeAutocomplete = 4
+	typeModalSubmit  = 5
 )
 
 // Interaction is the part of Discord's interaction object the bot reads. Token
@@ -22,8 +23,10 @@ type Interaction struct {
 	Type                              int
 	Data                              json.RawMessage
 	MessageID                         string
-	DiscordUserID                     string
-	ReceivedAt                        time.Time
+	// Source is the pressed message's embeds and components, for the card failure echo.
+	Source        sourceMessage
+	DiscordUserID string
+	ReceivedAt    time.Time
 }
 
 type wireUser struct {
@@ -43,6 +46,7 @@ type wireInteraction struct {
 	User    *wireUser `json:"user"`
 	Message *struct {
 		ID string `json:"id"`
+		sourceMessage
 	} `json:"message"`
 }
 
@@ -64,6 +68,7 @@ func ParseInteraction(body []byte, receivedAt time.Time) (Interaction, error) {
 	}
 	if w.Message != nil {
 		in.MessageID = w.Message.ID
+		in.Source = w.Message.sourceMessage
 	}
 	return in, nil
 }

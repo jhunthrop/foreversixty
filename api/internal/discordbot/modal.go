@@ -1,0 +1,124 @@
+package discordbot
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// modalInputID is the custom id of the one text input in both modals.
+const modalInputID = "name"
+
+// Component type and style of the modal's text input.
+const (
+	kindTextInput  = 4
+	styleTextShort = 1
+)
+
+// Modal is a one-input dialog. Opening it does no I/O, so it always answers inside the window.
+type Modal struct {
+	CustomID, Title, InputLabel, Placeholder string
+	MinLength, MaxLength                     int
+}
+
+type textInputJSON struct {
+	Type        int    `json:"type"`
+	CustomID    string `json:"custom_id"`
+	Style       int    `json:"style"`
+	Label       string `json:"label"`
+	Placeholder string `json:"placeholder,omitempty"`
+	MinLength   int    `json:"min_length,omitempty"`
+	MaxLength   int    `json:"max_length,omitempty"`
+	Required    bool   `json:"required"`
+}
+
+// MarshalJSON writes Discord's modal object.
+func (m Modal) MarshalJSON() ([]byte, error) {
+	if m.CustomID == "" {
+		return nil, fmt.Errorf("discordbot: modal %q needs a custom_id", m.Title)
+	}
+	input := textInputJSON{
+		Type: kindTextInput, CustomID: modalInputID, Style: styleTextShort, Label: m.InputLabel,
+		Placeholder: m.Placeholder, MinLength: m.MinLength, MaxLength: m.MaxLength, Required: true,
+	}
+	row := struct {
+		Type       int             `json:"type"`
+		Components []textInputJSON `json:"components"`
+	}{rowType, []textInputJSON{input}}
+	return json.Marshal(struct {
+		CustomID   string `json:"custom_id"`
+		Title      string `json:"title"`
+		Components any    `json:"components"`
+	}{m.CustomID, m.Title, []any{row}})
+}
+
+type wireModalRow struct {
+	Components []struct {
+		CustomID string `json:"custom_id"`
+		Value    string `json:"value"`
+	} `json:"components"`
+}
+
+// ModalValue is what the member typed into the modal input with that id; empty when absent.
+func (i Interaction) ModalValue(inputID string) string {
+	var d struct {
+		Components []wireModalRow `json:"components"`
+	}
+	_ = json.Unmarshal(i.Data, &d) // a malformed data object reads as empty
+	for _, row := range d.Components {
+		for _, c := range row.Components {
+			if c.CustomID == inputID {
+				return c.Value
+			}
+		}
+	}
+	return ""
+}
+
+// sourceMessage is the message a component sat on, kept raw so a failed press can put it back
+// exactly as it was.
+type sourceMessage struct {
+	Embeds     json.RawMessage `json:"embeds"`
+	Components json.RawMessage `json:"components"`
+}
+
+// cardFailureRoutes are the card prefixes: a handler error on one keeps the card.
+func cardFailureRoutes() map[string]bool {
+	return map[string]bool{
+		prefixBis: true, prefixChar: true, prefixSignup: true,
+		prefixAttendance: true, prefixReadiness: true, prefixReport: true,
+	}
+}
+
+// cardFailureReply puts the pressed card back with every pick and says `card.failure`: as the
+// lead for /bis, as the content line elsewhere. A press with no source card gets the plain
+// failure sentence in place.
+func cardFailureReply(in Interaction) Reply {
+	src := in.Source
+	if len(src.Embeds) == 0 && len(src.Components) == 0 {
+		rep := failureReply()
+		rep.Update = true
+		return rep
+	}
+	msg := Message{Ephemeral: true, echo: &src}
+	if customPrefix(in.CustomID()) == prefixBis {
+		msg.echo = &sourceMessage{Embeds: withLead(src.Embeds, guideCopy.CardFailure), Components: src.Components}
+	} else {
+		msg.Content = guideCopy.CardFailure
+	}
+	return Reply{Update: true, Message: msg}
+}
+
+// withLead replaces the first embed's description, leaving every other field as sent.
+func withLead(embeds json.RawMessage, lead string) json.RawMessage {
+	var list []map[string]json.RawMessage
+	if json.Unmarshal(embeds, &list) != nil || len(list) == 0 {
+		return embeds
+	}
+	text, _ := json.Marshal(lead)
+	list[0]["description"] = text
+	out, err := json.Marshal(list)
+	if err != nil {
+		return embeds
+	}
+	return out
+}

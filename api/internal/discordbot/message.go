@@ -110,6 +110,8 @@ type Message struct {
 	// Nonce, on a create, makes Discord answer a repeat (same nonce, same author, within a
 	// few minutes) with the message it already made instead of a second one. At most 25 chars.
 	Nonce string
+	// echo, when set, makes an edit put a pressed card back as it was (the card failure).
+	echo *sourceMessage
 }
 
 // maxNonceRunes is Discord's nonce bound.
@@ -147,19 +149,30 @@ func (m Message) MarshalJSON() ([]byte, error) {
 // clears it (a locked raid post loses its buttons). The ephemeral flag is
 // fixed by the first answer and is not sent.
 func (m Message) edit() editBody {
-	b := editBody{Content: m.Content, Embeds: m.Embeds, Components: m.Components, AllowedMentions: mentions{Parse: []string{}}}
-	if b.Embeds == nil {
-		b.Embeds = []notify.Embed{}
+	if m.echo != nil {
+		return editBody{Content: m.Content, Embeds: rawOrEmpty(m.echo.Embeds), Components: rawOrEmpty(m.echo.Components), AllowedMentions: mentions{Parse: []string{}}}
 	}
-	if b.Components == nil {
-		b.Components = []ActionRow{}
+	embeds, components := m.Embeds, m.Components
+	if embeds == nil {
+		embeds = []notify.Embed{}
 	}
-	return b
+	if components == nil {
+		components = []ActionRow{}
+	}
+	return editBody{Content: m.Content, Embeds: embeds, Components: components, AllowedMentions: mentions{Parse: []string{}}}
+}
+
+// rawOrEmpty is a source field as sent, or an empty list when the message had none.
+func rawOrEmpty(raw json.RawMessage) json.RawMessage {
+	if len(raw) == 0 || string(raw) == "null" {
+		return json.RawMessage("[]")
+	}
+	return raw
 }
 
 type editBody struct {
-	Content         string         `json:"content"`
-	Embeds          []notify.Embed `json:"embeds"`
-	Components      []ActionRow    `json:"components"`
-	AllowedMentions mentions       `json:"allowed_mentions"`
+	Content         string   `json:"content"`
+	Embeds          any      `json:"embeds"`
+	Components      any      `json:"components"`
+	AllowedMentions mentions `json:"allowed_mentions"`
 }

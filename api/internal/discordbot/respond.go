@@ -18,6 +18,7 @@ const (
 	respDeferredUpdate     = 6
 	respUpdateMessage      = 7
 	respAutocompleteResult = 8
+	respModal              = 9
 )
 
 type callbackBody struct {
@@ -55,7 +56,7 @@ func (s *Service) serveInteraction(w http.ResponseWriter, r *http.Request) {
 	switch in.Type {
 	case typePing:
 		writeCallback(w, callbackBody{Type: respPong})
-	case typeCommand, typeComponent:
+	case typeCommand, typeComponent, typeModalSubmit:
 		s.dispatch(r.Context(), w, in)
 	case typeAutocomplete:
 		s.autocomplete(r.Context(), w, in)
@@ -73,6 +74,10 @@ func unboundReply() Reply {
 }
 
 func (s *Service) writeReply(w http.ResponseWriter, rep Reply, kind int) {
+	if rep.Modal != nil {
+		writeCallback(w, callbackBody{Type: respModal, Data: rep.Modal})
+		return
+	}
 	if rep.Update && kind == respMessage {
 		// An update replaces the message: what it leaves out (the select) must go, so it
 		// sends the edit body, which writes every part explicitly.
@@ -208,6 +213,9 @@ func (s *Service) writeDeferral(w http.ResponseWriter, update bool) {
 func (s *Service) replyOf(in Interaction, res handled, update bool) Reply {
 	if res.err != nil {
 		s.log.Error("discordbot", "op", "discord_answer", "outcome", "handler_failed", "interaction", in.ID, "err", res.err)
+		if in.Type != typeCommand && cardFailureRoutes()[customPrefix(in.CustomID())] {
+			return cardFailureReply(in)
+		}
 		rep := failureReply()
 		rep.Update = update
 		return rep
