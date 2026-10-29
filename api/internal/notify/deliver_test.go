@@ -203,6 +203,10 @@ func (cancelAfterPost) Lookup(context.Context, string) (LookupResult, error) {
 
 func (cancelAfterPost) Delete(context.Context, string) error { return nil }
 
+func (cancelAfterPost) PostContent(context.Context, string, string) (string, error) { return "", nil }
+
+func (cancelAfterPost) DeleteMessage(context.Context, string, string) error { return nil }
+
 func TestRecordingSurvivesACancelledJobContext(t *testing.T) {
 	r := newDeliverRig(t, bothEvents)
 	if _, err := r.store.RecordFailure(context.Background(), r.uid, KindDiscord, "old", true); err != nil {

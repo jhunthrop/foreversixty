@@ -9,9 +9,10 @@ import (
 
 // Raid event names, as the logs read them.
 const (
-	eventRaidPosted  = "raid_posted"
-	eventRaidChanged = "raid_changed"
-	eventReportReady = "report_ready"
+	eventRaidPosted   = "raid_posted"
+	eventRaidChanged  = "raid_changed"
+	eventRaidReminder = "raid_reminder"
+	eventReportReady  = "report_ready"
 )
 
 // GuildDeliverer posts the raid embeds to a guild's channel. A nil *GuildDeliverer posts
@@ -81,29 +82,74 @@ func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event strin
 	return err
 }
 
-// deliver is Deliver that also says whether the post reached the channel.
-func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event string, embed Embed) (bool, error) {
-	hook, found, err := d.Store.Get(ctx, guildID)
-	if err != nil {
-		return false, err
+// RaidReminder posts the day-before reminder through the guild's webhook and returns the
+// reference to withdraw it by. False with no error means no channel, or it is switched off.
+func (d *GuildDeliverer) RaidReminder(ctx context.Context, guildID int64, e RaidPosted) (ReminderRef, bool, error) {
+	if d == nil {
+		return ReminderRef{}, false, nil
 	}
-	if !found || hook.DisabledReason != nil {
-		return false, nil
+	var ref ReminderRef
+	sent, err := d.deliverWith(ctx, guildID, eventRaidReminder, func(ctx context.Context, url string) error {
+		id, err := d.Poster.PostContent(ctx, url, WebhookReminderContent(e))
+		ref = ReminderRef{Via: ReminderViaWebhook, MessageID: id}
+		return err
+	})
+	return ref, sent, err
+}
+
+// RaidReminderWithdrawn deletes a webhook reminder again (the raid moved, was cancelled or
+// locked). A bot reference is the bot's to delete; a failure is logged, never returned.
+func (d *GuildDeliverer) RaidReminderWithdrawn(ctx context.Context, guildID int64, ref ReminderRef) {
+	if d == nil || ref.Via != ReminderViaWebhook {
+		return
+	}
+	url, found, err := d.openURL(ctx, guildID)
+	if err == nil && found {
+		postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
+		defer cancel()
+		err = d.Poster.DeleteMessage(postCtx, url, ref.MessageID)
+	}
+	if err != nil {
+		d.logger().Warn("notify", "guild", guildID, "event", eventRaidReminder, "outcome", "withdraw_failed", "err", err)
+	}
+}
+
+// openURL is the guild's webhook URL, false when it has no channel or the channel is off.
+func (d *GuildDeliverer) openURL(ctx context.Context, guildID int64) (string, bool, error) {
+	hook, found, err := d.Store.Get(ctx, guildID)
+	if err != nil || !found || hook.DisabledReason != nil {
+		return "", false, err
 	}
 	box, err := d.Store.TokenBox(ctx, guildID)
 	if errors.Is(err, ErrNotFound) {
-		return false, nil
+		return "", false, nil
 	}
 	if err != nil {
-		return false, err
+		return "", false, err
 	}
 	url, err := d.Sealer.Open(box)
 	if err != nil {
-		return false, errors.New("notify: the guild's saved webhook could not be opened")
+		return "", false, errors.New("notify: the guild's saved webhook could not be opened")
+	}
+	return url, true, nil
+}
+
+// deliver is Deliver that also says whether the post reached the channel.
+func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event string, embed Embed) (bool, error) {
+	return d.deliverWith(ctx, guildID, event, func(ctx context.Context, url string) error {
+		return d.Poster.Post(ctx, url, embed)
+	})
+}
+
+// deliverWith sends through send once the channel is found, then applies the five-failure rule.
+func (d *GuildDeliverer) deliverWith(ctx context.Context, guildID int64, event string, send func(ctx context.Context, url string) error) (bool, error) {
+	url, found, err := d.openURL(ctx, guildID)
+	if err != nil || !found {
+		return false, err
 	}
 	postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
 	defer cancel()
-	postErr := d.Poster.Post(postCtx, url, embed)
+	postErr := send(postCtx, url)
 	if postErr != nil && ctx.Err() != nil {
 		// The request's shared budget ended the post; that says nothing about the channel.
 		d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "raid_post_skipped")

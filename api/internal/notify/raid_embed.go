@@ -31,6 +31,8 @@ const (
 	PostEnded     RaidPostState = "ended"
 	PostDone      RaidPostState = "done"
 	PostWebhook   RaidPostState = "webhook"
+	// PostTomorrow is the post on the day-before reminder (spec 2026-10-28 §P.4).
+	PostTomorrow RaidPostState = "tomorrow"
 )
 
 // raidCopy is the words of the raid posts (spec 2026-10-27-discord-bot §6.2).
@@ -39,6 +41,7 @@ var raidCopy = struct {
 	MovedPrefix     string
 	CancelledPrefix string
 	DonePrefix      string
+	TomorrowPrefix  string
 	Descriptions    map[RaidPostState]string
 	WhenName        string
 	WhenFormat      string // %d the unix start, twice
@@ -61,11 +64,18 @@ var raidCopy = struct {
 	CameName        string
 	CameOf          string // %d came, %d of
 	KillsName       string
+	// The reminder line (spec 2026-10-28 §P.7).
+	ReminderLead        string // %s the escaped title, %d the unix start, twice
+	ReminderCount       string // %d signed up, %d the raid size
+	ReminderCountOpen   string // %d signed up, size unknown
+	ReminderNobody      string
+	ReminderWebhookLink string // %s the raid page
 }{
 	TitleFormat:     "%s · %s",
 	MovedPrefix:     "Moved: ",
 	CancelledPrefix: "Cancelled: ",
 	DonePrefix:      "Done: ",
+	TomorrowPrefix:  "Tomorrow: ",
 	Descriptions: map[RaidPostState]string{
 		PostOpen:      "Sign up with the buttons below.",
 		PostLocked:    "Sign-ups are locked. An officer can still change yours.",
@@ -74,6 +84,7 @@ var raidCopy = struct {
 		PostEnded:     "This raid has ended.",
 		PostDone:      "Logged as a raid night.",
 		PostWebhook:   "Sign up on Forever Sixty.",
+		PostTomorrow:  "The raid is tomorrow. Sign up with the buttons below.",
 	},
 	WhenName:       "When",
 	WhenFormat:     "<t:%d:F> (<t:%d:R>)",
@@ -98,6 +109,12 @@ var raidCopy = struct {
 	CameName:       "Came",
 	CameOf:         "%d of %d",
 	KillsName:      "Kills",
+
+	ReminderLead:        "**%s is tomorrow**, <t:%d:F> (<t:%d:R>).",
+	ReminderCount:       "%d of %d signed up so far.",
+	ReminderCountOpen:   "%d signed up so far.",
+	ReminderNobody:      "Nobody has signed up yet.",
+	ReminderWebhookLink: "[Sign up on Forever Sixty](%s)",
 }
 
 // RaidCounts are a raid's sign-up totals; the roles count In rows only.
@@ -171,6 +188,8 @@ func statePrefix(s RaidPostState) string {
 		return raidCopy.CancelledPrefix
 	case PostDone:
 		return raidCopy.DonePrefix
+	case PostTomorrow:
+		return raidCopy.TomorrowPrefix
 	}
 	return ""
 }

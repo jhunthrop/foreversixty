@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	"sync"
@@ -54,6 +55,10 @@ type Poster interface {
 	// Delete removes the webhook at Discord (DELETE on its URL). A 404 is
 	// success: it is already gone.
 	Delete(ctx context.Context, webhookURL string) error
+	// PostContent sends a plain text message that mentions no one and returns its id.
+	PostContent(ctx context.Context, webhookURL, content string) (messageID string, err error)
+	// DeleteMessage removes one message the webhook posted. A 404 is success.
+	DeleteMessage(ctx context.Context, webhookURL, messageID string) error
 }
 
 // Transport failures, reported without the URL. The deliverer turns them
@@ -151,6 +156,14 @@ func newMessage(avatarURL string, embed Embed) messageJSON {
 	}
 }
 
+// contentJSON is the plain text request body: no embeds, and a mention list that pings no one.
+type contentJSON struct {
+	Username        string          `json:"username"`
+	AvatarURL       string          `json:"avatar_url,omitempty"`
+	Content         string          `json:"content"`
+	AllowedMentions allowedMentions `json:"allowed_mentions"`
+}
+
 type fieldJSON struct {
 	Name   string `json:"name"`
 	Value  string `json:"value"`
@@ -201,6 +214,79 @@ func (p *HTTPPoster) Post(ctx context.Context, webhookURL string, embed Embed) e
 	}
 	defer res.Body.Close()
 	return statusError(res)
+}
+
+// PostContent sends one text message and returns the id Discord gave it.
+func (p *HTTPPoster) PostContent(ctx context.Context, webhookURL, content string) (string, error) {
+	target, err := withQuery(webhookURL, "wait", "true")
+	if err != nil {
+		return "", err
+	}
+	body, err := json.Marshal(contentJSON{
+		Username: Username, AvatarURL: p.avatarURL, Content: content,
+		AllowedMentions: allowedMentions{Parse: []string{}},
+	})
+	if err != nil {
+		return "", fmt.Errorf("notify: encode message: %w", err)
+	}
+	res, err := p.do(ctx, http.MethodPost, target, bytes.NewReader(body))
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+	if err := statusError(res); err != nil {
+		return "", err
+	}
+	var out struct {
+		ID string `json:"id"`
+	}
+	if err := json.NewDecoder(io.LimitReader(res.Body, maxResponseLen)).Decode(&out); err != nil || out.ID == "" {
+		return "", errors.New("notify: discord answered without a message id")
+	}
+	return out.ID, nil
+}
+
+// DeleteMessage removes one message of the webhook; any 2xx or a 404 is success.
+func (p *HTTPPoster) DeleteMessage(ctx context.Context, webhookURL, messageID string) error {
+	target, err := messageURL(webhookURL, messageID)
+	if err != nil {
+		return err
+	}
+	res, err := p.do(ctx, http.MethodDelete, target, nil)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode == http.StatusNotFound {
+		return nil
+	}
+	return statusError(res)
+}
+
+// withQuery adds one query parameter; a parse failure is reported without the URL.
+func withQuery(webhookURL, key, value string) (string, error) {
+	u, err := url.Parse(webhookURL)
+	if err != nil {
+		return "", errors.New("notify: bad webhook request")
+	}
+	q := u.Query()
+	q.Set(key, value)
+	u.RawQuery = q.Encode()
+	return u.String(), nil
+}
+
+// messageURL is the webhook's message path; the id must be a snowflake.
+func messageURL(webhookURL, messageID string) (string, error) {
+	if messageID == "" || strings.Trim(messageID, "0123456789") != "" {
+		return "", errors.New("notify: bad message id")
+	}
+	u, err := url.Parse(webhookURL)
+	if err != nil {
+		return "", errors.New("notify: bad webhook request")
+	}
+	u.Path = strings.TrimSuffix(u.Path, "/") + "/messages/" + messageID
+	u.RawPath = ""
+	return u.String(), nil
 }
 
 // LookupResult is what Discord says about a webhook. Name may be empty.
@@ -306,8 +392,54 @@ type FakePoster struct {
 	DeleteErr error
 	// OnDelete, when set, runs inside every Delete (a test reads the world as Discord is called).
 	OnDelete func(webhookURL string)
-	posts    []PostCall
-	deletes  []string
+	// ContentErr, when set, is returned by every PostContent; ContentID is the id it answers.
+	ContentErr error
+	ContentID  string
+	// DeleteMessageErr, when set, is returned by every DeleteMessage.
+	DeleteMessageErr error
+	posts            []PostCall
+	deletes          []string
+	contents         []ContentCall
+	messageDeletes   []MessageDeleteCall
+}
+
+// ContentCall is one recorded FakePoster.PostContent.
+type ContentCall struct{ URL, Content string }
+
+// MessageDeleteCall is one recorded FakePoster.DeleteMessage.
+type MessageDeleteCall struct{ URL, MessageID string }
+
+// PostContent records the message and answers ContentID (or ContentErr).
+func (f *FakePoster) PostContent(_ context.Context, webhookURL, content string) (string, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.contents = append(f.contents, ContentCall{URL: webhookURL, Content: content})
+	if f.ContentErr != nil {
+		return "", f.ContentErr
+	}
+	return f.ContentID, nil
+}
+
+// Contents returns a copy of the recorded PostContent calls.
+func (f *FakePoster) Contents() []ContentCall {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]ContentCall(nil), f.contents...)
+}
+
+// DeleteMessage records the call and returns DeleteMessageErr.
+func (f *FakePoster) DeleteMessage(_ context.Context, webhookURL, messageID string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.messageDeletes = append(f.messageDeletes, MessageDeleteCall{URL: webhookURL, MessageID: messageID})
+	return f.DeleteMessageErr
+}
+
+// MessageDeletes returns a copy of the recorded DeleteMessage calls.
+func (f *FakePoster) MessageDeletes() []MessageDeleteCall {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]MessageDeleteCall(nil), f.messageDeletes...)
 }
 
 func (f *FakePoster) Post(_ context.Context, webhookURL string, embed Embed) error {
