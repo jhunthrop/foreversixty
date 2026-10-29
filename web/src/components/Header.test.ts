@@ -31,6 +31,18 @@ describe('Header', () => {
     expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium' });
   });
 
+  it('carries the pre-paint hint script inside the header, before the doors (so /b/{id} has it)', async () => {
+    const doc = await renderDoc('/');
+    const header = doc.querySelector('[data-site-header]')!;
+    const script = [...header.querySelectorAll('script:not([src])')].find((s) =>
+      s.textContent?.includes('fs.premiumSource'),
+    );
+    expect(script).toBeDefined();
+    expect(script?.textContent).toContain('premiumNav');
+    const nav = doc.getElementById('primary-nav')!;
+    expect(script!.compareDocumentPosition(nav) & 4).toBe(4);
+  });
+
   it('marks the Premium tag current on /premium and its checkout', async () => {
     for (const path of ['/premium', '/premium/checkout']) {
       const doc = await renderDoc(path);

@@ -433,6 +433,91 @@
     }
   }
 
+  /* ------------------------------------------------------------ premium tag */
+  /* The Premium tag (spec 2026-10-29-premium-entry sections 3 to 5). One block after the bar's
+     own rules, so it wins over the shared .site-door rules at equal specificity; planner-island.css
+     carries it to the API's /b/{id} page with the rest of the header. Bar: a quiet tag (8 %
+     ground, 28 % border) on the doors' row; hover and current are stronger, and the open account
+     control stays the bar's strongest gold (section 9). */
+  .site-door-premium {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 4px;
+    border-radius: var(--radius-control);
+  }
+  .site-door-premium .pill {
+    color: var(--color-gold);
+    background: rgba(229, 185, 85, 0.08);
+    border-color: rgba(229, 185, 85, 0.28);
+    transition:
+      background-color 120ms,
+      border-color 120ms,
+      color 120ms;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .site-door-premium:hover .pill {
+      color: var(--color-gold-hover);
+      background: rgba(229, 185, 85, 0.22);
+      border-color: rgba(229, 185, 85, 0.6);
+    }
+  }
+  .site-door-premium:active .pill {
+    background: rgba(229, 185, 85, 0.3);
+  }
+  .site-door-premium[aria-current='page'] .pill {
+    background: rgba(229, 185, 85, 0.22);
+    border-color: var(--color-gold);
+  }
+  .site-door-premium:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    background: none;
+  }
+  /* Section 5: below 1024 the same element shares the Menu's last row with Get set up: Get set
+     up at the left as it was, the tag right-aligned, one 52 px row, no chevron. The groups keep
+     their full-width rows; a Premium account's row is Get set up alone, as before. */
+  @media (max-width: 1023px) {
+    .site-doors {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 12px;
+    }
+    .site-doors > .site-group {
+      flex: 0 0 100%;
+    }
+    .site-door-setup {
+      flex: 1 1 auto;
+      min-height: 52px;
+    }
+    .site-door-premium {
+      display: flex;
+      flex: none;
+      justify-content: flex-end;
+      min-height: 52px;
+      margin-top: 12px;
+      padding: 0 4px 0 8px;
+      border-radius: 4px;
+    }
+    .site-door-premium:hover,
+    .site-door-premium:active {
+      background: var(--row-hover);
+    }
+    .site-door-premium:focus-visible {
+      outline-offset: -2px;
+    }
+  }
+  /* Section 4: hidden before paint from the stored hint (Header.astro's inline script, on the
+     site and on /b/{id}); held (box kept) after /v1/me. */
+  html[data-premium-nav='hide'] .site-door-premium {
+    display: none;
+  }
+  html[data-premium-nav='hold'] .site-door-premium {
+    visibility: hidden;
+  }
+
   /* ------------------------------------------------------- character selector */
   .csel {
     position: relative;

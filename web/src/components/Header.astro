@@ -14,6 +14,7 @@ import {
 } from '../lib/nav';
 import { guideClasses } from '../lib/nav-guides';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
+import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
@@ -47,6 +48,23 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
 ---
 
 <header class="site-header" data-site-header>
+  <script is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: STORED_SOURCES }}>
+    // Who pays for Premium, before the doors are parsed (spec 2026-10-29-premium-entry section 4).
+    // It lives in the header, not the site's head, so the API's /b/{id} page (which wears this
+    // header and none of Base.astro's head) hides the tag too. The stored hint
+    // (lib/account/premium-hint.ts) becomes data-premium, which /premium's cards key off, and
+    // data-premium-nav="hide" takes the Premium tag out when the hint, or the cached /v1/me's
+    // server sims (data-server-sims, from Base.astro's head script on the site), says Premium.
+    // After paint the tag is only ever held (lib/premium-nav.ts), never removed.
+    const root = document.documentElement;
+    try {
+      const source = localStorage.getItem(key);
+      if (sources.includes(source)) root.dataset.premium = source;
+    } catch {
+      // Storage blocked: the cards keep their default state and the tag shows.
+    }
+    if (root.dataset.premium || root.dataset.serverSims) root.dataset.premiumNav = 'hide';
+  </script>
   <a href="/" class="site-wordmark">
     <Seal size={30} gradientId="header-seal" />
     <span>Forever Sixty</span>
@@ -176,87 +194,3 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     afterPaint(() => void import('../lib/header-wiring').then((m) => m.wireHeader()));
   </script>
 </header>
-
-<style>
-  /* The Premium tag (spec 2026-10-29-premium-entry sections 3 to 5). Its own rules live here, not
-     in nav.css: they sit outside nav.css's layer, so they win over the shared .site-door rules.
-     Bar: a quiet tag (8 % ground, 28 % border) on the doors' row; hover and current are stronger,
-     and the open account control stays the bar's strongest gold (section 9). */
-  .site-door-premium {
-    display: inline-flex;
-    align-self: center;
-    align-items: center;
-    min-height: 40px;
-    padding: 0 4px;
-    border-radius: var(--radius-control);
-  }
-  .site-door-premium .pill {
-    color: var(--color-gold);
-    background: rgba(229, 185, 85, 0.08);
-    border-color: rgba(229, 185, 85, 0.28);
-    transition:
-      background-color 120ms,
-      border-color 120ms,
-      color 120ms;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .site-door-premium:hover .pill {
-      color: var(--color-gold-hover);
-      background: rgba(229, 185, 85, 0.22);
-      border-color: rgba(229, 185, 85, 0.6);
-    }
-  }
-  .site-door-premium:active .pill {
-    background: rgba(229, 185, 85, 0.3);
-  }
-  .site-door-premium[aria-current='page'] .pill {
-    background: rgba(229, 185, 85, 0.22);
-    border-color: var(--color-gold);
-  }
-  .site-door-premium:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-    background: none;
-  }
-  /* Section 5: below 1024 the same element shares the Menu's last row with Get set up: Get set
-     up at the left as it was, the tag right-aligned, one 52 px row, no chevron. The groups keep
-     their full-width rows; a Premium account's row is Get set up alone, as before. */
-  @media (max-width: 1023px) {
-    .site-doors {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      column-gap: 12px;
-    }
-    .site-doors > :global(.site-group) {
-      flex: 0 0 100%;
-    }
-    .site-door-setup {
-      flex: 1 1 auto;
-      min-height: 52px;
-    }
-    .site-door-premium {
-      display: flex;
-      flex: none;
-      justify-content: flex-end;
-      min-height: 52px;
-      margin-top: 12px;
-      padding: 0 4px 0 8px;
-      border-radius: 4px;
-    }
-    .site-door-premium:hover,
-    .site-door-premium:active {
-      background: var(--row-hover);
-    }
-    .site-door-premium:focus-visible {
-      outline-offset: -2px;
-    }
-  }
-  /* Section 4: hidden before paint from the stored hint; held (box kept) after /v1/me. */
-  :global(html[data-premium-nav='hide']) .site-door-premium {
-    display: none;
-  }
-  :global(html[data-premium-nav='hold']) .site-door-premium {
-    visibility: hidden;
-  }
-</style>

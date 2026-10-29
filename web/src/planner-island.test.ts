@@ -73,16 +73,8 @@ function classNamesIn(html: string): string[] {
  * pipeline this file does not build); `reference-disclosure` and `reference-panel` are
  * bare semantic hooks with no CSS of their own anywhere in the codebase. Excluded here
  * rather than silently passing the "every class has a selector" check for them.
- * `site-door-premium` is the same case as `nav-scroll-fade`: the Premium tag's rules live in
- * Header.astro's own `<style>` (spec 2026-10-29-premium-entry), and the API's /b/{id} page
- * renders it with the shared `.pill.pill-site` look only.
  */
-const NON_TAILWIND_MARKER_CLASSES = new Set([
-  'nav-scroll-fade',
-  'reference-disclosure',
-  'reference-panel',
-  'site-door-premium',
-]);
+const NON_TAILWIND_MARKER_CLASSES = new Set(['nav-scroll-fade', 'reference-disclosure', 'reference-panel']);
 
 let css = '';
 let outDir = '';

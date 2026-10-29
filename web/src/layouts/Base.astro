@@ -46,7 +46,6 @@ import { storageKey } from '../lib/data/query';
 import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/history-layout';
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
-import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
   LIVE_TTL_MS as SERVER_RUNS_LIVE_TTL_MS,
@@ -243,21 +242,6 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       } catch {
         /* storage unavailable or malformed: the floors apply */
       }
-    </script>
-    <script is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: STORED_SOURCES }}>
-      // Who pays for Premium, before first paint (spec 2026-10-29-premium-entry section 4): the
-      // stored hint (lib/account/premium-hint.ts) becomes data-premium, which /premium's cards key
-      // off, and data-premium-nav="hide" takes the header's Premium tag out when the hint or the
-      // cached /v1/me's server sims (data-server-sims, set by the script above) says Premium.
-      // After paint the tag is only ever held (lib/premium-nav.ts), never removed.
-      const root = document.documentElement;
-      try {
-        const source = localStorage.getItem(key);
-        if (sources.includes(source)) root.dataset.premium = source;
-      } catch {
-        // Storage blocked: the cards keep their default state and the tag shows.
-      }
-      if (root.dataset.premium || root.dataset.serverSims) root.dataset.premiumNav = 'hide';
     </script>
   </head>
   <body class="min-h-screen flex flex-col bg-bg">

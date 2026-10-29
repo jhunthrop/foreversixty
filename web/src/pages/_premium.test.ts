@@ -139,11 +139,9 @@ describe('the Premium card when the account has Premium', () => {
     return card;
   };
   const sourceScripts = (doc: Document): Element[] =>
-    [...doc.head.querySelectorAll('script:not([src])')].filter((s) =>
-      s.textContent?.includes('fs.premiumSource'),
-    );
+    [...doc.querySelectorAll('script:not([src])')].filter((s) => s.textContent?.includes('fs.premiumSource'));
 
-  it('one head inline script copies the three stored words onto data-premium', async () => {
+  it('one inline script (in the header) copies the three stored words onto data-premium', async () => {
     const doc = await renderPremium();
     const scripts = sourceScripts(doc);
     expect(scripts).toHaveLength(1);
@@ -187,7 +185,7 @@ describe('the Premium card when the account has Premium', () => {
     expect(source).toMatch(/\.audience,\s*\.audience-cell\s*\{\s*margin-bottom: 8px;/);
   });
 
-  describe('the head script (Base.astro owns it; spec 2026-10-29-premium-entry section 4)', () => {
+  describe('the hint script (Header.astro owns it, so /b/{id} has it too; spec 2026-10-29-premium-entry section 4)', () => {
     const runOn = async (storageOf: () => Storage, html = '<html>'): Promise<DOMStringMap> => {
       const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
       const doc = new JSDOM(`<!doctype html>${html}</html>`).window.document;
