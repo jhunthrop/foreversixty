@@ -154,13 +154,13 @@ func (d *Drainer) drainRow(ctx context.Context, p Post, now time.Time) {
 		return
 	}
 	state := PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, p.MovedFrom, now)
-	messageID, err := d.send(ctx, p, postFor(facts, state, p.MovedFrom), facts, now)
+	messageID, look, err := d.sendPost(ctx, p, facts, state, now)
 	if err != nil {
 		d.refused(ctx, p, now, err)
 		return
 	}
 	d.write(ctx, "post_finish", p.RaidID, func(ctx context.Context) error {
-		return d.Store.FinishEdit(ctx, p, messageID, wakeAt(state, facts), now)
+		return d.Store.FinishEdit(ctx, p, messageID, wakeAt(look, facts), now)
 	})
 	d.write(ctx, "post_success", p.RaidID, func(ctx context.Context) error { return d.Store.RecordPostSuccess(ctx, p.GuildID) })
 }
@@ -192,11 +192,11 @@ func postNonce(p Post) string {
 	return "r" + strconv.FormatInt(p.RaidID, 36) + "." + strconv.FormatInt(p.CreatedAt.UnixMilli(), 36)
 }
 
-// wakeAt is the next time the post changes on its own: the start while moved, else the end
-// while the raid has not ended; nil once nothing is left to change by the clock.
+// wakeAt is the next time the post changes on its own: the start while moved or Tomorrow,
+// else the end while the raid has not ended; nil once nothing is left to change by the clock.
 func wakeAt(state notify.RaidPostState, facts guilds.RaidPostFacts) *time.Time {
 	switch state {
-	case notify.PostMoved:
+	case notify.PostMoved, notify.PostTomorrow:
 		at := facts.Post.StartsAt
 		return &at
 	case notify.PostOpen, notify.PostLocked:

@@ -26,6 +26,10 @@ type RaidEvents interface {
 	RaidChanged(ctx context.Context, guildID int64, e notify.RaidChanged)
 	// ReportReady posts the raid-night report; posted is false when it did not reach a channel.
 	ReportReady(ctx context.Context, guildID int64, e notify.ReportReady) (posted bool, err error)
+	// RaidReminder sends the day-before reminder; sent is false when it reached no channel.
+	RaidReminder(ctx context.Context, guildID int64, e notify.RaidPosted) (ref notify.ReminderRef, sent bool, err error)
+	// RaidReminderWithdrawn deletes a sent reminder again; a failure is logged, never returned.
+	RaidReminderWithdrawn(ctx context.Context, guildID int64, ref notify.ReminderRef)
 }
 
 // raidPathFormat is the raid page under the guild page's path.

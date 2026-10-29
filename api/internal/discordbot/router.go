@@ -58,6 +58,32 @@ func (r *RaidRouter) RaidChanged(ctx context.Context, guildID int64, e notify.Ra
 	r.Webhook.RaidChanged(ctx, guildID, e)
 }
 
+// RaidReminder asks the drainer for the reminder when the bot is active and the raid has a
+// live post: the drainer edits the post or replies under it (drain_reminder.go). Otherwise
+// the webhook sends it. A failed mark with the bot active is returned, so the caller retries
+// the reminder instead of sending it a second way.
+func (r *RaidRouter) RaidReminder(ctx context.Context, guildID int64, e notify.RaidPosted) (notify.ReminderRef, bool, error) {
+	if _, ok := r.activeChannel(ctx, guildID); ok {
+		err := r.Bot.d.Store.MarkReminderDue(ctx, e.RaidID)
+		switch {
+		case err == nil:
+			return notify.ReminderRef{Via: notify.ReminderViaBot}, true, nil
+		case !errors.Is(err, ErrNoLivePost):
+			return notify.ReminderRef{}, false, err
+		}
+	}
+	return r.Webhook.RaidReminder(ctx, guildID, e)
+}
+
+// RaidReminderWithdrawn deletes a webhook reminder. A bot reminder is the drainer's to
+// withdraw: the raid's own mark (a move, cancel or lock) brings it there.
+func (r *RaidRouter) RaidReminderWithdrawn(ctx context.Context, guildID int64, ref notify.ReminderRef) {
+	if ref.Via == notify.ReminderViaBot {
+		return
+	}
+	r.Webhook.RaidReminderWithdrawn(ctx, guildID, ref)
+}
+
 // enqueue queues the raid's post; false (logged on a failure) when nothing was queued
 // because the channel went away since ActiveInstall read it, so the caller uses the webhook.
 func (r *RaidRouter) enqueue(ctx context.Context, guildID, raidID int64) bool {

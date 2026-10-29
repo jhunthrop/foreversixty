@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+// ErrNoLivePost is a reminder for a raid without a post the bot can still edit.
+var ErrNoLivePost = errors.New("discordbot: the raid has no live post")
+
 // ErrLeaseLost is a write by a drainer whose lease on the row has lapsed or been taken: the
 // row is someone else's now, so the write does not land.
 var ErrLeaseLost = errors.New("discordbot: the post's lease was lost")
@@ -27,6 +30,12 @@ type Post struct {
 	Lease time.Time
 	// CreatedAt is when this generation of the post was queued (it names the nonce).
 	CreatedAt time.Time
+	// RemindDue asks the drain for the day-before reminder.
+	RemindDue bool
+	// ReminderMessageID is the reminder's reply, nil when none is up (or the post took it).
+	ReminderMessageID *string
+	// RemindedAt is when the reminder went out; nil before it and after a move withdrew it.
+	RemindedAt *time.Time
 }
 
 // enqueueSQL queues the post in the install's channel, read in the same statement: for share
@@ -72,16 +81,51 @@ func (s *Store) MarkRaidDirty(ctx context.Context, raidID int64) {
 // not, so the post shows Moved and Was. A failure is logged.
 func (s *Store) MarkRaidMoved(ctx context.Context, raidID int64, was time.Time) {
 	err := s.exec(ctx, `update guild_raid_discord_posts
-		set moved_from = $2, dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now()), `+unparkSet+`
+		set moved_from = $2, reminded_at = null, dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now()), `+unparkSet+`
 		where raid_id = $1 and not gone`, raidID, was)
 	if err != nil {
 		s.logger().Error("discordbot", "op", "mark_raid_moved", "raid_id", raidID, "err", err)
 	}
 }
 
-// SetMovedFrom records the start the raid was moved from, which the post shows as Was.
+// SetMovedFrom records the start the raid was moved from, which the post shows as Was. A
+// reminder sent for the old start no longer stands (Ruling 4): reminded_at is cleared, so the
+// post loses its Tomorrow look and the drain withdraws a reminder reply still up.
 func (s *Store) SetMovedFrom(ctx context.Context, raidID int64, was time.Time) error {
-	return s.exec(ctx, `update guild_raid_discord_posts set moved_from = $2 where raid_id = $1`, raidID, was)
+	return s.exec(ctx, `update guild_raid_discord_posts set moved_from = $2, reminded_at = null
+		where raid_id = $1`, raidID, was)
+}
+
+// MarkReminderDue asks the drain for the raid's day-before reminder and marks the post dirty.
+// ErrNoLivePost when the raid has no post row or its post is gone.
+func (s *Store) MarkReminderDue(ctx context.Context, raidID int64) error {
+	tag, err := s.Pool.Exec(ctx, `update guild_raid_discord_posts
+		set remind_due = true, dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now()), `+unparkSet+`
+		where raid_id = $1 and not gone`, raidID)
+	if err != nil {
+		return fmt.Errorf("discordbot: mark reminder due: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNoLivePost
+	}
+	return nil
+}
+
+// FinishReminder records a reminder sent (reminderID its reply, nil when the post took it) or
+// dropped unsent. It keeps the lease for the post's own FinishEdit. A move that landed while
+// the reminder was in flight leaves reminded_at null, so the next drain withdraws the reply.
+func (s *Store) FinishReminder(ctx context.Context, p Post, reminderID *string, now time.Time) error {
+	return s.execLeased(ctx, `update guild_raid_discord_posts set remind_due = false, reminder_message_id = $3,
+		reminded_at = case when moved_from is not distinct from $5 then $4::timestamptz end
+		where raid_id = $1 and lease_until = $2`, p.RaidID, p.Lease, reminderID, now, p.MovedFrom)
+}
+
+// ClearReminder records the reminder reply withdrawn; rearm also forgets that it was sent, so
+// the post loses its Tomorrow look. It keeps the lease for the post's own FinishEdit.
+func (s *Store) ClearReminder(ctx context.Context, p Post, rearm bool) error {
+	return s.execLeased(ctx, `update guild_raid_discord_posts set reminder_message_id = null,
+		reminded_at = case when $3 then null else reminded_at end
+		where raid_id = $1 and lease_until = $2`, p.RaidID, p.Lease, rearm)
 }
 
 // PostExists reports whether the raid has a post row, gone or not.
@@ -115,7 +159,7 @@ const claimDueSQL = `
 	  limit $4
 	  for update of d skip locked)
 	returning p.raid_id, p.guild_id, p.channel_id, p.message_id, p.moved_from, p.dirty_seq, p.attempts,
-	  p.lease_until, p.created_at`
+	  p.lease_until, p.created_at, p.remind_due, p.reminder_message_id, p.reminded_at`
 
 // ClaimDue leases the rows due at now for lease.
 func (s *Store) ClaimDue(ctx context.Context, now time.Time, debounce, lease time.Duration, limit int) ([]Post, error) {
@@ -128,7 +172,7 @@ func (s *Store) ClaimDue(ctx context.Context, now time.Time, debounce, lease tim
 	for rows.Next() {
 		var p Post
 		if err := rows.Scan(&p.RaidID, &p.GuildID, &p.ChannelID, &p.MessageID, &p.MovedFrom, &p.DirtySeq,
-			&p.Attempts, &p.Lease, &p.CreatedAt); err != nil {
+			&p.Attempts, &p.Lease, &p.CreatedAt, &p.RemindDue, &p.ReminderMessageID, &p.RemindedAt); err != nil {
 			return nil, fmt.Errorf("discordbot: claim posts: %w", err)
 		}
 		out = append(out, p)

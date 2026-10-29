@@ -19,6 +19,9 @@ type recordingRaidEvents struct {
 	posted  []notify.RaidPosted
 	changed []notify.RaidChanged
 	reports []notify.ReportReady
+	// reminders and withdrawn record the day-before reminders and their withdrawals.
+	reminders []notify.RaidPosted
+	withdrawn []notify.ReminderRef
 	// notPosted makes ReportReady answer that the post reached no channel.
 	notPosted bool
 	// reportErr makes ReportReady fail outright.
@@ -45,6 +48,19 @@ func (f *recordingRaidEvents) RaidChanged(_ context.Context, _ int64, e notify.R
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.changed = append(f.changed, e)
+}
+
+func (f *recordingRaidEvents) RaidReminder(_ context.Context, _ int64, e notify.RaidPosted) (notify.ReminderRef, bool, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.reminders = append(f.reminders, e)
+	return notify.ReminderRef{Via: notify.ReminderViaWebhook, MessageID: "1"}, true, nil
+}
+
+func (f *recordingRaidEvents) RaidReminderWithdrawn(_ context.Context, _ int64, ref notify.ReminderRef) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.withdrawn = append(f.withdrawn, ref)
 }
 
 const testSiteBase = "https://foreversixty.gg"

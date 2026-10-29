@@ -69,7 +69,7 @@ func postRows(p notify.RaidPost, raidURL, nightURL string) []ActionRow {
 	case notify.PostCancelled:
 		return rowOf(linkButton(postCopy.RaidPage, raidURL))
 	}
-	live := p.State == notify.PostOpen || p.State == notify.PostMoved
+	live := p.State == notify.PostOpen || p.State == notify.PostMoved || p.State == notify.PostTomorrow
 	row := make(ActionRow, 0, len(signUpStates)+1)
 	for i, s := range signUpStates {
 		style := StyleSecondary

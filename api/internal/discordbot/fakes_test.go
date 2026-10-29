@@ -21,7 +21,11 @@ type FakeREST struct {
 	ErrFor map[string]error
 	// MessageID is what CreateMessage returns (default "m1").
 	MessageID string
-	Layout    ServerLayout
+	// ReplyID is what CreateMessage returns for a reply (default MessageID's answer).
+	ReplyID string
+	// Latest is what LatestMessageID returns.
+	Latest string
+	Layout ServerLayout
 	// OnCall, when set, runs inside every call before it answers (a test acts while
 	// Discord is being called).
 	OnCall func(RESTCall)
@@ -52,6 +56,9 @@ func (f *FakeREST) CreateMessage(_ context.Context, channelID string, m Message)
 	if err := f.record(RESTCall{Method: "CreateMessage", ChannelID: channelID, Message: m}); err != nil {
 		return "", err
 	}
+	if m.ReplyTo != "" && f.ReplyID != "" {
+		return f.ReplyID, nil
+	}
 	if f.MessageID == "" {
 		return "m1", nil
 	}
@@ -60,6 +67,16 @@ func (f *FakeREST) CreateMessage(_ context.Context, channelID string, m Message)
 
 func (f *FakeREST) EditMessage(_ context.Context, channelID, messageID string, m Message) error {
 	return f.record(RESTCall{Method: "EditMessage", ChannelID: channelID, MessageID: messageID, Message: m})
+}
+
+func (f *FakeREST) LatestMessageID(_ context.Context, channelID string) (string, error) {
+	err := f.record(RESTCall{Method: "LatestMessageID", ChannelID: channelID})
+	return f.Latest, err
+}
+
+// DeleteMessage keeps the REST contract: an already deleted message (10008) is success.
+func (f *FakeREST) DeleteMessage(_ context.Context, channelID, messageID string) error {
+	return alreadyGone(f.record(RESTCall{Method: "DeleteMessage", ChannelID: channelID, MessageID: messageID}))
 }
 
 func (f *FakeREST) ServerLayout(_ context.Context, serverID string) (ServerLayout, error) {

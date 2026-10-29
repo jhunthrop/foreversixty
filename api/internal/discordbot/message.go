@@ -110,12 +110,21 @@ type Message struct {
 	// Nonce, on a create, makes Discord answer a repeat (same nonce, same author, within a
 	// few minutes) with the message it already made instead of a second one. At most 25 chars.
 	Nonce string
+	// ReplyTo, on a create, makes the message a reply to that message in the same channel;
+	// the reply survives the original's deletion and, with the empty mention list, pings no one.
+	ReplyTo string
 	// echo, when set, makes an edit put a pressed card back as it was (the card failure).
 	echo *sourceMessage
 }
 
 // maxNonceRunes is Discord's nonce bound.
 const maxNonceRunes = 25
+
+// messageReference is a reply's pointer to the message it answers.
+type messageReference struct {
+	MessageID       string `json:"message_id"`
+	FailIfNotExists bool   `json:"fail_if_not_exists"`
+}
 
 type mentions struct {
 	Parse []string `json:"parse"`
@@ -124,13 +133,14 @@ type mentions struct {
 // MarshalJSON always writes an empty mention list, so a message pings no one.
 func (m Message) MarshalJSON() ([]byte, error) {
 	out := struct {
-		Content         string         `json:"content,omitempty"`
-		Embeds          []notify.Embed `json:"embeds,omitempty"`
-		Components      []ActionRow    `json:"components,omitempty"`
-		Flags           int            `json:"flags,omitempty"`
-		AllowedMentions mentions       `json:"allowed_mentions"`
-		Nonce           string         `json:"nonce,omitempty"`
-		EnforceNonce    bool           `json:"enforce_nonce,omitempty"`
+		Content         string            `json:"content,omitempty"`
+		Embeds          []notify.Embed    `json:"embeds,omitempty"`
+		Components      []ActionRow       `json:"components,omitempty"`
+		Flags           int               `json:"flags,omitempty"`
+		AllowedMentions mentions          `json:"allowed_mentions"`
+		Nonce           string            `json:"nonce,omitempty"`
+		EnforceNonce    bool              `json:"enforce_nonce,omitempty"`
+		Reference       *messageReference `json:"message_reference,omitempty"`
 	}{
 		Content: m.Content, Embeds: m.Embeds, Components: m.Components,
 		AllowedMentions: mentions{Parse: []string{}}, Nonce: m.Nonce, EnforceNonce: m.Nonce != "",
@@ -140,6 +150,9 @@ func (m Message) MarshalJSON() ([]byte, error) {
 	}
 	if m.Ephemeral {
 		out.Flags = ephemeralFlag
+	}
+	if m.ReplyTo != "" {
+		out.Reference = &messageReference{MessageID: m.ReplyTo}
 	}
 	return json.Marshal(out)
 }

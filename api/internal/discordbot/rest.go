@@ -40,6 +40,10 @@ var (
 type REST interface {
 	CreateMessage(ctx context.Context, channelID string, m Message) (string, error)
 	EditMessage(ctx context.Context, channelID, messageID string, m Message) error
+	// LatestMessageID is the channel's newest message, "" when it has none.
+	LatestMessageID(ctx context.Context, channelID string) (string, error)
+	// DeleteMessage deletes a message; one already gone (10008) is success.
+	DeleteMessage(ctx context.Context, channelID, messageID string) error
 	ServerLayout(ctx context.Context, serverID string) (ServerLayout, error)
 	LeaveServer(ctx context.Context, serverID string) error
 	// PutCommands replaces the command set; serverID "" means global.
@@ -194,6 +198,35 @@ func (r *HTTPREST) CreateMessage(ctx context.Context, channelID string, m Messag
 func (r *HTTPREST) EditMessage(ctx context.Context, channelID, messageID string, m Message) error {
 	path := "/channels/" + url.PathEscape(channelID) + "/messages/" + url.PathEscape(messageID)
 	return r.do(ctx, call{method: http.MethodPatch, path: path, botAuth: true, body: m.edit()})
+}
+
+func (r *HTTPREST) LatestMessageID(ctx context.Context, channelID string) (string, error) {
+	var out []struct {
+		ID string `json:"id"`
+	}
+	path := "/channels/" + url.PathEscape(channelID) + "/messages?limit=1"
+	if err := r.do(ctx, call{method: http.MethodGet, path: path, botAuth: true, out: &out}); err != nil {
+		return "", err
+	}
+	if len(out) == 0 {
+		return "", nil
+	}
+	return out[0].ID, nil
+}
+
+func (r *HTTPREST) DeleteMessage(ctx context.Context, channelID, messageID string) error {
+	path := "/channels/" + url.PathEscape(channelID) + "/messages/" + url.PathEscape(messageID)
+	return alreadyGone(r.do(ctx, call{method: http.MethodDelete, path: path, botAuth: true}))
+}
+
+// alreadyGone is a delete's error with Discord's unknown message (10008) read as success: the
+// message the delete wanted gone is gone.
+func alreadyGone(err error) error {
+	var api *APIError
+	if errors.As(err, &api) && api.Code == codeUnknownMessage {
+		return nil
+	}
+	return err
 }
 
 func (r *HTTPREST) LeaveServer(ctx context.Context, serverID string) error {
