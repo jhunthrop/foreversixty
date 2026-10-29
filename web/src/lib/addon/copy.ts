@@ -22,6 +22,14 @@ export interface AddonSurface {
   images: readonly AddonSurfaceImage[];
 }
 
+interface SetupChip {
+  readonly step: number;
+  readonly href: string;
+  readonly label: string;
+  /** The reading once the step is done, when it differs from `label`. */
+  readonly labelDone?: string;
+}
+
 export const addonCopy = {
   // --- codec refusals. Each names what is wrong; never a generic failure. ---
   wrongPrefix: (found: string, wanted: string): string => `That code is ${found}; this site reads ${wanted}.`,
@@ -153,13 +161,14 @@ export const addonCopy = {
   setupPageTitle: 'Get set up',
   /** The label over the status chips: they report progress, they are not tabs. */
   setupProgressLabel: 'Your progress',
-  /** The three chips, each an anchor to its step: one label per chip whatever its state; the
-   *  tick, not the words, says it is done (W.10). */
+  /** The three chips, each an anchor to its step. Addon and Companion keep one label whatever
+   *  their state (the tick says done, W.10); step 1 asks `Sign in` until the session is signed in,
+   *  then reads `labelDone` -- a signed-out visitor is never told `Signed in`. */
   setupChips: [
-    { step: 1, href: '#signin', label: 'Signed in' },
+    { step: 1, href: '#signin', label: 'Sign in', labelDone: 'Signed in' },
     { step: 2, href: '#addon', label: 'Addon' },
     { step: 3, href: '#companion', label: 'Companion' },
-  ] as const,
+  ] as readonly SetupChip[],
   /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
   setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
   /** The done and not-done lines of each step for a signed-in account (W.9). */

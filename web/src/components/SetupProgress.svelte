@@ -72,7 +72,12 @@
             >
           </span>
         </span>
-        <span data-testid="setup-chip-label">{chip.label}</span>
+        {#if chip.labelDone === undefined}
+          <span data-testid="setup-chip-label">{chip.label}</span>
+        {:else}
+          <span class="chip-label-todo" data-testid="setup-chip-label">{chip.label}</span>
+          <span class="chip-label-done" data-testid="setup-chip-label">{chip.labelDone}</span>
+        {/if}
       </a>
     </li>
   {/each}

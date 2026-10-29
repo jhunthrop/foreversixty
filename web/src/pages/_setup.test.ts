@@ -480,7 +480,8 @@ describe('/setup as three steps (W.9)', () => {
       expect(html).toContain(`id="${chip.href.slice(1)}"`);
     }
     // One label per chip whatever its state, so a done row never reflows (W.10): the tick says done.
-    expect(addonCopy.setupChips.map((chip) => chip.label)).toEqual(['Signed in', 'Addon', 'Companion']);
+    expect(addonCopy.setupChips.map((chip) => chip.label)).toEqual(['Sign in', 'Addon', 'Companion']);
+    expect(addonCopy.setupChips[0]?.labelDone).toBe('Signed in');
     expect(chips).not.toMatch(/Addon seen|Companion running/);
   });
 

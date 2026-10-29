@@ -120,8 +120,10 @@ async function chipRowIsOneLine(page: Page): Promise<void> {
     .locator('.setup-chip-link')
     .evaluateAll((links) => links.map((el) => Math.round(el.getBoundingClientRect().top)));
   expect(new Set(tops).size, `chip tops ${tops.join(',')}`).toBe(1);
-  const labels = await page.getByTestId('setup-chip-label').allTextContents();
-  expect(labels).toEqual(['Signed in', 'Addon', 'Companion']);
+  const labels = await page.locator('[data-testid="setup-chip-label"]:visible').allTextContents();
+  expect(labels[1]).toBe('Addon');
+  expect(labels[2]).toBe('Companion');
+  expect(['Sign in', 'Signed in']).toContain(labels[0]);
   const height = await page
     .locator('.setup-chip-link')
     .first()
