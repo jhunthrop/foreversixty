@@ -24,6 +24,8 @@ export interface SignupChoice {
   state: GuildSignupState;
   role: GuildRaidRole;
   note: string;
+  /** A spec slug picked on this save; left out when the character's saved spec stands. */
+  spec?: string;
 }
 
 /** The page's answer to one save; `moved` names the character the API moved to Bench (R3). */
@@ -34,6 +36,7 @@ export type SignupHandler = (
   state: GuildSignupState,
   role: GuildRaidRole,
   note: string,
+  spec?: string,
 ) => Promise<SignupOutcome>;
 
 /** The header selector's current character first, the rest in the API's order. */

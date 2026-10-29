@@ -214,6 +214,20 @@ describe('sign-up races', () => {
   });
 });
 
+describe('sign-up spec', () => {
+  it('sends the picked spec with the sign-up, and nothing when none was picked', async () => {
+    const putSignup = vi.fn(() => Promise.resolve({ raid: plannedRaid(), moved: null }));
+    const { c, stop } = await started(deps({ putSignup }));
+    await c.signup('us-pvp-kraggor', 'in', 'healer', '', 'priest-holy');
+    await c.signup('us-pvp-kraggor', 'in', 'healer', '');
+    expect(putSignup.mock.calls.map((call) => (call as unknown[])[3])).toEqual([
+      { state: 'in', role: 'healer', note: '', spec: 'priest-holy' },
+      { state: 'in', role: 'healer', note: '' },
+    ]);
+    stop();
+  });
+});
+
 describe('lifecycle', () => {
   it('keeps one poll when started twice', async () => {
     const refetchRaid = vi.fn(() => Promise.resolve(plannedRaid()));

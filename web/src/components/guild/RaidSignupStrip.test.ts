@@ -169,4 +169,45 @@ describe('RaidSignupStrip', () => {
     expect(text(markup)).toContain(raidCopy.raidStates.cancelled);
     expect(rowOrder(markup)).toEqual([]);
   });
+
+  describe('spec ask', () => {
+    const specSelect = (markup: string, key: string): string =>
+      markup.match(
+        new RegExp(`<select[^>]*data-testid="signup-spec-${key}"[^>]*>[\\s\\S]*?</select>`),
+      )?.[0] ?? '';
+    const PALADIN = character('Aurelith', { class: 'paladin', spec: 'Holy', state: 'in', role: 'healer' });
+
+    it('asks In, Late and Bench rows with no saved spec, naming the class specs in full', () => {
+      const markup = html({ view: raid([PALADIN]) });
+      const select = specSelect(markup, PALADIN.character_key);
+      expect(text(markup)).toContain(raidCopy.spec.title);
+      expect(select).toContain(`>${raidCopy.spec.placeholder}<`);
+      expect(['Holy', 'Protection', 'Retribution'].every((name) => select.includes(`>${name}<`))).toBe(true);
+      expect(markup).toContain('signup-spec-us-forever-aurelith-label');
+    });
+
+    it('shows a saved spec chosen, under the Change spec label, with its icon', () => {
+      const saved = { ...PALADIN, raid_spec: 'paladin-retribution' };
+      const markup = html({ view: raid([saved]) });
+      expect(specSelect(markup, saved.character_key)).toMatch(
+        /<option value="paladin-retribution"[^>]*selected/,
+      );
+      expect(text(markup)).toContain(raidCopy.spec.change);
+      expect(text(markup)).not.toContain(raidCopy.spec.title);
+      expect(markup).toMatch(/<img[^>]*data-testid="signup-spec-us-forever-aurelith-icon"/);
+    });
+
+    it('does not ask an unsigned row or an Out row until a state is pressed', () => {
+      expect(html({ view: raid([character('Aurelith', { class: 'paladin' })]) })).not.toContain(
+        'signup-spec-',
+      );
+      expect(html({ view: raid([{ ...PALADIN, state: 'out' }]) })).not.toContain('signup-spec-');
+    });
+
+    it('disables the select with the row when the raid is locked', () => {
+      expect(specSelect(html({ view: raid([PALADIN]), locked: true }), PALADIN.character_key)).toMatch(
+        /^<select[^>]*disabled/,
+      );
+    });
+  });
 });

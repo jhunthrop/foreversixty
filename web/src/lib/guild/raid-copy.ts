@@ -21,6 +21,13 @@ const WEEKDAY_WINDOW_DAYS = 6;
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
 
+/** A sentence whose middle word is bold. */
+export interface SpecLead {
+  before: string;
+  name: string;
+  after: string;
+}
+
 export const raidCopy = {
   planButton: 'Plan a raid',
   gate: 'Planning and running raids are part of the guild plan. Subscribe the guild.',
@@ -57,6 +64,26 @@ export const raidCopy = {
     failed: 'That did not save. Try again.',
     movedToBench: (name: string): string => `${name} moved to Bench.`,
     left: (n: number): string => `${n} left`,
+  },
+  /** The raid page's spec ask: the Discord spec card's keys (guided-cards spec P.7). */
+  spec: {
+    title: 'Which spec tonight?',
+    placeholder: 'Choose a spec',
+    change: 'Change spec',
+    /** `spec.lead`: the name is the bold part. */
+    lead: (name: string, state: string, title: string, date: string): SpecLead => ({
+      before: 'The pick signs ',
+      name,
+      after: ` up as ${state} for ${title}, ${date}, and is kept for the next raid.`,
+    }),
+    /** `spec.lead.change`. */
+    leadChange: (name: string, title: string, date: string): SpecLead => ({
+      before: 'The pick changes the spec ',
+      name,
+      after: ` brings to ${title}, ${date}, and is kept for the next raid.`,
+    }),
+    /** `spec.kept`, alone (without its leading space). */
+    kept: (spec: string, name: string): string => `${spec} is kept for ${name}.`,
   },
   waitingCharacter: 'Waiting for approval. You can sign it up once an officer approves it.',
   raidStates: {

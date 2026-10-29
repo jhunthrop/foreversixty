@@ -7,6 +7,7 @@
   import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { pressAsksSpec, savedSpec, showsSpecSelect, specOfClass } from '../../lib/guild/raid-spec';
   import { createSerialSave } from '../../lib/guild/serial-save';
   import {
     NOTE_MAX,
@@ -21,6 +22,7 @@
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import FilterSelect from '../rankings/FilterSelect.svelte';
+  import SignupSpec from './SignupSpec.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
   let {
@@ -29,6 +31,8 @@
     disabled,
     describedBy,
     notice,
+    raidTitle,
+    raidDate,
     onClearNotice,
     onSave,
     onMoved,
@@ -40,12 +44,15 @@
     describedBy?: string;
     /** A line the strip sets on this row: `{Name} moved to Bench.` */
     notice: string | null;
+    /** The raid's title and date, for the spec ask's lead sentence. */
+    raidTitle: string;
+    raidDate: string;
     onClearNotice: () => void;
     onSave: (choice: SignupChoice) => Promise<SignupOutcome>;
     onMoved: (name: string) => void;
   } = $props();
 
-  type RowStatus = { kind: 'saved' } | { kind: 'error'; message: string; race: boolean };
+  type RowStatus = { kind: 'saved'; kept: string | null } | { kind: 'error'; message: string; race: boolean };
 
   const ROLE_OPTIONS = (['tank', 'healer', 'dps'] as const).map((role) => ({
     value: role,
@@ -57,6 +64,10 @@
   let roleChoice = $state<GuildRaidRole | null>(null);
   let noteEdit = $state<string | null>(null);
   let busy = $state(false);
+  /** In, Late or Bench was pressed with no saved spec: the pick, not the press, signs up. */
+  let awaitingSpec = $state(false);
+  /** The spec picked and in flight; `null` once the props carry the saved one. */
+  let specChoice = $state<string | null>(null);
   let status = $state<RowStatus | null>(null);
   /** The note last sent, so blur after Enter does not save it twice. */
   let sentNote: string | null = null;
@@ -67,12 +78,24 @@
   const shownRole = $derived(roleChoice ?? initialRole(character));
   const shownNote = $derived(noteEdit ?? savedNote);
   const counter = $derived(noteCounter(shownNote));
+  const saved = $derived(savedSpec(character));
+  const showSpec = $derived(showsSpecSelect(character.class, shownState));
+  const chosenSpec = $derived(specChoice ?? saved?.spec ?? '');
+  const specLead = $derived(
+    saved === null
+      ? raidCopy.spec.lead(character.name, raidCopy.segments[shownState ?? 'in'], raidTitle, raidDate)
+      : raidCopy.spec.leadChange(character.name, raidTitle, raidDate),
+  );
 
   $effect(() => () => clearTimeout(savedTimer));
 
-  function showSaved(): void {
+  function showSaved(choice: SignupChoice): void {
     clearTimeout(savedTimer);
-    status = { kind: 'saved' };
+    const picked = choice.spec === undefined ? null : specOfClass(character.class, choice.spec);
+    status = {
+      kind: 'saved',
+      kept: picked === null ? null : raidCopy.spec.kept(picked.name, character.name),
+    };
     savedTimer = setTimeout(() => {
       status = null;
     }, SAVED_LINE_MS);
@@ -93,25 +116,35 @@
     if (more) return;
     pendingState = undefined;
     roleChoice = null;
+    specChoice = null;
     if (!outcome.ok) {
       sentNote = null;
       status = { kind: 'error', ...failureLine(outcome.code) };
       return;
     }
     if (noteEdit === choice.note) noteEdit = null;
-    showSaved();
+    showSaved(choice);
   }
 
   /** Saves are serialised per row: a press during a save is sent, merged, when it settles. A
    *  refusal reverts to the confirmed (props) state, which the caller updates on each success. */
   const saver = createSerialSave<SignupChoice, SignupOutcome>({
-    read: () => (shownState === null ? null : { state: shownState, role: shownRole, note: shownNote }),
+    read: () =>
+      shownState === null
+        ? null
+        : {
+            state: shownState,
+            role: shownRole,
+            note: shownNote,
+            ...(specChoice === null ? {} : { spec: specChoice }),
+          },
     send: settle,
     settled,
     onBusy: (next) => (busy = next),
   });
 
   function save(): void {
+    if (awaitingSpec) return;
     status = null;
     onClearNotice();
     void saver.request();
@@ -123,6 +156,17 @@
 
   function pickState(state: GuildSignupState): void {
     pendingState = state;
+    awaitingSpec = pressAsksSpec(character, state);
+    if (awaitingSpec) status = null;
+    save();
+  }
+
+  function pickSpec(slug: string): void {
+    const spec = specOfClass(character.class, slug);
+    if (spec === null) return;
+    specChoice = slug;
+    roleChoice = spec.role;
+    awaitingSpec = false;
     save();
   }
 
@@ -220,6 +264,17 @@
         {/if}
       </div>
     </div>
+    {#if showSpec}
+      <SignupSpec
+        id={`signup-spec-${key}`}
+        classSlug={character.class}
+        chosen={chosenSpec}
+        saved={saved !== null}
+        lead={specLead}
+        disabled={disabled || busy}
+        onPick={pickSpec}
+      />
+    {/if}
     <div class="min-h-5 pt-0.5 pb-2 text-[13px] leading-5" data-testid={`signup-status-${key}`}>
       {#key status}
         {#if status?.kind === 'error' && status.race}
@@ -227,7 +282,9 @@
         {:else if status?.kind === 'error'}
           <p class="text-wipe" role="alert">{status.message}</p>
         {:else if status?.kind === 'saved'}
-          <p class="text-text" role="status">{raidCopy.stripStatus.saved}</p>
+          <p class="text-text" role="status">
+            {raidCopy.stripStatus.saved}{status.kept === null ? '' : ` ${status.kept}`}
+          </p>
         {:else if notice !== null}
           <p class="text-text" role="status">{notice}</p>
         {/if}

@@ -827,6 +827,9 @@ export interface GuildRaidViewerCharacter {
   /** `null` while the character has not signed up. */
   state: GuildSignupState | null;
   role: GuildRaidRole;
+  /** The character's saved raid spec in this guild (a slug from the spec catalogue, e.g.
+   *  `paladin-holy`), `null` while unset. Absent from an API that predates it, which reads unset. */
+  raid_spec?: string | null;
 }
 
 export interface GuildRaidView extends RaidAttendanceFields {

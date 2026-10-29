@@ -36,6 +36,8 @@ export interface SignupInput {
   state: GuildSignupState;
   role: GuildRaidRole;
   note: string;
+  /** A spec slug of the character's class, saved as its `raid_spec` with the sign-up. */
+  spec?: string;
 }
 
 export interface SignupResult {

@@ -253,10 +253,15 @@ export class RaidPageController {
   }
 
   /** The strip's handler: the answer is applied before the row hears `ok`. */
-  signup: SignupHandler = async (key, state, role, note) => {
+  signup: SignupHandler = async (key, state, role, note, spec) => {
     try {
       const result = await this.write((id) =>
-        this.deps.putSignup(id, this.route.raidId, key, { state, role, note }),
+        this.deps.putSignup(id, this.route.raidId, key, {
+          state,
+          role,
+          note,
+          ...(spec === undefined ? {} : { spec }),
+        }),
       );
       this.applyRaid(result.raid);
       return { ok: true, moved: result.moved };

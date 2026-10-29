@@ -429,3 +429,30 @@ describe('copyList', () => {
     ]);
   });
 });
+
+describe('raidCopy.spec, verbatim from the guided-cards spec G.7', () => {
+  const strG7 = (key: string, index = 0, fill: Record<string, string> = {}): string =>
+    specString(SPEC2, '## G.7 Copy, verbatim', key, index, fill);
+  const fill = { Name: 'Aurelith', State: 'In', Title: "Onyxia's Lair", Date: 'Thu 10 Dec', Spec: 'Holy' };
+  const joined = (lead: { before: string; name: string; after: string }): string =>
+    `${lead.before}**${lead.name}**${lead.after}`;
+
+  it('names the ask, its placeholder and the change label', () => {
+    expect(raidCopy.spec.title).toBe(strG7('`spec.title`'));
+    expect(raidCopy.spec.placeholder).toBe(strG7('`spec.placeholder`'));
+    expect(raidCopy.spec.change).toBe(strG7('`spec.change`'));
+  });
+
+  it('writes the lead for a new pick and for a change', () => {
+    expect(joined(raidCopy.spec.lead('Aurelith', 'In', "Onyxia's Lair", 'Thu 10 Dec'))).toBe(
+      strG7('`spec.lead`', 0, fill),
+    );
+    expect(joined(raidCopy.spec.leadChange('Aurelith', "Onyxia's Lair", 'Thu 10 Dec'))).toBe(
+      strG7('`spec.lead.change`', 0, fill),
+    );
+  });
+
+  it('writes the kept line alone, without the leading space', () => {
+    expect(raidCopy.spec.kept('Holy', 'Aurelith')).toBe(strG7('`spec.kept`', 0, fill).trim());
+  });
+});

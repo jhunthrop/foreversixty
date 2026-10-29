@@ -33,6 +33,7 @@ import type {
 } from '../../../src/lib/guild/api';
 import { instantToWallClock, wallClockToInstant } from '../../../src/lib/guild/raid-time';
 import type { RaidInput } from '../../../src/lib/guild/raids-api';
+import { SPECS } from '../../../src/lib/sim/specs';
 import { CHICAGO, NOW, NO_LOG_YET, plannedRaid } from '../../../src/test-support/raid-fixtures';
 import { GUILD_URL, envelope, refusal } from './officer-tools';
 
@@ -204,6 +205,9 @@ export interface RaidStubOptions {
   /** `discord_post` on every raid view; left out, none is scheduled. */
   discordPost?: GuildRaidDiscordPost | null;
   guildTimezone?: string | null;
+  /** The viewer's characters have no saved raid spec, so a sign-up asks for one (spec P.10.7);
+   *  left out, each already has the spec its roster row names. */
+  askSpec?: boolean;
 }
 
 export interface RecordedWrite {
@@ -292,9 +296,12 @@ export class RaidStub {
   /** The next sign-up, create or status write answers this instead (once). */
   refuseNext: { signup?: Refusal; create?: Refusal; status?: Refusal } = {};
   private nextId = FIRST_NEW_ID;
+  /** The saved raid spec per character key (a catalogue slug); written by a sign-up's `spec`. */
+  readonly raidSpecs = new Map<string, string>();
 
   constructor(options: RaidStubOptions) {
     this.viewer = options.viewer;
+    if (options.askSpec !== true) this.seedRaidSpecs();
     this.officerTools = options.officerTools;
     this.raids = options.raids ?? [storedRaid()];
     this.discordAvailable = options.discordAvailable ?? true;
@@ -323,6 +330,15 @@ export class RaidStub {
   /** Replaces one raid (the poll test changes the sign-ups between two reads). */
   update(id: number, change: (raid: StoredRaid) => StoredRaid): void {
     this.raids = this.raids.map((r) => (r.id === id ? change(r) : r));
+  }
+
+  /** Each own character starts with the spec its roster row names. */
+  private seedRaidSpecs(): void {
+    for (const name of OWN_NAMES[this.viewer]) {
+      const row = rosterRow(name);
+      const spec = SPECS.find((s) => s.class_slug === row.class && s.name === row.spec);
+      if (spec !== undefined) this.raidSpecs.set(row.character_key, spec.spec);
+    }
   }
 
   /** The raid view as this viewer reads it. */
@@ -358,6 +374,7 @@ export class RaidStub {
             verified: row.verified,
             state: mine?.state ?? null,
             role: mine?.role ?? row.role ?? 'dps',
+            raid_spec: this.raidSpecs.get(row.character_key) ?? null,
           };
         }),
       },
@@ -421,9 +438,10 @@ export class RaidStub {
   applySignup(
     id: number,
     key: string,
-    body: { state: GuildSignupState; role: GuildRaidRole; note: string },
+    body: { state: GuildSignupState; role: GuildRaidRole; note: string; spec?: string },
   ): { raid: GuildRaidView; moved: string | null } {
     const own = this.ownKeys;
+    if (body.spec !== undefined) this.raidSpecs.set(key, body.spec);
     let moved: string | null = null;
     this.update(id, (raid) => {
       const others = raid.signups
@@ -578,7 +596,7 @@ async function answerRaids(stub: RaidStub, route: Route): Promise<void> {
     const refusedSignup = stub.takeRefusal('signup');
     if (refusedSignup !== undefined) return route.fulfill(refused(refusedSignup));
     const key = rest.slice('signups/'.length).split('/').map(decodeURIComponent).join('/');
-    const signupBody = body as { state: GuildSignupState; role: GuildRaidRole; note: string };
+    const signupBody = body as { state: GuildSignupState; role: GuildRaidRole; note: string; spec?: string };
     return route.fulfill(envelope(stub.applySignup(id, key, signupBody)));
   }
   if (method === 'POST' && (rest === 'lock' || rest === 'unlock' || rest === 'cancel')) {
@@ -626,5 +644,7 @@ export function writesTo(stub: RaidStub, method: string, suffix: RegExp): Record
 }
 
 /** The test id of a strip row's part for a character (`signup-segments-us/pvp/zulmara`). */
-export const stripId = (part: 'row' | 'segments' | 'role' | 'note' | 'status', name: string): string =>
-  `signup-${part}-${keyOf(name)}`;
+export const stripId = (
+  part: 'row' | 'segments' | 'role' | 'note' | 'status' | 'spec',
+  name: string,
+): string => `signup-${part}-${keyOf(name)}`;
