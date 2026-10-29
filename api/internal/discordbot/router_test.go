@@ -2,6 +2,7 @@ package discordbot
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 	"testing"
@@ -134,6 +135,39 @@ func TestReportReadyGoesThroughTheBot(t *testing.T) {
 	}
 	if ok, err := w.router.ReportReady(ctx, w.gid, report); !ok || err != nil || len(w.poster.Posts()) != 1 {
 		t.Fatalf("webhook report = %v, %v, posts %d", ok, err, len(w.poster.Posts()))
+	}
+}
+
+// TestRouterSendRaidPostQueuesOrReturnsTheRefusal: the job's post is queued for an active
+// bot; without one the webhook posts, and its refusal comes back as an error so the
+// schedule retries instead of marking the raid posted.
+func TestRouterSendRaidPostQueuesOrReturnsTheRefusal(t *testing.T) {
+	ctx := context.Background()
+	w := newPostWorld(t)
+	if sent, err := w.router.SendRaidPost(ctx, w.gid, posted(w, w.raidID)); !sent || err != nil {
+		t.Fatalf("bot: sent %v, err %v", sent, err)
+	}
+	if r, found := w.row(t, w.raidID); !found || !r.dirty || len(w.poster.Posts()) != 0 {
+		t.Fatalf("bot: row %+v found %v, webhook posts %d", r, found, len(w.poster.Posts()))
+	}
+
+	w = newPostWorld(t)
+	if err := w.st.RemoveBot(ctx, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	refused := &notify.DiscordError{Status: 500, Body: "boom"}
+	w.poster.PostErr = refused
+	sent, err := w.router.SendRaidPost(ctx, w.gid, posted(w, w.raidID))
+	var notSent *notify.NotSentError
+	if sent || !errors.As(err, &notSent) || !errors.Is(err, refused) {
+		t.Fatalf("webhook refused: sent %v, err %v", sent, err)
+	}
+	if _, found := w.row(t, w.raidID); found {
+		t.Fatal("webhook refused: a bot row was queued")
+	}
+	w.poster.PostErr = nil
+	if sent, err := w.router.SendRaidPost(ctx, w.gid, posted(w, w.raidID)); !sent || err != nil {
+		t.Fatalf("webhook: sent %v, err %v", sent, err)
 	}
 }
 

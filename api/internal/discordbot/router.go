@@ -11,6 +11,7 @@ import (
 // The bot's halves of the guilds ports, checked here so cmd/api cannot drift.
 var (
 	_ guilds.RaidEvents     = (*RaidRouter)(nil)
+	_ guilds.RaidPostSender = (*RaidRouter)(nil)
 	_ guilds.RaidPostMarker = (*Store)(nil)
 	_ PostFacts             = (*guilds.Service)(nil)
 	_ GuildService          = (*guilds.Service)(nil)
@@ -30,6 +31,16 @@ func (r *RaidRouter) RaidPosted(ctx context.Context, guildID int64, e notify.Rai
 		return
 	}
 	r.Webhook.RaidPosted(ctx, guildID, e)
+}
+
+// SendRaidPost is RaidPosted for the raid-posts job: a post queued for the bot is sent (the
+// drainer owns it from there); otherwise the webhook posts, and a refusal is returned so the
+// schedule retries it with backoff.
+func (r *RaidRouter) SendRaidPost(ctx context.Context, guildID int64, e notify.RaidPosted) (bool, error) {
+	if _, ok := r.activeChannel(ctx, guildID); ok && r.enqueue(ctx, guildID, e.RaidID) {
+		return true, nil
+	}
+	return r.Webhook.SendRaidPost(ctx, guildID, e)
 }
 
 // RaidChanged edits the raid's one post: a raid with a row is marked (and its old start
