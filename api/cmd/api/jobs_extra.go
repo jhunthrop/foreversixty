@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"slices"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 )
@@ -19,6 +20,15 @@ type jobCommand struct {
 var extraJobs = append([]jobCommand{
 	{rating.RebuildPreparationJobCommand, runRebuildPreparation},
 }, coachJobs...)
+
+// setupCommands are run by hand from a checkout, never as Cloud Run jobs, so the deploy does
+// not move them; main runs them through the same table runner.
+var setupCommands = []jobCommand{
+	{discordEmojiCommand, runDiscordEmojiCommand},
+}
+
+// allCommands is every table-run command: the jobs, then the setup commands.
+func allCommands() []jobCommand { return slices.Concat(extraJobs, setupCommands) }
 
 // runJobTable runs the row of table named by args[0] with args[1:], then calls exit(0), or
 // exit(1) after one log.Error(name, "err", err) line, as main's own cases do. It returns,

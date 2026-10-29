@@ -75,6 +75,15 @@ func TestDiscordEmojiUploadsOnlyTheMissingAndPrintsNoToken(t *testing.T) {
 	}
 }
 
+func TestDiscordEmojiIsASetupCommand(t *testing.T) {
+	for _, job := range setupCommands {
+		if job.name == "discord-emoji" {
+			return
+		}
+	}
+	t.Fatal("discord-emoji is not routed")
+}
+
 func TestDiscordEmojiNeedsBothVariables(t *testing.T) {
 	err := runDiscordEmoji(context.Background(), nil, func(string) string { return "" }, nil, &bytes.Buffer{})
 	if err == nil || strings.Contains(err.Error(), emojiCmdToken) {

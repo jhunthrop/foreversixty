@@ -66,7 +66,7 @@ func main() {
 	// The image is the service and every job: Cloud Run runs it with
 	// the job's name as its first container argument.
 	if len(os.Args) > 1 {
-		runJobTable(log, extraJobs, os.Args[1:], os.Exit)
+		runJobTable(log, allCommands(), os.Args[1:], os.Exit)
 		switch os.Args[1] {
 		case reports.ParseJobCommand:
 			if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
@@ -131,12 +131,6 @@ func main() {
 		case "stripe-setup":
 			if err := runStripeSetup(context.Background(), log); err != nil {
 				log.Error("stripe-setup", "err", err)
-				os.Exit(1)
-			}
-			return
-		case "discord-emoji":
-			if err := runDiscordEmoji(context.Background(), os.Args[2:], os.Getenv, productionEmojiAPI, os.Stdout); err != nil {
-				log.Error("discord-emoji", "err", err)
 				os.Exit(1)
 			}
 			return

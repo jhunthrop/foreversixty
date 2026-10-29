@@ -13,6 +13,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -35,6 +36,14 @@ type emojiAPIFactory func(applicationID, botToken string) discordbot.EmojiAPI
 
 func productionEmojiAPI(applicationID, botToken string) discordbot.EmojiAPI {
 	return discordbot.NewHTTPREST(applicationID, botToken)
+}
+
+// discordEmojiCommand is the setup command's name, a row of extraJobs.
+const discordEmojiCommand = "discord-emoji"
+
+// runDiscordEmojiCommand is runDiscordEmoji over the process's environment and Discord.
+func runDiscordEmojiCommand(ctx context.Context, _ *slog.Logger, args []string) error {
+	return runDiscordEmoji(ctx, args, os.Getenv, productionEmojiAPI, os.Stdout)
 }
 
 func runDiscordEmoji(ctx context.Context, args []string, getenv func(string) string, newAPI emojiAPIFactory, out io.Writer) error {
