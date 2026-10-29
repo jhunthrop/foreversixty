@@ -287,10 +287,9 @@ test('the guild rows say Not verified, that the guild has no plan, and link the 
     await expect(row.getByTestId('account-guild-no-plan')).toContainText(
       accountPlanCopy.guildRow.noPlan(guild.name),
     );
-    const next = row.getByRole('link', {
-      name: accountPlanCopy.guildRow.nextStepLabel(accountPlanCopy.guildRow.nextStep, guild.name),
-    });
-    await expect(next).toHaveText(accountPlanCopy.guildRow.nextStep);
+    await expect(row.getByTestId('account-guild-plan-tag')).toHaveText(accountPlanCopy.guildRow.planTag.none);
+    const next = row.getByRole('link', { name: new RegExp(accountPlanCopy.guildRow.nextStep) });
+    await expect(next).toContainText(accountPlanCopy.guildRow.nextStep);
     await expect(next).toHaveAttribute(
       'href',
       `/premium/checkout?plan=${fittingGuildPlan(0)}&interval=yearly#guild-${guild.id}`,

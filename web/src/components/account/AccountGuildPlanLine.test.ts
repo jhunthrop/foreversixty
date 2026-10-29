@@ -28,12 +28,12 @@ function renderLine(plan: GuildBillingView): { body: string; text: string } {
 }
 
 describe('AccountGuildPlanLine', () => {
-  it('reads the scoped line then the Guild settings link', () => {
+  it('reads a Guild settings link row whose value is the scoped line', () => {
     const out = renderLine(BASE);
     expect(out.body).toContain('data-testid="account-guild-plan"');
-    expect(out.text).toBe('Officer tools · until 12 Dec 2026 · Guild settings');
+    expect(out.text).toBe('Guild settings Officer tools · until 12 Dec 2026');
     expect(out.body).toContain('href="/guild/us/hardcore/the-last-watch/settings"');
-    expect(out.body).toContain('underline');
+    expect(out.body).not.toContain('underline');
   });
 
   it('reads the paid plan line', () => {
@@ -43,7 +43,7 @@ describe('AccountGuildPlanLine', () => {
       current_period_end: '2026-12-31T12:00:00Z',
       billed_by: 'a#1',
     });
-    expect(out.text).toBe('Guild plan · renews 31 Dec 2026 · Guild settings');
+    expect(out.text).toBe('Guild settings Guild plan · renews 31 Dec 2026');
   });
 
   it('names the raid tier and the seat the account holds', () => {
@@ -55,6 +55,6 @@ describe('AccountGuildPlanLine', () => {
       billed_by: 'a#1',
       you_hold_seat: true,
     });
-    expect(out.text).toBe('Raid guild plan · renews 12 Dec 2026 · you hold a seat · Guild settings');
+    expect(out.text).toBe('Guild settings Raid guild plan · renews 12 Dec 2026 · you hold a seat');
   });
 });

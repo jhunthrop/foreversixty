@@ -26,6 +26,7 @@
     error,
     describedBy,
     testid,
+    onchange,
   }: {
     value?: string;
     options: readonly SelectOption[];
@@ -41,6 +42,7 @@
     /** Ids of lines that describe the field (read with the error line). */
     describedBy?: string;
     testid?: string;
+    onchange?: (event: Event) => void;
   } = $props();
 
   const errorId = $derived(`${id}-error`);
@@ -56,6 +58,7 @@
       {name}
       bind:value
       {disabled}
+      {onchange}
       aria-label={label}
       aria-invalid={error === undefined ? undefined : 'true'}
       aria-describedby={describedIds}

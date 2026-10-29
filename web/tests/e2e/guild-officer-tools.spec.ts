@@ -85,6 +85,9 @@ async function enabledCounts(page: Page): Promise<{ award: number; undo: number;
   return { award, undo, nudge };
 }
 
+/** The Guild settings link row that holds an account guild plan value. */
+const guildSettingsLinkOf = (value: Locator): Locator =>
+  value.locator('xpath=ancestor::a').filter({ hasText: 'Guild settings' });
 test.describe('officer-read-only: every control in place and disabled (§3.4)', () => {
   test('state 1: tools on shows no sentence and every control live', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -382,16 +385,10 @@ test.describe('the account page guild rows', () => {
         .filter({ hasText: 'Ashen Vigil' })
         .getByTestId('account-guild-plan'),
     ).toHaveCount(0);
-    await expect(lines.nth(0)).toHaveText(/^Officer tools · until 12 Dec 2026 ·\s*Guild settings$/);
-    await expect(lines.nth(1)).toHaveText(/^Guild plan · renews 31 Dec 2026 ·\s*Guild settings$/);
-    await expect(lines.nth(0).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
-      'href',
-      GUILD_SETTINGS_PATH,
-    );
-    await expect(lines.nth(1).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
-      'href',
-      SETTINGS_GUILD_PATH,
-    );
+    await expect(lines.nth(0)).toHaveText('Officer tools · until 12 Dec 2026');
+    await expect(lines.nth(1)).toHaveText('Guild plan · renews 31 Dec 2026');
+    await expect(guildSettingsLinkOf(lines.nth(0))).toHaveAttribute('href', GUILD_SETTINGS_PATH);
+    await expect(guildSettingsLinkOf(lines.nth(1))).toHaveAttribute('href', SETTINGS_GUILD_PATH);
     await expect(page.getByTestId('account-premium-block').getByText('Officer tools')).toHaveCount(0);
   });
 });

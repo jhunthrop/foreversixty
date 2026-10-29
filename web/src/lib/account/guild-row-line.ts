@@ -6,6 +6,7 @@ import { checkoutHref } from '../../components/premium/model';
 import { accountPlanCopy } from '../billing/account-plan-copy';
 import { fittingGuildPlan } from '../billing/checkout-params';
 import type { GuildCoveredView, GuildSubscribeView } from '../billing/contract';
+import type { GuildBillingView } from './api';
 
 const copy = accountPlanCopy.guildRow;
 
@@ -17,6 +18,7 @@ export interface GuildRowFacts {
   verified_count: number;
   covered?: GuildCoveredView | null;
   subscribe?: Pick<GuildSubscribeView, 'step'> | null;
+  plan?: Pick<GuildBillingView, 'tier'> | null;
 }
 
 export interface GuildRowNextStep {
@@ -24,6 +26,12 @@ export interface GuildRowNextStep {
   action: string;
   label: string;
   href: string;
+}
+
+/** The tag after the guild name: its plan tier, `No plan` when the API says it has none, else null. */
+export function guildPlanTag(guild: GuildRowFacts): string | null {
+  if (guild.plan) return copy.planTag[guild.plan.tier];
+  return guildRowNextStep(guild) === null ? null : copy.planTag.none;
 }
 
 export function notVerifiedMark(guild: GuildRowFacts): string | null {

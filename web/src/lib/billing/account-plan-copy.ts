@@ -61,6 +61,8 @@ export const accountPlanCopy = {
     raidPlan: `${PLANS.raid_guild.name} plan`,
     youHoldSeat: ' · you hold a seat',
     notVerified: 'Not verified',
+    /** The plan tag in a guild block's name line. */
+    planTag: { guild: PLANS.guild.name, raid_guild: PLANS.raid_guild.name, none: 'No plan' },
     noPlan: (guild: string): string => `${guild} has no plan.`,
     nextStep: 'See the next step',
     nextStepLabel: (action: string, guild: string): string => `${action} for ${guild}`,
