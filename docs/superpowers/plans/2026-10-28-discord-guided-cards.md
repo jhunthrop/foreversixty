@@ -36,7 +36,7 @@
 - **Privacy.** Every card is ephemeral (flag 64). Nothing new posts to a channel except the raid post and reminder (part P) and `Share in channel` (unchanged). No custom id or select value identifies another account, except officer `/attendance` values (character names), which are re-checked against rank on every pick. `/signup` card ids carry only the presser's own character key, and every press re-checks it.
 - **One answer function per command.** A card's commit answer is produced by the same function as the typed command (`bisAnswer`, `answerChar`, `reportMessage`, the press flow), so the two cannot drift. The test compares them byte for byte.
 - **File size.** Go files stay under 800 lines; new card code goes in new files (`card.go`, `bis_card.go`, `char_card.go`, `signup_card.go`, `officer_cards.go`). Svelte and TS files stay under 400 lines. `RaidForm.svelte` (379 lines) moves its Discord block into `RaidFormDiscord.svelte`.
-- **Commits.** Conventional commits. Every commit ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Run `git reset -q` before `git add`, because the shared index can be stale, then `git add` only the task's paths. Never `git stash`.
+- **Commits.** Conventional commits. Every commit ends with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`. Run `git reset -q` before `git add`, because the shared index can be stale, then `git add` only the task's paths. Never `git stash`.
 - **Migration number:** `0057_discord_guided_posting` (the last one is `0056_coach_account_spend`).
 
 ## Rulings (spec silences and conflicts decided here)
