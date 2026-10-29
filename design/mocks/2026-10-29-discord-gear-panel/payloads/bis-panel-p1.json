@@ -3,7 +3,7 @@
   "title": "/bis: Head to Legs",
   "budget": {
     "components": 37,
-    "text": 2069
+    "text": 2342
   },
   "message": {
     "flags": 32832,
@@ -38,7 +38,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Beastmaster's Cap](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226887&preset=raid#band-alliance-60)**\nHead · ties the next best\n-# Epic · item level 60 · Quest: Saving the Best for Last · Level 60"
+                "content": "<:fs_q_epic:1302600000000000004> **[Beastmaster's Cap](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226887&preset=raid#band-alliance-60)**\nHead · Gain not modelled yet\n-# Epic · item level 60 · Quest: Saving the Best for Last · requires level 58"
               }
             ],
             "accessory": {
@@ -54,7 +54,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Amulet of the Darkmoon](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=19491&preset=raid#band-alliance-60)**\nNeck · +0.3 DPS\n-# Epic · item level 65 · Quest: 1200 Tickets - Amulet of the Darkmoon · Level 60"
+                "content": "<:fs_q_epic:1302600000000000004> **[Amulet of the Darkmoon](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=19491&preset=raid#band-alliance-60)**\nNeck · +0.3 DPS\n-# Epic · item level 65 · Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
               }
             ],
             "accessory": {
@@ -70,7 +70,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Darkspear Pauldrons](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272105&preset=raid#band-alliance-60)**\nShoulder · ties the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "<:fs_q_epic:1302600000000000004> **[Darkspear Pauldrons](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272105&preset=raid#band-alliance-60)**\nShoulder\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -86,7 +86,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Cape of the Black Baron](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=13340&preset=raid#band-alliance-60)**\nBack · +0.9 DPS\n-# Rare · item level 63 · Stratholme · Baron Rivendare"
+                "content": "<:fs_q_rare:1302600000000000003> **[Cape of the Black Baron](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=13340&preset=raid#band-alliance-60)**\nBack · +0.9 DPS\n-# Rare · item level 63 · Stratholme · Baron Rivendare"
               }
             ],
             "accessory": {
@@ -102,7 +102,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Dawn Armor](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=252483&preset=raid#band-alliance-60)**\nChest · +5.4 DPS\n-# Epic · item level 61 · Crafted: Leatherworking"
+                "content": "<:fs_q_epic:1302600000000000004> **[Dawn Armor](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=252483&preset=raid#band-alliance-60)**\nChest · +5.4 DPS\n-# Epic · item level 61 · Crafted: Leatherworking"
               }
             ],
             "accessory": {
@@ -118,7 +118,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Beastmaster's Bindings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226885&preset=raid#band-alliance-60)**\nWrist · ties the next best\n-# Rare · item level 65 · Quest: An Earnest Proposition · Level 60"
+                "content": "<:fs_q_rare:1302600000000000003> **[Beastmaster's Bindings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=226885&preset=raid#band-alliance-60)**\nWrist\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58"
               }
             ],
             "accessory": {
@@ -134,7 +134,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Raider Gloves](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272099&preset=raid#band-alliance-60)**\nHands · ties the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "<:fs_q_epic:1302600000000000004> **[Raider Gloves](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=272099&preset=raid#band-alliance-60)**\nHands\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -150,7 +150,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Belt of Preserved Heads](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=20216&preset=raid#band-alliance-60)**\nWaist · +0.4 DPS\n-# Rare · item level 70 · Quest: A Collection of Heads · Level 60"
+                "content": "<:fs_q_rare:1302600000000000003> **[Belt of Preserved Heads](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=20216&preset=raid#band-alliance-60)**\nWaist · +0.4 DPS\n-# Rare · item level 70 · Quest: A Collection of Heads · requires level 58"
               }
             ],
             "accessory": {
@@ -166,7 +166,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Sentinel's Chain Leggings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237819&preset=raid#band-alliance-60)**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+                "content": "<:fs_q_epic:1302600000000000004> **[Sentinel's Chain Leggings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237819&preset=raid#band-alliance-60)**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {

@@ -15,7 +15,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { BUILD, bisRows, loadData } from "./data.mjs";
 import {
-  API, SITE, T, bisPanel, bisShare, bisShareNoSheet, bisSlotPanel, charPanel, charShare,
+  API, SITE, T, bisPanel, bisPanelShareFailed, bisShare, bisShareNoSheet, bisSlotPanel, charPanel, charShare,
   countComponents, textLength, upgradesOf, averageItemLevel,
 } from "./payloads.mjs";
 import { SHEET_H, SHEET_W, assets, bisSheetModel, charSheetModel, sheetHtml } from "./sheet.mjs";
@@ -29,7 +29,7 @@ const CLIENTS = [
   { name: "desktop", width: 640 },
   { name: "phone", width: 390 },
 ];
-const MAX_COMPONENTS = 40;
+const MAX_COMPONENTS = 38; // the spec's own ceiling (§A.6): 40 less two in hand
 const TEXT_BUDGET = 3800; // our guard under Discord's 4000 (spec §A.6)
 
 const d = loadData(ROOT);
@@ -39,6 +39,7 @@ const a = assets(ROOT, d.iconDir);
 const frames = [
   { id: "bis-panel-p1", title: "/bis: Head to Legs", usedCommand: null, message: bisPanel(d, 1) },
   { id: "bis-panel-p2", title: "/bis: Feet to Ranged", message: bisPanel(d, 2) },
+  { id: "bis-panel-p1-sharefail", title: "/bis page 1 after a failed share: the failure line, Share live again", message: bisPanelShareFailed(d) },
   { id: "bis-panel-slot", title: "/bis slot:legs", message: bisSlotPanel(d, "legs") },
   { id: "char-panel", title: "/char, linked member: top upgrades", message: charPanel(d) },
   { id: "char-panel-nogear", title: "/char, no gear shared", message: charPanel(d, { noGear: true }) },
@@ -64,6 +65,7 @@ const rel = (unix) => {
 };
 function inline(raw) {
   return esc(raw)
+    .replace(/&lt;:fs_q_(\w+):\d+&gt; ?/g, (_m, q) => `<span class="qd"><i style="background:${QUALITY_DOT[q]}"></i></span>`)
     .replace(/&lt;t:(\d+):R&gt;/g, (_m, u) => `<span class="ts">${rel(Number(u))}</span>`)
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a class="ml">$1</a>')
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
@@ -79,6 +81,7 @@ function markdown(content) {
     .join("");
 }
 
+const QUALITY_DOT = { poor: "#9d9d9d", common: "#ffffff", uncommon: "#1eff00", rare: "#0070dd", epic: "#a335ee", legendary: "#ff8000" };
 const QUALITY_RING = ["#9d9d9d", "#ffffff", "#1eff00", "#0070dd", "#a335ee", "#ff8000"];
 const TILE = new RegExp("^" + API.replace(/\./g, "\\.") + "/v1/discord/tiles/" + BUILD.replace(/\./g, "\\.") + "/(\\d+)\\.png$");
 const itemById = (id) => d.items.get(id);
@@ -147,6 +150,8 @@ body{margin:0;background:#313338;color:#dbdee1;font:16px/1.375 "gg sans","Segoe 
 .td .sub{font-size:13px;line-height:18px;color:#949ba4}
 .td strong{font-weight:700}
 .ml{color:#00a8fc;text-decoration:none}
+.qd{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;vertical-align:-5px;margin-right:4px}
+.qd i{display:block;width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.45)}
 .ts{background:#4e5058;border-radius:3px;padding:0 2px}
 .sep{border-top:1px solid #3f4147;margin:0}.sep.s2{margin:8px 0}.sep.nodiv{border-top:0}
 .gal img{display:block;width:100%;border-radius:8px}

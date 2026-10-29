@@ -3,7 +3,7 @@
   "title": "/bis slot:legs",
   "budget": {
     "components": 20,
-    "text": 724
+    "text": 823
   },
   "message": {
     "flags": 32832,
@@ -38,7 +38,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Sentinel's Chain Leggings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237819&preset=raid#band-alliance-60)**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+                "content": "<:fs_q_epic:1302600000000000004> **[Sentinel's Chain Leggings](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237819&preset=raid#band-alliance-60)**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {
@@ -63,7 +63,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Sentinel's Leather Pants](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237818&preset=raid#band-alliance-60)**\nLegs · −7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+                "content": "<:fs_q_epic:1302600000000000004> **[Sentinel's Leather Pants](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=237818&preset=raid#band-alliance-60)**\nLegs · −7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {
@@ -79,7 +79,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Marshal's Chain Legguards](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=231577&preset=raid#band-alliance-60)**\nLegs · −7.4 DPS\n-# Epic · item level 71 · PvP rank 16 · Marshal · Alliance"
+                "content": "<:fs_q_epic:1302600000000000004> **[Marshal's Chain Legguards](https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance&item=231577&preset=raid#band-alliance-60)**\nLegs · −7.4 DPS\n-# Epic · item level 71 · PvP rank 16 · Marshal · Alliance"
               }
             ],
             "accessory": {

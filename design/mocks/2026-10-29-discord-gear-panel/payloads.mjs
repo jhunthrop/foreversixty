@@ -20,6 +20,12 @@ const itemLink = (id) =>
 const CHAR_URL = SITE + "/character/us/normal/zulmara";
 
 const text = (content) => ({ type: T.TEXT, content });
+// The six quality dots, application emoji fs_q_{quality} (spec §A.4.1). The ids are the mock's;
+// the bot reads the real ones at start, as it does the 28 spec emoji.
+const Q_EMOJI = ["poor", "common", "uncommon", "rare", "epic", "legendary"];
+const dot = (q) => (q >= 0 && q < Q_EMOJI.length ? `<:fs_q_${Q_EMOJI[q]}:13026${String(q).padStart(14, "0")}> ` : "");
+const nameLine = (it, url) => `${dot(it.quality)}**[${it.name}](${url})**`;
+export const NOT_MODELLED = "Gain not modelled yet";
 const sep = (spacing = 1) => ({ type: T.SEP, divider: true, spacing });
 const thumb = (url, description) => ({ type: T.THUMB, media: { url }, description });
 const section = (content, accessory) => ({ type: T.SECTION, components: [text(content)], accessory });
@@ -41,8 +47,8 @@ function bisSlot(r, rows) {
     return text(`**Off hand** · none: ${main.name} is two-handed.`);
   }
   if (r.empty) return text(`**${label}** · no pick for this range.`);
-  const gain = r.gain === "tie" ? "ties the next best" : r.gain;
-  return section(`**[${r.name}](${itemLink(r.id)})**\n${slotLine(label, gain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label)));
+  const gain = r.unmodelled ? NOT_MODELLED : r.gain;
+  return section(`${nameLine(r, itemLink(r.id))}\n${slotLine(label, gain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label)));
 }
 
 const BIS_HEAD = "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance";
@@ -86,13 +92,13 @@ export function bisSlotPanel(d, slotKey) {
   const r = rows.get(slotKey);
   const label = SLOT_LABELS[slotKey];
   const alts = r.alternatives.slice(0, 2).map((a) => {
-    const delta = Math.abs(a.delta) < 0.05 ? "same DPS as the pick" : signedDPS(a.delta);
+    const delta = r.unmodelled || a.unmodelled ? NOT_MODELLED : Math.abs(a.delta) >= 0.05 ? signedDPS(a.delta) : undefined;
     return section(
-      `**[${a.name}](${itemLink(a.id)})**\n${slotLine(label, delta)}\n${facts(a, a.source)}`,
+      `${nameLine(a, itemLink(a.id))}\n${slotLine(label, delta)}\n${facts(a, a.source)}`,
       thumb(tileURL(a.id), tileAlt(a, label)),
     );
   });
-  const pickGain = r.gain === "tie" ? "ties the next best" : r.gain;
+  const pickGain = r.unmodelled ? NOT_MODELLED : r.gain;
   return {
     flags: IS_COMPONENTS_V2 | EPHEMERAL,
     components: [
@@ -102,7 +108,7 @@ export function bisSlotPanel(d, slotKey) {
         components: [
           section(`### ${label} · Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance`, thumb(crest("hunter"), "Hunter crest")),
           sep(),
-          section(`**[${r.name}](${itemLink(r.id)})**\n${slotLine(label, pickGain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label))),
+          section(`${nameLine(r, itemLink(r.id))}\n${slotLine(label, pickGain)}\n${facts(r, r.source)}`, thumb(tileURL(r.id), tileAlt(r, label))),
           sep(),
           text("-# The next best"),
           ...alts,
@@ -127,16 +133,18 @@ function upgradeSection(c) {
   const label = SLOT_LABELS[c.slot];
   const p = c.pick;
   const url = CHAR_URL + "#gear-slot-" + c.slot;
-  const gain = c.empty ? "fills an empty slot" : c.gain;
+  const gain = c.empty ? "fills an empty slot" : c.gainShown;
   const replaces = c.empty ? "" : `\n-# Replaces ${c.worn.name}, item level ${c.worn.ilvl}`;
-  return section(`**[${p.name}](${url})**\n${slotLine(label, gain)}\n${facts(p, p.source)}${replaces}`, thumb(tileURL(p.id), tileAlt(p, label)));
+  return section(`${nameLine(p, url)}\n${slotLine(label, gain)}\n${facts(p, p.source)}${replaces}`, thumb(tileURL(p.id), tileAlt(p, label)));
 }
 
 /** Upgrades in the order the panel lists them: empty slots first, then the largest gain. */
 export function upgradesOf(d) {
   const crows = charRows(d, bisRows(d));
   const ups = [...crows.values()].filter((c) => c.empty || (c.gainValue ?? 0) >= 0.05);
-  ups.sort((a, b) => (a.empty ? -1 : b.empty ? 1 : b.gainValue - a.gainValue));
+  // Empty slots first, then measured gains largest first, then picks whose gain is not modelled.
+  const rank = (c) => (c.empty ? 0 : c.pick.unmodelled ? 2 : 1);
+  ups.sort((a, b) => rank(a) - rank(b) || (b.gainValue ?? 0) - (a.gainValue ?? 0));
   return { crows, ups };
 }
 
@@ -198,7 +206,8 @@ export function charSheetAlt(d) {
     const c = crows.get(s);
     if (c.twoHand) return "Off hand: none, two-handed main hand";
     if (c.empty) return `${SLOT_LABELS[s]}: empty`;
-    return `${SLOT_LABELS[s]}: ${c.worn.name}${c.gain ? ", " + c.gain + " available" : ""}`;
+    const g = c.gainShown && !c.pick.unmodelled ? ", " + c.gainShown + " available" : "";
+    return `${SLOT_LABELS[s]}: ${c.worn.name}${g}`;
   });
   return "Character sheet, Zulmara, level 60 Beast Mastery Hunter, Olympus XXVII. " + parts.join("; ") + ".";
 }
@@ -234,13 +243,19 @@ export function charShare(d) {
         components: [
           text(CHAR_HEAD),
           { type: T.GALLERY, items: [{ media: { url: SHEET }, description: alt }] },
-          text("-# Gold figures are the DPS the level 60 Phase 1 raid pick adds in that slot."),
+          text("-# Gold figures: the level 60 Phase 1 raid pick's gain over what is worn."),
         ],
       },
       row(link("Character page", CHAR_URL)),
     ],
     allowed_mentions: { parse: [] },
   };
+}
+
+/** Page 1 after a failed share: the live button back and the failure line on top (38 components). */
+export function bisPanelShareFailed(d) {
+  const p = bisPanel(d, 1);
+  return { ...p, components: [text("Could not load that. Try again."), ...p.components] };
 }
 
 /** The share's fallback when the sheet cannot render: the visitor's panel, no image. */

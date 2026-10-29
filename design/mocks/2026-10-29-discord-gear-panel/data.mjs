@@ -65,7 +65,8 @@ function resolved(loot, id, kind, faction) {
       const qs = loot.quests[String(id)] ?? [];
       if (!qs.length) return undefined;
       const q = qs.find((o) => o.faction === faction) ?? qs[0];
-      return "Quest: " + q.name + (q.level > 0 ? " · Level " + q.level : "");
+      // The level a player must be to take the quest (min_level), not the quest's own level.
+      return "Quest: " + q.name + (q.min_level > 0 ? " · requires level " + q.min_level : "");
     }
     case "dungeon":
     case "raid": {
@@ -125,6 +126,34 @@ export function sourceLine(loot, id, kind, faction, raw) {
     (kind === "quest" ? (faction === "horde" ? "Horde quest" : "Alliance quest") : KIND_WORDS[kind] ?? kind);
 }
 
+// ---- the sheet's short form (spec §B.3 fit rule, step 2): real abbreviations only ----
+// The instance names players shorten in chat and on every guide; nothing else is abbreviated.
+export const INSTANCE_SHORT = {
+  "Blackrock Depths": "BRD", "Lower Blackrock Spire": "LBRS", "Upper Blackrock Spire": "UBRS",
+  "Stratholme": "Strat", "Scholomance": "Scholo", "Dire Maul": "Dire Maul", "Molten Core": "MC",
+  "Blackwing Lair": "BWL", "Onyxia's Lair": "Ony", "Zul'Gurub": "ZG", "Ruins of Ahn'Qiraj": "AQ20",
+  "Temple of Ahn'Qiraj": "AQ40", "Naxxramas": "Naxx", "Sunken Temple": "ST", "Zul'Farrak": "ZF",
+  "Maraudon": "Mara", "Scarlet Monastery": "SM", "Razorfen Downs": "RFD", "Razorfen Kraul": "RFK",
+  "Shadowfang Keep": "SFK", "Blackfathom Deeps": "BFD", "Wailing Caverns": "WC", "Ragefire Chasm": "RFC",
+  "Uldaman": "Uldaman", "Gnomeregan": "Gnomer",
+};
+/** The short form of a source line: the quest's requirement without its title, an instance by
+ *  its abbreviation, a PvP rank without its title, a recipe by its profession. */
+export function sourceShort(loot, id, kind, faction, full) {
+  if (kind === "quest") {
+    const m = / · requires level (\d+)$/.exec(full ?? "");
+    return m ? "Quest · requires level " + m[1] : "Quest";
+  }
+  if (kind === "pvp" || (full ?? "").startsWith("PvP rank ")) {
+    const m = /^PvP rank (\d+) · .* · (Alliance|Horde)$/.exec(full ?? "");
+    return m ? `PvP rank ${m[1]} · ${m[2]}` : full;
+  }
+  if (kind === "crafted") return (full ?? "").replace(/^Crafted: ([^·]+) · .*$/, "Crafted: $1");
+  let out = full ?? "";
+  for (const [long, short] of Object.entries(INSTANCE_SHORT)) out = out.replace(long, short);
+  return out;
+}
+
 // ---- slots ----
 export const SLOT_LABELS = {
   head: "Head", neck: "Neck", shoulder: "Shoulder", back: "Back", chest: "Chest", wrist: "Wrist",
@@ -167,16 +196,20 @@ export function bisRows(d) {
       continue;
     }
     const alt = (s.alternatives ?? [])[0];
-    let gain;
-    if (alt) gain = Math.abs(alt.dps_delta) < 0.05 ? "tie" : signedDPS(-alt.dps_delta);
+    // A gain shows only when there is one: a tie (under 0.05) or no alternative shows none.
+    const gain = alt && Math.abs(alt.dps_delta) >= 0.05 ? signedDPS(-alt.dps_delta) : undefined;
+    const source = sourceLine(d.loot, s.item_id, s.source_kind, FACTION, s.source);
     out.set(s.slot, {
       slot: s.slot,
       ...itemFacts(d, s.item_id, s.item_name),
       gain,
-      source: sourceLine(d.loot, s.item_id, s.source_kind, FACTION, s.source),
+      unmodelled: s.effect_unmodelled === true,
+      source,
+      sourceShort: sourceShort(d.loot, s.item_id, s.source_kind, FACTION, source),
       alternatives: (s.alternatives ?? []).map((a) => ({
         ...itemFacts(d, a.item_id, a.item_name),
         delta: a.dps_delta,
+        unmodelled: a.effect_unmodelled === true,
         source: sourceLine(d.loot, a.item_id, a.source_kind, FACTION, a.source),
       })),
     });
@@ -199,7 +232,7 @@ export function charRows(d, rows) {
       continue;
     }
     if (WORN_EMPTY.includes(slot)) {
-      out.set(slot, { slot, empty: true, pick: r, gain: undefined });
+      out.set(slot, { slot, empty: true, pick: r });
       continue;
     }
     const k = WORN_CHOICE[slot];
@@ -208,7 +241,9 @@ export function charRows(d, rows) {
       continue;
     }
     const alt = r.alternatives[k];
-    out.set(slot, { slot, worn: alt, pick: r, gainValue: -alt.delta, gain: signedDPS(-alt.delta) });
+    // A pick whose effect the sim cannot model has no trustworthy gain: it says so instead.
+    const gainShown = r.unmodelled ? "Gain not modelled yet" : signedDPS(-alt.delta);
+    out.set(slot, { slot, worn: alt, pick: r, gainValue: -alt.delta, gain: signedDPS(-alt.delta), gainShown });
   }
   return out;
 }

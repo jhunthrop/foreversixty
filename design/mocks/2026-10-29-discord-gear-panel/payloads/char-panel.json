@@ -3,7 +3,7 @@
   "title": "/char, linked member: top upgrades",
   "budget": {
     "components": 28,
-    "text": 1341
+    "text": 1528
   },
   "message": {
     "flags": 32832,
@@ -42,7 +42,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Molten Heart of the Mountain](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-trinket2)**\nTrinket 2 · fills an empty slot\n-# Rare · item level 55 · Crafted: Enchanting"
+                "content": "<:fs_q_rare:1302600000000000003> **[Molten Heart of the Mountain](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-trinket2)**\nTrinket 2 · fills an empty slot\n-# Rare · item level 55 · Crafted: Enchanting"
               }
             ],
             "accessory": {
@@ -58,7 +58,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Hyper Deluxe Sniper Rifle Mk XVII](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-ranged)**\nRanged · +23.1 DPS\n-# Epic · item level 65 · Crafted: Engineering\n-# Replaces Dark Iron Rifle, item level 55"
+                "content": "<:fs_q_epic:1302600000000000004> **[Hyper Deluxe Sniper Rifle Mk XVII](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-ranged)**\nRanged · +23.1 DPS\n-# Epic · item level 65 · Crafted: Engineering\n-# Replaces Dark Iron Rifle, item level 55"
               }
             ],
             "accessory": {
@@ -74,23 +74,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Beastmaster's Cap](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-head)**\nHead · +11.2 DPS\n-# Epic · item level 60 · Quest: Saving the Best for Last · Level 60\n-# Replaces Outlaw's Collar, item level 65"
-              }
-            ],
-            "accessory": {
-              "type": 11,
-              "media": {
-                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226887.png"
-              },
-              "description": "Beastmaster's Cap, Epic head item"
-            }
-          },
-          {
-            "type": 9,
-            "components": [
-              {
-                "type": 10,
-                "content": "**[Dawn Armor](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest)**\nChest · +11.0 DPS\n-# Epic · item level 61 · Crafted: Leatherworking\n-# Replaces Shadowcraft Tunic, item level 63"
+                "content": "<:fs_q_epic:1302600000000000004> **[Dawn Armor](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest)**\nChest · +11.0 DPS\n-# Epic · item level 61 · Crafted: Leatherworking\n-# Replaces Shadowcraft Tunic, item level 63"
               }
             ],
             "accessory": {
@@ -106,7 +90,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**[Sentinel's Chain Leggings](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-legs)**\nLegs · +9.3 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze\n-# Replaces Marshal's Chain Legplates, item level 71"
+                "content": "<:fs_q_epic:1302600000000000004> **[Sentinel's Chain Leggings](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-legs)**\nLegs · +9.3 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze\n-# Replaces Marshal's Chain Legplates, item level 71"
               }
             ],
             "accessory": {
@@ -115,6 +99,22 @@
                 "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/237819.png"
               },
               "description": "Sentinel's Chain Leggings, Epic legs item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "<:fs_q_rare:1302600000000000003> **[Beastmaster's Bindings](https://foreversixty.gg/character/us/normal/zulmara#gear-slot-wrist)**\nWrist · +4.7 DPS\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58\n-# Replaces Forest Stalker's Bracers, item level 65"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226885.png"
+              },
+              "description": "Beastmaster's Bindings, Rare wrist item"
             }
           },
           {
