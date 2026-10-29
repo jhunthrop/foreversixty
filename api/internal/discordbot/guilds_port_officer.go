@@ -23,6 +23,8 @@ type OfficerReads interface {
 	AttendanceNames(ctx context.Context, guildID, viewerID int64, typed string, limit int) ([]string, error)
 	// NextRaidReadiness is the next raid's readiness board for an officer.
 	NextRaidReadiness(ctx context.Context, guildID, viewerID int64, now time.Time) (guilds.ReadinessAnswer, error)
+	// RaidReadiness is the named planned raid's readiness board for an officer.
+	RaidReadiness(ctx context.Context, guildID, viewerID, raidID int64) (guilds.ReadinessAnswer, error)
 	// GuildPagePathOf is the guild page's site path.
 	GuildPagePathOf(ctx context.Context, guildID int64) (string, error)
 }

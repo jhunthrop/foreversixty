@@ -23,20 +23,50 @@ type officerGuilds struct {
 	lowestErr  error
 	readiness  guilds.ReadinessAnswer
 	readyErr   error
+	// planned and done script the raid lists; raidReady and reports answer by raid id.
+	planned   []guilds.Raid
+	done      []guilds.Raid
+	raidReady map[int64]guilds.ReadinessAnswer
+	reports   map[int64]*guilds.ReportAnswer
+}
+
+func (o *officerGuilds) PlannedRaids(ctx context.Context, guildID int64, now time.Time) ([]guilds.Raid, error) {
+	if o.planned != nil {
+		return o.planned, nil
+	}
+	return o.pressGuilds.PlannedRaids(ctx, guildID, now)
+}
+
+func (o *officerGuilds) DoneRaids(ctx context.Context, guildID int64, publicOnly bool, limit int) ([]guilds.Raid, error) {
+	if o.done != nil {
+		return o.done, nil
+	}
+	return o.pressGuilds.DoneRaids(ctx, guildID, publicOnly, limit)
+}
+
+func (o *officerGuilds) RaidReadiness(_ context.Context, _, _, raidID int64) (guilds.ReadinessAnswer, error) {
+	if o.readyErr != nil {
+		return guilds.ReadinessAnswer{}, o.readyErr
+	}
+	return o.raidReady[raidID], nil
 }
 
 // ReportFor scripts the report but takes membership from the real guild (GuildRank, as
 // guilds.ReportFor does): anyone who is not a verified member sees a public log only, as no member.
-func (o *officerGuilds) ReportFor(ctx context.Context, guildID, viewerID int64, _ *int64) (guilds.ReportAnswer, bool, error) {
+func (o *officerGuilds) ReportFor(ctx context.Context, guildID, viewerID int64, raidID *int64) (guilds.ReportAnswer, bool, error) {
 	o.reportSeen = append(o.reportSeen, viewerID)
 	_, member, err := o.Accounts.GuildRank(ctx, guildID, viewerID)
 	if err != nil {
 		return guilds.ReportAnswer{}, false, err
 	}
-	if o.report == nil || (!member && !o.report.Public) {
+	script := o.report
+	if raidID != nil && o.reports[*raidID] != nil {
+		script = o.reports[*raidID]
+	}
+	if script == nil || (!member && !script.Public) {
 		return guilds.ReportAnswer{}, false, nil
 	}
-	ans := *o.report
+	ans := *script
 	ans.Member = member
 	ans.Officer = ans.Officer && member
 	return ans, true, nil

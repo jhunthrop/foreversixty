@@ -23,34 +23,45 @@ const (
 	readinessMoreReserve = 40
 )
 
-// cmdReadiness answers /readiness: the next raid's readiness board for an officer, its failing
-// rows first. Rank, plan and freeze are checked on every call; never shared.
+// optReadinessRaid is /readiness's raid option: a raid id from the autocomplete.
+const optReadinessRaid = "raid"
+
+// cmdReadiness answers /readiness: the named raid's readiness board, or the next raid's, for an
+// officer, its failing rows first. Rank, plan and freeze are checked on every call; never shared.
 func (s *Service) cmdReadiness(ctx context.Context, in Interaction) (Reply, error) {
 	guildID, viewer, bound, err := s.lookupCaller(ctx, in)
 	if err != nil || !bound {
 		return pressReply(commonCopy.Unbound, false), err
 	}
+	raw, _ := in.Option(optReadinessRaid)
+	return s.readinessReply(ctx, guildID, viewer, raw, false)
+}
+
+// readinessReply is the one answer behind the command and a pick of the raid select. raw is the
+// raid id as typed or picked; "" is the next raid. update edits the pressed card in place.
+func (s *Service) readinessReply(ctx context.Context, guildID int64, viewer *int64, raw string, update bool) (Reply, error) {
 	g, err := s.d.Guilds.BotGuildFacts(ctx, guildID)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: readiness guild: %w", err)
 	}
 	guildName := memberText(g.Name)
 	if viewer == nil {
-		return pressReply(fill(officerCopy.ReadinessUnlinked, "{Guild}", guildName), false, s.linkButton()), nil
+		return pressReply(fill(officerCopy.ReadinessUnlinked, "{Guild}", guildName), update, s.linkButton()), nil
 	}
 	path, err := s.d.Guilds.GuildPagePathOf(ctx, guildID)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: readiness path: %w", err)
 	}
-	ans, err := s.d.Guilds.NextRaidReadiness(ctx, guildID, *viewer, s.now())
+	ans, err := s.readinessFor(ctx, guildID, *viewer, raw)
 	if refusal, ok := s.readinessRefusal(err, guildName, checkoutGuildURL(s.d.PublicBaseURL, guildID)); ok {
+		refusal.Update = update
 		return refusal, nil
 	}
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: readiness: %w", err)
 	}
 	if ans.Raid == nil {
-		return pressReply(commandCopy.RaidNone, false), nil
+		return pressReply(commandCopy.RaidNone, update), nil
 	}
 	zone, err := s.d.Guilds.GuildRaidTimezone(ctx, guildID)
 	if err != nil {
@@ -60,7 +71,25 @@ func (s *Service) cmdReadiness(ctx context.Context, in Interaction) (Reply, erro
 	embeds := []notify.Embed{readinessEmbed(ans, board, zone)}
 	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	link := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.Board, URL: board}
-	return Reply{Message: Message{Embeds: embeds, Components: []ActionRow{{link}}, Ephemeral: true}}, nil
+	raids, err := s.signableRaids(ctx, guildID)
+	if err != nil {
+		return Reply{}, err
+	}
+	rows := append([]ActionRow{{link}}, readinessRaidRow(raids, ans.Raid.ID, raidLocation(zone))...)
+	return Reply{Message: Message{Embeds: embeds, Components: rows, Ephemeral: true}, Update: update}, nil
+}
+
+// readinessFor reads the board of the named raid; an id that is not a raid number names none.
+func (s *Service) readinessFor(ctx context.Context, guildID, viewer int64, raw string) (guilds.ReadinessAnswer, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return s.d.Guilds.NextRaidReadiness(ctx, guildID, viewer, s.now())
+	}
+	id, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil || id <= 0 {
+		return guilds.ReadinessAnswer{}, nil
+	}
+	return s.d.Guilds.RaidReadiness(ctx, guildID, viewer, id)
 }
 
 // checkoutGuildURL opens the checkout's guild step with the Raid guild plan chosen for guildID,

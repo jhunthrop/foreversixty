@@ -42,12 +42,19 @@ func (s *Service) cmdReport(ctx context.Context, in Interaction) (Reply, error) 
 		return pressReply(officerCopy.ReportUnlinked, false, s.linkButton()), nil
 	}
 	raw, _ := in.Option(optReportRaid)
-	msg, ans, found, err := s.reportMessage(ctx, guildID, viewer, map[string]string{optReportRaid: raw})
+	return s.reportReply(ctx, in, guildID, *viewer, raw, false)
+}
+
+// reportReply is the one answer behind the command and a pick of the night select: the named
+// raid's report (the last one for ""), with Share when its log is public, the coach lines and
+// the select for another night. update edits the pressed card in place.
+func (s *Service) reportReply(ctx context.Context, in Interaction, guildID, viewer int64, raw string, update bool) (Reply, error) {
+	msg, ans, found, err := s.reportMessage(ctx, guildID, &viewer, map[string]string{optReportRaid: raw})
 	if err != nil {
 		return Reply{}, err
 	}
 	if !found {
-		return pressReply(officerCopy.ReportNone, false), nil
+		return pressReply(officerCopy.ReportNone, update), nil
 	}
 	if ans.Public {
 		opts := map[string]string{optReportRaid: strconv.FormatInt(ans.Raid.ID, 10)}
@@ -57,9 +64,14 @@ func (s *Service) cmdReport(ctx context.Context, in Interaction) (Reply, error) 
 		}
 		msg = withShare(msg, button)
 	}
-	msg = s.withCoachLines(ctx, msg, *viewer, ans.Raid.Match.ReportID)
+	msg = s.withCoachLines(ctx, msg, viewer, ans.Raid.Match.ReportID)
+	nights, err := s.reportNightRow(ctx, guildID, viewer, ans.Raid.ID)
+	if err != nil {
+		return Reply{}, err
+	}
+	msg.Components = append(msg.Components, nights...)
 	msg.Ephemeral = true
-	return Reply{Message: msg}, nil
+	return Reply{Message: msg, Update: update}, nil
 }
 
 // answerReport is /report's answer for viewer (nil: a visitor, who sees only a public log's

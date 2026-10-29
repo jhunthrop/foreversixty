@@ -197,6 +197,9 @@ func (s *Service) charAnswer(ctx context.Context, in Interaction, guildID int64,
 // withGuidedControls adds Someone else and the select to the presser's own copy of a guided
 // /char answer; any other answer is returned as it is. The public follow-up never gets them.
 func (s *Service) withGuidedControls(ctx context.Context, command string, opts map[string]string, guildID int64, viewer *int64, msg Message) (Message, error) {
+	if command == "report" && viewer != nil {
+		return s.withNightRow(ctx, guildID, *viewer, opts, msg)
+	}
 	if command != "char" || opts[optGuided] != guidedOn {
 		return msg, nil
 	}

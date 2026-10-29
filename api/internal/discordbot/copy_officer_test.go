@@ -28,6 +28,9 @@ func (f *fakeGuilds) AttendanceNames(context.Context, int64, int64, string, int)
 func (f *fakeGuilds) NextRaidReadiness(context.Context, int64, int64, time.Time) (guilds.ReadinessAnswer, error) {
 	return guilds.ReadinessAnswer{}, nil
 }
+func (f *fakeGuilds) RaidReadiness(context.Context, int64, int64, int64) (guilds.ReadinessAnswer, error) {
+	return guilds.ReadinessAnswer{}, nil
+}
 func (f *fakeGuilds) GuildPagePathOf(context.Context, int64) (string, error) { return "", nil }
 
 func TestOfficerCopyMatchesTheSpec(t *testing.T) {

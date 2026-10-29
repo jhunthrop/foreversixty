@@ -40,21 +40,23 @@ func (s *Service) commandRoutes() map[string]Handler {
 // componentRoutes maps a custom id's prefix (the part before the first colon)
 // to its handler.
 func (s *Service) componentRoutes() map[string]Handler {
-	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: s.bisPress(), prefixChar: s.charPress(), prefixSignup: s.signupPress(), prefixAttendance: s.attendancePress()}
+	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: s.bisPress(), prefixChar: s.charPress(), prefixSignup: s.signupPress(), prefixAttendance: s.attendancePress(),
+		prefixReadiness: s.readinessPress(), prefixReport: s.reportPress()}
 }
 
 // autocompleteRoutes maps a command's name to its suggester.
 func (s *Service) autocompleteRoutes() map[string]Autocomplete {
 	return map[string]Autocomplete{
 		"signup": s.autocompleteSignup, "char": s.autocompleteChar, "bis": s.autocompleteSpec,
-		"report": s.autocompleteReport, "attendance": s.autocompleteMember,
+		"report": s.autocompleteReport, "attendance": s.autocompleteMember, "readiness": s.autocompleteReadiness,
 	}
 }
 
 // updateComponents names the custom-id prefixes whose press edits the message
 // it sits on, so a slow one is deferred as type 6, not type 5.
 func updateComponents() map[string]bool {
-	return map[string]bool{pickIDPrefix: true, shareIDPrefix: true, prefixBis: true, prefixChar: true, prefixSignup: true, prefixAttendance: true}
+	return map[string]bool{pickIDPrefix: true, shareIDPrefix: true, prefixBis: true, prefixChar: true, prefixSignup: true, prefixAttendance: true,
+		prefixReadiness: true, prefixReport: true}
 }
 
 // customPrefix is the route key of a custom id.

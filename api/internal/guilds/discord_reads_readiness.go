@@ -52,6 +52,24 @@ func (s *Service) NextRaidReadiness(ctx context.Context, guildID, viewerID int64
 	return readinessAnswerOf(raid, view), nil
 }
 
+// RaidReadiness is the readiness of the named raid of the guild, behind the same gate and
+// refusals as NextRaidReadiness. A raid of another guild, or one that is not planned or locked,
+// gives an answer with no Raid.
+func (s *Service) RaidReadiness(ctx context.Context, guildID, viewerID, raidID int64) (ReadinessAnswer, error) {
+	if err := s.readinessGate(ctx, guildID, viewerID); err != nil {
+		return ReadinessAnswer{}, err
+	}
+	raid, found, err := s.Store.GetRaid(ctx, guildID, raidID)
+	if err != nil || !found || (raid.Status != RaidPlanned && raid.Status != RaidLocked) {
+		return ReadinessAnswer{}, err
+	}
+	view, err := s.Store.Readiness(ctx, guildID, true, &raid)
+	if err != nil {
+		return ReadinessAnswer{}, fmt.Errorf("guilds: bot raid readiness: %w", err)
+	}
+	return readinessAnswerOf(raid, view), nil
+}
+
 // readinessGate is the officer routes' gate (officerGateFor), then the Raid guild tools.
 func (s *Service) readinessGate(ctx context.Context, guildID, viewerID int64) error {
 	if err := s.officerGateFor(ctx, guildID, viewerID); err != nil {

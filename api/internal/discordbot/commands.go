@@ -67,7 +67,9 @@ func Commands() []Command {
 		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Released: true, Options: []CommandOption{
 			stringOption("name", "Officers: a member of the guild.", false, true, nil),
 		}},
-		{Name: "readiness", Description: "Officers: who is not ready for the next raid.", Released: true},
+		{Name: "readiness", Description: "Officers: who is not ready for the next raid.", Released: true, Options: []CommandOption{
+			stringOption("raid", descRaidOption, false, true, nil),
+		}},
 		{Name: "link", Description: "Link this Discord account to Forever Sixty.", Released: true},
 		{Name: "help", Description: "This list.", Released: true},
 	}
