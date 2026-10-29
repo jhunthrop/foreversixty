@@ -119,8 +119,6 @@ export const addonCopy = {
     'Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.',
   /** The disclosure that holds the data addon's own links and the build number. */
   setupManualInstall: 'Manual install',
-  installDataCurseForge: 'Forever Sixty Data on CurseForge',
-  installDataWago: 'Forever Sixty Data on Wago Addons',
   installDataGitHub: 'Latest data release',
   currentDataBuild: (build: string): string => `Current data build: ${build}`,
   flowOutTitle: 'Out of the game',
@@ -148,7 +146,7 @@ export const addonCopy = {
   /** The truth of how a character reaches the site, said once and the way the addon's welcome says
    *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
   setupHowItArrives:
-    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
+    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
   /** Under the step 3 title: which of the three steps can be skipped. */
   setupCompanionNote:
     'Sends your character automatically and logs live. Without it, paste an export after each change.',

@@ -17,6 +17,7 @@ describe('home-landing-copy', () => {
     expect(homeCompanionRow).toHaveLength(1);
     expect(homeCompanionRow[0].title).toBe('Get set up');
     expect(homeCompanionRow[0].href).toBe('/setup');
+    expect(homeCompanionRow[0].buttonLabel).toBe('Open setup');
     expect(homeCompanionRow[0].description).toBe(
       'Sign in, install the addon, and run the companion — one page.',
     );

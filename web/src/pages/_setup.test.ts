@@ -25,9 +25,7 @@ import {
 import activeBuild from '../data/active-build.json';
 import SetupPage, {
   CURSEFORGE_URL,
-  DATA_CURSEFORGE_URL,
   DATA_GITHUB_RELEASES_URL,
-  DATA_WAGO_URL,
   GITHUB_RELEASES_URL,
   WAGO_URL,
 } from './setup.astro';
@@ -41,8 +39,6 @@ const STRING_COPY_KEYS = [
   'installWago',
   'installGitHub',
   'installDataLead',
-  'installDataCurseForge',
-  'installDataWago',
   'installDataGitHub',
   'flowOutTitle',
   'flowOutBody',
@@ -106,33 +102,27 @@ describe('/setup', () => {
 
   it('keeps the data addon’s own links and the build number in the Manual install disclosure, not in the step', () => {
     expect(html).toContain('data-testid="setup-manual-install"');
-    expect(html).toContain(DATA_CURSEFORGE_URL);
-    expect(html).toContain(DATA_WAGO_URL);
     expect(html).toContain(DATA_GITHUB_RELEASES_URL);
     const open = html.indexOf('data-testid="setup-manual-install"');
     const close = html.indexOf('</details>', open);
     const inside = html.slice(open, close);
-    for (const url of [DATA_CURSEFORGE_URL, DATA_WAGO_URL, DATA_GITHUB_RELEASES_URL]) {
+    for (const url of [GITHUB_RELEASES_URL, DATA_GITHUB_RELEASES_URL]) {
       expect(inside).toContain(url);
     }
     expect(inside).toContain(addonCopy.currentDataBuild(activeBuild.build));
+    // Only the zip and the data release: the store buttons live in the step, not repeated here.
+    expect(inside).not.toContain(CURSEFORGE_URL);
+    expect(inside).not.toContain(WAGO_URL);
+    expect(inside.match(/<a\s/g)).toHaveLength(2);
     expect(html.indexOf(addonCopy.installDataHint)).toBeLessThan(open);
   });
 
   it('addresses CurseForge by the project ids the TOCs carry, never a guessed slug', () => {
     expect(CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706689');
-    expect(DATA_CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706707');
   });
 
   it('every install link opts out of opener access', () => {
-    for (const url of [
-      CURSEFORGE_URL,
-      WAGO_URL,
-      GITHUB_RELEASES_URL,
-      DATA_CURSEFORGE_URL,
-      DATA_WAGO_URL,
-      DATA_GITHUB_RELEASES_URL,
-    ]) {
+    for (const url of [CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL, DATA_GITHUB_RELEASES_URL]) {
       const anchor = [...html.matchAll(/<a\s+[^>]*>/g)].map((m) => m[0]).find((tag) => tag.includes(url));
       expect(anchor, `no <a> found for ${url}`).toBeDefined();
       expect(anchor).toContain('rel="noopener"');
@@ -443,11 +433,19 @@ describe('/setup first-run copy', () => {
     expect(html).not.toMatch(/pairs itself|pair the companion/i);
   });
 
+  it('makes "Try an export" in that line a link that opens its disclosure', () => {
+    const line = html.slice(html.indexOf('data-testid="setup-how-it-arrives"'));
+    expect(line.slice(0, line.indexOf('</p>'))).toContain(
+      `<a href="#paste" data-open-disclosure="setup-try-export">${addonCopy.setupTryExport}</a>`,
+    );
+    expect(html).toContain('data-testid="setup-try-export"');
+  });
+
   it('says once, the way the addon welcome does, how a character reaches the site', () => {
     expect(addonCopy.setupHowItArrives).toBe(
-      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
+      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
     );
-    expect(html.split(addonCopy.setupHowItArrives).length - 1).toBe(1);
+    expect(html.split('No companion? Paste an export instead (see ').length - 1).toBe(1);
   });
 
   it('drops the Blizzard status sentence from step 1', () => {

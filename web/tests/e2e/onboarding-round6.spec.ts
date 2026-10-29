@@ -158,8 +158,11 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['1']);
       await chipRowIsOneLine(page);
       await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(
-        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export (see Try an export below).',
+        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
       );
+      await page.getByTestId('setup-how-it-arrives').getByRole('link', { name: 'Try an export' }).click();
+      await expect(page.getByTestId('setup-try-export')).toHaveJSProperty('open', true);
+      await expect(page.getByTestId('setup-try-export')).toBeInViewport();
       await expect(page.getByTestId('setup-companion-note')).toHaveText(
         'Sends your character automatically and logs live. Without it, paste an export after each change.',
       );

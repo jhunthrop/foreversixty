@@ -76,6 +76,8 @@ export const homeAroundTheSiteCopy = {
 export interface HomeCompanionRowCard {
   title: string;
   description: string;
+  /** The card's button: says what it does, never repeats the title. */
+  buttonLabel: string;
   href: string;
 }
 
@@ -85,6 +87,7 @@ export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
   {
     title: 'Get set up',
     description: 'Sign in, install the addon, and run the companion — one page.',
+    buttonLabel: 'Open setup',
     href: '/setup',
   },
 ] as const;

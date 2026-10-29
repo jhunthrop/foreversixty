@@ -26,8 +26,6 @@ import communityLinks from '../data/links.json';
 export const CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706689';
 export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
 export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases/latest`;
-export const DATA_CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706707';
-export const DATA_WAGO_URL = 'https://addons.wago.io/addons/foreversixtydata';
 export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
 // CurseForge is the step's button; Wago and the zip are secondary buttons beside it in one row.
@@ -36,11 +34,14 @@ const otherInstalls = [
   { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
 ];
 
-const dataLinks = [
-  { label: addonCopy.installDataCurseForge, href: DATA_CURSEFORGE_URL },
-  { label: addonCopy.installDataWago, href: DATA_WAGO_URL },
+// The manual-install disclosure keeps only the hand-install downloads: the addon zip and the data release.
+const manualLinks = [
+  { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
   { label: addonCopy.installDataGitHub, href: DATA_GITHUB_RELEASES_URL },
 ];
+
+// The "how it arrives" line carries the export disclosure's title as a link that opens that disclosure.
+const [arrivesLead, arrivesTail] = addonCopy.setupHowItArrives.split(addonCopy.setupTryExport);
 
 const downloadUrl = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
 // The first download is the step's button; any other platform is a secondary button beside it.
@@ -101,7 +102,11 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           {addonCopy.installDataHint}
         </p>
         <p class="text-pretty text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
-          {addonCopy.setupHowItArrives}
+          {arrivesLead}
+          <a href="#paste" data-open-disclosure="setup-try-export">
+            {addonCopy.setupTryExport}
+          </a>
+          {arrivesTail}
         </p>
         <p class="text-pretty setup-when-out setup-when-pointer text-[14px]" data-testid="setup-addon-done">
           {addonCopy.setupAddonDoneLine}
@@ -126,7 +131,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           <div class="flex flex-col gap-3 px-4 pb-4">
             <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.installDataLead}</p>
             <div class="flex flex-wrap gap-3">
-              {dataLinks.map((link) => (
+              {manualLinks.map((link) => (
                 <a class={SECONDARY_ACTION} href={link.href} rel="noopener">
                   {link.label}
                 </a>
@@ -299,5 +304,17 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
     if (opened) target?.scrollIntoView();
   }
   openForHash();
+  // The export link in the how-it-arrives line: open that disclosure and scroll to it.
+  document.querySelectorAll<HTMLAnchorElement>('a[data-open-disclosure]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const details = document.querySelector<HTMLDetailsElement>(
+        `[data-testid="${link.dataset.openDisclosure}"]`,
+      );
+      if (details === null) return;
+      event.preventDefault();
+      details.open = true;
+      details.scrollIntoView({ block: 'start' });
+    });
+  });
   window.addEventListener('hashchange', openForHash);
 </script>

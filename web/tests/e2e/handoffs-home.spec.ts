@@ -35,6 +35,9 @@ test('the "Get set up" card links to /setup', async ({ page }) => {
   await page.goto('/');
   const row = page.getByTestId('home-companion-row');
   await expect(row.getByRole('link', { name: /Get set up/ })).toHaveAttribute('href', '/setup');
+  await expect(page.getByTestId('home-get-set-up-card').getByTestId('tool-card-button')).toHaveText(
+    'Open setup',
+  );
 });
 
 test('a signed-in visitor sees the "Get set up" banner collapse to one line, never the three-step pitch', async ({
