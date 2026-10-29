@@ -230,7 +230,7 @@ test('the free owner gets the card and one sentence, and the history is never re
   await expect(page.getByTestId('history-free-sentence')).toHaveText(
     'History charts draw your score and parses over time. See plans.',
   );
-  await expect(page.getByTestId('history-see-plans')).toHaveAttribute('href', '/premium');
+  await expect(page.getByTestId('history-see-plans')).toHaveAttribute('href', '/premium#history');
   await expect(page.getByTestId('character-history-section')).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(requests).toEqual([]);

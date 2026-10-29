@@ -8,6 +8,7 @@
 <script lang="ts">
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import { percentLabel } from '../../lib/sim/details';
   import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
   import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
@@ -200,12 +201,14 @@
         data-testid="sim-server-run">{simCopy.runOnServers}</button
       >
     {:else if signedIn}
+      <!-- A quiet text link, never a button and never gold: the Run sim button stays the
+           control (spec 2026-10-29-premium-entry section 7). It starts nothing. -->
       <a
-        href="/premium"
-        class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4 md:min-h-9"
-        data-testid="sim-get-premium"
+        href={PREMIUM_LINKS.serverSims}
+        class="text-muted hover:text-text focus-visible:outline-gold inline-flex min-h-11 items-center text-[13px] underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 md:min-h-9"
+        data-testid="sim-server-run-free"
       >
-        {simCopy.getPremium}
+        {simCopy.runOnServersFree}
       </a>
     {/if}
   </div>
@@ -240,7 +243,7 @@
     >
       {message}
       {#if message === simCopy.premiumRequired}
-        <a href="/premium" class="underline">{simCopy.seePlans}</a>
+        <a href={PREMIUM_LINKS.serverSims} class="underline">{simCopy.seePlans}</a>
       {/if}
     </p>
   {/if}

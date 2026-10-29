@@ -62,7 +62,7 @@ test('the Premium line opens the review; the free line goes to /premium', async 
   );
   const free = await page.context().newPage();
   await openAccount(free, 'free');
-  await expect(free.getByTestId('coach-last-raid-link')).toHaveAttribute('href', '/premium');
+  await expect(free.getByTestId('coach-last-raid-link')).toHaveAttribute('href', '/premium#coach');
 });
 
 test('no raid in 14 days shows the muted none line, never hidden', async ({ page }) => {

@@ -136,6 +136,8 @@ export const weightsUnsupportedSpec = (specName: string): string =>
 /** Shared across `simCopy.seePlans` and `bulkCopy.seePlans`: both sit next to a premium
  *  note and link to the same `/premium` page, so the label is one string, not two. */
 const seePlansLabel = 'See plans';
+/** The payer's button label; the free account's quiet link names the same feature. */
+const runOnServersLabel = 'Run on our servers';
 
 export const simCopy = {
   ...plannerSimCopy,
@@ -145,7 +147,9 @@ export const simCopy = {
   notFound: 'No sim with that id.',
   premiumRequired: 'Running on our servers is a premium feature. The browser lane is free and unlimited.',
   seePlans: seePlansLabel,
-  getPremium: 'Get premium',
+  /** A free account's server-run entry (spec 2026-10-29-premium-entry section 7): a muted text
+   *  link to the server-sims lines on /premium, quieter than the Run sim button. */
+  runOnServersFree: `${runOnServersLabel} · Premium plan`,
   specsFailed: 'Spec support could not be read.',
   characterFailed: 'That character could not be read.',
 
@@ -287,7 +291,7 @@ export const simCopy = {
   engineLoading: 'The engine is about 4 MB. It loads once and is cached after that.',
   iterations: 'iterations',
   progressLabel: 'Iterations complete',
-  runOnServers: 'Run on our servers',
+  runOnServers: runOnServersLabel,
   staleEngine: 'This result came from an older engine. Run it again for the current numbers.',
   /** The DPS figure's own unit label, beside the number. */
   dps: 'DPS',

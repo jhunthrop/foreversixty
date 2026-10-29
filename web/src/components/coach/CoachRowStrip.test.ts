@@ -34,7 +34,7 @@ describe('CoachRowStrip', () => {
     expect(body).toMatch(
       /Bloodthirst: 9 casts lost<\/span>(<!--[^>]*-->)*<span class="text-muted whitespace-pre"> first<\/span>/,
     );
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#coach"');
     expect(body).toContain('Read the full review with Premium');
   });
   it('loading holds the strip height by entitlement and says so to screen readers', () => {

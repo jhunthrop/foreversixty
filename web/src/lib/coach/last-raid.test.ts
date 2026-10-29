@@ -53,7 +53,7 @@ describe('lastRaidLine', () => {
     expect(text(recent({}), false)).toBe(
       'Last raid · Molten Core, Fri 23 Oct · 11 things to fix · First: Bloodthirst casts lost · Read the full review with Premium',
     );
-    expect(line(recent({}), false).href).toBe('/premium');
+    expect(line(recent({}), false).href).toBe('/premium#coach');
   });
 
   it('free with one finding, and with no first', () => {
@@ -263,7 +263,7 @@ describe('a viewer that flips from free to Premium', () => {
     await settle();
     const settled = states.at(-1);
     if (settled?.kind !== 'ready') throw new Error('expected a ready state');
-    expect(lastRaidLine(settled.recent, premium, 'UTC').href).toBe('/premium');
+    expect(lastRaidLine(settled.recent, premium, 'UTC').href).toBe('/premium#coach');
     premium = true;
     const flipped = lastRaidLine(settled.recent, premium, 'UTC');
     expect(flipped.href).toBe(RAID.url);

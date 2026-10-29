@@ -71,3 +71,16 @@ describe('GuildPlanChooser', () => {
     expect(body).not.toContain('guild-billing-trial-line');
   });
 });
+
+describe('GuildPlanChooser compare link (spec 2026-10-29-premium-entry section 7)', () => {
+  it('one action link under the cards, above the subscribe button, to the guild region', () => {
+    const body = html();
+    const link = /<a[^>]*data-testid="guild-billing-compare"[^>]*>[\s\S]*?<\/a>/.exec(body)?.[0] ?? '';
+    expect(link).toContain('href="/premium#guild-leaders"');
+    expect(text(link)).toBe('Compare Guild and Raid guild');
+    expect(link).toContain('data-glyph="chevron"');
+    const at = (id: string): number => body.indexOf(`data-testid="${id}"`);
+    expect(at('guild-billing-compare')).toBeGreaterThan(at('guild-billing-option-raid_guild'));
+    expect(at('guild-billing-compare')).toBeLessThan(at('guild-billing-subscribe'));
+  });
+});

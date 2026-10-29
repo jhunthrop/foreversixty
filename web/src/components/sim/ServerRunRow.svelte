@@ -5,6 +5,7 @@
      which of the five rerun states to show. -->
 <script lang="ts">
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import { simCopy } from '../../lib/sim/copy';
   import { headlineOf, kindOf } from '../../lib/sim/history';
   import { ageWords, elapsedSeconds, rowState } from '../../lib/sim/server-runs';
@@ -15,7 +16,6 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
 
   const CREST_SIZE = 32;
-  const PREMIUM_PATH = '/premium';
 
   let {
     row,
@@ -111,7 +111,10 @@
     {:else if rerun === 'lapsed'}
       <p class="text-wipe basis-full text-[13px]" role="alert">
         {serverRunsCopy.planLapsed}
-        <a class="text-text inline-flex min-h-11 items-center underline md:min-h-0" href={PREMIUM_PATH}>
+        <a
+          class="text-text inline-flex min-h-11 items-center underline md:min-h-0"
+          href={PREMIUM_LINKS.serverSims}
+        >
           {serverRunsCopy.seePlans}
         </a>
       </p>

@@ -6,6 +6,7 @@
      benefit lives; one that has not shipped, or is off for the plan, is a muted static row. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import type { EntitlementsView, MeCharacter } from '../../lib/account/api';
   import { accountPageCopy } from '../../lib/account/account-page-copy';
   import { mainCharacter } from '../../lib/account/main-character';
@@ -220,7 +221,7 @@
         </button>
       {/if}
       {#if showSeePlans}
-        <a class={button('primary')} href="/premium" data-testid="account-see-plans"
+        <a class={button('primary')} href={PREMIUM_LINKS.card} data-testid="account-see-plans"
           >{billingBlockCopy.seePlans}</a
         >
       {/if}

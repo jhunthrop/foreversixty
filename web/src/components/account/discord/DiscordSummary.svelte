@@ -5,6 +5,7 @@
      module cuts it at 40 characters and it is rendered as escaped text only. -->
 <script lang="ts">
   import type { DiscordNotifications } from '../../../lib/account/api';
+  import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import {
     failureWarning,
     openInDiscordUrl,
@@ -81,7 +82,8 @@
       </DiscordNotice>
     {:else if state === 'lapsed'}
       <DiscordNotice tone="gold" title={notificationsCopy.lapsedTitle} detail={notificationsCopy.lapsedBody}>
-        <a class="{ACTION_LINK} -my-2" href="/premium">{notificationsCopy.seePlans}<Glyph name="chevron" /></a
+        <a class="{ACTION_LINK} -my-2" href={PREMIUM_LINKS.notifications}
+          >{notificationsCopy.seePlans}<Glyph name="chevron" /></a
         >
       </DiscordNotice>
     {/if}

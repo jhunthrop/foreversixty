@@ -13,7 +13,7 @@ describe('CoachTeaser', () => {
     expect(body).toContain('Bloodthirst: 9 casts lost');
     expect(body).not.toContain('First:');
     expect(body).toContain('/data/b/icons/bt.webp');
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#coach"');
   });
   it('one finding is singular', () => {
     const { body } = render(CoachTeaser, { props: { answer: coachTeaser({ finding_count: 1 }), names } });

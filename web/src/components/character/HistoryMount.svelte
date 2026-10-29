@@ -6,6 +6,7 @@
      viewer will get it. -->
 <script lang="ts">
   import { historyCopy } from '../../lib/character/history-copy';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import { historyMount, type HistoryMountFacts } from '../../lib/character/history-mount';
   import type { CharacterPath } from '../../lib/characters';
   import HistoryReserve from './HistoryReserve.svelte';
@@ -41,7 +42,7 @@
       >{historyCopy.freeOwnerSentence}&#32;<span class="whitespace-nowrap"
         ><a
           class="text-text hover:text-gold-hover py-3.5 underline underline-offset-2"
-          href="/premium"
+          href={PREMIUM_LINKS.history}
           data-testid="history-see-plans">{historyCopy.freeOwnerLink}</a
         >.</span
       ></span

@@ -73,7 +73,7 @@ test.describe('free owner', () => {
     await expect(page.getByTestId('coach-row-open')).toHaveText(
       fill(coachCopy.rowFree, { n: 3, title: FIX_FIRST_TITLE }).replace(` · ${coachCopy.upgrade}`, ''),
     );
-    await expect(page.getByTestId('coach-row-premium')).toHaveAttribute('href', '/premium');
+    await expect(page.getByTestId('coach-row-premium')).toHaveAttribute('href', '/premium#coach');
     await expect(page.getByTestId('coach-row-premium')).toHaveText(coachCopy.upgrade);
   });
 
@@ -86,7 +86,7 @@ test.describe('free owner', () => {
       fill(coachCopy.teaserFirst, { title: FIX_FIRST_TITLE }),
     );
     await expect(page.getByTestId('coach-title')).toHaveText(fill(coachCopy.titleModel, { Spec: 'Fury' }));
-    await expect(page.getByTestId('coach-upgrade')).toHaveAttribute('href', '/premium');
+    await expect(page.getByTestId('coach-upgrade')).toHaveAttribute('href', '/premium#coach');
     await expect(page.getByTestId('coach-review-body')).toHaveCount(0);
   });
 });

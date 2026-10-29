@@ -152,7 +152,7 @@ describe('Run again', () => {
   it('lapsed (402): the Premium line and See plans to /premium', () => {
     const body = renderRow(failed, 'lapsed');
     expect(text(body)).toContain(serverRunsCopy.planLapsed);
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#server-sims"');
     expect(text(body)).toContain(serverRunsCopy.seePlans);
     expect(text(body)).not.toContain(serverRunsCopy.runAgainFailed);
   });

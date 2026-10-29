@@ -15,6 +15,8 @@
   import { listPriceAfterFounder, priceFor } from '../../../lib/billing/plan-costs';
   import { fitsTier } from '../../../lib/guild/billing-state';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
+  import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
+  import ActionLink from '../../ui/ActionLink.svelte';
   import IntervalSegments from './IntervalSegments.svelte';
 
   let {
@@ -89,6 +91,9 @@
   <p class="text-muted text-[13px]" data-testid="guild-billing-count">
     {copy.chooser.verifiedToday(verifiedCount)}
   </p>
+  <ActionLink href={PREMIUM_LINKS.guildLeaders} class="w-fit" data-testid="guild-billing-compare"
+    >{copy.chooser.compare}</ActionLink
+  >
   <a {href} class="{PRIMARY_BUTTON_FIXED} w-fit px-4" data-testid="guild-billing-subscribe">{buttonText}</a>
   {#if !trialUsed && !lapsed}
     <p class="text-muted text-[13px]" data-testid="guild-billing-trial-line">{copy.chooser.trialLine}</p>

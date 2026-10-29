@@ -3,6 +3,7 @@
 // module's sentence split into styled segments plus the one link it carries. Pure, so the
 // component and its tests agree. The line is never hidden: no raid in 14 days is the muted
 // `lastRaidNone` line (controller ruling), not `null`.
+import { PREMIUM_LINKS } from '../billing/premium-links';
 import { COACH_SEPARATOR, coachCopy, fill } from './copy';
 import type { CoachRecent, LastRaid } from './types';
 
@@ -30,7 +31,7 @@ export const LAST_RAID_LABEL = coachCopy.lastRaidNone.split(SEGMENT_SEPARATOR)[0
 export const LAST_RAID_RETRY_CLASS =
   '-my-3 inline-flex min-h-11 items-center px-1 text-gold underline hover:text-gold-hover focus-visible:outline-2 focus-visible:outline-gold disabled:opacity-60';
 
-export const PREMIUM_HREF = '/premium';
+export const PREMIUM_HREF = PREMIUM_LINKS.coach;
 const DATE_LOCALE = 'en-GB';
 
 /** `ddd d MMM` in the viewer's zone (the browser's own unless `timeZone` is given). */

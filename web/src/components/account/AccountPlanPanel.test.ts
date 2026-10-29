@@ -96,7 +96,7 @@ describe('Account plan headline', () => {
   it('shows See plans, linked to /premium, on the free plan', () => {
     const html = panel(meWith({}));
     expect(html).toContain('Not on Premium.');
-    expect(html).toContain('href="/premium"');
+    expect(html).toContain('href="/premium#premium"');
     expect(html).toContain('See plans');
   });
 });

@@ -3,6 +3,7 @@
      icon, and one outlined gold button to /premium. Zero findings says so and offers nothing. -->
 <script lang="ts">
   import { coachCopy, fill } from '../../lib/coach/copy';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import type { CoachNames } from '../../lib/coach/names';
   import type { CoachTeaser } from '../../lib/coach/types';
   import SpellIcon from './SpellIcon.svelte';
@@ -30,7 +31,7 @@
       </div>
     {/if}
     <a
-      href="/premium"
+      href={PREMIUM_LINKS.coach}
       class="rounded-control border-gold text-gold hover:border-gold-hover hover:text-gold-hover focus-visible:outline-gold mt-5 inline-flex h-11 items-center border px-4 text-[14px] font-semibold hover:bg-[#e5b95514] focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#e5b95524]"
       data-testid="coach-upgrade">{coachCopy.upgrade}</a
     >

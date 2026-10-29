@@ -186,8 +186,8 @@ describe('AccountPremiumBlock plan headline', () => {
       { ...PLAN, line: 'Not on Premium.', head: { name: 'Free', when: null, extra: null } },
       true,
     );
-    expect(html).toMatch(/<a class="[^"]*bg-\[linear-gradient[^"]*" href="\/premium"/);
-    expect(renderPlan(PLAN)).not.toContain('href="/premium"');
+    expect(html).toMatch(/<a class="[^"]*bg-\[linear-gradient[^"]*" href="\/premium#premium"/);
+    expect(renderPlan(PLAN)).not.toContain('href="/premium');
   });
 
   it('a seat holder reads who gave it', () => {

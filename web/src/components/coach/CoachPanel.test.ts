@@ -195,7 +195,7 @@ describe('CoachPanel', () => {
   it('teaser renders the free panel', () => {
     const body = panel(coachTeaser());
     expect(body).toContain('3 things to fix');
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#coach"');
   });
 
   it('error, not reviewable, preparing, not available and loading states', () => {

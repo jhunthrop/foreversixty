@@ -5,6 +5,7 @@
      never put in an attribute other than the input's own value. -->
 <script lang="ts">
   import type { DiscordEvents } from '../../../lib/account/api';
+  import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { button } from '../../../lib/ui/button';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../../lib/ui/link';
@@ -86,7 +87,9 @@
       >
         {#if error !== null}
           <span role="alert">{error}</span>
-          {#if offerPlans}<a class="text-gold underline" href="/premium">{notificationsCopy.seePlans}</a>{/if}
+          {#if offerPlans}<a class="text-gold underline" href={PREMIUM_LINKS.notifications}
+              >{notificationsCopy.seePlans}</a
+            >{/if}
         {/if}
       </div>
       <p id="discord-webhook-help" class="text-muted text-[13px]">{notificationsCopy.trustHelper}</p>

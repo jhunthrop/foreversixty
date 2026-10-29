@@ -62,7 +62,7 @@ describe('AccountDiscordBlock', () => {
     const body = html(meWith(false, { discord: null }));
     expect(body).toContain('data-testid="discord-free"');
     expect(text(body)).toContain(notificationsCopy.freeSentence);
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#notifications"');
     expect(body).toContain('account-discord"');
     expect(body).not.toContain('discord-state-tag');
     expect(body).not.toContain('<form');
@@ -241,7 +241,7 @@ describe('AccountDiscordBlock', () => {
     expect(body).toContain('border-gold');
     expect(text(body)).toContain(notificationsCopy.lapsedTitle);
     expect(text(body)).toContain(notificationsCopy.lapsedBody);
-    expect(body).toContain('href="/premium"');
+    expect(body).toContain('href="/premium#notifications"');
     for (const id of ['discord-event-sim', 'discord-event-upload', 'discord-event-private'])
       expect(isDisabled(body, id)).toBe(true);
     expect(tagOf(body, 'discord-state-tag')).toContain('data-tone="muted"');

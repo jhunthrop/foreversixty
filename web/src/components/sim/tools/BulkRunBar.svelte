@@ -11,6 +11,7 @@
      SettingsSheet's own disclosure itself, so nothing else here needs to). -->
 <script lang="ts">
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
@@ -203,7 +204,8 @@
              says that number. Offering it when the list is past 5,000 too would send the
              player to a lane that refuses the same request. -->
         <span class="text-muted"
-          >{bulkCopy.capPremiumNote} <a href="/premium" class="underline">{bulkCopy.seePlans}</a></span
+          >{bulkCopy.capPremiumNote}
+          <a href={PREMIUM_LINKS.serverSims} class="underline">{bulkCopy.seePlans}</a></span
         >
       {:else}
         <span class="text-muted"

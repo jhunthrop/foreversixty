@@ -26,7 +26,7 @@ describe('HistoryMount', () => {
   it('says one sentence with a See plans link to the free owner', () => {
     const html = mount({ entitled: false });
     expect(html).toContain('History charts draw your score and parses over time.');
-    expect(html).toMatch(/<a[^>]*href="\/premium"[^>]*>See plans<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="\/premium#history"[^>]*>See plans<\/a>/);
     expect(html).toMatch(/over time\. <span class="whitespace-nowrap"><a[^>]*>See plans<\/a>\.<\/span>/);
     expect(html).not.toContain('history-shell-reserve');
   });

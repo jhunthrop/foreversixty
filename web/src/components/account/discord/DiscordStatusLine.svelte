@@ -5,6 +5,7 @@
      its action row. Success is a polite status, a failure an alert in the failure colour. -->
 <script lang="ts">
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
+  import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
 
   /** `target: 'plans'` is a refusal for want of Premium: the sentence is followed by See plans. */
   let {
@@ -19,7 +20,7 @@
       <p class={status.ok ? 'text-text' : 'text-wipe'} role={status.ok ? 'status' : 'alert'}>
         {status.message}
         {#if status.target === 'plans'}
-          <a class="text-text underline" href="/premium">{notificationsCopy.seePlans}</a>
+          <a class="text-text underline" href={PREMIUM_LINKS.notifications}>{notificationsCopy.seePlans}</a>
         {/if}
       </p>
     {/if}

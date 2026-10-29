@@ -6,6 +6,7 @@
      the fetch. A strip that is loading holds its height so the list never moves. -->
 <script lang="ts">
   import { COACH_SEPARATOR, coachCopy } from '../../lib/coach/copy';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import type { IconUrl } from '../../lib/coach/names';
   import { STRIP_RESERVE, type RowLine, type StripPhase, type StripReserve } from '../../lib/coach/row-line';
   import SpellIcon from './SpellIcon.svelte';
@@ -95,7 +96,7 @@
         >{COACH_SEPARATOR}</span
       >
       <a
-        href="/premium"
+        href={PREMIUM_LINKS.coach}
         class="text-gold hover:text-gold-hover {LINK_FOCUS} flex min-h-11 items-center self-start underline md:min-h-0 md:self-center md:px-1"
         data-testid="coach-row-premium">{line.upgrade}</a
       >
