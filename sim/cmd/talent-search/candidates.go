@@ -197,24 +197,30 @@ func strip(t talentTrees, b build, removable func(id int) bool) build {
 // generate is the whole candidate pool around guide (deduplicated,
 // the guide itself excluded), before the cap. total is the level's
 // whole budget: the structural builds spend all of it even when the
-// guide, re-read against the active build, spends fewer. modeled is
-// the talents the engine's code reads: the guide re-spent twice, once
-// moving every non-damage point and once moving only modeled ones -
-// a talent the engine never reads sims as zero, so moving it is the
-// engine's blind spot rather than a finding. keep is the talents no
+// guide, re-read against the active build, spends fewer. respendable
+// is the talents the engine's code reads plus the survival-only ones
+// (survival.go): the guide re-spent twice, once moving every
+// non-damage point and once moving only respendable ones - a talent
+// the engine never reads sims as zero, so moving it is the engine's
+// blind spot rather than a finding, unless the client's own data says
+// it adds no damage to miss. keep is the talents no
 // candidate may take a point from (see resolveKeep): they are never a
 // swap source or a re-spent point, the deep archetypes start from the
 // guide stripped to them, and a candidate that still ends below the
 // guide's rank in one is dropped.
-func generate(t talentTrees, guide build, credits map[int]credit, modeled, keep map[int]bool, total, refineTop int) []candidate {
+// respendLabel names the guide re-spent with only its modeled and
+// survival-only non-damage points moved.
+const respendLabel = "guide, modeled and survival-only non-damage points re-spent"
+
+func generate(t talentTrees, guide build, credits map[int]credit, respendable, keep map[int]bool, total, refineTop int) []candidate {
 	var pool []candidate
 	s := scorer{credits: credits, prefer: guide}
 	nonDamage := func(id int) bool { return !credits[id].Damage && !keep[id] }
-	modeledNonDamage := func(id int) bool { return modeled[id] && !credits[id].Damage && !keep[id] }
+	respendableNonDamage := func(id int) bool { return respendable[id] && !credits[id].Damage && !keep[id] }
 	deepSeed := deepArchetypeSeed(t, guide, keep)
 	structural := []candidate{{
-		Label:      "guide, modeled non-damage points re-spent",
-		Build:      s.fill(t, strip(t, guide, modeledNonDamage), total, -1),
+		Label:      respendLabel,
+		Build:      s.fill(t, strip(t, guide, respendableNonDamage), total, -1),
 		Structural: true,
 	}, {
 		Label:      "guide, all non-damage points re-spent",

@@ -57,6 +57,26 @@ func TestRemovedUnmodeledNamesTheDroppedBlindSpots(t *testing.T) {
 	}
 }
 
+// A survival-only talent is free to re-spend even when the engine reads
+// nothing of it: the client's data says it adds no damage to miss.
+func TestRemovedUnmodeledLetsASurvivalOnlyTalentGo(t *testing.T) {
+	r := reportFixture()
+	r.in.survival = map[int]bool{2: true}
+	if got := removedUnmodeled(r.in, r.credits, build{1: 5, 5: 3}); len(got) != 0 {
+		t.Fatalf("B is survival-only, got %v", got)
+	}
+	if got, ok := r.bestClean(); !ok || got.Label != "no B" {
+		t.Fatalf("the winner that re-spends B should count as clean, got %+v", got)
+	}
+	out := r.markdown()
+	if !strings.Contains(out, "Survival-only talents (the client's data gives them no damage, so an unmodeled one may be re-spent): B.") {
+		t.Fatalf("the report should name the survival-only talents:\n%s", out)
+	}
+	if !strings.Contains(out, "| unmodeled, survival-only |") {
+		t.Fatalf("the credits table should mark B survival-only:\n%s", out)
+	}
+}
+
 func TestBestCleanSkipsWinnersThatDropUnmodeledTalents(t *testing.T) {
 	r := reportFixture()
 	res, ok := r.bestClean()

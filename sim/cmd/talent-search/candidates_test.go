@@ -118,7 +118,7 @@ func TestGenerateIsLegalDedupedAndKeepsUnmodeledInTheModeledRespend(t *testing.T
 			t.Errorf("%s: duplicate", c.Label)
 		}
 		seen[tr.key(c.Build)] = true
-		if c.Label == "guide, modeled non-damage points re-spent" {
+		if c.Label == respendLabel {
 			modeledRespend = &pool[i]
 		}
 	}

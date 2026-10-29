@@ -9,7 +9,7 @@ recommendedRaces: [gnome, troll]
 statPriority:
   [Spell power, Hit, Intellect, Critical strike, Fire power, Spell haste, Spell penetration, Shadow power]
 description: 'Talents, rotation, stats, and gear for Demonology Warlock in Forever, and what is confirmed versus projected from the beta.'
-updated: 2026-10-08
+updated: 2026-10-28
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -54,7 +54,9 @@ Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demo
 ## Talents and builds
 
 - **Fel Vitality** — up to 15% more maximum health, mana, and pet stats at rank 3, an early quality-of-life pick.
-- **Demonic Sacrifice** — sacrifices your active demon for a long-lasting buff instead, the talent that defines whether you're playing pet-out or pet-sacrificed Demonology.
+- **Demonic Sacrifice** — in Forever it is the prerequisite for Soul Link, and that is the only reason this build takes it. You never cast it here. Sacrificing your demon would also end Soul Link, Master Demonologist and Demonic Knowledge, which are worth more than the sacrifice's 15% school-damage buff. The buff only stays up past your next summon if you also take Demonic Pact.
+- **Soul Link** — cast it before the pull, with your demon out. It moves 30% of the damage you take onto the demon, and you and the demon both deal 3% more damage. It ends when the demon leaves, so cast it again after every summon.
+- **Improved Health Funnel, Demonic Aegis and Improved Voidwalker** — these fill out the early tiers on your way to Demonic Sacrifice. None of them adds damage: they make your Health Funnel, your armor and your Voidwalker better. You can move them into Improved Sayaad or Unholy Power instead. In our simulator that gained well under 1%, so keep them for the survival unless you want every last point of damage.
 - **Master Summoner** — up to 4 seconds off summon cast time and 40% off its mana cost at rank 2, useful whenever you need to re-summon mid-fight.
 - **Demonic Knowledge** — up to 100% of your level added to your and your pet's spell damage while a demon is active, one of the tree's largest damage talents.
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
@@ -62,7 +64,7 @@ Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demo
 
 ## Rotation and priority
 
-Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires (it edged out Bane of Agony in our simulator; on a fight shorter than a minute use Agony instead), and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Immolate is the addition that matters: recast it when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Soul Fire is back in the rotation now that the build takes both Decimation points: Decimation drops its cooldown by 90% and shortens its cast time and cost for 10 seconds after a Shadow Bolt or Searing Pain crit, and a Soul Fire cast whenever it is ready beat the Shadow Bolts it displaces by about 7% on the bare character and about 10% in the raid-ready run. Searing Pain fills every other global: in the raid-ready run the search put it ahead of Shadow Bolt as the filler, a further gain of about 2.5%. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs tick, and Life Tap is only the backstop below about 10%. Together these changes were worth about +13% in our level-60 search run.
+Cast Soul Link before the pull, with your demon out. Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires (it edged out Bane of Agony in our simulator; on a fight shorter than a minute use Agony instead), and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Immolate is the addition that matters: recast it when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Soul Fire is back in the rotation now that the build takes both Decimation points: Decimation drops its cooldown by 90% and shortens its cast time and cost for 10 seconds after a Shadow Bolt or Searing Pain crit, and a Soul Fire cast whenever it is ready beat the Shadow Bolts it displaces by about 7% on the bare character and about 10% in the raid-ready run. Searing Pain fills every other global: in the raid-ready run the search put it ahead of Shadow Bolt as the filler, a further gain of about 2.5%. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs tick, and Life Tap is only the backstop below about 10%. Together these changes were worth about +13% in our level-60 search run.
 
 ## Stat priority
 

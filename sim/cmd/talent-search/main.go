@@ -11,6 +11,12 @@
 // best are re-simmed at the ranker's weights level, and a markdown
 // report goes to design/reviews/talent-search/<spec>.md. Nothing under
 // data/ or web/ is ever written.
+//
+// The report's "clean" verdict is the one a guide build may adopt: a
+// winner that drops no guide talent the engine leaves unmodeled, since
+// moving one sims as free whatever it really does. Survival-only talents
+// (survival.go: the client's data gives them no damage) are exempt, so
+// filler like Demonic Aegis or Improved Voidwalker can be re-spent.
 package main
 
 import (
@@ -105,7 +111,7 @@ func run(args []string) error {
 	if err != nil {
 		return err
 	}
-	pool := generate(in.setup.trees, in.guide, credits, in.modeled, in.keep, o.level-9, o.refineTop)
+	pool := generate(in.setup.trees, in.guide, credits, in.respendable(), in.keep, o.level-9, o.refineTop)
 	cands := capCandidates(pool, o.limit)
 	log.Printf("talent-search: %s: %d candidates generated, %d screened", o.spec, len(pool), len(cands))
 	clean := func(b build) bool { return len(removedUnmodeled(in, credits, b)) == 0 }
@@ -145,7 +151,22 @@ type inputs struct {
 	guideCode   string // the guide frontmatter's own trees and client build
 	guideIssue  string // why the guide is not a legal active-build build, if it is not
 	modeled     map[int]bool
+	survival    map[int]bool // survival-only talents (survival.go): an unmodeled one is free to re-spend
 	keep        map[int]bool // talents no candidate may take a point from (-keep)
+}
+
+// respendable is the talents a build may move without the move being the
+// engine's blind spot: the ones the engine reads, and the survival-only
+// ones it need not.
+func (in inputs) respendable() map[int]bool {
+	out := make(map[int]bool, len(in.modeled)+len(in.survival))
+	for id, ok := range in.modeled {
+		out[id] = ok
+	}
+	for id, ok := range in.survival {
+		out[id] = out[id] || ok
+	}
+	return out
 }
 
 func prepare(o options) (inputs, error) {
@@ -209,6 +230,9 @@ func prepare(o options) (inputs, error) {
 		return inputs{}, err
 	}
 	if in.modeled, err = modeledTalents(trees, layout, names); err != nil {
+		return inputs{}, err
+	}
+	if in.survival, err = survivalOnlyTalents(filepath.Join(o.repoRoot, "data", "builds", clientBuild), spec.ClassSlug); err != nil {
 		return inputs{}, err
 	}
 	in.keep, err = resolveKeep(trees, splitKeep(o.keep))

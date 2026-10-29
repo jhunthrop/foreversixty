@@ -31,6 +31,9 @@ func (r report) markdown() string {
 		r.poolSize, len(r.eval.Screened)-1, r.opts.screenIters, len(r.eval.Final)-1, r.opts.finalIters, r.opts.seed, r.opts.probeIters, r.elapsed.Round(time.Second))
 	r.writeVerdict(&b, best)
 	r.writeCleanVerdict(&b)
+	if names := r.survivalNames(); len(names) > 0 {
+		fmt.Fprintf(&b, "Survival-only talents (the client's data gives them no damage, so an unmodeled one may be re-spent): %s.\n\n", strings.Join(names, ", "))
+	}
 	fmt.Fprintf(&b, "- Guide (frontmatter %s), re-read by talent id against %s: `%s`\n", r.in.guideCode, r.in.clientBuild, t.fs1(r.in.clientBuild, spec.ClassSlug, r.in.setup.band.Race, r.in.guide))
 	if r.in.guideIssue != "" {
 		fmt.Fprintf(&b, "- The guide is not a full legal build in %s: %s\n", r.in.clientBuild, r.in.guideIssue)
@@ -67,10 +70,15 @@ func (r report) writeVerdict(b *strings.Builder, best result) {
 // removedUnmodeled is the talents b drops from the guide that the
 // final classification calls unmodeled: their loss sims as free, so a
 // gain that comes from moving them is the engine's blind spot, not a
-// finding.
+// finding. A survival-only talent (survival.go) is the exception: the
+// client's own data says it adds no damage, so there is no blind spot
+// in moving it, and a DPS build may re-spend it.
 func removedUnmodeled(in inputs, credits map[int]credit, b build) []string {
 	var out []string
 	for _, id := range sortedIDs(in.guide) {
+		if in.survival[id] {
+			continue
+		}
 		if d := in.guide[id] - b[id]; d > 0 && classify(in.modeled[id], credits[id]) == classUnmodeled {
 			out = append(out, fmt.Sprintf("%s (-%d)", in.setup.trees.byID[id].Name, d))
 		}
@@ -135,7 +143,11 @@ func (r report) writeCredits(b *strings.Builder) {
 }
 
 func (r report) engineStatus(id int, c credit) string {
-	return classify(r.in.modeled[id], c).String()
+	status := classify(r.in.modeled[id], c).String()
+	if r.in.survival[id] {
+		status += ", survival-only"
+	}
+	return status
 }
 
 func (r report) writeScreened(b *strings.Builder) {
@@ -145,6 +157,18 @@ func (r report) writeScreened(b *strings.Builder) {
 	for _, res := range r.eval.Screened {
 		fmt.Fprintf(b, "| %s | %s | %.1f | %+.1f ± %.1f | %+.1f |\n", res.Label, t.summary(res.Build), res.DPS.Mean, res.Delta, res.DeltaErr, res.Estimate)
 	}
+}
+
+// survivalNames is the class's survival-only talents, by name.
+func (r report) survivalNames() []string {
+	var out []string
+	for id := range r.in.survival {
+		if n, ok := r.in.setup.trees.byID[id]; ok {
+			out = append(out, n.Name)
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 // unmodeledIn is the names of the talents b takes that the final
