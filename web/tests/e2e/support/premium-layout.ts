@@ -5,15 +5,13 @@
 // client rects and are skipped.
 import type { Page } from '@playwright/test';
 
-/** The guild price blocks are 144 px below this width and 152 px from it (Tailwind `md`). */
-export const WIDE_FROM_PX = 768;
-const GUILD_BLOCK_PX = { phone: 144, wide: 152 } as const;
+/** The guild price blocks are one height at every width: price, founder line, per-month line, 54 px cost box. */
+const GUILD_BLOCK_PX = 128;
 /** The cost line's box: three 18 px lines (PriceBlock.astro). */
 export const COST_BOX_PX = 54;
 export const GUILD_PLANS = ['guild', 'raid_guild'] as const;
 
-export const guildBlockPx = (width: number): number =>
-  width < WIDE_FROM_PX ? GUILD_BLOCK_PX.phone : GUILD_BLOCK_PX.wide;
+export const guildBlockPx = (): number => GUILD_BLOCK_PX;
 
 export interface GuildPriceBoxes {
   plan: string;

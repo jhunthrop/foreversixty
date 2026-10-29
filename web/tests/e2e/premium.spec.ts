@@ -191,7 +191,7 @@ test('at 1024 the guild row puts the history promise in column 3', async ({ page
 async function expectNoCardMovement(page: Page, width: number): Promise<void> {
   const check = (boxes: GuildPriceBoxes[]): void => {
     for (const box of boxes) {
-      expect(box.block, `${box.plan} block at ${width}`).toBe(guildBlockPx(width));
+      expect(box.block, `${box.plan} block at ${width}`).toBe(guildBlockPx());
       expect(box.costBox, `${box.plan} cost box at ${width}`).toBe(COST_BOX_PX);
       expect(box.costOverflows, `${box.plan} cost line overflows at ${width}`).toBe(false);
     }

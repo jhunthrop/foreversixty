@@ -83,12 +83,21 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
       <ul class="well">
         {view.doingWell.map((item) => (
           <li>
-            <span class="tick" aria-hidden="true">
-              ✓
-            </span>
             <span class="well-icon">
-              {item.icon && (
+              {item.icon ? (
                 <img class="icon" src={item.icon} width="20" height="20" alt="" onerror={HIDE_ON_ERROR} />
+              ) : (
+                <svg
+                  class="check-tile"
+                  viewBox="0 0 20 20"
+                  width="20"
+                  height="20"
+                  aria-hidden="true"
+                  data-testid="coach-sample-check"
+                >
+                  <rect x="0.5" y="0.5" width="19" height="19" rx="3" />
+                  <path d="M5.5 10.5l3 3 6-7" />
+                </svg>
               )}
             </span>
             <span>{item.text}</span>
@@ -231,10 +240,17 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
     width: 20px;
     height: 20px;
   }
-  .tick {
-    flex: none;
-    font-size: 14px;
-    color: var(--color-kill);
+  .check-tile {
+    display: block;
+    fill: var(--color-card-top);
+    stroke: var(--color-line-soft);
+  }
+  .check-tile path {
+    fill: none;
+    stroke: var(--color-kill);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .caption {
     margin: auto 0 0;

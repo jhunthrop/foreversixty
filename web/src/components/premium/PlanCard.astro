@@ -212,6 +212,13 @@ const cardId = plan === 'free' ? 'free' : undefined;
     font-size: 44px;
     color: var(--color-strong);
   }
+  /* Free has no button and no slot line (polish spec 2026-10-28 §3.3, player ruling): both cells
+     are hidden, and from 768 the feature list starts in the button's row (below), so no dead gap
+     sits between the price note and the list. */
+  .plan-card[data-plan='free'] .action-slot,
+  .plan-card[data-plan='free'] .slot {
+    display: none;
+  }
   .action-slot {
     display: flex;
     flex-direction: column;
@@ -304,6 +311,9 @@ const cardId = plan === 'free' ? 'free' : undefined;
     }
     .slot:empty {
       display: block;
+    }
+    .plan-card[data-plan='free'] .feature-block {
+      grid-row: 4 / 7;
     }
     .free-price {
       height: 86px;

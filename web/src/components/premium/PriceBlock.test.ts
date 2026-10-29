@@ -1,6 +1,6 @@
 // web/src/components/premium/PriceBlock.test.ts
 // Container renders of the price block (spec 2026-10-27-launch-pricing §B3.3): every interval and
-// founder state in the DOM, the guild blocks fixed at 144/152 px with the cost line in a 54 px box.
+// founder state in the DOM, the guild blocks fixed at 128 px with the cost line in a 54 px box.
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import type { PlanKey } from '../../lib/billing/plans';
@@ -39,11 +39,9 @@ describe('PriceBlock', () => {
     },
   );
 
-  it('guild price block is fixed 144 px phone, 152 px from 768', async () => {
+  it('guild price block is fixed 128 px at every width', async () => {
     for (const plan of GUILD_PLANS) {
-      const classes = classesOf(await renderBlock(plan));
-      expect(classes).toContain('h-[144px]');
-      expect(classes).toContain('md:h-[152px]');
+      expect(classesOf(await renderBlock(plan))).toContain('h-[128px]');
     }
   });
 

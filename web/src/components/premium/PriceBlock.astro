@@ -12,16 +12,15 @@ interface Props {
 }
 const { plan } = Astro.props;
 const guild = PLANS[plan].guild;
-// Guild budget with the founder line, every line one line high: phone 32 + 16 + 16 + (4 + 16)
-// + (6 + 54) = 144, no slack; from 768 34 + 16 + 16 + (2 + 14) + (6 + 54) = 142, 10 px slack. The
-// spec fixes 144, and no margin here can absorb a wrapped 16 px line, so the one-line lines are a
-// precondition, not slack: the founder line is about 270 px of 12 px text against about 282 px of
+// Guild budget with the one founder line, every line one line high: phone 32 + (4 + 16) + 16
+// + (6 + 54) = 128, no slack; from 768 34 + (2 + 14) + 16 + (6 + 54) = 126, 2 px slack. No margin
+// here can absorb a wrapped 16 px line, so the one-line lines are a precondition, not slack: the founder line is about 270 px of 12 px text against about 282 px of
 // card text width at 360, and 277 px at 1024-1279. Capture row 18 checks 360 and 1024 for a wrap;
 // a wrap goes back to the ux-designer for a new height rather than smaller type.
 // Premium's block carries the loudest figure on the page (polish spec 2026-10-28 §3.3: 44 px phone,
 // 52 px desktop, heading face): 44 + (4 + 16) + 16 = 80 on phone, 52 + (2 + 14) + 16 = 84 from 768.
 // Free's price cell is the same height (PlanCard.astro), so the two cards' rows line up.
-const blockClass = guild ? 'h-[144px] md:h-[152px]' : 'h-[82px] md:h-[86px]';
+const blockClass = guild ? 'h-[128px]' : 'h-[82px] md:h-[86px]';
 const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[44px] md:text-[52px]';
 ---
 

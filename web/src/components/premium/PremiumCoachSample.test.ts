@@ -75,6 +75,18 @@ describe('PremiumCoachSample', () => {
     }
   });
 
+  it('gives every Doing-well row a mark: its spell icon, else the generic check tile', async () => {
+    const doc = await render();
+    const rows = [...doc.querySelectorAll('[data-testid=coach-sample-well] li')];
+    expect(rows).toHaveLength(answer.review.doingWell.length);
+    for (const row of rows) {
+      const marks = row.querySelectorAll('.well-icon img, .well-icon [data-testid=coach-sample-check]');
+      expect(marks).toHaveLength(1);
+    }
+    expect(rows[0]?.querySelector('[data-testid=coach-sample-check]')).not.toBeNull();
+    expect(rows[1]?.querySelector('img')).not.toBeNull();
+  });
+
   it('is static: no script and no client directive', () => {
     expect(source).not.toMatch(/<script|client:/);
   });
