@@ -101,7 +101,31 @@
   </table>
   <p>Two need a check before building on them: the home page's Recent reports and Top guilds were still skeletons 1.5 s after the network went idle (a slow API or a real gap — an e2e with empty and failing reads will tell), and the legal pages' headers read "Confirmed by Blizzard or by multiple sources" from the content layout's status line.</p>
 
-  <h2>7. What happens after your pick</h2>
+  <h2>7. Discord: guided cards and raid posts</h2>
+  <p>From <code>design/specs/2026-10-28-discord-guided-cards.md</code>. A bare <code>/bis</code> answers only you with a card: class, then spec, then range, then Show BiS; a linked player's card comes pre-filled from their main, one tap from the answer. Raid posts go out when a raid is saved (or seven days before a far-off one), with a reminder the day before that edits the post if it is still the newest message, or replies under it otherwise.</p>
+  <h3>/bis card, step by step (desktop 640)</h3>
+  <div class="grid three">
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-1-class-desktop.png" alt="bis card step 1"><figcaption>1 · class</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-2-spec-desktop.png" alt="bis card step 2"><figcaption>2 · spec</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-3-range-desktop.png" alt="bis card step 3"><figcaption>3 · range</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-4-ready-desktop.png" alt="bis card ready"><figcaption>4 · ready</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-main-desktop.png" alt="bis card prefilled"><figcaption>Linked player: pre-filled from their main</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-result-desktop.png" alt="bis result"><figcaption>The card becomes the answer</figcaption></figure>
+  </div>
+  <h3>Edge states and phone</h3>
+  <div class="grid three">
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-nudge-desktop.png" alt="nudge"><figcaption>Show BiS pressed too early</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/bis-card-stale-desktop.png" alt="stale card"><figcaption>A press on an older card</figcaption></figure>
+    <figure class="phone"><img src="../2026-10-28-discord-guided-cards/bis-card-1-class-phone.png" alt="bis card phone"><figcaption>Phone · step 1</figcaption></figure>
+  </div>
+  <h3>Raid posts</h3>
+  <div class="grid three">
+    <figure><img src="../2026-10-28-discord-guided-cards/post-scheduled-desktop.png" alt="post when scheduled"><figcaption>The moment a raid is saved</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/post-tomorrow-desktop.png" alt="reminder edit"><figcaption>Reminder: the post edited to "Tomorrow"</figcaption></figure>
+    <figure><img src="../2026-10-28-discord-guided-cards/post-reminder-desktop.png" alt="reminder reply"><figcaption>Reminder as a reply under the post</figcaption></figure>
+  </div>
+
+  <h2>8. What happens after your pick</h2>
   <p>Tokens and the heading face land first (one commit, both directions are the same components), then the header and footer, then the account blocks, then the /premium row, then the inventory in rank order. Each piece goes through the two reviewer gates on captures of the live site and is pushed to main on its own.</p>
 </main>
 </body>
