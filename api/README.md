@@ -332,6 +332,25 @@ environment and secrets by name (never paste a value):
       --schedule "*/10 * * * *" --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/raid-posts:run" \
       --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
 
+The raid post's roster marks each sign-up with its spec's icon, uploaded once as the
+application's own emoji (`fs_{class}_{spec}`, one per row of `data/curated/specs.json`; 28 today).
+`discord-emoji` builds 128 px PNGs from the newest build folder's icons under
+`web/public/data/<build>/icons` (generated web data, so run it from a checkout whose
+`web/public/data` holds the active build, not from the image; `--icons <dir>` names another folder) and uploads only the names the application lacks; a second run uploads
+nothing, and `--replace` deletes and uploads them all again after an icon changes. It prints
+names and counts, never the token. Run it once per application (production, then the test
+application), with the service's two values in the shell's environment, taken by name and never
+pasted into a command line or a file:
+
+    cd api && DISCORD_APPLICATION_ID=… DISCORD_BOT_TOKEN=… go run ./cmd/api discord-emoji
+
+(set both from Secret Manager and the service's variables, for example with
+`export DISCORD_BOT_TOKEN="$(gcloud secrets versions access latest --secret DISCORD_BOT_TOKEN)"`
+in a shell whose history is off). The bot reads the list once at its first post and again at
+most hourly while any is missing (`emoji_missing` in the logs); until then those lines read
+`{Name} · {Spec} {Class}`. A build that adds a spec adds its row to `specs.json`, and the next
+run uploads only that one.
+
 `.env.job` must carry the non-secret variables the service has (`PUBLIC_BASE_URL`,
 `API_BASE_URL`, `DISCORD_CLIENT_ID`, `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`). Without
 the bot's variables the job still posts through webhooks.
