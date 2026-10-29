@@ -151,7 +151,7 @@
     class="border-line rounded-panel bg-raised flex flex-col gap-2 border p-3"
     data-testid="raid-cooldowns"
   >
-    <h2 class="label text-muted flex flex-wrap items-center gap-x-3">
+    <h2 class="quiet-label flex flex-wrap items-center gap-x-3">
       Raid cooldowns
       {#if shownDeaths.length > 0}
         <span class="text-death tracking-normal normal-case" data-testid="raid-cooldowns-deaths"
@@ -159,7 +159,7 @@
         >
       {/if}
     </h2>
-    <p class="text-muted label h-5 truncate" data-testid="raid-cooldowns-readout">
+    <p class="quiet-label h-5 truncate" data-testid="raid-cooldowns-readout">
       {#if hovered !== ''}<span class="text-strong normal-case">{hovered}</span
         >{:else if pulls.length > 0}hover or tap a lane for the pull and the nearest use · alternate shading
         is one pull each · a red top edge is a wipe{:else}hover or tap a lane for the nearest use{/if}
@@ -259,7 +259,7 @@
     </ul>
     {#if pulls.length > 0 && rows.some((row) => pullsUsed(row.uses).missed.length > 0)}
       <details class="text-[12px]" data-testid="raid-cooldowns-missed">
-        <summary class="label text-muted min-h-11 cursor-pointer md:min-h-0"
+        <summary class="quiet-label min-h-11 cursor-pointer md:min-h-0"
           >Pulls each cooldown was not used on</summary
         >
         <ul class="mt-1 flex flex-col gap-1">

@@ -72,7 +72,7 @@
 
   const deaths = $derived([...summary.deaths].sort((a, b) => a.at_ms - b.at_ms));
   const panel = 'border-line rounded-panel bg-raised flex flex-col gap-2 border p-3';
-  const heading = 'label text-muted flex items-center justify-between';
+  const heading = 'quiet-label flex items-center justify-between';
   const more =
     'text-gold inline-flex min-h-11 items-center text-[11px] normal-case tracking-normal md:min-h-0';
 </script>

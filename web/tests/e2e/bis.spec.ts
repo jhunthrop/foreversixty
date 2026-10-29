@@ -313,3 +313,22 @@ test('BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-sour
     expect(text).not.toMatch(TWO_HANDER_EMPTY_COPY);
   }
 });
+
+// Type pass fix round 1 (the 3 + 2 band grid, as the guide's): on a 390 px phone every level
+// band is on screen in two rows of 44 px targets, none scrolled out of view, and the open one
+// (60 here) is visible and marked current.
+test.describe('the band row at 390', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('shows all five bands, 44 px tall, with the selected one visible', async ({ page }) => {
+    await page.goto('/bis/mage/fire#band-alliance-60');
+    for (const band of [20, 30, 40, 50, 60]) {
+      const pill = page.locator(`[data-testid="bis-band-pill-alliance-${band}"]:visible`);
+      await expect(pill).toBeInViewport({ ratio: 1 });
+      const box = await pill.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(390);
+    }
+    await expect(page.locator('[data-testid="bis-band-pill-alliance-60"]:visible')).toHaveClass(/is-current/);
+  });
+});

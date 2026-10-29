@@ -144,7 +144,7 @@
 {:else}
   <div class="flex flex-col" data-testid="actor-table">
     <div
-      class="text-muted label hidden gap-x-3 px-2 pb-1 md:grid {showParse
+      class="quiet-label hidden gap-x-3 px-2 pb-1 md:grid {showParse
         ? 'grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
         : 'grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
     >
@@ -191,7 +191,7 @@
         : 'md:grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
       data-testid="actor-total"
     >
-      <span class="text-muted label {showParse ? 'md:col-span-3' : 'md:col-span-2'}">Total</span>
+      <span class="quiet-label {showParse ? 'md:col-span-3' : 'md:col-span-2'}">Total</span>
       <span class="numeric hidden text-right text-[12px] md:inline">100%</span>
       <span class="hidden md:inline"></span>
       <span

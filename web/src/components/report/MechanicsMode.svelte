@@ -288,7 +288,7 @@
     </p>
 
     <section class="flex flex-col gap-1" data-testid="mechanics-problems">
-      <h2 class="label text-muted" title="A death outranks any amount of damage; below the deaths, by damage">
+      <h2 class="quiet-label" title="A death outranks any amount of damage; below the deaths, by damage">
         Problems, deaths first, then most costly
       </h2>
       {#if problems.length === 0}
@@ -354,7 +354,7 @@
 
     {#if nightMode}
       <section class="flex flex-col gap-2" data-testid="mechanics-night">
-        <h2 class="label text-muted">Over the night</h2>
+        <h2 class="quiet-label">Over the night</h2>
         {#if nightBosses.length === 0}
           <p class="text-[14px]">Nothing the table lists hit anyone on any pull.</p>
         {:else}
@@ -387,7 +387,7 @@
 
     {#if melee.damage > 0}
       <section class="flex flex-col gap-1" data-testid="mechanics-melee">
-        <h2 class="label text-muted">Melee swings</h2>
+        <h2 class="quiet-label">Melee swings</h2>
         <p class="text-muted text-[13px]">
           <span class="text-text numeric">{formatAmount(melee.damage)}</span> damage to
           <span class="numeric">{melee.players}</span>
@@ -490,7 +490,7 @@
 
     {#if clean.length > 0}
       <section class="flex flex-col gap-1" data-testid="mechanics-clean">
-        <h2 class="label text-muted">Also in the table, nothing to answer for</h2>
+        <h2 class="quiet-label">Also in the table, nothing to answer for</h2>
         <ul class="flex flex-col">
           {#each clean as row (mechanicRowKey(row))}
             <li class="border-line-soft text-muted border-b px-2 py-2 text-[13px]">
@@ -506,7 +506,7 @@
 
     {#if unclassified.length > 0}
       <section class="flex flex-col gap-1" data-testid="mechanics-unclassified">
-        <h2 class="label text-muted">Not yet classified</h2>
+        <h2 class="quiet-label">Not yet classified</h2>
         <p class="text-muted text-[12px]">
           These enemy abilities hit someone and the table does not list them, so it does not say whether they
           were avoidable. Run <code class="font-mono text-[12px]">forever-logs mechanics-draft</code> on the
@@ -545,7 +545,7 @@
     {/if}
     {#if unjudged.length > 0}
       <section class="flex flex-col gap-1" data-testid="mechanics-unjudged-deaths">
-        <h2 class="label text-muted">Deaths the table does not explain</h2>
+        <h2 class="quiet-label">Deaths the table does not explain</h2>
         <p class="text-muted text-[12px]">
           Killed by a swing, by an ability the table does not list, or by nothing the log named: the problems
           above cannot say whether these were avoidable. The Deaths tab has each one in full.

@@ -6,10 +6,10 @@ import StatTile from './StatTile.svelte';
 describe('StatTile', () => {
   const body = render(StatTile, { props: { value: '88', label: 'Forever Score', testid: 'tile' } }).body;
 
-  it('sets the figure in the heading face at the stat size over a micro label', () => {
+  it('sets the figure in the heading face at the stat size over a quiet label (type pass ruling: grey sentence case)', () => {
     expect(body).toMatch(/figure-stat[^>]*>\s*(<!--.*?-->)?\s*<span[^>]*>88</s);
     expect(body.indexOf('88')).toBeLessThan(body.indexOf('Forever Score'));
-    expect(body).toContain('text-[11px] font-bold tracking-[.08em] uppercase');
+    expect(body).toContain('<span class="quiet-label">Forever Score</span>');
   });
 
   it('is a quiet tile: 12 14 padding, control radius, soft line', () => {

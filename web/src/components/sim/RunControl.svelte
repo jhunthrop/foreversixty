@@ -149,7 +149,7 @@
         {figure}
       </span>
       <span class="text-muted numeric text-[14px]" data-testid="sim-error">{band}</span>
-      <span class="label text-muted">{simCopy.dps}</span>
+      <span class="quiet-label">{simCopy.dps}</span>
       {#if staleVersion}
         <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(staleVersion)}</span>
       {/if}
@@ -178,7 +178,7 @@
   <div class="flex flex-wrap items-end gap-3">
     <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.precision}</span>
+        <span class="quiet-label">{simCopy.precision}</span>
         <PrecisionSelect
           class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
           value={precisionId}

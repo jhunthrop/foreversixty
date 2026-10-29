@@ -547,7 +547,7 @@
     {/if}
   {/if}
   <div class="flex flex-col gap-1 pt-2" data-testid="threat-taunts">
-    <h3 class="label text-muted">Taunts</h3>
+    <h3 class="quiet-label">Taunts</h3>
     {#if taunts === undefined}
       <p class="text-muted text-[13px]">This report was parsed before taunts were kept; parse it again.</p>
     {:else if orderedTaunts.length === 0}

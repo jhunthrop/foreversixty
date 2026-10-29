@@ -325,7 +325,7 @@
   data-compact={compact ? 'true' : undefined}
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2 {compact ? 'md:hidden' : ''}">
-    <span class="label text-muted"
+    <span class="quiet-label"
       >{#if series.length > 0}<span class="whitespace-nowrap"
           ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"
           ></span>{label}{perSecond ? ' per second' : ''}</span

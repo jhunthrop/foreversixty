@@ -50,7 +50,7 @@
   </p>
 
   <div class="flex flex-col gap-2">
-    <h2 class="label text-muted">Bosses</h2>
+    <h2 class="quiet-label">Bosses</h2>
     <div
       class="quiet-label hidden grid-cols-[minmax(160px,2fr)_64px_64px_64px_80px_64px_120px] gap-x-3 px-2 pb-1 md:grid"
     >
@@ -134,7 +134,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <h2 class="label text-muted">Players, across every boss pull</h2>
+    <h2 class="quiet-label">Players, across every boss pull</h2>
     <div
       class="quiet-label hidden grid-cols-[minmax(120px,1.4fr)_88px_56px_96px_96px_96px_72px_56px] gap-x-3 px-2 pb-1 md:grid"
     >
@@ -227,7 +227,7 @@
           </button>
           {#if open === player.guid}
             <table class="bg-card-top w-full text-[13px]" data-testid="night-player-fights">
-              <caption class="label text-muted px-2 pt-2 text-left">Each pull</caption>
+              <caption class="quiet-label px-2 pt-2 text-left">Each pull</caption>
               <tbody>
                 {#each player.by_fight as entry (entry.index)}
                   <tr class="border-line-soft border-b">

@@ -126,7 +126,7 @@
 {:else}
   {#if bySpell.length > 0}
     <div class="flex flex-col gap-1" data-testid="aura-by-spell">
-      <h2 class="label text-muted">
+      <h2 class="quiet-label">
         {kind === 'DEBUFF' ? 'On the bosses, across the night' : 'Across the night, over everyone who had it'}
       </h2>
       <ul class="flex flex-col">

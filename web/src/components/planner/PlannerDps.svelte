@@ -144,7 +144,7 @@
        and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
        line taller than its neighbours leaves every caption and every value on one baseline. -->
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">{plannerScoreCopy.label(unit)}</span>
+    <span class="quiet-label">{plannerScoreCopy.label(unit)}</span>
     <!-- A column below md, one row from md: with the figure and the button side by side on a
          phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
          (planner-dps.spec.ts read the button a row above the figure on CI). -->

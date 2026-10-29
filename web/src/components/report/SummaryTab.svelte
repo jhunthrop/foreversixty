@@ -324,7 +324,7 @@
 
   {#if summary.combatants.length > 0}
     <div class="flex flex-col gap-2">
-      <h2 class="label text-muted">At pull</h2>
+      <h2 class="quiet-label">At pull</h2>
       <ul class="flex flex-col" data-testid="combatants">
         {#each summary.combatants as combatant (combatant.guid)}
           {@const display = unitLabel(combatant.name)}

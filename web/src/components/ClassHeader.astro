@@ -491,4 +491,18 @@ const bandTextVariants = bands.map((band) => ({
       width: 100%;
     }
   }
+  /* On a phone the five level bands sit in two rows (3 + 2), every target 44 px and none
+     scrolled out of view -- the guide's band grid (GuideBisTable), the same rule. */
+  @media (max-width: 559px) {
+    .class-header-band-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      overflow: visible;
+    }
+    .class-header-band-tab {
+      justify-content: center;
+      padding: 0 4px;
+      text-align: center;
+    }
+  }
 </style>

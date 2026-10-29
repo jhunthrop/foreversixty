@@ -506,11 +506,7 @@
         ><span class="hidden md:inline">Scroll the table sideways when it is wider than the card;</span> the ability
         column stays put.
       </p>
-      <p
-        class="label text-muted pb-1 text-left"
-        id="row-abilities-caption-{actor.guid}"
-        hidden={splitUnavailable}
-      >
+      <p class="quiet-label pb-1 text-left" id="row-abilities-caption-{actor.guid}" hidden={splitUnavailable}>
         Abilities{#if schoolSplit.length > 1}
           <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
             >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
@@ -637,7 +633,7 @@
         data-testid="row-targets"
         hidden={splitUnavailable}
       >
-        <caption class="label text-muted pb-1 text-left">{pairsLabel}</caption>
+        <caption class="quiet-label pb-1 text-left">{pairsLabel}</caption>
         <thead>
           <tr class="quiet-label border-line-soft border-b">
             <th scope="col" class="py-1 pr-3 text-left">Name</th>

@@ -50,7 +50,7 @@
   class="border-line bg-raised md:rounded-panel sticky top-0 z-20 flex flex-wrap items-start gap-3 border-b px-[18px] py-3 md:static md:gap-5 md:border md:px-5"
 >
   <label class="flex flex-col gap-1">
-    <span class="label text-muted">Class</span>
+    <span class="quiet-label">Class</span>
     <!-- A function binding rather than a plain `value` attribute: on a <select> the value
          has to be applied after the options exist, and Svelte only does that for bindings. -->
     <select
@@ -73,21 +73,21 @@
        exists. Hiding it behind `hasCharacter && store.spent > 0` was exactly the "level gate
        is an afterthought" complaint the review named. -->
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">Level</span>
+    <span class="quiet-label">Level</span>
     <span class="text-strong numeric text-[20px] leading-11" data-testid="planner-level">
       {store.level}
     </span>
   </div>
 
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">Points left</span>
+    <span class="quiet-label">Points left</span>
     <span class="text-gold numeric text-[20px] leading-11" data-testid="planner-remaining">
       {MAX_POINTS - store.spent}
     </span>
   </div>
 
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">Spent</span>
+    <span class="quiet-label">Spent</span>
     <span class="text-strong numeric text-[20px] leading-11" data-testid="planner-spent">
       {store.spent}/{MAX_POINTS}
     </span>

@@ -45,7 +45,7 @@
   {#each worn as { piece, slot } (`${slot}-${piece.ID}`)}
     {@const item = items?.get(piece.ID)}
     <li class="border-line-soft flex min-h-8 items-center gap-2 border-b py-1">
-      <span class="text-muted label w-[72px] shrink-0">{slot}</span>
+      <span class="quiet-label w-[72px] shrink-0">{slot}</span>
       {#if item}
         <ItemHover itemId={item.id} {classSlug} build={dataBuild} class="min-w-0 flex-1">
           <img

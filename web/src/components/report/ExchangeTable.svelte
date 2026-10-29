@@ -240,7 +240,7 @@
   </div>
   {#if missed.length > 0}
     <div class="flex flex-col gap-1" data-testid="interrupts-missed">
-      <h2 class="label text-muted">Went through</h2>
+      <h2 class="quiet-label">Went through</h2>
       <ul class="flex flex-col">
         {#each missed as entry (entry.spell_id)}
           <li
@@ -261,7 +261,7 @@
   {/if}
   {#if uncured.length > 0}
     <div class="flex flex-col gap-1" data-testid="dispels-uncured">
-      <h2 class="label text-muted">Ran their course</h2>
+      <h2 class="quiet-label">Ran their course</h2>
       <ul class="flex flex-col">
         {#each uncured as entry (entry.spell_id)}
           <li

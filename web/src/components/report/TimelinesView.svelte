@@ -240,7 +240,7 @@
   <p class="text-muted text-[14px]" data-testid="table-empty">Nobody was in this window.</p>
 {:else}
   <div class="flex flex-col gap-1" data-testid="timelines">
-    <p class="text-muted label flex flex-wrap items-center gap-x-3">
+    <p class="quiet-label flex flex-wrap items-center gap-x-3">
       <span class="numeric">{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span>
       <span
         ><span class="bg-text mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
@@ -270,7 +270,7 @@
     <!-- The readout on one line of fixed height: eight aura names must never wrap and push
          the lanes out from under the pointer that is reading them. -->
     <p
-      class="text-muted label h-5 truncate"
+      class="quiet-label h-5 truncate"
       title={picked === null ? undefined : `${picked.name} · at ${formatDuration(picked.at)}`}
     >
       {#if picked}
@@ -385,7 +385,7 @@
       <!-- The bands are 3px each, too thin to label in place: this names each row's aura in
            its colour, in the order the rows run from the top of every lane. -->
       <details class="text-[12px]" data-testid="timeline-aura-legend">
-        <summary class="label text-muted min-h-11 cursor-pointer md:min-h-0"
+        <summary class="quiet-label min-h-11 cursor-pointer md:min-h-0"
           >Aura rows, top to bottom ({auraOrder.length})</summary
         >
         <ol class="mt-1 flex flex-wrap gap-x-4 gap-y-1">
