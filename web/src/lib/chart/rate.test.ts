@@ -259,3 +259,23 @@ describe('classMedianInfo', () => {
     expect(off.description).toBe(`Median DPS of the ${off.count} damage-dealing shamans`);
   });
 });
+
+describe('the median’s name', () => {
+  it('follows the set the chart draws', () => {
+    const base = {
+      metric: 'damage-done' as const,
+      players: raid(),
+      window: WHOLE,
+      durationMs: 340_000,
+      pinned: new Set<string>(),
+      chosen: null,
+      compare: { raid: true, className: null },
+    };
+    expect(buildRateModel(base).medians[0].label).toBe('Raid median');
+    expect(buildRateModel({ ...base, noun: 'everyone' }).medians[0].label).toBe('Median player');
+    const line = buildRateModel({ ...base, noun: 'group' }).series.find(
+      (entry) => entry.id === RAID_MEDIAN_ID,
+    );
+    expect(line?.label).toBe('Group median');
+  });
+});

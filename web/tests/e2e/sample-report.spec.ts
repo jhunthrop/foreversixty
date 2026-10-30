@@ -171,3 +171,54 @@ test.describe('the brush on a fight that does not end on a whole second', () => 
     });
   }
 });
+
+test.describe('the sample’s counts say what they count', () => {
+  // An open-world log sees every player in range: fight 6 has 265 of them and the logger's
+  // party is four of them. The default scope is the group; Everyone in range is one pick away.
+  test('the default is the logger’s group, and nothing claims a raid', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample');
+    const source = page.getByTestId('source-scope');
+    await expect(source.locator('option:checked')).toHaveText('Your group');
+    await expect(page.getByTestId('summary-roster-card')).toContainText(/\b4 players · 0 deaths\b/);
+    const chart = page.getByTestId('time-chart');
+    await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group \d+ DPS over the whole fight$/);
+    await expect(chart.getByTestId('chart-legend')).toContainText('Group median');
+    await expect(chart).not.toContainText('Raid');
+    // The two deaths in fight 6 are outsiders': the group's chart does not mark them.
+    await expect(chart.getByTestId('death-marker')).toHaveCount(0);
+    // No trash pull names a kill count: the engine's counts a party's kill twice.
+    await expect(page.getByTestId('fight-6')).not.toContainText('kill');
+    // The subtitle's deaths are the group's (none); the fight list's 2 are everyone's, and say so.
+    await expect(page.getByTestId('report-subtitle')).not.toContainText('death');
+    await expect(page.getByTestId('fight-6-deaths')).toHaveAttribute(
+      'title',
+      '2 deaths among everyone in range',
+    );
+  });
+
+  test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample?source=everyone');
+    await expect(page.getByTestId('summary-roster-card')).toContainText('265 players seen');
+    const chart = page.getByTestId('time-chart');
+    await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total \d+ DPS over the whole fight$/);
+    await expect(fieldBox(chart, 'players')).toContainText(/Top 4, bottom 4 of \d+ players seen/);
+    // The longer field still shows its value whole (the dropdown's fitted-field rule).
+    const label = fieldBox(chart, 'players').locator('.sel-label');
+    expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+    await expect(chart.getByTestId('death-marker').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
+    await expect(page.getByTestId('report-subtitle')).toContainText('2 deaths');
+  });
+
+  test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample?fight=2');
+    await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
+    await expect(page.getByTestId('summary-roster-card')).toContainText('players seen');
+    await expect(page.getByTestId('time-chart').getByTestId('chart-head-meta')).toHaveText(/^Total /);
+  });
+});

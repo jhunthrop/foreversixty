@@ -92,7 +92,6 @@ export type FightRow =
       key: number;
       zone: string;
       fights: FightEntry[];
-      kills: number;
       duration_ms: number;
       deaths: number;
     };
@@ -113,7 +112,6 @@ export function fightRows(fights: readonly FightEntry[]): FightRow[] {
         key: run[0].index,
         zone: run[0].zone ?? '',
         fights: run,
-        kills: run.reduce((sum, entry) => sum + entry.npc_kills, 0),
         duration_ms: run.reduce((sum, entry) => sum + entry.duration_ms, 0),
         deaths: run.reduce((sum, entry) => sum + entry.deaths, 0),
       });

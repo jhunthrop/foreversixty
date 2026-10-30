@@ -5,6 +5,7 @@
 import { classColorVar } from '../report/format';
 import { BUCKET_MS, type TimeWindow } from '../report/window';
 import { bucketMeans, chartBucket, type ChartBucket } from './buckets';
+import type { ScopeNoun } from '../report/group';
 import type { RateMetric } from './copy';
 import { chartCopy } from './copy';
 import {
@@ -51,6 +52,8 @@ export interface RateInput {
   deadSpans?: ReadonlyMap<string, readonly DeadSpan[]>;
   /** One player as the Source: their line is the gold area (today's look). */
   single?: string;
+  /** What the players are (lib/report/group.ts): it names the median line. A raid when absent. */
+  noun?: ScopeNoun;
 }
 
 export interface MedianInfo {
@@ -131,6 +134,7 @@ export function buildRateModel(input: RateInput): RateModel {
   const stepMs = bucket.seconds * BUCKET_MS;
   const spanS = Math.ceil(Math.max(0, input.durationMs) / BUCKET_MS);
   const averaged: Averaged = (values) => bucketMeans(values, bucket.seconds, spanS);
+  const medianName = chartCopy.median(input.noun ?? 'raid');
   const figures = new Map(players.map((player) => [player.guid, windowRate(player.series, window)]));
   const inFight = new Set(players.map((player) => player.guid));
   const pinnedHere = new Set([...pinned].filter((guid) => inFight.has(guid)));
@@ -152,7 +156,7 @@ export function buildRateModel(input: RateInput): RateModel {
   const medians: MedianInfo[] = [
     {
       id: RAID_MEDIAN_ID,
-      label: chartCopy.raidMedian,
+      label: medianName,
       description: chartCopy.raidMedianDescription(metric, group.length),
       count: group.length,
       on: compare.raid,
@@ -175,7 +179,7 @@ export function buildRateModel(input: RateInput): RateModel {
 
   const medianSeriesDrawn: ChartSeries[] = [
     ...(compare.raid && group.length > 0
-      ? [medianLine(RAID_MEDIAN_ID, chartCopy.raidMedian, 'var(--color-text)', group, window, averaged)]
+      ? [medianLine(RAID_MEDIAN_ID, medianName, 'var(--color-text)', group, window, averaged)]
       : []),
     ...(compare.className !== null && classMembers.length > 0
       ? [

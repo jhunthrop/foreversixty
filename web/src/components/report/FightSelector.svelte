@@ -18,6 +18,7 @@
     onSelect,
     phaseOf = new Map<number, string>(),
     foldOnPhone = false,
+    deathsInRange = false,
   }: {
     /** On a phone, fold the list to the one row that names the fight on show (the sample report,
      *  whose table would otherwise start two screens down). */
@@ -27,7 +28,12 @@
     onSelect: (index: number) => void;
     /** Per fight index, the phase that pull reached; a wipe's row says which. */
     phaseOf?: ReadonlyMap<number, string>;
+    /** The report's default scope is the logger's group, but a fight's deaths count every player
+     *  the log saw: the marks say so. */
+    deathsInRange?: boolean;
   } = $props();
+  const deathsTitle = (count: number): string =>
+    `${count} ${count === 1 ? 'death' : 'deaths'}${deathsInRange ? ' among everyone in range' : ''}`;
 
   let showTrash = $state(false);
   /** On a phone the list is folded to the one row that names the fight on show, so the report's
@@ -37,7 +43,13 @@
   const currentLabel = $derived(
     selected === ALL_FIGHTS || current === null
       ? 'All boss pulls'
-      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))}${current.kind === 'encounter' ? ` · ${formatDuration(current.duration_ms)}` : ''}`,
+      : [
+          fightTitle(current),
+          outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? '')),
+          current.kind === 'encounter' ? formatDuration(current.duration_ms) : '',
+        ]
+          .filter((part) => part !== '')
+          .join(' · '),
   );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
@@ -85,23 +97,23 @@
         >
           {fightTitle(fight)}
         </span>
-        <span
-          class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
-            ? 'text-gold'
-            : fight.kind !== 'encounter'
-              ? 'text-muted'
+        {#if outcome(fight, '') !== ''}<span
+            class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
+              ? 'text-gold'
+              : fight.kind !== 'encounter'
+                ? 'text-muted'
+                : fight.kill
+                  ? 'text-kill'
+                  : 'text-wipe'}"
+            title={fight.in_progress
+              ? 'The fight is still being logged'
               : fight.kill
-                ? 'text-kill'
-                : 'text-wipe'}"
-          title={fight.kind !== 'encounter'
-            ? 'Trash: how many enemies died'
-            : fight.kill
-              ? 'The boss died'
-              : 'The percentage is the boss’s health when the pull ended'}
-          data-testid={`fight-${fight.index}-outcome`}
-        >
-          {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
-        </span>
+                ? 'The boss died'
+                : 'The percentage is the boss’s health when the pull ended'}
+            data-testid={`fight-${fight.index}-outcome`}
+          >
+            {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
+          </span>{/if}
       </span>
       <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
         <span>{formatClock(fight.start)}</span>
@@ -110,7 +122,7 @@
         {#if fight.deaths > 0}
           <span
             class="text-death"
-            title={`${fight.deaths} ${fight.deaths === 1 ? 'death' : 'deaths'}`}
+            title={deathsTitle(fight.deaths)}
             data-testid={`fight-${fight.index}-deaths`}
           >
             {fight.deaths}<span aria-hidden="true">†</span>
@@ -203,16 +215,11 @@
                       class="text-muted min-w-0 flex-1 truncate leading-tight"
                       title={`Trash · ${row.zone}`}>Trash · {row.zone}</span
                     >
-                    <span class="text-muted numeric shrink-0 text-[12px]" title="Trash: how many enemies died"
-                      >{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
-                    >
                   </span>
                   <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
                     <span>{formatDuration(row.duration_ms)}</span>
                     {#if row.deaths > 0}
-                      <span
-                        class="text-death"
-                        title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}
+                      <span class="text-death" title={deathsTitle(row.deaths)}
                         >{row.deaths}<span aria-hidden="true">†</span></span
                       >
                     {/if}

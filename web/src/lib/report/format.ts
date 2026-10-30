@@ -153,7 +153,11 @@ export function phaseReached(phases: readonly Phase[] | undefined): string {
   return phases === undefined || phases.length === 0 ? '' : phases[phases.length - 1].name;
 }
 
-/** A fight's outcome word for a list: Kill, Wipe, Live, or how much trash died. */
+/**
+ * A fight's outcome word for a list: Kill, Wipe or Live, and nothing for a trash pull. The engine's
+ * npc_kills is not a count a raider would accept: it counts a party's kill twice (the UNIT_DIED and
+ * the PARTY_KILL, logs/engine/fight/fight.go) and every mob anyone in range killed.
+ */
 export function outcomeLabel(
   fight: {
     kind: string;
@@ -165,7 +169,7 @@ export function outcomeLabel(
   phase = '',
 ): string {
   if (fight.in_progress) return 'Live';
-  if (fight.kind !== 'encounter') return `${fight.npc_kills} ${fight.npc_kills === 1 ? 'kill' : 'kills'}`;
+  if (fight.kind !== 'encounter') return '';
   if (fight.kill) return 'Kill';
   // "Wipe 23%": how far the pull got, which is what separates one wipe from the next.
   // With phases curated for the boss, how far is also which phase it died in.

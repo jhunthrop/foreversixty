@@ -170,7 +170,7 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('rating-panel-none')).toHaveCount(0);
   });
 
-  test('zone-less trash keeps its rows, titled by length with a kill count; the untitled report is dated', async ({
+  test('zone-less trash keeps its rows, titled by length with no kill count; the untitled report is dated', async ({
     page,
   }) => {
     await serveBetaReport(page, { zone: '' });
@@ -178,7 +178,9 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
     await page.getByTestId('toggle-trash').click();
     await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
-    await expect(page.getByTestId('fight-1-outcome')).toHaveText('115 kills');
+    // No kill count: the engine's npc_kills counts a party's kill twice and every mob in range.
+    await expect(page.getByTestId('fight-1-outcome')).toHaveCount(0);
+    await expect(page.getByTestId('fight-1')).not.toContainText('kill');
     await expect(page.getByTestId('fight-3')).toContainText('Warden Kelthas');
   });
 
@@ -188,7 +190,7 @@ test.describe('a beta-log report', () => {
     await page.getByTestId('toggle-trash').click();
     const group = page.getByTestId('fight-group-1');
     await expect(group).toContainText('Trash · Sanguine Depths');
-    await expect(group).toContainText('230 kills');
+    await expect(group).not.toContainText('kill');
     await expect(group).toContainText('2 pulls');
     await expect(page.getByTestId('fight-1')).toHaveCount(0);
     await group.click();

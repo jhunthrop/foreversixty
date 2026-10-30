@@ -1,10 +1,18 @@
 // web/src/lib/chart/copy.ts
 // Every string the report charts show (controls and charts spec §B8), verbatim. Components read
 // these and never spell their own.
+import type { ScopeNoun } from '../report/group';
 import { clockLabel } from './time-axis';
 
 export type RateMetric = 'damage-done' | 'healing' | 'damage-taken';
 
+/** The head's figure, named for the set it sums. */
+const SET_NAME: Record<ScopeNoun, string> = { raid: 'Raid', group: 'Group', everyone: 'Total' };
+const MEDIAN_NAME: Record<ScopeNoun, string> = {
+  raid: 'Raid median',
+  group: 'Group median',
+  everyone: 'Median player',
+};
 const UNIT: Record<RateMetric, string> = { 'damage-done': 'DPS', healing: 'HPS', 'damage-taken': 'DTPS' };
 const NOUN: Record<RateMetric, string> = {
   'damage-done': 'damage',
@@ -21,9 +29,17 @@ export const chartCopy = {
   /** The span every figure on a chart is over: the head, the legend and the Players list agree. */
   span: (startMs: number, endMs: number, whole: boolean): string =>
     whole ? 'the whole fight' : `${clockLabel(startMs)} to ${clockLabel(endMs)}`,
-  /** Fix round 2: the head says what its figure is, the sum of every player's figure over the span. */
-  rateMeta: (metric: RateMetric, figure: string, span: string, target?: string): string =>
-    `Raid ${figure} ${UNIT[metric]} over ${span}${target ? ` · on ${target}` : ''}`,
+  /**
+   * Fix round 2: the head says what its figure is, the sum of every player's figure over the span,
+   * named for the set it sums: a raid, a group, or (everyone in range) a total.
+   */
+  rateMeta: (
+    metric: RateMetric,
+    figure: string,
+    span: string,
+    target?: string,
+    noun: ScopeNoun = 'raid',
+  ): string => `${SET_NAME[noun]} ${figure} ${UNIT[metric]} over ${span}${target ? ` · on ${target}` : ''}`,
   playerMeta: (metric: RateMetric, name: string, figure: string, span: string, target?: string): string =>
     `${name} · ${figure} ${UNIT[metric]} over ${span}${target ? ` · on ${target}` : ''}`,
   threatMeta: (startMs: number, endMs: number, whole: boolean): string =>
@@ -51,16 +67,24 @@ export const chartCopy = {
   window: 'Window',
   enemy: 'Enemy',
   /** The Players field: what is drawn, never a limit above the roster (`All 3`, not `Top 8 of 3`). */
-  playersField: (drawn: number, total: number, choice: 'split' | 'top' | 'bottom' | 'custom'): string => {
-    if (choice === 'custom') return `${drawn} of ${total}`;
-    if (total <= 8) return `All ${total}`;
-    if (choice === 'top') return `Top 8 of ${total}`;
-    if (choice === 'bottom') return `Bottom 8 of ${total}`;
-    return `Top 4, bottom 4 of ${total}`;
+  /** `seen`: the set is everyone in range, so the count says so (`of 90 players seen`). */
+  playersField: (
+    drawn: number,
+    total: number,
+    choice: 'split' | 'top' | 'bottom' | 'custom',
+    seen = false,
+  ): string => {
+    const of = `${total}${seen ? ' players seen' : ''}`;
+    if (choice === 'custom') return `${drawn} of ${of}`;
+    if (total <= 8) return `All ${of}`;
+    if (choice === 'top') return `Top 8 of ${of}`;
+    if (choice === 'bottom') return `Bottom 8 of ${of}`;
+    return `Top 4, bottom 4 of ${of}`;
   },
   presets: { split: 'Top 4 + bottom 4', top: 'Top 8', bottom: 'Bottom 8', custom: 'Custom' },
   groups: { compare: 'Compare', tank: 'Tanks', healer: 'Healers', dps: 'Damage', other: 'Others' },
-  raidMedian: 'Raid median',
+  /** The median line, named for the set it is the median of. */
+  median: (noun: ScopeNoun): string => MEDIAN_NAME[noun],
   classMedian: (className: string): string => `${className} median`,
   raidMedianDescription: (metric: RateMetric, count: number): string =>
     metric === 'healing'

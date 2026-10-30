@@ -61,6 +61,7 @@
     onTab = undefined,
     reportId = undefined,
     fightIndex = undefined,
+    seen = false,
   }: {
     summary: Summary;
     /** The same window before the source scope, so a scoped row still shares against everyone. */
@@ -85,6 +86,8 @@
     onTab?: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths' | 'rating') => void;
     reportId?: string;
     fightIndex?: number;
+    /** The roster is everyone in range, not the logger's group: its count says "players seen". */
+    seen?: boolean;
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
@@ -107,7 +110,7 @@
   /** The roster card's meta line: who was there, the deaths, the length, and who lacked a raid buff. */
   const rosterMeta = $derived(
     [
-      `${roster.length} ${roster.length === 1 ? 'player' : 'players'}`,
+      `${roster.length} ${roster.length === 1 ? 'player' : 'players'}${seen ? ' seen' : ''}`,
       `${summary.deaths.length} deaths`,
       formatDuration(durationMs),
       ...(missingBuffs > 0 ? [`${missingBuffs} missing a raid buff at pull`] : []),

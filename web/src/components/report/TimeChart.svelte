@@ -15,6 +15,7 @@
   import { clockLabel } from '../../lib/chart/time-axis';
   import type { ChartEvent, ChartPhase, ChartSeries, PlayerEntry } from '../../lib/chart/types';
   import { formatAmount } from '../../lib/report/format';
+  import type { ScopeNoun } from '../../lib/report/group';
   import type { Actor, RosterRow } from '../../lib/report/types';
   import { isFullWindow, type TimeWindow, type WindowPreset } from '../../lib/report/window';
   import ChartLegend from '../chart/ChartLegend.svelte';
@@ -52,6 +53,7 @@
     syncKey,
     onOpenDeath,
     compact = false,
+    noun = 'raid',
   }: {
     metric: RateMetric;
     /** The table's actors over the whole fight, under the source scope. */
@@ -87,6 +89,8 @@
     syncKey: string;
     onOpenDeath?: (deaths: readonly ChartEvent[]) => void;
     compact?: boolean;
+    /** What the drawn players are (lib/report/group.ts): it names the head's figure and the median. */
+    noun?: ScopeNoun;
   } = $props();
 
   const legend = new LegendState();
@@ -133,6 +137,7 @@
       compare: { raid: raidMedianOn && !enemies, className: enemies ? null : classMedian },
       deadSpans: spans,
       single: sourcePlayer,
+      noun,
     }),
   );
   const series = $derived<ChartSeries[]>([
@@ -184,7 +189,7 @@
     const span = chartCopy.span(current.startMs, current.endMs, whole);
     if (single !== undefined)
       return chartCopy.playerMeta(metric, single.label, formatAmount(single.figure), span, targetName);
-    return chartCopy.rateMeta(metric, formatAmount(model.raidFigure), span, targetName);
+    return chartCopy.rateMeta(metric, formatAmount(model.raidFigure), span, targetName, noun);
   });
 
   function choose(id: string): void {
@@ -229,6 +234,7 @@
         {medians}
         {choice}
         presets={PRESETS}
+        seen={noun === 'everyone'}
         formatValue={formatAmount}
         onToggle={choose}
         onMedian={toggleMedian}
