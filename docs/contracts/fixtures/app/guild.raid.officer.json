@@ -11,8 +11,8 @@
     "status": "planned",
     "size": 40,
     "guild_timezone": "America/Chicago",
-    "notes_html": "<p>Phase 2 prep: bring <strong>fire resistance</strong> and flasks. Strats on <a href=\"https://foreversixty.gg/guides/onyxia\">the guide</a>.</p>\n",
-    "notes": "Phase 2 prep: bring **fire resistance** and flasks.",
+    "notes_html": "<p>Bring <strong>fire resistance</strong> gear and flasks. Strats on <a href=\"https://foreversixty.gg/guides/onyxia\">the guide</a>.</p>\n",
+    "notes": "Bring **fire resistance** gear and flasks.",
     "counts": {
       "in": 23,
       "late": 1,
@@ -21,6 +21,107 @@
       "tanks": 3,
       "healers": 6,
       "dps": 14
+    },
+    "composition": {
+      "classes": [
+        {
+          "class": "warrior",
+          "count": 5
+        },
+        {
+          "class": "paladin",
+          "count": 0
+        },
+        {
+          "class": "hunter",
+          "count": 2
+        },
+        {
+          "class": "rogue",
+          "count": 2
+        },
+        {
+          "class": "priest",
+          "count": 4
+        },
+        {
+          "class": "shaman",
+          "count": 4
+        },
+        {
+          "class": "mage",
+          "count": 2
+        },
+        {
+          "class": "warlock",
+          "count": 2
+        },
+        {
+          "class": "druid",
+          "count": 3
+        }
+      ],
+      "roles": {
+        "tanks": 3,
+        "healers": 6,
+        "dps": 14
+      },
+      "targets": {
+        "tanks": 4,
+        "healers": 8,
+        "dps": 28
+      },
+      "buffs": [
+        {
+          "key": "fortitude",
+          "name": "Power Word: Fortitude",
+          "icon": "spell_holy_wordfortitude",
+          "present": true,
+          "count": 4
+        },
+        {
+          "key": "mark_of_the_wild",
+          "name": "Mark of the Wild",
+          "icon": "spell_nature_regeneration",
+          "present": true,
+          "count": 3
+        },
+        {
+          "key": "arcane_intellect",
+          "name": "Arcane Intellect",
+          "icon": "spell_holy_magicalsentry",
+          "present": true,
+          "count": 2
+        },
+        {
+          "key": "blessings",
+          "name": "Blessings",
+          "icon": "spell_holy_fistofjustice",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "shadow_protection",
+          "name": "Shadow Protection",
+          "icon": "spell_shadow_antishadow",
+          "present": true,
+          "count": 4
+        },
+        {
+          "key": "soulstone",
+          "name": "Soulstone",
+          "icon": "inv_misc_orb_04",
+          "present": true,
+          "count": 2
+        },
+        {
+          "key": "battle_rez",
+          "name": "Rebirth",
+          "icon": "spell_nature_reincarnation",
+          "present": true,
+          "count": 3
+        }
+      ]
     },
     "signups": [
       {

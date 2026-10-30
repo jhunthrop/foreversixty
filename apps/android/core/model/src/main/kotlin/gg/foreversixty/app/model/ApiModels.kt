@@ -1125,6 +1125,18 @@ data class RaidAttendanceRow(
 )
 
 @Serializable
+data class RaidBuff(
+    @SerialName("key") val key: String,
+    /** The spell's name in the client, e.g. Power Word: Fortitude. */
+    @SerialName("name") val name: String,
+    /** The icon stem, /data/{build}/icons/{stem}.webp. */
+    @SerialName("icon") val icon: String,
+    @SerialName("present") val present: Boolean,
+    /** How many signed In or Late can provide it. */
+    @SerialName("count") val count: Int,
+)
+
+@Serializable
 data class RaidCancel(
     @SerialName("post_to_discord") val postToDiscord: Boolean? = null,
 )
@@ -1134,6 +1146,21 @@ data class RaidCharacter(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
     @SerialName("class") val className: String,
+)
+
+@Serializable
+data class RaidClassCount(
+    @SerialName("class") val className: String,
+    @SerialName("count") val count: Int,
+)
+
+/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count) and soulstone (warlock). */
+@Serializable
+data class RaidComposition(
+    @SerialName("classes") val classes: List<RaidClassCount> = emptyList(),
+    @SerialName("roles") val roles: RaidRoleCounts,
+    @SerialName("targets") val targets: RaidRoleCounts? = null,
+    @SerialName("buffs") val buffs: List<RaidBuff> = emptyList(),
 )
 
 /** Sign-up counts; the role counts count in only. */
@@ -1336,6 +1363,13 @@ data class RaidPatch(
 )
 
 @Serializable
+data class RaidRoleCounts(
+    @SerialName("tanks") val tanks: Int,
+    @SerialName("healers") val healers: Int,
+    @SerialName("dps") val dps: Int,
+)
+
+@Serializable
 data class RaidSignup(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1387,6 +1421,7 @@ data class RaidView(
     /** Sanitised HTML of notes; render it. */
     @SerialName("notes_html") val notesHtml: String,
     @SerialName("counts") val counts: RaidCounts,
+    @SerialName("composition") val composition: RaidComposition? = null,
     @SerialName("signups") val signups: List<RaidSignup> = emptyList(),
     @SerialName("not_signed") val notSigned: List<RaidNotSigned> = emptyList(),
     @SerialName("viewer") val viewer: RaidViewer,

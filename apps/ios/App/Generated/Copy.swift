@@ -605,32 +605,39 @@ enum Copy {
     /// Druid
     static var raidsClassDruid: String { text("raids.class.druid") }
 
-    /// no Warriors
-    static var raidsClassNoneWarrior: String { text("raids.classNone.warrior") }
+    /// Raid composition
+    static var raidsCompTitle: String { text("raids.comp.title") }
 
-    /// no Paladins
-    static var raidsClassNonePaladin: String { text("raids.classNone.paladin") }
+    /// {role} {n}/{target}
+    static func raidsCompRole(role: String, n: Int, target: Int) -> String {
+        format("raids.comp.role", role, n, target)
+    }
 
-    /// no Hunters
-    static var raidsClassNoneHunter: String { text("raids.classNone.hunter") }
+    /// {role} {n}
+    static func raidsCompRoleCount(role: String, n: Int) -> String {
+        format("raids.comp.roleCount", role, n)
+    }
 
-    /// no Rogues
-    static var raidsClassNoneRogue: String { text("raids.classNone.rogue") }
+    /// Buffs and utility
+    static var raidsCompBuffs: String { text("raids.comp.buffs") }
 
-    /// no Priests
-    static var raidsClassNonePriest: String { text("raids.classNone.priest") }
+    /// Missing: {names}
+    static func raidsCompMissing(names: String) -> String {
+        format("raids.comp.missing", names)
+    }
 
-    /// no Shamans
-    static var raidsClassNoneShaman: String { text("raids.classNone.shaman") }
+    /// Every raid buff is covered.
+    static var raidsCompCovered: String { text("raids.comp.covered") }
 
-    /// no Mages
-    static var raidsClassNoneMage: String { text("raids.classNone.mage") }
+    /// {name}, covered by {n}
+    static func raidsA11yBuffPresent(name: String, n: Int) -> String {
+        format("raids.a11y.buffPresent", name, n)
+    }
 
-    /// no Warlocks
-    static var raidsClassNoneWarlock: String { text("raids.classNone.warlock") }
-
-    /// no Druids
-    static var raidsClassNoneDruid: String { text("raids.classNone.druid") }
+    /// {name}, missing
+    static func raidsA11yBuffMissing(name: String) -> String {
+        format("raids.a11y.buffMissing", name)
+    }
 
     /// {class} {n}
     static func raidsA11yClassCount(className: String, n: Int) -> String {
@@ -654,6 +661,9 @@ enum Copy {
 
     /// Saving
     static var raidsA11ySaving: String { text("raids.a11y.saving") }
+
+    /// More
+    static var raidsA11yMore: String { text("raids.a11y.more") }
 
     /// Pending, choose a spec
     static var raidsA11yPending: String { text("raids.a11y.pending") }

@@ -194,20 +194,20 @@
     <string name="raids_class_mage">Mage</string>
     <string name="raids_class_warlock">Warlock</string>
     <string name="raids_class_druid">Druid</string>
-    <string name="raids_classNone_warrior">no Warriors</string>
-    <string name="raids_classNone_paladin">no Paladins</string>
-    <string name="raids_classNone_hunter">no Hunters</string>
-    <string name="raids_classNone_rogue">no Rogues</string>
-    <string name="raids_classNone_priest">no Priests</string>
-    <string name="raids_classNone_shaman">no Shamans</string>
-    <string name="raids_classNone_mage">no Mages</string>
-    <string name="raids_classNone_warlock">no Warlocks</string>
-    <string name="raids_classNone_druid">no Druids</string>
+    <string name="raids_comp_title">Raid composition</string>
+    <string name="raids_comp_role" tools:ignore="PluralsCandidate">%1$s %2$d/%3$d</string>
+    <string name="raids_comp_roleCount" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raids_comp_buffs">Buffs and utility</string>
+    <string name="raids_comp_missing">Missing: %1$s</string>
+    <string name="raids_comp_covered">Every raid buff is covered.</string>
+    <string name="raids_a11y_buffPresent" tools:ignore="PluralsCandidate">%1$s, covered by %2$d</string>
+    <string name="raids_a11y_buffMissing">%1$s, missing</string>
     <string name="raids_a11y_classCount" tools:ignore="PluralsCandidate">%1$s %2$d</string>
     <string name="raids_a11y_classes">Classes coming: %1$s</string>
     <string name="raids_a11y_count">%1$s: %2$s</string>
     <string name="raids_a11y_segments">%1$s\'s sign-up</string>
     <string name="raids_a11y_saving">Saving</string>
+    <string name="raids_a11y_more">More</string>
     <string name="raids_a11y_pending">Pending, choose a spec</string>
     <string name="raids_a11y_place">%1$s, %2$s. Change the place</string>
     <string name="raids_a11y_roster">%1$s, %2$s %3$s</string>

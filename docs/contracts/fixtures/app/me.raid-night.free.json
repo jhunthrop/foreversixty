@@ -20,18 +20,18 @@
     "new_bests": 1,
     "loot": [
       {
-        "item_id": 17107,
-        "name": "Dragon's Blood Cape",
+        "item_id": 17078,
+        "name": "Sapphiron Drape",
         "quality": 4,
-        "icon": "inv_misc_cape_05",
+        "icon": "inv_misc_cape_16",
         "slot": "Back",
         "boss": "Onyxia",
         "awarded_by": "Kraggor",
         "replaces": {
-          "item_id": 13397,
-          "name": "Stoneskin Gargoyle Cape",
+          "item_id": 13340,
+          "name": "Cape of the Black Baron",
           "quality": 3,
-          "item_level": 61
+          "item_level": 63
         }
       }
     ],

@@ -26,12 +26,12 @@ var doneRaidOptional = append([]string{
 }, raidViewPending("data")...)
 
 // raidViewPending are the raid view fields lane F4 added to the contract (openapi.yaml, "Lane F4
-// contract, handler pending"): invite_at, the viewer's can, tools_ended and raid_night, and the
+// contract, handler pending"): invite_at, the composition block, the viewer's can, tools_ended and raid_night, and the
 // spec's name, icon and options on each row. The apps read each as absent until the handler sends
 // it; drop a path here when the handler starts to.
 func raidViewPending(prefix string) []string {
 	return []string{
-		prefix + ".invite_at",
+		prefix + ".invite_at", prefix + ".composition",
 		prefix + ".viewer.can", prefix + ".viewer.tools_ended", prefix + ".viewer.raid_night",
 		prefix + ".viewer.characters[].spec_name", prefix + ".viewer.characters[].spec_icon",
 		prefix + ".viewer.characters[].spec_options",

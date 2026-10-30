@@ -298,6 +298,12 @@ pre_done_status, match, night, attendance, report }`.
 - **Lane F4 additions** (the app's raid page, spec 2026-10-30-mobile-apps C2; the handler adds
   them after launch, and the apps read each as absent until then):
   - `invite_at`: when invites go out, before `starts_at` (the pull); null when the guild sets none.
+  - `composition`: the raid leader's read, computed by the API and rendered as is: `classes[]`
+    (`{ class, count }`, all nine in the game's order, counting In and Late), `roles` (`{ tanks,
+    healers, dps }`, In only), `targets` (the same shape, or null when the raid sets none) and
+    `buffs[]` (`{ key, name, icon, present, count }`: fortitude, mark_of_the_wild,
+    arcane_intellect, blessings, shadow_protection, soulstone and battle_rez, from the classes
+    signed In or Late).
   - `signups[]` and `not_signed[]` gain `spec_name` and `spec_icon` (the talent-tab icon stem);
     `not_signed[]` gains `role`, the spec's role, for an officer's Add.
   - `viewer.characters[]` gains `spec_name`, `spec_icon` and `spec_options[]` (`{ spec, name,

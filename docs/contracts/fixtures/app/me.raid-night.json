@@ -20,18 +20,18 @@
     "new_bests": 1,
     "loot": [
       {
-        "item_id": 17107,
-        "name": "Dragon's Blood Cape",
+        "item_id": 17078,
+        "name": "Sapphiron Drape",
         "quality": 4,
-        "icon": "inv_misc_cape_05",
+        "icon": "inv_misc_cape_16",
         "slot": "Back",
         "boss": "Onyxia",
         "awarded_by": "Kraggor",
         "replaces": {
-          "item_id": 13397,
-          "name": "Stoneskin Gargoyle Cape",
+          "item_id": 13340,
+          "name": "Cape of the Black Baron",
           "quality": 3,
-          "item_level": 61
+          "item_level": 63
         }
       }
     ],
@@ -44,9 +44,9 @@
       }
     ],
     "coach_notes": [
-      "Your Whirlwind uptime fell in phase 2; queue it on cooldown during the whelp waves.",
-      "You stood in Deep Breath once at 2:41; the safe lane is along the side walls.",
-      "Pre-pot before the pull: you had 0 potions in the first minute."
+      "Whirlwind sat unused for 40 seconds during the whelp waves; press it on cooldown when two or more whelps are in range.",
+      "Deep Breath hit you once at 2:41; when she lifts off, move out from under her to the sides of the cave.",
+      "No Elixir of the Mongoose or Juju Power on the pull; both were on the guild's consumables list."
     ]
   },
   "error": null,

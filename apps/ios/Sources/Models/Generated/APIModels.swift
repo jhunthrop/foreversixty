@@ -3026,6 +3026,31 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidBuff: Codable, Sendable, Equatable {
+    public let key: String
+    /// The spell's name in the client, e.g. Power Word: Fortitude.
+    public let name: String
+    /// The icon stem, /data/{build}/icons/{stem}.webp.
+    public let icon: String
+    public let present: Bool
+    /// How many signed In or Late can provide it.
+    public let count: Int
+
+    public init(
+        key: String,
+        name: String,
+        icon: String,
+        present: Bool,
+        count: Int
+    ) {
+        self.key = key
+        self.name = name
+        self.icon = icon
+        self.present = present
+        self.count = count
+    }
+}
+
 public struct RaidCancel: Codable, Sendable, Equatable {
     public let postToDiscord: Bool?
 
@@ -3055,6 +3080,52 @@ public struct RaidCharacter: Codable, Sendable, Equatable {
         case characterKey
         case name
         case className = "class"
+    }
+}
+
+public struct RaidClassCount: Codable, Sendable, Equatable {
+    public let className: String
+    public let count: Int
+
+    public init(
+        className: String,
+        count: Int
+    ) {
+        self.className = className
+        self.count = count
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case className = "class"
+        case count
+    }
+}
+
+/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count) and soulstone (warlock).
+public struct RaidComposition: Codable, Sendable, Equatable {
+    public let classes: [RaidClassCount]
+    public let roles: RaidRoleCounts
+    public let targets: RaidRoleCounts?
+    public let buffs: [RaidBuff]
+
+    public init(
+        classes: [RaidClassCount] = [],
+        roles: RaidRoleCounts,
+        targets: RaidRoleCounts? = nil,
+        buffs: [RaidBuff] = []
+    ) {
+        self.classes = classes
+        self.roles = roles
+        self.targets = targets
+        self.buffs = buffs
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        classes = try c.decodeIfPresent([RaidClassCount].self, forKey: .classes) ?? []
+        roles = try c.decode(RaidRoleCounts.self, forKey: .roles)
+        targets = try c.decodeIfPresent(RaidRoleCounts.self, forKey: .targets)
+        buffs = try c.decodeIfPresent([RaidBuff].self, forKey: .buffs) ?? []
     }
 }
 
@@ -3607,6 +3678,22 @@ public struct RaidPatch: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidRoleCounts: Codable, Sendable, Equatable {
+    public let tanks: Int
+    public let healers: Int
+    public let dps: Int
+
+    public init(
+        tanks: Int,
+        healers: Int,
+        dps: Int
+    ) {
+        self.tanks = tanks
+        self.healers = healers
+        self.dps = dps
+    }
+}
+
 public struct RaidSignup: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -3723,6 +3810,7 @@ public struct RaidView: Codable, Sendable, Equatable {
     /// Sanitised HTML of notes; render it.
     public let notesHtml: String
     public let counts: RaidCounts
+    public let composition: RaidComposition?
     public let signups: [RaidSignup]
     public let notSigned: [RaidNotSigned]
     public let viewer: RaidViewer
@@ -3750,6 +3838,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         notes: String,
         notesHtml: String,
         counts: RaidCounts,
+        composition: RaidComposition? = nil,
         signups: [RaidSignup] = [],
         notSigned: [RaidNotSigned] = [],
         viewer: RaidViewer,
@@ -3774,6 +3863,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.notes = notes
         self.notesHtml = notesHtml
         self.counts = counts
+        self.composition = composition
         self.signups = signups
         self.notSigned = notSigned
         self.viewer = viewer
@@ -3801,6 +3891,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         notes = try c.decode(String.self, forKey: .notes)
         notesHtml = try c.decode(String.self, forKey: .notesHtml)
         counts = try c.decode(RaidCounts.self, forKey: .counts)
+        composition = try c.decodeIfPresent(RaidComposition.self, forKey: .composition)
         signups = try c.decodeIfPresent([RaidSignup].self, forKey: .signups) ?? []
         notSigned = try c.decodeIfPresent([RaidNotSigned].self, forKey: .notSigned) ?? []
         viewer = try c.decode(RaidViewer.self, forKey: .viewer)

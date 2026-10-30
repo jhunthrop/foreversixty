@@ -2760,6 +2760,30 @@
         }
       }
     },
+    "raids.a11y.buffMissing": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, missing"
+          }
+        }
+      }
+    },
+    "raids.a11y.buffPresent": {
+      "comment": "Arguments: 1 name (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, covered by %2$lld"
+          }
+        }
+      }
+    },
     "raids.a11y.classCount": {
       "comment": "Arguments: 1 class (string), 2 n (int)",
       "extractionState": "manual",
@@ -2792,6 +2816,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "raids.a11y.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
           }
         }
       }
@@ -2977,101 +3012,71 @@
         }
       }
     },
-    "raids.classNone.druid": {
+    "raids.comp.buffs": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Druids"
+            "value": "Buffs and utility"
           }
         }
       }
     },
-    "raids.classNone.hunter": {
+    "raids.comp.covered": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Hunters"
+            "value": "Every raid buff is covered."
           }
         }
       }
     },
-    "raids.classNone.mage": {
+    "raids.comp.missing": {
+      "comment": "Arguments: 1 names (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Mages"
+            "value": "Missing: %1$@"
           }
         }
       }
     },
-    "raids.classNone.paladin": {
+    "raids.comp.role": {
+      "comment": "Arguments: 1 role (string), 2 n (int), 3 target (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Paladins"
+            "value": "%1$@ %2$lld/%3$lld"
           }
         }
       }
     },
-    "raids.classNone.priest": {
+    "raids.comp.roleCount": {
+      "comment": "Arguments: 1 role (string), 2 n (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Priests"
+            "value": "%1$@ %2$lld"
           }
         }
       }
     },
-    "raids.classNone.rogue": {
+    "raids.comp.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "no Rogues"
-          }
-        }
-      }
-    },
-    "raids.classNone.shaman": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "no Shamans"
-          }
-        }
-      }
-    },
-    "raids.classNone.warlock": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "no Warlocks"
-          }
-        }
-      }
-    },
-    "raids.classNone.warrior": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "no Warriors"
+            "value": "Raid composition"
           }
         }
       }
