@@ -270,6 +270,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
 
+    cb = sub.add_parser(
+        "carry-bis",
+        help="carry builds/<from>/bis/ onto a new client build until the ranking reruns "
+        "(tools/activate-build.sh): restamps each file and drops every pick or alternative "
+        "the new build's items.json lacks, one report line each",
+    )
+    cb.add_argument("--from", dest="from_build", required=True)
+    cb.add_argument("--to", dest="to_build", required=True)
+
     cr = sub.add_parser(
         "coach-rules",
         help="restamp the log coach's 28 spec rule files (curated/coach) for a build",
@@ -622,6 +631,18 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build, data=data))
         print(write_lua(args.build, data=data))
+    elif args.command == "carry-bis":
+        from pathlib import Path
+
+        from pipeline.bis_carry import carry_bis
+
+        lines = carry_bis(Path("builds"), args.from_build, args.to_build)
+        for line in lines:
+            print(f"carry-bis: {line}")
+        print(
+            f"carry-bis: {len(lines)} candidate(s) dropped carrying "
+            f"{args.from_build} -> {args.to_build}"
+        )
     elif args.command == "coach-rules":
         from pipeline.coachrules import drifted_rule_files, write_rule_files
 
@@ -672,7 +693,7 @@ def main(argv: list[str] | None = None) -> int:
         if github_output:
             with open(github_output, "a", encoding="utf-8") as fh:
                 for key, value in out.items():
-                    if key == "unmatched_newer":
+                    if isinstance(value, list):
                         value = json.dumps(value)
                     fh.write(f"{key}={str(value).lower() if isinstance(value, bool) else value}\n")
     elif args.command == "recorder":

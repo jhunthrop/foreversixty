@@ -26,6 +26,15 @@ Lanes inside a wave run at the same time. A wave's later lanes wait only on the 
 | **I. iOS scaffold** | iOS | `apps/ios` with SwiftUI and iOS 26+. A typed API client from lane C's contracts. Fixture mode (no network) for previews and tests. Keychain storage for the device token. Swift Testing plus snapshot tests. A GitHub Actions macOS job builds and tests on the simulator. Needs no Apple account until signing. | Wave 1 iOS lanes |
 | **N. Android scaffold** | Android | Install JDK 21 and Gradle on this Mac. `apps/android` with Compose, Material 3 and minSdk 28. kotlinx.serialization and a Ktor client from lane C's contracts, with a fixture mode. EncryptedSharedPreferences or DataStore with Tink for the token. Unit and Compose screenshot tests. A CI job builds, tests and uploads to the Play internal track through a Play Developer API service account. | Wave 1 Android lanes |
 
+### Wave 0.5: one source of truth, operable apps (owner 2026-10-30: "do what's necessary to have scalable and operatable software")
+
+Two lanes start once the Wave 0 integration lands.
+
+| Lane | Delivers |
+|---|---|
+| **P1. Generated, not hand-written** | (1) `api/openapi.yaml` covers every app endpoint. A test checks every contract fixture against its OpenAPI schema, so the spec, fixtures and handlers cannot drift. The Swift and Kotlin models and endpoint stubs are generated from it and checked in; CI fails on drift, the same way it does for tokens. (2) One copy catalog (`apps/shared/copy/*.json`) for every on-screen string, generated into a Swift strings catalog and Android string resources, with plural and placeholder rules. (3) One deep-link table (`apps/shared/links.json`) generates `apple-app-site-association`, `assetlinks.json` and both apps' routers. (4) Feature switches in `GET /v1/app/config`, read once at launch and cached, so a feature ships dark in both apps and turns on together. |
+| **P2. Operable** | (1) Each app sends `X-App: ios|android/<version> (<build>)` on every request. The API logs it and counts requests and errors per platform and version. The minimum-version gate uses the same header and returns `426` with an update link. (2) Crash and hang reporting on both platforms, privacy-first: no user ids, no ad SDKs, disclosed in the store privacy forms. Crashlytics or Sentry; pick one for both apps. (3) One version file (`apps/VERSION`) and one changelog. One command bumps both apps, builds, signs and uploads to the Play internal track, and to TestFlight once Apple enrollment clears (fastlane or the platform CLIs). (4) A mobile runbook: release, staged rollout, halt, forced update, rotating push keys, and what to do when push or sign-in fails. |
+
 Gate to Wave 1: lane D at SHIP from both personas, lane C's contracts merged, and I and N building green in CI.
 
 ### Wave 1: features (one iOS lane and one Android lane per feature, at the same time)

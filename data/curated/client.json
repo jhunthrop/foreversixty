@@ -19,6 +19,8 @@
     "wow_classic_titan"
   ],
   "min_version": "1.60.0.0",
+  "_test_product_pattern": "A product key this regex matches is a PTR or test realm and is never Forever live, whatever its version (a Forever PTR is numbered 1.6x and newer than live); it is not warned about either. `products` may not match it. Hand-dispatch client.yml with build= and product= to move to such a build deliberately.",
+  "test_product_pattern": "ptr|test|^wow[a-z]?t$|^wowz$",
   "blizzard_products": [
     "wow_classic_beta",
     "wowf",

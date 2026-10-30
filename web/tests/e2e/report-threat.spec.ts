@@ -242,3 +242,26 @@ test('the glossary explains standing and built', async ({ page }) => {
   await expect(page.getByTestId('glossary')).toContainText('Standing threat');
   await expect(page.getByTestId('glossary')).toContainText('Threat built in a window');
 });
+
+// Owner 2026-10-30: the open "More" menu disappeared under the threat chart. The tab row is
+// sticky, so it is its own stacking context; the menu's z-index only ranked inside it until
+// the row carried one too. The topmost element at each menu item's centre must be that item.
+test('the open More menu sits above the threat chart', async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 1280) < 1024, 'the More menu is the desktop tab row');
+  await page.goto(FIGHT);
+  await openChartIfCollapsed(page);
+  await page.getByTestId('tab-more').click();
+  const items = page.getByTestId('tab-more-menu').locator('[role="tab"], a, button');
+  const count = await items.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const item = items.nth(i);
+    const box = await item.boundingBox();
+    if (box === null) continue;
+    const onTop = await page.evaluate(
+      ({ x, y }) => document.elementFromPoint(x, y)?.closest('[data-testid="tab-more-menu"]') !== null,
+      { x: box.x + box.width / 2, y: box.y + box.height / 2 },
+    );
+    expect(onTop, `menu item ${i} is covered`).toBe(true);
+  }
+});

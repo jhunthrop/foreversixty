@@ -77,6 +77,44 @@ jobs:
         run: |
           git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
           git -C .engine checkout --quiet "${{ steps.identity.outputs.sha }}"
+      # Never rank with a mismatched engine (2026-10-30 rehearsal): an engine stamped for
+      # another client build reads this build's talent strings by the old trees' indexes,
+      # so its picks would be quietly wrong. Until engine.yml pins an engine that follows
+      # the active build, the picks and dps-per-point carried by tools/activate-build.sh
+      # stay live; that pin's green push dispatches this workflow with force. The crawl
+      # below still runs: it reads no engine stamp.
+      # A second night of waiting (the follow went to review and nobody finished it), or
+      # a stamp that cannot be read, is "stalled": the job still commits tonight's crawl,
+      # then fails visibly at its last step (tools/engine/ranking-wait.sh, review M1).
+      - name: the pinned engine follows the active build
+        id: engine
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          SHA: ${{ steps.identity.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # When active-build.json last changed: the checkout is shallow, so ask GitHub. A
+          # failed lookup is "unknown", which stalls a mismatched engine (a red run naming
+          # the lookup) and never reads as "now" (tools/engine/ranking-verdict.sh).
+          moved=$(gh api "repos/$GITHUB_REPOSITORY/commits?path=web/src/data/active-build.json&per_page=1" --jq '.[0].commit.committer.date' 2>/dev/null) || moved=""
+          if [ -n "$moved" ] && moved=$(date -u -d "$moved" +%s 2>/dev/null); then :; else
+            echo "::warning::could not read when active-build.json last changed"
+            moved=unknown
+          fi
+          # Captured, not read from a process substitution, so a failing verdict fails here.
+          out=$(tools/engine/ranking-verdict.sh . .engine "$BUILD" "$moved")
+          verdict=${out%%$'\t'*}
+          line=${out#*$'\t'}
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          if [ "$verdict" = rank ]; then
+            echo "follows=true" >> "$GITHUB_OUTPUT"
+            echo "the pinned engine $SHA: $line"
+          else
+            echo "follows=false" >> "$GITHUB_OUTPUT"
+            echo "line=$line" >> "$GITHUB_OUTPUT"
+            echo "::warning title=ranking waits for engine follow::$line (engine $SHA)"
+            echo "- $line (engine $SHA)" >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: astral-sh/setup-uv@v3
       - name: fill in quest levels and item sources from wowhead, then regenerate loot.json
         working-directory: data
@@ -175,15 +213,21 @@ jobs:
         env:
           BUILD: ${{ steps.identity.outputs.build }}
           FORCE: ${{ github.event.inputs.force }}
+          ENGINE_FOLLOWS: ${{ steps.engine.outputs.follows }}
         run: |
+          # dps-per-point.json and its carried-from marker are outputs of this workflow too
+          # (the re-measure below), so a re-measure does not re-rank the next night.
           hash=$( {
             git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml
-            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json"
+            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\."
           } | sha256sum | cut -c1-16)
           last=$(git log -1 --format=%B -- "data/builds/$BUILD/bis" | sed -n 's/^Inputs: //p' | head -1)
           echo "hash=$hash" >> "$GITHUB_OUTPUT"
           echo "tonight: $hash  last picks: ${last:-none}"
-          if [ "$FORCE" != "true" ] && [ -n "$last" ] && [ "$hash" = "$last" ]; then
+          if [ "$ENGINE_FOLLOWS" != "true" ]; then
+            # Force does not override this: the step above says why.
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$FORCE" != "true" ] && [ -n "$last" ] && [ "$hash" = "$last" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
             echo "::notice::nothing the ranker reads has changed since the last picks; skipping the ranking"
           else
@@ -227,6 +271,29 @@ jobs:
         continue-on-error: true
         working-directory: sim
         run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked' -count=1
+      # tools/activate-build.sh carries the previous build's dps-per-point.json unchanged
+      # (the addon's "+N DPS" and the API's loot values read it) and writes
+      # dps-per-point.carried-from beside it. Only then, on a move, does the first ranking
+      # on an engine stamped for the build re-measure it on the new picks; a build with no
+      # carried-from (every build before this rule, and any build already re-measured) is
+      # never re-measured here. Failure-isolated: a red or slow measure keeps the carry and
+      # the night's picks still land (the commit step stages the file only on success).
+      - name: re-measure dps-per-point where it is still a carry
+        id: dpp
+        if: steps.inputs.outputs.skip != 'true'
+        continue-on-error: true
+        timeout-minutes: 90
+        env: { BUILD: '${{ steps.identity.outputs.build }}' }
+        run: |
+          marker="data/builds/$BUILD/dps-per-point.carried-from"
+          if [ ! -f "$marker" ]; then
+            echo "dps-per-point.json is $BUILD's own (no carried-from); kept"
+            exit 0
+          fi
+          echo "dps-per-point.json is carried from $(cat "$marker"); re-measuring on tonight's picks"
+          go run ./sim/cmd/dps-per-point -repo-root .
+          rm "$marker"
+          echo "measured=true" >> "$GITHUB_OUTPUT"
       # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must
@@ -234,15 +301,24 @@ jobs:
       - name: regenerate the addon data with the new picks
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data
+        env: { MEASURED: '${{ steps.dpp.outputs.measured }}' }
         run: |
+          # A failed re-measure may have left a partial file; the carry stands instead.
+          if [ "$MEASURED" != true ]; then git checkout -- "builds/${{ steps.identity.outputs.build }}/dps-per-point.json" 2>/dev/null || true; fi
           uv sync
           uv run python -m pipeline addon-data --build "${{ steps.identity.outputs.build }}"
       - name: commit data/builds/*/bis if it changed
         if: steps.inputs.outputs.skip != 'true'
+        env: { MEASURED: '${{ steps.dpp.outputs.measured }}' }
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
           git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" addon/ForeverSixty/Data.lua
+          # The re-measured figures and the carried-from marker's removal, only when the
+          # measure succeeded (and only paths that exist: a build may have no figures).
+          if [ "$MEASURED" = true ]; then
+            git add -A -- "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.json" "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.carried-from"
+          fi
           if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}" -m "Inputs: ${{ steps.inputs.outputs.hash }}"; then
             echo "nothing to commit"; exit 0
           fi
@@ -272,8 +348,21 @@ jobs:
           exit 1
       # A push made with GITHUB_TOKEN never triggers another workflow, so
       # the site would keep serving last night's picks until someone else
-      # pushed. Dispatch the web deploy explicitly (actions: write above).
-      - name: deploy the site with tonight's picks
+      # pushed. Dispatch the web deploy explicitly (actions: write above),
+      # and the API's: its image copies data/builds, and api/internal/bis,
+      # sims/lootvalues.go and sims/gearscore.go serve the picks and the
+      # dps-per-point figures from that copy (review M5).
+      - name: deploy the site and the API with tonight's picks
         if: success() && steps.inputs.outputs.skip != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
-        run: gh workflow run web.yml --ref main
+        run: |
+          gh workflow run web.yml --ref main
+          gh workflow run api.yml --ref main
+      # Last, so tonight's crawl and any deploy above still landed: a ranking stalled on
+      # the engine for a second night is a red run, not another green notice.
+      - name: fail when the ranking has stalled on the engine
+        if: always() && steps.engine.outputs.verdict == 'stalled'
+        env: { LINE: '${{ steps.engine.outputs.line }}' }
+        run: |
+          echo "::error title=ranking stalled on the engine follow::$LINE"
+          exit 1
