@@ -1,0 +1,17 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Onyxia's Lair",
+      "body": "Starts in 60 minutes."
+    },
+    "sound": "default",
+    "thread-id": "raid-7",
+    "interruption-level": "time-sensitive"
+  },
+  "kind": "raid.starting",
+  "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+  "data": {
+    "guild_id": "2",
+    "raid_id": "7"
+  }
+}

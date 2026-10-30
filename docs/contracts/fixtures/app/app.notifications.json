@@ -13,6 +13,7 @@
         "who": "guild_members",
         "officer": false,
         "quiet_exempt": false,
+        "time_sensitive": false,
         "channels": {
           "push": true,
           "discord": true
@@ -23,6 +24,7 @@
         "who": "in_and_late",
         "officer": false,
         "quiet_exempt": true,
+        "time_sensitive": true,
         "channels": {
           "push": true,
           "discord": true
@@ -33,6 +35,7 @@
         "who": "player",
         "officer": false,
         "quiet_exempt": false,
+        "time_sensitive": false,
         "channels": {
           "push": false,
           "discord": false
@@ -43,6 +46,7 @@
         "who": "officers",
         "officer": true,
         "quiet_exempt": false,
+        "time_sensitive": false,
         "channels": {
           "push": true,
           "discord": true

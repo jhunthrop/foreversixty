@@ -1,0 +1,26 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "notification": {
+      "title": "Onyxia's Lair",
+      "body": "Sign-ups are open: Thu 5 Nov, 20:00 CST."
+    },
+    "data": {
+      "kind": "raid.posted",
+      "guild_id": "2",
+      "raid_id": "7",
+      "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+      "thread": "raid-7",
+      "category": "RAID_SIGNUP",
+      "actions": "[{\"id\":\"signup_in\",\"title\":\"In\",\"method\":\"PUT\",\"path\":\"/v1/guilds/2/raids/7/signups/{character}\",\"body\":{\"state\":\"in\"}},{\"id\":\"signup_late\",\"title\":\"Late\",\"method\":\"PUT\",\"path\":\"/v1/guilds/2/raids/7/signups/{character}\",\"body\":{\"state\":\"late\"}},{\"id\":\"signup_out\",\"title\":\"Out\",\"method\":\"PUT\",\"path\":\"/v1/guilds/2/raids/7/signups/{character}\",\"body\":{\"state\":\"out\"}}]"
+    },
+    "android": {
+      "priority": "NORMAL",
+      "collapse_key": "raid.posted-7",
+      "notification": {
+        "tag": "raid.posted-7",
+        "click_action": "RAID_SIGNUP"
+      }
+    }
+  }
+}

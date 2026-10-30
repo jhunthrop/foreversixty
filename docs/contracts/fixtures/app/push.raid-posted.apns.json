@@ -1,0 +1,46 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Onyxia's Lair",
+      "body": "Sign-ups are open: Thu 5 Nov, 20:00 CST."
+    },
+    "sound": "default",
+    "thread-id": "raid-7",
+    "category": "RAID_SIGNUP"
+  },
+  "kind": "raid.posted",
+  "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+  "actions": [
+    {
+      "id": "signup_in",
+      "title": "In",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "in"
+      }
+    },
+    {
+      "id": "signup_late",
+      "title": "Late",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "late"
+      }
+    },
+    {
+      "id": "signup_out",
+      "title": "Out",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "out"
+      }
+    }
+  ],
+  "data": {
+    "guild_id": "2",
+    "raid_id": "7"
+  }
+}

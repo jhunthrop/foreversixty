@@ -19,7 +19,10 @@ from a field name to a short sentence, present on validation errors. `request_id
 envelope: `204 No Content` answers, `304 Not Modified`, and the redirects of sign-in.
 
 **Fixtures.** A fixture is named for its endpoint and state, `<endpoint>[.<variant>].json`;
-failures carry `error-<code>` in the name. A fixture is a floor, not a ceiling. Every field it
+failures carry `error-<code>` in the name. API fixtures are whole envelopes; `cdn.*` fixtures
+are the static files as served and `push.*` fixtures are push payloads, neither enveloped. Each
+app keeps one route table from method and path to these names (iOS `FixtureCatalog`, Android
+`FixtureRoutes`). A fixture is a floor, not a ceiling. Every field it
 names is in the live answer with the same JSON kind; a field the live answer adds is allowed, and a
 client ignores what it does not know. **Never pin a count, an id or a value from a fixture**: a
 fixture shows one state, and a list is longer or shorter in production. A field marked *omitted
@@ -35,7 +38,11 @@ always present (null when unknown, `[]` when an empty list).
 - **device**: a bearer token only. A cookie is refused.
 
 A missing or dead credential answers `401 unauthorized`. A dead bearer token is `401` with
-`"that device token is not valid"`: the app discards the token and signs in again.
+`"that device token is not valid"`. An app token that lapsed (30 days unused or 180 days from
+sign-in) answers `401 session_expired` once, then `401 unauthorized`. **On either 401 the app
+clears its token and signs in again.** Billing writes (checkout, portal, guild upgrade, transfer)
+answer an app token `403 browser_session_required`: send the person to foreversixty.gg in the
+browser, never retry. An app token carries no moderator powers.
 
 **Caching.** Cache-Control values are set by the API, and the app's HTTP cache honours them.
 Classes: *live public* `public, max-age=30, stale-while-revalidate=300`; *public object*
@@ -55,6 +62,8 @@ answers when the thing exists but is private to you.
 | code | status | meaning |
 |---|---|---|
 | `unauthorized` | 401 | no, wrong or dead credential (fixture `error-unauthorized`) |
+| `session_expired` | 401 | an app token lapsed; sign in again (answered once, then `unauthorized`) |
+| `browser_session_required` | 403 | a billing write from an app token; open the site |
 | `forbidden` | 403 | signed in but not allowed (not a member, not an officer) |
 | `not_found` | 404 | no such thing, or private to you |
 | `invalid` | 400 or 422 | bad input; `fields` names each (400 body/query, 422 field rules) |
@@ -423,12 +432,13 @@ The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a displ
 while the date is in progress), `role`, `highlight`. Sort and compare by `iso`/`endIso`, never by
 `key`. Fixture `cdn.dates`.
 
-## Planned endpoints (written from lanes A1 and A2; reconcile at merge)
+## App sign-in and notifications (lanes A1 and A2)
 
-These shapes are read from the lane branches (`wt/mobile-auth`, `wt/mobile-push`) as they stand;
-they ship dark (unmounted until `APP_SIGN_IN` and `APP_NOTIFICATIONS_ENABLED` are set) and are
-reconciled with the lanes at merge. There is no handler on main yet, so these fixtures are held
-only to the envelope rule; the lanes' own tests own their shapes.
+These routes ship dark: unmounted until `APP_SIGN_IN=true` (A1) and `APP_NOTIFICATIONS_ENABLED=1`
+(A2) are set, so they answer 404 until then. The shapes below are the lanes' final contracts
+(reports `docs/superpowers/reports/2026-10-30-mobile-auth.md` and `...-mobile-push.md`). There is
+no handler on main yet, so these fixtures are held only to the envelope rule; add an
+`app_contract_test.go` beside each handler when its lane merges.
 
 ### Sign in (A1)
 The app opens the system browser (ASWebAuthenticationSession, Custom Tabs) and never sees the
@@ -437,46 +447,103 @@ Battle.net credentials.
 1. The app makes a random `code_verifier` (43 to 128 characters of `A-Za-z0-9._~-`) and a random
    `state` (16 to 128 of the same). It opens
    `GET https://api.foreversixty.gg/v1/auth/app/start?platform=ios|android&code_challenge=<base64url
-   SHA-256 of the verifier, 43 characters>&code_challenge_method=S256&state=<state>` (public; 60
-   starts an hour per IP). Errors: 400 `invalid` with `fields` (`app.signin.start.error-invalid`).
-2. Battle.net signs the player in; the API redirects to the universal link
-   `https://foreversixty.gg/app/auth?code=<one-time code>&state=<state>`. **Check the returned
-   `state` equals the one you sent.**
-3. `POST /v1/auth/app/exchange` (public; 60 an hour per IP), body `{ code, code_verifier,
-   device_name }` (`device_name` optional, otherwise "iOS" or "Android"). Answer **201** `{ token,
-   device: { id, name, platform }, me }`. `token` is the device bearer token, shown once: keep it in
-   the Keychain / encrypted storage. `me` is the body of `GET /v1/me`, so the first screen needs no
-   second call. Fixtures `app.signin.exchange`. Errors: 400 `invalid` (`...error-invalid`), 400
-   `invalid_grant` for a spent, expired or mismatched code (`...error-invalid-grant`; start again).
-4. From then on send `Authorization: Bearer <token>` on every call.
+   SHA-256 of the verifier, no padding, 43 characters>&code_challenge_method=S256&state=<state>`
+   (public; 60 an hour per IP, shared with continue). Errors: 400 `invalid` with `fields` naming
+   each bad parameter (`app.signin.start.error-invalid`), 429.
+2. Start answers **200 with a confirm page** (`text/html`, no script, framing refused): "Sign in to
+   the Forever Sixty app on your phone". The person taps "Continue to Battle.net", which is
+   `GET /v1/auth/app/continue?state=...`; that answers 302 to Battle.net, or 400 `invalid` from a
+   browser that did not start the flow. The flow may sit at Battle.net for 10 minutes.
+3. After Battle.net the API redirects to **exactly** `https://foreversixty.gg/app/auth?code=<one-time
+   code>&state=<your state, verbatim>`. There is no `/callback` suffix; register exactly that
+   universal link / App Link. **Any `redirect_uri` the client sends is ignored**, so send none.
+   **Check the returned `state` equals the one you sent.** The code is 43 base64url characters,
+   single use, and expires 2 minutes after the callback. A forged, expired or replayed flow answers
+   400 `invalid` ("start again in the app") and mints nothing.
+4. `POST /v1/auth/app/exchange` (public, no cookies; 60 an hour per IP), body `{ code,
+   code_verifier, device_name }` (`device_name` optional, trimmed to 60, otherwise "iOS" or
+   "Android"). Answer **201** `{ token, device: { id, name, platform }, me }`. `token` is the device
+   bearer token, shown once: keep it in the Keychain / encrypted storage. `me` is the body of
+   `GET /v1/me`, so the first screen needs no second call. Fixtures `app.signin.exchange`. Errors:
+   400 `invalid` for a malformed body, no code or a bad verifier (`...error-invalid`), 400
+   `invalid_grant` for an unknown, spent, expired or mismatched code (`...error-invalid-grant`;
+   start again; any attempt spends the code), 429.
+5. From then on send `Authorization: Bearer <token>` on every call. The token reads every session
+   route. On `401 unauthorized` or `401 session_expired`, clear it and sign in again; billing
+   writes answer `403 browser_session_required` (see Auth above).
 
 ### POST /v1/auth/app/logout
-Auth device. Revokes this device's token. Answer 200 `{ signed_out: true }` (`app.logout`). The
-account page lists app devices with Revoke; revoking makes the token answer 401.
+Auth device. Revokes this device's token. Answer 200 `{ signed_out: true }` (`app.logout`); 401
+with no token or a dead one. The apps call it on sign-out, then clear the token whatever the
+answer. The account page lists app devices (`GET /v1/devices` items are `{ id, name, platform,
+kind ("companion"|"app"), created_at, last_seen_at? }`) with Revoke; a revoke, `DELETE
+/v1/sessions` or `POST /v1/auth/logout` makes the token answer 401.
 
 ### GET /v1/me/notifications and PATCH /v1/me/notifications
-Auth session or device. Caching **no-store**. Mounted when notifications are on. The player's
-choices per event and channel. Answer `{ time_zone, quiet_hours { enabled, start, end }, events[]
-}`; an event is `{ kind, who, officer, quiet_exempt, channels { push, discord } }`. `kind` is the
-catalogue's name (`raid.posted`, `raid.starting`, `sim.finished`, `report.ready`, ...; the list is
-the plan's lifecycle table and grows), `who` the audience sentence key, `officer` true for an
+Auth session or device. Caching **no-store**. The player's choices per event and channel. Answer
+`{ time_zone, quiet_hours { enabled, start, end }, events[] }`; an event is `{ kind, who, officer,
+quiet_exempt, time_sensitive, channels { push, discord } }`, every catalogue event in catalogue
+order. `kind` is the catalogue's name (`raid.posted`, `raid.signup_nudge`, `raid.changed`,
+`raid.roster_set`, `raid.roster_moved`, `raid.starting`, `raid.summary`, `sim.finished`,
+`report.ready`, ...; the list grows), `who` the audience key (`player`, `guild_members`,
+`signed_up`, `in_and_late`, `raiders`, `officers`, `payer`, `everyone`), `officer` true for an
 event only officers receive (show it only to officers), `quiet_exempt` true for an event sent
-inside quiet hours. Show copy from your own strings keyed by `kind`; render an unknown `kind` by
-hiding it. Times are `HH:MM` in `time_zone`.
+inside quiet hours, `time_sensitive` true for one that breaks through Focus (`raid.roster_moved`,
+`raid.starting`). Show copy from your own strings keyed by `kind`; hide an unknown `kind`. Times
+are `HH:MM` in `time_zone` (an IANA name).
 
-PATCH body, every key optional but at least one: `{ time_zone (IANA), quiet_hours { enabled, start,
-end }, events: [{ kind, channel ("push"|"discord"), enabled }] }`. Answer 200 the same body.
-Fixture `app.notifications`. Errors: 422 `invalid` with `fields` (`time_zone`, `quiet_hours`,
-`events[i]`; `app.notifications.patch.error-invalid`), including "nothing to change".
+PATCH body, every key optional but at least one: `{ time_zone, quiet_hours { enabled, start, end },
+events: [{ kind, channel ("push"|"discord"), enabled }] }`. Answer 200 the GET body. Fixture
+`app.notifications`. Errors: 400 `invalid` for a body that is not JSON; 422 `invalid` with `fields`
+(`time_zone`, `quiet_hours`, `events`, `events[i]`; `app.notifications.patch.error-invalid`), and
+422 "nothing to change".
 
 ### POST /v1/me/push-tokens and DELETE /v1/me/push-tokens/{token}
-Auth device only. Register after the permission prompt and again whenever the OS rotates the token.
-Body `{ platform ("ios"|"android"), token, app_version }`: an iOS token is 64 to 200 hex
-characters, an Android token is the FCM registration token; `app_version` is optional, at most 32
-characters. Answer **201** `{ platform, app_version }`; registering an existing token moves it to
-this device. `DELETE` is **204**; send it on sign-out and when the player turns notifications off.
-Fixtures `app.push-tokens.register`. Errors: 422 `invalid` with `fields` (`platform`, `token`,
-`app_version`; `app.push-tokens.register.error-invalid`).
+Auth device only (a cookie is refused). Register after the permission prompt and again whenever
+the OS rotates the token. Body `{ platform ("ios"|"android"), token, app_version }`: an iOS token is
+64 to 200 hex characters, an Android token the FCM registration token (`[A-Za-z0-9_:-]`, 16 to
+4096 characters); `app_version` is optional, at most 32 characters. Answer **201** `{ platform,
+app_version }`. A device holds one token at a time; registering an existing token moves it to this
+device. `DELETE` answers **204** whether or not the token was there, and touches only the calling
+device's token; send it on sign-out and when the player turns notifications off. Revoking the
+device drops its tokens. Fixtures `app.push-tokens.register`. Errors: 400 `invalid` for a body
+that is not JSON; 422 `invalid` with `fields` (`platform`, `token`, `app_version`;
+`app.push-tokens.register.error-invalid`).
+
+### Push payloads
+What APNs and FCM hand the app (lane A2, `api/internal/push`). Fixtures `push.raid-posted.apns`,
+`push.raid-starting.apns`, `push.raid-posted.fcm`.
+
+- **APNs**: `aps.alert { title, body }`, `aps.sound` (`default`), `aps.thread-id`, `aps.category`
+  (`RAID_SIGNUP` when the payload carries actions), `aps.interruption-level` (`time-sensitive` for
+  `raid.roster_moved` and `raid.starting`, otherwise absent), and top-level `kind`, `link`,
+  `actions` (omitted when none) and `data` (string values). The `apns-collapse-id` header carries
+  the collapse id.
+- **FCM**: `message.notification { title, body }`; `message.data` holds strings only: `kind`,
+  `link`, `thread`, `category`, `actions` (the actions array as a JSON string) and the event's
+  data; `message.android.collapse_key` and `message.android.notification.tag` are the collapse id,
+  `message.android.notification.click_action` the category. `android.priority` is `HIGH` only for
+  a time-sensitive event, otherwise `NORMAL`.
+- **Ids.** The thread id is `raid-<raid id>`, so one raid's notifications group together. The
+  collapse id is `<kind>-<raid id>` (at most 64 bytes), so a later notification of the same kind
+  for the same raid replaces the earlier one.
+- **`data`** on a raid event is `{ guild_id, raid_id }` (decimal strings). `link` is a
+  `https://foreversixty.gg/...` page (guild, raid, character, sim, report, account): open it as a
+  deep link, or in the browser when the app has no screen for it.
+- **The RAID_SIGNUP category** has three buttons, In, Late and Out, on `raid.posted` and
+  `raid.signup_nudge`. Register the category with these action ids. Each action is `{ id
+  ("signup_in"|"signup_late"|"signup_out"), title ("In"|"Late"|"Out"), method ("PUT"), path,
+  body ({ state }) }`, and `path` is `/v1/guilds/{g}/raids/{r}/signups/{character}`. **The app
+  replaces `{character}`** with the `{region}/{ruleset}/{name}` of the character it answers for
+  (the server sends one event to the whole guild and cannot pick), then sends the PUT with its
+  device token. The PUT body writes `note` too, so an action without one clears the stored note.
+
+### Officer raid actions from the app
+Lock, unlock and cancel are `POST /v1/guilds/{id}/raids/{raid}/lock`, `/unlock` and `/cancel`
+(see Guilds above for the bodies, budget and errors); moving a player between In and Bench is the
+sign-up PUT with `{ "state": "in" | "bench" }` for another account's character. All of them take the
+app's device token once A1 admits app tokens on session routes; the sign-up PUT takes one only
+while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a player.
 
 ### GET /v1/app/config
 Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
