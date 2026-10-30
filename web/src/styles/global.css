@@ -3,6 +3,7 @@
 @import './tokens.css';
 @import './nav.css';
 @import './typeahead.css';
+@import './select.css';
 
 @layer base {
   body {
