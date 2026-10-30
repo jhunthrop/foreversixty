@@ -104,4 +104,7 @@ func connectProducers(deps *server.Deps, router events.Publisher, publicBaseURL 
 	if deps.Guilds != nil {
 		deps.Guilds.Events = router
 	}
+	if deps.Addon != nil {
+		deps.Addon.Events, deps.Addon.PublicBaseURL = router, publicBaseURL
+	}
 }

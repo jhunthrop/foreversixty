@@ -216,6 +216,7 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 	}
 	s.logger().Info("guilds", "op", "raid_create", "guild_id", guildID, "raids", len(raids), "user_id", actor.UserID)
 	s.rememberDiscordDefaults(r.Context(), guildID, req.PostToDiscord, req.RemindDayBefore)
+	s.publishCreated(r.Context(), views, now)
 	if ticked(req.PostToDiscord) && len(views) > 0 {
 		s.scheduleCreated(r.Context(), guildID, views, boxOr(req.RemindDayBefore, views[0].Discord.RemindDefault), now)
 		views = s.withSchedules(r.Context(), views)
@@ -248,6 +249,7 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	// A moved start shows on the bot's post ticked or not; the box decides only the announcement.
 	if moved {
 		s.markRaidMoved(r.Context(), updated.ID, was)
+		s.publishChanged(r.Context(), updated.ID, false)
 	} else {
 		s.markRaid(r.Context(), updated.ID)
 	}
@@ -288,6 +290,7 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		if move.to != RaidPlanned {
 			s.withdrawOnStatus(r.Context(), guildID, updated.ID)
 		}
+		s.publishStatus(r.Context(), updated, move.to)
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,
 			"user_id", auth.ActorFrom(r.Context()).UserID)
 		// The cancel box only pre-ticks from the raid form's default; it never writes it.
