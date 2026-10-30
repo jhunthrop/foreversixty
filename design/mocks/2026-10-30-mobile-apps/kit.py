@@ -239,6 +239,7 @@ def and_navbar(active: str) -> str:
 ME = {"name": "Lightningbolltz", "cls": "shaman", "desc": "Orc Elemental Shaman · Level 60", "short": "Elemental · 60",
       "guild": "Olympus XXVII", "battletag": "Hunthrop#1894"}
 ALTS = [("Lightningbolltz", "shaman", "Orc Elemental Shaman · Level 60", "Olympus XXVII"),
+        ("Vorgash", "warrior", "Orc Protection Warrior · Level 60", "Olympus XXVII"),
         ("Grimtusk", "warrior", "Orc Fury Warrior · Level 41", "Olympus XXVII"),
         ("Sablewhisper", "priest", "Undead Shadow Priest · Level 23", "No guild")]
 
@@ -262,8 +263,9 @@ def top_bar(plat: str, left: str, right: str = "", height: int = 60) -> str:
     64 dp top app bar on --bg."""
     top = DEVICES[plat]["top"]
     if plat == "ios":
-        return (f"<div style=\"position:absolute;top:{top}px;left:0;right:0;height:{height}px;display:flex;align-items:center;justify-content:space-between;"
-                f"padding:0 16px;gap:10px;z-index:12;background:linear-gradient(180deg,rgba(7,9,13,.92),rgba(7,9,13,.6) 80%,transparent)\">{left}<span style=\"display:flex;gap:8px\">{right}</span></div>")
+        return (f"<div style=\"position:absolute;top:0;left:0;right:0;height:{top}px;z-index:12;background:rgba(7,9,13,.96)\"></div>"
+                f"<div style=\"position:absolute;top:{top}px;left:0;right:0;height:{height}px;display:flex;align-items:center;justify-content:space-between;"
+                f"padding:0 16px;gap:10px;z-index:12;background:linear-gradient(180deg,rgba(7,9,13,.96),rgba(7,9,13,.6) 80%,transparent)\">{left}<span style=\"display:flex;gap:8px\">{right}</span></div>")
     return (f"<div class=\"and-bar\" style=\"position:absolute;top:{top}px;left:0;right:0;height:{max(height, 64)}px;justify-content:space-between;padding:0 4px 0 12px;"
             f"z-index:12;background:var(--bg)\">{left}<span style=\"display:flex\">{right}</span></div>")
 

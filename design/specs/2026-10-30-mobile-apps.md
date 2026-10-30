@@ -4,9 +4,46 @@ Author: ux-designer, 2026-10-30 (lane D of `docs/superpowers/plans/2026-10-30-mo
 
 A wow-player review follows this one. Wave 1 builds from this spec and lane C's fixtures; nothing here asks either app to compute BiS, gains, scores or entitlements (plan guard rail "one behaviour, one place").
 
+## Revision 2 (2026-10-30), the fix round on the wow-player HOLD
+
+The verdict is `design/reviews/2026-10-30-mobile-apps/player-verdict.md`. The coordinator's rulings are binding and are applied here.
+
+Blockers:
+1. **Talents (F6).** The tab totals are summed from the drawn build (30, 3, 18 = 51), never typed. The count is the planner's `diffCount` (`web/src/lib/planner/band-compare.ts`): your points spent where the guide spends fewer. `Matches` shows only when no cell differs. Cells and prerequisite lines follow the planner's `cellState` and `connectorPath`. The differing example is now a legal build: Lightning Overload's prerequisite (Elemental Alacrity 3) still holds.
+2. **Loot.** The loot example is Sapphiron Drape, an Onyxia drop in `loot.json` (`raid:onyxias-lair`). `loot.awarded` is off by default as a standalone push and folds into the after-raid summary.
+3. **New event `raid.roster_moved`** (§6.2, boards `f7-moved-*`): time sensitive, the high channel, and it comes through quiet hours.
+4. **F4.11** now shows In checked after a refused Late.
+
+Rulings on the shoulds:
+5. **Officer tools in v1.** Officers lock and unlock sign-ups and move raiders between In and Bench, or off the raid, from the raid page (§5.4 F4.18 to F4.21). Planning stays on the web.
+6. **One after-raid push.** `raid.summary` replaces `report.ready`, `coach.ready`, `ranking.best` and `loot.awarded` as pushes. It opens a new screen, Your raid night (F4.22).
+7. **Invite time.** It is a raid field, `invite_at`, shown beside the pull. `raid.starting` fires at the invite time minus the lead.
+8. **Tooltip parity.** The tooltip gains the Binds line, Unique, and the armor type, all from the client's ItemSparse and Item rows. Source lines carry reputation standings (`Warsong Outriders (Exalted)`).
+
+Other shoulds folded in:
+- the iOS guild subtitle;
+- `raid.starting` reads `in 1 hour`;
+- the unknown-spec push uses Vorgash, an alt with no saved spec, and draws `Out`;
+- F4.12 draws both character blocks with a level-60 alt;
+- `Also planned 2` counts only the listed rows;
+- the notes say phase 2;
+- `band.entered` names the first upgrade;
+- `game.milestone` skips the launch push for accounts with a synced character;
+- F2.7 names the pick;
+- the F3.1 chips wrap;
+- F3.2's back line only offers the way back when the picks differ.
+
+Shoulds skipped, with the reason:
+- **Client stat wording** (`Equip: Improves your chance to hit…`). The site prints `+10 Hit` by decision, because the repo has no verified per-point-to-percent table (`lib/items/tooltip.ts`, tenet 5). The app matches the site.
+- **Soft reserves.** These need a raid field and a site surface first. Planned for v1.x.
+- **Item lookup beyond the 17 rows.** It needs a search endpoint over the build's items. Planned for v1.x.
+- **Quest giver and zone.** The site does not show them yet. The app follows the site when it does.
+- **Two-column gear grid on F5.3.** The grid already runs in character-frame order. A long press shows the slot label (§5.5).
+- **The four Phase-1 BiS source questions.** These concern the site's BiS data and are routed separately by the coordinator.
+
 ## Mock
 
-`design/mocks/2026-10-30-mobile-apps/`: `gen_mobile_apps.py` (with `kit.py`, `model.py`, `screens_home.py`, `screens_raids.py`, `screens_more.py`) writes `renders/*.html`; `render.mjs` screenshots them with Playwright from `web/node_modules` at 1.5x. Run from the repo root:
+`design/mocks/2026-10-30-mobile-apps/`: `gen_mobile_apps.py` (with `kit.py`, `model.py`, `screens_home.py`, `screens_raids.py`, `screens_more.py`) writes `renders/*.html`; `render.mjs` screenshots them with Playwright from `web/node_modules` at 1.5x. `extract_data.py` rewrites `data.json` and `assets/` from a checkout holding the synced static data and the raw client tables. Run from the repo root:
 
 ```
 python3 design/mocks/2026-10-30-mobile-apps/gen_mobile_apps.py && node design/mocks/2026-10-30-mobile-apps/render.mjs
@@ -26,9 +63,12 @@ Every board is drawn on iPhone 17 (402 x 874 pt) and Pixel 9 (412 x 915 dp). `-i
 | `f4-raid-full-{ios,and}` | F4.6 the raid page scrolled top to bottom, roster included |
 | `f4-states-{ios,and}` | F4.7 unsigned, F4.8 locked, F4.9 cancelled, F4.10 offline, F4.11 save failed, F4.12 moved to Bench |
 | `f4-tab-states-{ios,and}` | F4.13 no guild, F4.14 waiting for approval, F4.15 no raid planned, F4.16 error, F4.17 offline |
+| `f4-officer-{ios,and}` | F4.18 officer view of an open raid, F4.19 the officer roster, F4.20 the move menu, F4.21 locked with the toast |
+| `f4-night-{ios,and}` | F4.22 Your raid night (Premium), F4.23 the same for a free player |
+| `f7-moved-{ios,and}` | F7.7 `raid.roster_moved`: moved In, moved to Bench, removed, added |
 | `f4-pair` | Raids tab and raid page, iOS and Android side by side |
 | `f5-sims-{ios,and}` | F5.1 sims (Premium), F5.2 sims (free), F5.3 to F5.5 the result for Premium, free in a link region, free elsewhere |
-| `f6-talents-{ios,and}` | F6.1 matches the guide, F6.2 differs |
+| `f6-talents-{ios,and}` | F6.1 matches the guide (totals 30, 3, 18), F6.2 differs by 2 points |
 | `f7-push-ios` | F7.1 lock screen, F7.2 long-press with In, Late, Out, F7.3 the replaced answer and loot |
 | `f7-push-and` | F7.1 the shade with actions, F7.3 the answer and the unknown-spec case |
 | `f7-settings-{ios,and}` | F7.4 notification settings, F7.5 the channel picker, F7.6 permission denied |
@@ -46,9 +86,11 @@ Every board is drawn on iPhone 17 (402 x 874 pt) and Pixel 9 (412 x 915 dp). `-i
 | Raids tab | "When is the next raid, and am I in?" | The next raid's date, time, countdown, count, and my In / Late / Bench / Out control with my state checked (F4.1) |
 | Raid page | "Am I in, as what, and who else is?" | Title, when, countdown, count and role breakdown, then my sign-up card (F4.2). The roster is the first scroll. |
 | Raid notification | "Can I answer without opening the app?" | In, Late, Out on the notification (F7.2) |
+| Your raid night | "What did I get tonight, and how did I do?" | Kills and wipes, loot awarded to me with its icon, my personal bests (F4.22) |
+| Raid page, officer | "Who is coming, and can I set the roster from here?" | The officer row (Lock sign-ups) under the count; the roster's place buttons on the first scroll (F4.18, F4.19) |
 | BiS | "What is best in each slot for my spec and range?" | The picker chips and the first seven slots, each with source and the next best (F3.1) |
 | Sims | "Did my run finish, and what did it do?" | Running runs with progress, then finished runs with DPS (F5.1) |
-| Talents | "Is my build the guide build?" | The Optimized or Unoptimized tag with its sentence, and the tree (F6.1) |
+| Talents | "Is my build the guide build?" | The Matches or Differs tag with its sentence, and the tree (F6.1) |
 | You | "What plan am I on, and what will the app tell me?" | Account, Plan, Notifications (F8.1) |
 
 Tenet 14: no screen opens on a slogan, a feature list or an onboarding carousel. A signed-out first launch is the Home tab in its signed-out state; there is no welcome flow.
@@ -97,7 +139,7 @@ I keep the suggested tabs. The defence:
 | Tab | Root | Pushes |
 |---|---|---|
 | Home | F2.1 the answer | F2.7 Your gear (all 17 slots); F6 Talents; F5.1 Sims, then F5.3 a result |
-| Raids | F4.1 Raids tab for the current character's guild | F4.2 raid page |
+| Raids | F4.1 Raids tab for the current character's guild | F4.2 raid page; F4.22 Your raid night (from the raid page of a done raid, or the push) |
 | BiS | F3.1 the list for the current character's spec, range and faction | none; the picker is a sheet |
 | You | F8.1 | F8.4 Plan; F7.4 Notifications; Characters; F1.6 Devices; Discord |
 
@@ -280,7 +322,7 @@ Top to bottom on Home, under the selector bar:
    - Footer row (52, gold body 600, chevron): `{n} more upgrades · all 17 slots`, which pushes F2.7. With five or fewer upgrades it reads `All 17 slots`.
 3. **Already best in slot.** Meta muted, under the card: `Already best in slot: {slots}.`
 4. **Next for {name}.** `micro` label, then a quiet card of three rows (56, tile or spec icon 36, label body 600, meta line, trailing tag or chevron):
-   - `Talents`: tag `Optimized` (kill) with `Matches the {spec} {band} build`, or tag `Unoptimized` (gold) with `{n} of the {m} points in the {band} build differ`. Pushes F6.
+   - `Talents`: tag `Matches` (kill) with `Your build is the {spec} {band} guide build`, or tag `Differs` (gold) with `{n} of your {m} points differ from the {band} build`. The rule is F6's. Pushes F6.
    - `Sims`: `Your {spec} sim finished: {dps} DPS` for the newest unseen finished sim, else the newest sim's headline and DPS, else `No sim yet.`. Pushes F5.1.
    - `Next raid`: tag `{State} · {Role}` (the Raids tab's viewer chip) and `{title} · {when}`. Pushes the raid page in the Raids tab. Shown only for a verified member of a guild with a planned raid.
 
@@ -298,9 +340,12 @@ States:
 
 ### F2.6 The item tooltip sheet
 A tap on any item icon or item name anywhere in the app (Home, Your gear, BiS, sim gear, loot) opens this sheet. Detents medium and large; it opens at medium.
-- Header: icon 56, the name in `sec` 700 quality text colour, meta `{Quality} · {Slot} · item level {n}`.
+- Header: icon 56, the name in `sec` 700 quality text colour, meta `{Quality} · {Slot}`. The item level appears once, in the panel.
 - The tooltip panel (`#0a0d14`, 1 pt `#3a4256`, `--radius-control`, padding 12/14), in the game's order and the site's tooltip model (`lib/items/tooltip.ts`):
-  - the slot, plus the type when exact (`Two-Handed Weapon`, `Shield`);
+  - the name in quality colour;
+  - the Binds line (`Binds when picked up`, `Binds when equipped`, `Binds when used`) from ItemSparse `Bonding`, left out when 0;
+  - `Unique` when ItemSparse `MaxCount` is 1;
+  - the slot on the left and, on the same line at the right, the armor type (`Cloth`, `Leather`, `Mail`, `Plate`, `Shield`) from Item `SubclassID` when `ClassID` is 4. No armor type for Back, as the Classic client shows a cloak. A weapon shows its type when exact (`Two-Handed Weapon`);
   - armor;
   - the weapon line (`{min} - {max} Damage`, `Speed {s}`, `({dps} damage per second)`);
   - each stat as `+{n} {Stat}`;
@@ -308,18 +353,18 @@ A tap on any item icon or item name anywhere in the app (Home, Your gear, BiS, s
   - set lines;
   - `Requires Level {n}`;
   - `Item Level {n}` in `#e5cc80`.
-- `micro` `Where it comes from`, then the source line in body strong. A quest adds ` · requires level {n}`; a drop adds its chance, `{n}% from {boss}`.
+- `micro` `Where it comes from`, then the source line in body strong. A quest adds ` · requires level {n}`; a drop adds its chance, `{n}% from {boss}`. A reputation reward reads `{Faction} ({Standing})` (`Warsong Outriders (Exalted)`). A vendor item with a reputation requirement (ItemSparse `MinReputation`) adds ` · requires {Standing}`. Knowledge of the Timbermaw has none in this build (its hotfix row reads 0), so it reads `Vendor: Meilosh`.
 - `micro` `The next best`, then up to two alternatives (icon 36, quality name, meta `{delta} DPS vs the pick`). The worn one leads its meta with `You wear this · `. With none: `Nothing else ranked`.
 - Footer meta `Best in slot for {Slot} · {Spec} {band} · {preset}`, only when the item is a pick.
 - Close: swipe down, tap the scrim, or VoiceOver escape (two-finger Z) / TalkBack back.
 
-The sheet reads the build's static files (`items/{class}.json`, `loot.json`, `sets.json`) and the BiS file already cached. It needs no request.
+The sheet reads the build's static files (`items/{class}.json`, `loot.json`, `sets.json`) and the BiS file already cached. It needs no request. The Binds, Unique, armor type and reputation fields need the data lane to publish `bonding`, `unique`, `armor_type` and `min_standing` in `items/{class}.json` (§14 C6). The site's tooltip gains them in the same change, so the two never differ.
 
 ### F2.7 Your gear
 Pushed screen `Your gear`. Meta `What you wear, and the pick for {band}. Tap an item for its tooltip.`. Then one quiet card of 17 rows in character-frame order. Each row:
 - `micro` slot label, 62 wide;
 - the worn icon (36);
-- the worn name (meta, quality colour) with `ilvl {n}` under it;
+- the worn name (meta, quality colour) with `ilvl {n}` under it, then `→ {pick}` in the pick's quality colour when the pick differs;
 - right: a kill tag `BiS` with a check when it is the pick, else a chevron and the pick's icon (36). Tapping the pick's icon opens its tooltip.
 
 An empty slot shows a 36 dashed `--color-line` box and `Empty`.
@@ -329,7 +374,7 @@ An empty slot shows a 36 dashed `--color-line` box and `Empty`.
 ### F3.1 The list
 - Bar: the selector; a trailing search button (`Search an item`, opens the system search field filtering the 17 rows by item name).
 - Title `Best in slot` (`title`) with the gold tag `Yours` when the list is the current character's spec, range and faction.
-- Three chips (40 tall, pill, 4.5% fill, `--color-line-card` border, chevron), each opening F3.2:
+- Three chips (40 tall, pill, 4.5% fill, `--color-line-card` border, chevron), each opening F3.2. They wrap onto a second line; a chip is never cut:
   - spec icon 28 with `{Spec} {Class}`;
   - the range, e.g. `60 · Phase 1 raid`;
   - the faction mark 24 with `Horde`.
@@ -372,14 +417,14 @@ For the current character's guild (`characters[].guild` in `/v1/me`; a character
 2. **Next raid card** (`--surface-card`), the tab's primary region. It shows the next signable raid (`home.next_raid` rules: planned or locked, not ended).
    - The date block (`THU` / `10` / `DEC`, the viewer's local date).
    - `micro` gold `Next raid`, then the title in Barlow Condensed 22.
-   - meta: the times in mono, then `· ` and the countdown in mono gold.
+   - meta `Invites 7:45 pm · Pull 8:00 pm` (times in mono; `Pull` alone, as `8:00 pm to 11:00 pm`, when the guild sets no invite time), then a second meta line `Invites in 2 days 2 h` with the countdown in mono gold (`Starts in …` with no invite time).
    - The count block: the 120 pt bar, mono body strong `24 of 40 signed up` (`11 signed up` with no size, and no bar), and the meta breakdown `3 tanks · 6 healers · 14 DPS · 1 late`.
    - A 1 pt divider, then `micro` `Your sign-up`.
    - The who line: crest 36; name in class colour; spec icon 18 with `{Spec} · {Role}`.
    - The segments, then the 20 pt status line.
    - Gold link `Who is coming ›`, which pushes F4.2 scrolled to the roster.
    - The whole card, outside the segments and the link, pushes F4.2.
-3. **Planned `{n}`.** `micro`, count in mono, then a quiet card with the remaining planned raids. Each row (min 76):
+3. **Also planned `{n}`.** `micro`, the count in mono, counting only the rows listed under it (the next raid above is not counted), then a quiet card with the remaining planned raids. Each row (min 76):
    - date block 48 x 52;
    - title body 600;
    - meta `{when}`;
@@ -389,7 +434,7 @@ For the current character's guild (`characters[].guild` in `/v1/me`; a character
    A row pushes F4.2.
 4. **Raid nights.** The guild's past raids (done, with a report), newest first, three rows, each pushing the raid page with its report link (`Open the report` opens the site's report in the browser in v1).
 
-Officers see one more row above Planned when `Can` includes `approve` and characters are waiting: tile, `{n} characters waiting for approval`, and the meta `Approve them on foreversixty.gg.` It opens the guild roster in the browser. Officer planning is web-only in v1 (§17 Q1).
+Officers see one more row above Also planned when `Can` includes `approve` and characters are waiting: tile, `{n} characters waiting for approval`, and the meta `Approve them on foreversixty.gg.` It opens the guild roster in the browser. Planning raids and approving characters stay on the web in v1 (coordinator ruling 2026-10-30); locking and moving raiders are in the app (F4.18).
 
 ### F4.2 The raid page
 Pushed. Bar: back (`Raids`); trailing `Add to calendar` (glyph button) and More (`…` iOS, `⋮` Android). Then:
@@ -397,10 +442,11 @@ Pushed. Bar: back (`Raids`); trailing `Add to calendar` (glyph button) and More 
 2. The title in `title` (iOS large title; Android shows it in the bar). When the title differs from the zone, ` · {Zone}` follows in body muted.
 3. The when lines:
    - body `Thursday 10 December`;
-   - body `8:00 pm to 11:00 pm · in 2 days 3 h`, with the times in mono and the countdown in mono gold;
-   - ` · 8:00 pm CST guild time` (muted) when the viewer's offset differs from the guild's.
+   - body `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`, with the labels muted and the times in mono. With no invite time it reads `Pull 8:00 pm · Ends 11:00 pm`;
+   - body `Invites in 2 days 2 h` (or `Starts in …`), with the countdown in mono gold;
+   - `8:00 pm CST guild time` (muted) on its own line when the viewer's offset differs from the guild's.
 
-   The countdown ticks each minute while visible and is muted once started or cancelled.
+   The countdown runs to the invite time when there is one, else to the pull. It ticks each minute while visible and is muted once started or cancelled.
 4. The count block as F4.1.
 5. **Your sign-up** card (`--surface-card`, padding 16), the page's primary region. Title `Your sign-up` (`sec`). Then one block per verified character of the viewer in this guild, the current character first:
    - The who line, with a gold `Change spec` text button right when the character has a saved spec for this guild.
@@ -479,6 +525,34 @@ The app never asks at first launch, at sign-in or on a timer. Android 9 to 12 ne
 | Raid not found or not a member | `This raid is not available. It may have been removed, or it is for members of another guild.` with `Back to Raids` |
 | F4.17 Offline (tab) | Strip; the next raid card with disabled segments and the offline line |
 
+### F4.18 to F4.21 Officer tools (officers only)
+Shown only when the raid view says the viewer may act (§14 C2: `viewer.can` holds `lock` and `move`). They are never inferred from a rank. A member sees none of this.
+- **Officer row** (F4.18), under the count block. `micro` `Officer`, then two secondary buttons: `Lock sign-ups` (`Unlock sign-ups` once locked) with the lock glyph, and `Copy the list` (the site's `copyList`, onto the clipboard, then `Copied` for 4 s). Under them, meta: `Locking tells everyone signed up whether they are In or on the Bench.`, or when locked `Locked. Everyone signed up was told the roster; moves you make now tell the raider at once.`
+- **Lock.** It needs no confirmation, because it is undone with one tap. It calls `POST /v1/guilds/{id}/raids/{raid}/lock` (`unlock`), with the busy and error states of §8. On success the toast `Sign-ups locked. {n} In and {b} on the Bench were told.` shows for 4 s (F4.21), and `raid.roster_set` goes to every signed-up raider. Members then see F4.8; the officer's own segments stay enabled.
+- **Place buttons** (F4.19). Every roster row ends in a 44 tall button showing its place (`In`, `Late`, `Bench`, `Out`) with a chevron. Not signed up becomes rows with `Add`.
+- **Move menu** (F4.20). iOS `Menu`, Android `DropdownMenu`. The head shows `{name} · {State} as {Role}`. The items depend on the place:
+
+  | Place | Menu items |
+  |---|---|
+  | In | `Move to Bench`, then `Remove from the raid` (destructive) |
+  | Bench | `Move to In`, `Remove from the raid` |
+  | Late | `Move to In`, `Move to Bench` |
+  | Out, Not signed up | `Add as In`, `Add as Bench` |
+
+  A pick writes the officer `PUT` (state `in`, `bench` or `out`, with the character's spec role) and moves the row to its group with the standard list animation. Failure restores the row with `That did not save. Try again.` under it.
+- **After the lock,** every move by an officer sends `raid.roster_moved` to the raider (§6.2).
+- **Officer-read-only** (a guild whose plan ended): the buttons stay, disabled, with the site's sentence `Planning and running raids are part of the guild plan.` and no link.
+
+### F4.22 Your raid night
+Opened from `raid.summary`, or from a done raid's page (`Your raid night` row, for a viewer in its log). Pushed on the Raids stack, title `Your raid night`.
+- Meta: `{Zone} · {Weekday} {d Month} · {Guild}`.
+- Primary card: three figures in `stat` (`1` kill, `0` wipes, `1` new best) and, right, the character in class colour with `{Spec} · {Role}`.
+- `Loot awarded to you`: item rows (icon 44, quality name, meta `{Slot} · {Boss} · awarded by {officer}`, meta `Replaces {worn}, ilvl {n}`); each opens F2.6. With none, the section is left out.
+- `Personal bests`: one row per fight with a new best: boss, meta `Your best on this fight · {kill time} kill`, and right the DPS in mono with its percentile in the parse colour (`--color-parse-*`). With none, left out.
+- `Coach notes`: Premium only. Up to three numbered notes from the coach. A free player sees no section and no prompt (F4.23).
+- Ghost `Full report on foreversixty.gg`.
+- States: loading skeleton; `Your raid night did not load.` with `Try again`; offline strip.
+
 ## 5.5 F5. Sims
 
 ### F5.1 Sims (pushed from Home)
@@ -511,12 +585,13 @@ Opening a result posts `POST /v1/sims/{id}/seen`.
 
 ## 5.6 F6. Talents (read-only)
 Pushed from Home.
-- **Status line:** tag `Optimized` (kill) with `Your build matches the {spec} {band} guide build.`, or `Unoptimized` (gold) with `{n} of the {m} points in the {band} build differ.`.
+- **Status line:** tag `Matches` (kill) with `Your build is the {spec} {band} guide build.`, shown only when no cell differs. Otherwise tag `Differs` (gold) with `{n} of your {m} points differ from the {band} build.`. `{n}` is the planner's `diffCount` (`band-compare.ts`): the sum over cells of `max(your rank - guide rank, 0)`, your points spent where the guide spends fewer. `{m}` is your points spent. Under it, `{k} points unspent.` when you have spent fewer than your level allows (level minus 9).
 - **Segmented:** `Guide build` and `Your build` (iOS `Picker(.segmented)`; Android `SingleChoiceSegmentedButtonRow`). It opens on `Your build` when the character has an export, else `Guide build`.
-- **Tree tabs:** `{Tree} {points}` for the three trees; the spec's tree first.
+- **Tree tabs:** `{Tree} {points}` for the three trees; the spec's tree first. Each `{points}` is summed from the build shown, never stored or typed; the three always add to `{m}`.
 - **The tree:** a 4-column grid, 22 pt between tiers, each talent its icon at 48, `--radius-control`.
-  - Border: gold at max rank, green `#1eff00` when partly spent, `#3a4256` when empty. An empty talent is greyscale at 55% brightness.
-  - Rank badge bottom right: mono 11 `{rank}/{max}`.
+  - The planner's `cellState`. A cell holding points (filled or maxed) has a `--color-kill` border. An empty cell that could take a point (its tier open at 5 points per tier, its prerequisite met) has a `--color-gold` border. A locked cell has a `--color-line` border with its face at 40% opacity.
+  - Rank badge bottom right: mono 11 `{rank}/{max}`. Its text is `--color-kill` at max rank, `--color-text` when partly spent, gold when available, muted when locked.
+  - Prerequisite lines follow the planner's `connectorPath`: straight down a column, across a row, or down then across. Each runs edge to edge, never over an icon: a 5 pt `--color-bg` halo under a 2 pt line, gold once the prerequisite holds the rank its dependent needs, `--color-line` before.
   - On `Your build`, a talent whose rank differs from the guide gets a 2 pt dashed `--color-wipe` outline, offset 3. The legend under the tree: `Dashed: your rank differs from the guide. Tap a talent for its rank text.`
 - A tap opens a sheet with the talent's name, `Rank {n}/{max}`, the rank's description, and the next rank's description under `Next rank`.
 - **Footer meta:** `Change talents in the game; the addon sends them on your next logout. Plan a build on foreversixty.gg/talents.`
@@ -537,7 +612,14 @@ Pushed from Home.
 - **Values:** `Push`, `Discord`, `Push and Discord`, `Off`.
   - `Discord` and `Push and Discord` show only when `discord_link` is set. Otherwise the section footer reads `Link Discord on foreversixty.gg to get these as a Discord message too.`
   - A change saves at once (lane A2's preferences endpoint) with the selection haptic. On failure the value returns and `That did not save. Try again.` shows under the row.
-- **Who sees which sections:** the Officers section only when any guild's `Can` includes `approve`. `Coach notes` and `Server run finished` only when the matching entitlement is true. `Payment failed` only for a payer.
+- **Rows.**
+  - Raids: `Sign-ups open`, `Not signed up, a day before`, `Time moved or cancelled`, `Roster set`, `Moved on or off the roster` (meta `Comes through quiet hours`), `Raid starting` (meta `1 hour before invites, set by your guild`).
+  - After the raid: `Your raid night` (meta `Report, loot, bests and coach notes, in one`), `Loot, as it is awarded` (default `Off`).
+  - Your characters: `First sync`, `Approved to a guild roster`, `New level range`, `Best in slot changes` (default `Off`, meta `One digest a week`).
+  - Sims: `Server run finished`.
+  - Officers: the three officer events.
+  - Account and game: `Premium seat from your guild`, `Payment failed`, `Phase and raid dates`.
+- **Who sees which sections:** the Officers section only when any guild's `Can` includes `approve`. `Server run finished` only when the entitlement is true. `Payment failed` only for a payer.
 - **Quiet hours** section:
   - `Quiet hours` switch (default off);
   - `From` and `To` time rows (default 11:00 pm and 8:00 am; iOS `DatePicker(.hourAndMinute)` in a compact style, Android `TimePicker` dialog);
@@ -594,10 +676,10 @@ Everything in premium-entry spec §2 holds, plus:
   - Categories carry the actions (§6.3).
   - `thread-identifier` = `thread`.
   - `apns-collapse-id` = `{event}:{raid_id}` for raid events, so a later notification of the same kind for the same raid replaces the earlier one (plan rule "one thread per raid").
-  - `interruption-level`: `time-sensitive` for `raid.starting` and `raid.changed` (cancelled); `passive` for `bis.changed` and `game.milestone`; else `active`.
-  - `loot.awarded` attaches the item icon through a Notification Service Extension.
+  - `interruption-level`: `time-sensitive` for `raid.starting`, `raid.roster_moved` and `raid.changed` (cancelled); `passive` for `bis.changed` and `game.milestone`; else `active`.
+  - `raid.summary` and `loot.awarded` attach the first loot item's icon through a Notification Service Extension.
 - **Android.**
-  - Channels: `Raids` (high: `raid.posted`, `raid.signup_nudge`, `raid.changed`, `raid.roster_set`, `loot.awarded`); `Raid starting` (high, own sound: `raid.starting`); `Logs and rankings` (default: `report.ready`, `coach.ready`, `ranking.best`); `Characters and gear` (default: `character.linked`, `guild.approved`, `band.entered`, `bis.changed` at low); `Sims` (default); `Officers` (default); `Account` (default); `Game dates` (low). A player can silence a channel in Android settings; the app's F7.4 is the per-event control.
+  - Channels: `Raids` (high: `raid.posted`, `raid.signup_nudge`, `raid.changed`, `raid.roster_set`, `loot.awarded`); `Raid starting` (high, own sound: `raid.starting`, `raid.roster_moved`); `After the raid` (default: `raid.summary`); `Characters and gear` (default: `character.linked`, `guild.approved`, `band.entered`, `bis.changed` at low); `Sims` (default); `Officers` (default); `Account` (default); `Game dates` (low). A player can silence a channel in Android settings; the app's F7.4 is the per-event control.
   - `setGroup("raid:{id}")`, a notification tag per `{event}:{raid_id}`, the seal small icon tinted `--color-gold`, and `setLargeIcon` with the item icon for loot.
 - **Background actions.**
   - iOS: `UNNotificationAction` with no `.foreground` option. The app wakes in the background, sends the PUT with the stored token, and posts the result as a replacement notification with the same identifier.
@@ -610,7 +692,13 @@ Everything in premium-entry spec §2 holds, plus:
 
   The body names it (`Sign up Lightningbolltz?`). With two or more verified and none chosen, the notification has no In / Late / Out; its one action is `Choose a character`, which opens the raid page.
 - **Unknown spec.** When the chosen character has no `raid_spec` and its class has two or more specs, the server sends `ask_spec: true`. The category then carries one foreground action, `Choose a spec`, which opens the raid page with the spec sheet up and the In press pending. Out stays a background action. On Android this is drawn as `Choose a spec` and `Out`.
-- **Quiet hours.** These are server-side. A notification due inside them is held and delivered at the end, with `raid.starting` the exception (plan rule). Held notifications for one raid collapse into the newest.
+- **Quiet hours.** These are server-side. A notification due inside them is held and delivered at the end. `raid.starting` and `raid.roster_moved` are the exceptions (plan rule and coordinator ruling). Held notifications for one raid collapse into the newest.
+- **Amendment to the plan's catalogue** (coordinator rulings, 2026-10-30):
+  - `raid.summary` replaces `report.ready`, `coach.ready`, `ranking.best` and `loot.awarded` as pushes. It is sent once per raider when the night's log is processed.
+  - `loot.awarded` stays as an event, off by default; a player may turn it on as `Loot, as it is awarded`.
+  - `raid.roster_set` fires when an officer locks sign-ups.
+  - `raid.roster_moved` is new. It fires on every officer change to a raider's place after the lock: In to Bench, Bench to In, added, removed. It goes to that raider only.
+  - `raid.starting` fires at `invite_at` minus the guild's lead (`starts_at` minus the lead with no invite time).
 
 ## 6.2 Copy, verbatim
 `{when}` is the raid copy's `whenPhrase` in the player's zone: `Tonight 8 pm`, `Tomorrow 8 pm`, `Thursday 8 pm`, `Thu 17 Dec, 8 pm`. `{Title}` is the raid title. `{n of size}` is `24 of 40` or `24` when the size is unknown. On iOS the subtitle line carries the guild name for raid and officer events; on Android it goes in `setSubText`.
@@ -619,7 +707,7 @@ Everything in premium-entry spec §2 holds, plus:
 |---|---|---|---|---|---|
 | `character.linked` | `{Name} is on Forever Sixty` | `Level {n} {Spec} {Class}, synced from the {addon\|Battle.net}. See what to upgrade first.` | none | none | Home on that character |
 | `guild.approved` | `Approved in {Guild}` | `{Name} is on the roster. You can sign up for raids now.` | none | none | Raids tab, that guild |
-| `band.entered` | `Level {n}: new best in slot` | `{Name} reached level {n}. Your {Spec} list for {band label} is ready.` | `Open the list` | `Open the list` | BiS, that band |
+| `band.entered` | `Level {n}: new best in slot` | `{Name} reached level {n}. First upgrade: {item} from {source}.` | `Open the list` | `Open the list` | BiS, that band |
 | `bis.changed` (weekly) | `Best in slot changed this week` | `{n} picks changed in your {Spec} {band} list: {slots}.` (`1 pick changed … : Head.`) | none | none | BiS, that band |
 | `raid.posted` | `{Title} · {when}` | `Sign-ups are open, {n} signed up so far. Sign up {Name}?` | `In`, `Late`, `Out` | `In`, `Late`, `Out` | The raid page |
 | `raid.signup_nudge` | `{Title} · {when}` | `You have not signed up yet. {n of size} are in. Sign up {Name}?` | `In`, `Late`, `Out` | `In`, `Late`, `Out` | The raid page |
@@ -627,11 +715,13 @@ Everything in premium-entry spec §2 holds, plus:
 | `raid.changed` (cancelled) | `{Title}, {when}, is cancelled` | `An officer cancelled it.` | none | none | The raid page |
 | `raid.roster_set` (In) | `You are on the roster for {Title}` | `{when}, as {Role} on {Name}.` | none | none | The raid page |
 | `raid.roster_set` (Bench) | `You are on the Bench for {Title}` | `{when}. An officer may still call you in.` | none | none | The raid page |
-| `raid.starting` | `{Title} starts in {lead}` (`60 min`, `30 min`, `2 h`) | `{clock}. You are {In\|Late} as {Role} on {Name}. {n of size} signed up.` | none | none | The raid page |
-| `loot.awarded` | `Loot: {Item}` | `Awarded to {Name} in {Zone}.` (item icon attached) | `Open loot` | `Open loot` | The raid page's loot (web in v1) |
-| `report.ready` | `Your log from {Zone} is ready` | `{Weekday}'s raid: {k} kills, {w} wipes. See your fights.` (`1 kill`, `no wipes`) | none | none | The report (web in v1) |
-| `coach.ready` | `Coach notes for {Weekday}` | `{n} notes on your {Spec} play in {Zone}.` | none | none | The coach page (web in v1) |
-| `ranking.best` | `New best on {Boss}` | `{Name}: {dps} DPS, your best on this fight.` | none | none | The ranking (web in v1) |
+| `raid.roster_moved` (to In) | `You are In for {Title} {tonight\|when}` | `{Officer} moved you from the Bench. Invites {clock}, pull {clock}, as {Role} on {Name}.` | none | none | The raid page |
+| `raid.roster_moved` (to Bench) | `You are on the Bench for {Title} {tonight\|when}` | `{Officer} moved you from In. An officer may still call you in before the pull at {clock}.` | none | none | The raid page |
+| `raid.roster_moved` (added) | `You are In for {Title}` (or `on the Bench for`) | `{Officer} added you to the roster for {when}, as {Role} on {Name}.` | none | none | The raid page |
+| `raid.roster_moved` (removed) | `You are off the roster for {Title}` | `{Officer} removed {Name} from {tonight's raid\|the raid on {when}}. Ask an officer if that is a mistake.` | none | none | The raid page |
+| `raid.starting` | `Invites for {Title} in {lead}` (`1 hour`, `30 min`, `2 hours`); `{Title} starts in {lead}` with no invite time | `Invites {clock}, pull {clock}. You are {In\|Late} as {Role} on {Name}. {n of size} signed up.` (`{clock}.` alone with no invite time) | none | none | The raid page |
+| `raid.summary` | `Your raid night: {Zone}` | `{k} kills, {w} wipes.` then, each only when true: ` Loot: {item}.` (`Loot: {item} and {n} more.`), ` A new best on {Boss}.` (` {n} new bests.`), ` Coach notes are ready.` (Premium) | none | none | F4.22 Your raid night |
+| `loot.awarded` (off by default) | `Loot: {Item}` | `Awarded to {Name} by {Officer}.` (item icon attached) | `Open` | `Open` | F4.22 for that night |
 | `sim.finished` | `Your {Spec} sim finished` | `{dps} DPS · {title}. Open the result.` | none | none | F5.3 |
 | `sim.finished` (failed) | `Your {Spec} sim stopped` | `{reason}` | none | none | F5.1 |
 | `roster.pending` (officers, batched) | `{n} characters waiting for approval` | `{Guild}: {Name}, {Name} and {k} more.` (`{Name} is waiting for approval.` for one) | none | none | The guild roster (web) |
@@ -640,7 +730,7 @@ Everything in premium-entry spec §2 holds, plus:
 | `premium.seat` | `{Guild} gave you a Premium seat` | `Server sims, coach notes and history are on for your account.` | none | none | F8.4 |
 | `billing.failed`, link region | `Your payment did not go through` | `Update your card on foreversixty.gg to keep Premium.` | `Open billing` | `Open billing` | foreversixty.gg/account#billing in the browser |
 | `billing.failed`, elsewhere | `Your payment did not go through` | `We emailed you the details.` | none | none | F8.4 |
-| `game.milestone` | `{Milestone} today` (`Forever launches today`, `Phase 2 starts today`, `Onyxia's Lair opens today`) | the date's own line from `dates.json` | none | none | The date's guide (web) |
+| `game.milestone` | `{Milestone} today` (`Phase 2 starts today`, `Onyxia's Lair opens today`; `Forever launches today` only to accounts with no synced character) | the date's own line from `dates.json` | none | none | The date's guide (web) |
 
 Answers posted in place of an actioned notification:
 
@@ -664,7 +754,7 @@ iOS categories (registered at launch, once):
 - `RAID_CHOOSE` (`CHOOSE` foreground `Choose a character`).
 - `RAID_MOVED` (`OUT`).
 - `OPEN_LIST` (`OPEN` foreground `Open the list`).
-- `LOOT` (`OPEN` foreground `Open loot`).
+- `LOOT` (`OPEN` foreground `Open`).
 - `BILLING` (`OPEN` foreground `Open billing`).
 
 Android uses the same identifiers as the intent actions.
@@ -676,6 +766,7 @@ Android uses the same identifiers as the intent actions.
 |---|---|
 | `/app/character/{region}/{ruleset}/{name}` | Home on that character (it becomes the current character) |
 | `/app/raid/{guild_id}/{raid_id}` | Raids tab › raid page; `?spec=ask` opens the spec sheet with In pending; `?state=in` presses In on open (used by `Choose a character` after the pick) |
+| `/app/raid/{guild_id}/{raid_id}/night` | Raids tab › raid page › Your raid night |
 | `/app/guild/{guild_id}` | Raids tab for that guild |
 | `/app/bis/{spec}/{band}` | BiS on that list (`band` is `20` to `60` or `p1`) |
 | `/app/sim/{id}` | Home › Sims › the result |
@@ -757,7 +848,7 @@ Focus order follows the visual order. A sheet traps focus until closed and retur
 | Sim result | The DPS figure at 52 | Error line, gear grid, actions |
 | You | The account head | Rows; Sign out muted |
 
-There is one gold-filled button per screen at most. Gold text marks links and the countdown only. Kill green marks a good state: checked In or Late, `Optimized`, `You wear it`, `Saved.`. Whitespace: 22 before a section label, 14 inside cards, 16 margins.
+There is one gold-filled button per screen at most. Gold text marks links and the countdown only. Kill green marks a good state: checked In or Late, `Matches`, `You wear it`, `Saved.`. Whitespace: 22 before a section label, 14 inside cards, 16 margins.
 
 # 10. Phone behaviour and what collapses
 
@@ -871,10 +962,10 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `home.upgrades.already` | `Already best in slot: {slots}.` | site `alreadyBestInSlotPrefix` |
 | `home.next.title` | `Next for {name}` | |
 | `home.next.talents` | `Talents` | site |
-| `home.next.optimized` | `Optimized` | site |
-| `home.next.unoptimized` | `Unoptimized` | site |
-| `home.next.talentsMatch` | `Matches the {spec} {band} build` | |
-| `home.next.talentsDiffer` | `{n} of the {m} points in the {band} build differ` | site `talentsLine` (without the planner clause) |
+| `home.next.matches` | `Matches` | site planner `matches` |
+| `home.next.differs` | `Differs` | |
+| `home.next.talentsMatch` | `Your build is the {spec} {band} guide build` | |
+| `home.next.talentsDiffer` | `{n} of your {m} points differ from the {band} build` | site planner `differs` with its band |
 | `home.next.talentsNone` | `Not available yet: no talent export for this character. Open the addon once to send it.` | site |
 | `home.next.sims` | `Sims` | |
 | `home.next.simFinished` | `Your {spec} sim finished: {dps} DPS` | site `bandLineParts` |
@@ -884,6 +975,11 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `gear.intro` | `What you wear, and the pick for {band}. Tap an item for its tooltip.` | |
 | `gear.bis` | `BiS` | |
 | `gear.emptySlot` | `Empty` | |
+| `tooltip.bind.pickup` / `.equip` / `.use` | `Binds when picked up` / `Binds when equipped` / `Binds when used` | client |
+| `tooltip.unique` | `Unique` | client |
+| `tooltip.armorType.*` | `Cloth`, `Leather`, `Mail`, `Plate`, `Shield` | client |
+| `tooltip.repSource` | `{faction} ({standing})` | site `repSourceLabel` |
+| `tooltip.requiresStanding` | ` · requires {standing}` | |
 | `tooltip.requires` | `Requires Level {n}` | client |
 | `tooltip.itemLevel` | `Item Level {n}` | client |
 | `tooltip.armor` | `{n} Armor` | client |
@@ -914,7 +1010,7 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `raids.guildLine` | `{faction} · {region} {ruleset} · {n} on the roster` | |
 | `raids.next` | `Next raid` | |
 | `raids.whoIsComing` | `Who is coming` | |
-| `raids.planned` | `Planned` | site |
+| `raids.planned` | `Also planned` | |
 | `raids.nights` | `Raid nights` | site |
 | `raids.pending` | `{n} characters waiting for approval` | |
 | `raids.pendingLine` | `Approve them on foreversixty.gg.` | |
@@ -929,6 +1025,30 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `raid.status.planned` / `.locked` / `.done` / `.cancelled` / `.ended` | `Planned` / `Locked` / `Done` / `Cancelled` / `Ended` | site |
 | `raid.chip.notSigned` | `Not signed up` | site |
 | `raid.timeTo` | `{start} to {end}` | site |
+| `raid.invites` / `.pull` / `.ends` | `Invites {clock}` / `Pull {clock}` / `Ends {clock}` | |
+| `raid.countdown.invites` / `.starts` | `Invites {countdown}` / `Starts {countdown}` | |
+| `officer.label` | `Officer` | |
+| `officer.lock` / `.unlock` | `Lock sign-ups` / `Unlock sign-ups` | site |
+| `officer.copy` / `.copied` | `Copy the list` / `Copied` | |
+| `officer.lockNote` | `Locking tells everyone signed up whether they are In or on the Bench.` | |
+| `officer.lockedNote` | `Locked. Everyone signed up was told the roster; moves you make now tell the raider at once.` | |
+| `officer.lockedToast` | `Sign-ups locked. {n} In and {b} on the Bench were told.` | |
+| `officer.memberLocked` | `Sign-ups are locked. Members cannot change theirs; officers can.` | |
+| `officer.menu.head` | `{name} · {state} as {role}` | |
+| `officer.move.in` / `.bench` / `.remove` / `.addIn` / `.addBench` | `Move to In` / `Move to Bench` / `Remove from the raid` / `Add as In` / `Add as Bench` | |
+| `officer.add` | `Add` | |
+| `officer.gate` | `Planning and running raids are part of the guild plan.` | API `refusal.RaidPlanRequired` |
+| `night.title` | `Your raid night` | |
+| `night.meta` | `{zone} · {weekday} {date} · {guild}` | |
+| `night.kill` / `.wipes` / `.best` | `kill` / `kills`, `wipe` / `wipes`, `new best` / `new bests` | |
+| `night.loot` | `Loot awarded to you` | |
+| `night.lootLine` | `{slot} · {boss} · awarded by {officer}` | |
+| `night.bests` | `Personal bests` | |
+| `night.bestLine` | `Your best on this fight · {time} kill` | |
+| `night.percentile` | `{n}th percentile` (with the English ordinal) | |
+| `night.coach` | `Coach notes` | |
+| `night.report` | `Full report on foreversixty.gg` | |
+| `night.failed` | `Your raid night did not load.` | |
 | `raid.guildTime` | `{clock} guild time` | site |
 | `raid.count` | `{n} of {size} signed up` / `{n} signed up` | site `countLine` |
 | `raid.breakdown` | `{t} tanks · {h} healers · {d} DPS · {l} late` | site `roleBreakdown` |
@@ -996,13 +1116,15 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `sims.breakdown` | `Full breakdown on foreversixty.gg` | |
 | `sims.error` | `± {error} · {n} iterations · engine {version}` | |
 | `talents.title` | `Talents` | |
-| `talents.match` | `Your build matches the {spec} {band} guide build.` | |
-| `talents.differ` | `{n} of the {m} points in the {band} build differ.` | |
+| `talents.matches` / `.differs` | `Matches` / `Differs` | site planner |
+| `talents.match` | `Your build is the {spec} {band} guide build.` | |
+| `talents.differ` | `{n} of your {m} points differ from the {band} build.` | site planner `differs` |
+| `talents.unspent` | `{n} points unspent.` / `1 point unspent.` | |
 | `talents.guide` / `.yours` | `Guide build` / `Your build` | |
-| `talents.legend` | `Dashed: your rank differs from the guide. Tap a talent for its rank text.` | |
+| `talents.legend` | `Dashed: your rank differs from the guide. Tap a talent for both ranks and its text.` | |
 | `talents.rank` | `Rank {n}/{max}` | |
 | `talents.nextRank` | `Next rank` | |
-| `talents.footer` | `Change talents in the game; the addon sends them on your next logout. Plan a build on foreversixty.gg/talents.` | |
+| `talents.footer` | `Change talents in the game; the addon sends them on your next logout.` | |
 | `talents.noList` | `No talent build published yet for this spec and level range.` | site |
 | `notif.title` | `Notifications` | |
 | `notif.section.raids` / `.after` / `.characters` / `.sims` / `.officers` / `.account` | `Raids` / `After the raid` / `Your characters` / `Sims` / `Officers` / `Account and game` | |
@@ -1010,12 +1132,13 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `notif.event.signupNudge` | `Not signed up, a day before` | |
 | `notif.event.raidChanged` | `Time moved or cancelled` | |
 | `notif.event.rosterSet` | `Roster set` | |
+| `notif.event.rosterMoved` | `Moved on or off the roster` | |
+| `notif.event.rosterMovedNote` | `Comes through quiet hours` | |
 | `notif.event.raidStarting` | `Raid starting` | |
-| `notif.event.raidStartingNote` | `{lead} before, set by your guild` | |
-| `notif.event.lootAwarded` | `Loot awarded to you` | |
-| `notif.event.reportReady` | `Your log is ready` | |
-| `notif.event.coachReady` | `Coach notes` | |
-| `notif.event.rankingBest` | `New personal best` | |
+| `notif.event.raidStartingNote` | `{lead} before invites, set by your guild` | |
+| `notif.event.raidSummary` | `Your raid night` | |
+| `notif.event.raidSummaryNote` | `Report, loot, bests and coach notes, in one` | |
+| `notif.event.lootAwarded` | `Loot, as it is awarded` | |
 | `notif.event.characterLinked` | `First sync` | |
 | `notif.event.guildApproved` | `Approved to a guild roster` | |
 | `notif.event.bandEntered` | `New level range` | |
@@ -1027,7 +1150,7 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `notif.event.lateChange` | `Someone drops to Out inside a day` | |
 | `notif.event.premiumSeat` | `Premium seat from your guild` | |
 | `notif.event.billingFailed` | `Payment failed` | |
-| `notif.event.milestone` | `Launch, phase and raid dates` | |
+| `notif.event.milestone` | `Phase and raid dates` | |
 | `notif.channel.push` / `.discord` / `.both` / `.off` | `Push` / `Discord` / `Push and Discord` / `Off` | |
 | `notif.linkDiscord` | `Link Discord on foreversixty.gg to get these as a Discord message too.` | |
 | `notif.discordFooter` | `Discord messages come as a DM from the Forever Sixty bot to {name}.` | |
@@ -1042,7 +1165,7 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `push.action.askSpec` | `Choose a spec` | |
 | `push.action.choose` | `Choose a character` | |
 | `push.action.openList` | `Open the list` | |
-| `push.action.openLoot` | `Open loot` | |
+| `push.action.openLoot` | `Open` | |
 | `push.action.openBilling` | `Open billing` | |
 | `you.title` | `You` | |
 | `you.signedInWith` | `Signed in with Battle.net` | site |
@@ -1089,7 +1212,13 @@ The apps re-derive nothing. Five contract needs are not met today:
   - `state` (`ok`, `no_gear`, `under_20`, `no_spec`, `no_list`).
 
   The site's home could move to it later (one behaviour, one place). Note the site computes the same answer in TypeScript today (`lib/home/upgrades.ts`); C1 must match it on lane C's fixtures.
-- **C2. The raid view as it is** (`RaidView`, `signupAnswerView`), plus `next_raid` per guild on `/v1/me` or `GET /v1/guilds/{id}/home`. No shape change is needed for F4.
+- **C2. The raid view** (`RaidView`, `signupAnswerView`), plus `next_raid` per guild on `/v1/me` or `GET /v1/guilds/{id}/home`. Two additions:
+  - `invite_at` (nullable instant; a new raid field the web form sets and the scheduler reads);
+  - `viewer.can` (`lock`, `move`) so the apps draw officer tools from words, never from a rank.
+
+  Officer moves use the existing officer `PUT`; lock and unlock use the existing status actions. `raid.roster_moved` needs the acting officer's display name (their main character in the guild).
+- **C5. `GET /v1/me/raid-nights/{raid_id}`.** The summary behind F4.22: kills, wipes, the viewer's loot (item id, boss, awarding officer), personal bests (boss, DPS, percentile, kill time), and coach notes when entitled.
+- **C6. Item facts in the static data:** `bonding`, `unique`, `armor_type` and `min_standing` per item in `items/{class}.json`, from ItemSparse and Item, for the app and the site tooltip alike.
 - **C3. `GET /v1/app/config`.** `{ "plans_link": { "ios": ["USA"], "android": ["US"] }, "plans_url": "https://foreversixty.gg/premium", "min_version": { "ios": "1.0", "android": "1.0" } }`. The `min_version` answer drives a blocking `Update Forever Sixty to keep signing up for raids.` screen when the API breaks old builds.
 - **C4. The `/app/*` paths on the site.** `apple-app-site-association` and `assetlinks.json` at `foreversixty.gg/.well-known/`, and a redirect from each `/app/…` path to its page.
 - **A2. Preferences and pushes.** Preferences read and write per event and channel, plus quiet hours and the zone. The push payload fields of §6.1, including `ask_spec`, the chosen `character_key`, the collapse ids and the per-locale text.
@@ -1103,10 +1232,10 @@ Each Wave 1 lane attaches captures from the iPhone 17 simulator (iOS 26) and a P
 | F1 | F1.1, F1.2 (consent or Custom Tab), F1.3, F1.4, F1.5 with three characters, F1.6 with the Revoke confirmation, Sign out confirmation, the 401 toast | F1.5 |
 | F2 | F2.1, F2.2, F2.3, F2.4, under 20, no spec, no list, all match, F2.5, F2.6 at medium and large detents, F2.7 | F2.1, F2.6 |
 | F3 | F3.1 signed in and signed out, F3.2, F3.3, not cached, error, the search field with a query | F3.1 |
-| F4 | F4.1, F4.2, F4.3 pending and picked, F4.4, F4.5 menu, calendar sheet, F4.6 full scroll, F4.7 to F4.17, the rate-limited and race lines, keyboard focus on a segment | F4.1, F4.2 (2 x 2 segments), F4.3 |
+| F4 | F4.1, F4.2, F4.3 pending and picked, F4.4, F4.5 menu, calendar sheet, F4.6 full scroll, F4.7 to F4.17, the rate-limited and race lines, keyboard focus on a segment, F4.18 to F4.21 as an officer and the same raid as a member (no officer controls), F4.22 and F4.23, a raid with no invite time | F4.1, F4.2 (2 x 2 segments), F4.3, F4.20 |
 | F5 | F5.1 with a running, finished-unseen and failed run, F5.2, F5.3, F5.4, F5.5, empty, Run again pending and failed | F5.3 |
 | F6 | F6.1, F6.2, a talent rank sheet, no export, no build | F6.2 |
-| F7 | every §6.2 notification as delivered (lock screen or shade), each action's posted answer including askSpec and failure, F7.4 for a member and for an officer with Premium, F7.5, F7.6, quiet hours on with the time pickers | F7.4 |
+| F7 | every §6.2 notification as delivered (lock screen or shade), each action's posted answer including askSpec and failure, `raid.roster_moved` in all four forms delivered inside quiet hours, F7.4 for a member and for an officer with Premium, F7.5, F7.6, quiet hours on with the time pickers | F7.4 |
 | F8 | F8.1 (storefront US), F8.2 (storefront GB), F8.3, F8.4 in both regions, a seat, About | F8.1 |
 
 Each lane also records:
@@ -1128,7 +1257,12 @@ Each lane also records:
 - [ ] No queued writes offline; the offline strip on every cached screen.
 - [ ] The reminder ask only in context, at most twice, never at first launch.
 - [ ] Notification text from the server; In / Late / Out in the background with the answer posted in place; one thread per raid.
-- [ ] Quiet hours apply except `raid.starting`.
+- [ ] Quiet hours apply except `raid.starting` and `raid.roster_moved`.
+- [ ] One `raid.summary` per raider per night; no standalone report, coach, best or loot pushes by default.
+- [ ] Officer tools drawn from `viewer.can` only; lock, unlock, and moves between In, Bench and off the raid.
+- [ ] Invite and pull times both on the raid page; `raid.starting` keyed to invites.
+- [ ] Talent tab totals summed from the drawn build; the differ count is the planner's `diffCount`; `Matches` only with no differing cell; prerequisite lines drawn.
+- [ ] Tooltip shows Binds, Unique and armor type from the client tables, and reputation standings on sources.
 - [ ] `See plans` only in link regions, fail closed; no Premium word elsewhere; no Premium push.
 - [ ] Every element has the §8 states; 44 pt and 48 dp targets; VoiceOver and TalkBack labels per §7.1.
 - [ ] §11 budgets measured on device.
@@ -1137,7 +1271,7 @@ Each lane also records:
 
 # 17. Open questions only the owner can answer
 
-1. **Officer tools in v1.** Officers today plan, lock and approve on the web. Should v1 of the apps include approving characters (one button per row) and locking sign-ups? My recommendation: approvals and lock in v1.1; planning stays on the web.
+1. **Approving characters in the app.** Locking and moving are in v1 (ruled). Approving waiting characters stays on the web. Do you want it in v1.1?
 2. **Google Play in the US.** The plan reads the US storefront as a link region on both stores. Play's US external-link rules have changed during 2025. Confirm that the Play Console account is enrolled in whatever programme Play now requires for a link to web checkout, and that any fee is accepted. Until then, should `plans_link.android` ship empty?
 3. **Premium features outside link regions.** Apple guideline 3.1.3(b) lets an app use a subscription bought on the web only when it is also offered as an in-app purchase, unless an exception applies. The spec shows Premium status and Premium features (Run again, coach pushes) to paying players everywhere and says nothing about buying. Do you accept the review risk the plan names, or should Premium-only actions hide outside link regions until App Review rules?
 4. **Signed-in handoff to checkout.** `See plans` opens the browser, where the player may not be signed in. Should the API mint a one-time web session from the app token (`/v1/auth/app/handoff`), so checkout opens signed in? It is a security-sensitive endpoint, and its own review.

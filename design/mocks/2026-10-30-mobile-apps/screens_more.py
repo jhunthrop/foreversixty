@@ -56,27 +56,78 @@ def sim_result(plat: str, premium: bool = True, link_region: bool = True) -> str
 
 
 # ---------- F6 talents ----------
+# The planner's rules (web/src/lib/planner): a tier opens at 5 points per tier in its tree; a cell's border is
+# green when it holds points, gold when it can take one, the line colour when locked (face at 40 %); a
+# prerequisite line runs edge to edge, gold once met, over a 5 px --bg halo. The count is band-compare.ts's
+# diffCount: your points spent where the guide spends fewer, and "Matches" only when no cell differs.
 
-def tree_grid(points: str, differs: set[int]) -> str:
-    tree = DATA["trees"][0]["talents"]
-    cells = {}
-    for i, t in enumerate(tree):
-        rank = int(points[i]) if i < len(points) else 0
-        cells[(t["tier"], t["column"])] = (t, rank, i in differs)
-    rows = max(t["tier"] for t in tree) + 1
-    out = ""
-    for tier in range(rows):
-        for col in range(4):
-            if (tier, col) not in cells:
-                out += "<span></span>"
-                continue
-            t, rank, diff = cells[(tier, col)]
-            colour = "#e5b955" if rank == t["max_rank"] else ("#1eff00" if rank else "#3a4256")
-            filt = "" if rank else "filter:grayscale(1) brightness(.55);"
-            ring = "outline:2px dashed var(--wipe);outline-offset:3px;" if diff else ""
-            out += (f"<span style=\"position:relative;justify-self:center\"><img src=\"{_icon(t['icon'])}\" alt=\"\" style=\"width:48px;height:48px;border-radius:8px;border:2px solid {colour};{filt}{ring}\">"
-                    f"<span class=\"mono\" style=\"position:absolute;right:-6px;bottom:-6px;font-size:11px;padding:1px 5px;border-radius:6px;background:#07090d;border:1px solid {colour};color:{colour if rank else '#9a9484'}\">{rank}/{t['max_rank']}</span></span>")
-    return f"<div style=\"display:grid;grid-template-columns:repeat(4,1fr);row-gap:22px;padding:18px 20px 8px\">{out}</div>"
+ICON, PX, PY = 46, 92, 64
+LEVEL_POINTS = 51
+
+
+def ranks_of(code: str) -> list[list[int]]:
+    trees = code.split("-")
+    return [[int(c, 36) for c in tree] + [0] * (len(DATA["trees"][i]["talents"]) - len(tree)) for i, tree in enumerate(trees)]
+
+
+def your_build(guide: list[list[int]], state: str) -> list[list[int]]:
+    if state == "same":
+        return [list(t) for t in guide]
+    yours = [list(t) for t in guide]
+    yours[0][3] += 2  # Reverberation 0 -> 2, where the guide spends none
+    yours[0][5] -= 2  # Call of Flame 3 -> 1; nothing depends on it, so the build stays legal
+    return yours
+
+
+def diff_count(yours: list[list[int]], guide: list[list[int]]) -> tuple[int, set[tuple[int, int]]]:
+    count, cells = 0, set()
+    for t, (ys, gs) in enumerate(zip(yours, guide)):
+        for i, (y, g) in enumerate(zip(ys, gs)):
+            count += max(y - g, 0)
+            if y != g:
+                cells.add((t, i))
+    return count, cells
+
+
+def tree_grid(ranks: list[int], differs: set[int]) -> str:
+    talents = DATA["trees"][0]["talents"]
+    spent = sum(ranks)
+    by_id = {t["id"]: (i, t) for i, t in enumerate(talents)}
+    left = (402 - (3 * PX + ICON)) // 2
+    pos = lambda t: (left + t["column"] * PX, t["tier"] * PY)  # noqa: E731
+    lines = ""
+    for i, t in enumerate(talents):
+        if t["prereq_talent_id"] is None:
+            continue
+        j, pre = by_id[t["prereq_talent_id"]]
+        (ax, ay), (bx, by) = pos(pre), pos(t)
+        h = ICON / 2
+        if pre["column"] == t["column"]:
+            d = f"M {ax + h} {ay + ICON} V {by}"
+        else:
+            side = 1 if t["column"] > pre["column"] else -1
+            d = f"M {ax + h} {ay + ICON} V {by + h} H {bx + h - side * h}"
+        met = ranks[j] >= (t["prereq_rank"] or 0)
+        lines += (f"<path d=\"{d}\" fill=\"none\" stroke=\"#07090d\" stroke-width=\"5\" stroke-linecap=\"round\"/>"
+                  f"<path d=\"{d}\" fill=\"none\" stroke=\"{'#e5b955' if met else '#262e40'}\" stroke-width=\"2\" stroke-linecap=\"round\"/>")
+    cells = ""
+    for i, t in enumerate(talents):
+        rank = ranks[i]
+        prereq_ok = t["prereq_talent_id"] is None or ranks[by_id[t["prereq_talent_id"]][0]] >= (t["prereq_rank"] or 0)
+        available = spent >= t["tier"] * 5 and prereq_ok
+        if rank:
+            border, pill, face = "#7fd48a", ("#7fd48a" if rank >= t["max_rank"] else "#e9e4d8"), ""
+        elif available:
+            border, pill, face = "#e5b955", "#e5b955", ""
+        else:
+            border, pill, face = "#262e40", "#9a9484", "opacity:.4;"
+        ring = "outline:2px dashed #f0736b;outline-offset:3px;" if i in differs else ""
+        x, y = pos(t)
+        cells += (f"<span style=\"position:absolute;left:{x}px;top:{y}px\"><img src=\"{_icon(t['icon'])}\" alt=\"\" style=\"display:block;width:{ICON}px;height:{ICON}px;border-radius:8px;border:2px solid {border};{face}{ring}\">"
+                  f"<span class=\"mono\" style=\"position:absolute;right:-7px;bottom:-7px;font-size:11px;padding:1px 5px;border-radius:6px;background:#07090d;border:1px solid {border};color:{pill}\">{rank}/{t['max_rank']}</span></span>")
+    tiers = max(t["tier"] for t in talents) + 1
+    height = (tiers - 1) * PY + ICON + 10
+    return (f"<div style=\"position:relative;height:{height}px;margin-top:18px\"><svg width=\"402\" height=\"{height}\" style=\"position:absolute;left:0;top:0\" aria-hidden=\"true\">{lines}</svg>{cells}</div>")
 
 
 def _icon(stem: str) -> str:
@@ -85,18 +136,26 @@ def _icon(stem: str) -> str:
 
 
 def talents(plat: str, state: str = "same") -> str:
-    guide = DATA["bands"]["raid"]["talents"].split("-")[0]
-    pts = guide if state == "same" else guide[:3] + "2" + guide[4:6] + "0" + guide[7:]
-    differs = set() if state == "same" else {3, 6}
-    status = ("<span class=\"tag tag-green\">Optimized</span><span class=\"t-meta muted\">Your build matches the Elemental 60 guide build.</span>" if state == "same"
-              else "<span class=\"tag tag-gold\">Unoptimized</span><span class=\"t-meta muted\">4 of the 51 points in the 60 build differ.</span>")
+    guide = ranks_of(DATA["bands"]["raid"]["talents"])
+    yours = your_build(guide, state)
+    count, cells = diff_count(yours, guide)
+    totals = [sum(t) for t in yours]
+    spent = sum(totals)
+    unspent = LEVEL_POINTS - spent
+    if not cells:
+        status = "<span class=\"tag tag-green\">Matches</span><span class=\"t-meta muted\">Your build is the Elemental 60 guide build.</span>"
+    else:
+        status = f"<span class=\"tag tag-gold\">Differs</span><span class=\"t-meta muted\"><span class=\"mono strong\">{count}</span> of your {spent} points differ from the 60 build.</span>"
+    unspent_line = f"<div class=\"t-meta muted pad\">{unspent} points unspent.</div>" if unspent > 0 else ""
     seg = ("<div class=\"seg4\" style=\"grid-template-columns:1fr 1fr;margin:14px 16px 0\"><span class=\"t-seg\">Guide build</span><span class=\"t-seg on-no\" style=\"box-shadow:inset 0 -2px 0 var(--gold);background:rgba(229,185,85,.12)\">Your build</span></div>")
+    names = [t["name"] for t in DATA["trees"]]
     tabs = "".join(f"<span class=\"t-meta\" style=\"flex:1;text-align:center;padding:10px 0;{'color:var(--strong);font-weight:700;box-shadow:inset 0 -2px 0 var(--gold)' if i == 0 else 'color:var(--nav)'}\">{n} <span class=\"mono\">{p}</span></span>"
-                   for i, (n, p) in enumerate([("Elemental", 30), ("Enhancement", 3), ("Restoration", 11)]))
-    legend = "" if state == "same" else "<div class=\"t-meta muted pad\">Dashed: your rank differs from the guide. Tap a talent for its rank text.</div>"
-    inner = (f"<div class=\"pad\" style=\"display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px\">{status}</div>{seg}"
-             f"<div style=\"display:flex;margin:12px 16px 0;border-bottom:1px solid var(--line)\">{tabs}</div>{tree_grid(pts, differs)}{legend}"
-             f"<div class=\"t-meta muted pad\" style=\"margin-top:8px\">Change talents in the game; the addon sends them on your next logout. Plan a build on foreversixty.gg/talents.</div>")
+                   for i, (n, p) in enumerate(zip(names, totals)))
+    legend = "" if not cells else "<div class=\"t-meta muted pad\" style=\"margin-top:6px\">Dashed: your rank differs from the guide. Tap a talent for both ranks and its text.</div>"
+    differs = {i for t, i in cells if t == 0}
+    inner = (f"<div class=\"pad\" style=\"display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px\">{status}</div>{unspent_line}{seg}"
+             f"<div style=\"display:flex;margin:12px 16px 0;border-bottom:1px solid var(--line)\">{tabs}</div>{tree_grid(yours[0], differs)}{legend}"
+             f"<div class=\"t-meta muted pad\" style=\"margin-top:8px;padding-bottom:120px\">Change talents in the game; the addon sends them on your next logout.</div>")
     return pushed(plat, "Home", "Talents", inner, "Home")
 
 
@@ -110,12 +169,14 @@ def ios_lock(cards: str, label: str = "") -> str:
     return device("ios", body, None)
 
 
-def ios_note(title: str, body: str, when: str = "now", sens: bool = False, big: bool = False, attach: str = "") -> str:
-    head_ = f"<span style=\"font-size:13px;opacity:.75\">{'TIME SENSITIVE · ' if sens else ''}{when}</span>"
+def ios_note(title: str, body: str, when: str = "now", sens: bool = False, big: bool = False, attach: str = "", sub: str = "Olympus XXVII") -> str:
+    """iOS draws the subtitle (the guild) on its own bold line under the title."""
+    head_ = f"<span style=\"font-size:13px;opacity:.75;white-space:nowrap\">{'Time Sensitive · ' if sens else ''}{when}</span>"
     att = f"<img src=\"{attach}\" style=\"width:38px;height:38px;border-radius:8px;flex:none\" alt=\"\">" if attach else ""
+    sub_html = f"<div style=\"font-size:15px;font-weight:600;opacity:.9\">{sub}</div>" if sub else ""
     return (f"<div class=\"glass\" style=\"border-radius:24px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;color:#fff;font-family:-apple-system,'SF Pro Text',sans-serif;{'padding:16px' if big else ''}\">"
-            f"<img src=\"{APP_ICON}\" style=\"width:38px;height:38px;border-radius:9px;flex:none\" alt=\"\"><div style=\"flex:1;min-width:0\"><div style=\"display:flex;justify-content:space-between\"><b style=\"font-size:15px\">{title}</b>{head_}</div>"
-            f"<div style=\"font-size:15px;line-height:20px;margin-top:1px\">{body}</div></div>{att}</div>")
+            f"<img src=\"{APP_ICON}\" style=\"width:38px;height:38px;border-radius:9px;flex:none\" alt=\"\"><div style=\"flex:1;min-width:0\"><div style=\"display:flex;justify-content:space-between;gap:8px\"><b style=\"font-size:15px\">{title}</b>{head_}</div>"
+            f"{sub_html}<div style=\"font-size:15px;line-height:20px;margin-top:1px\">{body}</div></div>{att}</div>")
 
 
 def ios_actions(names: list[str]) -> str:
@@ -142,36 +203,53 @@ def and_note(title: str, body: str, sub: str = "Olympus XXVII", actions: list[st
             f"<div style=\"font-size:14px;color:#c9c4b8;margin-top:2px;line-height:20px\">{body}</div></div>{att}</div>{acts}</div>")
 
 
+STARTING = ("Invites for Onyxia's Lair in 1 hour", "Invites 7:45 pm, pull 8:00 pm. You are In as DPS on Lightningbolltz. 38 of 40 signed up.")
+POSTED = ("Barrow Deeps · Saturday 7 pm", "Sign-ups are open, 11 signed up so far. Sign up Lightningbolltz?")
+NIGHT = ("Your raid night: Onyxia's Lair", "1 kill, no wipes. Loot: Sapphiron Drape. A new best on Onyxia. Coach notes are ready.")
+MOVED_IN = ("You are In for Onyxia's Lair tonight", "Kraggor moved you from the Bench. Invites 7:45 pm, pull 8:00 pm, as DPS on Lightningbolltz.")
+MOVED_BENCH = ("You are on the Bench for Onyxia's Lair tonight", "Kraggor moved you from In. An officer may still call you in before the pull at 8:00 pm.")
+
+
 def lock_board_ios() -> list[str]:
     from kit import asset
-    a = ios_lock(ios_note("Onyxia's Lair starts in 60 min", "8:00 pm. You are In as DPS on Lightningbolltz. 38 of 40 signed up.", sens=True)
-                 + ios_note("Barrow Deeps · Saturday 7 pm", "Sign-ups are open, 11 signed up so far. Sign up Lightningbolltz?", when="12m")
-                 + ios_note("Your Elemental sim finished", "412 DPS · Phase 1 raid set. Open the result.", when="2h"))
-    b = ios_lock(ios_note("Barrow Deeps · Saturday 7 pm", "Sign-ups are open, 11 signed up so far. Sign up Lightningbolltz?", when="12m", big=True) + ios_actions(["In", "Late", "Out"]))
+    a = ios_lock(ios_note(*STARTING, sens=True) + ios_note(*POSTED, when="12m") + ios_note("Your Elemental sim finished", "412 DPS · Phase 1 raid set. Open the result.", when="2h", sub=""))
+    b = ios_lock(ios_note(*POSTED, when="12m", big=True) + ios_actions(["In", "Late", "Out"]))
     c = ios_lock(ios_note("You are In for Barrow Deeps", "Saturday 7 pm, as DPS on Lightningbolltz. 12 signed up.", when="now")
-                 + ios_note("Loot: Talisman of Ascendance", "Awarded to Lightningbolltz in Onyxia's Lair.", when="1d", attach=asset("inv_misc_gem_pearl_04")))
+                 + ios_note(*NIGHT, when="7d", attach=asset("inv_misc_cape_16")))
     return [a, b, c]
 
 
 def lock_board_and() -> list[str]:
     from kit import asset
-    a = and_shade(and_note("Barrow Deeps · Saturday 7 pm", "Sign-ups are open, 11 signed up so far. Sign up Lightningbolltz?", actions=["In", "Late", "Out"], top=True)
-                  + and_note("Onyxia's Lair starts in 60 min", "8:00 pm. You are In as DPS on Lightningbolltz. 38 of 40 signed up.")
+    a = and_shade(and_note(*POSTED, actions=["In", "Late", "Out"], top=True) + and_note(*STARTING)
                   + and_note("Your Elemental sim finished", "412 DPS · Phase 1 raid set. Open the result.", sub="Sims", bottom=True))
     b = and_shade(and_note("You are In for Barrow Deeps", "Saturday 7 pm, as DPS on Lightningbolltz. 12 signed up.", top=True)
-                  + and_note("Pick a spec for Barrow Deeps", "Lightningbolltz has no spec saved for Olympus XXVII. Open to choose one; nothing is signed up yet.", actions=["Choose a spec"])
-                  + and_note("Loot: Talisman of Ascendance", "Awarded to Lightningbolltz in Onyxia's Lair.", bottom=True, attach=asset("inv_misc_gem_pearl_04")))
+                  + and_note("Pick a spec for Barrow Deeps", "Vorgash has no spec saved for Olympus XXVII. Open to choose one; nothing is signed up yet.", actions=["Choose a spec", "Out"])
+                  + and_note(*NIGHT, bottom=True, attach=asset("inv_misc_cape_16")))
+    return [a, b]
+
+
+def moved_boards(plat: str) -> list[str]:
+    """raid.roster_moved: time sensitive on iOS, the high Raid starting channel on Android; it breaks quiet hours."""
+    if plat == "ios":
+        a = ios_lock(ios_note(*MOVED_IN, sens=True))
+        b = ios_lock(ios_note(*MOVED_BENCH, sens=True))
+        c = ios_lock(ios_note("You are off the roster for Onyxia's Lair", "Kraggor removed Lightningbolltz from tonight's raid. Ask an officer if that is a mistake.", sens=True)
+                     + ios_note("You are In for Onyxia's Lair", "Kraggor added you to the roster for Thursday 8 pm, as DPS on Lightningbolltz.", when="2d", sens=True))
+        return [a, b, c]
+    a = and_shade(and_note(*MOVED_IN, top=True, bottom=True))
+    b = and_shade(and_note(*MOVED_BENCH, top=True) + and_note("You are off the roster for Onyxia's Lair", "Kraggor removed Lightningbolltz from tonight's raid. Ask an officer if that is a mistake.", bottom=True))
     return [a, b]
 
 
 CHANNEL_ROWS = [
     ("Raids", [("Sign-ups open", "Push", ""), ("Not signed up, a day before", "Push", ""), ("Time moved or cancelled", "Push and Discord", ""),
-               ("Roster set", "Push", ""), ("Raid starting", "Push", "60 min before, set by your guild"), ("Loot awarded to you", "Push", "")]),
-    ("After the raid", [("Your log is ready", "Push", ""), ("Coach notes", "Push", "Premium"), ("New personal best", "Push", "")]),
+               ("Roster set", "Push", ""), ("Moved on or off the roster", "Push", "Comes through quiet hours"), ("Raid starting", "Push", "1 hour before invites, set by your guild")]),
+    ("After the raid", [("Your raid night", "Push", "Report, loot, bests and coach notes, in one"), ("Loot, as it is awarded", "Off", "")]),
     ("Your characters", [("First sync", "Push", ""), ("Approved to a guild roster", "Push", ""), ("New level range", "Push", ""), ("Best in slot changes", "Off", "One digest a week")]),
     ("Sims", [("Server run finished", "Push", "")]),
     ("Officers", [("Characters waiting for approval", "Push", ""), ("A raid is short a day before", "Push", ""), ("Someone drops to Out inside a day", "Push", "")]),
-    ("Account and game", [("Premium seat from your guild", "Push", ""), ("Payment failed", "Push", ""), ("Launch, phase and raid dates", "Push", "")]),
+    ("Account and game", [("Premium seat from your guild", "Push", ""), ("Payment failed", "Push", ""), ("Phase and raid dates", "Push", "")]),
 ]
 
 

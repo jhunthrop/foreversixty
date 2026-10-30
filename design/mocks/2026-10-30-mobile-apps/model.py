@@ -25,6 +25,8 @@ def source_line(slot: dict) -> str:
         return f"Vendor: {src}"
     if kind == "quest":
         return f"Quest: {src}"
+    if kind == "rep":
+        return DATA["rep_sources"].get(str(slot["item_id"]), src)
     if kind == "world_drop":
         return "World drop (BoE)"
     return src

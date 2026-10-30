@@ -1512,12 +1512,15 @@
  "items": {
   "11302": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "2% chance when struck in melee to gain a holy shield, absorbing 216 damage for 15 sec. This chance is doubled in Wasteland and Haunted areas.",
    "icon": "inv_jewelry_talisman_06",
    "item_level": 52,
+   "min_standing": null,
    "name": "Uther's Strength",
    "quality": 3,
    "required_level": 47,
@@ -1528,10 +1531,12 @@
     "spell_power": 6
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "11623": {
    "armor": 37,
+   "armor_type": "Cloth",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
@@ -1577,6 +1582,7 @@
   },
   "11822": {
    "armor": 58,
+   "armor_type": "Cloth",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
@@ -1598,12 +1604,15 @@
   },
   "11904": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_ore_arcanite_02",
    "item_level": 56,
+   "min_standing": null,
    "name": "Spirit of Aquementas",
    "quality": 3,
    "required_level": 47,
@@ -1613,16 +1622,20 @@
     "spell_power": 21
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "12632": {
    "armor": 218,
+   "armor_type": "Mail",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Adds 3 Lightning damage to your melee attacks.",
    "icon": "inv_gauntlets_30",
    "item_level": 59,
+   "min_standing": null,
    "name": "Storm Gauntlets",
    "quality": 3,
    "required_level": 54,
@@ -1634,16 +1647,19 @@
     "stamina": 7
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "12794": {
    "armor": 0,
+   "bonding": "Binds when equipped",
    "damage_max": 108,
    "damage_min": 58,
    "dps": 41.5,
    "effect_text": "Blasts up to 3 targets for 125 Nature damage.",
    "icon": "inv_hammer_04",
    "item_level": 63,
+   "min_standing": null,
    "name": "Masterwork Stormhammer",
    "quality": 3,
    "required_level": 57,
@@ -1651,10 +1667,12 @@
    "speed": 2.0,
    "stats": {},
    "two_hand": false,
+   "unique": false,
    "weapon_type": "mace"
   },
   "13001": {
    "armor": 0,
+   "armor_type": null,
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
@@ -1676,12 +1694,15 @@
   },
   "15092": {
    "armor": 63,
+   "armor_type": "Leather",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_bracer_11",
    "item_level": 55,
+   "min_standing": null,
    "name": "Runic Leather Bracers",
    "quality": 2,
    "required_level": 50,
@@ -1692,16 +1713,20 @@
     "spell_power": 10
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16666": {
    "armor": 370,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_chain_11",
    "item_level": 63,
+   "min_standing": null,
    "name": "Vest of Elements",
    "quality": 3,
    "required_level": 58,
@@ -1713,16 +1738,20 @@
     "stamina": 13
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16690": {
    "armor": 89,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_cloth_11",
    "item_level": 63,
+   "min_standing": null,
    "name": "Devout Robe",
    "quality": 3,
    "required_level": 58,
@@ -1736,16 +1765,20 @@
     "stamina": 13
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16692": {
    "armor": 52,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_14",
    "item_level": 59,
+   "min_standing": null,
    "name": "Devout Gloves",
    "quality": 3,
    "required_level": 54,
@@ -1759,16 +1792,20 @@
     "stamina": 8
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16693": {
    "armor": 71,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_crown_01",
    "item_level": 62,
+   "min_standing": null,
    "name": "Devout Crown",
    "quality": 3,
    "required_level": 57,
@@ -1782,16 +1819,20 @@
     "stamina": 13
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16695": {
    "armor": 64,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_02",
    "item_level": 60,
+   "min_standing": null,
    "name": "Devout Mantle",
    "quality": 3,
    "required_level": 55,
@@ -1805,16 +1846,20 @@
     "stamina": 4
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "16697": {
    "armor": 35,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_31",
    "item_level": 57,
+   "min_standing": null,
    "name": "Devout Bracers",
    "quality": 3,
    "required_level": 52,
@@ -1828,16 +1873,45 @@
     "stamina": 7
    },
    "two_hand": false,
+   "unique": false,
+   "weapon_type": null
+  },
+  "17078": {
+   "armor": 55,
+   "armor_type": "Cloth",
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_cape_16",
+   "item_level": 72,
+   "name": "Sapphiron Drape",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "back",
+   "speed": 0.0,
+   "stats": {
+    "arcane_res": 6,
+    "frost_res": 6,
+    "healing": 14,
+    "intellect": 17,
+    "spell_power": 14,
+    "stamina": 10
+   },
+   "two_hand": false,
    "weapon_type": null
   },
   "17721": {
    "armor": 66,
+   "armor_type": "Leather",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_21",
    "item_level": 38,
+   "min_standing": null,
    "name": "Gloves of the Greatfather",
    "quality": 2,
    "required_level": 33,
@@ -1848,16 +1922,20 @@
     "spell_power": 24
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "18405": {
    "armor": 54,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_31",
    "item_level": 62,
+   "min_standing": null,
    "name": "Belt of the Archmage",
    "quality": 4,
    "required_level": 57,
@@ -1870,16 +1948,20 @@
     "stamina": 10
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "18504": {
    "armor": 98,
+   "armor_type": "Leather",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_26",
    "item_level": 62,
+   "min_standing": null,
    "name": "Girdle of Insight",
    "quality": 3,
    "required_level": 57,
@@ -1891,16 +1973,20 @@
     "stamina": 9
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "18510": {
    "armor": 48,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_misc_cape_01",
    "item_level": 62,
+   "min_standing": null,
    "name": "Hide of the Wild",
    "quality": 4,
    "required_level": 57,
@@ -1913,16 +1999,20 @@
     "stamina": 8
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19050": {
    "armor": 65,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_19",
    "item_level": 61,
+   "min_standing": null,
    "name": "Mantle of the Timbermaw",
    "quality": 3,
    "required_level": 56,
@@ -1934,16 +2024,20 @@
     "spell_power": 17
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19109": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_ring_35",
    "item_level": 63,
+   "min_standing": null,
    "name": "Deep Rooted Ring",
    "quality": 3,
    "required_level": 58,
@@ -1955,16 +2049,20 @@
     "stamina": 10
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19121": {
    "armor": 37,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_misc_cape_17",
    "item_level": 51,
+   "min_standing": null,
    "name": "Deep Woodlands Cloak",
    "quality": 3,
    "required_level": 46,
@@ -1976,16 +2074,20 @@
     "stamina": 6
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19315": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_misc_branch_01",
    "item_level": 60,
+   "min_standing": null,
    "name": "Therazane's Touch",
    "quality": 4,
    "required_level": 55,
@@ -1995,16 +2097,20 @@
     "spell_power": 29
    },
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "19426": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_necklace_16",
    "item_level": 65,
+   "min_standing": null,
    "name": "Orb of the Darkmoon",
    "quality": 4,
    "required_level": 60,
@@ -2016,16 +2122,20 @@
     "stamina": 11
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19595": {
    "armor": 44,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_bracer_13",
    "item_level": 65,
+   "min_standing": "Exalted",
    "name": "Dryad's Wrist Bindings",
    "quality": 4,
    "required_level": 60,
@@ -2038,16 +2148,20 @@
     "stamina": 8
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "19596": {
    "armor": 37,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_bracer_13",
    "item_level": 55,
+   "min_standing": "Exalted",
    "name": "Dryad's Wrist Bindings",
    "quality": 4,
    "required_level": 50,
@@ -2060,16 +2174,20 @@
     "stamina": 7
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "20682": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_ring_23",
    "item_level": 65,
+   "min_standing": null,
    "name": "Elemental Focus Band",
    "quality": 4,
    "required_level": 60,
@@ -2081,16 +2199,20 @@
     "stamina": 8
    },
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "220844": {
    "armor": 317,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_chain_07",
    "item_level": 53,
+   "min_standing": null,
    "name": "Stone Guard's Pulsing Breastplate",
    "quality": 3,
    "required_level": 50,
@@ -2103,16 +2225,20 @@
     "stamina": 13
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "22149": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_amulet_05",
    "item_level": 63,
+   "min_standing": null,
    "name": "Beads of Ogre Mojo",
    "quality": 3,
    "required_level": 58,
@@ -2124,6 +2250,7 @@
     "stamina": 7
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "2243": {
@@ -2150,12 +2277,15 @@
   },
   "22657": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_amulet_04",
    "item_level": 60,
+   "min_standing": null,
    "name": "Amulet of the Dawn",
    "quality": 4,
    "required_level": 55,
@@ -2167,16 +2297,20 @@
     "stamina": 13
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "22678": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Your next 5 damage or healing spells cast within 20 seconds will grant a bonus of up to 40 damage and up to 75 healing, stacking up to 5 times. Expires after 6 damage or healing spells or 20 seconds, whichever occurs first. ",
    "icon": "inv_misc_gem_pearl_04",
    "item_level": 60,
+   "min_standing": null,
    "name": "Talisman of Ascendance",
    "quality": 4,
    "required_level": 55,
@@ -2184,16 +2318,20 @@
    "speed": 0.0,
    "stats": {},
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "227002": {
    "armor": 314,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_helmet_04",
    "item_level": 60,
+   "min_standing": null,
    "name": "Coif of The Five Thunders",
    "quality": 4,
    "required_level": 55,
@@ -2206,16 +2344,20 @@
     "stamina": 12
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "227003": {
    "armor": 286,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_29",
    "item_level": 65,
+   "min_standing": null,
    "name": "Pauldrons of The Five Thunders",
    "quality": 3,
    "required_level": 60,
@@ -2228,16 +2370,20 @@
     "stamina": 11
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "227004": {
    "armor": 387,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_chain_11",
    "item_level": 60,
+   "min_standing": null,
    "name": "Vest of The Five Thunders",
    "quality": 4,
    "required_level": 55,
@@ -2250,16 +2396,20 @@
     "stamina": 14
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "227007": {
    "armor": 266,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_boots_wolf",
    "item_level": 60,
+   "min_standing": null,
    "name": "Slippers of The Five Thunders",
    "quality": 4,
    "required_level": 55,
@@ -2272,16 +2422,20 @@
     "stamina": 12
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "227165": {
    "armor": 398,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_chain_16",
    "item_level": 68,
+   "min_standing": null,
    "name": "Legionnaire's Mail Breastplate",
    "quality": 3,
    "required_level": 60,
@@ -2294,16 +2448,20 @@
     "stamina": 27
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "227808": {
    "armor": 75,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_19",
    "item_level": 65,
+   "min_standing": null,
    "name": "Rugged Mantle of the Timbermaw",
    "quality": 4,
    "required_level": 60,
@@ -2315,16 +2473,20 @@
     "spell_power": 27
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "228176": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases the critical strike chance of Lightning Bolt by 1%.",
    "icon": "inv_relics_totemofrebirth",
    "item_level": 65,
+   "min_standing": null,
    "name": "Totem of Thunder",
    "quality": 3,
    "required_level": 60,
@@ -2332,16 +2494,20 @@
    "speed": 0.0,
    "stats": {},
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "228190": {
    "armor": 56,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_09",
    "item_level": 65,
+   "min_standing": null,
    "name": "Knowledge of the Timbermaw",
    "quality": 4,
    "required_level": 60,
@@ -2353,16 +2519,20 @@
     "spell_power": 25
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "23125": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_18",
    "item_level": 60,
+   "min_standing": null,
    "name": "Chains of the Lich",
    "quality": 3,
    "required_level": 55,
@@ -2372,16 +2542,20 @@
     "spell_power": 22
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231659": {
    "armor": 353,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_29",
    "item_level": 74,
+   "min_standing": null,
    "name": "Warlord's Mail Spaulders",
    "quality": 4,
    "required_level": 60,
@@ -2394,16 +2568,20 @@
     "stamina": 27
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231660": {
    "armor": 283,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_11",
    "item_level": 71,
+   "min_standing": null,
    "name": "General's Mail Gauntlets",
    "quality": 4,
    "required_level": 60,
@@ -2416,16 +2594,20 @@
     "stamina": 27
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231661": {
    "armor": 311,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases the speed of your Ghost Wolf ability by 15%.",
    "icon": "inv_boots_plate_06",
    "item_level": 71,
+   "min_standing": null,
    "name": "General's Mail Sabatons",
    "quality": 4,
    "required_level": 60,
@@ -2437,16 +2619,20 @@
     "stamina": 30
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231662": {
    "armor": 470,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_chest_chain_11",
    "item_level": 74,
+   "min_standing": null,
    "name": "Warlord's Mail Breastplate",
    "quality": 4,
    "required_level": 60,
@@ -2459,16 +2645,20 @@
     "stamina": 52
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231663": {
    "armor": 382,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_helmet_09",
    "item_level": 74,
+   "min_standing": null,
    "name": "Warlord's Mail Helm",
    "quality": 4,
    "required_level": 60,
@@ -2481,16 +2671,20 @@
     "stamina": 52
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231664": {
    "armor": 396,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_pants_mail_15",
    "item_level": 71,
+   "min_standing": null,
    "name": "General's Mail Leggings",
    "quality": 4,
    "required_level": 60,
@@ -2503,16 +2697,20 @@
     "stamina": 36
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231666": {
    "armor": 283,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_11",
    "item_level": 71,
+   "min_standing": null,
    "name": "General's Mail Gloves",
    "quality": 4,
    "required_level": 60,
@@ -2526,16 +2724,20 @@
     "stamina": 27
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "231667": {
    "armor": 311,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases the speed of your Ghost Wolf ability by 15%.",
    "icon": "inv_boots_plate_06",
    "item_level": 71,
+   "min_standing": null,
    "name": "General's Mail Boots",
    "quality": 4,
    "required_level": 60,
@@ -2548,16 +2750,20 @@
     "stamina": 28
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "234032": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases the casting speed of your spells by 2% per piece of Timeworn armor equipped.",
    "icon": "inv_jewelry_ring_40",
    "item_level": 80,
+   "min_standing": "Exalted",
    "name": "Signet Ring of the Bronze Dragonflight",
    "quality": 4,
    "required_level": 60,
@@ -2570,16 +2776,19 @@
     "stamina": 8
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "234549": {
    "armor": 0,
+   "bonding": "Binds when picked up",
    "damage_max": 289,
    "damage_min": 192,
    "dps": 80.17,
    "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
    "icon": "inv_misc_bone_elfskull_01",
    "item_level": 80,
+   "min_standing": null,
    "name": "High Warlord's War Staff",
    "quality": 4,
    "required_level": 60,
@@ -2592,16 +2801,20 @@
     "stamina": 51
    },
    "two_hand": true,
+   "unique": false,
    "weapon_type": "staff"
   },
   "234563": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
    "icon": "inv_misc_book_15",
    "item_level": 80,
+   "min_standing": null,
    "name": "High Warlord's Tome of Destruction",
    "quality": 4,
    "required_level": 60,
@@ -2613,16 +2826,20 @@
     "stamina": 24
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "235474": {
    "armor": 3000,
+   "armor_type": "Shield",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
    "icon": "inv_shield_19",
    "item_level": 80,
+   "min_standing": null,
    "name": "High Warlord's Barricade",
    "quality": 4,
    "required_level": 60,
@@ -2635,16 +2852,20 @@
     "stamina": 26
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "237815": {
    "armor": 104,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_pants_cloth_05",
    "item_level": 78,
+   "min_standing": "Exalted",
    "name": "Sentinel's Silk Leggings",
    "quality": 4,
    "required_level": 60,
@@ -2657,16 +2878,20 @@
     "stamina": 39
    },
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "237817": {
    "armor": 201,
+   "armor_type": "Leather",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_pants_06",
    "item_level": 78,
+   "min_standing": "Exalted",
    "name": "Sentinel's Lizardhide Pants",
    "quality": 4,
    "required_level": 60,
@@ -2679,16 +2904,20 @@
     "stamina": 39
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "249469": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases Frost and Shadow spell damage done by up to 29 for 15 sec. This effect is doubled in Snowy areas.",
    "icon": "inv_misc_gem_sapphire_01",
    "item_level": 55,
+   "min_standing": null,
    "name": "Frozen Heart of the Mountain",
    "quality": 3,
    "required_level": 50,
@@ -2702,16 +2931,20 @@
     "shadow_res": 7
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "252486": {
    "armor": 164,
+   "armor_type": "Leather",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_pants_leather_26",
    "item_level": 61,
+   "min_standing": null,
    "name": "Ironfeather Leggings",
    "quality": 4,
    "required_level": 56,
@@ -2723,16 +2956,20 @@
     "spell_power": 38
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "252542": {
    "armor": 64,
+   "armor_type": "Leather",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_bracer_22a",
    "item_level": 50,
+   "min_standing": null,
    "name": "Skycaller's Leather Bracers",
    "quality": 3,
    "required_level": 45,
@@ -2745,16 +2982,20 @@
     "stamina": 6
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "252561": {
    "armor": 152,
+   "armor_type": "Leather",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_helmet_32",
    "item_level": 61,
+   "min_standing": null,
    "name": "Living Crown",
    "quality": 4,
    "required_level": 56,
@@ -2767,16 +3008,20 @@
     "spirit": 14
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "252604": {
    "armor": 319,
+   "armor_type": "Mail",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_helmet_09",
    "item_level": 61,
+   "min_standing": null,
    "name": "Blue Dragonscale Helm",
    "quality": 4,
    "required_level": 56,
@@ -2788,16 +3033,20 @@
     "spell_power": 25
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "254013": {
    "armor": 33,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_boots_cloth_22",
    "item_level": 36,
+   "min_standing": null,
    "name": "Earthen Silk Slippers",
    "quality": 2,
    "required_level": 31,
@@ -2808,16 +3057,20 @@
     "spirit": 7
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "254123": {
    "armor": 32,
+   "armor_type": "Cloth",
+   "bonding": "Binds when equipped",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_bracer_13",
    "item_level": 57,
+   "min_standing": null,
    "name": "Runecloth Cuffs",
    "quality": 2,
    "required_level": 52,
@@ -2828,16 +3081,20 @@
     "spell_power": 11
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272097": {
    "armor": 63,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_22",
    "item_level": 65,
+   "min_standing": "Exalted",
    "name": "Raider Handwraps",
    "quality": 4,
    "required_level": 60,
@@ -2850,16 +3107,20 @@
     "stamina": 15
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272101": {
    "armor": 260,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_gauntlets_11",
    "item_level": 65,
+   "min_standing": "Exalted",
    "name": "Raider Handguards",
    "quality": 4,
    "required_level": 60,
@@ -2871,16 +3132,20 @@
     "stamina": 15
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272399": {
    "armor": 217,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_belt_33",
    "item_level": 60,
+   "min_standing": null,
    "name": "Stormseeker's Girdle",
    "quality": 4,
    "required_level": 60,
@@ -2892,16 +3157,20 @@
     "stamina": 11
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272406": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_ring_24",
    "item_level": 65,
+   "min_standing": null,
    "name": "Channeler's Ring",
    "quality": 3,
    "required_level": 60,
@@ -2913,16 +3182,20 @@
     "spirit": 8
    },
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "272407": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_jewelry_ring_60",
    "item_level": 65,
+   "min_standing": null,
    "name": "Blessed Band of Light",
    "quality": 3,
    "required_level": 60,
@@ -2936,16 +3209,20 @@
     "stamina": 10
    },
    "two_hand": false,
+   "unique": true,
    "weapon_type": null
   },
   "272411": {
    "armor": 46,
+   "armor_type": "Cloth",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_misc_cape_05",
    "item_level": 65,
+   "min_standing": null,
    "name": "Arcanoweave Cloak",
    "quality": 3,
    "required_level": 60,
@@ -2957,16 +3234,20 @@
     "spell_power": 16
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272432": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Your Lightning Bolt ability can now also trigger the Maelstrom Weapon talent, but with a 50% reduced chance.",
    "icon": "spell_shaman_stormtotem",
    "item_level": 65,
+   "min_standing": null,
    "name": "Totem of the Storm",
    "quality": 3,
    "required_level": 60,
@@ -2974,16 +3255,20 @@
    "speed": 0.0,
    "stats": {},
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272438": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases your critical strike chance with all spells and attacks by 5% for 20 sec or until you deal a non-periodic critical effect.",
    "icon": "inv_misc_blizzcon09_graphicscard",
    "item_level": 65,
+   "min_standing": null,
    "name": "Weakness Analyzer",
    "quality": 3,
    "required_level": 60,
@@ -2993,16 +3278,20 @@
     "spell_power": 22
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272439": {
    "armor": 0,
+   "armor_type": null,
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "Increases Spirit by 72 for 15 sec.",
    "icon": "inv_misc_enggizmos_36",
    "item_level": 65,
+   "min_standing": null,
    "name": "Serenity Field",
    "quality": 3,
    "required_level": 60,
@@ -3013,16 +3302,20 @@
     "spell_power": 14
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "272958": {
    "armor": 312,
+   "armor_type": "Mail",
+   "bonding": "Binds when picked up",
    "damage_max": 0,
    "damage_min": 0,
    "dps": 0.0,
    "effect_text": "",
    "icon": "inv_shoulder_14",
    "item_level": 65,
+   "min_standing": "Exalted",
    "name": "Darkspear Shoulderguards",
    "quality": 4,
    "required_level": 60,
@@ -3034,6 +3327,7 @@
     "stamina": 12
    },
    "two_hand": false,
+   "unique": false,
    "weapon_type": null
   },
   "812": {
@@ -3061,6 +3355,11 @@
    "weapon_type": "staff"
   }
  },
+ "rep_sources": {
+  "19315": "Stormpike Guard (Exalted)",
+  "19595": "Warsong Outriders (Exalted)",
+  "19596": "Warsong Outriders (Exalted)"
+ },
  "trees": [
   {
    "icon": "spell_nature_lightning",
@@ -3069,113 +3368,161 @@
     {
      "column": 1,
      "icon": "spell_nature_wispsplode",
+     "id": 104773,
      "max_rank": 5,
      "name": "Convection",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 2,
      "icon": "spell_nature_earthshock",
+     "id": 104772,
      "max_rank": 5,
      "name": "Concussion",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 0,
      "icon": "spell_fire_elementaldevastation",
+     "id": 104769,
      "max_rank": 3,
      "name": "Elemental Devastation",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 1,
      "icon": "spell_frost_frostward",
+     "id": 104767,
      "max_rank": 5,
      "name": "Reverberation",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 2,
      "icon": "spell_lightning_lightningbolt01",
+     "id": 104771,
      "max_rank": 3,
      "name": "Elemental Alacrity",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 3,
      "icon": "spell_fire_immolation",
+     "id": 104770,
      "max_rank": 3,
      "name": "Call of Flame",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 0,
      "icon": "spell_shadow_manaburn",
+     "id": 104768,
      "max_rank": 1,
      "name": "Elemental Focus",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 1,
      "icon": "spell_nature_spiritarmor",
+     "id": 104765,
      "max_rank": 3,
      "name": "Elemental Warding",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 0,
      "icon": "spell_fire_sealoffire",
+     "id": 104764,
      "max_rank": 2,
      "name": "Trial by Fire",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 1,
      "icon": "spell_nature_eyeofthestorm",
+     "id": 104763,
      "max_rank": 3,
      "name": "Eye of the Storm",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 3,
      "icon": "spell_nature_stranglevines",
+     "id": 104762,
      "max_rank": 1,
      "name": "Earthbound",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 0,
      "icon": "spell_nature_stormreach",
+     "id": 104761,
      "max_rank": 2,
      "name": "Elemental Reach",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 1,
      "icon": "spell_shaman_lavaburst",
+     "id": 104760,
      "max_rank": 1,
      "name": "Lava Burst",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_nature_lightningoverload",
+     "id": 104759,
      "max_rank": 3,
      "name": "Lightning Overload",
+     "prereq_rank": 3,
+     "prereq_talent_id": 104771,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_fire_volcano",
+     "id": 104766,
      "max_rank": 5,
      "name": "Elemental Fury",
+     "prereq_rank": 3,
+     "prereq_talent_id": 104759,
      "tier": 5
     },
     {
      "column": 1,
      "icon": "spell_nature_wispheal",
+     "id": 104758,
      "max_rank": 1,
      "name": "Elemental Mastery",
+     "prereq_rank": 1,
+     "prereq_talent_id": 104760,
      "tier": 6
     }
    ]
@@ -3187,127 +3534,181 @@
     {
      "column": 0,
      "icon": "spell_nature_stoneclawtotem",
+     "id": 104757,
      "max_rank": 2,
      "name": "Earth's Grasp",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 1,
      "icon": "ability_thunderbolt",
+     "id": 104753,
      "max_rank": 5,
      "name": "Thundering Strikes",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 2,
      "icon": "spell_shadow_grimward",
+     "id": 104756,
      "max_rank": 5,
      "name": "Ancestral Knowledge",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 0,
      "icon": "spell_nature_stoneskintotem",
+     "id": 104754,
      "max_rank": 2,
      "name": "Guardian Totems",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 1,
      "icon": "spell_nature_mentalquickness",
+     "id": 104755,
      "max_rank": 3,
      "name": "Mental Dexterity",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 2,
      "icon": "spell_nature_spiritwolf",
+     "id": 104752,
      "max_rank": 2,
      "name": "Improved Ghost Wolf",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 3,
      "icon": "spell_nature_lightningshield",
+     "id": 104751,
      "max_rank": 3,
      "name": "Improved Lightning Shield",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 0,
      "icon": "spell_fire_flametounge",
+     "id": 104750,
      "max_rank": 3,
      "name": "Elemental Weapons",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 2,
      "icon": "spell_nature_elementalabsorption",
+     "id": 104749,
      "max_rank": 1,
      "name": "Shamanistic Focus",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 3,
      "icon": "spell_nature_mirrorimage",
+     "id": 104748,
      "max_rank": 3,
      "name": "Anticipation",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 0,
      "icon": "spell_holy_devotion",
+     "id": 104746,
      "max_rank": 5,
      "name": "Toughness",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 1,
      "icon": "ability_ghoulfrenzy",
+     "id": 104747,
      "max_rank": 5,
      "name": "Flurry",
+     "prereq_rank": 3,
+     "prereq_talent_id": 104755,
      "tier": 3
     },
     {
      "column": 2,
      "icon": "ability_shaman_stormstrike",
+     "id": 104743,
      "max_rank": 1,
      "name": "Stormstrike",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 0,
      "icon": "ability_parry",
+     "id": 104745,
      "max_rank": 1,
      "name": "Spirit Weapons",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 1,
      "icon": "spell_nature_sleep",
+     "id": 104744,
      "max_rank": 2,
      "name": "Mental Quickness",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_shaman_improvedstormstrike",
+     "id": 104742,
      "max_rank": 2,
      "name": "Improved Stormstrike",
+     "prereq_rank": 1,
+     "prereq_talent_id": 104743,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_shaman_maelstromweapon",
+     "id": 104741,
      "max_rank": 5,
      "name": "Maelstrom Weapon",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 5
     },
     {
      "column": 1,
      "icon": "spell_nature_bloodlust",
+     "id": 104740,
      "max_rank": 1,
      "name": "Rage of the Farseer",
+     "prereq_rank": 2,
+     "prereq_talent_id": 104744,
      "tier": 6
     }
    ]
@@ -3319,113 +3720,161 @@
     {
      "column": 1,
      "icon": "spell_nature_magicimmunity",
+     "id": 104739,
      "max_rank": 5,
      "name": "Improved Healing Wave",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 2,
      "icon": "spell_frost_manarecharge",
+     "id": 104729,
      "max_rank": 5,
      "name": "Tidal Focus",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 0
     },
     {
      "column": 0,
      "icon": "spell_nature_sleep",
+     "id": 104734,
      "max_rank": 3,
      "name": "Mindfulness",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 1,
      "icon": "spell_nature_healingtouch",
+     "id": 104736,
      "max_rank": 3,
      "name": "Natural Grace",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 2,
      "icon": "spell_nature_moonglow",
+     "id": 104735,
      "max_rank": 5,
      "name": "Totemic Focus",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 3,
      "icon": "spell_nature_reincarnation",
+     "id": 104737,
      "max_rank": 2,
      "name": "Improved Reincarnation",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 1
     },
     {
      "column": 0,
      "icon": "spell_nature_undyingstrength",
+     "id": 104731,
      "max_rank": 3,
      "name": "Ancestral Healing",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 1,
      "icon": "spell_nature_healingwavelesser",
+     "id": 104733,
      "max_rank": 3,
      "name": "Healing Focus",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 2,
      "icon": "ability_shaman_watershield",
+     "id": 104732,
      "max_rank": 1,
      "name": "Water Shield",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 2
     },
     {
      "column": 0,
      "icon": "spell_nature_tranquility",
+     "id": 104738,
      "max_rank": 5,
      "name": "Tidal Mastery",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 1,
      "icon": "spell_nature_manaregentotem",
+     "id": 104730,
      "max_rank": 5,
      "name": "Restorative Totems",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 2,
      "icon": "spell_frost_summonwaterelemental",
+     "id": 104728,
      "max_rank": 1,
      "name": "Mana Tide Totem",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 3
     },
     {
      "column": 1,
      "icon": "spell_nature_healingway",
+     "id": 104727,
      "max_rank": 3,
      "name": "Healing Way",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_nature_ravenform",
+     "id": 104726,
      "max_rank": 1,
      "name": "Nature's Swiftness",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 4
     },
     {
      "column": 2,
      "icon": "spell_frost_wizardmark",
+     "id": 104725,
      "max_rank": 5,
      "name": "Purification",
+     "prereq_rank": null,
+     "prereq_talent_id": null,
      "tier": 5
     },
     {
      "column": 1,
      "icon": "spell_nature_riptide",
+     "id": 104724,
      "max_rank": 1,
      "name": "Riptide",
+     "prereq_rank": 3,
+     "prereq_talent_id": 104727,
      "tier": 6
     }
    ]

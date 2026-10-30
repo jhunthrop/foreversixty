@@ -32,8 +32,8 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F2.4 No gear export.</b> Grimtusk, never synced by the addon.", H.home(p, "nogear")),
             cell("<b>F2.5 Error.</b> The answer failed; the rest still reads.", H.home(p, "error"))]),
         f"f2-items-{p}": ("F2 item tooltip and worn vs best in slot", [
-            cell("<b>F2.6 Item tooltip.</b> Tap an item: the sheet, medium detent.", H.home_tooltip(p)),
-            cell("<b>F2.7 Your gear.</b> All 17 slots, worn and the pick.", H.gear_full(p))]),
+            cell("<b>F2.6 Item tooltip.</b> Binds, armor type and Unique from the client tables.", H.home_tooltip(p)),
+            cell("<b>F2.7 Your gear.</b> All 17 slots: worn, then → the pick by name and icon.", H.gear_full(p))]),
         f"f3-bis-{p}": ("F3 best in slot", [
             cell("<b>F3.1 Default.</b> Your spec, range and faction, marked Yours.", H.bis(p)),
             cell("<b>F3.2 Picker.</b> Class, spec, range and faction in one sheet.", H.bis_picker(p)),
@@ -51,8 +51,8 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F4.8 Locked.</b>", R.raid_detail(p, "locked")),
             cell("<b>F4.9 Cancelled.</b>", R.raid_detail(p, "cancelled")),
             cell("<b>F4.10 Offline.</b> Read-only, stamped.", R.raid_detail(p, "offline")),
-            cell("<b>F4.11 Save failed.</b> Late was pressed; the old state returns.", R.raid_detail(p, "failed")),
-            cell("<b>F4.12 Moved.</b> In on a second character benches the first (R3).", R.raid_detail(p, "moved"))]),
+            cell("<b>F4.11 Save failed.</b> Late was pressed and refused; In, the old state, is back.", R.raid_detail(p, "failed")),
+            cell("<b>F4.12 Moved.</b> In on Lightningbolltz benched Vorgash (R3); the line is on his block.", R.raid_detail(p, "moved"))]),
         f"f4-tab-states-{p}": ("F4 Raids tab states", [
             cell("<b>F4.13 No guild.</b>", R.raids_tab(p, "noguild")),
             cell("<b>F4.14 Waiting for approval.</b>", R.raids_tab(p, "waiting")),
@@ -66,16 +66,27 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F5.4 Result, free, link region.</b> One muted See plans.", M.sim_result(p, premium=False)),
             cell("<b>F5.5 Result, free, other regions.</b> Nothing about Premium.", M.sim_result(p, premium=False, link_region=False))]),
         f"f6-talents-{p}": ("F6 talents, read-only", [
-            cell("<b>F6.1 Matches the guide.</b>", M.talents(p)),
-            cell("<b>F6.2 Differs.</b> Dashed ranks differ from the guide.", M.talents(p, "differs"))]),
+            cell("<b>F6.1 Matches.</b> Tab totals are summed from the drawn build: 30 + 3 + 18 = 51.", M.talents(p)),
+            cell("<b>F6.2 Differs.</b> 2 points in Reverberation the guide leaves empty; Call of Flame 1/3.", M.talents(p, "differs"))]),
         f"f7-push-{p}": ("F7 notifications as delivered", (
-            [cell("<b>F7.1 Lock screen.</b> raid.starting (time sensitive), raid.posted, sim.finished.", x) if i == 0 else
+            [cell("<b>F7.1 Lock screen.</b> raid.starting at invites minus the lead, raid.posted, sim.finished.", x) if i == 0 else
              cell("<b>F7.2 Long-press raid.posted.</b> In, Late, Out run in the background.", x) if i == 1 else
-             cell("<b>F7.3 After In.</b> The thread's notification is replaced with the answer; loot.awarded.", x)
+             cell("<b>F7.3 After In.</b> The answer replaces the question; raid.summary after the log.", x)
              for i, x in enumerate(M.lock_board_ios())] if p == "ios" else
-            [cell("<b>F7.1 Shade.</b> raid.posted expanded with In, Late, Out; raid.starting; sim.finished.", x) if i == 0 else
-             cell("<b>F7.3 After In, and the spec case.</b> Unknown spec: one action that opens the ask.", x)
+            [cell("<b>F7.1 Shade.</b> raid.posted with In, Late, Out; raid.starting; sim.finished.", x) if i == 0 else
+             cell("<b>F7.3 After In; the spec case; raid.summary.</b> Unknown spec: Choose a spec, and Out.", x)
              for i, x in enumerate(M.lock_board_and())])),
+        f"f4-officer-{p}": ("F4 officer tools on the raid page (officers only)", [
+            cell("<b>F4.18 Officer, open raid.</b> Lock sign-ups and Copy the list.", R.raid_detail(p, "officer")),
+            cell("<b>F4.19 Officer roster.</b> Each row ends in its place.", R.officer_roster(p)),
+            cell("<b>F4.20 Move.</b> In to Bench, or off the raid.", R.officer_roster(p, menu=True)),
+            cell("<b>F4.21 Locked.</b> The roster went out; Unlock sign-ups.", R.raid_detail(p, "officer-locked", overlay=R.toast_locked(p)))]),
+        f"f4-night-{p}": ("F4 Your raid night, the after-raid summary", [
+            cell("<b>F4.22 Your raid night, Premium.</b> Opened from raid.summary.", R.night(p)),
+            cell("<b>F4.23 Your raid night, free.</b> No coach section, no prompt.", R.night(p, premium=False))]),
+        f"f7-moved-{p}": ("F7 raid.roster_moved, time sensitive", [
+            cell(f"<b>F7.7 Moved {'In' if i == 0 else 'to Bench' if i == 1 else 'off, and added'}.</b>" if p == "ios" else f"<b>F7.7 {'Moved In' if i == 0 else 'Moved to Bench; removed'}.</b>", x)
+            for i, x in enumerate(M.moved_boards(p))]),
         f"f7-settings-{p}": ("F7 notification settings", [
             cell("<b>F7.4 Settings.</b> Per event and channel; officer and Premium sections only when they apply.", M.notif_settings(p, sections=3)),
             cell("<b>F7.5 Channel picker.</b> " + ("A Menu on the value." if p == "ios" else "A dropdown menu on the value."), M.notif_settings(p, picker=True, sections=3)),

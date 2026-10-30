@@ -46,7 +46,7 @@ def upgrades_card(n: int = 5, xl: bool = False, pressed: int = -1) -> str:
 
 
 def next_rows() -> str:
-    rows = [(spec_icon("spell_nature_lightning", 36), "Talents", "<span class=\"tag tag-green\">Optimized</span>", "Matches the Elemental 60 build"),
+    rows = [(spec_icon("spell_nature_lightning", 36), "Talents", "<span class=\"tag tag-green\">Matches</span>", "Your build is the Elemental 60 guide build"),
             (f"<span class=\"itile\" style=\"width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--tile);color:var(--tile-ink)\">{glyph('flask', 18)}</span>",
              "Sims", "", "Your Elemental sim finished: <span class=\"mono strong\">412 DPS</span>"),
             (f"<span class=\"itile\" style=\"width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--tile);color:var(--tile-ink)\">{glyph('calendar', 18)}</span>",
@@ -91,19 +91,31 @@ def next_rows_nogear() -> str:
     return f"<div class=\"t-micro micro pad\" style=\"margin-top:22px\">Next for Grimtusk</div><div class=\"card quiet\" style=\"margin:8px 16px 0\">{body}</div>"
 
 
+def tooltip_panel(item_id: int, slot_label: str) -> str:
+    """The site's tooltip model in the client's order: name, Binds, Unique, slot and armor type on one
+    line, armor, stats, Requires Level, Item Level. Binds, Unique and the armor type come from the
+    client's ItemSparse and Item rows; a Back item shows no armor type, as the Classic client does."""
+    it = item(item_id)
+    bind = f"<div class=\"ln t-body\">{it['bonding']}</div>" if it.get("bonding") else ""
+    uniq = "<div class=\"ln t-body\">Unique</div>" if it.get("unique") else ""
+    kind = it.get("armor_type") if slot_label != "Back" else None
+    slot_line = (f"<div class=\"ln t-body\" style=\"display:flex;justify-content:space-between\"><span>{slot_label}</span><span>{kind or ''}</span></div>")
+    armor = f"<div class=\"ln t-body\">{it['armor']} Armor</div>" if it.get("armor") else ""
+    stats = "".join(f"<div class=\"ln t-body\">{s}</div>" for s in stat_lines(item_id))
+    return (f"<div class=\"tip\"><div class=\"t-body\" style=\"font-weight:700;color:{Q_TEXT[it['quality']]}\">{it['name']}</div>{bind}{uniq}{slot_line}{armor}{stats}"
+            f"<div class=\"ln t-body\" style=\"margin-top:6px\">Requires Level {it['required_level']}</div><div class=\"t-body\" style=\"color:#e5cc80\">Item Level {it['item_level']}</div></div>")
+
+
 def tooltip_sheet(plat: str) -> str:
     pick, worn = 228190, WORN["waist"]
     it = item(pick)
-    stats = "".join(f"<div class=\"ln t-body\">{s}</div>" for s in stat_lines(pick))
     alts = "".join(f"<div class=\"lrow\" style=\"padding:10px 0\">{item_icon(i, 36)}<div class=\"t\">{qname(i)}<div class=\"t-meta muted\">{'You wear this · ' if i == worn else ''}{fmt(d)} DPS vs the pick</div></div></div>" for i, _, d in next_best("waist"))
-    inner = (f"<div style=\"padding:0 20px\"><div style=\"display:flex;gap:14px;align-items:center\">{item_icon(pick, 56)}<div><div class=\"t-sec\" style=\"font-weight:700;color:{Q_TEXT[it['quality']]}\">{it['name']}</div>"
-             f"<div class=\"t-meta muted\">{Q_WORD[it['quality']]} · Waist · item level {it['item_level']}</div></div></div>"
-             f"<div class=\"tip\" style=\"margin-top:14px\"><div class=\"ln t-body\">Waist</div><div class=\"ln t-body\">{it['armor']} Armor</div>{stats}"
-             f"<div class=\"ln t-body\" style=\"margin-top:6px\">Requires Level {it['required_level']}</div><div class=\"t-body\" style=\"color:#e5cc80\">Item Level {it['item_level']}</div></div>"
+    inner = (f"<div style=\"padding:0 20px\"><div style=\"display:flex;gap:14px;align-items:center;margin-bottom:12px\">{item_icon(pick, 56)}<div><div class=\"t-sec\" style=\"font-weight:700;color:{Q_TEXT[it['quality']]}\">{it['name']}</div>"
+             f"<div class=\"t-meta muted\">{Q_WORD[it['quality']]} · Waist</div></div></div>{tooltip_panel(pick, 'Waist')}"
              f"<div class=\"t-micro micro\" style=\"margin-top:16px\">Where it comes from</div><div class=\"t-body strong\" style=\"margin-top:4px\">Vendor: Meilosh</div>"
              f"<div class=\"t-micro micro\" style=\"margin-top:16px\">The next best</div>{alts}"
              f"<div class=\"t-meta muted\" style=\"margin-top:6px\">Best in slot for Waist · Elemental 60 · Phase 1 raid</div></div>")
-    return sheet(plat, inner, 640)
+    return sheet(plat, inner, 680)
 
 
 def home_tooltip(plat: str) -> str:
@@ -120,8 +132,9 @@ def gear_full(plat: str) -> str:
         worn = WORN.get(key, s["item_id"])
         same = worn == s["item_id"]
         right = (f"<span class=\"tag tag-green\">{glyph('check', 12)}BiS</span>" if same else f"{glyph('chev-right', 14)}{item_icon(s['item_id'], 36)}")
+        pick_line = "" if same else f"<div class=\"t-micro muted\">→ <span style=\"color:{Q_TEXT[item(s['item_id'])['quality']]}\">{item(s['item_id'])['name']}</span></div>"
         rows += (f"<div class=\"lrow\" style=\"gap:10px\"><span class=\"t-micro micro\" style=\"width:62px;flex:none\">{SLOT_LABEL[key]}</span>{item_icon(worn, 36)}"
-                 f"<div class=\"t\" style=\"min-width:0\">{qname(worn, 't-meta')}<div class=\"t-micro muted\">ilvl {item(worn)['item_level']}</div></div><span style=\"display:flex;align-items:center;gap:6px;color:var(--muted)\">{right}</span></div>")
+                 f"<div class=\"t\" style=\"min-width:0\">{qname(worn, 't-meta')}<div class=\"t-micro muted\">ilvl {item(worn)['item_level']}</div>{pick_line}</div><span style=\"display:flex;align-items:center;gap:6px;color:var(--muted)\">{right}</span></div>")
     title = "<span class=\"cond t-sec\" style=\"font-size:17px\">Your gear</span>"
     bar = top_bar(plat, back_btn(plat, "Home") + (title if plat == "and" else ""), "")
     head_ = "" if plat == "and" else f"<div class=\"cond t-title pad\" style=\"margin-top:6px\">Your gear</div>"
@@ -213,7 +226,7 @@ def bis_row(key: str) -> str:
 def bis(plat: str, state: str = "default", overlay: str = "") -> str:
     top = content_top(plat)
     bar = top_bar(plat, selector(plat), icon_btn(plat, "search", "Search an item"))
-    chips = (f"<div style=\"display:flex;gap:8px;padding:10px 16px 0;overflow:hidden\">{chip(spec_icon('spell_nature_lightning', 28) + '<span class=t-meta style=font-weight:600>Elemental Shaman</span>', True)}"
+    chips = (f"<div style=\"display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px 0\">{chip(spec_icon('spell_nature_lightning', 28) + '<span class=t-meta style=font-weight:600>Elemental Shaman</span>', True)}"
              f"{chip('<span class=t-meta style=font-weight:600;padding-left:6px>60 · Phase 1 raid</span>')}{chip(f'<img src={HORDE} width=24 height=24 alt=>' + '<span class=t-meta style=font-weight:600>Horde</span>')}</div>")
     head_ = (f"<div class=\"pad\" style=\"display:flex;align-items:baseline;gap:10px;margin-top:6px\"><span class=\"cond t-title\">Best in slot</span><span class=\"tag tag-gold\">Yours</span></div>{chips}"
              f"<div class=\"t-meta muted pad\" style=\"margin-top:10px\"><span class=\"mono strong\">{band()['set_dps']:.1f} DPS</span> at best in slot for your level range · Updated 29 Oct 2026</div>")
@@ -236,7 +249,7 @@ def bis_picker(plat: str) -> str:
              f"<div class=\"t-micro micro\" style=\"margin-top:14px\">Level range</div><div style=\"display:flex;flex-wrap:wrap;gap:8px;margin-top:6px\">{brow}</div>"
              f"<div class=\"t-micro micro\" style=\"margin-top:14px\">Faction</div><div style=\"display:flex;gap:8px;margin-top:6px\"><span class=\"t-meta\" style=\"display:inline-flex;gap:8px;align-items:center;min-height:44px;padding:0 14px 0 8px;border-radius:999px;border:1px solid var(--line);color:var(--nav)\"><img src=\"{ALLIANCE_SRC()}\" width=26 height=26 alt=\"\">Alliance</span>"
              f"<span class=\"t-meta\" style=\"display:inline-flex;gap:8px;align-items:center;min-height:44px;padding:0 14px 0 8px;border-radius:999px;border:1px solid var(--gold);background:rgba(229,185,85,.12);color:var(--gold);font-weight:700\"><img src=\"{HORDE}\" width=26 height=26 alt=\"\">Horde</span></div>"
-             f"<span class=\"btn btn-secondary full\" style=\"margin-top:16px\">Back to Lightningbolltz's list</span></div>")
+             f"<div class=\"t-meta muted\" style=\"margin-top:16px\">This is Lightningbolltz's list. Change any choice and Back to Lightningbolltz's list appears here.</div></div>")
     return bis(plat, overlay=sheet(plat, inner, 760, "Choose a list"))
 
 
