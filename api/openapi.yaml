@@ -2388,7 +2388,8 @@ components:
         reference_dps_per_point: { type: number }
         scale_reference_stat: { type: string }
         set_dps: { type: number }
-        new_at_band: { type: array, items: { type: integer } }
+        role: { type: string, enum: [dps, healer, tank], description: "The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score." }
+        new_at_band: { type: array, items: { type: string }, description: "\"<slot>: <item name>\" for each pick new at this band." }
         weights:
           type: array
           items:
@@ -2429,14 +2430,32 @@ components:
                     source: { type: string }
                     source_kind: { type: string }
                     dps_delta: { type: number, description: Negative against the pick. }
+                    verified: { type: boolean }
               score: { type: number }
               sim_dps: { type: number }
               dps_delta: { type: number }
               chance: { type: number }
               effect_unmodelled: { type: boolean }
               swap_note: { type: string }
-              ties: { type: array, items: { type: integer } }
-              set_bonus: { type: string }
+              ties:
+                type: array
+                description: Items that measure the same as the pick.
+                items:
+                  type: object
+                  title: BisTie
+                  required: [item_id, item_name]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+              set_bonus:
+                type: object
+                title: BisSetBonus
+                required: [set, pieces, bonus]
+                properties:
+                  set: { type: string }
+                  pieces: { type: integer }
+                  bonus: { type: string }
+              low_value: { type: boolean }
               faction_note: { type: string }
               empty_reason: { type: string }
     ItemsFile:
@@ -2468,7 +2487,7 @@ components:
         dps: { type: number }
         two_hand: { type: boolean }
         effect_text: { type: string }
-        stats_source: { type: string }
+        stats_source: { type: [string, "null"] }
         set_id: { type: [integer, "null"] }
         unique: { type: boolean }
         client_unconfirmed: { type: boolean }

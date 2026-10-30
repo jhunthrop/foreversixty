@@ -133,6 +133,7 @@ data class BisAlternative(
     @SerialName("source_kind") val sourceKind: String,
     /** Negative against the pick. */
     @SerialName("dps_delta") val dpsDelta: Double,
+    @SerialName("verified") val verified: Boolean? = null,
 )
 
 @Serializable
@@ -148,7 +149,10 @@ data class BisBand(
     @SerialName("reference_dps_per_point") val referenceDpsPerPoint: Double,
     @SerialName("scale_reference_stat") val scaleReferenceStat: String? = null,
     @SerialName("set_dps") val setDps: Double? = null,
-    @SerialName("new_at_band") val newAtBand: List<Int>? = null,
+    /** The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score. */
+    @SerialName("role") val role: String? = null,
+    /** "<slot>: <item name>" for each pick new at this band. */
+    @SerialName("new_at_band") val newAtBand: List<String>? = null,
     @SerialName("weights") val weights: List<BisWeight> = emptyList(),
     @SerialName("slots") val slots: List<BisSlot> = emptyList(),
 )
@@ -170,6 +174,13 @@ data class BisPreset(
 )
 
 @Serializable
+data class BisSetBonus(
+    @SerialName("set") val set: String,
+    @SerialName("pieces") val pieces: Int,
+    @SerialName("bonus") val bonus: String,
+)
+
+@Serializable
 data class BisSlot(
     @SerialName("slot") val slot: String,
     @SerialName("verified") val verified: Boolean,
@@ -185,10 +196,18 @@ data class BisSlot(
     @SerialName("chance") val chance: Double? = null,
     @SerialName("effect_unmodelled") val effectUnmodelled: Boolean? = null,
     @SerialName("swap_note") val swapNote: String? = null,
-    @SerialName("ties") val ties: List<Int>? = null,
-    @SerialName("set_bonus") val setBonus: String? = null,
+    /** Items that measure the same as the pick. */
+    @SerialName("ties") val ties: List<BisTie>? = null,
+    @SerialName("set_bonus") val setBonus: BisSetBonus? = null,
+    @SerialName("low_value") val lowValue: Boolean? = null,
     @SerialName("faction_note") val factionNote: String? = null,
     @SerialName("empty_reason") val emptyReason: String? = null,
+)
+
+@Serializable
+data class BisTie(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("item_name") val itemName: String,
 )
 
 @Serializable
@@ -903,7 +922,7 @@ data class Item(
     @SerialName("dps") val dps: Double,
     @SerialName("two_hand") val twoHand: Boolean,
     @SerialName("effect_text") val effectText: String,
-    @SerialName("stats_source") val statsSource: String,
+    @SerialName("stats_source") val statsSource: String? = null,
     @SerialName("set_id") val setId: Int? = null,
     @SerialName("unique") val unique: Boolean,
     @SerialName("client_unconfirmed") val clientUnconfirmed: Boolean,
