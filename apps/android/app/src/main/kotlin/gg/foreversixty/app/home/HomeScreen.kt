@@ -35,13 +35,13 @@ fun HomeScreen(character: AccountCharacter?) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = stringResource(R.string.home_tagline),
+            text = stringResource(R.string.shell_home_tagline),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
         )
         if (character == null) {
             Text(
-                text = stringResource(R.string.home_no_character),
+                text = stringResource(R.string.shell_home_noCharacter),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -62,7 +62,7 @@ private fun CharacterHeader(character: AccountCharacter) {
     val characterClass = character.className
     if (level != null && characterClass != null) {
         Text(
-            text = stringResource(R.string.home_level_class, level, characterClass.replaceFirstChar { it.uppercase() }),
+            text = stringResource(R.string.shell_home_levelClass, level, characterClass.replaceFirstChar { it.uppercase() }),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

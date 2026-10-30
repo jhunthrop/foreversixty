@@ -10,11 +10,11 @@ enum AppTab: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .home: "Character"
-        case .raids: "Raids"
-        case .bis: "BiS"
-        case .sims: "Sims"
-        case .account: "Account"
+        case .home: Copy.shellTabCharacter
+        case .raids: Copy.tabRaids
+        case .bis: Copy.tabBis
+        case .sims: Copy.shellTabSims
+        case .account: Copy.shellTabAccount
         }
     }
 
@@ -58,7 +58,7 @@ struct PlaceholderScreen: View {
 
     var body: some View {
         NavigationStack {
-            Text("Coming soon")
+            Text(Copy.shellComingSoon)
                 .foregroundStyle(Theme.Palette.muted)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Theme.Palette.background)

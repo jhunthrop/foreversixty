@@ -63,7 +63,7 @@ fun ForeverTabScaffold(
 private fun ComingSoon(tab: ForeverTab) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
-            text = stringResource(R.string.tab_coming_soon, stringResource(tab.label)),
+            text = stringResource(R.string.shell_arrivesNext, stringResource(tab.label)),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
