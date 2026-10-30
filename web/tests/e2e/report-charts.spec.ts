@@ -4,6 +4,10 @@
 // (support/raid40.ts); nothing here changes the fixture the site serves.
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { BROKK, beLightningbolltz, guidOf, raid40DpsSum, RAID40_URL, serveRaid40 } from './support/raid40';
+import { fieldBox, listOf } from './support/select';
+
+/** The Players field's closed text (`Top 8 of 40`). */
+const playersField = (chart: Locator): Locator => fieldBox(chart, 'players').locator('.sel-label');
 
 const FIXTURE = '/reports/fixture2abcd?fight=3';
 const isPhone = (page: Page): boolean => (page.viewportSize()?.width ?? 1280) < 768;
@@ -28,13 +32,14 @@ test.describe('overlays never sit under a chart (spec §C)', () => {
     await page.goto(`${FIXTURE}&tab=damage-done`);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
-    await chart.getByTestId('players-control').click();
-    const list = page.getByTestId('players-list');
+    await chart.getByTestId('players-trigger').click();
+    const list = listOf(chart, 'players');
     await expect(list).toBeVisible();
-    for (const row of await list.getByTestId('players-option').all()) {
+    for (const row of await list.locator('[role="option"]').all()) {
       const box = (await row.boundingBox())!;
+      if (box.y + box.height / 2 > (page.viewportSize()?.height ?? 0)) continue;
       const onTop = await page.evaluate(
-        ({ x, y }) => document.elementFromPoint(x, y)?.closest('[data-testid="players-list"]') !== null,
+        ({ x, y }) => document.elementFromPoint(x, y)?.closest('.sel-pop') !== null,
         { x: box.x + box.width / 2, y: box.y + box.height / 2 },
       );
       expect(onTop, 'a Players row is covered').toBe(true);
@@ -102,7 +107,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     if (!isPhone(page)) {
       await expect(chips).toHaveCount(10);
       await expect(chips.first()).toContainText('Raid median');
-      await expect(chart.getByTestId('players-control')).toHaveText('Top 4, bottom 4 of 40');
+      await expect(playersField(chart)).toHaveText('Top 4, bottom 4 of 40');
       await expect(chart.getByTestId('legend-more')).toHaveText('+31 more');
     }
     const you = chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(13)}"]`);
@@ -131,14 +136,15 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
-    await chart.getByTestId('players-control').click();
-    await page.getByTestId('players-filter').fill('osric');
-    await page.locator(`[data-testid="players-option"][data-id="${guidOf(39)}"]`).check();
+    await chart.getByTestId('players-trigger').click();
+    const list = listOf(chart, 'players');
+    await list.locator('input[role="combobox"]').fill('osric');
+    await list.locator(`[role="option"][data-value="${guidOf(39)}"]`).click();
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(39)}"]`)).toBeVisible();
     await expect(page).toHaveURL(/players=/);
-    await expect(chart.getByTestId('players-control')).toHaveText('10 of 40');
-    await expect(page.getByTestId('players-presets-custom')).toHaveClass(/lit/);
-    await page.getByTestId('players-presets').locator('[data-preset="split"]').click();
+    await expect(playersField(chart)).toHaveText('10 of 40');
+    await expect(list.locator('[data-foot-id="custom"]')).toHaveAttribute('data-lit', 'true');
+    await list.locator('button[data-foot-id="split"]').click();
     await expect(page).not.toHaveURL(/players=/);
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(39)}"]`)).toHaveCount(0);
   });
@@ -148,16 +154,17 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
-    await chart.getByTestId('players-control').click();
-    await page.getByTestId('players-presets').locator('[data-preset="bottom"]').click();
+    await chart.getByTestId('players-trigger').click();
+    const list = listOf(chart, 'players');
+    await list.locator('button[data-foot-id="bottom"]').click();
     await expect(page).toHaveURL(/players=bottom/);
-    await expect(chart.getByTestId('players-control')).toHaveText('Bottom 8 of 40');
+    await expect(playersField(chart)).toHaveText('Bottom 8 of 40');
     // The bottom 8 are damage dealers: no healer's small damage is named a low performer.
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(35)}"]`)).toHaveCount(0);
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(29)}"]`)).toBeVisible();
-    await page.getByTestId('players-presets').locator('[data-preset="top"]').click();
+    await list.locator('button[data-foot-id="top"]').click();
     await expect(page).toHaveURL(/players=top/);
-    await expect(chart.getByTestId('players-control')).toHaveText('Top 8 of 40');
+    await expect(playersField(chart)).toHaveText('Top 8 of 40');
   });
 
   test('the 40 players’ figures add up to the head’s raid figure, in the same unit', async ({ page }) => {
@@ -165,8 +172,8 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
-    await chart.getByTestId('players-control').click();
-    const figures = await page.getByTestId('players-option-figure').allTextContents();
+    await chart.getByTestId('players-trigger').click();
+    const figures = await listOf(chart, 'players').locator('.sel-row-meta').allTextContents();
     expect(figures).toHaveLength(40);
     const sum = figures.reduce((total, text) => total + Number(text.replace(/,/g, '')), 0);
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(
@@ -246,7 +253,7 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     test.skip(!isPhone(page), 'the phone fold stack');
     await page.setViewportSize({ width: 360, height: 640 });
     await page.goto(`${RAID40_URL}&tab=damage-done`);
-    await page.locator('#report-tab-select').selectOption('threat');
+    await page.locator('#report-tab-select').selectOption('threat', { force: true });
     const chart = page.getByTestId('threat-chart');
     await ready(chart);
     await page.waitForTimeout(800);
@@ -272,9 +279,9 @@ test('on a phone every head field shows its value whole, one field to a row', as
   await ready(chart);
   const windowField = chart.getByTestId('window-select');
   await expect(windowField).toHaveValue('0');
-  const field = (await windowField.boundingBox())!;
+  const field = (await fieldBox(chart, 'window-select').boundingBox())!;
   expect(field.width).toBeGreaterThanOrEqual(240);
-  const players = (await chart.getByTestId('players-control').boundingBox())!;
+  const players = (await fieldBox(chart, 'players').boundingBox())!;
   expect(players.width).toBeGreaterThanOrEqual(240);
   expect(Math.abs(players.x - field.x)).toBeLessThanOrEqual(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

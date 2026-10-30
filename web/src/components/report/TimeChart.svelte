@@ -229,7 +229,6 @@
         {choice}
         presets={PRESETS}
         formatValue={formatAmount}
-        {coarse}
         onToggle={choose}
         onMedian={toggleMedian}
         {onPreset}
@@ -240,7 +239,9 @@
     <div class="w-[180px] max-md:w-full">
       <Select
         id="window-select"
-        compact
+        class="w-full"
+        size="dense"
+        align="end"
         testid="window-select"
         options={windowOptions}
         value={selectedPreset < 0 ? 'custom' : String(selectedPreset)}
@@ -303,7 +304,8 @@
       onToggle={(id) => legend.toggle(id)}
       onOnly={(id) => legend.only(id, series)}
       onHighlight={(id) => legend.highlight(id)}
-      onMore={() => (coarse ? (legend.sheetOpen = true) : document.getElementById('chart-players')?.click())}
+      onMore={() =>
+        coarse ? (legend.sheetOpen = true) : document.getElementById('chart-players-trigger')?.click()}
     />
     <TimeSeriesChart
       {series}

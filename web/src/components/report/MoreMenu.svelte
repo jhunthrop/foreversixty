@@ -122,10 +122,11 @@
     bind:this={button}
     type="button"
     class={buttonClass}
-    class:border-gold={active}
-    class:text-strong={active}
-    class:border-transparent={!active}
-    class:text-nav={!active}
+    class:border-gold={active || open}
+    class:text-strong={active || open}
+    class:border-transparent={!active && !open}
+    class:text-nav={!active && !open}
+    class:bg-row-hover={open}
     aria-haspopup="menu"
     aria-expanded={open}
     aria-controls="report-more-menu"

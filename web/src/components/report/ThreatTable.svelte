@@ -376,9 +376,11 @@
   );
   const enemyOptions = $derived([
     { value: '', label: 'Every enemy' },
+    // The group count is the row's meta, not a suffix on the name (§A10 row 4).
     ...groups.map((group) => ({
       value: group.id,
-      label: `${group.name}${group.guids.length > 1 ? ` ×${group.guids.length}` : ''}`,
+      label: group.name,
+      meta: group.guids.length > 1 ? `×${group.guids.length}` : undefined,
     })),
   ]);
   const standingAtMs = $derived(window.endMs);
@@ -392,7 +394,9 @@
         <span class="w-[180px] max-md:flex-1">
           <Select
             id="threat-target"
-            compact
+            class="w-full"
+            size="dense"
+            align="end"
             testid="threat-target"
             options={enemyOptions}
             value={picked?.id ?? ''}
