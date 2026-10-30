@@ -18,6 +18,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="download wowhead's Forever gear planner, the items the client's ItemSparse lacks",
     )
     fw.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
+    fw.add_argument(
+        "--allow-shrink",
+        action="store_true",
+        help="accept a live feed below the coverage floor of the seeded supplement "
+        "(pipeline.build_floors.MIN_LIVE_COVERAGE); the seeded records are still carried",
+    )
 
     fwt = sub.add_parser(
         "fetch-wowhead-talents",
@@ -354,7 +360,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "fetch-wowhead":
         from pipeline.wowhead_items import fetch_wowhead
 
-        fetch_wowhead(args.build)
+        print(fetch_wowhead(args.build, allow_shrink=args.allow_shrink))
     elif args.command == "fetch-wowhead-talents":
         from pipeline.wowhead_talents import fetch_wowhead_talents
 

@@ -409,7 +409,7 @@ def supplement_icon_names(raw: Path) -> set[str]:
     from pipeline.csvio import read_csv
     from pipeline.normalize.gear import int_column
 
-    path = raw / wh.RAW_FILE
+    path = raw / wh.CARRY_FILE
     if not path.exists():
         return set()
     client_ids = {int_column(row, "ID") for row in read_csv(raw / "ItemSparse.csv")}

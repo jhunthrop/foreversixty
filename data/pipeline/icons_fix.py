@@ -12,7 +12,7 @@ the completeness gate refuses it. This module never reads `ItemSparse` at
 all: it only rewrites the `icon` field of the `items/<class>.json` rows
 `normalize` already produced, from the two sources that do not need it --
 the fork checkout's `assets/database/db.json` (`pipeline.forkdb`) and the
-committed `raw/wowhead-gear-planner.js` (`fetch-wowhead` writes it;
+committed `raw/wowhead/items.json` (`fetch-wowhead` writes it;
 `python -m pipeline icons --build <build> --engine <path>` reads it if
 present and otherwise skips that source, same as `normalize` does for the
 wowhead item supplement).
@@ -159,7 +159,7 @@ def fix_icons_for_build(
     if not fork_icons and not wowhead_icons:
         logger.warning(
             "icons: no fork checkout (--engine) and no wowhead payload "
-            "(raw/wowhead-gear-planner.js) for build %s; no placeholder icon "
+            "(raw/wowhead/items.json) for build %s; no placeholder icon "
             "names can be fixed this run",
             build,
         )

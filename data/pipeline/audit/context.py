@@ -2,7 +2,7 @@
 
 Every loader here is tolerant of a missing input: the audit is read-only and
 never fetches or regenerates anything (lane brief), so a raw table that was
-never committed (raw/*.csv, raw/wowhead-gear-planner.js -- both gitignored,
+never committed (raw/*.csv, gitignored,
 see data/.gitignore) or a classic-db dump nobody pointed `--classicdb-dump`
 at is simply absent, not an error. A check module reads the relevant
 `AuditContext` property, finds it `None`/empty, and records
@@ -191,8 +191,8 @@ class AuditContext:
     @functools.cached_property
     def wowhead_gear_planner(self) -> dict[int, object] | None:
         """item id -> `pipeline.wowhead_items.WowheadItem`, from the
-        committed gear-planner payload (`raw/wowhead-gear-planner.js` --
-        gitignored, so usually absent for a build this audit sees).
+        committed carry file (`raw/wowhead/items.json`, the live feed merged
+        over the previous build's records).
         `None` when the payload is missing or is not Forever's (same
         `WowheadPayloadError` `pipeline.normalize.wowhead.load_supplement`
         tolerates)."""

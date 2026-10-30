@@ -98,7 +98,7 @@ def test_supplement_icon_names_reads_the_payload_through_the_planners_own_gates(
 ):
     raw = tmp_path / "raw"
     raw.mkdir()
-    (raw / wh.RAW_FILE).write_text(WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
+    wh.merge_live_feed(raw.parent, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     write_item_sparse(raw, [11726])  # the belt is "the client's" for this test
     # The ring is quality 1, the QA robe is junk-named, the chest needs level
     # 70, and the belt is now the client's -- only the sword and the cloak
@@ -109,7 +109,7 @@ def test_supplement_icon_names_reads_the_payload_through_the_planners_own_gates(
 def test_supplement_icon_names_excludes_an_id_the_client_already_has(tmp_path: Path):
     raw = tmp_path / "raw"
     raw.mkdir()
-    (raw / wh.RAW_FILE).write_text(WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
+    wh.merge_live_feed(raw.parent, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     write_item_sparse(raw, [11726, 271218])  # the sword is now the client's too
     assert supplement_icon_names(raw) == {"inv_misc_cape_10"}
 
@@ -188,7 +188,7 @@ def test_icons_for_build_routes_a_client_owned_supplement_icon_through_casc(
         "ID,FilePath,FileName\n1,Interface\\ICONS\\,inv_misc_cape_10.blp\n",
         encoding="utf-8",
     )
-    (raw / wh.RAW_FILE).write_text(WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
+    wh.merge_live_feed(raw.parent, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     write_item_sparse(raw, [11726])  # belt is the client's; sword and cloak are not
     write_classes(build_dir)
     (build_dir / "talents").mkdir()
