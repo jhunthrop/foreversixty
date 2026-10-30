@@ -1784,8 +1784,12 @@
         <!-- On a phone the fight list sits above the mode bar, so a mode's content starts a
            screen or two down; a mode change scrolls here, the way a tab change scrolls to
            its table. -->
-        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 22px between the fight list and the tab row. -->
-        <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px]" aria-hidden="true"></div>
+        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 22px between the fight list and the tab row.
+             From md it is the column's first item: -mb-4 sets the mode bar 16 px under the page head
+             (its 8 px foot plus 8; PageHead's own head-to-below rhythm) instead of 32. Stage 2's PageHead
+             (eyebrow, the credit sentence on its own line) is 52 px taller than the old header, and
+             at 1280 x 800 that pushed Fix first's last line past the 640 px fold (coach-report). -->
+        <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px] md:-mb-4" aria-hidden="true"></div>
         <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
           <ModeBar {state} {roster} onPatch={patch} {nightMode} />
         </div>
