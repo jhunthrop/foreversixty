@@ -42,6 +42,7 @@ struct RootView: View {
             }
         }
         .tint(Theme.Palette.accent)
+        .task { await environment.appConfig.refresh() }
     }
 
     @ViewBuilder

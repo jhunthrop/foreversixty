@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         handleAppLink(intent)
+        lifecycleScope.launch { graph.appConfig.refresh() }
     }
 
     override fun onNewIntent(intent: Intent) {

@@ -64,7 +64,7 @@ data class ActiveBuild(
     @SerialName("build") val build: String,
 )
 
-/** GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. */
+/** GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json). */
 @Serializable
 data class AppConfig(
     /** ISO 3166-1 alpha-2, upper case; never null. */
@@ -72,6 +72,8 @@ data class AppConfig(
     @SerialName("min_app_version") val minAppVersion: MinAppVersion,
     /** The client build the static data serves. */
     @SerialName("active_build") val activeBuild: String,
+    /** Feature switches by key; apps/shared/features.json lists the keys and their bundled defaults. */
+    @SerialName("features") val features: Map<String, Boolean> = emptyMap(),
 )
 
 @Serializable

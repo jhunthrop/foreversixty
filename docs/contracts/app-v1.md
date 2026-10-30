@@ -558,14 +558,21 @@ while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a
 
 ### GET /v1/app/config
 Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
-`{ web_checkout_regions[], min_app_version { ios, android }, active_build }`. `web_checkout_regions` are the
+`{ web_checkout_regions[], min_app_version { ios, android }, active_build, features { <key>: bool } }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
 StoreKit or Play Billing and show the button exactly when it is in the list, and show no purchase
 prompt or call to action anywhere else. `min_app_version` is the lowest version the API supports
 for each platform (dotted, compared numerically): below it, block with an "Update the app" screen.
-`active_build` is the client build the static data serves. Fixture `app.config`. The handler is
-lane A3's (`api/internal/app`, dark behind `APP_API`).
+`active_build` is the client build the static data serves. `features` holds the feature
+switches by key (`apps/shared/features.json` lists every key, its lane and its bundled default;
+every one ships `false`). A feature lane ships dark in both apps and the API turns it on in both
+at once. The apps read the config once at launch and cache it (iOS `AppConfigStore`, Android
+`AppConfigRepository`): a key the answer leaves out takes the bundled default, a key the build
+does not know is ignored, and offline the cached answer, else the defaults, stands. The map is
+always present (`{}` when nothing is switched). Fixture `app.config`. The handler is lane A3's
+(`api/internal/app`, dark behind `APP_API`); it does not send `features` yet (see lane P1's
+report for the addition).
 
 ## Not in v1
 

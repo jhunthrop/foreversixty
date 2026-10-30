@@ -2,13 +2,16 @@ package gg.foreversixty.app
 
 import android.content.Context
 import android.os.Build
+import java.io.File
 import gg.foreversixty.app.auth.AndroidTokenStore
 import gg.foreversixty.app.auth.AppSignIn
 import gg.foreversixty.app.auth.TokenStore
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
+import gg.foreversixty.app.network.AppConfigRepository
 import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.AssetFixtureSource
+import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
 
 /**
@@ -27,6 +30,9 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     )
 
     val accountApi = AccountApi(apiClient)
+
+    /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
+    val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

@@ -2267,8 +2267,10 @@ components:
       description: >-
         GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the
         storefront country is in web_checkout_regions. Below min_app_version, block with the
-        update screen.
-      required: [web_checkout_regions, min_app_version, active_build]
+        update screen. A feature ships behind a features key, dark in both apps, and the key
+        turns it on in both at once: a key the app does not know is ignored, and a key the
+        answer leaves out takes the app's bundled default (apps/shared/features.json).
+      required: [web_checkout_regions, min_app_version, active_build, features]
       properties:
         web_checkout_regions: { type: array, items: { type: string, pattern: '^[A-Z]{2}$' }, description: "ISO 3166-1 alpha-2, upper case; never null." }
         min_app_version:
@@ -2279,6 +2281,10 @@ components:
             ios: { type: string, description: Dotted, compared numerically. }
             android: { type: string }
         active_build: { type: string, description: The client build the static data serves. }
+        features:
+          type: object
+          additionalProperties: { type: boolean }
+          description: Feature switches by key; apps/shared/features.json lists the keys and their bundled defaults.
 
     # Static files (https://foreversixty.gg/data) -------------------------------------------
     ActiveBuild:

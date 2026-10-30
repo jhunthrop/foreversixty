@@ -8,11 +8,19 @@ struct AppEnvironment {
     let configuration: APIConfiguration
     let tokens: any TokenStore
     let client: APIClient
+    /// Read at launch (RootView) and cached; feature lanes ask it `isEnabled(_:)`.
+    let appConfig: AppConfigStore
 
-    init(configuration: APIConfiguration, tokens: any TokenStore, bundle: Bundle = .main) {
+    init(
+        configuration: APIConfiguration,
+        tokens: any TokenStore,
+        bundle: Bundle = .main,
+        configCache: any AppConfigCache = UserDefaultsAppConfigCache()
+    ) {
         self.configuration = configuration
         self.tokens = tokens
         self.client = APIClient.make(configuration, tokens: tokens, bundle: bundle)
+        self.appConfig = AppConfigStore(client: client, cache: configCache)
     }
 
     /// Fixture mode keeps its token in memory so a fixture session never reaches the Keychain.

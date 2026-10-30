@@ -187,22 +187,26 @@ public struct ActiveBuild: Codable, Sendable, Equatable {
     }
 }
 
-/// GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen.
+/// GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json).
 public struct AppConfig: Codable, Sendable, Equatable {
     /// ISO 3166-1 alpha-2, upper case; never null.
     public let webCheckoutRegions: [String]
     public let minAppVersion: MinAppVersion
     /// The client build the static data serves.
     public let activeBuild: String
+    /// Feature switches by key; apps/shared/features.json lists the keys and their bundled defaults.
+    public let features: [String: Bool]
 
     public init(
         webCheckoutRegions: [String] = [],
         minAppVersion: MinAppVersion,
-        activeBuild: String
+        activeBuild: String,
+        features: [String: Bool] = [:]
     ) {
         self.webCheckoutRegions = webCheckoutRegions
         self.minAppVersion = minAppVersion
         self.activeBuild = activeBuild
+        self.features = features
     }
 
     public init(from decoder: any Decoder) throws {
@@ -210,6 +214,7 @@ public struct AppConfig: Codable, Sendable, Equatable {
         webCheckoutRegions = try c.decodeIfPresent([String].self, forKey: .webCheckoutRegions) ?? []
         minAppVersion = try c.decode(MinAppVersion.self, forKey: .minAppVersion)
         activeBuild = try c.decode(String.self, forKey: .activeBuild)
+        features = try c.decodeIfPresent([String: Bool].self, forKey: .features) ?? [:]
     }
 }
 
