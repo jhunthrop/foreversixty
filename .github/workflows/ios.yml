@@ -2,9 +2,9 @@ name: ios
 on:
   push:
     branches: [main]
-    paths: ['apps/ios/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
   pull_request:
-    paths: ['apps/ios/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:

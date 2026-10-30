@@ -2,9 +2,9 @@ name: android
 on:
   push:
     branches: [main]
-    paths: ['apps/android/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/android.yml']
+    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml']
   pull_request:
-    paths: ['apps/android/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/android.yml']
+    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml']
   workflow_dispatch:
     inputs:
       release:

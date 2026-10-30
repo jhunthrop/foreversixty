@@ -1,0 +1,5 @@
+// The app's version comes from apps/VERSION, the one file both apps read.
+#include "../VERSION"
+
+MARKETING_VERSION = $(APP_VERSION)
+CURRENT_PROJECT_VERSION = $(APP_BUILD)

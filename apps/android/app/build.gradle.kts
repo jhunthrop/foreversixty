@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.forever.contract.fixtures)
     alias(libs.plugins.forever.app.icon)
+    alias(libs.plugins.forever.app.version)
 }
 
 /**
@@ -13,9 +14,10 @@ plugins {
 val uploadKeystore: String? = providers.environmentVariable("FOREVER_UPLOAD_KEYSTORE").orNull
 
 android {
+    // BuildConfig.VERSION_NAME and VERSION_CODE feed the X-App header and the crash reporter.
+    buildFeatures { buildConfig = true }
+    // versionName and versionCode come from apps/VERSION (the forever.app-version plugin).
     defaultConfig {
-        versionCode = providers.gradleProperty("forever.versionCode").orElse("1").get().toInt()
-        versionName = providers.gradleProperty("forever.versionName").orElse("0.1.0").get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

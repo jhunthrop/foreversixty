@@ -1,0 +1,8 @@
+// The one version of both apps, in xcconfig syntax so iOS includes it as is
+// (apps/ios/Version.xcconfig) and Gradle reads the same two keys
+// (apps/android/build-logic AppVersionConventionPlugin).
+// tools/release-apps.sh bumps it; edit by hand only to start a new minor or major.
+// APP_VERSION is the semver players see. APP_BUILD rises by one on every upload,
+// whatever the version: it is the iOS build number and the Play versionCode.
+APP_VERSION = 0.1.0
+APP_BUILD = 1

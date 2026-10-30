@@ -57,6 +57,10 @@ targets:
     #     com.apple.developer.associated-domains: ["applinks:foreversixty.gg"]
     # TODO(lane A2, F7): the aps-environment entitlement and the Push
     # Notifications capability join the same entitlements file.
+    # MARKETING_VERSION and CURRENT_PROJECT_VERSION come from apps/VERSION, through this file.
+    configFiles:
+      Debug: Version.xcconfig
+      Release: Version.xcconfig
     info:
       path: Generated/Info.plist
       properties:
@@ -79,8 +83,6 @@ targets:
       base:
         PRODUCT_NAME: ForeverSixty
         PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app
-        MARKETING_VERSION: "0.1.0"
-        CURRENT_PROJECT_VERSION: "1"
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: NO
         API_BASE_URL: https://api.foreversixty.gg
