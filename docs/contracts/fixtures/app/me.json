@@ -1,0 +1,96 @@
+{
+  "ok": true,
+  "data": {
+    "user": {
+      "id": 4211,
+      "battletag": "Thrall#1234",
+      "email": null,
+      "role": "user",
+      "anonymize": false
+    },
+    "characters": [
+      {
+        "key": "eu/forever/thrallson",
+        "region": "eu",
+        "ruleset": "forever",
+        "name": "Thrallson",
+        "class": "shaman",
+        "realm": "Forever",
+        "level": 42,
+        "faction": "horde",
+        "race": "orc",
+        "gender": "male",
+        "item_level": 38,
+        "source": "export",
+        "build": {
+          "source": "addon",
+          "captured_at": "2026-10-29T21:14:03Z",
+          "gear": { "head": 10263, "main_hand": 1726 },
+          "talents": { "trees": ["05032001", "550030513", "0"], "points": [11, 22, 0] },
+          "level": 42,
+          "data_build": "1.15.8.70532",
+          "median_sync_gap_sec": 86400,
+          "sync_error": null
+        },
+        "guild": {
+          "id": 77,
+          "name": "Stormwatch",
+          "rank": "Raider",
+          "rank_index": 3,
+          "verified": true,
+          "attendance": { "present": 7, "nights": 8 }
+        },
+        "spec": "enhancement"
+      },
+      {
+        "key": "eu/forever/alttwo",
+        "region": "eu",
+        "ruleset": "forever",
+        "name": "Alttwo",
+        "source": "bnet"
+      }
+    ],
+    "guilds": [
+      {
+        "id": 77,
+        "region": "eu",
+        "ruleset": "forever",
+        "name": "Stormwatch",
+        "rank": "Raider",
+        "verified": true,
+        "verified_count": 18,
+        "can": [],
+        "ruleset_label": "Forever",
+        "slug": "stormwatch",
+        "crest_url": null,
+        "faction": "horde",
+        "roster_count": 24,
+        "claim": null,
+        "verify": null,
+        "covered": null,
+        "subscribe": null
+      }
+    ],
+    "entitlements": {
+      "server_sims": false,
+      "retention": false,
+      "multi_compare": false,
+      "history": false,
+      "notifications": false,
+      "officer_views": false,
+      "roster_check": false,
+      "log_coach": false,
+      "supporter_mark": false,
+      "billing": null,
+      "personal_portal": false
+    },
+    "main_character_key": "eu/forever/thrallson",
+    "finished_sims": [],
+    "server_sims": { "runs_this_month": 0 },
+    "discord_link_available": true,
+    "discord_link": null,
+    "discord_link_suggested": null
+  },
+  "error": null,
+  "request_id": "fixture-me"
+}

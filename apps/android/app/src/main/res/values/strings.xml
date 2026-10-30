@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Forever Sixty</string>
+    <string name="tab_character">Character</string>
+    <string name="tab_bis">BiS</string>
+    <string name="tab_raids">Raids</string>
+    <string name="tab_sims">Sims</string>
+    <string name="tab_account">Account</string>
+    <string name="home_tagline">Play your class better.</string>
+    <string name="home_no_character">Link a character with the addon or companion to see it here.</string>
+    <string name="home_level_class">Level %1$d %2$s</string>
+    <string name="tab_coming_soon">%1$s arrives in the next build.</string>
+</resources>

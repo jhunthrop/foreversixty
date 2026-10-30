@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "data": {
+    "device_id": "dev_fixture0001",
+    "token": "fsd_fixture-token-not-a-secret",
+    "account_label": "Thrall#1234"
+  },
+  "error": null,
+  "request_id": "fixture-auth-app-exchange"
+}
