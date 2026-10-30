@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.forever.contract.fixtures)
     alias(libs.plugins.forever.app.icon)
     alias(libs.plugins.forever.app.version)
+    alias(libs.plugins.forever.bundled.data)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 /**
@@ -72,6 +74,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.compose.material.icons)
+    // Game icons from the CDN with a disk cache (spec §11); BiS (lane F3).
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

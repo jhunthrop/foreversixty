@@ -6,6 +6,10 @@ import java.io.File
 import gg.foreversixty.app.auth.AndroidTokenStore
 import gg.foreversixty.app.auth.AppSignIn
 import gg.foreversixty.app.auth.TokenStore
+import gg.foreversixty.app.bis.BisModel
+import gg.foreversixty.app.bis.createBisModel
+import gg.foreversixty.app.bis.isBisEnabled
+import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -15,6 +19,7 @@ import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.UpdateGate
+import gg.foreversixty.app.network.dataOrNull
 import gg.foreversixty.app.update.InstallId
 
 /**
@@ -47,6 +52,18 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
 
     /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
     val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
+
+    /** BiS (lane F3): the static files through their offline cache; null while the switch is off. */
+    val bisModel: BisModel? = if (isBisEnabled(BuildConfig.DEBUG, config, appConfig)) {
+        createBisModel(
+            context = context,
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            appConfig = appConfig,
+            character = { accountApi.me().dataOrNull()?.mainCharacter },
+        )
+    } else {
+        null
+    }
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

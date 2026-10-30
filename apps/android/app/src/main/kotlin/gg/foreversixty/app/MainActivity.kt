@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val gate by graph.updateGate.state.collectAsStateWithLifecycle()
                 val answer = gate
                 if (answer == null) {
-                    ForeverAppScaffold(accountApi = graph.accountApi)
+                    ForeverAppScaffold(accountApi = graph.accountApi, bisModel = graph.bisModel)
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })

@@ -37,6 +37,10 @@ gradlePlugin {
             id = "forever.app-version"
             implementationClass = "AppVersionConventionPlugin"
         }
+        register("bundledData") {
+            id = "forever.bundled-data"
+            implementationClass = "BundledDataConventionPlugin"
+        }
         register("appIcon") {
             id = "forever.app-icon"
             implementationClass = "AppIconConventionPlugin"
