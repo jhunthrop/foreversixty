@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Tests for tools/activation-gate.sh, the test gate tools/activate-build.sh runs before it
-# commits, pushes or tags a client build move. Plain bash, no bats, the shape of
-# tools/engine/tests/test_scripts.sh: each case stubs `npm` and `go` (NPM_BIN, GO_BIN) to
-# write the reports the real tools write, and checks what the gate makes of them.
+# commits, pushes or tags a client build move, and for activate-build.sh's failure
+# report. Plain bash, no bats, the shape of tools/engine/tests/test_scripts.sh: the gate
+# cases stub `npm` and `go` (NPM_BIN, GO_BIN) to write the reports the real tools write;
+# the report cases run the real script in a scratch repository whose steps are stubs.
 #
 #   bash tools/tests/test_activation.sh
 #
@@ -13,6 +14,9 @@ set -uo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 readonly HERE
 readonly GATE=$HERE/../activation-gate.sh
+readonly ACTIVATE=$HERE/../activate-build.sh
+readonly OLD_BUILD=1.60.1.70658
+readonly NEW_BUILD=1.60.1.70707
 
 SCRATCH=$(mktemp -d)
 trap 'rm -rf "$SCRATCH"' EXIT
@@ -139,6 +143,93 @@ stub_go "$d" 1 '{"Action":"fail","Package":"github.com/jhunthrop/foreversixty/ap
 gate "$d"
 assert "both red: two lines" equal "$(wc -l <"$d/failures" | tr -d ' ')" 2
 assert "both red: web first" equal "$(head -1 "$d/failures")" "web src/c.test.ts > c"
+
+
+# make_move_repo <dir>: a scratch checkout with the active build, the new build's fetched
+# tables and an addon TOC, and a re-encode stub that fails the way a talent-tree change does.
+make_move_repo() {
+	local dir=$1 f
+	mkdir -p "$dir/tools" "$dir/web/src/data" "$dir/web/scripts" "$dir/data/builds/$NEW_BUILD" \
+		"$dir/data/builds/$OLD_BUILD" "$dir/addon/ForeverSixty"
+	cp "$ACTIVATE" "$dir/tools/activate-build.sh"
+	printf '{\n  "build": "%s"\n}\n' "$OLD_BUILD" >"$dir/web/src/data/active-build.json"
+	for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json; do
+		echo '{}' >"$dir/data/builds/$NEW_BUILD/$f"
+	done
+	printf '## Interface: 16001\n## Version: 2.1.7\n' >"$dir/addon/ForeverSixty/ForeverSixty.toc"
+	cat >"$dir/web/scripts/reencode-guide-builds.mjs" <<'EOF'
+console.error('mage/frost build: Arcane Focus is not in 1.60.1.70707\'s Arcane tree');
+process.exit(1);
+EOF
+	git init --quiet "$dir"
+	git -C "$dir" add -A
+	git -C "$dir" -c user.name=test -c user.email=test@example.com commit --quiet -m repo
+}
+
+# activate <dir> <args...>: runs the scratch copy with a step summary, sets STATUS, OUT, SUMMARY.
+activate() {
+	local dir=$1
+	shift
+	STATUS=0
+	OUT=$(cd "$dir" && GITHUB_STEP_SUMMARY="$dir/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$@" 2>&1) || STATUS=$?
+	SUMMARY=$(cat "$dir/summary.md" 2>/dev/null)
+}
+
+# The re-encode stops on a tree change: step, reason and the hand command are named.
+d=$SCRATCH/move-reencode
+make_move_repo "$d"
+activate "$d" "$NEW_BUILD" --no-commit --no-gate
+assert "re-encode: exits 1" equal "$STATUS" 1
+assert "re-encode: the summary names the step" contains "$SUMMARY" "**Step:** re-encoding the guide builds onto $NEW_BUILD's talent trees"
+assert "re-encode: the reason quotes the script" contains "$SUMMARY" "Arcane Focus is not in 1.60.1.70707"
+assert "re-encode: the hand command re-spends then reruns the move" contains "$SUMMARY" "then from main with those edits in the tree run: tools/activate-build.sh $NEW_BUILD"
+assert "re-encode: or dispatches client with the build and product" contains "$SUMMARY" "gh workflow run client.yml -f build=$NEW_BUILD -f product=wowf"
+assert "re-encode: a local run is told how to undo the half-move" contains "$SUMMARY" "git restore --staged --worktree --"
+assert "re-encode: the same report goes to stderr" contains "$OUT" "Client move to $NEW_BUILD stopped"
+assert "re-encode: nothing was committed" equal "$(git -C "$d" rev-list --count HEAD)" 1
+
+# A long report keeps its head (what failed) and its tail.
+d=$SCRATCH/move-long
+make_move_repo "$d"
+cat >"$d/web/scripts/reencode-guide-builds.mjs" <<'EOF'
+console.error('9 guide build(s) do not carry cleanly');
+for (let i = 1; i <= 150; i++) console.error(`line ${i}`);
+process.exit(1);
+EOF
+activate "$d" "$NEW_BUILD" --no-commit --no-gate
+assert "long: the head line stays" contains "$SUMMARY" "9 guide build(s) do not carry cleanly"
+assert "long: the tail stays" contains "$SUMMARY" "line 150"
+assert "long: the middle is elided" contains "$SUMMARY" "lines omitted"
+assert "long: and left out" lacks "$SUMMARY" "line 60"$'\n'
+
+# Under Actions: an error annotation, and no local undo line.
+d=$SCRATCH/move-actions
+make_move_repo "$d"
+STATUS=0
+OUT=$(cd "$d" && GITHUB_ACTIONS=true GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+assert "actions: an error annotation names the step" contains "$OUT" "::error title=client move to $NEW_BUILD stopped at: re-encoding the guide builds"
+assert "actions: no undo line on a throwaway runner" lacks "$(cat "$d/summary.md")" "undo the half-made move"
+assert "actions: without PRODUCT the redo names the build" contains "$(cat "$d/summary.md")" "gh workflow run client.yml -f build=$NEW_BUILD"
+assert "actions: and no empty product" lacks "$(cat "$d/summary.md")" "-f product="
+
+# The fetch has not landed: the hand command is the fetch, then the move.
+d=$SCRATCH/move-unfetched
+make_move_repo "$d"
+rm "$d/data/builds/$NEW_BUILD/simdb.bin"
+activate "$d" "$NEW_BUILD" --no-commit --no-gate
+assert "unfetched: exits 1" equal "$STATUS" 1
+assert "unfetched: names the missing table" contains "$SUMMARY" "data/builds/$NEW_BUILD/simdb.bin is missing"
+assert "unfetched: the hand command fetches first" contains "$SUMMARY" "gh workflow run data.yml -f product=wowf -f build=$NEW_BUILD, then gh workflow run client.yml"
+assert "unfetched: the active build was not touched" contains "$(cat "$d/web/src/data/active-build.json")" "$OLD_BUILD"
+
+# Argument errors and the already-active build are not failures to report.
+d=$SCRATCH/move-args
+make_move_repo "$d"
+activate "$d" "$NEW_BUILD" --no-gate
+assert "--no-gate without --no-commit is a usage error" equal "$STATUS" 2
+assert "and writes no failure summary" equal "$SUMMARY" ""
+activate "$d" "$OLD_BUILD"
+assert "the active build is nothing to do" equal "$STATUS" 0
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "$FAILED failed, $PASSED passed" >&2

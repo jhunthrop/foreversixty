@@ -152,9 +152,13 @@ jobs:
       - run: npm ci
         working-directory: web
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
+      # On a failure the script writes the step, the reason and the hand command that
+      # finishes the move to this run's summary (and an error annotation).
       - name: activate ${{ needs.watch.outputs.build }}
+        id: move
         env:
           BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
           INSPECT: ${{ inputs.inspect }}
         run: |
           if [ "$INSPECT" = "true" ]; then
@@ -163,3 +167,60 @@ jobs:
           else
             tools/activate-build.sh "$BUILD"
           fi
+      # A setup step failed before the script could report anything.
+      - name: say where the move stopped
+        if: failure() && steps.move.outcome != 'failure'
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
+        run: |
+          hand="gh workflow run client.yml -f build=$BUILD${PRODUCT:+ -f product=$PRODUCT}"
+          {
+            echo "## Client move to $BUILD stopped"
+            echo
+            echo "**Step:** setting up the activation runner (checkout, toolchains, pin-engine, npm ci)"
+            echo
+            echo "**Reason:** the failed step above; nothing was moved, committed or tagged"
+            echo
+            echo "**To finish or redo the move:** $hand"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=client move stopped at: setting up the activation runner::nothing moved -- to finish: $hand"
+
+  # The watch and the fetch fail outside activate-build.sh, which writes its own report;
+  # this names their step, the reason and the hand command the same way.
+  report:
+    needs: [watch, fetch, activate]
+    if: ${{ failure() && needs.activate.result != 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: say where the move stopped
+        env:
+          WATCH: ${{ needs.watch.result }}
+          FETCH: ${{ needs.fetch.result }}
+          BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          redo="gh workflow run client.yml -f build=${BUILD:-<build>}${PRODUCT:+ -f product=$PRODUCT}"
+          if [ "$WATCH" = failure ]; then
+            step="watch: the newest Forever build on wago.tools (pipeline client-check)"
+            reason="client-check failed: wago.tools or Blizzard's version service did not answer, or curated/client.json did not load (its log names which)"
+            hand="nothing has moved; the next 03:41 UTC run retries, or once the cause is fixed: gh workflow run client.yml"
+          else
+            step="fetch: data.yml's fetch of ${BUILD} (${PRODUCT})"
+            reason="data.yml's fetch job failed, so ${BUILD}'s tables were not committed and nothing moved; its log and summary name the gate (a shrunken catalogue, a truncated ItemSparse export, a wago.tools error)"
+            hand="gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=${BUILD} (add -f allow_shrink=true only for a deliberate re-baseline), then ${redo}"
+          fi
+          {
+            echo "## Client move to ${BUILD:-a new build} stopped"
+            echo
+            echo "**Step:** $step"
+            echo
+            echo "**Reason:** $reason"
+            echo
+            echo "**To finish or redo the move:** $hand"
+            echo
+            echo "Run: $RUN_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"
