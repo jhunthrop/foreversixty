@@ -1,0 +1,158 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "id": "ewlrx3enxbeb",
+        "title": "Onyxia, Tuesday",
+        "zone": "Onyxia's Lair",
+        "created_at": "2026-12-15T01:58:00Z",
+        "duration_ms": 4080000,
+        "fight_count": 9,
+        "kill_count": 1,
+        "wipe_count": 8,
+        "raiders": 20,
+        "deaths": 41,
+        "top_parse": {
+          "name": "Windtalon",
+          "class": "hunter",
+          "metric": "dps",
+          "value": 701.2
+        },
+        "fights": [
+          {
+            "index": 3,
+            "name": "Onyxia",
+            "encounter_id": 1084,
+            "kill": true,
+            "duration_ms": 268000,
+            "deaths": 3,
+            "players": 40
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": 29
+      }
+    ],
+    "next_cursor": "MjAyNi0xMi0xNVQwMTo1ODowMFp8ZXdscngzZW54YmVi",
+    "planned": [
+      {
+        "id": 31,
+        "zone": "raid:onyxias-lair",
+        "zone_name": "Onyxia's Lair",
+        "title": "Onyxia's Lair",
+        "starts_at": "2026-12-20T01:00:00Z",
+        "duration_minutes": 180,
+        "status": "planned",
+        "size": 40,
+        "guild_timezone": "America/Chicago",
+        "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
+        "notes": "Bring **flasks**",
+        "counts": {
+          "in": 18,
+          "late": 2,
+          "bench": 1,
+          "out": 3,
+          "tanks": 2,
+          "healers": 5,
+          "dps": 11
+        },
+        "signups": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "spec": "warrior-fury",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": true
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior",
+            "spec": "warrior-protection",
+            "role": "tank",
+            "state": "in",
+            "note": "",
+            "own": false
+          }
+        ],
+        "not_signed": [
+          {
+            "character_key": "us/pvp/zulmara",
+            "name": "Zulmara",
+            "class": "hunter",
+            "spec": "hunter-marksmanship"
+          }
+        ],
+        "viewer": {
+          "characters": [
+            {
+              "character_key": "us/pvp/obnoxious-yell",
+              "name": "Obnoxious Yell",
+              "class": "warrior",
+              "spec": "warrior-fury",
+              "verified": true,
+              "state": "in",
+              "role": "dps",
+              "raid_spec": "warrior-fury"
+            }
+          ]
+        },
+        "discord": {
+          "available": true,
+          "connected": true,
+          "post_default": true,
+          "remind_default": true,
+          "channel_name": "raid-signups"
+        },
+        "discord_post": {
+          "posted_at": "2026-12-13T18:00:00Z",
+          "post_at": "2026-12-13T18:00:00Z",
+          "reminded_at": null,
+          "remind": true
+        },
+        "pre_done_status": null,
+        "match": null,
+        "night": null,
+        "attendance": null,
+        "report": null
+      }
+    ],
+    "zones": [
+      {
+        "key": "raid:barrow-deeps",
+        "name": "Barrow Deeps",
+        "size": null
+      },
+      {
+        "key": "raid:hyjal-summit",
+        "name": "Hyjal Summit",
+        "size": null
+      },
+      {
+        "key": "raid:onyxias-lair",
+        "name": "Onyxia's Lair",
+        "size": 40
+      }
+    ],
+    "guild_timezone": "America/Chicago",
+    "discord": {
+      "available": true,
+      "connected": true,
+      "post_default": true,
+      "remind_default": true,
+      "channel_name": "raid-signups"
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

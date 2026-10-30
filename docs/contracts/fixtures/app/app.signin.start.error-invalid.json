@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "that app sign-in request is not valid",
+    "fields": {
+      "platform": "ios or android",
+      "code_challenge_method": "S256",
+      "code_challenge": "the base64url SHA-256 of the code verifier, 43 characters",
+      "state": "16 to 128 URL-safe characters"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

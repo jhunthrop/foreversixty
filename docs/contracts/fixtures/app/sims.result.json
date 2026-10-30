@@ -1,0 +1,518 @@
+{
+  "ok": true,
+  "data": {
+    "sim_id": "km3xibdrsiyr",
+    "engine_version": "1f542def3",
+    "request": {
+      "engine_version": "1f542def3",
+      "spec": "warrior-fury",
+      "source": {
+        "kind": "addon",
+        "ref": "",
+        "captured_at": "2026-09-14T10:00:00Z"
+      },
+      "character": {
+        "name": "Thrallgar",
+        "race": "orc",
+        "class": "warrior",
+        "level": 60,
+        "talents": "-5530515-",
+        "gear": [
+          {
+            "slot": "head",
+            "item_id": 12640
+          },
+          {
+            "slot": "main_hand",
+            "item_id": 12784
+          }
+        ],
+        "buffs": [
+          "battle_shout",
+          "blessing_of_kings"
+        ],
+        "consumes": [
+          "flask_of_supreme_power",
+          "elixir_of_the_mongoose"
+        ]
+      },
+      "encounter": {
+        "duration_sec": 180,
+        "variation": 0.2,
+        "targets": 1,
+        "execute_ratio": 0.25,
+        "profile": ""
+      },
+      "iterations": 3000,
+      "random_seed": 0
+    },
+    "lane": "browser",
+    "dps": {
+      "mean": 101.4257331012062,
+      "stddev": 7.236016802641698,
+      "error": 0.13211098764310886,
+      "min": 79.16585437963867,
+      "max": 130.8126857083039
+    },
+    "iterations_run": 3000,
+    "duration_ms": 504,
+    "summary": {
+      "engine_version": "sim:1f542def3",
+      "fight_index": 1,
+      "duration_ms": 179629,
+      "damage_done": [
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "class": "warrior",
+          "total": 18219,
+          "effective": 18219,
+          "active_ms": 179629,
+          "abilities": [
+            {
+              "spell_id": 10022000007,
+              "name": "other:attack/1",
+              "school": 1,
+              "total": 10816,
+              "effective": 10816,
+              "hits": 40,
+              "crits": 7,
+              "ticks": 0,
+              "misses": {
+                "DODGE": 3,
+                "GLANCING": 18,
+                "MISS": 2
+              },
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 1680,
+              "name": "spell:1680",
+              "school": 1,
+              "total": 3399,
+              "effective": 3399,
+              "hits": 12,
+              "crits": 3,
+              "ticks": 0,
+              "misses": {
+                "DODGE": 1,
+                "MISS": 1
+              },
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 20662,
+              "name": "spell:20662",
+              "school": 1,
+              "total": 2739,
+              "effective": 2739,
+              "hits": 6,
+              "crits": 1,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 25286,
+              "name": "spell:25286",
+              "school": 1,
+              "total": 1265,
+              "effective": 1265,
+              "hits": 3,
+              "crits": 1,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 22000006,
+              "name": "other:rage_gain",
+              "total": 0,
+              "effective": 0,
+              "hits": 0,
+              "crits": 0,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 10002025286,
+              "name": "spell:25286/1",
+              "total": 0,
+              "effective": 0,
+              "hits": 0,
+              "crits": 0,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 2687,
+              "name": "spell:2687",
+              "total": 0,
+              "effective": 0,
+              "hits": 0,
+              "crits": 0,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 1719,
+              "name": "spell:1719",
+              "total": 0,
+              "effective": 0,
+              "hits": 0,
+              "crits": 0,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            },
+            {
+              "spell_id": 20572,
+              "name": "spell:20572",
+              "total": 0,
+              "effective": 0,
+              "hits": 0,
+              "crits": 0,
+              "ticks": 0,
+              "min": 0,
+              "max": 0
+            }
+          ],
+          "targets": [
+            {
+              "guid": "sim-target-0",
+              "name": "Target 1",
+              "total": 18219
+            }
+          ],
+          "series": []
+        }
+      ],
+      "damage_taken": [],
+      "healing": [],
+      "healing_taken": [],
+      "deaths": [],
+      "auras": [
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 25289,
+          "name": "spell:25289",
+          "type": "BUFF",
+          "applications": 1,
+          "max_stacks": 0,
+          "uptime_ms": 179863,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 2458,
+          "name": "spell:2458",
+          "type": "BUFF",
+          "applications": 1,
+          "max_stacks": 0,
+          "uptime_ms": 179863,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 2687,
+          "name": "spell:2687",
+          "type": "BUFF",
+          "applications": 3,
+          "max_stacks": 0,
+          "uptime_ms": 34285,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 20572,
+          "name": "spell:20572",
+          "type": "BUFF",
+          "applications": 2,
+          "max_stacks": 0,
+          "uptime_ms": 30000,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 11585,
+          "name": "spell:11585",
+          "type": "BUFF",
+          "applications": 4,
+          "max_stacks": 0,
+          "uptime_ms": 19571,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 1719,
+          "name": "spell:1719",
+          "type": "BUFF",
+          "applications": 1,
+          "max_stacks": 0,
+          "uptime_ms": 15000,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 10002025286,
+          "name": "spell:25286/1",
+          "type": "BUFF",
+          "applications": 3,
+          "max_stacks": 0,
+          "uptime_ms": 11327,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 2457,
+          "name": "spell:2457",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 71,
+          "name": "spell:71",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 18499,
+          "name": "spell:18499",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 25288,
+          "name": "spell:25288",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 10002020569,
+          "name": "spell:20569/1",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        },
+        {
+          "target_guid": "sim-player",
+          "target_name": "Thrallgar",
+          "spell_id": 22000014,
+          "name": "other:move",
+          "type": "BUFF",
+          "applications": 0,
+          "max_stacks": 0,
+          "uptime_ms": 0,
+          "segments": [],
+          "appliers": [
+            "Thrallgar"
+          ]
+        }
+      ],
+      "casts": [
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 10022000007,
+          "spell_name": "other:attack/1",
+          "started": 45,
+          "succeeded": 45,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 1680,
+          "spell_name": "spell:1680",
+          "started": 13,
+          "succeeded": 13,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 10002025286,
+          "spell_name": "spell:25286/1",
+          "started": 3,
+          "succeeded": 3,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 2687,
+          "spell_name": "spell:2687",
+          "started": 3,
+          "succeeded": 3,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 25286,
+          "spell_name": "spell:25286",
+          "started": 3,
+          "succeeded": 3,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 20572,
+          "spell_name": "spell:20572",
+          "started": 2,
+          "succeeded": 2,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        },
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "owner_guid": "sim-player",
+          "spell_id": 1719,
+          "spell_name": "spell:1719",
+          "started": 1,
+          "succeeded": 1,
+          "failed": 0,
+          "cast_time_ms": 0,
+          "sequence": []
+        }
+      ],
+      "interrupts": [],
+      "dispels": [],
+      "resources": [
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "power_type": 3,
+          "series": [],
+          "gained": 515,
+          "spent": 509,
+          "zero_ms": 0,
+          "max": 0,
+          "at_max_ms": 0,
+          "wasted": 0
+        }
+      ],
+      "threat": [],
+      "threat_by_target": [],
+      "taunts": [],
+      "combatants": [],
+      "roster": [
+        {
+          "guid": "sim-player",
+          "name": "Thrallgar",
+          "class": "warrior",
+          "class_source": "sim",
+          "spec": "fury",
+          "role": "dps",
+          "active_ms": 179629,
+          "activity_pct": 100,
+          "deaths": 0,
+          "damage_done": 18219,
+          "healing_done": 0,
+          "damage_taken": 0,
+          "dps": 101.4257331012062,
+          "hps": 0,
+          "dtps": 0
+        }
+      ],
+      "mechanics": {
+        "table_found": false,
+        "rows": []
+      },
+      "phases": []
+    },
+    "title": "Tuesday"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

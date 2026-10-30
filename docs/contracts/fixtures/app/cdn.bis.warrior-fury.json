@@ -1,0 +1,105 @@
+{
+  "spec": "warrior-fury",
+  "build": "1.60.1.70658",
+  "engine_version": "1f542def3",
+  "generated_at": "2026-10-30T14:18:52Z",
+  "bands": [
+    {
+      "spec": "warrior-fury",
+      "band": 60,
+      "preset": "raid",
+      "faction": "horde",
+      "race": "troll",
+      "talents": "34320003002000000-05153105022011501-200000000000000000",
+      "talent_points": 51,
+      "score_unit": "reference_stat_points",
+      "reference_dps_per_point": 0.21128707660155732,
+      "scale_reference_stat": "strength",
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.0015721478457925789,
+          "insignificant": false,
+          "weight_per_percent": 1,
+          "scale_factor": 0.4545454545454577,
+          "dps_per_point": 0.21128707660155732,
+          "scale_error": 0.0007146126571784499
+        },
+        {
+          "stat": "strength",
+          "weight": 2.1999999999999846,
+          "error": 0.0034587252607431772,
+          "insignificant": false,
+          "weight_per_percent": 2.1999999999999846,
+          "scale_factor": 1,
+          "dps_per_point": 0.4648315685234229,
+          "scale_error": 0.0015721478457923642
+        },
+        {
+          "stat": "agility",
+          "weight": 1.992685398461359,
+          "error": 0.11728000806990657,
+          "insignificant": false,
+          "weight_per_percent": 1.992685398461359,
+          "scale_factor": 0.905766090209715,
+          "dps_per_point": 0.42102867242750996,
+          "scale_error": 0.05330909457723063
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 12640,
+          "item_name": "Lionheart Helm",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 194.452948852,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 227043,
+              "item_name": "Champion's Plate Helm",
+              "source_kind": "pvp",
+              "source": "PvP rank 14 · Champion · Horde",
+              "dps_delta": -14.964718727
+            },
+            {
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
+              "source_kind": "vendor",
+              "source": "PvP rank 11 · Blood Guard · Horde",
+              "dps_delta": -18.683371276
+            }
+          ]
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 19120,
+          "item_name": "Rune of the Guard Captain",
+          "source": "Job Opening: Guard Captain of Revantusk Village",
+          "source_kind": "quest",
+          "sim_dps": 894.0603618581058,
+          "verified": true,
+          "swap_note": "confirmed by the sim against Darkmoon Card: Maelstrom (id 19289): kept the pick, +16.2 DPS (894.1 vs 877.8 set DPS)",
+          "dps_delta": 16.210658571158092,
+          "alternatives": [
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -7.135850532
+            }
+          ]
+        }
+      ],
+      "new_at_band": []
+    }
+  ],
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1"
+    }
+  }
+}
