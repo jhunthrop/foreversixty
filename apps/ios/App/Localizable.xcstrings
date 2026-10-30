@@ -3076,6 +3076,18 @@
         }
       }
     },
+    "raids.copy.count": {
+      "comment": "Arguments: 1 size (string), 2 breakdown (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
     "raids.copy.group": {
       "comment": "Arguments: 1 label (string), 2 names (string)",
       "extractionState": "manual",
@@ -3526,6 +3538,65 @@
           "stringUnit": {
             "state": "translated",
             "value": "You are waiting for approval. Planned raids show once an officer approves you."
+          }
+        }
+      }
+    },
+    "raids.waitingTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting"
+          }
+        }
+      }
+    },
+    "raids.when.date": {
+      "comment": "Arguments: 1 date (string), 2 clock (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "raids.when.tomorrow": {
+      "comment": "Arguments: 1 clock (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomorrow %1$@"
+          }
+        }
+      }
+    },
+    "raids.when.tonight": {
+      "comment": "Arguments: 1 clock (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonight %1$@"
+          }
+        }
+      }
+    },
+    "raids.when.weekday": {
+      "comment": "Arguments: 1 weekday (string), 2 clock (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
           }
         }
       }

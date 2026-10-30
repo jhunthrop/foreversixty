@@ -495,6 +495,29 @@ enum Copy {
         format("raids.chip.signed", state, role)
     }
 
+    /// Waiting
+    static var raidsWaitingTag: String { text("raids.waitingTag") }
+
+    /// Tonight {clock}
+    static func raidsWhenTonight(clock: String) -> String {
+        format("raids.when.tonight", clock)
+    }
+
+    /// Tomorrow {clock}
+    static func raidsWhenTomorrow(clock: String) -> String {
+        format("raids.when.tomorrow", clock)
+    }
+
+    /// {weekday} {clock}
+    static func raidsWhenWeekday(weekday: String, clock: String) -> String {
+        format("raids.when.weekday", weekday, clock)
+    }
+
+    /// {date}, {clock}
+    static func raidsWhenDate(date: String, clock: String) -> String {
+        format("raids.when.date", date, clock)
+    }
+
     /// {spec} · {role}
     static func raidsWho(spec: String, role: String) -> String {
         format("raids.who", spec, role)
@@ -656,6 +679,11 @@ enum Copy {
     /// {label}: {names}
     static func raidsCopyGroup(label: String, names: String) -> String {
         format("raids.copy.group", label, names)
+    }
+
+    /// {size}: {breakdown}
+    static func raidsCopyCount(size: String, breakdown: String) -> String {
+        format("raids.copy.count", size, breakdown)
     }
 
     /// {guild} · {zone}

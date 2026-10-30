@@ -150,6 +150,11 @@
     <string name="raids_emptyNote">When an officer plans one, it shows here and we tell you.</string>
     <string name="raids_failed">Planned raids did not load.</string>
     <string name="raids_chip_signed">%1$s · %2$s</string>
+    <string name="raids_waitingTag">Waiting</string>
+    <string name="raids_when_tonight">Tonight %1$s</string>
+    <string name="raids_when_tomorrow">Tomorrow %1$s</string>
+    <string name="raids_when_weekday">%1$s %2$s</string>
+    <string name="raids_when_date">%1$s, %2$s</string>
     <string name="raids_who">%1$s · %2$s</string>
     <string name="raids_nightMeta">%1$s · %2$s · %3$s</string>
     <plurals name="raids_part_tanks">
@@ -209,6 +214,7 @@
     <string name="raids_note_saving">Saving…</string>
     <string name="raids_copy_size" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
     <string name="raids_copy_group">%1$s: %2$s</string>
+    <string name="raids_copy_count">%1$s: %2$s</string>
     <string name="raids_calendarLocation">%1$s · %2$s</string>
     <string name="raids_night_dps">%1$s DPS</string>
     <string name="raids_night_open">Your raid night</string>

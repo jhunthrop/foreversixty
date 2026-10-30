@@ -4391,7 +4391,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view"
-          x-fixtures: [guild.raid, guild.raid.done, guild.raid.officer, guild.raid.locked, guild.raid.cancelled, guild.raid.no-invite, guild.raid.ask-spec, guild.raid.two-characters]
+          x-fixtures: [guild.raid, guild.raid.done, guild.raid.officer, guild.raid.locked, guild.raid.cancelled, guild.raid.no-invite, guild.raid.ask-spec, guild.raid.two-characters, guild.raid.officer-locked]
           content:
             application/json:
               schema:
