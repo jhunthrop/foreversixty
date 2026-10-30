@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val gate by graph.updateGate.state.collectAsStateWithLifecycle()
                 val answer = gate
                 if (answer == null) {
-                    ForeverAppScaffold(accountApi = graph.accountApi)
+                    ForeverAppScaffold(accountApi = graph.accountApi, raids = graph.raids)
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })
@@ -64,9 +64,13 @@ class MainActivity : ComponentActivity() {
      */
     private fun handleAppLink(intent: Intent?) {
         val link = intent?.dataString ?: return
-        if (DeepLink.parse(link) is DeepLink.SignIn) {
+        val parsed = DeepLink.parse(link)
+        if (parsed is DeepLink.SignIn) {
             // TODO(lane F1): surface the SignInOutcome (signed in, cancelled, rejected, failed).
             lifecycleScope.launch { graph.signIn.complete(link) }
+        } else if (parsed != null && graph.raids.enabled) {
+            // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
+            graph.raids.navigator.open(parsed)
         }
     }
 }

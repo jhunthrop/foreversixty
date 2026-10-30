@@ -20,15 +20,27 @@ import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.network.AccountApi
+import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.RaidsRoute
+import androidx.compose.runtime.LaunchedEffect
 
 /** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
 @Composable
-fun ForeverAppScaffold(accountApi: AccountApi) {
+fun ForeverAppScaffold(accountApi: AccountApi, raids: RaidsFeature? = null) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Character) }
+    // Lane F4: a raid link or notification selects the Raids tab.
+    val wantsRaids = raids?.navigator?.wantsTab == true
+    LaunchedEffect(wantsRaids) {
+        if (wantsRaids) {
+            selected = ForeverTab.Raids
+            raids.navigator.wantsTab = false
+        }
+    }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         when (selected) {
             ForeverTab.Character -> HomeRoute(accountApi)
-            ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
+            ForeverTab.Raids -> if (raids != null && raids.enabled) RaidsRoute(raids) else ComingSoon(selected)
+            ForeverTab.Bis, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
         }
     }
 }

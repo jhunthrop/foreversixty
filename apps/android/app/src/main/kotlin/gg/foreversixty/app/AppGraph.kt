@@ -14,7 +14,9 @@ import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
+import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.UpdateGate
+import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.update.InstallId
 
 /**
@@ -47,6 +49,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
 
     /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
     val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
+
+    /** Lane F4: guild raids and sign-up. */
+    val raids = RaidsFeature(
+        context = context,
+        apiClient = apiClient,
+        statics = StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        appConfig = appConfig,
+        mode = config.mode,
+    )
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

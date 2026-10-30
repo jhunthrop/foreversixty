@@ -41,5 +41,9 @@ gradlePlugin {
             id = "forever.app-icon"
             implementationClass = "AppIconConventionPlugin"
         }
+        register("classCrests") {
+            id = "forever.crests"
+            implementationClass = "ClassCrestsConventionPlugin"
+        }
     }
 }
