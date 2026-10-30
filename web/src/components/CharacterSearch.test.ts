@@ -62,8 +62,11 @@ describe('CharacterSearch', () => {
   it('stacks on a phone: the name full width, region and ruleset side by side on the 52px Select', () => {
     expect(classOf(/<form class="([^"]*)"/)).toEqual(expect.arrayContaining(['grid', 'grid-cols-2']));
     for (const name of ['region', 'ruleset']) {
-      expect(classOf(new RegExp(`<select[^>]*name="${name}"[^>]*class="([^"]*)"`))).toEqual(
-        expect.arrayContaining(['h-[52px]', 'appearance-none']),
+      // The shared Select at its default 52 px, server-rendered and booted by its own script.
+      expect(html).toMatch(
+        new RegExp(
+          `data-size="default"[^>]*data-static="true"[^>]*>(<!--[^>]*-->)*<select class="sel-native"[^>]*name="${name}"`,
+        ),
       );
     }
   });

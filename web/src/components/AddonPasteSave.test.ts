@@ -34,12 +34,11 @@ describe('AddonPasteSave', () => {
     expect(body).toMatch(/<option value=""[^>]*selected[^>]*>Region</);
   });
 
-  it('draws the fields as fields: each has a border', () => {
+  it('draws the fields as fields: the name a bordered input, region and ruleset the shared Select', () => {
     const { body } = render(AddonPasteSave, { props: { signedIn: true, code: CODE } });
-    for (const testid of ['addon-paste-name', 'addon-paste-region', 'addon-paste-ruleset']) {
-      const tag = new RegExp(`<(?:input|select)[^>]*data-testid="${testid}"[^>]*>`).exec(body);
-      if (tag === null) throw new Error(`${testid} not rendered`);
-      expect(tag[0]).toMatch(/class="[^"]*\bborder\b/);
+    expect(body).toMatch(/<input[^>]*class="[^"]*\bborder\b[^"]*"[^>]*data-testid="addon-paste-name"/);
+    for (const testid of ['addon-paste-region', 'addon-paste-ruleset']) {
+      expect(body).toMatch(new RegExp(`<select class="sel-native"[^>]*data-testid="${testid}"`));
     }
   });
 

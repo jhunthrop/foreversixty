@@ -41,7 +41,10 @@
       const match = Array.from(select.options).find(
         (option) => option.textContent?.trim().toLowerCase() === race.toLowerCase(),
       );
-      if (match !== undefined) select.value = match.value;
+      if (match === undefined || select.value === match.value) return;
+      select.value = match.value;
+      // The shared Select's face follows its select through `change` (lib/ui/select-boot.ts).
+      select.dispatchEvent(new Event('change', { bubbles: true }));
     });
   });
 

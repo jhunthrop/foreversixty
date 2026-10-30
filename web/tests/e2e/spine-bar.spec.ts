@@ -6,6 +6,7 @@
 // href actually carries the pointer, on every page it is supposed to mount on.
 import { expect, test } from '@playwright/test';
 import { ACTIVE_BUILD } from './support/active-build';
+import { nativeSelect } from './support/select';
 
 // An export that names its character: the only kind that becomes the current one.
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:|who=Simfury:Realm`;
@@ -80,7 +81,7 @@ test.describe('the spine bar opens every door on the current character', () => {
   }) => {
     await pasteAndGoTo(page, '/planner');
     await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
-    await expect(page.getByLabel('Class')).toHaveValue('warrior');
+    await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
     // "5530515" base-36 digits sum to 24 points in Fury, nothing dropped (the same fixture
     // string current-character.spec.ts's own restore test and sim-saved.spec.ts's fixture
     // result, "0-5530515-", both already rely on).

@@ -9,6 +9,8 @@
   import PlannerDps from './PlannerDps.svelte';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
   import type { LiveGate } from '../../lib/planner/live-gate';
+  import { classOption } from '../../lib/ui/select-options';
+  import Select from '../ui/Select.svelte';
 
   let {
     store,
@@ -41,28 +43,26 @@
   // happened, and the DPS failure describes the build as a whole.
   const statusLine = $derived(store.refusal ?? (live.state === 'error' ? live.message : null) ?? '');
 
-  const controlClass =
-    'border-line-warm rounded-control bg-raised text-text h-11 min-w-[8rem] border px-3 text-[14px] font-semibold';
   const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
 </script>
 
 <div
   class="border-line bg-raised md:rounded-panel sticky top-0 z-20 flex flex-wrap items-start gap-3 border-b px-[18px] py-3 md:static md:gap-5 md:border md:px-5"
 >
-  <label class="flex flex-col gap-1">
-    <span class="quiet-label">Class</span>
-    <!-- A function binding rather than a plain `value` attribute: on a <select> the value
-         has to be applied after the options exist, and Svelte only does that for bindings. -->
-    <select
-      class={controlClass}
+  <div class="flex flex-col gap-1">
+    <label class="quiet-label" for="planner-summary-class">Class</label>
+    <!-- A function binding: the store is the truth, and a pick reaches selectClass. -->
+    <Select
+      id="planner-summary-class"
+      class="w-[180px]"
+      size="compact"
       bind:value={() => store.classSlug, (slug) => store.selectClass(slug)}
+      options={store.classes.map((row) =>
+        classOption({ value: row.slug, label: row.name, className: row.slug }),
+      )}
       disabled={store.readOnly}
-    >
-      {#each store.classes as row (row.slug)}
-        <option value={row.slug}>{row.name}</option>
-      {/each}
-    </select>
-  </label>
+    />
+  </div>
 
   <!-- Rebuild spec §4.A: the race select moves to the header, restyled onto ClassHeader's
        own token -- this bar keeps only the class select, which the header has no room for

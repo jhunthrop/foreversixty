@@ -4,6 +4,7 @@ import { collectPageErrors } from './support/console';
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
 import { openOrderStrip } from './support/planner';
+import { choose, nativeSelect } from './support/select';
 
 // tree-source.ts carries no import.meta.env dependency (unlike its neighbour config.ts,
 // which reads PUBLIC_API_BASE_URL at module scope and cannot be imported under
@@ -18,7 +19,7 @@ test('the planner opens on the default class with an empty build', async ({ page
   // base level, before any point is spent).
   await expect(page.getByTestId('planner-level')).toHaveText('9');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
-  await expect(page.getByLabel('Class')).toHaveValue('warrior');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
   // Both trees render, but below the md breakpoint only the selected tab's panel is on screen,
@@ -64,28 +65,28 @@ test('reset says it will ask before it clears the build', async ({ page }) => {
 
 test('?class and ?race preselect the build', async ({ page }) => {
   await page.goto('/planner?class=warrior&race=dwarf');
-  await expect(page.getByLabel('Class')).toHaveValue('warrior');
-  await expect(page.getByLabel('Race')).toHaveValue('dwarf');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
+  await expect(nativeSelect(page, 'Race')).toHaveValue('dwarf');
 });
 
 test('switching class and race rewrites the address, so a refresh keeps the choice', async ({ page }) => {
   await page.goto('/planner?class=warrior&race=dwarf');
-  await expect(page.getByLabel('Class')).toHaveValue('warrior');
-  await page.getByLabel('Class').selectOption('mage');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
+  await choose(nativeSelect(page, 'Class'), 'mage');
   await expect(page).toHaveURL(/\/planner\?class=mage(&race=[a-z]+)?$/);
-  await page.getByLabel('Race').selectOption('gnome');
+  await choose(nativeSelect(page, 'Race'), 'gnome');
   await expect(page).toHaveURL(/\/planner\?class=mage&race=gnome$/);
   await page.reload();
-  await expect(page.getByLabel('Class')).toHaveValue('mage');
-  await expect(page.getByLabel('Race')).toHaveValue('gnome');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('mage');
+  await expect(nativeSelect(page, 'Race')).toHaveValue('gnome');
 });
 
 test('a code stays in the address until its class or race is left', async ({ page }) => {
   const code = 'FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A';
   await page.goto(`/planner?code=${code}`);
-  await expect(page.getByLabel('Class')).toHaveValue('warrior');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
   await expect(page).toHaveURL(new RegExp(`/planner\\?code=${code}$`));
-  await page.getByLabel('Race').selectOption('dwarf');
+  await choose(nativeSelect(page, 'Race'), 'dwarf');
   await expect(page).toHaveURL(/\/planner\?class=warrior&race=dwarf$/);
 });
 
@@ -154,7 +155,7 @@ test('a slow class switch cannot leave one class holding another class trees', a
 
   await page.goto('/planner');
   await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
-  await page.getByLabel('Class').selectOption('paladin');
+  await choose(nativeSelect(page, 'Class'), 'paladin');
   await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
 
   const warriorResponse = page.waitForResponse('**/data/*/talents/warrior.json');
@@ -165,7 +166,7 @@ test('a slow class switch cannot leave one class holding another class trees', a
   // nothing and so raises no event to wait on, which is what this settle stands in for.
   await page.waitForTimeout(500);
 
-  await expect(page.getByLabel('Class')).toHaveValue('paladin');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
   await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Arms', includeHidden: true })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toHaveCount(0);
@@ -358,9 +359,9 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
 
   // Warrior is the only class with talent data on this build, so the way back to a ready
   // planner under a different class is out and back again.
-  await page.getByLabel('Class').selectOption('paladin');
+  await choose(nativeSelect(page, 'Class'), 'paladin');
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
 
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
@@ -416,7 +417,7 @@ test('a code naming a class with no talent data fails clean, and switching class
   // ranks onto it: codeApplied is armed the moment the first load began, not only once that
   // load succeeds, so warrior comes up with an empty build rather than paladin's digits
   // reinterpreted against warrior's own talent tab positions.
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
 
