@@ -1238,7 +1238,7 @@ enum Copy {
         format("you.version", version, build, data)
     }
 
-    /// Not affiliated with or endorsed by Blizzard Entertainment.
+    /// Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
     static var aboutNotAffiliated: String { text("about.notAffiliated") }
 
     /// What your plan includes
@@ -1391,7 +1391,7 @@ enum Copy {
     /// Your characters, their addon exports and sync history
     static var accountDeleteItemCharacters: String { text("account.delete.item.characters") }
 
-    /// The combat logs you uploaded and the reports parsed from them
+    /// The combat logs you uploaded
     static var accountDeleteItemLogs: String { text("account.delete.item.logs") }
 
     /// Your saved sims and builds, and the ratings derived from them
@@ -1400,10 +1400,29 @@ enum Copy {
     /// Your notification settings, Discord link and devices
     static var accountDeleteItemLinks: String { text("account.delete.item.links") }
 
-    /// Your plan is cancelled and does not renew.
-    static var accountDeletePlan: String { text("account.delete.plan") }
+    /// Billing and seats
+    static var accountDeleteLoseTitle: String { text("account.delete.lose.title") }
 
-    /// Every device is signed out at once. The rest is gone within thirty days, and usually much sooner.
+    /// Your Premium plan is cancelled and does not renew.
+    static var accountDeleteLosePremium: String { text("account.delete.lose.premium") }
+
+    /// Your founder price is gone for good. A plan taken later is billed at the full price.
+    static var accountDeleteLoseFounder: String { text("account.delete.lose.founder") }
+
+    /// The {guild} plan you pay for is cancelled, and its seats end for every member.
+    static func accountDeleteLoseGuildPlan(guild: String) -> String {
+        format("account.delete.lose.guildPlan", guild)
+    }
+
+    /// Your Premium seat from {guild} ends.
+    static func accountDeleteLoseSeat(guild: String) -> String {
+        format("account.delete.lose.seat", guild)
+    }
+
+    /// Guild reports stay for the raiders in them. Your name on them becomes Former raider.
+    static var accountDeleteReports: String { text("account.delete.reports") }
+
+    /// Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner.
     static var accountDeleteTiming: String { text("account.delete.timing") }
 
     /// You can also ask by email at help@foreversixty.gg.
@@ -1415,18 +1434,40 @@ enum Copy {
     /// Delete your Forever Sixty account?
     static var accountDeleteConfirmTitle: String { text("account.delete.confirm.title") }
 
-    /// This cannot be undone.
+    /// Your characters, logs and sims are removed within thirty days. Every device is signed out now.
     static var accountDeleteConfirmBody: String { text("account.delete.confirm.body") }
-
-    /// Delete
-    static var accountDeleteConfirmAction: String { text("account.delete.confirm.action") }
 
     /// Could not delete your account just now. Try again.
     static var accountDeleteFailed: String { text("account.delete.failed") }
 
-    /// Your account is being deleted. It is gone by {date}.
+    /// Your account is deleted. Everything is removed by {date}.
     static func accountDeleteDone(date: String) -> String {
         format("account.delete.done", date)
+    }
+
+    /// Character
+    static var accountYouCharacter: String { text("account.you.character") }
+
+    /// {region} · {ruleset}
+    static func accountCharacterWhere(region: String, ruleset: String) -> String {
+        format("account.character.where", region, ruleset)
+    }
+
+    /// Normal
+    static var accountRulesetNormal: String { text("account.ruleset.normal") }
+
+    /// PvP
+    static var accountRulesetPvp: String { text("account.ruleset.pvp") }
+
+    /// Roleplay
+    static var accountRulesetRp: String { text("account.ruleset.rp") }
+
+    /// Hardcore
+    static var accountRulesetHardcore: String { text("account.ruleset.hardcore") }
+
+    /// Version {version} ({build})
+    static func accountVersionNoData(version: String, build: String) -> String {
+        format("account.version.noData", version, build)
     }
 
     private static func text(_ key: String) -> String {

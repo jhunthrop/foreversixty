@@ -7,7 +7,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not affiliated with or endorsed by Blizzard Entertainment."
+            "value": "Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc."
           }
         }
       }
@@ -59,6 +59,18 @@
         }
       }
     },
+    "account.character.where": {
+      "comment": "Arguments: 1 region (string), 2 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "account.delete.button": {
       "extractionState": "manual",
       "localizations": {
@@ -70,24 +82,13 @@
         }
       }
     },
-    "account.delete.confirm.action": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete"
-          }
-        }
-      }
-    },
     "account.delete.confirm.body": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This cannot be undone."
+            "value": "Your characters, logs and sims are removed within thirty days. Every device is signed out now."
           }
         }
       }
@@ -110,7 +111,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your account is being deleted. It is gone by %1$@."
+            "value": "Your account is deleted. Everything is removed by %1$@."
           }
         }
       }
@@ -187,7 +188,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The combat logs you uploaded and the reports parsed from them"
+            "value": "The combat logs you uploaded"
           }
         }
       }
@@ -203,13 +204,70 @@
         }
       }
     },
-    "account.delete.plan": {
+    "account.delete.lose.founder": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your plan is cancelled and does not renew."
+            "value": "Your founder price is gone for good. A plan taken later is billed at the full price."
+          }
+        }
+      }
+    },
+    "account.delete.lose.guildPlan": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The %1$@ plan you pay for is cancelled, and its seats end for every member."
+          }
+        }
+      }
+    },
+    "account.delete.lose.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Premium plan is cancelled and does not renew."
+          }
+        }
+      }
+    },
+    "account.delete.lose.seat": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Premium seat from %1$@ ends."
+          }
+        }
+      }
+    },
+    "account.delete.lose.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billing and seats"
+          }
+        }
+      }
+    },
+    "account.delete.reports": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild reports stay for the raiders in them. Your name on them becomes Former raider."
           }
         }
       }
@@ -231,7 +289,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every device is signed out at once. The rest is gone within thirty days, and usually much sooner."
+            "value": "Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner."
           }
         }
       }
@@ -265,6 +323,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "iPhone"
+          }
+        }
+      }
+    },
+    "account.ruleset.hardcore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardcore"
+          }
+        }
+      }
+    },
+    "account.ruleset.normal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal"
+          }
+        }
+      }
+    },
+    "account.ruleset.pvp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PvP"
+          }
+        }
+      }
+    },
+    "account.ruleset.rp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roleplay"
           }
         }
       }
@@ -322,6 +424,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Opens your characters"
+          }
+        }
+      }
+    },
+    "account.version.noData": {
+      "comment": "Arguments: 1 version (string), 2 build (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "account.you.character": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character"
           }
         }
       }

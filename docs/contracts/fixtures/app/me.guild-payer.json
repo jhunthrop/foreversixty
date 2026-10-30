@@ -1,0 +1,142 @@
+{
+  "data": {
+    "characters": [
+      {
+        "key": "us/pvp/obnoxious-yell",
+        "region": "us",
+        "ruleset": "pvp",
+        "name": "Obnoxious Yell",
+        "class": "warrior",
+        "realm": "Whitemane",
+        "level": 58,
+        "faction": "horde",
+        "race": "orc",
+        "gender": "male",
+        "item_level": 66,
+        "avatar_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-avatar.jpg",
+        "render_url": "https://render.worldofwarcraft.com/us/character/whitemane/12/obnoxious-yell-main-raw.png",
+        "source": "bnet",
+        "spec": "Fury",
+        "build": {
+          "source": "bnet",
+          "captured_at": "2026-10-29T18:22:41Z",
+          "gear": {
+            "head": 12640,
+            "neck": 18404,
+            "shoulder": 14551,
+            "main_hand": 13246
+          },
+          "talents": {
+            "trees": [
+              "553051552",
+              "532001153",
+              "0"
+            ],
+            "points": [
+              31,
+              20,
+              0
+            ]
+          },
+          "level": 58,
+          "data_build": "1.60.1.70658",
+          "median_sync_gap_sec": 5400,
+          "sync_error": null
+        },
+        "guild": {
+          "id": 2,
+          "name": "OLYMPUS XXVII",
+          "rank": "officer",
+          "rank_index": 1,
+          "verified": true,
+          "attendance": {
+            "present": 6,
+            "nights": 8
+          }
+        }
+      },
+      {
+        "key": "us/pvp/yellfury",
+        "region": "us",
+        "ruleset": "pvp",
+        "name": "Yellfury",
+        "class": "hunter",
+        "realm": "Whitemane",
+        "level": 31,
+        "faction": "horde",
+        "race": "orc",
+        "gender": "female",
+        "item_level": 38,
+        "source": "bnet"
+      }
+    ],
+    "discord_link": null,
+    "discord_link_available": false,
+    "discord_link_suggested": null,
+    "entitlements": {
+      "billing": null,
+      "history": false,
+      "log_coach": false,
+      "multi_compare": false,
+      "notifications": false,
+      "officer_views": false,
+      "personal_portal": false,
+      "retention": false,
+      "roster_check": false,
+      "server_sims": false,
+      "supporter_mark": false
+    },
+    "finished_sims": [],
+    "guilds": [
+      {
+        "id": 2,
+        "region": "us",
+        "ruleset": "pvp",
+        "name": "OLYMPUS XXVII",
+        "rank": "leader",
+        "consent": "gear_bags",
+        "verified": true,
+        "verified_count": 24,
+        "can": [
+          "approve",
+          "remove",
+          "settings",
+          "award",
+          "billing",
+          "release"
+        ],
+        "ruleset_label": "PvP",
+        "slug": "olympus-xxvii",
+        "crest_url": null,
+        "faction": "horde",
+        "roster_count": 24,
+        "claim": null,
+        "verify": null,
+        "covered": null,
+        "subscribe": null,
+        "plan": {
+          "scope": "plan",
+          "tier": "guild",
+          "you_hold_seat": true,
+          "status": "active",
+          "current_period_end": "2027-10-27T15:00:00Z",
+          "cancel_at_period_end": false,
+          "billed_by": "Yell#1604",
+          "you_are_billing_contact": true
+        }
+      }
+    ],
+    "user": {
+      "id": 1812,
+      "battletag": "Yell#1604",
+      "email": null,
+      "role": "user",
+      "anonymize": false
+    },
+    "main_character_key": "us/pvp/obnoxious-yell",
+    "bnet_imported_at": "2026-10-29T18:22:41Z"
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "9f2c41d07ab3e655"
+}

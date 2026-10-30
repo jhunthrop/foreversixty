@@ -1252,7 +1252,7 @@ components:
           properties:
             connect: { type: boolean, description: True when the one-click Discord connect is configured. }
             discord: { oneOf: [{ $ref: '#/components/schemas/DiscordBlock' }, { type: "null" }] }
-        seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeat; omitted when none." }
+        seat: { $ref: '#/components/schemas/MeSeat' }
         seat_offer: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeatOffer; omitted when none." }
         ended_seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeEndedSeat; omitted when none." }
     AccountCharacter:
@@ -2220,6 +2220,15 @@ components:
       required: [signed_out]
       properties:
         signed_out: { type: boolean }
+    MeSeat:
+      type: object
+      description: The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none.
+      required: [guild_name, given_by, since, starts_at]
+      properties:
+        guild_name: { type: string }
+        given_by: { type: string }
+        since: { type: string, format: date-time }
+        starts_at: { type: [string, "null"], format: date-time }
     AccountDeletionRequest:
       type: object
       description: >-
@@ -2974,7 +2983,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account"
-          x-fixtures: [me, me.premium, me.empty]
+          x-fixtures: [me, me.premium, me.empty, me.guild-payer, me.seat]
           content:
             application/json:
               schema:
