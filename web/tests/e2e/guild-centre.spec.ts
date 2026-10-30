@@ -674,7 +674,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
 test.describe('roster at 390px: three blocks under the name, nothing past the edge (round 7)', () => {
   test.use({ timezoneId: 'UTC' });
 
-  test('every row fits, the facts keep one order, Remove is a quiet text control that asks with a name', async ({
+  test('every row fits, the facts keep one order, Remove is a bordered button that asks with a name', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 900 });
@@ -717,13 +717,13 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     await expect(zulmara).not.toContainText('per addon');
     await expect(zulmara).not.toContainText('build:');
 
-    // Remove: the ghost button (no visible border), 44px high on a phone, sitting on the name row; it asks with a name.
+    // Remove: the secondary button (a visible border, so it never reads as a link; stage 2 player verdict), 44px high on a phone, sitting on the name row; it asks with a name.
     const remove = page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Windtalon"]');
     const style = await remove.evaluate((node) => {
       const css = getComputedStyle(node);
       return { border: css.borderTopColor, height: node.getBoundingClientRect().height };
     });
-    expect(style.border).toBe('rgba(0, 0, 0, 0)');
+    expect(style.border).not.toBe('rgba(0, 0, 0, 0)');
     expect(style.height).toBeGreaterThanOrEqual(44);
     const windtalon = page
       .getByTestId('guild-roster-rows')
