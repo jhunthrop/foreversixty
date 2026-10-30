@@ -23,7 +23,7 @@ export type GearRowState = 'upgrade' | 'best' | 'empty' | 'worn-only' | 'none';
 export interface GearItemView {
   id: number;
   /** The item's name; for a worn item the export's data build does not have (no name), the muted
-   *  "Worn item not in our list" (gearCopy.unknownItem, fix round 4 item 5). */
+   *  "Not in our item data yet" (gearCopy.unknownItem, fix round 4 item 5). */
   name: string;
   /** False for an item the data build does not have: no tooltip, no icon, muted. */
   known: boolean;

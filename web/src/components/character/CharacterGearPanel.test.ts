@@ -157,8 +157,8 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     // Nothing opens a tooltip yet, and no name is drawn in its colour.
     expect(body).not.toContain('data-bis-item');
     expect(body).not.toContain('character-gear-pick');
-    // "Empty" and "Worn item not in our list" are not names: they draw at once.
-    expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
+    // "Empty" and "Not in our item data yet" are not names: they draw at once.
+    expect(text(rowHtml(body, 'legs'))).toContain('Not in our item data yet');
     expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your level range yet');
     // The off hand's swap note's line is reserved as a bar of its width (fix 4 item 4).
     expect(bare(rowHtml(body, 'off_hand'))).toMatch(
@@ -194,7 +194,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const legs = rowHtml(body, 'legs');
     expect(legs).not.toContain('data-bis-item="99001"');
     expect(legs).toMatch(
-      /<span class="text-muted"[^>]*data-testid="character-gear-worn">Worn item not in our list/,
+      /<span class="text-muted"[^>]*data-testid="character-gear-worn">Not in our item data yet/,
     );
   });
 
@@ -310,7 +310,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(rowHtml(body, 'head'))).toBe(
       "Head Green Lens → best at this level: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 points",
     );
-    expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
+    expect(text(rowHtml(body, 'legs'))).toContain('Not in our item data yet');
   });
 
   it('no text begins or ends with a separator: each dot is drawn before its text (fix 4 item B)', () => {

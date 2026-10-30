@@ -240,7 +240,7 @@ for (const width of [1440, 390]) {
         'No pick for your level range yet',
       );
       const legs = row(page, 'legs');
-      await expect(legs.getByTestId('character-gear-worn')).toHaveText('Worn item not in our list');
+      await expect(legs.getByTestId('character-gear-worn')).toHaveText('Not in our item data yet');
       await expect(legs.getByTestId('character-gear-worn')).toHaveCSS('color', RGB.muted);
       await expect(legs.getByTestId('character-gear-gap')).toHaveText('Not scored');
       await expect(legs.getByTestId('character-gear-gap')).toHaveCSS('color', RGB.muted);

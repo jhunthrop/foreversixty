@@ -4,6 +4,7 @@
 // words stay apart from the score card's: the card's "88 below its top" measures the Gear part
 // against the band's best set; the section's total counts the slot gaps against the picks the
 // character can wear. The line under the title says so with both numbers (fix round 1 ruling 3).
+import { itemNotInDataPhrase } from '../items/unknown-item-copy';
 
 /** "+18.4 pts", one decimal as the API serves it, a whole number without its ".0". */
 export function points(value: number): string {
@@ -97,7 +98,7 @@ export const gearCopy = {
   /** An empty slot, and a row with neither a worn item nor a pick. */
   empty: 'Empty',
   /** A worn item the export's data build does not have. */
-  unknownItem: 'Worn item not in our list',
+  unknownItem: itemNotInDataPhrase,
   /** In the footer, under the BiS link, when the build's items file did not load (fix round 4,
    *  nice-to-have; fix round 6 item 2). */
   failed: 'Item details didn’t load.',

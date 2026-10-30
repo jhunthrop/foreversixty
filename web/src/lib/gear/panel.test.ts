@@ -136,10 +136,10 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     });
   });
 
-  it('a gap the API could not score reads "Not scored"; a worn item the build lacks "Worn item not in our list" (fix 4 item 5)', () => {
+  it('a gap the API could not score reads "Not scored"; a worn item the build lacks "Not in our item data yet" (fix 4 item 5)', () => {
     expect(row('legs')).toMatchObject({
       state: 'upgrade',
-      worn: { id: 99001, name: 'Worn item not in our list', known: false },
+      worn: { id: 99001, name: 'Not in our item data yet', known: false },
       gap: 'Not scored',
       gapLabel: null,
       strong: false,
