@@ -26,9 +26,10 @@ const { label, testid, fitPhone = false } = Astro.props;
 <style>
   .guide-table-box {
     overflow-x: auto;
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
+    background: var(--surface-card);
+    border: 1px solid var(--color-line-card);
     border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-card);
     margin: 12px 0 14px;
   }
   .guide-table-box :global(table) {

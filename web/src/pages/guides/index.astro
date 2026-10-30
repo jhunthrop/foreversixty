@@ -8,6 +8,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import GuidesClassPicker, { type ClassCardEntry } from '../../components/guides/GuidesClassPicker.astro';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
+import PageHead from '../../components/ui/PageHead.astro';
 import classes from '../../data/classes.json';
 import { guidesCopy } from '../../lib/guides/copy';
 import { readSpecCatalog } from '../../lib/bis/load';
@@ -53,16 +54,16 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
   description="Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec."
   path="/guides"
 >
-  <main id="main" tabindex="-1" class="guides-index">
-    <header class="guides-index-header">
-      <p class="label guides-index-eyebrow">
-        <i class="guides-index-eyebrow-rule" aria-hidden="true"></i>
-        {guidesCopy.eyebrow}
-      </p>
-      <h1 class="guides-index-h1 heading-page">Guides</h1>
-      <UpdatedStamp date={updated} />
-      <p class="guides-index-honesty">{guidesCopy.indexHonestyLine}</p>
-      <div id="guides-signed-in-callout" data-testid="guides-signed-in-callout-root">
+  <main
+    id="main"
+    tabindex="-1"
+    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
+  >
+    <PageHead eyebrow={guidesCopy.eyebrow} title="Guides" job={guidesCopy.indexHonestyLine()}>
+      <Fragment slot="meta">
+        <UpdatedStamp date={updated} />
+      </Fragment>
+      <div slot="below" id="guides-signed-in-callout" data-testid="guides-signed-in-callout-root">
         <div
           class="guides-callout-skeleton"
           role="status"
@@ -74,7 +75,7 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
           <span class="skeleton-block guides-callout-skeleton-text" aria-hidden="true"></span>
         </div>
       </div>
-    </header>
+    </PageHead>
     <div class="guides-index-body">
       <GuidesClassPicker entries={entries} build={activeBuild.build} />
     </div>
@@ -112,42 +113,10 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
 </script>
 
 <style>
-  .guides-index {
-    display: flex;
-    flex-direction: column;
-  }
-  .guides-index-header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 28px var(--page-inset) 0 var(--page-inset);
-  }
-  .guides-index-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--color-gold);
-  }
-  .guides-index-eyebrow-rule {
-    width: 28px;
-    height: 1px;
-    background: var(--color-gold);
-    display: inline-block;
-  }
-  .guides-index-h1 {
-    margin: 0;
-  }
-  .guides-index-honesty {
-    margin: 0;
-    font-size: 14px;
-    color: var(--color-text);
-    max-width: 70ch;
-  }
   .guides-index-body {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding: 24px var(--page-inset) 32px var(--page-inset);
   }
 
   /* The callout's slot exists only for a visitor Base.astro's pre-paint script hints as signed
@@ -188,9 +157,12 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     padding: 14px 18px;
     min-height: 72px;
     box-sizing: border-box;
-    border: 1px solid var(--color-gold);
+    border: 1px solid var(--color-line-card);
     border-radius: var(--radius-panel);
-    background: color-mix(in srgb, var(--color-gold) 6%, transparent);
+    background: var(--surface-card);
+    box-shadow:
+      inset 0 1px 0 var(--card-highlight),
+      var(--shadow-card);
   }
   :global(.guides-callout-crest) {
     flex-shrink: 0;
@@ -203,13 +175,5 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     font-size: 14px;
     font-weight: 700;
     color: var(--color-gold);
-  }
-
-  @media (max-width: 1023px) {
-    .guides-index-header,
-    .guides-index-body {
-      padding-left: 18px;
-      padding-right: 18px;
-    }
   }
 </style>

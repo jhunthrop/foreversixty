@@ -1,6 +1,11 @@
 // Every user-visible string the guides lane's own components (GuideBuildTree,
 // BuildActionButtons, RacePillRow, StatPriorityPills) render, reference voice throughout
 // (design/DESIGN-SYSTEM.md: state the thing and stop).
+import { betaOver } from './beta';
+
+const STATUS_NOTE_TAIL =
+  "comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.";
+
 export const guidesCopy = {
   loadThisBuild: 'Load this build',
   simThisBuild: 'Sim this build',
@@ -12,7 +17,11 @@ export const guidesCopy = {
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Your guide: Fury Warrior →". */
   signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} →`,
-  indexHonestyLine: "The beta stops at level 30. Level 60 picks come from this site's simulator.",
+  /** The /guides index line. Before launch it names the beta cap; at launch the cap is gone. */
+  indexHonestyLine: (now: Date = new Date()): string =>
+    betaOver(now)
+      ? "Level 60 picks come from this site's simulator."
+      : "The beta stops at level 30. Level 60 picks come from this site's simulator.",
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
@@ -41,8 +50,10 @@ export const guidesCopy = {
   simRaidBuildAriaLabel: 'Sim the raid build',
   // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
   /** The one status note for the whole page; the sections are then written as a guide. */
-  statusNote:
-    "The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.",
+  statusNote: (now: Date = new Date()): string =>
+    betaOver(now)
+      ? `Everything on this page, the talents, rotation, stat weights and best in slot, ${STATUS_NOTE_TAIL}`
+      : `The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, ${STATUS_NOTE_TAIL}`,
   statusNoteLabel: 'About this guide',
   /** The muted tag beside `Updated` in the header: the guide is simulated, the beta is not over. */
   betaTag: 'Beta',

@@ -14,7 +14,8 @@
 // defaults, unchanged from before this rebuild.
 //
 // Polish spec 5.2: `Load this build` is the primary button, `Sim this build` the secondary
-// (lib/ui/button.ts), both 44 px.
+// (lib/ui/button.ts), both 44 px. `no-underline` beats the prose link rule, which would
+// otherwise underline the pair where it sits inside guide prose.
 import { guidesCopy } from '../../lib/guides/copy';
 import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
 import { BUTTON_MD, BUTTON_PRIMARY, BUTTON_SECONDARY } from '../../lib/ui/button';
@@ -38,7 +39,7 @@ const {
 <div class="flex flex-wrap gap-3" data-testid="guide-build-actions">
   <a
     href={loadBuildHref(code)}
-    class={`${BUTTON_PRIMARY} ${BUTTON_MD}`}
+    class={`${BUTTON_PRIMARY} ${BUTTON_MD} no-underline`}
     data-testid={loadTestId}
     aria-label={loadAriaLabel}
   >
@@ -46,7 +47,7 @@ const {
   </a>
   <a
     href={simBuildHref(code)}
-    class={`${BUTTON_SECONDARY} ${BUTTON_MD}`}
+    class={`${BUTTON_SECONDARY} ${BUTTON_MD} no-underline`}
     data-testid={simTestId}
     aria-label={simAriaLabel}
   >
