@@ -68,6 +68,7 @@ export const homeHeroCardsCopy = {
    *  character's own data; this one names a gap in the site's own published data). */
   bestInSlotNoListYet: 'No best in slot list published yet for this spec and level range.',
   talentsLabel: 'Talents',
+  talentsAction: 'Open the planner',
   talentsNotAvailable:
     'Not available yet: no talent export for this character. Open the addon once to send it.',
   talentsNoListYet: 'No talent build published yet for this spec and level range.',
@@ -78,6 +79,7 @@ export const homeHeroCardsCopy = {
   talentsLine: (pointsDiffer: number, bandTalentPoints: number, bandLabel: string): string =>
     `${pointsDiffer} of the ${bandTalentPoints} points in the ${bandLabel} build differ · compare in the planner`,
   simulatorLabel: 'Simulator',
+  simulatorAction: 'Open the simulator',
   /** The visitor's own latest saved sim, the unit on the figure: "26 DPS now". Shown only
    *  when that sim ran the band entry's own setup (`lib/home/sim-card.ts`). */
   simulatorNowFigure: (dps: string): string => `${dps} DPS now`,

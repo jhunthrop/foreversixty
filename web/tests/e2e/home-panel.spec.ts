@@ -541,7 +541,10 @@ for (const width of [390, 1440]) {
     const gap = await page.evaluate(() => {
       const bottomOf = (testId: string): number =>
         document.querySelector(`[data-testid="${testId}"]`)!.getBoundingClientRect().bottom;
-      const latest = [...document.querySelectorAll('h2')].find((h) => h.textContent === 'Latest')!;
+      // Latest's title sits in its card's head now, so the card's top is what follows the panels above.
+      const latest = [...document.querySelectorAll('h2')]
+        .find((h) => h.textContent === 'Latest')!
+        .closest('section')!;
       return latest.getBoundingClientRect().top - bottomOf('home-around-the-site');
     });
     expect(gap).toBeLessThanOrEqual(MAX_BAND_ABOVE_LATEST_PX);
@@ -557,7 +560,10 @@ for (const width of [390, 1440]) {
     );
     await page.goto('/');
     const card = (await page.getByTestId('home-get-set-up-signed-out').boundingBox())!;
-    const latest = (await page.getByRole('heading', { name: 'Latest' }).boundingBox())!;
+    const latest = (await page
+      .getByRole('heading', { name: 'Latest' })
+      .locator('xpath=ancestor::section')
+      .boundingBox())!;
     expect(latest.y - (card.y + card.height)).toBeLessThanOrEqual(MAX_BAND_ABOVE_LATEST_PX);
   });
 }

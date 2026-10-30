@@ -4,31 +4,25 @@
 // raid", each with one short line. The links are the tools' own pages in the static page; the
 // script at the foot points the first two at the visitor's current character when there is one.
 import { outcomeRows, outcomeRowsHeading } from '../lib/home/outcome-rows';
+import type { GlyphName } from '../lib/ui/glyphs';
+import Card from './ui/Card.astro';
+import SettingsRow from './ui/SettingsRow.svelte';
+
+/** Each row's tile: the tool it opens (site alignment spec 2026-10-29 §5.1). */
+const ROW_GLYPHS: Record<string, GlyphName> = { planner: 'tree', sim: 'bolt', logs: 'upload' };
 ---
 
-<section class="flex flex-col gap-[14px]" data-testid="home-outcomes">
-  <h2 class="section-title">{outcomeRowsHeading}</h2>
-  <ul class="border-line bg-raised rounded-panel flex flex-col border">
-    {outcomeRows.map((row) => (
-      <li class="border-line-soft border-b last:border-b-0">
-        <a
-          href={row.href}
-          class="hover:bg-card-top flex min-h-14 items-center justify-between gap-4 px-[18px] py-3 transition-colors duration-150"
-          data-testid={`home-outcome-${row.key}`}
-          data-outcome={row.key}
-        >
-          <span class="flex min-w-0 flex-col gap-0.5">
-            <span class="heading-name text-strong text-[18px]">{row.title}</span>
-            <span class="text-muted text-[13px] leading-snug">{row.line}</span>
-          </span>
-          <span class="text-gold shrink-0 text-[18px]" aria-hidden="true">
-            →
-          </span>
-        </a>
-      </li>
-    ))}
-  </ul>
-</section>
+<Card glyph="star" title={outcomeRowsHeading} body="rows" testid="home-outcomes">
+  {outcomeRows.map((row) => (
+    <SettingsRow
+      href={row.href}
+      glyph={ROW_GLYPHS[row.key]}
+      label={row.title}
+      sub={row.line}
+      testid={`home-outcome-${row.key}`}
+    />
+  ))}
+</Card>
 
 <script>
   import { afterPaint } from '../lib/after-paint';
@@ -42,9 +36,11 @@ import { outcomeRows, outcomeRowsHeading } from '../lib/home/outcome-rows';
         if (current === null) return;
         const hrefs = outcomeHrefs(current);
         for (const link of document.querySelectorAll<HTMLAnchorElement>(
-          '[data-testid="home-outcomes"] a[data-outcome]',
+          '[data-testid="home-outcomes"] a[data-testid^="home-outcome-"]',
         )) {
-          const href = (hrefs as Record<string, string | undefined>)[link.dataset.outcome ?? ''];
+          const href = (hrefs as Record<string, string | undefined>)[
+            (link.dataset.testid ?? '').replace('home-outcome-', '')
+          ];
           if (href !== undefined) link.setAttribute('href', href);
         }
       },

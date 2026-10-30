@@ -18,7 +18,8 @@ import StatTile from '../components/ui/StatTile.svelte';
 import Glyph from '../components/ui/Glyph.svelte';
 import HomeOutcomeRows from '../components/HomeOutcomeRows.astro';
 import ClassCrest from '../components/ClassCrest.astro';
-import Panel from '../components/Panel.astro';
+import Card from '../components/ui/Card.astro';
+import ActionLink from '../components/ui/ActionLink.svelte';
 import FeedRow from '../components/FeedRow.astro';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
@@ -147,10 +148,7 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                takes the whole row (home signed-in panel spec 2026-10-10). -->
           <div class="home-example-cell grid lg:col-span-5 min-w-0" data-testid="home-launch-block">
             <div class="[grid-area:1/1] min-w-0" data-session-hide data-testid="home-launch-panel-wrap">
-              <div
-                class="bg-raised/85 border-line flex flex-col gap-4 rounded-panel border px-5 py-[18px]"
-                data-testid="home-launch-panel"
-              >
+              <div class="card-surface flex flex-col gap-4 px-5 py-[18px]" data-testid="home-launch-panel">
                 <div
                   class="flex items-center justify-between"
                   data-testid="home-hero-card"
@@ -164,7 +162,7 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                     ></i>
                     <span data-part="eyebrow">{heroCard.eyebrow}</span>
                   </span>
-                  <span class="mono text-[12px] text-muted" data-part="tag">
+                  <span class="numeric text-[12px] text-muted" data-part="tag">
                     {heroCard.tag}
                   </span>
                 </div>
@@ -218,42 +216,38 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
            (Base.astro's inline script), the same synchronous, before-first-paint timing
            `html:not([data-session='1']) .chip-slot` already relies on elsewhere in
            global.css -- so a `display:none` swap here costs no layout shift either way. -->
-      <section class="flex flex-col gap-[14px]" data-signed-out-only data-testid="home-class-picker-large">
-        <div class="flex items-baseline justify-between">
-          <h2 class="section-title">{homeClassPickerCopy.bestInSlotByClassHeading}</h2>
-          <span class="flex items-baseline gap-4">
-            <a
-              href={homeClassPickerCopy.tierListHref}
-              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-              data-testid="home-tier-list-link"
-            >
+      <div data-signed-out-only>
+        <Card
+          glyph="sword"
+          title={homeClassPickerCopy.bestInSlotByClassHeading}
+          testid="home-class-picker-large"
+        >
+          <span slot="aside" class="flex flex-wrap items-center justify-end gap-x-4">
+            <ActionLink href={homeClassPickerCopy.tierListHref} data-testid="home-tier-list-link">
               {homeClassPickerCopy.tierListLink}
-            </a>
-            <a
-              href={homeClassPickerCopy.allSpecsHref}
-              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-            >
+            </ActionLink>
+            <ActionLink href={homeClassPickerCopy.allSpecsHref}>
               {homeClassPickerCopy.allSpecsLink}
-            </a>
+            </ActionLink>
           </span>
-        </div>
-        <div class="grid grid-cols-3 gap-[10px] sm:grid-cols-9">
-          {classes.map((c) => (
-            <a
-              href={`/guides/${c.slug}`}
-              class="flex flex-col items-center gap-[10px] rounded-control border border-line bg-raised px-2 pb-[14px] pt-4 transition-colors duration-150 hover:border-[var(--c)]"
-              style={`box-shadow: inset 0 2px 0 ${c.color}; --c: ${c.color};`}
-            >
-              <ClassCrest slug={c.slug} size={64} />
-              <span class="heading-name text-[12px]" style={`color: ${c.color}`}>
-                {c.name}
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
+          <div class="grid grid-cols-3 gap-[10px] sm:grid-cols-9">
+            {classes.map((c) => (
+              <a
+                href={`/guides/${c.slug}`}
+                class="flex flex-col items-center gap-[10px] rounded-control border border-line bg-raised px-2 pb-[14px] pt-4 transition-colors duration-150 hover:border-[var(--c)]"
+                style={`box-shadow: inset 0 2px 0 ${c.color}; --c: ${c.color};`}
+              >
+                <ClassCrest slug={c.slug} size={64} />
+                <span class="heading-name text-[12px]" style={`color: ${c.color}`}>
+                  {c.name}
+                </span>
+              </a>
+            ))}
+          </div>
+        </Card>
+      </div>
 
-      <section id="upgrades" class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-upgrades">
+      <section id="upgrades" data-signed-in-only data-testid="home-upgrades">
         <!-- Home rebuild spec §3.B.3: the real worn-vs-BiS table now that `MeCharacter.
              build.gear` exists (the API lane's own extension to the contract). The header
              row's own aside link names the real spec/band ("Full list for Marksmanship 20
@@ -284,35 +278,21 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
       <!-- §3.B.5 "Another class" (signed in only): the signed-in equivalent of the
            signed-out "Best in slot by class" row above -- a smaller, 44px crest row, since
            a signed-in visitor's own class already has its answer in the hero. -->
-      <section class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-another-class">
-        <div class="flex items-baseline justify-between">
-          <h2 class="section-title">{homeClassPickerCopy.anotherClassHeading}</h2>
-          <span class="flex items-baseline gap-4">
-            <a
-              href={homeClassPickerCopy.tierListHref}
-              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-              data-testid="home-tier-list-link"
-            >
+      <div data-signed-in-only data-testid="home-another-class">
+        <Card glyph="user" title={homeClassPickerCopy.anotherClassHeading}>
+          <span slot="aside" class="flex flex-wrap items-center justify-end gap-x-4">
+            <ActionLink href={homeClassPickerCopy.tierListHref} data-testid="home-tier-list-link">
               {homeClassPickerCopy.tierListLink}
-            </a>
-            <a
-              href={homeClassPickerCopy.allSpecsHref}
-              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-            >
+            </ActionLink>
+            <ActionLink href={homeClassPickerCopy.allSpecsHref}>
               {homeClassPickerCopy.allSpecsLink}
-            </a>
+            </ActionLink>
           </span>
-        </div>
-        <div class="bg-raised border-line rounded-panel border px-6 py-[14px]">
-          <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical axis
-               to clip too (CSS Overflow's "non-visible on one axis computes the other to
-               auto"), which cut ClassCrest's outside ring and focus outline flat at this
-               row's top/bottom. The scroll/clip boundary lives on this inner wrapper, not
-               the bordered panel above, so the fix never grows or shifts the panel's own
-               border/background -- matching padding (ring + focus-outline clearance: 6px
-               top/bottom, 4px sides) and negative margin on the SAME box cancel exactly in
-               the page's flow (margin-box unchanged), while the padding box each crest's
-               ring sits inside grows by that same amount. -->
+          <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical axis to clip
+               too, which cut ClassCrest's outside ring and focus outline flat at this row's top
+               and bottom. Padding (ring + focus-outline clearance: 6px top/bottom, 4px sides)
+               cancelled by an equal negative margin on the SAME box widens the clip boundary
+               without moving the row in the card's flow. -->
           <div class="-mx-1 -my-1.5 flex min-w-0 gap-4 overflow-x-auto px-1 py-1.5 md:justify-between md:gap-4">
             {classes.map((c) => (
               <a href={`/guides/${c.slug}`} class="flex shrink-0 flex-col items-center gap-[6px]">
@@ -323,26 +303,27 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
               </a>
             ))}
           </div>
-        </div>
-      </section>
+        </Card>
+      </div>
 
-      <section class="grid grid-cols-1 lg:grid-cols-2 gap-4" data-testid="home-around-the-site">
-        <Panel title={homeAroundTheSiteCopy.reportsLabel}>
-          <a slot="aside" href="/logs" class="text-[13px] font-semibold">
-            {homeAroundTheSiteCopy.seeAll}
-          </a>
-          <div class="p-[18px]">
-            <RecentReports client:idle-after-load compact heading={false} />
-          </div>
-        </Panel>
-        <Panel title={homeAroundTheSiteCopy.guildsLabel}>
-          <a slot="aside" href="/rankings?board=guild" class="text-[13px] font-semibold">
-            {homeAroundTheSiteCopy.seeAll}
-          </a>
-          <div class="p-[18px]">
-            <HomeTopGuilds client:idle-after-load />
-          </div>
-        </Panel>
+      <section
+        class="grid grid-cols-1 items-start gap-[22px] lg:grid-cols-2 lg:gap-8"
+        data-testid="home-around-the-site"
+      >
+        <Card
+          glyph="chart"
+          title={homeAroundTheSiteCopy.reportsLabel}
+          action={{ label: homeAroundTheSiteCopy.seeAll, href: '/logs' }}
+        >
+          <RecentReports client:idle-after-load compact heading={false} />
+        </Card>
+        <Card
+          glyph="trophy"
+          title={homeAroundTheSiteCopy.guildsLabel}
+          action={{ label: homeAroundTheSiteCopy.seeAll, href: '/rankings?board=guild' }}
+        >
+          <HomeTopGuilds client:idle-after-load />
+        </Card>
       </section>
 
       <section class="flex flex-col" data-testid="home-companion-row">
@@ -355,7 +336,7 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
           {homeCompanionRow.map((card) => (
             <a
               href={card.href}
-              class="border-line from-card-top to-raised rounded-panel text-strong hover:border-gold-deep flex flex-col gap-4 border bg-gradient-to-b p-5 transition-colors duration-150 md:h-24 md:flex-row md:items-center md:gap-5 md:py-0"
+              class="card-surface text-strong hover:border-gold-deep flex flex-col gap-4 p-5 transition-colors duration-150 md:h-24 md:flex-row md:items-center md:gap-5 md:py-0"
               data-testid="home-get-set-up-card"
             >
               <span class="flex min-w-0 items-center gap-4">
@@ -374,25 +355,30 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
         <HomeGetSetUp client:visible />
       </section>
 
-      <div class="grid grid-cols-12 gap-[22px] md:gap-8">
-        <Panel title="Latest" class="col-span-12">
-          <a slot="aside" href="/changelog" class="text-[13px] font-semibold">
-            Everything we know
-          </a>
-          {changelog.map((e, i) => (
-            <div data-testid="home-news-item" data-kind={e.data.kind} data-date={e.data.date.toISOString()}>
-              <FeedRow
-                date={e.data.date}
-                kind={e.data.kind}
-                title={e.data.title}
-                href={`/changelog#${e.id}`}
-                note={e.data.note}
-                last={i === changelog.length - 1}
-              />
-            </div>
-          ))}
-        </Panel>
-      </div>
+      <Card
+        glyph="news"
+        title="Latest"
+        action={{ label: 'Everything we know', href: '/changelog' }}
+        body="rows"
+      >
+        {changelog.map((e, i) => (
+          <div
+            class={`hover:bg-row-hover ${i === 0 ? 'border-line-soft border-t' : ''}`}
+            data-testid="home-news-item"
+            data-kind={e.data.kind}
+            data-date={e.data.date.toISOString()}
+          >
+            <FeedRow
+              date={e.data.date}
+              kind={e.data.kind}
+              title={e.data.title}
+              href={`/changelog#${e.id}`}
+              note={e.data.note}
+              last={i === changelog.length - 1}
+            />
+          </div>
+        ))}
+      </Card>
     </div>
   </main>
   <style slot="head" set:html={heroFontCss}></style>

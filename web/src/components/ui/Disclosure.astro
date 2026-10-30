@@ -9,12 +9,20 @@ interface Props {
   title: string;
   open?: boolean;
   testid?: string;
+  /** A full-bleed row inside a card's `rows` body: no box, a top rule, 20 px side padding. */
+  row?: boolean;
 }
-const { title, open = false, testid } = Astro.props;
+const { title, open = false, testid, row = false } = Astro.props;
 ---
 
-<details class="group border-line rounded-control border" open={open} data-testid={testid}>
-  <summary class="text-strong focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 text-[15px] font-semibold select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden">
+<details
+  class={row ? 'group border-line-soft border-t' : 'group border-line rounded-control border'}
+  open={open}
+  data-testid={testid}
+>
+  <summary
+    class={`text-strong focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden ${row ? 'px-5' : 'px-4'}`}
+  >
     {title}
     <span class="text-muted transition-transform duration-150 group-open:rotate-90" aria-hidden="true">
       <Glyph name="chevron" size={18} />

@@ -1,0 +1,17 @@
+---
+// web/src/components/ui/StepTile.astro
+// The numbered lead of a /setup step card (site alignment spec 2026-10-29 §5.14): the IconTile's
+// geometry (36 px, control radius, the tile ground and ink) with the step's digit in the figure face.
+interface Props {
+  step: number;
+}
+const { step } = Astro.props;
+---
+
+<span
+  class="rounded-control bg-tile text-tile-ink figure-stat inline-flex size-9 shrink-0 items-center justify-center text-[18px]"
+  aria-hidden="true"
+  data-testid="step-tile"
+>
+  {step}
+</span>

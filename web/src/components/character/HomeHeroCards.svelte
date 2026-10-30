@@ -24,8 +24,8 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import { loadBisContextFor, specKeyForCharacter, type BisContext } from '../../lib/home/upgrades-loader';
   import { talentDeltaFor } from '../../lib/home/talent-delta';
-  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
-  import Glyph from '../ui/Glyph.svelte';
+  import ActionLink from '../ui/ActionLink.svelte';
+  import Card from '../ui/Card.svelte';
   import { bisCopy } from '../../lib/bis/copy';
   import { presetLabelFor } from '../../lib/bis/presets';
 
@@ -107,31 +107,22 @@
     return specKey === undefined ? '/planner' : `/planner?spec=${specKey}`;
   });
 
-  const CARD_CLASS =
-    'flex flex-col gap-[6px] p-[14px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150';
-
   /** Fix round 1 item B.4 (ux-designer): the card's own answer is the one primary element and
    *  reads at the design system's headline-figure treatment (`design/DESIGN-SYSTEM.md`'s type
    *  table; polish spec 2026-10-28 §4.4 moved figures to Barlow Condensed 800) -- 22px here,
    *  not the `text-[15px] font-semibold` body-text size the mock's own three cards never use
    *  for their headline number. The line underneath it stays Barlow 12px muted, unchanged. */
+  /** The character's own sim is showing, so the link opens the simulator rather than asking for a first run. */
+  const hasSimFigure = $derived(simStatus === 'ready' && simFigures !== null && simFigures.nowDps !== null);
+
   const CARD_FIGURE_CLASS = 'figure-stat text-[22px] text-strong';
 </script>
 
-<!-- The card is itself the link to the simulator, so its action is an action-link look-alike (gold,
-     chevron, 44 px) rather than a nested anchor. -->
-{#snippet runAction()}
-  <span class={ACTION_LINK} data-testid="home-hero-card-sim-run">
-    {homePanelCopy.runAction}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
-  </span>
-{/snippet}
-
-<div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
-  <a href={talentsHref} class={CARD_CLASS} data-testid="home-hero-card-talents">
-    <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
+<div class="reveal grid grid-cols-1 items-start gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
+  <Card glyph="tree" title={homeHeroCardsCopy.talentsLabel} compact testid="home-hero-card-talents">
     {#if bandStatus === 'no-spec'}
       <span class="text-strong text-[15px] font-semibold">{homeHeroCardsCopy.pickASpec}</span>
-      <span class="text-muted text-[12px]">{homeHeroCardsCopy.pickASpecLine}</span>
+      <span class="text-muted text-[13px]">{homeHeroCardsCopy.pickASpecLine}</span>
     {:else if hero.build?.talents === undefined}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
     {:else if bandStatus === 'loading'}
@@ -146,24 +137,25 @@
           ? homeHeroCardsCopy.talentsOptimizedFigure
           : homeHeroCardsCopy.talentsUnoptimizedFigure}
       </span>
-      <span class="text-muted text-[12px]">
+      <span class="text-muted text-[13px]">
         {homeHeroCardsCopy.talentsLine(talentDelta, ctx.band.talent_points, bandLabel)}
       </span>
     {/if}
-  </a>
-  <a href={armorySimHref(hero.key)} class={CARD_CLASS} data-testid="home-hero-card-sim">
-    <span class="label text-gold">{homeHeroCardsCopy.simulatorLabel}</span>
+    <ActionLink href={talentsHref} data-testid="home-hero-card-talents-open">
+      {homeHeroCardsCopy.talentsAction}
+    </ActionLink>
+  </Card>
+  <Card glyph="bolt" title={homeHeroCardsCopy.simulatorLabel} compact testid="home-hero-card-sim">
     {#if simStatus === 'loading'}
       <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-sim-skeleton" />
     {:else if simStatus === 'failed'}
       <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-      {@render runAction()}
     {:else if simFigures !== null && simFigures.nowDps !== null}
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
       </span>
       {#if simFigures.bandDps !== null && ctx !== null}
-        <span class="text-muted numeric text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+        <span class="text-muted numeric text-[13px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
           >{homeHeroCardsCopy.simulatorBandLine(simFigures.bandDps)}</span
         >
       {/if}
@@ -171,13 +163,17 @@
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {homeHeroCardsCopy.simulatorBandOnlyFigure(simFigures.bandDps)}
       </span>
-      <span class="text-muted numeric text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+      <span class="text-muted numeric text-[13px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
         >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
       >
-      {@render runAction()}
     {:else}
       <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-      {@render runAction()}
     {/if}
-  </a>
+    <ActionLink
+      href={armorySimHref(hero.key)}
+      data-testid={hasSimFigure ? 'home-hero-card-sim-open' : 'home-hero-card-sim-run'}
+    >
+      {hasSimFigure ? homeHeroCardsCopy.simulatorAction : homePanelCopy.runAction}
+    </ActionLink>
+  </Card>
 </div>

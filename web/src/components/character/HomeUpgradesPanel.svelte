@@ -22,6 +22,7 @@
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
   import UpgradeRow from './UpgradeRow.svelte';
+  import Card from '../ui/Card.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import ItemHover from '../ItemHover.svelte';
 
@@ -73,19 +74,12 @@
   const extraAlreadyBisCount = $derived(result === null ? 0 : Math.max(0, result.alreadyBis.length - 3));
 </script>
 
-<div
-  class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between"
-  data-testid="home-upgrades-header"
+<Card
+  glyph="list"
+  title={homeUpgradesCopy.heading}
+  action={fullListHref === undefined ? undefined : { label: fullListLabel, href: fullListHref }}
+  testid="home-upgrades-body"
 >
-  <h2 class="section-title">{homeUpgradesCopy.heading}</h2>
-  {#if fullListHref !== undefined}
-    <a href={fullListHref} class="text-gold text-[12px] font-bold tracking-[0.12em] uppercase">
-      {fullListLabel}
-    </a>
-  {/if}
-</div>
-
-<div class="bg-raised border-line rounded-panel border px-5 py-[18px]" data-testid="home-upgrades-body">
   {#if status === 'loading'}
     <Skeleton lines={4} rowHeight="h-5" testid="home-upgrades-skeleton" />
   {:else if status === 'no-spec'}
@@ -162,7 +156,7 @@
       </p>
     {/if}
   {/if}
-</div>
+</Card>
 
 <style>
   .upgrades-table-header {

@@ -11,11 +11,12 @@ interface Props {
   titleClass?: string;
   titleColor?: string;
   titleId?: string;
+  titleTestid?: string;
   job?: string;
   testid?: string;
 }
 
-const { eyebrow, title, titleClass, titleColor, titleId, job, testid } = Astro.props;
+const { eyebrow, title, titleClass, titleColor, titleId, titleTestid, job, testid } = Astro.props;
 const hasLead = Astro.slots.has('lead');
 const hasMeta = Astro.slots.has('meta');
 const hasAside = Astro.slots.has('aside');
@@ -34,7 +35,7 @@ const titleStyle = titleColor === undefined ? undefined : `color:${titleColor}`;
           <span class={PAGE_HEAD.eyebrowRule} aria-hidden="true" />
           {eyebrow}
         </p>
-        <h1 class={pageHeadTitleClass(titleClass)} id={titleId} style={titleStyle}>
+        <h1 class={pageHeadTitleClass(titleClass)} id={titleId} style={titleStyle} data-testid={titleTestid}>
           {title}
         </h1>
         {job !== undefined && (

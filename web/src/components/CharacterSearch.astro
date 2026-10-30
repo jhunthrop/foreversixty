@@ -13,19 +13,17 @@
 import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
 import { REGIONS, RULESETS } from '../lib/characters';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+import Card from './ui/Card.astro';
 import Select from './ui/Select.svelte';
 import { BUTTON_PRIMARY } from '../lib/ui/button';
 
 const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-full border px-3 text-[15px]';
 ---
 
-<section id="lookup" class="flex scroll-mt-6 flex-col gap-3" data-testid="home-character-search">
-  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-    <h2 class="section-title">{copy.heading}</h2>
-    <p class="text-muted text-[14px]" data-testid="home-character-search-aside">
-      {copy.aside}
-    </p>
-  </div>
+<Card glyph="search" title={copy.heading} id="lookup" class="scroll-mt-6" testid="home-character-search">
+  <p class="text-muted text-[14px]" data-testid="home-character-search-aside">
+    {copy.aside}
+  </p>
   <form
     class="grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,1fr)_140px_160px_auto] md:items-end"
     data-character-search
@@ -115,7 +113,7 @@ const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-ful
     {copy.hint}
   </p>
   <p id="home-character-search-error" class="text-strong min-h-[1lh] text-[13px]" role="status"></p>
-</section>
+</Card>
 
 <style>
   /* The search box's clear control: the site's muted ink, gold on hover, never the browser's

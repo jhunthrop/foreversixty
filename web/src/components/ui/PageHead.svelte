@@ -15,7 +15,9 @@
     titleClass,
     titleColor,
     titleId,
+    titleTestid,
     job,
+    jobContent,
     lead,
     meta,
     aside,
@@ -30,8 +32,12 @@
     /** A class colour for the h1 (a CSS colour or var()). */
     titleColor?: string;
     titleId?: string;
+    /** A test id on the h1 itself. */
+    titleTestid?: string;
     /** One line under the h1 that says what the page does. */
     job?: string;
+    /** The job line as markup, for one that follows the session hint (two spans the hint picks between). */
+    jobContent?: Snippet;
     /** The 64 px crest at the title's left. */
     lead?: Snippet;
     /** The 13 px muted line under the job line (the Updated stamp). */
@@ -47,8 +53,19 @@
 {#snippet titleBlock()}
   <div class={PAGE_HEAD.titleBlock}>
     <p class={PAGE_HEAD.eyebrow}><span class={PAGE_HEAD.eyebrowRule} aria-hidden="true"></span>{eyebrow}</p>
-    <h1 class={pageHeadTitleClass(titleClass)} id={titleId} style:color={titleColor}>{title}</h1>
-    {#if job !== undefined}<p class={PAGE_HEAD.job} data-testid="page-head-job">{job}</p>{/if}
+    <h1
+      class={pageHeadTitleClass(titleClass)}
+      id={titleId}
+      style:color={titleColor}
+      data-testid={titleTestid}
+    >
+      {title}
+    </h1>
+    {#if jobContent !== undefined}
+      <p class={PAGE_HEAD.job} data-testid="page-head-job">{@render jobContent()}</p>
+    {:else if job !== undefined}
+      <p class={PAGE_HEAD.job} data-testid="page-head-job">{job}</p>
+    {/if}
     {#if meta !== undefined}<p class={PAGE_HEAD.meta} data-testid="page-head-meta">{@render meta()}</p>{/if}
   </div>
 {/snippet}
