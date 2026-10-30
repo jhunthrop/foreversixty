@@ -599,8 +599,8 @@
       <div class="reveal flex flex-col gap-8">
         <!-- Page header (polish spec 4.3): eyebrow and title left; at lg the identity tile, the
              BattleTag over the sign-in method, and Sign out right, stacked under the title on phone. -->
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <AccountTitle />
+        <AccountTitle aside={identity} />
+        {#snippet identity()}
           <div class="flex items-center gap-3" data-testid="account-identity">
             <IconTile glyph="user" />
             <div class="flex min-w-0 flex-col">
@@ -613,7 +613,7 @@
               <Glyph name="signout" />{accountPageCopy.signOut}
             </button>
           </div>
-        </div>
+        {/snippet}
 
         {#if signedInBanner !== ''}
           <div

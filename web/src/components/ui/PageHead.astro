@@ -1,0 +1,59 @@
+---
+// web/src/components/ui/PageHead.astro
+// The static twin of PageHead.svelte (site alignment spec 2026-10-29 §3.1, S2): the same box from
+// lib/ui/page-head.ts, no client JavaScript. Named slots: `lead` (64 px crest), `meta` (the
+// Updated stamp), `aside` (identity block or the page's one control), `below` (tabs, controls).
+import { PAGE_HEAD, pageHeadTitleClass } from '../../lib/ui/page-head';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  titleClass?: string;
+  titleColor?: string;
+  titleId?: string;
+  job?: string;
+  testid?: string;
+}
+
+const { eyebrow, title, titleClass, titleColor, titleId, job, testid } = Astro.props;
+const hasLead = Astro.slots.has('lead');
+const hasMeta = Astro.slots.has('meta');
+const hasAside = Astro.slots.has('aside');
+// With a crest the title block sits beside it in a row; without one it is the row's first child.
+const Wrap = hasLead ? 'div' : Fragment;
+const wrapProps = hasLead ? { class: PAGE_HEAD.withLead } : {};
+const titleStyle = titleColor === undefined ? undefined : `color:${titleColor}`;
+---
+
+<div class={PAGE_HEAD.root} data-testid={testid}>
+  <div class={PAGE_HEAD.row}>
+    <Wrap {...wrapProps}>
+      <slot name="lead" />
+      <div class={PAGE_HEAD.titleBlock}>
+        <p class={PAGE_HEAD.eyebrow}>
+          <span class={PAGE_HEAD.eyebrowRule} aria-hidden="true" />
+          {eyebrow}
+        </p>
+        <h1 class={pageHeadTitleClass(titleClass)} id={titleId} style={titleStyle}>
+          {title}
+        </h1>
+        {job !== undefined && (
+          <p class={PAGE_HEAD.job} data-testid="page-head-job">
+            {job}
+          </p>
+        )}
+        {hasMeta && (
+          <p class={PAGE_HEAD.meta} data-testid="page-head-meta">
+            <slot name="meta" />
+          </p>
+        )}
+      </div>
+    </Wrap>
+    {hasAside && (
+      <div class={PAGE_HEAD.aside} data-testid="page-head-aside">
+        <slot name="aside" />
+      </div>
+    )}
+  </div>
+  <slot name="below" />
+</div>
