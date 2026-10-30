@@ -145,9 +145,17 @@
       "phase": "later",
       "date": "unannounced",
       "confidence": "inferred",
-      "why": "Zandalar Tribe reputation and the Yeh'kinya and Zul'Gurub turn-ins exist only to lead into or reward Zul'Gurub, which has no date.",
+      "why": "Zandalar Tribe reputation and the Yeh'kinya and Zul'Gurub turn-ins exist only to lead into or reward Zul'Gurub, which has no date. The Bloodsoul and Darksoul smithing need Souldarite (19774), a Zul'Gurub-only drop with no source in loot.json, so those crafted items are keyed directly.",
       "factions": [
         {"id": 270, "name": "Zandalar Tribe"}
+      ],
+      "items": [
+        {"id": 19690, "name": "Bloodsoul Breastplate"},
+        {"id": 19691, "name": "Bloodsoul Shoulders"},
+        {"id": 19692, "name": "Bloodsoul Gauntlets"},
+        {"id": 19693, "name": "Darksoul Breastplate"},
+        {"id": 19694, "name": "Darksoul Leggings"},
+        {"id": 19695, "name": "Darksoul Shoulders"}
       ],
       "quests": [
         {"id": 8181, "name": "Confront Yeh'kinya"},
