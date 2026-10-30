@@ -350,6 +350,16 @@ assert "resume: the move itself is on origin" contains "$(git -C "$d.git" log -1
 assert "resume: nothing was dispatched" equal "$(cat "$d/stubs/gh-calls")" ""
 rm "$d.git/hooks/pre-receive"
 git -C "$d" tag -d addon-v2.1.8 >/dev/null 2>&1 || true
+# An inspect (--no-commit) or --no-publish rerun says what it would resume and does none of it.
+for mode in --no-commit --no-publish; do
+	STATUS=0
+	OUT=$(cd "$d" && PATH="$d/stubs:$PATH" bash tools/activate-build.sh "$NEW_BUILD" "$mode" 2>&1) || STATUS=$?
+	assert "resume $mode: exits 0" equal "$STATUS" 0
+	assert "resume $mode: says what it would do" contains "$OUT" "would resume the move to $NEW_BUILD: tag addon-v2.1.8"
+	assert "resume $mode: no tag on origin" equal "$(git -C "$d.git" tag -l 'addon-v*')" ""
+	assert "resume $mode: no tag locally" equal "$(git -C "$d" tag -l 'addon-v*')" ""
+	assert "resume $mode: nothing dispatched" equal "$(cat "$d/stubs/gh-calls")" ""
+done
 resume_run
 assert "resume: the rerun exits 0" equal "$STATUS" 0
 assert "resume: it says it is resuming" contains "$OUT" "resuming the move to $NEW_BUILD"
@@ -421,7 +431,7 @@ assert "the active build is nothing to do" equal "$STATUS" 0
 # core.fileMode off, so a script committed without its executable bit fails only on the
 # runner ("Permission denied", which the engine check would read as an unreadable stamp).
 for script in tools/activate-build.sh tools/activation-gate.sh tools/engine/pinned-build.sh \
-	tools/engine/pin-conditions.sh tools/engine/follow-inputs-hash.sh tools/engine/push-review-branch.sh; do
+	tools/engine/ranking-wait.sh tools/engine/ranking-verdict.sh tools/engine/pin-conditions.sh tools/engine/follow-inputs-hash.sh tools/engine/push-review-branch.sh; do
 	mode=$(git -C "$HERE/../.." ls-files -s "$script" | cut -c1-6)
 	assert "$script is committed executable (mode $mode)" equal "$mode" 100755
 done

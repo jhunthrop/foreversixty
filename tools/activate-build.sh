@@ -207,6 +207,11 @@ resume_move() {
     exit 0
   fi
   PREV="$(cat "data/builds/$NEW/dps-per-point.carried-from" 2>/dev/null || echo "the previous build")"
+  if [ "$MODE" != publish ]; then
+    # --no-commit (client.yml's inspect) and --no-publish never tag, push or dispatch.
+    echo "--no-commit/--no-publish: would resume the move to $NEW: tag $TAG at $(git log -1 --format=%h "$MOVE_SHA"), push it, then dispatch its consumers; doing nothing"
+    exit 0
+  fi
   echo "resuming the move to $NEW: $(git log -1 --format=%h "$MOVE_SHA") is on main, $TAG is not released"
   finish_move
   exit 0
