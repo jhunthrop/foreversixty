@@ -2,9 +2,10 @@
 <!-- The one filter panel (design/specs/2026-10-11-rankings.md section 3, decisions 2 and 8):
      Encounter first and widest, then Ruleset, Region, Phase, Faction, Metric and Today only;
      Class and Spec lead the row only where the page is not aimed at a character (signed out, or
-     after "Another class or spec"). From 1100 px it is one row, from 600 px three columns, and
-     on a phone it collapses to a one-line summary with a 44 px Filters button that opens the
-     two-column panel. Every filter lands in the URL through `onpatch`. -->
+     after "Another class or spec"). Each field is as wide as its longest value and the row wraps
+     before anything truncates (controls-charts spec §A9.3); on a phone it collapses to a
+     one-line summary with a 44 px Filters button that opens the panel. Every filter lands in
+     the URL through `onpatch`. -->
 <script lang="ts">
   import { encounterPickerCopy, rankingsCopy } from '../../lib/rankings/copy';
   import {
@@ -70,14 +71,15 @@
 
 {#snippet field(f: Field)}
   <div
-    class="flex min-w-0 flex-col gap-1 {f.ownRow ? 'col-span-full min-[1100px]:col-auto' : ''}"
-    style:flex={`${f.grow ?? 1} 1 0`}
+    class="flex flex-col gap-1 {f.ownRow ? 'max-[1099px]:basis-full' : ''}"
+    style:flex={`${f.grow ?? 1} 0 auto`}
     data-testid="{f.testid}-field"
   >
     <label class="quiet-label" for={f.id}>{f.label}</label>
     <Select
       id={f.id}
       size="compact"
+      fit
       value={f.value}
       options={f.options}
       disabled={f.disabled}
@@ -123,9 +125,7 @@
 
   <div
     id="rankings-filter-panel"
-    class="grid-cols-2 items-end gap-2.5 min-[600px]:grid min-[600px]:grid-cols-3 min-[1100px]:flex min-[1100px]:gap-3 {open
-      ? 'grid'
-      : 'hidden'}"
+    class="flex-wrap items-end gap-2.5 min-[600px]:flex min-[1100px]:gap-3 {open ? 'flex' : 'hidden'}"
     data-testid="rankings-filter-panel"
   >
     {#if showClassAndSpec}
