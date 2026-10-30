@@ -169,6 +169,7 @@ func (s *Service) answerOrDefer(ctx context.Context, w http.ResponseWriter, in I
 	select {
 	case res := <-done:
 		rep := s.replyOf(in, res, update)
+		rep = overSource(in, rep, rep.Update)
 		s.writeReply(w, rep, respMessage)
 		s.runAfter(w, in, rep)
 	case <-timer.C:
@@ -237,6 +238,7 @@ func (s *Service) deliver(in Interaction, res handled, update bool) {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "modal_after_deferral", "interaction", in.ID)
 		rep = s.failedPress(in, update)
 	}
+	rep = overSource(in, rep, update)
 	if s.now().Sub(in.ReceivedAt) > interactionTokenLife {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "expired", "interaction", in.ID)
 		s.dropAfter(rep)
@@ -252,6 +254,16 @@ func (s *Service) deliver(in Interaction, res handled, update bool) {
 	if rep.After != nil {
 		rep.After(ctx)
 	}
+}
+
+// overSource marks a reply that replaces the pressed message (replaces) with that message's
+// encoding, so its edit follows spec 2026-10-29 §A.7 rule 2. Anything else edits a message the
+// bot sent fresh or Discord's own deferral, both legacy.
+func overSource(in Interaction, rep Reply, replaces bool) Reply {
+	if replaces {
+		rep.Message.sourceV2 = in.Source.componentsV2()
+	}
+	return rep
 }
 
 // afterWithin bounds a reply's After work.

@@ -19,7 +19,11 @@ func (w *lookupWorld) pressBis(t *testing.T, user, id string, values ...string) 
 	return rep
 }
 
-func leadOf(m Message) string { return m.Embeds[0].Description }
+// leadOf is a V2 card's lead, under its heading.
+func leadOf(m Message) string {
+	e, _ := headFrom(m)
+	return e.Description
+}
 
 func jsonOf(t *testing.T, v any) string {
 	t.Helper()
@@ -34,9 +38,9 @@ func TestBisCardPicks(t *testing.T) {
 	w := newBisWorld(t)
 	t.Run("class then spec", func(t *testing.T) {
 		m := w.pressBis(t, "d-stranger", "gbis:1:c:::p1:", "hunter").Message
-		if m.Embeds[0].Title != "Hunter · choose a spec" || leadOf(m) != "Now choose a Hunter spec." ||
+		if headOf(t, m).Title != "Hunter · choose a spec" || leadOf(m) != "Now choose a Hunter spec." ||
 			defaultOf(m.Components[0][0]) != "hunter" || defaultOf(m.Components[2][0]) != "p1" || m.Components[1][0].Disabled {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 		if opts := m.Components[1][0].Options; len(opts) != 3 || opts[0].Description != "DPS" {
 			t.Fatalf("spec options = %+v", opts)
@@ -49,7 +53,7 @@ func TestBisCardPicks(t *testing.T) {
 	t.Run("the nudge keeps every pick", func(t *testing.T) {
 		m := w.pressBis(t, "d-stranger", "gbis:1:go:hunter::p1:").Message
 		if leadOf(m) != "**Choose a spec first.** Then Show BiS." || defaultOf(m.Components[0][0]) != "hunter" || defaultOf(m.Components[2][0]) != "p1" {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 		m = w.pressBis(t, "d-stranger", "gbis:1:go:::p1:").Message
 		if leadOf(m) != "**Choose a class and a spec first.** Then Show BiS." {
@@ -59,13 +63,13 @@ func TestBisCardPicks(t *testing.T) {
 	t.Run("a range pick lets the nudge give way", func(t *testing.T) {
 		m := w.pressBis(t, "d-stranger", "gbis:1:r:hunter::p1:", "50").Message
 		if leadOf(m) != "Now choose a Hunter spec." || defaultOf(m.Components[2][0]) != "50" {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 	})
 	t.Run("a forged pick reads as empty", func(t *testing.T) {
 		m := w.pressBis(t, "d-stranger", "gbis:1:c:::p1:", "paladin-nonsense").Message
 		if defaultOf(m.Components[0][0]) != "" || leadOf(m) != guideCopy.BisLeadUnlinked {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 	})
 	t.Run("the main's spec comes back with the main's class", func(t *testing.T) {
@@ -73,11 +77,11 @@ func TestBisCardPicks(t *testing.T) {
 		linkMain(w)
 		m := w.pressBis(t, pressDiscord, "gbis:1:c:hunter:beast-mastery:p1:", "warrior").Message
 		if defaultOf(m.Components[1][0]) != "" || leadOf(m) != "Now choose a Warrior spec." {
-			t.Fatalf("warrior = %+v", m.Embeds[0])
+			t.Fatalf("warrior = %+v", headOf(t, m))
 		}
 		m = w.pressBis(t, pressDiscord, "gbis:1:c:warrior::p1:", "hunter").Message
 		if defaultOf(m.Components[1][0]) != "beast-mastery" || leadOf(m) != "Picked from your main, **Zulmara**. Show BiS, or change a pick." {
-			t.Fatalf("hunter = %+v", m.Embeds[0])
+			t.Fatalf("hunter = %+v", headOf(t, m))
 		}
 	})
 }
@@ -86,18 +90,19 @@ func TestShowBisEqualsTheTypedAnswer(t *testing.T) {
 	w := newBisWorld(t)
 	typed := w.command(t, pressDiscord, "bis", map[string]string{"spec": "warrior-fury", "phase": "p1"}).Message
 	card := w.pressBis(t, pressDiscord, "gbis:1:go:warrior:fury:p1:")
-	if card.Message.Content != typed.Content || jsonOf(t, card.Message.Embeds) != jsonOf(t, typed.Embeds) {
-		t.Fatalf("card answer differs:\n%q\n%q", card.Message.Content, typed.Content)
+	if jsonOf(t, card.Message.Layout) != jsonOf(t, typed.Layout) {
+		t.Fatalf("card answer differs:\n%s\n%s", jsonOf(t, card.Message.Layout), jsonOf(t, typed.Layout))
 	}
 	if !card.Message.Ephemeral {
 		t.Fatal("the answer is not ephemeral")
 	}
-	want := []string{lookupCopy.Share, "Change picks", lookupCopy.BisAllSlots}
+	want := []string{lookupCopy.Share, "Feet to Ranged", "Change picks", lookupCopy.BisAllSlots}
 	if got := buttonLabels(card.Message.Components[0]); !slices.Equal(got, want) {
 		t.Fatalf("card row = %v", got)
 	}
-	if card.Message.Components[0][1].CustomID != "gbis:1:chg:warrior:fury:p1:" {
-		t.Fatalf("change id = %q", card.Message.Components[0][1].CustomID)
+	if card.Message.Components[0][2].CustomID != "gbis:1:chg:warrior:fury:p1:" ||
+		card.Message.Components[0][1].CustomID != "gbis:1:pg:warrior:fury:p1::2" {
+		t.Fatalf("ids = %q %q", card.Message.Components[0][1].CustomID, card.Message.Components[0][2].CustomID)
 	}
 	if got := buttonLabels(typed.Components[0]); !slices.Equal(got, want) {
 		t.Fatalf("typed row = %v", got)
@@ -108,7 +113,7 @@ func TestShowBisEqualsTheTypedAnswer(t *testing.T) {
 		}
 	}
 	slotted := w.pressBis(t, pressDiscord, "gbis:1:go:warrior:fury:p1:head").Message
-	if slotted.Content != "Head for a Fury Warrior, level 60 Phase 1 raid:" || len(slotted.Embeds) != 3 {
+	if textsOf(slotted)[0] != "### Head · Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance" || len(sectionsOf(slotted)) != 4 {
 		t.Fatalf("slot answer = %+v", slotted)
 	}
 }
@@ -118,11 +123,11 @@ func TestUseMainReadsTheLinkNotTheID(t *testing.T) {
 	writeBis(t, w.lg.dir, "hunter-beast-mastery", furyBands())
 	linkMain(w)
 	rep := w.pressBis(t, pressDiscord, "gbis:1:me:warrior:fury:50:")
-	if !strings.HasPrefix(rep.Message.Content, "Beast Mastery Hunter, level 60 Phase 1 raid.") {
-		t.Fatalf("content = %q", rep.Message.Content)
+	if head := textsOf(rep.Message)[0]; !strings.HasPrefix(head, "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid") {
+		t.Fatalf("head = %q", head)
 	}
 	stranger := w.pressBis(t, "d-stranger", "gbis:1:me:warrior:fury:50:")
-	if stranger.Message.Content != commonCopy.Failure {
+	if contentOf(stranger.Message) != commonCopy.Failure {
 		t.Fatalf("stranger = %+v", stranger.Message)
 	}
 }
@@ -132,7 +137,7 @@ func TestChangePicksReopensTheCard(t *testing.T) {
 	m := w.pressBis(t, "d-stranger", "gbis:1:chg:warrior:fury:p1:head").Message
 	if len(m.Components) != 4 || leadOf(m) != guideCopy.BisLeadReady ||
 		defaultOf(m.Components[0][0]) != "warrior" || defaultOf(m.Components[1][0]) != "fury" || defaultOf(m.Components[2][0]) != "p1" {
-		t.Fatalf("card = %+v", m.Embeds[0])
+		t.Fatalf("card = %+v", headOf(t, m))
 	}
 	if !strings.HasSuffix(m.Components[3][0].CustomID, ":head") {
 		t.Fatalf("slot lost: %q", m.Components[3][0].CustomID)
@@ -168,7 +173,7 @@ func TestBisPressesSurviveForgedIDs(t *testing.T) {
 		t.Run(id, func(t *testing.T) {
 			for _, user := range []string{pressDiscord, "d-stranger"} {
 				rep := w.pressBis(t, user, id, "bear")
-				if len(rep.Message.Embeds) == 0 && rep.Message.Content == "" {
+				if !hasCard(rep.Message) && contentOf(rep.Message) == "" {
 					t.Fatalf("empty answer: %+v", rep)
 				}
 			}
@@ -177,14 +182,14 @@ func TestBisPressesSurviveForgedIDs(t *testing.T) {
 	t.Run("a forged spec re-renders the nudge with the class kept", func(t *testing.T) {
 		m := w.pressBis(t, "d-stranger", "gbis:1:go:warrior:bear:99:boots:x").Message
 		if leadOf(m) != guideCopy.BisNudgeSpec || defaultOf(m.Components[0][0]) != "warrior" || defaultOf(m.Components[2][0]) != "p1" {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 	})
 	t.Run("another version is the stale card", func(t *testing.T) {
 		rep := w.pressBis(t, pressDiscord, "gbis:2:go:warrior:fury:p1:")
 		// The literal, not staleCard's own output: the doubled slash hid
 		// behind a computed expectation once.
-		if rep.Message.Content != "This card is out of date. Run /bis again." {
+		if contentOf(rep.Message) != "This card is out of date. Run /bis again." {
 			t.Fatalf("stale = %+v", rep.Message)
 		}
 	})
@@ -199,7 +204,7 @@ func TestShareFromACardKeepsTheControls(t *testing.T) {
 		t.Fatalf("share = %+v", rep)
 	}
 	got := buttonLabels(rep.Message.Components[0])
-	if !slices.Equal(got, []string{lookupCopy.Shared, "Change picks", lookupCopy.BisAllSlots}) {
+	if !slices.Equal(got, []string{lookupCopy.Shared, "Feet to Ranged", "Change picks", lookupCopy.BisAllSlots}) {
 		t.Fatalf("own copy = %v", got)
 	}
 	rep.After(context.Background())

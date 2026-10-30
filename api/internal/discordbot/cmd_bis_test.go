@@ -1,7 +1,7 @@
 package discordbot
 
 import (
-	"net/url"
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -43,50 +43,74 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 	page := pressPublic + "/bis/warrior/fury?faction=alliance&preset=raid#band-alliance-60"
 	t.Run("one slot", func(t *testing.T) {
 		w := newBisWorld(t)
-		rep := w.command(t, pressDiscord, "bis", map[string]string{"class": "warrior", "spec": "fury", "slot": "head", "phase": "p1"})
-		m := rep.Message
-		assertMessageLimits(t, m)
-		if m.Content != "Head for a Fury Warrior, level 60 Phase 1 raid:" || !m.Ephemeral || len(m.Embeds) != 3 {
-			t.Fatalf("reply = %+v", m)
+		m := w.command(t, pressDiscord, "bis", map[string]string{"class": "warrior", "spec": "fury", "slot": "head", "phase": "p1"}).Message
+		assertCardLimits(t, m)
+		want := []string{"### Head · Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance",
+			"**Pick head**\nHead · +15.0 DPS\n-# Epic · item level 61 · Source head",
+			panelCopy.BisSlotNext,
+			"**Alt one head**\nHead · −15.0 DPS\n-# Epic · item level 61 · PvP rank 14 · Lieutenant Commander · Alliance",
+			// An item the build does not know: no quality word or item level.
+			"**Alt two head**\nHead · −18.0 DPS\n-# Blacksmithing"}
+		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
+			t.Fatalf("texts = %q", got)
 		}
-		if m.Embeds[0].Author != "Best in slot" || m.Embeds[0].Description != "Head · Epic · item level 61\nSource head" ||
-			!sameBandPage(m.Embeds[0].URL, page) || m.Embeds[0].Color != 10696174 {
-			t.Fatalf("pick = %+v", m.Embeds[0])
+		if head := headOf(t, m); head.Color != 0xc69b6d || head.Thumbnail != pressPublic+"/icons/hd/crests/warrior.webp" {
+			t.Fatalf("head = %+v", head)
 		}
-		if m.Embeds[1].Author != "" || m.Embeds[1].Description != "Head · Epic · item level 61\n−15.0 DPS · PvP rank 14 · Lieutenant Commander · Alliance" ||
-			m.Embeds[2].Description != "Head\n−18.0 DPS · Blacksmithing" {
-			t.Fatalf("alternatives = %+v", m.Embeds[1:])
+		if tile := sectionsOf(m)[1].Accessory; tile.Media != pressAPI+"/v1/discord/tiles/"+lookupBuild+"/100.png" || tile.Description != "Pick head, Epic head item" {
+			t.Fatalf("tile = %+v", tile)
 		}
-		assertDistinctEmbedURLs(t, m.Embeds)
-		if m.Embeds[2].Footer != "Fury Warrior · level 60 Phase 1 raid · Forever Sixty" {
-			t.Fatalf("footer = %q", m.Embeds[2].Footer)
+		if tile := sectionsOf(m)[3].Accessory; tile.Description != "Alt two head, head item" {
+			t.Fatalf("unknown tile = %+v", tile)
 		}
 		row := m.Components[0]
-		if len(row) != 3 || row[0].Label != lookupCopy.Share || row[1].Label != guideCopy.BisChange || row[2].Label != lookupCopy.BisOpen || row[2].URL != page {
+		if got := strings.Join(buttonLabels(row), "|"); got != "Share in channel|Change picks|Open on Forever Sixty" || row[2].URL != page {
 			t.Fatalf("row = %+v", row)
 		}
 	})
-	t.Run("five slots by the first alternative's delta", func(t *testing.T) {
+	t.Run("page 1 in the character frame's order", func(t *testing.T) {
 		w := newBisWorld(t)
 		m := w.command(t, pressDiscord, "bis", map[string]string{"spec": "warrior-fury", "phase": "p1"}).Message
-		assertMessageLimits(t, m)
-		if m.Content != "Fury Warrior, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:" {
-			t.Fatalf("lead = %q", m.Content)
+		assertCardLimits(t, m)
+		want := []string{"### Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Head to Legs, 9 of 17 slots. Each gain is over the next best item.",
+			"**Pick head**\nHead · +15.0 DPS\n-# Epic · item level 61 · Source head",
+			"**Pick neck**\nNeck · +2.0 DPS\n-# Epic · item level 61 · Source neck",
+			"**Shoulder** · no pick for this range.",
+			"**Pick back**\nBack · +0.5 DPS\n-# Epic · item level 61 · Source back",
+			"**Chest** · no pick for this range.", "**Wrist** · no pick for this range.",
+			"**Hands** · no pick for this range.", "**Waist** · no pick for this range.",
+			"**Pick legs**\nLegs · +9.0 DPS\n-# Epic · item level 61 · Source legs"}
+		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
+			t.Fatalf("texts = %q", got)
 		}
-		var titles []string
-		for _, e := range m.Embeds {
-			titles = append(titles, e.Title)
+		row := m.Components[0]
+		if got := strings.Join(buttonLabels(row), "|"); got != "Share in channel|Feet to Ranged|Change picks|All 17 slots" ||
+			row[1].CustomID != "gbis:1:pg:warrior:fury:p1::2" || row[3].URL != page {
+			t.Fatalf("row = %+v", row)
 		}
-		if got := strings.Join(titles, ","); got != "Pick main\\_hand,Pick finger1,Pick head,Pick legs,Pick neck" &&
-			got != "Pick main_hand,Pick finger1,Pick head,Pick legs,Pick neck" {
-			t.Fatalf("order = %s", got)
+
+		// The page button answers page 2 in place, with the message's own Share copied.
+		in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": row[1].CustomID})
+		in.Source = sourceOf(t, m)
+		two := w.route(t, in)
+		if !two.Update {
+			t.Fatal("the page press did not edit in place")
 		}
-		assertDistinctEmbedURLs(t, m.Embeds)
-		if !strings.HasPrefix(m.Embeds[0].Description, "Main hand · Epic · item level 61\n+30.0 DPS · ") {
-			t.Fatalf("first = %q", m.Embeds[0].Description)
+		assertCardLimits(t, two.Message)
+		texts := textsOf(two.Message)
+		if !strings.HasSuffix(texts[0], "-# Feet to Ranged, 8 of 17 slots. Each gain is over the next best item.") ||
+			texts[1] != "**Pick feet**\nFeet · +1.0 DPS\n-# Epic · item level 61 · Source feet" ||
+			texts[2] != "**Pick finger1**\nRing 1 · +20.0 DPS\n-# Epic · item level 61 · Source finger1" ||
+			texts[len(texts)-1] != "**Ranged** · no pick for this range." || len(texts) != 9 {
+			t.Fatalf("page 2 = %q", texts)
 		}
-		if m.Components[0][2].Label != lookupCopy.BisAllSlots {
-			t.Fatalf("row = %+v", m.Components[0])
+		back := two.Message.Components[0]
+		if back[0].CustomID != row[0].CustomID || back[1].Label != "Head to Legs" || back[1].CustomID != "gbis:1:pg:warrior:fury:p1::1" {
+			t.Fatalf("page 2 row = %+v", back)
+		}
+		var shares int
+		if err := w.st.Pool.QueryRow(t.Context(), `select count(*) from discord_shares`).Scan(&shares); err != nil || shares != 1 {
+			t.Fatalf("shares = %d, %v: a page press minted a token", shares, err)
 		}
 	})
 	t.Run("defaults from the linked main", func(t *testing.T) {
@@ -95,15 +119,38 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		w.cards.cards["brakka"] = rankings.Character{Character: rankings.CharacterRef{Key: "us/normal/brakka", Region: "us",
 			Ruleset: "normal", Name: "Brakka", Class: "warrior", Level: ref(60)}}
 		m := w.command(t, pressDiscord, "bis", map[string]string{"spec": "fury", "slot": "head"}).Message
-		if m.Content != "Head for a Fury Warrior, level 60 Phase 1 raid:" {
-			t.Fatalf("lead = %q", m.Content)
+		if got := textsOf(m)[0]; got != "### Head · Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance" {
+			t.Fatalf("head = %q", got)
 		}
 		bare := w.command(t, pressDiscord, "bis", map[string]string{"spec": "fury", "slot": "head", "phase": "60"}).Message
-		if bare.Content != "Head for a Fury Warrior, level 60:" || bare.Embeds[0].Title != "Pick head" ||
-			!strings.Contains(bare.Embeds[0].URL, "preset=bare") {
-			t.Fatalf("bare = %+v", bare)
+		texts := textsOf(bare)
+		if texts[0] != "### Head · Fury Warrior\nBest in slot · level 60 · Alliance" || !strings.HasPrefix(texts[1], "**Pick head**") ||
+			!strings.Contains(bare.Components[0][len(bare.Components[0])-1].URL, "preset=bare") {
+			t.Fatalf("bare = %q", texts)
 		}
 	})
+}
+
+// sourceOf is m as the pressed message an interaction carries: its flags and components.
+func sourceOf(t *testing.T, m Message) sourceMessage {
+	t.Helper()
+	wire := wireOf(t, m)
+	raw, err := json.Marshal(wire["components"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	flags, _ := wire["flags"].(float64)
+	return sourceMessage{Flags: int(flags), Components: raw}
+}
+
+func TestBisSpecAutocompleteFiltersByClass(t *testing.T) {
+	w := newBisWorld(t)
+	in := interactionOf(typeAutocomplete, pressDiscord, map[string]any{"name": "bis", "options": []map[string]any{
+		{"name": "class", "value": "warrior"}, {"name": "spec", "value": "", "focused": true}}})
+	got, err := w.svc.autocompleteSpec(t.Context(), in)
+	if err != nil || len(got) != 3 || got[1].Name != "Fury Warrior" || got[1].Value != "warrior-fury" {
+		t.Fatalf("choices = %+v, %v", got, err)
+	}
 }
 
 // assertDistinctEmbedURLs fails when two embeds share a URL: Discord folds consecutive embeds
@@ -116,28 +163,5 @@ func assertDistinctEmbedURLs(t *testing.T, embeds []notify.Embed) {
 			t.Fatalf("embed URL %q is empty or repeated among %d embeds", e.URL, len(embeds))
 		}
 		seen[e.URL] = true
-	}
-}
-
-// sameBandPage reports whether link opens page: the same path, fragment and query apart from
-// the per-item key.
-func sameBandPage(link, page string) bool {
-	l, err1 := url.Parse(link)
-	p, err2 := url.Parse(page)
-	if err1 != nil || err2 != nil || l.Path != p.Path || l.Fragment != p.Fragment || l.Query().Get(itemLinkParam) == "" {
-		return false
-	}
-	q := l.Query()
-	q.Del(itemLinkParam)
-	return q.Encode() == p.Query().Encode()
-}
-
-func TestBisSpecAutocompleteFiltersByClass(t *testing.T) {
-	w := newBisWorld(t)
-	in := interactionOf(typeAutocomplete, pressDiscord, map[string]any{"name": "bis", "options": []map[string]any{
-		{"name": "class", "value": "warrior"}, {"name": "spec", "value": "", "focused": true}}})
-	got, err := w.svc.autocompleteSpec(t.Context(), in)
-	if err != nil || len(got) != 3 || got[1].Name != "Fury Warrior" || got[1].Value != "warrior-fury" {
-		t.Fatalf("choices = %+v, %v", got, err)
 	}
 }

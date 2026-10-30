@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"path/filepath"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -13,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 )
 
 // botEnabled reports whether the bot's variables are all set and the guild connect it installs
@@ -45,6 +47,18 @@ func botDeps(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log *slog.
 	}
 }
 
+// sheetRenderer draws Share in channel's character sheet from the active build's icons
+// ({TreeDataDir}/{build}/icons, as the tiles route reads them). Nil, with one warn line, when
+// no build is active: the share then posts its panel without the sheet.
+func sheetRenderer(cfg config.Config, deps server.Deps, log *slog.Logger) discordbot.SheetRenderer {
+	build, ok := deps.Guilds.ActiveBuild()
+	if !ok {
+		log.Warn("discordbot", "state", "no sheet", "effect", "shares post the panel without the sheet")
+		return nil
+	}
+	return sheet.NewRenderer(sheet.NewFileIcons(filepath.Join(cfg.TreeDataDir, build, "icons")))
+}
+
 // raidRouterFor routes the raid posts: the bot's one edited post where it is installed, the
 // webhook elsewhere. serve and the raid-posts job build the same router.
 func raidRouterFor(bot *discordbot.Service, deps server.Deps) guilds.RaidEvents {
@@ -62,6 +76,7 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	}
 	d := botDeps(cfg, pool, deps, log)
 	d.Characters, d.Coach = deps.Rankings, coachLinesOf(deps.Coach)
+	d.Sheets = sheetRenderer(cfg, deps, log)
 	bot := discordbot.New(d)
 	accounts.DiscordLinks = bot
 	deps.Guilds.Bot = bot

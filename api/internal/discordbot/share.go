@@ -111,6 +111,7 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 	if !found || visitor == nil || row.by != in.DiscordUserID {
 		return failureReply(), nil
 	}
+	row.opts = withSourcePage(in, row)
 	if row.used {
 		return s.sharedReply(ctx, in, guildID, token, row, Message{})
 	}
@@ -120,6 +121,10 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 	}
 	if !ok {
 		return pressReply(lookupCopy.NoLongerPublic, false), nil
+	}
+	post, err := s.sheetPostFor(ctx, row.command, guildID, row.opts)
+	if err != nil {
+		return Reply{}, fmt.Errorf("discordbot: share sheet: %w", err)
 	}
 	claimed, err := s.claimShare(ctx, token)
 	if err != nil || !claimed {
@@ -140,9 +145,21 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 			s.releaseShare(ctx, token)
 			return
 		}
-		s.postShare(ctx, in, token, public, restored, row.command)
+		s.postShare(ctx, in, token, s.publicShare(post, public, in), restored, row.command)
 	}
 	return rep, nil
+}
+
+// withSourcePage keeps a /bis answer on the page it showed when Share was pressed: the
+// presser's own copy is redrawn at that page. Share stores no page; the sheet shows all 17.
+func withSourcePage(in Interaction, row shareRow) map[string]string {
+	if row.command != "bis" {
+		return row.opts
+	}
+	if page := sourcePage(in.Source.Components); page != "" {
+		return withOption(row.opts, optPage, page)
+	}
+	return row.opts
 }
 
 // sharedReply re-renders the presser's own answer with the disabled Shared button; when it
@@ -173,11 +190,18 @@ func (s *Service) sharedReply(ctx context.Context, in Interaction, guildID int64
 	return Reply{Message: msg, Update: true}, nil
 }
 
-// withLiveShare is a Shared answer with its button live again, saying the share failed.
+// withLiveShare is a Shared answer with its button live again, saying the share failed: as
+// its content line, or on a V2 answer as a Text Display above the panel (spec §A.7). The
+// restore edits the Shared answer, which the bot already drew in the answer's encoding.
 func withLiveShare(shared Message, token string) Message {
 	rows := append([]ActionRow(nil), shared.Components...)
 	rows[0] = append(ActionRow{shareButton(token, false)}, rows[0][1:]...)
 	shared.Components = rows
+	if shared.componentsV2() {
+		shared.Layout = append([]Node{textNode(commonCopy.Failure)}, shared.Layout...)
+		shared.sourceV2 = true
+		return shared
+	}
 	shared.Content = commonCopy.Failure
 	return shared
 }

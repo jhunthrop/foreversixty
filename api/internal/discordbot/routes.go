@@ -32,7 +32,7 @@ type Autocomplete func(ctx context.Context, in Interaction) ([]Choice, error)
 func (s *Service) commandRoutes() map[string]Handler {
 	return map[string]Handler{
 		"link": s.cmdLink, "signup": s.cmdSignup, "raid": s.cmdRaid, "help": s.cmdHelp,
-		"char": s.cmdChar, "bis": s.cmdBis,
+		"char": componentsV2Flow(s.cmdChar), "bis": componentsV2Flow(s.cmdBis),
 		"report": s.cmdReport, "attendance": s.cmdAttendance, "readiness": s.cmdReadiness,
 	}
 }
@@ -40,7 +40,7 @@ func (s *Service) commandRoutes() map[string]Handler {
 // componentRoutes maps a custom id's prefix (the part before the first colon)
 // to its handler.
 func (s *Service) componentRoutes() map[string]Handler {
-	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: s.bisPress(), prefixChar: s.charPress(), prefixSignup: s.signupPress(), prefixAttendance: s.attendancePress(),
+	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick, shareIDPrefix: s.share, prefixBis: componentsV2Flow(s.bisPress()), prefixChar: componentsV2Flow(s.charPress()), prefixSignup: s.signupPress(), prefixAttendance: s.attendancePress(),
 		prefixReadiness: s.readinessPress(), prefixReport: s.reportPress(), prefixSpec: s.specPress()}
 }
 
@@ -57,6 +57,19 @@ func (s *Service) autocompleteRoutes() map[string]Autocomplete {
 func updateComponents() map[string]bool {
 	return map[string]bool{pickIDPrefix: true, shareIDPrefix: true, prefixBis: true, prefixChar: true, prefixSignup: true, prefixAttendance: true,
 		prefixReadiness: true, prefixReport: true, prefixSpec: true}
+}
+
+// componentsV2Flow makes every frame a /bis or /char handler draws Components V2 from its
+// first draw (spec 2026-10-29 §A.7 rule 1): an answer is built V2, and a line it answers with
+// (a failure, the unbound or stale sentence) is put in a Text Display. A modal is left as it is.
+func componentsV2Flow(h Handler) Handler {
+	return func(ctx context.Context, in Interaction) (Reply, error) {
+		rep, err := h(ctx, in)
+		if err == nil && rep.Modal == nil {
+			rep.Message = asComponentsV2(rep.Message, "")
+		}
+		return rep, err
+	}
 }
 
 // customPrefix is the route key of a custom id.

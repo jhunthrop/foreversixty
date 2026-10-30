@@ -33,11 +33,12 @@ func withChangePicks(msg Message, p bisPicks) Message {
 	return msg
 }
 
-// decorateOwn adds a command's private controls to the presser's own copy of an answer. The
-// public follow-up is never decorated.
+// decorateOwn adds a command's private controls to the presser's own copy of an answer: on
+// /bis the page button and Change picks. The public follow-up is never decorated.
 func decorateOwn(command string, opts map[string]string, msg Message) Message {
 	if command == "bis" {
-		return withChangePicks(msg, picksOfOptions(opts))
+		p := picksOfOptions(opts)
+		return withPageButton(withChangePicks(msg, p), opts, p)
 	}
 	return msg
 }
@@ -67,7 +68,7 @@ func (s *Service) bisAnswer(ctx context.Context, in Interaction, guildID int64, 
 func (s *Service) bisPress() Handler {
 	return s.cardHandler("/bis", map[string]cardPart{
 		"c": s.bisPickClass, "s": s.bisPickSpec, "r": s.bisPickRange,
-		"go": s.bisShow, "me": s.bisUseMain, "chg": s.bisChange,
+		"go": s.bisShow, "me": s.bisUseMain, "chg": s.bisChange, partPage: s.bisPage,
 	})
 }
 

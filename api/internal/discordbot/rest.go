@@ -7,7 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"strconv"
 	"time"
@@ -107,23 +109,68 @@ type call struct {
 	method, path string
 	botAuth      bool
 	body, out    any
+	// files, when set, sends body as payload_json in a multipart form with the files after it.
+	files []Attachment
+}
+
+// encode is the request body and its content type.
+func (c call) encode() (io.Reader, string, error) {
+	if c.body == nil {
+		return nil, "", nil
+	}
+	raw, err := json.Marshal(c.body)
+	if err != nil {
+		return nil, "", fmt.Errorf("discordbot: encode request: %w", err)
+	}
+	if len(c.files) == 0 {
+		return bytes.NewReader(raw), "application/json", nil
+	}
+	return multipartBody(raw, c.files)
+}
+
+// multipartBody is Discord's upload form: payload_json, then files[n] for each attachment
+// numbered n in the payload's attachments.
+func multipartBody(payload []byte, files []Attachment) (io.Reader, string, error) {
+	var buf bytes.Buffer
+	form := multipart.NewWriter(&buf)
+	head := textproto.MIMEHeader{}
+	head.Set("Content-Disposition", `form-data; name="payload_json"`)
+	head.Set("Content-Type", "application/json")
+	part, err := form.CreatePart(head)
+	if err == nil {
+		_, err = part.Write(payload)
+	}
+	for i, f := range files {
+		if err != nil {
+			break
+		}
+		head := textproto.MIMEHeader{}
+		head.Set("Content-Disposition", fmt.Sprintf(`form-data; name="files[%d]"; filename=%q`, i, f.Name))
+		head.Set("Content-Type", f.ContentType)
+		if part, err = form.CreatePart(head); err == nil {
+			_, err = part.Write(f.Data)
+		}
+	}
+	if err == nil {
+		err = form.Close()
+	}
+	if err != nil {
+		return nil, "", fmt.Errorf("discordbot: encode upload: %w", err)
+	}
+	return &buf, form.FormDataContentType(), nil
 }
 
 func (r *HTTPREST) do(ctx context.Context, c call) error {
-	var reader io.Reader
-	if c.body != nil {
-		raw, err := json.Marshal(c.body)
-		if err != nil {
-			return fmt.Errorf("discordbot: encode request: %w", err)
-		}
-		reader = bytes.NewReader(raw)
+	reader, contentType, err := c.encode()
+	if err != nil {
+		return err
 	}
 	req, err := http.NewRequestWithContext(ctx, c.method, r.BaseURL+c.path, reader)
 	if err != nil {
 		return errors.New("discordbot: bad request")
 	}
-	if c.body != nil {
-		req.Header.Set("Content-Type", "application/json")
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
 	}
 	if c.botAuth {
 		req.Header.Set("Authorization", "Bot "+r.botToken)
@@ -255,7 +302,7 @@ func (r *HTTPREST) EditOriginal(ctx context.Context, interactionToken string, m 
 }
 
 func (r *HTTPREST) FollowUp(ctx context.Context, interactionToken string, m Message) error {
-	return r.do(ctx, call{method: http.MethodPost, path: r.interactionPath(interactionToken), body: m})
+	return r.do(ctx, call{method: http.MethodPost, path: r.interactionPath(interactionToken), body: m, files: m.Files})
 }
 
 // ServerLayout reads the server's channels and roles and the bot's own roles.

@@ -59,11 +59,11 @@ func TestShareRecomputesAsAVisitorOnce(t *testing.T) {
 	}
 	public := ups[0].Message
 	raw, _ := json.Marshal(public)
-	if public.Ephemeral || strings.Contains(string(raw), `"flags"`) {
+	if public.Ephemeral || wireOf(t, public)["flags"] != float64(componentsV2Flag) {
 		t.Fatalf("follow-up is not public: %s", raw)
 	}
-	if got := strings.Join(fieldNames(public.Embeds[0]), ","); got != "Item level,Top 3 upgrades · level 60 Phase 1 raid" {
-		t.Fatalf("the visitor's card shows member fields: %s", got)
+	if got := headOf(t, public).Description; strings.Contains(got, "Readiness") || strings.Contains(got, "Synced") {
+		t.Fatalf("the visitor's card shows member clauses: %s", got)
 	}
 	for _, row := range public.Components {
 		for _, c := range row {
@@ -84,7 +84,7 @@ func TestShareRecomputesAsAVisitorOnce(t *testing.T) {
 	fresh := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
 	delete(w.cards.cards, "zulmara") // the character turned private since
 	gone := w.pressShare(t, fresh.Components[0][0].CustomID)
-	if gone.Update || gone.Message.Content != "That is no longer public, so it was not shared." || !gone.Message.Ephemeral {
+	if gone.Update || contentOf(gone.Message) != "That is no longer public, so it was not shared." || !gone.Message.Ephemeral {
 		t.Fatalf("private since = %+v", gone)
 	}
 	if len(w.followUps()) != 1 {
@@ -223,8 +223,16 @@ func TestShareFollowUpFailureFreesTheToken(t *testing.T) {
 		}
 	}
 	if len(edits) != 1 || edits[0].Message.Components[0][0].Label != lookupCopy.Share || edits[0].Message.Components[0][0].Disabled ||
-		edits[0].Message.Content != commonCopy.Failure {
+		contentOf(edits[0].Message) != commonCopy.Failure {
 		t.Fatalf("restore edit = %+v", edits)
+	}
+	// The restore edits the V2 Shared answer: the flag, never content or embeds (spec §A.7).
+	body := wireOf(t, edits[0].Message.edit())
+	if _, has := body["content"]; has || body["flags"] != float64(componentsV2Flag) {
+		t.Fatalf("restore body = %v", body)
+	}
+	if _, has := body["embeds"]; has {
+		t.Fatalf("restore body = %v", body)
 	}
 	w.rest.ErrFor = nil
 	if again := w.pressShare(t, id); again.After == nil {

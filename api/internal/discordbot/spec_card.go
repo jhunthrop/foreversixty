@@ -119,7 +119,7 @@ func (s *Service) specCard(in specCardIn) (Reply, error) {
 		options[i] = SelectOption{Label: sp.Name, Value: sp.Key, Description: roleDescription(sp.Role), Default: sp.Key == in.char.RaidSpec}
 	}
 	embed := notify.Embed{
-		Title: guideCopy.SpecTitle, Description: lead, Color: classColors[in.char.Class],
+		Title: guideCopy.SpecTitle, Description: lead, Color: classColorOf(in.char.Class),
 		Thumbnail: s.d.PublicBaseURL + "/icons/hd/crests/" + in.char.Class + ".webp",
 		Footer:    cardFooter, Timestamp: s.now(),
 	}

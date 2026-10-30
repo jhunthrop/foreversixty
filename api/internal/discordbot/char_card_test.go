@@ -41,7 +41,7 @@ func TestBareCharLinkedAnswersTheMain(t *testing.T) {
 	rep := w.command(t, pressDiscord, "char", nil)
 	m := rep.Message
 	assertCardLimits(t, m)
-	if rep.Update || jsonOf(t, m.Embeds) != jsonOf(t, typed.Embeds) {
+	if rep.Update || jsonOf(t, m.Layout) != jsonOf(t, typed.Layout) {
 		t.Fatalf("bare /char differs from the typed answer: %+v", rep)
 	}
 	if got := strings.Join(rowLabels(m.Components[0]), "|"); got != "Share in channel|Someone else|Character page" {
@@ -75,7 +75,7 @@ func TestBareCharUnlinked(t *testing.T) {
 	w := newLookupWorld(t)
 	m := w.command(t, "d-stranger", "char", nil).Message
 	assertCardLimits(t, m)
-	if m.Content != "Which character? Type a name, or link Discord to start from yours." || len(m.Embeds) != 0 || len(m.Components) != 1 {
+	if contentOf(m) != "Which character? Type a name, or link Discord to start from yours." || hasCard(m) || len(m.Components) != 1 {
 		t.Fatalf("card = %+v", m)
 	}
 	row := m.Components[0]
@@ -89,7 +89,7 @@ func TestBareCharLinkedWithNoCharacter(t *testing.T) {
 	w := newLookupWorld(t)
 	w.port.candidates = []guilds.SignupCandidate{}
 	m := w.command(t, pressDiscord, "char", nil).Message
-	if m.Content != "Which character? Type a name." || len(m.Components[0]) != 1 {
+	if contentOf(m) != "Which character? Type a name." || len(m.Components[0]) != 1 {
 		t.Fatalf("card = %+v", m)
 	}
 }
@@ -108,12 +108,12 @@ func TestModalNameAnswersInPlace(t *testing.T) {
 	w := newLookupWorld(t)
 	linkTwoChars(w)
 	rep := w.modal(t, pressDiscord, charNameID, "Zulmara")
-	if !rep.Update || len(rep.Message.Embeds) == 0 || len(rep.Message.Components) != 2 {
+	if !rep.Update || !hasCard(rep.Message) || len(rep.Message.Components) != 2 {
 		t.Fatalf("answer = %+v", rep)
 	}
 	assertCardLimits(t, rep.Message)
 	rep = w.modal(t, pressDiscord, charNameID, "Nobody")
-	if !rep.Update || rep.Message.Content != "No public character named Nobody. Try another name." || len(rep.Message.Embeds) != 0 {
+	if !rep.Update || contentOf(rep.Message) != "No public character named Nobody. Try another name." || hasCard(rep.Message) {
 		t.Fatalf("unknown = %+v", rep)
 	}
 	assertCardLimits(t, rep.Message)
@@ -125,7 +125,7 @@ func TestTypedUnknownCharOpensTheCard(t *testing.T) {
 	rep := w.command(t, pressDiscord, "char", map[string]string{"name": "Nobody"})
 	m := rep.Message
 	assertCardLimits(t, m)
-	if rep.Update || m.Content != "No public character named Nobody. Try another name." ||
+	if rep.Update || contentOf(m) != "No public character named Nobody. Try another name." ||
 		m.Components[0][0].Label != "Type a name" || m.Components[0][0].CustomID != charAskID {
 		t.Fatalf("card = %+v", rep)
 	}
@@ -137,8 +137,8 @@ func TestTypedUnknownCharOpensTheCard(t *testing.T) {
 func TestUnknownNameIsShownLiterally(t *testing.T) {
 	w := newLookupWorld(t)
 	rep := w.modal(t, "d-stranger", charNameID, "@everyone**x_")
-	if strings.Contains(rep.Message.Content, "**x") {
-		t.Fatalf("unescaped member text: %q", rep.Message.Content)
+	if strings.Contains(contentOf(rep.Message), "**x") {
+		t.Fatalf("unescaped member text: %q", contentOf(rep.Message))
 	}
 	assertCardLimits(t, rep.Message)
 }
@@ -147,7 +147,7 @@ func TestCharPickKeepsTheSelect(t *testing.T) {
 	w := newLookupWorld(t)
 	linkTwoChars(w)
 	rep := w.card(t, pressDiscord, charPickID, "Duskstrider")
-	if !rep.Update || rep.Message.Embeds[0].Title != "Duskstrider" {
+	if !rep.Update || headOf(t, rep.Message).Title != "Duskstrider" {
 		t.Fatalf("pick = %+v", rep)
 	}
 	assertCardLimits(t, rep.Message)

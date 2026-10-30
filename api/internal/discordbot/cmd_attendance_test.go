@@ -30,7 +30,7 @@ func TestAttendanceRules(t *testing.T) {
 		t.Fatalf("answer = %+v", rep.Message)
 	}
 	main := rep.Message.Embeds[0]
-	if main.Title != segment(0, map[string]string{"Name": "Zulmara"}) || main.Color != classColors["hunter"] ||
+	if main.Title != segment(0, map[string]string{"Name": "Zulmara"}) || main.Color != classColorOf("hunter") ||
 		main.Description != "Came 7 of 8 · 26 of 30 raids" || main.Fields[0].Name != segment(1, nil) {
 		t.Fatalf("main = %+v", main)
 	}

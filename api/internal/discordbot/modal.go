@@ -83,9 +83,13 @@ func (i Interaction) ModalValue(inputID string) string {
 // sourceMessage is the message a component sat on, kept raw so a failed press can put it back
 // exactly as it was.
 type sourceMessage struct {
+	Flags      int             `json:"flags"`
 	Embeds     json.RawMessage `json:"embeds"`
 	Components json.RawMessage `json:"components"`
 }
+
+// componentsV2 reports a source message that has the V2 flag.
+func (m sourceMessage) componentsV2() bool { return m.Flags&componentsV2Flag != 0 }
 
 // cardFailureRoutes are the card prefixes: a handler error on one keeps the card. Read-only.
 var cardFailureRoutes = map[string]bool{

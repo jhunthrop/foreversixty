@@ -12,6 +12,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 )
 
 // AppEmoji is one of the application's own emoji.
@@ -76,7 +77,7 @@ const (
 	emojiRereadAfter = time.Hour
 )
 
-// EmojiRegistry holds the application's spec emoji ids by name, in memory only (§P.8: no table
+// EmojiRegistry holds the application's spec and quality emoji ids by name, in memory only (§P.8: no table
 // stores them; Discord's own list is the one source). It reads the list on first use, and again
 // at most once an hour while any spec's emoji is missing, logging emoji_missing with the names.
 // A spec whose emoji is missing draws the text line.
@@ -135,11 +136,24 @@ func (r *EmojiRegistry) reload(ctx context.Context, now time.Time) {
 	}
 }
 
-// specMarks keeps the listed emoji that are spec marks.
+// markNames are the emoji the bot draws: the 28 spec marks the roster leads its lines with,
+// and the six quality dots that lead the gear panel's item names (spec 2026-10-29 §A.4.1).
+func markNames() []string {
+	var out []string
+	for _, sp := range raidspec.All() {
+		out = append(out, sp.Emoji())
+	}
+	for q := range qualityWords {
+		out = append(out, sheet.QualityEmojiName(q))
+	}
+	return out
+}
+
+// specMarks keeps the listed emoji that are the bot's marks.
 func specMarks(items []AppEmoji) notify.Marks {
 	wanted := map[string]bool{}
-	for _, sp := range raidspec.All() {
-		wanted[sp.Emoji()] = true
+	for _, name := range markNames() {
+		wanted[name] = true
 	}
 	marks := notify.Marks{}
 	for _, e := range items {
@@ -150,12 +164,12 @@ func specMarks(items []AppEmoji) notify.Marks {
 	return marks
 }
 
-// missingEmoji are the spec emoji names the marks lack, sorted.
+// missingEmoji are the mark names the marks lack, sorted.
 func missingEmoji(marks notify.Marks) []string {
 	var out []string
-	for _, sp := range raidspec.All() {
-		if marks[sp.Emoji()] == "" {
-			out = append(out, sp.Emoji())
+	for _, name := range markNames() {
+		if marks[name] == "" {
+			out = append(out, name)
 		}
 	}
 	slices.Sort(out)

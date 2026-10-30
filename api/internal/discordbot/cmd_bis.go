@@ -3,14 +3,10 @@ package discordbot
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -28,15 +24,11 @@ const phaseRaid = "p1"
 // defaultFaction is the faction a guild with none resolved reads, the site's own default.
 const defaultFaction = guilds.FactionAlliance
 
-// topSlots is how many slots /bis lists without a slot; slotAlternatives how many
-// alternatives follow a slot's pick.
-const (
-	topSlots         = 5
-	slotAlternatives = 2
-)
+// slotAlternatives is how many alternatives follow a slot's pick.
+const slotAlternatives = 2
 
-// cmdBis answers /bis: one slot's pick and two alternatives, or the five slots where the pick
-// gains most over the next best, ephemeral, with Share in channel. Omitted options come from
+// cmdBis answers /bis: one slot's pick and two alternatives, or the character frame's first
+// page of picks, ephemeral, with Share in channel. Omitted options come from
 // the linked viewer's main character (spec §3.3.3, ruling 9).
 func (s *Service) cmdBis(ctx context.Context, in Interaction) (Reply, error) {
 	guildID, viewer, bound, err := s.lookupCaller(ctx, in)
@@ -154,47 +146,6 @@ func resolveSpec(class, text string) (specs.Spec, bool) {
 	return found[0], true
 }
 
-// answerBis is the /bis answer for resolved options. It is the same for every viewer: the
-// BiS lists are public.
-func (s *Service) answerBis(ctx context.Context, guildID int64, _ *int64, opts map[string]string) (Message, bool, error) {
-	sp, ok := specByKey(opts[optSpec])
-	label, known := bandLabels[opts[optPhase]]
-	if !ok || !known {
-		return Message{}, false, nil
-	}
-	g, err := s.d.Guilds.BotGuildFacts(ctx, guildID)
-	if err != nil {
-		return Message{}, false, err
-	}
-	faction := g.Faction
-	if faction == "" {
-		faction = defaultFaction
-	}
-	band, preset := phaseBand(opts[optPhase])
-	build, _ := s.d.Guilds.ActiveBuild()
-	data, found, err := bis.LoadPresetBand(s.d.Guilds.BisDataDir(), s.d.Guilds.BisBuild(), sp.Spec, band, faction, preset)
-	if err != nil || !found {
-		return Message{}, false, err
-	}
-	page := s.bisPageURL(sp, faction, band, preset)
-	view := bisView{s: s, spec: sp, build: build, page: page, faction: faction}
-	var embeds []notify.Embed
-	lead, button := "", ""
-	if slot := opts[optSlot]; slot != "" {
-		pick, has := data.BySlot()[slot]
-		if !has || pick.ItemID <= 0 {
-			return Message{}, false, nil
-		}
-		lead, button, embeds = fill(lookupCopy.BisSlotLead, "{Slot}", slotLabel(slot)), lookupCopy.BisOpen, view.slotEmbeds(pick)
-	} else {
-		lead, button, embeds = lookupCopy.BisTopLead, lookupCopy.BisAllSlots, view.topEmbeds(data)
-	}
-	who := []string{"{Spec}", sp.Name, "{Class}", classLabel(sp.ClassSlug), "{band label}", label}
-	closeEmbeds(embeds, fill(lookupCopy.BisFooter, who...), s.now())
-	link := Component{Kind: KindButton, Style: StyleLink, Label: button, URL: page}
-	return Message{Content: fill(lead, who...), Embeds: embeds, Components: []ActionRow{{link}}}, true, nil
-}
-
 // phaseBand is a phase choice's level band and preset: the Phase 1 raid is level 60
 // raid-ready; the bare levels the bare preset.
 func phaseBand(phase string) (int, string) {
@@ -210,71 +161,6 @@ func phaseBand(phase string) (int, string) {
 func (s *Service) bisPageURL(sp specs.Spec, faction string, band int, preset string) string {
 	return fmt.Sprintf("%s/bis/%s/%s?faction=%s&preset=%s#band-%s-%d",
 		s.d.PublicBaseURL, sp.ClassSlug, sp.SpecSlug, faction, preset, faction, band)
-}
-
-type bisView struct {
-	s       *Service
-	spec    specs.Spec
-	build   string
-	page    string
-	faction string
-}
-
-// facts is an item of the band with the BiS page's own source line for its kind.
-func (v bisView) facts(id int, name, kind, raw string) ItemFacts {
-	return v.s.itemFacts(v.build, v.spec.ClassSlug, id, name, v.s.sourceLine(id, kind, v.faction, raw), itemLink(v.page, strconv.Itoa(id)))
-}
-
-// itemLinkParam is the query value that keeps each item embed's link its own.
-const itemLinkParam = "item"
-
-// itemLink is page with key in its query: Discord folds consecutive embeds that share a URL
-// into one card, so five picks linking the same band page showed as one item. key must be
-// unique among the message's embeds.
-func itemLink(page, key string) string {
-	u, err := url.Parse(page)
-	if err != nil {
-		return page
-	}
-	q := u.Query()
-	q.Set(itemLinkParam, key)
-	u.RawQuery = q.Encode()
-	return u.String()
-}
-
-// slotEmbeds are the pick under "Best in slot" and its first two alternatives with their deltas.
-func (v bisView) slotEmbeds(pick bis.Slot) []notify.Embed {
-	label := slotLabel(pick.Slot)
-	out := []notify.Embed{ItemEmbed(v.facts(pick.ItemID, pick.ItemName, pick.SourceKind, pick.Source), label, "", lookupCopy.BisAuthor)}
-	for i, alt := range pick.Alternatives {
-		if i == slotAlternatives {
-			break
-		}
-		out = append(out, ItemEmbed(v.facts(alt.ItemID, alt.ItemName, alt.SourceKind, alt.Source), label, signedDPS(alt.DpsDelta), ""))
-	}
-	return out
-}
-
-// topEmbeds are the five slots whose pick beats its first alternative by the most DPS (ruling 4).
-func (v bisView) topEmbeds(band bis.Band) []notify.Embed {
-	var ranked []bis.Slot
-	for _, sl := range band.Slots {
-		if sl.ItemID > 0 && len(sl.Alternatives) > 0 {
-			ranked = append(ranked, sl)
-		}
-	}
-	sort.SliceStable(ranked, func(i, j int) bool {
-		return ranked[i].Alternatives[0].DpsDelta < ranked[j].Alternatives[0].DpsDelta
-	})
-	if len(ranked) > topSlots {
-		ranked = ranked[:topSlots]
-	}
-	out := make([]notify.Embed, 0, len(ranked))
-	for _, sl := range ranked {
-		gain := signedDPS(-sl.Alternatives[0].DpsDelta)
-		out = append(out, ItemEmbed(v.facts(sl.ItemID, sl.ItemName, sl.SourceKind, sl.Source), slotLabel(sl.Slot), gain, ""))
-	}
-	return out
 }
 
 // autocompleteChar suggests the guild's public characters for /char's name.

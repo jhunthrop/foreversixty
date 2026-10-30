@@ -3,10 +3,12 @@ package discordbot
 import (
 	"fmt"
 	"math"
+	"net/url"
 	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 )
 
 // ItemFacts is what an item embed shows. Name, Quality, ItemLevel and the icon come from the
@@ -33,10 +35,17 @@ const lineJoin = " · "
 // by quality number, as embed colour integers.
 var qualityColors = []int{0x9d9d9d, 0xffffff, 0x1eff00, 0x0070dd, 0xa335ee, 0xff8000}
 
-// classColors are --color-class-*, as embed colour integers.
-var classColors = map[string]int{
-	"warrior": 0xc69b6d, "paladin": 0xf48cba, "hunter": 0xaad372, "rogue": 0xfff468,
-	"priest": 0xffffff, "shaman": 0x3f8fe0, "mage": 0x3fc7eb, "warlock": 0x8788ee, "druid": 0xff7c0a,
+// classColor is --color-class-{slug} as an embed colour integer; package sheet holds the one
+// copy of the class colours. false for a slug that is not a class.
+func classColor(slug string) (int, bool) {
+	c, ok := sheet.ClassColor(slug)
+	return int(c.R)<<16 | int(c.G)<<8 | int(c.B), ok
+}
+
+// classColorOf is the class's colour, 0 (none) for a slug that is not a class.
+func classColorOf(slug string) int {
+	c, _ := classColor(slug)
+	return c
 }
 
 // ItemEmbed is the one item grammar of /bis, /char and /report (spec §3.3.3): the name
@@ -131,4 +140,21 @@ func classLabel(slug string) string {
 		return ""
 	}
 	return strings.ToUpper(slug[:1]) + slug[1:]
+}
+
+// itemLinkParam is the query value that keeps each item embed's link its own.
+const itemLinkParam = "item"
+
+// itemLink is page with key in its query: Discord folds consecutive embeds that share a URL
+// into one card, so items linking the same page showed as one. key must be unique among the
+// message's embeds.
+func itemLink(page, key string) string {
+	u, err := url.Parse(page)
+	if err != nil {
+		return page
+	}
+	q := u.Query()
+	q.Set(itemLinkParam, key)
+	u.RawQuery = q.Encode()
+	return u.String()
 }

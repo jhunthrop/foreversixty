@@ -1,0 +1,506 @@
+[
+ {
+  "id": 9533,
+  "name": "Masons Fraternity Ring",
+  "icon": "inv_jewelry_ring_03",
+  "slot": "finger",
+  "quality": 3,
+  "item_level": 49,
+  "two_hand": false
+ },
+ {
+  "id": 16004,
+  "name": "Dark Iron Rifle",
+  "icon": "inv_weapon_rifle_08",
+  "slot": "ranged",
+  "quality": 3,
+  "item_level": 55,
+  "two_hand": false
+ },
+ {
+  "id": 249469,
+  "name": "Frozen Heart of the Mountain",
+  "icon": "inv_misc_gem_sapphire_01",
+  "slot": "trinket",
+  "quality": 3,
+  "item_level": 55,
+  "two_hand": false
+ },
+ {
+  "id": 249470,
+  "name": "Molten Heart of the Mountain",
+  "icon": "inv_misc_gem_ruby_01",
+  "slot": "trinket",
+  "quality": 3,
+  "item_level": 55,
+  "two_hand": false
+ },
+ {
+  "id": 274757,
+  "name": "Substandard Belt Chain",
+  "icon": "inv_belt_18",
+  "slot": "waist",
+  "quality": 2,
+  "item_level": 55,
+  "two_hand": false
+ },
+ {
+  "id": 16711,
+  "name": "Shadowcraft Boots",
+  "icon": "inv_boots_08",
+  "slot": "feet",
+  "quality": 3,
+  "item_level": 59,
+  "two_hand": false
+ },
+ {
+  "id": 226887,
+  "name": "Beastmaster's Cap",
+  "icon": "inv_helmet_24",
+  "slot": "head",
+  "quality": 4,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 226881,
+  "name": "Beastmaster's Treads",
+  "icon": "inv_boots_plate_07",
+  "slot": "feet",
+  "quality": 4,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 19325,
+  "name": "Don Julio's Band",
+  "icon": "inv_jewelry_ring_35",
+  "slot": "finger",
+  "quality": 4,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 16402,
+  "name": "Knight-Captain's Chain Armguards",
+  "icon": "inv_bracer_17",
+  "slot": "wrist",
+  "quality": 3,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 22659,
+  "name": "Medallion of the Dawn",
+  "icon": "inv_jewelry_amulet_04",
+  "slot": "neck",
+  "quality": 4,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 252483,
+  "name": "Dawn Armor",
+  "icon": "inv_chest_leather_08",
+  "slot": "chest",
+  "quality": 4,
+  "item_level": 61,
+  "two_hand": false
+ },
+ {
+  "id": 18511,
+  "name": "Shifting Cloak",
+  "icon": "inv_misc_cape_20",
+  "slot": "back",
+  "quality": 4,
+  "item_level": 62,
+  "two_hand": false
+ },
+ {
+  "id": 22150,
+  "name": "Beads of Ogre Might",
+  "icon": "inv_jewelry_amulet_05",
+  "slot": "neck",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": false
+ },
+ {
+  "id": 20216,
+  "name": "Belt of Preserved Heads",
+  "icon": "inv_belt_14",
+  "slot": "waist",
+  "quality": 3,
+  "item_level": 70,
+  "two_hand": false
+ },
+ {
+  "id": 13340,
+  "name": "Cape of the Black Baron",
+  "icon": "inv_misc_cape_20",
+  "slot": "back",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": false
+ },
+ {
+  "id": 250619,
+  "name": "Legionite Glaive",
+  "icon": "inv_spear_05",
+  "slot": "main_hand",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": true
+ },
+ {
+  "id": 19514,
+  "name": "Protector's Band",
+  "icon": "inv_jewelry_ring_10",
+  "slot": "finger",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": false
+ },
+ {
+  "id": 19538,
+  "name": "Sentinel's Medallion",
+  "icon": "inv_jewelry_necklace_13",
+  "slot": "neck",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": false
+ },
+ {
+  "id": 16721,
+  "name": "Shadowcraft Tunic",
+  "icon": "inv_chest_leather_07",
+  "slot": "chest",
+  "quality": 3,
+  "item_level": 63,
+  "two_hand": false
+ },
+ {
+  "id": 19491,
+  "name": "Amulet of the Darkmoon",
+  "icon": "inv_jewelry_necklace_14",
+  "slot": "neck",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 226885,
+  "name": "Beastmaster's Bindings",
+  "icon": "inv_bracer_17",
+  "slot": "wrist",
+  "quality": 3,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 20073,
+  "name": "Cloak of the Honor Guard",
+  "icon": "inv_misc_cape_02",
+  "slot": "back",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 272408,
+  "name": "Cutthroat's Signet",
+  "icon": "inv_jewelry_ring_01",
+  "slot": "finger",
+  "quality": 3,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 19287,
+  "name": "Darkmoon Card: Heroism",
+  "icon": "inv_misc_ticket_tarot_heroism_01",
+  "slot": "trinket",
+  "quality": 4,
+  "item_level": 66,
+  "two_hand": false
+ },
+ {
+  "id": 272106,
+  "name": "Darkspear Epaulets",
+  "icon": "inv_shoulder_12",
+  "slot": "shoulder",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 272105,
+  "name": "Darkspear Pauldrons",
+  "icon": "inv_shoulder_06",
+  "slot": "shoulder",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 227807,
+  "name": "Dense Timbermaw Belt",
+  "icon": "inv_belt_16",
+  "slot": "waist",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 19100,
+  "name": "Electrified Dagger",
+  "icon": "inv_weapon_shortblade_15",
+  "slot": "main_hand",
+  "quality": 3,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 16466,
+  "name": "Field Marshal's Chain Breastplate",
+  "icon": "inv_chest_chain_03",
+  "slot": "chest",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 231562,
+  "name": "Field Marshal's Chain Greathelm",
+  "icon": "inv_helmet_05",
+  "slot": "head",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 231581,
+  "name": "Field Marshal's Chain Hauberk",
+  "icon": "inv_chest_chain_03",
+  "slot": "chest",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 231580,
+  "name": "Field Marshal's Chain Helm",
+  "icon": "inv_helmet_05",
+  "slot": "head",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 231576,
+  "name": "Field Marshal's Chain Shoulders",
+  "icon": "inv_shoulder_10",
+  "slot": "shoulder",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 16468,
+  "name": "Field Marshal's Chain Spaulders",
+  "icon": "inv_shoulder_10",
+  "slot": "shoulder",
+  "quality": 4,
+  "item_level": 74,
+  "two_hand": false
+ },
+ {
+  "id": 19587,
+  "name": "Forest Stalker's Bracers",
+  "icon": "inv_bracer_12",
+  "slot": "wrist",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 234585,
+  "name": "Grand Marshal's Bullseye",
+  "icon": "inv_weapon_bow_12",
+  "slot": "ranged",
+  "quality": 4,
+  "item_level": 80,
+  "two_hand": false
+ },
+ {
+  "id": 234569,
+  "name": "Grand Marshal's Glaive",
+  "icon": "inv_spear_08",
+  "slot": "main_hand",
+  "quality": 4,
+  "item_level": 80,
+  "two_hand": true
+ },
+ {
+  "id": 234570,
+  "name": "Grand Marshal's Polearm",
+  "icon": "inv_spear_08",
+  "slot": "main_hand",
+  "quality": 4,
+  "item_level": 80,
+  "two_hand": true
+ },
+ {
+  "id": 234586,
+  "name": "Grand Marshal's Repeater",
+  "icon": "inv_weapon_crossbow_04",
+  "slot": "ranged",
+  "quality": 4,
+  "item_level": 80,
+  "two_hand": false
+ },
+ {
+  "id": 272414,
+  "name": "Howler's Furs",
+  "icon": "inv_misc_cape_10",
+  "slot": "back",
+  "quality": 3,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 279273,
+  "name": "Hyper Deluxe Sniper Rifle Mk XVII",
+  "icon": "inv_weapon_rifle_05",
+  "slot": "ranged",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 16462,
+  "name": "Marshal's Chain Boots",
+  "icon": "inv_boots_plate_07",
+  "slot": "feet",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 16461,
+  "name": "Marshal's Chain Bracers",
+  "icon": "inv_bracer_17",
+  "slot": "wrist",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 231579,
+  "name": "Marshal's Chain Greaves",
+  "icon": "inv_boots_plate_07",
+  "slot": "feet",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 231560,
+  "name": "Marshal's Chain Grips",
+  "icon": "inv_gauntlets_10",
+  "slot": "hands",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 231577,
+  "name": "Marshal's Chain Legguards",
+  "icon": "inv_pants_mail_17",
+  "slot": "legs",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 231558,
+  "name": "Marshal's Chain Legplates",
+  "icon": "inv_pants_mail_17",
+  "slot": "legs",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 231578,
+  "name": "Marshal's Chain Vices",
+  "icon": "inv_gauntlets_10",
+  "slot": "hands",
+  "quality": 4,
+  "item_level": 71,
+  "two_hand": false
+ },
+ {
+  "id": 279257,
+  "name": "Mourning Handguards",
+  "icon": "inv_gauntlets_11",
+  "slot": "hands",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 279253,
+  "name": "Outlaw's Collar",
+  "icon": "inv_misc_bandana_03",
+  "slot": "head",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 272099,
+  "name": "Raider Gloves",
+  "icon": "inv_gauntlets_27",
+  "slot": "hands",
+  "quality": 4,
+  "item_level": 65,
+  "two_hand": false
+ },
+ {
+  "id": 272397,
+  "name": "Ranger's Belt",
+  "icon": "inv_belt_25",
+  "slot": "waist",
+  "quality": 4,
+  "item_level": 60,
+  "two_hand": false
+ },
+ {
+  "id": 237819,
+  "name": "Sentinel's Chain Leggings",
+  "icon": "inv_pants_03",
+  "slot": "legs",
+  "quality": 4,
+  "item_level": 78,
+  "two_hand": false
+ },
+ {
+  "id": 237818,
+  "name": "Sentinel's Leather Pants",
+  "icon": "inv_pants_leather_12",
+  "slot": "legs",
+  "quality": 4,
+  "item_level": 78,
+  "two_hand": false
+ },
+ {
+  "id": 234202,
+  "name": "Signet Ring of the Bronze Dragonflight",
+  "icon": "inv_jewelry_ring_40",
+  "slot": "finger",
+  "quality": 4,
+  "item_level": 80,
+  "two_hand": false
+ }
+]

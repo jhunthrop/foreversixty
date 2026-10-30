@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 )
 
 const emojiTestToken = "emoji-secret-bot-token"
@@ -227,9 +228,17 @@ func TestEmojiRegistryReadsOnceAndRereadsHourlyWhileMissing(t *testing.T) {
 	if m := r.Marks(ctx); len(m) != 28 || api.reads != 2 {
 		t.Fatalf("marks %d reads %d", len(m), api.reads)
 	}
+	// The six quality dots are marks too: without them the list is read again an hour on.
+	for q := range qualityWords {
+		api.items = append(api.items, AppEmoji{ID: fmt.Sprint("q", q), Name: sheet.QualityEmojiName(q)})
+	}
+	now = now.Add(time.Hour)
+	if m := r.Marks(ctx); len(m) != 34 || m["fs_q_epic"] != "q4" || api.reads != 3 {
+		t.Fatalf("marks %d reads %d", len(m), api.reads)
+	}
 	now = now.Add(3 * time.Hour)
 	r.Marks(ctx)
-	if api.reads != 2 {
+	if api.reads != 3 {
 		t.Fatal("a complete set was read again")
 	}
 	if (*EmojiRegistry)(nil).Marks(ctx) != nil {

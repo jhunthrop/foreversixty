@@ -12,7 +12,7 @@ func (w *lookupWorld) bisCardOf(t *testing.T, user string, opts map[string]strin
 	t.Helper()
 	m := w.command(t, user, "bis", opts).Message
 	assertCardLimits(t, m)
-	if !m.Ephemeral || len(m.Embeds) != 1 || len(m.Components) != 4 {
+	if !m.Ephemeral || !hasCard(m) || len(m.Components) != 4 {
 		t.Fatalf("not a /bis card: %+v", m)
 	}
 	return m
@@ -47,9 +47,9 @@ func linkMain(w *lookupWorld) {
 func TestBareBisUnlinked(t *testing.T) {
 	w := newBisWorld(t)
 	m := w.bisCardOf(t, "d-stranger", nil)
-	e := m.Embeds[0]
+	e := headOf(t, m)
 	if e.Author != "Best in slot" || e.Title != "Choose a class" || e.Description != guideCopy.BisLeadUnlinked ||
-		e.Color != goldColor || e.Thumbnail != "" || e.Footer != "Forever Sixty" || e.Timestamp.IsZero() {
+		e.Color != goldColor || e.Thumbnail != "" {
 		t.Fatalf("embed = %+v", e)
 	}
 	spec := m.Components[1][0]
@@ -75,9 +75,9 @@ func TestBareBisLinkedWithAMain(t *testing.T) {
 	w := newBisWorld(t)
 	linkMain(w)
 	m := w.bisCardOf(t, pressDiscord, nil)
-	e := m.Embeds[0]
+	e := headOf(t, m)
 	if e.Description != "Picked from your main, **Zulmara**. Show BiS, or change a pick." ||
-		e.Title != "Beast Mastery Hunter · level 60 Phase 1 raid" || e.Color != classColors["hunter"] ||
+		e.Title != "Beast Mastery Hunter · level 60 Phase 1 raid" || e.Color != classColorOf("hunter") ||
 		!strings.HasSuffix(e.Thumbnail, "/icons/hd/crests/hunter.webp") {
 		t.Fatalf("embed = %+v", e)
 	}
@@ -106,7 +106,7 @@ func TestBareBisLinkedWithoutACharacter(t *testing.T) {
 	w := newBisWorld(t)
 	w.port.candidates = []guilds.SignupCandidate{}
 	m := w.bisCardOf(t, pressDiscord, nil)
-	if m.Embeds[0].Description != guideCopy.BisLeadNone || len(m.Components[3]) != 1 {
+	if headOf(t, m).Description != guideCopy.BisLeadNone || len(m.Components[3]) != 1 {
 		t.Fatalf("card = %+v", m)
 	}
 }
@@ -116,8 +116,8 @@ func TestBisPartials(t *testing.T) {
 	t.Run("class only", func(t *testing.T) {
 		m := w.bisCardOf(t, "d-stranger", map[string]string{"class": "warrior"})
 		if defaultOf(m.Components[0][0]) != "warrior" || defaultOf(m.Components[1][0]) != "" ||
-			m.Embeds[0].Description != "Now choose a Warrior spec." || m.Embeds[0].Title != "Warrior · choose a spec" {
-			t.Fatalf("card = %+v", m.Embeds[0])
+			headOf(t, m).Description != "Now choose a Warrior spec." || headOf(t, m).Title != "Warrior · choose a spec" {
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 		if got := m.Components[1][0].Options; len(got) != 3 || got[0].Description != "DPS" {
 			t.Fatalf("spec options = %+v", got)
@@ -131,8 +131,8 @@ func TestBisPartials(t *testing.T) {
 	})
 	t.Run("slot only", func(t *testing.T) {
 		m := w.bisCardOf(t, "d-stranger", map[string]string{"slot": "head"})
-		if m.Embeds[0].Description != "For Head only. Choose a class, a spec and a range, then Show BiS." {
-			t.Fatalf("lead = %q", m.Embeds[0].Description)
+		if headOf(t, m).Description != "For Head only. Choose a class, a spec and a range, then Show BiS." {
+			t.Fatalf("lead = %q", headOf(t, m).Description)
 		}
 		for _, row := range m.Components {
 			if id := row[0].CustomID; !strings.HasSuffix(id, ":head") {
@@ -142,18 +142,18 @@ func TestBisPartials(t *testing.T) {
 	})
 	t.Run("unknown spec", func(t *testing.T) {
 		m := w.bisCardOf(t, "d-stranger", map[string]string{"class": "warrior", "spec": "nonsense"})
-		if m.Embeds[0].Description != "No Warrior spec by that name. Choose one." || defaultOf(m.Components[0][0]) != "warrior" {
-			t.Fatalf("card = %+v", m.Embeds[0])
+		if headOf(t, m).Description != "No Warrior spec by that name. Choose one." || defaultOf(m.Components[0][0]) != "warrior" {
+			t.Fatalf("card = %+v", headOf(t, m))
 		}
 		m = w.bisCardOf(t, "d-stranger", map[string]string{"spec": "nonsense"})
-		if m.Embeds[0].Description != "No spec by that name. Choose one." {
-			t.Fatalf("lead = %q", m.Embeds[0].Description)
+		if headOf(t, m).Description != "No spec by that name. Choose one." {
+			t.Fatalf("lead = %q", headOf(t, m).Description)
 		}
 	})
 	t.Run("a resolvable spec answers at once", func(t *testing.T) {
 		m := w.command(t, "d-stranger", "bis", map[string]string{"spec": "warrior-fury", "phase": "p1"}).Message
-		if !strings.HasPrefix(m.Content, "Fury Warrior, level 60 Phase 1 raid.") {
-			t.Fatalf("content = %q", m.Content)
+		if head := textsOf(m)[0]; !strings.HasPrefix(head, "### Fury Warrior\nBest in slot · level 60 Phase 1 raid") {
+			t.Fatalf("head = %q", head)
 		}
 	})
 }

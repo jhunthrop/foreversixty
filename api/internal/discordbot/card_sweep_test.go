@@ -67,7 +67,23 @@ func sweepFrames(t *testing.T) []Message {
 	frames = append(frames, signupFrames(t)...)
 	frames = append(frames, specFrames(t)...)
 	frames = append(frames, newOfficerWorld(t).run(t, pressDiscord, "char").Message)
-	return append(frames, lookupFrames(t)...)
+	frames = append(frames, lookupFrames(t)...)
+	return append(frames, gearFrames(t)...)
+}
+
+// gearFrames are the gear panel's Components V2 frames (spec 2026-10-29): both /bis pages, the
+// slot panel, /char with its upgrades and the share-failure frame, the largest message.
+func gearFrames(t *testing.T) []Message {
+	t.Helper()
+	w := newGearWorld(t)
+	p1 := w.bisPanel(t, gearBisOpts)
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": p1.Components[0][1].CustomID})
+	in.Source = sourceOf(t, p1)
+	p2 := w.route(t, in).Message
+	slot := w.bisPanel(t, map[string]string{"spec": "hunter-beast-mastery", "phase": "p1", "slot": "legs"})
+	char := w.command(t, pressDiscord, "char", nil).Message
+	shared := w.pressShareFrom(t, p1).Message
+	return []Message{p1, p2, slot, char, withLiveShare(shared, "failed-share-token")}
 }
 
 // signupFrames are the bare /signup card and the card a raid pick redraws.

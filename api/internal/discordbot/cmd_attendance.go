@@ -123,7 +123,7 @@ func rosterLink(roster string) Component {
 func attendanceEmbed(r guilds.AttendanceRecord, roster, zone string) notify.Embed {
 	e := notify.Embed{
 		Title: fill(officerCopy.AttendanceTitle, "{Name}", memberText(r.Name)), URL: roster,
-		Color: classColors[r.Class], Description: r.Chip,
+		Color: classColorOf(r.Class), Description: r.Chip,
 	}
 	if e.Description == "" {
 		e.Description = officerCopy.NoRaids

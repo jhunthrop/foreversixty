@@ -1,7 +1,9 @@
 package discordbot
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -10,12 +12,18 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 )
 
 // payloadDirEnv names the folder TestDumpGuidedPayloads writes into. Unset, the test skips, so
 // a normal run never writes files. The committed copies live in
 // design/mocks/2026-10-28-discord-guided-cards/payloads (see README there).
 const payloadDirEnv = "GUIDED_PAYLOADS_DIR"
+
+// gearPayloadDirEnv names the folder TestDumpGearPanelPayloads writes the gear panel's real
+// frames into: design/mocks/2026-10-29-discord-gear-panel/payloads-real, drawn by
+// gen_gear_panel.mjs beside the mock's own.
+const gearPayloadDirEnv = "GEAR_PAYLOADS_DIR"
 
 // boardClock is the instant every dumped card is drawn at (the boards' clock).
 var boardClock = time.Date(2026, time.December, 10, 22, 0, 0, 0, time.UTC)
@@ -199,4 +207,61 @@ func boardRaid(w *postWorld, counts notify.RaidCounts) {
 		f.Post.StartsAt, f.Post.Timezone, f.Post.Counts = boardStart, "America/Chicago", counts
 		f.EndsAt = boardStart.Add(3 * time.Hour)
 	})
+}
+
+// TestDumpGearPanelPayloads writes the real handler frames of every gear-panel board to
+// $GEAR_PAYLOADS_DIR, one <board>.json each, in the mock's own frame shape (id, title, budget,
+// message), for gen_gear_panel.mjs to draw as <board>-real beside the board.
+func TestDumpGearPanelPayloads(t *testing.T) {
+	dir := os.Getenv(gearPayloadDirEnv)
+	if dir == "" {
+		t.Skip(gearPayloadDirEnv + " is not set")
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for id, m := range gearBoardFrames(t) {
+		frame := map[string]any{"id": id, "title": "real payload: " + id,
+			"budget": map[string]int{"components": m.componentCount(), "text": textLength(m.Layout)}, "message": json.RawMessage(marshalled(t, m))}
+		raw, err := json.MarshalIndent(frame, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(dir, id+".json"), append(raw, '\n'), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+// gearBoardFrames are the handlers' answers for each of the mock's nine boards.
+func gearBoardFrames(t *testing.T) map[string]Message {
+	t.Helper()
+	w := newGearWorld(t)
+	p1 := w.bisPanel(t, gearBisOpts)
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": p1.Components[0][1].CustomID})
+	in.Source = sourceOf(t, p1)
+	out := map[string]Message{
+		"bis-panel-p1":   p1,
+		"bis-panel-p2":   w.route(t, in).Message,
+		"bis-panel-slot": w.bisPanel(t, map[string]string{"spec": "hunter-beast-mastery", "phase": "p1", "slot": "legs"}),
+		"char-panel":     w.command(t, pressDiscord, "char", nil).Message,
+	}
+	share := w.pressShareFrom(t, p1)
+	out["bis-panel-p1-sharefail"] = withLiveShare(share.Message, p1.Components[0][0].CustomID[len(shareIDPrefix)+1:])
+	share.After(context.Background())
+	out["share-bis"] = w.followUps()[0].Message
+	w.sheets.err = errors.New("no sheet")
+	again := w.pressShareFrom(t, w.bisPanel(t, gearBisOpts))
+	again.After(context.Background())
+	out["share-bis-nosheet"] = w.followUps()[1].Message
+	w.sheets.err = nil
+	charShare := w.pressShareFrom(t, out["char-panel"])
+	charShare.After(context.Background())
+	out["share-char"] = w.followUps()[2].Message
+	bare := gearZulmara()
+	bare.Gear = []rankings.GearSlot{}
+	w.cards.cards["zulmara"] = bare
+	w.lg.readiness[keyZulmara] = guilds.ReadinessFacts{Word: "Not synced", OnRoster: true}
+	out["char-panel-nogear"] = w.command(t, pressDiscord, "char", nil).Message
+	return out
 }

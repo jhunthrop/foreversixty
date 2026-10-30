@@ -5,19 +5,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // optName is /char's character option.
 const optName = "name"
-
-// maxUpgrades is how many upgrade item embeds follow the card.
-const maxUpgrades = 3
-
-// tankRole is the spec role whose upgrades are ranked by score, not DPS.
-const tankRole = "tank"
 
 // cmdChar answers /char: the public character card and its top upgrades, ephemeral, with
 // Share in channel. A private or unknown name answers the one sentence.
@@ -67,35 +61,127 @@ func (s *Service) lookupCaller(ctx context.Context, in Interaction) (guildID int
 	return guildID, viewer, true, nil
 }
 
-// answerChar is the /char answer for viewer (nil: a visitor), resolving the name within the
-// guild's region and ruleset. Readiness and Synced are the guild's own reads: only a verified
-// member of the guild sees them.
-func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, opts map[string]string) (Message, bool, error) {
+// charData is a /char answer's character as the panel and the sheet read it. Readiness and
+// Synced are the guild's own reads: only a verified member of the guild sees them.
+type charData struct {
+	card    rankings.Character
+	spec    specs.Spec
+	class   string
+	faction string
+	build   string
+	facts   *guilds.ReadinessFacts
+	ups     upgradeList
+}
+
+// loadChar resolves the name within the guild's region and ruleset for viewer (nil: a visitor).
+func (s *Service) loadChar(ctx context.Context, guildID int64, viewer *int64, opts map[string]string) (charData, bool, error) {
 	g, err := s.d.Guilds.BotGuildFacts(ctx, guildID)
 	if err != nil {
-		return Message{}, false, err
+		return charData{}, false, err
 	}
 	card, found, err := s.d.Characters.CharacterCard(ctx, g.Region, g.Ruleset, opts[optName])
 	if err != nil || !found {
-		return Message{}, false, err
+		return charData{}, false, err
 	}
 	spec, _ := specByKey(deref(card.GearSpec))
-	head := s.cardEmbed(card, spec)
+	build, _ := s.d.Guilds.ActiveBuild()
+	d := charData{card: card, spec: spec, class: strings.ToLower(card.Character.Class),
+		faction: s.characterFaction(card, g.Faction), build: build, ups: s.upgrades(card, spec, g.Faction)}
 	member, err := s.verifiedMember(ctx, guildID, viewer)
+	if err != nil || !member {
+		return d, true, err
+	}
+	facts, err := s.d.Guilds.CharacterReadinessFacts(ctx, guildID, card.Character.Key)
 	if err != nil {
+		return charData{}, false, fmt.Errorf("discordbot: char readiness: %w", err)
+	}
+	if facts.OnRoster {
+		d.facts = &facts
+	}
+	return d, true, nil
+}
+
+// answerChar is the /char panel (spec 2026-10-29 §A.5.3): the character, then its top
+// upgrades. Its one row is the character page; the presser's copy gains the rest.
+func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, opts map[string]string) (Message, bool, error) {
+	d, found, err := s.loadChar(ctx, guildID, viewer, opts)
+	if err != nil || !found {
 		return Message{}, false, err
 	}
-	if member {
-		if head.Fields, err = s.memberFields(ctx, guildID, card.Character.Key, head.Fields); err != nil {
-			return Message{}, false, err
+	head := []Node{sectionNode(s.charHeader(d, true), s.crestThumb(d.class)), separatorNode(), textNode(upgradesText(d.card, d.ups))}
+	var rows []panelRow
+	if len(d.card.Gear) > 0 {
+		shown := d.ups.items[:min(len(d.ups.items), maxUpgrades)]
+		for _, u := range shown {
+			rows = append(rows, panelRow{item: pointerTo(s.upgradeRow(d, u))})
+		}
+		if more := moreText(len(d.ups.items) - len(shown)); more != "" {
+			rows = append(rows, panelRow{text: more})
 		}
 	}
-	ups := s.upgrades(card, spec, g.Faction)
-	head.Fields = append(head.Fields, upgradesField(card, ups))
-	embeds := append([]notify.Embed{head}, s.upgradeEmbeds(card, ups, s.characterFaction(card, g.Faction))...)
-	closeEmbeds(embeds, lookupCopy.Footer, s.now())
-	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(card.Character.Key)}
-	return Message{Embeds: embeds, Components: []ActionRow{{link}}}, true, nil
+	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}
+	body := s.guardedBody(ctx, d.build, head, rows)
+	return Message{Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}, true, nil
+}
+
+// charContainer is the panel's container in the class colour, or uncoloured for an unknown class.
+func charContainer(class string, body []Node) Node {
+	if color, ok := classColor(class); ok {
+		return containerNode(color, body...)
+	}
+	return Node{Kind: KindContainer, Children: body}
+}
+
+// charHeader is the linked name and the level line; with facts, the item level, readiness and
+// synced subtext, each clause only when known.
+func (s *Service) charHeader(d charData, withFacts bool) string {
+	lines := []string{heading("[" + memberText(d.card.Character.Name) + "](" + s.characterURL(d.card.Character.Key) + ")"),
+		cardLine(d.card, d.spec, d.class)}
+	if !withFacts {
+		return strings.Join(lines, "\n")
+	}
+	clauses := strings.Split(strings.TrimPrefix(lookupCopy.CharFacts, subtext("")), lineJoin)
+	var kept []string
+	if level, ok := averageItemLevel(d.card.Gear); ok {
+		kept = append(kept, fill(clauses[0], "{x.x}", level))
+	}
+	if d.facts != nil {
+		kept = append(kept, fill(clauses[1], "{word}", d.facts.Word))
+		if d.facts.SyncedAt != nil {
+			kept = append(kept, fill(clauses[2], "{unix}", fmt.Sprint(d.facts.SyncedAt.Unix())))
+		}
+	}
+	if len(kept) > 0 {
+		lines = append(lines, subtext(strings.Join(kept, lineJoin)))
+	}
+	return strings.Join(lines, "\n")
+}
+
+// upgradeRow is one upgrade as a panel row: the pick, its gain, and what it replaces.
+func (s *Service) upgradeRow(d charData, u upgrade) itemRow {
+	facts := s.itemFacts(d.build, d.class, u.id, u.name, s.sourceLine(u.id, u.kind, d.faction, u.source), "")
+	name, level := s.wornFacts(d, u.worn)
+	return itemRow{item: facts, slot: u.slot, gain: u.gain, replaces: replacesLine(name, level)}
+}
+
+// wornFacts is a worn item's name and item level: the export's, else the build's table.
+func (s *Service) wornFacts(d charData, w *rankings.GearWorn) (string, int) {
+	if w == nil {
+		return "", 0
+	}
+	name, level := deref(w.Name), 0
+	if w.ItemLevel != nil {
+		level = *w.ItemLevel
+	}
+	if it, ok := s.d.Guilds.BuildItem(d.build, d.class, w.ID); ok {
+		if name == "" {
+			name = it.Name
+		}
+		if level == 0 {
+			level = it.ItemLevel
+		}
+	}
+	return name, level
 }
 
 func (s *Service) verifiedMember(ctx context.Context, guildID int64, viewer *int64) (bool, error) {
@@ -111,24 +197,14 @@ func (s *Service) verifiedMember(ctx context.Context, guildID int64, viewer *int
 
 func (s *Service) characterURL(key string) string { return s.d.PublicBaseURL + "/character/" + key }
 
-// cardEmbed is the card: name, class colour, crest, the level line and the item level.
-func (s *Service) cardEmbed(card rankings.Character, spec specs.Spec) notify.Embed {
-	class := strings.ToLower(card.Character.Class)
-	e := notify.Embed{
-		Title: memberText(card.Character.Name), URL: s.characterURL(card.Character.Key), Color: classColors[class],
-		Description: cardLine(card, spec, class),
-	}
-	if _, known := classColors[class]; known {
-		e.Thumbnail = s.d.PublicBaseURL + "/icons/hd/crests/" + class + ".webp"
-	}
-	if level, ok := averageItemLevel(card.Gear); ok {
-		e.Fields = append(e.Fields, notify.EmbedField{Name: lookupCopy.ItemLevel, Value: level, Inline: true})
-	}
-	return e
-}
-
 // cardLine is "Level 60 Marksmanship Hunter · Olympus XXVII", each part only when known.
 func cardLine(card rankings.Character, spec specs.Spec, class string) string {
+	return cardLineWith(card, spec, class, memberText)
+}
+
+// cardLineWith is cardLine with the guild's name through text: memberText for Discord, as it
+// is for the sheet's image.
+func cardLineWith(card rankings.Character, spec specs.Spec, class string, text func(string) string) string {
 	who, guildPart, _ := strings.Cut(lookupCopy.CharLine, lineJoin)
 	level := ""
 	if card.Character.Level != nil {
@@ -138,7 +214,7 @@ func cardLine(card rankings.Character, spec specs.Spec, class string) string {
 	}
 	line := strings.Join(strings.Fields(fill(who, "{n}", level, "{Spec}", spec.Name, "{Class}", classLabel(class))), " ")
 	if card.Character.Guild != nil && card.Character.Guild.Name != "" {
-		line += lineJoin + fill(guildPart, "{Guild}", memberText(card.Character.Guild.Name))
+		line += lineJoin + fill(guildPart, "{Guild}", text(card.Character.Guild.Name))
 	}
 	return line
 }
@@ -159,22 +235,6 @@ func averageItemLevel(gear []rankings.GearSlot) (string, bool) {
 		return "", false
 	}
 	return fmt.Sprintf("%.1f", float64(total)/float64(count)), true
-}
-
-// memberFields adds Readiness and Synced, the readiness board's word and the export's time.
-func (s *Service) memberFields(ctx context.Context, guildID int64, key string, fields []notify.EmbedField) ([]notify.EmbedField, error) {
-	facts, err := s.d.Guilds.CharacterReadinessFacts(ctx, guildID, key)
-	if err != nil {
-		return nil, fmt.Errorf("discordbot: char readiness: %w", err)
-	}
-	if !facts.OnRoster {
-		return fields, nil
-	}
-	fields = append(fields, notify.EmbedField{Name: lookupCopy.Readiness, Value: facts.Word, Inline: true})
-	if facts.SyncedAt != nil {
-		fields = append(fields, notify.EmbedField{Name: lookupCopy.Synced, Value: fmt.Sprintf("<t:%d:R>", facts.SyncedAt.Unix()), Inline: true})
-	}
-	return fields, nil
 }
 
 // levelBands are the BiS data's level bands.

@@ -25,12 +25,13 @@ func assertCardLimits(t *testing.T, m Message) {
 
 // cardViolations lists how m breaks a Discord limit or a card rule: custom ids, row count,
 // select option counts, label and placeholder lengths, button styles, the empty mention list
-// and the ephemeral flag.
+// and the ephemeral flag; on a Components V2 message, its budget and layout kinds too.
 func cardViolations(m Message) []string {
 	var out []string
-	if len(m.Components) > maxActionRows {
+	if len(m.Components) > maxActionRows && !m.componentsV2() {
 		out = append(out, fmt.Sprintf("%d action rows", len(m.Components)))
 	}
+	out = append(out, v2Violations(m)...)
 	successes := 0
 	for _, row := range m.Components {
 		for _, c := range row {
@@ -99,8 +100,64 @@ func wireViolations(m Message) []string {
 	if body.AllowedMentions.Parse == nil || len(body.AllowedMentions.Parse) != 0 {
 		out = append(out, fmt.Sprintf("allowed_mentions.parse = %v", body.AllowedMentions.Parse))
 	}
-	if body.Flags != ephemeralFlag {
+	if body.Flags&ephemeralFlag == 0 {
 		out = append(out, fmt.Sprintf("flags = %d, not ephemeral", body.Flags))
+	}
+	if want := m.componentsV2(); (body.Flags&componentsV2Flag != 0) != want {
+		out = append(out, fmt.Sprintf("flags = %d, components v2 %v", body.Flags, want))
+	}
+	return out
+}
+
+// layoutParents are the layout kinds each kind may sit in ("" is the message's top level).
+var layoutParents = map[ComponentKind]map[ComponentKind]bool{
+	KindContainer:    {0: true},
+	KindTextDisplay:  {0: true, KindContainer: true, KindSection: true},
+	KindSection:      {0: true, KindContainer: true},
+	KindSeparator:    {0: true, KindContainer: true},
+	KindMediaGallery: {0: true, KindContainer: true},
+}
+
+// v2Violations checks a Components V2 message against the spec's budget (spec 2026-10-29
+// §A.6: at most 38 components and 3,800 text characters) and Discord's nesting rules: no
+// content or embeds, a Section with 1 to 3 Text Displays and a Thumbnail accessory, and every
+// thumbnail and gallery item with alt text.
+func v2Violations(m Message) []string {
+	if !m.componentsV2() {
+		return nil
+	}
+	var out []string
+	if n := m.componentCount(); n > maxV2Components {
+		out = append(out, fmt.Sprintf("%d components, over %d", n, maxV2Components))
+	}
+	if n := textLength(m.Layout); n > textBudget {
+		out = append(out, fmt.Sprintf("%d text characters, over %d", n, textBudget))
+	}
+	if m.Content != "" || len(m.Embeds) > 0 {
+		out = append(out, "components v2 with content or embeds")
+	}
+	return append(out, layoutViolations(m.Layout, 0)...)
+}
+
+func layoutViolations(nodes []Node, parent ComponentKind) []string {
+	var out []string
+	for _, n := range nodes {
+		if !layoutParents[n.Kind][parent] {
+			out = append(out, fmt.Sprintf("kind %d inside kind %d", n.Kind, parent))
+		}
+		switch n.Kind {
+		case KindSection:
+			if len(n.Children) < 1 || len(n.Children) > 3 || n.Accessory == nil || n.Accessory.Kind != KindThumbnail || n.Accessory.Description == "" {
+				out = append(out, fmt.Sprintf("section %+v", n))
+			}
+		case KindMediaGallery:
+			for _, it := range n.Items {
+				if it.Description == "" || utf8.RuneCountInString(it.Description) > 1024 {
+					out = append(out, "gallery item alt text")
+				}
+			}
+		}
+		out = append(out, layoutViolations(n.Children, n.Kind)...)
 	}
 	return out
 }

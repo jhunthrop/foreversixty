@@ -90,7 +90,7 @@ func TestAnInWithNoSpecAsksWhichSpec(t *testing.T) {
 	}
 	e := m.Embeds[0]
 	lead := fill(guideCopy.SpecLead, "{Name}", "Zulmara", "{State}", "In", "{Title}", "Onyxia's Lair", "{Date}", w.day())
-	if e.Title != guideCopy.SpecTitle || e.Description != lead || e.Color != classColors["paladin"] ||
+	if e.Title != guideCopy.SpecTitle || e.Description != lead || e.Color != classColorOf("paladin") ||
 		e.Thumbnail != pressPublic+"/icons/hd/crests/paladin.webp" || e.Footer != cardFooter || e.Timestamp.IsZero() || e.Author != "" {
 		t.Fatalf("embed = %+v", e)
 	}

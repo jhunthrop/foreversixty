@@ -1,0 +1,476 @@
+{
+ "generated_at": "2026-10-29T13:34:26Z",
+ "bands": [
+  {
+   "band": 60,
+   "preset": "raid",
+   "faction": "alliance",
+   "score_unit": "reference_stat_points",
+   "reference_dps_per_point": 0.14104517478848316,
+   "slots": [
+    {
+     "slot": "head",
+     "item_id": 226887,
+     "item_name": "Beastmaster's Cap",
+     "source": "Saving the Best for Last",
+     "source_kind": "quest",
+     "score": 96.015160446,
+     "effect_unmodelled": true,
+     "alternatives": [
+      {
+       "item_id": 231562,
+       "item_name": "Field Marshal's Chain Greathelm",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 231580,
+       "item_name": "Field Marshal's Chain Helm",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 279253,
+       "item_name": "Outlaw's Collar",
+       "source": "Leatherworking",
+       "source_kind": "crafted",
+       "dps_delta": -11.155827546
+      }
+     ]
+    },
+    {
+     "slot": "neck",
+     "item_id": 19491,
+     "item_name": "Amulet of the Darkmoon",
+     "source": "1200 Tickets - Amulet of the Darkmoon",
+     "source_kind": "quest",
+     "score": 55.154983606,
+     "alternatives": [
+      {
+       "item_id": 22150,
+       "item_name": "Beads of Ogre Might",
+       "source": "Falrin's Vendetta",
+       "source_kind": "quest",
+       "dps_delta": -0.268886019
+      },
+      {
+       "item_id": 22659,
+       "item_name": "Medallion of the Dawn",
+       "source": "Epic Armaments of Battle - Friend of the Dawn",
+       "source_kind": "quest",
+       "dps_delta": -1.512162067
+      },
+      {
+       "item_id": 19538,
+       "item_name": "Sentinel's Medallion",
+       "source": "Silverwing Sentinels",
+       "source_kind": "rep",
+       "dps_delta": -1.637756695
+      }
+     ]
+    },
+    {
+     "slot": "shoulder",
+     "item_id": 272105,
+     "item_name": "Darkspear Pauldrons",
+     "source": "Creeg Bothunk",
+     "source_kind": "vendor",
+     "score": 98.811999465,
+     "alternatives": [
+      {
+       "item_id": 16468,
+       "item_name": "Field Marshal's Chain Spaulders",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 231576,
+       "item_name": "Field Marshal's Chain Shoulders",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 272106,
+       "item_name": "Darkspear Epaulets",
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      }
+     ]
+    },
+    {
+     "slot": "back",
+     "item_id": 13340,
+     "item_name": "Cape of the Black Baron",
+     "source": "Stratholme: Baron Rivendare",
+     "source_kind": "dungeon",
+     "score": 63.54340811,
+     "alternatives": [
+      {
+       "item_id": 272414,
+       "item_name": "Howler's Furs",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor",
+       "dps_delta": -0.887852121
+      },
+      {
+       "item_id": 18511,
+       "item_name": "Shifting Cloak",
+       "source": "Leatherworking",
+       "source_kind": "crafted",
+       "dps_delta": -2.002025148
+      },
+      {
+       "item_id": 20073,
+       "item_name": "Cloak of the Honor Guard",
+       "source": "The League of Arathor",
+       "source_kind": "rep",
+       "dps_delta": -2.119759291
+      }
+     ]
+    },
+    {
+     "slot": "chest",
+     "item_id": 252483,
+     "item_name": "Dawn Armor",
+     "source": "Leatherworking",
+     "source_kind": "crafted",
+     "score": 157.089539548,
+     "alternatives": [
+      {
+       "item_id": 16466,
+       "item_name": "Field Marshal's Chain Breastplate",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": -5.35369161
+      },
+      {
+       "item_id": 231581,
+       "item_name": "Field Marshal's Chain Hauberk",
+       "source": "PvP rank 17 · Field Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": -5.35369161
+      },
+      {
+       "item_id": 16721,
+       "item_name": "Shadowcraft Tunic",
+       "source": "Blackrock Spire: General Drakkisath",
+       "source_kind": "dungeon",
+       "dps_delta": -10.962395693
+      }
+     ]
+    },
+    {
+     "slot": "wrist",
+     "item_id": 226885,
+     "item_name": "Beastmaster's Bindings",
+     "source": "An Earnest Proposition",
+     "source_kind": "quest",
+     "alternatives": [
+      {
+       "item_id": 16402,
+       "item_name": "Knight-Captain's Chain Armguards",
+       "source": "PvP rank 12 · Knight-Captain · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 16461,
+       "item_name": "Marshal's Chain Bracers",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 19587,
+       "item_name": "Forest Stalker's Bracers",
+       "source": "Silverwing Sentinels",
+       "source_kind": "rep",
+       "dps_delta": -4.677240427
+      }
+     ]
+    },
+    {
+     "slot": "hands",
+     "item_id": 272099,
+     "item_name": "Raider Gloves",
+     "source": "Creeg Bothunk",
+     "source_kind": "vendor",
+     "score": 78.378134598,
+     "alternatives": [
+      {
+       "item_id": 231578,
+       "item_name": "Marshal's Chain Vices",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 231560,
+       "item_name": "Marshal's Chain Grips",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": -0.975374068
+      },
+      {
+       "item_id": 279257,
+       "item_name": "Mourning Handguards",
+       "source": "Leatherworking",
+       "source_kind": "crafted",
+       "dps_delta": -2.456635043
+      }
+     ]
+    },
+    {
+     "slot": "waist",
+     "item_id": 20216,
+     "item_name": "Belt of Preserved Heads",
+     "source": "A Collection of Heads",
+     "source_kind": "quest",
+     "score": 72.792009453,
+     "alternatives": [
+      {
+       "item_id": 272397,
+       "item_name": "Ranger's Belt",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor",
+       "dps_delta": -0.440421524
+      },
+      {
+       "item_id": 227807,
+       "item_name": "Dense Timbermaw Belt",
+       "source": "Meilosh",
+       "source_kind": "vendor",
+       "dps_delta": -1.24007051
+      },
+      {
+       "item_id": 274757,
+       "item_name": "Substandard Belt Chain",
+       "source": "Zippie Fizzbolt",
+       "source_kind": "vendor",
+       "dps_delta": -2.291786816
+      }
+     ]
+    },
+    {
+     "slot": "legs",
+     "item_id": 237819,
+     "item_name": "Sentinel's Chain Leggings",
+     "source": "Illiyana Moonblaze",
+     "source_kind": "vendor",
+     "score": 171.717616667,
+     "alternatives": [
+      {
+       "item_id": 237818,
+       "item_name": "Sentinel's Leather Pants",
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor",
+       "dps_delta": -7.40088748
+      },
+      {
+       "item_id": 231577,
+       "item_name": "Marshal's Chain Legguards",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": -7.416911304
+      },
+      {
+       "item_id": 231558,
+       "item_name": "Marshal's Chain Legplates",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": -9.299750967
+      }
+     ]
+    },
+    {
+     "slot": "feet",
+     "item_id": 226881,
+     "item_name": "Beastmaster's Treads",
+     "source": "Mokvar",
+     "source_kind": "vendor",
+     "effect_unmodelled": true,
+     "alternatives": [
+      {
+       "item_id": 16462,
+       "item_name": "Marshal's Chain Boots",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 231579,
+       "item_name": "Marshal's Chain Greaves",
+       "source": "PvP rank 16 · Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 16711,
+       "item_name": "Shadowcraft Boots",
+       "source": "Scholomance: Rattlegore",
+       "source_kind": "dungeon",
+       "dps_delta": -7.618998443
+      }
+     ]
+    },
+    {
+     "slot": "finger1",
+     "item_id": 234202,
+     "item_name": "Signet Ring of the Bronze Dragonflight",
+     "source": "Anachronos",
+     "source_kind": "vendor",
+     "score": 98.91805432,
+     "effect_unmodelled": true,
+     "alternatives": [
+      {
+       "item_id": 19325,
+       "item_name": "Don Julio's Band",
+       "source": "Stormpike Guard",
+       "source_kind": "rep",
+       "dps_delta": -4.969809684
+      },
+      {
+       "item_id": 9533,
+       "item_name": "Masons Fraternity Ring",
+       "source": "Divino-matic Rod",
+       "source_kind": "quest",
+       "dps_delta": -8.219765827
+      },
+      {
+       "item_id": 19514,
+       "item_name": "Protector's Band",
+       "source": "Silverwing Sentinels",
+       "source_kind": "rep",
+       "dps_delta": -9.448083349
+      }
+     ]
+    },
+    {
+     "slot": "finger2",
+     "item_id": 272408,
+     "item_name": "Cutthroat's Signet",
+     "source": "Pix Xizzix",
+     "source_kind": "vendor",
+     "score": 69.889115579,
+     "alternatives": [
+      {
+       "item_id": 19325,
+       "item_name": "Don Julio's Band",
+       "source": "Stormpike Guard",
+       "source_kind": "rep",
+       "dps_delta": -0.875417945
+      },
+      {
+       "item_id": 9533,
+       "item_name": "Masons Fraternity Ring",
+       "source": "Divino-matic Rod",
+       "source_kind": "quest",
+       "dps_delta": -4.125374089
+      },
+      {
+       "item_id": 19514,
+       "item_name": "Protector's Band",
+       "source": "Silverwing Sentinels",
+       "source_kind": "rep",
+       "dps_delta": -5.35369161
+      }
+     ]
+    },
+    {
+     "slot": "trinket1",
+     "item_id": 249469,
+     "item_name": "Frozen Heart of the Mountain",
+     "source": "Enchanting",
+     "source_kind": "crafted",
+     "alternatives": []
+    },
+    {
+     "slot": "trinket2",
+     "item_id": 249470,
+     "item_name": "Molten Heart of the Mountain",
+     "source": "Enchanting",
+     "source_kind": "crafted",
+     "alternatives": [
+      {
+       "item_id": 19287,
+       "item_name": "Darkmoon Card: Heroism",
+       "source": "Darkmoon Warlords Deck",
+       "source_kind": "quest",
+       "dps_delta": 0
+      }
+     ]
+    },
+    {
+     "slot": "main_hand",
+     "item_id": 250619,
+     "item_name": "Legionite Glaive",
+     "source": "Blacksmithing",
+     "source_kind": "crafted",
+     "alternatives": [
+      {
+       "item_id": 234569,
+       "item_name": "Grand Marshal's Glaive",
+       "source": "PvP rank 18 · Grand Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 234570,
+       "item_name": "Grand Marshal's Polearm",
+       "source": "PvP rank 18 · Grand Marshal · Alliance",
+       "source_kind": "vendor",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 19100,
+       "item_name": "Electrified Dagger",
+       "source": "Stormpike Guard",
+       "source_kind": "rep",
+       "dps_delta": -20.021351885
+      }
+     ]
+    },
+    {
+     "slot": "off_hand",
+     "empty_reason": "two_hand_equipped",
+     "alternatives": []
+    },
+    {
+     "slot": "ranged",
+     "item_id": 279273,
+     "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
+     "source": "Engineering",
+     "source_kind": "crafted",
+     "alternatives": [
+      {
+       "item_id": 234585,
+       "item_name": "Grand Marshal's Bullseye",
+       "source": "PvP rank 18 · Grand Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 234586,
+       "item_name": "Grand Marshal's Repeater",
+       "source": "PvP rank 18 · Grand Marshal · Alliance",
+       "source_kind": "pvp",
+       "dps_delta": 0
+      },
+      {
+       "item_id": 16004,
+       "item_name": "Dark Iron Rifle",
+       "source": "Engineering",
+       "source_kind": "crafted",
+       "dps_delta": -23.116235121
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -113,7 +113,7 @@ func SyncEmoji(ctx context.Context, api EmojiAPI, images []EmojiImage, replace b
 		rep.Uploaded++
 		fmt.Fprintf(out, "uploaded %s\n", img.Name)
 	}
-	fmt.Fprintf(out, "%d uploaded, %d kept, %d deleted, %d specs\n", rep.Uploaded, rep.Kept, rep.Deleted, len(images))
+	fmt.Fprintf(out, "%d uploaded, %d kept, %d deleted, %d emoji\n", rep.Uploaded, rep.Kept, rep.Deleted, len(images))
 	return rep, nil
 }
 

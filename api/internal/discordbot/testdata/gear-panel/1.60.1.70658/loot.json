@@ -1,0 +1,812 @@
+{
+ "sources": [
+  {
+   "id": "dungeon:blackrock-spire",
+   "kind": "dungeon",
+   "name": "Blackrock Spire",
+   "zone_id": 1583,
+   "bosses": [
+    {
+     "id": "dungeon:blackrock-spire:10363",
+     "name": "General Drakkisath",
+     "npc_id": 10363,
+     "items": [
+      16721
+     ],
+     "item_chances": {},
+     "item_source_origin": {
+      "4304": "wowhead",
+      "8165": "wowhead",
+      "8170": "wowhead",
+      "8171": "wowhead",
+      "15416": "wowhead"
+     },
+     "rank": 3
+    }
+   ],
+   "trash": [],
+   "items": []
+  },
+  {
+   "id": "dungeon:scholomance",
+   "kind": "dungeon",
+   "name": "Scholomance",
+   "zone_id": 2057,
+   "bosses": [
+    {
+     "id": "dungeon:scholomance:11622",
+     "name": "Rattlegore",
+     "npc_id": 11622,
+     "items": [
+      16711
+     ],
+     "item_chances": {
+      "16711": 16.0
+     },
+     "reitemised_from": {
+      "287964": 8766
+     },
+     "rank": 1
+    }
+   ],
+   "trash": [],
+   "items": []
+  },
+  {
+   "id": "dungeon:stratholme",
+   "kind": "dungeon",
+   "name": "Stratholme",
+   "zone_id": 2017,
+   "bosses": [
+    {
+     "id": "dungeon:stratholme:10440",
+     "name": "Baron Rivendare",
+     "npc_id": 10440,
+     "items": [
+      13340
+     ],
+     "item_chances": {},
+     "rank": 1
+    }
+   ],
+   "trash": [],
+   "items": []
+  },
+  {
+   "id": "world:grunnda-wolfheart",
+   "kind": "world",
+   "name": "Grunnda Wolfheart",
+   "items": [
+    19325
+   ],
+   "item_chances": {
+    "19325": 0.02
+   },
+   "source_origin": "classic-db"
+  },
+  {
+   "id": "vendor:11557",
+   "kind": "vendor",
+   "name": "Meilosh",
+   "npc_id": 11557,
+   "items": [
+    227807
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:12777",
+   "kind": "vendor",
+   "name": "Captain Dirgehammer",
+   "npc_id": 12777,
+   "faction": "alliance",
+   "items": [
+    16462,
+    16466,
+    16468,
+    231558,
+    231562,
+    231576,
+    231578,
+    231579,
+    231581
+   ]
+  },
+  {
+   "id": "vendor:12782",
+   "kind": "vendor",
+   "name": "Captain O'Neal",
+   "npc_id": 12782,
+   "faction": "alliance",
+   "items": [
+    234570
+   ]
+  },
+  {
+   "id": "vendor:13216",
+   "kind": "vendor",
+   "name": "Gaelden Hammersmith",
+   "npc_id": 13216,
+   "items": [
+    19100,
+    19325
+   ],
+   "source_origin": "classic-db"
+  },
+  {
+   "id": "vendor:13217",
+   "kind": "vendor",
+   "name": "Thanthaldis Snowgleam",
+   "npc_id": 13217,
+   "items": [
+    19100,
+    19325
+   ],
+   "source_origin": "classic-db"
+  },
+  {
+   "id": "vendor:13218",
+   "kind": "vendor",
+   "name": "Grunnda Wolfheart",
+   "npc_id": 13218,
+   "items": [
+    19325
+   ],
+   "source_origin": "classic-db"
+  },
+  {
+   "id": "vendor:13219",
+   "kind": "vendor",
+   "name": "Jekyll Flandring",
+   "npc_id": 13219,
+   "items": [
+    19325
+   ],
+   "source_origin": "classic-db"
+  },
+  {
+   "id": "vendor:14753",
+   "kind": "vendor",
+   "name": "Illiyana Moonblaze",
+   "npc_id": 14753,
+   "items": [
+    19514,
+    19538,
+    19587,
+    237818,
+    237819
+   ]
+  },
+  {
+   "id": "vendor:14754",
+   "kind": "vendor",
+   "name": "Kelm Hargunth",
+   "npc_id": 14754,
+   "faction": "horde",
+   "items": [
+    19587
+   ]
+  },
+  {
+   "id": "vendor:15127",
+   "kind": "vendor",
+   "name": "Samuel Hawke",
+   "npc_id": 15127,
+   "items": [
+    20073
+   ]
+  },
+  {
+   "id": "vendor:15192",
+   "kind": "vendor",
+   "name": "Anachronos",
+   "npc_id": 15192,
+   "items": [
+    234202
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:227853",
+   "kind": "vendor",
+   "name": "Pix Xizzix",
+   "npc_id": 227853,
+   "items": [
+    272397,
+    272408,
+    272414
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:230317",
+   "kind": "vendor",
+   "name": "Mokvar",
+   "npc_id": 230317,
+   "items": [
+    226881
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:230319",
+   "kind": "vendor",
+   "name": "Deliana",
+   "npc_id": 230319,
+   "items": [
+    226881
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:230565",
+   "kind": "vendor",
+   "name": "Ironforge Guard",
+   "npc_id": 230565,
+   "items": [
+    226881
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:230566",
+   "kind": "vendor",
+   "name": "Kor'kron Elite",
+   "npc_id": 230566,
+   "items": [
+    226881
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:263570",
+   "kind": "vendor",
+   "name": "Creeg Bothunk",
+   "npc_id": 263570,
+   "items": [
+    272099,
+    272105,
+    272106
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "vendor:265577",
+   "kind": "vendor",
+   "name": "Zippie Fizzbolt",
+   "npc_id": 265577,
+   "items": [
+    274757
+   ],
+   "source_origin": "wowhead"
+  },
+  {
+   "id": "crafted:blacksmithing",
+   "kind": "crafted",
+   "name": "Blacksmithing",
+   "profession": "blacksmithing",
+   "items": [
+    250619
+   ],
+   "reitemised_from": {
+    "217273": 9366
+   }
+  },
+  {
+   "id": "crafted:enchanting",
+   "kind": "crafted",
+   "name": "Enchanting",
+   "profession": "enchanting",
+   "items": [
+    249469,
+    249470
+   ]
+  },
+  {
+   "id": "crafted:engineering",
+   "kind": "crafted",
+   "name": "Engineering",
+   "profession": "engineering",
+   "items": [
+    16004,
+    279273
+   ],
+   "reitemised_from": {
+    "217314": 4383
+   }
+  },
+  {
+   "id": "crafted:leatherworking",
+   "kind": "crafted",
+   "name": "Leatherworking",
+   "profession": "leatherworking",
+   "items": [
+    18511,
+    252483,
+    279253,
+    279257
+   ],
+   "reitemised_from": {
+    "217270": 8187
+   }
+  },
+  {
+   "id": "rep:frostwolf-clan:exalted",
+   "kind": "rep",
+   "name": "Frostwolf Clan",
+   "faction_id": 729,
+   "standing": "exalted",
+   "items": [
+    19325
+   ]
+  },
+  {
+   "id": "rep:silverwing-sentinels:exalted",
+   "kind": "rep",
+   "name": "Silverwing Sentinels",
+   "faction_id": 889,
+   "standing": "exalted",
+   "items": [
+    19587
+   ]
+  },
+  {
+   "id": "rep:silverwing-sentinels:honored",
+   "kind": "rep",
+   "name": "Silverwing Sentinels",
+   "faction_id": 889,
+   "standing": "honored",
+   "items": [
+    19514,
+    19538
+   ]
+  },
+  {
+   "id": "rep:stormpike-guard:exalted",
+   "kind": "rep",
+   "name": "Stormpike Guard",
+   "faction_id": 730,
+   "standing": "exalted",
+   "items": [
+    19325
+   ]
+  },
+  {
+   "id": "rep:stormpike-guard:revered",
+   "kind": "rep",
+   "name": "Stormpike Guard",
+   "faction_id": 730,
+   "standing": "revered",
+   "items": [
+    19100
+   ]
+  },
+  {
+   "id": "rep:the-league-of-arathor:revered",
+   "kind": "rep",
+   "name": "The League of Arathor",
+   "faction_id": 509,
+   "standing": "revered",
+   "items": [
+    20073
+   ]
+  },
+  {
+   "id": "rep:warsong-outriders:exalted",
+   "kind": "rep",
+   "name": "Warsong Outriders",
+   "faction_id": 890,
+   "standing": "exalted",
+   "items": [
+    19587
+   ]
+  },
+  {
+   "id": "pvp:rank-12:alliance",
+   "kind": "pvp",
+   "name": "Rank 12 (Alliance)",
+   "rank": 12,
+   "faction": "alliance",
+   "faction_source": "title",
+   "title": "Knight-Captain",
+   "items": [
+    16402
+   ]
+  },
+  {
+   "id": "pvp:rank-12:horde",
+   "kind": "pvp",
+   "name": "Rank 12 (Horde)",
+   "rank": 12,
+   "faction": "horde",
+   "faction_source": "classic-db",
+   "title": "Legionnaire",
+   "items": [
+    19587
+   ]
+  },
+  {
+   "id": "pvp:rank-16:alliance",
+   "kind": "pvp",
+   "name": "Rank 16 (Alliance)",
+   "rank": 16,
+   "faction": "alliance",
+   "faction_source": "classic-db",
+   "title": "Marshal",
+   "items": [
+    16461,
+    16462,
+    231558,
+    231560,
+    231577,
+    231578,
+    231579
+   ]
+  },
+  {
+   "id": "pvp:rank-17:alliance",
+   "kind": "pvp",
+   "name": "Rank 17 (Alliance)",
+   "rank": 17,
+   "faction": "alliance",
+   "faction_source": "classic-db",
+   "title": "Field Marshal",
+   "items": [
+    16466,
+    16468,
+    231562,
+    231576,
+    231580,
+    231581
+   ]
+  },
+  {
+   "id": "pvp:rank-18:alliance",
+   "kind": "pvp",
+   "name": "Rank 18 (Alliance)",
+   "rank": 18,
+   "faction": "alliance",
+   "faction_source": "classic-db",
+   "title": "Grand Marshal",
+   "items": [
+    234569,
+    234570,
+    234585,
+    234586
+   ]
+  },
+  {
+   "id": "quest",
+   "kind": "quest",
+   "name": "Quests",
+   "items": [
+    9533,
+    19287,
+    19491,
+    20216,
+    22150,
+    22659,
+    226885,
+    226887
+   ],
+   "reitemised_from": {
+    "217017": 19978,
+    "217274": 9367,
+    "226773": 22109,
+    "226776": 22113,
+    "226778": 22112,
+    "226779": 22111,
+    "226825": 22009,
+    "226826": 22008,
+    "226827": 22007,
+    "226829": 22005,
+    "226830": 22004,
+    "226832": 22002,
+    "226858": 22001,
+    "226859": 22000,
+    "226861": 21998,
+    "226862": 21997,
+    "226863": 21996,
+    "226864": 21994,
+    "226882": 22017,
+    "226884": 22016,
+    "226885": 22011,
+    "226886": 22060,
+    "226887": 22013,
+    "226888": 22010,
+    "226905": 22070,
+    "226906": 22075,
+    "226907": 22071,
+    "226908": 22076,
+    "226909": 22074,
+    "226910": 22072,
+    "226911": 22077,
+    "226912": 22073,
+    "226929": 22063,
+    "226932": 22069,
+    "226933": 22067,
+    "226934": 22062,
+    "226935": 22065,
+    "226936": 22068,
+    "226945": 22083,
+    "226946": 22085,
+    "226947": 22080,
+    "226948": 22078,
+    "226949": 22079,
+    "226951": 22082,
+    "226952": 22084,
+    "226969": 22093,
+    "226970": 22088,
+    "226971": 22086,
+    "226972": 22092,
+    "226973": 22089,
+    "226975": 22090,
+    "227001": 22095,
+    "227002": 22097,
+    "227003": 22101,
+    "227004": 22102,
+    "227005": 22100,
+    "227006": 22099,
+    "227008": 22098,
+    "227727": 18592,
+    "228659": 18707,
+    "228749": 18659,
+    "272448": 7083,
+    "281167": 13582,
+    "281168": 13584,
+    "287966": 118,
+    "287967": 858,
+    "287968": 2455,
+    "287975": 2459
+   }
+  }
+ ],
+ "quests": {
+  "9533": [
+   {
+    "quest_id": 2768,
+    "name": "Divino-matic Rod",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 40,
+    "level": 47,
+    "level_source": "classic-db"
+   },
+   {
+    "quest_id": 2768,
+    "name": "Divino-matic Rod",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 40,
+    "level": 47,
+    "level_source": "classic-db"
+   }
+  ],
+  "19287": [
+   {
+    "quest_id": 7928,
+    "name": "Darkmoon Warlords Deck",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 1,
+    "level": 55,
+    "level_source": "classic-db"
+   },
+   {
+    "quest_id": 7928,
+    "name": "Darkmoon Warlords Deck",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 1,
+    "level": 55,
+    "level_source": "classic-db"
+   }
+  ],
+  "19491": [
+   {
+    "quest_id": 7981,
+    "name": "1200 Tickets - Amulet of the Darkmoon",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db"
+   },
+   {
+    "quest_id": 7981,
+    "name": "1200 Tickets - Amulet of the Darkmoon",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db"
+   }
+  ],
+  "20216": [
+   {
+    "quest_id": 8201,
+    "name": "A Collection of Heads",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db"
+   },
+   {
+    "quest_id": 8201,
+    "name": "A Collection of Heads",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db"
+   }
+  ],
+  "22150": [
+   {
+    "quest_id": 8949,
+    "name": "Falrin's Vendetta",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db"
+   },
+   {
+    "quest_id": 8949,
+    "name": "Falrin's Vendetta",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db"
+   }
+  ],
+  "22659": [
+   {
+    "quest_id": 9222,
+    "name": "Epic Armaments of Battle - Friend of the Dawn",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db",
+    "required_rep_faction": 529,
+    "required_rep_standing": "friendly"
+   },
+   {
+    "quest_id": 9224,
+    "name": "Epic Armaments of Battle - Honored Amongst the Dawn",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db",
+    "required_rep_faction": 529,
+    "required_rep_standing": "honored"
+   },
+   {
+    "quest_id": 9225,
+    "name": "Epic Armaments of Battle - Revered Amongst the Dawn",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db",
+    "required_rep_faction": 529,
+    "required_rep_standing": "revered"
+   },
+   {
+    "quest_id": 9228,
+    "name": "Epic Armaments of Battle - Exalted Amongst the Dawn",
+    "faction": "both",
+    "faction_source": "classic-db",
+    "min_level": 55,
+    "level": 60,
+    "level_source": "classic-db",
+    "required_rep_faction": 529,
+    "required_rep_standing": "exalted"
+   }
+  ],
+  "226885": [
+   {
+    "quest_id": 8906,
+    "name": "An Earnest Proposition",
+    "faction": "alliance",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 8914,
+    "name": "An Earnest Proposition",
+    "faction": "horde",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 8906,
+    "name": "An Earnest Proposition",
+    "faction": "alliance",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "wowhead",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 8914,
+    "name": "An Earnest Proposition",
+    "faction": "horde",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "wowhead",
+    "classes": [
+     "hunter"
+    ]
+   }
+  ],
+  "226887": [
+   {
+    "quest_id": 9000,
+    "name": "Saving the Best for Last",
+    "faction": "alliance",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 9008,
+    "name": "Saving the Best for Last",
+    "faction": "horde",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "classic-db",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 9000,
+    "name": "Saving the Best for Last",
+    "faction": "alliance",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "wowhead",
+    "classes": [
+     "hunter"
+    ]
+   },
+   {
+    "quest_id": 9008,
+    "name": "Saving the Best for Last",
+    "faction": "horde",
+    "faction_source": "classic-db",
+    "min_level": 58,
+    "level": 60,
+    "level_source": "wowhead",
+    "classes": [
+     "hunter"
+    ]
+   }
+  ]
+ }
+}

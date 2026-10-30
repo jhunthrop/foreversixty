@@ -13,11 +13,11 @@ func TestEmptyOrForgedNameAsksInsteadOfNamingNobody(t *testing.T) {
 		w.card(t, pressDiscord, charPickID, ""),
 	} {
 		assertCardLimits(t, rep.Message)
-		if !rep.Update || rep.Message.Content != "Which character? Type a name." || strings.Contains(rep.Message.Content, "named") {
+		if !rep.Update || contentOf(rep.Message) != "Which character? Type a name." || strings.Contains(contentOf(rep.Message), "named") {
 			t.Fatalf("reply = %+v", rep)
 		}
 	}
-	if rep := w.modal(t, "d-stranger", charNameID, ""); rep.Message.Content != guideCopy.CharLeadUnlinked {
+	if rep := w.modal(t, "d-stranger", charNameID, ""); contentOf(rep.Message) != guideCopy.CharLeadUnlinked {
 		t.Fatalf("unlinked = %+v", rep)
 	}
 }
@@ -28,7 +28,7 @@ func TestBareCharWithAMainThatNoLongerResolvesAsks(t *testing.T) {
 	delete(w.cards.cards, "zulmara")
 	rep := w.command(t, pressDiscord, "char", nil)
 	assertCardLimits(t, rep.Message)
-	if rep.Update || rep.Message.Content != "Which character? Type a name." || len(rep.Message.Embeds) != 0 {
+	if rep.Update || contentOf(rep.Message) != "Which character? Type a name." || hasCard(rep.Message) {
 		t.Fatalf("reply = %+v", rep)
 	}
 }

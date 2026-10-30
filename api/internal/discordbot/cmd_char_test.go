@@ -6,13 +6,13 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -173,34 +173,26 @@ func assertMessageLimits(t *testing.T, m Message) {
 	}
 }
 
-func fieldNames(e notify.Embed) []string {
-	var out []string
-	for _, f := range e.Fields {
-		out = append(out, f.Name)
-	}
-	return out
-}
-
+// TestLookupCopyMatchesTheSpec holds the bot spec's §6.2 strings the gear panel keeps (spec
+// 2026-10-29 retired the embeds' lead, author, fields and footers; TestPanelCopyMatchesTheSpec
+// holds their replacements).
 func TestLookupCopyMatchesTheSpec(t *testing.T) {
 	cell := func(label string) []string { return specCell(t, pressHeading, label) }
-	char := cell("`/char`")
-	wantChar := []string{lookupCopy.CharLine, lookupCopy.ItemLevel, lookupCopy.Readiness, lookupCopy.Synced, lookupCopy.TopUpgrades, lookupCopy.UpgradesBand,
-		lookupCopy.UpgradesByDPS, lookupCopy.UpgradesByScore, lookupCopy.NoGear, lookupCopy.CharacterPage}
-	bis := cell("`/bis`")
-	wantBis := []string{lookupCopy.BisSlotLead, lookupCopy.BisTopLead, lookupCopy.BisAuthor, lookupCopy.BisOpen, lookupCopy.BisAllSlots,
-		bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}
-	item := cell("Item embed")
-	wantItem := append([]string{lookupCopy.ItemLineOne, lookupCopy.ItemLineTwo}, qualityWords...)
-	share := cell("Share")
-	wantShare := []string{lookupCopy.Share, lookupCopy.Shared, lookupCopy.NoLongerPublic}
-	footers := cell("Footers")
 	for _, c := range []struct {
-		name      string
-		got, want []string
-	}{{"char", char, wantChar}, {"bis", bis, wantBis}, {"item", item, wantItem}, {"share", share, wantShare},
-		{"footers", []string{footers[1], footers[3]}, []string{lookupCopy.Footer, lookupCopy.BisFooter}}} {
-		if strings.Join(c.got, "|") != strings.Join(c.want, "|") {
-			t.Errorf("%s: spec %q\ncopy %q", c.name, c.got, c.want)
+		name string
+		got  []string
+		kept []string
+	}{
+		{"char", cell("`/char`"), []string{lookupCopy.CharLine, lookupCopy.NoGear, lookupCopy.CharacterPage}},
+		{"bis", cell("`/bis`"), []string{lookupCopy.BisOpen, lookupCopy.BisAllSlots,
+			bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}},
+		{"item", cell("Item embed"), append([]string{lookupCopy.ItemLineOne, lookupCopy.ItemLineTwo}, qualityWords...)},
+		{"share", cell("Share"), []string{lookupCopy.Share, lookupCopy.Shared, lookupCopy.NoLongerPublic}},
+	} {
+		for _, want := range c.kept {
+			if !slices.Contains(c.got, want) {
+				t.Errorf("%s: spec %q lacks %q", c.name, c.got, want)
+			}
 		}
 	}
 }
@@ -221,9 +213,10 @@ func TestColoursAreTheSiteTokens(t *testing.T) {
 		v, _ := strconv.ParseInt(m[1], 16, 32)
 		return int(v)
 	}
-	for class, colour := range classColors {
-		if want := token("color-class-" + class); colour != want {
-			t.Errorf("%s = %06x, want %06x", class, colour, want)
+	for _, c := range classChoices {
+		colour, ok := classColor(c.Value)
+		if want := token("color-class-" + c.Value); !ok || colour != want {
+			t.Errorf("%s = %06x, want %06x", c.Value, colour, want)
 		}
 	}
 	for q, word := range qualityWords {
@@ -259,7 +252,7 @@ func TestItemEmbedGrammar(t *testing.T) {
 }
 
 func TestCharCard(t *testing.T) {
-	t.Run("card and three upgrades", func(t *testing.T) {
+	t.Run("panel and upgrades in points", func(t *testing.T) {
 		w := newLookupWorld(t)
 		// The band measured nothing she wears, so the list reads in points from the gear panel.
 		writeBis(t, w.lg.dir, "hunter-marksmanship", []map[string]any{{"band": 60, "faction": "alliance", "slots": []map[string]any{
@@ -268,35 +261,28 @@ func TestCharCard(t *testing.T) {
 		}}})
 		w.port.candidates = []guilds.SignupCandidate{{CharacterKey: keyZulmaraLookup, Name: "Zulmara", Verified: true, Main: true}}
 		w.lg.readiness[keyZulmaraLookup] = guilds.ReadinessFacts{Word: "Stocked", SyncedAt: ref(time.Unix(1700000000, 0)), OnRoster: true}
-		rep := w.command(t, pressDiscord, "char", map[string]string{"name": "zulmara"})
-		m := rep.Message
-		assertMessageLimits(t, m)
-		if !m.Ephemeral || len(m.Embeds) != 4 {
-			t.Fatalf("reply = %+v", m)
+		m := w.command(t, pressDiscord, "char", map[string]string{"name": "zulmara"}).Message
+		assertCardLimits(t, m)
+		head := headOf(t, m)
+		if head.Title != "Zulmara" || head.URL != pressPublic+"/character/"+keyZulmaraLookup || head.Color != 0xaad372 ||
+			head.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" ||
+			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0 · Readiness: Stocked · Synced <t:1700000000:R>" {
+			t.Fatalf("header = %+v", head)
 		}
-		card := m.Embeds[0]
-		if card.Description != "Level 60 Marksmanship Hunter · Olympus XXVII" || card.Color != 0xaad372 ||
-			card.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" || card.URL != pressPublic+"/character/"+keyZulmaraLookup {
-			t.Fatalf("card = %+v", card)
+		texts := textsOf(m)
+		if texts[1] != "**Top upgrades** · level 60\n"+panelCopy.UpgradesByScore {
+			t.Fatalf("lead = %q", texts[1])
 		}
-		if got := strings.Join(fieldNames(card), ","); got != "Item level,Readiness,Synced,Top 3 upgrades · level 60" {
-			t.Fatalf("fields = %s", got)
+		// Nothing measured, so the list reads in points, in frame order by gap: head, hands, feet, wrist.
+		want := []string{"**Pick head**\nHead · +9.0 points\n-# Epic · item level 61 · Source head",
+			"**Pick hands**\nHands · +7.0 points\n-# Epic · item level 61 · Source hands",
+			"**Pick feet**\nFeet · +5.0 points\n-# Epic · item level 61 · Source feet",
+			"**Pick wrist**\nWrist · +2.0 points\n-# Epic · item level 61 · Source wrist"}
+		if got := texts[2:]; strings.Join(got, "|") != strings.Join(want, "|") {
+			t.Fatalf("upgrades = %q", got)
 		}
-		if card.Fields[0].Value != "56.0" || card.Fields[1].Value != "Stocked" || card.Fields[2].Value != "<t:1700000000:R>" ||
-			card.Fields[3].Value != lookupCopy.UpgradesByScore || card.Fields[3].Inline {
-			t.Fatalf("field values = %+v", card.Fields)
-		}
-		// Nothing measured, so the list reads in points, largest gap first.
-		wantLines := []string{"Head · Epic · item level 61\n+9.0 points · Source head",
-			"Hands · Epic · item level 61\n+7.0 points · Source hands", "Feet · Epic · item level 61\n+5.0 points · Source feet"}
-		for i, want := range wantLines {
-			e := m.Embeds[i+1]
-			if e.Description != want || e.Thumbnail != pressPublic+"/data/"+lookupBuild+"/icons/inv_helmet_01.webp" {
-				t.Fatalf("upgrade %d = %+v", i, e)
-			}
-		}
-		if m.Embeds[3].Footer != "Forever Sixty" || m.Embeds[3].Timestamp.IsZero() {
-			t.Fatalf("footer = %+v", m.Embeds[3])
+		if s := sectionsOf(m)[1]; s.Accessory.Media != pressAPI+"/v1/discord/tiles/"+lookupBuild+"/100.png" || s.Accessory.Description != "Pick head, Epic head item" {
+			t.Fatalf("tile = %+v", s.Accessory)
 		}
 		row := m.Components[0]
 		if len(row) != 2 || row[0].Label != lookupCopy.Share || row[0].Style != StyleSecondary ||
@@ -319,16 +305,16 @@ func TestCharCard(t *testing.T) {
 		w := newLookupWorld(t)
 		writeBis(t, w.lg.dir, "hunter-marksmanship", bands("alliance"))
 		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		field := m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1]
-		if field.Name != "Top 3 upgrades · level 60 Phase 1 raid" || field.Value != lookupCopy.UpgradesByDPS {
-			t.Fatalf("field = %+v", field)
+		texts := textsOf(m)
+		if texts[1] != "**Top upgrades** · level 60 Phase 1 raid\n"+panelCopy.UpgradesByDPS {
+			t.Fatalf("lead = %q", texts[1])
 		}
 		// The raid band's picks (hands is the band's own 150, not the panel's 102), largest gain
 		// first, each the band's measured gain over what she wears, with the page's source line.
-		for i, want := range []string{"Head · Epic · item level 61\n+9.2 DPS · Vendors", "Feet · Epic · item level 61\n+4.4 DPS · Vendors",
-			"Hands · Epic · item level 61\n+3.1 DPS · Vendors"} {
-			if m.Embeds[i+1].Description != want {
-				t.Fatalf("upgrade %d = %q, want %q", i, m.Embeds[i+1].Description, want)
+		for i, want := range []string{"Head · +9.2 DPS\n-# Epic · item level 61 · Vendors", "Feet · +4.4 DPS\n-# Epic · item level 61 · Vendors",
+			"Hands · +3.1 DPS\n-# Epic · item level 61 · Vendors"} {
+			if !strings.Contains(texts[i+2], want) {
+				t.Fatalf("upgrade %d = %q, want %q", i, texts[i+2], want)
 			}
 		}
 
@@ -338,15 +324,15 @@ func TestCharCard(t *testing.T) {
 		c.Character.Race = ref("Orc")
 		w.cards.cards["zulmara"] = c
 		m = w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		if !strings.Contains(m.Embeds[1].Description, "+9.2 DPS") {
-			t.Fatalf("horde character = %q", m.Embeds[1].Description)
+		if !strings.Contains(textsOf(m)[2], "+9.2 DPS") {
+			t.Fatalf("horde character = %q", textsOf(m)[2])
 		}
 	})
 	t.Run("a viewer outside the guild sees no readiness", func(t *testing.T) {
 		w := newLookupWorld(t)
-		rep := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"})
-		if got := strings.Join(fieldNames(rep.Message.Embeds[0]), ","); got != "Item level,Top 3 upgrades · level 60 Phase 1 raid" {
-			t.Fatalf("fields = %s", got)
+		m := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"}).Message
+		if got := headOf(t, m).Description; got != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0" {
+			t.Fatalf("header = %q", got)
 		}
 	})
 	t.Run("tank specs rank by score", func(t *testing.T) {
@@ -354,10 +340,9 @@ func TestCharCard(t *testing.T) {
 		c := zulmaraCard()
 		c.Character.Class, c.GearSpec = "druid", ref("druid-feral-bear")
 		w.cards.cards["zulmara"] = c
-		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		if m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1].Value != lookupCopy.UpgradesByScore ||
-			!strings.Contains(m.Embeds[1].Description, "+9.0 points") {
-			t.Fatalf("tank = %+v", m.Embeds[:2])
+		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
+		if !strings.HasSuffix(texts[1], panelCopy.UpgradesByScore) || !strings.Contains(texts[2], "Head · +9.0 points") {
+			t.Fatalf("tank = %q", texts)
 		}
 	})
 	t.Run("no gear shared", func(t *testing.T) {
@@ -366,15 +351,16 @@ func TestCharCard(t *testing.T) {
 		c.Gear = []rankings.GearSlot{}
 		w.cards.cards["zulmara"] = c
 		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		assertMessageLimits(t, m)
-		if len(m.Embeds) != 1 || m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1].Value != lookupCopy.NoGear {
-			t.Fatalf("no gear = %+v", m)
+		assertCardLimits(t, m)
+		texts := textsOf(m)
+		if len(texts) != 2 || texts[1] != "**Top upgrades** · level 60 Phase 1 raid\n"+lookupCopy.NoGear {
+			t.Fatalf("no gear = %q", texts)
 		}
 	})
 	t.Run("private or unknown", func(t *testing.T) {
 		w := newLookupWorld(t)
 		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Nobody"}).Message
-		if m.Content != "No public character named Nobody. Try another name." || len(m.Embeds) != 0 {
+		if texts := textsOf(m); len(texts) != 1 || texts[0] != "No public character named Nobody. Try another name." || m.Content != "" {
 			t.Fatalf("unknown = %+v", m)
 		}
 	})

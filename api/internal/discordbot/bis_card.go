@@ -110,17 +110,17 @@ func bisLeadFor(p bisPicks, main *bisMain, linked bool) string {
 	return guideCopy.BisLeadNone
 }
 
-// bisCardMessage is the /bis card: one embed and four rows, only the member sees it.
+// bisCardMessage is the /bis card: its heading and lead in a container, and four rows, only
+// the member sees it. It is Components V2 from its first frame (spec 2026-10-29 §A.7).
 func (s *Service) bisCardMessage(c bisCard) Message {
-	embeds := []notify.Embed{s.bisCardEmbed(c)}
-	closeEmbeds(embeds, cardFooter, s.now())
 	rows := []ActionRow{
 		{bisClassSelect(c.Picks)},
 		{bisSpecSelect(c.Picks)},
 		{bisRangeSelect(c.Picks)},
 		s.bisButtons(c),
 	}
-	return Message{Embeds: embeds, Components: rows, Ephemeral: true}
+	card := Message{Embeds: []notify.Embed{s.bisCardEmbed(c)}, Components: rows, Ephemeral: true}
+	return asComponentsV2(card, crestAlt(c.Picks.Class))
 }
 
 func (s *Service) bisCardEmbed(c bisCard) notify.Embed {
@@ -129,7 +129,7 @@ func (s *Service) bisCardEmbed(c bisCard) notify.Embed {
 	if p.Class == "" {
 		return e
 	}
-	e.Color = classColors[p.Class]
+	e.Color = classColorOf(p.Class)
 	e.Thumbnail = s.d.PublicBaseURL + "/icons/hd/crests/" + p.Class + ".webp"
 	e.Title = fill(guideCopy.BisTitleClass, "{Class}", classLabel(p.Class))
 	if key, ok := p.specKey(); ok {

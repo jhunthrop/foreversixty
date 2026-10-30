@@ -1,0 +1,170 @@
+{
+  "id": "bis-card-main",
+  "title": "linked: picked from the main",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "embeds": [
+      {
+        "title": "Beast Mastery Hunter · level 60 Phase 1 raid",
+        "description": "Picked from your main, **Zulmara**. Show BiS, or change a pick.",
+        "footer": {
+          "text": "Forever Sixty"
+        },
+        "author": {
+          "name": "Best in slot"
+        },
+        "thumbnail": {
+          "url": "https://site.test/icons/hd/crests/hunter.webp"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 11195250
+      }
+    ],
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gbis:1:c:hunter:beast-mastery:p1:",
+            "placeholder": "Choose a class",
+            "options": [
+              {
+                "label": "Druid",
+                "value": "druid",
+                "description": "Balance, Feral, Feral Bear, Restoration"
+              },
+              {
+                "label": "Hunter",
+                "value": "hunter",
+                "description": "Beast Mastery, Marksmanship, Survival",
+                "default": true
+              },
+              {
+                "label": "Mage",
+                "value": "mage",
+                "description": "Arcane, Fire, Frost"
+              },
+              {
+                "label": "Paladin",
+                "value": "paladin",
+                "description": "Holy, Protection, Retribution"
+              },
+              {
+                "label": "Priest",
+                "value": "priest",
+                "description": "Discipline, Holy, Shadow"
+              },
+              {
+                "label": "Rogue",
+                "value": "rogue",
+                "description": "Assassination, Combat, Subtlety"
+              },
+              {
+                "label": "Shaman",
+                "value": "shaman",
+                "description": "Elemental, Enhancement, Restoration"
+              },
+              {
+                "label": "Warlock",
+                "value": "warlock",
+                "description": "Affliction, Demonology, Destruction"
+              },
+              {
+                "label": "Warrior",
+                "value": "warrior",
+                "description": "Arms, Fury, Protection"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gbis:1:s:hunter:beast-mastery:p1:",
+            "placeholder": "Choose a spec",
+            "options": [
+              {
+                "label": "Beast Mastery",
+                "value": "beast-mastery",
+                "description": "DPS",
+                "default": true
+              },
+              {
+                "label": "Marksmanship",
+                "value": "marksmanship",
+                "description": "DPS"
+              },
+              {
+                "label": "Survival",
+                "value": "survival",
+                "description": "DPS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gbis:1:r:hunter:beast-mastery:p1:",
+            "placeholder": "Choose a range",
+            "options": [
+              {
+                "label": "Level 20",
+                "value": "20",
+                "description": "Levels 20 to 29"
+              },
+              {
+                "label": "Level 30",
+                "value": "30",
+                "description": "Levels 30 to 39"
+              },
+              {
+                "label": "Level 40",
+                "value": "40",
+                "description": "Levels 40 to 49"
+              },
+              {
+                "label": "Level 50",
+                "value": "50",
+                "description": "Levels 50 to 59"
+              },
+              {
+                "label": "Level 60",
+                "value": "60",
+                "description": "Level 60, no buffs or consumables"
+              },
+              {
+                "label": "Phase 1 raid",
+                "value": "p1",
+                "description": "Level 60, raid buffs and consumables",
+                "default": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 3,
+            "label": "Show BiS",
+            "custom_id": "gbis:1:go:hunter:beast-mastery:p1:"
+          }
+        ]
+      }
+    ],
+    "flags": 64,
+    "allowed_mentions": {
+      "parse": []
+    }
+  }
+}

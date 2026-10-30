@@ -33,6 +33,9 @@ type Deps struct {
 	Guilds                                                    GuildService
 	// Characters answers /char: the public character page.
 	Characters CharacterCards
+	// Sheets draws the character sheet Share in channel posts for /bis and /char. Nil posts
+	// the panel without it.
+	Sheets SheetRenderer
 	// Coach words the log coach's fix-first line in /report. Nil: no coach lines.
 	Coach  CoachLines
 	Notify *notify.Service
