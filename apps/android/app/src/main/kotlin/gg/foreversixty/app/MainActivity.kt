@@ -8,8 +8,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
-import gg.foreversixty.app.auth.SignInContract
 import gg.foreversixty.app.designsystem.ForeverTheme
+import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.ForeverAppScaffold
 import kotlinx.coroutines.launch
 
@@ -34,10 +34,14 @@ class MainActivity : ComponentActivity() {
         handleAppLink(intent)
     }
 
-    /** The sign-in redirect arrives as an App Link (see the TODO in AndroidManifest.xml). */
+    /**
+     * App Links arrive here (see the TODO in AndroidManifest.xml); [DeepLink] (generated from
+     * apps/shared/links.json) names the screen. Only the sign-in return is wired so far; the
+     * feature lanes open their screens from the other cases.
+     */
     private fun handleAppLink(intent: Intent?) {
         val link = intent?.dataString ?: return
-        if (link.startsWith(SignInContract.REDIRECT_URI)) {
+        if (DeepLink.parse(link) is DeepLink.SignIn) {
             // TODO(lane F1): surface the SignInOutcome (signed in, cancelled, rejected, failed).
             lifecycleScope.launch { graph.signIn.complete(link) }
         }

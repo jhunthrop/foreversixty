@@ -49,7 +49,7 @@ targets:
         buildPhase: resources
     dependencies:
       - package: ForeverKit
-        products: [Models, Networking, Auth, DesignSystem]
+        products: [Models, Networking, Auth, DesignSystem, Routing]
     # TODO(universal links): add when the Team ID exists (lane O), with signing:
     # entitlements:
     #   path: App/ForeverSixty.entitlements
@@ -124,3 +124,4 @@ schemes:
         - package: ForeverKit/ModelsTests
         - package: ForeverKit/NetworkingTests
         - package: ForeverKit/AuthTests
+        - package: ForeverKit/RoutingTests

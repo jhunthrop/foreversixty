@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "Networking", targets: ["Networking"]),
         .library(name: "Auth", targets: ["Auth"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
+        .library(name: "Routing", targets: ["Routing"]),
     ],
     targets: [
         .target(name: "Models", path: "Sources/Models", swiftSettings: strictSettings),
@@ -26,6 +27,8 @@ let package = Package(
             path: "Sources/Auth",
             swiftSettings: strictSettings
         ),
+        // Generated/DeepLink.swift is generated from apps/shared/links.json.
+        .target(name: "Routing", path: "Sources/Routing", swiftSettings: strictSettings),
         // Shared/DesignTokens.swift is generated from web/src/styles/tokens.css
         // (lane T); it is its own target so the generator owns the whole folder.
         .target(name: "DesignTokens", path: "Shared", swiftSettings: strictSettings),
@@ -52,6 +55,12 @@ let package = Package(
             name: "NetworkingTests",
             dependencies: ["Networking", "Models", "TestSupport"],
             path: "Tests/NetworkingTests",
+            swiftSettings: strictSettings
+        ),
+        .testTarget(
+            name: "RoutingTests",
+            dependencies: ["Routing"],
+            path: "Tests/RoutingTests",
             swiftSettings: strictSettings
         ),
         .testTarget(
