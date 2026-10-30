@@ -1721,9 +1721,7 @@
       <PageHead
         eyebrow={reportCopy.eyebrow}
         title={heading}
-        titleClass="min-w-0 md:overflow-visible md:whitespace-normal {isSampleReport(reportId)
-          ? 'max-md:break-words'
-          : 'truncate'}"
+        titleClass="min-w-0 break-words"
         titleTestid="report-title"
         meta={reportMeta}
         aside={reportActions}
