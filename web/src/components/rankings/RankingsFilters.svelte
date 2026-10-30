@@ -21,7 +21,9 @@
   import { GUILD_KINDS, type RankingsState } from '../../lib/rankings/url';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import Switch from '../ui/Switch.svelte';
-  import FilterSelect from './FilterSelect.svelte';
+  import { selectCopy } from '../../lib/ui/copy';
+  import type { SelectOption } from '../../lib/ui/listbox-model';
+  import Select from '../ui/Select.svelte';
 
   let {
     filters,
@@ -45,9 +47,47 @@
     onencounter: (slug: string) => void;
   } = $props();
 
+  /** One filter field: its label over a 44 px Select; `grow` lets the Encounter run wider,
+   *  `ownRow` gives it a row of its own below the wide layout (rankings spec section 5). */
+  interface Field {
+    id: string;
+    label: string;
+    value: string;
+    options: readonly SelectOption[];
+    testid: string;
+    onpick: (value: string) => void;
+    grow?: number;
+    ownRow?: boolean;
+    disabled?: boolean;
+    searchable?: boolean;
+  }
+  /** An encounter list longer than this gets the filter field (§A10 row 14). */
+  const SEARCHABLE_OVER = 15;
+
   let open = $state(false);
   const guildKinds = GUILD_KINDS.map((kind) => ({ value: kind.id, label: kind.label }));
 </script>
+
+{#snippet field(f: Field)}
+  <div
+    class="flex min-w-0 flex-col gap-1 {f.ownRow ? 'col-span-full min-[1100px]:col-auto' : ''}"
+    style:flex={`${f.grow ?? 1} 1 0`}
+    data-testid="{f.testid}-field"
+  >
+    <label class="quiet-label" for={f.id}>{f.label}</label>
+    <Select
+      id={f.id}
+      size="compact"
+      value={f.value}
+      options={f.options}
+      disabled={f.disabled}
+      searchable={f.searchable}
+      searchPlaceholder={selectCopy.filterEncounters}
+      testid={f.testid}
+      onchange={(event) => f.onpick((event.currentTarget as HTMLSelectElement).value)}
+    />
+  </div>
+{/snippet}
 
 <div class="flex flex-col gap-2" data-testid="rankings-filters">
   <!-- Phone only: the summary wraps rather than truncating, and the button opens the panel. -->
@@ -89,86 +129,87 @@
     data-testid="rankings-filter-panel"
   >
     {#if showClassAndSpec}
-      <FilterSelect
-        id="rankings-class"
-        label="Class"
-        value={filters.class}
-        options={classOptions()}
-        testid="filter-class"
-        onchange={(value) => onpatch({ class: value, spec: '' })}
-      />
-      <FilterSelect
-        id="rankings-spec"
-        label="Spec"
-        value={filters.spec}
-        options={specOptions(filters.class)}
-        testid="filter-spec"
-        onchange={(value) => onpatch({ spec: value })}
-      />
+      {@render field({
+        id: 'rankings-class',
+        label: rankingsCopy.classLabel,
+        value: filters.class,
+        options: classOptions(),
+        testid: 'filter-class',
+        onpick: (value) => onpatch({ class: value, spec: '' }),
+      })}
+      {@render field({
+        id: 'rankings-spec',
+        label: rankingsCopy.specLabel,
+        value: filters.spec,
+        options: specOptions(filters.class),
+        testid: 'filter-spec',
+        onpick: (value) => onpatch({ spec: value }),
+      })}
     {/if}
-    <FilterSelect
-      id="rankings-encounter"
-      label={rankingsCopy.encounterLabel}
-      value={noEncounters ? '' : encounterSlug}
-      options={noEncounters
+    {@render field({
+      id: 'rankings-encounter',
+      label: rankingsCopy.encounterLabel,
+      value: noEncounters ? '' : encounterSlug,
+      options: noEncounters
         ? [{ value: '', label: encounterPickerCopy.noEncountersOption }]
-        : encounterOptions(encounters, encounterSlug)}
-      disabled={noEncounters}
-      testid="filter-encounter"
-      grow={1.3}
-      ownRow={!showClassAndSpec}
-      onchange={onencounter}
-    />
-    <FilterSelect
-      id="rankings-ruleset"
-      label="Ruleset"
-      value={filters.ruleset}
-      options={rulesetOptions()}
-      testid="filter-ruleset"
-      onchange={(value) => onpatch({ ruleset: value })}
-    />
-    <FilterSelect
-      id="rankings-region"
-      label="Region"
-      value={filters.region}
-      options={regionOptions()}
-      testid="filter-region"
-      onchange={(value) => onpatch({ region: value })}
-    />
-    <FilterSelect
-      id="rankings-phase"
-      label="Phase"
-      value={filters.phase}
-      options={phaseOptions()}
-      testid="filter-phase"
-      onchange={(value) => onpatch({ phase: value })}
-    />
-    <FilterSelect
-      id="rankings-faction"
-      label="Faction"
-      value={filters.faction}
-      options={factionOptions()}
-      testid="filter-faction"
-      onchange={(value) => onpatch({ faction: value })}
-    />
+        : encounterOptions(encounters, encounterSlug),
+      disabled: noEncounters,
+      testid: 'filter-encounter',
+      grow: 1.3,
+      ownRow: !showClassAndSpec,
+      searchable: encounters.length > SEARCHABLE_OVER,
+      onpick: onencounter,
+    })}
+    {@render field({
+      id: 'rankings-ruleset',
+      label: rankingsCopy.rulesetLabel,
+      value: filters.ruleset,
+      options: rulesetOptions(),
+      testid: 'filter-ruleset',
+      onpick: (value) => onpatch({ ruleset: value }),
+    })}
+    {@render field({
+      id: 'rankings-region',
+      label: rankingsCopy.regionLabel,
+      value: filters.region,
+      options: regionOptions(),
+      testid: 'filter-region',
+      onpick: (value) => onpatch({ region: value }),
+    })}
+    {@render field({
+      id: 'rankings-phase',
+      label: rankingsCopy.phaseLabel,
+      value: filters.phase,
+      options: phaseOptions(),
+      testid: 'filter-phase',
+      onpick: (value) => onpatch({ phase: value }),
+    })}
+    {@render field({
+      id: 'rankings-faction',
+      label: rankingsCopy.factionLabel,
+      value: filters.faction,
+      options: factionOptions(),
+      testid: 'filter-faction',
+      onpick: (value) => onpatch({ faction: value }),
+    })}
     {#if filters.board === 'character'}
-      <FilterSelect
-        id="rankings-metric"
-        label="Metric"
-        value={filters.metric}
-        options={metricOptions()}
-        testid="filter-metric"
-        onchange={(value) => onpatch({ metric: value })}
-      />
+      {@render field({
+        id: 'rankings-metric',
+        label: rankingsCopy.metricLabel,
+        value: filters.metric,
+        options: metricOptions(),
+        testid: 'filter-metric',
+        onpick: (value) => onpatch({ metric: value }),
+      })}
     {:else}
-      <FilterSelect
-        id="rankings-kind"
-        label="Board"
-        value={filters.kind}
-        options={guildKinds}
-        testid="filter-kind"
-        onchange={(value) => onpatch({ kind: value })}
-      />
+      {@render field({
+        id: 'rankings-kind',
+        label: rankingsCopy.boardLabel,
+        value: filters.kind,
+        options: guildKinds,
+        testid: 'filter-kind',
+        onpick: (value) => onpatch({ kind: value }),
+      })}
     {/if}
     <div class="flex min-h-11 items-center gap-3">
       <span id="rankings-today-label" class="text-text text-[13px]">{rankingsCopy.todayOnly}</span>

@@ -74,6 +74,15 @@ export const rankingsCopy = {
   pickerHeading: 'Choose an encounter',
 
   encounterLabel: 'Encounter',
+  /** The filter panel's other field labels (spec 2026-10-30-controls-charts §A10 row 14). */
+  classLabel: 'Class',
+  specLabel: 'Spec',
+  rulesetLabel: 'Ruleset',
+  regionLabel: 'Region',
+  phaseLabel: 'Phase',
+  factionLabel: 'Faction',
+  metricLabel: 'Metric',
+  boardLabel: 'Board',
   allRulesets: 'All rulesets',
   allRegions: 'All regions',
   allPhases: 'All phases',
