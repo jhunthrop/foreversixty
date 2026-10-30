@@ -82,10 +82,9 @@ for (const width of WIDTHS) {
     });
 
     test(`timelines and resources ${width}`, async ({ page }) => {
+      // Resources draws no damage chart above its own lines (fix round 2).
       await page.goto('/reports/fixture2abcd?fight=3&tab=resources');
-      if (phone) await page.getByTestId('chart-toggle').click();
-      await settle(page);
-      if (!phone) await hoverPlot(page, 'time-chart', 0.4);
+      await expect(page.getByTestId('resource-head')).toBeVisible();
       await page.screenshot({ path: join(OUT, `build-charts-resources-${width}.png`), fullPage: true });
       await page.goto('/reports/fixture2abcd?fight=3&view=timelines');
       await expect(page.getByTestId('timelines')).toBeVisible();
@@ -93,3 +92,20 @@ for (const width of WIDTHS) {
     });
   });
 }
+
+test.describe('death link', () => {
+  test.use({ viewport: { width: 1440, height: 1100 } });
+
+  test('death marker to the Deaths tab, before and after (1440)', async ({ page }) => {
+    await page.goto('/reports/fixture2abcd?fight=3&tab=damage-done');
+    await settle(page);
+    const marker = page.getByTestId('time-chart').getByTestId('death-marker');
+    await marker.hover();
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: join(OUT, 'build-charts-death-link-before-1440.png') });
+    await marker.click();
+    await expect(page).toHaveURL(/tab=deaths/);
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: join(OUT, 'build-charts-death-link-after-1440.png') });
+  });
+});

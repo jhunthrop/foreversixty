@@ -211,16 +211,16 @@ test('the threat chart draws one line per player and marks the taunts', async ({
   // Four players built threat on Warden Kelthas, so four legend chips.
   await expect(chart.getByTestId('legend-chip')).toHaveCount(4);
   await expect(chart).toContainText('Baelgrim');
-  // With no enemy picked the chart says which one it is drawing, and that it is an estimate.
-  const phone = (page.viewportSize()?.width ?? 1280) < 768;
-  await expect(chart.getByRole('heading')).toHaveText(
-    phone ? 'Estimated threat' : 'Estimated threat on Warden Kelthas',
-  );
+  // The chart says which enemy it draws, and that it is an estimate.
+  // "Every enemy" is picked, so the title says so (fix round 2): the title and the field agree.
+  await expect(chart.getByRole('heading')).toHaveText('Estimated threat, every enemy');
   const taunts = chart.locator('[data-testid="lane-marker"][data-kind="taunt"]');
   await expect(taunts).toHaveCount(1);
   await expect(taunts.first()).toHaveAttribute('aria-label', /Taunt · Baelgrim on Warden Kelthas/);
   // The lines are a running total, not a rate: the head says so.
-  await expect(chart.getByTestId('chart-head-meta')).toHaveText('Cumulative · Whole fight');
+  // (On a phone the title takes the head; the brush carries the window there.)
+  if ((page.viewportSize()?.width ?? 1280) >= 768)
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText('Cumulative · Whole fight');
   // The caveat line says what the estimate leaves out and links to the glossary's entry.
   await expect(chart.getByTestId('threat-caveat').getByRole('link')).toHaveAttribute(
     'href',

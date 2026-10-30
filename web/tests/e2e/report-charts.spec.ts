@@ -98,11 +98,11 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     const chart = page.getByTestId('time-chart');
     await ready(chart);
     const chips = chart.getByTestId('legend-chip');
-    // The raid median, the top 8 and you.
+    // The raid median, the top 4, the bottom 4 and you (fix round 2 ruling).
     if (!isPhone(page)) {
       await expect(chips).toHaveCount(10);
       await expect(chips.first()).toContainText('Raid median');
-      await expect(chart.getByTestId('players-control')).toHaveText('Top 8 of 40');
+      await expect(chart.getByTestId('players-control')).toHaveText('Top 4, bottom 4 of 40');
       await expect(chart.getByTestId('legend-more')).toHaveText('+31 more');
     }
     const you = chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(13)}"]`);
@@ -110,7 +110,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await expect(you).toContainText('YOU');
     // The head's raid figure is the sum of all 40 players' rounded DPS.
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(
-      `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS · 5 s average`,
+      `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS over the whole fight`,
     );
   });
 
@@ -123,7 +123,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     const rows = page.getByTestId('chart-tooltip-row');
     await expect(rows.first()).toBeVisible();
     for (const value of await rows.locator('span.numeric').allTextContents()) expect(value).toBe('0');
-    await expect(page.getByTestId('chart-tooltip')).toContainText('Submerge phase · 5 s average');
+    await expect(page.getByTestId('chart-tooltip')).toContainText('Submerge phase · DPS, 5 s average');
   });
 
   test('the Players control draws a player at once, and Top 8 restores the default', async ({ page }) => {
@@ -137,9 +137,44 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(39)}"]`)).toBeVisible();
     await expect(page).toHaveURL(/players=/);
     await expect(chart.getByTestId('players-control')).toHaveText('10 of 40');
-    await page.getByTestId('players-reset').click();
+    await expect(page.getByTestId('players-presets-custom')).toHaveClass(/lit/);
+    await page.getByTestId('players-presets').locator('[data-preset="split"]').click();
     await expect(page).not.toHaveURL(/players=/);
     await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(39)}"]`)).toHaveCount(0);
+  });
+
+  test('the presets draw the top 8 or the bottom 8, and ride in the URL', async ({ page }) => {
+    test.skip(isPhone(page), 'a coarse pointer uses the legend sheet');
+    await page.goto(`${RAID40_URL}&tab=damage-done`);
+    const chart = page.getByTestId('time-chart');
+    await ready(chart);
+    await chart.getByTestId('players-control').click();
+    await page.getByTestId('players-presets').locator('[data-preset="bottom"]').click();
+    await expect(page).toHaveURL(/players=bottom/);
+    await expect(chart.getByTestId('players-control')).toHaveText('Bottom 8 of 40');
+    // The bottom 8 are damage dealers: no healer's small damage is named a low performer.
+    await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(35)}"]`)).toHaveCount(0);
+    await expect(chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(29)}"]`)).toBeVisible();
+    await page.getByTestId('players-presets').locator('[data-preset="top"]').click();
+    await expect(page).toHaveURL(/players=top/);
+    await expect(chart.getByTestId('players-control')).toHaveText('Top 8 of 40');
+  });
+
+  test('the 40 players’ figures add up to the head’s raid figure, in the same unit', async ({ page }) => {
+    test.skip(isPhone(page), 'reads the desktop Players list');
+    await page.goto(`${RAID40_URL}&tab=damage-done`);
+    const chart = page.getByTestId('time-chart');
+    await ready(chart);
+    await chart.getByTestId('players-control').click();
+    const figures = await page.getByTestId('players-option-figure').allTextContents();
+    expect(figures).toHaveLength(40);
+    const sum = figures.reduce((total, text) => total + Number(text.replace(/,/g, '')), 0);
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(
+      `Raid ${sum.toLocaleString('en-US')} DPS over the whole fight`,
+    );
+    // Every chip names its unit.
+    for (const value of await chart.getByTestId('legend-value').allTextContents())
+      expect(value).toMatch(/DPS$/);
   });
 
   test('the legend isolates a line with Only, and the log scale rides in the URL', async ({ page }) => {
@@ -147,10 +182,12 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
-    const first = chart.locator('[data-testid="legend-chip"]').nth(1);
+    // The median leads the legend, then you (pinned); the third chip is the top player.
+    const first = chart.locator('[data-testid="legend-chip"]').nth(2);
     await first.hover();
     await chart.getByTestId('legend-only').click();
-    await expect(chart.locator('[data-testid="legend-chip"][aria-pressed="true"]')).toHaveCount(2);
+    // The line alone, plus the pinned (you), and the raid median stays as the reference.
+    await expect(chart.locator('[data-testid="legend-chip"][aria-pressed="true"]')).toHaveCount(3);
     await chart.getByTestId('log-scale').click();
     await expect(page).toHaveURL(/scale=log/);
     await expect(chart.locator('[data-testid="chart-frame"]')).toHaveAttribute('data-scale', 'log');
@@ -190,6 +227,9 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     await expect(events).toContainText('Brokk died · Melee from Ragnaros · 3,862 (1,104 overkill)');
     await expect(events).toContainText('Ragnaros turned to Thandril');
     await expect(events).toContainText('Taunt · Thandril on Ragnaros');
+    // One second's events read death, target change, taunt.
+    await expect(events.locator('li').nth(1)).toContainText('turned to');
+    await expect(page.getByTestId('chart-tooltip')).toContainText('estimated threat, every enemy');
     // The share column is of every player's estimated threat at that second.
     await expect(page.getByTestId('chart-tooltip')).toContainText('Share');
     // The table's leader is the legend's first chip.
@@ -199,7 +239,7 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
       .locator('span')
       .first()
       .textContent())!.trim();
-    await expect(chart.getByTestId('legend-chip').first()).toContainText(leader);
+    await expect(chart.getByTestId('legend-chip').filter({ hasText: leader })).toBeVisible();
   });
 
   test('on a 360 × 640 phone the whole chart fits the first screen after a tab change', async ({ page }) => {
@@ -220,6 +260,33 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     await sheet.getByTestId('legend-sheet-done').click();
     await expect(sheet).toBeHidden();
   });
+});
+
+test('on a phone every head field shows its value whole, one field to a row', async ({ page }) => {
+  test.skip(!isPhone(page), 'the phone head');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await serveRaid40(page);
+  await page.goto(`${RAID40_URL}&tab=damage-done`);
+  await page.getByTestId('chart-toggle').click();
+  const chart = page.getByTestId('time-chart');
+  await ready(chart);
+  const windowField = chart.getByTestId('window-select');
+  await expect(windowField).toHaveValue('0');
+  const field = (await windowField.boundingBox())!;
+  expect(field.width).toBeGreaterThanOrEqual(240);
+  const players = (await chart.getByTestId('players-control').boundingBox())!;
+  expect(players.width).toBeGreaterThanOrEqual(240);
+  expect(Math.abs(players.x - field.x)).toBeLessThanOrEqual(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test('the Resources tab draws no damage chart and heads its rows', async ({ page }) => {
+  await page.goto(`${FIXTURE}&tab=resources`);
+  await expect(page.getByTestId('resource-graphs')).toBeVisible();
+  await expect(page.getByTestId('resource-head')).toContainText('Player');
+  await expect(page.getByTestId('resource-head')).toContainText('Time empty');
+  await expect(page.getByTestId('time-chart')).toHaveCount(0);
+  await expect(page.getByTestId('chart-toggle')).toHaveCount(0);
 });
 
 test('the main chart’s cursor draws the crosshair on the Raid cooldowns lanes too', async ({ page }) => {
