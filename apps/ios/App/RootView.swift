@@ -1,4 +1,5 @@
 import DesignSystem
+import Routing
 import SwiftUI
 
 /// The app's tabs, one per v1 feature area in the lane plan. Lane D's spec
@@ -32,6 +33,8 @@ enum AppTab: String, CaseIterable, Identifiable {
 struct RootView: View {
     let environment: AppEnvironment
     @State private var selection: AppTab = .home
+    /// Lane F4: the Raids tab's stack, which raid links and notifications push onto.
+    @State private var raidsRouter = RaidsRouter()
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -51,14 +54,27 @@ struct RootView: View {
         }
         .tint(Theme.Palette.accent)
         .task { await environment.appConfig.refresh() }
+        .onOpenURL { url in DeepLink(url: url).map(openRaids) }
+        .task { RaidNotificationCenter.shared.onOpen = openRaids }
     }
 
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
         case .home: HomeScreen(client: environment.client)
+        case .raids where environment.raidsEnabled:
+            RaidsTab(dependencies: .live(environment), router: raidsRouter)
         default: PlaceholderScreen(title: tab.title)
         }
+    }
+}
+
+extension RootView {
+    /// Lane F4: a raid, raid-night or guild link selects the Raids tab and pushes its screen.
+    private func openRaids(_ link: DeepLink) {
+        guard environment.raidsEnabled, RaidsRouter.handles(link) else { return }
+        selection = .raids
+        raidsRouter.open(link)
     }
 }
 

@@ -51,6 +51,11 @@ targets:
         excludes: ["*.txt"]
       - path: ../shared/brand/ios/Brand.xcassets
         buildPhase: resources
+      # Lane F4: the ringed HD class crests (spec 4.3), from the site's one copy.
+      - path: ../../web/public/icons/hd/crests
+        name: Crests
+        type: folder
+        buildPhase: resources
     dependencies:
       - package: ForeverKit
         products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]
@@ -83,6 +88,8 @@ targets:
           - Cinzel-Bold.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
+        # Lane F4: Add to calendar writes the raid with write-only access (iOS 17+).
+        NSCalendarsWriteOnlyAccessUsageDescription: Add to calendar puts the raid in your calendar.
         FSAPIBaseURL: $(API_BASE_URL)
         FSAPIMode: $(API_MODE)
         FSSentryDSN: $(SENTRY_DSN)
