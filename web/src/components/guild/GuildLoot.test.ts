@@ -32,6 +32,7 @@ function html(officer: boolean, extra: LootProps = {}): string {
       settingsHref: SETTINGS_HREF,
       onAward: () => {},
       onUndo: () => {},
+      onBoss: () => {},
       ...extra,
     },
   }).body;
