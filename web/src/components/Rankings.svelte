@@ -45,9 +45,13 @@
   import CharacterHeader from './character/CharacterHeader.svelte';
   import RankingsBoard from './rankings/RankingsBoard.svelte';
   import RankingsFilters from './rankings/RankingsFilters.svelte';
-  import RankingsHeading from './rankings/RankingsHeading.svelte';
+  import RankingsBoards from './rankings/RankingsBoards.svelte';
+  import RankingsLegend from './rankings/RankingsLegend.svelte';
   import RankingsHero from './rankings/RankingsHero.svelte';
   import ActionLink from './ui/ActionLink.svelte';
+  import Card from './ui/Card.svelte';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../lib/ui/link';
+  import Glyph from './ui/Glyph.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -284,6 +288,11 @@
   );
   const updatedStamp = $derived(updatedAt === null ? null : formatDate(new Date(updatedAt)));
 
+  /** The character board's rows run the card's full width; every other state sits in the padded body. */
+  const boardShown = $derived(
+    !needsPicker && status === 'ready' && state.board !== 'guild' && page !== null && page.rows.length > 0,
+  );
+
   function backToOwnBoard(): void {
     otherBoard = false;
     patch({ class: ownDefaults.class, spec: ownDefaults.spec });
@@ -313,106 +322,135 @@
       </p>
     {/if}
 
-    <RankingsHeading
-      scope={scopeHeading(state.class, state.spec)}
-      board={state.board}
-      canChooseAnother={viewer !== null && ownDefaults.class !== '' && !showClassAndSpec}
-      onanother={() => (otherBoard = true)}
-      onboard={(board) => patch({ board })}
-    />
-
-    <RankingsFilters
-      filters={state}
-      {encounters}
-      {encounterSlug}
-      {summary}
-      {showClassAndSpec}
-      noEncounters={aimed && encounters.length === 0 && encounterSlug === ''}
-      onpatch={patch}
-      onencounter={chooseEncounter}
-    />
-
-    {#if needsPicker}
-      <div data-testid="encounter-picker" class="flex flex-col gap-3">
-        {#if encounters.length === 0}
-          <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
-            {encounterPickerCopy.noneYet}
-          </p>
-          <p class="text-muted text-[14px]">{encounterPickerCopy.tryGuildsProgress}</p>
-          <ActionLink href={guildsBoardHref} data-testid="rankings-try-guilds" onclick={openGuildsBoard}>
-            {state.board === 'guild'
-              ? encounterPickerCopy.openProgressBoard
-              : encounterPickerCopy.openGuildsBoard}
-          </ActionLink>
-        {:else}
-          <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
-          <ul class="flex flex-col" data-testid="encounter-picker-rows">
-            {#each encounters as option (option.id)}
-              <li class="border-line-soft border-b py-2 text-[14px]">
-                <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state, ownDefaults)}`}
-                  >{option.name}</a
+    <Card
+      glyph="trophy"
+      title={scopeHeading(state.class, state.spec)}
+      titleTestid="rankings-scope"
+      body="none"
+      testid="rankings-heading"
+    >
+      {#snippet aside()}
+        <RankingsBoards board={state.board} onboard={(board) => patch({ board })} />
+      {/snippet}
+      <div class="border-line-soft flex flex-col gap-2 border-t px-5 py-4">
+        {#if viewer !== null && ownDefaults.class !== '' && !showClassAndSpec}
+          <button
+            type="button"
+            class={ACTION_LINK}
+            data-testid="rankings-another"
+            onclick={() => (otherBoard = true)}
+          >
+            {rankingsCopy.anotherBoard}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+          </button>
+        {/if}
+        <RankingsFilters
+          filters={state}
+          {encounters}
+          {encounterSlug}
+          {summary}
+          {showClassAndSpec}
+          noEncounters={aimed && encounters.length === 0 && encounterSlug === ''}
+          onpatch={patch}
+          onencounter={chooseEncounter}
+        />
+      </div>
+      <div class="border-line-soft border-t" class:px-5={!boardShown} class:py-4={!boardShown}>
+        {#if needsPicker}
+          <div data-testid="encounter-picker" class="flex flex-col gap-3">
+            {#if encounters.length === 0}
+              <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
+                {encounterPickerCopy.noneYet}
+              </p>
+              <p class="text-muted text-[14px]">{encounterPickerCopy.tryGuildsProgress}</p>
+              <ActionLink href={guildsBoardHref} data-testid="rankings-try-guilds" onclick={openGuildsBoard}>
+                {state.board === 'guild'
+                  ? encounterPickerCopy.openProgressBoard
+                  : encounterPickerCopy.openGuildsBoard}
+              </ActionLink>
+            {:else}
+              <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
+              <ul class="flex flex-col" data-testid="encounter-picker-rows">
+                {#each encounters as option (option.id)}
+                  <li class="border-line-soft border-b py-2 text-[14px]">
+                    <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state, ownDefaults)}`}
+                      >{option.name}</a
+                    >
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          </div>
+        {:else if status === 'loading'}
+          <Skeleton
+            lines={8}
+            rowHeight="h-11"
+            minHeight={RANKINGS_LOADING_MIN_H}
+            testid="rankings-skeleton"
+          />
+        {:else if status === 'failed'}
+          <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
+        {:else if state.board === 'guild'}
+          {#if guildRows.length === 0}
+            <EmptyState
+              message={rankingsEmptyCopy.message}
+              action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
+              testid="rankings-empty"
+            />
+          {:else}
+            <ul class="reveal flex flex-col" data-testid="guild-rows">
+              {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
+                <li
+                  class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
                 >
-              </li>
-            {/each}
-          </ul>
+                  <span class="numeric text-[12px]">{row.rank}</span>
+                  <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
+                    >{row.guild.name}</a
+                  >
+                  <span class="numeric text-right">{formatAmount(Math.round(row.value))}</span>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        {:else if page === null || page.rows.length === 0}
+          <EmptyState
+            message={rankingsEmptyCopy.message}
+            action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
+            testid="rankings-empty"
+          />
+        {:else}
+          <RankingsBoard
+            {page}
+            {metricLabel}
+            ownKey={ownBoard && viewer !== null ? viewer.key : null}
+            {now}
+          />
+
+          <div class="flex items-center gap-3 px-5 py-4">
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
+              disabled={state.page <= 1}
+              data-testid="rankings-prev"
+              onclick={() => patch({ page: state.page - 1 })}
+            >
+              Previous
+            </button>
+            <span class="text-muted numeric text-[13px]">Page {state.page} of {lastPage}</span>
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
+              disabled={state.page >= lastPage}
+              data-testid="rankings-next"
+              onclick={() => patch({ page: state.page + 1 })}
+            >
+              Next
+            </button>
+          </div>
         {/if}
       </div>
-    {:else if status === 'loading'}
-      <Skeleton lines={8} rowHeight="h-11" minHeight={RANKINGS_LOADING_MIN_H} testid="rankings-skeleton" />
-    {:else if status === 'failed'}
-      <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
-    {:else if state.board === 'guild'}
-      {#if guildRows.length === 0}
-        <EmptyState
-          message={rankingsEmptyCopy.message}
-          action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
-          testid="rankings-empty"
-        />
-      {:else}
-        <ul class="reveal flex flex-col" data-testid="guild-rows">
-          {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
-            <li
-              class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
-            >
-              <span class="numeric text-[12px]">{row.rank}</span>
-              <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
-                >{row.guild.name}</a
-              >
-              <span class="numeric text-right">{formatAmount(Math.round(row.value))}</span>
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    {:else if page === null || page.rows.length === 0}
-      <EmptyState
-        message={rankingsEmptyCopy.message}
-        action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
-        testid="rankings-empty"
-      />
-    {:else}
-      <RankingsBoard {page} {metricLabel} ownKey={ownBoard && viewer !== null ? viewer.key : null} {now} />
-
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-          disabled={state.page <= 1}
-          data-testid="rankings-prev"
-          onclick={() => patch({ page: state.page - 1 })}
-        >
-          Previous
-        </button>
-        <span class="text-muted numeric text-[13px]">Page {state.page} of {lastPage}</span>
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-          disabled={state.page >= lastPage}
-          data-testid="rankings-next"
-          onclick={() => patch({ page: state.page + 1 })}
-        >
-          Next
-        </button>
-      </div>
-    {/if}
+      {#snippet foot()}
+        <RankingsLegend />
+      {/snippet}
+    </Card>
   </div>
 </div>

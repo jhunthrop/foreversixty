@@ -32,7 +32,7 @@
   const columnClass = 'quiet-label';
 </script>
 
-<div class="bg-raised border-line rounded-panel overflow-hidden border" data-testid="ranking-board">
+<div class="overflow-hidden" data-testid="ranking-board">
   <!-- The column line is drawn from the table row up, where every cell has its own column; on a
        phone the row folds its figures into a line of its own. -->
   <div

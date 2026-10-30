@@ -100,7 +100,7 @@
 
 <div class="logs-grid" data-testid="logs-grid">
   <div class="logs-column" data-testid="logs-reading">
-    <LogsPanel title="Your reports" id="reports">
+    <LogsPanel glyph="chart" title="Your reports" id="reports">
       <div class="min-h-[88px]">
         {#if me === undefined || me === null}
           <!-- One node from the server markup through the session answer: a visitor with no session
@@ -126,7 +126,7 @@
         {/if}
       </div>
     </LogsPanel>
-    <LogsPanel title="Recent public reports">
+    <LogsPanel glyph="news" title="Recent public reports">
       <RecentReports heading={false} />
     </LogsPanel>
   </div>
@@ -134,7 +134,7 @@
   <div class="logs-column" class:logs-pending={waysPending} data-testid="logs-ways">
     {#each order as way (way)}
       {#if way === 'companion'}
-        <LogsPanel title="The companion" aside="Live, while you raid" id="companion">
+        <LogsPanel glyph="device" title="The companion" aside="Live, while you raid" id="companion">
           <div class="flex flex-col items-start gap-3">
             {#if devices !== null}<CompanionStatus {devices} />{/if}
             <p class="text-[14px]" data-testid="logs-companion-pointer">{logsCompanionCopy.pointer}</p>
@@ -159,7 +159,7 @@
           {/if}
         </LogsPanel>
       {:else}
-        <LogsPanel title="Upload a log" aside="For a night already logged" id="upload">
+        <LogsPanel glyph="upload" title="Upload a log" aside="For a night already logged" id="upload">
           <Upload bind:this={upload} />
         </LogsPanel>
       {/if}

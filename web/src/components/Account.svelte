@@ -561,12 +561,8 @@
       <p class="text-[14px]">
         Signed in as {displayName}. For the fallback, show a code and type it into the companion.
       </p>
-      <button
-        class="text-nav inline-flex min-h-11 items-center text-[13px] underline md:min-h-0"
-        onclick={onPair}
-        disabled={busy}
-      >
-        Show pairing code
+      <button class={ACTION_LINK} onclick={onPair} disabled={busy}>
+        Show pairing code<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
       </button>
     {:else}
       <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">{pairing.code}</p>

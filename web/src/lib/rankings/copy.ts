@@ -43,7 +43,7 @@ export const rankingsCopy = {
   jobSignedIn: 'Where your character stands among characters like it.',
   jobSignedOut: 'How characters rank on each encounter, kill by kill.',
   tierQuestion: 'Comparing specs, not characters?',
-  tierLink: 'Tier list →',
+  tierLink: 'Tier list',
   tierHref: '/tiers',
   updated: (date: string) => `Updated ${date}`,
 

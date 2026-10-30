@@ -83,7 +83,7 @@
 
   <div
     id="rankings-filter-panel"
-    class="bg-raised border-line rounded-panel grid-cols-2 items-end gap-2.5 border px-2.5 py-3.5 min-[480px]:px-4 min-[600px]:grid min-[600px]:grid-cols-3 min-[1100px]:flex min-[1100px]:gap-3 min-[1100px]:px-[18px] {open
+    class="grid-cols-2 items-end gap-2.5 min-[600px]:grid min-[600px]:grid-cols-3 min-[1100px]:flex min-[1100px]:gap-3 {open
       ? 'grid'
       : 'hidden'}"
     data-testid="rankings-filter-panel"

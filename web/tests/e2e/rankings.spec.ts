@@ -45,7 +45,7 @@ test.describe('signed in, desktop', () => {
   }) => {
     const api = await openSignedIn(page);
 
-    await expect(page.getByTestId('rankings-h1')).toHaveText('Rankings');
+    await expect(page.locator('h1')).toHaveText('Rankings');
     await expect(page.getByTestId('rankings-job')).toHaveText(
       'Where your character stands among characters like it.',
     );

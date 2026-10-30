@@ -1,12 +1,13 @@
 ---
 // web/src/pages/logs.astro
 // The logs landing (design/specs/2026-10-11-logs.md): one job, "upload a log, or open one, and
-// read it". A full-bleed band names the page (eyebrow, h1, one job line, no stamp); under it the
+// read it". The page head names the page (eyebrow, h1, one job line, no stamp); under it the
 // shared character header (the latest kill, the newest report, the Upload action; signed out its
 // one shared line) and two columns split by verb, reading on the left and ways in on the right.
 // Everything below the band is one island, `LogsLanding`, because the header's action, the order
 // of the ways in and the signed-in panels all follow one session read.
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/ui/PageHead.astro';
 import LogsLanding from '../components/logs/LogsLanding.svelte';
 import { logsBandCopy } from '../lib/reports/copy';
 ---
@@ -17,15 +18,8 @@ import { logsBandCopy } from '../lib/reports/copy';
   path="/logs"
 >
   <main id="main" tabindex="-1" class="logs-page" data-testid="logs-page">
-    <div class="band full-bleed">
-      <header class="hero page-column">
-        <p class="label eyebrow">
-          <i class="eyebrow-rule" aria-hidden="true"></i>
-          {logsBandCopy.eyebrow}
-        </p>
-        <h1 class="h1 heading-page">{logsBandCopy.h1}</h1>
-        <p class="job">{logsBandCopy.jobLine}</p>
-      </header>
+    <div class="px-[var(--page-inset)] pt-4 md:pt-7">
+      <PageHead eyebrow={logsBandCopy.eyebrow} title={logsBandCopy.h1} job={logsBandCopy.jobLine} />
     </div>
 
     <div class="body">
@@ -40,67 +34,10 @@ import { logsBandCopy } from '../lib/reports/copy';
     flex-direction: column;
     width: 100%;
   }
-  .band {
-    position: relative;
-    background: var(--color-raised);
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .band::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, #26405c66 0%, #07090dcc 70%, #07090d 100%);
-    pointer-events: none;
-  }
-  .hero {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-block: 28px 24px;
-  }
-  .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    color: var(--color-gold);
-  }
-  .eyebrow-rule {
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--color-gold);
-  }
-  .h1 {
-    margin: 0;
-  }
-  .job {
-    margin: 0;
-    max-width: 62ch;
-    font-size: 14px;
-    color: #c9c2b2;
-  }
   .body {
     display: flex;
     flex-direction: column;
     gap: 22px;
     padding: 12px var(--page-inset) 40px;
-  }
-
-  @media (max-width: 767px) {
-    .hero {
-      padding-inline: 18px;
-    }
-  }
-  @media (max-width: 599px) {
-    .hero {
-      gap: 10px;
-      padding-block: 22px 20px;
-    }
-    .h1 {
-      font-size: 26px;
-    }
   }
 </style>

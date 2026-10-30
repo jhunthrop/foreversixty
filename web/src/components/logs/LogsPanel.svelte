@@ -1,22 +1,21 @@
 <!-- web/src/components/logs/LogsPanel.svelte -->
-<!-- One titled panel of the logs landing, as the mock draws it (gen_logs.py `panel`): a bordered
-     raised box whose title row (a 15 px display title and a muted aside) sits inside it, over the
-     panel's own content. The box owns the padding; the content brings none. -->
+<!-- One titled panel of the logs landing: the shared Card (site alignment spec 2026-10-29 §5.12)
+     with its tile, its title and the muted aside as the head's meta, over the panel's own content.
+     The card owns the padding; the content brings none. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import type { GlyphName } from '../../lib/ui/glyphs';
+  import Card from '../ui/Card.svelte';
 
   let {
     title,
+    glyph,
     aside = '',
     id,
     children,
-  }: { title: string; aside?: string; id?: string; children: Snippet } = $props();
+  }: { title: string; glyph: GlyphName; aside?: string; id?: string; children: Snippet } = $props();
 </script>
 
-<section {id} class="bg-raised border-line rounded-panel flex scroll-mt-6 flex-col gap-3 border p-4 md:px-5">
-  <div class="flex items-baseline justify-between gap-3">
-    <h2 class="section-title">{title}</h2>
-    {#if aside !== ''}<span class="text-muted text-[12px]">{aside}</span>{/if}
-  </div>
+<Card {glyph} {title} meta={aside === '' ? undefined : aside} {id} class="scroll-mt-6">
   {@render children()}
-</section>
+</Card>
