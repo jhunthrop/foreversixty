@@ -58,3 +58,67 @@ They are the screenshot tests' own renders: iOS on the shared iPhone 17 simulato
 7. **Shared controls live in the Home folder** (primary and secondary buttons, tag, offline strip, cards). Other lanes need the same; they belong in DesignSystem once the lanes merge (tenet 10).
 8. **Copy keys added beyond §13:** `home.answer.under20Button`, `home.answer.openPlanner`, `home.next.talentsNoBuild`, `home.hero.level`, `home.upgrades.bandRaid` (`60 · raid`; the boards read `60 · Phase 1 raid`, which the home answer cannot name), `home.age.*`, and the `items.*` family.
 9. **Coil** joins the Android version catalog (3.0.4, already in the Gradle cache). Lane F3 needs it too; take one entry at merge.
+
+## Fix round (2026-10-31), on the ux-designer and wow-player HOLDs
+
+Verdicts: `design/reviews/2026-10-31-mobile-home/ux-verdict.md`, `player-verdict.md` (committed in c5bc6f704).
+
+| Commit | What |
+|---|---|
+| c5bc6f704 | Fixtures from the launch-gated data; `source_line` and `drop_chance`; `subclass` and `weapon_slot`; the verdicts |
+| f2b5913d4 | iOS: four tabs, ruled order, formatted sources, weapon line, off hand, unknown tile |
+| fe834a2fd | Android: the same, with one-line tab labels |
+| (last) | Captures and this section |
+
+1. **Four tabs on both apps, in the spec's order.** Labels come from the catalog (`tab.home`, `tab.raids`, `tab.bis`, `tab.you`). On Android the label is one line with its font scale capped at 1.3; icons stay. **The slot API for F1, F3 and F4:**
+   - iOS: `enum AppTab { case home, raids, bis, you }` in `apps/ios/App/RootView.swift`. Plug a screen into `RootView.screen(for:)` by replacing that tab's `PlaceholderScreen` line.
+   - Android: `enum class ForeverTab { Home, Raids, Bis, You }` in `navigation/ForeverTab.kt`. Plug a screen into `ForeverAppScaffold`'s `when (selected)` by replacing that tab's `ComingSoon(selected)` branch.
+   - Dead shell copy removed: `shell.tab.*`, `shell.home.*`, `shell.title`.
+2. **Upgrade order.** Measured gains largest first, then gains not modelled yet, then empty slots, sorted in the app for presentation only (`HomePresenter.presentationOrder` on both). An empty slot with a measured gain counts as a measured gain. **Lane A3 should return this order:** `upgrades.Order` today puts empty slots first.
+3. **Sources read like the site.** `HomePick.drop_chance`, and `source_line` and `drop_chance` on BiS slots and alternatives, are in openapi.yaml.
+   - The fixtures' lines come from the site's own `describeSourceCell(resolveSourceCell(…))` (`web/src/lib/bis/source-cell.ts`) over the build's `loot.json`, bundled and run as is. Examples: `Crafted: Blacksmithing`, `4% from Smolderthorn Headhunter`, `Stratholme · Baron Rivendare`, `Quest: Divino-matic Rod · requires level 40`, `PvP rank 18 · High Warlord · Horde`. The item's own name is taken out of its line.
+   - **Lane A3 must fill `source_line` and `drop_chance` the same way**: its `upgrades.SourceLine` is today's `source · crafted`. The ranker should publish them on BiS rows too.
+   - The site's formatter has no recipe or NPC-and-zone detail ("Plans: …", "Lord Banehollow, Felwood"). The app shows exactly the site's line.
+   - The tooltip's runners-up now show their source.
+4. **The weapon line** reads `Two-Hand` on the left and `Polearm` on the right. It comes from the new optional `weapon_slot` and `subclass` (Item `InventoryType` and `SubclassID`), carried by the hunter fixture like C6. When the data lacks them, the left word falls back to `two_hand` and the slot, and the right side stays empty. The data lane must publish both.
+5. **Off hand beside a two-hander** reads `none: Legionite Glaive is two-handed.` under the OFF HAND label: the Discord panel's words.
+   - The name is the worn main hand if the items file says it is two-handed.
+   - Otherwise it is the band's main-hand pick, when the band's off hand is empty for `two_hand_equipped`.
+6. **Fixture accuracy.**
+   - `hunter-beast-mastery` was re-ranked at band 60 with the content-phase gates (`go run ./sim/cmd/leveling-bis -spec hunter-beast-mastery -bands 60 -weights-iterations 200`, engine 1f542def3, set DPS 734.0 as in the gate report). The committed nightly file for 1.60.1.70658 predates the gates.
+   - `character.home` and `.empty` are lane A3's own `answer()` over that band, run from a scratch copy of its branch.
+   - Velaren (Horde) wears only runners-up of the gated Horde band. Item levels come from the data.
+   - Signet Ring and Sentinel's Chain Leggings are gone. Raider Gloves is no longer picked, so it is gone. Dawn Armor (`Crafted: Leatherworking`) and Hyper Deluxe Sniper Rifle Mk XVII (`Crafted: Engineering`) are still picked and kept.
+   - None of the regenerated BiS data is committed outside the fixtures (nightly owns it).
+
+Also fixed from the shoulds:
+- the unknown worn item draws the dashed tile;
+- the iOS tooltip header icon is top-aligned;
+- full-length captures of Home and Your gear on both platforms;
+- Your gear at the largest size on both.
+
+Not done (shoulds, open):
+- the Next row icons still differ (SF Symbols vs Material core);
+- JetBrains Mono is not bundled;
+- the band head still reads `60 · raid`;
+- the effect trigger prefix is not shown;
+- the set block has no piece list or count;
+- the stat wording follows the site (`Attack power`).
+
+**Tests, fix round.** All gates were run with exit codes checked, never through a pipe.
+
+| Check | Result |
+|---|---|
+| `make -C apps/ios test` | TEST SUCCEEDED, 129 tests (41 app-hosted) |
+| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` | BUILD SUCCESSFUL, 133 tests, 0 failures, lint clean |
+| `go test ./internal/contract/` and the server OpenAPI test | ok |
+| `vitest run src/lib/mobile src/styles/mobile-tokens.test.ts` | 28 passed |
+
+**Captures** re-recorded on both platforms (38 images):
+- every Home state, at the default size;
+- `home-default-xl` at the largest size;
+- `home-full` at full length;
+- the tooltip at medium and large, plus `tooltip-large-xl` at the largest size;
+- `tooltip-vendor` (replaces `tooltip-rep`; no rep reward is in the gated hunter band);
+- `tooltip-weapon`;
+- `gear-default`, `gear-default-xl` and `gear-full`.
