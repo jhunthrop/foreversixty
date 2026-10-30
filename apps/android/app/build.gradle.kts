@@ -13,6 +13,12 @@ plugins {
  */
 val uploadKeystore: String? = providers.environmentVariable("FOREVER_UPLOAD_KEYSTORE").orNull
 
+/**
+ * The Sentry DSN for release builds (apps/shared/privacy.md). Empty, the placeholder, keeps crash
+ * reporting off; the release command passes SENTRY_DSN_ANDROID. Debug builds never get one.
+ */
+val releaseSentryDsn: String = providers.environmentVariable("SENTRY_DSN_ANDROID").orElse("").get()
+
 android {
     // BuildConfig.VERSION_NAME and VERSION_CODE feed the X-App header and the crash reporter.
     buildFeatures { buildConfig = true }
@@ -33,8 +39,10 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            buildConfigField("String", "SENTRY_DSN", "\"\"")
         }
         release {
+            buildConfigField("String", "SENTRY_DSN", "\"$releaseSentryDsn\"")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -58,6 +66,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:network"))
+    implementation(project(":core:telemetry"))
+    implementation(libs.sentry.android.core)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
