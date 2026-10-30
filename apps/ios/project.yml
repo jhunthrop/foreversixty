@@ -51,6 +51,18 @@ targets:
         excludes: ["*.txt"]
       - path: ../shared/brand/ios/Brand.xcassets
         buildPhase: resources
+      # BiS (lane F3): the spec catalogue the CDN does not publish, the active build for a first
+      # launch offline, and the bundled crests and faction marks. Each is the repo's one copy.
+      - path: ../../data/curated/specs.json
+        buildPhase: resources
+      - path: ../../web/src/data/active-build.json
+        buildPhase: resources
+      - path: ../../web/public/icons/hd/crests
+        type: folder
+        buildPhase: resources
+      - path: ../../web/public/icons/hd/faction
+        type: folder
+        buildPhase: resources
     dependencies:
       - package: ForeverKit
         products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]

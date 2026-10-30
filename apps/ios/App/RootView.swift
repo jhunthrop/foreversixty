@@ -29,9 +29,20 @@ enum AppTab: String, CaseIterable, Identifiable {
     }
 }
 
+extension AppTab {
+    /// The tab the app opens on: Home, or in debug builds the `-FSTab <tab>` launch argument, so
+    /// a capture script can open a tab on the shared simulator without taps.
+    static var launchTab: AppTab {
+        #if DEBUG
+            if let name = UserDefaults.standard.string(forKey: "FSTab"), let tab = AppTab(rawValue: name) { return tab }
+        #endif
+        return .home
+    }
+}
+
 struct RootView: View {
     let environment: AppEnvironment
-    @State private var selection: AppTab = .home
+    @State private var selection: AppTab = .launchTab
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -57,6 +68,7 @@ struct RootView: View {
     private func screen(for tab: AppTab) -> some View {
         switch tab {
         case .home: HomeScreen(client: environment.client)
+        case .bis where BisScreen.isEnabled(environment): BisScreen.live(environment)
         default: PlaceholderScreen(title: tab.title)
         }
     }
