@@ -140,6 +140,10 @@ export interface ReportState {
   rankingsSpec: string;
   /** Rankings mode's metric; '' is the default (dps). */
   rankingsMetric: string;
+  /** The chart's Players control: the GUIDs drawn beside the always-drawn ones; null is the top 8. */
+  players: string[] | null;
+  /** The rate charts' log scale (`scale=log`). */
+  logScale: boolean;
 }
 
 const ENABLED_MODES = MODES.filter((m) => m.enabled).map((m) => m.id) as Mode[];
@@ -167,6 +171,8 @@ export function defaultState(firstFight: number): ReportState {
     openDeaths: [],
     rankingsSpec: '',
     rankingsMetric: '',
+    players: null,
+    logScale: false,
   };
 }
 
@@ -249,6 +255,13 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   if (rankingsSpec !== null && /^[A-Za-z ]{1,32}$/.test(rankingsSpec)) state.rankingsSpec = rankingsSpec;
   const rankingsMetric = params.get('rmetric');
   if (rankingsMetric !== null && /^[a-z_]{1,24}$/.test(rankingsMetric)) state.rankingsMetric = rankingsMetric;
+  const players = params.get('players');
+  if (players !== null)
+    state.players = players
+      .split(',')
+      .filter((guid) => /^[A-Za-z0-9-]{1,64}$/.test(guid))
+      .slice(0, 80);
+  state.logScale = params.get('scale') === 'log';
   return state;
 }
 
@@ -277,6 +290,8 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.openDeaths.length > 0) params.set('death', state.openDeaths.join(','));
   if (state.rankingsSpec !== '') params.set('rspec', state.rankingsSpec);
   if (state.rankingsMetric !== '') params.set('rmetric', state.rankingsMetric);
+  if (state.players !== null) params.set('players', state.players.join(','));
+  if (state.logScale) params.set('scale', 'log');
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

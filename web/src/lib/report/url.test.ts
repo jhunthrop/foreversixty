@@ -84,6 +84,8 @@ describe('the report URL state', () => {
       openDeaths: [],
       rankingsSpec: '',
       rankingsMetric: '',
+      players: null,
+      logScale: false,
     });
   });
 
@@ -112,6 +114,8 @@ describe('the report URL state', () => {
       openDeaths: [],
       rankingsSpec: '',
       rankingsMetric: '',
+      players: null,
+      logScale: false,
     });
   });
 
@@ -137,6 +141,8 @@ describe('the report URL state', () => {
       openDeaths: [],
       rankingsSpec: '',
       rankingsMetric: '',
+      players: null,
+      logScale: false,
     });
   });
 
@@ -174,6 +180,8 @@ describe('the report URL state', () => {
       openDeaths: [],
       rankingsSpec: '',
       rankingsMetric: '',
+      players: null,
+      logScale: false,
     });
     expect(reportSearch(state, 1)).toBe(
       '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',
@@ -214,6 +222,8 @@ describe('the report URL state', () => {
       openDeaths: [],
       rankingsSpec: '',
       rankingsMetric: '',
+      players: null,
+      logScale: false,
     });
     const search = reportSearch(state, 1);
     expect(search).toBe('?target=Creature-1-2&ability=116&flags=bd&with=4&cmetric=dps');
@@ -265,5 +275,18 @@ describe('the compared player', () => {
     expect(parseReportState('?fight=3', 1).compareVs).toBe('');
     expect(parseReportState('?fight=3&vs=Morrowlyn the Great', 1).compareVs).toBe('');
     expect(reportSearch(parseReportState('?fight=3', 1), 1)).not.toContain('vs=');
+  });
+});
+
+describe('the chart keys (controls and charts spec §B6.4, §B6.5)', () => {
+  it('round-trips the Players choice and the log scale, absent for the defaults', () => {
+    const state = parseReportState('?fight=3&players=Player-1,Player-2,bad%20guid&scale=log', 1);
+    expect(state.players).toEqual(['Player-1', 'Player-2']);
+    expect(state.logScale).toBe(true);
+    expect(reportSearch(state, 1)).toBe('?fight=3&players=Player-1%2CPlayer-2&scale=log');
+    const plain = parseReportState('?fight=3', 1);
+    expect(plain.players).toBeNull();
+    expect(plain.logScale).toBe(false);
+    expect(reportSearch(plain, 1)).toBe('?fight=3');
   });
 });

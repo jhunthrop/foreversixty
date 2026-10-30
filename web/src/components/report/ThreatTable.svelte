@@ -30,10 +30,15 @@
     formatPercent,
     tauntKey,
   } from '../../lib/report/format';
-  import type { Taunt, ThreatPair, ThreatRow } from '../../lib/report/types';
+  import { chartCopy } from '../../lib/chart/copy';
+  import type { ThreatPlayer } from '../../lib/chart/threat';
+  import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
+  import type { Actor, Taunt, TargetChange, ThreatPair, ThreatRow } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
+  import Card from '../ui/Card.svelte';
+  import Select from '../ui/Select.svelte';
   import CopyCsv from './CopyCsv.svelte';
-  import TimeChart from './TimeChart.svelte';
+  import ThreatChart from './ThreatChart.svelte';
 
   let {
     rows,
@@ -53,6 +58,7 @@
     scopeNoun = 'pull',
     onPatch,
     onWindow,
+    chart = undefined,
   }: {
     rows: ThreatRow[];
     /** One player's threat on one enemy. Absent from summaries before engine 0.3.1. */
@@ -84,6 +90,25 @@
     nightMode?: boolean;
     onPatch: (patch: { target?: string }) => void;
     onWindow: (window: TimeWindow | null) => void;
+    /** What the estimated-threat chart needs beyond the table: undefined draws no chart. */
+    chart?: {
+      /** Whole-fight pairs, every player, so a line runs across the whole fight. */
+      pairs: readonly ThreatPair[];
+      players: ReadonlyMap<string, ThreatPlayer>;
+      /** Whole-fight taunts, every player. */
+      taunts: readonly Taunt[];
+      targetChanges?: readonly TargetChange[];
+      damageTaken: readonly Actor[];
+      events: (enemyGuids: readonly string[]) => ChartEvent[];
+      phases: readonly ChartPhase[];
+      sourcePlayer?: string;
+      youGuid?: string;
+      chosen: readonly string[] | null;
+      onChoose: (chosen: string[] | null) => void;
+      brushShape: readonly number[];
+      syncKey: string;
+      onOpenDeath?: (deaths: readonly ChartEvent[]) => void;
+    };
   } = $props();
 
   /** A row of the table, whichever question it is answering. */
@@ -290,8 +315,6 @@
   );
   /** A row that has a share: every row on a picked enemy, only the players on the totals table. */
   const shares = (line: ThreatLine): boolean => picked !== undefined || isPlayer(line.guid);
-  const incomplete = $derived(ordered.some((row) => !row.complete));
-  const modelVersion = $derived(ordered[0]?.model_version ?? '');
   /**
    * The empty taunt line names what emptied it: the picked enemy, the source scope, or
    * the brush. A whole pull with no taunt says so and blames no window.
@@ -315,9 +338,9 @@
   const showBuilt = $derived(allMeasured && approximate);
   const rowGrid = $derived(
     showBuilt
-      ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_96px_64px]'
+      ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_96px_160px]'
       : ranked
-        ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]'
+        ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_160px]'
         : 'md:grid-cols-[minmax(120px,1.2fr)_96px]',
   );
   // With an enemy picked, its taunts alone: the list answers "who took this one off me".
@@ -333,219 +356,204 @@
    * carrying the most threat, named under the chart so nobody reads it as the raid's total.
    */
   const charted = $derived(picked ?? everyoneGroups[0] ?? groups[0]);
-  /** A running total, so the line's value at a second is that player's standing then. */
-  function cumulative(series: number[]): number[] {
-    let running = 0;
-    return series.map((value) => (running += value));
-  }
-  /**
-   * One line per player on the charted enemy, each in their class colour, longest first so
-   * the legend reads top-down like the table. Every pair of a player on this enemy is
-   * summed: six adds of one name are one enemy, and a player's line on it is the sum.
-   */
-  const chartLines = $derived.by(() => {
-    if (charted === undefined) return [];
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const byPlayer = new Map<string, number[]>();
-    for (const pair of pairs) {
-      if (pair.series === undefined || !charted.guids.includes(pair.target_guid)) continue;
-      const found = byPlayer.get(pair.guid) ?? [];
-      const merged = [...found];
-      pair.series.forEach((value, index) => {
-        merged[index] = (merged[index] ?? 0) + value;
-      });
-      byPlayer.set(pair.guid, merged);
-    }
-    return [...byPlayer.entries()]
-      .map(([guid, series]) => ({
-        label: splitUnitName(names.get(guid) ?? guid).name,
-        series: cumulative(series.map((value) => value ?? 0)),
-        token: classColorVar(classOf.get(guid)),
-      }))
-      .sort((a, b) => (b.series[b.series.length - 1] ?? 0) - (a.series[a.series.length - 1] ?? 0));
-  });
-  /** The taunts on the charted enemy, as marks on the chart's time axis. */
-  const chartMarks = $derived(
-    orderedTaunts.map((taunt) => ({
-      atMs: taunt.at_ms,
-      label: `${nameOf(taunt.source_guid, taunt.source_name)} · ${taunt.spell_name} on ${nameOf(taunt.target_guid, taunt.target_name)}`,
-    })),
+  /** The threat chart draws once the pairs carry their per-second series (engine 0.4.0). */
+  const showChart = $derived(
+    !nightMode &&
+      chart !== undefined &&
+      charted !== undefined &&
+      chart.pairs.some((pair) => pair.series !== undefined),
   );
-  const showChart = $derived(!nightMode && chartLines.length > 0);
-  const selectClass =
-    'border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto';
+  const enemyOptions = $derived([
+    { value: '', label: 'Every enemy' },
+    ...groups.map((group) => ({
+      value: group.id,
+      label: `${group.name}${group.guids.length > 1 ? ` ×${group.guids.length}` : ''}`,
+    })),
+  ]);
+  /** The charted enemy's guids over the whole fight (the chart's pairs are not scoped). */
+  const chartedGuids = $derived(charted?.guids ?? []);
+  const standingAtMs = $derived(window.endMs);
 </script>
 
 <div class="flex flex-col gap-2" data-testid="threat-table">
-  {#if incomplete}
-    <p class="text-muted text-[12px]" data-testid="threat-incomplete">
-      Threat model {modelVersion} does not yet carry every class's modifiers: a tank's stance, taunt and threat
-      multipliers are not in it, so a tank can read below the damage dealers they were holding threat over. The
-      per-class table lands with Forever's ability data.{#if scaled}
-        Under this window, threat is the fight's total scaled by the window's share, not the window's own
-        events.{/if}
-    </p>
-  {/if}
-  {#if showChart}
-    <div data-testid="threat-chart">
-      <TimeChart
-        series={[]}
-        extra={chartLines}
-        marks={chartMarks}
-        perSecond={false}
-        {durationMs}
-        {window}
-        deaths={[]}
-        label={`Threat on ${charted?.name ?? ''}`}
-        {onWindow}
-      />
-    </div>
-  {/if}
-  <p class="text-muted text-[12px]" data-testid="threat-chart-note">
-    {#if nightMode}
-      A night has no clock to draw threat on, so there is no chart here: the totals below are every pull's
-      threat added up.
-    {:else if showChart}
-      One cumulative line per player, on {charted?.name}{picked === undefined
-        ? ', the enemy carrying the most threat; pick another above'
-        : ''}. A taunt in the game puts the taunter on top, and the base threat model does not: the lines are
-      what damage and healing built, so a taunt mark is the moment the order stopped matching them.
-    {:else}
-      This report was parsed before threat was kept second by second, so there is no chart; the totals below
-      are the whole fight's.
+  {#snippet enemyPicker()}
+    {#if groups.length > 0}
+      <span class="inline-flex items-center gap-2 max-md:w-full">
+        <label class="quiet-label max-md:sr-only" for="threat-target">{chartCopy.enemy}</label>
+        <span class="w-[180px] max-md:flex-1">
+          <Select
+            id="threat-target"
+            compact
+            testid="threat-target"
+            options={enemyOptions}
+            value={picked?.id ?? ''}
+            onchange={(event) => onPatch({ target: (event.currentTarget as HTMLSelectElement).value })}
+          />
+        </span>
+      </span>
     {/if}
-  </p>
-  {#if groups.length > 0}
-    <label class="quiet-label flex flex-wrap items-center gap-2" for="threat-target">
-      Enemy
-      <select
-        id="threat-target"
-        class={selectClass}
-        data-testid="threat-target"
-        value={picked?.id ?? ''}
-        onchange={(event) => onPatch({ target: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Every enemy</option>
-        {#each groups as group (group.id)}
-          <option value={group.id}
-            >{group.name}{group.guids.length > 1 ? ` ×${group.guids.length}` : ''}</option
-          >
-        {/each}
-      </select>
-    </label>
-  {/if}
-  {#if lines.length === 0}
-    <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
+  {/snippet}
+  {#if showChart && chart !== undefined && charted !== undefined}
+    <ThreatChart
+      enemyName={charted.name}
+      enemyGuids={chartedGuids}
+      pairs={chart.pairs}
+      players={chart.players}
+      taunts={chart.taunts}
+      targetChanges={chart.targetChanges}
+      damageTaken={chart.damageTaken}
+      events={chart.events(chartedGuids)}
+      phases={chart.phases}
+      {durationMs}
+      {window}
+      {onWindow}
+      sourcePlayer={chart.sourcePlayer}
+      youGuid={chart.youGuid}
+      chosen={chart.chosen}
+      onChoose={chart.onChoose}
+      brushShape={chart.brushShape}
+      syncKey={chart.syncKey}
+      onOpenDeath={chart.onOpenDeath}
+      {enemyPicker}
+    />
   {:else}
-    <div class={`quiet-label hidden gap-x-3 px-2 pb-1 md:grid ${rowGrid}`}>
-      <span>{picked === undefined ? 'Unit' : 'Player'}</span>
-      {#if ranked}<span title="Threat generated, against the highest row">Threat</span>{/if}
-      <span
-        class="text-right"
-        title={showBuilt
-          ? 'Cumulative threat at the window’s end: the number that decides who the enemy attacks'
-          : picked === undefined
-            ? 'Threat accumulated from damage and healing over this window'
-            : `Threat this player built on ${picked.name} over this window`}
-        >{showBuilt ? 'Standing' : 'Total'}</span
-      >
-      {#if showBuilt}
-        <span class="text-right" title="Threat this player built inside the window">Built</span>
+    <p class="text-muted text-[12px]" data-testid="threat-chart-note">
+      {#if nightMode}
+        A night has no clock to draw threat on, so there is no chart here: the totals below are every pull's
+        threat added up.
+      {:else}
+        This report was parsed before threat was kept second by second, so there is no chart; the totals below
+        are the whole fight's.
       {/if}
-      {#if ranked}
+    </p>
+    {@render enemyPicker()}
+  {/if}
+  <Card
+    quiet
+    compact
+    body="table"
+    title={chartCopy.threatTableTitle}
+    meta={picked === undefined || lines.length === 0
+      ? undefined
+      : chartCopy.threatTableMeta(picked.name, standingAtMs, lines.length)}
+    testid="threat-table-card"
+  >
+    {#if lines.length === 0}
+      <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
+    {:else}
+      <div class={`quiet-label hidden gap-x-3 px-2 pb-1 md:grid ${rowGrid}`}>
+        <span>{picked === undefined ? 'Unit' : 'Player'}</span>
+        {#if ranked}<span title="Estimated threat, against the highest row">{chartCopy.threatColumn}</span
+          >{/if}
         <span
           class="text-right"
-          title={picked === undefined
-            ? "Share of every player's threat in this window; an enemy's own row is outside it"
-            : `Share of every player's threat on ${picked.name}`}>Share</span
+          title={showBuilt
+            ? 'Cumulative threat at the window’s end: the number that decides who the enemy attacks'
+            : picked === undefined
+              ? 'Threat accumulated from damage and healing over this window'
+              : `Threat this player built on ${picked.name} over this window`}
+          >{showBuilt ? chartCopy.standingColumn : 'Total'}</span
         >
-      {/if}
-    </div>
-    <ul
-      class="flex flex-col"
-      data-testid={picked === undefined ? undefined : 'threat-on-target'}
-      data-ranked={ranked ? 'true' : 'false'}
-    >
-      {#each lines as row (row.guid)}
-        <li
-          class={`border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] ${rowGrid}`}
-          data-testid={`threat-${row.guid}`}
-        >
-          <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
-            {splitUnitName(row.name).name}{#if picked === undefined && copies.has(row.guid)}
-              <span class="text-muted numeric ml-1 text-[11px]" title="Another unit of the same name"
-                >#{copyOf.get(row.guid)}</span
-              >{/if}
-          </span>
-          {#if ranked}
-            <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
-              <span
-                class="bg-gold block h-full"
-                style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}
-              ></span>
-            </span>
-          {/if}
-          <!-- The phone has no header row, so the figure says what it is. -->
+        {#if showBuilt}
+          <span class="text-right" title="Threat this player built inside the window">Built</span>
+        {/if}
+        {#if ranked}
           <span
-            class={`numeric text-right ${ranked ? '' : 'text-muted'}`}
-            {title}
-            data-testid="threat-standing"
-            aria-label={approximateAriaLabel(scaled, formatAmount(Math.round(row.threat)))}
+            class="text-right"
+            title={picked === undefined
+              ? "Share of every player's threat in this window; an enemy's own row is outside it"
+              : `Share of every player's threat on ${picked.name}`}>{chartCopy.shareColumn}</span
           >
-            {mark}{formatAmount(Math.round(row.threat))}<span class="quiet-label ml-1.5 md:hidden"
-              >{showBuilt ? 'standing' : 'threat'}</span
-            >
-          </span>
-          {#if showBuilt}
+        {/if}
+      </div>
+      <ul
+        class="flex flex-col"
+        data-testid={picked === undefined ? undefined : 'threat-on-target'}
+        data-ranked={ranked ? 'true' : 'false'}
+      >
+        {#each lines as row (row.guid)}
+          <li
+            class={`border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] ${rowGrid}`}
+            data-testid={`threat-${row.guid}`}
+          >
+            <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
+              {splitUnitName(row.name).name}{#if picked === undefined && copies.has(row.guid)}
+                <span class="text-muted numeric ml-1 text-[11px]" title="Another unit of the same name"
+                  >#{copyOf.get(row.guid)}</span
+                >{/if}
+            </span>
+            {#if ranked}
+              <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
+                <span
+                  class="bg-gold block h-full"
+                  style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}
+                ></span>
+              </span>
+            {/if}
+            <!-- The phone has no header row, so the figure says what it is. -->
             <span
-              class="text-muted numeric text-right"
-              title="Threat this player built inside the window"
-              data-testid="threat-built"
+              class={`numeric text-right ${ranked ? '' : 'text-muted'}`}
+              {title}
+              data-testid="threat-standing"
+              aria-label={approximateAriaLabel(scaled, formatAmount(Math.round(row.threat)))}
             >
-              {formatAmount(Math.round(row.built ?? 0))}<span class="quiet-label ml-1.5 md:hidden">built</span
+              {mark}{formatAmount(Math.round(row.threat))}<span class="quiet-label ml-1.5 md:hidden"
+                >{showBuilt ? 'standing' : 'threat'}</span
               >
             </span>
-          {/if}
-          {#if ranked && shares(row)}
-            <span
-              class="text-muted numeric col-span-2 text-right text-[13px] md:col-span-1"
-              data-testid="threat-share"
-              >{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}<span
-                class="quiet-label ml-1.5 md:hidden">share</span
-              ></span
-            >
-          {:else if ranked}
-            <span
-              class="text-muted col-span-2 text-right text-[12px] md:col-span-1"
-              title="An enemy's threat is the model run over its own damage; the raid's shares do not include it"
-              data-testid="threat-no-share">—</span
-            >
-          {/if}
-        </li>
-      {/each}
-    </ul>
-    {#if ranked}
-      <p class="text-muted text-[12px]" data-testid="threat-share-note">
-        Share is of every player’s threat {picked === undefined ? 'in this window' : `on ${picked.name}`},
-        whatever the source scope shows; the bar is drawn against the highest row.
-      </p>
+            {#if showBuilt}
+              <span
+                class="text-muted numeric text-right"
+                title="Threat this player built inside the window"
+                data-testid="threat-built"
+              >
+                {formatAmount(Math.round(row.built ?? 0))}<span class="quiet-label ml-1.5 md:hidden"
+                  >built</span
+                >
+              </span>
+            {/if}
+            {#if ranked && shares(row)}
+              <span
+                class="text-muted numeric col-span-2 text-right text-[13px] md:col-span-1"
+                data-testid="threat-share"
+                >{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}<span
+                  class="quiet-label ml-1.5 md:hidden">share</span
+                ></span
+              >
+            {:else if ranked}
+              <span
+                class="text-muted col-span-2 text-right text-[12px] md:col-span-1"
+                title="An enemy's threat is the model run over its own damage; the raid's shares do not include it"
+                data-testid="threat-no-share">—</span
+              >
+            {/if}
+          </li>
+        {/each}
+      </ul>
+      {#if ranked}
+        <p class="text-muted text-[12px]" data-testid="threat-share-note">
+          Share is of every player’s threat {picked === undefined ? 'in this window' : `on ${picked.name}`},
+          whatever the source scope shows; the bar is drawn against the highest row.
+        </p>
+      {/if}
+      <CopyCsv lines={csvLines} />
+      {#if showBuilt}
+        <p class="text-muted text-[12px]" data-testid="threat-window-note">
+          Standing is the threat this player had built by the window’s end, which is the number that decides
+          who the enemy attacks; Built is what they made inside the window. Both are measured from the fight’s
+          own seconds, so neither is marked. The table sorts by Standing.
+        </p>
+      {:else if scaled}
+        <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
+          This report was parsed before threat was kept second by second, so threat inside a window is not
+          measured. Each figure is marked {mark} because it is the whole fight’s threat scaled to this window’s
+          share of that player’s total, not the window’s own events, so it is not a standing and is not drawn as
+          one: no bars, no shares, no order to read. Parse the report again for the measured figures. The whole
+          pull is exact.
+        </p>
+      {/if}
     {/if}
-    <CopyCsv lines={csvLines} />
-    {#if showBuilt}
-      <p class="text-muted text-[12px]" data-testid="threat-window-note">
-        Standing is the threat this player had built by the window’s end, which is the number that decides who
-        the enemy attacks; Built is what they made inside the window. Both are measured from the fight’s own
-        seconds, so neither is marked. The table sorts by Standing.
-      </p>
-    {:else if scaled}
-      <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
-        This report was parsed before threat was kept second by second, so threat inside a window is not
-        measured. Each figure is marked {mark} because it is the whole fight’s threat scaled to this window’s share
-        of that player’s total, not the window’s own events, so it is not a standing and is not drawn as one: no
-        bars, no shares, no order to read. Parse the report again for the measured figures. The whole pull is exact.
-      </p>
-    {/if}
-  {/if}
+  </Card>
   <div class="flex flex-col gap-1 pt-2" data-testid="threat-taunts">
     <h3 class="quiet-label">Taunts</h3>
     {#if taunts === undefined}
