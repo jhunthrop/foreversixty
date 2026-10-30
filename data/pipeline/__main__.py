@@ -121,6 +121,15 @@ def build_parser() -> argparse.ArgumentParser:
     hf.add_argument("--build", required=True)
     hf.add_argument("--cache", required=True, help="path to the copied DBCache.bin")
 
+    bf = sub.add_parser(
+        "build-floors",
+        help="refuse a build whose committed items fall below another build's floors "
+        "(item count, wowhead-sourced count; pipeline.build_floors); "
+        "tools/activate-build.sh runs it against the active build before a move",
+    )
+    bf.add_argument("--build", required=True, help="the build to check")
+    bf.add_argument("--against", required=True, help="the build it must not fall below")
+
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
     n.add_argument(
@@ -712,6 +721,17 @@ def main(argv: list[str] | None = None) -> int:
         except (OSError, RecorderError) as error:
             logging.getLogger("pipeline").error("recorder: %s", error)
             return 1
+    elif args.command == "build-floors":
+        from pathlib import Path
+
+        from pipeline.build_floors import floor_problems
+
+        problems = floor_problems(Path("builds") / args.build, Path("builds") / args.against)
+        for problem in problems:
+            logging.getLogger("pipeline").error("build-floors: %s", problem)
+        if problems:
+            return 1
+        print(f"build-floors: {args.build} holds {args.against}'s floors")
     elif args.command == "audit":
         import tempfile
         from pathlib import Path
