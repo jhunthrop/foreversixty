@@ -268,7 +268,7 @@ def night(plat: str, premium: bool = True) -> str:
             "<div style=\"text-align:right\"><div class=\"mono t-body strong\">612 DPS</div><div class=\"t-micro mono\" style=\"color:#a335ee\">82nd percentile</div></div></div>")
     coach = ""
     if premium:
-        notes = ["Chain Lightning was off cooldown for 38 s of the 4:12 fight.", "Phase 2: you cast through Deep Breath once and took 3,210 damage.", "Mana ran dry at 3:40; one more Mana Tide would cover it."]
+        notes = ["Chain Lightning was off cooldown for 38 s of the 4:12 fight.", "Phase 2: you cast through Deep Breath once and took 3,210 damage.", "Mana ran dry at 3:40; a Major Mana Potion at 2:30 would cover it."]
         coach = ("<div class=\"t-micro micro pad\" style=\"margin-top:22px\">Coach notes</div><div class=\"card quiet\" style=\"margin:8px 16px 0;padding:6px 0\">"
                  + "".join(f"<div class=\"t-body\" style=\"padding:8px 16px;display:flex;gap:10px\"><span class=\"gold mono\">{i + 1}</span>{n}</div>" for i, n in enumerate(notes)) + "</div>")
     inner = (f"<div class=\"t-meta muted pad\" style=\"margin-top:4px\">Onyxia's Lair · Thursday 10 December · Olympus XXVII</div>"

@@ -100,3 +100,32 @@ The `60 · Phase 1 raid` Elemental list and home answer pick or offer several it
 - The reminder ask comes in context, after the first In, never at launch.
 - No Premium pushes.
 - `Free` with no nag outside link regions.
+
+## Re-check (2026-10-30, Revision 2)
+
+**Verdict: SHIP.** All four blockers are fixed on the boards. The rulings on the shoulds are right. What follows are copy and consistency fixes in the mock that the build should not copy. None of them blocks.
+
+### Blockers
+
+1. **F6 talents: resolved.** The tabs read `Elemental 30 · Enhancement 3 · Restoration 18` on both F6.1 and F6.2, which is 51. F6.2 reads `2 of your 51 points differ from the 60 build.` The board shows exactly that: Reverberation is 2/5 where the guide has 0/5, and Call of Flame is 1/3 where the guide has 3/3. Both cells are dashed and sit in the same tier, so the build is still legal and Elemental stays at 30. Prerequisite lines are drawn now (the Lightning column and the bottom chain).
+2. **F7.3 loot: resolved.** `Loot: Sapphiron Drape` is a real Onyxia drop, it carries its icon, and it now sits inside `Your raid night: Onyxia's Lair` instead of being a push of its own. `loot.awarded` is off as a standalone push.
+3. **`raid.roster_moved`: resolved.** F7.7 covers all four cases: moved In, moved to the Bench, removed, and added. Each is `Time Sensitive` and carries the guild line. Each names the officer, the character and the times, for example `Kraggor moved you from the Bench. Invites 7:45 pm, pull 8:00 pm, as DPS on Lightningbolltz.` This replaces the Discord @mention.
+4. **F4.11: resolved.** `In` is checked above `That did not save. Try again.`
+
+### Rulings on my shoulds
+
+- **Officer tools (F4.18 to F4.21): agree.** `Lock sign-ups`, a place button on every roster row, and a move menu (`Draknar · In as DPS` / `Move to Bench` / `Remove from the raid`) give an officer on a phone what Raid-Helper gives them. The locked toast ties back to `raid.roster_moved` (`moves you make now tell the raider at once`). Planning stays on the web, which is fine.
+- **Your raid night (F4.22, F4.23): agree.** Kills, wipes, loot with its icon and the piece it replaces, a personal best with its percentile, then coach notes. Free players get the same screen without the coach section and without a nag. One push per night instead of three to ten.
+- **Invite time: agree.** `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm` and `Invites in 2 days 2 h` appear on the Raids tab, the raid page and every state board. `raid.starting` is now anchored to invites.
+- **Tooltip: agree.** F2.6 now follows the client's order: name, `Binds when picked up`, then `Waist` with `Cloth` on the right, then armor, stats, `Requires Level 60` and `Item Level 65` in gold. The header no longer repeats the item level. Keeping `+10 Hit` until a verified table exists is acceptable, because the site does the same.
+
+### New things to fix (shoulds)
+
+1. **F4.22 coach note 3: `Mana ran dry at 3:40; one more Mana Tide would cover it.`** Lightningbolltz is 30/3/18. In this tree, Mana Tide Totem is the Restoration talent at tier 3, and his build string puts 0 points in it. Any shaman reads this as "you should have cast a spell you do not have" and will screenshot it. Since the coach speaks to this character, use something he can act on, such as `a Major Mana Potion at 2:30 would cover it`, or name the totem's owner (`ask your Restoration shaman for Mana Tide`). The builder should treat this as the rule: a coach note never names a talent the build lacks.
+2. **F2.6 source: still `Vendor: Meilosh`.** Revision 2 rules that source lines carry standings, but this board was not redrawn. Draw `Meilosh, Felwood · Timbermaw Hold, Revered` (or whatever standing the data holds).
+3. **F7.1 timing.** The lock screen reads 7:00 and the notification reads `now`, but its title is `Invites for Onyxia's Lair in 1 hour` with `Invites 7:45 pm`. That gap is 45 minutes. Either set the clock to 6:45 or make the title `in 45 min`. The Android shade has the same mismatch.
+4. **F7.3 iOS: `Your raid night: Onyxia's Lair` is stamped `7d` on Thursday 10 December**, which is the night of that same raid. Stamp it `now`, or move the lock-screen date to the next morning.
+5. **Vorgash contradicts himself.** F7.3 Android says `Vorgash has no spec saved for Olympus XXVII`, but F4.12 shows him in Olympus XXVII as `Protection · Tank` with `Change spec`. Since the spec is asked once per guild, use a third alt for one of the two.
+6. **F4.4 reminder copy: `One an hour before the start`.** This reads as a typo, and the push now fires before invites, not the start. Suggested copy: `One an hour before invites, and one when sign-ups open.`
+7. **F6 footer copy runs under the floating tab bar** (`Change talents in the game: the addon sends them on your next lo…`, and the Dashed line on F6.2 is garbled). Pad the scroll content so the last line clears the bar.
+8. **F4.21 toast: `23 In and 2 on the Bench were told`** sits beside `24 of 40 signed up · … · 1 late`. A raid leader will add these up. Say `23 In, 1 Late and 2 on the Bench were told`, or make the count include the bench.
