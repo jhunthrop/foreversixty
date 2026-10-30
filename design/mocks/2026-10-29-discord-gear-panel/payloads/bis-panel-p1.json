@@ -70,7 +70,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Darkspear Pauldrons**\nShoulder\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "<:fs_q_epic:1302600000000000004> **Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -118,7 +118,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **Beastmaster's Bindings**\nWrist\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58"
+                "content": "<:fs_q_rare:1302600000000000003> **Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58"
               }
             ],
             "accessory": {
@@ -134,7 +134,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Raider Gloves**\nHands\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "<:fs_q_epic:1302600000000000004> **Raider Gloves**\nHands · Same DPS as the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
