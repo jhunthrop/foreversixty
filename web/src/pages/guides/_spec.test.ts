@@ -19,7 +19,10 @@ import { guideSchema } from '../../content.config';
 import SpecPage from './[class]/[spec].astro';
 import { raceRows } from '../../lib/planner/reference';
 import { racialEffects } from '../../lib/guides/race-table';
+import { decodeBuildTrees } from '../../lib/guides/build-tree';
+import { schoolHitTalent } from '../../lib/guides/hit-cap-line';
 import { createPageContainer } from '../../test-support/page-container';
+import activeBuild from '../../data/active-build.json';
 
 let container: AstroContainer;
 
@@ -33,6 +36,24 @@ function loadGuideEntry(id: string) {
   const [, frontmatterBlock, ...bodyParts] = raw.split('---');
   const data = guideSchema.parse(parseYaml(frontmatterBlock));
   return { id, collection: 'guides' as const, data, body: bodyParts.join('---').trim() };
+}
+
+/**
+ * The talent a guide's hit line names, read from the active build's trees the way the page
+ * reads it (the raid build when it differs, else the leveling build; `schoolHitTalent`; the
+ * copy's own "talents" when none), so a client build that renames the talent moves the
+ * expectation with it instead of failing the move (Elemental Precision became Precision in
+ * 1.60.1.70685).
+ */
+function guideHitTalent(id: string): string {
+  const { build, raidBuild } = loadGuideEntry(id).data;
+  const code = raidBuild !== undefined && raidBuild !== build ? raidBuild : build;
+  const trees = code === undefined ? [] : (decodeBuildTrees(activeBuild.build, code) ?? []);
+  return schoolHitTalent(trees) ?? 'talents';
+}
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 describe('/guides/warrior/fury', () => {
@@ -139,8 +160,11 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const html = await frostHtml();
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-stat-table"');
+    const talent = escapeRegExp(guideHitTalent('mage/frost'));
     expect(html).toMatch(
-      /data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
+      new RegExp(
+        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?% · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear<`,
+      ),
     );
     expect(html).toContain('DPS per point');
     // The unit line names the top per-point stat at 60, and the nightly sim decides which one
