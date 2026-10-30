@@ -11,6 +11,7 @@
     ACCOUNT_FAILED,
     EMAIL_SENT,
     battlenetStartUrl,
+    companionsOf,
     fetchMeOnce,
     listDevices,
     pairDevice,
@@ -371,7 +372,7 @@
       const code = await pairDevice();
       pairing = code;
       activePoll = createPairingPoll(
-        () => refreshDevices(),
+        async () => companionsOf(await refreshDevices()),
         beforeIds,
         (device) => {
           pairedDevice = device;
@@ -801,7 +802,7 @@
                     </p>
                   {:else if pairing === null}
                     <!-- No companion yet: the download is the button, the code a text link under it. -->
-                    {#if devices.length === 0}
+                    {#if companionsOf(devices).length === 0}
                       <a
                         class={button('secondary')}
                         href={accountPageCopy.downloadCompanionHref}

@@ -1,0 +1,8 @@
+{
+  "todo": "OWNER: replace appleTeamId with the Commish LLC Team ID from developer.apple.com (Membership), and androidSha256Fingerprints with the Play App Signing key's SHA-256 from Play Console (Test and release > App integrity), plus the upload key's if internal builds are side-loaded. Then run `npm run sync:app-links` and commit public/.well-known.",
+  "appleTeamId": "TEAMID_TODO",
+  "iosBundleId": "gg.foreversixty.app",
+  "androidPackage": "gg.foreversixty.app",
+  "androidSha256Fingerprints": ["SHA256_FINGERPRINT_TODO"],
+  "paths": ["/app/*"]
+}

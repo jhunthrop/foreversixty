@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:local-api": "node scripts/dev-local-api.mjs",
+    "prebuild": "node scripts/app-links.mjs",
     "build": "astro build",
     "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts && vite build --config vite.sim-island.config.ts && vite build --config vite.sim-tools-island.config.ts",
     "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs && node scripts/check-no-removed-routes.mjs",
@@ -28,6 +29,7 @@
     "lhci:push": "lhci autorun --config=lighthouserc.push.cjs",
     "deploy": "npm run build && wrangler deploy",
     "sync:data": "node scripts/sync-data.mjs",
+    "sync:app-links": "node scripts/app-links.mjs",
     "sync:sim-ids": "node scripts/sync-sim-ids.mjs",
     "sync:rotations": "node scripts/sync-rotations.mjs",
     "sync:report-fixture": "node scripts/sync-report-fixture.mjs",

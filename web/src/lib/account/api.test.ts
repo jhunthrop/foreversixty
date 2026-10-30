@@ -8,6 +8,7 @@ import {
   AccountError,
   type BillingView,
   battlenetStartUrl,
+  companionsOf,
   connectDeviceApprove,
   connectDeviceDeny,
   connectDeviceLookup,
@@ -16,6 +17,7 @@ import {
   fetchMe,
   fetchMeOnce,
   forgetSession,
+  listCompanions,
   listDevices,
   pairDevice,
   postMyExports,
@@ -156,6 +158,33 @@ describe('the account API', () => {
     await expect(pairDevice(API)).resolves.toEqual({ code: '4821-9930', expires_in: 600 });
     await expect(revokeDevice('dev1', API)).resolves.toBeUndefined();
     expect((upstream.mock.calls[2][0] as Request).url).toBe(`${API}/v1/devices/dev1`);
+  });
+
+  it('a signed-in phone app is a device but not a companion', async () => {
+    const devices = [
+      {
+        id: 'pc',
+        name: 'Raid PC',
+        platform: 'windows',
+        kind: 'companion' as const,
+        created_at: 't',
+        last_seen_at: null,
+      },
+      {
+        id: 'ph',
+        name: 'iPhone',
+        platform: 'ios',
+        kind: 'app' as const,
+        created_at: 't',
+        last_seen_at: null,
+      },
+      // An API from before devices carried a kind lists companions only.
+      { id: 'old', name: 'Old PC', platform: 'linux', created_at: 't', last_seen_at: null },
+    ];
+    expect(companionsOf(devices).map((d) => d.id)).toEqual(['pc', 'old']);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(envelope(devices)));
+    await expect(listDevices(API)).resolves.toHaveLength(3);
+    await expect(listCompanions(API)).resolves.toEqual([devices[0], devices[2]]);
   });
 
   it('listDevices shares a cached answer across two calls without a second request', async () => {

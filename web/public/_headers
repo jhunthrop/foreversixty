@@ -33,3 +33,14 @@
 /data/:build/trees/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+
+# The native apps' universal links (iOS) and App Links (Android) files, built from
+# web/app-links.json by scripts/app-links.mjs. Apple fetches the extensionless file through
+# its CDN and needs it as JSON; both stay short-cached so a new signing fingerprint or Team
+# ID reaches the stores' verifiers within the hour.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
