@@ -34,6 +34,14 @@ struct RootView: View {
     @State private var selection: AppTab = .home
 
     var body: some View {
+        if environment.updateGate.isRequired {
+            UpdateRequiredView(storeURL: environment.updateGate.storeURL)
+        } else {
+            tabs
+        }
+    }
+
+    private var tabs: some View {
         TabView(selection: $selection) {
             ForEach(AppTab.allCases) { tab in
                 Tab(tab.title, systemImage: tab.systemImage, value: tab) {

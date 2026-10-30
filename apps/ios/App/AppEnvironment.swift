@@ -8,22 +8,31 @@ struct AppEnvironment {
     let configuration: APIConfiguration
     let tokens: any TokenStore
     let client: APIClient
+    /// Flips when the API says this build is below its minimum; RootView then blocks.
+    let updateGate: UpdateGate
     /// Read at launch (RootView) and cached; feature lanes ask it `isEnabled(_:)`.
     let appConfig: AppConfigStore
 
+    @MainActor
     init(
         configuration: APIConfiguration,
         tokens: any TokenStore,
+        identity: ClientIdentity,
+        updateGate: UpdateGate = UpdateGate(),
         bundle: Bundle = .main,
         configCache: any AppConfigCache = UserDefaultsAppConfigCache()
     ) {
         self.configuration = configuration
         self.tokens = tokens
-        self.client = APIClient.make(configuration, tokens: tokens, bundle: bundle)
+        self.updateGate = updateGate
+        self.client = APIClient.make(
+            configuration, tokens: tokens, identity: identity, updateGate: updateGate, bundle: bundle
+        )
         self.appConfig = AppConfigStore(client: client, cache: configCache)
     }
 
     /// Fixture mode keeps its token in memory so a fixture session never reaches the Keychain.
+    @MainActor
     static func fromBundle(_ bundle: Bundle = .main) -> AppEnvironment {
         let configuration: APIConfiguration
         do {
@@ -35,7 +44,8 @@ struct AppEnvironment {
         case .live: KeychainTokenStore()
         case .fixture: InMemoryTokenStore(token: "fsd_fixture")
         }
-        return AppEnvironment(configuration: configuration, tokens: tokens, bundle: bundle)
+        let identity = ClientIdentity.bundled(bundle, installID: InstallID.current())
+        return AppEnvironment(configuration: configuration, tokens: tokens, identity: identity, bundle: bundle)
     }
 
     // TODO(lane A2, F7): register the APNs device token with the push_tokens

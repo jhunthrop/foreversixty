@@ -14,6 +14,7 @@ from pipeline.loot.pvp_faction import (
     TITLE_FACTION,
     PvpFactionStats,
     rank_title,
+    ranks_with_item_evidence,
     split_pvp_sources_by_faction,
     title_faction,
     vendor_npc_factions,
@@ -234,7 +235,7 @@ def test_split_pvp_sources_by_faction_exposes_faction_on_a_matching_vendor_row()
             LootSource(id="vendor:1", kind="vendor", name="Ordinary Vendor", npc_id=1, items=[2]),
         ]
     )
-    item_names = {18873: "Grand Marshal's Stave"}
+    item_names = {18873: "Grand Marshal's Stave", 234570: "Grand Marshal's Polearm"}
     classic_sources = {
         18873: [
             ClassicDbSourceRecord(kind="vendor", npc_id=12782, name="Captain O'Neal", map_id=449)
@@ -283,7 +284,7 @@ def test_split_pvp_sources_by_faction_backfills_a_vendor_item_missing_from_the_p
             ),
         ]
     )
-    item_names = {18873: "Grand Marshal's Stave"}
+    item_names = {18873: "Grand Marshal's Stave", 234570: "Grand Marshal's Polearm"}
     classic_sources = {
         18873: [
             ClassicDbSourceRecord(kind="vendor", npc_id=12782, name="Captain O'Neal", map_id=449)
@@ -325,6 +326,87 @@ def test_split_pvp_sources_by_faction_never_backfills_when_the_vendors_own_items
     for source in result.sources:
         if source.kind == "pvp":
             assert 999999 not in (source.items or [])
+
+
+def test_split_pvp_sources_by_faction_never_backfills_a_known_non_rank_reward():
+    """bis-phase-gate lane, 2026-10-30: Kelm Hargunth, the Horde Warsong
+    Gulch quartermaster, sold one title-ranked item (Legionnaire's Band),
+    so the backfill filed his whole stock -- Dryad's Wrist Bindings, a
+    Silverwing/Warsong reputation reward with no PvP rank -- under
+    pvp:rank-12:horde. An item classic-db names with no honor rank is not
+    a rank reward, however it reached a rank bucket: by the backfill, or
+    by its own title (Legionnaire's Band itself)."""
+    document = LootFile(
+        sources=[
+            LootSource(id="pvp:rank-12", kind="pvp", name="Rank 12", rank=12, items=[19510]),
+            LootSource(
+                id="vendor:14754", kind="vendor", name="Kelm Hargunth", npc_id=14754,
+                items=[19510, 19595],
+            ),
+        ]
+    )  # fmt: skip
+    item_names = {19510: "Legionnaire's Band", 19595: "Dryad's Wrist Bindings"}
+    kelm = ClassicDbSourceRecord(kind="vendor", npc_id=14754, name="Kelm Hargunth", map_id=1)
+    result, stats = split_pvp_sources_by_faction(
+        document, item_names, {19510: [kelm], 19595: [kelm]}, ZONE_ROWS,
+        not_rank_rewards=frozenset({19510, 19595}),
+    )  # fmt: skip
+    assert not [s for s in result.sources if s.kind == "pvp"]
+
+
+def test_ranks_recovered_from_an_earlier_loot_json_need_evidence_on_the_item():
+    """Merge-only mode recovers ranks from the committed loot.json, which
+    also carries whatever an earlier run filed wrongly -- Scalemail Vest
+    and the Season of Discovery Warsong stock under pvp:rank-12:horde. Every
+    rank the client states on 1.60.1.70658 is on an item with a rank title
+    or a faction restriction, so a recovered rank keeps only those."""
+    item_rows = [
+        {"id": 285, "name": "Scalemail Vest", "faction_restriction": ""},
+        {"id": 211500, "name": "Resilient Cloth Headband", "faction_restriction": ""},
+        {"id": 227046, "name": "Knight-Captain's Plate Hauberk", "faction_restriction": ""},
+        {"id": 16341, "name": "Sergeant's Cloak", "faction_restriction": ""},
+        {"id": 272000, "name": "Some Forever Reward", "faction_restriction": "horde_only"},
+    ]
+    recovered = {285: 12, 211500: 12, 227046: 12, 16341: 7, 272000: 9}
+    assert ranks_with_item_evidence(recovered, item_rows) == {227046: 12, 16341: 7, 272000: 9}
+
+
+def test_split_pvp_sources_by_faction_backfills_only_an_item_naming_its_rank():
+    """Kelm Hargunth's Season of Discovery stock (Resilient Cloth
+    Headband) is not a classic id, so classic-db cannot vouch for it; it
+    carries no rank title either, so his one ranked item does not file it
+    under that rank."""
+    document = LootFile(
+        sources=[
+            LootSource(id="pvp:rank-12", kind="pvp", name="Rank 12", rank=12, items=[227049]),
+            LootSource(
+                id="vendor:14754", kind="vendor", name="Kelm Hargunth", npc_id=14754,
+                items=[227049, 211500],
+            ),
+        ]
+    )  # fmt: skip
+    item_names = {227049: "Legionnaire's Plate Hauberk", 211500: "Resilient Cloth Headband"}
+    kelm = ClassicDbSourceRecord(kind="vendor", npc_id=14754, name="Kelm Hargunth", map_id=1)
+    result, stats = split_pvp_sources_by_faction(document, item_names, {227049: [kelm]}, ZONE_ROWS)
+    pvp_items = {i for s in result.sources if s.kind == "pvp" for i in s.items or []}
+    assert pvp_items == {227049}
+    assert stats.backfilled_from_vendor == 0
+
+
+def test_the_honor_title_table_ranks_both_sides_alike():
+    """HONOR_RANK_BY_TITLE agrees with the two rank ladders, and from rank
+    11 up names both factions' title: Knight-Lieutenant's was missing while
+    Blood Guard's was listed, so Alliance's re-itemised rank-11 sets went
+    uncapped."""
+    from pipeline.classicdb_items import HONOR_RANK_BY_TITLE
+
+    for ladder in (ALLIANCE_TITLES, HORDE_TITLES):
+        for index, title in enumerate(ladder):
+            rank = index + 5
+            listed = HONOR_RANK_BY_TITLE.get(f"{title}'s")
+            assert listed in (None, rank), (title, listed, rank)
+            if rank >= 11:
+                assert listed == rank, f"{title}'s (rank {rank}) is missing"
 
 
 def test_rank_title_tables_stay_in_sync_with_the_web_copy():

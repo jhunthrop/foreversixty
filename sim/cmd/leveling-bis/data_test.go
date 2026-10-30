@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -556,12 +557,9 @@ func TestLoadLootIndexVendorInheritsPvpRankLeavesAmbiguousUnknownSideAlone(t *te
 // This lane's brief, item 3's own named case: Atiesh's own quest (id
 // 9270) is a "kind": "quest" loot.json row, which the general
 // raid-source Opens gate never sees at all (that loop skips "quest"
-// rows entirely) - raidLockedQuestOpens is the separate table that
-// catches it, and this test is the exact regression a future edit to
-// either table could otherwise reintroduce silently.
-// TestLoadLootIndexNoLongerHandGatesAtieshsQuest pins that
-// raidLockedQuestOpens (data.go) no longer carries a hand-picked entry
-// for Atiesh's own quest ids - this lane's brief, item 2: "replace the
+// rows entirely).
+// TestLoadLootIndexNoLongerHandGatesAtieshsQuest pins that no hand list
+// carries a hand-picked entry for Atiesh's own quest ids - this lane's brief, item 2: "replace the
 // hand list with a rule" (band.go's legendaryGatedLater, gated on the
 // candidate's own quality field) replaces it, one layer above this
 // function: loadLootIndex/sourceFor have no item quality to gate on at
@@ -636,13 +634,10 @@ func TestLoadLootIndexCarriesPerQuestOpensThrough(t *testing.T) {
 	}
 }
 
-// TestLoadLootIndexComputedOpensWinsOverTheHandList pins
-// firstNonEmpty's own priority in loadLootIndex: a quest id
-// raidLockedQuestOpens ALSO names must still show whatever the
-// pipeline's own computed `opens` states, not silently be overridden by
-// the hand list - the hand list is a fallback for ids the computation
-// cannot see (the Ahn'Qiraj war-effort three), never a ceiling on one it
-// can.
+// TestLoadLootIndexComputedOpensWinsOverTheHandList pins that
+// loadLootIndex carries the pipeline's own computed quest `opens`
+// through unchanged; the content-phase gates are applied on top, never
+// in place of it.
 func TestLoadLootIndexComputedOpensWinsOverTheHandList(t *testing.T) {
 	dir := t.TempDir()
 	lootJSON := `{
@@ -663,7 +658,7 @@ func TestLoadLootIndexComputedOpensWinsOverTheHandList(t *testing.T) {
 	src, ok := idx[21504]
 	if !ok || len(src) != 1 || src[0].Opens != "raids-1" {
 		t.Fatalf(
-			"idx[21504] = %+v, want Opens \"raids-1\" (the computed value, not raidLockedQuestOpens's \"later\")",
+			"idx[21504] = %+v, want Opens \"raids-1\" (the computed value, carried through)",
 			src,
 		)
 	}
@@ -674,10 +669,9 @@ func TestLoadLootIndexComputedOpensWinsOverTheHandList(t *testing.T) {
 // never states an "opens" value for any rep-kind source, but Cenarion
 // Circle (faction 609) is Gates of Ahn'Qiraj content, the same patch
 // this build already gates raid:ahnqiraj "later" for.
-// repFactionRaidPhaseOpens (data.go) supplies that gate on top of
-// loot.json's own (always-empty) rep opens; an ordinary reputation
-// faction not in that map stays open at launch, exactly as a previous
-// lane already confirmed for reputation sources in general.
+// data/curated/content-phases.json supplies that gate on top of
+// loot.json's own rep opens (loadGatedLootIndex); an ordinary reputation
+// faction it does not list stays open at launch.
 func TestLoadLootIndexGatesCenarionCircleRepToLaterPhase(t *testing.T) {
 	dir := t.TempDir()
 	lootJSON := `{
@@ -690,9 +684,9 @@ func TestLoadLootIndexGatesCenarionCircleRepToLaterPhase(t *testing.T) {
 	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
 		t.Fatal(err)
 	}
-	idx, _, err := loadLootIndex(dir, nil)
+	idx, _, err := loadGatedLootIndex(publishedRepoRoot, dir, nil, io.Discard)
 	if err != nil {
-		t.Fatalf("loadLootIndex: %v", err)
+		t.Fatalf("loadGatedLootIndex: %v", err)
 	}
 	earthstrike, ok := idx[21180]
 	if !ok || len(earthstrike) != 1 || earthstrike[0].Opens != "later" {
@@ -726,9 +720,9 @@ func TestLoadLootIndexGatesBroodOfNozdormuRepToLaterPhase(t *testing.T) {
 	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
 		t.Fatal(err)
 	}
-	idx, _, err := loadLootIndex(dir, nil)
+	idx, _, err := loadGatedLootIndex(publishedRepoRoot, dir, nil, io.Discard)
 	if err != nil {
-		t.Fatalf("loadLootIndex: %v", err)
+		t.Fatalf("loadGatedLootIndex: %v", err)
 	}
 	ring, ok := idx[21210]
 	if !ok || len(ring) != 1 || ring[0].Opens != "later" {
@@ -740,8 +734,7 @@ func TestLoadLootIndexGatesBroodOfNozdormuRepToLaterPhase(t *testing.T) {
 }
 
 // A rep source loot.json itself already gives an explicit opens value
-// for must keep that computed value, not the hand-maintained
-// repFactionRaidPhaseOpens fallback - the same firstNonEmpty priority
+// for keeps it in the raw index - the same carry-through
 // TestLoadLootIndexComputedOpensWinsOverTheHandList pins for quests.
 func TestLoadLootIndexComputedRepOpensWinsOverTheHandList(t *testing.T) {
 	dir := t.TempDir()
@@ -760,11 +753,11 @@ func TestLoadLootIndexComputedRepOpensWinsOverTheHandList(t *testing.T) {
 	}
 	src, ok := idx[21180]
 	if !ok || len(src) != 1 || src[0].Opens != "raids-1" {
-		t.Fatalf("idx[21180] = %+v, want Opens \"raids-1\" (the computed value, not repFactionRaidPhaseOpens's \"later\")", src)
+		t.Fatalf("idx[21180] = %+v, want Opens \"raids-1\" (the computed value, carried through)", src)
 	}
 }
 
-// bis-ranker-integrity-7 lane, item 3: worldBossSources (data.go)
+// bis-ranker-integrity-7 lane, item 3: data/curated/content-phases.json
 // gates the six named world bosses to "raids-1" even though loot.json's
 // own "world" kind (shared with every ordinary named-mob world drop)
 // never carries an opens value at all - a fresh level-60 character does
@@ -787,9 +780,9 @@ func TestLoadLootIndexGatesWorldBossesToRaidsOnePhase(t *testing.T) {
 	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
 		t.Fatal(err)
 	}
-	idx, _, err := loadLootIndex(dir, nil)
+	idx, _, err := loadGatedLootIndex(publishedRepoRoot, dir, nil, io.Discard)
 	if err != nil {
-		t.Fatalf("loadLootIndex: %v", err)
+		t.Fatalf("loadGatedLootIndex: %v", err)
 	}
 	for id, boss := range map[int]string{
 		18543: "Lord Kazzak", 18202: "Azuregos", 20579: "Emeriss",
@@ -807,8 +800,7 @@ func TestLoadLootIndexGatesWorldBossesToRaidsOnePhase(t *testing.T) {
 }
 
 // A world boss source loot.json itself already gives an explicit opens
-// value for must keep that computed value, not the hand-maintained
-// worldBossSources fallback - the same firstNonEmpty priority
+// value for keeps it in the raw index - the same carry-through
 // TestLoadLootIndexComputedOpensWinsOverTheHandList pins for quests and
 // TestLoadLootIndexComputedRepOpensWinsOverTheHandList pins for
 // reputation.
@@ -829,7 +821,7 @@ func TestLoadLootIndexComputedWorldBossOpensWinsOverTheHandList(t *testing.T) {
 	}
 	src, ok := idx[18543]
 	if !ok || len(src) != 1 || src[0].Opens != "later" {
-		t.Fatalf("idx[18543] = %+v, want Opens \"later\" (the computed value, not worldBossSources's \"raids-1\")", src)
+		t.Fatalf("idx[18543] = %+v, want Opens \"later\" (the computed value, carried through)", src)
 	}
 }
 

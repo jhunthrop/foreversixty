@@ -14,6 +14,9 @@ public enum APIError: Error, Sendable, Equatable {
     case decoding(String)
     /// A non-2xx status without a readable envelope.
     case unexpectedStatus(Int)
+    /// 426 `update_required`: this build is below the API's minimum. The app has already
+    /// switched to its blocking update screen; `storeURL` is the gate's store page.
+    case updateRequired(storeURL: URL?)
     /// Fixture mode has no file for this route.
     case missingFixture(String)
 

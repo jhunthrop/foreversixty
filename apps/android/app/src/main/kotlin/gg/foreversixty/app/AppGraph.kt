@@ -11,8 +11,11 @@ import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
 import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.AssetFixtureSource
+import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
+import gg.foreversixty.app.network.UpdateGate
+import gg.foreversixty.app.update.InstallId
 
 /**
  * The app's object graph, built once per process and passed down explicitly. Feature lanes add
@@ -21,12 +24,23 @@ import gg.foreversixty.app.network.ForeverHttpClient
 class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConfig()) {
     val tokens: TokenStore = AndroidTokenStore.create(context)
 
+    /** Shuts when the API says this build is below its minimum; MainActivity then blocks. */
+    val updateGate = UpdateGate()
+
+    val identity = ClientIdentity(
+        version = BuildConfig.VERSION_NAME,
+        build = BuildConfig.VERSION_CODE,
+        installId = InstallId.current(context),
+    )
+
     val apiClient: ApiClient = ApiClient(
         ForeverHttpClient.create(
             config = config,
             tokens = tokens,
             engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            identity = identity,
         ),
+        updateGate,
     )
 
     val accountApi = AccountApi(apiClient)

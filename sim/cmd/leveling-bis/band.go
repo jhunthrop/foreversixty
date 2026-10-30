@@ -289,7 +289,7 @@ func bestBoss(obtainable []itemSource) (itemSource, bool) {
 const legendaryQuality = 5
 
 // legendaryGatedLater reports whether c is a legendary - this lane's
-// brief, item 2: replaces data.go's raidLockedQuestOpens hand list (which
+// brief, item 2: replaces a raidLockedQuestOpens hand list data.go once had (which
 // needed its own manual quest-id entry for Atiesh AND, separately, for
 // Thunderfury, and would need a fresh one for every future legendary this
 // build ever adds) with one rule that catches every legendary regardless
@@ -299,10 +299,8 @@ const legendaryQuality = 5
 // gated behind one (Atiesh's own Naxxramas chain, Thunderfury's Molten
 // Core Bindings), or - should this build ever add one - a vendor or
 // crafted recipe; no source kind makes a legendary launch-day-obtainable.
-// raidLockedQuestOpens keeps the Ahn'Qiraj war-effort quest ids (8756/
-// 8789/8790): those rewards are not legendaries (their own items.json
-// quality is well below 5) and are gated by the war-effort RAID EVENT,
-// a fact this rule has no way to see.
+// The Ahn'Qiraj war-effort quests (8756/8789/8790) are not legendaries
+// and are gated by data/curated/content-phases.json instead.
 func legendaryGatedLater(c candidate) bool {
 	return c.Quality == legendaryQuality
 }

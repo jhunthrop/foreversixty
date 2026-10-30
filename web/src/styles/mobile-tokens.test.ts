@@ -3,7 +3,6 @@
 // tokens.css run `node web/scripts/gen-mobile-tokens.mjs` and commit the result.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain .mjs script, no type declarations
 import { KOTLIN_OUT, SWIFT_OUT, buildModel, generate, parseColor } from '../../scripts/gen-mobile-tokens.mjs';
 
 const CHECK_IN_HINT = 'run `node web/scripts/gen-mobile-tokens.mjs` and commit the result';

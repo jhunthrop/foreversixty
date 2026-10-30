@@ -7,10 +7,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.ForeverAppScaffold
+import gg.foreversixty.app.update.PLAY_STORE_URL
+import gg.foreversixty.app.update.UpdateRequiredScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +33,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge(statusBarStyle = darkBars, navigationBarStyle = darkBars)
         setContent {
             ForeverTheme {
-                ForeverAppScaffold(accountApi = graph.accountApi)
+                val gate by graph.updateGate.state.collectAsStateWithLifecycle()
+                val answer = gate
+                if (answer == null) {
+                    ForeverAppScaffold(accountApi = graph.accountApi)
+                } else {
+                    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                        UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })
+                    }
+                }
             }
         }
         handleAppLink(intent)
@@ -33,6 +51,10 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+    }
+
+    private fun openStore(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     }
 
     /**
