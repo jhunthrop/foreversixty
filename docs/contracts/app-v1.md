@@ -1,0 +1,506 @@
+# Native apps v1: API and static-data contract (binding for the iOS and Android lanes)
+
+Plan: `docs/superpowers/plans/2026-10-30-mobile-apps-lanes.md`. This file is lane C. It lists every
+endpoint and every static file the v1 apps read or write, with the exact shapes the live handlers
+answer today. Each response has a JSON fixture under `docs/contracts/fixtures/app/`, and a Go test
+in the `api` module serves the real handler with test data and checks its answer against that
+fixture. Either app can be built against the fixtures with no network.
+
+## Conventions
+
+**Hosts.** The API is `https://api.foreversixty.gg`. Static data is on the site origin,
+`https://foreversixty.gg` (the Cloudflare CDN).
+
+**Envelope.** Every API answer, success or failure, is
+`{ "ok": bool, "data": ..., "error": ..., "request_id": "..." }`. A success has `data` and a null
+`error`; a failure has a null `data` and `error = { code, message, fields? }`. `fields` is a map
+from a field name to a short sentence, present on validation errors. `request_id` is also the
+`X-Request-Id` header; send your own `X-Request-Id` to correlate a report. Exceptions that carry no
+envelope: `204 No Content` answers, `304 Not Modified`, and the redirects of sign-in.
+
+**Fixtures.** A fixture is named for its endpoint and state, `<endpoint>[.<variant>].json`;
+failures carry `error-<code>` in the name. A fixture is a floor, not a ceiling. Every field it
+names is in the live answer with the same JSON kind; a field the live answer adds is allowed, and a
+client ignores what it does not know. **Never pin a count, an id or a value from a fixture**: a
+fixture shows one state, and a list is longer or shorter in production. A field marked *omitted
+when empty* below is absent rather than null; treat absent and null alike. Every other field is
+always present (null when unknown, `[]` when an empty list).
+
+**Auth.** Three kinds:
+- **public**: no credential.
+- **session**: the browser session cookie. A signed-in app sends its **device bearer token**
+  (`Authorization: Bearer fsd_...`) instead, and every session route accepts it (lane A1: a token
+  issued by app sign-in is an app device, which `RequireSession` admits; a companion's token is
+  still refused on session routes). A bearer request needs no CSRF header.
+- **device**: a bearer token only. A cookie is refused.
+
+A missing or dead credential answers `401 unauthorized`. A dead bearer token is `401` with
+`"that device token is not valid"`: the app discards the token and signs in again.
+
+**Caching.** Cache-Control values are set by the API, and the app's HTTP cache honours them.
+Classes: *live public* `public, max-age=30, stale-while-revalidate=300`; *public object*
+`public, max-age=60, stale-while-revalidate=600`; *private* `private, no-cache` with
+`Vary: Cookie, Authorization` (always revalidate; never a shared cache); *no-store*. Every 2xx
+`GET` carries a weak `ETag` over `data`; send it back as `If-None-Match` and a match answers
+`304` with no body. Use this on every private read: it makes a refresh free.
+
+**Limits.** 120 requests a minute per IP across the router, and 120 a minute per device token.
+`429 rate_limited` is the answer; back off, do not retry in a loop. Writes carry tighter budgets,
+stated per endpoint.
+
+**Common errors.** Any route can answer `401 unauthorized`, `429 rate_limited` and
+`500 internal` (`"could not ... just now"`; retry later). `404 not_found` is also what a route
+answers when the thing exists but is private to you.
+
+| code | status | meaning |
+|---|---|---|
+| `unauthorized` | 401 | no, wrong or dead credential (fixture `error-unauthorized`) |
+| `forbidden` | 403 | signed in but not allowed (not a member, not an officer) |
+| `not_found` | 404 | no such thing, or private to you |
+| `invalid` | 400 or 422 | bad input; `fields` names each (400 body/query, 422 field rules) |
+| `conflict` | 409 | the state does not allow this (a raid's status) |
+| `premium_required` | 402 | a Premium feature on a free account |
+| `rate_limited` | 429 | too many requests |
+| `internal` | 500 | server fault |
+
+**Timestamps** are RFC 3339 with a zone, normally UTC (`Z`). Durations are `..._ms` or `..._sec`.
+Unknown numbers are `null`, never `0`.
+
+**Character keys.** A character is `region/ruleset/slug`, for example `us/pvp/obnoxious-yell`.
+`region` is `us|eu|kr|tw|cn`, `ruleset` is `normal|pvp|rp|hardcore`, and the slug is the name
+lowercased with spaces turned into hyphens. The same three segments are the path of every
+character route.
+
+## Account
+
+### GET /v1/me
+Auth session. Caching private. Fixtures `me`, `me.premium`, `me.empty`.
+
+The home answer: who you are, your characters, your guilds and what you may use. Errors: 401.
+
+`data`:
+- `user`: `{ id, battletag (nullable), email (nullable), role, anonymize }`.
+- `characters[]`: `{ key, region, ruleset, name, source }` always; omitted when unknown: `class`
+  (lowercase slug), `realm`, `level`, `faction` (`alliance|horde`), `race`, `gender`, `item_level`,
+  `avatar_url`, `render_url` (Blizzard's render CDN), `spec` (primary tree name), `build`, `guild`.
+  `build` is `{ source ("addon"|"bnet"), captured_at, median_sync_gap_sec (nullable), sync_error
+  (nullable) }` plus, each omitted when not decoded: `gear` (slot to item id), `talents`
+  (`{ trees[], points[] }`, one entry per tree), `level`, `data_build` (the client build the export
+  was made on). `guild` is `{ id, name, rank, verified }` plus omitted `rank_index` and
+  `attendance` (`{ present, nights }`, only once the guild counts raids).
+- `guilds[]`: `{ id, region, ruleset, name, verified, verified_count, can[] }` plus omitted `rank`,
+  `consent`, `plan`, `ruleset_label`, `slug`; and always-present nullable `crest_url`, `faction`,
+  `roster_count`, `claim`, `verify`, `covered`, `subscribe`. `can[]` lists what you may do there
+  (`approve`, `remove`, `settings`, `award`, `billing`, `release`); draw a control exactly when its
+  word is present, never from the rank.
+- `entitlements`: booleans `server_sims`, `retention`, `multi_compare`, `history`, `notifications`,
+  `officer_views`, `roster_check`, `log_coach`, `supporter_mark`, `personal_portal`, and `billing`
+  (null without a plan, else `{ plan, source ("stripe"|"grant"), status, current_period_end
+  (nullable), cancel_at_period_end, amount_cents, interval, founder }`). The apps carry the web's
+  exact rules: a feature is available exactly when its flag is true.
+- `finished_sims[]`: your unseen finished server runs, newest first, at most three, only with
+  `server_sims`: `{ sim_id, spec, title, dps, finished_at }`.
+- `discord_link_available` (bool), `discord_link` (`{ display_name }` or null),
+  `discord_link_suggested` (string or null).
+- Omitted when empty: `main_character_key`, `bnet_imported_at`, `server_sims`
+  (`{ runs_this_month }`), `notifications` (`{ connect, discord }`), `seat`, `seat_offer`,
+  `ended_seat`.
+
+A new account with no characters answers `characters: []`, `guilds: []` (fixture `me.empty`).
+
+### PATCH /v1/me
+Auth session. Request JSON, at least one of `anonymize` (bool) and `main_character_key` (one of your
+own character keys). Answer: the same body as `GET /v1/me` (fixtures `me.patch`). Errors: 400
+`invalid` for a broken body or nothing to change (`me.patch.error-invalid`), or a main key that is
+not yours (`me.patch.error-not-your-character`).
+
+## Characters
+
+### GET /v1/characters/{region}/{ruleset}/{name}
+The character card. Auth public. Caching live public. Fixtures `character.card`,
+`character.card.empty`. Errors: 404 `not_found` for an unknown region, ruleset or character, and
+for a character whose owner made their account anonymous (`character.card.error-not-found`).
+
+`data`: `character` (`{ key, region, ruleset, name, guild, level, race, realm }`, the last four
+nullable, plus omitted `class`, `avatar_url`, `render_url`; `guild` is `{ name, rank }`), `best[]`
+and `history[]` (fights; `percentile`, `spec` omitted when unknown; `history[]` adds `kill`,
+`duration_ms`, `talent_split`, `execution_score` nullable), `builds_seen[]`, `score_history[]`
+(`{ date, score, tier }`, oldest first), `gear[]` (the gear panel, below), `gear_gap_total`,
+`gear_spec`, `gear_spec_source` (`fight|talents|default`), `supporter`, and the Forever Score:
+`score`, `tier`, `as_of`, `components` (`{ gear, experience, parses, attendance, discipline }`),
+`experience` (`{ dungeons, raid_kills, alts }`). **Every score field is null for a character
+with no rated fight; render "no logs yet", never 0** (fixture `character.card.empty`).
+
+A gear row is `{ slot, worn, pick, gap }`: `worn` is `{ id, name, item_level }` or null for an
+empty slot (`name` and `item_level` are null when the data build does not know the item); `pick`
+is the band's recommendation `{ id, name, source, chance }` or null (`chance`, the drop fraction,
+is null for a source with no rate); `gap` is the score points the pick adds, or null. `gear` is
+`[]` for a character with no addon export. The rules (picks, gaps, scores) live in the API: the
+apps never re-derive them.
+
+### GET /v1/characters/search
+Typeahead. Auth public. Caching `public, max-age=60, stale-while-revalidate=300`. Query `q` (2 to
+24 characters; shorter answers no rows), optional `region`, `ruleset`, `limit` (1 to 10, default
+8). Answer `{ rows[] }`, each `{ key, region, ruleset, name, class (nullable), level (nullable),
+spec (always null) }`. Fixtures `character.search`, `character.search.empty`. Errors: 400
+`bad_request` for an unknown region, ruleset or limit (`character.search.error-bad-request`).
+
+### GET /v1/characters/{region}/{ruleset}/{name}/sim-input
+The character model a sim starts from. Auth public; caching `private,
+no-cache` for a signed-in caller, `public, max-age=60, stale-while-revalidate=600` otherwise.
+Answer `{ spec, spec_source, gear, talents, buffs[], captured_at, source }`. `source` is `addon`
+or `blizzard` (an export) or `fight`. `gear` is **a JSON string** (the FS1 export) for an export
+and an object `{ trinkets: [item ids] }` for `fight`; branch on `source`, not on the shape.
+`talents` is the last fight's split (`"31/20/0"`) or `""`. `spec` and `spec_source`
+(`fight|talents|default`) are `""` when unknown. Fixtures `character.sim-input.addon`,
+`.fight`. Errors: 404 `not_found` (`character.sim-input.error-not-found`).
+
+## Sims
+
+A sim row's `state` is `queued|running|done|error`. A server run is Premium (`entitlements.server_sims`).
+
+### GET /v1/sims?mine=1
+Your sims. Auth session. Caching private. `mine=1` is required; optional `page` (from 1), `kind`
+(`run|gear|talents|drops|weights`), `lane` (`server|browser`). Answer `{ rows[], total, page,
+per_page }` (100 a page, newest first). A row is `{ sim_id, spec, kind, dps, headline, state,
+engine_version, created_at, title, lane, seen }` plus omitted `finished_at`, `failure_reason`
+(a plain sentence on `error`), `estimate_seconds` (queued and running only). `headline` is `""`
+until done. Fixtures `sims.list`, `sims.list.empty`. Errors: 400 `invalid` (`sims.list.error-invalid`).
+
+### GET /v1/sims/{id}
+One saved result. Auth public (the id is the secret). Caching public object. The body is the
+engine's `SimResult` (`sim/api` `SimResult`: `engine_version`, `request`, `lane`, `dps`
+`{ mean, stddev, error, min, max }`, `iterations_run`, `duration_ms`, `summary`, optional `error`,
+`aborted`, `combos`, `equipped`, `stages`, `weights`, `sample`, `healing`, `tank`) plus `sim_id`
+and an omitted `title`. The fixture is the real engine fixture
+(`web/src/fixtures/sim/result.json`); an app reads `dps`, `lane`, `request.spec`, `title`, and for
+bulk runs `combos[]`. Fixtures `sims.result`. Errors: 404 (`sims.result.error-not-found`).
+
+### GET /v1/sims/{id}/progress
+Follow a server run, poll every 2 seconds. Auth public. Caching **no-store**. Answer
+`{ state, iterations_done, dps (omitted until running or done), stage, combos_done, combos_total }`;
+the last three are 0 for a plain run. Stop polling at `done` or `error`, then read the sim (or its
+list row for `failure_reason`). Fixtures `sims.progress`, `sims.progress.queued`. Errors: 404.
+
+### POST /v1/sims/{id}/rerun
+Start a failed server run again as a new run. Auth session, Premium. No body. Budget 6 starts a
+minute per account (shared with `POST /v1/sims/run`). Answer **202** `{ sim_id }` (the new run);
+the failed row is left as it is. Fixtures `sims.rerun`. Errors: 402 `premium_required`
+(`sims.rerun.error-premium-required`), 404 `not_found` for a row that is not yours or not failed
+(`sims.rerun.error-not-found`), 400 `too_large` / `cap_exceeded` when the stored request no longer
+fits the server lane, 502 `upstream` when the run was recorded but could not be started (list it
+and rerun again). The route is mounted only where the server lane is available; elsewhere it answers
+404 `not_found` "no such route".
+
+### POST /v1/sims/{id}/seen
+Mark a finished run read (clears it from `finished_sims`). Auth session. Answer **204**, no body.
+404 when the run is not yours or not done.
+
+## Guilds
+
+A guild id is a number (`guilds[].id` of `/v1/me`). A raid id is a number. A `raids[]` row's `id` is a report id (a string), not a raid id; its `raid_id` is the raid. "Member" means a
+verified member; officers are verified `officer` or `leader` rank.
+
+### GET /v1/guilds/{id}/home
+Auth session, verified members only. Caching private. Fixture `guild.home`. Errors: 403 `forbidden`
+for a non-member or an unverified one (`guild.home.error-forbidden`), 404.
+
+`data`: `guild` (`{ id, region, ruleset, name, faction, crest_url }`, the last two nullable),
+`viewer` (`{ role, verified, officer_tools, raid_guild_tools, verify: { has_approver } }` plus
+omitted `character_key`), `claim` (`{ state, frozen }` plus omitted `since`, `claimed_by_name`),
+`summary`, `standing` (omitted when it cannot be derived), `reports[]` (the last 7 days;
+`next_cursor` omitted), `roster[]` and `pending[]` (roster rows; `pending` is `[]` for a
+non-officer), `members[]` and `counts` (the roster as a person counts it, with each member's
+`state`: `approved|waiting|no_account|not_seen`), `addon_snapshot` (nullable), `next_raid`
+(omitted when none; the band's raid line `{ id, zone, zone_name, title, starts_at, status, size,
+guild_timezone, counts, own }`), `attendance_source` (`raids|reports`).
+
+A roster row is `{ character_key, region, ruleset, name, rank, verified, consent, logged_at,
+logged_recently, attendance { present, nights }, account_key, supporter, last_report_at, may_remove,
+may_approve, addon }` plus omitted `class`, `spec`, `role`, `item_level` (withheld without gear
+consent), `attendance_30`, `best_parse`, `rating`, `professions`. Draw Remove and Approve exactly
+when `may_remove` and `may_approve`.
+
+### GET /v1/guilds/{id}/raids
+Auth none required (the actor is read if present). Caching private. Query `limit` (default 20,
+max 50), `cursor` (the `next_cursor` of a previous page). Answer `{ rows[], next_cursor (omitted at
+the end) }`: `rows[]` are logged raid nights (`{ id (a report id), title, zone, created_at,
+duration_ms, fight_count, kill_count, wipe_count, raiders, deaths, fights[], present[], raid_id
+(nullable) }` plus omitted `top_parse`). **A verified member also gets `planned[]` (the open raids,
+raid views), `zones[]`, `guild_timezone` and `discord`; anyone else gets none of those four keys**
+(fixtures `guild.raids`, `guild.raids.public`). Errors: 400 `invalid` for a bad cursor, 404.
+
+### GET /v1/guilds/{id}/raids/{raid}
+One raid. Auth session, verified members only: anyone else gets 404, never 403. Caching private.
+Fixtures `guild.raid`, `guild.raid.done`. Errors: 404 (`guild.raid.error-not-found`).
+
+The raid view: `{ id, zone, zone_name, title, starts_at, duration_minutes, status, size,
+guild_timezone, notes, notes_html, counts, signups[], not_signed[], viewer, discord, discord_post,
+pre_done_status, match, night, attendance, report }`.
+- `status`: `planned|locked|done|cancelled`. A **locked** raid takes no sign-up from a member;
+  an officer may still write.
+- `counts`: `{ in, late, bench, out, tanks, healers, dps }`; the role counts count `in` only.
+- `signups[]`: `{ character_key, name, class, spec, role, state, note, own }`, `state` is
+  `in|late|bench|out`, `role` is `tank|healer|dps`.
+- `not_signed[]`: verified roster characters with no sign-up yet.
+- `viewer.characters[]`: your own characters in the guild: `{ character_key, name, class, spec,
+  verified, state (null until signed), role, raid_spec (null until picked) }`. An unverified
+  character is listed but cannot sign up. When `raid_spec` is null, ask "Which spec tonight?" and
+  send the answer as `spec`.
+- `notes_html` is sanitised HTML of `notes`; render the HTML.
+- After the night: `match`, `night`, `attendance[]` (each row has an `outcome`: `present|late|no_show|...`) and `report` are filled (null before a log is
+  matched); `attendance` carries every row for an officer and only your own characters for a
+  member (fixture `guild.raid.done`).
+
+### PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}
+Answer for one character: the app's In / Late / Bench / Out buttons. Auth session (a device token
+too, once the apps' sign-up is switched on, `APP_NOTIFICATIONS_ENABLED`, lane A2). A member
+answers for their own verified characters; an officer of a guild with the plan answers for any
+verified roster character, and may write to a locked raid. Budget 30 writes a minute per account.
+
+Request `{ "state": "in|late|bench|out", "role": "" | "tank|healer|dps", "note": "", "spec": "" }`.
+`role` empty takes the spec's default. `note` is at most 140 characters. `spec` is optional: a
+`specs.json` key such as `warrior-fury`, saved as the character's raid spec before the sign-up; the
+sign-up then takes that spec's role. Answer **200** `{ raid, moved }`: the raid view as it now
+stands, and `moved`, the name of **your other character that the server moved to bench** (a player
+brings one character; signing a second in benches the first) or null. Tell the player when `moved`
+is set. A sign-up refreshes the guild's Discord raid post.
+
+Fixtures `guild.signup`, `guild.signup.moved`. Errors: 422 `invalid` with `fields`
+(`state`, `role`, `note`, `spec`; `guild.signup.error-invalid`); 403 `forbidden` for someone else's
+character (`...error-forbidden`, the message is the sentence to show), an unverified one, or a
+character not verified in the guild; 403 `guild_plan_required` for an officer signing others
+without the plan; 404 `not_found` for a raid you cannot see or a character not in the guild
+(`...error-character-not-found`); 409 `raid_locked` (`...error-raid-locked`), `raid_cancelled`,
+`claim_contested`; 429 `rate_limited`.
+
+### PATCH /v1/guilds/{id}/raids/{raid}
+Officers edit a raid. Auth session, verified officer or leader of a guild with the plan, claim not
+frozen. Budget 20 officer raid writes a minute per account (shared with lock, unlock, cancel and
+create). Request is the whole form: `{ zone ("raid:onyxias-lair", from the raids list's `zones[]`),
+title (may be ""), starts_at (RFC 3339, in the future, within a year), duration_minutes (60 to 240
+in steps of 30), notes (markdown, at most 2000), timezone (an IANA name), post_to_discord (bool or
+omitted), remind_day_before (bool or omitted) }`. `repeat_weeks` is create-only. Answer 200 the
+raid view. Fixtures `guild.raid.patch`. Errors: 422 `invalid` with `fields`
+(`guild.raid.patch.error-invalid`); 403 `forbidden` (`guild.raid.patch.error-forbidden`, also
+`guild_plan_required`, `raid_guild_required`); 404; 409 `conflict` for a cancelled or done raid,
+`claim_contested`.
+
+### POST /v1/guilds/{id}/raids/{raid}/lock | unlock | cancel
+Officer status moves, same auth and budget as PATCH. `cancel` takes an optional body
+`{ post_to_discord }`. Answer 200 the raid view (`guild.raid.patch`). Errors as PATCH, plus 409
+`conflict` when the status does not allow the move (`guild.raid.error-conflict`): lock from
+`planned`, unlock from `locked`, cancel from `planned` or `locked`.
+
+### GET /v1/guilds/{id}/loot
+Auth session, verified members only. Caching private. Fixture `guild.loot`. Answer `{ encounters[]
+(the boss picker: `{ encounter_id, name, zone, killed }`), selected, items[] }`. An item is
+`{ item_id, name, icon, quality (0 to 5), slot, copies, awarded_to, candidates[] }`; `awarded_to` is
+`{ award_id, character_key, name, at, by_name }` or null; a candidate is `{ character_key, name,
+class, spec, gain_dps (null when not sim-checked), not_sim_checked, ilvl_delta (nullable),
+attendance, already_equivalent, replaces, items_won }`, ranked best first. `icon` is an icon stem
+(see Icons). Errors: 403 `forbidden` (`guild.home.error-forbidden`), 404.
+
+The roster is the `roster[]` of the home read; there is no separate roster endpoint in v1.
+
+## Reports
+
+### GET /v1/reports?mine=1
+Your reports, newest first. Auth session. Caching private. `mine=1` required, optional `page`.
+Answer `{ rows[], total, page, per_page }` (100 a page). A row is `{ id, title, zone, status,
+visibility, created_at, fight_count, kill_count, boss_count, logging_character, last_upload_at,
+heartbeat_at }`; `status` is `live|processing|complete|failed`, `visibility`
+`public|unlisted|guild|private`, `logging_character` is `{ key, name }` or null, `last_upload_at`
+and `heartbeat_at` are nullable (a live report with a recent heartbeat is "Live"). `title` may be
+`""`; show the zone. Fixtures `reports.list`, `reports.list.empty`. Errors: 400 `invalid`
+(`reports.list.error-invalid`).
+
+### GET /v1/reports/{id}
+One report summary. Auth public for a `public` or `unlisted` report (caching public object); a
+`guild`, `private` or flagged report needs the owner or a verified guild member and is cached
+private; **anything you may not read is 404, never 403**. Answer `{ id, title, visibility, owner
+({ id, battletag }, or null), guild (omitted when none), zone, status, engine_version, fights[],
+players[], created_at, last_upload_at, heartbeat_at, data_base_url, logging_character }` plus
+omitted `flagged`. A fight is `{ index, kind ("encounter"|"trash"), name, kill, in_progress, start,
+end, duration_ms, players[], deaths, npc_kills, verified }` plus omitted `encounter_id`,
+`difficulty`, `size`, `zone`, `boss_health_pct`. The per-fight tables are files under
+`data_base_url`, which v1 does not read: the app shows the summary and opens the full report on the
+web. Fixtures `reports.get`. Errors: 404 (`reports.get.error-not-found`).
+
+## Builds
+
+### GET /v1/builds?mine=1
+Your saved planner builds, newest first. Auth session. Caching private. `mine=1` required, optional
+`page`. Answer `{ rows[], total, page, per_page }`; a row is a build (below). Fixtures
+`builds.list`, `builds.list.empty`. Errors: 400 `invalid` (`builds.list.error-invalid`).
+
+### GET /v1/builds/{id}
+One build. Auth public. Caching `public, max-age=86400`. A build is `{ id, class_id, race_id,
+tree_version, point_order[], gear, created_at, views }` plus omitted `title`. `point_order` is the
+talent ids in the order the points were spent; `gear` maps a slot (`head`, `finger1`, `trinket2`,
+`main_hand`, ...) to an item id (an open map); `tree_version` names the client build whose static
+data it was made against (`/data/<tree_version>/talents/<class>.json`): **read the trees from that
+build, not the active one**. Fixtures `builds.get`. Errors: 404 (`builds.get.error-not-found`).
+
+### POST /v1/builds
+Save a build. Auth public (a signed-in caller owns it). Budget 20 saves an hour per IP. Request
+`{ class_id, race_id, tree_version, point_order[], gear, title }` (at most 8 KB; title at most 60
+characters). Answer **201** (new) or **200** (the same build again) `{ id, url }`; the id is a hash of
+the content. Fixtures `builds.save`. Errors: 400 `invalid` with `fields` keyed by `point_order[n]`
+and the like (`builds.save.error-invalid`).
+
+## Static files
+
+Served from `https://foreversixty.gg`. A build directory `/data/<build>/` is immutable per build in
+practice (it can be regenerated for a corrected pipeline). The cache rule is
+`public, max-age=3600, stale-while-revalidate=86400`; icons and tree art are
+`public, max-age=31536000, immutable`. No envelope. Fixtures `cdn.*`; the tests hold them to the
+data generator's real output for the active build.
+
+**Finding the build.** Two ways: the active build is named by `/data/active-build.json`, and a
+character's own export names the build it was made on (`/v1/me` `characters[].build.data_build`).
+For the lists and the BiS, read the active build. Build ids look like `1.60.1.70658`.
+
+> **Open item (publication).** `active-build.json` and `dates.json` are checked into
+> `web/src/data/` today but not copied into `public/data/` by `web/scripts/sync-data.mjs`, so they
+> are not on the CDN yet. Until a follow-up publishes them at `/data/active-build.json` and
+> `/data/dates.json`, an app that needs them has no fetchable source. Everything else below is
+> published.
+
+### /data/active-build.json
+`{ "build": "1.60.1.70658" }`. Fixture `cdn.active-build`. Fetch on launch; revalidate (an hour).
+
+### /data/{build}/bis/{spec}.json
+The BiS lists for a spec (`warrior-fury`; one file per spec). Fixture `cdn.bis.warrior-fury`.
+`{ spec, build, engine_version, generated_at, bands[], presets }`. A **band** is one level band
+(`20|30|40|50|60`) for one `faction` (`alliance|horde`) under one `preset` (`bare`, and `raid` at
+60): `{ spec, band, preset, faction, race, talents, talent_points, weights[], slots[], set_dps,
+score_unit, reference_dps_per_point, ... }`. Pick a band by (band, faction, preset). Read:
+- `slots[]` (the list): `{ slot, verified }` always; when the slot has a pick: `item_id`,
+  `item_name`, `source` (the game's words), `source_kind` (`vendor|rep|quest|crafted|dungeon|raid|...`),
+  `alternatives[]` (runners-up: `{ item_id, item_name, source, source_kind, dps_delta }`, `dps_delta`
+  is negative against the pick), `score`, `sim_dps`, `chance` (drop fraction), `effect_unmodelled`
+  (true when a proc the sim leaves out makes the item good: say so), `swap_note`, `ties`,
+  `set_bonus`, `faction_note`.
+- `empty_reason` on a slot with no pick (`two_hand_equipped` for an off hand under a two-hander).
+- `weights[]`: `{ stat, weight, error, scale_factor, dps_per_point, weight_per_percent, insignificant }`.
+  **Show the scale factor** (normalised so the top stat is 1.00); haste is per 1%.
+- `presets.raid.label` and its buff lists describe the raid preset.
+A band's `slots[].item_id`s resolve in `items/<class>.json`. Do not quote numbers in prose: render
+them from this file. Item ids are positive; `item_id <= 0` or absent means no recommendation.
+
+### /data/{build}/items/{class}.json
+`{ build, class_slug, items[] }`, one file per class (`warrior`, `hunter`, ...). An item is `{ id,
+name, icon, slot, quality, required_level, item_level, armor, stats, damage_min, damage_max, speed,
+dps, two_hand, effect_text, stats_source, set_id, unique, client_unconfirmed, percent_stats,
+icon_source, weapon_type, superseded_by, required_level_source }`. `quality` is 0 to 5 (poor to
+legendary; draw the quality colours). `stats` and `percent_stats` are open maps of a stat to a
+number; `set_id` is nullable, with sets in `sets.json`. `slot` is the item slot
+(`head ... ranged`, `main_hand`, `off_hand`, `finger`, `trinket`). `client_unconfirmed` marks stats
+the client has not confirmed. The tooltip is built from these fields. Fixture `cdn.items.warrior`.
+
+### /data/{build}/talents/{class}.json
+`{ build, class_id, class_slug, trees[] }`; a tree is `{ id, name, position, background, icon,
+talents[] }`, a talent `{ id, name, icon, max_rank, tier, column, prereq_talent_id (nullable),
+prereq_rank (nullable), ranks[], spell_id }`, a rank `{ spell_id, description }`. `tier` and
+`column` place the talent on the grid; `background` names `/data/<build>/trees/<background>.webp`.
+`id` is the id a build's `point_order` and `GET /v1/builds` use (the client's trait node id);
+`spell_id` is the spell. Fixture `cdn.talents.warrior`.
+
+### /data/{build}/classes.json
+`[{ id, name, slug, color, forever_changes[] }]`, one per class, `color` a hex. `forever_changes[]`
+is `{ text, sources[] }`. Use the id to read `class_id` of a build. Fixture `cdn.classes`.
+
+### /data/{build}/icons/{icon}.webp
+The game icon for any item, talent or spell: `icon` is the stem a JSON file carries
+(`inv_helmet_09` is `/data/<build>/icons/inv_helmet_09.webp`). A faithful HD, scalable reproduction;
+never reinterpret or re-badge. A build that does not carry an icon answers 404: fall back to the
+neutral placeholder. Tree art is `/data/<build>/trees/<background>.webp`.
+
+### /data/dates.json
+The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a display date, "Nov 4"),
+`value` (the label), omitted `note`, `iso` (YYYY-MM-DD), `endIso`, `time`, `running` (the sentence
+while the date is in progress), `role`, `highlight`. Sort and compare by `iso`/`endIso`, never by
+`key`. Fixture `cdn.dates`.
+
+## Planned endpoints (written from lanes A1 and A2; reconcile at merge)
+
+These shapes are read from the lane branches (`wt/mobile-auth`, `wt/mobile-push`) as they stand;
+they ship dark (unmounted until `APP_SIGN_IN` and `APP_NOTIFICATIONS_ENABLED` are set) and are
+reconciled with the lanes at merge. There is no handler on main yet, so these fixtures are held
+only to the envelope rule; the lanes' own tests own their shapes.
+
+### Sign in (A1)
+The app opens the system browser (ASWebAuthenticationSession, Custom Tabs) and never sees the
+Battle.net credentials.
+
+1. The app makes a random `code_verifier` (43 to 128 characters of `A-Za-z0-9._~-`) and a random
+   `state` (16 to 128 of the same). It opens
+   `GET https://api.foreversixty.gg/v1/auth/app/start?platform=ios|android&code_challenge=<base64url
+   SHA-256 of the verifier, 43 characters>&code_challenge_method=S256&state=<state>` (public; 60
+   starts an hour per IP). Errors: 400 `invalid` with `fields` (`app.signin.start.error-invalid`).
+2. Battle.net signs the player in; the API redirects to the universal link
+   `https://foreversixty.gg/app/auth?code=<one-time code>&state=<state>`. **Check the returned
+   `state` equals the one you sent.**
+3. `POST /v1/auth/app/exchange` (public; 60 an hour per IP), body `{ code, code_verifier,
+   device_name }` (`device_name` optional, otherwise "iOS" or "Android"). Answer **201** `{ token,
+   device: { id, name, platform }, me }`. `token` is the device bearer token, shown once: keep it in
+   the Keychain / encrypted storage. `me` is the body of `GET /v1/me`, so the first screen needs no
+   second call. Fixtures `app.signin.exchange`. Errors: 400 `invalid` (`...error-invalid`), 400
+   `invalid_grant` for a spent, expired or mismatched code (`...error-invalid-grant`; start again).
+4. From then on send `Authorization: Bearer <token>` on every call.
+
+### POST /v1/auth/app/logout
+Auth device. Revokes this device's token. Answer 200 `{ signed_out: true }` (`app.logout`). The
+account page lists app devices with Revoke; revoking makes the token answer 401.
+
+### GET /v1/me/notifications and PATCH /v1/me/notifications
+Auth session or device. Caching **no-store**. Mounted when notifications are on. The player's
+choices per event and channel. Answer `{ time_zone, quiet_hours { enabled, start, end }, events[]
+}`; an event is `{ kind, who, officer, quiet_exempt, channels { push, discord } }`. `kind` is the
+catalogue's name (`raid.posted`, `raid.starting`, `sim.finished`, `report.ready`, ...; the list is
+the plan's lifecycle table and grows), `who` the audience sentence key, `officer` true for an
+event only officers receive (show it only to officers), `quiet_exempt` true for an event sent
+inside quiet hours. Show copy from your own strings keyed by `kind`; render an unknown `kind` by
+hiding it. Times are `HH:MM` in `time_zone`.
+
+PATCH body, every key optional but at least one: `{ time_zone (IANA), quiet_hours { enabled, start,
+end }, events: [{ kind, channel ("push"|"discord"), enabled }] }`. Answer 200 the same body.
+Fixture `app.notifications`. Errors: 422 `invalid` with `fields` (`time_zone`, `quiet_hours`,
+`events[i]`; `app.notifications.patch.error-invalid`), including "nothing to change".
+
+### POST /v1/me/push-tokens and DELETE /v1/me/push-tokens/{token}
+Auth device only. Register after the permission prompt and again whenever the OS rotates the token.
+Body `{ platform ("ios"|"android"), token, app_version }`: an iOS token is 64 to 200 hex
+characters, an Android token is the FCM registration token; `app_version` is optional, at most 32
+characters. Answer **201** `{ platform, app_version }`; registering an existing token moves it to
+this device. `DELETE` is **204**; send it on sign-out and when the player turns notifications off.
+Fixtures `app.push-tokens.register`. Errors: 422 `invalid` with `fields` (`platform`, `token`,
+`app_version`; `app.push-tokens.register.error-invalid`).
+
+### GET /v1/app/config
+Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
+`{ web_checkout_regions[], min_app_version { ios, android } }`. `web_checkout_regions` are the
+storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
+that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
+StoreKit or Play Billing and show the button exactly when it is in the list, and show no purchase
+prompt or call to action anywhere else. `min_app_version` is the lowest version the API supports
+for each platform (dotted, compared numerically): below it, block with an "Update the app" screen.
+Fixture `app.config`. No handler is written yet; the shape is the plan's.
+
+## Not in v1
+
+No in-app purchase (decision P). Not read: rankings, tier lists, guides (static site pages), the
+report per-fight files and coach, `POST /v1/sims/run` (the app reruns, it does not compose a sim),
+loot awards, and the roster approve and remove routes (the officer roster actions stay on the web).
+If a later lane needs one, it adds its section here and its fixtures in the same commit.
+
+## How the tests pin this
+
+`api/internal/contract` compares a response with a fixture (fields, kinds, nullability, never
+values or counts; nulls match any kind; `Optional` marks an omitted-when-empty field; `Open` marks
+a map whose keys are data). Each `app_contract_test.go` in `auth`, `builds`, `guilds`, `rankings`,
+`reports` and `sims` serves the real handler with test data and asserts its answer, and its
+`Cache-Control`, against the fixtures above. `cdn_test.go` holds the static fixtures to the real
+generator output for the active build, and loads the BiS fixture through the API's own reader.
+Run them with `TEST_DATABASE_URL` set and `go test -p 1`, since the packages share one database.

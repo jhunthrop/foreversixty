@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "that is not one of your characters",
+    "fields": {
+      "main_character_key": "one of your characters"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

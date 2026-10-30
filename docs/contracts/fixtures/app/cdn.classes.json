@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Warrior",
+    "slug": "warrior",
+    "color": "#c69b6d",
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "forbidden",
+    "message": "you must be a verified officer of this guild to plan raids"
+  },
+  "request_id": "9f2c41d07ab3e655"
+}
