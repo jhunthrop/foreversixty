@@ -1,0 +1,238 @@
+[
+  {
+    "id": 184,
+    "name": "Shadowcraft Armor",
+    "item_ids": [
+      16707,
+      16708,
+      16709,
+      16710,
+      16711,
+      16712,
+      16713,
+      16721
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+8 All Resistances."
+      },
+      {
+        "pieces": 3,
+        "description": "+30 Attack Power."
+      },
+      {
+        "pieces": 4,
+        "description": "When struck in combat, has a 5% chance to remove a Snare effect from yourself. Can only occur once every 60 sec."
+      },
+      {
+        "pieces": 5,
+        "description": "Chance on melee attack to restore 20 Energy."
+      },
+      {
+        "pieces": 6,
+        "description": "Restores 15 health per 5 sec."
+      }
+    ]
+  },
+  {
+    "id": 515,
+    "name": "Beastmaster Armor",
+    "item_ids": [
+      22010,
+      22011,
+      22013,
+      22015,
+      22016,
+      22017,
+      22060,
+      22061
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+8 All Resistances."
+      },
+      {
+        "pieces": 4,
+        "description": "Your normal ranged attacks have a 4% chance of restoring 200 mana."
+      },
+      {
+        "pieces": 6,
+        "description": "+40 Attack Power."
+      },
+      {
+        "pieces": 8,
+        "description": "+200 Armor."
+      }
+    ]
+  },
+  {
+    "id": 1669,
+    "name": "Beastmaster Armor",
+    "item_ids": [
+      226897,
+      226898,
+      226899,
+      226900,
+      226901,
+      226902,
+      226903,
+      226904
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+8 All Resistances."
+      },
+      {
+        "pieces": 3,
+        "description": "Restores 8 mana per 5 sec."
+      },
+      {
+        "pieces": 4,
+        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+      },
+      {
+        "pieces": 5,
+        "description": "When struck in combat, has a 8% chance to remove a Root effect from yourself. Can only occur once every 60 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "+40 Attack Power."
+      }
+    ]
+  },
+  {
+    "id": 1725,
+    "name": "Warlord's Pursuit",
+    "item_ids": [
+      231570,
+      231571,
+      231572,
+      231573,
+      231574,
+      231575
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+20 Stamina."
+      },
+      {
+        "pieces": 3,
+        "description": "Reduces the cooldown of your Concussive Shot by 1 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "+20 Agility."
+      }
+    ]
+  },
+  {
+    "id": 1726,
+    "name": "Warlord's Prowess",
+    "item_ids": [
+      231564,
+      231565,
+      231566,
+      231567,
+      231568,
+      231569
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+20 Stamina."
+      },
+      {
+        "pieces": 3,
+        "description": "Increases the duration of your Wing Clip by 2 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "+40 Attack Power."
+      }
+    ]
+  },
+  {
+    "id": 1738,
+    "name": "Field Marshal's Prowess",
+    "item_ids": [
+      231557,
+      231558,
+      231560,
+      231561,
+      231562,
+      231563
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+20 Stamina."
+      },
+      {
+        "pieces": 3,
+        "description": "Increases the duration of your Wing Clip by 2 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "+40 Attack Power."
+      }
+    ]
+  },
+  {
+    "id": 1739,
+    "name": "Field Marshal's Pursuit",
+    "item_ids": [
+      231576,
+      231577,
+      231578,
+      231579,
+      231580,
+      231581
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "+20 Stamina."
+      },
+      {
+        "pieces": 3,
+        "description": "Reduces the cooldown of your Concussive Shot by 1 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "+20 Agility."
+      }
+    ]
+  },
+  {
+    "id": 1937,
+    "name": "Dawnstalker Armor",
+    "item_ids": [
+      239537,
+      239538,
+      239539,
+      239540,
+      239541,
+      239542,
+      239543,
+      239544
+    ],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "Your Shots deal 20% increased damage to targets afflicted with your Serpent Sting."
+      },
+      {
+        "pieces": 4,
+        "description": "Your ranged critical strikes increase your Attack Power by 20% for 10 sec."
+      },
+      {
+        "pieces": 6,
+        "description": "Your Multi-Shot hits 2 additional targets, and your Kill Shot and Chimera Shot hits increase the damage done by your next Multi-Shot cast within 12 sec by 75%, stacking up to 4 times."
+      }
+    ]
+  }
+]

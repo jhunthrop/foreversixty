@@ -262,6 +262,13 @@ public extension StaticResource where Response == ItemsFile {
     }
 }
 
+public extension StaticResource where Response == [ItemSet] {
+    /// /data/{build}/sets.json: Every item set of a build, for the tooltip's set lines
+    static func getSets(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/sets.json")
+    }
+}
+
 public extension StaticResource where Response == TalentsFile {
     /// /data/{build}/talents/{class}.json: A class's talent trees
     static func getTalents(build: String, className: String) -> StaticResource {
@@ -311,6 +318,7 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/data/{build}/classes.json", fixture: "cdn.classes", status: 200),
         FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}", status: 200),
+        FixtureRoute(.get, "/data/{build}/sets.json", fixture: "cdn.sets", status: 200),
         FixtureRoute(.get, "/data/{build}/talents/{class}.json", fixture: "cdn.talents.{class}", status: 200),
     ]
 }
