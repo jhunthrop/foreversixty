@@ -11,6 +11,7 @@
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose } from './support/select';
 
 test.use({ viewport: { width: 360, height: 800 } });
 
@@ -74,7 +75,7 @@ test('a damage row is a card with every field labelled', async ({ page }) => {
 // scrollWidth, so the sweep would pass with the table flush to the screen edge.
 test('the compare table stays inside the page gutter once a second fight is picked', async ({ page }) => {
   await page.goto(`${REPORT}&mode=compare`);
-  await page.getByTestId('compare-with').selectOption('1');
+  await choose(page.getByTestId('compare-with'), '1');
   // A phone gets one card per player; the table is the desktop's.
   await expect(page.getByTestId('compare-cards')).toBeVisible();
 

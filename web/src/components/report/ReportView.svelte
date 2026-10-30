@@ -208,6 +208,7 @@
       name: row.name,
       class: row.class,
       spec: row.spec,
+      role: row.role,
     })),
   );
 

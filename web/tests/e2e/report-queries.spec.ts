@@ -7,6 +7,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { readFileSync } from 'node:fs';
+import { choose } from './support/select';
 
 /** The lines of fight 3 (Warden Kelthas, encounter 9001) in the fixture log, boundaries included. */
 function fightThreeLines(): number {
@@ -51,10 +52,10 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
   await page.goto(REPORT);
   await expect(page.getByTestId('summary-tab')).toBeVisible();
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
   else await page.getByTestId('tab-damage-done').click();
   if (phone) {
-    await page.getByTestId('tab-select').selectOption('casts');
+    await choose(page.getByTestId('tab-select'), 'casts');
   } else {
     // Casts lives under the category row's "More" menu now (design review 2026-09-26
     // finding 3): a native `<details>`, opened by clicking its own summary.

@@ -37,6 +37,11 @@
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
   import { clampWindow, scopeSummary, type TimeWindow } from '../../lib/report/window';
+  import { reportCopy } from '../../lib/report/copy';
+  import { selectCopy } from '../../lib/ui/copy';
+  import type { SelectOption } from '../../lib/ui/listbox-model';
+  import { classOption } from '../../lib/ui/select-options';
+  import Select from '../ui/Select.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -93,10 +98,21 @@
   });
   const bossOptions = $derived(options.filter((fight) => fight.kind === 'encounter'));
   const trashOptions = $derived(options.filter((fight) => fight.kind !== 'encounter'));
-  function optionLabel(fight: FightEntry): string {
+  /** A fight as the Compare with list reads it: the name (and which pull), and under it the
+   *  outcome and length, the way FightSelector shows them (§A10 row 8). */
+  function fightChoice(fight: FightEntry, group: string): SelectOption {
     const pull = pullOf.get(fight.index) ?? '';
-    return `${fight.name}${pull === '' ? '' : ` · ${pull}`} · ${formatDuration(fight.duration_ms)} · ${outcomeLabel(fight).toLowerCase()}`;
+    return {
+      value: String(fight.index),
+      label: `${fight.name}${pull === '' ? '' : ` · ${pull}`}`,
+      description: `${outcomeLabel(fight)} · ${formatDuration(fight.duration_ms)}`,
+      group,
+    };
   }
+  const compareChoices = $derived([
+    ...bossOptions.map((fight) => fightChoice(fight, reportCopy.bossPulls)),
+    ...trashOptions.map((fight) => fightChoice(fight, reportCopy.trash)),
+  ]);
   let rightWhole = $state<Summary | null>(null);
 
   /**
@@ -274,12 +290,15 @@
     return leader?.guid ?? lines[0]?.guid ?? '';
   });
   /** The players this pull's roster offers as a second player, the picked one excluded. */
-  const vsOptions = $derived(
-    left.roster
+  const vsChoices = $derived([
+    { value: '', label: reportCopy.compareFightsInstead },
+    ...left.roster
       .filter((row) => row.guid !== basePlayer)
-      .map((row) => ({ guid: row.guid, name: splitUnitName(row.name).name }))
-      .sort((a, b) => a.name.localeCompare(b.name)),
-  );
+      .map((row) =>
+        classOption({ value: row.guid, label: splitUnitName(row.name).name, className: row.class }),
+      )
+      .sort((a, b) => a.label.localeCompare(b.label)),
+  ]);
   /** True while the mode is two players inside this pull rather than two pulls. */
   const versusPlayer = $derived(vs !== '' && vs !== basePlayer && left.roster.some((row) => row.guid === vs));
   /** The name a card and the scope line call a player by. */
@@ -485,83 +504,63 @@
   </p>
 
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-    <label class="quiet-label flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-with">
-      Compare with
-      <select
+    <div class="flex w-full flex-wrap items-center gap-2 md:w-auto">
+      <label class="quiet-label" for="compare-with">{reportCopy.compareWith}</label>
+      <Select
         id="compare-with"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto"
-        data-testid="compare-with"
+        class="w-full md:w-[260px]"
+        size="dense"
         value={rightIndex === null ? '' : String(rightIndex)}
+        options={compareChoices}
+        placeholder={reportCopy.pickFight}
+        emptyLabel={selectCopy.noCompareFight}
+        testid="compare-with"
         onchange={(event) => {
           const raw = (event.currentTarget as HTMLSelectElement).value;
           onPatch({ compareWith: raw === '' ? null : Number(raw) });
         }}
-      >
-        <option value="">Pick a fight</option>
-        <optgroup label="Boss pulls">
-          {#each bossOptions as fight (fight.index)}
-            <option value={String(fight.index)} selected={fight.index === rightIndex}
-              >{optionLabel(fight)}</option
-            >
-          {/each}
-        </optgroup>
-        {#if trashOptions.length > 0}
-          <optgroup label="Trash">
-            {#each trashOptions as fight (fight.index)}
-              <option value={String(fight.index)} selected={fight.index === rightIndex}
-                >{optionLabel(fight)}</option
-              >
-            {/each}
-          </optgroup>
-        {/if}
-      </select>
-    </label>
-    <label class="quiet-label flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-vs">
-      Or a player
-      <select
+      />
+    </div>
+    <div class="flex w-full flex-wrap items-center gap-2 md:w-auto">
+      <label class="quiet-label" for="compare-vs">{reportCopy.orAPlayer}</label>
+      <Select
         id="compare-vs"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto"
-        data-testid="compare-vs"
+        class="w-full md:w-[220px]"
+        size="dense"
         value={versusPlayer ? vs : ''}
+        options={vsChoices}
+        testid="compare-vs"
         onchange={(event) => onPatch({ compareVs: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Compare fights instead</option>
-        {#each vsOptions as option (option.guid)}
-          <option value={option.guid}>{option.name}</option>
-        {/each}
-      </select>
-    </label>
-    <label class="quiet-label flex items-center gap-2" for="compare-metric">
-      Metric
-      <select
+      />
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="quiet-label" for="compare-metric">{reportCopy.metric}</label>
+      <Select
         id="compare-metric"
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+        class="w-[160px]"
+        size="dense"
         value={metric}
+        options={COMPARE_METRICS.map((option) => ({ value: option, label: metricOptionLabel(option) }))}
+        testid="compare-metric"
         onchange={(event) => onPatch({ compareMetric: (event.currentTarget as HTMLSelectElement).value })}
-        data-testid="compare-metric"
-      >
-        {#each COMPARE_METRICS as option (option)}
-          <option value={option}>{metricOptionLabel(option)}</option>
-        {/each}
-      </select>
-    </label>
+      />
+    </div>
     {#if rightWhole !== null}
       {#if phases.length > 0}
-        <label class="quiet-label flex items-center gap-2" for="compare-phase">
-          Phase
-          <select
+        <div class="flex items-center gap-2">
+          <label class="quiet-label" for="compare-phase">{reportCopy.phase}</label>
+          <Select
             id="compare-phase"
-            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-            data-testid="compare-phase"
-            value={phase}
-            onchange={(event) => (phase = (event.currentTarget as HTMLSelectElement).value)}
-          >
-            <option value="">The whole pull</option>
-            {#each phases as name (name)}
-              <option value={name}>{name}</option>
-            {/each}
-          </select>
-        </label>
+            class="w-[180px]"
+            size="dense"
+            bind:value={phase}
+            options={[
+              { value: '', label: reportCopy.wholePull },
+              ...phases.map((name) => ({ value: name, label: name })),
+            ]}
+            testid="compare-phase"
+          />
+        </div>
       {:else}
         <p class="text-muted text-[12px]" data-testid="compare-phase-note">
           These two pulls have no phase in common, so there is nothing to align by: either their bosses have

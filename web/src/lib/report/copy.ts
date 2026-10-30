@@ -11,6 +11,29 @@ export const reportCopy = {
   more: 'More',
   /** The phone table-switcher's visible label, so it reads next to "Source" rather than under it. */
   table: 'Table',
+  /** The Source select (spec 2026-10-30-controls-charts §A10 row 1): its label, the two
+   *  scopes and the role groups its players sit under. */
+  source: 'Source',
+  allFriendlies: 'All friendlies',
+  allEnemies: 'All enemies',
+  sourceGroups: { tank: 'Tanks', healer: 'Healers', dps: 'Damage' },
+  /** The filter bar's two selects (§A10 rows 6, 7). */
+  target: 'Target',
+  ability: 'Ability',
+  everyTarget: 'Every target',
+  everyAbility: 'Every ability',
+  /** Compare mode's selects (§A10 rows 8 to 11). */
+  compareWith: 'Compare with',
+  pickFight: 'Pick a fight',
+  bossPulls: 'Boss pulls',
+  trash: 'Trash',
+  orAPlayer: 'Or a player',
+  compareFightsInstead: 'Compare fights instead',
+  metric: 'Metric',
+  phase: 'Phase',
+  wholePull: 'The whole pull',
+  spec: 'Spec',
+  everySpec: 'Every spec',
   /** The merged preset/slider row's select, which replaced the old six-button preset row. */
   window: 'Window',
   /** The header of a report whose title is not known yet. */

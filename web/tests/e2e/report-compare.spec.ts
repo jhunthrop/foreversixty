@@ -3,6 +3,7 @@
 // abilities in two pulls, which is a row expanding. "What did I do differently from them"
 // is two players in this pull, which is the second picker.
 import { expect, test } from '@playwright/test';
+import { choose } from './support/select';
 
 const COMPARE = '/reports/fixture2abcd?fight=3&mode=compare';
 
@@ -54,7 +55,7 @@ test('threat has no ability split, and the row says so rather than opening empty
 
 test('picking a player compares the two inside this pull, and rides in the url', async ({ page }) => {
   await page.goto(COMPARE);
-  await page.getByTestId('compare-vs').selectOption('Player-4184-000000A3');
+  await choose(page.getByTestId('compare-vs'), 'Player-4184-000000A3');
   await expect(page).toHaveURL(/vs=Player-4184-000000A3/);
   // The player table collapses to the two of them.
   const rows = page.getByTestId('compare-cards').locator('li');
