@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
@@ -664,6 +665,16 @@ func serve(log *slog.Logger) error {
 	deps.Addon.SimRequests = deps.Sims
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
+	if cfg.App.Enabled {
+		// The apps' home answer reads the same card, BiS files and item tables as the
+		// Discord /char panel (guildService's build reads), so the two agree.
+		deps.App = &app.Service{
+			Characters: deps.Rankings, Data: guildService, Exports: &app.Store{Pool: pool}, Log: log,
+			Settings: app.Settings{WebCheckoutRegions: cfg.App.WebCheckoutRegions,
+				MinVersionIOS: cfg.App.MinVersionIOS, MinVersionAndroid: cfg.App.MinVersionAndroid},
+		}
+		log.Info("app", "state", "APP_API is on", "effect", "the app home and config routes are mounted")
+	}
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 

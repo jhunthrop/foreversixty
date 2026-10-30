@@ -173,6 +173,9 @@ type Config struct {
 
 	// Coach is the Log Coach's model client and cap settings.
 	Coach CoachConfig
+
+	// App is the mobile apps' API settings (off by default).
+	App AppConfig
 }
 
 // String and GoString redact the whole Config so a stray %v or %+v never prints the
@@ -311,6 +314,9 @@ func Load(getenv func(string) string) (Config, error) {
 		return c, err
 	}
 	if c.Coach, err = loadCoach(getenv); err != nil {
+		return c, err
+	}
+	if c.App, err = loadApp(getenv); err != nil {
 		return c, err
 	}
 

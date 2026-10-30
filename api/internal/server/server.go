@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
@@ -67,6 +68,8 @@ type Deps struct {
 	Coach *coach.Service
 	// Tiles serves the Discord panel's item tiles; nil leaves the route unmounted.
 	Tiles *sheet.Tiles
+	// App serves the mobile apps' routes; nil (APP_API off) leaves them unmounted.
+	App *app.Service
 
 	TrustedProxyHops int
 }
@@ -140,6 +143,9 @@ func NewRouter(d Deps) http.Handler {
 	if d.Coach != nil {
 		coach.Mount(mux, d.Coach)
 		coach.MountLines(mux, d.Coach)
+	}
+	if d.App != nil {
+		app.Mount(mux, d.App)
 	}
 	if d.Tiles != nil {
 		d.Tiles.Mount(mux)

@@ -7,6 +7,15 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 )
 
+// The words a gain reads when there is no figure to state, shared by the Discord panel and
+// the apps (spec 2026-10-29 copy table; site lib/bis/copy.ts notSimCheckedTag).
+const (
+	// NotModelledWords: the pick's gain has no figure, or its effect is not in the sim.
+	NotModelledWords = "Gain not modelled yet"
+	// NotSimCheckedWords: a weapon the pick does not list, whose gain only a full sim measures.
+	NotSimCheckedWords = "not sim-checked"
+)
+
 // minusSign is U+2212, the SimC convention for a negative figure.
 const minusSign = "−"
 

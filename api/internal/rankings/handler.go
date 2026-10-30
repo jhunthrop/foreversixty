@@ -96,10 +96,11 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", message, nil)
 }
 
-// cache marks a read cacheable for the edge: rankings, ratings, the
+// CacheLive marks a read cacheable for the edge: rankings, ratings, the
 // reports feed, and a guild or character's public page are all the
-// spec's "Live public boards" class (§2.2).
-func cache(w http.ResponseWriter) {
+// spec's "Live public boards" class (§2.2). The apps' character home
+// answer is cached the same as the character page it is read from.
+func CacheLive(w http.ResponseWriter) {
 	httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 }
 
@@ -190,7 +191,7 @@ func (s *Service) rankings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "rankings", err, "could not read the rankings just now")
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, page)
 }
 
@@ -262,7 +263,7 @@ func (s *Service) percentile(w http.ResponseWriter, r *http.Request) {
 			"nothing has been ranked in that bracket yet", nil)
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"percentile": pct, "ranked": ranked})
 }
 
@@ -302,7 +303,7 @@ func (s *Service) guildRankings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "guild rankings", err, "could not read the guild rankings just now")
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"rows": rows})
 }
 
@@ -316,7 +317,7 @@ func (s *Service) encounters(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "encounters", err, "could not read the encounters just now")
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"rows": rows})
 }
 
@@ -330,7 +331,7 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, c)
 }
 
@@ -395,6 +396,6 @@ func (s *Service) guild(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return
 	}
-	cache(w)
+	CacheLive(w)
 	httpx.WriteOK(w, r, http.StatusOK, g)
 }
