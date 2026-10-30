@@ -39,6 +39,7 @@
   $effect(() => {
     if (onTab && reportId !== undefined && fightIndex !== undefined) ratingPanelLazy.load();
   });
+  import Card from '../ui/Card.svelte';
   import ClassIcon from './ClassIcon.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -103,6 +104,15 @@
   /** The combatant whose gear list is open. */
   let gearOpen = $state<string | null>(null);
   const missingBuffs = $derived(summary.combatants.filter((row) => row.missing_buffs.length > 0).length);
+  /** The roster card's meta line: who was there, the deaths, the length, and who lacked a raid buff. */
+  const rosterMeta = $derived(
+    [
+      `${roster.length} ${roster.length === 1 ? 'player' : 'players'}`,
+      `${summary.deaths.length} deaths`,
+      formatDuration(durationMs),
+      ...(missingBuffs > 0 ? [`${missingBuffs} missing a raid buff at pull`] : []),
+    ].join(' · '),
+  );
   const activeMark = $derived(wholeFightMark(approximate));
   const activeTitle = $derived(wholeFightTitle(approximate));
 
@@ -146,163 +156,166 @@
 </script>
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
-  <p class="text-muted text-[13px]">
-    <span class="numeric">{roster.length}</span>
-    {roster.length === 1 ? 'player' : 'players'} ·
-    <span class="numeric">{summary.deaths.length}</span> deaths ·
-    <span class="numeric">{formatDuration(durationMs)}</span>
-    {#if missingBuffs > 0}
-      · <span class="numeric">{missingBuffs}</span> missing a raid buff at pull
-    {/if}
-  </p>
-
-  <div class="flex flex-col">
-    <div class="quiet-label hidden {grid} gap-x-3 px-2 pb-1 md:grid">
-      {#if showParse}<span
-          title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
-          >Parse</span
-        >{/if}
-      <span>Name</span>
-      {#if showSpec}<span>Spec</span>{/if}
-      <span class="text-right" title="Damage done, and per second over this window">Damage</span>
-      <span class="text-right" title="Healing done, and per second over this window">Healing</span>
-      <span class="text-right" title="Damage taken, and per second over this window">Taken</span>
-      <span class="text-right" title="Share of the fight spent casting or attacking">Active</span>
-      <span class="text-right">Deaths</span>
-    </div>
-    <ul class="flex flex-col">
-      {#each shownRoster as row (row.guid)}
-        {@const display = unitLabel(row.name)}
-        {@const cell = specCell(row, unitClasses)}
-        {@const percentile = percentiles.get(row.guid) ?? null}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] {grid}"
-          data-testid={`roster-${row.guid}`}
-        >
-          {#if showParse}
-            <span
-              class="numeric col-start-2 row-start-1 text-right text-[12px] md:col-auto md:row-auto md:text-left"
-              class:text-muted={percentile === null || parseWithheld}
-              style={percentile === null || parseWithheld
-                ? undefined
-                : `color: ${percentileToken(percentile.percentile)}`}
-              title={percentile === null || parseWithheld
-                ? parseTitle(parseFallback)
-                : parseTitle(percentile.percentile, percentile.ranked)}
-              data-testid="roster-percentile"
+  <Card glyph="user" title="Players" meta={rosterMeta} body="none" compact testid="summary-roster-card">
+    <div class="border-line-soft flex flex-col gap-3 border-t px-3 pt-1 pb-3 md:px-5 md:pb-4">
+      <div class="flex flex-col">
+        <div class="quiet-label hidden {grid} gap-x-3 px-2 pb-1 md:grid">
+          {#if showParse}<span
+              title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
+              >Parse</span
+            >{/if}
+          <span>Name</span>
+          {#if showSpec}<span>Spec</span>{/if}
+          <span class="text-right" title="Damage done, and per second over this window">Damage</span>
+          <span class="text-right" title="Healing done, and per second over this window">Healing</span>
+          <span class="text-right" title="Damage taken, and per second over this window">Taken</span>
+          <span class="text-right" title="Share of the fight spent casting or attacking">Active</span>
+          <span class="text-right">Deaths</span>
+        </div>
+        <ul class="flex flex-col">
+          {#each shownRoster as row (row.guid)}
+            {@const display = unitLabel(row.name)}
+            {@const cell = specCell(row, unitClasses)}
+            {@const percentile = percentiles.get(row.guid) ?? null}
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] {grid}"
+              data-testid={`roster-${row.guid}`}
             >
-              {#if percentile === null || parseWithheld}{['none', 'night', 'window', 'filter'].includes(
-                  parseFallback,
-                )
-                  ? ''
-                  : parseFallback}{:else}<span class="quiet-label mr-1 md:hidden">Parse</span>{Math.round(
-                  percentile.percentile,
-                )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
-            </span>
-          {/if}
-          <span
-            class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold"
-            style={`color: ${classColorVar(cell.class)}`}
-            title={display.title}
-          >
-            <ClassIcon className={cell.class} />
-            {#if onSelectPlayer}
-              <button
-                type="button"
-                class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+              {#if showParse}
+                <span
+                  class="numeric col-start-2 row-start-1 text-right text-[12px] md:col-auto md:row-auto md:text-left"
+                  class:text-muted={percentile === null || parseWithheld}
+                  style={percentile === null || parseWithheld
+                    ? undefined
+                    : `color: ${percentileToken(percentile.percentile)}`}
+                  title={percentile === null || parseWithheld
+                    ? parseTitle(parseFallback)
+                    : parseTitle(percentile.percentile, percentile.ranked)}
+                  data-testid="roster-percentile"
+                >
+                  {#if percentile === null || parseWithheld}{['none', 'night', 'window', 'filter'].includes(
+                      parseFallback,
+                    )
+                      ? ''
+                      : parseFallback}{:else}<span class="quiet-label mr-1 md:hidden">Parse</span>{Math.round(
+                      percentile.percentile,
+                    )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
+                </span>
+              {/if}
+              <span
+                class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold"
                 style={`color: ${classColorVar(cell.class)}`}
-                title="Show only this player"
-                data-testid="roster-name"
-                onclick={() => onSelectPlayer(row.guid)}
+                title={display.title}
               >
-                {display.name}{#if display.realm !== ''}<span class="text-muted ml-1 text-[11px] font-normal"
-                    >· {display.realm}</span
-                  >{/if}
-              </button>
-            {:else}
-              {display.name}{#if display.realm !== ''}<span class="text-muted ml-1 text-[11px] font-normal"
-                  >· {display.realm}</span
-                >{/if}
-            {/if}
-          </span>
-          {#if showSpec}
-            <span
-              class="col-span-2 text-[13px] md:col-span-1 {cell.classColoured
-                ? 'font-semibold'
-                : 'text-muted'}"
-              style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
-              title={cell.title}
-              data-testid="roster-spec"
-            >
-              {cell.text}
-            </span>
-          {/if}
-          <!-- Total on top, per-second underneath: a raid leader compares totals across
+                <ClassIcon className={cell.class} />
+                {#if onSelectPlayer}
+                  <button
+                    type="button"
+                    class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                    style={`color: ${classColorVar(cell.class)}`}
+                    title="Show only this player"
+                    data-testid="roster-name"
+                    onclick={() => onSelectPlayer(row.guid)}
+                  >
+                    {display.name}{#if display.realm !== ''}<span
+                        class="text-muted ml-1 text-[11px] font-normal">· {display.realm}</span
+                      >{/if}
+                  </button>
+                {:else}
+                  {display.name}{#if display.realm !== ''}<span
+                      class="text-muted ml-1 text-[11px] font-normal">· {display.realm}</span
+                    >{/if}
+                {/if}
+              </span>
+              {#if showSpec}
+                <span
+                  class="col-span-2 text-[13px] md:col-span-1 {cell.classColoured
+                    ? 'font-semibold'
+                    : 'text-muted'}"
+                  style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
+                  title={cell.title}
+                  data-testid="roster-spec"
+                >
+                  {cell.text}
+                </span>
+              {/if}
+              <!-- Total on top, per-second underneath: a raid leader compares totals across
                the roster, and a player compares their per-second figure with their
                parse. Both are the window's own numbers. -->
-          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-damage">
-            <span>{formatAmountLike(row.damage_done, columnMax.damage_done)}</span>
-            <span class="text-muted text-[11px]">{formatPerSecond(row.damage_done, durationMs)}/s</span>
-          </span>
-          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-healing">
-            <span>{formatAmountLike(row.healing_done, columnMax.healing_done)}</span>
-            <span class="text-muted text-[11px]">{formatPerSecond(row.healing_done, durationMs)}/s</span>
-          </span>
-          <span class="numeric hidden flex-col text-right leading-tight md:flex" data-testid="roster-taken">
-            <span>{formatAmountLike(row.damage_taken, columnMax.damage_taken)}</span>
-            <span class="text-muted text-[11px]">{formatPerSecond(row.damage_taken, durationMs)}/s</span>
-          </span>
-          <span
-            class="text-muted numeric hidden text-right text-[13px] md:inline"
-            title={activeTitle}
-            aria-label={wholeFightAriaLabel(approximate, formatPercent(row.activity_pct))}
-            data-testid="roster-active"
-          >
-            {activeMark}{formatPercent(row.activity_pct)}
-          </span>
-          <span class="numeric hidden text-right md:inline" class:text-death={row.deaths > 0}
-            >{row.deaths}</span
-          >
+              <span
+                class="numeric hidden flex-col text-right leading-tight md:flex"
+                data-testid="roster-damage"
+              >
+                <span>{formatAmountLike(row.damage_done, columnMax.damage_done)}</span>
+                <span class="text-muted text-[11px]">{formatPerSecond(row.damage_done, durationMs)}/s</span>
+              </span>
+              <span
+                class="numeric hidden flex-col text-right leading-tight md:flex"
+                data-testid="roster-healing"
+              >
+                <span>{formatAmountLike(row.healing_done, columnMax.healing_done)}</span>
+                <span class="text-muted text-[11px]">{formatPerSecond(row.healing_done, durationMs)}/s</span>
+              </span>
+              <span
+                class="numeric hidden flex-col text-right leading-tight md:flex"
+                data-testid="roster-taken"
+              >
+                <span>{formatAmountLike(row.damage_taken, columnMax.damage_taken)}</span>
+                <span class="text-muted text-[11px]">{formatPerSecond(row.damage_taken, durationMs)}/s</span>
+              </span>
+              <span
+                class="text-muted numeric hidden text-right text-[13px] md:inline"
+                title={activeTitle}
+                aria-label={wholeFightAriaLabel(approximate, formatPercent(row.activity_pct))}
+                data-testid="roster-active"
+              >
+                {activeMark}{formatPercent(row.activity_pct)}
+              </span>
+              <span class="numeric hidden text-right md:inline" class:text-death={row.deaths > 0}
+                >{row.deaths}</span
+              >
 
-          <!-- The five figures above are columns under headings in the header row, which is
+              <!-- The five figures above are columns under headings in the header row, which is
                `hidden` below `md`. A card has no headings, so on phone they are replaced by
                this strip, where each figure states what it is. Active keeps the whole-fight
                mark, its title and its composed accessible name: a card layout that dropped
                them would be claiming a precision the summary does not have. -->
-          <span
-            class="quiet-label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden"
-            data-testid="roster-figures"
-          >
-            {#each figuresFor(row) as figure (figure.label)}
-              <span>
-                {figure.label}
-                <span class="numeric normal-case" title={figure.title} aria-label={figure.ariaLabel}
-                  >{figure.value}</span
-                >
+              <span
+                class="quiet-label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden"
+                data-testid="roster-figures"
+              >
+                {#each figuresFor(row) as figure (figure.label)}
+                  <span>
+                    {figure.label}
+                    <span class="numeric normal-case" title={figure.title} aria-label={figure.ariaLabel}
+                      >{figure.value}</span
+                    >
+                  </span>
+                {/each}
               </span>
-            {/each}
-          </span>
-        </li>
-      {/each}
-    </ul>
-    {#if shownRoster.length < roster.length}
-      <button
-        type="button"
-        class="text-nav hover:text-strong min-h-11 self-start px-2 text-left text-[13px] underline-offset-2 hover:underline"
-        data-testid="roster-show-all"
-        onclick={() => (showEveryone = true)}
-      >
-        Show all {roster.length} players
-      </button>
-    {/if}
-  </div>
+            </li>
+          {/each}
+        </ul>
+        {#if shownRoster.length < roster.length}
+          <button
+            type="button"
+            class="text-nav hover:text-strong min-h-11 self-start px-2 text-left text-[13px] underline-offset-2 hover:underline"
+            data-testid="roster-show-all"
+            onclick={() => (showEveryone = true)}
+          >
+            Show all {roster.length} players
+          </button>
+        {/if}
+      </div>
 
-  {#if approximate}
-    <p class="text-muted text-[12px]" data-testid="summary-wholefight-note">
-      Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's figure
-      even inside a shorter window. Damage, healing, taken and deaths above are this window's own numbers.
-    </p>
-  {/if}
+      {#if approximate}
+        <p class="text-muted text-[12px]" data-testid="summary-wholefight-note">
+          Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's
+          figure even inside a shorter window. Damage, healing, taken and deaths above are this window's own numbers.
+        </p>
+      {/if}
+    </div>
+  </Card>
 
   {#if onTab}
     <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} {approximate} />
@@ -316,15 +329,14 @@
           {onSelectPlayer}
         />
       {:else}
-        <!-- The panel's outer height with no ratings (its most common state), so its arrival does not move the At pull section. -->
-        <div class="min-h-[70px]" data-testid="rating-panel-slot" aria-hidden="true"></div>
+        <!-- The compact card's outer height with no ratings (its most common state), so its arrival does not move the At pull section. -->
+        <div class="min-h-[104px]" data-testid="rating-panel-slot" aria-hidden="true"></div>
       {/if}
     {/if}
   {/if}
 
   {#if summary.combatants.length > 0}
-    <div class="flex flex-col gap-2">
-      <h2 class="quiet-label">At pull</h2>
+    <Card glyph="user" title="At pull" body="rows" testid="at-pull-card">
       <ul class="flex flex-col" data-testid="combatants">
         {#each summary.combatants as combatant (combatant.guid)}
           {@const display = unitLabel(combatant.name)}
@@ -339,7 +351,7 @@
               ? simLinkFor(reportId, fightIndex, combatant.guid)
               : null}
           <li
-            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
+            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-t px-5 py-2 text-[14px]"
           >
             <span class="font-semibold" title={display.title}>{display.text}</span>
             <span class="text-muted text-[13px]">
@@ -386,6 +398,6 @@
           </li>
         {/each}
       </ul>
-    </div>
+    </Card>
   {/if}
 </section>

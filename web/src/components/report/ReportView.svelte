@@ -7,6 +7,8 @@
      Tasks 10 to 17 add panels inside the content column. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import Card from '../ui/Card.svelte';
+  import PageHead from '../ui/PageHead.svelte';
   import {
     POLL_INTERVAL_MS,
     REPORT_LOAD_FAILED,
@@ -1512,40 +1514,144 @@
   {/if}
 {/snippet}
 
+{#snippet creditLine()}
+  <span class="block" data-testid="report-credit"
+    >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}>{credit.name}</a
+      >{:else}{credit.name}{/if}</span
+  >
+{/snippet}
+
+<!-- The processing and waiting head's meta line: the live badge, who owns it, its state, and the credit. -->
+{#snippet processingMeta()}
+  {#if status === 'waiting'}
+    <span class="pill pill-site mr-2" data-testid="report-live"
+      >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
+    >
+  {/if}
+  <span data-testid="report-subtitle">
+    {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
+    {#if status === 'waiting'}
+      {#if meta?.owner}<span data-testid="report-owner">{meta.owner.battletag}</span>{/if}
+    {:else}
+      {status === 'processing' ? 'Processing' : 'Could not be parsed'}
+    {/if}
+  </span>
+  {@render creditLine()}
+{/snippet}
+
+<!-- The report head's meta line: the sample or live badge (announced politely, not stealing focus: a
+     fight going live or settling is worth a screen reader hearing about on its own time), the zone,
+     date, fights and state, the fight in view, and under it the credit and the sample note. -->
+{#snippet reportMeta()}
+  <span role="status" aria-live="polite">
+    {#if isSampleReport(reportId)}
+      <span class="pill pill-site mr-2" data-testid="report-sample-badge">{reportCopy.sampleBadge}</span>
+    {:else if fightIsLive}
+      <span class="pill pill-site mr-2" data-testid="report-live"
+        >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
+      >
+    {/if}
+  </span>
+  <span data-testid="report-subtitle">
+    {#if facts.zone !== ''}{facts.zone} ·{/if}
+    {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
+    <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
+      {SUBTITLE_SEPARATOR}{meta.status}{/if}
+    {#if nightMode}· All boss pulls{/if}
+    {#if fight}· {fight.name}
+      {#if fight.kind === 'encounter' && !fight.in_progress}
+        <span
+          class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
+          title={fight.kill ? 'The boss died' : 'The percentage is the boss’s health when the pull ended'}
+          data-testid="report-fight-outcome"
+          >{outcomeLabel(fight, fight.kill ? '' : phaseReached(summary?.phases))}</span
+        >
+      {/if}
+      <span class="numeric">{formatDuration(fight.duration_ms)}</span>
+      {#if fight.deaths > 0}
+        · <span class="text-death numeric">{fight.deaths}</span>
+        {fight.deaths === 1 ? 'death' : 'deaths'}
+      {/if}{/if}
+  </span>
+  <!-- The bundled sample was logged by no one the site knows: no credit line. -->
+  {#if !isSampleReport(reportId)}{@render creditLine()}{/if}
+  {#if isSampleReport(reportId)}
+    <span class="block" data-testid="report-sample-note">{reportCopy.sampleNote}</span>
+  {/if}
+{/snippet}
+
+<!-- Sim first, Copy link second, both the same secondary button (design review 2026-09-26 finding
+     5): the old inline gold link read as emphasis, not the one action a raider reaches for right
+     after opening a fight. A phone gets them as 44 px icon buttons. -->
+{#snippet reportActions()}
+  <div class="flex items-center gap-2">
+    {#if fight}
+      <a
+        class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
+        href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
+        aria-label={simCopy.simThisFight}
+        title={simCopy.simThisFight}
+        data-testid="report-sim-fight"
+        ><svg
+          class="md:hidden"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          ><path d="M10 2v6.5L4.6 18a2 2 0 0 0 1.8 3h11.2a2 2 0 0 0 1.8-3L14 8.5V2" /><path
+            d="M8.5 2h7"
+          /><path d="M7 15h10" /></svg
+        ><span class="hidden md:inline">{simCopy.simThisFight}</span></a
+      >
+    {/if}
+    <button
+      type="button"
+      class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
+      title="Copy a link to exactly this view"
+      aria-label={copied === '' ? 'Copy link' : copied}
+      data-testid="copy-link"
+      onclick={() => void copyLink()}
+    >
+      <svg
+        class="md:hidden"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        ><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path
+          d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"
+        /></svg
+      ><span class={copied === '' ? 'hidden md:inline' : ''}>{copied === '' ? 'Copy link' : copied}</span>
+    </button>
+  </div>
+{/snippet}
+
 {#if status === 'failed'}
   <div class="px-[18px] md:px-0">
     <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
   </div>
 {:else if status === 'processing' || status === 'waiting' || status === 'unparsed'}
   <div class="reveal" data-testid="report-processing" data-state={status}>
-    <header class="flex flex-col gap-1 px-[18px] md:px-0">
-      <div class="flex flex-wrap items-center gap-2">
-        <h1 class="heading-page" data-testid="report-title">
-          {#if status === 'waiting' && meta !== null}{heading}{:else}{meta?.title ||
-              meta?.zone ||
-              reportCopy.yourUpload}{/if}
-        </h1>
-        {#if status === 'waiting'}
-          <span class="pill pill-site" data-testid="report-live"
-            >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
-          >
-        {/if}
-      </div>
-      <p class="text-muted text-[13px]" data-testid="report-subtitle">
-        {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
-        {#if status === 'waiting'}
-          {#if meta?.owner}<span data-testid="report-owner">{meta.owner.battletag}</span> ·{/if}
-        {:else}
-          {status === 'processing' ? 'Processing' : 'Could not be parsed'}
-          ·
-        {/if}
-        <span data-testid="report-credit"
-          >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
-              >{credit.name}</a
-            >{:else}{credit.name}{/if}</span
-        >
-      </p>
-    </header>
+    <div class="px-[18px] pb-2 md:px-0 md:pb-2">
+      <PageHead
+        eyebrow={reportCopy.eyebrow}
+        title={status === 'waiting' && meta !== null
+          ? heading
+          : meta?.title || meta?.zone || reportCopy.yourUpload}
+        titleTestid="report-title"
+        meta={processingMeta}
+      />
+    </div>
     <div class="flex flex-col gap-4 px-[18px] pt-4 md:px-0">
       <div class="flex min-w-0 flex-wrap gap-1" data-testid="report-tabs-disabled">
         {#each TABS.slice(0, 1) as tab (tab.id)}
@@ -1611,129 +1717,18 @@
     <!-- A phone: the title on one line with its pill beside it, and under them the subtitle
          with the two actions as 44px icon buttons at its right. From md the wrapper below is
          an ordinary row and the header the ordinary column it always was. -->
-    <header
-      class="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 px-[18px] md:flex md:flex-col md:items-stretch md:px-0"
-    >
-      <div class="contents md:flex md:flex-wrap md:items-center md:gap-2">
-        <h1
-          class="heading-page min-w-0 md:overflow-visible md:whitespace-normal {isSampleReport(reportId)
-            ? 'max-md:break-words'
-            : 'truncate'}"
-          title={heading}
-          data-testid="report-title"
-        >
-          {heading}
-        </h1>
-        <!-- Announced politely, not stolen focus: a fight going live or settling is worth a
-           screen reader hearing about on its own time, not interrupting whatever the
-           visitor is doing. role="status" plus aria-live="polite" is the same pairing
-           SummaryBar.svelte uses for its own background result. -->
-        <span role="status" aria-live="polite" class="justify-self-end md:justify-self-auto">
-          {#if isSampleReport(reportId)}
-            <span class="pill pill-site" data-testid="report-sample-badge">{reportCopy.sampleBadge}</span>
-          {:else if fightIsLive}
-            <span class="pill pill-site" data-testid="report-live"
-              >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
-            >
-          {/if}
-        </span>
-        <!-- Sim first, Copy link second, both the same secondary button (design review
-             2026-09-26 finding 5): the old inline gold link read as emphasis, not the one
-             action a raider reaches for right after opening a fight. -->
-        <div
-          class="col-start-2 row-start-2 flex items-center gap-2 justify-self-end md:col-auto md:row-auto md:ml-auto md:justify-self-auto"
-        >
-          {#if fight}
-            <a
-              class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
-              href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
-              aria-label={simCopy.simThisFight}
-              title={simCopy.simThisFight}
-              data-testid="report-sim-fight"
-              ><svg
-                class="md:hidden"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                ><path d="M10 2v6.5L4.6 18a2 2 0 0 0 1.8 3h11.2a2 2 0 0 0 1.8-3L14 8.5V2" /><path
-                  d="M8.5 2h7"
-                /><path d="M7 15h10" /></svg
-              ><span class="hidden md:inline">{simCopy.simThisFight}</span></a
-            >
-          {/if}
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
-            title="Copy a link to exactly this view"
-            aria-label={copied === '' ? 'Copy link' : copied}
-            data-testid="copy-link"
-            onclick={() => void copyLink()}
-          >
-            <svg
-              class="md:hidden"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-              ><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path
-                d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"
-              /></svg
-            ><span class={copied === '' ? 'hidden md:inline' : ''}
-              >{copied === '' ? 'Copy link' : copied}</span
-            >
-          </button>
-        </div>
-      </div>
-      <p
-        class="text-muted col-start-1 row-start-2 min-w-0 text-[13px] md:col-auto md:row-auto"
-        data-testid="report-subtitle"
-      >
-        {#if facts.zone !== ''}{facts.zone} ·{/if}
-        {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
-        <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
-          {SUBTITLE_SEPARATOR}{meta.status}{/if}
-        <!-- The bundled sample was logged by no one the site knows: no credit line. -->
-        {#if !isSampleReport(reportId)}
-          ·
-          <span data-testid="report-credit"
-            >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
-                >{credit.name}</a
-              >{:else}{credit.name}{/if}</span
-          >
-        {/if}
-        {#if nightMode}· All boss pulls{/if}
-        {#if fight}· {fight.name}
-          {#if fight.kind === 'encounter' && !fight.in_progress}
-            <span
-              class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
-              title={fight.kill ? 'The boss died' : 'The percentage is the boss’s health when the pull ended'}
-              data-testid="report-fight-outcome"
-              >{outcomeLabel(fight, fight.kill ? '' : phaseReached(summary?.phases))}</span
-            >
-          {/if}
-          <span class="numeric">{formatDuration(fight.duration_ms)}</span>
-          {#if fight.deaths > 0}
-            · <span class="text-death numeric">{fight.deaths}</span>
-            {fight.deaths === 1 ? 'death' : 'deaths'}
-          {/if}{/if}
-      </p>
-      {#if isSampleReport(reportId)}
-        <p class="text-muted col-span-2 text-[13px] md:col-auto" data-testid="report-sample-note">
-          {reportCopy.sampleNote}
-        </p>
-      {/if}
-    </header>
+    <div class="px-[18px] pb-2 md:px-0 md:pb-2">
+      <PageHead
+        eyebrow={reportCopy.eyebrow}
+        title={heading}
+        titleClass="min-w-0 md:overflow-visible md:whitespace-normal {isSampleReport(reportId)
+          ? 'max-md:break-words'
+          : 'truncate'}"
+        titleTestid="report-title"
+        meta={reportMeta}
+        aside={reportActions}
+      />
+    </div>
 
     {#if unknownSource !== null}
       <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-unknown-source">
@@ -1838,7 +1833,8 @@
         <!-- Where a tab's table begins. On a phone the chart, its sliders and the death
            presets sit between the tab strip and the table, so a tap on a tab that left the
            page where it was read as a tap that did nothing; the page scrolls here instead. -->
-        <div bind:this={tabAnchor} class="scroll-mt-2" aria-hidden="true"></div>
+        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 24px between the chart and the table. -->
+        <div bind:this={tabAnchor} class="scroll-mt-2 md:-mb-6" aria-hidden="true"></div>
         {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
           {#if state.tab === 'summary' && nightMode}
             {#if night !== null}
@@ -1871,86 +1867,99 @@
               fightIndex={state.fight}
             />
           {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
-            <FilterBar
-              {filters}
-              actors={tabSource}
-              afterDeathAvailable={!nightMode}
-              onChange={setFilters}
-              showBossOnly={state.tab !== 'healing'}
-            />
-            {@render parseRetry()}
-            <ActorTable
-              actors={tabActors}
-              durationMs={scoped.duration_ms}
-              {metricLabel}
-              {percentiles}
-              parseFallback={tableParseFallback}
-              {showParse}
-              pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
-              mitigation={state.tab === 'damage-taken'}
-              healing={state.tab === 'healing'}
-              splitUnavailable={nightMode && filtersScale}
-              splitFilter={nightFilterWords}
-              absent={absentPlayers}
-              deadAt={deadRows}
-              {windowIsWhole}
-              measure={nightMode ? undefined : measureRow}
-              approximate={actorTableApproximate}
-              amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
-              onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
-              charted={chartedAbility?.key ?? ''}
-            />
-            {#if actorTableApproximate}
-              <p class="text-muted text-[12px]" data-testid="approximate-note">
-                {#if tableExact !== null}
-                  <span class="text-kill" data-testid="table-measured"
-                    >Totals, shares, per-second figures and targets are measured from the fight’s events for
-                    this window and filter.</span
-                  >
-                  A row’s ability split is measured the same way when it is opened.
-                  {#if ignoringDead && windowedDeadSpans.length > 0}
-                    <span data-testid="dead-spans-note"
-                      >Left out while dead: {windowedDeadSpans
-                        .map(
-                          (span) =>
-                            `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,
-                        )
-                        .join(', ')}. A figure that does not move had nothing landing in those spans.</span
-                    >
-                  {/if}
-                {:else if nightMode}
-                  Over the whole night a tilde marks a figure split across abilities and targets in proportion
-                  to the window and any target or boss filter{nightProrates ? ', totals included' : ''}; an
-                  ability filter’s totals are exact. Open a pull to read its figures from the fight’s events.
-                {:else if tableMeasuring}
-                  <span data-testid="table-measuring">Measuring this window from the fight’s events…</span> A tilde
-                  marks a figure still prorated from the summary.
-                {:else if tableMeasureError !== ''}
-                  <span class="text-wipe" role="alert">{tableMeasureError}</span> A tilde marks a figure
-                  prorated from the summary{filtersScale && !windowIsWhole ? ', totals included' : ''}.
-                  <button
-                    type="button"
-                    class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                    data-testid="measure-table"
-                    onclick={() => void runTableMeasure(++measureToken)}>Try the measure again</button
-                  >
-                {:else}
-                  A tilde marks a figure split across abilities and targets in proportion to the window and
-                  any active target or boss filter. Totals and per-second figures are exact.
-                  <button
-                    type="button"
-                    class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                    data-testid="measure-exactly"
-                    onclick={() => patch({ view: 'queries' })}>Measure this window exactly in Queries</button
-                  >.
+            <Card
+              glyph="chart"
+              title={TABS.find((tab) => tab.id === state.tab)?.label ?? ''}
+              meta={`${tabActors.length} ${tabActors.length === 1 ? 'row' : 'rows'} · ${formatDuration(scoped.duration_ms)}`}
+              body="none"
+              testid="report-table-card"
+            >
+              <div class="border-line-soft flex flex-col gap-3 border-t p-3 md:px-5 md:py-4">
+                <FilterBar
+                  {filters}
+                  actors={tabSource}
+                  afterDeathAvailable={!nightMode}
+                  onChange={setFilters}
+                  showBossOnly={state.tab !== 'healing'}
+                />
+                {@render parseRetry()}
+                <ActorTable
+                  actors={tabActors}
+                  durationMs={scoped.duration_ms}
+                  {metricLabel}
+                  {percentiles}
+                  parseFallback={tableParseFallback}
+                  {showParse}
+                  pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
+                  mitigation={state.tab === 'damage-taken'}
+                  healing={state.tab === 'healing'}
+                  splitUnavailable={nightMode && filtersScale}
+                  splitFilter={nightFilterWords}
+                  absent={absentPlayers}
+                  deadAt={deadRows}
+                  {windowIsWhole}
+                  measure={nightMode ? undefined : measureRow}
+                  approximate={actorTableApproximate}
+                  amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
+                  onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
+                  charted={chartedAbility?.key ?? ''}
+                />
+                {#if actorTableApproximate}
+                  <p class="text-muted text-[12px]" data-testid="approximate-note">
+                    {#if tableExact !== null}
+                      <span class="text-kill" data-testid="table-measured"
+                        >Totals, shares, per-second figures and targets are measured from the fight’s events
+                        for this window and filter.</span
+                      >
+                      A row’s ability split is measured the same way when it is opened.
+                      {#if ignoringDead && windowedDeadSpans.length > 0}
+                        <span data-testid="dead-spans-note"
+                          >Left out while dead: {windowedDeadSpans
+                            .map(
+                              (span) =>
+                                `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,
+                            )
+                            .join(', ')}. A figure that does not move had nothing landing in those spans.</span
+                        >
+                      {/if}
+                    {:else if nightMode}
+                      Over the whole night a tilde marks a figure split across abilities and targets in
+                      proportion to the window and any target or boss filter{nightProrates
+                        ? ', totals included'
+                        : ''}; an ability filter’s totals are exact. Open a pull to read its figures from the
+                      fight’s events.
+                    {:else if tableMeasuring}
+                      <span data-testid="table-measuring">Measuring this window from the fight’s events…</span
+                      > A tilde marks a figure still prorated from the summary.
+                    {:else if tableMeasureError !== ''}
+                      <span class="text-wipe" role="alert">{tableMeasureError}</span> A tilde marks a figure
+                      prorated from the summary{filtersScale && !windowIsWhole ? ', totals included' : ''}.
+                      <button
+                        type="button"
+                        class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                        data-testid="measure-table"
+                        onclick={() => void runTableMeasure(++measureToken)}>Try the measure again</button
+                      >
+                    {:else}
+                      A tilde marks a figure split across abilities and targets in proportion to the window
+                      and any active target or boss filter. Totals and per-second figures are exact.
+                      <button
+                        type="button"
+                        class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                        data-testid="measure-exactly"
+                        onclick={() => patch({ view: 'queries' })}
+                        >Measure this window exactly in Queries</button
+                      >.
+                    {/if}
+                  </p>
                 {/if}
-              </p>
-            {/if}
-            {#if chartedError !== ''}
-              <p class="text-wipe text-[12px]" role="alert" data-testid="ability-chart-error">
-                {chartedError}
-              </p>
-            {/if}
+                {#if chartedError !== ''}
+                  <p class="text-wipe text-[12px]" role="alert" data-testid="ability-chart-error">
+                    {chartedError}
+                  </p>
+                {/if}
+              </div>
+            </Card>
           {:else if state.tab === 'buffs'}
             <RaidCooldowns
               tracks={scoped.auras}

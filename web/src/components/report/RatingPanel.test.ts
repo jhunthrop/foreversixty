@@ -59,7 +59,7 @@ describe('RatingPanel', () => {
 
   it('the heading carries a real "Rating tab" button, not a link -- Task 6 wires its click to onTab', () => {
     const body = renderPanel();
-    expect(body).toMatch(/<button[^>]*type="button"[^>]*>\s*Rating tab\s*<\/button>/);
+    expect(body).toMatch(/<button[^>]*type="button"[^>]*>\s*Rating tab/);
   });
 
   it('the initial render is the loading skeleton, never a premature empty or error flash', () => {

@@ -28,6 +28,7 @@ export const reportCopy = {
   /** The badge that replaces "Live" while the companion is quiet. */
   quietBadge: 'Quiet',
   /** The badge where "Live" goes on the bundled sample report. */
+  eyebrow: 'Report',
   sampleBadge: 'Sample report',
   /** The one muted line under the sample's subtitle: what it is, and that yours look like it. */
   sampleNote:

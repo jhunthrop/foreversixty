@@ -5,6 +5,8 @@
 // between mounting and the first byte of data ({@html}) -- so the two moments look the
 // same and the layout does not jump between them. Static markup with no data in it.
 
+import { PAGE_HEAD } from '../ui/page-head';
+
 /** One placeholder block: a bar of the given Tailwind width/height classes. */
 const block = (classes: string): string => `<span class="skeleton-block ${classes}"></span>`;
 
@@ -48,7 +50,8 @@ export function reportSkeletonHtml(title?: string): string {
   return [
     '<div class="report-skeleton flex flex-col gap-4 px-[18px] md:px-0" data-testid="report-skeleton" aria-busy="true">',
     '<p class="sr-only" role="status">Loading the report.</p>',
-    `<div class="flex flex-col gap-2">${heading}${block('h-3 w-80 max-w-full')}</div>`,
+    // The page head's own box (PageHead): the eyebrow, the title, and the two-line meta (facts, then credit).
+    `<div class="${PAGE_HEAD.titleBlock}"><p class="${PAGE_HEAD.eyebrow}"><span class="${PAGE_HEAD.eyebrowRule}" aria-hidden="true"></span>Report</p>${heading}<div class="flex min-h-10 flex-col gap-2">${block('h-3 w-80 max-w-full')}${block('h-3 w-56 max-w-full')}</div></div>`,
     '<div aria-hidden="true" class="flex flex-col gap-4">',
     '<div class="grid grid-cols-1 gap-[22px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8">',
     `<ul class="flex flex-col">${['w-28', 'w-36', 'w-24', 'w-32', 'w-28', 'w-36', 'w-20', 'w-32'].map(fightRow).join('')}</ul>`,

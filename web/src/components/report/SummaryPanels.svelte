@@ -17,6 +17,9 @@
     schoolToken,
   } from '../../lib/report/format';
   import type { Actor, Summary } from '../../lib/report/types';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+  import Card from '../ui/Card.svelte';
+  import Glyph from '../ui/Glyph.svelte';
 
   let {
     summary,
@@ -71,18 +74,19 @@
   });
 
   const deaths = $derived([...summary.deaths].sort((a, b) => a.at_ms - b.at_ms));
-  const panel = 'border-line rounded-panel bg-raised flex flex-col gap-2 border p-3';
-  const heading = 'quiet-label flex items-center justify-between';
-  const more =
-    'text-gold inline-flex min-h-11 items-center text-[11px] normal-case tracking-normal md:min-h-0';
 </script>
 
-<div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="summary-panels">
-  <section class={panel} data-testid="panel-taken">
-    <h2 class={heading}>
-      Damage taken by ability
-      <button type="button" class={more} onclick={() => onTab('damage-taken')}>Damage Taken tab</button>
-    </h2>
+{#snippet tabLink(tab: 'damage-taken' | 'deaths', label: string)}
+  <button type="button" class={ACTION_LINK} onclick={() => onTab(tab)}>
+    {label}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+  </button>
+{/snippet}
+
+<div class="grid grid-cols-1 items-start gap-4 md:grid-cols-2" data-testid="summary-panels">
+  <Card glyph="chart" title="Damage taken by ability" compact testid="panel-taken">
+    {#snippet aside()}
+      {@render tabLink('damage-taken', 'Damage Taken tab')}
+    {/snippet}
     <ul class="flex flex-col">
       <li
         class="quiet-label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
@@ -131,13 +135,12 @@
         tab measures the window’s own split from the fight’s events.
       </p>
     {/if}
-  </section>
+  </Card>
 
-  <section class={panel} data-testid="panel-deaths">
-    <h2 class={heading}>
-      Deaths
-      <button type="button" class={more} onclick={() => onTab('deaths')}>Deaths tab</button>
-    </h2>
+  <Card glyph="target" title="Deaths" compact testid="panel-deaths">
+    {#snippet aside()}
+      {@render tabLink('deaths', 'Deaths tab')}
+    {/snippet}
     {#if deaths.length === 0}
       <p class="text-muted text-[13px]">Nobody died.</p>
     {:else}
@@ -175,5 +178,5 @@
         {/each}
       </ul>
     {/if}
-  </section>
+  </Card>
 </div>

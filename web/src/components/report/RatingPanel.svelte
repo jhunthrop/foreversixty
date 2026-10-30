@@ -12,6 +12,9 @@
   import { ratingCopy, componentLabel } from '../../lib/rating/copy';
   import { RATING_COMPONENT_ORDER } from '../../lib/rating/types';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+  import Card from '../ui/Card.svelte';
+  import Glyph from '../ui/Glyph.svelte';
 
   let {
     reportId,
@@ -37,18 +40,14 @@
   const rows = $derived(
     (fetcher.data?.players ?? []).map((player) => ({ player, guid: guidForPlayer(player, roster) })),
   );
-
-  const panel = 'border-line rounded-panel bg-raised flex flex-col gap-2 border p-3';
-  const heading = 'quiet-label flex items-center justify-between';
-  const more =
-    'text-gold inline-flex min-h-11 items-center text-[11px] normal-case tracking-normal md:min-h-0';
 </script>
 
-<section class={panel} data-testid="rating-panel">
-  <h2 class={heading}>
-    {ratingCopy.panelHeading}
-    <button type="button" class={more} onclick={onTab}>{ratingCopy.panelMore}</button>
-  </h2>
+<Card glyph="star" title={ratingCopy.panelHeading} compact testid="rating-panel">
+  {#snippet aside()}
+    <button type="button" class={ACTION_LINK} onclick={onTab}>
+      {ratingCopy.panelMore}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+    </button>
+  {/snippet}
   {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div class="flex h-8 flex-col gap-2" data-testid="rating-panel-loading" aria-hidden="true">
       <div class="bg-line-soft h-8 w-full animate-pulse rounded"></div>
@@ -104,4 +103,4 @@
       {/each}
     </ul>
   {/if}
-</section>
+</Card>
