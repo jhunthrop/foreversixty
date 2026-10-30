@@ -231,6 +231,15 @@ assert "and writes no failure summary" equal "$SUMMARY" ""
 activate "$d" "$OLD_BUILD"
 assert "the active build is nothing to do" equal "$STATUS" 0
 
+# The workflows and activate-build.sh run these directly, and this repository has
+# core.fileMode off, so a script committed without its executable bit fails only on the
+# runner ("Permission denied", which the engine check would read as an unreadable stamp).
+for script in tools/activate-build.sh tools/activation-gate.sh tools/engine/pinned-build.sh \
+	tools/engine/pin-conditions.sh tools/engine/follow-inputs-hash.sh tools/engine/push-review-branch.sh; do
+	mode=$(git -C "$HERE/../.." ls-files -s "$script" | cut -c1-6)
+	assert "$script is committed executable (mode $mode)" equal "$mode" 100755
+done
+
 if [[ $FAILED -gt 0 ]]; then
 	echo "$FAILED failed, $PASSED passed" >&2
 	exit 1
