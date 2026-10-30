@@ -14,8 +14,8 @@ import javax.inject.Inject
 /**
  * The repo files the app carries in every variant, each from its one source (lane F3, BiS):
  * - `assets/bundled/specs.json` from data/curated/specs.json, the spec catalogue the CDN does not
- *   publish, and `assets/bundled/active-build.json` from web/src/data, the build a first offline
- *   launch reads;
+ *   publish, `assets/bundled/active-build.json` and `dates.json` from web/src/data, the build and the
+ *   key dates a first offline launch reads (neither is on the CDN yet);
  * - `res/drawable-nodpi/crest_<class>.webp` and `faction_<faction>.webp` from web/public/icons/hd,
  *   so a crest or a faction mark never waits on the network.
  */
@@ -61,7 +61,7 @@ abstract class CopyBundledData @Inject constructor(
     fun copy() {
         fs.sync {
             from(repoDir) { include("specs.json") }
-            from(webDataDir) { include("active-build.json") }
+            from(webDataDir) { include("active-build.json", "dates.json") }
             into(outputDir.dir(ASSET_DIR))
         }
     }

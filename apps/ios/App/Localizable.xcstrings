@@ -203,18 +203,6 @@
         }
       }
     },
-    "bis.nextSameShort": {
-      "comment": "Arguments: 1 unit (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "same %1$@"
-          }
-        }
-      }
-    },
     "bis.noPick": {
       "comment": "Arguments: 1 slot (string)",
       "extractionState": "manual",
@@ -317,17 +305,6 @@
         }
       }
     },
-    "bis.preset.bare": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bare"
-          }
-        }
-      }
-    },
     "bis.qualitySlot": {
       "comment": "Arguments: 1 quality (string), 2 slot (string)",
       "extractionState": "manual",
@@ -347,6 +324,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "60 · Phase 1 raid"
+          }
+        }
+      }
+    },
+    "bis.range.p1Opens": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 · Phase 1 raid · opens %1$@"
           }
         }
       }
@@ -442,17 +431,6 @@
         }
       }
     },
-    "bis.slot.ring": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ring"
-          }
-        }
-      }
-    },
     "bis.slotSource": {
       "comment": "Arguments: 1 slot (string), 2 source (string)",
       "extractionState": "manual",
@@ -513,6 +491,18 @@
         }
       }
     },
+    "bis.tankLine": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated %1$@"
+          }
+        }
+      }
+    },
     "bis.title": {
       "extractionState": "manual",
       "localizations": {
@@ -546,13 +536,13 @@
         }
       }
     },
-    "bis.unit.points": {
+    "bis.unit.score": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "points"
+            "value": "score"
           }
         }
       }
@@ -1422,12 +1412,13 @@
       }
     },
     "items.sameDps": {
+      "comment": "Arguments: 1 unit (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Same DPS as the pick"
+            "value": "Same %1$@ as the pick"
           }
         }
       }
@@ -5129,13 +5120,13 @@
       }
     },
     "tooltip.delta": {
-      "comment": "Arguments: 1 delta (string)",
+      "comment": "Arguments: 1 delta (string), 2 unit (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ DPS vs the pick"
+            "value": "%1$@ %2$@ vs the pick"
           }
         }
       }
@@ -5187,13 +5178,13 @@
       }
     },
     "tooltip.pickOf": {
-      "comment": "Arguments: 1 slot (string), 2 spec (string), 3 band (string), 4 preset (string)",
+      "comment": "Arguments: 1 slot (string), 2 spec (string), 3 band (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Best in slot for %1$@ · %2$@ %3$@ · %4$@"
+            "value": "Best in slot for %1$@ · %2$@ %3$@"
           }
         }
       }

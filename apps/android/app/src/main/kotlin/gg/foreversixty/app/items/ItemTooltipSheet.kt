@@ -5,15 +5,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
@@ -23,80 +34,111 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.MicroStyle
+import gg.foreversixty.app.common.SecondaryButton
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GamePalette
 import gg.foreversixty.app.model.Item
 
-// MERGE NOTE (lanes F2 and F3): this is F3's minimal item tooltip sheet (spec F2.6). Lane F2
-// builds the full one in parallel; the two merge into this one file, F2's body winning. F3 reads
-// only `ItemTooltipContent` and `ItemTooltipBody(content)`, shown inside a ModalBottomSheet.
+// MERGE NOTE (lanes F2 and F3): F2's full sheet replaces this file at integration (coordinator
+// ruling, 2026-10-31). The entry point is F2's: `ItemTooltipSheet(request, catalog, onDismiss)`,
+// with the pure body `ItemTooltipContent(request, phase, retry)`. F3's body here is minimal on
+// purpose: no stats, weapon line, Binds, Unique, armor type or set lines.
 
-/** A runner-up as the sheet's `The next best` lists it. */
-data class ItemTooltipAlternative(
-    val id: Int,
-    val name: String,
-    val icon: String?,
-    val quality: Int,
-    /** `−1.3 DPS vs the pick`, led by `You wear this · ` for the worn one. */
-    val meta: String,
-)
-
-/** Everything the sheet draws, already worded by the screen that opens it. */
-data class ItemTooltipContent(
-    val id: Int,
-    val name: String,
-    /** The build's item facts; null when the class's items file is not on the phone. */
-    val item: Item?,
-    val slotKey: String,
-    val source: String?,
-    val nextBest: List<ItemTooltipAlternative>,
-    /** `Best in slot for Head · Fury Warrior 60 · Raid-ready, Phase 1`, when a pick. */
-    val pickOf: String?,
-) {
-    val quality: Int get() = item?.quality ?: 1
+/** The sheet's phases: the fallback header while the static files load, then the model. */
+sealed interface ItemTooltipPhase {
+    data object Loading : ItemTooltipPhase
+    data class Loaded(val model: ItemTooltipModel) : ItemTooltipPhase
+    data object Failed : ItemTooltipPhase
 }
 
-/** The item tooltip (spec F2.6): header, the game-ordered panel, where it comes from, the next best, the pick footer. */
+/** The item tooltip as a bottom sheet (spec F2.6). It reads only the build's static files. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemTooltipBody(content: ItemTooltipContent, modifier: Modifier = Modifier) {
+fun ItemTooltipSheet(request: ItemTooltipRequest, catalog: ItemCatalog, onDismiss: () -> Unit) {
     val res = LocalResources.current
+    var phase by remember(request) { mutableStateOf<ItemTooltipPhase>(ItemTooltipPhase.Loading) }
+    var attempt by remember(request) { mutableIntStateOf(0) }
+    LaunchedEffect(request, attempt) {
+        phase = ItemTooltipPhase.Loading
+        val sources = catalog.sources(request)
+        phase = if (sources == null) ItemTooltipPhase.Failed else ItemTooltipPhase.Loaded(ItemTooltipModel.build(request, sources, res))
+    }
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(),
+        containerColor = GamePalette.sheet,
+    ) {
+        ItemTooltipContent(request, phase, retry = { attempt++ })
+    }
+}
+
+/** The sheet's body, pure over its phase so the screenshot tests draw it directly. Clears the gesture bar. */
+@Composable
+fun ItemTooltipContent(request: ItemTooltipRequest, phase: ItemTooltipPhase, retry: () -> Unit = {}) {
     Column(
-        modifier.background(GamePalette.sheet).verticalScroll(rememberScrollState()).navigationBarsPadding().padding(16.dp),
+        Modifier.fillMaxWidth().background(GamePalette.sheet).verticalScroll(rememberScrollState())
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            ItemIcon(content.item?.icon, content.quality, size = 56.dp)
-            Column {
-                Text(content.name, style = MaterialTheme.typography.titleMedium, color = GamePalette.qualityText(content.quality))
-                Text(
-                    stringResource(R.string.bis_qualitySlot, ItemWords.quality(res, content.quality), ItemWords.slot(res, content.slotKey)),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = FsColor.muted,
-                )
+        when (phase) {
+            ItemTooltipPhase.Loading -> {
+                Header(request.fallback, slotKey = null)
+                Text(stringResource(R.string.items_loading), style = MaterialTheme.typography.labelMedium, color = FsColor.muted)
             }
+            ItemTooltipPhase.Failed -> {
+                Header(request.fallback, slotKey = null)
+                Text(stringResource(R.string.items_failed), style = MaterialTheme.typography.bodyMedium, color = FsColor.wipe)
+                SecondaryButton(stringResource(R.string.common_tryAgain), retry)
+            }
+            is ItemTooltipPhase.Loaded -> Loaded(phase.model)
         }
-        content.item?.let { Panel(it) }
-        content.source?.takeIf { it.isNotEmpty() }?.let { source ->
-            Section(stringResource(R.string.tooltip_source)) {
-                Text(source, style = MaterialTheme.typography.bodyMedium, color = FsColor.strong)
-            }
+    }
+}
+
+@Composable
+private fun Loaded(model: ItemTooltipModel) {
+    Header(model.look, model.slotKey)
+    model.item?.let { Panel(it) }
+    model.source?.takeIf { it.isNotEmpty() }?.let { source ->
+        Section(stringResource(R.string.tooltip_source)) {
+            Text(source, style = MaterialTheme.typography.bodyMedium, color = FsColor.strong)
         }
-        Section(stringResource(R.string.tooltip_nextBest)) {
-            if (content.nextBest.isEmpty()) {
-                Text(stringResource(R.string.tooltip_nothingElse), style = MaterialTheme.typography.labelMedium, color = FsColor.muted)
-            }
-            content.nextBest.forEach { alternative ->
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ItemIcon(alternative.icon, alternative.quality, size = 36.dp)
-                    Column {
-                        Text(alternative.name, style = MaterialTheme.typography.bodyMedium, color = GamePalette.qualityText(alternative.quality))
-                        Text(alternative.meta, style = MaterialTheme.typography.labelMedium, color = FsColor.muted)
-                    }
+    }
+    Section(stringResource(R.string.tooltip_nextBest)) {
+        if (model.alternatives.isEmpty()) {
+            Text(stringResource(R.string.tooltip_nothingElse), style = MaterialTheme.typography.labelMedium, color = FsColor.muted)
+        }
+        model.alternatives.forEach { alternative ->
+            val quality = alternative.look.quality ?: 1
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                ItemIcon(alternative.look.icon, quality, size = 36.dp)
+                Column {
+                    Text(alternative.look.name.orEmpty(), style = MaterialTheme.typography.bodyMedium, color = GamePalette.qualityText(quality))
+                    Text(alternative.meta, style = MaterialTheme.typography.labelMedium, color = FsColor.muted)
                 }
             }
         }
-        content.pickOf?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = FsColor.muted) }
+    }
+    model.pickFooter?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = FsColor.muted) }
+}
+
+@Composable
+private fun Header(look: ItemLook, slotKey: String?) {
+    val res = LocalResources.current
+    val quality = look.quality ?: 1
+    val qualityName = ItemWords.quality(res, quality)
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        ItemIcon(look.icon, quality, size = 56.dp)
+        Column {
+            Text(look.name.orEmpty(), style = MaterialTheme.typography.titleMedium, color = GamePalette.qualityText(quality))
+            Text(
+                slotKey?.let { stringResource(R.string.bis_qualitySlot, qualityName, ItemWords.slot(res, it)) } ?: qualityName,
+                style = MaterialTheme.typography.labelMedium,
+                color = FsColor.muted,
+            )
+        }
     }
 }
 

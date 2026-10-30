@@ -9,8 +9,8 @@ import gg.foreversixty.app.R
  */
 object ItemWords {
     /**
-     * The paperdoll label of a BiS or item slot key. Both rings read `Ring` and both trinkets
-     * `Trinket`, as the site's BiS list does (`slot-display-labels.ts`); the rest are F2's `items.slot.*`.
+     * The paperdoll label of a BiS or item slot key. Two rings read `Ring 1` and `Ring 2`,
+     * two trinkets `Trinket 1` and `Trinket 2`, so the rows can be told apart.
      */
     fun slot(res: Resources, key: String): String = when (key) {
         "head" -> res.getString(R.string.items_slot_head)
@@ -23,8 +23,12 @@ object ItemWords {
         "waist" -> res.getString(R.string.items_slot_waist)
         "legs" -> res.getString(R.string.items_slot_legs)
         "feet" -> res.getString(R.string.items_slot_feet)
-        "finger", "finger1", "finger2" -> res.getString(R.string.bis_slot_ring)
-        "trinket", "trinket1", "trinket2" -> res.getString(R.string.items_slot_trinket)
+        "finger" -> res.getString(R.string.items_slot_finger)
+        "finger1" -> res.getString(R.string.items_slot_finger1)
+        "finger2" -> res.getString(R.string.items_slot_finger2)
+        "trinket" -> res.getString(R.string.items_slot_trinket)
+        "trinket1" -> res.getString(R.string.items_slot_trinket1)
+        "trinket2" -> res.getString(R.string.items_slot_trinket2)
         "main_hand" -> res.getString(R.string.items_slot_mainHand)
         "off_hand" -> res.getString(R.string.items_slot_offHand)
         "ranged" -> res.getString(R.string.items_slot_ranged)

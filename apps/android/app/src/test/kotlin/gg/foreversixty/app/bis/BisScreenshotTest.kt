@@ -10,7 +10,14 @@ import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.ForeverTheme
-import gg.foreversixty.app.items.ItemTooltipBody
+import gg.foreversixty.app.items.ItemTooltipContent
+import gg.foreversixty.app.items.ItemTooltipModel
+import gg.foreversixty.app.items.ItemTooltipPhase
+import gg.foreversixty.app.items.ItemTooltipSources
+import gg.foreversixty.app.model.KeyDate
+import kotlinx.serialization.builtins.ListSerializer
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performScrollTo
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import org.junit.Rule
@@ -40,11 +47,17 @@ class BisScreenshotTest {
         BisListBuilder(res, BisTestData.items().items, setOf(12640), ZoneOffset.UTC)
             .list(file, band, "Fury Warrior", res.getString(R.string.bis_range_p1))
     }
-    private val context = BisContext(BisTestData.raid, BisTestData.raid, "Obnoxious Yell", BisTestData.classes())
+    private val context = BisContext(
+        BisTestData.raid,
+        BisTestData.raid,
+        "Obnoxious Yell",
+        BisTestData.classes(),
+        RaidsOpening.from(BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))),
+    )
     private val catalog = BisTestData.catalog()
 
     private fun content(phase: BisPhase) = @Composable {
-        BisContent(BisUiState(phase, context), catalog, query = "", nowMillis = BisTestData.NOW)
+        BisContent(BisUiState(phase, context, build = BisTestData.BUILD), catalog, query = "", nowMillis = BisTestData.NOW)
     }
 
     @Test fun `list`() = both("bis_list", content(BisPhase.Loaded(list, null)))
@@ -57,27 +70,42 @@ class BisScreenshotTest {
 
     @Test fun `not cached`() = both("bis_not_cached", content(BisPhase.NotCached))
 
-    @Test fun `picker`() = both("bis_picker") {
-        BisPickerContent(context.copy(selection = BisTestData.raid.copy(faction = "alliance")), catalog) {}
+    /** The sheets draw over the tab bar on a device, so they are captured alone, as the sheet's content. */
+    @Test fun `picker`() = both("bis_picker", screen = { PickerSheet() }, inShell = false)
+
+    @Test fun `picker scrolled to Back at the largest size`() {
+        capture("bis_picker_bottom_large", LARGE, inShell = false, scrollTo = "Back to Obnoxious Yell's list") { PickerSheet() }
     }
 
-    @Test fun `tooltip`() = both("bis_tooltip") {
+    @Test fun `tooltip`() = both("bis_tooltip", inShell = false, screen = {
         val row = list.rows.first()
-        ItemTooltipBody(tooltipContent(row, requireNotNull(row.pick), list, res))
+        val request = tooltipRequest(row, requireNotNull(row.pick), list, context, BisTestData.BUILD)
+        val sources = ItemTooltipSources(BisTestData.items().items.associateBy { it.id }, emptyList(), BisTestData.bis())
+        ItemTooltipContent(request, ItemTooltipPhase.Loaded(ItemTooltipModel.build(request, sources, res)))
+    })
+
+    @Composable
+    private fun PickerSheet() = BisPickerContent(context.copy(selection = BisTestData.raid.copy(faction = "alliance")), catalog) {}
+
+    private fun both(name: String, screen: @Composable () -> Unit, inShell: Boolean = true) {
+        capture("${name}_default", 1f, inShell, screen = screen)
+        capture("${name}_large", LARGE, inShell, screen = screen)
     }
 
-    private fun both(name: String, screen: @Composable () -> Unit) {
-        capture("${name}_default", 1f, screen)
-        capture("${name}_large", LARGE, screen)
-    }
-
-    private fun capture(name: String, fontScale: Float, screen: @Composable () -> Unit) {
+    private fun capture(
+        name: String,
+        fontScale: Float,
+        inShell: Boolean,
+        scrollTo: String? = null,
+        screen: @Composable () -> Unit,
+    ) {
         RuntimeEnvironment.setFontScale(fontScale)
         compose.setContent {
             ForeverTheme {
-                ForeverTabScaffold(selected = ForeverTab.Bis, onSelect = {}) { screen() }
+                if (inShell) ForeverTabScaffold(selected = ForeverTab.Bis, onSelect = {}) { screen() } else screen()
             }
         }
+        scrollTo?.let { compose.onNodeWithText(it).performScrollTo() }
         compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = TOLERANT)
     }
 

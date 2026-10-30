@@ -358,17 +358,17 @@ enum Copy {
     /// You wear this ·
     static var tooltipYouWear: String { text("tooltip.youWear") }
 
-    /// {delta} DPS vs the pick
-    static func tooltipDelta(delta: String) -> String {
-        format("tooltip.delta", delta)
+    /// {delta} {unit} vs the pick
+    static func tooltipDelta(delta: String, unit: String) -> String {
+        format("tooltip.delta", delta, unit)
     }
 
     /// Nothing else ranked
     static var tooltipNothingElse: String { text("tooltip.nothingElse") }
 
-    /// Best in slot for {slot} · {spec} {band} · {preset}
-    static func tooltipPickOf(slot: String, spec: String, band: String, preset: String) -> String {
-        format("tooltip.pickOf", slot, spec, band, preset)
+    /// Best in slot for {slot} · {spec} {band}
+    static func tooltipPickOf(slot: String, spec: String, band: String) -> String {
+        format("tooltip.pickOf", slot, spec, band)
     }
 
     /// {item}, {quality} {slot} item
@@ -623,8 +623,10 @@ enum Copy {
         format("items.setBonus", n, text)
     }
 
-    /// Same DPS as the pick
-    static var itemsSameDps: String { text("items.sameDps") }
+    /// Same {unit} as the pick
+    static func itemsSameDps(unit: String) -> String {
+        format("items.sameDps", unit)
+    }
 
     /// Loading the item…
     static var itemsLoading: String { text("items.loading") }
@@ -698,6 +700,16 @@ enum Copy {
     /// 60 · Phase 1 raid
     static var bisRangeP1: String { text("bis.range.p1") }
 
+    /// 60 · Phase 1 raid · opens {date}
+    static func bisRangeP1Opens(date: String) -> String {
+        format("bis.range.p1Opens", date)
+    }
+
+    /// Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated {date}
+    static func bisTankLine(date: String) -> String {
+        format("bis.tankLine", date)
+    }
+
     /// This list is not on your phone yet. Connect once to save it.
     static var bisNotCached: String { text("bis.notCached") }
 
@@ -716,8 +728,8 @@ enum Copy {
     /// HPS
     static var bisUnitHps: String { text("bis.unit.hps") }
 
-    /// points
-    static var bisUnitPoints: String { text("bis.unit.points") }
+    /// score
+    static var bisUnitScore: String { text("bis.unit.score") }
 
     /// {spec} {class}
     static func bisSpecChip(spec: String, className: String) -> String {
@@ -754,9 +766,6 @@ enum Copy {
         format("bis.slotSource", slot, source)
     }
 
-    /// Ring
-    static var bisSlotRing: String { text("bis.slot.ring") }
-
     /// Quest: {name}
     static func bisSourceQuest(name: String) -> String {
         format("bis.source.quest", name)
@@ -785,18 +794,10 @@ enum Copy {
     /// Shows the item
     static var bisA11yShowsItem: String { text("bis.a11y.showsItem") }
 
-    /// same {unit}
-    static func bisNextSameShort(unit: String) -> String {
-        format("bis.nextSameShort", unit)
-    }
-
     /// {quality} · {slot}
     static func bisQualitySlot(quality: String, slot: String) -> String {
         format("bis.qualitySlot", quality, slot)
     }
-
-    /// Bare
-    static var bisPresetBare: String { text("bis.preset.bare") }
 
     /// {faction} · {region} {ruleset} · {n} on the roster
     static func raidsGuildLine(faction: String, region: String, ruleset: String, n: Int) -> String {

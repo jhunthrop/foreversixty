@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,7 +61,7 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
     }
 }
 
-/** The secondary button: a 4.5% white fill and the gold 17% border, 48 tall. */
+/** The secondary button: a 4.5% white fill and the gold 17% border, 48 tall, its label in sentence case. */
 @Composable
 fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedButton(
@@ -70,7 +71,7 @@ fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modi
         border = BorderStroke(1.dp, FsColor.lineCard),
         colors = ButtonDefaults.outlinedButtonColors(containerColor = GamePalette.controlFill, contentColor = FsColor.strong),
     ) {
-        Text(text.uppercase(), style = MicroStyle.copy(fontSize = 13.sp))
+        Text(text, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FsFontWeight.bodySemibold))
     }
 }
 

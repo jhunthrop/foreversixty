@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalResources
@@ -62,8 +63,8 @@ import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GamePalette
 import gg.foreversixty.app.designsystem.HeadingFamily
 import gg.foreversixty.app.items.ItemIcon
-import gg.foreversixty.app.items.ItemTooltipAlternative
-import gg.foreversixty.app.items.ItemTooltipContent
+import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemWords
 import gg.foreversixty.app.items.SpecIcon
 
@@ -80,7 +81,7 @@ fun BisContent(
     query: String,
     onOpenPicker: () -> Unit = {},
     onTryAgain: () -> Unit = {},
-    onOpenItem: (ItemTooltipContent) -> Unit = {},
+    onOpenItem: (ItemTooltipRequest) -> Unit = {},
     nowMillis: Long = System.currentTimeMillis(),
 ) {
     val phase = state.phase
@@ -97,7 +98,7 @@ fun BisContent(
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             item { TitleRow(state.context.isYours) }
-            item { Chips(state.context, catalog, onOpenPicker) }
+            item { Chips(state.context, catalog, nowMillis, onOpenPicker) }
             when (phase) {
                 BisPhase.Loading -> item { Skeleton() }
                 is BisPhase.Loaded -> {
@@ -110,7 +111,9 @@ fun BisContent(
                             RowCell(index, rows.size) {
                                 val pick = row.pick
                                 if (pick != null) {
-                                    PickRow(row, pick) { onOpenItem(tooltipContent(row, pick, phase.list, it)) }
+                                    PickRow(row, pick) {
+                                        state.build?.let { build -> onOpenItem(tooltipRequest(row, pick, phase.list, state.context, build)) }
+                                    }
                                 } else {
                                     EmptyRow(row.emptyReason.orEmpty())
                                 }
@@ -118,9 +121,9 @@ fun BisContent(
                         }
                     }
                 }
-                is BisPhase.NoList -> item { Notice(stringResource(R.string.home_answer_noList)) }
-                BisPhase.NotCached -> item { Notice(stringResource(R.string.bis_notCached)) }
-                BisPhase.Failed -> item { Failed(onTryAgain) }
+                is BisPhase.NoList -> item { StateNotice(stringResource(R.string.home_answer_noList), FsColor.muted, onTryAgain = null) }
+                BisPhase.NotCached -> item { StateNotice(stringResource(R.string.bis_notCached), FsColor.muted, onTryAgain) }
+                BisPhase.Failed -> item { StateNotice(stringResource(R.string.bis_failed), FsColor.wipe, onTryAgain) }
             }
         }
     }
@@ -144,12 +147,12 @@ private fun TitleRow(isYours: Boolean) {
 }
 
 @Composable
-private fun Chips(context: BisContext, catalog: SpecCatalog, onOpenPicker: () -> Unit) {
+private fun Chips(context: BisContext, catalog: SpecCatalog, nowMillis: Long, onOpenPicker: () -> Unit) {
     val res = LocalResources.current
     val selection = context.selection
     val spec = catalog.spec(selection.spec)
     val specLabel = stringResource(R.string.bis_specChip, spec?.name ?: selection.spec, context.className(selection.classSlug))
-    val range = BisLabels.range(res, selection.range)
+    val range = context.rangeLabel(res, selection.range, nowMillis)
     val faction = BisLabels.faction(res, selection.faction)
     val description = stringResource(R.string.bis_a11y_picker, specLabel, range, faction)
     FlowRow(
@@ -345,40 +348,39 @@ private fun Notice(text: String) {
     Text(text, style = MaterialTheme.typography.bodyLarge, color = FsColor.text, modifier = Modifier.padding(top = 8.dp))
 }
 
+/**
+ * A state of the list region (not saved, no list, error): its sentence, 24 below the chips (the
+ * chips' 14 plus 10), and `Try again` where a retry can help (spec §5.0).
+ */
 @Composable
-private fun Failed(onTryAgain: () -> Unit) {
-    Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+private fun StateNotice(text: String, color: Color, onTryAgain: (() -> Unit)?) {
+    Column(Modifier.padding(top = 10.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            stringResource(R.string.bis_failed),
+            text,
             style = MaterialTheme.typography.bodyLarge,
-            color = FsColor.wipe,
-            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
+            color = color,
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
         )
-        SecondaryButton(stringResource(R.string.common_tryAgain), onTryAgain)
+        onTryAgain?.let { SecondaryButton(stringResource(R.string.common_tryAgain), it) }
     }
 }
 
-/** Spec F2.6: up to two alternatives. */
-private const val MAX_NEXT_BEST = 2
-
-/** The tooltip content of a list row. */
-fun tooltipContent(row: BisRow, pick: BisPick, list: BisList, res: Resources): ItemTooltipContent =
-    ItemTooltipContent(
-        id = pick.item.id,
-        name = pick.item.name,
-        item = pick.item.item,
-        slotKey = row.slot,
-        source = pick.source,
-        nextBest = pick.runnersUp.take(MAX_NEXT_BEST).map { alternative ->
-            val gap = BisListBuilder.signedDelta(alternative.dpsDelta)?.let { res.getString(R.string.tooltip_delta, it) }
-                ?: res.getString(R.string.bis_nextSameShort, res.getString(list.unit.word))
-            ItemTooltipAlternative(
-                id = alternative.item.id,
-                name = alternative.item.name,
-                icon = alternative.item.icon,
-                quality = alternative.item.quality,
-                meta = (if (alternative.isWorn) res.getString(R.string.tooltip_youWear) else "") + gap,
-            )
-        },
-        pickOf = res.getString(R.string.tooltip_pickOf, row.slotLabel, list.specLabel, list.rangeLabel, list.presetLabel),
+/** The tooltip request of a list row, in F2's entry point's terms (`ItemTooltipSheet(request, catalog, onDismiss)`). */
+fun tooltipRequest(row: BisRow, pick: BisPick, list: BisList, context: BisContext, build: String): ItemTooltipRequest {
+    val selection = context.selection
+    val item = pick.item.item
+    return ItemTooltipRequest(
+        itemId = pick.item.id,
+        fallback = ItemLook(pick.item.id, pick.item.name, item?.quality, item?.icon, item?.itemLevel),
+        build = build,
+        classSlug = selection.classSlug,
+        spec = selection.spec,
+        specName = list.specLabel,
+        band = selection.range.band,
+        bandLabel = list.rangeLabel,
+        preset = selection.range.preset,
+        faction = selection.faction,
+        sourceLine = pick.source,
+        wornId = pick.runnersUp.firstOrNull { it.isWorn }?.item?.id ?: pick.item.id.takeIf { pick.isWorn },
     )
+}

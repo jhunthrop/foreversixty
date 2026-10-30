@@ -36,12 +36,16 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GamePalette
 import gg.foreversixty.app.items.IconSource
-import gg.foreversixty.app.items.ItemTooltipBody
-import gg.foreversixty.app.items.ItemTooltipContent
+import gg.foreversixty.app.items.ItemCatalog
+import gg.foreversixty.app.items.ItemTooltipRequest
+import gg.foreversixty.app.items.ItemTooltipSheet
 import gg.foreversixty.app.items.LocalIconSource
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ActiveBuild
 import gg.foreversixty.app.model.ApiJson
+import gg.foreversixty.app.model.KeyDate
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.builtins.ListSerializer
 import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.ApiMode
 import gg.foreversixty.app.network.AppConfigRepository
@@ -59,13 +63,13 @@ import java.io.IOException
 /** The BiS tab (spec F3): the list, its search, its picker and the item tooltip, over [BisModel]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BisRoute(model: BisModel) {
+fun BisRoute(model: BisModel, catalog: ItemCatalog) {
     val state by model.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var query by rememberSaveable { mutableStateOf("") }
     var searching by rememberSaveable { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(false) }
-    var tooltip by remember { mutableStateOf<ItemTooltipContent?>(null) }
+    var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(model) { model.start() }
 
     CompositionLocalProvider(LocalIconSource provides state.build?.let { IconSource(it) }) {
@@ -104,11 +108,7 @@ fun BisRoute(model: BisModel) {
                 BisPickerContent(state.context, model.catalog) { scope.launch { model.select(it) } }
             }
         }
-        tooltip?.let { content ->
-            ModalBottomSheet(onDismissRequest = { tooltip = null }, containerColor = GamePalette.sheet) {
-                ItemTooltipBody(content)
-            }
-        }
+        tooltip?.let { request -> ItemTooltipSheet(request, catalog, onDismiss = { tooltip = null }) }
     }
 }
 
@@ -156,7 +156,8 @@ fun createBisModel(
             appConfig.current?.activeBuild ?: appConfig.refresh().dataOrNull()?.activeBuild
         },
         character = character,
-        bundledBuild = readAsset(context, BUNDLED_BUILD)?.let(::decodeBuild),
+        bundledBuild = readAsset(context, BUNDLED_BUILD)?.let { decode(it, ActiveBuild.serializer())?.build },
+        bundledDates = readAsset(context, BUNDLED_DATES)?.let { decode(it, ListSerializer(KeyDate.serializer())) }.orEmpty(),
     )
     return BisModel(
         source = source,
@@ -169,14 +170,17 @@ fun createBisModel(
 /** The active build bundled with the app, for a first launch with no connection. */
 const val BUNDLED_BUILD = "bundled/active-build.json"
 
+/** The key dates bundled with the app: `/data/dates.json` is not published yet (app-v1.md). */
+const val BUNDLED_DATES = "bundled/dates.json"
+
 private fun readAsset(context: Context, name: String): String? = try {
     context.assets.open(name).bufferedReader().use { it.readText() }
 } catch (e: IOException) {
     null
 }
 
-private fun decodeBuild(json: String): String? = try {
-    ApiJson.decodeFromString(ActiveBuild.serializer(), json).build
+private fun <T> decode(json: String, strategy: DeserializationStrategy<T>): T? = try {
+    ApiJson.decodeFromString(strategy, json)
 } catch (e: SerializationException) {
     null
 } catch (e: IllegalArgumentException) {

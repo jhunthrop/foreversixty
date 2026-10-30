@@ -10,6 +10,7 @@ import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.Item
 import gg.foreversixty.app.model.ItemsFile
+import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
@@ -44,6 +45,9 @@ interface BisDataSource {
 
     /** The current character, or null signed out. F1's switcher replaces the main character. */
     suspend fun currentCharacter(): AccountCharacter?
+
+    /** The key dates: the CDN's (or its saved copy), else the copy bundled with the app. */
+    suspend fun keyDates(): List<KeyDate>
 }
 
 /** The live source: the CDN through the offline cache, the build from the app config. */
@@ -53,6 +57,8 @@ class LiveBisDataSource(
     private val character: suspend () -> AccountCharacter?,
     /** Null only for a broken build; the first offline launch then shows the not-saved sentence. */
     private val bundledBuild: String?,
+    /** web/src/data/dates.json, bundled: `/data/dates.json` is not published yet (app-v1.md). */
+    private val bundledDates: List<KeyDate>,
 ) : BisDataSource {
     override suspend fun activeBuild(): String = configuredBuild() ?: bundledBuild.orEmpty()
     override suspend fun bis(build: String, spec: String) = files.load(StaticEndpoints.getBis(build, spec))
@@ -62,6 +68,8 @@ class LiveBisDataSource(
     override fun cachedItems(build: String, classSlug: String) = files.cached(StaticEndpoints.getItems(build, classSlug))
     override fun cachedClasses(build: String) = files.cached(StaticEndpoints.getClasses(build))
     override suspend fun currentCharacter(): AccountCharacter? = character()
+    override suspend fun keyDates(): List<KeyDate> =
+        (files.load(StaticEndpoints.getKeyDates()) as? ApiResult.Success)?.data?.value ?: bundledDates
 }
 
 /** Remembers the last list and whether the signed-out picker has opened once. */
@@ -123,6 +131,8 @@ data class BisContext(
     val characterSelection: BisSelection? = null,
     val characterName: String? = null,
     val classes: List<ClassInfo> = emptyList(),
+    /** When the first raids open; null when the dates file has no raids entry. */
+    val raidsOpening: RaidsOpening? = null,
 ) {
     /** The gold `Yours` tag: the list is the character's spec, range and faction. */
     val isYours: Boolean get() = characterSelection == selection
@@ -137,6 +147,10 @@ data class BisContext(
 
     fun className(slug: String): String =
         classes.firstOrNull { it.slug == slug }?.name ?: slug.replaceFirstChar { it.uppercase() }
+
+    /** A range's chip and pill words, with `opens Dec 9` on the raid list before raids open. */
+    fun rangeLabel(res: Resources, range: BisRange, nowMillis: Long = System.currentTimeMillis()): String =
+        BisLabels.range(res, range, raidsOpening, nowMillis)
 }
 
 data class BisUiState(
@@ -171,12 +185,14 @@ class BisModel(
             openPicker = true
         }
         val build = source.activeBuild()
+        val opening = RaidsOpening.from(source.keyDates())
         mutable.update {
             it.copy(
                 context = it.context.copy(
                     selection = own ?: it.context.selection,
                     characterSelection = own,
                     characterName = character?.name?.takeIf { own != null },
+                    raidsOpening = opening,
                 ),
                 build = build,
                 isPickerOpen = openPicker,
@@ -260,7 +276,15 @@ class BisModel(
 
 /** The words of the chips and pills. */
 object BisLabels {
-    fun range(res: Resources, range: BisRange): String = when {
+    /** The range's words; the raid list reads `60 · Phase 1 raid · opens Dec 9` until raids open, the date from the data. */
+    fun range(
+        res: Resources,
+        range: BisRange,
+        opening: RaidsOpening? = null,
+        nowMillis: Long = System.currentTimeMillis(),
+    ): String = when {
+        range.preset == BisRange.RAID && opening != null && opening.isUpcoming(nowMillis) ->
+            res.getString(R.string.bis_range_p1Opens, opening.label)
         range.preset == BisRange.RAID -> res.getString(R.string.bis_range_p1)
         range.band == BisRange.LAST_BAND -> res.getString(R.string.bis_range_top, range.band)
         else -> res.getString(R.string.bis_range_span, range.band, range.band + BisRange.BAND_STEP - 1)

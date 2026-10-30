@@ -7,6 +7,12 @@ import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.BisSlot
 import gg.foreversixty.app.model.mainCharacter
+import gg.foreversixty.app.model.KeyDate
+import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipModel
+import gg.foreversixty.app.items.ItemTooltipRequest
+import gg.foreversixty.app.items.ItemTooltipSources
+import kotlinx.serialization.builtins.ListSerializer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -76,7 +82,7 @@ class BisListTest {
     @Test
     fun `healer and tank bands name their own measure`() {
         assertEquals("HPS", res.getString(BisUnit.forRole("healer").word))
-        assertEquals("points", res.getString(BisUnit.forRole("tank").word))
+        assertEquals("score", res.getString(BisUnit.forRole("tank").word))
         assertEquals("DPS", res.getString(BisUnit.forRole(null).word))
     }
 
@@ -87,7 +93,9 @@ class BisListTest {
         assertEquals("Neck · Quest: Falrin's Vendetta", rows[1].pick?.slotSource)
         assertEquals("Shoulder · Vendor: Creeg Bothunk", rows[2].pick?.slotSource)
         assertEquals("Wrist · Warsong Outriders", rows[5].pick?.slotSource)
-        assertEquals("Ring", rows[10].slotLabel)
+        assertEquals("Ring 1", rows[10].slotLabel)
+        assertEquals("Ring 2", rows[11].slotLabel)
+        assertEquals("Trinket 1", rows[12].slotLabel)
         assertEquals(
             "PvP rank 14 · Champion · Horde",
             BisListBuilder(res, emptyList(), emptySet()).sourceLine("PvP rank 14 · Champion · Horde", "vendor"),
@@ -109,7 +117,7 @@ class BisListTest {
         val offHand = builder.row(BisSlot("off_hand", verified = false, emptyReason = "two_hand_equipped"), BisUnit.Dps, "Argent Crusader")
         assertEquals("Off hand · none: Argent Crusader is two-handed.", offHand.emptyReason)
         val trinket = builder.row(BisSlot("trinket1", verified = false, emptyReason = "no_sourced_item"), BisUnit.Dps, null)
-        assertEquals("Trinket · no pick for this range.", trinket.emptyReason)
+        assertEquals("Trinket 1 · no pick for this range.", trinket.emptyReason)
     }
 
     @Test
@@ -150,12 +158,68 @@ class BisListTest {
         assertNull(signedOut.backTarget)
     }
 
+    private fun real(spec: String): BisFile =
+        ApiJson.decodeFromString(BisFile.serializer(), File(BisTestData.repo, "data/builds/${BisTestData.BUILD}/bis/$spec.json").readText())
+
+    private fun request(file: BisFile, band: Int, preset: String, slotIndex: Int, wornId: Int? = null): ItemTooltipRequest {
+        val slot = requireNotNull(file.band(BisRange(band, preset), "horde")).slots[slotIndex]
+        val id = requireNotNull(slot.itemId)
+        return ItemTooltipRequest(
+            itemId = id, fallback = ItemLook(id, slot.itemName), build = BisTestData.BUILD, classSlug = "warrior",
+            spec = file.spec, specName = "Fury Warrior", band = band, bandLabel = BisLabels.range(res, BisRange(band, preset)),
+            preset = preset, faction = "horde", sourceLine = slot.source, wornId = wornId,
+        )
+    }
+
+    private fun model(file: BisFile, request: ItemTooltipRequest) =
+        ItemTooltipModel.build(request, ItemTooltipSources(emptyMap(), emptyList(), file), res)
+
     @Test
-    fun `the raid list reads the file's preset label and the bare list reads Bare`() {
-        val file = BisTestData.bis()
-        val builder = BisListBuilder(res, emptyList(), emptySet())
-        assertEquals("Raid-ready, Phase 1", builder.presetLabel(file, requireNotNull(file.band(BisRange(60, "raid"), "horde"))))
-        assertEquals("Bare", builder.presetLabel(file, requireNotNull(file.band(BisRange(50, "bare"), "horde"))))
+    fun `the tooltip's next best reads in the band's unit`() {
+        val fury = BisTestData.bis()
+        assertEquals("\u221215.0 DPS vs the pick", model(fury, request(fury, 60, "raid", 0)).alternatives.first().meta)
+        listOf("priest-holy" to "HPS", "warrior-protection" to "score").forEach { (spec, word) ->
+            val file = real(spec)
+            val index = requireNotNull(file.band(BisRange(60, "raid"), "horde")).slots
+                .indexOfFirst { s -> s.alternatives.orEmpty().take(2).any { kotlin.math.abs(it.dpsDelta) >= 0.05 } }
+            assertTrue(model(file, request(file, 60, "raid", index)).alternatives.any { it.meta.endsWith(" $word vs the pick") })
+        }
+    }
+
+    @Test
+    fun `the tooltip footer names the slot, spec and band, never a preset id`() {
+        val fury = BisTestData.bis()
+        assertEquals("Best in slot for Head · Fury Warrior 50 to 59", model(fury, request(fury, 50, "bare", 0)).pickFooter)
+        assertEquals("Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid", model(fury, request(fury, 60, "raid", 10)).pickFooter)
+    }
+
+    @Test
+    fun `the worn runner-up leads with You wear this`() {
+        val fury = BisTestData.bis()
+        val alt = requireNotNull(fury.band(BisRange(60, "raid"), "horde")).slots[0].alternatives.orEmpty().first()
+        assertTrue(model(fury, request(fury, 60, "raid", 0, wornId = alt.itemId)).alternatives.first().meta.startsWith("You wear this · "))
+    }
+
+    @Test
+    fun `a tank list explains its score instead of a damage headline`() {
+        val file = real("warrior-protection")
+        val band = requireNotNull(file.band(BisRange(60, "raid"), "horde"))
+        val list = BisListBuilder(res, emptyList(), emptySet(), ZoneOffset.UTC).list(file, band, "Protection Warrior", "60")
+        assertEquals(BisUnit.Score, list.unit)
+        assertTrue(list.setDpsLine.orEmpty().startsWith("Tank lists rank by score"))
+        assertTrue(list.rows.mapNotNull { it.pick }.any { it.next.endsWith(" score") })
+    }
+
+    @Test
+    fun `the raid chip says when raids open, from the data, until they do`() {
+        val dates = BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))
+        val opening = requireNotNull(RaidsOpening.from(dates))
+        assertEquals("Dec 9", opening.label)
+        val raid = BisRange(60, "raid")
+        assertEquals("60 · Phase 1 raid · opens Dec 9", BisLabels.range(res, raid, opening, BisTestData.NOW))
+        assertEquals("60 · Phase 1 raid", BisLabels.range(res, raid, opening, opening.startsMillis))
+        assertEquals("60", BisLabels.range(res, BisRange(60, "bare"), opening, BisTestData.NOW))
+        assertNull(RaidsOpening.from(emptyList()))
     }
 
     @Test

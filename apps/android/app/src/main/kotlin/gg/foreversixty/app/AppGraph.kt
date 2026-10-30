@@ -9,6 +9,8 @@ import gg.foreversixty.app.auth.TokenStore
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.createBisModel
 import gg.foreversixty.app.bis.isBisEnabled
+import gg.foreversixty.app.items.ItemCatalog
+import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
@@ -64,6 +66,12 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     } else {
         null
     }
+
+    /** The item tooltip's static files (F2's `ItemCatalog` entry point; F2's class replaces F3's). */
+    val itemCatalog = ItemCatalog(
+        StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        File(context.noBackupFilesDir, "static-data"),
+    )
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

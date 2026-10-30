@@ -8,6 +8,8 @@ import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.ItemsFile
+import gg.foreversixty.app.model.KeyDate
+import kotlinx.serialization.builtins.ListSerializer
 import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
@@ -39,6 +41,7 @@ private class FakeBisSource(
     override fun cachedItems(build: String, classSlug: String): CachedFile<ItemsFile>? = null
     override fun cachedClasses(build: String): CachedFile<List<ClassInfo>>? = null
     override suspend fun currentCharacter() = character
+    override suspend fun keyDates(): List<KeyDate> = BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))
 }
 
 private class MemoryPreferences : BisPreferences {
@@ -67,6 +70,7 @@ class BisModelTest {
         assertTrue(state.context.isYours)
         assertEquals(BisRange(50, "bare"), state.context.selection.range)
         assertFalse(state.isPickerOpen)
+        assertEquals("Dec 9", state.context.raidsOpening?.label)
         val phase = state.phase as BisPhase.Loaded
         assertEquals(null, phase.offlineSinceMillis)
         assertEquals(17, phase.list.rows.size)

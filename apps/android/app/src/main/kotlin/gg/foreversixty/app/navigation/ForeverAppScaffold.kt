@@ -20,17 +20,18 @@ import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.BisRoute
+import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.network.AccountApi
 
 /** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
 @Composable
-fun ForeverAppScaffold(accountApi: AccountApi, bisModel: BisModel? = null) {
+fun ForeverAppScaffold(accountApi: AccountApi, bisModel: BisModel? = null, itemCatalog: ItemCatalog? = null) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Character) }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         when (selected) {
             ForeverTab.Character -> HomeRoute(accountApi)
-            ForeverTab.Bis -> bisModel?.let { BisRoute(it) } ?: ComingSoon(selected)
+            ForeverTab.Bis -> if (bisModel != null && itemCatalog != null) BisRoute(bisModel, itemCatalog) else ComingSoon(selected)
             ForeverTab.Raids, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
         }
     }

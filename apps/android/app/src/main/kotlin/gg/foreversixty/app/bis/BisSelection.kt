@@ -4,6 +4,10 @@ import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.BisBand
 import gg.foreversixty.app.model.BisFile
+import gg.foreversixty.app.model.KeyDate
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -114,4 +118,31 @@ data class BisSelection(val classSlug: String, val spec: String, val range: BisR
 fun BisFile.band(range: BisRange, faction: String): BisBand? {
     val candidates = bands.filter { it.band == range.band && it.faction == faction }
     return candidates.firstOrNull { it.preset == range.preset } ?: candidates.firstOrNull { it.preset == BisRange.BARE }
+}
+
+/**
+ * When the first raids open (`dates.json`'s `raids` entry, Dec 9): until then the Phase 1 raid list
+ * says so on its chip and stays viewable. Read as the site's home dates line reads it: the entry's
+ * `iso` day starts at 00:00 UTC, and its `key` is the display date.
+ */
+data class RaidsOpening(
+    /** `Dec 9`, the data's own display date. */
+    val label: String,
+    val startsMillis: Long,
+) {
+    fun isUpcoming(nowMillis: Long): Boolean = nowMillis < startsMillis
+
+    companion object {
+        const val ROLE = "raids"
+
+        fun from(dates: List<KeyDate>): RaidsOpening? {
+            val entry = dates.firstOrNull { it.role == ROLE } ?: return null
+            val starts = try {
+                LocalDate.parse(entry.iso).atStartOfDay(ZoneOffset.UTC).toInstant()
+            } catch (e: DateTimeParseException) {
+                return null
+            }
+            return RaidsOpening(entry.key, starts.toEpochMilli())
+        }
+    }
 }

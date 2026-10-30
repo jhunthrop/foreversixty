@@ -85,7 +85,7 @@ fun BisPickerContent(context: BisContext, catalog: SpecCatalog, onSelect: (BisSe
             }
         }
         Section(stringResource(R.string.bis_picker_range)) {
-            Pills(BisRange.all, { BisLabels.range(res, it) }, selection.range, mark = null) { onSelect(selection.copy(range = it)) }
+            Pills(BisRange.all, { context.rangeLabel(res, it) }, selection.range, mark = null) { onSelect(selection.copy(range = it)) }
         }
         Section(stringResource(R.string.bis_picker_faction)) {
             Pills(BisSelection.factions, { BisLabels.faction(res, it) }, selection.faction, mark = { it }) { onSelect(selection.copy(faction = it)) }

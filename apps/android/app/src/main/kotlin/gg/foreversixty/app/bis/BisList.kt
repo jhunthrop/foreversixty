@@ -18,17 +18,17 @@ import kotlin.math.abs
 
 /**
  * The measure a band's figures are in: a healer band's are healing per second, a tank band's its
- * tank score (the site's `rateUnitForRole`).
+ * tank score (the site's `scoreUnitWord`: DPS, HPS, score).
  */
 enum class BisUnit(val word: Int) {
     Dps(R.string.bis_unit_dps),
     Hps(R.string.bis_unit_hps),
-    Points(R.string.bis_unit_points);
+    Score(R.string.bis_unit_score);
 
     companion object {
         fun forRole(role: String?): BisUnit = when (role) {
             "healer" -> Hps
-            "tank" -> Points
+            "tank" -> Score
             else -> Dps
         }
     }
@@ -66,7 +66,6 @@ data class BisList(
     val unit: BisUnit,
     val specLabel: String,
     val rangeLabel: String,
-    val presetLabel: String,
 ) {
     /** The rows whose pick or runner-up names contain [query] (spec F3.1 search). */
     fun filtered(query: String): List<BisRow> {
@@ -95,20 +94,25 @@ class BisListBuilder(
     fun list(file: BisFile, band: BisBand, specLabel: String, rangeLabel: String): BisList {
         val unit = BisUnit.forRole(band.role)
         val mainHand = band.slots.firstOrNull { it.slot == MAIN_HAND }?.itemName
-        val unitWord = res.getString(unit.word)
         return BisList(
-            setDpsLine = band.setDps?.let { res.getString(R.string.bis_setDps, figure(it), unitWord, updated(file.generatedAt)) },
+            setDpsLine = headline(file, band, unit),
             rows = band.slots.map { row(it, unit, mainHand) },
             unit = unit,
             specLabel = specLabel,
             rangeLabel = rangeLabel,
-            presetLabel = presetLabel(file, band),
         )
     }
 
-    /** The file's own label for the preset; the bare character reads `Bare`, as the site's `presetLabelFor` does. */
-    fun presetLabel(file: BisFile, band: BisBand): String =
-        if (band.preset == BisRange.BARE) res.getString(R.string.bis_preset_bare) else file.presets[band.preset]?.label ?: band.preset
+    /**
+     * The line above the rows: a DPS or HPS band's `set_dps` with its Updated date; a tank band's
+     * `set_dps` is its own damage, not what a tank is judged on (the site's `headlineDpsOf`), so it
+     * says what a score point is instead.
+     */
+    fun headline(file: BisFile, band: BisBand, unit: BisUnit): String? {
+        val date = updated(file.generatedAt)
+        if (unit == BisUnit.Score) return res.getString(R.string.bis_tankLine, date)
+        return band.setDps?.let { res.getString(R.string.bis_setDps, figure(it), res.getString(unit.word), date) }
+    }
 
     fun row(slot: BisSlot, unit: BisUnit, mainHand: String?): BisRow {
         val label = ItemWords.slot(res, slot.slot)
