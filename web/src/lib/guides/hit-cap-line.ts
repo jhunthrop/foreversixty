@@ -15,11 +15,7 @@ export interface GuideHitCapLine {
 }
 
 /** The talents that add hit to some of a caster's spells (`BisSpellHitToCap.school`). */
-export const SCHOOL_HIT_TALENTS: readonly string[] = [
-  'Precision',
-  "Nature's Reach",
-  'Suppression',
-];
+export const SCHOOL_HIT_TALENTS: readonly string[] = ['Precision', "Nature's Reach", 'Suppression'];
 
 /** The school-hit talent a build spends points in, if any. */
 export function schoolHitTalent(trees: readonly DecodedTreeView[]): string | undefined {
