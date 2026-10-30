@@ -15,6 +15,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 readonly HERE
 readonly GATE=$HERE/../activation-gate.sh
 readonly ACTIVATE=$HERE/../activate-build.sh
+readonly PINNED=$HERE/../engine/pinned-build.sh
 readonly OLD_BUILD=1.60.1.70658
 readonly NEW_BUILD=1.60.1.70707
 
@@ -38,18 +39,26 @@ equal() { [[ $1 == "$2" ]]; }
 contains() { [[ $1 == *"$2"* ]]; }
 lacks() { [[ $1 != *"$2"* ]]; }
 
-# stub_npm <dir> <exit> <vitest json>: an npm whose `test` writes the JSON report to the
-# --outputFile.json path it was given and exits <exit>.
+# stub_npm <dir> <test exit> <vitest json> [<red script>...]: an npm whose `test` writes
+# the JSON report to the --outputFile.json path it was given and exits <test exit>, and
+# whose `run <script>` exits 1 for each named red script and 0 otherwise. Each call is
+# recorded with the CF_PAGES, FOREVER_DATA and PUBLIC_SIM_ENGINE it saw.
 stub_npm() {
 	local dir=$1 status=$2 report=$3
+	shift 3
 	mkdir -p "$dir"
 	printf '%s' "$report" >"$dir/vitest.json"
+	printf '%s\n' "$@" >"$dir/red"
 	cat >"$dir/npm" <<EOF
 #!/usr/bin/env bash
+echo "npm \$* [CF_PAGES=\${CF_PAGES:-} FOREVER_DATA=\${FOREVER_DATA:-} PUBLIC_SIM_ENGINE=\${PUBLIC_SIM_ENGINE:-}]" >>"$dir/calls"
+if [ "\$1" = run ]; then
+  if grep -qxF "\$2" "$dir/red"; then echo "\$2 failed: prerender of /guides/mage/frost threw"; exit 1; fi
+  exit 0
+fi
 for arg in "\$@"; do
   case "\$arg" in --outputFile.json=*) cp "$dir/vitest.json" "\${arg#--outputFile.json=}" ;; esac
 done
-echo "npm \$*" >>"$dir/calls"
 exit $status
 EOF
 	chmod +x "$dir/npm"
@@ -90,6 +99,12 @@ assert "green: exits 0" equal "$STATUS" 0
 assert "green: says so" contains "$OUT" "are green"
 assert "green: lists nothing" equal "$LIST" ""
 assert "green: runs the whole vitest suite through npm test" contains "$(cat "$d/calls")" "npm test --"
+assert "green: runs astro check" contains "$(cat "$d/calls")" "npm run check"
+assert "green: runs lint" contains "$(cat "$d/calls")" "npm run lint"
+assert "green: runs the format check" contains "$(cat "$d/calls")" "npm run format:check"
+assert "green: the real build runs as deploy runs it" contains "$(cat "$d/calls")" "npm run build [CF_PAGES=1 FOREVER_DATA= PUBLIC_SIM_ENGINE=]"
+assert "green: check's real sync runs before the build, vitest's fixture sync after" \
+	equal "$(sed -E 's/ \[.*//; s/ --.*//' "$d/calls" | tr '\n' ',')" "npm run check,npm run lint,npm run format:check,npm run build,npm test,"
 assert "green: go test runs one package at a time" contains "$(cat "$d/go-calls")" "test -p 1 -count=1 -json"
 assert "green: the API packages that read the active build are found" contains "$(cat "$d/go-calls")" "./internal/trees"
 assert "green: a package that does not read it is left out" lacks "$(cat "$d/go-calls")" "./internal/httpx"
@@ -103,6 +118,27 @@ assert "web red: exits 1" equal "$STATUS" 1
 assert "web red: names the failing test, file relative to web/" equal "$LIST" "web src/pages/guides/_spec.test.ts > /guides/mage/frost the hit line"
 assert "web red: a passing test is not listed" lacks "$LIST" "the header"
 assert "web red: prints the list" contains "$OUT" "the hit line"
+
+# A real-build prerender failure is named, with the scripts after it still run.
+d=$SCRATCH/web-build
+stub_npm "$d" 0 "$WEB_GREEN" build
+stub_go "$d" 0 "$API_GREEN"
+STATUS=0
+OUT=$(FOREVER_DATA=fixture PUBLIC_SIM_ENGINE=wasm NPM_BIN="$d/npm" GO_BIN="$d/go" "$GATE" "$d/failures" 2>&1) || STATUS=$?
+LIST=$(cat "$d/failures")
+assert "build red: exits 1" equal "$STATUS" 1
+assert "build red: names the build" equal "$LIST" "web (npm run build) exited 1"
+assert "build red: quotes its log" contains "$OUT" "prerender of /guides/mage/frost threw"
+assert "build red: an inherited FOREVER_DATA and engine are cleared for the build" contains "$(cat "$d/calls")" "npm run build [CF_PAGES=1 FOREVER_DATA= PUBLIC_SIM_ENGINE=]"
+assert "build red: vitest still runs" contains "$(cat "$d/calls")" "npm test --"
+
+# Two red scripts and a red test: all listed.
+d=$SCRATCH/web-many
+stub_npm "$d" 1 '{"testResults":[{"name":"src/d.test.ts","status":"failed","assertionResults":[{"fullName":"d","status":"failed"}]}]}' check format:check
+stub_go "$d" 0 "$API_GREEN"
+gate "$d"
+assert "many red: three lines" equal "$(wc -l <"$d/failures" | tr -d ' ')" 3
+assert "many red: check, format, then the test" equal "$(tr '\n' '|' <"$d/failures")" "web (npm run check) exited 1|web (npm run format:check) exited 1|web src/d.test.ts > d|"
 
 # A web file that failed without an assertion (an import error) is listed as the suite.
 d=$SCRATCH/web-suite
@@ -201,6 +237,74 @@ assert "long: the head line stays" contains "$SUMMARY" "9 guide build(s) do not 
 assert "long: the tail stays" contains "$SUMMARY" "line 150"
 assert "long: the middle is elided" contains "$SUMMARY" "lines omitted"
 assert "long: and left out" lacks "$SUMMARY" "line 60"$'\n'
+
+
+# make_full_move_repo <dir>: a scratch checkout every step of a move passes in, up to the
+# gate: stub uv and go on PATH (stubs/), a re-encode that carries cleanly, the three TOCs,
+# the changelog, the API fixture and one API package that reads the active build; plus a
+# bare origin (<dir>.git) to show what a run pushed or tagged.
+make_full_move_repo() {
+	local dir=$1 toc
+	make_move_repo "$dir"
+	cp "$GATE" "$dir/tools/activation-gate.sh"
+	mkdir -p "$dir/tools/engine" "$dir/stubs" "$dir/web/src/content/guides/mage" "$dir/api/internal/trees" \
+		"$dir/api/internal/bnetbuild/testdata" "$dir/addon/ForeverSixtyData" "$dir/addon/ForeverSixtyInbox" \
+		"$dir/data/curated/coach" "$dir/sim/enginever"
+	cp "$PINNED" "$dir/tools/engine/pinned-build.sh"
+	echo 'console.log("43 guide build(s) re-stamped");' >"$dir/web/scripts/reencode-guide-builds.mjs"
+	echo "see https://foreversixty.gg/data/$OLD_BUILD/talents" >"$dir/web/src/content/guides/mage/frost.md"
+	echo 'package trees // reads web/src/data/active-build.json' >"$dir/api/internal/trees/trees.go"
+	echo "FS1:$OLD_BUILD:warrior:human:x" >"$dir/api/internal/bnetbuild/testdata/era-kiloz.fs1"
+	for toc in addon/ForeverSixtyData/ForeverSixtyData.toc addon/ForeverSixtyInbox/ForeverSixtyInbox.toc; do
+		printf '## Interface: 16001\n' >"$dir/$toc"
+	done
+	printf '# Changelog\n\n## 2.1.7\n\nOlder.\n' >"$dir/addon/ForeverSixty/CHANGELOG.md"
+	printf 'package enginever\n\nconst Version = "abcdef123"\n' >"$dir/sim/enginever/version.go"
+	printf '#!/usr/bin/env bash\nexit 0\n' >"$dir/stubs/uv"
+	printf '#!/usr/bin/env bash\nexit 0\n' >"$dir/stubs/go"
+	chmod +x "$dir/stubs/uv" "$dir/stubs/go"
+	git -C "$dir" add -A
+	git -C "$dir" -c user.name=test -c user.email=test@example.com commit --quiet -m "the rest of the move's inputs"
+	git clone --quiet --bare "$dir" "$dir.git"
+	git -C "$dir" remote add origin "$dir.git"
+	git -C "$dir" branch --quiet -M main
+	git -C "$dir" push --quiet origin main
+}
+
+# A real-build prerender failure stops the move before the commit, the push and the tag.
+d=$SCRATCH/move-prerender
+make_full_move_repo "$d"
+stub_npm "$d/npm-stub" 0 "$WEB_GREEN" build
+stub_go "$d/go-stub" 0 "$API_GREEN"
+before=$(git -C "$d.git" rev-parse main)
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" \
+	GITHUB_STEP_SUMMARY="$d/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$NEW_BUILD" 2>&1) || STATUS=$?
+assert "prerender: the move exits 1" equal "$STATUS" 1
+assert "prerender: it reached the gate (the earlier steps passed)" contains "$OUT" "== the test gate"
+assert "prerender: the summary names the real build" contains "$(cat "$d/summary.md")" "web (npm run build) exited 1"
+assert "prerender: nothing was pushed" equal "$(git -C "$d.git" rev-parse main)" "$before"
+assert "prerender: no tag on origin" equal "$(git -C "$d.git" tag -l 'addon-v*')" ""
+assert "prerender: no tag locally" equal "$(git -C "$d" tag -l 'addon-v*')" ""
+assert "prerender: nothing was committed" equal "$(git -C "$d" rev-parse HEAD)" "$before"
+
+# The same move with a green gate commits, pushes and tags (the test above is not green by
+# accident of a broken fixture).
+d=$SCRATCH/move-green
+make_full_move_repo "$d"
+stub_npm "$d/npm-stub" 0 "$WEB_GREEN"
+stub_go "$d/go-stub" 0 "$API_GREEN"
+printf '#!/usr/bin/env bash\nexit 1\n' >"$d/stubs/gh"
+chmod +x "$d/stubs/gh"
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" \
+	GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" 2>&1) || STATUS=$?
+assert "green move: pushed the move" contains "$(git -C "$d.git" log -1 --format=%s main)" "activate build $NEW_BUILD"
+assert "green move: tagged the addon" equal "$(git -C "$d.git" tag -l 'addon-v*')" "addon-v2.1.8"
+assert "green move: the ranking waits (the stub engine stamp is unreadable)" contains "$OUT" "ranking waits for engine follow"
+assert "green move: the failed dispatches fail the run" equal "$STATUS" 1
+
+
 
 # Under Actions: an error annotation, and no local undo line.
 d=$SCRATCH/move-actions
