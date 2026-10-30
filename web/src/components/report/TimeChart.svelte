@@ -1,6 +1,6 @@
 <!-- web/src/components/report/TimeChart.svelte -->
 <!-- The report's main chart (controls and charts spec §B5, D5): the table's metric per player as
-     5 s averages, the top 8 of N plus the Source player and you, the raid median, the Players
+     5 s averages, the top 4 and the bottom 4 of N (fix round 2) plus the Source player and you, the raid median, the Players
      control, the Window presets and the log scale, all on the shared TimeSeriesChart. The head's
      raid figure is the sum of every player's figure as the legend shows it. The sample report's
      `compact` strip is the same chart at 96 px with no legend, lane or brush. -->
@@ -8,7 +8,7 @@
   import { splitUnitName } from '../../lib/characters';
   import { togglePlayer } from '../../lib/chart/choice';
   import { chartCopy, type RateMetric } from '../../lib/chart/copy';
-  import type { DeadSpan } from '../../lib/chart/drawn';
+  import type { DeadSpan, DrawPreset, PlayersChoice } from '../../lib/chart/drawn';
   import { LegendState } from '../../lib/chart/legend-state.svelte';
   import { entityStyle } from '../../lib/chart/palette';
   import { buildRateModel, classMedianInfo, RAID_MEDIAN_ID, type RatePlayer } from '../../lib/chart/rate';
@@ -42,7 +42,9 @@
     enemies = false,
     youGuid,
     chosen,
+    preset = 'split',
     onChoose,
+    onPreset,
     logScale,
     onLogScale,
     targetName,
@@ -69,9 +71,13 @@
     /** The Source is the enemies: lines take the palette, not class colours. */
     enemies?: boolean;
     youGuid?: string;
-    /** The Players control's choice, from the url; null is the top 8. */
+    /** The Players control's own set, from the url; null keeps the preset. */
     chosen: readonly string[] | null;
+    /** The default draw (fix round 2 ruling): top 4 and bottom 4, or Top 8, or Bottom 8. */
+    preset?: DrawPreset;
     onChoose: (chosen: string[] | null) => void;
+    /** A preset picked in the Players control: it replaces any own set. */
+    onPreset: (preset: DrawPreset) => void;
     logScale: boolean;
     onLogScale: (on: boolean) => void;
     /** The filter bar's target, by name, for the head's meta. */
@@ -122,6 +128,7 @@
       youGuid,
       chosen:
         sourcePlayer !== undefined && chosen === null ? new Set() : chosen === null ? null : new Set(chosen),
+      preset,
       compare: { raid: raidMedianOn && !enemies, className: enemies ? null : classMedian },
       deadSpans: spans,
       single: sourcePlayer,
@@ -173,9 +180,10 @@
   const meta = $derived.by(() => {
     if (model.raidFigure === 0 && players.length > 0)
       return chartCopy.emptyMeta(chartCopy.rateNoun(metric), phaseOfWindow, current.startMs, current.endMs);
+    const span = chartCopy.span(current.startMs, current.endMs, whole);
     if (single !== undefined)
-      return chartCopy.playerMeta(metric, single.label, formatAmount(single.figure), targetName);
-    return chartCopy.rateMeta(metric, formatAmount(model.raidFigure), targetName);
+      return chartCopy.playerMeta(metric, single.label, formatAmount(single.figure), span, targetName);
+    return chartCopy.rateMeta(metric, formatAmount(model.raidFigure), span, targetName);
   });
 
   function choose(id: string): void {
@@ -196,6 +204,8 @@
     return () => query.removeEventListener('change', read);
   });
   const title = $derived(chartCopy.title[metric]);
+  const choice = $derived<PlayersChoice>(chosen !== null ? 'custom' : preset);
+  const PRESETS: readonly DrawPreset[] = ['split', 'top', 'bottom'];
   const notDrawn = $derived(model.entries.filter((entry: PlayerEntry) => !entry.drawn).length);
 </script>
 
@@ -204,24 +214,30 @@
 {/snippet}
 
 {#snippet controls()}
-  <div class="flex flex-wrap items-center justify-end gap-x-2 gap-y-2">
+  <!-- On a phone the head wraps (fix round 2 ruling): the title on its row, then each field on
+       its own full-width row, so every field shows its value whole. -->
+  <div
+    class="flex flex-wrap items-center justify-end gap-x-2 gap-y-2 max-md:grid max-md:w-full max-md:grid-cols-[64px_minmax(0,1fr)] max-md:justify-items-stretch max-md:text-left"
+    data-testid="chart-head-controls"
+  >
     {#if !enemies}
       <span class="quiet-label">{chartCopy.players}</span>
       <PlayersControl
         id="chart-players"
         entries={model.entries}
         {medians}
-        isDefault={model.isDefault}
+        {choice}
+        presets={PRESETS}
         formatValue={formatAmount}
         {coarse}
         onToggle={choose}
         onMedian={toggleMedian}
-        onReset={() => onChoose(null)}
+        {onPreset}
         onCoarse={() => (legend.sheetOpen = true)}
       />
     {/if}
     <label class="quiet-label" for="window-select">{chartCopy.window}</label>
-    <div class="w-[180px] max-md:flex-1">
+    <div class="w-[180px] max-md:w-full">
       <Select
         id="window-select"
         compact
@@ -234,7 +250,7 @@
         }}
       />
     </div>
-    <span class="inline-flex items-center gap-2">
+    <span class="inline-flex items-center gap-2 max-md:col-span-2">
       <Switch checked={logScale} label={chartCopy.logScale} onchange={onLogScale} testid="log-scale" />
       <span class="text-text text-[13px]" aria-hidden="true">{chartCopy.logScale}</span>
     </span>
@@ -265,7 +281,16 @@
     />
   </div>
 {:else}
-  <Card quiet compact body="none" {title} titleSnippet={headMeta} aside={controls} testid="time-chart">
+  <Card
+    quiet
+    compact
+    body="none"
+    {title}
+    titleSnippet={headMeta}
+    aside={controls}
+    headClass="max-md:[&>div:last-child]:ml-0 max-md:[&>div:last-child]:basis-full"
+    testid="time-chart"
+  >
     <ChartLegend
       {series}
       hidden={legend.hidden}
@@ -274,6 +299,7 @@
       {coarse}
       scrubMs={legend.scrubMs}
       formatValue={formatAmount}
+      unit={chartCopy.unit(metric)}
       onToggle={(id) => legend.toggle(id)}
       onOnly={(id) => legend.only(id, series)}
       onHighlight={(id) => legend.highlight(id)}
@@ -295,6 +321,7 @@
       highlightId={legend.highlightId}
       {brushShape}
       formatValue={formatAmount}
+      rowsLabel={chartCopy.tooltipRate(metric)}
       onScrub={(ms) => (legend.scrubMs = ms)}
       {onOpenDeath}
     />
@@ -303,11 +330,12 @@
     open={legend.sheetOpen}
     entries={model.entries}
     {medians}
-    isDefault={model.isDefault}
+    {choice}
+    presets={PRESETS}
     formatValue={formatAmount}
     onToggle={choose}
     onMedian={toggleMedian}
-    onReset={() => onChoose(null)}
+    {onPreset}
     onClose={() => (legend.sheetOpen = false)}
   />
 {/if}

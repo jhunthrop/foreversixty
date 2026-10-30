@@ -636,6 +636,12 @@
     ),
   );
   const chartSyncKey = $derived(`${reportId}:${state.fight}`);
+  /** The tabs whose table is itself a time chart: the shared damage chart is not drawn above them. */
+  const tabDrawsOwnChart = $derived(
+    state.mode === 'analyze' &&
+      state.view === 'tables' &&
+      (state.tab === 'threat' || state.tab === 'resources'),
+  );
   // The chart chunk loads in parallel with the summary, so a chart never waits on it (spec §B11).
   $effect(() => {
     loadChartChunk().catch(() => {
@@ -1840,8 +1846,9 @@
            Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
            opens is a canvas nobody should pay the scroll distance for. -->
         <!-- The Coach tab reads a review, not a window: no chart, so Fix first opens in view. -->
-        <!-- One chart per tab (spec §B1.7): the Threat tab's chart is its own, below. -->
-        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach' && !(state.mode === 'analyze' && state.view === 'tables' && state.tab === 'threat')}
+        <!-- One chart per tab (spec §B1.7): Threat draws its own chart below, and Resources is its
+             own set of lines (fix round 2), so neither repeats the damage chart above it. -->
+        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach' && !tabDrawsOwnChart}
           {#if chartOpen}
             <TimeChart
               metric={chartMetric}
@@ -1860,7 +1867,10 @@
               enemies={state.source === SOURCE_ENEMIES}
               {youGuid}
               chosen={state.players}
+              preset={state.playersPreset === null ? 'split' : state.playersPreset}
               onChoose={(players) => patch({ players })}
+              onPreset={(preset) =>
+                patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
               logScale={state.logScale}
               onLogScale={(logScale) => patch({ logScale })}
               targetName={state.target === ''

@@ -56,6 +56,7 @@ const PROPS = {
   onWindow: () => undefined,
   chosen: null,
   onChoose: () => undefined,
+  onPreset: () => undefined,
   logScale: false,
   onLogScale: () => undefined,
   syncKey: 'fixture:3',
@@ -69,15 +70,26 @@ describe('TimeChart (controls and charts spec §B5)', () => {
       Math.round(actor.series.reduce((sum, value) => sum + value, 0) / 60),
     );
     const sum = perPlayer.reduce((total, value) => total + value, 0);
-    expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS · 5 s average`);
+    expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS over the whole fight`);
   });
 
-  it('draws the raid median and the top 8 of 40, and says so in the Players field', () => {
+  it('draws the raid median, the top 4 and the bottom 4 of 40, and names it in the Players field', () => {
     const { body } = render(TimeChart, { props: PROPS });
     expect(body.match(/data-testid="legend-chip"/g)).toHaveLength(9);
     expect(body).toContain('Raid median');
-    expect(body).toContain('Top 8 of 40');
+    expect(body).toContain('Top 4, bottom 4 of 40');
     expect(body).toContain('+32 more');
+    // Every chip says what its figure is.
+    expect(body.match(/<span class="unit[^"]*">DPS<\/span>/g)).toHaveLength(9);
+  });
+
+  it('names the Top 8 and Bottom 8 presets, and says All N on a roster of 8 or fewer', () => {
+    expect(render(TimeChart, { props: { ...PROPS, preset: 'top' } }).body).toContain('Top 8 of 40');
+    expect(render(TimeChart, { props: { ...PROPS, preset: 'bottom' } }).body).toContain('Bottom 8 of 40');
+    const few = raid(3);
+    const { body } = render(TimeChart, { props: { ...PROPS, actors: few.actors, roster: few.roster } });
+    expect(body).toContain('All 3');
+    expect(body).not.toContain('of 3');
   });
 
   it('pins your own character beside the 8', () => {

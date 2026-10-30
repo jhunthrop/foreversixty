@@ -140,8 +140,10 @@ export interface ReportState {
   rankingsSpec: string;
   /** Rankings mode's metric; '' is the default (dps). */
   rankingsMetric: string;
-  /** The chart's Players control: the GUIDs drawn beside the always-drawn ones; null is the top 8. */
+  /** The chart's Players control: the GUIDs drawn beside the always-drawn ones; null keeps the preset. */
   players: string[] | null;
+  /** The damage chart's preset (`players=top` or `players=bottom`); null is the default top 4 and bottom 4. */
+  playersPreset: 'top' | 'bottom' | null;
   /** The rate charts' log scale (`scale=log`). */
   logScale: boolean;
 }
@@ -172,6 +174,7 @@ export function defaultState(firstFight: number): ReportState {
     rankingsSpec: '',
     rankingsMetric: '',
     players: null,
+    playersPreset: null,
     logScale: false,
   };
 }
@@ -256,7 +259,8 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   const rankingsMetric = params.get('rmetric');
   if (rankingsMetric !== null && /^[a-z_]{1,24}$/.test(rankingsMetric)) state.rankingsMetric = rankingsMetric;
   const players = params.get('players');
-  if (players !== null)
+  if (players === 'top' || players === 'bottom') state.playersPreset = players;
+  else if (players !== null)
     state.players = players
       .split(',')
       .filter((guid) => /^[A-Za-z0-9-]{1,64}$/.test(guid))
@@ -291,6 +295,7 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.rankingsSpec !== '') params.set('rspec', state.rankingsSpec);
   if (state.rankingsMetric !== '') params.set('rmetric', state.rankingsMetric);
   if (state.players !== null) params.set('players', state.players.join(','));
+  else if (state.playersPreset !== null) params.set('players', state.playersPreset);
   if (state.logScale) params.set('scale', 'log');
   const query = params.toString();
   return query === '' ? '' : `?${query}`;

@@ -43,7 +43,8 @@
     onOpenDeath,
     enemyPicker,
   }: {
-    enemyName: string;
+    /** The picked enemy's name; null with "Every enemy" picked, where every enemy's threat is summed. */
+    enemyName: string | null;
     enemyGuids: readonly string[];
     /** Whole-fight pairs, every player. */
     pairs: readonly ThreatPair[];
@@ -100,7 +101,7 @@
     };
   });
   const phone = $derived(viewport < 768);
-  const title = $derived(phone ? chartCopy.threatTitlePhone : chartCopy.threatTitle(enemyName));
+  const title = $derived(chartCopy.threatTitle(enemyName));
   const notDrawn = $derived(model.entries.filter((entry) => !entry.drawn).length);
   function choose(id: string): void {
     onChoose([...togglePlayer(chosen === null ? null : new Set(chosen), model.entries, id)]);
@@ -108,7 +109,9 @@
 </script>
 
 {#snippet headMeta()}
-  <span class="text-muted numeric text-[13px]" data-testid="chart-head-meta"
+  <!-- On a phone the title takes the head's one row (it names the enemy, fix round 2); the brush
+       under the plot carries the window's edges there. -->
+  <span class="text-muted numeric text-[13px] max-md:hidden" data-testid="chart-head-meta"
     >{chartCopy.threatMeta(current.startMs, current.endMs, whole)}</span
   >
 {/snippet}
@@ -120,11 +123,12 @@
       <PlayersControl
         id="threat-players"
         entries={model.entries}
-        isDefault={model.isDefault}
+        choice={model.isDefault ? 'top' : 'custom'}
+        presets={['top']}
         formatValue={formatAmount}
         {coarse}
         onToggle={choose}
-        onReset={() => onChoose(null)}
+        onPreset={() => onChoose(null)}
         onCoarse={() => (legend.sheetOpen = true)}
       />
       {@render enemyPicker()}
@@ -143,9 +147,9 @@
 {/snippet}
 
 {#snippet caveat()}
-  <p class="text-muted text-[12px]" data-testid="threat-caveat">
+  <p class="text-muted text-[12px] leading-4" data-testid="threat-caveat">
     {phone ? chartCopy.threatCaveatPhone : chartCopy.threatCaveat}
-    <a class="caveat-link" href="#glossary-threat">{chartCopy.threatCaveatLink}</a>
+    <a class="caveat-link whitespace-nowrap" href="#glossary-threat">{chartCopy.threatCaveatLink}</a>
   </p>
 {/snippet}
 
@@ -177,7 +181,8 @@
     mode="cumulative"
     {syncKey}
     label={chartCopy.threatTitle(enemyName)}
-    emptyCopy={chartCopy.emptyThreat(enemyName)}
+    emptyCopy={chartCopy.emptyThreat(chartCopy.threatSubject(enemyName))}
+    rowsLabel={chartCopy.tooltipThreat(chartCopy.threatSubject(enemyName))}
     hidden={legend.hidden}
     highlightId={legend.highlightId}
     {brushShape}
@@ -188,15 +193,16 @@
     {onOpenDeath}
     testid="threat-time-chart"
   />
-  <div class="border-line-soft flex min-h-7 items-center border-t px-4 py-1.5">{@render caveat()}</div>
+  <div class="border-line-soft flex min-h-7 items-center border-t px-4 py-1">{@render caveat()}</div>
 </Card>
 <LegendSheet
   open={legend.sheetOpen}
   entries={model.entries}
-  isDefault={model.isDefault}
+  choice={model.isDefault ? 'top' : 'custom'}
+  presets={['top']}
   formatValue={formatAmount}
   onToggle={choose}
-  onReset={() => onChoose(null)}
+  onPreset={() => onChoose(null)}
   onClose={() => (legend.sheetOpen = false)}
 />
 

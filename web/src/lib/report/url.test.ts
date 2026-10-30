@@ -85,6 +85,7 @@ describe('the report URL state', () => {
       rankingsSpec: '',
       rankingsMetric: '',
       players: null,
+      playersPreset: null,
       logScale: false,
     });
   });
@@ -115,6 +116,7 @@ describe('the report URL state', () => {
       rankingsSpec: '',
       rankingsMetric: '',
       players: null,
+      playersPreset: null,
       logScale: false,
     });
   });
@@ -142,6 +144,7 @@ describe('the report URL state', () => {
       rankingsSpec: '',
       rankingsMetric: '',
       players: null,
+      playersPreset: null,
       logScale: false,
     });
   });
@@ -181,6 +184,7 @@ describe('the report URL state', () => {
       rankingsSpec: '',
       rankingsMetric: '',
       players: null,
+      playersPreset: null,
       logScale: false,
     });
     expect(reportSearch(state, 1)).toBe(
@@ -223,6 +227,7 @@ describe('the report URL state', () => {
       rankingsSpec: '',
       rankingsMetric: '',
       players: null,
+      playersPreset: null,
       logScale: false,
     });
     const search = reportSearch(state, 1);
@@ -288,5 +293,13 @@ describe('the chart keys (controls and charts spec §B6.4, §B6.5)', () => {
     expect(plain.players).toBeNull();
     expect(plain.logScale).toBe(false);
     expect(reportSearch(plain, 1)).toBe('?fight=3');
+  });
+
+  it('carries the damage chart’s Top 8 and Bottom 8 presets as players=top and players=bottom', () => {
+    const top = parseReportState('?fight=3&players=top', 1);
+    expect(top.playersPreset).toBe('top');
+    expect(top.players).toBeNull();
+    expect(reportSearch(top, 1)).toBe('?fight=3&players=top');
+    expect(parseReportState('?players=bottom', 1).playersPreset).toBe('bottom');
   });
 });

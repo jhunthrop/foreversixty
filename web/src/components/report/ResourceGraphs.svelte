@@ -193,6 +193,16 @@
 {#if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">No resource changes in this window.</p>
 {:else}
+  <!-- The column heads (fix round 2): what each row's name, power, line and figure are. -->
+  <div
+    class="quiet-label border-line-soft grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 border-b px-2 pb-1 md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
+    data-testid="resource-head"
+  >
+    <span>Player</span>
+    <span class="hidden md:block">Power</span>
+    <span class="hidden md:block">Over the {capSpan}</span>
+    <span class="text-right">Time empty</span>
+  </div>
   <ul class="flex flex-col" data-testid="resource-graphs">
     {#each rows as track (`${track.guid}-${track.power_type}`)}
       {@const lowest = low(track.series)}

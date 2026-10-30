@@ -352,15 +352,26 @@
   /** The units table spells a name; the event's own copy of it is the fallback. */
   const nameOf = (guid: string, recorded: string): string => splitUnitName(names.get(guid) ?? recorded).name;
   /**
-   * The enemy the chart draws: the picked one, or — with "Every enemy" picked — the one
-   * carrying the most threat, named under the chart so nobody reads it as the raid's total.
+   * The enemies the chart draws: the picked one, or with "Every enemy" picked every enemy the
+   * players built threat on, summed per player. The title says which (fix round 2): the field,
+   * the title and the tooltip name the same thing.
    */
-  const charted = $derived(picked ?? everyoneGroups[0] ?? groups[0]);
+  const chartedGuids = $derived(
+    picked !== undefined
+      ? picked.guids
+      : [
+          ...new Set(
+            (chart?.pairs ?? [])
+              .filter((pair) => isPlayer(pair.guid) && !isPlayer(pair.target_guid))
+              .map((pair) => pair.target_guid),
+          ),
+        ],
+  );
   /** The threat chart draws once the pairs carry their per-second series (engine 0.4.0). */
   const showChart = $derived(
     !nightMode &&
       chart !== undefined &&
-      charted !== undefined &&
+      chartedGuids.length > 0 &&
       chart.pairs.some((pair) => pair.series !== undefined),
   );
   const enemyOptions = $derived([
@@ -370,8 +381,6 @@
       label: `${group.name}${group.guids.length > 1 ? ` ×${group.guids.length}` : ''}`,
     })),
   ]);
-  /** The charted enemy's guids over the whole fight (the chart's pairs are not scoped). */
-  const chartedGuids = $derived(charted?.guids ?? []);
   const standingAtMs = $derived(window.endMs);
 </script>
 
@@ -393,9 +402,9 @@
       </span>
     {/if}
   {/snippet}
-  {#if showChart && chart !== undefined && charted !== undefined}
+  {#if showChart && chart !== undefined}
     <ThreatChart
-      enemyName={charted.name}
+      enemyName={picked?.name ?? null}
       enemyGuids={chartedGuids}
       pairs={chart.pairs}
       players={chart.players}
