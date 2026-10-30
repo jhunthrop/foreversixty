@@ -13,6 +13,8 @@ export interface TabItem {
   /** A short muted note after the label (" · read-only"). */
   suffix?: string;
   testid?: string;
+  /** Extra attributes on the tab (a page's own hook, such as data-sim-tab). */
+  attrs?: Readonly<Record<string, string>>;
 }
 
 export const TAB_STRIP = {
@@ -71,6 +73,12 @@ export function tabIdForKey(key: string, tabs: readonly TabItem[], active: strin
   const from = tabs.findIndex((tab) => tab.id === active);
   const next = tabIndexForKey(key, from < 0 ? 0 : from, tabs);
   return next === null ? null : tabs[next].id;
+}
+
+/** The edge fades' test ids: the strip's own id with -fade-start / -fade-end. */
+export function tabStripFadeTestids(testid: string | undefined): { start: string; end: string } {
+  const base = testid ?? 'tab-strip';
+  return { start: `${base}-fade-start`, end: `${base}-fade-end` };
 }
 
 /** Scrolls a strip sideways so the current tab is in view, never moving the page. */

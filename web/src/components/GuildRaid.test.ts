@@ -148,7 +148,7 @@ describe('the band', () => {
   it('draws the tabs as links to the guild page, Raids active', () => {
     const body = html();
     expect(body).toContain(`href="${GUILD_PATH}#roster"`);
-    expect(body).toMatch(/aria-selected="true"[^>]*data-guild-tab="raids"/);
+    expect(body).toMatch(/aria-current="page"[^>]*data-tab-id="raids"/);
   });
 
   it('shows the poll pause line after three failed polls', () => {
@@ -341,8 +341,8 @@ describe('loading', () => {
       `${raidCopy.backLink('Olympus XXVII')} ${raidCopy.page.eyebrow}`,
     );
     expect(body).toContain(`href="${GUILD_PATH}#raids"`);
-    expect(body).toMatch(/aria-selected="true"[^>]*data-guild-tab="raids"/);
-    expect(body.indexOf('raid-band-skeleton')).toBeLessThan(body.indexOf('data-guild-tab="raids"'));
+    expect(body).toMatch(/aria-current="page"[^>]*data-tab-id="raids"/);
+    expect(body.indexOf('raid-band-skeleton')).toBeLessThan(body.indexOf('data-tab-id="raids"'));
   });
 
   it('reserves the band lines, one strip row and the roster, and says Loading the raid', () => {

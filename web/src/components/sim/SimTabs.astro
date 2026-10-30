@@ -8,14 +8,16 @@
 // above the island's own measured mount, where it cannot shift anything the CLS budget
 // already accounts for. Its own inline script (below the markup) only ever toggles the
 // edge-fade overlays and scrolls the active tab into view -- it never touches layout, so
-// the CLS budget still owes this component nothing.
+// the CLS budget still owes this component nothing. Drawn by the shared TabStrip (site
+// alignment spec 2026-10-29 D3), inset by the phone gutter so no tab starts past it.
 //
 // A client script still rewrites these hrefs once a character is loaded (lib/sim/tabs.ts's
 // `syncTabHrefs`, called from both islands): this component only ever renders the bare
 // path, exactly as a signed-out visitor with nothing loaded sees it.
-import { rowLink } from '../../lib/report/format';
 import { SIM_TABS, SIM_TAB_ATTR } from '../../lib/sim/tabs';
 import { simCopy } from '../../lib/sim/copy';
+import TabStrip from '../ui/TabStrip.astro';
+import type { TabItem } from '../../lib/ui/tabs';
 
 interface Props {
   /**
@@ -31,101 +33,16 @@ interface Props {
 const { currentPath } = Astro.props;
 const normalizedPath = currentPath.length > 1 ? currentPath.replace(/\/+$/, '') : currentPath;
 
-const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9`;
+const tabs: TabItem[] = SIM_TABS.map((tab) => ({
+  id: tab.id,
+  label: tab.label,
+  href: tab.href,
+  testid: `sim-nav-tab-${tab.id}`,
+  attrs: { [SIM_TAB_ATTR]: tab.id },
+}));
+const active = SIM_TABS.find((tab) => tab.href === normalizedPath)?.id ?? '';
 ---
 
-<!--
-  night-sim-tabs (2026-09-28): at 390px the strip scrolls sideways (kept -- sim-tabs.spec.ts
-  asserts it) but nothing said Weights or Spec support were off the right edge. The wrapper
-  below adds two edge-fade overlays that this component's own inline script shows or hides
-  from the nav's real scrollLeft/scrollWidth, so the fade is only ever present on the side
-  that actually still has hidden tabs. Desktop never overflows (md:flex-wrap above), so both
-  fades stay hidden there without the script needing a breakpoint check of its own.
--->
-<div class="relative">
-  <nav
-    aria-label={simCopy.simTabsLabel}
-    data-testid="sim-nav-tabs"
-    class="flex flex-nowrap gap-x-1 overflow-x-auto overscroll-x-contain px-[18px] md:flex-wrap md:px-0"
-  >
-    {SIM_TABS.map((tab) => {
-      const current = tab.href === normalizedPath;
-      return (
-        <a
-          href={tab.href}
-          {...{ [SIM_TAB_ATTR]: tab.id }}
-          data-testid={`sim-nav-tab-${tab.id}`}
-          aria-current={current ? 'page' : undefined}
-          class:list={[pill, current ? 'text-gold' : 'text-nav hover:text-strong']}
-        >
-          {tab.label}
-        </a>
-      );
-    })}
-  </nav>
-  <div
-    aria-hidden="true"
-    data-testid="sim-nav-tabs-fade-start"
-    class="edge-fade edge-fade-start pointer-events-none absolute inset-y-0 left-0 w-6 opacity-0 transition-opacity duration-150 md:hidden"
-  />
-  <div
-    aria-hidden="true"
-    data-testid="sim-nav-tabs-fade-end"
-    class="edge-fade edge-fade-end pointer-events-none absolute inset-y-0 right-0 w-6 opacity-0 transition-opacity duration-150 md:hidden"
-  />
+<div class="px-[var(--page-inset)]">
+  <TabStrip tabs={tabs} active={active} label={simCopy.simTabsLabel} testid="sim-nav-tabs" />
 </div>
-
-<style>
-  .edge-fade-start {
-    background: linear-gradient(to right, var(--color-bg), transparent);
-  }
-  .edge-fade-end {
-    background: linear-gradient(to left, var(--color-bg), transparent);
-  }
-  .edge-fade.is-visible {
-    opacity: 1;
-  }
-</style>
-
-<script>
-  // Scoped to this component's own markup (Astro runs one copy of this script per page,
-  // since SimTabs.astro is included once per page). Re-derives everything from the nav's
-  // real scroll geometry rather than from SIM_TABS' length, so it keeps working unchanged
-  // if a tab is ever added or removed, or the strip wraps at a different breakpoint.
-  const EPSILON_PX = 1;
-
-  function setUp(nav: HTMLElement): void {
-    const wrap = nav.parentElement;
-    const fadeStart = wrap?.querySelector<HTMLElement>('[data-testid="sim-nav-tabs-fade-start"]');
-    const fadeEnd = wrap?.querySelector<HTMLElement>('[data-testid="sim-nav-tabs-fade-end"]');
-    if (!fadeStart || !fadeEnd) return;
-
-    const updateFades = (): void => {
-      // Measured against the first and last TAB, not scrollWidth: the strip's own
-      // trailing padding counts toward scrollWidth, so after the last tab is scrolled
-      // into view a sliver of padding kept the end fade on (CI mobile, 2026-09-29).
-      const first = nav.firstElementChild;
-      const last = nav.lastElementChild;
-      const edge = nav.getBoundingClientRect();
-      const hiddenStart = first !== null && first.getBoundingClientRect().left < edge.left - EPSILON_PX;
-      const hiddenEnd = last !== null && last.getBoundingClientRect().right > edge.right + EPSILON_PX;
-      fadeStart.classList.toggle('is-visible', hiddenStart);
-      fadeEnd.classList.toggle('is-visible', hiddenEnd);
-    };
-
-    nav.addEventListener('scroll', updateFades, { passive: true });
-    window.addEventListener('resize', updateFades);
-
-    // The active tab is the one thing a returning visitor already cares about -- scroll it
-    // into view on load without ever moving the page vertically (`block: 'nearest'` is a
-    // no-op here since the strip itself never scrolls the page, only its own x-axis).
-    const active = nav.querySelector<HTMLElement>('[aria-current="page"]');
-    active?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
-
-    updateFades();
-  }
-
-  for (const nav of document.querySelectorAll<HTMLElement>('[data-testid="sim-nav-tabs"]')) {
-    setUp(nav);
-  }
-</script>

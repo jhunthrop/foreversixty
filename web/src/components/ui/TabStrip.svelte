@@ -9,10 +9,18 @@
      - Link tabs (no `onSelect`): a `nav` of links, the current one `aria-current="page"`.
      The strip scrolls sideways on a phone with a 24 px fade on a clipped edge, and the current
      tab scrolls into view in the strip, never moving the page. TabStrip.astro is the static
-     link-tab twin. Tailwind utilities only: the guild tabs mount client-side after a fetch. -->
+     link-tab twin. `testid` names the strip itself (the scroller); its fades are
+     `${testid}-fade-start` and `-fade-end`. Tailwind utilities only: the guild tabs mount client-side after a fetch. -->
 <script lang="ts">
   import { scrollFade } from '../../lib/scroll-fade';
-  import { TAB_STRIP, scrollTabIntoView, tabClass, tabIdForKey, type TabItem } from '../../lib/ui/tabs';
+  import {
+    TAB_STRIP,
+    scrollTabIntoView,
+    tabClass,
+    tabIdForKey,
+    tabStripFadeTestids,
+    type TabItem,
+  } from '../../lib/ui/tabs';
 
   let {
     tabs,
@@ -36,6 +44,7 @@
   let strip = $state<HTMLElement | undefined>(undefined);
 
   const tablist = $derived(onSelect !== undefined);
+  const fades = $derived(tabStripFadeTestids(testid));
 
   function tabElement(id: string): HTMLElement | null {
     return strip?.querySelector<HTMLElement>(`[data-tab-id="${CSS.escape(id)}"]`) ?? null;
@@ -69,7 +78,7 @@
   {tab.label}{#if tab.suffix !== undefined}<span class={TAB_STRIP.suffix}>{tab.suffix}</span>{/if}
 {/snippet}
 
-<div class={TAB_STRIP.wrapper} data-testid={testid}>
+<div class={TAB_STRIP.wrapper}>
   {#if tablist}
     <!-- The tabs are the focus stops (roving tabindex); the list only hears their keys. -->
     <!-- svelte-ignore a11y_interactive_supports_focus -->
@@ -80,6 +89,7 @@
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
+      data-testid={testid}
       onkeydown={onKeydown}
     >
       {#each tabs as tab (tab.id)}
@@ -96,6 +106,7 @@
             class={tabClass(current, false)}
             data-tab-id={tab.id}
             data-testid={tab.testid}
+            {...tab.attrs}
             onclick={(event) => choose(tab, event)}>{@render tabLabel(tab)}</a
           >
         {:else}
@@ -110,13 +121,14 @@
             class={tabClass(current, disabled)}
             data-tab-id={tab.id}
             data-testid={tab.testid}
+            {...tab.attrs}
             onclick={(event) => choose(tab, event)}>{@render tabLabel(tab)}</button
           >
         {/if}
       {/each}
     </div>
   {:else}
-    <nav bind:this={strip} use:scrollFade class={TAB_STRIP.strip} aria-label={label}>
+    <nav bind:this={strip} use:scrollFade class={TAB_STRIP.strip} aria-label={label} data-testid={testid}>
       {#each tabs as tab (tab.id)}
         {@const current = tab.id === active}
         {#if tab.href !== undefined && tab.disabled !== true}
@@ -125,19 +137,21 @@
             aria-current={current ? 'page' : undefined}
             class={tabClass(current, false)}
             data-tab-id={tab.id}
-            data-testid={tab.testid}>{@render tabLabel(tab)}</a
+            data-testid={tab.testid}
+            {...tab.attrs}>{@render tabLabel(tab)}</a
           >
         {:else}
           <span
             aria-disabled="true"
             class={tabClass(false, true)}
             data-tab-id={tab.id}
-            data-testid={tab.testid}>{@render tabLabel(tab)}</span
+            data-testid={tab.testid}
+            {...tab.attrs}>{@render tabLabel(tab)}</span
           >
         {/if}
       {/each}
     </nav>
   {/if}
-  <div class={TAB_STRIP.fadeStart} aria-hidden="true" data-testid="tab-strip-fade-start"></div>
-  <div class={TAB_STRIP.fadeEnd} aria-hidden="true" data-testid="tab-strip-fade-end"></div>
+  <div class={TAB_STRIP.fadeStart} aria-hidden="true" data-testid={fades.start}></div>
+  <div class={TAB_STRIP.fadeEnd} aria-hidden="true" data-testid={fades.end}></div>
 </div>

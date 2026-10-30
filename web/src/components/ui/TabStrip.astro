@@ -3,8 +3,9 @@
 // The static twin of TabStrip.svelte's link tabs (site alignment spec 2026-10-29 D3, S7): a `nav`
 // of links in the shared underline recipe (lib/ui/tabs.ts), the current one aria-current="page".
 // Its one small script keeps the 24 px edge fades current and scrolls the current tab into view
-// in the strip (never the page); it never touches layout.
-import { TAB_STRIP, tabClass, type TabItem } from '../../lib/ui/tabs';
+// in the strip (never the page); it never touches layout. `testid` names the nav itself; its fades
+// are `${testid}-fade-start` and `-fade-end`.
+import { TAB_STRIP, tabClass, tabStripFadeTestids, type TabItem } from '../../lib/ui/tabs';
 
 interface Props {
   tabs: readonly TabItem[];
@@ -14,10 +15,11 @@ interface Props {
 }
 
 const { tabs, active, label, testid } = Astro.props;
+const fades = tabStripFadeTestids(testid);
 ---
 
-<div class={TAB_STRIP.wrapper} data-testid={testid} data-tab-strip>
-  <nav class={TAB_STRIP.strip} aria-label={label}>
+<div class={TAB_STRIP.wrapper} data-tab-strip>
+  <nav class={TAB_STRIP.strip} aria-label={label} data-testid={testid}>
     {tabs.map((tab) => {
       const current = tab.id === active;
       return tab.href !== undefined && tab.disabled !== true ? (
@@ -27,6 +29,7 @@ const { tabs, active, label, testid } = Astro.props;
           class={tabClass(current, false)}
           data-tab-id={tab.id}
           data-testid={tab.testid}
+          {...tab.attrs}
         >
           {tab.label}
           {tab.suffix !== undefined && <span class={TAB_STRIP.suffix}>{tab.suffix}</span>}
@@ -37,14 +40,15 @@ const { tabs, active, label, testid } = Astro.props;
           class={tabClass(false, true)}
           data-tab-id={tab.id}
           data-testid={tab.testid}
+          {...tab.attrs}
         >
           {tab.label}
         </span>
       );
     })}
   </nav>
-  <div class={TAB_STRIP.fadeStart} aria-hidden="true" data-testid="tab-strip-fade-start"></div>
-  <div class={TAB_STRIP.fadeEnd} aria-hidden="true" data-testid="tab-strip-fade-end"></div>
+  <div class={TAB_STRIP.fadeStart} aria-hidden="true" data-testid={fades.start}></div>
+  <div class={TAB_STRIP.fadeEnd} aria-hidden="true" data-testid={fades.end}></div>
 </div>
 
 <script>

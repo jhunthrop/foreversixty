@@ -106,20 +106,28 @@ describe('TabStrip (in-page tabs)', () => {
     expect(doc.querySelector('[data-testid=tab-overview]')).not.toBeNull();
   });
 
-  it('carries both edge fades, decorative, driven by the wrapper', () => {
+  it('names the strip itself, and carries both edge fades, decorative, driven by the wrapper', () => {
     const doc = strip({ onSelect: select, testid: 'strip' });
-    const wrapper = doc.querySelector('[data-testid=strip]');
+    const list = doc.querySelector('[data-testid=strip]');
+    expect(list?.getAttribute('role')).toBe('tablist');
+    const wrapper = list?.parentElement;
     expect(wrapper?.className).toBe(TAB_STRIP.wrapper);
-    expect(wrapper?.querySelector('[data-testid=tab-strip-fade-start]')?.getAttribute('aria-hidden')).toBe(
+    expect(wrapper?.querySelector('[data-testid=strip-fade-start]')?.getAttribute('aria-hidden')).toBe(
       'true',
     );
-    expect(wrapper?.querySelector('[data-testid=tab-strip-fade-end]')?.className).toBe(TAB_STRIP.fadeEnd);
+    expect(wrapper?.querySelector('[data-testid=strip-fade-end]')?.className).toBe(TAB_STRIP.fadeEnd);
+  });
+
+  it('names the fades generically without a test id, and passes a tab its own attributes', () => {
+    const doc = strip({ onSelect: select, tabs: [{ id: 'a', label: 'A', attrs: { 'data-sim-tab': 'a' } }] });
+    expect(doc.querySelector('[data-testid=tab-strip-fade-end]')).not.toBeNull();
+    expect(doc.querySelector('[data-sim-tab=a]')?.getAttribute('role')).toBe('tab');
   });
 });
 
 describe('TabStrip (link tabs)', () => {
   const links: readonly TabItem[] = [
-    { id: 'quick', label: 'Quick sim', href: '/sim' },
+    { id: 'quick', label: 'Quick sim', href: '/sim', attrs: { 'data-sim-tab': 'quick' } },
     { id: 'gear', label: 'Top gear', href: '/sim/gear' },
     { id: 'soon', label: 'Soon' },
   ];
@@ -147,6 +155,8 @@ describe('TabStrip (link tabs)', () => {
     expect(current?.className).toBe(tabClass(true, false));
     expect(doc.querySelector('a[href="/sim/gear"]')?.className).toBe(tabClass(false, false));
     expect(doc.querySelector('[data-tab-id=soon]')?.getAttribute('aria-disabled')).toBe('true');
-    expect(doc.querySelector('[data-testid=tab-strip-fade-end]')).not.toBeNull();
+    expect(doc.querySelector('nav')?.getAttribute('data-testid')).toBe('sim-tabs');
+    expect(doc.querySelector('[data-testid=sim-tabs-fade-end]')).not.toBeNull();
+    expect(doc.querySelector('[data-sim-tab=quick]')?.getAttribute('href')).toBe('/sim');
   });
 });
