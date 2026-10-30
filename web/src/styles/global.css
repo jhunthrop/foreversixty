@@ -814,17 +814,17 @@ html[data-pointer='1'] .setup-when-no-pointer {
    reading: from `data-done` once the session and device reads have answered, and until then from
    the same pre-paint hints the steps use -- the session cookie for step 1, the stored character
    for step 2 -- so a signed-in visitor never sees step 1 flip. */
-.setup-chip[data-done='true'] :is(.chip-todo, .chip-label-todo),
-.setup-chip[data-done='false'] :is(.chip-done, .chip-label-done),
+:is(.setup-chip, .setup-step-tag)[data-done='true'] :is(.chip-todo, .chip-label-todo),
+:is(.setup-chip, .setup-step-tag)[data-done='false'] :is(.chip-done, .chip-label-done),
 html:not([data-session='1'])
-  .setup-chip[data-hint='session']:not([data-done])
+  :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-session='1'] .setup-chip[data-hint='session']:not([data-done]) :is(.chip-todo, .chip-label-todo),
+html[data-session='1'] :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done]) :is(.chip-todo, .chip-label-todo),
 html:not([data-pointer='1'])
-  .setup-chip[data-hint='pointer']:not([data-done])
+  :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) :is(.chip-todo, .chip-label-todo),
-.setup-chip[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
+html[data-pointer='1'] :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done]) :is(.chip-todo, .chip-label-todo),
+:is(.setup-chip, .setup-step-tag)[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
   display: none;
 }
 .setup-chip[data-done='true'] .setup-chip-link,

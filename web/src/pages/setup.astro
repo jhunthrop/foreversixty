@@ -10,6 +10,7 @@ import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import SetupProgress from '../components/SetupProgress.svelte';
 import SetupBackToClaim from '../components/claim/SetupBackToClaim.svelte';
 import SetupStepLine from '../components/SetupStepLine.svelte';
+import SetupStepTag from '../components/SetupStepTag.svelte';
 import { companionPlatformsLine } from '../lib/setup/progress';
 import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
@@ -82,6 +83,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
 
     <Card title={addonCopy.setupStep1Title} body="none">
       <StepTile slot="lead" step={1} />
+      <SetupStepTag slot="aside" step={1} client:idle />
       <div id="signin" class="flex scroll-mt-20 flex-col gap-3 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <a
@@ -97,6 +99,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
 
     <Card title={addonCopy.setupStep2Title} body="none">
       <StepTile slot="lead" step={2} />
+      <SetupStepTag slot="aside" step={2} client:idle />
       <div id="addon" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <div class="flex flex-wrap gap-3">
           <a class={STEP_BUTTON} data-step="2" href={CURSEFORGE_URL} rel="noopener">
@@ -122,7 +125,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           {addonCopy.setupAddonDoneLine}
         </p>
         <SetupStepLine step="addon" client:idle />
-        <CurrentCharacterBar client:idle hasOwnPasteBox />
+        <CurrentCharacterBar client:idle hasOwnPasteBox inCard />
 
         <!-- Behind disclosures, so the step reads as one button and a line: the export paste box,
              the data addon's own links and the build number, and the manual (what the addon does
@@ -228,6 +231,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
 
     <Card title={addonCopy.setupStep3Title} body="none">
       <StepTile slot="lead" step={3} />
+      <SetupStepTag slot="aside" step={3} client:idle />
       <div id="companion" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-note">
           {addonCopy.setupCompanionNote}
