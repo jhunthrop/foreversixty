@@ -13,6 +13,7 @@
      navigation action; the phone tab strip's `role="tab"` buttons are still the only thing
      that switches the visible panel. -->
 <script lang="ts">
+  import { CARD_HEAD, cardClass } from '../../lib/ui/card';
   import type { BandDiffView } from '../../lib/planner/band-compare';
   import { dataUrl } from '../../lib/planner/load';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
@@ -164,9 +165,7 @@
       role="tabpanel"
       aria-labelledby={`tree-tab-${tree.id}`}
       data-testid={`tree-panel-${tree.id}`}
-      class="border-line-warm bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree === i
-        ? 'flex'
-        : 'hidden'}"
+      class="{cardClass(true)} flex-col md:flex {activeTree === i ? 'flex' : 'hidden'}"
     >
       <!-- The game's tree header: spec icon, name, points in the tree, a rule under both --
          the same "icon - name - point count" order the BiS header's own SpecTabs use (spec
@@ -187,7 +186,7 @@
            and never shrinks (`shrink-0`); `flex-wrap` on the row is the named fallback --
            if a future name still cannot fit, the count drops under the icon instead of
            overlapping, it never truncates and it never overlaps. -->
-      <header class="border-line-soft flex flex-wrap items-center gap-2 border-b pb-2">
+      <header class="{CARD_HEAD.compact} border-line-soft border-b">
         {#if icon !== undefined}
           <!-- `loading="eager"` (fix round 3, ux-designer review): the tree panel's own
                header spec icon -- see TalentCell.svelte's identical comment. -->
@@ -201,25 +200,31 @@
             class="rounded-control border-line h-7 w-7 shrink-0 border"
           />
         {/if}
-        <h2
-          class="section-title min-w-0 flex-1 text-[15px] whitespace-nowrap md:text-[14px] md:tracking-[0.02em]"
-        >
+        <h2 class="section-title min-w-0 flex-1 leading-6 whitespace-nowrap">
           {tree.name}
         </h2>
-        <span class="text-gold numeric ml-auto shrink-0 text-[15px]" data-testid={`tree-points-${tree.id}`}>
+        <span
+          class="text-gold numeric ml-auto shrink-0 text-[15px] leading-6"
+          data-testid={`tree-points-${tree.id}`}
+        >
           {store.split[i] ?? 0}
         </span>
       </header>
-      {#if drawn.includes(i) || activeTree === i}
-        <TreeGrid {store} {tree} {bandDiff} />
-      {:else}
-        <!-- The grid's own box, empty: the trees draw one task at a time after the first (see
+      <div class="flex flex-col gap-3 p-4">
+        {#if drawn.includes(i) || activeTree === i}
+          <TreeGrid {store} {tree} {bandDiff} />
+        {:else}
+          <!-- The grid's own box, empty: the trees draw one task at a time after the first (see
              `drawn`), and nothing below this panel moves when its cells arrive. -->
-        {@const size = gridSize(tree)}
-        <div class="flex justify-center" aria-hidden="true">
-          <div class="tree-reserve" style="--tree-columns: {size.columns}; --tree-tiers: {size.tiers};"></div>
-        </div>
-      {/if}
+          {@const size = gridSize(tree)}
+          <div class="flex justify-center" aria-hidden="true">
+            <div
+              class="tree-reserve"
+              style="--tree-columns: {size.columns}; --tree-tiers: {size.tiers};"
+            ></div>
+          </div>
+        {/if}
+      </div>
     </div>
   {/each}
 </div>

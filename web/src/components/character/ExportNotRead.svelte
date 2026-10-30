@@ -8,6 +8,8 @@
 <script lang="ts">
   import { formatSyncStamp } from '../../lib/dates';
   import { notReadCopy } from '../../lib/gear/copy';
+  import { CARD_BODY, CARD_HEAD, cardClass } from '../../lib/ui/card';
+  import IconTile from '../ui/IconTile.svelte';
 
   let {
     capturedAt = null,
@@ -18,17 +20,21 @@
   const stamp = $derived(capturedAt === null ? '' : formatSyncStamp(new Date(capturedAt)));
 </script>
 
-<div
-  class="border-line-warm bg-raised rounded-panel flex flex-col gap-1 border px-4 py-3 text-[14px]"
-  role="status"
-  data-testid={testid}
->
-  {#if owned}
-    <p class="text-strong font-semibold" data-testid="export-not-read-lead">{notReadCopy.lead}</p>
-    <p class="text-muted">{notReadCopy.synced(stamp)}</p>
-    <p class="text-muted">{notReadCopy.steps}</p>
-  {:else}
-    <p class="text-strong font-semibold" data-testid="export-not-read-lead">{notReadCopy.visitorLead}</p>
-    <p class="text-muted">{notReadCopy.visitorSynced}</p>
-  {/if}
+<!-- A quiet card (site alignment §5.5): a muted `device` tile, the sentence as the head in its own
+     case (it is a sentence, not a title), the two lines as the body. -->
+<div class="{cardClass(true)} text-[14px]" role="status" data-testid={testid}>
+  <div class={CARD_HEAD.root}>
+    <IconTile glyph="device" tone="muted" />
+    <p class="text-strong flex-1 font-semibold" data-testid="export-not-read-lead">
+      {owned ? notReadCopy.lead : notReadCopy.visitorLead}
+    </p>
+  </div>
+  <div class="{CARD_BODY.text} gap-1">
+    {#if owned}
+      <p class="text-muted">{notReadCopy.synced(stamp)}</p>
+      <p class="text-muted">{notReadCopy.steps}</p>
+    {:else}
+      <p class="text-muted">{notReadCopy.visitorSynced}</p>
+    {/if}
+  </div>
 </div>

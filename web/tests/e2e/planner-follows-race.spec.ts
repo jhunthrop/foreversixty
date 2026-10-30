@@ -34,10 +34,11 @@ test.describe('The planner starts on the character’s race', () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/planner');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Warrior talents · Gnome · Level 21');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Warrior talents');
+    await expect(page.getByTestId('page-head-meta')).toContainText('Gnome · Level 21');
     await expect(page.getByTestId('planner-race-select')).toHaveValue('gnome');
 
     await page.getByTestId('planner-race-select').selectOption('orc');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Warrior talents · Orc · Level 21');
+    await expect(page.getByTestId('page-head-meta')).toContainText('Orc · Level 21');
   });
 });

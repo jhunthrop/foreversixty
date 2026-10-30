@@ -5,11 +5,13 @@
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
   import { importFromAddon, type ImportOutcome } from '../../lib/addon/import';
-  import { currentCharacterCopy } from '../../lib/current-character-copy';
   import type { TalentIndex } from '../../lib/planner/rules';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import { CARD_BODY, CARD_HEAD, cardClass } from '../../lib/ui/card';
+  import ActionLink from '../ui/ActionLink.svelte';
+  import Card from '../ui/Card.svelte';
+  import IconTile from '../ui/IconTile.svelte';
   import type { Gear } from '../../lib/planner/types';
-  import { rowLink } from '../../lib/report/format';
 
   let {
     talents,
@@ -81,20 +83,7 @@
   }
 </script>
 
-<svelte:element
-  this={phone ? 'details' : 'section'}
-  class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4 {className}"
-  data-testid="import-box"
->
-  {#if phone}
-    <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
-      {addonCopy.importTitle}
-      <span class="when-closed text-muted" aria-hidden="true">Show</span>
-      <span class="when-open text-muted" aria-hidden="true">Hide</span>
-    </summary>
-  {:else}
-    <h2 class="section-title">{addonCopy.importTitle}</h2>
-  {/if}
+{#snippet fields()}
   <textarea
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
     rows="2"
@@ -104,7 +93,7 @@
     data-testid="import-code"></textarea>
   <button
     type="button"
-    class="{SECONDARY_BUTTON} border-line-warm-strong text-strong self-start px-4"
+    class="{button('secondary', 'md')} self-start"
     disabled={code.trim() === ''}
     onclick={submit}
     data-testid="import-submit"
@@ -121,9 +110,26 @@
   {#each notes as note (note)}
     <p class="text-muted text-[13px]" data-testid="import-note">{note}</p>
   {/each}
-  <p class="text-muted text-[13px]">
-    <a href="/setup" class="{rowLink} text-nav" data-testid="import-get-addon"
-      >{currentCharacterCopy.getTheAddon}</a
-    >
+  <p class="text-muted flex flex-wrap items-center gap-x-2 text-[13px]">
+    {addonCopy.importNoExport}
+    <ActionLink href="/setup" data-testid="import-get-addon">{addonCopy.importGetAddon}</ActionLink>
   </p>
-</svelte:element>
+{/snippet}
+
+{#if phone}
+  <details class="{cardClass(false)} {className}" data-testid="import-box">
+    <summary class="{CARD_HEAD.compact} min-h-11 cursor-pointer list-none">
+      <IconTile glyph="download" size={28} />
+      <span class="section-title flex-1 leading-6">{addonCopy.importTitle}</span>
+      <span class="text-muted text-[13px]">
+        <span class="when-closed" aria-hidden="true">Show</span>
+        <span class="when-open" aria-hidden="true">Hide</span>
+      </span>
+    </summary>
+    <div class={CARD_BODY.text}>{@render fields()}</div>
+  </details>
+{:else}
+  <Card glyph="download" compact title={addonCopy.importTitle} testid="import-box" class={className}>
+    {@render fields()}
+  </Card>
+{/if}

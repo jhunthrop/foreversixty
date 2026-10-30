@@ -139,11 +139,11 @@ test('an unknown character says so, with the lookup and the addon line', async (
   await page.screenshot({ path: join(SHOTS, 'w8-character-not-found.png'), fullPage: true });
 });
 
-test('the planner opens a visitor on the level-60 build, never "your level’s range"', async ({ page }) => {
+test('the planner opens a visitor on the level-60 build, never a "range" line', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.goto('/planner');
   const card = page.getByTestId('band-compare');
   await expect(card).toContainText(/level 60 build/i, { timeout: 15_000 });
   await expect(card).not.toContainText('your level');
-  await expect(card).toContainText('the level 60 range');
+  await expect(card).not.toContainText('range');
 });

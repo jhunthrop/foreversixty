@@ -437,9 +437,9 @@ test.describe('choosing a character', () => {
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/planner');
     await ready(page);
-    await expect(page.getByTestId('planner-header-h1')).toContainText('Warrior');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Warrior');
     await choose(page, FROSTBYTE);
-    await expect(page.getByTestId('planner-header-h1')).toContainText('Mage');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Mage');
     await expect(page).toHaveURL(/\/planner\?character=us%2Fnormal%2Ffrostbyte/);
     await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
     expect(await pageWasNotReloaded(page)).toBe(true);

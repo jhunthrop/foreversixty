@@ -8,6 +8,7 @@
      no new field on BuildDraft or the card route. The panel's job is only to run that sim,
      after the build has an id, and to never let a failed sim take the save down with it. -->
 <script lang="ts">
+  import Switch from '../ui/Switch.svelte';
   import { tick } from 'svelte';
   import CopyForGame from '../CopyForGame.svelte';
   import { addonCopy } from '../../lib/addon/copy';
@@ -50,6 +51,7 @@
   // items within one instance by loop index.
   const uid = $props.id();
   const shareConfirmHeadingId = `share-confirm-heading-${uid}`;
+  const includeSimLabelId = `share-include-sim-label-${uid}`;
 
   let saving = $state(false);
   let outcome = $state<SaveOutcome | null>(null);
@@ -384,18 +386,19 @@
     </button>
   </div>
 
-  <label
-    class="text-muted flex min-h-11 w-fit items-center gap-2 text-[13px] md:min-h-0"
+  <div
+    class="flex min-h-11 items-center justify-between gap-3 text-[13px]"
     title={canIncludeSim ? undefined : simCopy.buildSimUnavailable}
   >
-    <input
-      type="checkbox"
+    <span class="text-muted" id={includeSimLabelId}>{simCopy.includeSimOnCard}</span>
+    <Switch
       checked={includeSimChecked}
       disabled={!canIncludeSim}
-      onchange={(event) => (includeSim = event.currentTarget.checked)}
+      onchange={(next) => (includeSim = next)}
+      labelledby={includeSimLabelId}
+      testid="share-include-sim"
     />
-    {simCopy.includeSimOnCard}
-  </label>
+  </div>
 
   {#if confirmOpen}
     <div

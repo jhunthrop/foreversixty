@@ -8,6 +8,8 @@
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import Card from '../ui/Card.svelte';
   import SharePanel from './SharePanel.svelte';
 
   let {
@@ -44,18 +46,14 @@
      sit outside the confirm to survive it -- it holds the title being typed and the
      link of the last save, and re-mounting it when the confirm opens would throw
      both away. -->
-  <section
-    class="border-line bg-raised rounded-panel flex w-full flex-col gap-3 border p-4"
-    data-testid="planner-share-section"
-  >
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <h2 class="section-title">{plannerCopy.shareTitle}</h2>
-      <div class="flex flex-wrap items-center gap-3">
+  <Card glyph="share" compact title={plannerCopy.shareTitle} testid="planner-share-section">
+    {#snippet aside()}
+      <div class="flex flex-wrap items-center justify-end gap-3">
         {#if confirmingReset}
           <span class="text-muted text-[13px]">Clear every point in this build?</span>
           <button
             type="button"
-            class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+            class={button('secondary', 'sm')}
             onclick={() => {
               store.reset();
               confirmingReset = false;
@@ -69,23 +67,19 @@
                than clearing it, which is the only reason the second step exists. -->
           <button
             type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+            class={button('ghost', 'sm')}
             {@attach (node) => node.focus()}
             onclick={() => (confirmingReset = false)}
           >
             Keep the build
           </button>
         {:else}
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-            onclick={() => (confirmingReset = true)}
-          >
+          <button type="button" class={button('ghost', 'sm')} onclick={() => (confirmingReset = true)}>
             Reset…
           </button>
         {/if}
       </div>
-    </header>
+    {/snippet}
     <SharePanel {store} {live} />
-  </section>
+  </Card>
 {/if}

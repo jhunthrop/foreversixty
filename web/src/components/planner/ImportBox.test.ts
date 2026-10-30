@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 // indexTalents -- not a hand-built TalentIndex, and not the generated public/data/<build>/
 // one, whose content is whatever npm run sync last pruned it to.
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
-import { currentCharacterCopy } from '../../lib/current-character-copy';
+import { addonCopy } from '../../lib/addon/copy';
 import { indexTalents } from '../../lib/planner/rules';
 import type { TalentFile } from '../../lib/planner/types';
 import ImportBox from './ImportBox.svelte';
@@ -17,7 +17,8 @@ describe('ImportBox', () => {
   it('links to /addon, with the shared "get the addon" copy', () => {
     const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
     expect(body).toContain('href="/setup"');
-    expect(body).toContain(currentCharacterCopy.getTheAddon);
+    expect(body).toContain(addonCopy.importNoExport);
+    expect(body).toContain(addonCopy.importGetAddon);
   });
 
   it('gives the /addon link a 44px hit target', () => {

@@ -8,6 +8,9 @@ export const plannerCopy = {
   itemNotSimmed: (name: string): string => `${name} · not simmed`,
   unknownItem: (id: number): string => `Unknown item ${id} · not in our data yet`,
   shareTitle: 'Share this build',
+  pointOrderTitle: 'Point order',
+  /** The point-order card's meta: "0 spent". */
+  pointOrderMeta: (spent: number): string => `${spent} spent`,
   share: 'Share',
   shareConfirmTitle: 'Share this build',
   shareConfirmIntro:
@@ -152,9 +155,6 @@ const lowerBandPhrase = (bandLabel: string): string => bandPhrase(bandLabel).toL
 
 export const bandCompareCopy = {
   heading: (bandLabel: string): string => `${bandPhrase(bandLabel)} build`,
-  /** "your level's range" only to a visitor who has a character; anyone else gets the band's own name. */
-  headingAside: (bandLabel: string, hasCharacter: boolean): string =>
-    hasCharacter ? "your level's range" : `the ${lowerBandPhrase(bandLabel)} range`,
   /** "No level 9 build for Arms. Pick Fury or Protection." -- the level and the class's other specs come from data. */
   noLevelBuild: (level: number, specName: string, otherSpecs: readonly string[]): string => {
     const head = `No level ${level} build for ${specName}.`;

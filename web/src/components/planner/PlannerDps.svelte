@@ -44,7 +44,7 @@
      * number is wrong, this one is just never the player's own gear once a build is pasted.
      */
     ownGearCaveat?: boolean;
-    /** False inside `PlannerHeader`'s own facts rail (fix round 1): "Sim this build" is now
+    /** False inside `PlannerHeadControls`'s own facts rail (fix round 1): "Sim this build" is now
      *  its own outlined gold button in the rail, above the Share panel, not bundled with the
      *  figure. Still true (default) for the non-standalone inline embed, unchanged. */
     showSimLink?: boolean;

@@ -15,10 +15,10 @@ test.describe('headers align with the body', () => {
   test.skip(({ isMobile }) => isMobile, 'Widths are set by the test');
 
   for (const width of WIDTHS) {
-    test(`/planner at ${width}: the eyebrow and the facts start where the trees do`, async ({ page }) => {
+    test(`/planner at ${width}: the crest and the facts start where the trees do`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/planner');
-      const eyebrow = page.locator('.planner-header-eyebrow');
+      const eyebrow = page.getByTestId('planner-header-crest');
       await expect(eyebrow).toBeVisible();
       await expect(page.getByTestId('planner-tree-source')).toBeVisible();
       const body = await left(page.getByTestId('planner-tree-source'));
@@ -40,8 +40,8 @@ test.describe('headers align with the body', () => {
   test('on a phone both headers keep the 18 px inset', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.goto('/planner');
-    await expect(page.locator('.planner-header-eyebrow')).toBeVisible();
-    expect(await left(page.locator('.planner-header-eyebrow'))).toBe(18);
+    await expect(page.getByTestId('planner-header-crest')).toBeVisible();
+    expect(await left(page.getByTestId('planner-header-crest'))).toBe(18);
     await page.goto('/tiers');
     expect(await left(page.getByTestId('tier-page').locator('p.text-gold'))).toBe(18);
   });

@@ -15,6 +15,10 @@
   import { dataUrl } from '../../lib/planner/load';
   import { CELL_BORDER, cellState } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
+  import { plannerCopy } from '../../lib/planner/copy';
+  import { CARD_BODY, CARD_HEAD, cardClass } from '../../lib/ui/card';
+  import Card from '../ui/Card.svelte';
+  import IconTile from '../ui/IconTile.svelte';
 
   let {
     store,
@@ -87,28 +91,32 @@
   {/if}
 {/snippet}
 
-<svelte:element
-  this={phone ? 'details' : 'section'}
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-4 md:mx-0 {className}"
-  data-testid="order-strip"
->
-  {#if phone}
-    <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
-      <span>Point order</span>
-      <span class="flex items-center gap-3">
-        <span class="text-muted numeric text-[12px]">{store.order.length}</span>
-        <span class="when-closed text-muted" aria-hidden="true">Show</span>
-        <span class="when-open text-muted" aria-hidden="true">Hide</span>
+{#if phone}
+  <!-- Closed by default on a phone: the card's own surface and compact head recipe, as a
+       native <details> (a `Card` is a section, so it cannot fold). -->
+  <details class="{cardClass(false)} mx-[18px] {className}" data-testid="order-strip">
+    <summary class="{CARD_HEAD.compact} min-h-11 cursor-pointer list-none">
+      <IconTile glyph="list" size={28} />
+      <span class="section-title flex-1 leading-6">{plannerCopy.pointOrderTitle}</span>
+      <span class="text-muted flex items-center gap-3 text-[13px]">
+        <span class="numeric">{plannerCopy.pointOrderMeta(store.order.length)}</span>
+        <span class="when-closed" aria-hidden="true">Show</span>
+        <span class="when-open" aria-hidden="true">Hide</span>
       </span>
     </summary>
-    <div class="pt-3">
+    <div class={CARD_BODY.text}>
       {@render list()}
     </div>
-  {:else}
-    <header class="flex items-center justify-between gap-3">
-      <h2 class="section-title">Point order</h2>
-      <span class="text-muted numeric text-[13px]">{store.order.length}</span>
-    </header>
+  </details>
+{:else}
+  <Card
+    glyph="list"
+    compact
+    title={plannerCopy.pointOrderTitle}
+    meta={plannerCopy.pointOrderMeta(store.order.length)}
+    testid="order-strip"
+    class="mx-[18px] md:mx-0 {className}"
+  >
     {@render list()}
-  {/if}
-</svelte:element>
+  </Card>
+{/if}

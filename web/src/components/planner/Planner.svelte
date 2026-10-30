@@ -59,7 +59,7 @@
   import ImportBox from './ImportBox.svelte';
   import { importFromAddon } from '../../lib/addon/import';
   import OrderStrip from './OrderStrip.svelte';
-  import PlannerHeaderBand from './PlannerHeaderBand.svelte';
+  import PlannerHead from './PlannerHead.svelte';
   import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
   import { watchMedia } from '../../lib/watch-media';
@@ -655,9 +655,8 @@
       // `loadReference` produces (both only need `store.treeVersion`/`slug`, already known),
       // so starting it here instead of after `reference` resolves turns two sequential round
       // trips into one. Planner rebuild, fix round 1: this is also what the header's own
-      // background art (`PlannerHeaderBand.svelte`'s `headerArtSrc`, which needs `store.
-      // talentIndex`) now waits on, so halving this wait is half of the Lighthouse LCP
-      // budget back. `.catch(() => {})` on a throwaway reference only silences the
+      // background art (once the header art returns) waits on, so halving this wait is half of the
+      // Lighthouse LCP budget back. `.catch(() => {})` on a throwaway reference only silences the
       // "unhandled rejection" warning a promise nobody has awaited yet can raise while
       // `reference` is still in flight below -- the real rejection still reaches the
       // `await talentsPromise` inside the nested `try`, unaffected by this one.
@@ -883,24 +882,22 @@
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
-    <!-- Rebuild spec §4.A/§4.B, fix round 5: `PlannerHeaderBand` owns the full-bleed band
-         (the same shape the BiS page's `ArtPanel` + `.header-row` ships), `PlannerHeader`
-         and the shared `CharacterHeader` card as its own two grid columns -- replaces the bare page
-         title, the old current-character spine band (which duplicated Copy for the game, now
-         in the Share panel below), and the prior round's boxed header beside a separate
-         character-card panel. -->
-    <PlannerHeaderBand
-      {store}
-      {live}
-      {gate}
-      onshowdps={() => (dpsOptedIn = true)}
-      oncharacter={(next) => {
-        bandCharacter = next;
-        bandSettled = true;
-      }}
-      origin={effectiveOrigin}
-      simHref={simLinkShown ? simHref : undefined}
-    />
+    <!-- Site alignment §5.5 (D1): `PlannerHead` is a `PageHead` on the page ground, the
+         character card its aside, the selects and facts its `below` row. -->
+    <div class="px-[18px] pt-4 md:px-0 md:pt-7">
+      <PlannerHead
+        {store}
+        {live}
+        {gate}
+        onshowdps={() => (dpsOptedIn = true)}
+        oncharacter={(next) => {
+          bandCharacter = next;
+          bandSettled = true;
+        }}
+        origin={effectiveOrigin}
+        simHref={simLinkShown ? simHref : undefined}
+      />
+    </div>
   {:else}
     <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
          keeps its own pre-fix-round layout: no header, no rail -- just the flat facts bar
@@ -1103,7 +1100,7 @@
        Mac-measured natural for the CI runner's fonts, rounded up -- 1202 / 1158 / 874.
 
        Fix round 1, item 2.a (the mock): "Sim this build" moved out of the facts rail (now
-       inside `PlannerHeader`, outside this reserve) into this rail, as its own button above
+       inside `PlannerHeadControls`, outside this reserve) into this rail, as its own button above
        the Share panel -- one more 44px control plus its own gap added to every branch this
        reserve covers. Re-measured the identical way: 1244 at 360px, 1209.5 at 800px, 926 at
        1280px, each 24px over for the CI runner's fonts and rounded up -- 1268 / 1234 / 950.
@@ -1232,7 +1229,7 @@
                  orders agree as closely as the mobile/desktop split allows. -->
               <OrderStrip {store} class="order-1 lg:order-1" />
 
-              <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
+              <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeadControls`) and
                  lives here instead -- its own outlined gold secondary button, directly
                  under Point order on desktop, above the Share panel. `lg:col-span-2`: the
                  tablet rail's own second row, spanning both columns (fix round 6) --

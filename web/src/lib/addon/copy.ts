@@ -70,6 +70,8 @@ export const addonCopy = {
   importTitle: 'Import from addon',
   importPlaceholder: 'FS1:…',
   importAction: 'Import',
+  importNoExport: "Don't have an export?",
+  importGetAddon: 'Get the addon',
   importOrderApproximated:
     'Nothing in the game records the order a build was spent in, so this order is our best reconstruction: lowest tier first, left to right. The finished tree is exact.',
   importDropped: (names: string): string =>
@@ -135,9 +137,9 @@ export const addonCopy = {
     'The addon is in beta testing in game. Every surface it draws is listed above under What it does in the game, with a capture from the client where we have one.',
 
   // --- /setup page's three steps (spec 2026-09-25 §3.4) ---
-  setupStep1Title: '1. Sign in with Battle.net',
-  setupStep2Title: '2. The addon',
-  setupStep3Title: '3. The companion',
+  setupStep1Title: 'Sign in',
+  setupStep2Title: 'The addon',
+  setupStep3Title: 'The companion',
   setupSignInBody: 'Saves your builds, sims and logs to your account.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
@@ -157,6 +159,7 @@ export const addonCopy = {
    *  under it, a done line for each step a visitor has already finished, the addon's
    *  how-it-works cards behind one disclosure, and the companion's downloads. */
   setupPageTitle: 'Get set up',
+  setupEyebrow: 'Addon and companion',
   /** The label over the status chips: they report progress, they are not tabs. */
   setupProgressLabel: 'Your progress',
   /** The three chips, each an anchor to its step. Addon and Companion keep one label whatever

@@ -33,6 +33,7 @@
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { siblingSpecNames, specDisplayName } from '../../lib/sim/spec-label';
   import { specKeyFor } from '../../lib/addon/score';
+  import Card from '../ui/Card.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
   let {
@@ -189,22 +190,13 @@
   }
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel flex w-full flex-col gap-3 border p-4 {className}"
-  data-testid="band-compare"
+<Card
+  glyph="layers"
+  compact
+  title={bandCompareCopy.heading(bandLabel)}
+  testid="band-compare"
+  class="mx-[18px] md:mx-0 {className}"
 >
-  <!-- `whitespace-nowrap` on the heading: its own text is the one thing in this panel that
-       changes length as a build levels (e.g. "50 to 59 build" -> "60 build"), and letting it
-       wrap internally at a narrow rail width shifted everything below it by a text line on
-       the exact click that crosses a band boundary (planner-dps.spec.ts's own "never moves
-       the trees" case) -- a real, if small, CLS regression this panel must not introduce. -->
-  <header class="flex items-baseline justify-between gap-3">
-    <h2 class="section-title whitespace-nowrap">{bandCompareCopy.heading(bandLabel)}</h2>
-    <span class="text-muted text-[12px] whitespace-nowrap"
-      >{bandCompareCopy.headingAside(bandLabel, characterLevel !== null)}</span
-    >
-  </header>
-
   {#if file === undefined}
     <!-- Fix round 4 (CI: the facts-rail/footer position tests this panel's own loading-to-
          ready swap was moving, 18-33.5px, now that it reliably finishes mid-test instead of
@@ -305,4 +297,4 @@
       </span>
     </a>
   {/if}
-</section>
+</Card>
