@@ -52,6 +52,15 @@ function guideHitTalent(id: string): string {
   return schoolHitTalent(trees) ?? 'talents';
 }
 
+/**
+ * Client builds where the frost guide's hit line deliberately says "from talents": the
+ * build's school-hit talent is not one `SCHOOL_HIT_TALENTS` names, and naming it was
+ * decided against. Empty until someone decides that; a move to a build that renames the
+ * talent (70685 and 70707 call it Precision) fails here, so the copy is a decision, never
+ * a silent fallback.
+ */
+const HIT_LINE_FALLBACK_BUILDS: readonly string[] = [];
+
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -160,7 +169,14 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const html = await frostHtml();
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-stat-table"');
-    const talent = escapeRegExp(guideHitTalent('mage/frost'));
+    const named = guideHitTalent('mage/frost');
+    if (!HIT_LINE_FALLBACK_BUILDS.includes(activeBuild.build)) {
+      expect(
+        named,
+        `the frost hit line names no talent on ${activeBuild.build}: add its school-hit talent to SCHOOL_HIT_TALENTS, or the build to HIT_LINE_FALLBACK_BUILDS`,
+      ).not.toBe('talents');
+    }
+    const talent = escapeRegExp(named);
     expect(html).toMatch(
       new RegExp(
         `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?% · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear<`,
