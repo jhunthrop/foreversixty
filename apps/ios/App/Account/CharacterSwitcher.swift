@@ -33,7 +33,7 @@ struct CharacterSelector: View {
             .padding(.leading, FSSpacing.space1)
             .padding(.trailing, FSSpacing.space3)
             .background(FSColor.raised, in: .capsule)
-            .overlay(Capsule().stroke(isOpen ? FSColor.gold : FSColor.gold.opacity(0.17)))
+            .overlay(Capsule().strokeBorder(isOpen ? FSColor.gold : FSColor.gold.opacity(0.17)))
             .shadow(color: isOpen ? FSColor.gold.opacity(0.4) : .clear, radius: 8)
         }
         .buttonStyle(.plain)

@@ -132,7 +132,7 @@ struct AccountRow: View {
                     .foregroundStyle(FSColor.gold)
                     .padding(.horizontal, FSSpacing.space2)
                     .frame(minHeight: 22)
-                    .overlay(Capsule().stroke(FSColor.gold.opacity(0.4)))
+                    .overlay(Capsule().strokeBorder(FSColor.gold.opacity(0.4)))
             }
             if let trailing {
                 Text(trailing).font(ScaledType.meta).foregroundStyle(FSColor.muted).multilineTextAlignment(.trailing)
