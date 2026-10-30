@@ -83,21 +83,35 @@ jobs:
       # the active build, the picks and dps-per-point carried by tools/activate-build.sh
       # stay live; that pin's green push dispatches this workflow with force. The crawl
       # below still runs: it reads no engine stamp.
+      # A second night of waiting (the follow went to review and nobody finished it), or
+      # a stamp that cannot be read, is "stalled": the job still commits tonight's crawl,
+      # then fails visibly at its last step (tools/engine/ranking-wait.sh, review M1).
       - name: the pinned engine follows the active build
         id: engine
         env:
           BUILD: ${{ steps.identity.outputs.build }}
           SHA: ${{ steps.identity.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          stamp=$(tools/engine/pinned-build.sh . .engine) || stamp="an unreadable build"
-          if [ "$stamp" = "$BUILD" ]; then
+          stamp=$(tools/engine/pinned-build.sh . .engine) || stamp=""
+          # When active-build.json last changed: the checkout is shallow, so ask GitHub.
+          moved=$(gh api "repos/$GITHUB_REPOSITORY/commits?path=web/src/data/active-build.json&per_page=1" --jq '.[0].commit.committer.date' 2>/dev/null) || moved=""
+          if [ -n "$moved" ]; then
+            moved=$(date -u -d "$moved" +%s)
+          else
+            echo "::warning::could not read when active-build.json last changed; tonight counts as the move night"
+            moved=$(date -u +%s)
+          fi
+          IFS=$'\t' read -r verdict line < <(tools/engine/ranking-wait.sh "$BUILD" "$stamp" "$moved" "$(date -u +%s)")
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          if [ "$verdict" = rank ]; then
             echo "follows=true" >> "$GITHUB_OUTPUT"
-            echo "the pinned engine $SHA is stamped for $BUILD"
+            echo "the pinned engine $SHA: $line"
           else
             echo "follows=false" >> "$GITHUB_OUTPUT"
-            line="ranking waits for engine follow: the pinned engine $SHA is stamped for $stamp, not the active $BUILD; the carried picks stay live until engine.yml pins an engine that follows $BUILD"
-            echo "::notice title=ranking waits for engine follow::$line"
-            echo "- $line" >> "$GITHUB_STEP_SUMMARY"
+            echo "line=$line" >> "$GITHUB_OUTPUT"
+            echo "::warning title=ranking waits for engine follow::$line (engine $SHA)"
+            echo "- $line (engine $SHA)" >> "$GITHUB_STEP_SUMMARY"
           fi
       - uses: astral-sh/setup-uv@v3
       - name: fill in quest levels and item sources from wowhead, then regenerate loot.json
@@ -337,3 +351,11 @@ jobs:
         if: success() && steps.inputs.outputs.skip != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         run: gh workflow run web.yml --ref main
+      # Last, so tonight's crawl and any deploy above still landed: a ranking stalled on
+      # the engine for a second night is a red run, not another green notice.
+      - name: fail when the ranking has stalled on the engine
+        if: always() && steps.engine.outputs.verdict == 'stalled'
+        env: { LINE: '${{ steps.engine.outputs.line }}' }
+        run: |
+          echo "::error title=ranking stalled on the engine follow::$LINE"
+          exit 1

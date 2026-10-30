@@ -16,6 +16,7 @@ readonly HASH=$HERE/../follow-inputs-hash.sh
 readonly PIN=$HERE/../pin-conditions.sh
 readonly PUSH=$HERE/../push-review-branch.sh
 readonly PINNED=$HERE/../pinned-build.sh
+readonly WAIT=$HERE/../ranking-wait.sh
 readonly BUILD=1.60.1.70532
 readonly OTHER_BUILD=1.60.1.70425
 
@@ -376,6 +377,26 @@ test_pinned_build_fails_rather_than_guess() {
 	assert "no arguments is a usage error" equal "$status" 2
 }
 
+
+test_ranking_wait_verdicts() {
+	local moved=1730000000 out status
+	out=$(bash "$WAIT" "$BUILD" "$BUILD" "$moved" $((moved + 3600)))
+	assert "an engine on the active build ranks (got '$out')" equal "${out%%$'\t'*}" rank
+	out=$(bash "$WAIT" "$BUILD" "$OTHER_BUILD" "$moved" $((moved + 3 * 3600)))
+	assert "the move night's ranking waits (got '$out')" equal "${out%%$'\t'*}" wait
+	assert "the wait line says why" contains "$out" "ranking waits for engine follow"
+	out=$(bash "$WAIT" "$BUILD" "$OTHER_BUILD" "$moved" $((moved + 26 * 3600)))
+	assert "the second night of waiting is stalled (got '$out')" equal "${out%%$'\t'*}" stalled
+	assert "the stall names the hours and the fix" contains "$out" "waited for engine follow for 26h"
+	out=$(bash "$WAIT" "$BUILD" "" "$moved" $((moved + 60)))
+	assert "an unreadable stamp is stalled at once, never a quiet wait" equal "${out%%$'\t'*}" stalled
+	out=$(STALL_HOURS=48 bash "$WAIT" "$BUILD" "$OTHER_BUILD" "$moved" $((moved + 26 * 3600)))
+	assert "STALL_HOURS moves the line" equal "${out%%$'\t'*}" wait
+	status=0
+	bash "$WAIT" "$BUILD" "$BUILD" soon later >/dev/null 2>&1 || status=$?
+	assert "non-integer epochs are a usage error" equal "$status" 2
+}
+
 test_pin_gives_up_on_a_fork_ci_that_never_finishes
 test_pin_refuses_a_fork_on_another_build
 test_pin_refuses_the_sha_already_pinned
@@ -388,6 +409,7 @@ test_push_review_branch_fails_on_a_bad_remote
 test_pinned_build_reads_the_forks_stamp_at_the_pin
 test_pinned_build_asks_github_without_a_fork
 test_pinned_build_fails_rather_than_guess
+test_ranking_wait_verdicts
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "FAILED $FAILED of $((PASSED + FAILED)) assertions" >&2
