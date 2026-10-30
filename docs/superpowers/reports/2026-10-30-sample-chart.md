@@ -125,8 +125,136 @@ In `design/reviews/2026-10-30-controls-charts/`:
   5 s trailing average at every second. A 15-minute fight drops from 900 points to 180.
 - **The desktop fold.** At 1280 × 720 and 1440 × 900, no damage row is on the first screen of the
   sample any more. That is the owner's call, and the phone still keeps its promise.
-- **Brush end handle, not changed in this lane.** On a 9.9 s pull, the brush's right handle sits
-  short of the track's end. The brush's scale looks like it comes from `brushShape`'s whole
-  seconds, not the fight's milliseconds. It is worth a look in the chart lane.
 - **Header CLS, not changed in this lane.** The site header logs a font-swap layout shift of about
   0.0004 (a 3 px text move in the nav at about 40 ms). It is outside the report.
+
+## Fix round (ux-designer and wow-player HOLDs)
+
+### 4. The brush's end handle 
+
+- **Cause.** The handles are range inputs with `step=1000` and `max=domainMs`. When a fight does
+  not end on a whole second, the browser snaps the value to the last whole step. On the 9.879 s
+  pull the browser reported the end input as 9000, so the handle drew at about 89% while Window
+  read "Whole fight". The cause was the input's step. Neither `brushShape` nor the buckets were
+  involved.
+- **Fix.**
+  - The inputs take `step="any"`.
+  - A dragged edge snaps to the nearest whole second, except that the fight's end lands on its
+    exact millisecond (`lib/chart/brush.ts`).
+  - The end and domain labels read the fight's length as the fight list does: `0:09.9` under a
+    minute, the rounded second past it (`endClockLabel`).
+- **Tests.**
+  - Unit tests cover `brushSnap` and `endClockLabel`.
+  - A server-render test of OverviewBrush covers fights on 1 s, 2 s, 5 s and 10 s points:
+    9.879 s, 80.261 s, 763.14 s and 30:00.437.
+  - An e2e test runs on sample fights 2, 9 and 6, on both desktop and mobile, at 1024 px so the
+    mobile project also draws the brush. It checks that the browser's own input value equals
+    `max`. It was red before the fix: 9000 for 9879, and 80000 for 80261.
+
+### 5. Counts that say what they count
+
+**The engine and group membership.**
+- The engine reads the affiliation bits (MINE `0x1`, PARTY `0x2`, RAID `0x4`, OUTSIDER `0x8`;
+  `logs/engine/units/units.go`).
+- `report.json`'s units keep each unit's **last-seen** flags (`Registry.touch`). The per-fight
+  summary keeps no flags at all.
+- In the sample, the units are 1 MINE, 4 PARTY and 955 OUTSIDER players. The logger was in a
+  party of five.
+- So the group can be found client-side, from report-wide, last-seen flags.
+
+**What the client now does** (`web/src/lib/report/group.ts`):
+- **The default "friendlies" scope is the logger's group** when outsiders outnumber the group (an
+  open-world log) and the pull has a group member in it. The Source list then offers "Your group"
+  (or "Your raid") and "Everyone in range" (`?source=everyone`).
+- **Instance logs keep every player.** There, a few players read as outsiders only because they
+  left the group before the log ended. Scoping those out would drop real raiders, so outsiders
+  have to outnumber the group first.
+- **A crowded pull the group was not in** (the 9.9 s pull) keeps every player, and the Source list
+  says "Everyone in range". The page doesn't go empty.
+- **The sample's meta carries `group`.** That lets its summary-first table scope before
+  `report.json` arrives. `api/cmd/samplecut` now writes the field (`groupOf`, with a Go test), and
+  the committed `meta.json` got the same derivation from its `report.json` units: five GUIDs added
+  and nothing else changed.
+
+**Copy fixes:**
+
+| Where | Change |
+| --- | --- |
+| Chart head | Names the set it sums: "Raid", "Group" (a group of five or fewer with no RAID flag), or "Total" for everyone in range |
+| Median line | "Raid median", "Group median" or "Median player" |
+| Players field (everyone in range) | "Top 4, bottom 4 of 90 players seen", in a field widened to 260 px so it never truncates |
+| Players card | "265 players seen" under everyone in range; "4 players · 0 deaths" under the group |
+| Subtitle deaths | The group's deaths under the group scope. Fight 6's "2 deaths" are outsiders' and show only under everyone in range |
+| Fight list death marks | Tooltip reads "2 deaths among everyone in range" when the default is the group |
+| Chart markers | Under the group scope, the chart no longer marks outsiders' deaths and cooldowns |
+| Trash kill counts | Removed everywhere: fight rows, trash group rows, the phone fight summary, Compare's fight list |
+
+**Why the kill counts went.** The engine's `npc_kills` (`logs/engine/fight/fight.go`, `assign`)
+adds one for every hostile UNIT_DIED **and** one for every PARTY_KILL. Each kill the party makes
+is therefore counted twice. Every mob anyone in range killed counts as well. Measured on the
+sample's own `events.parquet`:
+
+| Fight | Hostile deaths | PARTY_KILL | Also counted as UNIT_DIED | Engine shows |
+| --- | --- | --- | --- | --- |
+| 6 | 177 | 26 | all 26 | 203 |
+
+Fight 6's true counts are 177 mobs died in range, and 26 were the party's. No client-side figure
+can be made true, so the count is not shown. Critters are not counted unless the party kills one:
+neutral units are not hostile, but PARTY_KILL counts any party kill.
+
+**What the engine needs** (not changed in this lane):
+1. **Kills.** In `logs/engine/fight/fight.go` `Segmenter.assign`, count each hostile NPC GUID's
+   death once: de-duplicate UNIT_DIED and PARTY_KILL by dest GUID. Add a separate count for the
+   group's kills (PARTY_KILL, or a death whose last hostile-damage source carried MINE, PARTY or
+   RAID). Then the fight entry can say "26 kills by your group · 177 died in range".
+2. **Per-fight group membership.** Today the flags are last-seen and report-wide. The engine
+   should OR the affiliation bits each player carried during the fight into the summary's roster
+   row, as e.g. `affiliation`, or a `group` list per `FightEntry`. Then someone who joins or
+   leaves the party mid-night is scoped right per pull, and instance logs can scope too. The
+   client would read that instead of the units' flags.
+3. **Per-fight group deaths.** `FightEntry.deaths` counts every player death in range. A
+   `group_deaths` field would let the fight list show the group's own deaths.
+
+**Tests.**
+- `group.test.ts`: 9 tests.
+- Copy, rate and format/fights updates.
+- samplecut's `groupOf` Go tests.
+- New e2e in `sample-report.spec.ts`:
+  - the group default: "Your group", "4 players · 0 deaths", "Group … DPS", "Group median", no
+    "Raid", no death markers, no kill counts, and the in-range death tooltip;
+  - Everyone in range: "265 players seen", "Total … DPS", "of N players seen" not truncated,
+    "Median player", "2 deaths";
+  - the 9.9 s pull reading "Everyone in range".
+- `report-players.spec.ts` no longer expects "115 kills" or "230 kills".
+
+### Gates (fix round)
+
+| Gate | Result |
+| --- | --- |
+| Full vitest | 689 files, 7764 tests, pass |
+| `check` (fixture data) | 0 errors |
+| `lint`, `format:check` | pass |
+| Island size | pass: `report-island.js` 396,864 B raw / 127,439 B gzip, +1.9 KB raw over the first round; no budget moved |
+| `go test ./cmd/samplecut/` | pass |
+| Full Playwright suite on the count-fix build | 3396 passed, 410 skipped, 0 failed |
+| After the last two changes (marker scope, field width), desktop and mobile: sample-report, launch-polish, onboarding-second-screen, coach-report and every `report-*.spec.ts` | 440 passed, 56 skipped (project-specific), 0 failed |
+
+### Captures (re-taken)
+
+- `sample-chart-1440.png`, `-2000.png` and `-390.png` show the group default.
+- `sample-chart-1440-10s-pull.png` has the end handle at the track's end, labelled `0:09.9`, and
+  reads Everyone in range.
+- `sample-chart-1440-everyone.png` is new: fight 6 under Everyone in range.
+
+### Concerns (fix round)
+
+- **The sample's group is in few pulls.** The logger was solo for most of the night. Only fight 6
+  (4 of the group), fight 45 (2) and single-player pulls have the group in them. Fight 6 is still
+  the default and shows four players.
+- **Last-seen flags are report-wide.** Someone who left the party mid-night reads as an outsider
+  in every pull. Engine item 2 fixes that.
+- **Some copy still says "raid".** The Debuffs tab's note "the debuffs on the raid" keeps that
+  word under a group scope. The Ratings tab lists every rated player under either friendlies
+  scope.
+- **Not done here:** the player's should-level notes (axis unit, marker key, step lines, a
+  finding under the chart) and the ux shoulds.
