@@ -1,0 +1,63 @@
+name: ios
+on:
+  push:
+    branches: [main]
+    paths: ['apps/ios/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['apps/ios/**', 'apps/shared/**', 'docs/contracts/**', '.github/workflows/ios.yml']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  # The app needs Xcode 27.1 (iOS 26 deployment target, Swift 6.4, iOS 27 simulator
+  # runtimes). setup-xcode fails the job loudly when the runner image lacks it.
+  XCODE_VERSION: '27.1'
+  XCODEGEN_VERSION: '2.46.0'
+  SIMULATOR: 'platform=iOS Simulator,name=iPhone 17'
+jobs:
+  build-test:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: apps/ios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - name: Install XcodeGen
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" \
+            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+      - name: Generate the project
+        run: xcodegen generate
+      - name: Cache SwiftPM checkouts
+        uses: actions/cache@v4
+        with:
+          path: apps/ios/build/DerivedData/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Package.swift') }}
+      # Simulator only: no Apple Developer account yet, so the build is
+      # ad-hoc signed ("-", project.yml) and needs no certificate or team.
+      - name: Build and test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project ForeverSixty.xcodeproj \
+            -scheme ForeverSixty \
+            -destination "$SIMULATOR" \
+            -derivedDataPath build/DerivedData \
+            -resultBundlePath build/ForeverSixty.xcresult
+      - name: Upload results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-results
+          path: |
+            apps/ios/build/ForeverSixty.xcresult
+            apps/ios/AppTests/__Snapshots__
+          retention-days: 7
