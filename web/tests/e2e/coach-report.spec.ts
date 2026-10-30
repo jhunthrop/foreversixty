@@ -240,7 +240,10 @@ test.describe('Premium owner', () => {
     await expect(page.getByTestId('coach-then-item').first()).toContainText(answer.review.thenFix[0]!.title);
   });
 
-  test('at 1280 x 800 Fix first ends above the fold, with no chart on the tab', async ({ page, isMobile }) => {
+  test('at 1280 x 800 Fix first ends above the fold, with no chart on the tab', async ({
+    page,
+    isMobile,
+  }) => {
     // The fold is the fine-pointer desktop's: a touch device at this width draws the report's
     // dense tool-bar fields at 44 px, not 36 (controls-charts spec §A4.1), and is not this budget.
     test.skip(isMobile, 'the fine-pointer desktop layout');
