@@ -436,7 +436,7 @@
     </div>
   {/if}
 
-  <Card glyph="user" title="Roster" meta={countLine(countsView)} body="none" testid="guild-roster-card">
+  <Card glyph="user" title="Roster" body="none" testid="guild-roster-card">
     <div class="border-line-soft flex flex-col gap-4 border-t px-5 py-4">
       <div class="flex flex-col gap-1">
         <p class="text-[14px] font-semibold" data-testid="guild-roster-counts">{countLine(countsView)}</p>
@@ -598,7 +598,7 @@
                 {/if}
                 {#if canRemove && row.may_remove}
                   <button
-                    class={`${button('ghost', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                    class={`${button('secondary', 'sm')} ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
                     onclick={() => (removingKey = row.character_key)}
                     disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
                     aria-label={`Remove ${row.name}`}
