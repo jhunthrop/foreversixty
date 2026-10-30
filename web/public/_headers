@@ -44,3 +44,10 @@
 /.well-known/assetlinks.json
   Content-Type: application/json
   Cache-Control: public, max-age=3600
+
+# /app/auth is where the phone apps' sign-in hands its one-time code when the app did not
+# catch the link (src/pages/app/auth.astro). The code is in the URL for the moment before the
+# page's head script strips it, so nothing may cache the page or send it on as a referrer.
+/app/*
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store

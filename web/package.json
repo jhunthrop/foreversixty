@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "astro dev",
     "dev:local-api": "node scripts/dev-local-api.mjs",
-    "prebuild": "node scripts/app-links.mjs",
     "build": "astro build",
     "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts && vite build --config vite.sim-island.config.ts && vite build --config vite.sim-tools-island.config.ts",
     "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs && node scripts/check-no-removed-routes.mjs",
@@ -35,7 +34,7 @@
     "sync:report-fixture": "node scripts/sync-report-fixture.mjs",
     "sync:duckdb": "node scripts/sync-duckdb.mjs",
     "upload:duckdb": "node scripts/upload-duckdb-runtime.mjs",
-    "sync": "npm run sync:data && npm run sync:sim-ids && npm run sync:rotations && npm run sync:report-fixture && npm run sync:duckdb",
+    "sync": "npm run sync:app-links && npm run sync:data && npm run sync:sim-ids && npm run sync:rotations && npm run sync:report-fixture && npm run sync:duckdb",
     "make:report-fixture": "node scripts/make-report-fixture.mjs",
     "predev": "npm run sync",
     "precheck": "npm run sync",

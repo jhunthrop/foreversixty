@@ -8,8 +8,8 @@
 // Only the configured paths (/app/*) open the apps; every other URL stays on the site. The
 // API's app sign-in hands its one-time code to /app/auth (api/internal/auth/app_auth.go).
 //
-// `npm run sync:app-links` rewrites the files; prebuild runs it so a deploy always carries
-// the config's current values.
+// `npm run sync:app-links` rewrites the files. `npm run sync` (predev and prebuild) runs it,
+// so a deploy always carries the config's current values.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
