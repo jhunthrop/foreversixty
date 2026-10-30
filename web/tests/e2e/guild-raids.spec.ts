@@ -438,7 +438,7 @@ test.describe('the officer row in a browser (Task 7)', () => {
 
 test('a cancelled raid keeps its row on the Raids tab with the Cancelled chip', async ({ page }) => {
   await openRaidsTab(page, { viewer: 'member', raids: threePlanned() });
-  await expect(page.getByTestId('guild-planned-count')).toHaveText('3');
+  await expect(page.getByTestId('guild-planned').getByTestId('card-head-meta')).toHaveText('3');
   const chip = page.locator(
     `[data-testid^="planned-raid-${HYJAL_ID}-"][data-testid$="-status-chip"]:visible`,
   );

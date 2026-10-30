@@ -409,7 +409,8 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
       .slice(1);
     expect(waitingRows.length).toBe(home.pending?.length);
     for (const part of waitingRows) {
-      expect(text(part)).toContain('Waiting for approval');
+      // The card's head says it; the per-row state pill is gone (site alignment §5.10).
+      expect(text(part)).not.toContain('Waiting for approval');
       expect(part).toMatch(/data-testid="guild-roster-pending-rank"[^>]*>(Member|Officer|Leader)</);
       expect(part).toContain('data-testid="guild-roster-decline"');
       expect(part).toContain('data-testid="guild-roster-approve"');
@@ -453,7 +454,7 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
   it('adds a "No account" filter chip beside "Verified only"', () => {
     const filters = asOfficer.slice(
       asOfficer.indexOf('data-testid="guild-roster-filters"'),
-      asOfficer.indexOf('data-testid="guild-roster-waiting"'),
+      asOfficer.indexOf('data-testid="guild-roster-sort"'),
     );
     expect(filters.indexOf('guild-roster-filter-verified')).toBeLessThan(
       filters.indexOf('guild-roster-filter-noaccount'),

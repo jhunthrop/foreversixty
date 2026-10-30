@@ -72,11 +72,11 @@ const filled = (body: string): number =>
   (body.match(/<(?:button|a)[^>]*(?:bg-gold|bg-\[linear-gradient)[^>]*>/g) ?? []).length;
 
 describe('GuildDiscordSection', () => {
-  it('is the #discord flat section with the Discord heading in every state', () => {
+  it('is the #discord card with the Discord heading in every state', () => {
     for (const discord of [NOT_CONNECTED, CONNECTED, SWITCHED_OFF]) {
       const body = html(discord);
       expect(body).toMatch(/<section id="discord" class="[^"]*scroll-mt-20/);
-      expect(body).toContain(`<h2 class="section-title">${guildDiscordCopy.heading}</h2>`);
+      expect(body).toMatch(new RegExp(`<h2[^>]*>\\s*${guildDiscordCopy.heading}\\s*</h2>`));
       expect(body).not.toContain('rounded-panel');
     }
   });

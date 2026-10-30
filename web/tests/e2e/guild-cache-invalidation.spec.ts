@@ -164,8 +164,10 @@ test('approving a character changes the band count and survives the next visit',
   await page.route('**/v1/rankings/guilds*', (route) => route.fulfill(envelope({ rows: [] })));
 
   await page.goto(GUILD_PATH);
-  const waiting = page.getByTestId('guild-officer-waiting');
-  const first = Number(((await waiting.textContent()) ?? '').match(/\d+/)?.[0]);
+  // The Overview's Roster card carries the waiting count (the officer strip left the head).
+  const waiting = page.getByTestId('guild-overview-roster-facts');
+  await expect(waiting).toContainText('waiting for approval');
+  const first = Number(((await waiting.textContent()) ?? '').match(/(\d+) waiting for approval/)?.[1]);
   expect(first).toBeGreaterThan(1);
 
   await page.goto(`${GUILD_PATH}#roster`);

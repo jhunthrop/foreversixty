@@ -14,6 +14,7 @@
   import { getGuildBilling, previewUpgrade, upgrade } from '../../lib/billing/guild-billing-api';
   import type { GuildBillingSettings } from '../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../lib/billing/guild-billing-copy';
+  import { settingsWords } from '../../lib/guild/settings-view';
   import {
     billingState,
     canBill,
@@ -39,12 +40,12 @@
   } from '../../lib/guild/billing-handoff';
   import { readReserve, writeReserve } from '../../lib/layout-reserve';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import Card from '../ui/Card.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import BillingHandoff from './BillingHandoff.svelte';
   import GuildPlanChooser from './billing/GuildPlanChooser.svelte';
   import GuildPlanLine from './billing/GuildPlanLine.svelte';
-  import GuildRecords from './billing/GuildRecords.svelte';
   import GuildSeats from './billing/GuildSeats.svelte';
   import GuildSizeLine from './billing/GuildSizeLine.svelte';
   import GuildTransferOffer from './billing/GuildTransferOffer.svelte';
@@ -93,6 +94,15 @@
     writeReserve(reserveKey(), readyHeight);
   });
   const payer = $derived(view !== null && canBill(view));
+  /** The lower blocks (size line, chooser, seats, the read-only line) draw nothing for a plain paid plan. */
+  const hasLowerBlocks = $derived(
+    view !== null &&
+      (showSizeLine(view) ||
+        flow.confirming ||
+        (showsChooser(viewState) && payer) ||
+        view.seats.length > 0 ||
+        showsReadOnlyLine(view, payer)),
+  );
 
   /** A read that finishes after a newer one began is ignored, so it cannot overwrite the newer view. */
   let loadSequence = 0;
@@ -154,107 +164,121 @@
   });
 </script>
 
-<section
-  bind:this={sectionEl}
+<Card
   id="billing"
-  class="flex scroll-mt-20 flex-col gap-5"
-  data-testid="guild-settings-billing"
+  class="scroll-mt-20"
+  glyph="crown"
+  label={view?.billing ? settingsWords.guildPlan : undefined}
+  title={view?.billing ? copy.chooser.tierName(view.billing.tier) : settingsWords.guildPlan}
+  body="none"
+  testid="guild-settings-billing"
 >
-  <h2 class="section-title">Billing</h2>
-  <div bind:this={statusEl} role="status" tabindex="-1" class="text-muted text-[13px] empty:hidden">
-    {#if flow.notice === 'unconfirmed'}
-      <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>
-    {:else if flow.notice === 'unconfirmed-stale'}
-      <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmedStale}</p>
-    {:else if flow.notice === 'moved'}
-      <p data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
-    {/if}
-  </div>
-  {#if failed}
-    <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="guild-billing-load-error" />
-  {:else if view === null}
+  <div bind:this={sectionEl}>
     <div
-      class={GUILD_BILLING_LOADING.minHeight}
-      style={storedReserve === null ? undefined : `min-height: ${storedReserve}px`}
-      data-testid="guild-billing-reserve"
+      bind:this={statusEl}
+      role="status"
+      tabindex="-1"
+      class="text-muted border-line-soft border-t px-5 py-3 text-[13px] empty:hidden"
     >
-      <Skeleton lines={GUILD_BILLING_LOADING.lines} testid="guild-billing-skeleton" />
+      {#if flow.notice === 'unconfirmed'}
+        <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>
+      {:else if flow.notice === 'unconfirmed-stale'}
+        <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmedStale}</p>
+      {:else if flow.notice === 'moved'}
+        <p data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
+      {/if}
     </div>
-  {:else}
-    <!-- The ready blocks, measured once settled so the next visit reserves this height. -->
-    <div class="flex flex-col gap-5" bind:clientHeight={readyHeight} data-testid="guild-billing-ready">
-      {#if view.billing !== null && view.transfer !== null && offeredToReader(view)}
-        <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={reload} />
-      {/if}
-      {#if view.billing !== null && viewState.kind !== 'none'}
-        <GuildPlanLine
-          {guildId}
-          plan={view.billing}
-          lineState={viewState}
-          {payer}
-          showMove={movesFromPlanLine(view, viewState)}
-          expanded={flow.confirming}
-          onMove={() => void upgradeFlow.open()}
-        />
-      {/if}
-      {#if showSizeLine(view)}
-        <GuildSizeLine
-          count={view.verified_count}
-          {payer}
-          expanded={flow.confirming}
-          onMove={() => void upgradeFlow.open()}
-        />
-      {/if}
-      {#if flow.confirming}
-        <GuildUpgradeConfirm
-          plan={view.billing}
-          preview={flow.preview}
-          committing={flow.committing}
-          error={flow.error}
-          onCommit={() => void upgradeFlow.commit()}
-          onKeep={upgradeFlow.close}
-        />
-      {/if}
-      {#if showsChooser(viewState) && payer}
-        <GuildPlanChooser
-          {guildId}
-          verifiedCount={view.verified_count}
-          trialUsed={view.trial_used}
-          lapsed={viewState.kind === 'lapsed'}
-          {now}
-          {...chooserPreselect(preselect)}
-        />
-      {/if}
-      <div data-testid="guild-billing-seats-slot">
-        <GuildSeats
-          {guildId}
-          seats={view.seats}
-          total={planSeatCount(view)}
-          manage={view.can.includes('seats')}
-          {now}
-          onChanged={reload}
-        />
+    {#if failed}
+      <div class="border-line-soft border-t px-5 py-4">
+        <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="guild-billing-load-error" />
       </div>
-      <div data-testid="guild-billing-whopays-slot">
-        {#if view.billing !== null && view.can.includes('transfer')}
-          <GuildWhoPays
+    {:else if view === null}
+      <div
+        class="border-line-soft border-t px-5 py-4 {GUILD_BILLING_LOADING.minHeight}"
+        style={storedReserve === null ? undefined : `min-height: ${storedReserve}px`}
+        data-testid="guild-billing-reserve"
+      >
+        <Skeleton lines={GUILD_BILLING_LOADING.lines} testid="guild-billing-skeleton" />
+      </div>
+    {:else}
+      <!-- The ready blocks, measured once settled so the next visit reserves this height. -->
+      <div class="flex flex-col" bind:clientHeight={readyHeight} data-testid="guild-billing-ready">
+        {#if view.billing !== null && view.transfer !== null && offeredToReader(view)}
+          <div class="border-line-soft border-t px-5 py-4">
+            <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={reload} />
+          </div>
+        {/if}
+        {#if view.billing !== null && viewState.kind !== 'none'}
+          <GuildPlanLine
             {guildId}
             plan={view.billing}
-            transfer={view.transfer}
-            candidates={view.transfer_candidates}
-            onChanged={reload}
+            lineState={viewState}
+            {payer}
+            showMove={movesFromPlanLine(view, viewState)}
+            expanded={flow.confirming}
+            onMove={() => void upgradeFlow.open()}
           />
         {/if}
+        <div data-testid="guild-billing-whopays-slot">
+          {#if view.billing !== null && view.can.includes('transfer')}
+            <GuildWhoPays
+              {guildId}
+              plan={view.billing}
+              transfer={view.transfer}
+              candidates={view.transfer_candidates}
+              onChanged={reload}
+            />
+          {/if}
+        </div>
+        <div class="border-line-soft flex flex-col gap-5 border-t px-5 py-4 {hasLowerBlocks ? '' : 'hidden'}">
+          {#if showSizeLine(view)}
+            <GuildSizeLine
+              count={view.verified_count}
+              {payer}
+              expanded={flow.confirming}
+              onMove={() => void upgradeFlow.open()}
+            />
+          {/if}
+          {#if flow.confirming}
+            <GuildUpgradeConfirm
+              plan={view.billing}
+              preview={flow.preview}
+              committing={flow.committing}
+              error={flow.error}
+              onCommit={() => void upgradeFlow.commit()}
+              onKeep={upgradeFlow.close}
+            />
+          {/if}
+          {#if showsChooser(viewState) && payer}
+            <GuildPlanChooser
+              {guildId}
+              verifiedCount={view.verified_count}
+              trialUsed={view.trial_used}
+              lapsed={viewState.kind === 'lapsed'}
+              {now}
+              {...chooserPreselect(preselect)}
+            />
+          {/if}
+          <div data-testid="guild-billing-seats-slot">
+            <GuildSeats
+              {guildId}
+              seats={view.seats}
+              total={planSeatCount(view)}
+              manage={view.can.includes('seats')}
+              {now}
+              onChanged={reload}
+            />
+          </div>
+          {#if showsReadOnlyLine(view, payer)}
+            <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
+              {copy.readOnly}
+            </p>
+            {#if showsBillingHandoff(view, viewState)}
+              <BillingHandoff {path} {guildName} verifiedCount={view.verified_count} />
+            {/if}
+          {/if}
+        </div>
       </div>
-      <GuildRecords {guildId} />
-      {#if showsReadOnlyLine(view, payer)}
-        <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
-          {copy.readOnly}
-        </p>
-        {#if showsBillingHandoff(view, viewState)}
-          <BillingHandoff {path} {guildName} verifiedCount={view.verified_count} />
-        {/if}
-      {/if}
-    </div>
-  {/if}
-</section>
+    {/if}
+  </div>
+</Card>

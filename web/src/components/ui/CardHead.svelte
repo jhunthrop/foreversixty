@@ -20,7 +20,9 @@
     label,
     title,
     titleSnippet,
+    titleContent,
     titleId,
+    titleTestid,
     meta,
     action,
     aside,
@@ -38,8 +40,12 @@
     title: string;
     /** Beside the title (a Founder tag). */
     titleSnippet?: Snippet;
+    /** Replaces the title's text inside the heading (an item's name in its quality colour, with its tooltip). */
+    titleContent?: Snippet;
     /** The heading's id, for a section's aria-labelledby. */
     titleId?: string;
+    /** A test id on the heading itself. */
+    titleTestid?: string;
     /** A 13 px muted line at the right ("Updated 3 hours ago", "20 to 29"). */
     meta?: string;
     /** An ActionLink at the right ("See all"). */
@@ -71,9 +77,13 @@
     {/if}
     <div class={CARD_HEAD.titleRow}>
       {#if headingLevel === 3}
-        <h3 class={titleClass} id={titleId}>{title}</h3>
+        <h3 class={titleClass} id={titleId} data-testid={titleTestid}>
+          {#if titleContent}{@render titleContent()}{:else}{title}{/if}
+        </h3>
       {:else}
-        <h2 class={titleClass} id={titleId}>{title}</h2>
+        <h2 class={titleClass} id={titleId} data-testid={titleTestid}>
+          {#if titleContent}{@render titleContent()}{:else}{title}{/if}
+        </h2>
       {/if}
       {@render titleSnippet?.()}
     </div>

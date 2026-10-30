@@ -104,7 +104,7 @@
     {:else}
       <!-- The band's ready height while the chunk loads (raids spec 4, Page states); the chunk's own
          loading view then names it Loading the raid. -->
-      <div class="bg-raised full-bleed {RAID_BAND_MIN}">
+      <div class="{RAID_BAND_MIN} {GUILD_BANDLESS_TOP}">
         <h1 class="sr-only">{raidCopy.page.eyebrow}</h1>
         {@render chunkPending(raidLazy, 'raid-chunk', '')}
       </div>

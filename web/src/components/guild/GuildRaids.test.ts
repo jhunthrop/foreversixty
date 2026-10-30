@@ -77,7 +77,7 @@ describe('GuildRaids planned section', () => {
 
   it('leaves the count out of the sub-head with none planned', () => {
     const markup = html({ planned: [] });
-    expect(markup).not.toContain('guild-planned-count');
+    expect(markup).not.toContain('card-head-meta');
     expect(text(markup)).toContain(`${raidCopy.subheads.planned} ${raidCopy.emptyPlanned.member}`);
   });
 
@@ -94,7 +94,6 @@ describe('GuildRaids planned section', () => {
   it('shows a visitor nothing planned (R1)', () => {
     const markup = html({ planned: undefined, memberView: false });
     expect(markup).not.toContain('guild-planned');
-    expect(markup).not.toContain('guild-raid-nights-heading');
     expect(planButton(markup)).toBe('');
   });
 

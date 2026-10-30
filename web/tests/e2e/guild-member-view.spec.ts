@@ -200,10 +200,12 @@ test.describe('the guild page', () => {
     await expect(page.getByTestId('guild-roster-remove')).toHaveCount(0);
   });
 
-  test('gives a verified officer Guild settings in place of the claim entry', async ({ page }) => {
+  test('gives a verified officer no claim entry, and no settings link in the head (Settings is a tab)', async ({
+    page,
+  }) => {
     await stub(page, 'officer');
     await page.goto(GUILD_PATH);
-    await expect(page.getByTestId('guild-settings-link')).toHaveAttribute('href', `${GUILD_PATH}/settings`);
+    await expect(page.getByTestId('guild-settings-link')).toHaveCount(0);
     await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
     await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
   });

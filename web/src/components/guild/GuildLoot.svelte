@@ -14,7 +14,7 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
-  import type { AttendanceSource } from '../../lib/guild/attendance-contract';
+  import type { AttendanceSource, RaidLootAward } from '../../lib/guild/attendance-contract';
   import { guildGateCopy } from '../../lib/guild/copy';
   import {
     LOOT_FOOTNOTE,
@@ -29,8 +29,10 @@
     candidateGainLabel,
     candidateLine,
   } from '../../lib/guild/loot-view';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import EmptyState from '../ui/EmptyState.svelte';
+  import { button } from '../../lib/ui/button';
+  import Card from '../ui/Card.svelte';
+  import Select from '../ui/Select.svelte';
+  import RaidLootItem from './RaidLootItem.svelte';
   import type { GuildPlanRefusal } from '../../lib/guild/officer-tools';
   import GuildPlanGate from './GuildPlanGate.svelte';
 
@@ -46,6 +48,7 @@
     settingsHref,
     onAward,
     onUndo,
+    onBoss,
   }: {
     loot: GuildLootPage | null;
     officer: boolean;
@@ -64,6 +67,8 @@
     onAward: (item: GuildLootItem, characterKey: string) => void;
     /** Remove the item's award (the award's id is on `item.awarded_to`). */
     onUndo: (item: GuildLootItem) => void;
+    /** The boss chooser changed: read that encounter's loot. */
+    onBoss: (encounterId: number) => void;
   } = $props();
 
   /** The candidate whose Award is asking first; one at a time. */
@@ -90,7 +95,21 @@
     refusal !== null && loot !== null && loot.selected === refusal.encounterId ? refusal : null,
   );
 
-  const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
+  const bossOptions = $derived(
+    (loot?.encounters ?? []).map((e) => ({ value: String(e.encounter_id), label: bossPickerLabel(e) })),
+  );
+  /** The item as the shared item hover reads it: the candidates' class opens the tooltip's class file. */
+  const awardOf = (item: GuildLootItem): RaidLootAward => ({
+    item_id: item.item_id,
+    item_name: item.name,
+    quality: item.quality,
+    icon: item.icon,
+    character_key: '',
+    name: '',
+    class: item.candidates[0]?.class ?? '',
+    by_name: '',
+    at: '',
+  });
   const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
   const officerReadOnly = $derived(officer && !(officerTools && raidGuildTools));
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
@@ -100,66 +119,94 @@
   );
 </script>
 
-<section class="flex flex-col gap-4" data-testid="guild-loot-tab">
-  <div class="flex items-center justify-between gap-3">
-    <h2 class="section-title">Loot</h2>
-    {#if memberReadOnly || officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span
-      >{/if}
-  </div>
+{#snippet itemIcon(item: GuildLootItem)}
+  <RaidLootItem award={awardOf(item)} iconSize={36} nameSize="" show="icon" />
+{/snippet}
+
+{#snippet itemName(item: GuildLootItem)}
+  <RaidLootItem award={awardOf(item)} iconSize={36} nameSize="text-[24px]" show="name" />
+{/snippet}
+
+<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-tab">
   {#if officerReadOnly}<GuildPlanGate tab="loot" {settingsHref} raidGuild={officerTools} />{/if}
 
-  {#if loot === null || loot.items.length === 0}
-    <EmptyState
-      message="No bosses killed yet this tier — loot ranking starts after the first kill"
-      testid="guild-loot-empty"
-    />
-  {:else}
-    <div class="flex items-center gap-3" data-testid="guild-loot-boss-picker">
-      <span class="quiet-label">Boss</span>
-      <span
-        class="border-gold text-gold inline-flex h-9 items-center rounded-md border px-3 text-[13px] font-bold"
+  <Card
+    glyph="star"
+    title="Loot"
+    meta={memberReadOnly || officerReadOnly ? guildGateCopy.readOnly : undefined}
+    body="none"
+  >
+    {#snippet aside()}
+      {#if loot !== null && loot.items.length > 0}
+        <div class="w-56 text-left" data-testid="guild-loot-boss-picker">
+          <Select
+            id="guild-loot-boss"
+            compact
+            label="Boss"
+            options={bossOptions}
+            value={String(loot.selected ?? '')}
+            onchange={(event) => onBoss(Number((event.currentTarget as HTMLSelectElement).value))}
+          />
+        </div>
+      {/if}
+    {/snippet}
+    {#if loot === null || loot.items.length === 0}
+      <p class="border-line-soft text-muted border-t px-5 py-4 text-[14px]" data-testid="guild-loot-empty">
+        No bosses killed yet this tier — loot ranking starts after the first kill
+      </p>
+    {:else if notSimmed}
+      <p
+        class="border-line-soft text-muted border-t px-5 py-4 text-[13px]"
+        data-testid="guild-loot-not-simmed"
       >
-        {bossPickerLabel(selectedEncounter)}
-      </span>
-    </div>
-
-    {#if notSimmed}
-      <p class="text-muted text-[12px]" data-testid="guild-loot-not-simmed">{NOT_SIMMED_NOTE}</p>
+        {NOT_SIMMED_NOTE}
+      </p>
     {/if}
+    {#if loot !== null && loot.items.length > 0}
+      <div class="border-line-soft text-muted border-t px-5 py-4 text-[13px]">{LOOT_FOOTNOTE}</div>
+    {/if}
+  </Card>
 
-    <div class="flex flex-col gap-4" data-testid="guild-loot-items">
+  {#if loot !== null && loot.items.length > 0}
+    <div class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-items">
       {#each loot.items as item (item.item_id)}
-        <div
-          class="border-line-soft bg-raised flex flex-col gap-2 rounded-md border p-4"
-          data-testid={`guild-loot-item-${item.item_id}`}
+        <Card
+          label={item.slot === '' ? undefined : item.slot}
+          title={item.name}
+          body="none"
+          testid={`guild-loot-item-${item.item_id}`}
         >
-          <!-- Below lg the awarded line is its own full-width row under the title (a chip that
-               grows with its text); at lg it sits right of it. Undo is the winner row's alone. -->
-          <div class="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
-            <span class="heading-name min-w-0 text-[15px]"
-              >{item.name}{#if (item.copies ?? 1) > 1}
-                <span class="text-muted text-[12px]" data-testid={`guild-loot-copies-${item.item_id}`}
-                  >x{item.copies}</span
-                >{/if}</span
-            >
-            {#if item.awarded_to !== null}
-              <div class="flex min-w-0 flex-wrap items-center gap-3 lg:justify-end">
-                <span
-                  class="min-w-0 basis-full rounded-md border border-[rgba(30,255,0,.25)] bg-[rgba(30,255,0,.10)] px-3 py-2 text-[14px] leading-snug text-[#7bff5c] lg:basis-auto"
-                  data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
-                >
-              </div>
+          {#snippet lead()}{@render itemIcon(item)}{/snippet}
+          {#snippet titleContent()}{@render itemName(item)}{/snippet}
+          {#snippet titleSnippet()}
+            {#if (item.copies ?? 1) > 1}
+              <span class="text-muted text-[12px]" data-testid={`guild-loot-copies-${item.item_id}`}
+                >x{item.copies}</span
+              >
             {/if}
-          </div>
+          {/snippet}
+          {#snippet aside()}
+            {#if item.awarded_to !== null}
+              <span
+                class="inline-block rounded-md border border-[rgba(30,255,0,.25)] bg-[rgba(30,255,0,.10)] px-3 py-2 text-left text-[14px] leading-snug text-[#7bff5c]"
+                data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
+              >
+            {/if}
+          {/snippet}
           {#if item.candidates.length === 0}
-            <p class="text-muted text-[13px]" data-testid={`guild-loot-no-candidate-${item.item_id}`}>
+            <p
+              class="border-line-soft text-muted border-t px-5 py-4 text-[13px]"
+              data-testid={`guild-loot-no-candidate-${item.item_id}`}
+            >
               {NO_CANDIDATE}
             </p>
           {/if}
           <div class="flex flex-col">
             {#each item.candidates as candidate (candidate.character_key)}
               {@const action = candidateAction(item, candidate.character_key)}
-              <div class="border-line-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-b py-1.5">
+              <div
+                class="border-line-soft flex min-h-14 flex-wrap items-center gap-x-3 gap-y-1 border-t px-5 py-2"
+              >
                 <ClassCrestRing characterClass={candidate.class} size={26} />
                 <span
                   class="min-w-[120px] text-[13px] font-semibold"
@@ -204,7 +251,7 @@
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
                     <button
-                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase disabled:cursor-default disabled:opacity-50 md:h-7"
+                      class={button('secondary', 'sm')}
                       onclick={() => (confirming = { itemId: item.item_id, key: candidate.character_key })}
                       disabled={officerReadOnly || busyItemId === item.item_id || confirming !== null}
                       aria-describedby={gateDescribedBy}
@@ -220,7 +267,7 @@
               <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
               {#if officer && !officerReadOnly && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
                 <div
-                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2 pl-[38px]"
+                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-5 py-3"
                   role="group"
                   aria-label={awardQuestion(item.name, candidate.name)}
                   onkeydown={(event) => {
@@ -232,14 +279,14 @@
                     >{awardQuestion(item.name, candidate.name)}</span
                   >
                   <button
-                    class="{PRIMARY_BUTTON_FIXED} justify-center px-4 md:h-7"
+                    class={button('primary', 'sm')}
                     onclick={() => confirmAward(item, candidate.character_key)}
                     data-testid={`guild-loot-award-yes-${item.item_id}`}
                   >
                     Award
                   </button>
                   <button
-                    class="rounded-control text-muted inline-flex h-11 items-center justify-center bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)] md:h-7"
+                    class="{button('ghost', 'sm')} focus:outline-gold focus:outline-2 focus:outline-offset-2"
                     onclick={() => (confirming = null)}
                     use:focusOnMount
                     data-testid={`guild-loot-award-cancel-${item.item_id}`}
@@ -252,7 +299,7 @@
           </div>
           {#if refusedHere !== null && refusedHere.itemId === item.item_id}
             <p
-              class="text-wipe text-[13px] leading-5"
+              class="border-line-soft text-wipe border-t px-5 py-3 text-[13px] leading-5"
               role="alert"
               tabindex="-1"
               use:focusRefusalOnce
@@ -261,9 +308,8 @@
               {refusedLine}
             </p>
           {/if}
-        </div>
+        </Card>
       {/each}
     </div>
-    <p class="text-muted text-[12px]">{LOOT_FOOTNOTE}</p>
   {/if}
 </section>

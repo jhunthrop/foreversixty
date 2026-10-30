@@ -177,7 +177,7 @@ async function stubCoreWithFaction(
 // colour wash. A null/unknown faction renders neither layer -- a neutral band, pixel-
 // identical to the page before this round.
 test.describe('header art: faction crest, watermark and neutral band (spec §12.2)', () => {
-  test('a Horde guild shows the ringed flat Horde logo and its own watermark', async ({ page }) => {
+  test('a Horde guild shows the ringed flat Horde logo', async ({ page }) => {
     await stubCoreWithFaction(page, VIEWER_MEMBER, 'horde');
     await page.goto(GUILD_URL);
     const crest = page.getByTestId('guild-faction-crest');
@@ -186,13 +186,6 @@ test.describe('header art: faction crest, watermark and neutral band (spec §12.
     // The browser re-serialises the style attribute, normalising the authored hex colour to
     // rgb() -- #c0392b is rgb(192, 57, 43).
     await expect(crest).toHaveAttribute('style', /box-shadow: rgb\(192, 57, 43\) 0px 0px 0px 2px/);
-    // The testid is on the clipping wrapper (bounding-box containment, below); the <img>
-    // with the real src is its only child.
-    await expect(page.getByTestId('guild-header-watermark').locator('img')).toHaveAttribute(
-      'src',
-      /horde-logo-512\.webp$/,
-    );
-    await expect(page.getByTestId('guild-header-vignette')).toBeVisible();
   });
 
   test('an Alliance guild shows the Alliance logo and Alliance bar colour, never Horde’s', async ({
@@ -203,61 +196,24 @@ test.describe('header art: faction crest, watermark and neutral band (spec §12.
     const crest = page.getByTestId('guild-faction-crest');
     await expect(crest).toHaveAttribute('src', /alliance-logo-512\.webp$/);
     await expect(crest).toHaveAttribute('style', /box-shadow: rgb\(47, 111, 214\) 0px 0px 0px 2px/);
-    await expect(page.getByTestId('guild-header-watermark').locator('img')).toHaveAttribute(
-      'src',
-      /alliance-logo-512\.webp$/,
-    );
-    // The browser re-serialises the style attribute, normalising the authored hex colour to
-    // rgb() -- #2f6fd6 is rgb(47, 111, 214) -- so this matches that, not the source string.
-    await expect(page.getByTestId('guild-header-vignette')).toHaveAttribute(
-      'style',
-      /color-mix\(in srgb, rgb\(47, 111, 214\)/,
-    );
   });
 
-  test('a null-faction guild renders no crest, no vignette, no watermark -- a neutral band', async ({
-    page,
-  }) => {
+  test('a null-faction guild renders no crest', async ({ page }) => {
     await stubCoreWithFaction(page, VIEWER_MEMBER, null);
     await page.goto(GUILD_URL);
     await expect(page.getByTestId('guild')).toBeVisible();
     await expect(page.getByTestId('guild-faction-crest')).toHaveCount(0);
-    await expect(page.getByTestId('guild-header-vignette')).toHaveCount(0);
-    await expect(page.getByTestId('guild-header-watermark')).toHaveCount(0);
   });
 
-  test('at 390px the watermark never overlaps the guild name', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 900 });
-    await stubCoreWithFaction(page, VIEWER_MEMBER, 'horde');
-    await page.goto(GUILD_URL);
-    const h1 = page.locator('h1', { hasText: 'Olympus XXVII' });
-    const h1Box = await h1.boundingBox();
-    const watermarkBox = await page.getByTestId('guild-header-watermark').boundingBox();
-    expect(h1Box).not.toBeNull();
-    expect(watermarkBox).not.toBeNull();
-    if (h1Box !== null && watermarkBox !== null) {
-      const overlapsHorizontally =
-        h1Box.x < watermarkBox.x + watermarkBox.width && h1Box.x + h1Box.width > watermarkBox.x;
-      const overlapsVertically =
-        h1Box.y < watermarkBox.y + watermarkBox.height && h1Box.y + h1Box.height > watermarkBox.y;
-      expect(overlapsHorizontally && overlapsVertically).toBe(false);
-    }
-  });
-
-  // Owner note on the boards: the wash/watermark must clip at the band's own bottom edge,
-  // never spill into the body below it (the band is a positioned, `overflow:hidden`
-  // container; see Guild.svelte's own comment on `guild-header-band`).
+  // Site alignment D1: no band, faction wash or watermark behind the head, at any width.
   for (const width of [1440, 390]) {
-    test(`the watermark never extends past the band's own bottom edge at ${width}px`, async ({ page }) => {
+    test(`the head has no band, wash or watermark at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await stubCoreWithFaction(page, VIEWER_MEMBER, 'alliance');
       await page.goto(GUILD_URL);
-      const bandBox = await page.getByTestId('guild-header-band').boundingBox();
-      const watermarkBox = await page.getByTestId('guild-header-watermark').boundingBox();
-      expect(bandBox).not.toBeNull();
-      expect(watermarkBox).not.toBeNull();
-      if (bandBox !== null && watermarkBox !== null) {
-        expect(watermarkBox.y + watermarkBox.height).toBeLessThanOrEqual(bandBox.y + bandBox.height + 1);
+      await expect(page.getByTestId('guild-header')).toBeVisible();
+      for (const gone of ['guild-header-band', 'guild-header-vignette', 'guild-header-watermark']) {
+        await expect(page.getByTestId(gone)).toHaveCount(0);
       }
     });
   }
@@ -284,16 +240,16 @@ test.describe('tab strip renders and hash-routes', () => {
     await expect(page.getByTestId('guild-readiness-tab')).toBeVisible();
   });
 
-  // Fix round 1, item 1: the officer strip moved into the persistent band alongside the
-  // standing line and tab strip, so a claimed guild's officer sees it on every tab, not
-  // just Overview.
-  test('the officer strip stays visible across tabs, inside the full-bleed band', async ({ page }) => {
+  // Site alignment §5.10: the claim and invite strip left the head. Its jobs live in the Settings tab
+  // (invite link) and the Roster tab (waiting for approval), so no tab carries it.
+  test('the head carries no officer strip on any tab', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-officer-strip')).toBeVisible();
+    await expect(page.getByTestId('guild-header')).toBeVisible();
+    await expect(page.getByTestId('guild-officer-strip')).toHaveCount(0);
     await page.getByTestId('guild-tab-readiness').click();
-    await expect(page.getByTestId('guild-officer-strip')).toBeVisible();
+    await expect(page.getByTestId('guild-officer-strip')).toHaveCount(0);
   });
 
   test('a public visitor sees only the three public tabs, never Roster/Readiness/Loot/Settings', async ({
@@ -329,8 +285,7 @@ test.describe('roster: pin, sort, officer controls', () => {
     const rows = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
     await expect(rows.first()).toContainText('(you)');
 
-    const unverifiedList = page.getByTestId('guild-roster-unverified-list');
-    await expect(unverifiedList).toContainText('Waiting for approval');
+    await expect(page.getByTestId('guild-roster-waiting')).toContainText('Waiting for approval');
   });
 
   test('officer sees Approve all, with a distinct accessible name per raider for Approve/Remove', async ({
@@ -521,7 +476,9 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     );
     const list = page.getByTestId('guild-roster-unverified-list');
     await expect(list.getByTestId('guild-roster-pending-rank').first()).toHaveText('Member');
-    await expect(list.getByTestId('guild-roster-state').first()).toHaveText('Waiting for approval');
+    // The card's head says it; there is no per-row state tag.
+    await expect(page.getByTestId('guild-roster-waiting')).toContainText('Waiting for approval');
+    await expect(list.getByTestId('guild-roster-state')).toHaveCount(0);
   });
 
   test('Approve all goes straight through when no officer is waiting', async ({ page }) => {
@@ -760,14 +717,13 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     await expect(zulmara).not.toContainText('per addon');
     await expect(zulmara).not.toContainText('build:');
 
-    // Remove: no border, muted, underlined, 44px high, sitting on the name row; it asks with a name.
+    // Remove: the ghost button (no visible border), 44px high on a phone, sitting on the name row; it asks with a name.
     const remove = page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Windtalon"]');
     const style = await remove.evaluate((node) => {
       const css = getComputedStyle(node);
-      return { border: css.borderTopWidth, underline: css.textDecorationLine, height: node.clientHeight };
+      return { border: css.borderTopColor, height: node.getBoundingClientRect().height };
     });
-    expect(style.border).toBe('0px');
-    expect(style.underline).toContain('underline');
+    expect(style.border).toBe('rgba(0, 0, 0, 0)');
     expect(style.height).toBeGreaterThanOrEqual(44);
     const windtalon = page
       .getByTestId('guild-roster-rows')
@@ -797,25 +753,6 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     expect(yes).not.toBe(cancel);
     expect(yes).not.toBe('rgba(0, 0, 0, 0)');
   });
-
-  for (const width of [390, 1280]) {
-    test(`at ${width} the claim and invite card folds to one 44px line with a Show toggle; Settings keeps it open`, async ({
-      page,
-    }) => {
-      await page.setViewportSize({ width, height: 900 });
-      await stubCore(page, VIEWER_OFFICER, 'leader');
-      await page.goto(`${GUILD_URL}#roster`);
-      const summary = page.getByTestId('guild-officer-strip-summary');
-      await expect(summary).toBeVisible();
-      expect((await summary.boundingBox())?.height).toBe(44);
-      await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
-      await page.getByTestId('guild-officer-strip-toggle').click();
-      await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
-      await page.getByTestId('guild-tab-settings').click();
-      await expect(page.getByTestId('guild-officer-strip-summary')).toBeHidden();
-      await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
-    });
-  }
 
   test('the ranks line sits above the roster while a row has no rank', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
@@ -1066,7 +1003,7 @@ test.describe('loot: Award asks first and can be undone', () => {
     await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(item.candidates.length);
   });
 
-  test('at 390px the awarded line is its own row: its box holds its text and clears the title', async ({
+  test('at 390px the awarded line sits under the card title: its box holds its text and clears the title', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 900 });
@@ -1098,13 +1035,12 @@ test.describe('loot: Award asks first and can be undone', () => {
     expect(fit.size).toBe('14px');
     expect(fit.transform).toBe('none');
     // The title's box and the chip's box do not intersect; the chip is under the title, full width.
-    const title = await panel.locator('span.heading-name').first().boundingBox();
+    const title = await panel.locator('h2').first().boundingBox();
     const box = await chip.boundingBox();
     const undo = await page.getByTestId(`guild-loot-row-undo-${item.item_id}`).boundingBox();
     expect(title && box && undo).toBeTruthy();
     if (title && box && undo) {
       expect(box.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
-      expect(box.width).toBeGreaterThan(300);
       expect(undo.height).toBeGreaterThanOrEqual(44);
       // The one Undo is the winner row's, below the chip.
       expect(undo.y).toBeGreaterThanOrEqual(box.y + box.height);
@@ -1277,14 +1213,16 @@ test.describe('the Overview raid-night row at 390 (round 8)', () => {
     }
     // The facts sit on a line of their own under the title and the day.
     const [title, factsBox] = await Promise.all([
-      row.locator('span').first().boundingBox(),
+      row.getByTestId('guild-overview-raid-row-label').boundingBox(),
       facts.boundingBox(),
     ]);
     expect(title && factsBox && factsBox.y >= title.y + title.height - 1).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 
-  test('at 1280 the row stays one line', async ({ page }) => {
+  test('at 1280 the row is a settings row: the title and facts at the left, the day at the right', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
@@ -1293,7 +1231,9 @@ test.describe('the Overview raid-night row at 390 (round 8)', () => {
     await expect(row).toBeVisible();
     await expect(row.getByTestId('guild-overview-raid-facts')).toContainText(' · ');
     const box = await row.boundingBox();
-    expect(box?.height ?? 99).toBeLessThan(40);
+    expect(box?.height ?? 99).toBeLessThan(80);
+    const day = await row.getByTestId('settings-row-value').boundingBox();
+    expect(day && box && day.x > box.x + box.width / 2).toBe(true);
   });
 });
 
@@ -1702,8 +1642,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
-    await expect(page.getByTestId('guild-officer-strip-summary')).toBeVisible();
-    await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
+    await expect(page.getByTestId('guild-officer-strip')).toHaveCount(0);
     const raidLine = page
       .locator('[data-testid="guild-raid-line"], [data-testid="guild-raid-line-none"]')
       .first();
@@ -1711,9 +1650,10 @@ test.describe('guild facts read as sentences (P.1)', () => {
     const lineBox = await raidLine.boundingBox();
     expect(lineBox).not.toBeNull();
     expect(lineBox!.y).toBeLessThan(300);
-    const row = page.locator('.guild-roster-row').first();
-    await expect(row).toBeVisible();
-    const box = await row.boundingBox();
+    // The waiting card leads the tab, so the Roster card's head is what starts above the fold.
+    const card = page.getByTestId('guild-roster-card');
+    await expect(card).toBeVisible();
+    const box = await card.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.y).toBeLessThan(800);
   });

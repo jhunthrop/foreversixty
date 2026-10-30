@@ -28,11 +28,11 @@ const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1440, height: 1000 };
 const MIN_TARGET = 44;
-/** §3.8's caps, phone (360) then desktop (1440). */
+/** §3.8's caps, phone (360) then desktop (1440); each carries the Card head's 62 px (site alignment). */
 const CAPS = {
-  'not-connected': [210, 140],
-  connected: [300, 230],
-  'switched-off': [440, 330],
+  'not-connected': [272, 224],
+  connected: [362, 296],
+  'switched-off': [502, 392],
 } as const;
 
 const section = (page: Page): Locator => page.locator(SECTION);

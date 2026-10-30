@@ -10,7 +10,7 @@ describe('GuildLanding', () => {
   it('has the Guilds heading, the lead and a Top guilds section', () => {
     expect(body).toMatch(/<h1[^>]*>Guilds<\/h1>/);
     expect(body).toContain(guildLandingCopy.lead);
-    expect(body).toMatch(/<h2[^>]*>Top guilds<\/h2>/);
+    expect(body).toMatch(/<h2[^>]*>(?:<!--.*?-->|\s)*Top guilds(?:<!--.*?-->|\s)*<\/h2>/);
     expect(body).toContain('home-top-guilds');
   });
 

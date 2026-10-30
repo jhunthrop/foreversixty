@@ -7,11 +7,11 @@
   import { billedLine, guildBillingCopy, guildPlanLine } from '../../../lib/billing/guild-billing-copy';
   import { billingBlockCopy } from '../../../lib/billing/copy';
   import { lineTwoState, type BillingViewState } from '../../../lib/guild/billing-state';
-  import {
-    BILLING_MOVE_BUTTON,
-    BILLING_OUTLINE_BUTTON,
-    OPENER_PRESSED,
-  } from '../../../lib/guild/billing-styles';
+  import { OPENER_PRESSED } from '../../../lib/guild/billing-styles';
+  import { button } from '../../../lib/ui/button';
+  import { CARD_FOOT } from '../../../lib/ui/card';
+  import SettingsRow from '../../ui/SettingsRow.svelte';
+  import Tag from '../../ui/Tag.svelte';
   import { canManageBilling, officerToolsExplanation, settingsWords } from '../../../lib/guild/settings-view';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
 
@@ -72,33 +72,32 @@
   }
 </script>
 
-<div
-  class="flex flex-col gap-1 md:flex-row md:items-start md:justify-between md:gap-4"
-  data-testid="guild-billing-planline"
->
-  <div class="flex flex-col gap-1">
-    <p class="text-[14px]" data-testid="guild-billing-plan">
-      {planText}{#if plan.founder && lineState.kind !== 'lapsed'}<span
-          class="pill pill-site ml-2"
-          data-testid="guild-billing-founder">{guildBillingCopy.founderPill}</span
-        >{/if}
-    </p>
-    <p class="text-muted text-[13px]" data-testid="guild-billing-contact">{lineTwo}</p>
-    {#if payer && plan.status === 'past_due'}
-      <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-    {/if}
-    {#if failure !== null}
-      <p class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
-        {settingsWords.billingUnavailable}
-      </p>
-    {/if}
-  </div>
+<div data-testid="guild-billing-planline">
+  <SettingsRow label={planText} testid="guild-billing-plan">
+    {#snippet control()}
+      {#if plan.founder && lineState.kind !== 'lapsed'}
+        <Tag testid="guild-billing-founder">{guildBillingCopy.founderPill}</Tag>
+      {/if}
+    {/snippet}
+  </SettingsRow>
+  <SettingsRow label={lineTwo} testid="guild-billing-contact">
+    {#snippet below()}
+      {#if payer && plan.status === 'past_due'}
+        <span class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</span>
+      {/if}
+      {#if failure !== null}
+        <span class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
+          {settingsWords.billingUnavailable}
+        </span>
+      {/if}
+    {/snippet}
+  </SettingsRow>
   {#if manageable || (payer && showMove)}
-    <div class="mt-2 flex flex-wrap gap-2 md:mt-0">
+    <div class={CARD_FOOT}>
       {#if manageable}
         <button
           type="button"
-          class="{BILLING_OUTLINE_BUTTON} {busy ? BUSY_CLASS : ''}"
+          class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
           disabled={busy}
           aria-busy={busy}
           onclick={() => void manage()}
@@ -110,7 +109,7 @@
       {#if payer && showMove}
         <button
           type="button"
-          class="{BILLING_MOVE_BUTTON} {expanded ? OPENER_PRESSED : ''}"
+          class="{button('ghost', 'sm')} {expanded ? OPENER_PRESSED : ''}"
           aria-expanded={expanded}
           onclick={onMove}
           data-testid="guild-move-raid-guild"

@@ -10,8 +10,9 @@
   import { guildSettingsCopy } from '../../lib/guild/copy';
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import { button } from '../../lib/ui/button';
+  import SettingsRow from '../ui/SettingsRow.svelte';
 
   let {
     guildId,
@@ -19,6 +20,7 @@
     disabled = false,
     testidPrefix = 'guild-invite',
     onRotated = undefined,
+    row = false,
   }: {
     guildId: number;
     /** When the current link was made (the settings read), for the muted line underneath. */
@@ -26,6 +28,8 @@
     disabled?: boolean;
     testidPrefix?: string;
     onRotated?: (rotatedAt: string) => void;
+    /** Drawn as a settings row (the Members and access card); the default is the stand-alone block. */
+    row?: boolean;
   } = $props();
 
   let confirming = $state(false);
@@ -54,18 +58,20 @@
   }
 </script>
 
-<div class="flex w-full flex-col gap-3" data-testid={`${testidPrefix}-block`}>
-  {#if !confirming}
-    <button
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-      onclick={() => (confirming = true)}
-      disabled={busy || disabled}
-      aria-busy={busy}
-      data-testid={`${testidPrefix}-rotate`}
-    >
-      {guildSettingsCopy.rotateButton}
-    </button>
-  {:else}
+{#snippet rotate(cls: string)}
+  <button
+    class="{cls} {busy ? BUSY_CLASS : ''}"
+    onclick={() => (confirming = true)}
+    disabled={busy || disabled}
+    aria-busy={busy}
+    data-testid={`${testidPrefix}-rotate`}
+  >
+    {guildSettingsCopy.rotateButton}
+  </button>
+{/snippet}
+
+{#snippet details()}
+  {#if confirming}
     <div
       class="border-line-soft flex flex-col gap-3 border p-4"
       data-testid={`${testidPrefix}-rotate-confirm`}
@@ -73,7 +79,7 @@
       <p class="text-[13px]">{guildSettingsCopy.rotateConfirmLine}</p>
       <div class="flex gap-3">
         <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
+          class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
           onclick={() => void onRotate()}
           disabled={busy}
           aria-busy={busy}
@@ -81,11 +87,7 @@
         >
           {guildSettingsCopy.rotateConfirmButton}
         </button>
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3`}
-          onclick={() => (confirming = false)}
-          disabled={busy}
-        >
+        <button class={button('ghost', 'sm')} onclick={() => (confirming = false)} disabled={busy}>
           {guildSettingsCopy.rotateCancel}
         </button>
       </div>
@@ -114,4 +116,22 @@
   {#if error !== ''}
     <p class="text-[13px]" role="alert" data-testid={`${testidPrefix}-error`}>{error}</p>
   {/if}
-</div>
+{/snippet}
+
+{#if row}
+  <div data-testid={`${testidPrefix}-block`}>
+    <SettingsRow label={guildSettingsCopy.inviteHeading} sub={guildSettingsCopy.inviteHelp} controlBelow>
+      {#snippet control()}
+        {#if !confirming}{@render rotate(button('secondary', 'sm'))}{/if}
+      {/snippet}
+    </SettingsRow>
+    {#if confirming || url !== null || madeOn !== '' || error !== ''}
+      <div class="flex flex-col gap-3 px-5 pb-4">{@render details()}</div>
+    {/if}
+  </div>
+{:else}
+  <div class="flex w-full flex-col gap-3" data-testid={`${testidPrefix}-block`}>
+    {#if !confirming}{@render rotate(`${button('secondary')} w-fit`)}{/if}
+    {@render details()}
+  </div>
+{/if}

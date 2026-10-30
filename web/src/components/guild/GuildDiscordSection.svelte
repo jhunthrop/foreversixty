@@ -38,6 +38,8 @@
   import { button } from '../../lib/ui/button';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
+  import Card from '../ui/Card.svelte';
+  import Tag from '../ui/Tag.svelte';
   import GuildDiscordAdd from './GuildDiscordAdd.svelte';
   import GuildDiscordBot from './GuildDiscordBot.svelte';
   import GuildDiscordChannel from './GuildDiscordChannel.svelte';
@@ -78,10 +80,16 @@
   let changing = $state(false);
   let focusSelect = $state(false);
   let pickerSaving = $state(false);
-  let section = $state<HTMLElement | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
   const state = $derived(guildDiscordState(discord));
+  /** The head's state tag: a connected channel or bot, or the switched-off webhook; nothing before a connect. */
+  const stateTag = $derived.by((): { tone: 'success' | 'danger'; text: string } | null => {
+    if (view.bot !== null && view.state !== 'removed')
+      return { tone: 'success', text: guildDiscordCopy.connectedTag };
+    if (state === 'switched-off') return { tone: 'danger', text: guildDiscordCopy.switchedOffTag };
+    return state === 'not-connected' ? null : { tone: 'success', text: guildDiscordCopy.connectedTag };
+  });
   const botOn = $derived(discord.bot_available === true);
   const view = $derived(guildBotView(discord, changing));
   const installHref = $derived(guildBotInstallUrl(guildId));
@@ -99,7 +107,7 @@
     show: (next) => show(next),
     focus: (selector) => focus.request(selector),
     focusSelect: () => (focusSelect = true),
-    scrollToSection: () => section?.scrollIntoView({ block: 'start' }),
+    scrollToSection: () => document.getElementById('discord')?.scrollIntoView({ block: 'start' }),
   });
   const focus = createFocusQueue(() => [
     state,
@@ -231,97 +239,105 @@
   }
 </script>
 
-<section
+<Card
   id="discord"
-  bind:this={section}
-  class="flex scroll-mt-20 flex-col gap-3 {held}"
-  data-testid="guild-settings-discord"
+  class="scroll-mt-20 {held}"
+  glyph="discord"
+  tone="discord"
+  title={guildDiscordCopy.heading}
+  body="none"
+  testid="guild-settings-discord"
 >
-  <h2 class="section-title">{guildDiscordCopy.heading}</h2>
-  {#if readOnly}<GuildPlanGate tab="discord" settingsHref="#billing" sentence={gateLead} />{/if}
-  {#snippet addParts(variant: 'nothing' | 'offer')}
-    <GuildDiscordAdd
-      {variant}
-      {installHref}
-      webhookHref={connectHref}
-      gated={frozen || readOnly}
-      {gateId}
-      busy={busy !== null}
-      {status}
-      onStuck={() => show(connectStuck())}
-    />
+  {#snippet aside()}
+    {#if stateTag !== null}<Tag tone={stateTag.tone} dot testid="guild-discord-state-tag">{stateTag.text}</Tag
+      >{/if}
   {/snippet}
-  {#snippet offerPart()}{@render addParts('offer')}{/snippet}
-  {#if returns.settling || returns.botSettling}
-    <!-- the connected or picker height, held until the settings read answers (spec 3.8, Return) -->
-  {:else if botOn && view.state === 'nothing'}
-    {@render addParts('nothing')}
-  {:else if view.bot !== null}
-    <div class="flex max-w-[720px] flex-col gap-3" onkeydown={onKeydown} role="presentation">
-      <GuildDiscordBot
-        {guildId}
-        {discord}
-        bot={view.bot}
-        botState={view.state}
+  <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
+    {#if readOnly}<GuildPlanGate tab="discord" settingsHref="#billing" sentence={gateLead} />{/if}
+    {#snippet addParts(variant: 'nothing' | 'offer')}
+      <GuildDiscordAdd
+        {variant}
         {installHref}
-        {changing}
-        {focusSelect}
-        onSaving={(saving) => (pickerSaving = saving)}
-        {readOnly}
-        {frozen}
-        {gateId}
-        {confirming}
-        {busy}
-        {status}
-        onStatus={report}
-        onSaved={saved}
-        onTest={() => void test()}
-        onChange={change}
-        onCancelChange={cancelChange}
-        onAskRemove={askRemove}
-        onRemove={() => void remove()}
-        onCancelRemove={cancel}
-        onStuck={() => show(connectStuck())}
-      />
-    </div>
-  {:else if state === 'not-connected'}
-    <!-- One line at 1440: the 140 cap counts the explanation as one line, so it is not held to 720. -->
-    <div class="flex flex-col items-start">
-      <DiscordConnectLink
-        label={notificationsCopy.connect}
-        class={button('primary')}
-        testid="discord-connect"
-        href={connectHref}
-        busy={busy !== null}
+        webhookHref={connectHref}
         gated={frozen || readOnly}
-        describedBy={gateId}
-        onStuck={() => show(connectStuck())}
-      />
-      <p class="text-muted mt-2 text-[13px]" data-testid="discord-explanation">
-        {guildDiscordCopy.explanation}
-      </p>
-      <div id="guild-discord-status" tabindex="-1" class="w-full outline-none">
-        <DiscordStatusLine {status} />
-      </div>
-    </div>
-  {:else}
-    <div class="flex max-w-[720px] flex-col gap-3" onkeydown={onKeydown} role="presentation">
-      <GuildDiscordChannel
-        {discord}
-        switchedOff={state === 'switched-off'}
-        {connectHref}
-        {confirming}
-        {busy}
-        {status}
         {gateId}
-        {frozen}
-        onTest={() => void test()}
-        onAskRemove={askRemove}
-        onRemove={() => void remove()}
-        onCancel={cancel}
+        busy={busy !== null}
+        {status}
         onStuck={() => show(connectStuck())}
-        offer={botOn ? offerPart : undefined}
       />
-    </div>
-  {/if}
-</section>
+    {/snippet}
+    {#snippet offerPart()}{@render addParts('offer')}{/snippet}
+    {#if returns.settling || returns.botSettling}
+      <!-- the connected or picker height, held until the settings read answers (spec 3.8, Return) -->
+    {:else if botOn && view.state === 'nothing'}
+      {@render addParts('nothing')}
+    {:else if view.bot !== null}
+      <div class="flex flex-col gap-3" onkeydown={onKeydown} role="presentation">
+        <GuildDiscordBot
+          {guildId}
+          {discord}
+          bot={view.bot}
+          botState={view.state}
+          {installHref}
+          {changing}
+          {focusSelect}
+          onSaving={(saving) => (pickerSaving = saving)}
+          {readOnly}
+          {frozen}
+          {gateId}
+          {confirming}
+          {busy}
+          {status}
+          onStatus={report}
+          onSaved={saved}
+          onTest={() => void test()}
+          onChange={change}
+          onCancelChange={cancelChange}
+          onAskRemove={askRemove}
+          onRemove={() => void remove()}
+          onCancelRemove={cancel}
+          onStuck={() => show(connectStuck())}
+        />
+      </div>
+    {:else if state === 'not-connected'}
+      <!-- One line at 1440: the 140 cap counts the explanation as one line, so it is not held to 720. -->
+      <div class="flex flex-col items-start">
+        <DiscordConnectLink
+          label={notificationsCopy.connect}
+          class={button('primary')}
+          testid="discord-connect"
+          href={connectHref}
+          busy={busy !== null}
+          gated={frozen || readOnly}
+          describedBy={gateId}
+          onStuck={() => show(connectStuck())}
+        />
+        <p class="text-muted mt-2 text-[13px]" data-testid="discord-explanation">
+          {guildDiscordCopy.explanation}
+        </p>
+        <div id="guild-discord-status" tabindex="-1" class="w-full outline-none">
+          <DiscordStatusLine {status} />
+        </div>
+      </div>
+    {:else}
+      <div class="flex flex-col gap-3" onkeydown={onKeydown} role="presentation">
+        <GuildDiscordChannel
+          {discord}
+          switchedOff={state === 'switched-off'}
+          {connectHref}
+          {confirming}
+          {busy}
+          {status}
+          {gateId}
+          {frozen}
+          onTest={() => void test()}
+          onAskRemove={askRemove}
+          onRemove={() => void remove()}
+          onCancel={cancel}
+          onStuck={() => show(connectStuck())}
+          offer={botOn ? offerPart : undefined}
+        />
+      </div>
+    {/if}
+  </div>
+</Card>

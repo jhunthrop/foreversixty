@@ -30,6 +30,7 @@
     REPORT_RESERVE,
     YOUR_NIGHT_RESERVE,
     bandLinesReserve,
+    GUILD_BANDLESS_TOP,
   } from '../lib/guild/raid-layout';
   import { raidQuiet } from '../lib/guild/planned-row';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
@@ -148,8 +149,8 @@
 {/snippet}
 
 {#if c.load === 'failed'}
-  <div class="flex flex-col gap-[22px] md:gap-8">
-    <GuildBandFrame faction={c.guild?.faction ?? null}>
+  <div class="flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}">
+    <GuildBandFrame>
       {#if c.guild !== null}{@render guildHeading()}{:else}<h1 class="sr-only">
           {raidCopy.page.eyebrow}
         </h1>{/if}
@@ -157,11 +158,11 @@
     <LoadError message={raidCopy.loadErrors.raid} onRetry={() => c.retry()} testid="raid-load-error" />
   </div>
 {:else if c.load === 'loading' || c.access === 'loading'}
-  <div class="flex flex-col gap-[22px] md:gap-8" data-testid="raid-page-loading">
+  <div class="flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}" data-testid="raid-page-loading">
     <span class="sr-only">{raidCopy.page.loading}</span>
     <!-- The back link, eyebrow and tabs need only the route, so they are drawn for real; the
          skeleton holds lines 3–5 (and an officer's wrapped phone row) at their ready height. -->
-    <GuildBandFrame faction={c.guild?.faction ?? null}>
+    <GuildBandFrame>
       {@render backLinkRow()}
       {@render raidEyebrow()}
       <div class={bandLinesReserve(doneReserve, officer)}>
@@ -193,31 +194,33 @@
     <div class="min-h-[560px] md:min-h-[420px]" aria-hidden="true" data-testid="raid-roster-reserve"></div>
   </div>
 {:else if !visible}
-  <GuildBandFrame faction={c.guild?.faction ?? null} testid="raid-not-visible">
-    {@render guildHeading()}
-    {#if c.access === 'unverified'}
-      <p class="text-text text-[14px]" data-testid="raid-not-visible-line">
-        {raidCopy.notVisible.unverified}
-      </p>
-    {:else if c.access === 'signed-out'}
-      <SignInPrompt
-        line={raidCopy.notVisible.members(guildName)}
-        next={typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname}
-        testid="raid-sign-in-prompt"
-      />
-    {:else}
-      <p class="text-text text-[14px]" data-testid="raid-not-visible-line">
-        {raidCopy.notVisible.members(guildName)}
-      </p>
-      <p class="text-muted text-[13px]" data-testid="raid-not-a-member">{guildClaimCopy.notAMember}</p>
-    {/if}
-  </GuildBandFrame>
+  <div class={GUILD_BANDLESS_TOP}>
+    <GuildBandFrame testid="raid-not-visible">
+      {@render guildHeading()}
+      {#if c.access === 'unverified'}
+        <p class="text-text text-[14px]" data-testid="raid-not-visible-line">
+          {raidCopy.notVisible.unverified}
+        </p>
+      {:else if c.access === 'signed-out'}
+        <SignInPrompt
+          line={raidCopy.notVisible.members(guildName)}
+          next={typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname}
+          testid="raid-sign-in-prompt"
+        />
+      {:else}
+        <p class="text-text text-[14px]" data-testid="raid-not-visible-line">
+          {raidCopy.notVisible.members(guildName)}
+        </p>
+        <p class="text-muted text-[13px]" data-testid="raid-not-a-member">{guildClaimCopy.notAMember}</p>
+      {/if}
+    </GuildBandFrame>
+  </div>
 {:else if raid !== null && flags !== null && when !== null && count !== null}
-  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="raid-page">
+  <div class="reveal flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}" data-testid="raid-page">
     <p class="sr-only" role="status" data-testid="raid-live-region">
       {c.logMatched ? attendanceCopy.liveRegion : ''}
     </p>
-    <GuildBandFrame faction={c.guild?.faction ?? null}>
+    <GuildBandFrame>
       {@render backLinkRow()}
       <div class="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
         <div class="flex flex-wrap items-center gap-3 md:col-start-1 md:row-start-1">

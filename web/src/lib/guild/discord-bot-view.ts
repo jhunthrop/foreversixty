@@ -34,17 +34,17 @@ export const guildBotState = (discord: BotFacts, changingChannel: boolean): Guil
  * A webhook-only section keeps G1's two heights plus the offer (WEBHOOK_OFFER_RESERVE).
  */
 export const GUILD_BOT_RESERVE: Readonly<Record<Exclude<GuildBotState, 'webhook-only'>, string>> = {
-  picker: 'min-h-[400px] md:min-h-[330px]',
-  installed: 'min-h-[330px] md:min-h-[250px]',
-  unusable: 'min-h-[320px] md:min-h-[240px]',
-  removed: 'min-h-[300px] md:min-h-[230px]',
-  nothing: 'min-h-[340px] md:min-h-[250px]',
+  picker: 'min-h-[462px] md:min-h-[392px]',
+  installed: 'min-h-[392px] md:min-h-[312px]',
+  unusable: 'min-h-[382px] md:min-h-[302px]',
+  removed: 'min-h-[362px] md:min-h-[292px]',
+  nothing: 'min-h-[402px] md:min-h-[312px]',
 };
 
-/** G1's connected (250 / 230 on md) and switched-off (349 / 310) heights plus the offer's 100. */
+/** G1's connected (250 / 230 on md) and switched-off (349 / 310) heights plus the offer's 100, and (site alignment) the Card head's 62 px every table here carries. */
 export const WEBHOOK_OFFER_RESERVE = {
-  connected: 'min-h-[350px] md:min-h-[330px]',
-  'switched-off': 'min-h-[449px] md:min-h-[410px]',
+  connected: 'min-h-[412px] md:min-h-[392px]',
+  'switched-off': 'min-h-[511px] md:min-h-[472px]',
 } as const;
 
 /** The query parameter the install callback leaves (`?discord_bot=`), its own name so it never

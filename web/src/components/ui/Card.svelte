@@ -18,6 +18,8 @@
     title,
     label,
     titleSnippet,
+    titleContent,
+    titleTestid,
     meta,
     action,
     aside,
@@ -38,6 +40,10 @@
     title: string;
     label?: string;
     titleSnippet?: Snippet;
+    /** Replaces the title's text inside the heading (an item's name with its tooltip). */
+    titleContent?: Snippet;
+    /** A test id on the heading itself. */
+    titleTestid?: string;
     meta?: string;
     action?: { label: string; href: string };
     /** The head's right slot: a Tag or one small button. */
@@ -65,6 +71,8 @@
     {label}
     {title}
     {titleSnippet}
+    {titleContent}
+    {titleTestid}
     {meta}
     {action}
     {aside}

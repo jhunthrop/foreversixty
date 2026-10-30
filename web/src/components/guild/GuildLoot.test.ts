@@ -102,7 +102,7 @@ describe('GuildLoot', () => {
 
   it('lists "Head of Onyxia" once, for both copies', () => {
     const markup = html(true);
-    expect(markup.split('Head of Onyxia').length - 1).toBe(1);
+    expect(text(markup).split('Head of Onyxia').length - 1).toBe(1); // the icon's aria-label is not text
     expect(text(markup)).toContain('Head of Onyxia x2');
   });
 
@@ -124,12 +124,11 @@ describe('GuildLoot', () => {
     expect(text(html(true))).not.toContain('over their current');
   });
 
-  it('puts the awarded line on its own full-width row, no dot before Undo, and Awarded · Undo on the winner', () => {
+  it('puts the awarded line in the card head, no dot before Undo, and Awarded · Undo on the winner', () => {
     const markup = html(true);
     expect(markup).not.toMatch(/aria-hidden="true">·<\/span>\s*<button/);
     const awardedAt = markup.indexOf(`data-testid="guild-loot-awarded-${awarded?.item_id}"`);
     const chip = markup.slice(markup.lastIndexOf('<span', awardedAt), awardedAt);
-    expect(chip).toContain('basis-full');
     expect(chip).not.toContain('uppercase');
     expect(markup).toContain(`data-testid="guild-loot-row-undo-${awarded?.item_id}"`);
     expect(text(html(false))).toContain('Awarded');
@@ -194,7 +193,7 @@ describe('GuildLoot', () => {
       for (const tag of controls) {
         expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
         expect(tag).toContain('aria-describedby="officer-tools-gate-loot"');
-        expect(tag).toContain('disabled:cursor-default');
+        expect(tag).toMatch(/disabled:cursor-(default|not-allowed)/);
       }
       for (const tag of buttons(markup, 'guild-loot-row-undo-'))
         expect(tag).toContain('disabled:no-underline');

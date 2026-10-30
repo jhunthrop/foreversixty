@@ -4,8 +4,8 @@
 // pre-review and review rounds), so the swap from reserve to content moves nothing. Tiny on purpose:
 // GuildShell's entry chunk imports it.
 
-/** The raid band, ready: back link, eyebrow, title, when, count and tabs, for a member. */
-export const RAID_BAND_MIN = 'min-h-[347px] md:min-h-[311px]';
+/** The raid head, ready (no band padding since site alignment D1: 38 px less on a phone, 60 from md): back link, eyebrow, title, when, count and tabs, for a member. */
+export const RAID_BAND_MIN = 'min-h-[309px] md:min-h-[251px]';
 
 /** The band's lines 3–5 while the raid loads (h1, the when line and the count line with the gaps
  *  between them): the back link, eyebrow and tabs around them are drawn for real. */

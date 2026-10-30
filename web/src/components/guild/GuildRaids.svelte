@@ -21,7 +21,7 @@
   } from '../../lib/guild/api';
   import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
-  import EmptyState from '../ui/EmptyState.svelte';
+  import Card from '../ui/Card.svelte';
   import FactLine from './FactLine.svelte';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { raidCopy } from '../../lib/guild/raid-copy';
@@ -36,7 +36,7 @@
   } from '../../lib/guild/raid-form';
   import { createRaid, type RaidInput } from '../../lib/guild/raids-api';
   import { planRaid } from '../../lib/guild/raids-tab-controller';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import GuildPlannedRaids from './GuildPlannedRaids.svelte';
   import RaidForm from './RaidForm.svelte';
@@ -180,123 +180,132 @@
   }
 </script>
 
-<section class="flex flex-col gap-2" data-testid="guild-raids-tab">
-  <div class="flex items-center justify-between gap-3" data-testid="guild-raids-header">
-    <h2 class="section-title">Raids</h2>
-    <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
-    {#if officer && showPlanned && !formOpen}
-      <button
-        type="button"
-        bind:this={planButton}
-        class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#cfa64a] disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={readOnly || atCap}
-        aria-describedby={planDescribedBy}
-        onclick={() => (formOpen = true)}
-        data-testid="guild-raids-plan">{raidCopy.planButton}</button
-      >
+<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-raids-tab">
+  <Card glyph="chart" title="Raids" body="none" testid="guild-raids-header">
+    {#snippet aside()}
+      <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
+      {#if officer && showPlanned && !formOpen}
+        <button
+          type="button"
+          bind:this={planButton}
+          class={button('primary', 'sm')}
+          disabled={readOnly || atCap}
+          aria-describedby={planDescribedBy}
+          onclick={() => (formOpen = true)}
+          data-testid="guild-raids-plan">{raidCopy.planButton}</button
+        >
+      {/if}
+    {/snippet}
+    {#if officer && showPlanned && (readOnly || atCap || (formOpen && planned !== undefined))}
+      <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
+        {#if officer && showPlanned && readOnly}
+          <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} />
+        {:else if officer && showPlanned && atCap}
+          <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
+        {/if}
+        {#if formOpen && officer && planned !== undefined}
+          <RaidForm
+            mode="create"
+            {zones}
+            {guildTimezone}
+            {viewerTimezone}
+            lastRaid={lastPlannedRaid(planned)}
+            {plannedCount}
+            discord={discord ?? planned[0]?.discord ?? null}
+            {settingsHref}
+            onSubmit={submitPlan}
+            onCancel={() => void closeForm()}
+          />
+        {/if}
+      </div>
     {/if}
-  </div>
-  {#if officer && showPlanned && readOnly}
-    <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} />
-  {:else if officer && showPlanned && atCap}
-    <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
-  {/if}
-  {#if formOpen && officer && planned !== undefined}
-    <RaidForm
-      mode="create"
-      {zones}
-      {guildTimezone}
-      {viewerTimezone}
-      lastRaid={lastPlannedRaid(planned)}
-      {plannedCount}
-      discord={discord ?? planned[0]?.discord ?? null}
-      {settingsHref}
-      onSubmit={submitPlan}
-      onCancel={() => void closeForm()}
-    />
-  {/if}
+  </Card>
   {#if showPlanned && planned !== undefined}
     <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock.now} {viewerTimezone} />
-    <h3 class="label text-muted mt-4" data-testid="guild-raid-nights-heading">
-      {raidCopy.subheads.raidNights}
-    </h3>
   {/if}
-  {#if rows.length === 0}
-    <EmptyState
-      message={publicView
-        ? NO_PUBLIC_RAID_NIGHTS
-        : 'No raid nights logged yet. Upload a raid log to get started.'}
-      testid="guild-raids-empty"
-    />
-  {:else}
-    <div class="flex flex-col" data-testid="guild-raids-rows">
-      {#each rows as row (row.id)}
-        {@const isOpen = expanded === row.id}
-        <div class="border-line-soft border-b" id={`guild-raid-night-${row.id}`}>
-          <button
-            class="flex w-full flex-wrap items-center gap-3 py-2 text-left"
-            onclick={() => (expanded = isOpen ? null : row.id)}
-            aria-expanded={isOpen}
-            data-testid={`guild-raid-row-${row.id}`}
-          >
-            <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
-            <span class="text-muted tabular text-[13px]">{raidNightDay(row.created_at)}</span>
-            <span class="text-muted numeric text-[13px]">{minutes(row.duration_ms)}</span>
-            <FactLine
-              facts={raidTallyParts(row, bossIds)}
-              class="text-muted tabular ml-auto text-right text-[13px]"
-            />
-          </button>
-          {#if isOpen}
-            <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>
-              {#if row.raid_id !== undefined && row.raid_id !== null}
-                <a
-                  href={guildRaidHref(guildPath, row.raid_id)}
-                  class="text-gold inline-flex min-h-11 items-center self-start text-[13px] font-bold"
-                  data-testid={`guild-raid-link-${row.id}`}>{attendanceCopy.match.openRaid}</a
-                >
-              {/if}
-              <div class="flex flex-wrap items-center gap-1">
-                {#each row.present.slice(0, 20) as p (p.character_key)}
-                  <ClassCrestRing characterClass={p.class} size={22} />
-                {/each}
-                <span class="text-muted ml-2 text-[12px]">{row.present.length} of {row.raiders} present</span>
-              </div>
-              {#if row.top_parse !== null}
-                <p class="text-[13px]">
-                  Top parse <span style={`color:${classColorVar(row.top_parse.class)};font-weight:600`}
-                    >{row.top_parse.name}</span
+  <Card
+    glyph="chart"
+    title={raidCopy.subheads.raidNights}
+    titleTestid="guild-raid-nights-heading"
+    body="none"
+    testid="guild-raid-nights"
+  >
+    {#if rows.length === 0}
+      <p class="border-line-soft text-muted border-t px-5 py-4 text-[14px]" data-testid="guild-raids-empty">
+        {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet. Upload a raid log to get started.'}
+      </p>
+    {:else}
+      <div class="border-line-soft flex flex-col border-t px-5" data-testid="guild-raids-rows">
+        {#each rows as row (row.id)}
+          {@const isOpen = expanded === row.id}
+          <div class="border-line-soft border-b" id={`guild-raid-night-${row.id}`}>
+            <button
+              class="flex w-full flex-wrap items-center gap-3 py-2 text-left"
+              onclick={() => (expanded = isOpen ? null : row.id)}
+              aria-expanded={isOpen}
+              data-testid={`guild-raid-row-${row.id}`}
+            >
+              <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
+              <span class="text-muted tabular text-[13px]">{raidNightDay(row.created_at)}</span>
+              <span class="text-muted numeric text-[13px]">{minutes(row.duration_ms)}</span>
+              <FactLine
+                facts={raidTallyParts(row, bossIds)}
+                class="text-muted tabular ml-auto text-right text-[13px]"
+              />
+            </button>
+            {#if isOpen}
+              <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>
+                {#if row.raid_id !== undefined && row.raid_id !== null}
+                  <a
+                    href={guildRaidHref(guildPath, row.raid_id)}
+                    class="text-gold inline-flex min-h-11 items-center self-start text-[13px] font-bold"
+                    data-testid={`guild-raid-link-${row.id}`}>{attendanceCopy.match.openRaid}</a
                   >
-                  {row.top_parse.value.toFixed(1)}
-                  {row.top_parse.metric.toUpperCase()}
-                </p>
-              {/if}
-              <div class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
-                {#each row.fights as fight (fight.index)}
-                  <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
-                    {#if fight.name !== null}
-                      <span class="min-w-[120px] text-[13px]">{fight.name} · pull {fight.index + 1}</span>
-                      <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
-                      <span
-                        class="pill"
-                        class:pill-kill={fight.kill}
-                        style={fight.kill
-                          ? 'color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)'
-                          : ''}
-                      >
-                        {fight.kill ? 'Kill' : 'Wipe'}
-                      </span>
-                    {:else}
-                      <span class="min-w-[120px] text-[13px]">Pull {fight.index + 1}</span>
-                      <span class="text-muted text-[12px]">no named encounter published</span>
-                    {/if}
-                  </div>
-                {/each}
+                {/if}
+                <div class="flex flex-wrap items-center gap-1">
+                  {#each row.present.slice(0, 20) as p (p.character_key)}
+                    <ClassCrestRing characterClass={p.class} size={22} />
+                  {/each}
+                  <span class="text-muted ml-2 text-[12px]"
+                    >{row.present.length} of {row.raiders} present</span
+                  >
+                </div>
+                {#if row.top_parse !== null}
+                  <p class="text-[13px]">
+                    Top parse <span style={`color:${classColorVar(row.top_parse.class)};font-weight:600`}
+                      >{row.top_parse.name}</span
+                    >
+                    {row.top_parse.value.toFixed(1)}
+                    {row.top_parse.metric.toUpperCase()}
+                  </p>
+                {/if}
+                <div class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
+                  {#each row.fights as fight (fight.index)}
+                    <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
+                      {#if fight.name !== null}
+                        <span class="min-w-[120px] text-[13px]">{fight.name} · pull {fight.index + 1}</span>
+                        <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
+                        <span
+                          class="pill"
+                          class:pill-kill={fight.kill}
+                          style={fight.kill
+                            ? 'color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)'
+                            : ''}
+                        >
+                          {fight.kill ? 'Kill' : 'Wipe'}
+                        </span>
+                      {:else}
+                        <span class="min-w-[120px] text-[13px]">Pull {fight.index + 1}</span>
+                        <span class="text-muted text-[12px]">no named encounter published</span>
+                      {/if}
+                    </div>
+                  {/each}
+                </div>
               </div>
-            </div>
-          {/if}
-        </div>
-      {/each}
-    </div>
-  {/if}
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </Card>
 </section>

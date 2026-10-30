@@ -10,7 +10,7 @@
   import { fetchItemTooltipModel } from '../../lib/items/lookup';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import { dataUrl } from '../../lib/planner/load';
-  import { rarityClassFor } from '../../lib/planner/items';
+  import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import activeBuild from '../../data/active-build.json';
   import ItemHover from '../ItemHover.svelte';
@@ -19,12 +19,15 @@
     award,
     iconSize,
     nameSize,
+    show = 'both',
   }: {
     award: RaidLootAward;
-    /** 28 in the Report, 20 in Your night. */
-    iconSize: 28 | 20;
+    /** 28 in the Report, 20 in Your night, 36 in a loot card's head. */
+    iconSize: 36 | 28 | 20;
     /** The name's Tailwind text size: `text-[14px]` or `text-[13px]`. */
     nameSize: string;
+    /** A card head draws the icon and the name apart (the lead and the title), each with the tooltip. */
+    show?: 'both' | 'icon' | 'name';
   } = $props();
 
   const build = activeBuild.build;
@@ -50,24 +53,35 @@
   });
 </script>
 
-<ItemHover itemId={award.item_id} {classSlug} {build} model={ownModel} class="gap-2">
-  <span
-    class="rounded-control border-line bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
-    style={`width:${iconSize}px;height:${iconSize}px`}
-    data-testid="raid-loot-icon"
-  >
-    {#if icon !== null}
-      <img
-        src={dataUrl(build, `icons/${icon}.webp`)}
-        alt=""
-        width={iconSize}
-        height={iconSize}
-        class="h-full w-full object-cover"
-        onerror={() => (broken = true)}
-      />
-    {:else}
-      <span aria-hidden="true" data-testid="raid-loot-initials">{lootInitials(award.item_name)}</span>
-    {/if}
-  </span>
-  <span class="{rarityClassFor(award.quality)} {nameSize} truncate">{award.item_name}</span>
+<ItemHover
+  itemId={award.item_id}
+  {classSlug}
+  {build}
+  model={ownModel}
+  class="gap-2"
+  label={show === 'icon' ? award.item_name : undefined}
+>
+  {#if show !== 'name'}
+    <span
+      class="rounded-control bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
+      style={`width:${iconSize}px;height:${iconSize}px;border-width:2px;border-color:${rarityBorderColorFor(award.quality)}`}
+      data-testid="raid-loot-icon"
+    >
+      {#if icon !== null}
+        <img
+          src={dataUrl(build, `icons/${icon}.webp`)}
+          alt=""
+          width={iconSize}
+          height={iconSize}
+          class="h-full w-full object-cover"
+          onerror={() => (broken = true)}
+        />
+      {:else}
+        <span aria-hidden="true" data-testid="raid-loot-initials">{lootInitials(award.item_name)}</span>
+      {/if}
+    </span>
+  {/if}
+  {#if show !== 'icon'}
+    <span class="{rarityClassFor(award.quality)} {nameSize} truncate">{award.item_name}</span>
+  {/if}
 </ItemHover>

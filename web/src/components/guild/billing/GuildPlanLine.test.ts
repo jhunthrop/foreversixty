@@ -48,14 +48,12 @@ describe('GuildPlanLine', () => {
     expect(body).toContain('Cancel before 4 Nov and nothing is charged. Billed to you.');
   });
 
-  it('reads the active line with the Founder pill', () => {
+  it('reads the active line with the Founder tag', () => {
     const body = html(atNoon(FOUNDER_RAID_GUILD_READ), true);
     expect(text(body)).toContain('Raid guild · renews 1 Dec 2026 · $200 a year');
     expect(body).toContain('guild-billing-founder');
-    // The account panel's gold pill, 8 px after the price (persona round 2).
-    expect(body).toMatch(
-      /<span class="pill pill-site ml-2" data-testid="guild-billing-founder">Founder<\/span>/,
-    );
+    // The Founder state is a Tag in the plan row's trailing slot (site alignment, settings Plan card).
+    expect(body).toMatch(/data-testid="guild-billing-founder" data-tone="gold"[^>]*>[\s\S]*Founder/);
   });
 
   it('gives a payer Manage billing and Move to Raid guild; a reader neither', () => {

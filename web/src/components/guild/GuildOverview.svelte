@@ -34,6 +34,10 @@
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
   import { counted } from '../../lib/plural';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+  import Card from '../ui/Card.svelte';
+  import Glyph from '../ui/Glyph.svelte';
+  import SettingsRow from '../ui/SettingsRow.svelte';
   import FactLine from './FactLine.svelte';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
   import type { GuildTabId } from './GuildTabs.svelte';
@@ -159,20 +163,17 @@
   );
 </script>
 
-<section class="flex flex-col gap-5" data-testid="guild-overview-tab">
+{#snippet seeAll(tab: GuildTabId)}
+  <button type="button" class={ACTION_LINK} onclick={() => onSelectTab(tab)}>
+    See all<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+  </button>
+{/snippet}
+
+<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-overview-tab">
   {#if role !== 'public'}
-    <div
-      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
-      data-testid="guild-overview-card-roster"
-    >
-      <div class="flex items-center justify-between">
-        <h3 class="section-title">Roster</h3>
-        <button
-          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
-          onclick={() => onSelectTab('roster')}>See all</button
-        >
-      </div>
-      <p class="text-[14px]" data-testid="guild-overview-roster-facts">
+    <Card glyph="user" title="Roster" testid="guild-overview-card-roster">
+      {#snippet aside()}{@render seeAll('roster')}{/snippet}
+      <p data-testid="guild-overview-roster-facts">
         <FactLine
           facts={[
             rosterParts.raiders,
@@ -181,102 +182,65 @@
           ]}
         />
       </p>
-    </div>
+    </Card>
   {/if}
 
-  <div
-    class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
-    data-testid="guild-overview-card-raids"
+  <Card
+    glyph="chart"
+    title="This week's raid nights"
+    body={reports.length === 0 ? 'text' : 'rows'}
+    testid="guild-overview-card-raids"
   >
-    <div class="flex items-center justify-between">
-      <h3 class="section-title">This week's raid nights</h3>
-      <button
-        class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
-        onclick={() => onSelectTab('raids')}>See all</button
-      >
-    </div>
+    {#snippet aside()}{@render seeAll('raids')}{/snippet}
     {#if reports.length === 0}
-      <p class="text-muted text-[14px]">
-        {role === 'public' ? NO_PUBLIC_REPORTS : 'No reports this week yet.'}
-      </p>
+      <p class="text-muted">{role === 'public' ? NO_PUBLIC_REPORTS : 'No reports this week yet.'}</p>
     {:else}
       {#each reports.slice(0, 3) as report (report.id)}
         {@const facts = tallyOf(report)}
-        <!-- Below lg two lines: the title left and the day right, then the facts in a wrapping row
-             (each fact whole). At lg one row, the facts as the single " · " line they always were. -->
-        <div
-          class="border-line-soft flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b py-1.5 lg:flex-nowrap lg:items-center"
-          data-testid="guild-overview-raid-row"
+        <SettingsRow
+          label={report.title === '' ? report.zone : report.title}
+          value={raidNightDay(report.created_at)}
+          testid="guild-overview-raid-row"
         >
-          <span class="min-w-0 flex-1 text-[14px] font-semibold"
-            >{report.title === '' ? report.zone : report.title}</span
-          >
-          <span class="text-muted tabular text-[14px] lg:text-[13px]">{raidNightDay(report.created_at)}</span>
-          {#if facts.length > 0}
-            <FactLine
-              {facts}
-              class="text-muted tabular order-last basis-full text-[14px] lg:order-none lg:basis-auto lg:text-[13px]"
-              testid="guild-overview-raid-facts"
-            />
-          {/if}
-        </div>
+          {#snippet below()}
+            {#if facts.length > 0}
+              <FactLine {facts} class="text-muted tabular text-[13px]" testid="guild-overview-raid-facts" />
+            {/if}
+          {/snippet}
+        </SettingsRow>
       {/each}
     {/if}
-  </div>
+  </Card>
 
-  <div
-    class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
-    data-testid="guild-overview-card-progression"
-  >
-    <div class="flex items-center justify-between">
-      <h3 class="section-title">Progression</h3>
-      <button
-        class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
-        onclick={() => onSelectTab('progression')}>See all</button
-      >
-    </div>
+  <Card glyph="trophy" title="Progression" testid="guild-overview-card-progression">
+    {#snippet aside()}{@render seeAll('progression')}{/snippet}
     {#if showCounts}
-      <p class="text-[14px]">{encountersLine}</p>
+      <p>{encountersLine}</p>
     {:else}
-      <p class="text-muted text-[14px]">{NO_PUBLIC_REPORTS}</p>
+      <p class="text-muted">{NO_PUBLIC_REPORTS}</p>
     {/if}
-  </div>
+  </Card>
 
   {#if role !== 'public'}
-    <div
-      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
-      data-testid="guild-overview-card-readiness"
+    <Card
+      glyph="guild"
+      title="Readiness"
+      body={readinessSummary === null ? 'text' : 'rows'}
+      testid="guild-overview-card-readiness"
     >
-      <div class="flex items-center justify-between">
-        <h3 class="section-title">Readiness</h3>
-        <button
-          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
-          onclick={() => onSelectTab('readiness')}>See all</button
-        >
-      </div>
+      {#snippet aside()}{@render seeAll('readiness')}{/snippet}
       {#if readinessSummary === null}
-        <p class="text-muted text-[13px]">No readiness data yet.</p>
+        <p class="text-muted">No readiness data yet.</p>
       {:else}
         {#each readinessSummary as row (row.name)}
-          <p class="text-[13px]">
-            <span class="font-semibold">{row.name}</span> · {checksFailingLine(row.failing)}
-          </p>
+          <SettingsRow label={row.name} value={checksFailingLine(row.failing)} />
         {/each}
       {/if}
-    </div>
+    </Card>
 
-    <div
-      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
-      data-testid="guild-overview-card-loot"
-    >
-      <div class="flex items-center justify-between">
-        <h3 class="section-title">Loot</h3>
-        <button
-          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
-          onclick={() => onSelectTab('loot')}>See all</button
-        >
-      </div>
-      <p class="text-[14px]">{lootSummary ?? 'No bosses killed yet this tier.'}</p>
-    </div>
+    <Card glyph="star" title="Loot" testid="guild-overview-card-loot">
+      {#snippet aside()}{@render seeAll('loot')}{/snippet}
+      <p>{lootSummary ?? 'No bosses killed yet this tier.'}</p>
+    </Card>
   {/if}
 </section>

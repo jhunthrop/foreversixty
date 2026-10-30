@@ -10,15 +10,15 @@
   import { seatsCopy } from '../../../lib/billing/seats-copy';
   import { transferErrorLine } from '../../../lib/guild/billing-errors';
   import {
-    BILLING_OUTLINE_BUTTON,
     BILLING_SAFE_TEXT_BUTTON,
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
   } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
-  import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
+  import { button } from '../../../lib/ui/button';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
   import SelectChevron from '../../ui/SelectChevron.svelte';
+  import SettingsRow from '../../ui/SettingsRow.svelte';
 
   const copy = seatsCopy.whoPays;
 
@@ -102,32 +102,57 @@
   }
 </script>
 
-<div bind:this={rootEl} class="flex flex-col gap-2" data-testid="guild-whopays">
-  <h3 class="section-title">{copy.heading}</h3>
-  <p class="text-muted text-[13px]">{copy.help}</p>
-  {#if waiting && transfer !== null}
-    <div class="flex flex-wrap items-center gap-3">
-      <p class="text-[14px]" data-testid="guild-transfer-waiting">
-        {copy.offered(transfer.to_name, transfer.at)}
-      </p>
-      <button
-        type="button"
-        class="{BILLING_SAFE_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
-        disabled={busy}
-        aria-busy={busy}
-        onclick={() => void run(() => withdrawTransfer(guildId))}
-        data-whopays-action
-        data-testid="guild-transfer-withdraw"
-      >
-        {copy.withdraw}
-      </button>
-    </div>
-    {#if error !== ''}
-      <p class="text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
-    {/if}
-  {:else if opening && candidates.length > 0}
+<div bind:this={rootEl} data-testid="guild-whopays">
+  <SettingsRow label={copy.heading} sub={copy.help} testid="guild-whopays-row" controlBelow>
+    {#snippet below()}
+      {#if waiting && transfer !== null}
+        <span class="text-[14px]" data-testid="guild-transfer-waiting">
+          {copy.offered(transfer.to_name, transfer.at)}
+        </span>
+      {:else if !opening || candidates.length === 0}
+        {#if declined && transfer !== null}
+          <span class="text-muted text-[13px]" data-testid="guild-transfer-declined">
+            {copy.declined(transfer.to_name)}
+          </span>
+        {/if}
+        {#if candidates.length === 0}
+          <span class="text-muted text-[13px]" id="guild-transfer-none" data-testid="guild-transfer-none">
+            {copy.noCandidates}
+          </span>
+        {/if}
+      {/if}
+    {/snippet}
+    {#snippet control()}
+      {#if waiting}
+        <button
+          type="button"
+          class="{BILLING_SAFE_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+          disabled={busy}
+          aria-busy={busy}
+          onclick={() => void run(() => withdrawTransfer(guildId))}
+          data-whopays-action
+          data-testid="guild-transfer-withdraw"
+        >
+          {copy.withdraw}
+        </button>
+      {:else if !opening || candidates.length === 0}
+        <button
+          type="button"
+          class={button('secondary', 'sm')}
+          disabled={candidates.length === 0}
+          aria-describedby={candidates.length === 0 ? 'guild-transfer-none' : undefined}
+          onclick={() => (opening = true)}
+          data-whopays-action
+          data-testid="guild-transfer-open"
+        >
+          {copy.transfer}
+        </button>
+      {/if}
+    {/snippet}
+  </SettingsRow>
+  {#if !waiting && opening && candidates.length > 0}
     <div
-      class="border-line-soft flex flex-col gap-3 border p-4"
+      class="border-line-soft mx-5 mb-4 flex flex-col gap-3 border p-4"
       role="group"
       aria-labelledby="guild-transfer-label"
       onkeydown={onKeydown}
@@ -163,7 +188,7 @@
       <div class={CONFIRM_ACTIONS}>
         <button
           type="button"
-          class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4 {busy ? BUSY_CLASS : ''}"
+          class="{button('primary', 'sm')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
           disabled={busy}
           aria-busy={busy}
           onclick={() => void send()}
@@ -176,32 +201,7 @@
         >
       </div>
     </div>
-  {:else}
-    {#if declined && transfer !== null}
-      <p class="text-muted text-[13px]" data-testid="guild-transfer-declined">
-        {copy.declined(transfer.to_name)}
-      </p>
-    {/if}
-    <div class="flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        class={BILLING_OUTLINE_BUTTON}
-        disabled={candidates.length === 0}
-        aria-describedby={candidates.length === 0 ? 'guild-transfer-none' : undefined}
-        onclick={() => (opening = true)}
-        data-whopays-action
-        data-testid="guild-transfer-open"
-      >
-        {copy.transfer}
-      </button>
-      {#if candidates.length === 0}
-        <p class="text-muted text-[13px]" id="guild-transfer-none" data-testid="guild-transfer-none">
-          {copy.noCandidates}
-        </p>
-      {/if}
-    </div>
-    {#if error !== ''}
-      <p class="text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
-    {/if}
+  {:else if error !== ''}
+    <p class="px-5 pb-4 text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
   {/if}
 </div>

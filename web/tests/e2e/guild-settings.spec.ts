@@ -16,10 +16,7 @@ const GUILD_PAGE = {
   reports: [],
 };
 
-test('a verified officer sees settings and can rotate the invite link with the leak warning shown', async ({
-  page,
-  context,
-}) => {
+test('a verified officer sees settings and can rotate the invite link', async ({ page, context }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
@@ -45,9 +42,7 @@ test('a verified officer sees settings and can rotate the invite link with the l
 
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings')).toBeVisible();
-  await expect(
-    page.getByText('Anyone with this link can join as a member. Rotate it if it leaks.'),
-  ).toBeVisible();
+  await expect(page.getByText('Anyone with this link can join as a member.')).toBeVisible();
 
   // Rotating asks first: the old link stops working.
   await page.getByTestId('guild-invite-rotate').click();

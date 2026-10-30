@@ -8,6 +8,9 @@ import { raidCopy } from './raid-copy';
 
 export const guildDiscordCopy = {
   heading: 'Discord',
+  /** The card head's state tag. */
+  connectedTag: 'Connected',
+  switchedOffTag: 'Switched off',
   explanation:
     "Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post this guild's raids there. You must manage webhooks in it. We keep only that webhook, encrypted.",
   destination: { lead: 'Posts raids to', name: 'a Discord channel' },

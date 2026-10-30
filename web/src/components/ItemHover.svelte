@@ -38,6 +38,7 @@
     build,
     model,
     class: pillClass = '',
+    label,
     children,
   }: {
     itemId: number;
@@ -45,6 +46,8 @@
     build: string;
     model?: ItemTooltipModel;
     class?: string;
+    /** The accessible name when `children` hold no text (an icon drawn apart from the name). */
+    label?: string;
     children?: Snippet;
   } = $props();
 
@@ -156,6 +159,7 @@
     class={`inline-flex min-w-0 items-center gap-1 ${pillClass}`}
     tabindex="0"
     role="button"
+    aria-label={label}
     data-testid={`item-hover-${itemId}`}
     aria-haspopup="true"
     aria-describedby={isOpen ? tooltipId : undefined}

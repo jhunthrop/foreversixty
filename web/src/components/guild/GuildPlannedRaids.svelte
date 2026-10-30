@@ -3,6 +3,7 @@
      rows by start and `Show all {n} planned raids`, which expands in place; the empty line says
      who plans raids (member) or what planning does (officer). -->
 <script lang="ts">
+  import Card from '../ui/Card.svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
   import { sortByStart } from '../../lib/guild/planned-row';
@@ -31,28 +32,32 @@
   const shown = $derived(expanded ? sorted : sorted.slice(0, FIRST_ROWS));
 </script>
 
-<section class="flex flex-col gap-2" aria-labelledby="guild-planned-heading" data-testid="guild-planned">
-  <h3 id="guild-planned-heading" class="label text-muted">
-    {raidCopy.subheads.planned}
-    {#if sorted.length > 0}<span class="numeric" data-testid="guild-planned-count">{sorted.length}</span>{/if}
-  </h3>
+<Card
+  glyph="bell"
+  title={raidCopy.subheads.planned}
+  meta={sorted.length > 0 ? String(sorted.length) : undefined}
+  body="none"
+  testid="guild-planned"
+>
   {#if sorted.length === 0}
-    <p class="text-muted text-[13px]" data-testid="guild-planned-empty">
+    <p class="border-line-soft text-muted border-t px-5 py-4 text-[13px]" data-testid="guild-planned-empty">
       {officer ? raidCopy.emptyPlanned.officer : raidCopy.emptyPlanned.member}
     </p>
   {:else}
-    <div class="border-line-soft flex flex-col border-t" data-testid="guild-planned-rows">
+    <div class="border-line-soft flex flex-col border-t px-5" data-testid="guild-planned-rows">
       {#each shown as raid (raid.id)}
         <PlannedRaidRow {raid} href={guildRaidHref(guildPath, raid.id)} {now} {viewerTimezone} />
       {/each}
     </div>
     {#if !expanded && sorted.length > FIRST_ROWS}
-      <button
-        type="button"
-        class="text-text focus-visible:outline-gold h-11 self-start text-[13px] underline focus-visible:outline-2"
-        onclick={() => (expanded = true)}
-        data-testid="guild-planned-show-all">{showAll(sorted.length)}</button
-      >
+      <div class="border-line-soft border-t px-5">
+        <button
+          type="button"
+          class="text-text focus-visible:outline-gold h-11 text-[13px] underline focus-visible:outline-2"
+          onclick={() => (expanded = true)}
+          data-testid="guild-planned-show-all">{showAll(sorted.length)}</button
+        >
+      </div>
     {/if}
   {/if}
-</section>
+</Card>

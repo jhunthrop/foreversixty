@@ -30,14 +30,14 @@ const PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1440, height: 1000 };
 const MIN_TARGET = 44;
 const RETURN = (flag: string): string => `${SETTINGS_GUILD_PATH}?discord_bot=${flag}#discord`;
-/** §3.1's caps, phone (360) then desktop (1440). */
+/** §3.1's caps, phone (360) then desktop (1440); each carries the Card head's 62 px (site alignment). */
 const CAPS = {
-  nothing: [340, 250],
-  picker: [400, 330],
-  installed: [450, 330],
-  'installed with warning': [520, 380],
-  removed: [300, 230],
-  'webhook only': [440, 330],
+  nothing: [402, 312],
+  picker: [462, 392],
+  installed: [512, 392],
+  'installed with warning': [582, 442],
+  removed: [362, 292],
+  'webhook only': [502, 392],
 } as const;
 
 const section = (page: Page): Locator => page.locator(SECTION);

@@ -14,7 +14,7 @@
   import type { CharacterPath } from '../../lib/characters';
   import type { GuildHome, GuildViewerRole } from '../../lib/guild/api';
   import { guildHomeCopy } from '../../lib/guild/copy';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import GuildCrestSettings from './GuildCrestSettings.svelte';
   import GuildSettings from '../GuildSettings.svelte';
 
@@ -59,18 +59,23 @@
   const canContestHere = $derived(!isClaimantAccount && home.claim.state === 'claimed');
 </script>
 
-<section class="flex flex-col gap-6" data-testid="guild-settings-tab">
-  <!-- Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): "officer only" --
-       this tab already only ever mounts for `role === 'officer' | 'moderator'`
-       (Guild.svelte's own tab-content gate), so the narrower check here is what actually
-       excludes a moderator, who gets no crest block in the web lane even though the API
-       itself lets one remove a crest (the contract's own prose; this build keeps the web
-       surface to officer/leader only, per the build brief). -->
-  {#if role === 'officer'}
-    <GuildCrestSettings guildId={home.guild.id} guild={home.guild} {onCrestChanged} />
-  {/if}
+<!-- Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): "officer only" -- this tab
+     already only ever mounts for `role === 'officer' | 'moderator'` (Guild.svelte's own tab-content
+     gate), so the narrower check here is what actually excludes a moderator, who gets no crest row in
+     the web lane even though the API itself lets one remove a crest. The row sits at the foot of the
+     Records card. -->
+{#snippet crestRow()}
+  <GuildCrestSettings guildId={home.guild.id} guild={home.guild} {onCrestChanged} />
+{/snippet}
 
-  <GuildSettings {path} {officerTools} {onPlanRefused} />
+<section class="flex flex-col gap-6" data-testid="guild-settings-tab">
+  <GuildSettings
+    embedded
+    {path}
+    {officerTools}
+    {onPlanRefused}
+    crest={role === 'officer' ? crestRow : undefined}
+  />
 
   {#if canContestHere}
     <div
@@ -78,7 +83,7 @@
       data-testid="guild-settings-claim-contest"
     >
       <button
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+        class="{button('secondary', 'sm')} w-fit"
         onclick={onContestStart}
         disabled={contestBusy}
         data-testid="guild-home-contest-button"
@@ -99,18 +104,14 @@
           </ul>
           <div class="flex gap-3">
             <button
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+              class={button('secondary', 'sm')}
               onclick={onContestConfirm}
               disabled={contestBusy}
               data-testid="guild-home-contest-confirm-button"
             >
               {guildHomeCopy.contestConfirmButton}
             </button>
-            <button
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-              onclick={onContestCancel}
-              disabled={contestBusy}
-            >
+            <button class={button('ghost', 'sm')} onclick={onContestCancel} disabled={contestBusy}>
               {guildHomeCopy.cancel}
             </button>
           </div>

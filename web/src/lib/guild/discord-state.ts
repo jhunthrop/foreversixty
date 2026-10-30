@@ -28,9 +28,9 @@ export function guildDiscordState(
  * loads, and the `connected` hold after a return from Discord, so nothing under it moves.
  */
 export const GUILD_DISCORD_RESERVE: Readonly<Record<GuildDiscordState, string>> = {
-  'not-connected': 'min-h-[198px] md:min-h-[140px]',
-  connected: 'min-h-[250px] md:min-h-[230px]',
-  'switched-off': 'min-h-[349px] md:min-h-[310px]',
+  'not-connected': 'min-h-[260px] md:min-h-[224px]',
+  connected: 'min-h-[312px] md:min-h-[296px]',
+  'switched-off': 'min-h-[411px] md:min-h-[372px]',
 };
 
 /** The placeholder's height while the section's chunk loads: a `connected` return holds the

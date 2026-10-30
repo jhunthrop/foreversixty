@@ -22,8 +22,9 @@
   import { guildCrestCopy, guildHomeCopy } from '../../lib/guild/copy';
   import { CREST_ACCEPT_ATTR, CREST_RULES_LINE, precheckCrestFile } from '../../lib/guild/crest';
   import { guildMarkSrc } from '../../lib/guild/mark';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import { button } from '../../lib/ui/button';
+  import { ROW, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
 
   let {
     guildId,
@@ -125,18 +126,16 @@
   });
 </script>
 
-<section class="border-line-soft flex flex-col gap-4 border-b pb-6" data-testid="guild-crest-settings">
-  <h2 class="section-title">{guildCrestCopy.heading}</h2>
-
-  <div class="flex items-center gap-4">
+<section data-testid="guild-crest-settings">
+  <div class="{ROW} gap-y-2">
     {#if previewUrl !== null}
       <img
         src={previewUrl}
         alt=""
         aria-hidden="true"
-        width="64"
-        height="64"
-        class="bg-raised box-border h-16 w-16 shrink-0 rounded-full object-contain p-[10px]"
+        width="40"
+        height="40"
+        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full object-contain p-[6px]"
         style={ringStyle}
         data-testid="guild-crest-preview"
       />
@@ -145,110 +144,117 @@
         src={currentMark}
         alt=""
         aria-hidden="true"
-        width="64"
-        height="64"
-        class="bg-raised box-border h-16 w-16 shrink-0 rounded-full object-contain p-[10px]"
+        width="40"
+        height="40"
+        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full object-contain p-[6px]"
         style={ringStyle}
         data-testid="guild-crest-current"
       />
     {:else}
       <div
-        class="bg-raised box-border h-16 w-16 shrink-0 rounded-full"
+        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full"
         aria-hidden="true"
         data-testid="guild-crest-current"
       ></div>
     {/if}
-    {#if !hasCrest}
-      <p class="text-muted text-[13px]" data-testid="guild-crest-default-caption">
-        {guildCrestCopy.defaultCaption}
-      </p>
-    {/if}
+    <span class="flex min-w-0 flex-1 flex-col">
+      <span class="{ROW_LABEL} text-strong">{guildCrestCopy.heading}</span>
+      {#if !hasCrest}
+        <span class={ROW_SUB} data-testid="guild-crest-default-caption">
+          {guildCrestCopy.defaultCaption}
+        </span>
+      {/if}
+    </span>
+    <!-- The browser's own file control is hidden (it stays in the page for the file dialog, a keyboard and
+         a screen reader); the secondary button is its label, and the focus ring shows on the label. -->
+    <label
+      class="{button(
+        'secondary',
+        'sm',
+      )} has-[:focus-visible]:outline-gold cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 {busy !==
+      null
+        ? BUSY_CLASS
+        : ''}"
+      data-testid="guild-crest-choose"
+    >
+      {guildCrestCopy.chooseButton}
+      <input
+        id="guild-crest-file"
+        type="file"
+        accept={CREST_ACCEPT_ATTR}
+        bind:this={fileInputEl}
+        onchange={onFileChange}
+        disabled={busy !== null}
+        class="sr-only"
+        aria-label={guildCrestCopy.pickerLabel}
+        data-testid="guild-crest-file-input"
+      />
+    </label>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <!-- The browser's own file control is hidden (it stays in the page for the file dialog, a keyboard and
-         a screen reader); the ghost button is its label, and the focus ring shows on the label. -->
-    <div class="flex flex-wrap items-center gap-3">
-      <label
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text has-[:focus-visible]:outline-gold cursor-pointer px-4 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ${busy !== null ? BUSY_CLASS : ''}`}
-        data-testid="guild-crest-choose"
-      >
-        {guildCrestCopy.chooseButton}
-        <input
-          id="guild-crest-file"
-          type="file"
-          accept={CREST_ACCEPT_ATTR}
-          bind:this={fileInputEl}
-          onchange={onFileChange}
-          disabled={busy !== null}
-          class="sr-only"
-          aria-label={guildCrestCopy.pickerLabel}
-          data-testid="guild-crest-file-input"
-        />
-      </label>
+  <div class="flex flex-col gap-3 px-5 pb-4">
+    <div class="flex flex-col gap-1">
       <span class="text-muted min-w-0 truncate text-[13px]" data-testid="guild-crest-file-name"
         >{selectedFile === null ? guildCrestCopy.noneChosen : selectedFile.name}</span
       >
+      <p class="text-muted text-[12px]">{CREST_RULES_LINE}</p>
     </div>
-    <p class="text-muted text-[12px]">{CREST_RULES_LINE}</p>
-  </div>
 
-  <div class="min-h-[21px]">
     {#if fileError !== ''}
       <p class="text-[13px]" role="alert" data-testid="guild-crest-file-error">{fileError}</p>
     {:else if actionError !== ''}
       <p class="text-[13px]" role="alert" data-testid="guild-crest-action-error">{actionError}</p>
     {/if}
-  </div>
 
-  <div class="flex flex-wrap items-center gap-3">
-    <button
-      type="button"
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4 disabled:cursor-not-allowed disabled:opacity-50 ${busy === 'saving' ? BUSY_CLASS : ''}`}
-      onclick={() => void onSave()}
-      disabled={selectedFile === null || busy !== null}
-      aria-busy={busy === 'saving'}
-      data-testid="guild-crest-save"
-    >
-      {busy === 'saving' ? guildCrestCopy.saving : guildCrestCopy.save}
-    </button>
-
-    {#if hasCrest && !confirmingRemove}
+    <div class="flex flex-wrap items-center gap-3">
       <button
         type="button"
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`}
-        onclick={onRemoveStart}
-        disabled={busy !== null}
-        data-testid="guild-crest-remove"
+        class="{button('secondary', 'sm')} {busy === 'saving' ? BUSY_CLASS : ''}"
+        onclick={() => void onSave()}
+        disabled={selectedFile === null || busy !== null}
+        aria-busy={busy === 'saving'}
+        data-testid="guild-crest-save"
       >
-        {guildCrestCopy.remove}
+        {busy === 'saving' ? guildCrestCopy.saving : guildCrestCopy.save}
       </button>
+
+      {#if hasCrest && !confirmingRemove}
+        <button
+          type="button"
+          class={button('ghost', 'sm')}
+          onclick={onRemoveStart}
+          disabled={busy !== null}
+          data-testid="guild-crest-remove"
+        >
+          {guildCrestCopy.remove}
+        </button>
+      {/if}
+    </div>
+
+    {#if confirmingRemove}
+      <div class="border-line-soft flex flex-col gap-3 border p-4" data-testid="guild-crest-remove-confirm">
+        <p class="text-[13px]">{guildCrestCopy.removeConfirmLine}</p>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            class="{button('danger', 'sm')} {busy === 'removing' ? BUSY_CLASS : ''}"
+            onclick={() => void onRemoveConfirm()}
+            disabled={busy !== null}
+            aria-busy={busy === 'removing'}
+            data-testid="guild-crest-remove-confirm-button"
+          >
+            {busy === 'removing' ? guildCrestCopy.removing : guildCrestCopy.removeConfirmButton}
+          </button>
+          <button
+            type="button"
+            class={button('ghost', 'sm')}
+            onclick={onRemoveCancel}
+            disabled={busy !== null}
+          >
+            {guildHomeCopy.cancel}
+          </button>
+        </div>
+      </div>
     {/if}
   </div>
-
-  {#if confirmingRemove}
-    <div class="border-line-soft flex flex-col gap-3 border p-4" data-testid="guild-crest-remove-confirm">
-      <p class="text-[13px]">{guildCrestCopy.removeConfirmLine}</p>
-      <div class="flex gap-3">
-        <button
-          type="button"
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3 ${busy === 'removing' ? BUSY_CLASS : ''}`}
-          onclick={() => void onRemoveConfirm()}
-          disabled={busy !== null}
-          aria-busy={busy === 'removing'}
-          data-testid="guild-crest-remove-confirm-button"
-        >
-          {busy === 'removing' ? guildCrestCopy.removing : guildCrestCopy.removeConfirmButton}
-        </button>
-        <button
-          type="button"
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
-          onclick={onRemoveCancel}
-          disabled={busy !== null}
-        >
-          {guildHomeCopy.cancel}
-        </button>
-      </div>
-    </div>
-  {/if}
 </section>

@@ -13,7 +13,6 @@
 <script lang="ts">
   import { fetchMeFresh, type Me } from '../lib/account/api';
   import { lookupAddonExport } from '../lib/addon-export';
-  import { FACTION_BAR_COLOR, factionLogoSrc } from '../lib/faction-mark';
   import {
     characterSlug,
     guildClaimHref,
@@ -84,7 +83,6 @@
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
-  import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -97,6 +95,7 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
+  import PageHead from './ui/PageHead.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -705,6 +704,17 @@
     }
   }
 
+  /** The boss chooser: reads that encounter's loot. */
+  async function onBoss(encounterId: number): Promise<void> {
+    if (guildId === null) return;
+    lootError = '';
+    try {
+      loot = await fetchGuildLoot(guildId, encounterId);
+    } catch (thrown) {
+      lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+    }
+  }
+
   /** Undo: removes the award the item shows, then reads the page again (the invalidation in
    *  `unawardLoot` clears the cached loot, so the read is fresh). */
   async function onUndo(item: GuildLootItem): Promise<void> {
@@ -755,275 +765,192 @@
     />
   </div>
 {:else if data !== null && resolved !== null}
-  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
-    <!-- Fix round 1 (owner rule): a full-bleed band, inner content in the site column,
-         like every other page. Built with the shared `.full-bleed` breakout and
-         `.page-column` inner (tenet 10) -- this page's own hero is
-         only ever known client-side (guild name, standing, tab state), so there is no
-         build-time-known markup to hoist into a separate Astro `beforeMain` region the way
-         `ArtPanel`/`ClassHeader` do on the guides page; the CSS breakout keeps the one
-         GuildShell island's state in one place instead of splitting it across two mount
-         points. The band's own inner is the same `.page-column` the layout wraps the tab
-         content below in, so both share one left edge at every width -- verified at 1440 and 2000. -->
-    <!-- Owner note (header art round): the wash and watermark must never show below this
-         band -- `overflow-hidden` here is what clips both the vignette (`inset:0` of the
-         inner 1344px column below, which exactly fills this band) and the watermark's own
-         top/right overrun, at the band's own bottom/right edges, never the page body below
-         it. `data-testid` so the e2e suite can assert the watermark's own bounding box never
-         extends past this band's bottom. -->
-    <div class="bg-raised full-bleed relative overflow-hidden" data-testid="guild-header-band">
-      <!-- The faction wash belongs to the full-bleed band, not the 1344px inner: on a wide
-           screen the inner's right edge is not the viewport's, and a wash clipped there read
-           as a cut-off rectangle (owner, 2026-10-05). The watermark below stays anchored to
-           the inner. -->
-      {#if faction === 'alliance' || faction === 'horde'}
-        <div
-          class="pointer-events-none absolute inset-0 z-0"
-          style={`background:linear-gradient(135deg, transparent 52%, color-mix(in srgb, ${FACTION_BAR_COLOR[faction]} 38%, transparent) 100%)`}
-          aria-hidden="true"
-          data-testid="guild-header-vignette"
-        ></div>
-      {/if}
-      <div class="page-column relative flex flex-col gap-3 px-[18px] pt-4 pb-[22px] md:pt-7 md:pb-8">
-        <!-- Header art round (spec §12.2, option B, the owner's pick): a sharp diagonal
-             faction-colour wash plus the real flat faction logo, crisp, no filter, cropped
-             by this band's own `overflow:hidden` right edge (the div above) -- never a
-             drawn shape, never Blizzard artwork beyond the logo's own pixels. Both layers
-             are `position:absolute` (out of flow, so they add no height) and sit at `z-0`
-             so the header/tabs content below (`z-10`) always paints above them; a neutral/
-             unknown faction renders neither layer at all, leaving this band pixel-identical
-             to today's shipped header. -->
-        {#if faction === 'alliance' || faction === 'horde'}
-          <!-- Owner note: the watermark's own box must never extend past the band's bottom
-               edge, not just rely on the band's `overflow-hidden` to hide the overrun --
-               `bottom-0` pins this wrapper flush with the band's own bottom (the inner
-               column's padding-bottom edge, which is the band's own bottom), so its height
-               is whatever room is actually available between the top offset and the band's
-               floor, never a fixed 180/320px that could out-run a short band. The image
-               inside fills that box (`h-full w-full object-contain object-top`), so it still
-               renders at its full intended size and top-anchored position for any band tall
-               enough to hold it, and only shrinks -- never overflows -- for a shorter one. -->
-          <div
-            class="pointer-events-none absolute top-[-22px] right-[-80px] bottom-0 z-0 w-[180px] overflow-hidden lg:top-[-38px] lg:right-[-90px] lg:w-[320px]"
-            data-testid="guild-header-watermark"
-          >
-            <img
-              src={factionLogoSrc(faction)}
-              alt=""
-              aria-hidden="true"
-              width={320}
-              height={320}
-              loading="eager"
-              decoding="async"
-              class="h-full w-full object-contain object-top opacity-[.14] lg:opacity-[.12]"
-            />
-          </div>
-        {/if}
-        <header
-          class="relative z-10 flex flex-col gap-3"
-          style:min-height={holdBand ? `${heldBand}px` : undefined}
-          bind:offsetHeight={bandHeaderHeight}
-          data-testid="guild-band-header"
-        >
-          <span class="label text-gold flex items-center gap-2.5">
-            <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
-            Guild
-          </span>
-          <div class="flex items-center gap-4 lg:gap-[18px]">
+  <div class="reveal flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}" data-testid="guild" id="guild">
+    <!-- Site alignment (2026-10-29, D1): the head sits on the page ground like every other page's:
+         the shared PageHead (eyebrow, the guild's mark at the left, the name, the facts line), then
+         the viewer's own lines under it, then the tab strip. No band, no faction wash or watermark:
+         the TabStrip's edge fade runs to the page ground. -->
+    <div class="flex flex-col gap-4" data-testid="guild-header">
+      <header
+        class="flex flex-col gap-3"
+        style:min-height={holdBand ? `${heldBand}px` : undefined}
+        bind:offsetHeight={bandHeaderHeight}
+        data-testid="guild-band-header"
+      >
+        <PageHead eyebrow={guildHomeCopy.eyebrow} title={data.guild.name}>
+          {#snippet lead()}
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
-            <h1 class="heading-page">{data.guild.name}</h1>
-          </div>
-          <p class="text-muted text-[13px]" data-testid="guild-header-facts">
-            <FactLine
-              facts={bandFacts(
-                rulesetLabel(resolved.ruleset),
-                resolved.region,
-                showCounts ? { killed, pulls } : null,
-                home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
-              )}
-            />
-          </p>
+          {/snippet}
+          {#snippet meta()}
+            <span data-testid="guild-header-facts">
+              <FactLine
+                facts={bandFacts(
+                  rulesetLabel(resolved.ruleset),
+                  resolved.region,
+                  showCounts ? { killed, pulls } : null,
+                  home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
+                )}
+              />
+            </span>
+          {/snippet}
+        </PageHead>
 
-          <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,
+        <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,
                the Battle.net button style, returning to this page. Live defect 2026-10-05:
                the public view shipped without it. -->
-          {#if meResolved && role === 'public' && myBattletag === null}
-            <SignInPrompt
-              line="See where you stand in this guild."
-              next={typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname}
-              testid="guild-sign-in-prompt"
-            />
-          {/if}
+        {#if meResolved && role === 'public' && myBattletag === null}
+          <SignInPrompt
+            line="See where you stand in this guild."
+            next={typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname}
+            testid="guild-sign-in-prompt"
+          />
+        {/if}
 
-          <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
+        <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
                the claim page states the rules and who may claim. A verified officer gets
                their Guild settings link in the role line below instead. -->
-          {#if meResolved && claimEntry.kind === 'claim'}
-            <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
-              {claimEntryCopy.question}
-              <a
-                href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-                data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
-              >
-            </p>
-          {:else if meResolved && claimEntry.kind === 'getClaimed'}
-            <p class="text-[13px]" data-testid="guild-claim-entry">
-              <a
-                href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-                data-testid="guild-claim-entry-link">{claimEntryNotes.getClaimed}</a
-              >
-            </p>
-          {:else if meResolved && claimEntry.kind === 'note'}
-            <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
-          {/if}
+        {#if meResolved && claimEntry.kind === 'claim'}
+          <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
+            {claimEntryCopy.question}
+            <a
+              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+              data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
+            >
+          </p>
+        {:else if meResolved && claimEntry.kind === 'getClaimed'}
+          <p class="text-[13px]" data-testid="guild-claim-entry">
+            <a
+              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+              data-testid="guild-claim-entry-link">{claimEntryNotes.getClaimed}</a
+            >
+          </p>
+        {:else if meResolved && claimEntry.kind === 'note'}
+          <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
+        {/if}
 
-          <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
+        <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
                settings, still above the tab strip. "Contest this claim" moved out of here
                entirely (fix round 1, item 2) -- it now lives in the Settings tab, under
                the claim block, and never reaches the claimant's own account. -->
-          {#if homeStatus === 'ready' && home !== null}
-            <div class="flex flex-col gap-2" data-testid="guild-role-line">
-              <!-- Spec §4.A.1: the standing line's four branches (ranked / alone-in-spec /
+        {#if homeStatus === 'ready' && home !== null}
+          <div class="flex flex-col gap-2" data-testid="guild-role-line">
+            <!-- Spec §4.A.1: the standing line's four branches (ranked / alone-in-spec /
                    unverified / signed-out) never branch on officer vs member -- every
                    verified viewer sees it, officer included; only the member-only "before
                    {Weekday}" sentence (§4.A.2) is role-gated. Kept unconditional here,
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
-              <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-                {#if home.standing !== null && home.standing !== undefined}
-                  {@const sentence = standingSentence(home.standing)}
-                  <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
-                    <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
+            <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
+              {#if home.standing !== null && home.standing !== undefined}
+                {@const sentence = standingSentence(home.standing)}
+                <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
+                  <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
                          gloss read as a second spec beside the header chip's. -->
-                    {#if sentence !== ''}
-                      <span style={`color:${classColorVar(home.standing.class)}`}>
-                        {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
-                      </span>
-                    {/if}
-                    {#if viewerPlannerHref !== null}
-                      <a
-                        href={viewerPlannerHref}
-                        class="text-[13px] font-bold"
-                        data-testid="guild-standing-planner-link"
-                      >
-                        Gear in the planner
-                      </a>
-                    {/if}
-                  </p>
-                {/if}
-                <!-- Raids spec 3.4: the next raid's line, for verified viewers only (R1), between
+                  {#if sentence !== ''}
+                    <span style={`color:${classColorVar(home.standing.class)}`}>
+                      {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
+                    </span>
+                  {/if}
+                  {#if viewerPlannerHref !== null}
+                    <a
+                      href={viewerPlannerHref}
+                      class="text-[13px] font-bold"
+                      data-testid="guild-standing-planner-link"
+                    >
+                      Gear in the planner
+                    </a>
+                  {/if}
+                </p>
+              {/if}
+              <!-- Raids spec 3.4: the next raid's line, for verified viewers only (R1), between
                      the standing line and the needs line. Its chunk loads alongside /home; the box
                      it fills (the resting caps, 44 desktop, 112 phone) is held until it lands, and
                      a chunk that fails leaves the plain link in its place. -->
-                {#if showsBandLine(myGuildMembership?.verified === true, role)}
-                  {#if bandLineLazy.current !== null}
-                    <bandLineLazy.current
-                      guildId={home.guild.id}
-                      nextRaid={home.next_raid ?? null}
-                      officer={officerView}
-                      {guildPath}
-                      currentKey={myCharacterKey}
-                      ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
-                      defaultRole={myRosterRow?.role ?? 'dps'}
-                      onChange={(next) => {
-                        if (home !== null) home = { ...home, next_raid: next };
-                        raidsChanged();
-                      }}
-                      onStatusLine={(shown) => (bandLineStatus = shown)}
-                    />
-                  {:else if bandLineLazy.error !== '' && home.next_raid != null}
-                    <a
-                      href={guildRaidHref(guildPath, home.next_raid.id)}
-                      class="text-gold text-[13px] font-bold"
-                      data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
-                    >
-                  {:else if bandLineLazy.error !== '' && officerView}
-                    <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
-                      >{raidCopy.bandNone.planLink}</a
-                    >
-                  {:else if bandLineLazy.error === ''}
-                    <div
-                      class={home.next_raid == null ? 'min-h-5' : 'min-h-[112px] md:min-h-11'}
-                      aria-hidden="true"
-                      data-testid="guild-raid-line-reserve"
-                    ></div>
-                  {/if}
-                {/if}
-                {#if role === 'member' && home.standing !== null && home.standing !== undefined}
-                  <!-- Guild spec 4.A.2: the fails read --text (a to-do list, not a failure); every check
-                       passing reads green. -->
-                  <p
-                    class="text-[13px] {home.standing.needs_before_next_raid.length === 0 ? '' : 'text-text'}"
-                    style={home.standing.needs_before_next_raid.length === 0 ? 'color:#7bff5c' : undefined}
-                    data-testid="guild-overview-needs"
-                  >
-                    {needsBeforeSentence(
-                      home.standing.needs_before_next_raid,
-                      nextRaidDeadline(home.next_raid?.starts_at),
-                    )}
-                  </p>
-                {/if}
-              </div>
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
-                  <a
-                    class="text-[13px] font-semibold"
-                    href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                    data-testid="guild-claim-link"
-                  >
-                    {guildHomeCopy.claimLink}
-                  </a>
-                {:else if isOfficerOrLeader && home.claim.state === 'pending'}
-                  <a
-                    class="text-[13px] font-semibold"
-                    href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                    data-testid="guild-confirm-claim-link"
-                  >
-                    {guildHomeCopy.confirmClaimLink}
-                  </a>
-                {:else if canManage}
-                  <a
-                    class="text-[13px] font-semibold"
-                    href={guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name)}
-                    data-testid="guild-settings-link"
-                  >
-                    {guildHomeCopy.settingsLink}
-                  </a>
-                {:else if myGuildMembership !== null && !myGuildMembership.verified}
-                  <GuildUnverifiedNote
-                    guildName={home.guild.name}
-                    hasApprover={home.viewer?.verify?.has_approver}
-                    claimHref={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+              {#if showsBandLine(myGuildMembership?.verified === true, role)}
+                {#if bandLineLazy.current !== null}
+                  <bandLineLazy.current
+                    guildId={home.guild.id}
+                    nextRaid={home.next_raid ?? null}
+                    officer={officerView}
+                    {guildPath}
+                    currentKey={myCharacterKey}
+                    ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
+                    defaultRole={myRosterRow?.role ?? 'dps'}
+                    onChange={(next) => {
+                      if (home !== null) home = { ...home, next_raid: next };
+                      raidsChanged();
+                    }}
+                    onStatusLine={(shown) => (bandLineStatus = shown)}
                   />
+                {:else if bandLineLazy.error !== '' && home.next_raid != null}
+                  <a
+                    href={guildRaidHref(guildPath, home.next_raid.id)}
+                    class="text-gold text-[13px] font-bold"
+                    data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
+                  >
+                {:else if bandLineLazy.error !== '' && officerView}
+                  <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
+                    >{raidCopy.bandNone.planLink}</a
+                  >
+                {:else if bandLineLazy.error === ''}
+                  <div
+                    class={home.next_raid == null ? 'min-h-5' : 'min-h-[112px] md:min-h-11'}
+                    aria-hidden="true"
+                    data-testid="guild-raid-line-reserve"
+                  ></div>
                 {/if}
-              </div>
-
-              <!-- The claimant's own officers (fix round 1, item 2): the glance strip
-                   (claim badge, waiting-for-approval, invite rotate), now part of the band
-                   so it is visible on every tab, not Overview-only. -->
-              {#if canManage && home.claim.state === 'claimed' && guildId !== null}
-                <GuildOfficerStrip
-                  {guildId}
-                  claimedByName={home.claim.claimed_by_name ?? null}
-                  waitingCount={home.summary?.waiting_for_approval ?? 0}
-                  onSelectRoster={() => selectTab('roster')}
-                  collapsible={activeTab !== 'settings'}
-                />
               {/if}
-
-              {#if home.claim.frozen}
-                <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">
-                  {guildHomeCopy.frozenNotice}
+              {#if role === 'member' && home.standing !== null && home.standing !== undefined}
+                <!-- Guild spec 4.A.2: the fails read --text (a to-do list, not a failure); every check
+                       passing reads green. -->
+                <p
+                  class="text-[13px] {home.standing.needs_before_next_raid.length === 0 ? '' : 'text-text'}"
+                  style={home.standing.needs_before_next_raid.length === 0 ? 'color:#7bff5c' : undefined}
+                  data-testid="guild-overview-needs"
+                >
+                  {needsBeforeSentence(
+                    home.standing.needs_before_next_raid,
+                    nextRaidDeadline(home.next_raid?.starts_at),
+                  )}
                 </p>
               {/if}
             </div>
-          {/if}
-        </header>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
+                <a
+                  class="text-[13px] font-semibold"
+                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+                  data-testid="guild-claim-link"
+                >
+                  {guildHomeCopy.claimLink}
+                </a>
+              {:else if isOfficerOrLeader && home.claim.state === 'pending'}
+                <a
+                  class="text-[13px] font-semibold"
+                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+                  data-testid="guild-confirm-claim-link"
+                >
+                  {guildHomeCopy.confirmClaimLink}
+                </a>
+              {:else if myGuildMembership !== null && !myGuildMembership.verified}
+                <GuildUnverifiedNote
+                  guildName={home.guild.name}
+                  hasApprover={home.viewer?.verify?.has_approver}
+                  claimHref={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+                />
+              {/if}
+            </div>
 
-        <div class="relative z-10">
-          <GuildTabs active={activeTab} {role} onSelect={selectTab} />
-        </div>
-      </div>
+            {#if home.claim.frozen}
+              <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">
+                {guildHomeCopy.frozenNotice}
+              </p>
+            {/if}
+          </div>
+        {/if}
+      </header>
+
+      <GuildTabs active={activeTab} {role} onSelect={selectTab} />
     </div>
 
     {#if activeTab === 'overview'}
@@ -1165,6 +1092,7 @@
           {settingsHref}
           onAward={(item, charKey) => void onAward(item, charKey)}
           onUndo={(item) => void onUndo(item)}
+          onBoss={(encounterId) => void onBoss(encounterId)}
         />
         {#if lootError !== ''}<p class="text-[13px]" role="alert" data-testid="guild-loot-error">
             {lootError}

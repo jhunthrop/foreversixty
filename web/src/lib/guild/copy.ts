@@ -6,6 +6,7 @@ import { uiCopy } from '../ui/copy';
 import { possessive } from '../possessive';
 
 export const guildHomeCopy = {
+  eyebrow: 'Guild',
   // The line every not-yet-ready state paints (loading, failed, a bad address), so the first
   // thing on screen is server-rendered text that hydration does not change: the page's
   // largest-contentful-paint candidate lands with the HTML instead of waiting for, or
@@ -81,6 +82,7 @@ export const guildHomeCopy = {
 } as const;
 
 export const guildClaimCopy = {
+  stateHeading: 'Claim',
   failed: 'That did not load.',
   // Guild name isn't known until the public guild page resolves, so the heading falls
   // back to a nameless form rather than the page ever hardcoding either half itself.
@@ -147,13 +149,16 @@ export const guildSettingsCopy = {
   // Spec section 4.4, exact wording.
   forbidden: 'You need to be a verified officer of this guild to see its settings.',
   heading: 'Guild settings',
+  eyebrow: 'Guild',
   // Spec 2026-10-27 section 9.3, under the read-only billing sentence.
   sendThemThisLink: 'Send them this link.',
   defaultVisibility: 'Default report visibility',
   officerThreshold: 'Officer rank threshold',
   inviteHeading: 'Invite link',
-  // Spec section 3.3, exact wording.
-  inviteWarning: 'Anyone with this link can join as a member. Rotate it if it leaks.',
+  inviteHelp: 'Anyone with this link can join as a member.',
+  membersHeading: 'Members and access',
+  recordsHeading: 'Records and crest',
+  recordsOnlyHeading: 'Records',
   rotateButton: 'Rotate invite link',
   // The invite link: rotate asks first, then the full URL with a Copy button. The API keeps
   // only a hash of the token, so the link can be shown once and never again; the page
@@ -283,7 +288,10 @@ export const guildRosterAddonCopy = {
 
 /** The bare `/guild` landing: the lookup, the top guilds and the officer line. */
 export const guildLandingCopy = {
+  eyebrow: 'Guild',
   heading: 'Guilds',
+  lookupHeading: 'Open a guild',
+  namePlaceholder: 'Guild name',
   lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
   nameLabel: 'Guild name',
   regionLabel: 'Region',

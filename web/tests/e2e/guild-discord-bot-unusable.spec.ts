@@ -25,7 +25,7 @@ const PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1440, height: 1000 };
 const MIN_TARGET = 44;
 /** A.2's caps, phone then desktop. */
-const CAP = [320, 240] as const;
+const CAP = [382, 302] as const; // 320 / 240 plus the Card head's 62 px (site alignment)
 /** The reserves of 2b and state 2 differ by design (320 / 330 and 240 / 250). */
 const RESERVE_DELTA = 10;
 const ALL_PERMISSIONS: GuildChannelPermission[] = ['View Channel', 'Send Messages', 'Embed Links'];
