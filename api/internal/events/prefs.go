@@ -38,6 +38,18 @@ func (q QuietHours) contains(m int) bool {
 	return m >= q.Start || m < q.End
 }
 
+// The settings of an account that never saved any; migration 0060 has the same defaults.
+const (
+	DefaultTimeZone   = "UTC"
+	DefaultQuietStart = 22 * 60
+	DefaultQuietEnd   = 7 * 60
+)
+
+// DefaultPrefs is the catalogue's defaults, in UTC, with quiet hours off.
+func DefaultPrefs() Prefs {
+	return Prefs{TimeZone: DefaultTimeZone, Quiet: QuietHours{Start: DefaultQuietStart, End: DefaultQuietEnd}}
+}
+
 // PrefKey is one event on one channel.
 type PrefKey struct {
 	Kind    Kind
