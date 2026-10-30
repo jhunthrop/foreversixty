@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -56,19 +57,25 @@ func (t *Tiles) serve(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such tile", nil)
 		return
 	}
-	key := build + "/" + strconv.Itoa(id)
-	png, hit := t.cache.get(key)
+	tile := t.lookup(build, id)
+	png, hit := t.cache.get(tile.key)
 	if !hit {
 		var err error
-		png, err = t.render(build, id)
+		png, err = t.render(build, &tile)
 		if err != nil {
 			t.log.Error("discord tile", "op", "tile", "build", build, "item", id, "err", err)
 			httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not draw the tile", nil)
 			return
 		}
-		t.cache.put(key, png)
+		if tile.cacheable {
+			t.cache.put(tile.key, png)
+		}
 	}
-	httpx.CachePublicImmutable(w)
+	if tile.provisional {
+		httpx.CachePublic(w, provisionalTileMaxAge, 0)
+	} else {
+		httpx.CachePublicImmutable(w)
+	}
 	w.Header().Set("Content-Type", "image/png")
 	w.Header().Set("Content-Length", strconv.Itoa(len(png)))
 	w.WriteHeader(http.StatusOK)
@@ -77,23 +84,44 @@ func (t *Tiles) serve(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// render draws one tile: the item's icon in its quality ring, or the question mark in the
-// empty ring for an item the build does not know.
-func (t *Tiles) render(build string, id int) ([]byte, error) {
-	src := t.icons(build)
+// provisionalTileMaxAge is how long a question-mark tile may be kept: an item the build does
+// not know yet, or whose icon file is missing, may be drawn properly after the next data
+// deploy, so it is never immutable.
+const provisionalTileMaxAge = time.Hour
+
+// tileSpec is what one request draws and where it is cached.
+type tileSpec struct {
+	key         string // the LRU key: build/id, or build/? for every item the build lacks
+	icon        string
+	quality     int
+	provisional bool // the question mark: a short cache, not immutable
+	cacheable   bool // kept in the LRU; false for a known item whose icon file is missing
+}
+
+// lookup resolves a request to its tile. Every item the build does not know shares one key,
+// build/?, so random ids cannot churn the LRU.
+func (t *Tiles) lookup(build string, id int) tileSpec {
 	icon, quality, known := t.items.TileItem(build, id)
 	if !known {
-		icon, quality = QuestionMark, -1
+		return tileSpec{key: build + "/?", icon: QuestionMark, quality: -1, provisional: true, cacheable: true}
 	}
-	img, err := src.Icon(icon)
-	if errors.Is(err, ErrNoIcon) && icon != QuestionMark {
-		t.log.Warn("discord tile", "op", "sheet_icon_missing", "build", build, "icon", icon)
+	return tileSpec{key: build + "/" + strconv.Itoa(id), icon: icon, quality: quality, cacheable: true}
+}
+
+// render draws one tile. A known item whose icon file is missing draws the question mark in
+// its quality ring (logged), provisional and kept out of the LRU, so it heals on the next deploy.
+func (t *Tiles) render(build string, tile *tileSpec) ([]byte, error) {
+	src := t.icons(build)
+	img, err := src.Icon(tile.icon)
+	if errors.Is(err, ErrNoIcon) && tile.icon != QuestionMark {
+		t.log.Warn("discord tile", "op", "sheet_icon_missing", "build", build, "icon", tile.icon)
+		tile.provisional, tile.cacheable = true, false
 		img, err = src.Icon(QuestionMark)
 	}
 	if err != nil {
 		return nil, err
 	}
-	return Tile(img, quality)
+	return Tile(img, tile.quality)
 }
 
 // tileItemID reads "{digits}.png"; anything else is no tile.

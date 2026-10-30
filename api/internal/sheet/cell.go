@@ -3,6 +3,7 @@ package sheet
 import (
 	"image"
 	"image/color"
+	"strings"
 	"sync"
 )
 
@@ -24,6 +25,7 @@ type cellText struct {
 	nameLH    float64 // the name block's line height, logical
 	meta      []string
 	gold      string
+	label     [][]word // an empty slot's "{Slot} · {status}", wrapped
 }
 
 // cell is a laid-out cell: its words and its socket.
@@ -46,11 +48,9 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	var candidates []string
 	if kind == KindChar {
 		ct.gold = sl.Gain
-		if m := itemLevelMeta(sl.ItemLevel); m != "" {
-			candidates = []string{m}
-		}
+		candidates = labelled(SlotLabel(sl.Slot), itemLevelMeta(sl.ItemLevel))
 	} else {
-		candidates = metaCandidates(sl.Meta)
+		candidates = labelled(SlotLabel(sl.Slot), metaCandidates(sl.Meta)...)
 	}
 	lines := 2
 	if len(ct.name) > 1 {
@@ -63,15 +63,31 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	return ct, err
 }
 
-// fitEmpty is an empty socket's words: "Empty" (with its gold line) on /char, "No pick" on /bis.
+// fitEmpty is an empty socket's words, the panel's grammar: "{Slot} · Upgrade available" or
+// "{Slot} · Gain not modelled yet" with the status in gold; "{Slot} · Empty" (/char, no pick)
+// and "{Slot} · No pick" (/bis) all muted.
 func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
-	ct := cellText{nameStyle: styleDimLabel, nameColor: colorMuted, nameLH: styleDimLabel.lineHeight}
+	status, gold := CopyNone, false
 	if kind == KindChar {
-		ct.name, ct.gold = []string{CopyEmpty}, sl.Gain
-		return ct, nil
+		status, gold = CopyEmpty, sl.Gain != ""
+		if gold {
+			status = sl.Gain
+		}
 	}
-	ct.name = []string{CopyNone}
-	return ct, nil
+	lead, err := r.faces.text(styleMeta)
+	if err != nil {
+		return cellText{}, err
+	}
+	tail := lead
+	tailColor := colorMuted
+	if gold {
+		if tail, err = r.faces.text(styleGold); err != nil {
+			return cellText{}, err
+		}
+		tailColor = colorGold
+	}
+	words := append(spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin), spanWords(tail, tailColor, status)...)
+	return cellText{label: wrapWords(words, d(textW+fitSlack))}, nil
 }
 
 // fitName draws the name on one line at 20 px, shrinking 1 px at a time to 14 px; a name still
@@ -99,7 +115,10 @@ func (r *renderer) fitName(sl Slot) (cellText, error) {
 	return cellText{name: lines, nameStyle: styleNameTwo, nameColor: col, nameLH: nameTwoLH}, nil
 }
 
-// fitMeta is the first candidate that fits the lines available, word-wrapped; none fits, none.
+// fitMeta is the first candidate that fits the lines available; none fits, none. Each candidate
+// is tried broken between its " · " parts first (the separator is dropped at the break, so the
+// slot label stands alone rather than leaving an orphaned "58" or "Bothunk"), then word-wrapped
+// as a browser would, before the next, shorter candidate.
 func (r *renderer) fitMeta(candidates []string, lines int) ([]string, error) {
 	if lines <= 0 {
 		return nil, nil
@@ -108,13 +127,48 @@ func (r *renderer) fitMeta(candidates []string, lines int) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	maxW := d(textW + fitSlack)
 	for _, c := range candidates {
-		wrapped, fits := t.wrap(c, d(textW+fitSlack))
-		if fits && len(wrapped) <= lines {
+		if wrapped, fits := wrapParts(t, c, maxW); fits && len(wrapped) <= lines {
+			return wrapped, nil
+		}
+		if wrapped, fits := t.wrap(c, maxW); fits && len(wrapped) <= lines {
 			return wrapped, nil
 		}
 	}
 	return nil, nil
+}
+
+// wrapParts lays s out greedily by its " · " parts, word-wrapping a part only when it cannot
+// fit a line alone.
+func wrapParts(t text, s string, maxW float64) (lines []string, fits bool) {
+	fits = true
+	var line string
+	for _, part := range strings.Split(s, metaJoin) {
+		next := part
+		if line != "" {
+			next = line + metaJoin + part
+		}
+		if t.width(next) <= maxW {
+			line = next
+			continue
+		}
+		if line != "" {
+			lines = append(lines, line)
+		}
+		if t.width(part) <= maxW {
+			line = part
+			continue
+		}
+		words, ok := t.wrap(part, maxW)
+		fits = fits && ok
+		lines = append(lines, words[:len(words)-1]...)
+		line = words[len(words)-1]
+	}
+	if line != "" {
+		lines = append(lines, line)
+	}
+	return lines, fits
 }
 
 // layoutCell is the slot's words and its socket's art.
@@ -149,14 +203,19 @@ func (r *renderer) drawCell(c cell, x, y int, right bool) error {
 	}
 	r.socket(c, sockX, y)
 	top := float64(y + nameTopNudge)
-	nameT, err := r.faces.text(c.nameStyle)
-	if err != nil {
-		return err
-	}
 	for _, line := range c.name {
+		nameT, err := r.faces.text(c.nameStyle)
+		if err != nil {
+			return err
+		}
 		tx, ty := at(float64(textX), top)
 		nameT.drawAligned(r.img, c.nameColor, tx, d(textW), ty, a, line)
 		top += c.nameLH
+	}
+	for _, line := range c.label {
+		tx, ty := at(float64(textX), top)
+		drawWords(r.img, line, tx, d(textW), ty, a)
+		top += metaLH
 	}
 	return r.drawMetaAndGold(c, textX, top, a)
 }

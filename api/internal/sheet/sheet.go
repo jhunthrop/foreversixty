@@ -32,7 +32,10 @@ const (
 //   - Gain is the /char gold line, already worded: "+9.3 DPS", "+4.0 points",
 //     CopyNotModelled; on an empty /char slot, CopyUpgrade or CopyNotModelled (or "" when the
 //     band has no pick).
-//   - Empty is a slot with no item: "Empty" on /char, "No pick" on /bis.
+//   - Empty is a slot with no item: "{Slot} · {Gain}" with Gain in gold, else "{Slot} · Empty"
+//     on /char and "{Slot} · No pick" on /bis.
+//   - Every meta line starts with the slot's label ("Ring 1 · Vendor: Anachronos"), falling back
+//     to the label alone, so every cell names its slot.
 type Slot struct {
 	Slot      string
 	ItemID    int
@@ -53,7 +56,8 @@ type Slot struct {
 //     "Level {n} {Spec} {Class} · {Guild}" and the character's name.
 //   - The centre column: /bis draws "Level {Level}" over Subtitle (the range, "Phase 1 raid");
 //     /char draws "ITEM LEVEL" over Subtitle (the average, "63.5").
-//   - Footer and FooterRight are the bottom line's two ends.
+//   - Footer is the bottom line: /bis "Updated {d Mon yyyy}", /char the gold legend. The shared
+//     /char sheet carries no sync date.
 //   - Band is the band label ("level 60 Phase 1 raid"), for the /bis alt text; Name is the
 //     character (the /char title) and Guild its guild, for the /char alt text.
 //   - TwoHand leaves the off-hand cell out: the main hand fills both hands.
@@ -62,7 +66,7 @@ type Sheet struct {
 	Class, Spec, Faction string
 	Title, Kicker        string
 	Subtitle             string
-	Footer, FooterRight  string
+	Footer               string
 	Level                int
 	Band                 string
 	Guild                string

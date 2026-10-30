@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // botEnabled reports whether the bot's variables are all set and the guild connect it installs
@@ -63,6 +64,14 @@ func sheetRenderer(cfg config.Config, deps server.Deps, log *slog.Logger) discor
 // webhook elsewhere. serve and the raid-posts job build the same router.
 func raidRouterFor(bot *discordbot.Service, deps server.Deps) guilds.RaidEvents {
 	return &discordbot.RaidRouter{Bot: bot, Webhook: deps.Notify.GuildDeliverer()}
+}
+
+// wireDiscord sets serve's Discord surfaces: the bot (nil when off) and the gear panel's item
+// tiles (spec 2026-10-29 §A.4), public item art from {TreeDataDir}/{build}/icons, mounted
+// whether or not the bot is on.
+func wireDiscord(stop context.Context, cfg config.Config, pool *pgxpool.Pool, deps *server.Deps, accounts *auth.Service, treeData *trees.Data, log *slog.Logger) {
+	deps.DiscordBot = newDiscordBot(stop, cfg, pool, *deps, accounts, log)
+	deps.Tiles = sheet.NewTiles(cfg.TreeDataDir, sheet.TreesItems{Data: treeData}, log)
 }
 
 // newDiscordBot builds the bot's interactions service. It is nil, with one

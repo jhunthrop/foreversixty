@@ -55,12 +55,11 @@ func TestTileRingPerQuality(t *testing.T) {
 }
 
 // fakeItems knows one build and two items.
-type fakeItems struct{ lookups atomic.Int32 }
+type fakeItems struct{}
 
 func (f *fakeItems) KnownBuild(build string) bool { return build == "1.60.1.70658" }
 
 func (f *fakeItems) TileItem(_ string, id int) (string, int, bool) {
-	f.lookups.Add(1)
 	switch id {
 	case 16846:
 		return "inv_helmet_24", 4, true
@@ -70,15 +69,26 @@ func (f *fakeItems) TileItem(_ string, id int) (string, int, bool) {
 	return "", 0, false
 }
 
-func tileServer(t *testing.T) (*httptest.Server, *fakeItems) {
+// countedIcons counts icon loads, one per drawn tile.
+type countedIcons struct {
+	IconSource
+	loads atomic.Int32
+}
+
+func (c *countedIcons) Icon(name string) (image.Image, error) {
+	c.loads.Add(1)
+	return c.IconSource.Icon(name)
+}
+
+func tileServer(t *testing.T) (*httptest.Server, *Tiles, *countedIcons) {
 	t.Helper()
-	items := &fakeItems{}
-	tiles := newTiles(items, func(string) IconSource { return testIcons() }, nil)
+	icons := &countedIcons{IconSource: testIcons()}
+	tiles := newTiles(&fakeItems{}, func(string) IconSource { return icons }, nil)
 	mux := http.NewServeMux()
 	tiles.Mount(mux)
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
-	return srv, items
+	return srv, tiles, icons
 }
 
 func get(t *testing.T, url string) *http.Response {
@@ -92,7 +102,7 @@ func get(t *testing.T, url string) *http.Response {
 }
 
 func TestTilesRoute(t *testing.T) {
-	srv, _ := tileServer(t)
+	srv, _, _ := tileServer(t)
 	res := get(t, srv.URL+TilePath+"1.60.1.70658/16846.png")
 	if res.StatusCode != http.StatusOK || res.Header.Get("Content-Type") != "image/png" {
 		t.Fatalf("status %d type %q", res.StatusCode, res.Header.Get("Content-Type"))
@@ -110,7 +120,7 @@ func TestTilesRoute(t *testing.T) {
 }
 
 func TestTilesRouteQuestionMark(t *testing.T) {
-	srv, _ := tileServer(t)
+	srv, _, _ := tileServer(t)
 	question, err := testIcons().Icon(QuestionMark)
 	if err != nil {
 		t.Fatal(err)
@@ -124,6 +134,9 @@ func TestTilesRouteQuestionMark(t *testing.T) {
 		if !closeColor(img.At(tileRing+32, tileRing+32), question.At(32, 32)) {
 			t.Errorf("%d: not the question mark", id)
 		}
+		if cc := res.Header.Get("Cache-Control"); cc != "public, max-age=3600" {
+			t.Errorf("%d: a question mark is cached %q, want an hour and never immutable", id, cc)
+		}
 		wantRing := colorEmptyRing
 		if id == 99 {
 			wantRing = qualityRing[3]
@@ -135,7 +148,7 @@ func TestTilesRouteQuestionMark(t *testing.T) {
 }
 
 func TestTilesRoute404s(t *testing.T) {
-	srv, _ := tileServer(t)
+	srv, _, _ := tileServer(t)
 	for _, path := range []string{
 		"9.9.9.9/16846.png", "1.60.1.70658/16846", "1.60.1.70658/abc.png", "1.60.1.70658/-1.png",
 		"1.60.1.70658/.png", "1.60.1.70658/0.png", "..%2F..%2Fetc/16846.png", "1.60.1.70658/16846.png/x",
@@ -152,14 +165,28 @@ func TestTilesRoute404s(t *testing.T) {
 }
 
 func TestTilesRouteCaches(t *testing.T) {
-	srv, items := tileServer(t)
+	srv, tiles, icons := tileServer(t)
 	for range 3 {
 		if res := get(t, srv.URL+TilePath+"1.60.1.70658/16846.png"); res.StatusCode != http.StatusOK {
 			t.Fatal(res.StatusCode)
 		}
 	}
-	if n := items.lookups.Load(); n != 1 {
+	if n := icons.loads.Load(); n != 1 {
 		t.Fatalf("drawn %d times, want once", n)
+	}
+	// Every id the build lacks shares one cached question mark: random ids neither churn the
+	// LRU nor draw again.
+	for id := 500000; id < 500020; id++ {
+		get(t, srv.URL+TilePath+"1.60.1.70658/"+strconv.Itoa(id)+".png")
+	}
+	if n, held := icons.loads.Load(), tiles.cache.len(); n != 2 || held != 2 {
+		t.Fatalf("20 unknown ids: %d draws, %d cached; want 2 and 2", n, held)
+	}
+	// A known item whose icon file is missing is drawn each time and never kept.
+	get(t, srv.URL+TilePath+"1.60.1.70658/99.png")
+	get(t, srv.URL+TilePath+"1.60.1.70658/99.png")
+	if held := tiles.cache.len(); held != 2 {
+		t.Fatalf("a missing-icon tile was cached (%d held)", held)
 	}
 }
 

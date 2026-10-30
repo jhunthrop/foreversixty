@@ -55,25 +55,35 @@ func TestFitRuleNames(t *testing.T) {
 }
 
 func TestFitRuleMeta(t *testing.T) {
+	// Every meta line leads with the slot's label; the full source first, then the short form.
+	waist := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "waist"))
+	if strings.Join(waist.meta, " ") != "Waist · Quest: A Collection of Heads · requires level 58" || len(waist.meta) != 2 {
+		t.Fatalf("waist meta %q", waist.meta)
+	}
 	head := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "head"))
-	if len(head.meta) != 2 || strings.Join(head.meta, " ") != "Quest: Saving the Best for Last · requires level 58" {
+	if !slices.Equal(head.meta, []string{"Head · Quest", "requires level 58"}) {
 		t.Fatalf("head meta %q", head.meta)
 	}
 	neck := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "neck"))
-	if !slices.Equal(neck.meta, []string{"Quest · requires level 55"}) {
+	if !slices.Equal(neck.meta, []string{"Neck · Quest", "requires level 55"}) {
 		t.Fatalf("neck meta %q", neck.meta)
 	}
 	back := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "back"))
-	if strings.Join(back.meta, " ") != "Stratholme · Baron Rivendare" {
+	if !slices.Equal(back.meta, []string{"Back · Stratholme", "Baron Rivendare"}) {
 		t.Fatalf("back meta %q", back.meta)
 	}
+	signet := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "finger1"))
+	if !slices.Equal(signet.meta, []string{"Ring 1 · Vendor: Anachronos"}) {
+		t.Fatalf("signet meta %q", signet.meta)
+	}
+	// A source that fits no candidate leaves the label alone: the slot is always named.
 	none := fit(t, KindBis, Slot{Slot: "head", Name: "Cap", Quality: 4, Icon: "inv_helmet_24",
 		Meta: "Vendor: Sorcerer-Thane-Thaurissan-of-the-Shadowforge-Dynasty-and-All-Its-Halls"})
-	if none.meta != nil {
+	if !slices.Equal(none.meta, []string{"Head"}) {
 		t.Fatalf("a source that fits no candidate kept %q", none.meta)
 	}
 	gold := fit(t, KindChar, fixtureSlot(t, "sheet-char", "legs"))
-	if !slices.Equal(gold.meta, []string{"item level 71"}) || gold.gold != "+9.3 DPS" {
+	if !slices.Equal(gold.meta, []string{"Legs · item level 71"}) || gold.gold != "+9.3 DPS" {
 		t.Fatalf("char legs %q %q", gold.meta, gold.gold)
 	}
 }
@@ -97,6 +107,20 @@ func TestShortSource(t *testing.T) {
 	}
 }
 
+// labelText is an empty cell's line as read, and the part of it drawn in gold.
+func labelText(ct cellText) (all, gold string) {
+	var words, golds []string
+	for _, line := range ct.label {
+		for _, w := range line {
+			words = append(words, w.text)
+			if w.col == colorGold {
+				golds = append(golds, w.text)
+			}
+		}
+	}
+	return strings.Join(words, " "), strings.Join(golds, " ")
+}
+
 func TestEveryCellState(t *testing.T) {
 	cases := []struct {
 		name, kind string
@@ -107,23 +131,17 @@ func TestEveryCellState(t *testing.T) {
 		wantColor  color.RGBA
 	}{
 		{"bis pick", KindBis, Slot{Slot: "feet", Name: "Beastmaster's Treads", Quality: 4, Icon: "inv_boots_plate_07", Meta: "Vendor: Mokvar"},
-			"Beastmaster's Treads", []string{"Vendor: Mokvar"}, "", qualityText[4]},
+			"Beastmaster's Treads", []string{"Feet · Vendor: Mokvar"}, "", qualityText[4]},
 		{"char worn, no gain", KindChar, Slot{Slot: "neck", Name: "Amulet of the Darkmoon", Quality: 4, Icon: "inv_jewelry_necklace_14", ItemLevel: 65},
-			"Amulet of the Darkmoon", []string{"item level 65"}, "", qualityText[4]},
+			"Amulet of the Darkmoon", []string{"Neck · item level 65"}, "", qualityText[4]},
 		{"char worn, gain", KindChar, Slot{Slot: "chest", Name: "Shadowcraft Tunic", Quality: 3, Icon: "inv_chest_leather_07", ItemLevel: 63, Gain: "+11.0 DPS"},
-			"Shadowcraft Tunic", []string{"item level 63"}, "+11.0 DPS", qualityText[3]},
+			"Shadowcraft Tunic", []string{"Chest · item level 63"}, "+11.0 DPS", qualityText[3]},
 		{"char worn, tank gain", KindChar, Slot{Slot: "chest", Name: "Shadowcraft Tunic", Quality: 3, Icon: "inv_chest_leather_07", ItemLevel: 63, Gain: "+4.0 points"},
-			"Shadowcraft Tunic", []string{"item level 63"}, "+4.0 points", qualityText[3]},
+			"Shadowcraft Tunic", []string{"Chest · item level 63"}, "+4.0 points", qualityText[3]},
 		{"char worn, not modelled", KindChar, Slot{Slot: "head", Name: "Outlaw's Collar", Quality: 4, Icon: "inv_misc_bandana_03", ItemLevel: 65, Gain: CopyNotModelled},
-			"Outlaw's Collar", []string{"item level 65"}, CopyNotModelled, qualityText[4]},
-		{"char empty, upgrade", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyUpgrade},
-			CopyEmpty, nil, CopyUpgrade, colorMuted},
-		{"char empty, not modelled", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyNotModelled},
-			CopyEmpty, nil, CopyNotModelled, colorMuted},
-		{"bis no pick", KindBis, Slot{Slot: "trinket2", Empty: true},
-			CopyNone, nil, "", colorMuted},
+			"Outlaw's Collar", []string{"Head · item level 65"}, CopyNotModelled, qualityText[4]},
 		{"unknown item", KindBis, Slot{Slot: "head", Name: "Mystery Hood", Quality: -1, Meta: "Vendor: Mokvar"},
-			"Mystery Hood", []string{"Vendor: Mokvar"}, "", colorText},
+			"Mystery Hood", []string{"Head · Vendor: Mokvar"}, "", colorText},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -135,11 +153,46 @@ func TestEveryCellState(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if c.slot.Empty != cl.empty || (!cl.empty && cl.icon == nil) {
+			if cl.empty || cl.icon == nil {
 				t.Fatalf("socket: empty %v icon %v", cl.empty, cl.icon != nil)
 			}
 			if c.name == "unknown item" && cl.ring != colorEmptyRing {
 				t.Fatalf("unknown item ring %v", cl.ring)
+			}
+		})
+	}
+}
+
+func TestEveryEmptyState(t *testing.T) {
+	cases := []struct {
+		name, kind         string
+		slot               Slot
+		wantText, wantGold string
+	}{
+		{"char empty, upgrade", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyUpgrade},
+			"Trinket 2 · Upgrade available", "Upgrade available"},
+		{"char empty, not modelled", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyNotModelled},
+			"Trinket 2 · Gain not modelled yet", "Gain not modelled yet"},
+		{"char empty, measured gain", KindChar, Slot{Slot: "finger1", Empty: true, Gain: "+6.2 DPS"},
+			"Ring 1 · +6.2 DPS", "+6.2 DPS"},
+		{"char empty, no pick", KindChar, Slot{Slot: "trinket2", Empty: true},
+			"Trinket 2 · Empty", ""},
+		{"bis no pick", KindBis, Slot{Slot: "trinket2", Empty: true},
+			"Trinket 2 · No pick", ""},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			ct := fit(t, c.kind, c.slot)
+			text, gold := labelText(ct)
+			if text != c.wantText || gold != c.wantGold || ct.name != nil || ct.meta != nil || ct.gold != "" {
+				t.Fatalf("got %q (gold %q), name %q meta %q", text, gold, ct.name, ct.meta)
+			}
+			if len(ct.label) > 3 {
+				t.Fatalf("%d lines overflow the cell", len(ct.label))
+			}
+			cl, err := testRenderer(t).layoutCell(c.kind, c.slot)
+			if err != nil || !cl.empty {
+				t.Fatalf("socket: empty %v err %v", cl.empty, err)
 			}
 		})
 	}
@@ -174,10 +227,16 @@ func TestTwoHandLeavesTheOffHandOut(t *testing.T) {
 }
 
 func TestEveryIconTopSitsOnThePitch(t *testing.T) {
+	at := map[string]int{}
 	for _, p := range placements(false) {
 		if (p.y-row0)%pitch != 0 {
 			t.Errorf("%s at y %d is off the %d px pitch", p.key, p.y, pitch)
 		}
+		at[p.key] = p.y
+	}
+	// Both columns are top-aligned, as in the game's frame: Head beside Hands, Wrist beside Ring 2.
+	if at["head"] != row0 || at["head"] != at["hands"] || at["wrist"] != at["finger2"] {
+		t.Fatalf("columns not top-aligned: head %d hands %d wrist %d ring 2 %d", at["head"], at["hands"], at["wrist"], at["finger2"])
 	}
 }
 

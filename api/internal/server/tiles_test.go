@@ -39,7 +39,7 @@ func tilesRouter(t *testing.T) http.Handler {
 	return NewRouter(Deps{Version: "test-1", Log: quiet, Tiles: sheet.NewTiles(root, sheet.TreesItems{Data: data}, quiet)})
 }
 
-func TestTheTilesRouteIsMountedAndRateLimited(t *testing.T) {
+func TestTheTilesRouteIsMountedAndSkipsTheRouterLimit(t *testing.T) {
 	h := tilesRouter(t)
 	frozen := time.Date(2026, time.October, 29, 0, 0, 0, 0, time.UTC)
 	httpx.Now = func() time.Time { return frozen }
@@ -53,8 +53,7 @@ func TestTheTilesRouteIsMountedAndRateLimited(t *testing.T) {
 	}
 	// Item 1 is not in test-1: the question mark, in the empty ring.
 	rec := get(sheet.TilePath + "test-1/1.png")
-	if rec.Code != http.StatusOK || rec.Header().Get("Content-Type") != "image/png" ||
-		rec.Header().Get("Cache-Control") != "public, max-age=31536000, immutable" {
+	if rec.Code != http.StatusOK || rec.Header().Get("Content-Type") != "image/png" {
 		t.Fatalf("code %d type %q cache %q", rec.Code, rec.Header().Get("Content-Type"), rec.Header().Get("Cache-Control"))
 	}
 	if rec := get(sheet.TilePath + "no-such-build/1.png"); rec.Code != http.StatusNotFound {
@@ -63,11 +62,18 @@ func TestTheTilesRouteIsMountedAndRateLimited(t *testing.T) {
 	if rec := get(sheet.TilePath + "test-1/x.png"); rec.Code != http.StatusNotFound {
 		t.Fatalf("non-digit item: %d", rec.Code)
 	}
-	// Rate-limited like every public route: past the router budget, a tile is a 429.
+	if cc := rec.Header().Get("Cache-Control"); cc != "public, max-age=3600" {
+		t.Fatalf("an unknown item's question mark is cached %q, want an hour", cc)
+	}
+	// Discord's media proxy fetches from a few IPs: past the router budget, tiles still answer
+	// while everything else is limited.
 	for i := 0; i < routerRequestsPerMinute; i++ {
 		get("/version")
 	}
-	if rec := get(sheet.TilePath + "test-1/1.png"); rec.Code != http.StatusTooManyRequests {
-		t.Fatalf("past the budget: %d, want 429", rec.Code)
+	if rec := get(sheet.TilePath + "test-1/12640.png"); rec.Code != http.StatusOK {
+		t.Fatalf("a tile past the budget: %d, want 200", rec.Code)
+	}
+	if rec := get("/version"); rec.Code != http.StatusTooManyRequests {
+		t.Fatalf("/version past the budget: %d, want 429", rec.Code)
 	}
 }

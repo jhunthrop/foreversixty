@@ -11,7 +11,7 @@ Source (the owner, 2026-10-29, on a production `/bis` answer of five stacked ite
    - Meta lines are 16/20.
    - Names sit on one line, shrinking from 20 px to 14 px, at a fixed row height and an even 72 px pitch.
    - Nothing is cut with "…". A source that cannot fit falls back to a short form built only from real abbreviations, then to no meta line.
-   - Shirt and Tabard are gone; the left column's six slots centre on the right column's eight.
+   - Shirt and Tabard are gone; the left column's six slots top-align with the right column's eight, as in the game's frame (fix round 1, ruling B10).
    - The sheet is now 600 x 844 logical (1200 x 1688 PNG).
 3. **Panel.**
    - Each name is led by a quality-coloured dot, from six new application emoji (§A.4.1).
@@ -295,7 +295,7 @@ The channel asks: "What is this build, or this character, wearing, at a glance?"
 
 - **The in-game character frame (PaperDollFrame).** Borrowed: two slot columns around the centre, and the weapons along the bottom, in the game's order.
   - Shirt and Tabard are not drawn. The BiS data and the addon export have no rows for them (17 export slots), so their sockets could only ever be empty, and empty sockets read as missing gear.
-  - The left column's six sit centred against the right column's eight, on the same 72 px pitch, so every icon lines up with an even slot.
+  - Both columns are top-aligned, as in the game's frame: the left column's six sit on the right column's rows 1 to 6, on the same 72 px pitch (ruling B10).
   - The round portrait becomes the circular ringed HD crest (one crest language), in the centre where the frame draws the model.
 - **Gear-inspection addons that print names beside the frame's slots.** Borrowed: the name in its quality colour beside each icon, the left column's to the right and the right column's to the left, with a quiet meta line under it.
 - **Our BiS page header and the OG card.** Borrowed: the gold small-caps kicker and the Cinzel title in the class colour.
@@ -312,11 +312,11 @@ The channel asks: "What is this build, or this character, wearing, at a glance?"
 | Site mark | right 16, top 22 | `foreversixty.gg` Barlow 400 13/16 `--color-muted` #9a9484, then the seal at 28 x 28, gap 8 |
 | Rule | 16, 76, 568, 1 | `--color-line-warm` |
 | Right column | x 344, rows at y = 92 + 72i, i 0 to 7, each 240 x 64 | Hands, Waist, Legs, Feet, Ring 1, Ring 2, Trinket 1, Trinket 2 |
-| Left column | x 16, rows at y = 92 + 72i, i 1 to 6, each 240 x 64 | Head, Neck, Shoulder, Back, Chest, Wrist (centred against the right's eight) |
+| Left column | x 16, rows at y = 92 + 72i, i 0 to 5, each 240 x 64 | Head, Neck, Shoulder, Back, Chest, Wrist (top-aligned with the right column, ruling B10) |
 | Centre column | x 264, w 72, y 92 to 660, contents vertically centred | Crest 64 x 64 (native 128 px). `/bis`: `Level {n}` Barlow 600 14/17 `--color-strong`, then `{range}` Barlow 400 13/16 muted. `/char`: `ITEM LEVEL` Barlow 600 11/13 tracking 0.12em muted, then `{x.x}` Cinzel 700 22/26 gold. Then the faction mark 32 x 32 and `Alliance` or `Horde`, Barlow 600 13/16, `--color-alliance` #6fb1ff or `--color-horde` #ff6b5c |
 | Weapons, row 9 | y 668: Main hand at x 16 (left style), Off hand at x 344 (right style) | |
 | Weapons, row 10 | y 740: Ranged centred, x 180, w 240 (left style) | |
-| Footer | 16, 814, 568, 16 | Barlow 400 13/16 muted. `/bis` left: `Updated {d Mon yyyy}` (the band file's `generated_at`). `/char` left: `Gold: gain over what is worn, {band label}`; right: `Synced {d Mon yyyy}` |
+| Footer | 16, 814, 568, 16 | Barlow 400 13/16 muted. `/bis` left: `Updated {d Mon yyyy}` (the band file's `generated_at`). `/char` left: `Gold: gain over what is worn, {band label}`, and nothing on the right: the shared sheet never prints a sync date (ruling B11) |
 
 **A cell** is 240 x 64, a fixed height. It holds a socket and a text block, gap 8, so the text block is 196 wide.
 - Socket: 36 x 36, radius 4, black fill, 2 px ring in `--color-rarity-*`, icon 32 x 32 logical (its native 64 px).
@@ -331,20 +331,21 @@ The channel asks: "What is this build, or this character, wearing, at a glance?"
    - A name still wider takes two lines at 14/17 (34 px), word-wrapped. On these boards: `Signet Ring of the Bronze Dragonflight` and `Hyper Deluxe Sniper Rifle Mk XVII`.
    - The row height does not change.
 2. **Meta lines available.** 2 under a one-line name. 1 under a two-line name. 1 less again when the cell has a gold line.
-3. **Meta candidates,** tried in order; the first that fits the lines available wins:
-   1. The full source line, word-wrapped.
+3. **Meta candidates,** each led by the slot's label and ` · ` (`Ring 1 · Vendor: Anachronos`; ruling B10), tried in order; the first that fits the lines available wins. Each is tried first broken between its ` · ` parts, the separator dropped at the break (`Hands` / `Vendor: Creeg Bothunk`), then word-wrapped:
+   1. The full source line.
    2. The short form, built only from real abbreviations and dropped titles:
       - Quest: `Quest · requires level {min_level}` (the quest title is dropped).
       - Instance names by the abbreviations players use: `Blackrock Depths` BRD, `Lower Blackrock Spire` LBRS, `Upper Blackrock Spire` UBRS, `Stratholme` Strat, `Scholomance` Scholo, `Molten Core` MC, `Blackwing Lair` BWL, `Onyxia's Lair` Ony, `Zul'Gurub` ZG, `Ruins of Ahn'Qiraj` AQ20, `Temple of Ahn'Qiraj` AQ40, `Naxxramas` Naxx, `Sunken Temple` ST, `Zul'Farrak` ZF, `Maraudon` Mara, `Scarlet Monastery` SM, `Razorfen Downs` RFD, `Razorfen Kraul` RFK, `Shadowfang Keep` SFK, `Blackfathom Deeps` BFD, `Wailing Caverns` WC, `Ragefire Chasm` RFC, `Gnomeregan` Gnomer. Dire Maul and Uldaman stay whole: "DM" is also the Deadmines.
       - PvP: `PvP rank {n} · {Faction}` (the title is dropped; the bot's own untitled form).
       - Crafted: `Crafted: {Profession}` (the recipe name is dropped).
-   3. No meta line.
-4. **`/char` meta** is `item level {n}`, one line, and always fits.
+   3. The slot's label alone: every cell names its slot.
+4. **`/char` meta** is `{Slot} · item level {n}`, one line.
 
 On the `/bis` board:
-- Head shows the full `Quest: Saving the Best for Last · requires level 58` over two lines.
-- Neck falls back to `Quest · requires level 55`, because `1200 Tickets - Amulet of the Darkmoon` does not fit.
-- Back shows `Stratholme · Baron Rivendare` in full.
+- Waist shows the full `Waist · Quest: A Collection of Heads · requires level 58` over two lines.
+- Head falls back to `Head · Quest` / `requires level 58`, Neck to `Neck · Quest` / `requires level 55`.
+- Back shows `Back · Stratholme` / `Baron Rivendare` in full; Hands `Hands` / `Vendor: Creeg Bothunk`.
+- The two-line Ranged name leaves one line: `Ranged`.
 
 **Cell states:**
 
@@ -354,9 +355,9 @@ On the `/bis` board:
 | `/char` worn, no gain | Quality ring, icon | Name, then `item level {n}` |
 | `/char` worn, gain | Quality ring, icon | Name, `item level {n}`, gold `+{x.x} DPS` (tank `+{x.x} points`) |
 | `/char` worn, pick not modelled | Quality ring, icon | Name, `item level {n}`, gold `Gain not modelled yet` |
-| `/char` empty slot | Empty: #0d111a fill, #262e40 ring | `Empty` Barlow 400 16/20 muted; gold `Upgrade available` when the band has a pick, or `Gain not modelled yet` when that pick's effect is unmodelled (ruling B9) |
+| `/char` empty slot | Empty: #0d111a fill, #262e40 ring | The panel's grammar, 16/20: `{Slot} · ` muted, then the status in gold Barlow 600: the pick's gain (`+6.2 DPS`), `Upgrade available`, or `Gain not modelled yet` when that pick's effect is unmodelled (ruling B9). With no pick: `{Slot} · Empty`, muted. Never a bare `Empty` |
 | Off hand, two-handed main hand | Not drawn (ruling B8): the off-hand box is left out, not greyed. The alt text still says `Off hand: none, two-handed main hand` | |
-| No pick for the range (`/bis`) | Empty socket | `No pick`, 16/20 muted |
+| No pick for the range (`/bis`) | Empty socket | `{Slot} · No pick`, 16/20 muted |
 | Item unknown to the build | `inv_misc_questionmark`, #262e40 ring | The data's name in `--color-text` |
 | Shirt, Tabard | Not drawn. If a future export carries a worn shirt or tabard, `/char` draws it as left rows 6 and 7 at the in-game position, and the left column grows to eight | |
 
@@ -423,7 +424,7 @@ Assets:
 
 Caching:
 - **Sheets:** an in-process LRU keyed by SHA-256 of the sheet model's canonical JSON (build, spec, band, preset, faction, per-slot id, name, meta candidates and gold, header strings, date). 32 entries, at most 48 MB.
-- **Tiles:** `GET /v1/discord/tiles/{build}/{item}.png`. `{build}` must be a known build folder and `{item}` digits, else 404. `Cache-Control: public, max-age=31536000, immutable`. An in-process LRU of 2,048. Discord's media proxy caches in front. Rate-limited like every public route.
+- **Tiles:** `GET /v1/discord/tiles/{build}/{item}.png`. `{build}` must be a known build folder and `{item}` digits, else 404. `Cache-Control: public, max-age=31536000, immutable`. An in-process LRU of 2,048. Every id the build does not know shares one cached question-mark tile (key `{build}/?`), sent with `Cache-Control: public, max-age=3600`, never immutable, so random ids cannot churn the LRU and an item added later is not stuck as a question mark; a known item whose icon file is missing is drawn the same way and not cached. Discord's media proxy caches in front. The route skips the router-wide per-IP limiter (Discord fetches every thumbnail from a few IPs; fix round 1, reviewer R1): it answers only loaded builds and numeric ids, and unknown ids cost no render.
 
 # Copy, verbatim
 
@@ -461,13 +462,12 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `sheet.bis.level` | `Level {n}` |
 | `sheet.bis.range` | `Phase 1 raid`; `No buffs or consumables` (level 60 bare); `Levels {n} to {n+9}` (20 to 50) |
 | `sheet.char.ilvl` | `Item level` (drawn uppercase) |
-| `sheet.empty` | `Empty` |
-| `sheet.upgrade` | `Upgrade available` |
-| `sheet.none` | `No pick` |
+| `sheet.empty` | `{Slot} · Empty` |
+| `sheet.upgrade` | `{Slot} · Upgrade available` (status in gold) |
+| `sheet.none` | `{Slot} · No pick` |
 | `sheet.mark` | `foreversixty.gg` |
 | `sheet.updated` | `Updated {d Mon yyyy}` |
 | `sheet.char.gold` | `Gold: gain over what is worn, {band label}` |
-| `sheet.char.synced` | `Synced {d Mon yyyy}` |
 | `sheet.alt.bis` | `Best in slot sheet, {Spec} {Class}, {band label}, {Faction}. {Slot}: {Item}; …` |
 | `sheet.alt.char` | `Character sheet, {Name}, level {n} {Spec} {Class}, {Guild}. {Slot}: {Item}, {gain} available; …` |
 | `sheet.alt.offhand` | `Off hand: none, two-handed main hand` |
@@ -528,6 +528,10 @@ B7. Item 9533 is `Masons Fraternity Ring` in `items.json`, the class table and t
 B8. (Coordinator, after the persona round.) When the main hand is two-handed the sheet leaves the off-hand box out; it is not drawn greyed. `/bis` draws no Shirt or Tabard. Ring and trinket labels are `Ring 1`, `Ring 2`, `Trinket 1`, `Trinket 2` everywhere.
 
 B9. (Coordinator, after the persona round.) An empty `/char` slot whose pick's gain is not modelled reads `Gain not modelled yet` in gold, not `Upgrade available`.
+
+B10. (Fix round 1, wow-player.) Every cell names its slot: the meta line starts with the slot label (`Head · Vendor: …`, `Ring 1 · …`), falling back to the label alone. Both columns are top-aligned like the in-game frame; the left column starts at row 1.
+
+B11. (Fix round 1, wow-player.) The shared `/char` sheet never prints `Synced …`; the footer carries the gold legend only.
 
 C1. One Go renderer in the API: attachment for the sheet, cached endpoint for the tiles.
 

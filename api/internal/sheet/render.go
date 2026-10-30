@@ -47,8 +47,8 @@ const (
 	footerY    = sheetH - 30
 )
 
-// The frame's columns without Shirt and Tabard (spec §B.2): the left column's six sit on the
-// right column's rows 2 to 7, so both centre on the crest.
+// The frame's columns without Shirt and Tabard (spec §B.2), both top-aligned as in the game:
+// the left column's six sit on the right column's rows 1 to 6.
 var (
 	leftColumn  = []string{"head", "neck", "shoulder", "back", "chest", "wrist"}
 	rightColumn = []string{"hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2"}
@@ -56,19 +56,18 @@ var (
 
 // The text styles of spec §B.3.
 var (
-	styleKicker   = style{face: barlow600, size: 12, lineHeight: 15, trackingEm: 0.12, upper: true}
-	styleTitle    = style{face: cinzel700, size: 24, lineHeight: 30, trackingEm: 0.01}
-	styleMark     = style{face: barlow400, size: 13, lineHeight: 16}
-	styleFooter   = style{face: barlow400, size: 13, lineHeight: 16}
-	styleMeta     = style{face: barlow400, size: 16, lineHeight: metaLH}
-	styleGold     = style{face: barlow600, size: 16, lineHeight: metaLH}
-	styleNameTwo  = style{face: barlow600, size: nameMinPx, lineHeight: nameTwoLH}
-	styleLevel    = style{face: barlow600, size: 14, lineHeight: 17}
-	styleRange    = style{face: barlow400, size: 13, lineHeight: 16}
-	styleILvlLab  = style{face: barlow600, size: 11, lineHeight: 13, trackingEm: 0.12, upper: true}
-	styleILvl     = style{face: cinzel700, size: 22, lineHeight: 26}
-	styleFaction  = style{face: barlow600, size: 13, lineHeight: 16}
-	styleDimLabel = styleMeta
+	styleKicker  = style{face: barlow600, size: 12, lineHeight: 15, trackingEm: 0.12, upper: true}
+	styleTitle   = style{face: cinzel700, size: 24, lineHeight: 30, trackingEm: 0.01}
+	styleMark    = style{face: barlow400, size: 13, lineHeight: 16}
+	styleFooter  = style{face: barlow400, size: 13, lineHeight: 16}
+	styleMeta    = style{face: barlow400, size: 16, lineHeight: metaLH}
+	styleGold    = style{face: barlow600, size: 16, lineHeight: metaLH}
+	styleNameTwo = style{face: barlow600, size: nameMinPx, lineHeight: nameTwoLH}
+	styleLevel   = style{face: barlow600, size: 14, lineHeight: 17}
+	styleRange   = style{face: barlow400, size: 13, lineHeight: 16}
+	styleILvlLab = style{face: barlow600, size: 11, lineHeight: 13, trackingEm: 0.12, upper: true}
+	styleILvl    = style{face: cinzel700, size: 22, lineHeight: 26}
+	styleFaction = style{face: barlow600, size: 13, lineHeight: 16}
 )
 
 func nameStyle(px int) style { return style{face: barlow600, size: float64(px), lineHeight: nameLH} }
@@ -169,9 +168,7 @@ func (r *renderer) footer(s Sheet) error {
 		return err
 	}
 	x, y := at(pad, footerY)
-	w := d(sheetW - 2*border - 2*pad)
 	t.draw(r.img, colorMuted, x, y, s.Footer)
-	t.drawAligned(r.img, colorMuted, x, w, y, alignRight, s.FooterRight)
 	return nil
 }
 
@@ -187,7 +184,7 @@ type placement struct {
 func placements(twoHand bool) []placement {
 	out := make([]placement, 0, len(slotLabels))
 	for i, k := range leftColumn {
-		out = append(out, placement{k, pad, row0 + pitch*(i+1), false})
+		out = append(out, placement{k, pad, row0 + pitch*i, false})
 	}
 	for i, k := range rightColumn {
 		out = append(out, placement{k, rightX, row0 + pitch*i, true})

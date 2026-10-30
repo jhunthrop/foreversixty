@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -36,15 +35,12 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
-	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
-	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/runner"
-	"github.com/jhunthrop/foreversixty/sim/talents"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -511,42 +507,6 @@ func simEngine(log *slog.Logger) sims.Engine {
 	return &runner.Fixture{}
 }
 
-// activeVersion is the active client build's version for the startup log, "" when none loaded.
-func activeVersion(data *trees.Data) string {
-	b, ok := data.Active()
-	if !ok {
-		return ""
-	}
-	return b.Version
-}
-
-// inferrer names specs from the active client build's talent data.
-func inferrer(data *trees.Data) *spec.Inferrer {
-	b, ok := data.Active()
-	if !ok {
-		return spec.New(nil)
-	}
-	return spec.New(b)
-}
-
-// talentLayouts loads the active build's talent layout, which is what
-// turns a fight's recorded talent ids into the engine's positional
-// string. A build with no layout is not fatal: the scorer then refuses
-// every character, which is what it already does for the missing race.
-func talentLayouts(dir string, data *trees.Data, log *slog.Logger) *talents.Layouts {
-	build, ok := data.Active()
-	if !ok {
-		log.Warn("sims", "state", "no client build", "effect", "no execution scores")
-		return nil
-	}
-	layouts, err := talents.Load(filepath.Join(dir, build.Version, "talents"))
-	if err != nil {
-		log.Warn("sims", "state", "no talent layout", "err", err, "effect", "no execution scores")
-		return nil
-	}
-	return layouts
-}
-
 // scorerShim adapts the sims scorer to what the ingest asks for, so
 // neither package has to import the other. The conversion compiles
 // only while reports.ScoredFight and sims.FightAt have identical
@@ -705,10 +665,7 @@ func serve(log *slog.Logger) error {
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
-	deps.DiscordBot = newDiscordBot(ctx, cfg, pool, deps, accounts, log)
-	// The Discord panel's item tiles (spec 2026-10-29 §A.4): public item art, drawn from the
-	// image's /data/{build}/icons.
-	deps.Tiles = sheet.NewTiles(cfg.TreeDataDir, sheet.TreesItems{Data: treeData}, log)
+	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})

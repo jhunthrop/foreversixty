@@ -100,6 +100,21 @@ func ShortSource(full string) string {
 	return out
 }
 
+// metaJoin joins a meta line's slot label to what follows it ("Head · Vendor: Mokvar").
+const metaJoin = " · "
+
+// labelled leads each meta candidate with the slot's label, then offers the label alone, so
+// every cell names its slot whatever fits (the persona round's ruling).
+func labelled(label string, candidates ...string) []string {
+	out := make([]string, 0, len(candidates)+1)
+	for _, c := range candidates {
+		if c != "" {
+			out = append(out, label+metaJoin+c)
+		}
+	}
+	return append(out, label)
+}
+
 // metaCandidates is a /bis cell's meta lines, longest first and without repeats: the full
 // source line, then its short form.
 func metaCandidates(full string) []string {

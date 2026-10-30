@@ -149,7 +149,7 @@ func NewRouter(d Deps) http.Handler {
 	})
 	mws := []func(http.Handler) http.Handler{
 		httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin),
-		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, routerLimitSkip(d.DiscordBot != nil)),
+		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, routerLimitSkip(d.DiscordBot != nil, d.Tiles != nil)),
 	}
 	if d.Auth != nil {
 		mws = append(mws, d.Auth.Middleware)
@@ -162,9 +162,17 @@ func NewRouter(d Deps) http.Handler {
 // every interaction from a few egress IPs, so one IP bucket would 429 a busy
 // bot; the endpoint's Ed25519 signature check (cheap, before any work) is what
 // guards it. With the bot off the path is a 404 like any other, and limited.
-func routerLimitSkip(botMounted bool) func(*http.Request) bool {
+//
+// The Discord panel's item tiles skip it too, while mounted: Discord's media proxy fetches every
+// thumbnail from a few IPs, so one bucket would turn a busy channel's icons into broken
+// squares. What bounds them instead: the route answers only a loaded build and a numeric id,
+// every item the build lacks shares one cached question-mark tile (so random ids cannot churn
+// the LRU or force renders), and the drawn tiles are immutable and cached by the proxy.
+func routerLimitSkip(botMounted, tilesMounted bool) func(*http.Request) bool {
 	return func(r *http.Request) bool {
-		return sharedRead(r) || (botMounted && r.Method == http.MethodPost && r.URL.Path == discordbot.InteractionsPath)
+		return sharedRead(r) ||
+			(botMounted && r.Method == http.MethodPost && r.URL.Path == discordbot.InteractionsPath) ||
+			(tilesMounted && (r.Method == http.MethodGet || r.Method == http.MethodHead) && strings.HasPrefix(r.URL.Path, sheet.TilePath))
 	}
 }
 
