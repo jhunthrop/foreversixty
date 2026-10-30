@@ -8,6 +8,7 @@
 import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
 import type { TankHeadline } from '../../lib/bis/tank-view';
+import Card from '../ui/Card.astro';
 
 interface Props {
   setDps: number;
@@ -25,51 +26,48 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
   Astro.props;
 ---
 
-<div class="this-set-panel" data-testid="bis-this-set">
-  <span class="label">{bisCopy.thisSetLabel}</span>
-  {tank === undefined ? (
-    <span class="this-set-figure-row">
-      <span class="figure-stat this-set-figure">{setDps.toFixed(1)}</span>
-      <span class="this-set-figure-caption">
-        {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+<Card glyph="bolt" title={bisCopy.thisSetLabel} compact testid="bis-this-set">
+  <div class="this-set-panel">
+    {tank === undefined ? (
+      <span class="this-set-figure-row">
+        <span class="figure-stat this-set-figure">{setDps.toFixed(1)}</span>
+        <span class="this-set-figure-caption">
+          {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+        </span>
       </span>
+    ) : (
+      <>
+        <span class="tank-figures">
+          {tank.figures.map((figure) => (
+            <span class="tank-figure" title={figure.title} data-testid={`bis-tank-figure-${figure.id}`}>
+              <span class="tank-figure-label">{figure.label}</span>
+              <span class="numeric tank-figure-value">{figure.value}</span>
+            </span>
+          ))}
+        </span>
+        <span class="this-set-figure-caption" title={tank.secondaryTitle} data-testid="bis-tank-secondary">
+          {tank.secondaryLine}
+        </span>
+        <span class="this-set-figure-caption">{tankCopy.figureLine(characterLevel, race, talentPoints)}</span>
+      </>
+    )}
+    <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
+    <span class="this-set-actions">
+      <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={simHref}>
+        {bisCopy.openInSimulator}
+      </a>
+      <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={plannerHref}>
+        {bisCopy.talentsInPlanner}
+      </a>
     </span>
-  ) : (
-    <>
-      <span class="tank-figures">
-        {tank.figures.map((figure) => (
-          <span class="tank-figure" title={figure.title} data-testid={`bis-tank-figure-${figure.id}`}>
-            <span class="tank-figure-label">{figure.label}</span>
-            <span class="numeric tank-figure-value">{figure.value}</span>
-          </span>
-        ))}
-      </span>
-      <span class="this-set-figure-caption" title={tank.secondaryTitle} data-testid="bis-tank-secondary">
-        {tank.secondaryLine}
-      </span>
-      <span class="this-set-figure-caption">{tankCopy.figureLine(characterLevel, race, talentPoints)}</span>
-    </>
-  )}
-  <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
-  <span class="this-set-actions">
-    <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={simHref}>
-      {bisCopy.openInSimulator}
-    </a>
-    <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={plannerHref}>
-      {bisCopy.talentsInPlanner}
-    </a>
-  </span>
-</div>
+  </div>
+</Card>
 
 <style>
   .this-set-panel {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 16px 20px;
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
   }
   .this-set-figure-row {
     display: flex;

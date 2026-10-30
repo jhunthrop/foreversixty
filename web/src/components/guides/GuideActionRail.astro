@@ -10,6 +10,7 @@
 // line per stat with its real per-point scale number (`railStatRows`), round-1 mock review
 // finding 4 -- never the bare, mostly-empty pill row the first mock board shipped.
 import BuildActionButtons from './BuildActionButtons.astro';
+import Card from '../ui/Card.astro';
 import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
 import type { DecodedTreeView } from '../../lib/guides/build-tree';
@@ -38,8 +39,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
 ---
 
 <div class="guide-rail" data-testid="guide-action-rail" style={`--guide-rail-cols: ${cardCount}`}>
-  <div class="panel-box guide-rail-card" data-testid="guide-rail-build">
-    <span class="label">{guidesCopy.buildRailLabel}</span>
+  <Card glyph="tree" title={guidesCopy.buildRailLabel} compact testid="guide-rail-build">
     {trees.length > 0 && (
       <div class="guide-rail-trees" aria-hidden="true" data-testid="guide-rail-tree-thumbnail">
         {trees.map((tree) => (
@@ -79,12 +79,17 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
       loadAriaLabel={guidesCopy.loadBuildRailAriaLabel}
       simAriaLabel={guidesCopy.simBuildRailAriaLabel}
     />
-  </div>
+  </Card>
 
   <div class="guide-rail-cards">
     {hasRotation && (
-      <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
-        <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
+      <Card
+        glyph="sword"
+        title={guidesCopy.rotationRailTitle}
+        meta={rotationBandLabel}
+        compact
+        testid="guide-rail-rotation"
+      >
         <ul class="guide-rail-rotation-lines">
           {rotationLines.map((line) => (
             <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
@@ -119,12 +124,11 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
         <a class="guide-rail-full-priority" href="#rotation-and-priority">
           {guidesCopy.fullPriorityLink}
         </a>
-      </div>
+      </Card>
     )}
 
     {hasStatPriority && (
-      <div class="panel-box guide-rail-card" data-testid="guide-rail-stat-priority">
-        <span class="label">{guidesCopy.statPriorityRailLabel}</span>
+      <Card glyph="target" title={guidesCopy.statPriorityRailLabel} compact testid="guide-rail-stat-priority">
         <div class="guide-rail-stat-rows">
           {statRows.map((row, index) => (
             <div class="guide-rail-stat-row">
@@ -142,7 +146,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     )}
   </div>
 </div>
@@ -162,17 +166,6 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
        at its 3-up width instead of stretching one card across the page (owner 2026-10-04,
        Holy Paladin): 3 x 405px + 2 x 16px = the 1248px inner width at 1344 - 2 x 48. */
     max-width: calc(var(--guide-rail-cols, 3) * 405px + (var(--guide-rail-cols, 3) - 1) * 16px);
-  }
-  .panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .guide-rail-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px 20px;
   }
 
   /* Build card */

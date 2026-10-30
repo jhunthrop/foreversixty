@@ -4,7 +4,7 @@
 // /addon. Reference voice: state the thing and stop. Each step is one gold button and, signed
 // in, one line saying whether the account shows it done (W.9; UX review r5, finding 2).
 import Base from '../layouts/Base.astro';
-import Panel from '../components/Panel.astro';
+import Card from '../components/ui/Card.astro';
 import AddonPasteBox from '../components/AddonPasteBox.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import SetupProgress from '../components/SetupProgress.svelte';
@@ -76,8 +76,8 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
       <SetupBackToClaim client:only="svelte" />
     </header>
 
-    <Panel title={addonCopy.setupStep1Title}>
-      <div id="signin" class="flex scroll-mt-20 flex-col gap-3 p-[18px]">
+    <Card glyph="user" title={addonCopy.setupStep1Title} body="none">
+      <div id="signin" class="flex scroll-mt-20 flex-col gap-3 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <a
           class={`setup-when-out ${STEP_BUTTON}`}
@@ -88,10 +88,10 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
         </a>
         <SetupStepLine step="signin" client:idle />
       </div>
-    </Panel>
+    </Card>
 
-    <Panel title={addonCopy.setupStep2Title}>
-      <div id="addon" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
+    <Card glyph="download" title={addonCopy.setupStep2Title} body="none">
+      <div id="addon" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <div class="flex flex-wrap gap-3">
           <a class={STEP_BUTTON} data-step="2" href={CURSEFORGE_URL} rel="noopener">
             {addonCopy.installCurseForge}
@@ -218,10 +218,10 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           </div>
         </Disclosure>
       </div>
-    </Panel>
+    </Card>
 
-    <Panel title={addonCopy.setupStep3Title}>
-      <div id="companion" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
+    <Card glyph="device" title={addonCopy.setupStep3Title} body="none">
+      <div id="companion" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-note">
           {addonCopy.setupCompanionNote}
         </p>
@@ -286,7 +286,7 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           </span>
         </div>
       </div>
-    </Panel>
+    </Card>
   </main>
 </Base>
 

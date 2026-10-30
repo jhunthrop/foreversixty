@@ -12,6 +12,7 @@ import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import { bandTopLevel } from '../../lib/bis/rotation-view';
 import type { BandView } from '../../lib/bis/band-view';
 import type { Faction } from '../../lib/bis/types';
+import Card from '../ui/Card.astro';
 
 interface Props {
   view: BandView;
@@ -65,12 +66,8 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
   />
 </section>
 
-<section class="the-list-section">
-  <div class="the-list-heading-row">
-    <h2 class="section-title">{bisCopy.theListHeading}</h2>
-    <span class="text-muted text-[12px]">{bisCopy.hoverOrTapCaption}</span>
-  </div>
-  <div class="panel-box the-list-panel">
+<div class="the-list-section">
+  <Card glyph="list" title={bisCopy.theListHeading} meta={bisCopy.hoverOrTapCaption} body="table">
     {/* No `role="row"` here (a11y fix, 2026-09-30): the rows below are a
                             plain `<ul>` of `<li>` cards (`GearRow.astro`), never ARIA
                             `row`/`cell`s -- a lone `role="row"` with no table/rowgroup
@@ -101,16 +98,17 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
         />
       ))}
     </ul>
-  </div>
-</section>
+  </Card>
+</div>
 
 <section class="footer-row">
-  <div class="footer-col">
-    <h2 class="section-title">{bisCopy.whereToGetItHeading}</h2>
-    <div
-      class="panel-box footer-groups-panel"
-      data-testid={`bis-source-groups-${faction}-${view.band}${testSuffix}`}
-    >
+  <Card
+    glyph="pin"
+    title={bisCopy.whereToGetItHeading}
+    body="none"
+    testid={`bis-source-groups-${faction}-${view.band}${testSuffix}`}
+  >
+    <div class="footer-groups-panel">
       {view.sourceGroups.map((group) => (
         <div class="footer-group">
           <span class="footer-group-name">
@@ -133,21 +131,22 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
         </div>
       ))}
     </div>
-  </div>
-  <div class="footer-col">
-    <h2 class="section-title">{bisCopy.newAtThisBandHeading}</h2>
-    <div class="new-at-band-card" data-testid={`bis-new-at-band-${faction}-${view.band}${testSuffix}`}>
-      <p class="new-at-band-line">{view.newAtBand.sentence1}</p>
-      {view.newAtBand.sentence2 !== undefined && (
-        <p class="text-muted new-at-band-line">{view.newAtBand.sentence2}</p>
-      )}
-      {view.nextBand !== undefined && (
-        <a class="new-at-band-see-link" href={`#band-${faction}-${view.nextBand}`}>
-          {bisCopy.seeBandLink(view.nextBandLabel!)}
-        </a>
-      )}
-    </div>
-  </div>
+  </Card>
+  <Card
+    glyph="star"
+    title={bisCopy.newAtThisBandHeading}
+    testid={`bis-new-at-band-${faction}-${view.band}${testSuffix}`}
+  >
+    <p class="new-at-band-line">{view.newAtBand.sentence1}</p>
+    {view.newAtBand.sentence2 !== undefined && (
+      <p class="text-muted new-at-band-line">{view.newAtBand.sentence2}</p>
+    )}
+    {view.nextBand !== undefined && (
+      <a class="new-at-band-see-link" href={`#band-${faction}-${view.nextBand}`}>
+        {bisCopy.seeBandLink(view.nextBandLabel!)}
+      </a>
+    )}
+  </Card>
 </section>
 
 <style>
@@ -159,30 +158,14 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
   }
 
   .the-list-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
     padding: 28px var(--page-inset) 0 var(--page-inset);
-  }
-  .the-list-heading-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-  .panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .the-list-panel {
-    padding: 4px 20px 6px 20px;
   }
   .the-list-header {
     display: grid;
     grid-template-columns: 90px 1fr 1fr;
     gap: 16px;
     padding: 12px 0 6px 0;
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line-soft);
   }
   .the-list-rows {
     list-style: none;
@@ -197,25 +180,17 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     align-items: start;
     padding: 28px var(--page-inset) 28px var(--page-inset);
   }
-  .footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
   .footer-groups-panel {
     display: flex;
     flex-direction: column;
-    padding: 4px 20px 8px 20px;
+    padding: 0 0 8px 0;
   }
   .footer-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .footer-group:last-child {
-    border-bottom: none;
+    padding: 10px 20px;
+    border-top: 1px solid var(--color-line-soft);
   }
   .footer-group-name {
     font-size: 13px;
@@ -234,15 +209,6 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
   .footer-group-item {
     font-size: 13px;
     cursor: pointer;
-  }
-  .new-at-band-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px 18px;
-    background: var(--color-card-top);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
   }
   .new-at-band-line {
     margin: 0;

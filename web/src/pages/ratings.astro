@@ -14,7 +14,7 @@
 // card, its headings one level down. Labels are the addon's, from the shared fixture
 // (lib/score/copy.ts); every card renders statically, so the page still ships no island.
 import Base from '../layouts/Base.astro';
-import Panel from '../components/Panel.astro';
+import Card from '../components/ui/Card.astro';
 import ForeverScoreCard from '../components/ForeverScoreCard.svelte';
 import RatingCard from '../components/RatingCard.svelte';
 import TierStrip from '../components/TierStrip.svelte';
@@ -106,8 +106,8 @@ const MEASURE = 'max-w-[70ch]';
         </p>
       </div>
 
-      <Panel title={scoreCopy.explainerPartsHeading} level={3}>
-        <div class="grid gap-6 p-3 md:p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+      <Card glyph="layers" title={scoreCopy.explainerPartsHeading} headingLevel={3} body="none">
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] border-line-soft border-t px-5 py-4">
           <ul class="flex flex-col gap-4 text-[14px] leading-[22px]">
             {scoreCopy.components.map((component) => (
               <li
@@ -154,10 +154,10 @@ const MEASURE = 'max-w-[70ch]';
             </p>
           </div>
         </div>
-      </Panel>
+      </Card>
 
-      <Panel title={scoreCopy.explainerLogsHeading} level={3}>
-        <div class="flex flex-col items-start gap-3 p-3 md:flex-row md:items-center md:gap-6 md:p-4">
+      <Card glyph="chart" title={scoreCopy.explainerLogsHeading} headingLevel={3} body="none">
+        <div class="flex flex-col items-start gap-3 md:flex-row md:items-center md:gap-6 border-line-soft border-t px-5 py-4">
           <p class={`text-[14px] leading-[22px] ${MEASURE}`} data-testid="ratings-forever-logs">
             {scoreCopy.explainerLogsBody}
           </p>
@@ -169,7 +169,7 @@ const MEASURE = 'max-w-[70ch]';
             {scoreCopy.explainerLogsButton}
           </a>
         </div>
-      </Panel>
+      </Card>
     </section>
 
     <section
@@ -210,8 +210,8 @@ const MEASURE = 'max-w-[70ch]';
         </p>
       </div>
 
-      <Panel title="One number first, then six parts" level={3}>
-        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">
+      <Card glyph="star" title="One number first, then six parts" headingLevel={3} body="none">
+        <div class="flex flex-col gap-3 text-[14px] leading-relaxed border-line-soft border-t px-5 py-4">
           <p>
             Every rating starts with one overall number, 0 to 100. That number is a weighted average of six
             components — Output, Survival, Mechanics, Utility, Preparation, Activity — each also scored 0 to
@@ -226,10 +226,13 @@ const MEASURE = 'max-w-[70ch]';
             components that did score.
           </p>
         </div>
-      </Panel>
+      </Card>
 
-      <Panel title="What each component measures" level={3}>
-        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-components">
+      <Card glyph="list" title="What each component measures" headingLevel={3} body="none">
+        <div
+          class="flex flex-col gap-3 text-[14px] leading-relaxed border-line-soft border-t px-5 py-4"
+          data-testid="ratings-components"
+        >
           <p>
             <strong>Output.</strong> Damage or healing done. For a DPS spec the simulator already models,
             Output is judged against how well the fight could have gone with your gear — rotation, GCD usage,
@@ -267,10 +270,10 @@ const MEASURE = 'max-w-[70ch]';
             phase transition, for instance — so it is not just raw uptime.
           </p>
         </div>
-      </Panel>
+      </Card>
 
-      <Panel title="Weights, by role" level={3}>
-        <div class="overflow-x-auto p-3">
+      <Card glyph="scale" title="Weights, by role" headingLevel={3} body="none">
+        <div class="overflow-x-auto border-line-soft border-t px-5 py-4">
           <table class="w-full min-w-[420px] border-collapse text-[13px]" data-testid="ratings-weights">
             <thead>
               <tr>
@@ -312,10 +315,13 @@ const MEASURE = 'max-w-[70ch]';
           The weight table above, and the cap below, are both settings a guild's officers can change — this
           page always describes the site-wide defaults.
         </p>
-      </Panel>
+      </Card>
 
-      <Panel title="Ranked against your spec, or absolute" level={3}>
-        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-basis">
+      <Card glyph="trophy" title="Ranked against your spec, or absolute" headingLevel={3} body="none">
+        <div
+          class="flex flex-col gap-3 text-[14px] leading-relaxed border-line-soft border-t px-5 py-4"
+          data-testid="ratings-basis"
+        >
           <p>
             When at least 20 kills of the same encounter, difficulty, spec, role and roughly the same kill
             speed exist, a component is ranked against players of your spec in those other logs — "better than
@@ -336,11 +342,11 @@ const MEASURE = 'max-w-[70ch]';
             comparison to a full kill's.
           </p>
         </div>
-      </Panel>
+      </Card>
 
-      <Panel title="The cap" level={3}>
-        <p class="p-3 text-[14px] leading-relaxed">{ratingCopy.cappedRule}</p>
-      </Panel>
+      <Card glyph="target" title="The cap" headingLevel={3} body="none">
+        <p class="text-[14px] leading-relaxed border-line-soft border-t px-5 py-4">{ratingCopy.cappedRule}</p>
+      </Card>
     </section>
   </main>
 </Base>

@@ -15,6 +15,7 @@
 import { bisCopy } from '../../lib/bis/copy';
 import { dataUrl } from '../../lib/planner/load';
 import type { RotationLineView } from '../../lib/bis/rotation-view';
+import Card from '../ui/Card.astro';
 
 interface Props {
   bandLabel: string;
@@ -27,59 +28,54 @@ interface Props {
 const { bandLabel, lines, specName, guideHref, build } = Astro.props;
 ---
 
-<div class="panel-box play-it-panel" data-testid="bis-play-it">
-  <span class="label">{bisCopy.playItHeading(bandLabel)}</span>
-  <ul class="play-it-lines">
-    {lines.map((line) => (
-      <li class="play-it-line" data-testid={`bis-rotation-line-${line.spellId}`}>
-        {line.icon !== undefined ? (
-          <img
-            src={dataUrl(build, `icons/${line.icon}.webp`)}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            decoding="async"
-            class="play-it-icon"
-          />
-        ) : (
-          <span
-            class="play-it-icon play-it-icon-placeholder"
-            aria-hidden="true"
-            title={bisCopy.iconNotAvailableYet}
-          />
-        )}
-        <span class="play-it-body">
-          <span class="play-it-name-line">
-            <span class="play-it-name">{line.name}</span>
-            {line.rank !== undefined && <span class="text-muted play-it-rank">Rank {line.rank}</span>}
+<Card glyph="sword" title={bisCopy.playItTitle} meta={bandLabel} compact testid="bis-play-it">
+  <div class="play-it-panel">
+    <ul class="play-it-lines">
+      {lines.map((line) => (
+        <li class="play-it-line" data-testid={`bis-rotation-line-${line.spellId}`}>
+          {line.icon !== undefined ? (
+            <img
+              src={dataUrl(build, `icons/${line.icon}.webp`)}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="play-it-icon"
+            />
+          ) : (
+            <span
+              class="play-it-icon play-it-icon-placeholder"
+              aria-hidden="true"
+              title={bisCopy.iconNotAvailableYet}
+            />
+          )}
+          <span class="play-it-body">
+            <span class="play-it-name-line">
+              <span class="play-it-name">{line.name}</span>
+              {line.rank !== undefined && <span class="text-muted play-it-rank">Rank {line.rank}</span>}
+            </span>
+            <span
+              class="play-it-condition"
+              data-testid={line.truncatedAtSource ? 'bis-rotation-truncated' : undefined}
+            >
+              {line.condition}
+            </span>
           </span>
-          <span
-            class="play-it-condition"
-            data-testid={line.truncatedAtSource ? 'bis-rotation-truncated' : undefined}
-          >
-            {line.condition}
-          </span>
-        </span>
-      </li>
-    ))}
-  </ul>
-  <a class="play-it-guide-link" href={guideHref}>
-    {bisCopy.openGuideLink(specName)}
-  </a>
-</div>
+        </li>
+      ))}
+    </ul>
+    <a class="play-it-guide-link" href={guideHref}>
+      {bisCopy.openGuideLink(specName)}
+    </a>
+  </div>
+</Card>
 
 <style>
-  .panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
   .play-it-panel {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 16px 20px;
     /* Never a fixed max-height or CSS ellipsis on the condition line below -- the panel
        grows to fit whatever the real sentence's length is (spec §4.C.3). */
   }

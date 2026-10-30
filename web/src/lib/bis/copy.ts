@@ -328,8 +328,10 @@ export const bisCopy = {
     `Simmed ${generatedAtDate}, every pick measured with the item equipped`,
   openInSimulator: 'Open in simulator',
   talentsInPlanner: 'Talents in planner',
-  statWeightsAtBand: (bandLabel: string): string => `Stat weights at ${bandLabel}`,
-  playItHeading: (bandLabel: string): string => `Play it · ${bandLabel}`,
+  /** The Stat weights card's title; its band label is the head's meta (site alignment §5.3). */
+  statWeightsTitle: 'Stat weights',
+  /** The Play it card's title; its band label is the head's meta. */
+  playItTitle: 'Play it',
   /** The rotation line's own icon placeholder (spec §4.C.3) -- this build carries no spell-
    *  icon-by-id data for a trained (non-talent) ability at all (verified: `spells.json`,
    *  `spellranks.json` and `spellconst/<class>.json` all checked), so every line falls back

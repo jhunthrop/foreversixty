@@ -22,7 +22,8 @@ export const guidesCopy = {
   setDpsLine: (dps: number): string => `${dps.toFixed(1)} DPS`,
   setDpsLineSuffix: 'at 60, this set',
   buildRailLabel: 'Build',
-  rotationRailLabel: (bandLabel: string): string => `Rotation · ${bandLabel}`,
+  /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
+  rotationRailTitle: 'Rotation',
   fullPriorityLink: 'Full priority ↓',
   statPriorityRailLabel: 'Stat priority',
   levelingPointsLabel: (points: number): string => `${points} point${points === 1 ? '' : 's'}`,

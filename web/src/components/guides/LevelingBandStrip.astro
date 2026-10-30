@@ -8,6 +8,7 @@
 // takes more points than in the band before is marked, so the strip also reads as what each
 // range adds. Every row is wrapped in the same `decodeBandTalents` the rail and the full tree
 // share.
+import { CARD_QUIET } from '../../lib/ui/card';
 import { decodeBandTalents } from '../../lib/guides/build-tree';
 import { guidesCopy } from '../../lib/guides/copy';
 import { levelingChipRows } from '../../lib/guides/leveling-talents';
@@ -38,7 +39,7 @@ const chipRows = levelingChipRows(decoded);
 <p class="leveling-legend" data-testid="guide-leveling-legend">
   {guidesCopy.levelingLegend}
 </p>
-<div class="leveling-panel-box leveling-strip" data-testid="guide-leveling-strip">
+<div class={`${CARD_QUIET} leveling-strip`} data-testid="guide-leveling-strip">
   {rows.map((row, index) => {
     const chips = chipRows[index] ?? [];
     return (
@@ -81,11 +82,6 @@ const chipRows = levelingChipRows(decoded);
   /* Global on purpose: a scoped style stamps a data-astro-cid attribute on every element it
        styles, and this block is ~100 rows of markup. Every selector carries this component's own
        prefix, so going global widens nothing. */
-  .leveling-panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
   .leveling-strip {
     padding: 4px 20px 6px 20px;
     margin: 0 0 14px;

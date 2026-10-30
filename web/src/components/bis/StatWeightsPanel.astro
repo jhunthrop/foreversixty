@@ -21,6 +21,7 @@ import type { ExpertiseCapLine } from '../../lib/bis/expertise-cap';
 import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+import Card from '../ui/Card.astro';
 
 interface Props {
   bandLabel: string;
@@ -47,93 +48,88 @@ const perPointStyle =
 const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
 ---
 
-<div class="panel-box stat-weights-panel" data-testid={testId} style={perPointStyle}>
-  <span class="label">{bisCopy.statWeightsAtBand(bandLabel)}</span>
-  <p class="stat-weights-caption text-muted">{caption}</p>
-  <div class="stat-weights-table" role="table">
-    <div class="stat-weights-header" role="row">
-      <span class="quiet-label" role="columnheader">
-        Stat
-      </span>
-      <span aria-hidden="true"></span>
-      <span class="quiet-label stat-weights-num-header" role="columnheader">
-        Scale
-      </span>
-      <span class="quiet-label stat-weights-num-header" role="columnheader">
-        Per point
-      </span>
-      <span class="quiet-label stat-weights-num-header" role="columnheader">
-        Error
-      </span>
-    </div>
-    {scaleRows.map((row) => (
-      <div
-        class:list={['stat-weights-row', !row.significant && 'stat-weights-row-faint']}
-        role="row"
-        title={row.significant ? row.ratingFactorTitle : `${row.label} not significant`}
-        data-testid={`bis-weight-row-${row.stat}`}
-      >
-        <span class="stat-weights-stat" role="cell">
-          {row.label}
+<Card glyph="scale" title={bisCopy.statWeightsTitle} meta={bandLabel} compact testid={testId}>
+  <div class="stat-weights-panel" style={perPointStyle}>
+    <p class="stat-weights-caption text-muted">{caption}</p>
+    <div class="stat-weights-table" role="table">
+      <div class="stat-weights-header" role="row">
+        <span class="quiet-label" role="columnheader">
+          Stat
         </span>
-        <span class="stat-weights-bar" aria-hidden="true">
-          {row.significant && <span class="stat-weights-bar-fill" style={`width:${row.barPercent}%`} />}
+        <span aria-hidden="true"></span>
+        <span class="quiet-label stat-weights-num-header" role="columnheader">
+          Scale
         </span>
-        {row.significant ? (
-          <>
-            <span class="numeric stat-weights-num" role="cell">
-              {row.scaleFactor.toFixed(2)}
-            </span>
-            <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
-              {row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}` : ''}
-            </span>
-            <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
-              {`±${row.scaleError.toFixed(2)}`}
-            </span>
-          </>
-        ) : (
-          <span class="stat-weights-num stat-weights-not-significant" role="cell" aria-colspan="3">
-            {bisCopy.weightsNotSignificant}
-          </span>
-        )}
+        <span class="quiet-label stat-weights-num-header" role="columnheader">
+          Per point
+        </span>
+        <span class="quiet-label stat-weights-num-header" role="columnheader">
+          Error
+        </span>
       </div>
-    ))}
-  </div>
-  {hitCap !== undefined && (
-    <p class="stat-weights-hit-cap text-muted" title={hitCap.title} data-testid={`${testId}-hit-cap`}>
-      {hitCap.text}
-    </p>
-  )}
-  {expertiseCap !== undefined && (
-    <p
-      class="stat-weights-hit-cap text-muted"
-      title={expertiseCap.title}
-      data-testid={`${testId}-expertise-cap`}
+      {scaleRows.map((row) => (
+        <div
+          class:list={['stat-weights-row', !row.significant && 'stat-weights-row-faint']}
+          role="row"
+          title={row.significant ? row.ratingFactorTitle : `${row.label} not significant`}
+          data-testid={`bis-weight-row-${row.stat}`}
+        >
+          <span class="stat-weights-stat" role="cell">
+            {row.label}
+          </span>
+          <span class="stat-weights-bar" aria-hidden="true">
+            {row.significant && <span class="stat-weights-bar-fill" style={`width:${row.barPercent}%`} />}
+          </span>
+          {row.significant ? (
+            <>
+              <span class="numeric stat-weights-num" role="cell">
+                {row.scaleFactor.toFixed(2)}
+              </span>
+              <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
+                {row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}` : ''}
+              </span>
+              <span class="numeric stat-weights-num stat-weights-num-muted" role="cell">
+                {`±${row.scaleError.toFixed(2)}`}
+              </span>
+            </>
+          ) : (
+            <span class="stat-weights-num stat-weights-not-significant" role="cell" aria-colspan="3">
+              {bisCopy.weightsNotSignificant}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+    {hitCap !== undefined && (
+      <p class="stat-weights-hit-cap text-muted" title={hitCap.title} data-testid={`${testId}-hit-cap`}>
+        {hitCap.text}
+      </p>
+    )}
+    {expertiseCap !== undefined && (
+      <p
+        class="stat-weights-hit-cap text-muted"
+        title={expertiseCap.title}
+        data-testid={`${testId}-expertise-cap`}
+      >
+        {expertiseCap.text}
+      </p>
+    )}
+    <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
+    <a
+      href="/addon"
+      class={`${SECONDARY_BUTTON} border-line-warm text-text justify-center px-4`}
+      data-testid="bis-weights-addon-button"
     >
-      {expertiseCap.text}
-    </p>
-  )}
-  <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
-  <a
-    href="/addon"
-    class={`${SECONDARY_BUTTON} border-line-warm text-text justify-center px-4`}
-    data-testid="bis-weights-addon-button"
-  >
-    {bisCopy.weightsAddonButton}
-  </a>
-</div>
+      {bisCopy.weightsAddonButton}
+    </a>
+  </div>
+</Card>
 
 <style>
-  .panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
   .stat-weights-panel {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 16px 20px;
   }
   .stat-weights-caption {
     margin: 0 0 4px;
