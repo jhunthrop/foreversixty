@@ -36,7 +36,10 @@ const BUDGETS = [
   // 77 KB since the lifecycle round of 2026-10-19: the selector's signed-in-empty state
   // (W.1), the card's send-to-addon state machine (W.2; the send itself loads on the first
   // press) and the unread-export panel (W.3) read 78,030 bytes on CI against 76,800.
-  { file: 'dist/planner-island.js', limitBytes: 77 * 1024 },
+  // 78 KB since the site alignment of 2026-10-29: the planner moved onto the shared PageHead,
+  // Card and compact CardHead and its band compare gained the still-to-take line; CI read
+  // 79,107 bytes against 78,848.
+  { file: 'dist/planner-island.js', limitBytes: 78 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
