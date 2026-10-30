@@ -42,3 +42,24 @@ The full chart does the job of looking like real tooling. It has class-coloured 
 
 ## Data I do not believe
 See blocker 2. Also: no sample fight has a boss, so every sample view is trash. The sample therefore never shows what a raider uploads for.
+
+## Re-check (both blockers)
+
+Seen: sample-chart-1440, -1440-10s-pull, -1440-everyone, and the fix-round section of the lane report.
+
+Verdict: SHIP. No blockers remain.
+
+1. **Brush end handle: fixed.** On the 9.9 s pull the right handle sits on the end of the track, and the end label reads "0:09.9". Window reads "Whole fight". The report's cause (range inputs with step 1000) is a believable reason for the old 9000 snap, and the e2e test checks the browser's own value against max.
+2. **Counts say what they count: fixed.**
+   - Default Source is "Your group". The Players control reads "All 4" and the subtitle reads "Group 3 DPS over the whole fight". The legend says "Group median".
+   - Under "Everyone in range" the control reads "Top 4, bottom 4 of 90 players seen" (12:43 pull) and "of 26 players seen" (9.9 s pull). "Players seen" is honest for an open-world log, and the default no longer shows 90.
+   - The Players table header reads "4 players · 0 deaths · 12:43".
+3. **Trash kill counts: hidden.** The Fights list shows only the length and start time, and "79 pulls" is on the group row. No "kills" figure appears anywhere I looked.
+
+New, not blocking:
+- The Fights header still reads "0 pulls" beside "79 pulls". Label it "0 selected" or drop it.
+- "Median player 0 DPS" remains under Everyone in range. Rename it "Median player" only when it is non-zero, or leave it.
+- The 9.9 s pull still draws straight ramps through zero between 1 s points (player should from the first round).
+- Y-axis unit, marker key, a next-step finding under the chart and the phone legend are still open. The report lists them as not done. They are shoulds, not blockers.
+- The default group view is four players on one pull. That is honest, but it is the thinnest view the sample shows. Fine for launch.
+- Copy still says "raid" in the Debuffs note under a group scope (the report's own concern). Fix when that tab is next touched.
