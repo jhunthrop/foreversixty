@@ -1,0 +1,90 @@
+{
+  "ok": true,
+  "data": {
+    "user": { "id": 1001, "battletag": "Fixture#1234", "email": null, "role": "user", "anonymize": false },
+    "characters": [
+      {
+        "key": "us/normal/obnoxious",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Obnoxious",
+        "class": "warrior",
+        "realm": "Forever",
+        "level": 42,
+        "faction": "alliance",
+        "race": "human",
+        "gender": "male",
+        "item_level": 38,
+        "source": "bnet",
+        "spec": "arms",
+        "build": {
+          "source": "addon",
+          "captured_at": "2026-11-04T21:03:00.123456Z",
+          "gear": { "head": 7719, "chest": 6627 },
+          "talents": { "trees": ["5500203010", "", ""], "points": [16, 0, 0] },
+          "level": 42,
+          "data_build": "1.60.1.70291",
+          "median_sync_gap_sec": 86400,
+          "sync_error": null
+        },
+        "guild": {
+          "id": 2,
+          "name": "Fixture Guild",
+          "rank": "Raider",
+          "rank_index": 3,
+          "verified": true,
+          "attendance": { "present": 7, "nights": 8 }
+        }
+      },
+      {
+        "key": "us/normal/quietalt",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Quietalt",
+        "source": "export"
+      }
+    ],
+    "guilds": [
+      {
+        "id": 2,
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Fixture Guild",
+        "rank": "Raider",
+        "verified": true,
+        "verified_count": 24,
+        "can": null,
+        "ruleset_label": "Normal",
+        "slug": "fixture-guild",
+        "crest_url": null,
+        "faction": "alliance",
+        "roster_count": 31,
+        "claim": null,
+        "verify": null,
+        "covered": null,
+        "subscribe": null
+      }
+    ],
+    "entitlements": {
+      "server_sims": false,
+      "retention": false,
+      "multi_compare": false,
+      "history": false,
+      "notifications": false,
+      "officer_views": false,
+      "roster_check": false,
+      "log_coach": false,
+      "supporter_mark": false,
+      "billing": null,
+      "personal_portal": false
+    },
+    "bnet_imported_at": "2026-11-04T20:00:00Z",
+    "main_character_key": "us/normal/obnoxious",
+    "finished_sims": [],
+    "discord_link_available": false,
+    "discord_link": null,
+    "discord_link_suggested": null
+  },
+  "error": null,
+  "request_id": "req_fixture_me"
+}

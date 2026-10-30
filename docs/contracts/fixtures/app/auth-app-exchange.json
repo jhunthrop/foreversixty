@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "data": {
+    "token": "fsd_fixture_token_not_a_secret",
+    "device": {
+      "id": "dev_fixture_ios",
+      "name": "iPhone",
+      "platform": "ios",
+      "created_at": "2026-11-04T21:00:00Z"
+    }
+  },
+  "error": null,
+  "request_id": "req_fixture_exchange"
+}
