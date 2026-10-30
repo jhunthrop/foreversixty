@@ -169,12 +169,16 @@ jobs:
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
       # On a failure the script writes the step, the reason and the hand command that
       # finishes the move to this run's summary (and an error annotation).
+      # The step's own timeout is under the job's, so a hung move still leaves time for
+      # the report step below; MOVE_BREADCRUMB tells it where the move stood.
       - name: activate ${{ needs.watch.outputs.build }}
         id: move
+        timeout-minutes: 50
         env:
           BUILD: ${{ needs.watch.outputs.build }}
           PRODUCT: ${{ needs.watch.outputs.product }}
           INSPECT: ${{ inputs.inspect }}
+          MOVE_BREADCRUMB: ${{ runner.temp }}/client-move-step
         run: |
           if [ "$INSPECT" = "true" ]; then
             tools/activate-build.sh "$BUILD" --no-commit
@@ -182,24 +186,36 @@ jobs:
           else
             tools/activate-build.sh "$BUILD"
           fi
-      # A setup step failed before the script could report anything.
+      # Whenever the move did not succeed and the script wrote no report of its own: a
+      # setup step failed before it ran (no breadcrumb), or it timed out or was cancelled
+      # mid-step (a breadcrumb with no "reported" line). A rerun finishes a move that got
+      # past its push (activate-build.sh resumes it), so the hand command is the rerun.
       - name: say where the move stopped
-        if: failure() && steps.move.outcome != 'failure'
+        if: always() && steps.move.outcome != 'success'
         env:
           BUILD: ${{ needs.watch.outputs.build }}
           PRODUCT: ${{ needs.watch.outputs.product }}
+          CRUMB: ${{ runner.temp }}/client-move-step
         run: |
+          if grep -qx reported "$CRUMB" 2>/dev/null; then exit 0; fi
           hand="gh workflow run client.yml -f build=$BUILD${PRODUCT:+ -f product=$PRODUCT}"
+          if [ -s "$CRUMB" ]; then
+            step="$(head -n 1 "$CRUMB") (the move timed out or was cancelled here)"
+            reason="no report from the script: check main and the addon tags for how far it got; a rerun resumes a move that is already on main"
+          else
+            step="setting up the activation runner (checkout, toolchains, pin-engine, npm ci)"
+            reason="the failed step above; nothing was moved, committed or tagged"
+          fi
           {
             echo "## Client move to $BUILD stopped"
             echo
-            echo "**Step:** setting up the activation runner (checkout, toolchains, pin-engine, npm ci)"
+            echo "**Step:** $step"
             echo
-            echo "**Reason:** the failed step above; nothing was moved, committed or tagged"
+            echo "**Reason:** $reason"
             echo
             echo "**To finish or redo the move:** $hand"
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error title=client move stopped at: setting up the activation runner::nothing moved -- to finish: $hand"
+          echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"
 
   # The watch and the fetch fail outside activate-build.sh, which writes its own report;
   # this names their step, the reason and the hand command the same way.

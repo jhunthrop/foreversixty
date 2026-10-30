@@ -70,7 +70,12 @@ cd "$ROOT"
 REDO="gh workflow run client.yml -f build=$NEW${PRODUCT:+ -f product=$PRODUCT}"
 STEP="reading the active build"; HAND="$REDO"; REASON=""; UNDO=""
 STEP_LOG="$(mktemp)"
-step() { STEP="$1"; HAND="$2"; REASON=""; : > "$STEP_LOG"; echo "== $STEP"; }
+# MOVE_BREADCRUMB (client.yml sets it): the current step, then "reported" once a failure
+# report is written, so the workflow can say where a timed-out or cancelled move stood.
+step() {
+  STEP="$1"; HAND="$2"; REASON=""; : > "$STEP_LOG"; echo "== $STEP"
+  [ -z "${MOVE_BREADCRUMB:-}" ] || printf '%s\n' "$STEP" > "$MOVE_BREADCRUMB"
+}
 die() { REASON="$1"; echo "$1" >&2; exit 1; }
 run() {
   local status=0
@@ -90,7 +95,8 @@ in_dir() { local dir="$1"; shift; (cd "$dir" && "$@"); }
 report_failure() {
   local status=$? summary
   rm -f "$STEP_LOG"
-  [ "$status" -ne 0 ] && [ "$status" -ne 2 ] || return 0
+  # Usage errors exit 2 before this trap is set, so any non-zero status here is a step's.
+  [ "$status" -ne 0 ] || return 0
   summary="$(mktemp)"
   {
     echo "## Client move to $NEW stopped"
@@ -115,6 +121,7 @@ report_failure() {
     echo "::error title=client move to $NEW stopped at: $STEP::$(head -n 1 <<<"${REASON:-exit status $status}") -- to finish: $HAND"
   fi
   rm -f "$summary"
+  [ -z "${MOVE_BREADCRUMB:-}" ] || echo reported >> "$MOVE_BREADCRUMB"
 }
 trap report_failure EXIT
 
@@ -253,7 +260,7 @@ printf '{\n  "build": "%s"\n}\n' "$NEW" > "$ACTIVE_JSON"
 step "re-encoding the guide builds onto $NEW's talent trees" \
   "re-spend the builds named above against $NEW's trees (web/src/content/guides, codes stamped FS1:$NEW), then from main with those edits in the tree run: tools/activate-build.sh $NEW (it commits them with the move, gates, pushes, tags and dispatches); or land them on main and $REDO"
 run node web/scripts/reencode-guide-builds.mjs
-grep -rl "foreversixty.gg/data/$ACTIVE/" web/src/content/guides | while read -r f; do
+{ grep -rl "foreversixty.gg/data/$ACTIVE/" web/src/content/guides || true; } | while read -r f; do
   sed -i.bak "s#foreversixty.gg/data/$ACTIVE/#foreversixty.gg/data/$NEW/#g" "$f" && rm -f "$f.bak"
 done
 
@@ -315,7 +322,7 @@ if [ "$GATE" = on ]; then
 fi
 
 git add "${MOVED_PATHS[@]}"
-git status --short | head -40
+git status --short | awk 'NR <= 40'
 [ "$MODE" != inspect ] || { UNDO=""; echo "--no-commit: stopping with the tree changed and staged"; exit 0; }
 
 step "committing the move" "$REDO"

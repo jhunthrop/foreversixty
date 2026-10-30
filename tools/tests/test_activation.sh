@@ -364,6 +364,30 @@ assert "resume: and has nothing left to do" contains "$OUT" "is released; nothin
 assert "resume: it dispatches nothing more" equal "$(wc -l <"$d/stubs/gh-calls")" "$calls"
 assert "resume: no new commit" equal "$(git -C "$d.git" rev-list --count main)" "$(git -C "$d" rev-list --count HEAD)"
 
+
+# A step that exits 2 (argparse, a grep error) is reported like any other failure; the
+# breadcrumb names the step and then says the report was written.
+d=$SCRATCH/move-exit2
+make_move_repo "$d"
+echo 'process.exit(2);' >"$d/web/scripts/reencode-guide-builds.mjs"
+STATUS=0
+OUT=$(cd "$d" && MOVE_BREADCRUMB="$d/crumb" GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+assert "exit 2: the move exits 2" equal "$STATUS" 2
+assert "exit 2: still reported" contains "$(cat "$d/summary.md" 2>/dev/null)" "**Step:** re-encoding the guide builds"
+assert "exit 2: the breadcrumb names the step, then the report" equal "$(tr '\n' '|' <"$d/crumb")" "re-encoding the guide builds onto $NEW_BUILD's talent trees|reported|"
+
+# No guide links the active build's data: the link rewrite is not a failure.
+d=$SCRATCH/move-nolinks
+make_full_move_repo "$d"
+echo "no data links here" >"$d/web/src/content/guides/mage/frost.md"
+git -C "$d" add -A
+git -C "$d" -c user.name=test -c user.email=test@example.com commit --quiet -m nolinks
+stub_npm "$d/npm-stub" 0 "$WEB_GREEN"
+stub_go "$d/go-stub" 0 "$API_GREEN"
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" bash tools/activate-build.sh "$NEW_BUILD" --no-commit 2>&1) || STATUS=$?
+assert "no links: the inspect run completes" equal "$STATUS" 0
+
 # Under Actions: an error annotation, and no local undo line.
 d=$SCRATCH/move-actions
 make_move_repo "$d"
