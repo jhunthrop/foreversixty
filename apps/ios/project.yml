@@ -1,0 +1,107 @@
+# XcodeGen spec for the Forever Sixty iOS app. The .xcodeproj is generated
+# from this file and never committed: `xcodegen generate` in apps/ios.
+name: ForeverSixty
+options:
+  bundleIdPrefix: gg.foreversixty
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    # Simulator-only until the Apple Team ID exists (lane O): ad-hoc
+    # "Sign to Run Locally", which needs no account. A fully unsigned app has
+    # no entitlements and the simulator Keychain refuses it (-34018).
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+packages:
+  ForeverKit:
+    path: .
+  SnapshotTesting:
+    url: https://github.com/pointfreeco/swift-snapshot-testing
+    exactVersion: 1.19.7
+targets:
+  ForeverSixty:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      # The contract fixtures, copied into the bundle as "Fixtures" for fixture mode.
+      - path: ../../docs/contracts/fixtures/app
+        name: Fixtures
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: ForeverKit
+        products: [Models, Networking, Auth, DesignSystem]
+    # TODO(universal links): add when the Team ID exists (lane O), with signing:
+    # entitlements:
+    #   path: App/ForeverSixty.entitlements
+    #   properties:
+    #     com.apple.developer.associated-domains: ["applinks:foreversixty.gg"]
+    # TODO(lane A2, F7): the aps-environment entitlement and the Push
+    # Notifications capability join the same entitlements file.
+    info:
+      path: Generated/Info.plist
+      properties:
+        CFBundleDisplayName: Forever Sixty
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+        FSAPIBaseURL: $(API_BASE_URL)
+        FSAPIMode: $(API_MODE)
+    settings:
+      base:
+        PRODUCT_NAME: ForeverSixty
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        API_BASE_URL: https://api.foreversixty.gg
+      configs:
+        # Debug runs on contract fixtures until lane A1's sign-in is live;
+        # override with `xcodebuild ... API_MODE=live`.
+        Debug:
+          API_MODE: fixture
+        Release:
+          API_MODE: live
+  ForeverSixtyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [AppTests]
+    dependencies:
+      - target: ForeverSixty
+      - package: ForeverKit
+        products: [Auth]
+      - package: SnapshotTesting
+        product: SnapshotTesting
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/ForeverSixty.app/ForeverSixty
+        BUNDLE_LOADER: $(TEST_HOST)
+schemes:
+  ForeverSixty:
+    build:
+      targets:
+        ForeverSixty: all
+        ForeverSixtyTests: [test]
+    test:
+      config: Debug
+      gatherCoverageData: true
+      coverageTargets: [ForeverSixty]
+      targets:
+        - ForeverSixtyTests
+        - package: ForeverKit/ModelsTests
+        - package: ForeverKit/NetworkingTests
+        - package: ForeverKit/AuthTests
