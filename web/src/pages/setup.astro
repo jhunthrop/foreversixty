@@ -254,8 +254,10 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
         </p>
         <SetupStepLine step="companion" client:idle />
         <div class="flex flex-col gap-2">
+          <!-- Below 640 the capture runs to the card's edges (rows in a card are full-bleed), so the
+               phone crop keeps its readable width inside the Card's 20 px body padding. -->
           <div
-            class="setup-capture border-line-soft rounded-control bg-raised relative w-full overflow-hidden border"
+            class="setup-capture border-line-soft rounded-control bg-raised relative w-full overflow-hidden border max-sm:-mx-5 max-sm:w-[calc(100%+40px)] max-sm:rounded-none max-sm:border-x-0"
             style={`max-width: 800px; --capture-ratio: ${capture.width} / ${capture.height}; --capture-phone-ratio: ${capture.phoneWidth} / ${capture.phoneHeight}`}
             data-testid="setup-companion-capture"
           >
