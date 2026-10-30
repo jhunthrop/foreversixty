@@ -110,8 +110,27 @@ func TestATankBandReadsInPoints(t *testing.T) {
 	if got := d.pickGain(bis.Slot{Alternatives: []bis.Alternative{{DpsDelta: -3.21}}}); got != "+3.2 points" {
 		t.Fatalf("tank gain = %q", got)
 	}
-	if got := d.pickGain(bis.Slot{Alternatives: []bis.Alternative{{DpsDelta: -0.04}}}); got != "" {
-		t.Fatalf("a tie shows %q", got)
+	if got := d.pickGain(bis.Slot{Alternatives: []bis.Alternative{{DpsDelta: -0.04}}}); got != "Same points as the next best" {
+		t.Fatalf("a tank tie shows %q", got)
+	}
+}
+
+// The panel's lead promises a gain on every row, so a tie and a slot with nothing else
+// ranked each say so rather than leaving the figure blank.
+func TestEveryPickRowSaysItsGain(t *testing.T) {
+	d := bisData{}
+	for name, tc := range map[string]struct {
+		slot bis.Slot
+		want string
+	}{
+		"a tie":               {bis.Slot{Alternatives: []bis.Alternative{{DpsDelta: -0.04}}}, "Same DPS as the next best"},
+		"nothing else ranked": {bis.Slot{}, "Nothing else ranked"},
+		"a real gain":         {bis.Slot{Alternatives: []bis.Alternative{{DpsDelta: -2.84}}}, "+2.8 DPS"},
+		"an unmodelled pick":  {bis.Slot{EffectUnmodelled: true}, panelCopy.NotModelled},
+	} {
+		if got := d.pickGain(tc.slot); got != tc.want {
+			t.Errorf("%s = %q, want %q", name, got, tc.want)
+		}
 	}
 }
 

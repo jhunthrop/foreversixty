@@ -22,7 +22,7 @@ const (
 	lastPage     = 2
 )
 
-// minShownGain is the smallest gain a row states; a smaller one is a tie and shows none.
+// minShownGain is the smallest gain a row states as a figure; a smaller one is a tie.
 const minShownGain = 0.05
 
 // textBudget is the bot's guard on a V2 message's text, under Discord's 4,000 (spec §A.6);
@@ -130,16 +130,27 @@ func (s *Service) bisFacts(d bisData, id int, name, kind, raw string) ItemFacts 
 	return s.itemFacts(d.build, d.spec.ClassSlug, id, name, s.sourceLine(id, kind, d.faction, raw), "")
 }
 
-// pickGain is a pick's line-2 figure: Gain not modelled yet for an unmodelled effect, else
-// its gain over the next best when there is one.
+// pickGain is a pick's line-2 figure: Gain not modelled yet for an unmodelled effect,
+// Nothing else ranked with no next best, a tie with it in words, else the gain over it.
+// Every row says something, because the panel's lead promises a gain on each.
 func (d bisData) pickGain(sl bis.Slot) string {
-	if sl.EffectUnmodelled {
+	switch {
+	case sl.EffectUnmodelled:
 		return panelCopy.NotModelled
-	}
-	if len(sl.Alternatives) == 0 || math.Abs(sl.Alternatives[0].DpsDelta) < minShownGain {
-		return ""
+	case len(sl.Alternatives) == 0:
+		return panelCopy.BisOnly
+	case math.Abs(sl.Alternatives[0].DpsDelta) < minShownGain:
+		return fill(panelCopy.BisTie, "{unit}", d.unitWord())
 	}
 	return d.figure(-sl.Alternatives[0].DpsDelta)
+}
+
+// unitWord names what the band's figures measure: points for a tank band, else DPS.
+func (d bisData) unitWord() string {
+	if d.band.ScoreUnit == bis.TankScoreUnit {
+		return "points"
+	}
+	return "DPS"
 }
 
 // bisPagePanel is one page of the /bis panel: the header, then each slot's row.

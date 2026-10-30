@@ -40,9 +40,12 @@ var panelCopy = struct {
 	BisPages                  [2]string
 	BisSlotTitle, BisSlotNext string
 	// BisAltDelta is an alternative\'s line-2 figure: its own measured gap to the pick.
-	BisAltDelta                                   string
-	BisOffHandTwoHand, BisSlotNone                string
-	NotModelled                                   string
+	BisAltDelta                    string
+	BisOffHandTwoHand, BisSlotNone string
+	NotModelled                    string
+	// BisTie and BisOnly fill a pick's gain when there is no figure to state: a tie with the
+	// next best ({unit} is DPS or points), and a slot with nothing else ranked.
+	BisTie, BisOnly                               string
 	Replaces, ReplacesNoLevel                     string
 	UpgradesTitle, UpgradesByDPS, UpgradesByScore string
 	UpgradesMore, UpgradesMoreOne, UpgradesNone   string
@@ -62,6 +65,8 @@ var panelCopy = struct {
 	BisOffHandTwoHand: "**Off hand** · none: {main hand name} is two-handed.",
 	BisSlotNone:       "**{Slot}** · no pick for this range.",
 	NotModelled:       "Gain not modelled yet",
+	BisTie:            "Same {unit} as the next best",
+	BisOnly:           "Nothing else ranked",
 	Replaces:          "-# Replaces {worn name}, item level {n}",
 	ReplacesNoLevel:   "-# Replaces {worn name}",
 	UpgradesTitle:     "**Top upgrades** · {band label}",

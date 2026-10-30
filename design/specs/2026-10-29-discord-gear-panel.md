@@ -108,7 +108,7 @@ Each item row is one Section (type 9) holding one Text Display and a Thumbnail a
 
 - **Line 1, the row's one primary element.** It is the quality dot (§A.4.1), a space, then the name in plain bold text, **never a link** (ruling A10: Discord draws every link in its link blue #00a8fc, which hid the quality colour). The colour is carried by the dot beside it and the ring on the tile. When the dot emoji is not loaded, line 1 is the name alone. The panel's link button (`All 17 slots`, `Open on Forever Sixty`, `Character page`) opens the page.
 - **Line 2, body size.** The slot (the `/bis` slot choice's name: `Ring 1`, `Ring 2`, `Trinket 1`, `Trinket 2`, the same words the sheet's alt text uses), then ` · ` and the gain **only when there is one**:
-  - `/bis`: `signedDPS(-alternatives[0].dps_delta)` when its absolute value is at least 0.05. A tie or a slot with no alternative shows the slot alone. The retired `ties the next best` never appears.
+  - `/bis`: `signedDPS(-alternatives[0].dps_delta)` when its absolute value is at least 0.05. A tie reads `Same DPS as the next best` (`Same points as the next best` on a tank band) and a slot with no alternative reads `Nothing else ranked` (ruling A14).
   - `/char`: the band's measured gain over the worn item. An empty slot shows its real gain, the pick's stat-weight score in DPS (`score x reference_dps_per_point`, the site's `upgrades.ts` rule with nothing worn), or `Gain not modelled yet` where no figure exists: a sim-decided pick with no score (an on-use trinket), a weapon, or an unmodelled effect (ruling A11).
   - Tank: `+{x.x} points`.
   - **A pick with `effect_unmodelled: true`** (its proc, on-use or set effect is not in the sim) shows `Gain not modelled yet` in place of any figure, because the figure would leave out the effect that makes it the pick. In this band that is Head (Beastmaster's Cap), Feet (Beastmaster's Treads) and Ring 1 (Signet Ring of the Bronze Dragonflight). In the slot form, an alternative carrying the flag reads the same.
@@ -506,6 +506,8 @@ A9. Quest lines show the level a player must be (`min_level`). The data holds bo
 A10. (Coordinator, after the persona round.) Item names are plain bold text, not links: Discord draws every link blue, which hid the quality the dot gives. The panel's link button opens the page.
 
 A11. (Coordinator, after the persona round.) An empty `/char` slot shows its real gain, or `Gain not modelled yet` for a pick the sim cannot model (an on-use trinket); `fills an empty slot` is retired.
+
+A14. (Owner, 2026-10-30, on the live panel.) A pick row never leaves its gain blank: the lead promises a gain on every row, so a blank read as missing data. A tie and a slot with nothing else ranked say so in words.
 
 A12. (Coordinator, wow-player gate on the real output.) An alternative's figure says what it is measured against: `−7.4 DPS vs the best pick`. Checked against the band: Sentinel's Leather Pants (−7.40) and Marshal's Chain Legguards (−7.42) are each measured against the pick, so both round to −7.4. That is a real near-tie between them, not a bug.
 
