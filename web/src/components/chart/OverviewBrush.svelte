@@ -4,9 +4,12 @@
      The handles ARE the two native range inputs the old TimeChart drew (the keyboard and
      screen-reader path to the window), layered over the strip and styled. A handle's drag shows
      the new edge at once and calls onWindow on release; dragging the window body pans it.
-     Keys: arrows ±1 s, Shift+arrows ±10 s, PageUp and PageDown ±30 s, Home and End. -->
+     Keys: arrows ±1 s, Shift+arrows ±10 s, PageUp and PageDown ±30 s, Home and End. The inputs
+     take any value (step="any"): a whole-second step that does not divide the fight's length made
+     the browser snap the end handle down a second short of the end. Drags snap in lib/chart/brush. -->
 <script lang="ts">
-  import { clockLabel } from '../../lib/chart/time-axis';
+  import { brushSnap } from '../../lib/chart/brush';
+  import { clockLabel, endClockLabel } from '../../lib/chart/time-axis';
   import { BUCKET_MS, type TimeWindow } from '../../lib/report/window';
 
   let {
@@ -33,6 +36,8 @@
   let draft = $state<TimeWindow | null>(null);
   const shown = $derived(draft ?? current);
   const zoomed = $derived(shown.startMs > 0 || shown.endMs < domainMs);
+  /** An edge on the clock: the fight's end reads as the fight list reads its length. */
+  const edgeLabel = (ms: number): string => (ms >= domainMs ? endClockLabel(domainMs) : clockLabel(ms));
   const pct = (ms: number): number =>
     domainMs <= 0 ? 0 : (Math.max(0, Math.min(domainMs, ms)) / domainMs) * 100;
 
@@ -147,13 +152,13 @@
       type="range"
       min="0"
       max={domainMs}
-      step={BUCKET_MS}
+      step="any"
       value={shown.startMs}
       aria-label="Start"
-      aria-valuetext={clockLabel(shown.startMs)}
+      aria-valuetext={edgeLabel(shown.startMs)}
       data-testid="window-start"
-      oninput={(event) => (draft = moved('start', Number(event.currentTarget.value)))}
-      onchange={(event) => commit(moved('start', Number(event.currentTarget.value)))}
+      oninput={(event) => (draft = moved('start', brushSnap(Number(event.currentTarget.value), domainMs)))}
+      onchange={(event) => commit(moved('start', brushSnap(Number(event.currentTarget.value), domainMs)))}
       onkeydown={(event) => onKey('start', event)}
     />
     <input
@@ -161,13 +166,13 @@
       type="range"
       min="0"
       max={domainMs}
-      step={BUCKET_MS}
+      step="any"
       value={shown.endMs}
       aria-label="End"
-      aria-valuetext={clockLabel(shown.endMs)}
+      aria-valuetext={edgeLabel(shown.endMs)}
       data-testid="window-end"
-      oninput={(event) => (draft = moved('end', Number(event.currentTarget.value)))}
-      onchange={(event) => commit(moved('end', Number(event.currentTarget.value)))}
+      oninput={(event) => (draft = moved('end', brushSnap(Number(event.currentTarget.value), domainMs)))}
+      onchange={(event) => commit(moved('end', brushSnap(Number(event.currentTarget.value), domainMs)))}
       onkeydown={(event) => onKey('end', event)}
     />
   </div>
@@ -182,10 +187,11 @@
       <span
         class="text-gold absolute -translate-x-1/2 font-bold"
         style:left="{pct(shown.endMs)}%"
-        data-testid="brush-end-label">{clockLabel(shown.endMs)}</span
+        data-testid="brush-end-label">{edgeLabel(shown.endMs)}</span
       >
     {/if}
-    <span class="text-muted absolute right-0">{clockLabel(domainMs)}</span>
+    <span class="text-muted absolute right-0" data-testid="brush-domain-label">{endClockLabel(domainMs)}</span
+    >
   </div>
 </div>
 

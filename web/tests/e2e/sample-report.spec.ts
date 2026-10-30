@@ -144,3 +144,30 @@ test.describe('the sample report’s chart', () => {
     expect(box.height).toBeLessThanOrEqual(100);
   });
 });
+
+test.describe('the brush on a fight that does not end on a whole second', () => {
+  // 1 s, 2 s and 5 s points (lib/chart/buckets.ts); the 10 s case is OverviewBrush.test.ts's.
+  const FIGHTS = [
+    { fight: 2, durationMs: 9_879, label: '0:09.9' },
+    { fight: 9, durationMs: 80_261, label: '1:20' },
+    { fight: 6, durationMs: 763_140, label: '12:43' },
+  ];
+  for (const { fight, durationMs, label } of FIGHTS) {
+    test(`fight ${fight}: the whole-fight end handle sits on the track's end`, async ({ page }) => {
+      // 1024 px: the full chart and its brush on both projects (a phone draws the strip, no brush).
+      await page.setViewportSize({ width: 1024, height: 900 });
+      await page.goto(`/reports/sample?fight=${fight}`);
+      const chart = page.getByTestId('time-chart');
+      await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+      const end = chart.getByTestId('window-end');
+      await expect(end).toHaveAttribute('max', String(durationMs));
+      // The browser's own reading of the input: a step that did not divide the fight snapped it down.
+      expect(await end.inputValue()).toBe(String(durationMs));
+      expect(await end.evaluate((input: HTMLInputElement) => input.valueAsNumber / Number(input.max))).toBe(
+        1,
+      );
+      await expect(end).toHaveAttribute('aria-valuetext', label);
+      await expect(chart.getByTestId('brush-domain-label')).toHaveText(label);
+    });
+  }
+});

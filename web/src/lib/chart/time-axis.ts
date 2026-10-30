@@ -22,6 +22,17 @@ export function clockLabel(ms: number): string {
   return hours > 0 ? `${hours}:${String(minutes).padStart(2, '0')}:${seconds}` : `${minutes}:${seconds}`;
 }
 
+/**
+ * The fight's end on the chart's clock, as the fight list reads its length: to the tenth under a
+ * minute (`0:09.9`, where a second is a tenth of the pull), else to the rounded second.
+ */
+export function endClockLabel(ms: number): string {
+  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
+  const tenths = Math.round(safe / 100);
+  if (tenths < 600 && tenths % 10 !== 0) return `0:${(tenths / 10).toFixed(1).padStart(4, '0')}`;
+  return clockLabel(Math.round(safe / 1000) * 1000);
+}
+
 /** The smallest listed step, at least `floorS`, whose labels sit at least 64 px apart across `widthPx`. */
 export function timeStepSeconds(spanS: number, widthPx: number, floorS: number = TIME_STEP_FLOOR_S): number {
   const perSecond = spanS <= 0 ? 0 : widthPx / spanS;

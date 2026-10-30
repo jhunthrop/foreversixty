@@ -1,6 +1,6 @@
 // web/src/lib/chart/time-axis.test.ts
 import { describe, expect, it } from 'vitest';
-import { clockLabel, timeStepSeconds, timeTicks } from './time-axis';
+import { clockLabel, endClockLabel, timeStepSeconds, timeTicks } from './time-axis';
 
 describe('clockLabel', () => {
   it('reads m:ss under an hour and h:mm:ss from one hour', () => {
@@ -55,5 +55,20 @@ describe('timeTicks', () => {
 
   it('is empty for an empty range', () => {
     expect(timeTicks(10, 10, 600)).toEqual([]);
+  });
+});
+
+describe('endClockLabel', () => {
+  it('reads a short pull to the tenth, as the fight list does', () => {
+    expect(endClockLabel(9_879)).toBe('0:09.9');
+    expect(endClockLabel(4_470)).toBe('0:04.5');
+  });
+
+  it('reads a whole second, and a fight past a minute, to the rounded second', () => {
+    expect(endClockLabel(10_000)).toBe('0:10');
+    expect(endClockLabel(59_970)).toBe('1:00');
+    expect(endClockLabel(80_261)).toBe('1:20');
+    expect(endClockLabel(763_140)).toBe('12:43');
+    expect(endClockLabel(1_800_437)).toBe('30:00');
   });
 });
