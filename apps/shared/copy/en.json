@@ -425,7 +425,6 @@
     "account.age.hours": { "text": "{n} h ago", "args": { "n": "int" }, "notPlural": true },
     "account.age.days": { "text": "{n} d ago", "args": { "n": "int" }, "notPlural": true },
     "account.signOut.action": "Sign out",
-    "account.browserOnly": "That is done on foreversixty.gg. It opens in your browser.",
     "account.devices.loadFailed": "Could not load your devices just now.",
     "account.delete.row": "Delete account",
     "account.delete.title": "Delete account",

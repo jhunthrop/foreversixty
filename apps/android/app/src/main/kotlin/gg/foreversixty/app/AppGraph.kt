@@ -3,9 +3,16 @@ package gg.foreversixty.app
 import android.content.Context
 import android.os.Build
 import java.io.File
+import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.auth.AndroidTokenStore
 import gg.foreversixty.app.auth.AppSignIn
+import gg.foreversixty.app.auth.CustomTabsLauncher
 import gg.foreversixty.app.auth.TokenStore
+import gg.foreversixty.app.auth.session.FixtureBrowser
+import gg.foreversixty.app.auth.session.SessionManager
+import gg.foreversixty.app.auth.session.SessionTokens
+import gg.foreversixty.app.network.ApiMode
+import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -22,7 +29,9 @@ import gg.foreversixty.app.update.InstallId
  * their `XxxApi(apiClient)` here. A DI framework can replace this when the graph outgrows it.
  */
 class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConfig()) {
-    val tokens: TokenStore = AndroidTokenStore.create(context)
+    /** The device token, reporting every 401 discard to [session] (lane F1). */
+    private val sessionTokens = SessionTokens(AndroidTokenStore.create(context))
+    val tokens: TokenStore = sessionTokens
 
     /** Shuts when the API says this build is below its minimum; MainActivity then blocks. */
     val updateGate = UpdateGate()
@@ -54,4 +63,21 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         tokens = tokens,
         deviceName = Build.MODEL,
     )
+
+    /** The account (lane F1): signed in or out, the current character, sign-in and sign-out. */
+    val session = SessionManager(
+        client = apiClient,
+        tokens = sessionTokens,
+        signInFlow = signIn,
+        picked = PrefsValue(context, PrefsValue.PICKED_CHARACTER),
+        scope = MainScope(),
+    )
+
+    /** Fixture builds sign in against the contract fixtures; live builds open a Custom Tab. */
+    val account = AccountDeps(session) { activity ->
+        when (config.mode) {
+            ApiMode.Fixture -> FixtureBrowser { session.handleRedirect(it) }
+            ApiMode.Live -> CustomTabsLauncher(activity)
+        }
+    }
 }

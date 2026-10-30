@@ -419,7 +419,6 @@
     <string name="account_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
     <string name="account_age_days" tools:ignore="PluralsCandidate">%1$d d ago</string>
     <string name="account_signOut_action">Sign out</string>
-    <string name="account_browserOnly">That is done on foreversixty.gg. It opens in your browser.</string>
     <string name="account_devices_loadFailed">Could not load your devices just now.</string>
     <string name="account_delete_row">Delete account</string>
     <string name="account_delete_title">Delete account</string>

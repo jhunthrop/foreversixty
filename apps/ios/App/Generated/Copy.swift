@@ -1373,9 +1373,6 @@ enum Copy {
     /// Sign out
     static var accountSignOutAction: String { text("account.signOut.action") }
 
-    /// That is done on foreversixty.gg. It opens in your browser.
-    static var accountBrowserOnly: String { text("account.browserOnly") }
-
     /// Could not load your devices just now.
     static var accountDevicesLoadFailed: String { text("account.devices.loadFailed") }
 

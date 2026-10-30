@@ -20,5 +20,5 @@ enum class ForeverTab(@param:StringRes val label: Int, val icon: ImageVector) {
     Bis(R.string.tab_bis, Icons.AutoMirrored.Filled.List),
     Raids(R.string.tab_raids, Icons.Filled.DateRange),
     Sims(R.string.shell_tab_sims, Icons.Filled.PlayArrow),
-    Account(R.string.shell_tab_account, Icons.Filled.AccountCircle),
+    Account(R.string.tab_you, Icons.Filled.AccountCircle),
 }

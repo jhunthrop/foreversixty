@@ -18,17 +18,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
+import gg.foreversixty.app.account.AccountDeps
+import gg.foreversixty.app.account.HomeAccountGate
+import gg.foreversixty.app.account.YouRoute
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.network.AccountApi
 
-/** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
+/**
+ * The app shell: a Material 3 navigation bar over one screen per tab. [account] is lane F1's
+ * session and sign-in, null while its feature switch is off.
+ */
 @Composable
-fun ForeverAppScaffold(accountApi: AccountApi) {
+fun ForeverAppScaffold(accountApi: AccountApi, account: AccountDeps? = null) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Character) }
+    val pickClass = { selected = ForeverTab.Bis }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         when (selected) {
-            ForeverTab.Character -> HomeRoute(accountApi)
-            ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
+            ForeverTab.Character ->
+                if (account == null) HomeRoute(accountApi) else HomeAccountGate(account, pickClass) { HomeRoute(accountApi) }
+            ForeverTab.Account -> if (account == null) ComingSoon(selected) else YouRoute(account, pickClass)
+            ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims -> ComingSoon(selected)
         }
     }
 }
