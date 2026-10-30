@@ -2,6 +2,55 @@
 
 Branch `wt/mobile-f1-signin`, from origin/main, with origin/main (5d86a8dc7, the shared device lock) merged in. Not pushed. No migration, no API handler.
 
+## Fix round 1 (2026-10-31, both reviewers HOLD)
+
+The verdicts are `design/reviews/2026-10-31-mobile-signin/ux-verdict.md` and `player-verdict.md`, and they are committed with this round. The coordinator's six items:
+
+1. **Region and ruleset on every character.** Forever has no realms: a character is its region, ruleset and name.
+   - Switcher rows read `Obnoxious Yell · US · PvP`, with the race, spec, class and level below it and the guild as secondary text.
+   - You gains a Character row in the same form.
+   - The ruleset words are the site's own (`web/src/lib/characters.ts`: Normal, PvP, Roleplay, Hardcore), stored as `account.ruleset.*`. An unknown ruleset is shown as the API sends it.
+2. **Delete account says what a paying player loses.** `DeletionConsequence.of(me)` (iOS Auth, Android core:auth) reads `/v1/me` and shows only the lines that apply:
+   - an active Premium plan is cancelled;
+   - the founder price is gone for good;
+   - a guild plan the account pays for (`guilds[].plan`, scope `plan`, `you_are_billing_contact`) is cancelled and its seats end for every member;
+   - a seat held from a guild ends.
+
+   The lines appear under "Billing and seats" and again in the confirmation. The confirm button now reads `Delete account`.
+
+   To read the seat, `seat` is now typed in the spec as `MeSeat` (it was open JSON). New fixtures `me.guild-payer` and `me.seat` are claimed by `getMe`. Each case is tested on both platforms.
+3. **Guild reports. PENDING THE OWNER'S DECISION.**
+   - One key, `account.delete.reports`: "Guild reports stay for the raiders in them. Your name on them becomes Former raider." This is the coordinator's recommended default.
+   - The logs item now reads only "The combat logs you uploaded", so whichever way the owner decides, the change is a one-line edit to that key.
+   - The handler note below must follow the decision.
+4. **You (F8.1).**
+   - Privacy and Terms open foreversixty.gg/privacy and /terms in the system browser, with the external glyph.
+   - About Forever Sixty pushes the seal, the version and the site footer's disclaimer. `about.notAffiliated` is now byte-equal to `web/src/lib/footer-copy.ts`.
+   - The version line reads `Version {v} ({build}) · data {build}`. The version and build come from apps/VERSION through P2's `ClientIdentity`; the data build comes from the app config's `active_build`. Before the config answers, the line falls back to `account.version.noData`.
+   - Notifications, Characters and Discord wait for their lanes.
+5. **The deletion notice is neutral.** It uses the line border and a gold check, not wipe red, and reads "Your account is deleted. Everything is removed by 29 Nov 2026." Red stays for F1.4 and the 401 line.
+6. **Tab bar: minimal additive approach.** F2's shell fix and slot API have not landed: `wt/mobile-f2-home` touches only its own Home case.
+   - My edits to the tab label and icon are reverted on both platforms; the tab reads "Account" again until F2 lands.
+   - The case is renamed to the name F2 will use: iOS `AppTab.you` (was `account`), Android `ForeverTab.You` (was `Account`). The spec's names are `home`, `raids`, `bis`, `you`, in Kotlin's PascalCase on Android.
+   - My only other tab-setup lines are the `.home` / `.you` cases that plug in `HomeAccountGate` and `YouScreen` / `YouRoute`. Merging F2's four-tab shell should only touch those lines.
+
+Reviewer shoulds also taken:
+- Delete account moved below Sign out as a quiet red text row.
+- The plan line is meta under Plan, with the Founder tag on the right.
+- Revoke has a 44 pt hit target.
+- Companions are drawn with a monitor and phones with a smartphone glyph on Android (vector drawables, since `material-icons-core` has neither).
+- The confirmation body is "Your characters, logs and sims are removed within thirty days. Every device is signed out now."
+- The timing line now says "Everything listed is deleted within thirty days".
+- The iOS switcher sheet title stops growing at AX2.
+
+Left for the owner or a later lane:
+- Sign-in copy suggestions (read-only Battle.net, "Pick your class to see…", "Forever lists a character…"). These change spec-owned keys and need the spec author.
+- The Premium tag on the account head (F8).
+- Whether signing in again during the 30 days restores the account. This is an API decision; it is added to the handler note.
+- An inset-aware Android capture and iOS alert captures. These need the shared emulator (no system image installed on this Mac) or a UI-test target.
+
+New captures: `delete-free`, `delete-premium`, `delete-guild-payer`, `delete-seat`, `delete-failed`, `delete-confirm` (Android, Premium founder), `about-default`, plus refreshed `you-*`, `switcher-*`, `devices-*` and `signedout-deleted`. The old `delete-default` and `delete-plan-failed` are removed.
+
 ## What was built
 
 Both platforms, the same states and the same test list.
@@ -86,8 +135,9 @@ The site's `/account` has no deletion entry. The in-app copy (`account.delete.*`
    - notification settings and push tokens (lane A2's tables);
    - the Discord link and its webhooks (the notifications copy already promises "we ... delete it with your account");
    - the user row itself.
-   - Owner decision needed: guild reports that list other raiders. The account page says "Reports themselves are never deleted or rewritten" (about the pseudonym), but the privacy page says reports go with the account. Choose: delete the deleted user's own uploads, or detach them as `user-<id>`. Then align the two pages.
+   - Guild reports that list other raiders: pending the owner. The app's default copy (`account.delete.reports`) says reports stay and the deleted player's name becomes "Former raider". If that stands, rewrite the player's name on report rows to "Former raider" and keep the reports; then align the privacy page ("kept until you delete them or your account") and the account page.
 5. **Idempotent.** A repeat call while a deletion is pending answers 202 with the same two dates.
+   - Decide whether a Battle.net sign-in during the 30 days restores the account or starts a fresh one, and tell the app lane so the screen can say it.
 6. **Contract test.** Add `app_contract_test.go` beside the handler against the three fixtures, and keep it dark until after Nov 6 like the other API lanes.
 
 ## Verification (each command on its own, exit code checked)
