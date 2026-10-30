@@ -36,49 +36,17 @@
     ]
   },
   {
-    "id": 515,
-    "name": "Beastmaster Armor",
+    "id": 186,
+    "name": "Beaststalker Armor",
     "item_ids": [
-      22010,
-      22011,
-      22013,
-      22015,
-      22016,
-      22017,
-      22060,
-      22061
-    ],
-    "bonuses": [
-      {
-        "pieces": 2,
-        "description": "+8 All Resistances."
-      },
-      {
-        "pieces": 4,
-        "description": "Your normal ranged attacks have a 4% chance of restoring 200 mana."
-      },
-      {
-        "pieces": 6,
-        "description": "+40 Attack Power."
-      },
-      {
-        "pieces": 8,
-        "description": "+200 Armor."
-      }
-    ]
-  },
-  {
-    "id": 1669,
-    "name": "Beastmaster Armor",
-    "item_ids": [
-      226897,
-      226898,
-      226899,
-      226900,
-      226901,
-      226902,
-      226903,
-      226904
+      16674,
+      16675,
+      16676,
+      16677,
+      16678,
+      16679,
+      16680,
+      16681
     ],
     "bonuses": [
       {
@@ -87,19 +55,19 @@
       },
       {
         "pieces": 3,
-        "description": "Restores 8 mana per 5 sec."
+        "description": "+30 Attack Power."
       },
       {
         "pieces": 4,
-        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-      },
-      {
-        "pieces": 5,
         "description": "When struck in combat, has a 8% chance to remove a Root effect from yourself. Can only occur once every 60 sec."
       },
       {
+        "pieces": 5,
+        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+      },
+      {
         "pieces": 6,
-        "description": "+40 Attack Power."
+        "description": "Restores 8 mana per 5 sec."
       }
     ]
   },
@@ -208,30 +176,28 @@
     ]
   },
   {
-    "id": 1937,
-    "name": "Dawnstalker Armor",
+    "id": 1765,
+    "name": "Lieutenant Commander's Prowess",
     "item_ids": [
-      239537,
-      239538,
-      239539,
-      239540,
-      239541,
-      239542,
-      239543,
-      239544
+      227084,
+      227085,
+      227086,
+      227087,
+      227088,
+      227089
     ],
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your Shots deal 20% increased damage to targets afflicted with your Serpent Sting."
+        "description": "+40 Attack Power."
       },
       {
         "pieces": 4,
-        "description": "Your ranged critical strikes increase your Attack Power by 20% for 10 sec."
+        "description": "Increases the duration of your Wing Clip by 2 sec."
       },
       {
         "pieces": 6,
-        "description": "Your Multi-Shot hits 2 additional targets, and your Kill Shot and Chimera Shot hits increase the damage done by your next Multi-Shot cast within 12 sec by 75%, stacking up to 4 times."
+        "description": "+20 Stamina."
       }
     ]
   }

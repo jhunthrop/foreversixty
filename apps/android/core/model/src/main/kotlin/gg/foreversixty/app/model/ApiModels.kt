@@ -133,6 +133,10 @@ data class BisAlternative(
     @SerialName("source_kind") val sourceKind: String,
     /** Negative against the pick. */
     @SerialName("dps_delta") val dpsDelta: Double,
+    /** The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2). */
+    @SerialName("source_line") val sourceLine: String? = null,
+    /** Percent when known. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
 )
 
 @Serializable
@@ -187,6 +191,10 @@ data class BisSlot(
     @SerialName("item_name") val itemName: String? = null,
     @SerialName("source") val source: String? = null,
     @SerialName("source_kind") val sourceKind: String? = null,
+    /** The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2). */
+    @SerialName("source_line") val sourceLine: String? = null,
+    /** Percent when known. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
     @SerialName("alternatives") val alternatives: List<BisAlternative>? = null,
     @SerialName("score") val score: Double? = null,
     @SerialName("sim_dps") val simDps: Double? = null,
@@ -868,7 +876,10 @@ data class HomePick(
     @SerialName("quality") val quality: Int? = null,
     @SerialName("icon") val icon: String? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** The site's formatted source (web/src/lib/bis/source-cell.ts describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}", "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name. */
     @SerialName("source_line") val sourceLine: String,
+    /** Percent (0 to 100) when the source names one; absent or null otherwise. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
 )
 
 @Serializable
@@ -933,6 +944,10 @@ data class Item(
     @SerialName("armor_type") val armorType: String? = null,
     /** Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published. */
     @SerialName("min_standing") val minStanding: String? = null,
+    /** Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints on the right of the slot line ("Polearm"); null for anything else. Omitted until the data lane publishes it. */
+    @SerialName("subclass") val subclass: String? = null,
+    /** Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25 thrown); null for anything else. Omitted until published. */
+    @SerialName("weapon_slot") val weaponSlot: String? = null,
 )
 
 /** One item set of /data/{build}/sets.json. */

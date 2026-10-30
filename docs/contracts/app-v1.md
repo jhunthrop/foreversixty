@@ -179,7 +179,10 @@ no_list), spec, band, band_label, preset, unit, unit_word, data_build, upgrade_c
 not_sim_checked_count, not_modelled_count, synced_at, synced_from, upgrades[], already_best[],
 talents { state, points_differ, band_points } }`. Any state but `ok` has `upgrades` and
 `already_best` empty and `total_gain` null. Fixtures `character.home`, `character.home.empty`,
-`character.home.no-gear`. Errors: 404 `not_found`.
+`character.home.no-gear`. Errors: 404 `not_found`. A pick's `source_line` is the site's formatted line (see the BiS
+file below) and `drop_chance` the percent when known; lane A3 fills both. The apps list
+upgrades measured gains largest first, then gains not modelled yet, then empty slots (coordinator
+ruling, 2026-10-31); A3 should return that order too.
 
 ### GET /v1/characters/search
 Typeahead. Auth public. Caching `public, max-age=60, stale-while-revalidate=300`. Query `q` (2 to
@@ -415,6 +418,12 @@ For the lists and the BiS, read the active build. Build ids look like `1.60.1.70
 
 ### /data/{build}/bis/{spec}.json
 The BiS lists for a spec (`warrior-fury`; one file per spec). Fixtures `cdn.bis.warrior-fury`, `cdn.bis.hunter-beast-mastery` (its level-60 bands).
+**Pending (lane F2 fix round).** Each slot and alternative gains `source_line`, the site's
+formatted source (`describeSourceCell` in `web/src/lib/bis/source-cell.ts`: `Quest: {name} ·
+requires level {n}`, `{n}% from {boss}`, `Crafted: {profession}`, `{instance} · {boss}`), never
+repeating the item's name, and `drop_chance` (percent, or null). The apps render `source_line`
+and fall back to `source`. The hunter fixture carries both, from the site's formatter over
+`loot.json`.
 `{ spec, build, engine_version, generated_at, bands[], presets }`. A **band** is one level band
 (`20|30|40|50|60`) for one `faction` (`alliance|horde`) under one `preset` (`bare`, and `raid` at
 60): `{ spec, band, preset, faction, race, talents, talent_points, weights[], slots[], set_dps,
@@ -450,6 +459,11 @@ and `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when 
 set). Each is nullable and absent until published; draw nothing for a missing one. The
 `cdn.items.hunter` fixture carries them, read from the client's own Item and ItemSparse rows.
 `stats_source` is null on most real rows.
+
+**Pending (lane F2 fix round).** `subclass` (a weapon's type word: `polearm`, `sword`, `gun` ...,
+from Item `SubclassID` when `ClassID` is 2) and `weapon_slot` (`one_hand`, `two_hand`,
+`main_hand`, `off_hand`, `ranged`, `thrown`, from Item `InventoryType`): the client's
+`Two-Hand ... Polearm` line. Nullable, absent until published.
 
 ### /data/{build}/sets.json
 `[{ id, name, item_ids[], bonuses[] }]`, a bonus `{ pieces, description }`. An item's `set_id`

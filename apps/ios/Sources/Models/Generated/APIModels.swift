@@ -331,19 +331,27 @@ public struct BisAlternative: Codable, Sendable, Equatable {
     public let sourceKind: String
     /// Negative against the pick.
     public let dpsDelta: Double
+    /// The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2).
+    public let sourceLine: String?
+    /// Percent when known.
+    public let dropChance: Double?
 
     public init(
         itemId: Int,
         itemName: String,
         source: String,
         sourceKind: String,
-        dpsDelta: Double
+        dpsDelta: Double,
+        sourceLine: String? = nil,
+        dropChance: Double? = nil
     ) {
         self.itemId = itemId
         self.itemName = itemName
         self.source = source
         self.sourceKind = sourceKind
         self.dpsDelta = dpsDelta
+        self.sourceLine = sourceLine
+        self.dropChance = dropChance
     }
 }
 
@@ -486,6 +494,10 @@ public struct BisSlot: Codable, Sendable, Equatable {
     public let itemName: String?
     public let source: String?
     public let sourceKind: String?
+    /// The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2).
+    public let sourceLine: String?
+    /// Percent when known.
+    public let dropChance: Double?
     public let alternatives: [BisAlternative]?
     public let score: Double?
     public let simDps: Double?
@@ -507,6 +519,8 @@ public struct BisSlot: Codable, Sendable, Equatable {
         itemName: String? = nil,
         source: String? = nil,
         sourceKind: String? = nil,
+        sourceLine: String? = nil,
+        dropChance: Double? = nil,
         alternatives: [BisAlternative]? = nil,
         score: Double? = nil,
         simDps: Double? = nil,
@@ -525,6 +539,8 @@ public struct BisSlot: Codable, Sendable, Equatable {
         self.itemName = itemName
         self.source = source
         self.sourceKind = sourceKind
+        self.sourceLine = sourceLine
+        self.dropChance = dropChance
         self.alternatives = alternatives
         self.score = score
         self.simDps = simDps
@@ -2308,7 +2324,10 @@ public struct HomePick: Codable, Sendable, Equatable {
     public let quality: Int?
     public let icon: String?
     public let itemLevel: Int?
+    /// The site's formatted source (web/src/lib/bis/source-cell.ts describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}", "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name.
     public let sourceLine: String
+    /// Percent (0 to 100) when the source names one; absent or null otherwise.
+    public let dropChance: Double?
 
     public init(
         id: Int,
@@ -2316,7 +2335,8 @@ public struct HomePick: Codable, Sendable, Equatable {
         quality: Int? = nil,
         icon: String? = nil,
         itemLevel: Int? = nil,
-        sourceLine: String
+        sourceLine: String,
+        dropChance: Double? = nil
     ) {
         self.id = id
         self.name = name
@@ -2324,6 +2344,7 @@ public struct HomePick: Codable, Sendable, Equatable {
         self.icon = icon
         self.itemLevel = itemLevel
         self.sourceLine = sourceLine
+        self.dropChance = dropChance
     }
 }
 
@@ -2431,6 +2452,10 @@ public struct Item: Codable, Sendable, Equatable {
     public let armorType: String?
     /// Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published.
     public let minStanding: String?
+    /// Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints on the right of the slot line ("Polearm"); null for anything else. Omitted until the data lane publishes it.
+    public let subclass: String?
+    /// Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25 thrown); null for anything else. Omitted until published.
+    public let weaponSlot: String?
 
     public init(
         id: Int,
@@ -2459,7 +2484,9 @@ public struct Item: Codable, Sendable, Equatable {
         supersededBy: Int? = nil,
         bonding: String? = nil,
         armorType: String? = nil,
-        minStanding: String? = nil
+        minStanding: String? = nil,
+        subclass: String? = nil,
+        weaponSlot: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -2488,6 +2515,8 @@ public struct Item: Codable, Sendable, Equatable {
         self.bonding = bonding
         self.armorType = armorType
         self.minStanding = minStanding
+        self.subclass = subclass
+        self.weaponSlot = weaponSlot
     }
 
     public init(from decoder: any Decoder) throws {
@@ -2519,6 +2548,8 @@ public struct Item: Codable, Sendable, Equatable {
         bonding = try c.decodeIfPresent(String.self, forKey: .bonding)
         armorType = try c.decodeIfPresent(String.self, forKey: .armorType)
         minStanding = try c.decodeIfPresent(String.self, forKey: .minStanding)
+        subclass = try c.decodeIfPresent(String.self, forKey: .subclass)
+        weaponSlot = try c.decodeIfPresent(String.self, forKey: .weaponSlot)
     }
 }
 

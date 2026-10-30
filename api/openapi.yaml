@@ -1576,7 +1576,15 @@ components:
                   quality: { type: [integer, "null"] }
                   icon: { type: [string, "null"] }
                   item_level: { type: [integer, "null"] }
-                  source_line: { type: string }
+                  source_line:
+                    type: string
+                    description: >-
+                      The site's formatted source (web/src/lib/bis/source-cell.ts
+                      describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}",
+                      "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name.
+                  drop_chance:
+                    type: [number, "null"]
+                    description: Percent (0 to 100) when the source names one; absent or null otherwise.
               worn:
                 type: [object, "null"]
                 title: HomeWorn
@@ -2417,6 +2425,8 @@ components:
               item_name: { type: string }
               source: { type: string }
               source_kind: { type: string }
+              source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+              drop_chance: { type: [number, "null"], description: Percent when known. }
               alternatives:
                 type: array
                 items:
@@ -2429,6 +2439,8 @@ components:
                     source: { type: string }
                     source_kind: { type: string }
                     dps_delta: { type: number, description: Negative against the pick. }
+                    source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+                    drop_chance: { type: [number, "null"], description: Percent when known. }
               score: { type: number }
               sim_dps: { type: number }
               dps_delta: { type: number }
@@ -2510,6 +2522,20 @@ components:
           description: >-
             Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else
             null. Omitted until published.
+        subclass:
+          type: [string, "null"]
+          enum: [axe, bow, gun, mace, polearm, sword, staff, fist_weapon, dagger, thrown, crossbow, wand, fishing_pole, null]
+          description: >-
+            Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints
+            on the right of the slot line ("Polearm"); null for anything else. Omitted until the
+            data lane publishes it.
+        weapon_slot:
+          type: [string, "null"]
+          enum: [one_hand, two_hand, main_hand, off_hand, ranged, thrown, null]
+          description: >-
+            Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot
+            line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25
+            thrown); null for anything else. Omitted until published.
     ItemSet:
       type: object
       description: One item set of /data/{build}/sets.json.

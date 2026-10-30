@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70658",
   "engine_version": "1f542def3",
-  "generated_at": "2026-10-30T13:22:34Z",
+  "generated_at": "2026-10-30T23:07:33Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -16,32 +16,32 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0012754773379757224,
+          "error": 0.0012754773379759193,
           "insignificant": false,
           "weight_per_percent": 1,
           "scale_factor": 0.3533195358630308,
           "dps_per_point": 0.06812604163405009,
-          "scale_error": 0.0004506510610573963
+          "scale_error": 0.0004506510610574659
         },
         {
           "stat": "agility",
           "weight": 2.8302992008561447,
-          "error": 0.01615449519471626,
+          "error": 0.01615449519471624,
           "insignificant": false,
           "weight_per_percent": 2.8302992008561447,
           "scale_factor": 1,
           "dps_per_point": 0.1928170811943444,
-          "scale_error": 0.005707698744298709
+          "scale_error": 0.005707698744298703
         },
         {
           "stat": "crit",
-          "weight": 1.2925346299354086,
-          "error": 0.03325296085053009,
+          "weight": 1.2925346299354081,
+          "error": 0.03325296085053008,
           "insignificant": false,
-          "weight_per_percent": 18.09548481909572,
-          "scale_factor": 0.4566777355356728,
-          "dps_per_point": 0.08805526801243117,
-          "scale_error": 0.011748920693780824
+          "weight_per_percent": 18.095484819095713,
+          "scale_factor": 0.45667773553567265,
+          "dps_per_point": 0.08805526801243113,
+          "scale_error": 0.011748920693780822
         },
         {
           "stat": "hit",
@@ -56,117 +56,134 @@
         {
           "stat": "melee_haste",
           "weight": 13.151510662296886,
-          "error": 1.7901055195201176,
+          "error": 1.7901055195201174,
           "insignificant": false,
           "weight_per_percent": 13.151510662296886,
           "scale_factor": 4.646685643100437,
           "dps_per_point": 0.8959603629302912,
-          "scale_error": 0.6324792513026976
+          "scale_error": 0.6324792513026974
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 226887,
-          "item_name": "Beastmaster's Cap",
-          "source": "Saving the Best for Last",
-          "source_kind": "quest",
-          "score": 88.101103663,
+          "item_id": 252605,
+          "item_name": "Black Dragonscale Helm",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 278.5839968233016,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 231562,
               "item_name": "Field Marshal's Chain Greathelm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231580,
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 279253,
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -10.605916358
+              "dps_delta": -6.021722428,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "neck",
-          "item_id": 19491,
-          "item_name": "Amulet of the Darkmoon",
-          "source": "1200 Tickets - Amulet of the Darkmoon",
-          "source_kind": "quest",
-          "score": 53.775684816,
+          "item_id": 13089,
+          "item_name": "Skibi's Pendant",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 36.793889611,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19538,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.771268325
+              "item_id": 20649,
+              "item_name": "Sunprism Pendant",
+              "source_kind": "quest",
+              "source": "Vyral the Vile",
+              "dps_delta": -0.949160153,
+              "source_line": "Quest: Vyral the Vile · requires level 60",
+              "drop_chance": null
             },
             {
-              "item_id": 19620,
-              "item_name": "Maelstrom's Tendril",
-              "source_kind": "quest",
-              "source": "The Maelstrom's Tendril",
-              "dps_delta": -0.771268325
+              "item_id": 273049,
+              "item_name": "Archmagister's Faceted Pendant",
+              "source_kind": "world",
+              "source": "Shade of the Archmage",
+              "dps_delta": -1.689109556,
+              "source_line": "Shade of the Archmage",
+              "drop_chance": null
             },
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -1.153734091
+              "item_id": 13084,
+              "item_name": "Kaleidoscope Chain",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.735353731,
+              "source_line": "World drop (BoE) · levels 31-38",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 45-53",
+          "drop_chance": null
         },
         {
           "slot": "shoulder",
-          "item_id": 272105,
-          "item_name": "Darkspear Pauldrons",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 94.513563242,
+          "item_id": 16708,
+          "item_name": "Shadowcraft Spaulders",
+          "source": "Stratholme: Cannon Master Willey",
+          "source_kind": "dungeon",
+          "score": 66.867426828,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 13116,
+              "item_name": "Spaulders of the Unseen",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 58-62",
+              "drop_chance": null
+            },
             {
               "item_id": 16468,
               "item_name": "Field Marshal's Chain Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231576,
               "item_name": "Field Marshal's Chain Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Cannon Master Willey",
+          "drop_chance": null
         },
         {
           "slot": "back",
@@ -178,27 +195,35 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20073,
-              "item_name": "Cloak of the Honor Guard",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.974406229
-            },
-            {
               "item_id": 18511,
               "item_name": "Shifting Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.97688667
+              "dps_delta": -1.12066034,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             },
             {
-              "item_id": 272414,
-              "item_name": "Howler's Furs",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -1.507423679
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.362520833,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.940972076,
+              "source_line": "World drop (BoE) · levels 45-53",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "chest",
@@ -214,268 +239,341 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.145637832
+              "dps_delta": -2.145637832,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.145637832
+              "dps_delta": -2.145637832,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -5.343187053
+              "item_id": 16721,
+              "item_name": "Shadowcraft Tunic",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -3.578208818,
+              "source_line": "Blackrock Spire · General Drakkisath",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "wrist",
-          "item_id": 226885,
-          "item_name": "Beastmaster's Bindings",
-          "source": "An Earnest Proposition",
-          "source_kind": "quest",
-          "sim_dps": 296.73909174394294,
+          "item_id": 16681,
+          "item_name": "Beaststalker's Bindings",
+          "source": "Stratholme: Fleshflayer Ghoul",
+          "source_kind": "dungeon",
+          "chance": 0.0432,
+          "score": 42.454488013,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 16402,
-              "item_name": "Knight-Captain's Chain Armguards",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": 0
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
             },
             {
               "item_id": 16461,
               "item_name": "Marshal's Chain Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -7.77826088
+              "item_id": 16710,
+              "item_name": "Shadowcraft Bracers",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Scholomance Occultist",
+              "dps_delta": -6.592064927,
+              "source_line": "6% from Scholomance Occultist",
+              "drop_chance": 6.329
             }
           ],
-          "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+          "source_line": "4% from Ghoul Ravener",
+          "drop_chance": 4.02
         },
         {
           "slot": "hands",
-          "item_id": 272099,
-          "item_name": "Raider Gloves",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 76.418078423,
+          "item_id": 16676,
+          "item_name": "Beaststalker's Gloves",
+          "source": "Blackrock Spire: War Master Voone",
+          "source_kind": "dungeon",
+          "sim_dps": 278.5839968233016,
           "verified": true,
-          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +1.2 DPS (296.7 vs 295.5 set DPS)",
-          "dps_delta": 1.2324782984638318,
           "alternatives": [
-            {
-              "item_id": 231578,
-              "item_name": "Marshal's Chain Vices",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
-            },
             {
               "item_id": 231560,
               "item_name": "Marshal's Chain Grips",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.546343712
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
+            },
+            {
+              "item_id": 231578,
+              "item_name": "Marshal's Chain Vices",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 279257,
               "item_name": "Mourning Handguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.156902487
-            }
-          ]
-        },
-        {
-          "slot": "waist",
-          "item_id": 226888,
-          "item_name": "Beastmaster's Belt",
-          "source": "Just Compensation",
-          "source_kind": "quest",
-          "sim_dps": 296.73909174394294,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272397,
-              "item_name": "Ranger's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.962101606
+              "dps_delta": -5.881091218,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 4,
+            "set": "Beaststalker Armor",
+            "pieces": 5,
             "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-          }
+          },
+          "source_line": "Blackrock Spire · War Master Voone",
+          "drop_chance": null
+        },
+        {
+          "slot": "waist",
+          "item_id": 16680,
+          "item_name": "Beaststalker's Belt",
+          "source": "Blackrock Spire: Smolderthorn Headhunter",
+          "source_kind": "dungeon",
+          "chance": 0.0418,
+          "sim_dps": 278.5839968233016,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 16464,
+              "item_name": "Marshal's Chain Girdle",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
+            },
+            {
+              "item_id": 19043,
+              "item_name": "Heavy Timbermaw Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0,
+              "source_line": "Crafted: Blacksmithing",
+              "drop_chance": null
+            },
+            {
+              "item_id": 17778,
+              "item_name": "Sagebrush Girdle",
+              "source_kind": "quest",
+              "source": "Vyletongue Corruption",
+              "dps_delta": -5.241492201,
+              "source_line": "Quest: Vyletongue Corruption · requires level 41",
+              "drop_chance": null
+            }
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "4% from Smolderthorn Headhunter",
+          "drop_chance": 4.18
         },
         {
           "slot": "legs",
-          "item_id": 237819,
-          "item_name": "Sentinel's Chain Leggings",
-          "source": "Illiyana Moonblaze",
-          "source_kind": "vendor",
-          "score": 158.255663712,
+          "item_id": 16678,
+          "item_name": "Beaststalker's Pants",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "sim_dps": 278.5839968233016,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.9 DPS (296.7 vs 294.8 set DPS)",
-          "dps_delta": 1.93529455298426,
           "alternatives": [
-            {
-              "item_id": 231577,
-              "item_name": "Marshal's Chain Legguards",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.992777422
-            },
-            {
-              "item_id": 237818,
-              "item_name": "Sentinel's Leather Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -3.109723238
-            },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -3.818130304
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
+            },
+            {
+              "item_id": 231577,
+              "item_name": "Marshal's Chain Legguards",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
+            },
+            {
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -8.604369762,
+              "source_line": "Vendor: Captain Dirgehammer",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 3,
+            "bonus": "+30 Attack Power."
+          },
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "feet",
-          "item_id": 226881,
-          "item_name": "Beastmaster's Treads",
-          "source": "Mokvar",
-          "source_kind": "vendor",
-          "sim_dps": 296.73909174394294,
+          "item_id": 16675,
+          "item_name": "Beaststalker's Boots",
+          "source": "Stratholme: Nerub'enkan",
+          "source_kind": "dungeon",
+          "sim_dps": 278.5839968233016,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 16462,
               "item_name": "Marshal's Chain Boots",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231579,
               "item_name": "Marshal's Chain Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 22061,
-              "item_name": "Beastmaster's Boots",
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words",
-              "dps_delta": -8.87604939
+              "item_id": 16711,
+              "item_name": "Shadowcraft Boots",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Rattlegore",
+              "dps_delta": -7.789238187,
+              "source_line": "16% from Rattlegore",
+              "drop_chance": 16
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
+            "set": "Beaststalker Armor",
             "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+            "bonus": "+30 Attack Power."
+          },
+          "source_line": "Stratholme · Nerub'enkan",
+          "drop_chance": null
         },
         {
           "slot": "finger1",
-          "item_id": 234202,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "score": 90.931402864,
+          "item_id": 9533,
+          "item_name": "Masons Fraternity Ring",
+          "source": "Divino-matic Rod",
+          "source_kind": "quest",
+          "score": 39.624188812,
           "verified": true,
-          "effect_unmodelled": true,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +3.1 DPS (278.6 vs 275.5 set DPS)",
+          "dps_delta": 3.1259292277645727,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -2.441071614
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.964085406,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
-              "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -3.495357401
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -1.156902487,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             },
             {
-              "item_id": 19514,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -4.073808644
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -1.336918304,
+              "source_line": "25% from Princess Theradras",
+              "drop_chance": 25
             }
-          ]
+          ],
+          "source_line": "Quest: Divino-matic Rod · requires level 40",
+          "drop_chance": null
         },
         {
           "slot": "finger2",
-          "item_id": 272408,
-          "item_name": "Cutthroat's Signet",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "score": 62.628410855,
+          "item_id": 2951,
+          "item_name": "Ring of the Underwood",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 28.302992009,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -0.512900802
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.192817081,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
-              "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -1.567186589
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -0.385634162,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             },
             {
-              "item_id": 19514,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -2.145637832
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.565649979,
+              "source_line": "25% from Princess Theradras",
+              "drop_chance": 25
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 32-39",
+          "drop_chance": null
         },
         {
           "slot": "trinket1",
@@ -483,10 +581,12 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 296.73909174394294,
+          "sim_dps": 278.5839968233016,
           "verified": true,
-          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +2.4 DPS (296.7 vs 294.3 set DPS)",
-          "dps_delta": 2.445561474530791
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +2.1 DPS (278.6 vs 276.5 set DPS)",
+          "dps_delta": 2.125672867526646,
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "trinket2",
@@ -494,18 +594,22 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 296.73909174394294,
+          "sim_dps": 278.5839968233016,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19287,
-              "item_name": "Darkmoon Card: Heroism",
+              "item_id": 17774,
+              "item_name": "Mark of the Chosen",
               "source_kind": "quest",
-              "source": "Darkmoon Warlords Deck",
-              "dps_delta": 0
+              "source": "The Pariah's Instructions",
+              "dps_delta": 0,
+              "source_line": "Quest: The Pariah's Instructions · requires level 39",
+              "drop_chance": null
             }
           ],
-          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.42 vs 0.52 ± 0.33 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.41 vs 0.50 ± 0.33 DPS gain) -- each faction's own tournament winner kept",
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "main_hand",
@@ -513,7 +617,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 296.73909174394294,
+          "sim_dps": 278.5839968233016,
           "verified": true,
           "alternatives": [
             {
@@ -521,23 +625,31 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 234570,
               "item_name": "Grand Marshal's Polearm",
               "source_kind": "vendor",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 19100,
-              "item_name": "Electrified Dagger",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -8.597152795
+              "item_id": 10696,
+              "item_name": "Enchanted Azsharite Felbane Sword",
+              "source_kind": "quest",
+              "source": "Enchanted Azsharite Fel Weaponry",
+              "dps_delta": -8.932567598,
+              "source_line": "Quest: Enchanted Azsharite Fel Weaponry · requires level 45",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
         },
         {
           "slot": "off_hand",
@@ -550,7 +662,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 296.73909174394294,
+          "sim_dps": 278.5839968233016,
           "verified": true,
           "alternatives": [
             {
@@ -558,39 +670,47 @@
               "item_name": "Grand Marshal's Bullseye",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 234586,
               "item_name": "Grand Marshal's Repeater",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 16004,
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -12.046552136
+              "dps_delta": -12.284116318,
+              "source_line": "Crafted: Engineering",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Engineering",
+          "drop_chance": null
         }
       ],
-      "set_dps": 296.73909174394294,
+      "set_dps": 278.5839968233016,
       "new_at_band": [
-        "head: Beastmaster's Cap",
-        "neck: Amulet of the Darkmoon",
-        "shoulder: Darkspear Pauldrons",
+        "head: Black Dragonscale Helm",
+        "neck: Skibi's Pendant",
+        "shoulder: Shadowcraft Spaulders",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
-        "wrist: Beastmaster's Bindings",
-        "hands: Raider Gloves",
-        "waist: Beastmaster's Belt",
-        "legs: Sentinel's Chain Leggings",
-        "feet: Beastmaster's Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cutthroat's Signet",
+        "wrist: Beaststalker's Bindings",
+        "hands: Beaststalker's Gloves",
+        "waist: Beaststalker's Belt",
+        "legs: Beaststalker's Pants",
+        "feet: Beaststalker's Boots",
+        "finger1: Masons Fraternity Ring",
+        "finger2: Ring of the Underwood",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Legionite Glaive",
@@ -612,32 +732,32 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0012754773379757224,
+          "error": 0.0012754773379759193,
           "insignificant": false,
           "weight_per_percent": 1,
           "scale_factor": 0.3533195358630308,
           "dps_per_point": 0.06812604163405009,
-          "scale_error": 0.0004506510610573963
+          "scale_error": 0.0004506510610574659
         },
         {
           "stat": "agility",
           "weight": 2.8302992008561447,
-          "error": 0.01615449519471626,
+          "error": 0.01615449519471624,
           "insignificant": false,
           "weight_per_percent": 2.8302992008561447,
           "scale_factor": 1,
           "dps_per_point": 0.1928170811943444,
-          "scale_error": 0.005707698744298709
+          "scale_error": 0.005707698744298703
         },
         {
           "stat": "crit",
-          "weight": 1.2925346299354086,
-          "error": 0.03325296085053009,
+          "weight": 1.2925346299354081,
+          "error": 0.03325296085053008,
           "insignificant": false,
-          "weight_per_percent": 18.09548481909572,
-          "scale_factor": 0.4566777355356728,
-          "dps_per_point": 0.08805526801243117,
-          "scale_error": 0.011748920693780824
+          "weight_per_percent": 18.095484819095713,
+          "scale_factor": 0.45667773553567265,
+          "dps_per_point": 0.08805526801243113,
+          "scale_error": 0.011748920693780822
         },
         {
           "stat": "hit",
@@ -652,117 +772,134 @@
         {
           "stat": "melee_haste",
           "weight": 13.151510662296886,
-          "error": 1.7901055195201176,
+          "error": 1.7901055195201174,
           "insignificant": false,
           "weight_per_percent": 13.151510662296886,
           "scale_factor": 4.646685643100437,
           "dps_per_point": 0.8959603629302912,
-          "scale_error": 0.6324792513026976
+          "scale_error": 0.6324792513026974
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 226887,
-          "item_name": "Beastmaster's Cap",
-          "source": "Saving the Best for Last",
-          "source_kind": "quest",
-          "score": 88.101103663,
+          "item_id": 252605,
+          "item_name": "Black Dragonscale Helm",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 287.9824677732639,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 16566,
               "item_name": "Warlord's Chain Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231571,
               "item_name": "Warlord's Chain Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 279253,
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -10.773608227
+              "dps_delta": -6.071186985,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "neck",
-          "item_id": 19491,
-          "item_name": "Amulet of the Darkmoon",
-          "source": "1200 Tickets - Amulet of the Darkmoon",
-          "source_kind": "quest",
-          "score": 53.775684816,
+          "item_id": 13089,
+          "item_name": "Skibi's Pendant",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 36.793889611,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
+              "item_id": 20649,
+              "item_name": "Sunprism Pendant",
               "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.461312955
+              "source": "Vyral the Vile",
+              "dps_delta": -0.192817081,
+              "source_line": "Quest: Vyral the Vile · requires level 60",
+              "drop_chance": null
             },
             {
-              "item_id": 19534,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.771268325
+              "item_id": 19159,
+              "item_name": "Woven Ivy Necklace",
+              "source_kind": "quest",
+              "source": "Wanted: Vile Priestess Hexx and Her Minions",
+              "dps_delta": -0.771268325,
+              "source_line": "Quest: Wanted: Vile Priestess Hexx and Her Minions · requires level 46",
+              "drop_chance": null
             },
             {
-              "item_id": 19620,
-              "item_name": "Maelstrom's Tendril",
-              "source_kind": "quest",
-              "source": "The Maelstrom's Tendril",
-              "dps_delta": -0.771268325
+              "item_id": 273049,
+              "item_name": "Archmagister's Faceted Pendant",
+              "source_kind": "world",
+              "source": "Shade of the Archmage",
+              "dps_delta": -1.689109556,
+              "source_line": "Shade of the Archmage",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 45-53",
+          "drop_chance": null
         },
         {
           "slot": "shoulder",
-          "item_id": 272105,
-          "item_name": "Darkspear Pauldrons",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 94.513563242,
+          "item_id": 16708,
+          "item_name": "Shadowcraft Spaulders",
+          "source": "Stratholme: Cannon Master Willey",
+          "source_kind": "dungeon",
+          "score": 66.867426828,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 231572,
-              "item_name": "Warlord's Chain Shoulders",
-              "source_kind": "pvp",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "item_id": 13116,
+              "item_name": "Spaulders of the Unseen",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 58-62",
+              "drop_chance": null
             },
             {
               "item_id": 231565,
               "item_name": "Warlord's Chain Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.457497134
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
+            },
+            {
+              "item_id": 231572,
+              "item_name": "Warlord's Chain Shoulders",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Cannon Master Willey",
+          "drop_chance": null
         },
         {
           "slot": "back",
@@ -774,27 +911,35 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272414,
-              "item_name": "Howler's Furs",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.780061296
-            },
-            {
-              "item_id": 20068,
-              "item_name": "Deathguard's Cloak",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.974406229
-            },
-            {
               "item_id": 18511,
               "item_name": "Shifting Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.97688667
+              "dps_delta": -1.156274597,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.362520833,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.940972076,
+              "source_line": "World drop (BoE) · levels 45-53",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "chest",
@@ -810,266 +955,341 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.145637832
+              "dps_delta": -2.145637832,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.145637832
+              "dps_delta": -2.145637832,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -4.294055994
+              "item_id": 16721,
+              "item_name": "Shadowcraft Tunic",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -3.191034975,
+              "source_line": "Blackrock Spire · General Drakkisath",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "wrist",
-          "item_id": 226885,
-          "item_name": "Beastmaster's Bindings",
-          "source": "An Earnest Proposition",
-          "source_kind": "quest",
-          "sim_dps": 307.0430164187725,
+          "item_id": 16681,
+          "item_name": "Beaststalker's Bindings",
+          "source": "Stratholme: Fleshflayer Ghoul",
+          "source_kind": "dungeon",
+          "chance": 0.0432,
+          "score": 42.454488013,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 16517,
-              "item_name": "Legionnaire's Chain Bracers",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": 0
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
             },
             {
               "item_id": 16570,
               "item_name": "General's Chain Wristguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -8.246665208
+              "item_id": 16710,
+              "item_name": "Shadowcraft Bracers",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Scholomance Occultist",
+              "dps_delta": -6.951415271,
+              "source_line": "6% from Scholomance Occultist",
+              "drop_chance": 6.329
             }
           ],
-          "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+          "source_line": "4% from Ghoul Ravener",
+          "drop_chance": 4.02
         },
         {
           "slot": "hands",
-          "item_id": 272099,
-          "item_name": "Raider Gloves",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 76.418078423,
+          "item_id": 16676,
+          "item_name": "Beaststalker's Gloves",
+          "source": "Blackrock Spire: War Master Voone",
+          "source_kind": "dungeon",
+          "sim_dps": 287.9824677732639,
           "verified": true,
-          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +1.2 DPS (307.0 vs 305.8 set DPS)",
-          "dps_delta": 1.201547475935854,
           "alternatives": [
             {
               "item_id": 16571,
               "item_name": "General's Chain Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231575,
               "item_name": "General's Chain Vices",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 231569,
-              "item_name": "General's Chain Grips",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.546343712
-            }
-          ]
-        },
-        {
-          "slot": "waist",
-          "item_id": 226888,
-          "item_name": "Beastmaster's Belt",
-          "source": "Just Compensation",
-          "source_kind": "quest",
-          "sim_dps": 307.0430164187725,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272397,
-              "item_name": "Ranger's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -5.658331839
+              "item_id": 279257,
+              "item_name": "Mourning Handguards",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -5.391041222,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 4,
+            "set": "Beaststalker Armor",
+            "pieces": 5,
             "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-          }
+          },
+          "source_line": "Blackrock Spire · War Master Voone",
+          "drop_chance": null
         },
         {
-          "slot": "legs",
-          "item_id": 237819,
-          "item_name": "Sentinel's Chain Leggings",
-          "source": "Illiyana Moonblaze",
-          "source_kind": "vendor",
-          "score": 158.255663712,
+          "slot": "waist",
+          "item_id": 16680,
+          "item_name": "Beaststalker's Belt",
+          "source": "Blackrock Spire: Smolderthorn Headhunter",
+          "source_kind": "dungeon",
+          "chance": 0.0418,
+          "sim_dps": 287.9824677732639,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22673,
-              "item_name": "Outrider's Chain Leggings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -1.969679601
+              "item_id": 16572,
+              "item_name": "General's Chain Girdle",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
+            },
+            {
+              "item_id": 19043,
+              "item_name": "Heavy Timbermaw Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0,
+              "source_line": "Crafted: Blacksmithing",
+              "drop_chance": null
+            },
+            {
+              "item_id": 17778,
+              "item_name": "Sagebrush Girdle",
+              "source_kind": "quest",
+              "source": "Vyletongue Corruption",
+              "dps_delta": -5.555017513,
+              "source_line": "Quest: Vyletongue Corruption · requires level 41",
+              "drop_chance": null
+            }
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "4% from Smolderthorn Headhunter",
+          "drop_chance": 4.18
+        },
+        {
+          "slot": "legs",
+          "item_id": 16678,
+          "item_name": "Beaststalker's Pants",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "sim_dps": 287.9824677732639,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 231567,
+              "item_name": "General's Chain Legplates",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231574,
               "item_name": "General's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.992777422
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 237818,
-              "item_name": "Sentinel's Leather Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -3.109723238
+              "item_id": 13130,
+              "item_name": "Windrunner Legguards",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -7.52022169,
+              "source_line": "World drop (BoE) · levels 52-59",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 3,
+            "bonus": "+30 Attack Power."
+          },
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "feet",
-          "item_id": 226881,
-          "item_name": "Beastmaster's Treads",
-          "source": "Mokvar",
-          "source_kind": "vendor",
-          "sim_dps": 307.0430164187725,
+          "item_id": 16675,
+          "item_name": "Beaststalker's Boots",
+          "source": "Stratholme: Nerub'enkan",
+          "source_kind": "dungeon",
+          "sim_dps": 287.9824677732639,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 231564,
               "item_name": "General's Chain Sabatons",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231570,
               "item_name": "General's Chain Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 22061,
-              "item_name": "Beastmaster's Boots",
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words",
-              "dps_delta": -8.531575934
+              "item_id": 16711,
+              "item_name": "Shadowcraft Boots",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Rattlegore",
+              "dps_delta": -5.727361214,
+              "source_line": "16% from Rattlegore",
+              "drop_chance": 16
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
+            "set": "Beaststalker Armor",
             "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+            "bonus": "+30 Attack Power."
+          },
+          "source_line": "Stratholme · Nerub'enkan",
+          "drop_chance": null
         },
         {
           "slot": "finger1",
-          "item_id": 234202,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "score": 90.931402864,
+          "item_id": 9533,
+          "item_name": "Masons Fraternity Ring",
+          "source": "Divino-matic Rod",
+          "source_kind": "quest",
+          "score": 39.624188812,
           "verified": true,
-          "effect_unmodelled": true,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +3.2 DPS (288.0 vs 284.7 set DPS)",
+          "dps_delta": 3.235890142431799,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -2.441071614
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.964085406,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 11862,
+              "item_name": "White Bone Band",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -3.495357401
+              "source": "Bone-Bladed Weapons",
+              "dps_delta": -1.064414138,
+              "source_line": "Quest: Bone-Bladed Weapons · requires level 48",
+              "drop_chance": null
             },
             {
-              "item_id": 19510,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -4.073808644
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -1.156902487,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Quest: Divino-matic Rod · requires level 40",
+          "drop_chance": null
         },
         {
           "slot": "finger2",
-          "item_id": 272408,
-          "item_name": "Cutthroat's Signet",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "score": 62.628410855,
+          "item_id": 2951,
+          "item_name": "Ring of the Underwood",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 28.302992009,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -0.512900802
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.192817081,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 11862,
+              "item_name": "White Bone Band",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -1.567186589
+              "source": "Bone-Bladed Weapons",
+              "dps_delta": -0.293145813,
+              "source_line": "Quest: Bone-Bladed Weapons · requires level 48",
+              "drop_chance": null
             },
             {
-              "item_id": 19510,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -2.145637832
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -0.385634162,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 32-39",
+          "drop_chance": null
         },
         {
           "slot": "trinket1",
@@ -1077,10 +1297,12 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 307.0430164187725,
+          "sim_dps": 287.9824677732639,
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +7.9 DPS (307.0 vs 299.1 set DPS)",
-          "dps_delta": 7.928327052844907
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +8.7 DPS (288.0 vs 279.3 set DPS)",
+          "dps_delta": 8.675982757786016,
+          "source_line": "Quest: Job Opening: Guard Captain of Revantusk Village · requires level 46",
+          "drop_chance": null
         },
         {
           "slot": "trinket2",
@@ -1088,7 +1310,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 307.0430164187725,
+          "sim_dps": 287.9824677732639,
           "verified": true,
           "alternatives": [
             {
@@ -1096,9 +1318,13 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0
+              "dps_delta": -2.184638059,
+              "source_line": "Crafted: Enchanting",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "main_hand",
@@ -1106,7 +1332,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 307.0430164187725,
+          "sim_dps": 287.9824677732639,
           "verified": true,
           "alternatives": [
             {
@@ -1114,23 +1340,31 @@
               "item_name": "High Warlord's Pig Sticker",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 234548,
               "item_name": "High Warlord's Pig Poker",
               "source_kind": "vendor",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 19099,
-              "item_name": "Glacial Blade",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -7.506331533
+              "item_id": 10696,
+              "item_name": "Enchanted Azsharite Felbane Sword",
+              "source_kind": "quest",
+              "source": "Enchanted Azsharite Fel Weaponry",
+              "dps_delta": -9.496067004,
+              "source_line": "Quest: Enchanted Azsharite Fel Weaponry · requires level 45",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
         },
         {
           "slot": "off_hand",
@@ -1143,7 +1377,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 307.0430164187725,
+          "sim_dps": 287.9824677732639,
           "verified": true,
           "alternatives": [
             {
@@ -1151,39 +1385,49 @@
               "item_name": "High Warlord's Recurve",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 234560,
               "item_name": "High Warlord's Crossbow",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 16004,
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -10.052915802
+              "dps_delta": -8.56126874,
+              "source_line": "Crafted: Engineering",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Engineering",
+          "drop_chance": null
         }
       ],
-      "set_dps": 307.0430164187725,
+      "set_dps": 287.9824677732639,
       "new_at_band": [
-        "head: Beastmaster's Cap",
-        "neck: Amulet of the Darkmoon",
-        "shoulder: Darkspear Pauldrons",
+        "head: Black Dragonscale Helm",
+        "neck: Skibi's Pendant",
+        "shoulder: Shadowcraft Spaulders",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
-        "wrist: Beastmaster's Bindings",
-        "hands: Raider Gloves",
-        "waist: Beastmaster's Belt",
-        "legs: Sentinel's Chain Leggings",
-        "feet: Beastmaster's Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cutthroat's Signet",
+        "wrist: Beaststalker's Bindings",
+        "hands: Beaststalker's Gloves",
+        "waist: Beaststalker's Belt",
+        "legs: Beaststalker's Pants",
+        "feet: Beaststalker's Boots",
+        "finger1: Masons Fraternity Ring",
+        "finger2: Ring of the Underwood",
+        "trinket1: Rune of the Guard Captain",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
@@ -1203,157 +1447,174 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0012449441756317754,
+          "error": 0.0012449441756320345,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.3444838300671764,
-          "dps_per_point": 0.14104517478848316,
-          "scale_error": 0.0004288631378414575
+          "scale_factor": 0.34448383006717637,
+          "dps_per_point": 0.1410451747884831,
+          "scale_error": 0.0004288631378415467
         },
         {
           "stat": "agility",
-          "weight": 2.9028938740172334,
-          "error": 0.016030835652723754,
+          "weight": 2.902893874017234,
+          "error": 0.016030835652723806,
           "insignificant": false,
-          "weight_per_percent": 2.9028938740172334,
+          "weight_per_percent": 2.902893874017234,
           "scale_factor": 1,
-          "dps_per_point": 0.4094391738531777,
-          "scale_error": 0.005522363664827722
+          "dps_per_point": 0.40943917385317763,
+          "scale_error": 0.0055223636648277395
         },
         {
           "stat": "crit",
-          "weight": 1.4595617761746087,
-          "error": 0.03148750393709244,
+          "weight": 1.4595617761746096,
+          "error": 0.03148750393709247,
           "insignificant": false,
-          "weight_per_percent": 20.433864866444523,
-          "scale_factor": 0.5027954308762801,
-          "dps_per_point": 0.20586414583513662,
-          "scale_error": 0.0108469359555049
+          "weight_per_percent": 20.433864866444534,
+          "scale_factor": 0.5027954308762803,
+          "dps_per_point": 0.20586414583513668,
+          "scale_error": 0.01084693595550491
         },
         {
           "stat": "hit",
-          "weight": 2.924860134317867,
-          "error": 0.18131612476922263,
+          "weight": 2.9248601343178695,
+          "error": 0.1813161247692227,
           "insignificant": false,
-          "weight_per_percent": 29.24860134317867,
-          "scale_factor": 1.0075670214806147,
-          "dps_per_point": 0.41253740887672985,
-          "scale_error": 0.062460473113439836
+          "weight_per_percent": 29.248601343178695,
+          "scale_factor": 1.0075670214806156,
+          "dps_per_point": 0.41253740887673007,
+          "scale_error": 0.06246047311343986
         },
         {
           "stat": "melee_haste",
-          "weight": 19.008470034311937,
-          "error": 2.4442522187544404,
+          "weight": 19.00847003431195,
+          "error": 2.4442522187544413,
           "insignificant": false,
-          "weight_per_percent": 19.008470034311937,
-          "scale_factor": 6.548110561136928,
-          "dps_per_point": 2.681052978451172,
-          "scale_error": 0.8420053659667235
+          "weight_per_percent": 19.00847003431195,
+          "scale_factor": 6.548110561136932,
+          "dps_per_point": 2.6810529784511727,
+          "scale_error": 0.8420053659667237
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 226887,
-          "item_name": "Beastmaster's Cap",
-          "source": "Saving the Best for Last",
-          "source_kind": "quest",
-          "score": 96.015160446,
+          "item_id": 252605,
+          "item_name": "Black Dragonscale Helm",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 714.0517958259672,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 231562,
               "item_name": "Field Marshal's Chain Greathelm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231580,
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 279253,
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -11.155827546
+              "dps_delta": -8.846588763,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "neck",
-          "item_id": 19491,
-          "item_name": "Amulet of the Darkmoon",
-          "source": "1200 Tickets - Amulet of the Darkmoon",
-          "source_kind": "quest",
-          "score": 55.154983606,
+          "item_id": 13089,
+          "item_name": "Skibi's Pendant",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 37.737620362,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
+              "item_id": 20649,
+              "item_name": "Sunprism Pendant",
               "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.268886019
+              "source": "Vyral the Vile",
+              "dps_delta": -0.409439174,
+              "source_line": "Quest: Vyral the Vile · requires level 60",
+              "drop_chance": null
             },
             {
-              "item_id": 22659,
-              "item_name": "Medallion of the Dawn",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.512162067
+              "item_id": 273049,
+              "item_name": "Archmagister's Faceted Pendant",
+              "source_kind": "world",
+              "source": "Shade of the Archmage",
+              "dps_delta": -3.630167163,
+              "source_line": "Shade of the Archmage",
+              "drop_chance": null
             },
             {
-              "item_id": 19538,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.637756695
+              "item_id": 13084,
+              "item_name": "Kaleidoscope Chain",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -3.684952565,
+              "source_line": "World drop (BoE) · levels 31-38",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 45-53",
+          "drop_chance": null
         },
         {
           "slot": "shoulder",
-          "item_id": 272105,
-          "item_name": "Darkspear Pauldrons",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 98.811999465,
+          "item_id": 16708,
+          "item_name": "Shadowcraft Spaulders",
+          "source": "Stratholme: Cannon Master Willey",
+          "source_kind": "dungeon",
+          "score": 69.713385497,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 13116,
+              "item_name": "Spaulders of the Unseen",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 58-62",
+              "drop_chance": null
+            },
             {
               "item_id": 16468,
               "item_name": "Field Marshal's Chain Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231576,
               "item_name": "Field Marshal's Chain Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Cannon Master Willey",
+          "drop_chance": null
         },
         {
           "slot": "back",
@@ -1365,27 +1626,35 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272414,
-              "item_name": "Howler's Furs",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.887852121
-            },
-            {
               "item_id": 18511,
               "item_name": "Shifting Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.002025148
+              "dps_delta": -2.301884022,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             },
             {
-              "item_id": 20073,
-              "item_name": "Cloak of the Honor Guard",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -2.119759291
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.820903496,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.049221017,
+              "source_line": "World drop (BoE) · levels 45-53",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "chest",
@@ -1401,263 +1670,341 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.35369161
+              "dps_delta": -5.35369161,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.35369161
+              "dps_delta": -5.35369161,
+              "source_line": "PvP rank 17 · Field Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 16721,
               "item_name": "Shadowcraft Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -10.962395693
+              "dps_delta": -10.372503931,
+              "source_line": "Blackrock Spire · General Drakkisath",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "wrist",
-          "item_id": 226885,
-          "item_name": "Beastmaster's Bindings",
-          "source": "An Earnest Proposition",
-          "source_kind": "quest",
-          "sim_dps": 751.3482813226776,
+          "item_id": 16681,
+          "item_name": "Beaststalker's Bindings",
+          "source": "Stratholme: Fleshflayer Ghoul",
+          "source_kind": "dungeon",
+          "chance": 0.0432,
+          "score": 43.54340811,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 16402,
-              "item_name": "Knight-Captain's Chain Armguards",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": 0
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
             },
             {
               "item_id": 16461,
               "item_name": "Marshal's Chain Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -4.677240427
+              "item_id": 16710,
+              "item_name": "Shadowcraft Bracers",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Scholomance Occultist",
+              "dps_delta": -10.051194138,
+              "source_line": "6% from Scholomance Occultist",
+              "drop_chance": 6.329
             }
           ],
-          "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+          "source_line": "4% from Ghoul Ravener",
+          "drop_chance": 4.02
         },
         {
           "slot": "hands",
-          "item_id": 272099,
-          "item_name": "Raider Gloves",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 78.378134598,
+          "item_id": 16676,
+          "item_name": "Beaststalker's Gloves",
+          "source": "Blackrock Spire: War Master Voone",
+          "source_kind": "dungeon",
+          "sim_dps": 714.0517958259672,
           "verified": true,
-          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +2.4 DPS (751.3 vs 748.9 set DPS)",
-          "dps_delta": 2.4099978140370695,
           "alternatives": [
-            {
-              "item_id": 231578,
-              "item_name": "Marshal's Chain Vices",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
-            },
             {
               "item_id": 231560,
               "item_name": "Marshal's Chain Grips",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.975374068
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
+            },
+            {
+              "item_id": 231578,
+              "item_name": "Marshal's Chain Vices",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 279257,
               "item_name": "Mourning Handguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.456635043
+              "dps_delta": -5.587500544,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "Blackrock Spire · War Master Voone",
+          "drop_chance": null
         },
         {
           "slot": "waist",
-          "item_id": 20216,
-          "item_name": "Belt of Preserved Heads",
-          "source": "A Collection of Heads",
-          "source_kind": "quest",
-          "score": 72.792009453,
+          "item_id": 16680,
+          "item_name": "Beaststalker's Belt",
+          "source": "Blackrock Spire: Smolderthorn Headhunter",
+          "source_kind": "dungeon",
+          "chance": 0.0418,
+          "sim_dps": 714.0517958259672,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272397,
-              "item_name": "Ranger's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.440421524
+              "item_id": 16464,
+              "item_name": "Marshal's Chain Girdle",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -1.24007051
+              "item_id": 19043,
+              "item_name": "Heavy Timbermaw Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0,
+              "source_line": "Crafted: Blacksmithing",
+              "drop_chance": null
             },
             {
-              "item_id": 274757,
-              "item_name": "Substandard Belt Chain",
-              "source_kind": "vendor",
-              "source": "Zippie Fizzbolt",
-              "dps_delta": -2.291786816
+              "item_id": 17778,
+              "item_name": "Sagebrush Girdle",
+              "source_kind": "quest",
+              "source": "Vyletongue Corruption",
+              "dps_delta": -6.212303076,
+              "source_line": "Quest: Vyletongue Corruption · requires level 41",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "4% from Smolderthorn Headhunter",
+          "drop_chance": 4.18
         },
         {
           "slot": "legs",
-          "item_id": 237819,
-          "item_name": "Sentinel's Chain Leggings",
-          "source": "Illiyana Moonblaze",
-          "source_kind": "vendor",
-          "score": 171.717616667,
+          "item_id": 16678,
+          "item_name": "Beaststalker's Pants",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "sim_dps": 714.0517958259672,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +3.7 DPS (751.3 vs 747.7 set DPS)",
-          "dps_delta": 3.6960812957020153,
           "alternatives": [
             {
-              "item_id": 237818,
-              "item_name": "Sentinel's Leather Pants",
+              "item_id": 231558,
+              "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -7.40088748
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -7.416911304
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 231558,
-              "item_name": "Marshal's Chain Legplates",
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -9.299750967
+              "source": "Captain Dirgehammer",
+              "dps_delta": -10.783853892,
+              "source_line": "Vendor: Captain Dirgehammer",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "feet",
-          "item_id": 226881,
-          "item_name": "Beastmaster's Treads",
-          "source": "Mokvar",
-          "source_kind": "vendor",
-          "sim_dps": 751.3482813226776,
+          "item_id": 16675,
+          "item_name": "Beaststalker's Boots",
+          "source": "Stratholme: Nerub'enkan",
+          "source_kind": "dungeon",
+          "sim_dps": 714.0517958259672,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 16462,
               "item_name": "Marshal's Chain Boots",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 231579,
               "item_name": "Marshal's Chain Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 16711,
               "item_name": "Shadowcraft Boots",
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "dps_delta": -7.618998443
+              "dps_delta": -10.083007856,
+              "source_line": "16% from Rattlegore",
+              "drop_chance": 16
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 3,
-            "bonus": "Restores 8 mana per 5 sec."
-          }
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "Stratholme · Nerub'enkan",
+          "drop_chance": null
         },
         {
           "slot": "finger1",
-          "item_id": 234202,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "score": 98.91805432,
+          "item_id": 9533,
+          "item_name": "Masons Fraternity Ring",
+          "source": "Divino-matic Rod",
+          "source_kind": "quest",
+          "score": 40.640514236,
           "verified": true,
-          "effect_unmodelled": true,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +6.5 DPS (714.1 vs 707.5 set DPS)",
+          "dps_delta": 6.528682407569818,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -4.969809684
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -2.047195869,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -2.456635043,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
+            },
+            {
+              "item_id": 281634,
+              "item_name": "Field Researcher's Loop",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -8.219765827
-            },
-            {
-              "item_id": 19514,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -9.448083349
+              "source": "Greater Friend of the Library",
+              "dps_delta": -2.866074217,
+              "source_line": "Quest: Greater Friend of the Library · requires level 20",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Quest: Divino-matic Rod · requires level 40",
+          "drop_chance": null
         },
         {
           "slot": "finger2",
-          "item_id": 272408,
-          "item_name": "Cutthroat's Signet",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "score": 69.889115579,
+          "item_id": 2951,
+          "item_name": "Ring of the Underwood",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 29.02893874,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -0.875417945
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.409439174,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -0.818878348,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
+            },
+            {
+              "item_id": 281634,
+              "item_name": "Field Researcher's Loop",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -4.125374089
-            },
-            {
-              "item_id": 19514,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -5.35369161
+              "source": "Greater Friend of the Library",
+              "dps_delta": -1.228317522,
+              "source_line": "Quest: Greater Friend of the Library · requires level 20",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 32-39",
+          "drop_chance": null
         },
         {
           "slot": "trinket1",
@@ -1665,10 +2012,12 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 751.3482813226776,
+          "sim_dps": 714.0517958259672,
           "verified": true,
-          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +7.4 DPS (751.3 vs 744.0 set DPS)",
-          "dps_delta": 7.376486076718038
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +6.4 DPS (714.1 vs 707.7 set DPS)",
+          "dps_delta": 6.377148425498035,
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "trinket2",
@@ -1676,18 +2025,22 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 751.3482813226776,
+          "sim_dps": 714.0517958259672,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19287,
-              "item_name": "Darkmoon Card: Heroism",
+              "item_id": 17774,
+              "item_name": "Mark of the Chosen",
               "source_kind": "quest",
-              "source": "Darkmoon Warlords Deck",
-              "dps_delta": 0
+              "source": "The Pariah's Instructions",
+              "dps_delta": 0,
+              "source_line": "Quest: The Pariah's Instructions · requires level 39",
+              "drop_chance": null
             }
           ],
-          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 3.42 vs 0.93 ± 0.81 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 3.93 vs 0.87 ± 0.83 DPS gain) -- each faction's own tournament winner kept",
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "main_hand",
@@ -1695,7 +2048,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 751.3482813226776,
+          "sim_dps": 714.0517958259672,
           "verified": true,
           "alternatives": [
             {
@@ -1703,23 +2056,31 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 234570,
               "item_name": "Grand Marshal's Polearm",
               "source_kind": "vendor",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
-              "item_id": 19100,
-              "item_name": "Electrified Dagger",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -20.021351885
+              "item_id": 10696,
+              "item_name": "Enchanted Azsharite Felbane Sword",
+              "source_kind": "quest",
+              "source": "Enchanted Azsharite Fel Weaponry",
+              "dps_delta": -19.995530091,
+              "source_line": "Quest: Enchanted Azsharite Fel Weaponry · requires level 45",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
         },
         {
           "slot": "off_hand",
@@ -1732,7 +2093,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 751.3482813226776,
+          "sim_dps": 714.0517958259672,
           "verified": true,
           "alternatives": [
             {
@@ -1740,45 +2101,53 @@
               "item_name": "Grand Marshal's Bullseye",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 234586,
               "item_name": "Grand Marshal's Repeater",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · Grand Marshal · Alliance",
+              "drop_chance": null
             },
             {
               "item_id": 16004,
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -23.116235121
+              "dps_delta": -22.666054928,
+              "source_line": "Crafted: Engineering",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Engineering",
+          "drop_chance": null
         }
       ],
-      "set_dps": 751.3482813226776,
+      "set_dps": 714.0517958259672,
       "new_at_band": [
-        "head: Beastmaster's Cap",
-        "neck: Amulet of the Darkmoon",
-        "shoulder: Darkspear Pauldrons",
+        "head: Black Dragonscale Helm",
+        "neck: Skibi's Pendant",
+        "shoulder: Shadowcraft Spaulders",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
-        "wrist: Beastmaster's Bindings",
-        "hands: Raider Gloves",
-        "waist: Belt of Preserved Heads",
-        "legs: Sentinel's Chain Leggings",
-        "feet: Beastmaster's Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cutthroat's Signet",
+        "wrist: Beaststalker's Bindings",
+        "hands: Beaststalker's Gloves",
+        "waist: Beaststalker's Belt",
+        "legs: Beaststalker's Pants",
+        "feet: Beaststalker's Boots",
+        "finger1: Masons Fraternity Ring",
+        "finger2: Ring of the Underwood",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "reference_dps_per_point": 0.14104517478848316,
+      "reference_dps_per_point": 0.1410451747884831,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility"
     },
@@ -1794,157 +2163,174 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0012449441756317754,
+          "error": 0.0012449441756320345,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.3444838300671764,
-          "dps_per_point": 0.14104517478848316,
-          "scale_error": 0.0004288631378414575
+          "scale_factor": 0.34448383006717637,
+          "dps_per_point": 0.1410451747884831,
+          "scale_error": 0.0004288631378415467
         },
         {
           "stat": "agility",
-          "weight": 2.9028938740172334,
-          "error": 0.016030835652723754,
+          "weight": 2.902893874017234,
+          "error": 0.016030835652723806,
           "insignificant": false,
-          "weight_per_percent": 2.9028938740172334,
+          "weight_per_percent": 2.902893874017234,
           "scale_factor": 1,
-          "dps_per_point": 0.4094391738531777,
-          "scale_error": 0.005522363664827722
+          "dps_per_point": 0.40943917385317763,
+          "scale_error": 0.0055223636648277395
         },
         {
           "stat": "crit",
-          "weight": 1.4595617761746087,
-          "error": 0.03148750393709244,
+          "weight": 1.4595617761746096,
+          "error": 0.03148750393709247,
           "insignificant": false,
-          "weight_per_percent": 20.433864866444523,
-          "scale_factor": 0.5027954308762801,
-          "dps_per_point": 0.20586414583513662,
-          "scale_error": 0.0108469359555049
+          "weight_per_percent": 20.433864866444534,
+          "scale_factor": 0.5027954308762803,
+          "dps_per_point": 0.20586414583513668,
+          "scale_error": 0.01084693595550491
         },
         {
           "stat": "hit",
-          "weight": 2.924860134317867,
-          "error": 0.18131612476922263,
+          "weight": 2.9248601343178695,
+          "error": 0.1813161247692227,
           "insignificant": false,
-          "weight_per_percent": 29.24860134317867,
-          "scale_factor": 1.0075670214806147,
-          "dps_per_point": 0.41253740887672985,
-          "scale_error": 0.062460473113439836
+          "weight_per_percent": 29.248601343178695,
+          "scale_factor": 1.0075670214806156,
+          "dps_per_point": 0.41253740887673007,
+          "scale_error": 0.06246047311343986
         },
         {
           "stat": "melee_haste",
-          "weight": 19.008470034311937,
-          "error": 2.4442522187544404,
+          "weight": 19.00847003431195,
+          "error": 2.4442522187544413,
           "insignificant": false,
-          "weight_per_percent": 19.008470034311937,
-          "scale_factor": 6.548110561136928,
-          "dps_per_point": 2.681052978451172,
-          "scale_error": 0.8420053659667235
+          "weight_per_percent": 19.00847003431195,
+          "scale_factor": 6.548110561136932,
+          "dps_per_point": 2.6810529784511727,
+          "scale_error": 0.8420053659667237
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 226887,
-          "item_name": "Beastmaster's Cap",
-          "source": "Saving the Best for Last",
-          "source_kind": "quest",
-          "score": 96.015160446,
+          "item_id": 252605,
+          "item_name": "Black Dragonscale Helm",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 734.0190137886943,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 16566,
               "item_name": "Warlord's Chain Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231571,
               "item_name": "Warlord's Chain Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 279253,
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -18.160169469
+              "dps_delta": -8.924958719,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "neck",
-          "item_id": 19491,
-          "item_name": "Amulet of the Darkmoon",
-          "source": "1200 Tickets - Amulet of the Darkmoon",
-          "source_kind": "quest",
-          "score": 55.154983606,
+          "item_id": 13089,
+          "item_name": "Skibi's Pendant",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 37.737620362,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
+              "item_id": 20649,
+              "item_name": "Sunprism Pendant",
               "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.268886019
+              "source": "Vyral the Vile",
+              "dps_delta": -0.409439174,
+              "source_line": "Quest: Vyral the Vile · requires level 60",
+              "drop_chance": null
             },
             {
-              "item_id": 22659,
-              "item_name": "Medallion of the Dawn",
+              "item_id": 19159,
+              "item_name": "Woven Ivy Necklace",
               "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.512162067
+              "source": "Wanted: Vile Priestess Hexx and Her Minions",
+              "dps_delta": -1.637756695,
+              "source_line": "Quest: Wanted: Vile Priestess Hexx and Her Minions · requires level 46",
+              "drop_chance": null
             },
             {
-              "item_id": 19534,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -1.637756695
+              "item_id": 273049,
+              "item_name": "Archmagister's Faceted Pendant",
+              "source_kind": "world",
+              "source": "Shade of the Archmage",
+              "dps_delta": -3.630167163,
+              "source_line": "Shade of the Archmage",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 45-53",
+          "drop_chance": null
         },
         {
           "slot": "shoulder",
-          "item_id": 272105,
-          "item_name": "Darkspear Pauldrons",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 98.811999465,
+          "item_id": 16708,
+          "item_name": "Shadowcraft Spaulders",
+          "source": "Stratholme: Cannon Master Willey",
+          "source_kind": "dungeon",
+          "score": 69.713385497,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 231572,
-              "item_name": "Warlord's Chain Shoulders",
-              "source_kind": "pvp",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272106,
-              "item_name": "Darkspear Epaulets",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "item_id": 13116,
+              "item_name": "Spaulders of the Unseen",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 58-62",
+              "drop_chance": null
             },
             {
               "item_id": 231565,
               "item_name": "Warlord's Chain Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.539607493
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
+            },
+            {
+              "item_id": 231572,
+              "item_name": "Warlord's Chain Shoulders",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Cannon Master Willey",
+          "drop_chance": null
         },
         {
           "slot": "back",
@@ -1956,27 +2342,35 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272414,
-              "item_name": "Howler's Furs",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.887852121
-            },
-            {
               "item_id": 18511,
               "item_name": "Shifting Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.002025148
+              "dps_delta": -2.002025148,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             },
             {
-              "item_id": 20068,
-              "item_name": "Deathguard's Cloak",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -2.119759291
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.820903496,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.049221017,
+              "source_line": "World drop (BoE) · levels 45-53",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "chest",
@@ -1992,266 +2386,341 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -5.35369161
+              "dps_delta": -5.35369161,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -5.35369161
+              "dps_delta": -5.35369161,
+              "source_line": "PvP rank 17 · Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 16721,
               "item_name": "Shadowcraft Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -10.161399163
+              "dps_delta": -9.760740643,
+              "source_line": "Blackrock Spire · General Drakkisath",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
         },
         {
           "slot": "wrist",
-          "item_id": 226885,
-          "item_name": "Beastmaster's Bindings",
-          "source": "An Earnest Proposition",
-          "source_kind": "quest",
-          "sim_dps": 781.9034785569881,
+          "item_id": 16681,
+          "item_name": "Beaststalker's Bindings",
+          "source": "Stratholme: Fleshflayer Ghoul",
+          "source_kind": "dungeon",
+          "chance": 0.0432,
+          "score": 43.54340811,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 16517,
-              "item_name": "Legionnaire's Chain Bracers",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": 0
+              "item_id": 13120,
+              "item_name": "Deepfury Bracers",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "source_line": "World drop (BoE) · levels 51-59",
+              "drop_chance": null
             },
             {
               "item_id": 16570,
               "item_name": "General's Chain Wristguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -14.19513889
+              "item_id": 16710,
+              "item_name": "Shadowcraft Bracers",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Scholomance Occultist",
+              "dps_delta": -11.168432527,
+              "source_line": "6% from Scholomance Occultist",
+              "drop_chance": 6.329
             }
           ],
-          "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 4,
-            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-          }
+          "source_line": "4% from Ghoul Ravener",
+          "drop_chance": 4.02
         },
         {
           "slot": "hands",
-          "item_id": 272099,
-          "item_name": "Raider Gloves",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 78.378134598,
+          "item_id": 16676,
+          "item_name": "Beaststalker's Gloves",
+          "source": "Blackrock Spire: War Master Voone",
+          "source_kind": "dungeon",
+          "sim_dps": 734.0190137886943,
           "verified": true,
-          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +2.4 DPS (781.9 vs 779.5 set DPS)",
-          "dps_delta": 2.4351194915977885,
           "alternatives": [
             {
               "item_id": 16571,
               "item_name": "General's Chain Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231575,
               "item_name": "General's Chain Vices",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 231569,
-              "item_name": "General's Chain Grips",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.975374068
-            }
-          ]
-        },
-        {
-          "slot": "waist",
-          "item_id": 226888,
-          "item_name": "Beastmaster's Belt",
-          "source": "Just Compensation",
-          "source_kind": "quest",
-          "sim_dps": 781.9034785569881,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272397,
-              "item_name": "Ranger's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": -10.761656692
+              "item_id": 279257,
+              "item_name": "Mourning Handguards",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -5.988079451,
+              "source_line": "Crafted: Leatherworking",
+              "drop_chance": null
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 4,
+            "set": "Beaststalker Armor",
+            "pieces": 5,
             "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-          }
+          },
+          "source_line": "Blackrock Spire · War Master Voone",
+          "drop_chance": null
         },
         {
-          "slot": "legs",
-          "item_id": 237819,
-          "item_name": "Sentinel's Chain Leggings",
-          "source": "Illiyana Moonblaze",
-          "source_kind": "vendor",
-          "score": 171.717616667,
+          "slot": "waist",
+          "item_id": 16680,
+          "item_name": "Beaststalker's Belt",
+          "source": "Blackrock Spire: Smolderthorn Headhunter",
+          "source_kind": "dungeon",
+          "chance": 0.0418,
+          "sim_dps": 734.0190137886943,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22673,
-              "item_name": "Outrider's Chain Leggings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -3.796957443
+              "item_id": 16572,
+              "item_name": "General's Chain Girdle",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 237818,
-              "item_name": "Sentinel's Leather Pants",
+              "item_id": 19043,
+              "item_name": "Heavy Timbermaw Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0,
+              "source_line": "Crafted: Blacksmithing",
+              "drop_chance": null
+            },
+            {
+              "item_id": 17778,
+              "item_name": "Sagebrush Girdle",
+              "source_kind": "quest",
+              "source": "Vyletongue Corruption",
+              "dps_delta": -7.519434196,
+              "source_line": "Quest: Vyletongue Corruption · requires level 41",
+              "drop_chance": null
+            }
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "4% from Smolderthorn Headhunter",
+          "drop_chance": 4.18
+        },
+        {
+          "slot": "legs",
+          "item_id": 16678,
+          "item_name": "Beaststalker's Pants",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "sim_dps": 734.0190137886943,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 231567,
+              "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -7.40088748
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231574,
               "item_name": "General's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -7.416911304
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
+            },
+            {
+              "item_id": 13130,
+              "item_name": "Windrunner Legguards",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -16.123425706,
+              "source_line": "World drop (BoE) · levels 52-59",
+              "drop_chance": null
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Beaststalker Armor",
+            "pieces": 5,
+            "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
+          },
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
         },
         {
           "slot": "feet",
-          "item_id": 226881,
-          "item_name": "Beastmaster's Treads",
-          "source": "Mokvar",
-          "source_kind": "vendor",
-          "sim_dps": 781.9034785569881,
+          "item_id": 16675,
+          "item_name": "Beaststalker's Boots",
+          "source": "Stratholme: Nerub'enkan",
+          "source_kind": "dungeon",
+          "sim_dps": 734.0190137886943,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 231564,
               "item_name": "General's Chain Sabatons",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 231570,
               "item_name": "General's Chain Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 16 · General · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 16711,
               "item_name": "Shadowcraft Boots",
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "dps_delta": -15.51335325
+              "dps_delta": -10.084261637,
+              "source_line": "16% from Rattlegore",
+              "drop_chance": 16
             }
           ],
           "set_bonus": {
-            "set": "Beastmaster Armor",
-            "pieces": 4,
+            "set": "Beaststalker Armor",
+            "pieces": 5,
             "bonus": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
-          }
+          },
+          "source_line": "Stratholme · Nerub'enkan",
+          "drop_chance": null
         },
         {
           "slot": "finger1",
-          "item_id": 234202,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "score": 98.91805432,
+          "item_id": 9533,
+          "item_name": "Masons Fraternity Ring",
+          "source": "Divino-matic Rod",
+          "source_kind": "quest",
+          "score": 40.640514236,
           "verified": true,
-          "effect_unmodelled": true,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +6.7 DPS (734.0 vs 727.3 set DPS)",
+          "dps_delta": 6.696038504374769,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -4.969809684
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -2.047195869,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 11862,
+              "item_name": "White Bone Band",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -8.219765827
+              "source": "Bone-Bladed Weapons",
+              "dps_delta": -2.347064239,
+              "source_line": "Quest: Bone-Bladed Weapons · requires level 48",
+              "drop_chance": null
             },
             {
-              "item_id": 19510,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -9.448083349
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -2.456635043,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Quest: Divino-matic Rod · requires level 40",
+          "drop_chance": null
         },
         {
           "slot": "finger2",
-          "item_id": 272408,
-          "item_name": "Cutthroat's Signet",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "score": 69.889115579,
+          "item_id": 2951,
+          "item_name": "Ring of the Underwood",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 29.02893874,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -0.875417945
+              "item_id": 7552,
+              "item_name": "Falcon's Hook",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.409439174,
+              "source_line": "2% from Ancient Treasure",
+              "drop_chance": 1.6
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
+              "item_id": 11862,
+              "item_name": "White Bone Band",
               "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -4.125374089
+              "source": "Bone-Bladed Weapons",
+              "dps_delta": -0.709307544,
+              "source_line": "Quest: Bone-Bladed Weapons · requires level 48",
+              "drop_chance": null
             },
             {
-              "item_id": 19510,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -5.35369161
+              "item_id": 276202,
+              "item_name": "Disengagement Ring",
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark",
+              "dps_delta": -0.818878348,
+              "source_line": "Vendor: Friz Frazzlespark",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "World drop (BoE) · levels 32-39",
+          "drop_chance": null
         },
         {
           "slot": "trinket1",
@@ -2259,10 +2728,12 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 781.9034785569881,
+          "sim_dps": 734.0190137886943,
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +21.8 DPS (781.9 vs 760.1 set DPS)",
-          "dps_delta": 21.756153618481903
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +19.0 DPS (734.0 vs 715.0 set DPS)",
+          "dps_delta": 19.006577105583574,
+          "source_line": "Quest: Job Opening: Guard Captain of Revantusk Village · requires level 46",
+          "drop_chance": null
         },
         {
           "slot": "trinket2",
@@ -2270,7 +2741,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 781.9034785569881,
+          "sim_dps": 734.0190137886943,
           "verified": true,
           "alternatives": [
             {
@@ -2278,9 +2749,13 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -7.025869598
+              "dps_delta": -5.554635949,
+              "source_line": "Crafted: Enchanting",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
         {
           "slot": "main_hand",
@@ -2288,7 +2763,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 781.9034785569881,
+          "sim_dps": 734.0190137886943,
           "verified": true,
           "alternatives": [
             {
@@ -2296,23 +2771,31 @@
               "item_name": "High Warlord's Pig Sticker",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 234548,
               "item_name": "High Warlord's Pig Poker",
               "source_kind": "vendor",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 19099,
-              "item_name": "Glacial Blade",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -19.520410899
+              "item_id": 10696,
+              "item_name": "Enchanted Azsharite Felbane Sword",
+              "source_kind": "quest",
+              "source": "Enchanted Azsharite Fel Weaponry",
+              "dps_delta": -21.248972058,
+              "source_line": "Quest: Enchanted Azsharite Fel Weaponry · requires level 45",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
         },
         {
           "slot": "off_hand",
@@ -2325,7 +2808,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 781.9034785569881,
+          "sim_dps": 734.0190137886943,
           "verified": true,
           "alternatives": [
             {
@@ -2333,43 +2816,53 @@
               "item_name": "High Warlord's Recurve",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
               "item_id": 234560,
               "item_name": "High Warlord's Crossbow",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "source_line": "PvP rank 18 · High Warlord · Horde",
+              "drop_chance": null
             },
             {
-              "item_id": 2825,
-              "item_name": "Bow of Searing Arrows",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -28.181809129
+              "item_id": 16004,
+              "item_name": "Dark Iron Rifle",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -20.172506141,
+              "source_line": "Crafted: Engineering",
+              "drop_chance": null
             }
-          ]
+          ],
+          "source_line": "Crafted: Engineering",
+          "drop_chance": null
         }
       ],
-      "set_dps": 781.9034785569881,
+      "set_dps": 734.0190137886943,
       "new_at_band": [
-        "head: Beastmaster's Cap",
-        "neck: Amulet of the Darkmoon",
-        "shoulder: Darkspear Pauldrons",
+        "head: Black Dragonscale Helm",
+        "neck: Skibi's Pendant",
+        "shoulder: Shadowcraft Spaulders",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
-        "wrist: Beastmaster's Bindings",
-        "hands: Raider Gloves",
-        "waist: Beastmaster's Belt",
-        "legs: Sentinel's Chain Leggings",
-        "feet: Beastmaster's Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cutthroat's Signet",
+        "wrist: Beaststalker's Bindings",
+        "hands: Beaststalker's Gloves",
+        "waist: Beaststalker's Belt",
+        "legs: Beaststalker's Pants",
+        "feet: Beaststalker's Boots",
+        "finger1: Masons Fraternity Ring",
+        "finger2: Ring of the Underwood",
+        "trinket1: Rune of the Guard Captain",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "reference_dps_per_point": 0.14104517478848316,
+      "reference_dps_per_point": 0.1410451747884831,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility"
     }

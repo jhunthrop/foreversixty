@@ -94,10 +94,13 @@ func TestCDNItemsFixtureMatchesTheGenerator(t *testing.T) {
 	}
 }
 
-// itemFactsPending are the spec's C6 item facts (bonding, armor type, minimum standing). The
+// itemFactsPending are the spec's C6 item facts (bonding, armor type, minimum standing) and the
+// weapon's subclass and slot words (lane F2's fix round). The
 // hunter fixture carries them, read from the client's Item and ItemSparse tables, so the apps'
 // tooltips draw them; the generator does not publish them yet, so they are optional here.
-var itemFactsPending = []string{"items[].bonding", "items[].armor_type", "items[].min_standing"}
+var itemFactsPending = []string{
+	"items[].bonding", "items[].armor_type", "items[].min_standing", "items[].subclass", "items[].weapon_slot",
+}
 
 func TestCDNHunterItemsFixtureMatchesTheGenerator(t *testing.T) {
 	got := readJSON(t, filepath.Join(activeBuildDir(t), "items", "hunter.json"))
@@ -134,7 +137,12 @@ func TestCDNBisFixtureMatchesTheRanker(t *testing.T) {
 
 func TestCDNHunterBisFixtureMatchesTheRanker(t *testing.T) {
 	got := readJSON(t, filepath.Join(activeBuildDir(t), "bis", "hunter-beast-mastery.json"))
-	if diffs := Compare(Load(t, "cdn.bis.hunter-beast-mastery"), got, Options{Optional: bisOptional}); len(diffs) > 0 {
+	// The formatted source line and drop chance are pending in the ranker (lane F2's fix round).
+	pending := append([]string{
+		"bands[].slots[].source_line", "bands[].slots[].drop_chance",
+		"bands[].slots[].alternatives[].source_line", "bands[].slots[].alternatives[].drop_chance",
+	}, bisOptional...)
+	if diffs := Compare(Load(t, "cdn.bis.hunter-beast-mastery"), got, Options{Optional: pending}); len(diffs) > 0 {
 		t.Fatalf("bis/hunter-beast-mastery.json: %v", diffs)
 	}
 }

@@ -1,332 +1,365 @@
 {
   "data": {
-    "already_best": [
-      {
-        "item": {
-          "icon": "inv_shoulder_10",
-          "id": 16468,
-          "item_level": 74,
-          "name": "Field Marshal's Chain Spaulders",
-          "quality": 4
-        },
-        "slot": "shoulder",
-        "slot_label": "Shoulder"
-      },
-      {
-        "item": {
-          "icon": "inv_misc_cape_20",
-          "id": 13340,
-          "item_level": 63,
-          "name": "Cape of the Black Baron",
-          "quality": 3
-        },
-        "slot": "back",
-        "slot_label": "Back"
-      },
-      {
-        "item": {
-          "icon": "inv_belt_14",
-          "id": 20216,
-          "item_level": 70,
-          "name": "Belt of Preserved Heads",
-          "quality": 3
-        },
-        "slot": "waist",
-        "slot_label": "Waist"
-      },
-      {
-        "item": {
-          "icon": "inv_jewelry_ring_01",
-          "id": 272408,
-          "item_level": 65,
-          "name": "Cutthroat's Signet",
-          "quality": 3
-        },
-        "slot": "finger2",
-        "slot_label": "Ring 2"
-      },
-      {
-        "item": {
-          "icon": "inv_misc_ticket_tarot_heroism_01",
-          "id": 19287,
-          "item_level": 66,
-          "name": "Darkmoon Card: Heroism",
-          "quality": 4
-        },
-        "slot": "trinket2",
-        "slot_label": "Trinket 2"
-      }
-    ],
+    "character": "us/normal/velaren",
+    "state": "ok",
+    "spec": "hunter-beast-mastery",
     "band": 60,
     "band_label": "60",
-    "character": "us/normal/velaren",
-    "data_build": "1.60.1.70658",
-    "not_modelled_count": 6,
-    "not_sim_checked_count": 1,
     "preset": "raid",
-    "spec": "hunter-beast-mastery",
-    "state": "ok",
-    "synced_at": "2026-10-29T21:15:00Z",
-    "synced_from": "addon",
-    "talents": {
-      "band_points": 51,
-      "points_differ": 1,
-      "state": "differs"
-    },
-    "total_gain": 76.2,
     "unit": "dps",
     "unit_word": "DPS",
-    "upgrade_count": 11,
+    "data_build": "1.60.1.70658",
+    "upgrade_count": 12,
+    "total_gain": 102.5,
+    "not_sim_checked_count": 0,
+    "not_modelled_count": 2,
+    "synced_at": "2026-10-29T21:15:00Z",
+    "synced_from": "addon",
     "upgrades": [
       {
-        "gain": 11.1,
-        "gain_words": "+11.1 DPS",
-        "modelled": true,
+        "slot": "trinket2",
+        "slot_label": "Trinket 2",
         "pick": {
-          "icon": "inv_gauntlets_27",
-          "id": 272099,
-          "item_level": 65,
-          "name": "Raider Gloves",
-          "quality": 4,
-          "source_line": "Creeg Bothunk"
-        },
-        "slot": "hands",
-        "slot_label": "Hands",
-        "worn": null
-      },
-      {
-        "gain": null,
-        "gain_words": "Gain not modelled yet",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_misc_gem_sapphire_01",
           "id": 249469,
-          "item_level": 55,
           "name": "Frozen Heart of the Mountain",
           "quality": 3,
-          "source_line": "Enchanting · crafted"
-        },
-        "slot": "trinket1",
-        "slot_label": "Trinket 1",
-        "worn": null
-      },
-      {
-        "gain": 23.1,
-        "gain_words": "+23.1 DPS",
-        "modelled": true,
-        "pick": {
-          "icon": "inv_weapon_rifle_05",
-          "id": 279273,
-          "item_level": 65,
-          "name": "Hyper Deluxe Sniper Rifle Mk XVII",
-          "quality": 4,
-          "source_line": "Engineering · crafted"
-        },
-        "slot": "ranged",
-        "slot_label": "Ranged",
-        "worn": {
-          "icon": "inv_weapon_rifle_08",
-          "id": 16004,
+          "icon": "inv_misc_gem_sapphire_01",
           "item_level": 55,
-          "known": true,
-          "label": "Dark Iron Rifle",
-          "name": "Dark Iron Rifle",
-          "quality": 3
-        }
-      },
-      {
-        "gain": 11,
-        "gain_words": "+11.0 DPS",
-        "modelled": true,
-        "pick": {
-          "icon": "inv_chest_leather_08",
-          "id": 252483,
-          "item_level": 61,
-          "name": "Dawn Armor",
-          "quality": 4,
-          "source_line": "Leatherworking · crafted"
+          "source_line": "Crafted: Enchanting",
+          "drop_chance": null
         },
-        "slot": "chest",
-        "slot_label": "Chest",
-        "worn": {
-          "icon": "inv_chest_leather_07",
-          "id": 16721,
-          "item_level": 63,
-          "known": true,
-          "label": "Shadowcraft Tunic",
-          "name": "Shadowcraft Tunic",
-          "quality": 3
-        }
-      },
-      {
-        "gain": 4.9,
-        "gain_words": "+4.9 DPS",
-        "modelled": true,
-        "pick": {
-          "icon": "inv_jewelry_necklace_14",
-          "id": 19491,
-          "item_level": 65,
-          "name": "Amulet of the Darkmoon",
-          "quality": 4,
-          "source_line": "1200 Tickets - Amulet of the Darkmoon"
-        },
-        "slot": "neck",
-        "slot_label": "Neck",
-        "worn": {
-          "icon": "inv_jewelry_necklace_29naxxramas",
-          "id": 23023,
-          "item_level": 83,
-          "known": true,
-          "label": "Sadist's Collar",
-          "name": "Sadist's Collar",
-          "quality": 4
-        }
-      },
-      {
-        "gain": -0.8,
-        "gain_words": "−0.8 DPS",
-        "modelled": true,
-        "pick": {
-          "icon": "inv_pants_03",
-          "id": 237819,
-          "item_level": 78,
-          "name": "Sentinel's Chain Leggings",
-          "quality": 4,
-          "source_line": "Illiyana Moonblaze"
-        },
-        "slot": "legs",
-        "slot_label": "Legs",
-        "worn": {
-          "icon": "inv_pants_mail_15",
-          "id": 239541,
-          "item_level": 98,
-          "known": true,
-          "label": "Dawnstalker Legguards",
-          "name": "Dawnstalker Legguards",
-          "quality": 4
-        }
-      },
-      {
-        "gain": 11.2,
-        "gain_words": "Gain not modelled yet",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_helmet_24",
-          "id": 226887,
-          "item_level": 60,
-          "name": "Beastmaster's Cap",
-          "quality": 4,
-          "source_line": "Saving the Best for Last"
-        },
-        "slot": "head",
-        "slot_label": "Head",
-        "worn": {
-          "icon": "inv_misc_bandana_03",
-          "id": 279253,
-          "item_level": 65,
-          "known": true,
-          "label": "Outlaw's Collar",
-          "name": "Outlaw's Collar",
-          "quality": 4
-        }
-      },
-      {
+        "worn": null,
         "gain": null,
         "gain_words": "Gain not modelled yet",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_bracer_17",
-          "id": 226885,
-          "item_level": 65,
-          "name": "Beastmaster's Bindings",
-          "quality": 3,
-          "source_line": "An Earnest Proposition"
-        },
-        "slot": "wrist",
-        "slot_label": "Wrist",
-        "worn": {
-          "icon": null,
-          "id": 999999,
-          "item_level": null,
-          "known": false,
-          "label": "Not in our item data yet",
-          "name": null,
-          "quality": null
-        }
+        "modelled": false
       },
       {
-        "gain": 7.6,
-        "gain_words": "Gain not modelled yet",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_boots_plate_07",
-          "id": 226881,
-          "item_level": 60,
-          "name": "Beastmaster's Treads",
-          "quality": 4,
-          "source_line": "Mokvar"
-        },
-        "slot": "feet",
-        "slot_label": "Feet",
-        "worn": {
-          "icon": "inv_boots_08",
-          "id": 16711,
-          "item_level": 59,
-          "known": true,
-          "label": "Shadowcraft Boots",
-          "name": "Shadowcraft Boots",
-          "quality": 3
-        }
-      },
-      {
-        "gain": 8.2,
-        "gain_words": "Gain not modelled yet",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_jewelry_ring_40",
-          "id": 234202,
-          "item_level": 80,
-          "name": "Signet Ring of the Bronze Dragonflight",
-          "quality": 4,
-          "source_line": "Anachronos"
-        },
-        "slot": "finger1",
-        "slot_label": "Ring 1",
-        "worn": {
-          "icon": "inv_jewelry_ring_03",
-          "id": 9533,
-          "item_level": 49,
-          "known": true,
-          "label": "Masons Fraternity Ring",
-          "name": "Masons Fraternity Ring",
-          "quality": 3
-        }
-      },
-      {
-        "gain": null,
-        "gain_words": "not sim-checked",
-        "modelled": false,
-        "pick": {
-          "icon": "inv_spear_05",
-          "id": 250619,
-          "item_level": 63,
-          "name": "Legionite Glaive",
-          "quality": 3,
-          "source_line": "Blacksmithing · crafted"
-        },
         "slot": "main_hand",
         "slot_label": "Main hand",
+        "pick": {
+          "id": 250619,
+          "name": "Legionite Glaive",
+          "quality": 3,
+          "icon": "inv_spear_05",
+          "item_level": 63,
+          "source_line": "Crafted: Blacksmithing",
+          "drop_chance": null
+        },
         "worn": {
-          "icon": "inv_sword_05",
-          "id": 13246,
+          "id": 10696,
+          "name": "Enchanted Azsharite Felbane Sword",
+          "quality": 2,
+          "icon": "inv_weapon_shortblade_26",
+          "item_level": 60,
+          "known": true,
+          "label": "Enchanted Azsharite Felbane Sword"
+        },
+        "gain": 21.2,
+        "gain_words": "+21.2 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "ranged",
+        "slot_label": "Ranged",
+        "pick": {
+          "id": 279273,
+          "name": "Hyper Deluxe Sniper Rifle Mk XVII",
+          "quality": 4,
+          "icon": "inv_weapon_rifle_05",
+          "item_level": 65,
+          "source_line": "Crafted: Engineering",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16004,
+          "name": "Dark Iron Rifle",
+          "quality": 3,
+          "icon": "inv_weapon_rifle_08",
+          "item_level": 55,
+          "known": true,
+          "label": "Dark Iron Rifle"
+        },
+        "gain": 20.2,
+        "gain_words": "+20.2 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "legs",
+        "slot_label": "Legs",
+        "pick": {
+          "id": 16678,
+          "name": "Beaststalker's Pants",
+          "quality": 3,
+          "icon": "inv_pants_03",
+          "item_level": 61,
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 13130,
+          "name": "Windrunner Legguards",
+          "quality": 3,
+          "icon": "inv_pants_03",
+          "item_level": 56,
+          "known": true,
+          "label": "Windrunner Legguards"
+        },
+        "gain": 16.1,
+        "gain_words": "+16.1 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "feet",
+        "slot_label": "Feet",
+        "pick": {
+          "id": 16675,
+          "name": "Beaststalker's Boots",
+          "quality": 3,
+          "icon": "inv_boots_plate_07",
+          "item_level": 59,
+          "source_line": "Stratholme · Nerub'enkan",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16711,
+          "name": "Shadowcraft Boots",
+          "quality": 3,
+          "icon": "inv_boots_08",
+          "item_level": 59,
+          "known": true,
+          "label": "Shadowcraft Boots"
+        },
+        "gain": 10.1,
+        "gain_words": "+10.1 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "chest",
+        "slot_label": "Chest",
+        "pick": {
+          "id": 252483,
+          "name": "Dawn Armor",
+          "quality": 4,
+          "icon": "inv_chest_leather_08",
+          "item_level": 61,
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16721,
+          "name": "Shadowcraft Tunic",
+          "quality": 3,
+          "icon": "inv_chest_leather_07",
+          "item_level": 63,
+          "known": true,
+          "label": "Shadowcraft Tunic"
+        },
+        "gain": 9.8,
+        "gain_words": "+9.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "head",
+        "slot_label": "Head",
+        "pick": {
+          "id": 252605,
+          "name": "Black Dragonscale Helm",
+          "quality": 4,
+          "icon": "inv_helmet_09",
+          "item_level": 61,
+          "source_line": "Crafted: Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 279253,
+          "name": "Outlaw's Collar",
+          "quality": 4,
+          "icon": "inv_misc_bandana_03",
+          "item_level": 65,
+          "known": true,
+          "label": "Outlaw's Collar"
+        },
+        "gain": 8.9,
+        "gain_words": "+8.9 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "waist",
+        "slot_label": "Waist",
+        "pick": {
+          "id": 16680,
+          "name": "Beaststalker's Belt",
+          "quality": 3,
+          "icon": "inv_belt_28",
+          "item_level": 58,
+          "source_line": "4% from Smolderthorn Headhunter",
+          "drop_chance": 4.18
+        },
+        "worn": {
+          "id": 17778,
+          "name": "Sagebrush Girdle",
+          "quality": 3,
+          "icon": "inv_belt_25",
+          "item_level": 49,
+          "known": true,
+          "label": "Sagebrush Girdle"
+        },
+        "gain": 7.5,
+        "gain_words": "+7.5 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "hands",
+        "slot_label": "Hands",
+        "pick": {
+          "id": 16676,
+          "name": "Beaststalker's Gloves",
+          "quality": 3,
+          "icon": "inv_gauntlets_10",
+          "item_level": 59,
+          "source_line": "Blackrock Spire · War Master Voone",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 279257,
+          "name": "Mourning Handguards",
+          "quality": 4,
+          "icon": "inv_gauntlets_11",
+          "item_level": 65,
+          "known": true,
+          "label": "Mourning Handguards"
+        },
+        "gain": 6,
+        "gain_words": "+6.0 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "back",
+        "slot_label": "Back",
+        "pick": {
+          "id": 13340,
+          "name": "Cape of the Black Baron",
+          "quality": 3,
+          "icon": "inv_misc_cape_20",
+          "item_level": 63,
+          "source_line": "Stratholme · Baron Rivendare",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 18511,
+          "name": "Shifting Cloak",
+          "quality": 4,
+          "icon": "inv_misc_cape_20",
           "item_level": 62,
           "known": true,
-          "label": "Argent Avenger",
-          "name": "Argent Avenger",
-          "quality": 3
+          "label": "Shifting Cloak"
+        },
+        "gain": 2,
+        "gain_words": "+2.0 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "finger2",
+        "slot_label": "Ring 2",
+        "pick": {
+          "id": 2951,
+          "name": "Ring of the Underwood",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_12",
+          "item_level": 36,
+          "source_line": "World drop (BoE) · levels 32-39",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 11862,
+          "name": "White Bone Band",
+          "quality": 2,
+          "icon": "inv_misc_bone_05",
+          "item_level": 52,
+          "known": true,
+          "label": "White Bone Band"
+        },
+        "gain": 0.7,
+        "gain_words": "+0.7 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "wrist",
+        "slot_label": "Wrist",
+        "pick": {
+          "id": 16681,
+          "name": "Beaststalker's Bindings",
+          "quality": 3,
+          "icon": "inv_bracer_17",
+          "item_level": 57,
+          "source_line": "4% from Ghoul Ravener",
+          "drop_chance": 4.02
+        },
+        "worn": {
+          "id": 999999,
+          "name": null,
+          "quality": null,
+          "icon": null,
+          "item_level": null,
+          "known": false,
+          "label": "Not in our item data yet"
+        },
+        "gain": null,
+        "gain_words": "Gain not modelled yet",
+        "modelled": false
+      }
+    ],
+    "already_best": [
+      {
+        "slot": "neck",
+        "slot_label": "Neck",
+        "item": {
+          "id": 13089,
+          "name": "Skibi's Pendant",
+          "quality": 3,
+          "icon": "inv_jewelry_amulet_07",
+          "item_level": 49
+        }
+      },
+      {
+        "slot": "shoulder",
+        "slot_label": "Shoulder",
+        "item": {
+          "id": 16708,
+          "name": "Shadowcraft Spaulders",
+          "quality": 3,
+          "icon": "inv_shoulder_07",
+          "item_level": 60
+        }
+      },
+      {
+        "slot": "finger1",
+        "slot_label": "Ring 1",
+        "item": {
+          "id": 9533,
+          "name": "Masons Fraternity Ring",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_03",
+          "item_level": 49
+        }
+      },
+      {
+        "slot": "trinket1",
+        "slot_label": "Trinket 1",
+        "item": {
+          "id": 19120,
+          "name": "Rune of the Guard Captain",
+          "quality": 2,
+          "icon": "inv_misc_rune_07",
+          "item_level": 51
         }
       }
-    ]
+    ],
+    "talents": {
+      "state": "differs",
+      "points_differ": 1,
+      "band_points": 51
+    }
   },
   "error": null,
   "ok": true,
