@@ -62,6 +62,7 @@ type Service struct {
 // Mount registers the app routes.
 func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/home", s.home)
+	mux.HandleFunc("GET /v1/app/config", s.config)
 }
 
 func (s *Service) logger() *slog.Logger {

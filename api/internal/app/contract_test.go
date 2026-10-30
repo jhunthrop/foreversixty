@@ -46,6 +46,7 @@ func TestContractFixtures(t *testing.T) {
 			w.chars.cards["velaren"] = card
 			delete(w.exports.rows, homeKey)
 		}},
+		{"app-config.json", "/v1/app/config", nil},
 	}
 	for _, c := range cases {
 		t.Run(c.fixture, func(t *testing.T) {
