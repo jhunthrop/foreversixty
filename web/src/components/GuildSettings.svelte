@@ -31,7 +31,8 @@
   import GuildStatus from './GuildStatus.svelte';
   import Card from './ui/Card.svelte';
   import PageHead from './ui/PageHead.svelte';
-  import Select, { type SelectOption } from './ui/Select.svelte';
+  import type { SelectOption } from '../lib/ui/listbox-model';
+  import Select from './ui/Select.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
   import { button } from '../lib/ui/button';
@@ -206,7 +207,7 @@
         <div class="w-40">
           <Select
             id="guild-visibility"
-            compact
+            size="compact"
             label={guildSettingsCopy.defaultVisibility}
             options={VISIBILITY_OPTIONS}
             value={current.default_visibility}

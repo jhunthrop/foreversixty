@@ -30,7 +30,7 @@
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import FilterSelect from '../rankings/FilterSelect.svelte';
+  import Select from '../ui/Select.svelte';
   import SignupSpec from './SignupSpec.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
@@ -287,16 +287,17 @@
         />
       </div>
       <div class="col-start-2 row-start-1 flex md:col-start-3">
-        <FilterSelect
+        <Select
           id={`signup-role-${key}`}
+          class="w-full"
+          size="compact"
           label={ROLE_FIELD_LABEL}
-          labelHidden
           value={shownRole}
           options={ROLE_OPTIONS}
-          onchange={pickRole}
           {disabled}
-          {describedBy}
+          describedBy={disabled ? describedBy : undefined}
           testid={`signup-role-${key}`}
+          onchange={(event) => pickRole((event.currentTarget as HTMLSelectElement).value)}
         />
       </div>
       <div class="relative col-span-2 row-start-3 md:col-span-1 md:col-start-4 md:row-start-1">

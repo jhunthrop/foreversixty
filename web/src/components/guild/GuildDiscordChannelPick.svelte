@@ -18,7 +18,7 @@
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { button } from '../../lib/ui/button';
-  import FilterSelect from '../rankings/FilterSelect.svelte';
+  import Select from '../ui/Select.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
   import GuildBotRemoveQuestion from './GuildBotRemoveQuestion.svelte';
 
@@ -87,16 +87,16 @@
     return () => onSaving(false);
   });
 
-  const groups = $derived(
-    groupChannels(channels).map((group) => ({
-      label: group.category,
-      options: group.channels.map((channel) => ({
+  const channelOptions = $derived([
+    { value: '', label: guildBotCopy.picker.placeholder },
+    ...groupChannels(channels).flatMap((group) =>
+      group.channels.map((channel) => ({
         value: channel.id,
         label: guildBotCopy.installed.channel(channel.name),
+        group: group.category ?? undefined,
       })),
-    })),
-  );
-  const placeholder = [{ value: '', label: guildBotCopy.picker.placeholder }];
+    ),
+  ]);
   const loadingOptions = [{ value: '', label: guildBotCopy.picker.loading }];
   const serverName = $derived(shortServerName(server));
   const saveOff = $derived(gated || saving || listState === 'loading');
@@ -172,19 +172,18 @@
   </div>
 {:else}
   <div class="flex w-full flex-col gap-2 md:w-[360px]">
-    <FilterSelect
+    <label class="quiet-label" for={SELECT_ID}>{guildBotCopy.picker.label}</label>
+    <Select
       id={SELECT_ID}
-      label={guildBotCopy.picker.label}
+      size="compact"
       value={selected}
-      options={listState === 'loading' ? loadingOptions : placeholder}
-      groups={listState === 'loading' ? undefined : groups}
-      onchange={choose}
+      options={listState === 'loading' ? loadingOptions : channelOptions}
       testid="bot-channel"
-      grow={0}
       busy={listState === 'loading'}
       disabled={gated || saving || listState === 'loading'}
       invalid={emptyPress}
       describedBy={emptyPress ? EMPTY_PRESS_ID : undefined}
+      onchange={(event) => choose((event.currentTarget as HTMLSelectElement).value)}
     />
     {#if emptyPress}
       <p id={EMPTY_PRESS_ID} class="text-wipe text-[13px]" data-testid="bot-channel-empty-press">

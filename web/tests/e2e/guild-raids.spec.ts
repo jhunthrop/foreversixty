@@ -29,6 +29,7 @@ import {
   type RaidStubOptions,
 } from './support/guild-raids';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
+import { choose } from './support/select';
 
 const NEW_YORK = 'America/New_York';
 const POLL_MS = 10_000;
@@ -290,14 +291,14 @@ test.describe('the guild clock (R4)', () => {
     await expect(page.getByTestId('raid-form-timezone')).toHaveValue(CHICAGO);
     await expect(page.getByTestId('raid-form-time')).toHaveValue('20:00');
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: Thu 17 Dec, 9:00 pm.');
-    await page.getByTestId('raid-form-timezone').selectOption(NEW_YORK);
+    await choose(page.getByTestId('raid-form-timezone'), NEW_YORK);
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: same time.');
   });
 
   test('a repeat across 14 March 2027 keeps 8:00 pm guild time', async ({ page }) => {
     const stub = await openRaidsTab(page, { viewer: 'officer', raids: [] }, new Date('2027-03-01T18:00:00Z'));
     await openForm(page);
-    await page.getByTestId('raid-form-zone').selectOption('raid:onyxias-lair');
+    await choose(page.getByTestId('raid-form-zone'), 'raid:onyxias-lair');
     await page.getByTestId('raid-form-date').fill('2027-03-11');
     await page.getByTestId('raid-form-time').fill('20:00');
     await page.getByTestId('raid-form-repeat').check();

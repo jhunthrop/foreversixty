@@ -23,6 +23,7 @@ import {
 } from './support/guild-discord';
 import { gotoHydrated } from './support/hydrated';
 import { envelope, expectNoAxeViolations } from './support/officer-tools';
+import { fieldBox } from './support/select';
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };
@@ -66,7 +67,7 @@ test.describe('not connected', () => {
   test('a member gets no discord key and no section', async ({ page }) => {
     await stubGuildDiscord(page, { discord: null });
     await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings');
-    await expect(page.getByTestId('guild-visibility-select')).toBeVisible();
+    await expect(fieldBox(page, 'guild-visibility-select')).toBeVisible();
     await expect(page.locator(SECTION)).toHaveCount(0);
     await expect(page.getByTestId('discord-connect')).toHaveCount(0);
   });
