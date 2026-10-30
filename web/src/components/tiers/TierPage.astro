@@ -7,6 +7,7 @@
 import Base from '../../layouts/Base.astro';
 import FactionMark from '../FactionMark.astro';
 import UpdatedStamp from '../UpdatedStamp.astro';
+import Card from '../ui/Card.astro';
 import PageHead from '../ui/PageHead.astro';
 import TierRow from './TierRow.astro';
 import { FACTION_ATTRIBUTE, FACTION_PARAM, TIER_FACTION_ORDER } from '../../lib/tiers/tier-controls';
@@ -154,44 +155,53 @@ const stampTitle =
                 </p>
               )
             ) : (
-              <div class="tier-list" data-role={role}>
-                <div class="tier-heads" aria-hidden="true">
-                  <span class="quiet-label">{tiersCopy.headers.rank}</span>
-                  <span class="quiet-label"></span>
-                  <span class="quiet-label">{tiersCopy.headers.spec}</span>
-                  <span class="quiet-label">{tiersCopy.headers.bar[role]}</span>
-                  <span class="quiet-label tier-head-num">{tiersCopy.headers.number[role]}</span>
-                  {role === 'tank' && (
-                    <>
-                      <span class="quiet-label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
-                      <span class="quiet-label tier-head-num">{tiersCopy.headers.threat}</span>
-                    </>
-                  )}
-                  <span class="quiet-label tier-head-num">{tiersCopy.headers.gap[role]}</span>
-                  <span class="quiet-label"></span>
+              <Card
+                compact
+                glyph="trophy"
+                title={tiersCopy.listTitle(role)}
+                meta={FACTION_LABELS[faction]}
+                body="none"
+                testid="tier-list-card"
+              >
+                <div class="tier-list" data-role={role}>
+                  <div class="tier-heads" aria-hidden="true">
+                    <span class="quiet-label">{tiersCopy.headers.rank}</span>
+                    <span class="quiet-label"></span>
+                    <span class="quiet-label">{tiersCopy.headers.spec}</span>
+                    <span class="quiet-label">{tiersCopy.headers.bar[role]}</span>
+                    <span class="quiet-label tier-head-num">{tiersCopy.headers.number[role]}</span>
+                    {role === 'tank' && (
+                      <>
+                        <span class="quiet-label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
+                        <span class="quiet-label tier-head-num">{tiersCopy.headers.threat}</span>
+                      </>
+                    )}
+                    <span class="quiet-label tier-head-num">{tiersCopy.headers.gap[role]}</span>
+                    <span class="quiet-label"></span>
+                  </div>
+                  <ol class="tier-panel" data-testid="tier-list">
+                    {roleHasTiers(role)
+                      ? groupByTier(rows).map((group) => (
+                          <li class="tier-group" data-tier={group.letter} data-testid="tier-group">
+                            <div class="tier-chip" data-testid="tier-chip">
+                              <span class="tier-letter" data-testid="tier-letter">
+                                <span class="sr-only">{tiersCopy.tierLabel(group.letter)}: </span>
+                                <span aria-hidden="true">{group.letter}</span>
+                              </span>
+                              <span class="tier-count">{tiersCopy.tierCount(group.rows.length)}</span>
+                              <span class="tier-chip-band">{tiersCopy.tierBand(group)}</span>
+                            </div>
+                            <ol class="tier-rows" aria-label={tiersCopy.tierLabel(group.letter)}>
+                              {group.rows.map((row) => (
+                                <TierRow row={row} />
+                              ))}
+                            </ol>
+                          </li>
+                        ))
+                      : rows.map((row) => <TierRow row={row} />)}
+                  </ol>
                 </div>
-                <ol class="tier-panel card-surface-quiet" data-testid="tier-list">
-                  {roleHasTiers(role)
-                    ? groupByTier(rows).map((group) => (
-                        <li class="tier-group" data-tier={group.letter} data-testid="tier-group">
-                          <div class="tier-chip" data-testid="tier-chip">
-                            <span class="tier-letter" data-testid="tier-letter">
-                              <span class="sr-only">{tiersCopy.tierLabel(group.letter)}: </span>
-                              <span aria-hidden="true">{group.letter}</span>
-                            </span>
-                            <span class="tier-count">{tiersCopy.tierCount(group.rows.length)}</span>
-                            <span class="tier-chip-band">{tiersCopy.tierBand(group)}</span>
-                          </div>
-                          <ol class="tier-rows" aria-label={tiersCopy.tierLabel(group.letter)}>
-                            {group.rows.map((row) => (
-                              <TierRow row={row} />
-                            ))}
-                          </ol>
-                        </li>
-                      ))
-                    : rows.map((row) => <TierRow row={row} />)}
-                </ol>
-              </div>
+              </Card>
             )}
           </section>
         );
@@ -463,7 +473,8 @@ const stampTitle =
     grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px minmax(168px, 210px);
     column-gap: 14px;
     align-items: end;
-    padding: 0 17px 8px 17px;
+    padding: 10px 17px 8px 17px;
+    border-top: 1px solid var(--color-line-soft);
   }
   .tier-list[data-role='dps'] .tier-heads {
     padding-left: calc(17px + var(--tier-chip-width));

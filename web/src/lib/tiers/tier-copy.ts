@@ -187,6 +187,7 @@ export const tiersCopy = {
   simChecksLink: 'How we check the sim →',
   simChecksHref: '/sim/specs',
   emptyRole: (role: BisRole): string => `No ${ROLE_LABELS[role]} specs are simmed yet.`,
+  listTitle: (role: BisRole): string => `${ROLE_LABELS[role]} tier list`,
   noData: 'No tier list is published for this build yet.',
   rowUnit: { dps: 'DPS', healer: 'HPS', tank: 'taken per second' } as const satisfies Record<BisRole, string>,
   headers: {
