@@ -19,6 +19,7 @@ import gg.foreversixty.app.model.Device
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
+import gg.foreversixty.app.model.ItemSet
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.Me
@@ -204,6 +205,10 @@ object StaticEndpoints {
     fun getItems(build: String, className: String): StaticResource<ItemsFile> =
         StaticResource("/data/${build.encodeURLPathPart()}/items/${className.encodeURLPathPart()}.json", ItemsFile.serializer())
 
+    /** /data/{build}/sets.json: Every item set of a build, for the tooltip's set lines */
+    fun getSets(build: String): StaticResource<List<ItemSet>> =
+        StaticResource("/data/${build.encodeURLPathPart()}/sets.json", ListSerializer(ItemSet.serializer()))
+
     /** /data/{build}/talents/{class}.json: A class's talent trees */
     fun getTalents(build: String, className: String): StaticResource<TalentsFile> =
         StaticResource("/data/${build.encodeURLPathPart()}/talents/${className.encodeURLPathPart()}.json", TalentsFile.serializer())
@@ -251,6 +256,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/data/{build}/classes.json", "cdn.classes", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/sets.json", "cdn.sets", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/talents/{class}.json", "cdn.talents.{class}", HttpStatusCode.fromValue(200)),
     )
 }

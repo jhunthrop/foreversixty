@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.compose.material.icons)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

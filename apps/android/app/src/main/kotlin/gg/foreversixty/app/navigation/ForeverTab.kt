@@ -3,22 +3,19 @@ package gg.foreversixty.app.navigation
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import gg.foreversixty.app.R
 
 /**
- * The top-level destinations, from the lane plan's features: F2 character, F3 BiS, F4 guild and
- * raids, F5 sims, F1/F8 account. Placeholders until lane D's spec fixes the IA and the icons
- * (the house crests and game icons replace these Material stand-ins).
+ * The app's four tabs, in the spec's order (§3.1): Home, Raids, BiS, You. Feature lanes plug their
+ * root screen into `ForeverAppScaffold`'s `when`, one branch each; the enum itself stays fixed.
  */
 enum class ForeverTab(@param:StringRes val label: Int, val icon: ImageVector) {
-    Character(R.string.shell_tab_character, Icons.Filled.Home),
-    Bis(R.string.tab_bis, Icons.AutoMirrored.Filled.List),
+    Home(R.string.tab_home, Icons.Filled.Home),
     Raids(R.string.tab_raids, Icons.Filled.DateRange),
-    Sims(R.string.shell_tab_sims, Icons.Filled.PlayArrow),
-    Account(R.string.shell_tab_account, Icons.Filled.AccountCircle),
+    Bis(R.string.tab_bis, Icons.AutoMirrored.Filled.List),
+    You(R.string.tab_you, Icons.Filled.Person),
 }

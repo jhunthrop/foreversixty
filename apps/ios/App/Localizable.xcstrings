@@ -495,6 +495,53 @@
         }
       }
     },
+    "home.age.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld d ago"
+          }
+        }
+      }
+    },
+    "home.age.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h ago"
+          }
+        }
+      }
+    },
+    "home.age.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min ago"
+          }
+        }
+      }
+    },
+    "home.age.now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "just now"
+          }
+        }
+      }
+    },
     "home.answer.allMatch": {
       "comment": "Arguments: 1 band (string)",
       "extractionState": "manual",
@@ -621,6 +668,17 @@
         }
       }
     },
+    "home.answer.openPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the planner"
+          }
+        }
+      }
+    },
     "home.answer.pickSpec": {
       "extractionState": "manual",
       "localizations": {
@@ -667,6 +725,18 @@
         }
       }
     },
+    "home.answer.under20Button": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ gear for 20 to 29"
+          }
+        }
+      }
+    },
     "home.answer.upgrades": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -687,6 +757,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "home.hero.level": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
           }
         }
       }
@@ -793,6 +875,17 @@
         }
       }
     },
+    "home.next.talentsNoBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No guide build for this level range yet."
+          }
+        }
+      }
+    },
     "home.next.talentsNone": {
       "extractionState": "manual",
       "localizations": {
@@ -835,6 +928,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Already best in slot: %1$@."
+          }
+        }
+      }
+    },
+    "home.upgrades.bandRaid": {
+      "comment": "Arguments: 1 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · raid"
           }
         }
       }
@@ -904,6 +1009,1004 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your upgrades"
+          }
+        }
+      }
+    },
+    "items.a11y.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the item"
+          }
+        }
+      }
+    },
+    "items.bind.quest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quest Item"
+          }
+        }
+      }
+    },
+    "items.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This item did not load."
+          }
+        }
+      }
+    },
+    "items.header": {
+      "comment": "Arguments: 1 quality (string), 2 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "items.ilvl": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ilvl %1$lld"
+          }
+        }
+      }
+    },
+    "items.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the item…"
+          }
+        }
+      }
+    },
+    "items.notInData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not in our item data yet"
+          }
+        }
+      }
+    },
+    "items.offHandTwoHand": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none: %1$@ is two-handed."
+          }
+        }
+      }
+    },
+    "items.pickArrow": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "→ %1$@"
+          }
+        }
+      }
+    },
+    "items.quality.common": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Common"
+          }
+        }
+      }
+    },
+    "items.quality.epic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Epic"
+          }
+        }
+      }
+    },
+    "items.quality.legendary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legendary"
+          }
+        }
+      }
+    },
+    "items.quality.poor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poor"
+          }
+        }
+      }
+    },
+    "items.quality.rare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rare"
+          }
+        }
+      }
+    },
+    "items.quality.uncommon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uncommon"
+          }
+        }
+      }
+    },
+    "items.sameDps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same DPS as the pick"
+          }
+        }
+      }
+    },
+    "items.setBonus": {
+      "comment": "Arguments: 1 n (int), 2 text (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%1$lld) Set: %2$@"
+          }
+        }
+      }
+    },
+    "items.slot.back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "items.slot.chest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chest"
+          }
+        }
+      }
+    },
+    "items.slot.feet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feet"
+          }
+        }
+      }
+    },
+    "items.slot.finger": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finger"
+          }
+        }
+      }
+    },
+    "items.slot.finger1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ring 1"
+          }
+        }
+      }
+    },
+    "items.slot.finger2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ring 2"
+          }
+        }
+      }
+    },
+    "items.slot.hands": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hands"
+          }
+        }
+      }
+    },
+    "items.slot.head": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Head"
+          }
+        }
+      }
+    },
+    "items.slot.legs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legs"
+          }
+        }
+      }
+    },
+    "items.slot.mainHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main hand"
+          }
+        }
+      }
+    },
+    "items.slot.neck": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neck"
+          }
+        }
+      }
+    },
+    "items.slot.offHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off hand"
+          }
+        }
+      }
+    },
+    "items.slot.ranged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranged"
+          }
+        }
+      }
+    },
+    "items.slot.shoulder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoulder"
+          }
+        }
+      }
+    },
+    "items.slot.trinket": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trinket"
+          }
+        }
+      }
+    },
+    "items.slot.trinket1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trinket 1"
+          }
+        }
+      }
+    },
+    "items.slot.trinket2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trinket 2"
+          }
+        }
+      }
+    },
+    "items.slot.waist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waist"
+          }
+        }
+      }
+    },
+    "items.slot.wrist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrist"
+          }
+        }
+      }
+    },
+    "items.standing.exalted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exalted"
+          }
+        }
+      }
+    },
+    "items.standing.friendly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friendly"
+          }
+        }
+      }
+    },
+    "items.standing.hated": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hated"
+          }
+        }
+      }
+    },
+    "items.standing.honored": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Honored"
+          }
+        }
+      }
+    },
+    "items.standing.hostile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hostile"
+          }
+        }
+      }
+    },
+    "items.standing.neutral": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neutral"
+          }
+        }
+      }
+    },
+    "items.standing.revered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revered"
+          }
+        }
+      }
+    },
+    "items.standing.unfriendly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfriendly"
+          }
+        }
+      }
+    },
+    "items.stat.agility": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agility"
+          }
+        }
+      }
+    },
+    "items.stat.arcaneRes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arcane resistance"
+          }
+        }
+      }
+    },
+    "items.stat.attackPower": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attack power"
+          }
+        }
+      }
+    },
+    "items.stat.block": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block"
+          }
+        }
+      }
+    },
+    "items.stat.blockValue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block value"
+          }
+        }
+      }
+    },
+    "items.stat.crit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crit"
+          }
+        }
+      }
+    },
+    "items.stat.defense": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Defense"
+          }
+        }
+      }
+    },
+    "items.stat.dodge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodge"
+          }
+        }
+      }
+    },
+    "items.stat.firePower": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fire spell damage"
+          }
+        }
+      }
+    },
+    "items.stat.fireRes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fire resistance"
+          }
+        }
+      }
+    },
+    "items.stat.frostRes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frost resistance"
+          }
+        }
+      }
+    },
+    "items.stat.healing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healing"
+          }
+        }
+      }
+    },
+    "items.stat.hit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit"
+          }
+        }
+      }
+    },
+    "items.stat.intellect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intellect"
+          }
+        }
+      }
+    },
+    "items.stat.mp5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mana per 5"
+          }
+        }
+      }
+    },
+    "items.stat.natureRes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nature resistance"
+          }
+        }
+      }
+    },
+    "items.stat.parry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parry"
+          }
+        }
+      }
+    },
+    "items.stat.rangedAttackPower": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranged attack power"
+          }
+        }
+      }
+    },
+    "items.stat.shadowRes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shadow resistance"
+          }
+        }
+      }
+    },
+    "items.stat.spellPenetration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spell penetration"
+          }
+        }
+      }
+    },
+    "items.stat.spellPower": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spell power"
+          }
+        }
+      }
+    },
+    "items.stat.spirit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spirit"
+          }
+        }
+      }
+    },
+    "items.stat.stamina": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stamina"
+          }
+        }
+      }
+    },
+    "items.stat.strength": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength"
+          }
+        }
+      }
+    },
+    "items.subclass.axe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Axe"
+          }
+        }
+      }
+    },
+    "items.subclass.bow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bow"
+          }
+        }
+      }
+    },
+    "items.subclass.crossbow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crossbow"
+          }
+        }
+      }
+    },
+    "items.subclass.dagger": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dagger"
+          }
+        }
+      }
+    },
+    "items.subclass.fishingPole": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fishing Pole"
+          }
+        }
+      }
+    },
+    "items.subclass.fistWeapon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fist Weapon"
+          }
+        }
+      }
+    },
+    "items.subclass.gun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gun"
+          }
+        }
+      }
+    },
+    "items.subclass.mace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mace"
+          }
+        }
+      }
+    },
+    "items.subclass.polearm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polearm"
+          }
+        }
+      }
+    },
+    "items.subclass.staff": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staff"
+          }
+        }
+      }
+    },
+    "items.subclass.sword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sword"
+          }
+        }
+      }
+    },
+    "items.subclass.thrown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thrown"
+          }
+        }
+      }
+    },
+    "items.subclass.wand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wand"
+          }
+        }
+      }
+    },
+    "items.weapon.damage": {
+      "comment": "Arguments: 1 min (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld - %2$lld Damage"
+          }
+        }
+      }
+    },
+    "items.weapon.dps": {
+      "comment": "Arguments: 1 dps (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%1$@ damage per second)"
+          }
+        }
+      }
+    },
+    "items.weapon.speed": {
+      "comment": "Arguments: 1 speed (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speed %1$@"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.mainHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.offHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.oneHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.ranged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranged"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.thrown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thrown"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.twoHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two-Hand"
           }
         }
       }
@@ -2982,118 +4085,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Coming soon"
-          }
-        }
-      }
-    },
-    "shell.home.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not load your character just now."
-          }
-        }
-      }
-    },
-    "shell.home.level": {
-      "comment": "Arguments: 1 n (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Level %1$lld"
-          }
-        }
-      }
-    },
-    "shell.home.levelClass": {
-      "comment": "Arguments: 1 n (int), 2 class (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Level %1$lld %2$@"
-          }
-        }
-      }
-    },
-    "shell.home.noCharacter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Link a character with the addon or Battle.net to see it here."
-          }
-        }
-      }
-    },
-    "shell.home.signInFirst": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in to see your character."
-          }
-        }
-      }
-    },
-    "shell.home.tagline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Play your class better."
-          }
-        }
-      }
-    },
-    "shell.tab.account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
-          }
-        }
-      }
-    },
-    "shell.tab.character": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Character"
-          }
-        }
-      }
-    },
-    "shell.tab.sims": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sims"
-          }
-        }
-      }
-    },
-    "shell.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Forever Sixty"
           }
         }
       }

@@ -1576,7 +1576,15 @@ components:
                   quality: { type: [integer, "null"] }
                   icon: { type: [string, "null"] }
                   item_level: { type: [integer, "null"] }
-                  source_line: { type: string }
+                  source_line:
+                    type: string
+                    description: >-
+                      The site's formatted source (web/src/lib/bis/source-cell.ts
+                      describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}",
+                      "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name.
+                  drop_chance:
+                    type: [number, "null"]
+                    description: Percent (0 to 100) when the source names one; absent or null otherwise.
               worn:
                 type: [object, "null"]
                 title: HomeWorn
@@ -2388,7 +2396,7 @@ components:
         reference_dps_per_point: { type: number }
         scale_reference_stat: { type: string }
         set_dps: { type: number }
-        new_at_band: { type: array, items: { type: integer } }
+        new_at_band: { type: array, items: { type: string }, description: "\"slot: item name\" for each pick new at this band." }
         weights:
           type: array
           items:
@@ -2417,6 +2425,8 @@ components:
               item_name: { type: string }
               source: { type: string }
               source_kind: { type: string }
+              source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+              drop_chance: { type: [number, "null"], description: Percent when known. }
               alternatives:
                 type: array
                 items:
@@ -2429,14 +2439,33 @@ components:
                     source: { type: string }
                     source_kind: { type: string }
                     dps_delta: { type: number, description: Negative against the pick. }
+                    source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+                    drop_chance: { type: [number, "null"], description: Percent when known. }
               score: { type: number }
               sim_dps: { type: number }
               dps_delta: { type: number }
               chance: { type: number }
               effect_unmodelled: { type: boolean }
               swap_note: { type: string }
-              ties: { type: array, items: { type: integer } }
-              set_bonus: { type: string }
+              ties:
+                type: array
+                description: Items with the pick's exact score.
+                items:
+                  type: object
+                  title: BisTie
+                  required: [item_id, item_name]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+              set_bonus:
+                type: object
+                title: BisSetBonus
+                description: The set bonus this piece is worn for.
+                required: [set, pieces, bonus]
+                properties:
+                  set: { type: string }
+                  pieces: { type: integer }
+                  bonus: { type: string }
               faction_note: { type: string }
               empty_reason: { type: string }
     ItemsFile:
@@ -2468,13 +2497,62 @@ components:
         dps: { type: number }
         two_hand: { type: boolean }
         effect_text: { type: string }
-        stats_source: { type: string }
+        stats_source: { type: [string, "null"] }
         set_id: { type: [integer, "null"] }
         unique: { type: boolean }
         client_unconfirmed: { type: boolean }
         icon_source: { type: string }
         weapon_type: { type: [string, "null"] }
         superseded_by: { type: [integer, "null"] }
+        bonding:
+          type: [string, "null"]
+          enum: [pickup, equip, use, quest, null]
+          description: >-
+            Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest);
+            null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+        armor_type:
+          type: [string, "null"]
+          enum: [cloth, leather, mail, plate, shield, null]
+          description: >-
+            Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a
+            ring, a trinket, a weapon or unknown. Omitted until published.
+        min_standing:
+          type: [string, "null"]
+          enum: [hated, hostile, unfriendly, neutral, friendly, honored, revered, exalted, null]
+          description: >-
+            Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else
+            null. Omitted until published.
+        subclass:
+          type: [string, "null"]
+          enum: [axe, bow, gun, mace, polearm, sword, staff, fist_weapon, dagger, thrown, crossbow, wand, fishing_pole, null]
+          description: >-
+            Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints
+            on the right of the slot line ("Polearm"); null for anything else. Omitted until the
+            data lane publishes it.
+        weapon_slot:
+          type: [string, "null"]
+          enum: [one_hand, two_hand, main_hand, off_hand, ranged, thrown, null]
+          description: >-
+            Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot
+            line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25
+            thrown); null for anything else. Omitted until published.
+    ItemSet:
+      type: object
+      description: One item set of /data/{build}/sets.json.
+      required: [id, name, item_ids, bonuses]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        item_ids: { type: array, items: { type: integer } }
+        bonuses:
+          type: array
+          items:
+            type: object
+            title: ItemSetBonus
+            required: [pieces, description]
+            properties:
+              pieces: { type: integer }
+              description: { type: string }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -4734,7 +4812,7 @@ paths:
         '200':
           description: "Every band of the spec"
           x-fixture-route: cdn.bis.{spec}
-          x-fixtures: [cdn.bis.warrior-fury]
+          x-fixtures: [cdn.bis.warrior-fury, cdn.bis.hunter-beast-mastery]
           content: { application/json: { schema: { $ref: '#/components/schemas/BisFile' } } }
   /data/{build}/items/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
@@ -4749,8 +4827,21 @@ paths:
         '200':
           description: "The class's items"
           x-fixture-route: cdn.items.{class}
-          x-fixtures: [cdn.items.warrior]
+          x-fixtures: [cdn.items.warrior, cdn.items.hunter]
           content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
+  /data/{build}/sets.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every item set of a build, for the tooltip's set lines
+      operationId: getSets
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per set"
+          x-fixtures: [cdn.sets]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

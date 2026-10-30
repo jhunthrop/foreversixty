@@ -133,6 +133,10 @@ data class BisAlternative(
     @SerialName("source_kind") val sourceKind: String,
     /** Negative against the pick. */
     @SerialName("dps_delta") val dpsDelta: Double,
+    /** The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2). */
+    @SerialName("source_line") val sourceLine: String? = null,
+    /** Percent when known. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
 )
 
 @Serializable
@@ -148,7 +152,8 @@ data class BisBand(
     @SerialName("reference_dps_per_point") val referenceDpsPerPoint: Double,
     @SerialName("scale_reference_stat") val scaleReferenceStat: String? = null,
     @SerialName("set_dps") val setDps: Double? = null,
-    @SerialName("new_at_band") val newAtBand: List<Int>? = null,
+    /** "slot: item name" for each pick new at this band. */
+    @SerialName("new_at_band") val newAtBand: List<String>? = null,
     @SerialName("weights") val weights: List<BisWeight> = emptyList(),
     @SerialName("slots") val slots: List<BisSlot> = emptyList(),
 )
@@ -169,6 +174,14 @@ data class BisPreset(
     @SerialName("label") val label: String,
 )
 
+/** The set bonus this piece is worn for. */
+@Serializable
+data class BisSetBonus(
+    @SerialName("set") val set: String,
+    @SerialName("pieces") val pieces: Int,
+    @SerialName("bonus") val bonus: String,
+)
+
 @Serializable
 data class BisSlot(
     @SerialName("slot") val slot: String,
@@ -178,6 +191,10 @@ data class BisSlot(
     @SerialName("item_name") val itemName: String? = null,
     @SerialName("source") val source: String? = null,
     @SerialName("source_kind") val sourceKind: String? = null,
+    /** The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2). */
+    @SerialName("source_line") val sourceLine: String? = null,
+    /** Percent when known. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
     @SerialName("alternatives") val alternatives: List<BisAlternative>? = null,
     @SerialName("score") val score: Double? = null,
     @SerialName("sim_dps") val simDps: Double? = null,
@@ -185,10 +202,18 @@ data class BisSlot(
     @SerialName("chance") val chance: Double? = null,
     @SerialName("effect_unmodelled") val effectUnmodelled: Boolean? = null,
     @SerialName("swap_note") val swapNote: String? = null,
-    @SerialName("ties") val ties: List<Int>? = null,
-    @SerialName("set_bonus") val setBonus: String? = null,
+    /** Items with the pick's exact score. */
+    @SerialName("ties") val ties: List<BisTie>? = null,
+    /** The set bonus this piece is worn for. */
+    @SerialName("set_bonus") val setBonus: BisSetBonus? = null,
     @SerialName("faction_note") val factionNote: String? = null,
     @SerialName("empty_reason") val emptyReason: String? = null,
+)
+
+@Serializable
+data class BisTie(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("item_name") val itemName: String,
 )
 
 @Serializable
@@ -851,7 +876,10 @@ data class HomePick(
     @SerialName("quality") val quality: Int? = null,
     @SerialName("icon") val icon: String? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** The site's formatted source (web/src/lib/bis/source-cell.ts describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}", "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name. */
     @SerialName("source_line") val sourceLine: String,
+    /** Percent (0 to 100) when the source names one; absent or null otherwise. */
+    @SerialName("drop_chance") val dropChance: Double? = null,
 )
 
 @Serializable
@@ -903,13 +931,38 @@ data class Item(
     @SerialName("dps") val dps: Double,
     @SerialName("two_hand") val twoHand: Boolean,
     @SerialName("effect_text") val effectText: String,
-    @SerialName("stats_source") val statsSource: String,
+    @SerialName("stats_source") val statsSource: String? = null,
     @SerialName("set_id") val setId: Int? = null,
     @SerialName("unique") val unique: Boolean,
     @SerialName("client_unconfirmed") val clientUnconfirmed: Boolean,
     @SerialName("icon_source") val iconSource: String,
     @SerialName("weapon_type") val weaponType: String? = null,
     @SerialName("superseded_by") val supersededBy: Int? = null,
+    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
+    @SerialName("bonding") val bonding: String? = null,
+    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published. */
+    @SerialName("armor_type") val armorType: String? = null,
+    /** Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published. */
+    @SerialName("min_standing") val minStanding: String? = null,
+    /** Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints on the right of the slot line ("Polearm"); null for anything else. Omitted until the data lane publishes it. */
+    @SerialName("subclass") val subclass: String? = null,
+    /** Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25 thrown); null for anything else. Omitted until published. */
+    @SerialName("weapon_slot") val weaponSlot: String? = null,
+)
+
+/** One item set of /data/{build}/sets.json. */
+@Serializable
+data class ItemSet(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("item_ids") val itemIds: List<Int> = emptyList(),
+    @SerialName("bonuses") val bonuses: List<ItemSetBonus> = emptyList(),
+)
+
+@Serializable
+data class ItemSetBonus(
+    @SerialName("pieces") val pieces: Int,
+    @SerialName("description") val description: String,
 )
 
 @Serializable
