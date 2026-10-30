@@ -3,8 +3,8 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70658:mage:gnome:2030005/113023/25351013010030025:'
-raidBuild: 'FS1:1.60.1.70658:mage:gnome:0332005/13102/253510130101301221:'
+build: 'FS1:1.60.1.70707:mage:gnome:230005/23023/25351013010030025:'
+raidBuild: 'FS1:1.60.1.70707:mage:gnome:2300052/5102/253510130101301221:'
 recommendedRaces: [gnome, troll]
 statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -58,8 +58,10 @@ Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed
 - **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below.
 - **Fingers of Frost** — each Chill effect (Frostbolt, Frostfire Bolt, Cone of Cold, Improved Blizzard) has a 15% chance to grant a 15 second effect that treats your next 1 spell (2 at rank 2) as if the target were Frozen. That switches on Shatter's crit bonus and Ice Lance's frozen damage bonus against a target that Frost Nova cannot freeze. It needs Ice Lance, so that is a one-point cost.
 - **Winter's Chill** — reworked in Forever: every Frostbolt and every Fingers of Frost Ice Lance stacks Winter's Chill on the target, up to 5, and only your own next Cone of Cold spends them. A raid frost mage stands at range and does not cast Cone of Cold, so the build keeps just the 2 points Ice Barrier needs below it.
-- **Missile Barrage and Arcane Focus** — Missile Barrage 2/2 gives Frostbolt a 20% chance to make your next Arcane Missiles free, halve its channel and fire the missiles every half second; Arcane Focus adds hit to those Arcane missiles. Together with an Arcane Missiles cast on every proc they were worth about +7% in our audit run.
+- **Missile Barrage** — Missile Barrage 2/2 gives Frostbolt a 20% chance to make your next Arcane Missiles free, halve its channel and fire the missiles every half second, and Precision (below) now covers those Arcane missiles' hit. Together with an Arcane Missiles cast on every proc it was worth about +7% in our audit run.
 - **Ice Barrier** — the shield also raises your Frost damage by 3% for a minute, and by another 3% while the shield holds, so it is a damage talent as much as a defensive one.
+
+Outside Frost, **Precision** (3/3) is Elemental Precision renamed, now adding 6% hit chance to all your spells. The client moved **Improved Fire Blast** two rows down the Fire tree, out of reach of a ten-point dip, so its point went to **Incineration**, which also raises Ice Lance's critical strike chance; the raid build's Incineration goes to 5/5, taking that point and one of the three Arcane Focus held before the client removed it. Precision now does Arcane Focus's job for the Missile Barrage missiles, and its other two points go to **Wand Specialization**, which the Missile Barrage row needs above it.
 
 ## Rotation and priority
 

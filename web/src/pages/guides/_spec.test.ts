@@ -176,10 +176,13 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
         `the frost hit line names no talent on ${activeBuild.build}: add its school-hit talent to SCHOOL_HIT_TALENTS, or the build to HIT_LINE_FALLBACK_BUILDS`,
       ).not.toBe('talents');
     }
+    // Precision adds hit to every Mage spell, so whether the band's cap still carries a
+    // talent split is the nightly ranking's call. When it does, the split names the build's
+    // talent, not the "talents" fallback.
     const talent = escapeRegExp(named);
     expect(html).toMatch(
       new RegExp(
-        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?% · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear<`,
+        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear)?<`,
       ),
     );
     expect(html).toContain('DPS per point');

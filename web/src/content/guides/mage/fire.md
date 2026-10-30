@@ -3,8 +3,8 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70658:mage:gnome:20500151/23552100130125031/003:'
-raidBuild: 'FS1:1.60.1.70658:mage:gnome:20500151/23452100130135031/003:'
+build: 'FS1:1.60.1.70707:mage:gnome:251015/55521001230123031/003:'
+raidBuild: 'FS1:1.60.1.70707:mage:gnome:251015/54521001230133031/003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -52,17 +52,18 @@ Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerabilit
 
 ## Talents and builds
 
-- **Improved Fireball** — up to 0.5 seconds off Fireball's and Frostfire Bolt's cast time at rank 5, a direct throughput gain taken early.
+- **Accelerant** — up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5, a direct throughput gain taken early. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot.
+- **Incineration** — up to 10% more critical strike chance on Fire Blast and Scorch at rank 5. The client gave it two more ranks when it took two from Critical Mass, and the build moves its two points with them: 5/5.
 - **Ignite** — Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage.
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.
-- **Critical Mass** — more Fire critical strike chance, feeding both Ignite and Combustion. The current client gives it five ranks and makes all five the prerequisite for Combustion, so the build takes it at 5/5.
-- **Fire Power** — a flat Fire damage bonus, the tree's biggest raw damage talent, now capped at three ranks; the two points it no longer holds are the two that went into Critical Mass.
+- **Critical Mass** — more Fire critical strike chance, feeding both Ignite and Combustion. The current client gives it three ranks and makes all three the prerequisite for Combustion, so the build takes it at 3/3.
+- **Fire Power** — a flat Fire damage bonus, the tree's biggest raw damage talent, now capped at three ranks.
 - **Pyroblast** and **Heating Up** — a pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits.
 
-This build spends 34 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They were bought with the points of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measured the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. The client has since trimmed Elemental Precision to 3 ranks, and the two points that freed went back into Master of Elements (2/3), so the mana refund is back and Pyroblast and Heating Up stay. Taking Pyroblast and Heating Up's points from Wake of Fire or Incineration instead measured the same within the sim's error, so that is a matter of taste.
+This build spends 34 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They were bought with the points of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measured the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. The client has since trimmed Precision (then Elemental Precision) to 3 ranks, and the two points that freed went back into Master of Elements (2/3), so the mana refund is back and Pyroblast and Heating Up stay. Taking Pyroblast and Heating Up's points from Wake of Fire or Incineration instead measured the same within the sim's error, so that is a matter of taste.
 
-Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 3 points in Frost instead, all into **Elemental Precision** (3/3, 6% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** (since removed from the game) and **Arcane Subtlety** entirely, neither of which registered any damage in the sim's model for this rotation — and picks up 3 points in Frost instead, all into **Precision** (3/3, 6% more hit chance with all your spells; the client renamed Elemental Precision and widened it from Frost and Fire to every school), a real damage gain for this rotation since Fireball, Scorch and Fire Blast all benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 
