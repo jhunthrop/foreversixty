@@ -18,6 +18,12 @@ describe('IconTile', () => {
     expect(body).toContain('width="16"');
   });
 
+  it('is 28 px with a 14 px glyph in a compact card head', () => {
+    const body = render(IconTile, { props: { glyph: 'scale', size: 28 } }).body;
+    expect(body).toContain('width: 28px');
+    expect(body).toContain('width="14"');
+  });
+
   it.each([
     ['gold', 'bg-tile text-tile-ink'],
     ['discord', 'bg-[rgba(88,101,242,.16)] text-[#9aa4ff]'],

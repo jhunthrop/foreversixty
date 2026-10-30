@@ -66,13 +66,13 @@
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import AccountTitle from './account/AccountTitle.svelte';
+  import Card from './ui/Card.svelte';
   import CardHead from './ui/CardHead.svelte';
   import Glyph from './ui/Glyph.svelte';
   import IconTile from './ui/IconTile.svelte';
   import LoadError from './ui/LoadError.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
   import Switch from './ui/Switch.svelte';
-  import StatePanel from './ui/StatePanel.svelte';
   import {
     SIGNED_OUT_MIN_H,
     clearAccountReserve,
@@ -727,15 +727,13 @@
             {#if heroPath !== null}
               <!-- Hidden (not unmounted: the panel's own fetch decides) until a rating exists. -->
               <div hidden={!ratingsShown} data-testid="account-ratings-slot">
-                <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
-                  <div class="p-[18px]">
-                    <CharacterRatingPanel
-                      path={heroPath}
-                      heading={false}
-                      onshown={(shown) => (ratingsShown = shown)}
-                    />
-                  </div>
-                </StatePanel>
+                <Card glyph="trophy" title={accountPageCopy.yourRatingsLabel} testid="account-ratings">
+                  <CharacterRatingPanel
+                    path={heroPath}
+                    heading={false}
+                    onshown={(shown) => (ratingsShown = shown)}
+                  />
+                </Card>
               </div>
             {/if}
 

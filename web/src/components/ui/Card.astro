@@ -1,0 +1,102 @@
+---
+// web/src/components/ui/Card.astro
+// The static twin of Card.svelte (site alignment spec 2026-10-29 §3.2 to §3.4, S1), for pages that
+// ship no client JavaScript: the same surface, head, body and foot from lib/ui/card.ts. The tile and
+// the chevron are the Svelte IconTile and Glyph rendered at build time (no hydration, no script).
+// Slots: default (the body), `lead` (replaces the tile), `aside` (the head's right slot), `foot`.
+import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+import {
+  CARD_BODY,
+  CARD_FOOT,
+  CARD_HEAD,
+  cardClass,
+  cardHeadTileSize,
+  cardHeadTitleClass,
+  type CardBody,
+} from '../../lib/ui/card';
+import type { GlyphName } from '../../lib/ui/glyphs';
+import Glyph from './Glyph.svelte';
+import IconTile, { type TileTone } from './IconTile.svelte';
+
+interface Props {
+  glyph?: GlyphName;
+  tone?: TileTone;
+  title: string;
+  label?: string;
+  meta?: string;
+  action?: { label: string; href: string };
+  quiet?: boolean;
+  body?: CardBody;
+  headingLevel?: 2 | 3;
+  compact?: boolean;
+  testid?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  glyph,
+  tone = 'gold',
+  title,
+  label,
+  meta,
+  action,
+  quiet = false,
+  body = 'text',
+  headingLevel = 2,
+  compact = false,
+  testid,
+  id,
+  class: className = '',
+} = Astro.props;
+const Heading = headingLevel === 3 ? 'h3' : 'h2';
+const hasLead = Astro.slots.has('lead');
+const hasAside = Astro.slots.has('aside');
+const hasFoot = Astro.slots.has('foot');
+const hasRight = meta !== undefined || action !== undefined || hasAside;
+const showLabel = label !== undefined && !compact;
+---
+
+<section id={id} class={`${cardClass(quiet)} ${className}`.trim()} data-testid={testid}>
+  <div class={compact ? CARD_HEAD.compact : CARD_HEAD.root} data-compact={compact ? 'true' : undefined}>
+    {hasLead ? (
+      <slot name="lead" />
+    ) : (
+      glyph !== undefined && <IconTile glyph={glyph} tone={tone} size={cardHeadTileSize(compact)} />
+    )}
+    <div class={CARD_HEAD.titleBlock}>
+      {showLabel && <span class={CARD_HEAD.label}>{label}</span>}
+      <div class={CARD_HEAD.titleRow}>
+        <Heading class={cardHeadTitleClass(compact, label !== undefined)}>{title}</Heading>
+      </div>
+    </div>
+    {hasRight && (
+      <div class={CARD_HEAD.aside}>
+        {meta !== undefined && (
+          <span class={CARD_HEAD.meta} data-testid="card-head-meta">
+            {meta}
+          </span>
+        )}
+        {action !== undefined && (
+          <a href={action.href} class={ACTION_LINK}>
+            {action.label}
+            <Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+          </a>
+        )}
+        <slot name="aside" />
+      </div>
+    )}
+  </div>
+  {body === 'none' ? (
+    <slot />
+  ) : (
+    <div class={CARD_BODY[body]} data-card-body={body}>
+      <slot />
+    </div>
+  )}
+  {hasFoot && (
+    <div class={CARD_FOOT} data-card-foot>
+      <slot name="foot" />
+    </div>
+  )}
+</section>
