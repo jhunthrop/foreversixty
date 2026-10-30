@@ -257,3 +257,56 @@ def test_a_forever_build_ingested_after_the_active_one_with_a_lower_number_is_re
         "wowf": [{"version": "1.60.1.70374", "created_at": "2026-10-20 00:00:00"}],
     }
     assert check(relisted, "1.60.1.70374", CONFIG).out_of_order == ()
+
+
+PTR_CONFIG = ClientConfig(
+    products=CONFIG.products,
+    ignore_products=CONFIG.ignore_products,
+    min_version=CONFIG.min_version,
+    test_product_pattern=r"ptr|test|^wow[a-z]?t$|^wowz$",
+)
+
+
+@pytest.mark.parametrize(
+    "product", ["wowft", "wowf_ptr", "wow_forever_ptr", "wowflivetest", "wowz"]
+)
+def test_a_forever_ptr_or_test_key_carrying_1_6x_is_never_forever(product: str):
+    """A Forever PTR is numbered like live (1.6x) and is newer than it; it must never move
+    the site, so a test-shaped key loses to the version rule."""
+    ptr = {**BUILDS, product: [{"version": "1.61.0.71500", "created_at": "2026-11-05 15:00:00"}]}
+    result = check(ptr, "1.60.1.70374", PTR_CONFIG)
+    assert not is_forever(Build(product, "1.61.0.71500", ""), PTR_CONFIG)
+    assert not result.newer
+    assert result.newest == Build("wow_cn_beta", "1.60.1.70374", "2026-10-13 23:59:08")
+    # Nor is it warned about every night as an unclaimed launch client.
+    assert result.unmatched_newer == ()
+
+
+def test_the_ptr_rule_leaves_a_live_shaped_key_alone():
+    assert is_forever(Build("wow_forever", "1.60.2.71000", ""), PTR_CONFIG)
+    assert is_forever(Build("wowf", "1.60.2.71000", ""), PTR_CONFIG)
+
+
+def test_a_listed_product_that_looks_like_a_ptr_is_refused_at_load(tmp_path: Path):
+    path = tmp_path / "client.json"
+    path.write_text(
+        json.dumps(
+            {
+                "products": ["wowf", "wowft"],
+                "min_version": "1.60.0.0",
+                "test_product_pattern": "^wow[a-z]?t$",
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ClientWatchError, match="wowft"):
+        load_config(path)
+
+
+def test_the_committed_config_never_activates_a_ptr_key():
+    config = load_config()
+    assert config.test_product_pattern, "curated/client.json names no test_product_pattern"
+    for product in ("wowt", "wowxptr", "wow_classic_ptr", "wowft", "wowf_ptr", "wowlivetest"):
+        assert not is_forever(Build(product, "1.60.2.71000", ""), config), product
+    for product in config.products:
+        assert is_forever(Build(product, "1.60.2.71000", ""), config), product

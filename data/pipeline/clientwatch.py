@@ -8,7 +8,11 @@ game goes live, so the pick is made two ways at once, from `curated/client.json`
 - a build under a product the file names is Forever, whatever its version;
 - a build under any other product is Forever when its version is a 1.x at or above
   `min_version` (Classic Era stays on 1.15; Forever started at 1.60), unless the product
-  is in `ignore_products`.
+  is in `ignore_products`;
+- a product whose key matches `test_product_pattern` (a PTR or test realm: `wowt`,
+  `wowxptr`, a `wowft` or `wowf_ptr` should Forever get one) is never Forever, whatever
+  its version, and is not warned about either: a Forever PTR is numbered like live and
+  newer than it, and must never move the site. A listed product may not match it.
 
 The newest matching build, by version then by wago's ingest time, is the candidate.
 `newer_than` compares it with the active build; `interface_number` is the TOC
@@ -55,6 +59,13 @@ class ClientConfig:
     ignore_products: frozenset[str]
     min_version: tuple[int, ...]
     blizzard_products: tuple[str, ...] = ()
+    test_product_pattern: str = ""
+
+    def is_test_product(self, product: str) -> bool:
+        return (
+            bool(self.test_product_pattern)
+            and re.search(self.test_product_pattern, product) is not None
+        )
 
 
 @dataclass(frozen=True)
@@ -124,12 +135,20 @@ def interface_number(version: str) -> int:
 
 def load_config(path: Path = CONFIG_PATH) -> ClientConfig:
     raw = json.loads(path.read_text(encoding="utf-8"))
-    return ClientConfig(
+    config = ClientConfig(
         products=frozenset(raw["products"]),
         ignore_products=frozenset(raw.get("ignore_products", ())),
         min_version=version_tuple(raw["min_version"]),
         blizzard_products=tuple(raw.get("blizzard_products", ())),
+        test_product_pattern=raw.get("test_product_pattern", ""),
     )
+    test_shaped = sorted(p for p in config.products if config.is_test_product(p))
+    if test_shaped:
+        raise ClientWatchError(
+            f"{path}: products {test_shaped} match test_product_pattern "
+            f"{config.test_product_pattern!r}; a PTR or test key is never Forever live"
+        )
+    return config
 
 
 def read_active_build(path: Path = ACTIVE_BUILD_PATH) -> str:
@@ -149,6 +168,8 @@ def in_forever_family(build: Build, config: ClientConfig) -> bool:
 
 
 def is_forever(build: Build, config: ClientConfig) -> bool:
+    if config.is_test_product(build.product):
+        return False
     if build.product in config.products:
         return True
     if build.product in config.ignore_products:
@@ -165,7 +186,7 @@ def first_ingested(builds: list[Build], version: str) -> str:
 def is_unclaimed(build: Build, config: ClientConfig) -> bool:
     """Not Forever by rule, yet worth a warning: an unknown product, or an ignored one
     carrying a Forever-family version."""
-    if is_forever(build, config):
+    if is_forever(build, config) or config.is_test_product(build.product):
         return False
     return build.product not in config.ignore_products or in_forever_family(build, config)
 
