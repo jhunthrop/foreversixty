@@ -20,9 +20,13 @@ export class LegendState {
     this.hidden = next;
   }
 
-  /** That series alone; the always-drawn players stay. */
+  /** That series alone; the always-drawn players and the medians (the reference) stay. */
   only(id: string, series: readonly ChartSeries[]): void {
-    this.hidden = new Set(series.filter((line) => line.id !== id && !line.pinned).map((line) => line.id));
+    this.hidden = new Set(
+      series
+        .filter((line) => line.id !== id && !line.pinned && line.kind !== 'median')
+        .map((line) => line.id),
+    );
   }
 
   highlight(id: string | null): void {

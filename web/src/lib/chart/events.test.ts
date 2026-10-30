@@ -93,6 +93,11 @@ describe('eventsNear', () => {
     expect(eventsNear(events, 127_000).map((event) => event.atMs)).toEqual([126_000, 127_000, 127_400]);
   });
 
+  it('orders one second’s events death, then target change, then taunt', () => {
+    const same = [at(127_400, 'taunt'), at(127_000, 'target-change'), at(127_200, 'death')];
+    expect(eventsNear(same, 127_000).map((event) => event.kind)).toEqual(['death', 'target-change', 'taunt']);
+  });
+
   it('includes the edges of the window', () => {
     expect(eventsNear([at(125_000), at(129_000)], 127_000)).toHaveLength(2);
     expect(eventsNear([at(124_999)], 127_000)).toHaveLength(0);

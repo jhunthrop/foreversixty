@@ -96,6 +96,42 @@ describe('selectDrawn', () => {
     expect(picked).toEqual(['p3', 'p12', 'p39']);
   });
 
+  it('splits the default into the top 4 and the bottom 4, so the low performers are named', () => {
+    const picked = selectDrawn({ candidates, pinned: new Set(), chosen: null, preset: 'split' });
+    expect(picked).toEqual(['p0', 'p1', 'p2', 'p3', 'p36', 'p37', 'p38', 'p39']);
+  });
+
+  it('takes the bottom from the metric’s own pool (damage dealers on damage done)', () => {
+    const pool = new Set(candidates.slice(0, 30).map((entry) => entry.id));
+    const split = selectDrawn({
+      candidates,
+      pinned: new Set(),
+      chosen: null,
+      preset: 'split',
+      bottomPool: pool,
+    });
+    expect(split.slice(-4)).toEqual(['p26', 'p27', 'p28', 'p29']);
+    const bottom = selectDrawn({
+      candidates,
+      pinned: new Set(),
+      chosen: null,
+      preset: 'bottom',
+      bottomPool: pool,
+    });
+    expect(bottom).toEqual(['p22', 'p23', 'p24', 'p25', 'p26', 'p27', 'p28', 'p29']);
+  });
+
+  it('never draws a player twice when the roster is small', () => {
+    const few = candidates.slice(0, 5);
+    expect(selectDrawn({ candidates: few, pinned: new Set(), chosen: null, preset: 'split' })).toEqual([
+      'p0',
+      'p1',
+      'p2',
+      'p3',
+      'p4',
+    ]);
+  });
+
   it('ignores a pinned player who is not in the fight', () => {
     expect(selectDrawn({ candidates, pinned: new Set(['ghost']), chosen: null })).not.toContain('ghost');
   });

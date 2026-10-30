@@ -19,6 +19,7 @@
     scrubMs = null,
     loading = false,
     formatValue = valueLabel,
+    unit = '',
     onToggle,
     onOnly,
     onHighlight,
@@ -34,6 +35,8 @@
     scrubMs?: number | null;
     loading?: boolean;
     formatValue?: (value: number) => string;
+    /** What every chip's value is (`DPS`): the head's unit, over the head's span. */
+    unit?: string;
     onToggle: (id: string) => void;
     onOnly: (id: string) => void;
     onHighlight: (id: string | null) => void;
@@ -72,6 +75,16 @@
     }
     return formatValue(line.figure);
   };
+  /** Medians, then the pinned players (tanks, the Source player, you), then the rest: at every
+   *  width the always-drawn lines are named before `+n` (fix round 2). On a phone the first chip
+   *  alone carries the unit, so the row has room for the pinned names. */
+  const medians = $derived(series.filter((line) => line.kind === 'median'));
+  const pinnedLines = $derived(series.filter((line) => line.kind !== 'median' && line.pinned));
+  const rest = $derived(series.filter((line) => line.kind !== 'median' && !line.pinned));
+  /** A phone's one row names the pinned players first: they are the lines it promises to draw. */
+  const ordered = $derived(
+    coarse ? [...pinnedLines, ...medians, ...rest] : [...medians, ...pinnedLines, ...rest],
+  );
   const overflow = $derived(coarse ? Math.max(0, series.length - fitting) : 0);
   const moreCount = $derived(coarse ? overflow + notDrawn : notDrawn);
 </script>
@@ -90,7 +103,7 @@
       ></span>
     {/each}
   {:else}
-    {#each series as line, index (line.id)}
+    {#each ordered as line, index (line.id)}
       {@const off = hidden.has(line.id)}
       <span
         class="chip-wrap relative inline-flex shrink-0"
@@ -128,7 +141,10 @@
             >{line.label}</span
           >
           {#if line.you}<span class="you">{chartCopy.youChip}</span>{/if}
-          <span class="value numeric" data-testid="legend-value">{valueOf(line)}</span>
+          <span class="value numeric" data-testid="legend-value"
+            >{valueOf(line)}{#if unit !== '' && (!coarse || index === 0)}<span class="unit">{unit}</span
+              >{/if}</span
+          >
         </button>
         {#if !coarse && highlightId === line.id}
           <button
@@ -161,6 +177,8 @@
   }
   .legend.coarse {
     min-height: 37px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     flex-wrap: nowrap;
   }
   /* A chip that did not fit the phone's one row: measured, never seen. */
@@ -232,9 +250,18 @@
   .coarse .value {
     min-width: 36px;
   }
+  .unit {
+    margin-left: 3px;
+    font-size: 11px;
+  }
+  /* The fine pointer's chip reserves the slot its Only button appears in, so the button never
+     covers the value and no chip moves on hover. */
+  .legend:not(.coarse) .chip-wrap {
+    padding-right: 38px;
+  }
   .only {
     position: absolute;
-    right: 6px;
+    right: 2px;
     top: 50%;
     transform: translateY(-50%);
     padding: 2px 4px;

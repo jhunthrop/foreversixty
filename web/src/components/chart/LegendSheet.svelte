@@ -6,10 +6,12 @@
 <script lang="ts">
   import { matchesFilter } from '../../lib/chart/choice';
   import { chartCopy } from '../../lib/chart/copy';
+  import type { DrawPreset, PlayersChoice } from '../../lib/chart/drawn';
   import type { MedianInfo } from '../../lib/chart/rate';
   import type { PlayerEntry } from '../../lib/chart/types';
   import { claimOverlay } from '../../lib/ui/overlay';
   import ClassIcon from '../report/ClassIcon.svelte';
+  import PresetChips from './PresetChips.svelte';
   import Glyph from '../ui/Glyph.svelte';
   import Switch from '../ui/Switch.svelte';
 
@@ -17,21 +19,25 @@
     open,
     entries,
     medians = [],
-    isDefault,
+    choice,
+    presets,
     formatValue,
     onToggle,
     onMedian,
-    onReset,
+    onPreset,
     onClose,
   }: {
     open: boolean;
     entries: readonly PlayerEntry[];
     medians?: readonly MedianInfo[];
-    isDefault: boolean;
+    /** What is drawn now: a preset, or the reader's own set. */
+    choice: PlayersChoice;
+    /** The presets this chart offers: all three on the damage chart, Top 8 on threat. */
+    presets: readonly DrawPreset[];
     formatValue: (value: number) => string;
     onToggle: (id: string) => void;
     onMedian?: (id: string) => void;
-    onReset: () => void;
+    onPreset: (preset: DrawPreset) => void;
     onClose: () => void;
   } = $props();
 
@@ -80,11 +86,11 @@
       <span class="text-muted numeric mr-auto text-[13px]"
         >{chartCopy.sheetMeta(drawnCount, entries.length)}</span
       >
-      <button type="button" class="action" disabled={isDefault} onclick={onReset}>{chartCopy.topN}</button>
       <button type="button" class="action" onclick={onClose} data-testid="legend-sheet-done"
         >{chartCopy.done}</button
       >
     </div>
+    <div class="px-[18px] pb-2"><PresetChips {presets} {choice} {onPreset} testid="sheet-presets" /></div>
     <div class="filter">
       <Glyph name="search" size={16} class="text-muted" />
       <input

@@ -66,19 +66,55 @@ export interface DrawCandidate {
   figure: number;
 }
 
+/**
+ * Who the chart draws by default (controls and charts spec D5, fix round 2 ruling): the top 4 and
+ * the bottom 4 (`split`, the damage chart's default, so the low performers are named), the top 8,
+ * or the bottom 8. A Players-control choice replaces the preset (custom).
+ */
+export type DrawPreset = 'split' | 'top' | 'bottom';
+
+export const DRAW_PRESETS: readonly DrawPreset[] = ['split', 'top', 'bottom'];
+
+/** What the Players control shows as picked: a preset, or the reader's own set. */
+export type PlayersChoice = DrawPreset | 'custom';
+
 export interface DrawSelection {
   candidates: readonly DrawCandidate[];
   /** Always drawn whenever they are in the fight. */
   pinned: ReadonlySet<string>;
-  /** The Players control's choice; null keeps the default top N. */
+  /** The Players control's choice; null keeps the preset. */
   chosen: ReadonlySet<string> | null;
+  /** The default: `top` unless a chart says otherwise. */
+  preset?: DrawPreset;
+  /** Who the bottom is taken from (the metric's own role: damage dealers on damage done); everyone when absent. */
+  bottomPool?: ReadonlySet<string>;
   topN?: number;
 }
 
-/** The ids drawn, highest figure first: the top N (or the chosen set) plus the pinned players. */
-export function selectDrawn({ candidates, pinned, chosen, topN = DEFAULT_TOP_N }: DrawSelection): string[] {
+/** The ids drawn, highest figure first: the preset's players (or the chosen set) plus the pinned players. */
+export function selectDrawn({
+  candidates,
+  pinned,
+  chosen,
+  preset = 'top',
+  bottomPool,
+  topN = DEFAULT_TOP_N,
+}: DrawSelection): string[] {
   const ranked = [...candidates].sort((a, b) => b.figure - a.figure);
-  const base = chosen === null ? ranked.slice(0, topN).map((entry) => entry.id) : [...chosen];
+  const pool = ranked.filter((entry) => bottomPool === undefined || bottomPool.has(entry.id));
+  const bottom = (count: number, excluded: ReadonlySet<string>): string[] =>
+    pool
+      .filter((entry) => !excluded.has(entry.id))
+      .slice(-count)
+      .map((entry) => entry.id);
+  let base: string[];
+  if (chosen !== null) base = [...chosen];
+  else if (preset === 'top') base = ranked.slice(0, topN).map((entry) => entry.id);
+  else if (preset === 'bottom') base = bottom(topN, new Set());
+  else {
+    const top = ranked.slice(0, topN / 2).map((entry) => entry.id);
+    base = [...top, ...bottom(topN / 2, new Set(top))];
+  }
   const wanted = new Set([...base, ...pinned]);
   return ranked.filter((entry) => wanted.has(entry.id)).map((entry) => entry.id);
 }

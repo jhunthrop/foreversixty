@@ -8,6 +8,7 @@ import type { RateMetric } from './copy';
 import { chartCopy } from './copy';
 import {
   type DeadSpan,
+  type DrawPreset,
   median,
   medianSeries,
   roundedSum,
@@ -39,8 +40,10 @@ export interface RateInput {
   /** The Source player and you: always drawn. */
   pinned: ReadonlySet<string>;
   youGuid?: string;
-  /** The Players control's choice; null keeps the top 8. */
+  /** The Players control's choice; null keeps the preset. */
   chosen: ReadonlySet<string> | null;
+  /** The default draw; `split` (top 4 and bottom 4) unless the Players control picked another. */
+  preset?: DrawPreset;
   /** The Compare group: the raid median, and the median of one class (a class name) or none. */
   compare: { raid: boolean; className: string | null };
   deadSpans?: ReadonlyMap<string, readonly DeadSpan[]>;
@@ -121,6 +124,11 @@ export function buildRateModel(input: RateInput): RateModel {
     candidates: players.map((player) => ({ id: player.guid, figure: figures.get(player.guid) ?? 0 })),
     pinned: pinnedHere,
     chosen,
+    preset: input.preset ?? 'split',
+    // The bottom is the metric's own role: a healer's damage is not a low performer on Damage done.
+    bottomPool: new Set(
+      players.filter((player) => inMedianGroup(metric, player)).map((player) => player.guid),
+    ),
   });
   const drawn = new Set(drawnIds);
   const byGuid = new Map(players.map((player) => [player.guid, player]));

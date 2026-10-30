@@ -51,6 +51,7 @@
     tooltipWidth = 268,
     formatValue = valueLabel,
     shareOf,
+    rowsLabel = '',
     onScrub,
     onOpenDeath,
     testid = 'chart-frame',
@@ -82,6 +83,8 @@
     formatValue?: (value: number) => string;
     /** The threat chart's share column: a series' share of everyone at that second. */
     shareOf?: (value: number, ms: number) => string;
+    /** What the tooltip's rows are, in its head: `DPS, 5 s average` or `estimated threat, every enemy`. */
+    rowsLabel?: string;
     /** A touch scrub's second, so the legend reads out; null when it ends. */
     onScrub?: (ms: number | null) => void;
     /** A death marker (or a collapsed cluster) pressed: the report opens it on the Deaths tab in place. */
@@ -90,6 +93,8 @@
   } = $props();
 
   const owner = `chart-${Math.random().toString(36).slice(2)}`;
+  /** A median is the reference every line is read against: 2 px, so it holds among 12 lines. */
+  const MEDIAN_WIDTH = 2;
   const AXIS_PX = CHART_AXIS_PX;
   const LANE_PX = CHART_LANE_PX;
   const EVENT_LINE_PX = CHART_EVENT_LINE_PX;
@@ -211,7 +216,6 @@
           stroke: () => colour('var(--color-bg)'),
         },
       },
-      focus: { alpha: 0.25 },
       scales: {
         x: { time: false, auto: false, range: () => [current.startMs / 1000, current.endMs / 1000] },
         y:
@@ -250,8 +254,8 @@
         {},
         ...series.map((line) => ({
           label: line.label,
-          stroke: () => colour(line.colour, line.kind === 'median' ? 0.7 : 1),
-          width: 1.5,
+          stroke: () => colour(line.colour, line.kind === 'median' ? 0.85 : 1),
+          width: line.kind === 'median' ? MEDIAN_WIDTH : 1.5,
           dash: line.dash === undefined ? undefined : [...line.dash],
           fill: fill(line),
           points: { show: false },
@@ -436,10 +440,11 @@
       series.forEach((line, index) => {
         const show = !off.has(line.id);
         if (u.series[index + 1].show !== show) u.setSeries(index + 1, { show }, false);
-        u.series[index + 1].width = focus === line.id ? 2.5 : 1.5;
+        u.series[index + 1].width = focus === line.id ? 2.5 : line.kind === 'median' ? MEDIAN_WIDTH : 1.5;
+        // A hovered chip dims every other line, never a median: the reference stays readable
+        // while a player is read against it (fix round 2 ruling).
+        u.series[index + 1].alpha = focus === null || focus === line.id || line.kind === 'median' ? 1 : 0.25;
       });
-      const at = series.findIndex((line) => line.id === focus);
-      u.setSeries(at < 0 ? null : at + 1, { focus: at >= 0 }, false);
       u.redraw(false, false);
     });
   });
@@ -657,7 +662,7 @@
     const { lines, more } = rowsAt(tooltipMs);
     return {
       title: clockLabel(tooltipMs),
-      note: chartCopy.tooltipRight(phaseAt(tooltipMs), mode === 'cumulative'),
+      note: chartCopy.tooltipRight(phaseAt(tooltipMs), rowsLabel),
       events: eventsNear(events, tooltipMs).map((event) =>
         event.iconUrl && brokenIcons.has(event.iconUrl) ? { ...event, iconUrl: null } : event,
       ),

@@ -76,13 +76,29 @@ export function phaseEvent(phase: ChartPhase): ChartEvent {
   };
 }
 
-/** Every event within ±2 s of `ms`, in time order. */
+/** Within one second, the order a raider reads a wipe in: the death, who the boss turned to, the taunt. */
+const KIND_ORDER: Readonly<Record<ChartEvent['kind'], number>> = {
+  death: 0,
+  'target-change': 1,
+  taunt: 2,
+  cast: 3,
+  phase: 4,
+};
+
+/** Every event within ±2 s of `ms`, by time (to the second) and then by kind (spec §B5.6, fix round 2). */
 export function eventsNear(
   events: readonly ChartEvent[],
   ms: number,
   radius = EVENT_RADIUS_MS,
 ): ChartEvent[] {
-  return events.filter((event) => Math.abs(event.atMs - ms) <= radius).sort((a, b) => a.atMs - b.atMs);
+  return events
+    .filter((event) => Math.abs(event.atMs - ms) <= radius)
+    .sort(
+      (a, b) =>
+        Math.floor(a.atMs / 1000) - Math.floor(b.atMs / 1000) ||
+        KIND_ORDER[a.kind] - KIND_ORDER[b.kind] ||
+        a.atMs - b.atMs,
+    );
 }
 
 /** One marker in the lane: a single event, or a counted cluster of them. */

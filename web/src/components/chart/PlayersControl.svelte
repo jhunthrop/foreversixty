@@ -1,8 +1,8 @@
 <!-- web/src/components/chart/PlayersControl.svelte -->
 <!-- The chart head's Players control (controls and charts spec §A4.5, §B5.3): who the chart draws.
      A searchable multi-select with a Compare group (the raid median, a class median), then Tanks,
-     Healers and Damage; an always-drawn player is on and disabled; `Top 8` in the foot restores
-     the default. It opens bottom-end in the top layer and is the page's one open overlay.
+     Healers and Damage; an always-drawn player is on and disabled. The presets row under the
+     filter (PresetChips) picks Top 4 + bottom 4, Top 8 or Bottom 8; a toggle makes it Custom. It opens bottom-end in the top layer and is the page's one open overlay.
      On a coarse pointer it opens the legend sheet instead (onCoarse).
 
      TODO(dropdown lane): this is a temporary checkbox list. When the shared listbox lands on
@@ -11,33 +11,39 @@
 <script lang="ts">
   import { matchesFilter } from '../../lib/chart/choice';
   import { chartCopy } from '../../lib/chart/copy';
+  import type { DrawPreset, PlayersChoice } from '../../lib/chart/drawn';
   import type { MedianInfo } from '../../lib/chart/rate';
   import type { PlayerEntry } from '../../lib/chart/types';
   import { claimOverlay } from '../../lib/ui/overlay';
   import ClassIcon from '../report/ClassIcon.svelte';
+  import PresetChips from './PresetChips.svelte';
   import SelectChevron from '../ui/SelectChevron.svelte';
 
   let {
     id,
     entries,
     medians = [],
-    isDefault,
+    choice,
+    presets,
     formatValue,
     coarse = false,
     onToggle,
     onMedian,
-    onReset,
+    onPreset,
     onCoarse,
   }: {
     id: string;
     entries: readonly PlayerEntry[];
     medians?: readonly MedianInfo[];
-    isDefault: boolean;
+    /** What is drawn now: a preset, or the reader's own set. */
+    choice: PlayersChoice;
+    /** The presets this chart offers: all three on the damage chart, Top 8 on threat. */
+    presets: readonly DrawPreset[];
     formatValue: (value: number) => string;
     coarse?: boolean;
     onToggle: (id: string) => void;
     onMedian?: (id: string) => void;
-    onReset: () => void;
+    onPreset: (preset: DrawPreset) => void;
     onCoarse: () => void;
   } = $props();
 
@@ -53,7 +59,7 @@
     entries.filter((entry) => entry.drawn).length + medians.filter((m) => m.on).length,
   );
   const fieldText = $derived(
-    chartCopy.playersField(entries.filter((entry) => entry.drawn).length, entries.length, isDefault),
+    chartCopy.playersField(entries.filter((entry) => entry.drawn).length, entries.length, choice),
   );
   const ROLE_ORDER = ['tank', 'healer', 'dps', 'other'] as const;
   const groups = $derived(
@@ -115,7 +121,7 @@
   }
 </script>
 
-<div class="players relative">
+<div class="players relative max-md:w-full">
   <button
     bind:this={trigger}
     type="button"
@@ -154,6 +160,7 @@
       />
       <span class="text-muted shrink-0 text-[12px]" aria-live="polite">{entries.length} players</span>
     </div>
+    <div class="preset-row"><PresetChips {presets} {choice} {onPreset} /></div>
     <div
       class="scroll"
       id="{id}-list"
@@ -198,15 +205,14 @@
               >
               {#if entry.pinned}<span class="pc-description">{chartCopy.alwaysDrawn}</span>{/if}
             </span>
-            <span class="text-muted numeric text-[13px]">{formatValue(entry.figure)}</span>
+            <span class="text-muted numeric text-[13px]" data-testid="players-option-figure"
+              >{formatValue(entry.figure)}</span
+            >
           </label>
         {/each}
       {/each}
     </div>
-    <div class="foot flex items-center justify-between">
-      <button type="button" class="reset" disabled={isDefault} onclick={onReset} data-testid="players-reset"
-        >{chartCopy.topN}</button
-      >
+    <div class="foot flex items-center justify-end">
       <span class="text-muted numeric text-[12px]">{chartCopy.drawnCount(drawnCount)}</span>
     </div>
   </div>
@@ -218,7 +224,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    width: 150px;
+    width: 196px;
     height: 36px;
     padding: 0 10px;
     border: 1px solid var(--color-line-card);
@@ -242,6 +248,7 @@
   }
   @media (max-width: 767px) {
     .field {
+      width: 100%;
       height: 44px;
     }
   }
@@ -347,16 +354,8 @@
     padding: 6px 8px;
     border-top: 1px solid var(--color-line-soft);
   }
-  .reset {
-    height: 32px;
-    padding: 0 10px;
-    color: var(--color-gold);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .reset:disabled {
-    opacity: 0.45;
+  .preset-row {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-line-soft);
   }
 </style>

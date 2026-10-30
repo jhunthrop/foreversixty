@@ -24,7 +24,31 @@ function raid(): RatePlayer[] {
 const WHOLE = { startMs: 0, endMs: 340_000 };
 
 describe('buildRateModel', () => {
-  it('draws the top 8 of N, plus you, plus the raid median under them', () => {
+  it('draws the top 4 and the bottom 4 damage dealers by default, plus you and the median', () => {
+    const model = buildRateModel({
+      metric: 'damage-done',
+      players: raid(),
+      window: WHOLE,
+      pinned: new Set(['Player-20']),
+      youGuid: 'Player-20',
+      chosen: null,
+      compare: { raid: true, className: null },
+    });
+    // The bottom is taken from the damage dealers: the healers' small damage is not a low performer.
+    expect(model.series.filter((line) => line.kind === 'player').map((line) => line.id)).toEqual([
+      'Player-0',
+      'Player-1',
+      'Player-2',
+      'Player-3',
+      'Player-20',
+      'Player-36',
+      'Player-37',
+      'Player-38',
+      'Player-39',
+    ]);
+  });
+
+  it('draws the top 8 of N with the Top 8 preset, plus you, plus the raid median under them', () => {
     const model = buildRateModel({
       metric: 'damage-done',
       players: raid(),
@@ -32,6 +56,7 @@ describe('buildRateModel', () => {
       pinned: new Set(['Player-35']),
       youGuid: 'Player-35',
       chosen: null,
+      preset: 'top',
       compare: { raid: true, className: null },
     });
     expect(model.total).toBe(40);
