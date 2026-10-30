@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // Discord's option type numbers the bot uses.
@@ -15,19 +17,22 @@ const optionString = 3
 // own slot keys (bis.Slot.Slot); phaseChoices the level bands and the Phase 1 raid.
 var (
 	classChoices = choicesOf("Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior")
-	slotChoices  = []Choice{
-		{"Head", "head"}, {"Neck", "neck"}, {"Shoulder", "shoulder"}, {"Back", "back"},
-		{"Chest", "chest"}, {"Wrist", "wrist"}, {"Hands", "hands"}, {"Waist", "waist"},
-		{"Legs", "legs"}, {"Feet", "feet"}, {"Ring 1", "finger1"}, {"Ring 2", "finger2"},
-		{"Trinket 1", "trinket1"}, {"Trinket 2", "trinket2"}, {"Main hand", "main_hand"},
-		{"Off hand", "off_hand"}, {"Ranged", "ranged"},
-	}
+	slotChoices  = slotChoicesOf(upgrades.Slots)
 	phaseChoices = []Choice{
 		{"Level 20", "20"}, {"Level 30", "30"}, {"Level 40", "40"}, {"Level 50", "50"},
 		{"Level 60", "60"}, {"Phase 1 raid", "p1"},
 	}
 	statusChoices = []Choice{{"In", "in"}, {"Late", "late"}, {"Bench", "bench"}, {"Out", "out"}}
 )
+
+// slotChoicesOf is the gear slots as choices, named by their words and valued by their keys.
+func slotChoicesOf(slots []upgrades.Slot) []Choice {
+	out := make([]Choice, len(slots))
+	for i, s := range slots {
+		out[i] = Choice{Name: s.Label, Value: s.Key}
+	}
+	return out
+}
 
 func choicesOf(names ...string) []Choice {
 	out := make([]Choice, len(names))
