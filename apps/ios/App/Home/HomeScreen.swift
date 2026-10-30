@@ -1,0 +1,208 @@
+import DesignTokens
+import Models
+import Networking
+import SwiftUI
+
+/// The site pages Home opens in the browser.
+enum HomeLinks {
+    static let setup = URL(string: "https://foreversixty.gg/setup")!
+    static let planner = URL(string: "https://foreversixty.gg/planner")!
+}
+
+/// What Home needs from the app: the API, the static data, the cache and the feature switch.
+struct HomeDependencies {
+    let client: APIClient
+    let catalog: ItemCatalog
+    let cache: any HomeCache
+    let isEnabled: Bool
+
+    @MainActor
+    static func live(_ environment: AppEnvironment) -> HomeDependencies {
+        let staticTransport: any HTTPTransport = switch environment.configuration.mode {
+        case .live: URLSessionTransport()
+        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
+        }
+        return HomeDependencies(
+            client: environment.client,
+            catalog: ItemCatalog(client: StaticDataClient(transport: staticTransport)),
+            cache: FileHomeCache.standard() ?? MemoryHomeCache(),
+            // The switch is on in fixture builds (debug) and wherever the API turns it on.
+            isEnabled: environment.configuration.mode == .fixture || environment.appConfig.isEnabled(.characterHome)
+        )
+    }
+}
+
+/// The Home tab: finds the character, then shows its answer. Lane F1's selector replaces the
+/// `/v1/me` main-character pick with the player's current character.
+struct HomeTab: View {
+    /// Switches to the BiS tab on the character's list (lane F3 owns that tab).
+    let openBis: () -> Void
+
+    @State private var dependencies: HomeDependencies
+
+    @State private var me: Me?
+    @State private var meFailed = false
+
+    var body: some View {
+        if !dependencies.isEnabled {
+            PlaceholderScreen(title: Copy.tabHome)
+        } else if let me, let character = me.mainCharacter {
+            HomeCharacterScreen(
+                character: HomeCharacter(character),
+                finishedSims: me.finishedSims,
+                dependencies: dependencies,
+                openBis: openBis
+            )
+            .id(character.key)
+        } else {
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 12) {
+                    if me != nil {
+                        Text(Copy.signinNoCharsTitle).font(HomeType.sectionTitle).foregroundStyle(FSColor.strong)
+                        Text(Copy.signinNoCharsBody).font(HomeType.body).foregroundStyle(FSColor.muted)
+                    } else if meFailed {
+                        Text(Copy.homeAnswerFailed).font(HomeType.lead).foregroundStyle(FSColor.wipe)
+                        SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise") { Task { await loadMe() } }
+                    } else {
+                        HomeSkeleton()
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(FSColor.bg)
+            }
+            .task { await loadMe() }
+        }
+    }
+
+    init(dependencies: HomeDependencies, openBis: @escaping () -> Void = {}) {
+        _dependencies = State(initialValue: dependencies)
+        self.openBis = openBis
+    }
+
+    private func loadMe() async {
+        meFailed = false
+        do {
+            me = try await dependencies.client.send(.getMe)
+        } catch {
+            meFailed = true
+        }
+    }
+}
+
+/// Home for one character: the answer, Your gear and the tooltip sheet.
+struct HomeCharacterScreen: View {
+    let character: HomeCharacter
+    let finishedSims: [FinishedSim]
+    let dependencies: HomeDependencies
+    let openBis: () -> Void
+
+    @State private var store: HomeStore
+    @State private var tooltip: ItemTooltipRequest?
+    @State private var showGear = false
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
+
+    init(character: HomeCharacter, finishedSims: [FinishedSim], dependencies: HomeDependencies, openBis: @escaping () -> Void) {
+        self.character = character
+        self.finishedSims = finishedSims
+        self.dependencies = dependencies
+        self.openBis = openBis
+        _store = State(initialValue: .live(client: dependencies.client, cache: dependencies.cache))
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                HomeAnswerView(
+                    phase: store.phase,
+                    presenter: HomePresenter(character: character, finishedSims: finishedSims, time: HomeTime(now: Date())),
+                    build: home?.dataBuild ?? "",
+                    offlineStamp: offlineStamp,
+                    send: handle
+                )
+            }
+            .background(FSColor.bg)
+            .refreshable { await store.refresh(character) }
+            .navigationTitle(character.name)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showGear) { gear }
+        }
+        .sheet(item: $tooltip) { request in
+            ItemTooltipSheet(request: request, catalog: dependencies.catalog)
+        }
+        .task { await store.load(character) }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await store.refreshIfStale(character) } }
+        }
+    }
+
+    private var home: CharacterHome? {
+        switch store.phase {
+        case let .loaded(home, _): home
+        case let .failed(cached): cached
+        case .loading: nil
+        }
+    }
+
+    private var offlineStamp: String? {
+        guard case let .loaded(_, since?) = store.phase else { return nil }
+        return HomeTime(now: Date()).stamp(since)
+    }
+
+    @ViewBuilder
+    private var gear: some View {
+        if let home {
+            GearScreen(home: home, character: character, catalog: dependencies.catalog) { look, wornID in
+                tooltip = request(for: look, home: home, sourceLine: nil, wornID: wornID)
+            }
+        }
+    }
+
+    private func handle(_ intent: HomeIntent) {
+        switch intent {
+        case let .openItem(look, sourceLine, wornID):
+            if let home { tooltip = request(for: look, home: home, sourceLine: sourceLine, wornID: wornID) }
+        case .openGear:
+            showGear = true
+        case .action(.getAddon):
+            openURL(HomeLinks.setup)
+        case .action(.openPlanner):
+            openURL(HomeLinks.planner)
+        case .action(.openList):
+            openBis()
+        case .openNext:
+            break
+        case .retry:
+            Task { await store.refresh(character) }
+        }
+    }
+
+    private func request(for look: HomeItemLook, home: CharacterHome, sourceLine: String?, wornID: Int?) -> ItemTooltipRequest {
+        .forHome(look, home: home, character: character, sourceLine: sourceLine, wornID: wornID)
+    }
+}
+
+/// Your gear, with the build's items file loaded for the slots the answer does not name.
+struct GearScreen: View {
+    let home: CharacterHome
+    let character: HomeCharacter
+    let catalog: ItemCatalog
+    let open: (HomeItemLook, Int?) -> Void
+
+    @State private var items: [Int: Item] = [:]
+
+    var body: some View {
+        GearView(
+            rows: GearModel.rows(home: home, gear: character.gear, items: items),
+            intro: Copy.gearIntro(band: HomePresenter.bandHeadText(home) ?? ""),
+            build: home.dataBuild,
+            open: open
+        )
+        .task {
+            let probe = ItemTooltipRequest.forHome(
+                HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil), home: home, character: character
+            )
+            items = (try? await catalog.sources(for: probe).items) ?? [:]
+        }
+    }
+}

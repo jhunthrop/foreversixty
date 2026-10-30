@@ -118,6 +118,8 @@
     "home.answer.under20Button": "{spec} gear for 20 to 29",
     "home.answer.openPlanner": "Open the planner",
     "home.next.talentsNoBuild": "No guide build for this level range yet.",
+    "home.hero.level": {"text": "Level {n}", "args": {"n": "int"}},
+    "home.upgrades.bandRaid": "{band} · raid",
     "home.age.now": "just now",
     "home.age.minutes": {"text": "{n} min ago", "notPlural": true, "args": {"n": "int"}},
     "home.age.hours": {"text": "{n} h ago", "notPlural": true, "args": {"n": "int"}},

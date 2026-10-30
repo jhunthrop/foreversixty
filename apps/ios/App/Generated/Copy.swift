@@ -387,6 +387,16 @@ enum Copy {
     /// No guide build for this level range yet.
     static var homeNextTalentsNoBuild: String { text("home.next.talentsNoBuild") }
 
+    /// Level {n}
+    static func homeHeroLevel(n: Int) -> String {
+        format("home.hero.level", n)
+    }
+
+    /// {band} · raid
+    static func homeUpgradesBandRaid(band: String) -> String {
+        format("home.upgrades.bandRaid", band)
+    }
+
     /// just now
     static var homeAgeNow: String { text("home.age.now") }
 

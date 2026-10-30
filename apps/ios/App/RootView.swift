@@ -56,7 +56,8 @@ struct RootView: View {
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
-        case .home: HomeScreen(client: environment.client)
+        // Lane F2: the home answer.
+        case .home: HomeTab(dependencies: .live(environment), openBis: { selection = .bis })
         default: PlaceholderScreen(title: tab.title)
         }
     }

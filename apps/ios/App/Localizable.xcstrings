@@ -761,6 +761,18 @@
         }
       }
     },
+    "home.hero.level": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
+          }
+        }
+      }
+    },
     "home.next.differs": {
       "extractionState": "manual",
       "localizations": {
@@ -916,6 +928,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Already best in slot: %1$@."
+          }
+        }
+      }
+    },
+    "home.upgrades.bandRaid": {
+      "comment": "Arguments: 1 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · raid"
           }
         }
       }

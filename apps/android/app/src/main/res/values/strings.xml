@@ -117,6 +117,8 @@
     <string name="home_answer_under20Button">%1$s gear for 20 to 29</string>
     <string name="home_answer_openPlanner">Open the planner</string>
     <string name="home_next_talentsNoBuild">No guide build for this level range yet.</string>
+    <string name="home_hero_level">Level %1$d</string>
+    <string name="home_upgrades_bandRaid">%1$s · raid</string>
     <string name="home_age_now">just now</string>
     <string name="home_age_minutes" tools:ignore="PluralsCandidate">%1$d min ago</string>
     <string name="home_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
