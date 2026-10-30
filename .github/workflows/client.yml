@@ -50,6 +50,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       newer: ${{ steps.decide.outputs.newer }}
+      resume: ${{ steps.decide.outputs.resume }}
       build: ${{ steps.decide.outputs.build }}
       product: ${{ steps.decide.outputs.product }}
       needs_fetch: ${{ steps.decide.outputs.needs_fetch }}
@@ -85,15 +86,29 @@ jobs:
           if [ "$WAGO_BEHIND" = true ]; then
             echo "::warning title=Blizzard shipped a client wago.tools has not exported::Blizzard serves $BLIZZARD_BUILD on $BLIZZARD_PRODUCT; wago.tools' newest Forever export is ${FOUND_BUILD:-none}. The move waits for the export (the fetch reads wago's tables); nothing to do but check again tomorrow."
           fi
-          build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"
+          build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"; resume=false
           if [ -n "$ASK_BUILD" ]; then
             build="$ASK_BUILD"; product="${ASK_PRODUCT:-$FOUND_PRODUCT}"
             [ "$build" != "$ACTIVE" ] && newer=true || newer=false
           fi
+          # A move that stopped after its push (the tag or a dispatch) is finished by
+          # running the script again for the active build: by hand (build= the active
+          # one), or here when the addon version on main has no tag on origin.
+          # activate-build.sh decides whether anything is left (it resumes only a
+          # version its own move commit set) and otherwise says "nothing to do".
+          if [ "$newer" != true ]; then
+            version=$(sed -n 's/^## Version: *//p' ../addon/ForeverSixty/ForeverSixty.toc)
+            if [ "$build" = "$ACTIVE" ] && [ -n "$ASK_BUILD" ]; then
+              resume=true
+            elif ! git ls-remote --exit-code --tags origin "refs/tags/addon-v$version" >/dev/null; then
+              resume=true; build="$ACTIVE"
+              echo "::notice title=resuming a move::addon-v$version is not on origin; the activate job finishes the move to $ACTIVE if it stopped after its push"
+            fi
+          fi
           needs_fetch=true
           [ -f "builds/$build/items.json" ] && needs_fetch=false
           {
-            echo "newer=$newer"; echo "build=$build"; echo "product=$product"; echo "needs_fetch=$needs_fetch"
+            echo "newer=$newer"; echo "resume=$resume"; echo "build=$build"; echo "product=$product"; echo "needs_fetch=$needs_fetch"
           } >> "$GITHUB_OUTPUT"
           if [ "$newer" = true ]; then
             echo "::notice title=new Forever client::$build ($product) is newer than the active $ACTIVE; fetch needed: $needs_fetch"
@@ -113,7 +128,7 @@ jobs:
 
   activate:
     needs: [watch, fetch]
-    if: ${{ !cancelled() && needs.watch.outputs.newer == 'true' && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
+    if: ${{ !cancelled() && (needs.watch.outputs.newer == 'true' || needs.watch.outputs.resume == 'true') && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: { contents: write, actions: write }

@@ -310,6 +310,59 @@ assert "green move: dps-per-point is carried" equal "$(git -C "$d.git" show "mai
 assert "green move: with a marker naming the build it was measured on" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.carried-from")" "$OLD_BUILD"
 
 
+# stub_gh <dir>: a gh whose `workflow run` succeeds and is recorded, whose `run list`
+# counts the recorded addon-release dispatches, and whose `api` fails (so the engine
+# stamp reads as unreadable and the ranking waits).
+stub_gh_ok() {
+	local dir=$1
+	mkdir -p "$dir"
+	: >"$dir/gh-calls"
+	cat >"$dir/gh" <<EOF
+#!/usr/bin/env bash
+case "\$1 \$2" in
+  "workflow run") echo "\$*" >>"$dir/gh-calls"; exit 0 ;;
+  "run list") grep -c addon-release "$dir/gh-calls" || true; exit 0 ;;
+  *) exit 1 ;;
+esac
+EOF
+	chmod +x "$dir/gh"
+}
+
+# A move that stops after its push (origin refuses the tag) is finished by a rerun with
+# the same build: the tag, then the dispatches; a third run has nothing left to do.
+d=$SCRATCH/move-resume
+make_full_move_repo "$d"
+stub_npm "$d/npm-stub" 0 "$WEB_GREEN"
+stub_go "$d/go-stub" 0 "$API_GREEN"
+stub_gh_ok "$d/stubs"
+# shellcheck disable=SC2016 # the hook's own variables, expanded when it runs
+printf '#!/bin/sh\nwhile read -r old new ref; do case "$ref" in refs/tags/*) echo "tags refused" >&2; exit 1 ;; esac; done\n' >"$d.git/hooks/pre-receive"
+chmod +x "$d.git/hooks/pre-receive"
+resume_run() {
+	STATUS=0
+	OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" \
+		GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" 2>&1) || STATUS=$?
+}
+resume_run
+assert "resume: the first run stops at the tag" contains "$(cat "$d/summary.md")" "**Step:** tagging the addon release addon-v2.1.8"
+assert "resume: its hand command is the rerun" contains "$(cat "$d/summary.md")" "a rerun finds the move on main and resumes from the tag"
+assert "resume: the move itself is on origin" contains "$(git -C "$d.git" log -1 --format=%s main)" "activate build $NEW_BUILD"
+assert "resume: nothing was dispatched" equal "$(cat "$d/stubs/gh-calls")" ""
+rm "$d.git/hooks/pre-receive"
+git -C "$d" tag -d addon-v2.1.8 >/dev/null 2>&1 || true
+resume_run
+assert "resume: the rerun exits 0" equal "$STATUS" 0
+assert "resume: it says it is resuming" contains "$OUT" "resuming the move to $NEW_BUILD"
+assert "resume: the tag is on origin, at the move" equal "$(git -C "$d.git" rev-parse 'addon-v2.1.8^{commit}')" "$(git -C "$d.git" rev-parse main)"
+assert "resume: the addon release is dispatched" contains "$(cat "$d/stubs/gh-calls")" "workflow run addon-release.yml --ref addon-v2.1.8"
+assert "resume: and the engine follow" contains "$(cat "$d/stubs/gh-calls")" "workflow run engine.yml"
+assert "resume: no ranking on an unreadable engine stamp" lacks "$(cat "$d/stubs/gh-calls")" "bis.yml"
+calls=$(wc -l <"$d/stubs/gh-calls")
+resume_run
+assert "resume: a third run exits 0" equal "$STATUS" 0
+assert "resume: and has nothing left to do" contains "$OUT" "is released; nothing to do"
+assert "resume: it dispatches nothing more" equal "$(wc -l <"$d/stubs/gh-calls")" "$calls"
+assert "resume: no new commit" equal "$(git -C "$d.git" rev-list --count main)" "$(git -C "$d" rev-list --count HEAD)"
 
 # Under Actions: an error annotation, and no local undo line.
 d=$SCRATCH/move-actions

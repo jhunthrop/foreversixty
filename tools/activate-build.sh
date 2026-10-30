@@ -118,10 +118,93 @@ report_failure() {
 }
 trap report_failure EXIT
 
+# finish_move: everything after the push, written to be run again. The tag is made and
+# pushed only when origin lacks it, then the engine check and the dispatches. Both a move
+# and a resumed move (a rerun after a stop past the push, below) end here, so "redo the
+# move" is the hand command for every stop (review M2).
+finish_move() {
+  RELEASE="gh workflow run addon-release.yml --ref $TAG -f dry_run=false -f publish=true"
+  step "tagging the addon release $TAG" \
+    "$REDO (a rerun finds the move on main and resumes from the tag); by hand: git fetch origin && git tag -a $TAG $MOVE_SHA -m 'Forever Sixty $NEW_VER: data for client build $NEW' && git push origin $TAG, then $RELEASE and the dispatches (web.yml, api.yml, sim.yml, engine.yml with -f force=true)"
+  if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+    echo "$TAG is already on origin"
+  else
+    git rev-parse -q --verify "refs/tags/$TAG" >/dev/null || run git tag -a "$TAG" "$MOVE_SHA" -m "Forever Sixty $NEW_VER: data for client build $NEW"
+    run git push --quiet origin "$TAG"
+    echo "tagged $TAG (addon-release.yml publishes it to CurseForge and Wago)"
+  fi
+
+  # The ranking (bis.yml) and the dps-per-point re-measure it makes run only on an engine
+  # stamped for the new build (tools/engine/pinned-build.sh): an engine on the old trees
+  # reads the new client's talent strings by the old indexes, so its picks would be
+  # quietly wrong. Until engine.yml pins an engine that follows $NEW, the carried picks
+  # and figures stay live, and that pin's green push dispatches bis.yml with force.
+  ENGINE_PIN="$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)"
+  ENGINE_BUILD="$(tools/engine/pinned-build.sh . 2>/dev/null)" || ENGINE_BUILD="an unreadable build"
+  RANK_NOW=false
+  if [ "$ENGINE_BUILD" = "$NEW" ]; then
+    RANK_NOW=true
+  else
+    WAIT_LINE="ranking waits for engine follow: the pinned engine $ENGINE_PIN is stamped for $ENGINE_BUILD, not $NEW. The picks and dps-per-point carried from $PREV stay live; engine.yml's green pin of an engine that follows $NEW dispatches bis.yml with force, which ranks and re-measures."
+    echo "$WAIT_LINE"
+    [ -z "${GITHUB_STEP_SUMMARY:-}" ] || printf '%s\n\n' "- $WAIT_LINE" >> "$GITHUB_STEP_SUMMARY"
+  fi
+
+  # A push made with GITHUB_TOKEN triggers no workflow (the 2026-10-16 move landed
+  # with no deploy, no addon publish and no ranking until each was dispatched by
+  # hand), so every consumer of the new build is dispatched here: the site, the
+  # API image (its simdb), the sim artifacts, the addon release for the tag, the
+  # engine follow, and (on an engine already stamped for it) the ranking. A failed
+  # dispatch does not stop the others; the run then fails naming each one to re-run.
+  if command -v gh >/dev/null 2>&1; then
+    step "dispatching the consumers of $NEW" "run each command the reason lists"
+    missed=()
+    dispatch() { if gh workflow run "$@"; then echo "dispatched $1"; else missed+=("gh workflow run $*"); fi; }
+    dispatch web.yml --ref main
+    dispatch api.yml --ref main
+    dispatch sim.yml --ref main
+    dispatch addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true
+    [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
+    dispatch engine.yml --ref main -f force=true
+    [ ${#missed[@]} -eq 0 ] || die "$(printf 'the move is on main and tagged, but these dispatches failed:\n%s' "$(printf '%s\n' "${missed[@]}")")"
+  fi
+}
+
 ACTIVE_JSON=web/src/data/active-build.json
 ACTIVE="$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$ACTIVE_JSON")"
 [ -n "$ACTIVE" ] || die "$ACTIVE_JSON names no build"
-if [ "$NEW" = "$ACTIVE" ]; then echo "$NEW is already the active build; nothing to do"; exit 0; fi
+TOC=addon/ForeverSixty/ForeverSixty.toc
+PREV="$ACTIVE"
+
+# resume_move: $NEW is already active. If the move's own commit set the addon version
+# and the release never happened (the tag is not on origin, or no addon-release run
+# exists for it), finish the steps after the push; otherwise there is nothing to do.
+resume_move() {
+  MOVE_SHA="$(git log -1 --format=%H -- "$ACTIVE_JSON")"
+  if [ "$(git log -1 --format=%s "$MOVE_SHA")" != "chore(client): activate build $NEW" ] \
+    || [ "$(git log -1 --format=%H -- "$TOC")" != "$MOVE_SHA" ]; then
+    echo "$NEW is already the active build; nothing to do"
+    exit 0
+  fi
+  NEW_VER="$(sed -n 's/^## Version: *//p' "$TOC")"
+  TAG="addon-v$NEW_VER"
+  local released=0
+  if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+    released=1
+    if command -v gh >/dev/null 2>&1; then
+      released=$(gh run list --workflow addon-release.yml --branch "$TAG" --limit 1 --json databaseId --jq length 2>/dev/null) || released=1
+    fi
+  fi
+  if [ "$released" -gt 0 ] 2>/dev/null; then
+    echo "$NEW is already the active build and $TAG is released; nothing to do"
+    exit 0
+  fi
+  PREV="$(cat "data/builds/$NEW/dps-per-point.carried-from" 2>/dev/null || echo "the previous build")"
+  echo "resuming the move to $NEW: $(git log -1 --format=%h "$MOVE_SHA") is on main, $TAG is not released"
+  finish_move
+  exit 0
+}
+if [ "$NEW" = "$ACTIVE" ]; then resume_move; fi
 
 NEW_DIR="data/builds/$NEW"; OLD_DIR="data/builds/$ACTIVE"
 step "the fetched tables for $NEW" \
@@ -197,7 +280,7 @@ step "the addon's TOCs, version and changelog" "$FIX_THEN_REDO"
 for toc in addon/ForeverSixty/ForeverSixty.toc addon/ForeverSixtyData/ForeverSixtyData.toc addon/ForeverSixtyInbox/ForeverSixtyInbox.toc; do
   sed -i.bak "s/^## Interface: .*/## Interface: $NEW_IFACE/" "$toc" && rm -f "$toc.bak"
 done
-OLD_VER="$(sed -n 's/^## Version: *//p' addon/ForeverSixty/ForeverSixty.toc)"
+OLD_VER="$(sed -n 's/^## Version: *//p' "$TOC")"
 IFS=. read -r VMAJ VMIN VPAT <<<"$OLD_VER"
 NEW_VER="$VMAJ.$VMIN.$((10#$VPAT + 1))"
 TAG="addon-v$NEW_VER"
@@ -270,46 +353,4 @@ UNDO=""
 MOVE_SHA="$(git rev-parse HEAD)"
 echo "pushed to main"
 
-# Main has moved from here on: a redo of the client run would say "already the active
-# build", so every hand command below names the one step left.
-RELEASE="gh workflow run addon-release.yml --ref $TAG -f dry_run=false -f publish=true"
-step "tagging the addon release $TAG" \
-  "git fetch origin && git tag -a $TAG $MOVE_SHA -m 'Forever Sixty $NEW_VER: data for client build $NEW' && git push origin $TAG, then $RELEASE and the dispatches the log did not reach (web.yml, api.yml, sim.yml, engine.yml with -f force=true)"
-run git tag -a "$TAG" -m "Forever Sixty $NEW_VER: data for client build $NEW"
-run git push --quiet origin "$TAG"
-echo "tagged $TAG (addon-release.yml publishes it to CurseForge and Wago)"
-
-# The ranking (bis.yml) and the dps-per-point re-measure it makes run only on an engine
-# stamped for the new build (tools/engine/pinned-build.sh): an engine on the old trees
-# reads the new client's talent strings by the old indexes, so its picks would be
-# quietly wrong. Until engine.yml pins an engine that follows $NEW, the carried picks
-# and figures stay live, and that pin's green push dispatches bis.yml with force.
-ENGINE_PIN="$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)"
-ENGINE_BUILD="$(tools/engine/pinned-build.sh . 2>/dev/null)" || ENGINE_BUILD="an unreadable build"
-RANK_NOW=false
-if [ "$ENGINE_BUILD" = "$NEW" ]; then
-  RANK_NOW=true
-else
-  WAIT_LINE="ranking waits for engine follow: the pinned engine $ENGINE_PIN is stamped for $ENGINE_BUILD, not $NEW. The picks and dps-per-point carried from $ACTIVE stay live; engine.yml's green pin of an engine that follows $NEW dispatches bis.yml with force, which ranks and re-measures."
-  echo "$WAIT_LINE"
-  [ -z "${GITHUB_STEP_SUMMARY:-}" ] || printf '%s\n\n' "- $WAIT_LINE" >> "$GITHUB_STEP_SUMMARY"
-fi
-
-# A push made with GITHUB_TOKEN triggers no workflow (the 2026-10-16 move landed
-# with no deploy, no addon publish and no ranking until each was dispatched by
-# hand), so every consumer of the new build is dispatched here: the site, the
-# API image (its simdb), the sim artifacts, the addon release for the tag, the
-# engine follow, and (on an engine already stamped for it) the ranking. A failed
-# dispatch does not stop the others; the run then fails naming each one to re-run.
-if command -v gh >/dev/null 2>&1; then
-  step "dispatching the consumers of $NEW" "run each command the reason lists"
-  missed=()
-  dispatch() { if gh workflow run "$@"; then echo "dispatched $1"; else missed+=("gh workflow run $*"); fi; }
-  dispatch web.yml --ref main
-  dispatch api.yml --ref main
-  dispatch sim.yml --ref main
-  dispatch addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true
-  [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
-  dispatch engine.yml --ref main -f force=true
-  [ ${#missed[@]} -eq 0 ] || die "$(printf 'the move is on main and tagged, but these dispatches failed:\n%s' "$(printf '%s\n' "${missed[@]}")")"
-fi
+finish_move
