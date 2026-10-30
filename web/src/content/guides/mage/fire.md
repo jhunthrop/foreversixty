@@ -3,7 +3,7 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70707:mage:gnome:251015/55521001230123031/003:'
+build: 'FS1:1.60.1.70707:mage:gnome:2520150000002/51521001230133031/003:'
 raidBuild: 'FS1:1.60.1.70707:mage:gnome:251015/54521001230133031/003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
@@ -52,7 +52,7 @@ Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerabilit
 
 ## Talents and builds
 
-- **Accelerant** — up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5, a direct throughput gain taken early. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot.
+- **Accelerant** — up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot. Fireball is the filler only until you train Scorch: from then on Scorch is the filler, so Accelerant speeds up nothing the level-60 rotation casts. The leveling build keeps one point, to open the tree's second row, and the raid build keeps four.
 - **Incineration** — up to 10% more critical strike chance on Fire Blast and Scorch at rank 5. The client gave it two more ranks when it took two from Critical Mass, and the build moves its two points with them: 5/5.
 - **Ignite** — Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage.
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.
@@ -61,9 +61,11 @@ Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerabilit
 - **Pyroblast** and **Heating Up** — a pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits.
 
-This build spends 34 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They were bought with the points of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measured the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. The client has since trimmed Precision (then Elemental Precision) to 3 ranks, and the two points that freed went back into Master of Elements (2/3), so the mana refund is back and Pyroblast and Heating Up stay. Taking Pyroblast and Heating Up's points from Wake of Fire or Incineration instead measured the same within the sim's error, so that is a matter of taste.
+Both builds reach Combustion at the bottom, and two of their Fire points are Pyroblast and Heating Up. They were bought with the points of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measured the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. The client has since trimmed Precision (then Elemental Precision) to 3 ranks, and the two points that freed went back into Master of Elements, so the mana refund is back and Pyroblast and Heating Up stay; both builds now take it at 3/3. Taking Pyroblast and Heating Up's points from Wake of Fire or Incineration instead measured the same within the sim's error, so that is a matter of taste.
 
-Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** (since removed from the game) and **Arcane Subtlety** entirely, neither of which registered any damage in the sim's model for this rotation — and picks up 3 points in Frost instead, all into **Precision** (3/3, 6% more hit chance with all your spells; the client renamed Elemental Precision and widened it from Frost and Fire to every school), a real damage gain for this rotation since Fireball, Scorch and Fire Blast all benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+The leveling build takes four points out of Accelerant, since Scorch is the filler from the moment you train it. One goes to the third rank of **Master of Elements**. The other three go to Arcane: two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast), plus a second rank of **Arcane Resilience**, which brings Arcane to the 15 points that row needs. Without raid buffs, a long fight runs a Fire Mage short of mana, and this spend measures about +5% in our level-60 search run, with every talent the engine cannot model still in it. That leaves Fire at 31 points, exactly the path to Combustion. The raid build keeps 34 in Fire: with raid buffs and a mana potion, the same move measured under 1%.
+
+Outside Fire, the raid build spends 14 points in Arcane (the leveling build 17, with the Arcane Meditation above), neither taking **Arcane Subtlety**, which registered no damage in the sim's model for this rotation, and both take 3 points in Frost, all into **Precision** (3/3, 6% more hit chance with all your spells; the client renamed Elemental Precision and widened it from Frost and Fire to every school), a real damage gain for this rotation since Fireball, Scorch and Fire Blast all benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 
