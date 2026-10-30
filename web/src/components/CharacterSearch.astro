@@ -135,16 +135,21 @@ const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-ful
 
 <script>
   import { afterPaint } from '../lib/after-paint';
+  import { holdSubmitUntilWired } from '../lib/held-submit';
 
   // The form's submit and the "Look up another character" prefill; the "/" key that focuses
   // this box lives in the site header (HeaderSearch.astro), which is on every page. Wired after
-  // first paint, or at the first pointer, key or focus event (src/lib/after-paint.ts).
+  // first paint, or at the first pointer, key or focus event (src/lib/after-paint.ts). An Enter
+  // pressed before the wiring lands is held and replayed (src/lib/held-submit.ts).
+  const forms = [...document.querySelectorAll<HTMLFormElement>('form[data-character-search-primary]')];
+  const releases = forms.map((form) => holdSubmitUntilWired(form));
   afterPaint(() => {
     void import('../lib/character-search-dom').then(({ prefillFromQuery, wireLookupForm }) => {
-      for (const form of document.querySelectorAll<HTMLFormElement>('form[data-character-search-primary]')) {
+      forms.forEach((form, index) => {
         wireLookupForm(form);
         prefillFromQuery(form);
-      }
+        releases[index]?.();
+      });
     });
   });
 </script>

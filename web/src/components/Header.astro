@@ -186,11 +186,22 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
   </script>
   <script>
     import { afterPaint } from '../lib/after-paint';
+    import { holdSubmitUntilWired } from '../lib/held-submit';
 
     // The wiring (src/lib/header-wiring.ts) runs after first paint (src/lib/after-paint.ts):
     // the header is complete markup without it, and its module chain was about 150 ms of
     // simulated LCP on every page (W.16). The header gets `data-header-wired` when it is
-    // done; specs that drive the panels or the "/" key wait for it.
-    afterPaint(() => void import('../lib/header-wiring').then((m) => m.wireHeader()));
+    // done; specs that drive the panels or the "/" key wait for it. A compact lookup submitted
+    // before then is held and replayed (src/lib/held-submit.ts).
+    const releases = [
+      ...document.querySelectorAll<HTMLFormElement>('[data-site-header] form[data-character-search]'),
+    ].map((form) => holdSubmitUntilWired(form));
+    afterPaint(
+      () =>
+        void import('../lib/header-wiring').then((m) => {
+          m.wireHeader();
+          for (const release of releases) release();
+        }),
+    );
   </script>
 </header>
