@@ -182,11 +182,24 @@ assert "both red: web first" equal "$(head -1 "$d/failures")" "web src/c.test.ts
 
 
 # make_move_repo <dir>: a scratch checkout with the active build, the new build's fetched
-# tables and an addon TOC, and a re-encode stub that fails the way a talent-tree change does.
+# tables and an addon TOC, a re-encode stub that fails the way a talent-tree change does,
+# and a stub uv on stubs/ (the pipeline is not in a scratch checkout; the floors themselves
+# are data/tests/test_build_floors.py's). The stub records each call in stubs/uv-calls;
+# `build-floors` refuses with stubs/floors-refusal's text when that file exists, and every
+# call succeeds otherwise.
 make_move_repo() {
 	local dir=$1 f
 	mkdir -p "$dir/tools" "$dir/web/src/data" "$dir/web/scripts" "$dir/data/builds/$NEW_BUILD" \
-		"$dir/data/builds/$OLD_BUILD" "$dir/addon/ForeverSixty"
+		"$dir/data/builds/$OLD_BUILD" "$dir/addon/ForeverSixty" "$dir/stubs"
+	cat >"$dir/stubs/uv" <<EOF
+#!/usr/bin/env bash
+echo "\$*" >>"$dir/stubs/uv-calls"
+case " \$* " in
+  *" build-floors "*) if [ -e "$dir/stubs/floors-refusal" ]; then cat "$dir/stubs/floors-refusal" >&2; exit 1; fi ;;
+esac
+exit 0
+EOF
+	chmod +x "$dir/stubs/uv"
 	cp "$ACTIVATE" "$dir/tools/activate-build.sh"
 	printf '{\n  "build": "%s"\n}\n' "$OLD_BUILD" >"$dir/web/src/data/active-build.json"
 	for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json; do
@@ -207,7 +220,7 @@ activate() {
 	local dir=$1
 	shift
 	STATUS=0
-	OUT=$(cd "$dir" && GITHUB_STEP_SUMMARY="$dir/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$@" 2>&1) || STATUS=$?
+	OUT=$(cd "$dir" && PATH="$dir/stubs:$PATH" GITHUB_STEP_SUMMARY="$dir/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$@" 2>&1) || STATUS=$?
 	SUMMARY=$(cat "$dir/summary.md" 2>/dev/null)
 }
 
@@ -260,9 +273,8 @@ make_full_move_repo() {
 	done
 	printf '# Changelog\n\n## 2.1.7\n\nOlder.\n' >"$dir/addon/ForeverSixty/CHANGELOG.md"
 	printf 'package enginever\n\nconst Version = "abcdef123"\n' >"$dir/sim/enginever/version.go"
-	printf '#!/usr/bin/env bash\nexit 0\n' >"$dir/stubs/uv"
 	printf '#!/usr/bin/env bash\nexit 0\n' >"$dir/stubs/go"
-	chmod +x "$dir/stubs/uv" "$dir/stubs/go"
+	chmod +x "$dir/stubs/go"
 	git -C "$dir" add -A
 	git -C "$dir" -c user.name=test -c user.email=test@example.com commit --quiet -m "the rest of the move's inputs"
 	git clone --quiet --bare "$dir" "$dir.git"
@@ -381,10 +393,39 @@ d=$SCRATCH/move-exit2
 make_move_repo "$d"
 echo 'process.exit(2);' >"$d/web/scripts/reencode-guide-builds.mjs"
 STATUS=0
-OUT=$(cd "$d" && MOVE_BREADCRUMB="$d/crumb" GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" MOVE_BREADCRUMB="$d/crumb" GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
 assert "exit 2: the move exits 2" equal "$STATUS" 2
 assert "exit 2: still reported" contains "$(cat "$d/summary.md" 2>/dev/null)" "**Step:** re-encoding the guide builds"
 assert "exit 2: the breadcrumb names the step, then the report" equal "$(tr '\n' '|' <"$d/crumb")" "re-encoding the guide builds onto $NEW_BUILD's talent trees|reported|"
+
+# The item floors refuse the new build (wowhead's feed lost items): the move stops before
+# anything changes, with the step, the pipeline's reason and the re-fetch as the hand command.
+d=$SCRATCH/move-floors
+make_move_repo "$d"
+echo "ERROR pipeline: build-floors: $NEW_BUILD takes 396 items' stats from wowhead, below 90% of $OLD_BUILD's 688" >"$d/stubs/floors-refusal"
+activate "$d" "$NEW_BUILD" --no-commit --no-gate
+assert "floors: exits 1" equal "$STATUS" 1
+assert "floors: the guard ran on the new build against the active one" contains "$(cat "$d/stubs/uv-calls")" "run python -m pipeline build-floors --build $NEW_BUILD --against $OLD_BUILD"
+assert "floors: the summary names the step" contains "$SUMMARY" "**Step:** checking $NEW_BUILD's items against $OLD_BUILD's floors (pipeline build-floors)"
+assert "floors: the reason quotes the pipeline" contains "$SUMMARY" "takes 396 items' stats from wowhead, below 90% of $OLD_BUILD's 688"
+assert "floors: the hand command re-fetches the build" contains "$SUMMARY" "**To finish or redo the move:** gh workflow run data.yml -f product=wowf -f build=$NEW_BUILD (add -f allow_shrink=true only if"
+assert "floors: and then reruns the move" contains "$SUMMARY" "then gh workflow run client.yml -f build=$NEW_BUILD -f product=wowf"
+assert "floors: it stopped before the re-encode" lacks "$OUT" "== re-encoding the guide builds"
+assert "floors: nothing to undo, so no undo line" lacks "$SUMMARY" "undo the half-made move"
+assert "floors: the active build was not touched" contains "$(cat "$d/web/src/data/active-build.json")" "$OLD_BUILD"
+assert "floors: nothing in the checkout changed" equal "$(git -C "$d" status --porcelain --untracked-files=no)" ""
+d=$SCRATCH/move-floors-actions
+make_move_repo "$d"
+echo "ERROR pipeline: build-floors: $NEW_BUILD takes 396 items' stats from wowhead" >"$d/stubs/floors-refusal"
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" GITHUB_ACTIONS=true GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+assert "floors actions: exits 1" equal "$STATUS" 1
+assert "floors actions: an error annotation names the step and the reason" contains "$OUT" "::error title=client move to $NEW_BUILD stopped at: checking $NEW_BUILD's items against $OLD_BUILD's floors (pipeline build-floors)::ERROR pipeline: build-floors: $NEW_BUILD takes 396"
+# The floors hold: the move goes on to the next step.
+d=$SCRATCH/move-floors-hold
+make_move_repo "$d"
+activate "$d" "$NEW_BUILD" --no-commit --no-gate
+assert "floors hold: the move reaches the re-encode" contains "$OUT" "== re-encoding the guide builds"
 
 # No guide links the active build's data: the link rewrite is not a failure.
 d=$SCRATCH/move-nolinks
@@ -402,7 +443,7 @@ assert "no links: the inspect run completes" equal "$STATUS" 0
 d=$SCRATCH/move-actions
 make_move_repo "$d"
 STATUS=0
-OUT=$(cd "$d" && GITHUB_ACTIONS=true GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" GITHUB_ACTIONS=true GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
 assert "actions: an error annotation names the step" contains "$OUT" "::error title=client move to $NEW_BUILD stopped at: re-encoding the guide builds"
 assert "actions: no undo line on a throwaway runner" lacks "$(cat "$d/summary.md")" "undo the half-made move"
 assert "actions: without PRODUCT the redo names the build" contains "$(cat "$d/summary.md")" "gh workflow run client.yml -f build=$NEW_BUILD"

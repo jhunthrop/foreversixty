@@ -53,6 +53,11 @@ Lane `wt/wowhead-carry`. It fixes the data problem found in `design/reviews/2026
    - `_check_class_items_not_shrunk`: a first run uses the previous build's per-class counts (`previous_class_item_counts`), at 90% as before.
    - New `check_wowhead_items_floor`: the wowhead-sourced count must be at least 90% of the reference run's (the build's own last run, or else the previous build's). 70685's 7 against 688 fails it.
    - New CLI `pipeline build-floors`, used by `activate-build.sh`.
+   - After the rebase onto the client hardening, the guard is a reported step of the move: "checking NEW's items against ACTIVE's floors". It runs before anything changes, and a refusal gives the hardening's summary and `::error` annotation:
+     - the step;
+     - the pipeline's reason;
+     - the hand command, which is re-dispatching `data.yml` for the build, then the move.
+   - `tools/tests/test_activation.sh` stubs `uv` in the scratch move repositories. The floors themselves are tested by `data/tests/test_build_floors.py`. New shell cases cover a refusal (summary, annotation, nothing changed) and a pass.
 
 ## Proof (70707 regenerated locally in a scratch root: normalize, loot and simdb)
 

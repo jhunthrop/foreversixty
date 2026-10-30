@@ -225,13 +225,16 @@ for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json
   [ -e "$NEW_DIR/$f" ] || die "$NEW_DIR/$f is missing: data.yml's fetch has not landed $NEW"
 done
 
-# The new build's items may not fall below the active build's floors (item count, and
-# how many items take their stats from wowhead's feed). 2026-10-30: 70707 was committed
-# with 396 wowhead-sourced items against 70658's 688 after wowhead's feed lost items;
-# activating it would have rolled Kindling Stave and Spire of Hakkar back to 1.12
-# stats on the live site (design/reviews/2026-10-30-70707-dps-drop.md).
-( cd data && uv run python -m pipeline build-floors --build "$NEW" --against "$ACTIVE" ) \
-  || { echo "$NEW falls below $ACTIVE's item floors: re-run data.yml's fetch for $NEW" >&2; exit 1; }
+# The new build's committed items may not fall below the active build's floors (item
+# count, and how many items take their stats from wowhead's feed), checked before
+# anything changes. 2026-10-30: 70707 was committed with 396 wowhead-sourced items
+# against 70658's 688 after wowhead's feed lost items; activating it would have rolled
+# Kindling Stave and Spire of Hakkar back to 1.12 stats on the live site
+# (design/reviews/2026-10-30-70707-dps-drop.md). The fix is a new fetch, which carries
+# the lost items forward from raw/wowhead/items.json.
+step "checking $NEW's items against $ACTIVE's floors (pipeline build-floors)" \
+  "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW (add -f allow_shrink=true only if its fetch-wowhead step refuses a live feed whose lost items the carry file holds), then $REDO"
+run in_dir data uv run python -m pipeline build-floors --build "$NEW" --against "$ACTIVE"
 
 # The Interface number Blizzard's TOC convention gives this version (1.60.1 -> 16001).
 IFS=. read -r MAJOR MINOR PATCH _ <<<"$NEW"
