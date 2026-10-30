@@ -8,6 +8,9 @@ enum AccountLinks {
     static let account = page("/account")
     /// F1.3's `Get the addon`.
     static let setup = page("/setup")
+    /// You's Privacy and Terms rows (App Store 5.1.1(i)).
+    static let privacy = page("/privacy")
+    static let terms = page("/terms")
 
     private static func page(_ path: String) -> URL {
         guard let url = URL(string: site + path) else { preconditionFailure("bad site path \(path)") }

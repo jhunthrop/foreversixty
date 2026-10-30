@@ -30,7 +30,7 @@ struct AccountSnapshotTests {
 
     @Test func accountDeleted() throws {
         let date = try #require(ISO8601DateFormatter().date(from: "2026-11-29T21:41:00Z"))
-        snap(signedOutView(notice: AccountCopy.notice(.accountDeleted(completeBy: date))), "signedout-deleted")
+        snap(signedOutView(notice: AccountCopy.notice(.accountDeleted(completeBy: date)), failure: false), "signedout-deleted")
     }
 
     @Test func noCharacters() { snap(NoCharactersView {}, "home-no-characters") }
@@ -52,13 +52,17 @@ struct AccountSnapshotTests {
     // MARK: You, Devices, Delete account
 
     @Test func youFree() throws {
-        let summary = YouSummary(me: try Self.me("me.json"), deviceCount: 3)
+        let summary = try Self.summary("me.json")
         snap(NavigationStack { YouView(summary: summary) {} }, "you-free")
     }
 
     @Test func youPremium() throws {
-        let summary = YouSummary(me: try Self.me("me.premium.json"), deviceCount: 3)
+        let summary = try Self.summary("me.premium.json")
         snap(NavigationStack { YouView(summary: summary) {} }, "you-premium")
+    }
+
+    @Test func about() {
+        snap(NavigationStack { AboutView(version: Self.version) }, "about-default")
     }
 
     @Test func devices() throws {
@@ -72,20 +76,34 @@ struct AccountSnapshotTests {
         snap(NavigationStack { view }, "devices-revoke-failed")
     }
 
-    @Test func deleteAccount() {
-        let view = DeleteAccountView(hasPlan: false, isDeleting: false, failed: false, onDelete: {})
-        snap(NavigationStack { view }, "delete-default")
+    @Test func deleteFree() throws { snap(try deleteView("me.json"), "delete-free") }
+
+    @Test func deletePremium() throws { snap(try deleteView("me.premium.json"), "delete-premium") }
+
+    @Test func deleteGuildPayer() throws { snap(try deleteView("me.guild-payer.json"), "delete-guild-payer") }
+
+    @Test func deleteSeat() throws { snap(try deleteView("me.seat.json"), "delete-seat") }
+
+    @Test func deleteFailed() throws { snap(try deleteView("me.json", failed: true), "delete-failed") }
+
+    private func deleteView(_ file: String, failed: Bool = false) throws -> some View {
+        let consequences = DeletionConsequence.of(try Self.me(file))
+        return NavigationStack {
+            DeleteAccountView(consequences: consequences, isDeleting: false, failed: failed, onDelete: {})
+        }
     }
 
-    @Test func deleteAccountWithPlanFailed() {
-        let view = DeleteAccountView(hasPlan: true, isDeleting: false, failed: true, onDelete: {})
-        snap(NavigationStack { view }, "delete-plan-failed")
+    static let version = "Version 0.1.0 (1) · data 1.60.1.70658"
+
+    static func summary(_ file: String) throws -> YouSummary {
+        let me = try me(file)
+        return YouSummary(me: me, current: me.mainCharacter, deviceCount: 3, version: version)
     }
 
     // MARK: Helpers
 
-    private func signedOutView(notice: String?, signingIn: Bool = false) -> some View {
-        SignedOutView(notice: notice, isSigningIn: signingIn, onSignIn: {}, onPickClass: {})
+    private func signedOutView(notice: String?, signingIn: Bool = false, failure: Bool = true) -> some View {
+        SignedOutView(notice: notice, noticeIsFailure: failure, isSigningIn: signingIn, onSignIn: {}, onPickClass: {})
     }
 
     /// The selector open over a dimmed screen, and the sheet drawn as it presents.

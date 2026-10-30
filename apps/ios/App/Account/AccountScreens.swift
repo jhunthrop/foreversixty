@@ -38,6 +38,7 @@ struct SignedOutPanel: View {
         SignedOutView(
             variant: variant,
             notice: notice,
+            noticeIsFailure: noticeIsFailure,
             isSigningIn: session.phase == .signingIn,
             onSignIn: {
                 session.dismissNotice()
@@ -50,28 +51,36 @@ struct SignedOutPanel: View {
         )
     }
 
-    private var notice: String? {
-        if case let .signedOut(notice?) = session.phase { return AccountCopy.notice(notice) }
+    private var signedOutNotice: SignedOutNotice? {
+        if case let .signedOut(notice?) = session.phase { return notice }
         return nil
     }
+
+    private var notice: String? { signedOutNotice.map(AccountCopy.notice) }
+
+    private var noticeIsFailure: Bool { signedOutNotice.map(AccountCopy.isFailure) ?? true }
 }
 
 /// The You tab: the account section when signed in, the sign-in panel when not.
 struct YouScreen: View {
     let session: SessionStore
+    /// You's version line and About's version (`AccountCopy.version`).
+    let version: String
     let onPickClass: () -> Void
     @State private var deviceCount: Int?
 
     var body: some View {
         NavigationStack {
             if let me = session.phase.me {
-                YouView(summary: YouSummary(me: me, deviceCount: deviceCount)) {
+                let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
+                YouView(summary: summary) {
                     Task { await session.signOut() }
                 }
                 .navigationDestination(for: YouRoute.self) { route in
                     switch route {
                     case .devices: DevicesScreen(session: session) { deviceCount = $0 }
                     case .deleteAccount: DeleteAccountScreen(session: session)
+                    case .about: AboutView(version: version)
                     }
                 }
                 .task { deviceCount = (try? await session.devices())?.count }

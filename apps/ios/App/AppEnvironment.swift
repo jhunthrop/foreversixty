@@ -15,6 +15,8 @@ struct AppEnvironment {
     /// The account (lane F1): signed in or out, the current character, sign-in and sign-out.
     /// Feature lanes read it from the SwiftUI environment (`@Environment(SessionStore.self)`).
     let session: SessionStore
+    /// This build's version and build number (apps/VERSION, lane P2); You's version line reads it.
+    let identity: ClientIdentity
 
     @MainActor
     init(
@@ -27,6 +29,7 @@ struct AppEnvironment {
         account: AccountStorage = .device
     ) {
         let sessionTokens = SessionTokenSource(tokens)
+        self.identity = identity
         self.configuration = configuration
         self.tokens = sessionTokens
         self.updateGate = updateGate

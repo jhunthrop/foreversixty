@@ -74,10 +74,14 @@ struct DevicesView: View {
     private func deviceRow(_ row: DeviceRow) -> some View {
         VStack(alignment: .leading, spacing: FSSpacing.space1) {
             HStack {
-                AccountRow(icon: "iphone", title: AccountCopy.deviceName(row), subtitle: AccountCopy.deviceMeta(row))
+                AccountRow(
+                    icon: row.isCompanion ? "desktopcomputer" : "iphone",
+                    title: AccountCopy.deviceName(row),
+                    subtitle: AccountCopy.deviceMeta(row)
+                )
                 if row.canRevoke {
                     Button(Copy.devicesRevoke) { confirming = row }
-                        .buttonStyle(BrandButtonStyle(.destructive, height: 36))
+                        .buttonStyle(BrandButtonStyle(.destructive, height: 44))
                         .fixedSize()
                         .padding(.trailing, FSSpacing.space4)
                 }

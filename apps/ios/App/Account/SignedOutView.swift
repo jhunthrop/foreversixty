@@ -11,6 +11,7 @@ struct SignedOutView: View {
 
     var variant: Variant = .home
     let notice: String?
+    var noticeIsFailure = true
     let isSigningIn: Bool
     let onSignIn: () -> Void
     let onPickClass: () -> Void
@@ -26,7 +27,7 @@ struct SignedOutView: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             if let notice {
-                NoticeToast(text: notice)
+                NoticeToast(text: notice, isFailure: noticeIsFailure)
                     .padding(.horizontal, FSSpacing.space4)
                     .padding(.top, FSSpacing.space3)
                     .accessibilitySortPriority(1)

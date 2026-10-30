@@ -57,6 +57,7 @@ struct SwitcherSheet: View {
                 VStack(alignment: .leading, spacing: FSSpacing.space1) {
                     Text(Copy.switcherTitle)
                         .font(ScaledType.sec)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .textCase(.uppercase)
                         .foregroundStyle(FSColor.strong)
                         .accessibilityAddTraits(.isHeader)
@@ -86,10 +87,10 @@ struct SwitcherSheet: View {
             HStack(spacing: FSSpacing.space3) {
                 ClassCrest(className: character.className, size: 44)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(character.name)
-                        .font(ScaledType.name)
-                        .foregroundStyle(ClassColor.of(character.className))
-                        .fixedSize(horizontal: false, vertical: true)
+                    // `Thrall · US · PvP`: same-named characters differ by region and ruleset.
+                    let name = Text(character.name).font(ScaledType.name).foregroundStyle(ClassColor.of(character.className))
+                    let place = Text(" · \(AccountCopy.place(character))").font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    Text("\(name)\(place)").fixedSize(horizontal: false, vertical: true)
                     Text(AccountCopy.switcherDetail(character)).font(ScaledType.meta).foregroundStyle(FSColor.text)
                     Text(character.guild?.name ?? Copy.switcherNoGuild).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }

@@ -29,3 +29,31 @@ struct CharacterSelectionTests {
         #expect(RelativeAge(from: now.addingTimeInterval(-seconds), to: now) == age)
     }
 }
+
+@Suite("Deletion consequences")
+struct DeletionConsequenceTests {
+    private func me(_ file: String) throws -> Me {
+        let data = try FixtureLocation.data(file)
+        return try #require(try WireFormat.decoder().decode(Envelope<Me>.self, from: data).data)
+    }
+
+    @Test("a free account with no guild plan or seat loses only its data")
+    func free() throws {
+        #expect(DeletionConsequence.of(try me("me.json")).isEmpty)
+    }
+
+    @Test("a founder Premium plan names the plan and the founder price")
+    func premium() throws {
+        #expect(DeletionConsequence.of(try me("me.premium.json")) == [.premiumPlan, .founderPrice])
+    }
+
+    @Test("a guild plan the account pays for ends with its seats")
+    func guildPayer() throws {
+        #expect(DeletionConsequence.of(try me("me.guild-payer.json")) == [.guildPlan(guild: "OLYMPUS XXVII")])
+    }
+
+    @Test("a seat held from a guild ends")
+    func seat() throws {
+        #expect(DeletionConsequence.of(try me("me.seat.json")) == [.seat(guild: "OLYMPUS XXVII")])
+    }
+}

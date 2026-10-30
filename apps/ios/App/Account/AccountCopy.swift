@@ -1,6 +1,7 @@
 import Auth
 import Foundation
 import Models
+import Networking
 
 /// The words for F1's states, all from the copy catalog (`Copy`). Dates follow the spec's
 /// meta lines: `30 Oct` within the year, `27 Oct 2027` otherwise.
@@ -11,6 +12,45 @@ enum AccountCopy {
         case .sessionEnded: Copy.signinSignedOut
         case let .accountDeleted(completeBy): Copy.accountDeleteDone(date: longDate(completeBy))
         }
+    }
+
+    /// Red is for failures only (spec §5.0): a completed deletion reads neutral.
+    static func isFailure(_ notice: SignedOutNotice) -> Bool {
+        switch notice {
+        case .signInFailed, .sessionEnded: true
+        case .accountDeleted: false
+        }
+    }
+
+    /// `US · PvP`: Forever has no realms, so a character is its region, ruleset and name.
+    static func place(_ character: AccountCharacter) -> String {
+        Copy.accountCharacterWhere(region: character.region.uppercased(), ruleset: ruleset(character.ruleset))
+    }
+
+    /// The site's ruleset labels (web/src/lib/characters.ts); an unknown one is echoed.
+    static func ruleset(_ id: String) -> String {
+        switch id {
+        case "normal": Copy.accountRulesetNormal
+        case "pvp": Copy.accountRulesetPvp
+        case "rp": Copy.accountRulesetRp
+        case "hardcore": Copy.accountRulesetHardcore
+        default: id
+        }
+    }
+
+    static func consequence(_ consequence: DeletionConsequence) -> String {
+        switch consequence {
+        case .premiumPlan: Copy.accountDeleteLosePremium
+        case .founderPrice: Copy.accountDeleteLoseFounder
+        case let .guildPlan(guild): Copy.accountDeleteLoseGuildPlan(guild: guild)
+        case let .seat(guild): Copy.accountDeleteLoseSeat(guild: guild)
+        }
+    }
+
+    /// `Version 0.1.0 (1) · data 1.60.1.70658`, without the data part before the config answers.
+    static func version(_ identity: ClientIdentity, data: String?) -> String {
+        guard let data else { return Copy.accountVersionNoData(version: identity.version, build: identity.build) }
+        return Copy.youVersion(version: identity.version, build: identity.build, data: data)
     }
 
     static func signInFailure(_ failure: SignInFailure) -> String {

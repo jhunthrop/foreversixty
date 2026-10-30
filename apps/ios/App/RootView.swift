@@ -4,7 +4,7 @@ import SwiftUI
 /// The app's tabs, one per v1 feature area in the lane plan. Lane D's spec
 /// sets the final set, names and icons; feature lanes replace each placeholder.
 enum AppTab: String, CaseIterable, Identifiable {
-    case home, raids, bis, sims, account
+    case home, raids, bis, sims, you
 
     var id: String { rawValue }
 
@@ -14,7 +14,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .raids: Copy.tabRaids
         case .bis: Copy.tabBis
         case .sims: Copy.shellTabSims
-        case .account: Copy.tabYou
+        case .you: Copy.shellTabAccount
         }
     }
 
@@ -24,7 +24,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .raids: "calendar"
         case .bis: "list.star"
         case .sims: "chart.bar"
-        case .account: "person"
+        case .you: "gearshape"
         }
     }
 }
@@ -75,8 +75,12 @@ struct RootView: View {
                 HomeScreen(client: environment.client)
             }
         case .home: HomeScreen(client: environment.client)
-        case .account where signInAvailable:
-            YouScreen(session: environment.session, onPickClass: { selection = .bis })
+        case .you where signInAvailable:
+            YouScreen(
+                session: environment.session,
+                version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
+                onPickClass: { selection = .bis }
+            )
         default: PlaceholderScreen(title: tab.title)
         }
     }

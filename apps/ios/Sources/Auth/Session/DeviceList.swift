@@ -16,6 +16,8 @@ public struct DeviceRow: Equatable, Sendable, Identifiable {
     /// The API's name; the view shows `This iPhone` instead when `isThisDevice`.
     public let name: String
     public let isThisDevice: Bool
+    /// The desktop companion, drawn with a monitor rather than a phone.
+    public let isCompanion: Bool
     public let meta: Meta
 
     /// Every device but this one carries Revoke.
@@ -23,6 +25,8 @@ public struct DeviceRow: Equatable, Sendable, Identifiable {
 }
 
 public enum DeviceList {
+    private static let companionKind = "companion"
+
     /// This device first, then the others by last use, newest first.
     public static func rows(_ devices: [Device], thisDevice: String?, now: Date) -> [DeviceRow] {
         let this = devices.filter { $0.id == thisDevice }
@@ -40,7 +44,9 @@ public enum DeviceList {
         } else {
             (device.lastSeenAt ?? device.createdAt).map { .lastUsed(RelativeAge(from: $0, to: now)) } ?? .none
         }
-        return DeviceRow(id: device.id, name: device.name, isThisDevice: isThis, meta: meta)
+        return DeviceRow(
+            id: device.id, name: device.name, isThisDevice: isThis, isCompanion: device.kind == companionKind, meta: meta
+        )
     }
 }
 

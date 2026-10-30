@@ -67,15 +67,18 @@ struct BandBackground: View {
     }
 }
 
-/// The toast at the top of F1.1 (F1.4, the 401 line, a deletion): wipe-red border, alert role.
+/// The toast at the top of F1.1: F1.4 and the 401 line in wipe red, a finished deletion neutral.
 struct NoticeToast: View {
     let text: String
-    var tint: Color = FSColor.wipe
+    /// A failure is wipe-red with the alert glyph; anything else is neutral with the check.
+    var isFailure = true
+
+    private var tint: Color { isFailure ? FSColor.wipe : FSColor.line }
 
     var body: some View {
         HStack(alignment: .top, spacing: FSSpacing.space3) {
-            Image(systemName: "exclamationmark.circle")
-                .foregroundStyle(tint)
+            Image(systemName: isFailure ? "exclamationmark.circle" : "checkmark.circle")
+                .foregroundStyle(isFailure ? FSColor.wipe : FSColor.gold)
             Text(text)
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.strong)

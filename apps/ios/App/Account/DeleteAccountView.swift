@@ -3,10 +3,12 @@ import DesignSystem
 import SwiftUI
 
 /// You › Delete account (App Store guideline 5.1.1(v)): what is deleted, in the privacy page's
-/// words, then the destructive button and an explicit confirmation alert. Pure over its inputs.
+/// words; what else ends for this account (its plan, founder price, guild plan, seat); what
+/// happens to guild reports; then the destructive button and an explicit confirmation alert
+/// that repeats the consequences. Pure over its inputs.
 struct DeleteAccountView: View {
-    /// Whether the account pays for a plan: only then does the plan line show.
-    let hasPlan: Bool
+    /// The lines that apply to this account (`DeletionConsequence.of`), in order.
+    let consequences: [DeletionConsequence]
     let isDeleting: Bool
     let failed: Bool
     let onDelete: () -> Void
@@ -22,25 +24,25 @@ struct DeleteAccountView: View {
         ]
     }
 
+    private var consequenceLines: [String] { consequences.map(AccountCopy.consequence) }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpacing.space4) {
                 Text(Copy.accountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
-                VStack(alignment: .leading, spacing: FSSpacing.space3) {
-                    ForEach(items, id: \.self) { item in
-                        HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space3) {
-                            Image(systemName: "minus").foregroundStyle(FSColor.wipe).accessibilityHidden(true)
-                            Text(item).font(ScaledType.body).foregroundStyle(FSColor.strong)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
+                bulletCard(items, glyph: "minus")
+                if !consequenceLines.isEmpty {
+                    Text(Copy.accountDeleteLoseTitle)
+                        .font(ScaledType.micro)
+                        .textCase(.uppercase)
+                        .tracking(1.5)
+                        .foregroundStyle(FSColor.muted)
+                        .padding(.top, FSSpacing.space2)
+                    bulletCard(consequenceLines, glyph: "exclamationmark.circle")
                 }
-                .padding(FSSpacing.space4)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .accountCard()
-                if hasPlan {
-                    Text(Copy.accountDeletePlan).font(ScaledType.body).foregroundStyle(FSColor.text)
-                }
+                // Pending the owner's decision on guild reports: one key, account.delete.reports.
+                Text(Copy.accountDeleteReports).font(ScaledType.body).foregroundStyle(FSColor.text)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(Copy.accountDeleteTiming).font(ScaledType.body).foregroundStyle(FSColor.text)
                     .fixedSize(horizontal: false, vertical: true)
                 if failed {
@@ -64,10 +66,25 @@ struct DeleteAccountView: View {
         .navigationTitle(Copy.accountDeleteTitle)
         .alert(Copy.accountDeleteConfirmTitle, isPresented: $confirming) {
             Button(Copy.commonCancel, role: .cancel) {}
-            Button(Copy.accountDeleteConfirmAction, role: .destructive, action: onDelete)
+            Button(Copy.accountDeleteButton, role: .destructive, action: onDelete)
         } message: {
-            Text(Copy.accountDeleteConfirmBody)
+            Text(([Copy.accountDeleteConfirmBody] + consequenceLines).joined(separator: "\n\n"))
         }
+    }
+
+    private func bulletCard(_ lines: [String], glyph: String) -> some View {
+        VStack(alignment: .leading, spacing: FSSpacing.space3) {
+            ForEach(lines, id: \.self) { line in
+                HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space3) {
+                    Image(systemName: glyph).foregroundStyle(FSColor.wipe).accessibilityHidden(true)
+                    Text(line).font(ScaledType.body).foregroundStyle(FSColor.strong)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .padding(FSSpacing.space4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accountCard()
     }
 }
 
@@ -80,7 +97,7 @@ struct DeleteAccountScreen: View {
 
     var body: some View {
         DeleteAccountView(
-            hasPlan: session.phase.me?.entitlements.billing != nil,
+            consequences: session.phase.me.map(DeletionConsequence.of) ?? [],
             isDeleting: isDeleting,
             failed: failed,
             onDelete: delete
