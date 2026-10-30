@@ -106,9 +106,13 @@
   <!-- The Talents and Simulator cards render from HomeHeroCards.svelte, mounted above once
        signed in -- not this island's own static markup, so a signed-out visitor's browser never
        downloads the Simulator card's fetch or its dependencies. The slot reserves the card
-       row's height (a session-hinted visit only) so the mount does not shift the table beneath. -->
+       row's height (a session-hinted visit only) so the mount does not shift the table beneath.
+       Re-measured for stage 2, where both became Cards with a 48 px compact head and a 56 px
+       answer box in every state (HomeHeroCards.svelte): the row is 402 px stacked below 640 and
+       195 px side by side from 640 up. The old 236/112 let the row grow on mount, and a header
+       switch remounting it moved the upgrades table 120 px (home-panel). -->
   <div
-    class={['ch-hint-only min-w-0', (!ready || signedIn) && 'min-h-[236px] sm:min-h-[112px]']}
+    class={['ch-hint-only min-w-0', (!ready || signedIn) && 'min-h-[402px] sm:min-h-[195px]']}
     data-testid="home-hero-cards-slot"
   ></div>
 </div>

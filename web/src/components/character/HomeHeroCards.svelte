@@ -116,59 +116,69 @@
   const hasSimFigure = $derived(simStatus === 'ready' && simFigures !== null && simFigures.nowDps !== null);
 
   const CARD_FIGURE_CLASS = 'figure-stat text-[22px] text-strong';
+  /** Each card's answer box, one height in every state (alignment stage 2, tenet 13): the ready
+   *  figure (22 px) over its one-line caption (22), 12 apart, so the loading skeleton, a one-line
+   *  state and the ready figure all draw 56 px and the row the slot reserves never moves. As
+   *  Cards the old 72 px talents skeleton swapped for a 22 px line and shifted the hero 50 px. */
+  const CARD_ANSWER_CLASS = 'flex min-h-14 flex-col gap-3';
+  const SKELETON_ROW = 'h-[22px]';
 </script>
 
 <div class="reveal grid grid-cols-1 items-start gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
   <Card glyph="tree" title={homeHeroCardsCopy.talentsLabel} compact testid="home-hero-card-talents">
-    {#if bandStatus === 'no-spec'}
-      <span class="text-strong text-[15px] font-semibold">{homeHeroCardsCopy.pickASpec}</span>
-      <span class="text-muted text-[13px]">{homeHeroCardsCopy.pickASpecLine}</span>
-    {:else if hero.build?.talents === undefined}
-      <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
-    {:else if bandStatus === 'loading'}
-      <!-- Fix round 1 item C.9 (tenet 13, no layout shift): sized for the ready figure's own
-           22px figure line (`CARD_FIGURE_CLASS`). -->
-      <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-talents-skeleton" />
-    {:else if bandStatus === 'no-list-yet'}
-      <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>
-    {:else if talentDelta !== null && ctx !== null}
-      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-talents-value">
-        {talentDelta === 0
-          ? homeHeroCardsCopy.talentsOptimizedFigure
-          : homeHeroCardsCopy.talentsUnoptimizedFigure}
-      </span>
-      <span class="text-muted text-[13px]">
-        {homeHeroCardsCopy.talentsLine(talentDelta, ctx.band.talent_points, bandLabel)}
-      </span>
-    {/if}
+    <div class={CARD_ANSWER_CLASS}>
+      {#if bandStatus === 'no-spec'}
+        <span class="text-strong text-[15px] font-semibold">{homeHeroCardsCopy.pickASpec}</span>
+        <span class="text-muted text-[13px]">{homeHeroCardsCopy.pickASpecLine}</span>
+      {:else if hero.build?.talents === undefined}
+        <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
+      {:else if bandStatus === 'loading'}
+        <!-- Fix round 1 item C.9 (tenet 13, no layout shift): the ready figure and its caption,
+           22 px each (`CARD_ANSWER_CLASS`). -->
+        <Skeleton lines={2} rowHeight={SKELETON_ROW} testid="home-hero-card-talents-skeleton" />
+      {:else if bandStatus === 'no-list-yet'}
+        <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>
+      {:else if talentDelta !== null && ctx !== null}
+        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-talents-value">
+          {talentDelta === 0
+            ? homeHeroCardsCopy.talentsOptimizedFigure
+            : homeHeroCardsCopy.talentsUnoptimizedFigure}
+        </span>
+        <span class="text-muted text-[13px]">
+          {homeHeroCardsCopy.talentsLine(talentDelta, ctx.band.talent_points, bandLabel)}
+        </span>
+      {/if}
+    </div>
     <ActionLink href={talentsHref} data-testid="home-hero-card-talents-open">
       {homeHeroCardsCopy.talentsAction}
     </ActionLink>
   </Card>
   <Card glyph="bolt" title={homeHeroCardsCopy.simulatorLabel} compact testid="home-hero-card-sim">
-    {#if simStatus === 'loading'}
-      <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-sim-skeleton" />
-    {:else if simStatus === 'failed'}
-      <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-    {:else if simFigures !== null && simFigures.nowDps !== null}
-      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
-        {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
-      </span>
-      {#if simFigures.bandDps !== null && ctx !== null}
+    <div class={CARD_ANSWER_CLASS}>
+      {#if simStatus === 'loading'}
+        <Skeleton lines={2} rowHeight={SKELETON_ROW} testid="home-hero-card-sim-skeleton" />
+      {:else if simStatus === 'failed'}
+        <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
+      {:else if simFigures !== null && simFigures.nowDps !== null}
+        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
+          {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
+        </span>
+        {#if simFigures.bandDps !== null && ctx !== null}
+          <span class="text-muted numeric text-[13px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+            >{homeHeroCardsCopy.simulatorBandLine(simFigures.bandDps)}</span
+          >
+        {/if}
+      {:else if simFigures !== null && simFigures.bandDps !== null && ctx !== null}
+        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
+          {homeHeroCardsCopy.simulatorBandOnlyFigure(simFigures.bandDps)}
+        </span>
         <span class="text-muted numeric text-[13px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
-          >{homeHeroCardsCopy.simulatorBandLine(simFigures.bandDps)}</span
+          >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
         >
+      {:else}
+        <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
       {/if}
-    {:else if simFigures !== null && simFigures.bandDps !== null && ctx !== null}
-      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
-        {homeHeroCardsCopy.simulatorBandOnlyFigure(simFigures.bandDps)}
-      </span>
-      <span class="text-muted numeric text-[13px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
-        >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
-      >
-    {:else}
-      <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-    {/if}
+    </div>
     <ActionLink
       href={armorySimHref(hero.key)}
       data-testid={hasSimFigure ? 'home-hero-card-sim-open' : 'home-hero-card-sim-run'}
