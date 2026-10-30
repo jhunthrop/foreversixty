@@ -346,11 +346,16 @@ jobs:
           exit 1
       # A push made with GITHUB_TOKEN never triggers another workflow, so
       # the site would keep serving last night's picks until someone else
-      # pushed. Dispatch the web deploy explicitly (actions: write above).
-      - name: deploy the site with tonight's picks
+      # pushed. Dispatch the web deploy explicitly (actions: write above),
+      # and the API's: its image copies data/builds, and api/internal/bis,
+      # sims/lootvalues.go and sims/gearscore.go serve the picks and the
+      # dps-per-point figures from that copy (review M5).
+      - name: deploy the site and the API with tonight's picks
         if: success() && steps.inputs.outputs.skip != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
-        run: gh workflow run web.yml --ref main
+        run: |
+          gh workflow run web.yml --ref main
+          gh workflow run api.yml --ref main
       # Last, so tonight's crawl and any deploy above still landed: a ranking stalled on
       # the engine for a second night is a red run, not another green notice.
       - name: fail when the ranking has stalled on the engine
