@@ -754,6 +754,9 @@ enum Copy {
         format("bis.slotSource", slot, source)
     }
 
+    /// Ring
+    static var bisSlotRing: String { text("bis.slot.ring") }
+
     /// Quest: {name}
     static func bisSourceQuest(name: String) -> String {
         format("bis.source.quest", name)
@@ -768,69 +771,6 @@ enum Copy {
     static func bisSourceVendor(name: String) -> String {
         format("bis.source.vendor", name)
     }
-
-    /// Head
-    static var bisSlotHead: String { text("bis.slot.head") }
-
-    /// Neck
-    static var bisSlotNeck: String { text("bis.slot.neck") }
-
-    /// Shoulder
-    static var bisSlotShoulder: String { text("bis.slot.shoulder") }
-
-    /// Back
-    static var bisSlotBack: String { text("bis.slot.back") }
-
-    /// Chest
-    static var bisSlotChest: String { text("bis.slot.chest") }
-
-    /// Wrist
-    static var bisSlotWrist: String { text("bis.slot.wrist") }
-
-    /// Hands
-    static var bisSlotHands: String { text("bis.slot.hands") }
-
-    /// Waist
-    static var bisSlotWaist: String { text("bis.slot.waist") }
-
-    /// Legs
-    static var bisSlotLegs: String { text("bis.slot.legs") }
-
-    /// Feet
-    static var bisSlotFeet: String { text("bis.slot.feet") }
-
-    /// Ring
-    static var bisSlotFinger: String { text("bis.slot.finger") }
-
-    /// Trinket
-    static var bisSlotTrinket: String { text("bis.slot.trinket") }
-
-    /// Main hand
-    static var bisSlotMainHand: String { text("bis.slot.mainHand") }
-
-    /// Off hand
-    static var bisSlotOffHand: String { text("bis.slot.offHand") }
-
-    /// Ranged
-    static var bisSlotRanged: String { text("bis.slot.ranged") }
-
-    /// Poor
-    static var bisQualityPoor: String { text("bis.quality.poor") }
-
-    /// Common
-    static var bisQualityCommon: String { text("bis.quality.common") }
-
-    /// Uncommon
-    static var bisQualityUncommon: String { text("bis.quality.uncommon") }
-
-    /// Rare
-    static var bisQualityRare: String { text("bis.quality.rare") }
-
-    /// Epic
-    static var bisQualityEpic: String { text("bis.quality.epic") }
-
-    /// Legendary
-    static var bisQualityLegendary: String { text("bis.quality.legendary") }
 
     /// {item}, {quality}, item level {n}.
     static func bisA11yItem(item: String, quality: String, n: Int) -> String {
