@@ -21,6 +21,9 @@ type Alternative struct {
 	// SourceKind is the source's kind ("vendor", "rep", "quest", "crafted", "dungeon", ...),
 	// from which the site's BiS page resolves the full source line (loot.json).
 	SourceKind string `json:"source_kind"`
+	// EffectUnmodelled marks an item whose proc, on-use or set effect the sim leaves out, so
+	// DpsDelta misses what makes the item good.
+	EffectUnmodelled bool `json:"effect_unmodelled"`
 }
 
 // Slot is one band's pick for one gear slot. ItemID <= 0 means the band has no known
@@ -33,11 +36,33 @@ type Slot struct {
 	Source       string        `json:"source"`
 	SourceKind   string        `json:"source_kind"`
 	Alternatives []Alternative `json:"alternatives"`
+	// Score is the pick's stat-weight score in the band's ScoreUnit; nil on a sim-decided row
+	// (an on-use trinket, a weapon) that carries sim_dps instead.
+	Score *float64 `json:"score"`
+	// EffectUnmodelled marks a pick whose proc, on-use or set effect the sim leaves out: no
+	// figure it carries includes the effect that makes it the pick.
+	EffectUnmodelled bool `json:"effect_unmodelled"`
+	// EmptyReason says why a slot has no pick ("two_hand_equipped": the main hand is a
+	// two-hander); "" otherwise.
+	EmptyReason string `json:"empty_reason"`
 }
+
+// EmptyTwoHand is the off hand's EmptyReason when the pick in the main hand is two-handed.
+const EmptyTwoHand = "two_hand_equipped"
+
+// TankScoreUnit is the ScoreUnit of a tank band, whose figures are Forever Score points.
+const TankScoreUnit = "tank_score"
 
 // Band is one spec's BiS picks for one level band and faction.
 type Band struct {
 	Slots []Slot
+	// ScoreUnit is what the band's scores and deltas count: "reference_stat_points" (DPS) or
+	// TankScoreUnit.
+	ScoreUnit string
+	// ReferenceDpsPerPoint turns a Score into DPS; nil when the band states none.
+	ReferenceDpsPerPoint *float64
+	// GeneratedAt is when the file was ranked (RFC 3339), "" when it does not say.
+	GeneratedAt string
 }
 
 // BySlot indexes Slots by their own slot name, for a caller comparing one character's gear
@@ -53,14 +78,22 @@ func (b Band) BySlot() map[string]Slot {
 // bisFile and bisBand are the on-disk JSON shape - unexported, since the loaders are the
 // only things that ever need the whole file.
 type bisFile struct {
-	Bands []bisBand `json:"bands"`
+	GeneratedAt string    `json:"generated_at"`
+	Bands       []bisBand `json:"bands"`
 }
 
 type bisBand struct {
-	Band    int    `json:"band"`
-	Faction string `json:"faction"`
-	Preset  string `json:"preset"`
-	Slots   []Slot `json:"slots"`
+	Band                 int      `json:"band"`
+	Faction              string   `json:"faction"`
+	Preset               string   `json:"preset"`
+	Slots                []Slot   `json:"slots"`
+	ScoreUnit            string   `json:"score_unit"`
+	ReferenceDpsPerPoint *float64 `json:"reference_dps_per_point"`
+}
+
+// band is the entry as the loaders return it.
+func (b bisBand) band() Band {
+	return Band{Slots: b.Slots, ScoreUnit: b.ScoreUnit, ReferenceDpsPerPoint: b.ReferenceDpsPerPoint}
 }
 
 // The presets a band entry is ranked under; an entry with no preset is bare.
@@ -90,7 +123,7 @@ func LoadBand(dataDir, build, fileSlug string, band int, faction string) (Band, 
 	}
 	for _, b := range file.Bands {
 		if b.Band == band && b.Faction == faction {
-			return Band{Slots: b.Slots}, true, nil
+			return b.band(), true, nil
 		}
 	}
 	return Band{}, false, nil
@@ -104,6 +137,10 @@ func LoadPresetBand(dataDir, build, fileSlug string, band int, faction, preset s
 	if err != nil || !ok {
 		return Band{}, false, err
 	}
+	stamp := func(b Band) Band {
+		b.GeneratedAt = file.GeneratedAt
+		return b
+	}
 	var candidates []bisBand
 	for _, b := range file.Bands {
 		if b.Band == band && b.Faction == faction {
@@ -113,12 +150,12 @@ func LoadPresetBand(dataDir, build, fileSlug string, band int, faction, preset s
 	for _, want := range []string{preset, BarePreset} {
 		for _, b := range candidates {
 			if b.preset() == want {
-				return Band{Slots: b.Slots}, true, nil
+				return stamp(b.band()), true, nil
 			}
 		}
 	}
 	if len(candidates) > 0 {
-		return Band{Slots: candidates[0].Slots}, true, nil
+		return stamp(candidates[0].band()), true, nil
 	}
 	return Band{}, false, nil
 }
