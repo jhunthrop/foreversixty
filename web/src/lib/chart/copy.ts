@@ -92,7 +92,9 @@ export const chartCopy = {
   /** The tooltip head's right side: the phase, then what the rows are (the threat chart names its enemy). */
   tooltipRight: (phase: string | undefined, rows: string): string =>
     `${phase === undefined ? '' : `${phase} phase · `}${rows}`,
-  tooltipRate: (metric: RateMetric): string => `${UNIT[metric]}, 5 s average`,
+  /** What a rate chart's points are: the average over their bucket (lib/chart/buckets.ts). */
+  tooltipRate: (metric: RateMetric, bucketS: number): string =>
+    `${UNIT[metric]}, ${bucketS === 1 ? 'each second' : `${bucketS} s average`}`,
   tooltipThreat: (subject: string): string => `estimated threat, ${subject}`,
   tooltipMore: (n: number): string => `+${n} more`,
   diedAt: (ms: number): string => `Died ${clockLabel(ms)}`,

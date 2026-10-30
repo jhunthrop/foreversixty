@@ -6,23 +6,6 @@ import { BUCKET_MS, sliceSeries, type TimeWindow } from '../report/window';
 /** The default number of players a chart draws, before the always-drawn ones. */
 export const DEFAULT_TOP_N = 8;
 
-/** The rate charts' smoothing: a trailing average over this many seconds. */
-export const AVERAGE_SECONDS = 5;
-
-/**
- * A trailing average: each second is the mean of itself and the seconds before it, up to
- * `seconds` of them. A run of zeros brings it to exactly zero and keeps it there, so a phase
- * where the boss takes no damage draws flat at zero, never a gap and never a slope across it.
- */
-export function trailingAverage(values: readonly number[], seconds = AVERAGE_SECONDS): number[] {
-  let running = 0;
-  return values.map((value, index) => {
-    running += value;
-    if (index >= seconds) running -= values[index - seconds];
-    return running / Math.min(seconds, index + 1);
-  });
-}
-
 /** A running total: the value at a second is the standing then. */
 export function cumulative(values: readonly number[]): number[] {
   let running = 0;
@@ -124,11 +107,18 @@ export interface DeadSpan {
   endMs: number;
 }
 
-/** The line stops at a death (the death's own second is its last point) and resumes after a raise. */
-export function stopAtDeath(values: readonly number[], spans: readonly DeadSpan[]): (number | null)[] {
+/**
+ * The line stops at a death (the last point at or before the death is its last) and resumes after
+ * a raise. `stepMs` is the width of a point: one second unless the chart buckets wider.
+ */
+export function stopAtDeath(
+  values: readonly number[],
+  spans: readonly DeadSpan[],
+  stepMs: number = BUCKET_MS,
+): (number | null)[] {
   if (spans.length === 0) return [...values];
   return values.map((value, index) => {
-    const at = index * BUCKET_MS;
+    const at = index * stepMs;
     return spans.some((span) => at > span.startMs && at <= span.endMs) ? null : value;
   });
 }

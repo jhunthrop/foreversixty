@@ -43,4 +43,10 @@ describe('tooltipLines', () => {
     });
     expect(lines.map((entry) => entry.id)).toEqual(['a']);
   });
+
+  it('reads a line of 5 s points at the point the moment falls in', () => {
+    const coarse: ChartSeries = { ...line('a', 0), values: [10, 20, 30], stepMs: 5000 };
+    const { lines } = tooltipLines([coarse], 7000, { hidden: new Set(), highlightId: null, format });
+    expect(lines[0].value).toBe(20);
+  });
 });

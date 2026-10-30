@@ -6,7 +6,7 @@
 /** What a line is: a player, a median reference, the one gold area, or an extra line beside it. */
 export type SeriesKind = 'player' | 'median' | 'single' | 'extra';
 
-/** One drawn line, one value per whole second of the fight. `null` is a gap (a dead player). */
+/** One drawn line, one value per point of the fight (a second unless `stepMs` says). `null` is a gap (a dead player). */
 export interface ChartSeries {
   /** A unit GUID, `median:raid`, `median:<class>` or another stable key. */
   id: string;
@@ -25,6 +25,8 @@ export interface ChartSeries {
   diedAtMs?: number;
   /** A canvas dash pattern; medians are 5/4. */
   dash?: readonly number[];
+  /** The width of each point, in ms (lib/chart/buckets.ts); one second when absent. */
+  stepMs?: number;
 }
 
 /** The kinds of moment a chart marks (spec §B5.6). */

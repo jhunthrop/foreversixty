@@ -28,6 +28,14 @@ describe('timeStepSeconds', () => {
     expect(timeStepSeconds(70, 280)).toBe(30);
   });
 
+  it('takes 2 s only when the chart asks for a finer floor than 5 s', () => {
+    // A 10 s pull across 1180 px: 2 s is 236 px apart.
+    expect(timeStepSeconds(10, 1180)).toBe(5);
+    expect(timeStepSeconds(10, 1180, 2)).toBe(2);
+    // A floor above the fitting step wins: a 10 s bucket never labels finer than its points.
+    expect(timeStepSeconds(70, 1180, 10)).toBe(10);
+  });
+
   it('falls back to the largest step for a very long span', () => {
     expect(timeStepSeconds(10_000, 300)).toBe(300);
   });
@@ -39,6 +47,10 @@ describe('timeTicks', () => {
       90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160,
     ]);
     expect(timeTicks(0, 340, 1180)).toEqual([0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]);
+  });
+
+  it('labels a short pull every 2 s on a 2 s floor', () => {
+    expect(timeTicks(0, 10, 1180, 2)).toEqual([0, 2, 4, 6, 8, 10]);
   });
 
   it('is empty for an empty range', () => {

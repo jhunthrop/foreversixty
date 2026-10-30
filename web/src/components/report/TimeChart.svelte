@@ -1,6 +1,6 @@
 <!-- web/src/components/report/TimeChart.svelte -->
-<!-- The report's main chart (controls and charts spec §B5, D5): the table's metric per player as
-     5 s averages, the top 4 and the bottom 4 of N (fix round 2) plus the Source player and you, the raid median, the Players
+<!-- The report's main chart (controls and charts spec §B5, D5): the table's metric per player,
+     averaged over the fight's bucket (lib/chart/buckets.ts: every second on a short pull, 5 s on a long fight), the top 4 and the bottom 4 of N (fix round 2) plus the Source player and you, the raid median, the Players
      control, the Window presets and the log scale, all on the shared TimeSeriesChart. The head's
      raid figure is the sum of every player's figure as the legend shows it. The sample report's
      `compact` strip is the same chart at 96 px with no legend, lane or brush. -->
@@ -124,6 +124,7 @@
       metric,
       players,
       window: current,
+      durationMs,
       pinned: new Set([sourcePlayer, youGuid].filter((guid): guid is string => guid !== undefined)),
       youGuid,
       chosen:
@@ -144,7 +145,7 @@
             label: extra.label,
             colour: entityStyle(1).colour,
             kind: 'extra' as const,
-            values: extra.series,
+            ...model.pointsOf(extra.series),
             figure: 0,
           },
         ]),
@@ -274,6 +275,7 @@
       window={current}
       {onWindow}
       plotHeights={{ base: 74, md: 74, lg: 74, xl: 74 }}
+      labelFloorS={model.bucket.labelFloorS}
       {syncKey}
       label={title}
       emptyCopy={chartCopy.emptyRate(metric)}
@@ -316,6 +318,7 @@
       {onWindow}
       plotHeights={{ base: 140, md: 160, lg: 200, xl: 220 }}
       scale={logScale ? 'log' : 'linear'}
+      labelFloorS={model.bucket.labelFloorS}
       {syncKey}
       label={title}
       emptyCopy={chartCopy.emptyRate(metric)}
@@ -323,7 +326,7 @@
       highlightId={legend.highlightId}
       {brushShape}
       formatValue={formatAmount}
-      rowsLabel={chartCopy.tooltipRate(metric)}
+      rowsLabel={chartCopy.tooltipRate(metric, model.bucket.seconds)}
       onScrub={(ms) => (legend.scrubMs = ms)}
       {onOpenDeath}
     />

@@ -26,3 +26,11 @@ describe('the threat title and the Enemy field agree (fix round 2)', () => {
     );
   });
 });
+
+describe('chartCopy.tooltipRate', () => {
+  it('names the average the points are', () => {
+    expect(chartCopy.tooltipRate('damage-done', 5)).toBe('DPS, 5 s average');
+    expect(chartCopy.tooltipRate('healing', 2)).toBe('HPS, 2 s average');
+    expect(chartCopy.tooltipRate('damage-done', 1)).toBe('DPS, each second');
+  });
+});
