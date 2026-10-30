@@ -334,3 +334,23 @@ test.describe('the band row at 390', () => {
     await expect(page.locator('[data-testid="bis-band-pill-alliance-60"]:visible')).toHaveClass(/is-current/);
   });
 });
+
+// Stage 2 fix round: the "This set" actions wrap inside the card instead of running past it.
+test.describe('the This set card at 390', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('keeps every action button inside the card', async ({ page }) => {
+    await page.goto('/bis/warrior/fury');
+    const cards = page.locator('[data-testid="bis-this-set"]:visible');
+    expect(await cards.count()).toBeGreaterThan(0);
+    const cardBox = await cards.first().boundingBox();
+    const buttons = await cards.first().locator('.this-set-actions a').all();
+    expect(buttons.length).toBeGreaterThan(0);
+    for (const button of buttons) {
+      const box = await button.boundingBox();
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+        (cardBox?.x ?? 0) + (cardBox?.width ?? 0),
+      );
+    }
+  });
+});
