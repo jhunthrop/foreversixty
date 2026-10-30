@@ -25,7 +25,9 @@ export interface QuestSourceCell {
   kind: 'quest';
   questName: string;
   faction: Faction;
-  level: number;
+  /** The level a player must be to take the quest (loot.json's `min_level`), not the quest's
+   *  own level, which read as a requirement it is not (spec 2026-10-29 §A.3). 0 when unknown. */
+  minLevel: number;
 }
 
 export interface PlaceSourceCell {
@@ -192,7 +194,7 @@ export function resolveSourceCell(
     // matching `sourceBadgeLabel`'s existing rule for the generic per-kind badge.
     return option === undefined
       ? fallback
-      : { kind: 'quest', questName: option.name, faction, level: option.level };
+      : { kind: 'quest', questName: option.name, faction, minLevel: option.min_level };
   }
 
   if (slot.source_kind === 'dungeon' || slot.source_kind === 'raid') {
@@ -281,14 +283,14 @@ export function resolveSourceCell(
 }
 
 /** The specific line a source cell shows beneath the row's generic kind badge (`load.ts`'s
- *  `sourceBadgeLabel`): "Quest: Pulsating Crystalline Shard · Level 50", "Molten Core ·
+ *  `sourceBadgeLabel`): "Quest: Pulsating Crystalline Shard · requires level 48", "Molten Core ·
  *  Ragnaros", "Crafted: Blacksmithing", and so on -- one line per kind, the real thing tenet
  *  2 asks a source cell to be. */
 export function describeSourceCell(cell: SourceCell): string {
   switch (cell.kind) {
     case 'quest':
-      return cell.level > 0
-        ? `${bisCopy.questSourceLabel(cell.questName)} · ${bisCopy.questLevelLabel(cell.level)}`
+      return cell.minLevel > 0
+        ? `${bisCopy.questSourceLabel(cell.questName)} · ${bisCopy.questLevelLabel(cell.minLevel)}`
         : bisCopy.questSourceLabel(cell.questName);
     case 'dungeon':
     case 'raid':

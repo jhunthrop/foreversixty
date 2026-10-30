@@ -16,7 +16,7 @@ import (
 // resolveSourceCell then describeSourceCell, with bis/copy.ts and items/source-labels.ts's
 // labels): the pick's source kind resolved against the build's loot.json, so a vendor reads
 // "Vendor: Pix Xizzix", a reputation item "Stormpike Guard (exalted)", a quest "Quest:
-// Divino-matic Rod · Level 47". A kind loot.json has nothing for falls back to the page's
+// Saving the Best for Last · requires level 58". A kind loot.json has nothing for falls back to the page's
 // own generic badge word. Change both together.
 
 const lootFileName = "loot.json"
@@ -50,7 +50,9 @@ type lootBoss struct {
 type lootQuest struct {
 	Name    string `json:"name"`
 	Faction string `json:"faction"`
-	Level   int    `json:"level"`
+	// MinLevel is the level a player must be to take the quest (classic-db), which the line
+	// shows; the quest's own level misled as a requirement (spec 2026-10-29 §A.3).
+	MinLevel int `json:"min_level"`
 }
 
 // sourceBook is one build's loot.json, read once.
@@ -210,7 +212,8 @@ func resolvedSource(loot *lootFile, itemID int, kind, faction string) (string, b
 
 func realFaction(f string) bool { return f == "alliance" || f == "horde" }
 
-// questLine is the quest of the panel's faction (else the first): "Quest: {name} · Level {n}".
+// questLine is the quest of the panel's faction (else the first): "Quest: {name} · requires
+// level {min_level}", the name alone when the data has no min_level.
 func questLine(options []lootQuest, faction string) (string, bool) {
 	if len(options) == 0 {
 		return "", false
@@ -223,8 +226,8 @@ func questLine(options []lootQuest, faction string) (string, bool) {
 		}
 	}
 	line := fill(sourceCopy.Quest, "{name}", q.Name)
-	if q.Level > 0 {
-		line += lineJoin + fill(sourceCopy.QuestLevel, "{n}", strconv.Itoa(q.Level))
+	if q.MinLevel > 0 {
+		line += lineJoin + fill(sourceCopy.QuestLevel, "{min_level}", strconv.Itoa(q.MinLevel))
 	}
 	return line, true
 }

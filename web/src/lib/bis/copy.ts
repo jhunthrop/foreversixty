@@ -69,7 +69,9 @@ export const bisCopy = {
   // wow-player review round 2, 390px capture). Never a `white-space: nowrap` on the line's
   // own outer element instead: several of these lines (`alternativeMetaLabel` below) join
   // two such tokens with " · ", which must still be free to wrap between them.
-  questLevelLabel: (level: number): string => `Level\u00a0${level}`,
+  // The level a player must be to take the quest (loot.json's min_level), never the quest's own
+  // level, which read as a requirement (gear panel spec 2026-10-29 §A.3; the bot says the same).
+  questLevelLabel: (minLevel: number): string => `requires level\u00a0${minLevel}`,
   /** The row's small item-level figure, labelled so a bare number never has to be guessed at. */
   itemLevelShort: (level: number): string => `ilvl\u00a0${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>

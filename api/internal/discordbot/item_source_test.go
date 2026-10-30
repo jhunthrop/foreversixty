@@ -17,7 +17,8 @@ const sourceLoot = `{
   {"kind": "dungeon", "name": "Scholomance", "bosses": [{"name": "Darkmaster Gandling", "items": [13398]}]},
   {"kind": "world_drop", "name": "World drops", "level_min": 55, "level_max": 63, "items": [7000]}
  ],
- "quests": {"9533": [{"name": "Divino-matic Rod", "faction": "both", "level": 47}]}
+ "quests": {"9533": [{"name": "Divino-matic Rod", "faction": "both", "level": 47, "min_level": 40}],
+  "9534": [{"name": "No Requirement", "faction": "both", "level": 47}]}
 }`
 
 func TestSourceLinesAreTheBisPagesOwn(t *testing.T) {
@@ -32,7 +33,8 @@ func TestSourceLinesAreTheBisPagesOwn(t *testing.T) {
 		{272408, "vendor", "Vendor: Pix Xizzix"},
 		{16466, "vendor", "PvP rank 17 · Field Marshal · Alliance"},
 		{19325, "rep", "Stormpike Guard (exalted)"},
-		{9533, "quest", "Quest: Divino-matic Rod · Level 47"},
+		{9533, "quest", "Quest: Divino-matic Rod · requires level 40"},
+		{9534, "quest", "Quest: No Requirement"},
 		{252483, "crafted", "Crafted: Leatherworking"},
 		{13340, "dungeon", "12% from Baron Rivendare"},
 		{13398, "dungeon", "Scholomance · Darkmaster Gandling"},

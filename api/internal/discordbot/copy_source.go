@@ -2,8 +2,8 @@ package discordbot
 
 // sourceCopy is the site BiS page's source-line labels (web/src/lib/bis/copy.ts, the
 // questSourceLabel to worldDropSourceLabel block, and items/source-labels.ts), so an item
-// reads the same in Discord as on the page. The page's non-breaking space in "Level 47"
-// is kept.
+// reads the same in Discord as on the page. A quest names the level a player must be to take
+// it ("requires level 58", spec 2026-10-29 §A.3).
 var sourceCopy = struct {
 	Quest, QuestLevel, Vendor, Rep, Crafted, CraftedNamed string
 	Chance, UnderOne, Trash, Unnamed                      string
@@ -11,7 +11,7 @@ var sourceCopy = struct {
 	AllianceQuest, HordeQuest                             string
 }{
 	Quest:           "Quest: {name}",
-	QuestLevel:      "Level {n}",
+	QuestLevel:      "requires level {min_level}",
 	Vendor:          "Vendor: {npc}",
 	Rep:             "{faction} ({standing})",
 	Crafted:         "Crafted: {name}",

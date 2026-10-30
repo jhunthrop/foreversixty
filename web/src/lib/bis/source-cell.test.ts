@@ -145,9 +145,9 @@ describe('hasKnownSource', () => {
 });
 
 describe('resolveSourceCell', () => {
-  it('resolves a quest to its band faction, name and level, not the quest’s own faction', () => {
+  it('resolves a quest to its band faction, name and required level, not the quest’s own faction', () => {
     const cell = resolveSourceCell(slot({ item_id: 70, source_kind: 'quest' }), 'alliance', LOOT, 'fallback');
-    expect(cell).toEqual({ kind: 'quest', questName: 'A Faction Quest', faction: 'alliance', level: 12 });
+    expect(cell).toEqual({ kind: 'quest', questName: 'A Faction Quest', faction: 'alliance', minLevel: 10 });
   });
 
   it('resolves a neutral ("both") quest under either faction panel using that panel’s faction', () => {
@@ -158,8 +158,8 @@ describe('resolveSourceCell', () => {
       'fallback',
     );
     const horde = resolveSourceCell(slot({ item_id: 71, source_kind: 'quest' }), 'horde', LOOT, 'fallback');
-    expect(alliance).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'alliance', level: 8 });
-    expect(horde).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'horde', level: 8 });
+    expect(alliance).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'alliance', minLevel: 5 });
+    expect(horde).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'horde', minLevel: 5 });
   });
 
   it('falls back when loot.json has no quest entry for the item', () => {
@@ -344,9 +344,10 @@ describe('describeSourceCell', () => {
   });
 
   it('formats every kind as the one line the row shows', () => {
-    expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', level: 12 })).toBe(
-      'Quest: Foo · Level 12',
+    expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', minLevel: 58 })).toBe(
+      'Quest: Foo · requires level\u00a058',
     );
+    expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', minLevel: 0 })).toBe('Quest: Foo');
     expect(describeSourceCell({ kind: 'raid', instance: 'Molten Core', boss: 'Ragnaros' })).toBe(
       'Molten Core · Ragnaros',
     );
