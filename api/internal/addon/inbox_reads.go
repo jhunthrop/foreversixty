@@ -138,7 +138,7 @@ type ackRow struct {
 }
 
 // acks reads an ackRow for every one of userID's exports, but only when the account has a
-// companion paired (a device that is not revoked): without one nothing would carry the ack
+// companion paired (a companion device that is not revoked; a signed-in app does not count): without one nothing would carry the ack
 // into the game. A request's state is its run's once the run has ended - done, or failed for
 // a run that errored - and the state recorded with the request (queued, or why no run started)
 // until then.
@@ -155,7 +155,7 @@ func (s *Store) acks(ctx context.Context, userID int64) ([]ackRow, error) {
 		      order by a.created_at desc limit 1
 		   ) n on true
 		  where e.user_id = $1
-		    and exists (select 1 from devices d where d.user_id = $1 and d.revoked_at is null)
+		    and exists (select 1 from devices d where d.user_id = $1 and d.revoked_at is null and d.kind = 'companion')
 		  order by e.character_key`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("addon: read acks: %w", err)

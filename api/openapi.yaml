@@ -1537,6 +1537,43 @@ paths:
       responses:
         '200': { description: "The account as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '400': { description: "Nothing to change", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/app/start:
+    get:
+      summary: Start a native app sign-in (dark unless APP_SIGN_IN=true; 60 per hour per IP)
+      description: Opened in the system browser. Records the PKCE challenge, platform and the app's state, then redirects to Battle.net through the site's own start. The Battle.net callback answers an app flow with a 302 to https://foreversixty.gg/app/auth?code=<one-time code>&state=<the app's state> and sets no web session. The code is single use and lives two minutes.
+      parameters:
+        - { name: platform, in: query, required: true, schema: { type: string, enum: [ios, android] } }
+        - { name: code_challenge, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' } }
+        - { name: code_challenge_method, in: query, required: true, schema: { type: string, enum: [S256] } }
+        - { name: state, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9._~-]{16,128}$' } }
+      responses:
+        '302': { description: "To Battle.net" }
+        '400': { description: "invalid, with error.fields naming each bad parameter", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '429': { description: "Too many starts from this address", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/app/exchange:
+    post:
+      summary: Swap the one-time code and the PKCE verifier for a device token (dark unless APP_SIGN_IN=true; 60 per hour per IP)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, code_verifier]
+              properties:
+                code: { type: string }
+                code_verifier: { type: string, pattern: '^[A-Za-z0-9._~-]{43,128}$' }
+                device_name: { type: string, maxLength: 60 }
+      responses:
+        '201': { description: "token (shown once), device {id, name, platform}, me (the GET /v1/me body)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "invalid (bad body) or invalid_grant (unknown, spent, expired or wrong verifier; the code is spent by any attempt)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '429': { description: "Too many exchanges from this address", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/app/logout:
+    post:
+      summary: The calling app's Sign out; revokes its device (dark unless APP_SIGN_IN=true)
+      responses:
+        '200': { description: "signed_out true", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "Not a device token, or the token is already dead", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices/pair:
     post:
       summary: Issue a pairing code (session only)
@@ -1613,9 +1650,10 @@ paths:
   /v1/devices:
     get:
       summary: The account's devices
+      description: Session or app token. Each device carries kind, companion or app (a native app signed in through /v1/auth/app); an app's platform is ios or android.
       responses:
         '200':
-          description: "data is the device array itself, with no wrapper object"
+          description: "data is the device array itself, with no wrapper object: id, name, platform, kind, created_at, last_seen_at"
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
   /v1/devices/self:
     delete:

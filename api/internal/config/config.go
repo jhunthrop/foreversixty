@@ -123,6 +123,10 @@ type Config struct {
 	// not Forever characters at all. Off, sign-in still works, the nightly
 	// job still probes for the namespace, and nothing is written.
 	BnetImportCharacters bool
+	// AppSignIn (APP_SIGN_IN=true) mounts the native app sign-in: GET /v1/auth/app/start,
+	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
+	// answer 404 until the apps ship. It needs Battle.net configured to do anything.
+	AppSignIn bool
 
 	// ParseJobName, ParseJobRegion and ParseJobProject address the Cloud
 	// Run job that parses a whole-file upload.
@@ -262,6 +266,7 @@ func Load(getenv func(string) string) (Config, error) {
 		c.BnetProfileGame = defaultBnetProfileGame
 	}
 	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") == "true"
+	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
 	c.BnetRegions = splitCommaList(getenv("BNET_REGIONS"), defaultBnetRegions)
 	c.BnetProbeGames = splitCommaList(getenv("BNET_PROBE_GAMES"), defaultBnetProbeGames)
 	for _, d := range []struct {

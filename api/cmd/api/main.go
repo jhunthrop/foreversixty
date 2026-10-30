@@ -595,6 +595,9 @@ func serve(log *slog.Logger) error {
 	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+		// The native app sign-in rides the same Battle.net start and callback; dark until
+		// APP_SIGN_IN=true.
+		accounts.AppSignIn = cfg.AppSignIn
 		bnetSvcClient := bnetClient(cfg, log)
 		bnetTables, ok, err := bnetbuild.LoadTables(cfg.TreeDataDir, treeData)
 		if err != nil {

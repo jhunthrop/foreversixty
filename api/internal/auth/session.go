@@ -25,6 +25,8 @@ type Actor struct {
 	Role     string
 	Method   string
 	DeviceID string
+	// DeviceKind is DeviceKindCompanion or DeviceKindApp for a device, empty otherwise.
+	DeviceKind string
 }
 
 // Signed reports whether the request carries any identity at all.
@@ -32,6 +34,9 @@ func (a Actor) Signed() bool { return a.UserID != 0 }
 
 // IsDevice reports whether the identity came from a device token.
 func (a Actor) IsDevice() bool { return a.DeviceID != "" }
+
+// IsApp reports whether the identity came from a signed-in native app's token.
+func (a Actor) IsApp() bool { return a.IsDevice() && a.DeviceKind == DeviceKindApp }
 
 // IsModerator reports whether the actor may act on other people's
 // reports and rankings.
@@ -84,7 +89,7 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 				u, uerr := a.Store.User(r.Context(), d.UserID)
 				if uerr == nil {
 					next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
-						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID})))
+						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID, DeviceKind: d.Kind})))
 					return
 				}
 				err = uerr
@@ -236,12 +241,15 @@ func Require(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// RequireSession wraps a handler so only a browser session reaches it: a
-// device token cannot pair another device or sign anything out.
+// RequireSession wraps a handler so only the account holder reaches it: a
+// browser session, or a native app signed in through /v1/auth/app (a
+// first-party client acting as its person). A companion's device token
+// is refused: it uploads, and cannot read the account, pair another
+// device or sign anything out.
 func RequireSession(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		a := ActorFrom(r.Context())
-		if !a.Signed() || a.IsDevice() {
+		if !a.Signed() || (a.IsDevice() && !a.IsApp()) {
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "sign in on the site first", nil)
 			return
 		}
