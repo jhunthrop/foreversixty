@@ -20,6 +20,7 @@ import {
 import { guildSettingsCopy } from '../../src/lib/guild/copy';
 import { uiCopy } from '../../src/lib/ui/copy';
 import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-billing';
+import { fieldBox } from './support/select';
 
 const PHONE = { width: 360, height: 780 };
 const MIN_TAP_PX = 44;
@@ -234,7 +235,7 @@ test('case 18: axe finds no violations and every control is at least 44px tall a
   });
   await page.getByTestId('guild-move-raid-guild').click();
   await page.getByTestId('guild-seat-1-give').click();
-  await expect(page.getByTestId('guild-seat-1-select')).toBeVisible();
+  await expect(fieldBox(page, 'guild-seat-1-select')).toBeVisible();
   await page.addScriptTag({ path: AXE_SOURCE });
   const results = await page.evaluate(async (): Promise<AxeResults> => {
     const axe = (window as unknown as { axe: { run: (context: string) => Promise<AxeResults> } }).axe;

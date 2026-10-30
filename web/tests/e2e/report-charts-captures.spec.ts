@@ -40,7 +40,7 @@ for (const width of WIDTHS) {
       await settle(page);
       if (phone) {
         await page.goto(`${RAID40_URL}&tab=damage-done`);
-        await page.locator('#report-tab-select').selectOption('threat');
+        await page.locator('#report-tab-select').selectOption('threat', { force: true });
         await settle(page);
         await page.waitForTimeout(800);
       } else {
@@ -76,7 +76,7 @@ for (const width of WIDTHS) {
       await settle(page);
       await page.getByTestId('time-chart').scrollIntoViewIfNeeded();
       if (phone) await page.getByTestId('time-chart').getByTestId('legend-more').click();
-      else await page.getByTestId('players-control').click();
+      else await page.getByTestId('players-trigger').click();
       await page.waitForTimeout(300);
       await page.screenshot({ path: join(OUT, `build-charts-players-${width}.png`) });
     });

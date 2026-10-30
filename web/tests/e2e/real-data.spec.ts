@@ -13,6 +13,7 @@ import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';
 import { POINTS_PER_TIER } from '../../src/lib/planner/types';
+import { choose, nativeSelect } from './support/select';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -59,7 +60,7 @@ function syncedTreeNames(slug: string): string[] {
 async function openPlanner(page: Page): Promise<string> {
   await page.goto('/planner');
   await expect.poll(() => renderedTreeNames(page)).toHaveLength(TREES_PER_CLASS);
-  const slug = await page.getByLabel('Class').inputValue();
+  const slug = await nativeSelect(page, 'Class').inputValue();
   expect(slug).not.toBe('');
   return slug;
 }
@@ -90,8 +91,8 @@ test('switching class lays out the new class real trees', async ({ page }) => {
     );
   expect(to, 'no second class with a distinguishable set of tree names').toBeDefined();
 
-  await page.getByLabel('Class').selectOption(to!);
-  await expect(page.getByLabel('Class')).toHaveValue(to!);
+  await choose(nativeSelect(page, 'Class'), to!);
+  await expect(nativeSelect(page, 'Class')).toHaveValue(to!);
   await expect.poll(() => renderedTreeNames(page)).toEqual(syncedTreeNames(to!));
 });
 
@@ -147,7 +148,7 @@ async function spend(page: Page, treeId: number, points: number): Promise<void> 
 
 test('the trees are laid out in the order the client draws them', async ({ page }) => {
   await openPlanner(page);
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   expect(syncedTrees('warrior').map((tree) => tree.name)).toEqual(['Arms', 'Fury', 'Protection']);
 });
@@ -161,7 +162,7 @@ test('the banner names the build the trees were read from', async ({ page }) => 
 
 test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => {
   await openPlanner(page);
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const [arms, fury] = syncedTrees('warrior');
 
@@ -178,7 +179,7 @@ test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => 
 
 test('a prerequisite link is drawn for every prerequisite the client has', async ({ page }) => {
   await openPlanner(page);
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const pairs = syncedTrees('warrior').flatMap((tree) =>
     tree.talents.filter((talent) => talent.prereq_talent_id !== null).map((talent) => ({ tree, talent })),
@@ -231,7 +232,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   });
 
   await openPlanner(page);
-  await page.getByLabel('Class').selectOption('warrior');
+  await choose(nativeSelect(page, 'Class'), 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const [arms, fury] = syncedTrees('warrior');
   await spend(page, arms.id, 31);
@@ -270,7 +271,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   await page.goto('/b/real1234');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
-  await expect(page.getByLabel('Class')).toBeDisabled();
+  await expect(nativeSelect(page, 'Class')).toBeDisabled();
 
   await page.setViewportSize({ width: 390, height: 800 });
   await page.reload();

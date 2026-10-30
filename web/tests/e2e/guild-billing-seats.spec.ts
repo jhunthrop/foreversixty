@@ -16,6 +16,7 @@ import {
   returnedSeat,
 } from '../../src/test-support/billing-fixtures';
 import { GUILD_ID, envelope, openLive, stubCandidates } from './support/guild-billing';
+import { choose, fieldControl } from './support/select';
 
 const PENDING_OFFEREE = { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' };
 const SEATED = (seats: GuildBillingSettings['seats']): GuildBillingSettings =>
@@ -29,7 +30,7 @@ test('case 12: give to a non-payer holds it with its lock date', async ({ page }
     return route.fulfill(envelope(cell.current.seats[0]));
   });
   await page.getByTestId('guild-seat-1-give').click();
-  await expect(page.getByTestId('guild-seat-1-select')).toBeFocused();
+  await expect(fieldControl(page, 'guild-seat-1-select')).toBeFocused();
   await expect(page.getByTestId('guild-seat-1-pays-note')).toHaveCount(0);
   await page.getByTestId('guild-seat-1-submit').click();
   await expect(page.getByTestId('guild-seat-1-name')).toHaveText('Kraggor');
@@ -51,9 +52,7 @@ test('case 12: give to a payer shows the payer note, then Waiting, and Withdraw 
     return route.fulfill(envelope(cell.current.seats[0]));
   });
   await page.getByTestId('guild-seat-1-give').click();
-  await page
-    .getByTestId('guild-seat-1-select')
-    .selectOption({ label: 'Mirelle · Priest · pays for Premium' });
+  await choose(page.getByTestId('guild-seat-1-select'), { label: 'Mirelle · Priest · pays for Premium' });
   await expect(page.getByTestId('guild-seat-1-pays-note')).toBeVisible();
   await page.getByTestId('guild-seat-1-submit').click();
   await expect(page.getByTestId('guild-seat-1')).toContainText('Waiting');
@@ -110,7 +109,7 @@ test('case 13: send, wait and withdraw puts the button back', async ({ page }) =
     return route.fulfill({ status: 204 });
   });
   await page.getByTestId('guild-transfer-open').click();
-  await expect(page.getByTestId('guild-transfer-select')).toBeFocused();
+  await expect(fieldControl(page, 'guild-transfer-select')).toBeFocused();
   await expect(page.getByTestId('guild-transfer-consequence')).toContainText(
     'Nothing changes until they accept.',
   );

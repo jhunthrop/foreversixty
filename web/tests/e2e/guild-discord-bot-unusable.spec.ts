@@ -19,6 +19,7 @@ import {
 } from './support/guild-discord-bot';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { choose, fieldControl } from './support/select';
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };
@@ -144,7 +145,7 @@ test.describe('13 · precedence', () => {
   test('an open picker wins', async ({ page }) => {
     await open(page, { discord: unusable(DELETED) });
     await id(page, 'bot-choose-channel').click();
-    await expect(id(page, 'bot-channel')).toBeVisible();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeVisible();
     await expect(id(page, 'discord-notice')).toHaveCount(0);
   });
 });
@@ -155,13 +156,13 @@ test.describe('14 · fix by picking', () => {
   }) => {
     await open(page, { discord: unusable(DELETED) });
     await id(page, 'bot-choose-channel').click();
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await expect(id(page, 'bot-channel')).toHaveValue('');
     await id(page, 'bot-channel-cancel').click();
     await expect(id(page, 'discord-notice')).toBeVisible();
     await expect(id(page, 'bot-choose-channel')).toBeFocused();
     await id(page, 'bot-choose-channel').click();
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(id(page, 'discord-notice')).toBeVisible();
     await expect(id(page, 'bot-choose-channel')).toBeFocused();
@@ -170,7 +171,7 @@ test.describe('14 · fix by picking', () => {
   test('a save shows state 2 with the saved line and focus on the test button', async ({ page }) => {
     const seen = await open(page, { discord: unusable(DELETED) });
     await id(page, 'bot-choose-channel').click();
-    await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
+    await choose(id(page, 'bot-channel'), RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.installed.saved);
     await expect(id(page, 'bot-test')).toBeFocused();
@@ -196,7 +197,7 @@ test.describe('14b · Escape on the state 2 Change channel picker', () => {
   test('Escape cancels it and focus returns to Change channel', async ({ page }) => {
     await open(page, { discord: botSettings({}) });
     await id(page, 'bot-change').click();
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(id(page, 'bot-destination')).toBeVisible();
     await expect(id(page, 'bot-change')).toBeFocused();
@@ -207,11 +208,11 @@ test.describe('14c · Escape after a save', () => {
   test('a saved channel does not leave Escape stuck for the next Change channel picker', async ({ page }) => {
     await open(page, { discord: unusable(DELETED) });
     await id(page, 'bot-choose-channel').click();
-    await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
+    await choose(id(page, 'bot-channel'), RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(id(page, 'bot-test')).toBeFocused();
     await id(page, 'bot-change').click();
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(id(page, 'bot-destination')).toBeVisible();
     await expect(id(page, 'bot-change')).toBeFocused();
@@ -229,7 +230,7 @@ test.describe('15 · fix by saving the same channel', () => {
     await expect(section(page).getByRole('alert')).toHaveText(guildBotCopy.picker.race);
     await expect(page.locator('#guild-discord-status')).toBeFocused();
     expect(seen.channelReads).toBe(2);
-    await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
+    await choose(id(page, 'bot-channel'), RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.installed.saved);
     await expect(id(page, 'discord-notice')).toHaveCount(0);
@@ -288,7 +289,7 @@ test.describe('17 · axe, 44 px targets, caps and layout', () => {
       });
     const before = await tops();
     await id(page, 'bot-choose-channel').click();
-    await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
+    await choose(id(page, 'bot-channel'), RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(id(page, 'bot-test')).toBeFocused();
     const after = await tops();

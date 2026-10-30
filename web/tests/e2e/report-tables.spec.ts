@@ -2,6 +2,7 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose } from './support/select';
 
 /**
  * Clicks an ability's chart control until its label flips. The forced click (see the note
@@ -46,7 +47,7 @@ test('damage done ranks rows, colours names by class and expands to abilities', 
 
 test('the ability filter narrows every row to that ability', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
-  await page.getByTestId('filter-ability').selectOption({ label: 'Slam' });
+  await choose(page.getByTestId('filter-ability'), { label: 'Slam' });
   const rows = page.getByTestId('actor-table').locator('li');
   await expect(rows).toHaveCount(1);
   await expect(rows.first()).toContainText('Baelgrim');
@@ -92,7 +93,7 @@ test('a window change keeps the ability on the chart', async ({ page }) => {
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
   // A window is a stretch to read the line against, not a different question: the pick
   // and its measured whole-fight series survive it, and the brush only slices the line.
-  await page.getByTestId('window-select').selectOption({ label: 'First 30s' });
+  await choose(page.getByTestId('window-select'), { label: 'First 30s' });
   await expect(page).toHaveURL(/start=0&end=30000/);
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam');
   await expect(control).toHaveText('Off the chart');

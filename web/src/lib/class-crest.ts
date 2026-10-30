@@ -14,3 +14,20 @@
 export function classCrestSrc(slug: string): string {
   return `/icons/hd/crests/${slug}.webp`;
 }
+
+/** The classes a crest is drawn for (public/icons/hd/crests/). */
+const CREST_CLASSES: ReadonlySet<string> = new Set([
+  'druid',
+  'hunter',
+  'mage',
+  'paladin',
+  'priest',
+  'rogue',
+  'shaman',
+  'warlock',
+  'warrior',
+]);
+
+export function hasClassCrest(slug: string): boolean {
+  return CREST_CLASSES.has(slug);
+}

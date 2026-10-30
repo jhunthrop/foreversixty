@@ -202,9 +202,21 @@ const CLASS_TOKENS = new Set([
   'monk',
 ]);
 
-export function classColorVar(className: string | undefined): string {
+/** A known class's slug (`death-knight`), else undefined. */
+export function classSlug(className: string | undefined): string | undefined {
   const slug = (className ?? '').toLowerCase().replace(/\s+/g, '-');
-  return CLASS_TOKENS.has(slug) ? `var(--color-class-${slug})` : 'var(--color-text)';
+  return CLASS_TOKENS.has(slug) ? slug : undefined;
+}
+
+/** A known class's colour token name (`--color-class-mage`), for a dropdown option's colour. */
+export function classColorToken(className: string | undefined): string | undefined {
+  const slug = classSlug(className);
+  return slug === undefined ? undefined : `--color-class-${slug}`;
+}
+
+export function classColorVar(className: string | undefined): string {
+  const token = classColorToken(className);
+  return token === undefined ? 'var(--color-text)' : `var(${token})`;
 }
 
 /**

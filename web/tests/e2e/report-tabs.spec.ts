@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { heldRoute } from './support/held-route';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose, fieldBox } from './support/select';
 
 const REPORT = '/reports/fixture2abcd';
 
@@ -37,7 +38,7 @@ test('the report opens on its first fight with the chrome the spec sets', async 
   }
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
   if (phone) {
-    await expect(page.getByTestId('tab-select')).toBeVisible();
+    await expect(fieldBox(page, 'tab-select')).toBeVisible();
     await expect(page.getByTestId('tab-select')).toHaveValue('summary');
   } else {
     await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
@@ -59,7 +60,7 @@ test('every control the spec names writes itself into the URL and reads back', a
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
-  if (phone) await page.getByTestId('tab-select').selectOption('healing');
+  if (phone) await choose(page.getByTestId('tab-select'), 'healing');
   else await page.getByTestId('tab-healing').click();
   await page.getByTestId('view-events').click();
 
@@ -76,11 +77,11 @@ test('the table tabs are a select below lg and a wrapping pill row at lg and up'
   await page.goto(REPORT);
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
   if (phone) {
-    await expect(page.getByTestId('tab-select')).toBeVisible();
+    await expect(fieldBox(page, 'tab-select')).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeHidden();
   } else {
     await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
-    await expect(page.getByTestId('tab-select')).toBeHidden();
+    await expect(fieldBox(page, 'tab-select')).toBeHidden();
   }
 });
 
@@ -233,7 +234,7 @@ test('a lazy mode shows a sized skeleton, not a blank panel, while its chunk loa
 test('compare puts two fights side by side with a per-player difference', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
   await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');
-  await page.getByTestId('compare-with').selectOption({ index: 1 });
+  await choose(page.getByTestId('compare-with'), { index: 1 });
   // A phone gets one card per player instead of the table.
   const phone = (page.viewportSize()?.width ?? 1280) < 768;
   await expect(page.getByTestId(phone ? 'compare-cards' : 'compare-table')).toBeVisible();
@@ -254,11 +255,11 @@ test('a stale compare answer does not overwrite the fight actually selected', as
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare&cmetric=damage_done');
 
   const slow = await heldFightRoute(page, 1, 'continue');
-  await page.getByTestId('compare-with').selectOption('1');
+  await choose(page.getByTestId('compare-with'), '1');
   await slow.started;
 
   // The visitor changes their mind before fight 1's summary has even arrived.
-  await page.getByTestId('compare-with').selectOption('2');
+  await choose(page.getByTestId('compare-with'), '2');
   const phone = (page.viewportSize()?.width ?? 1280) < 768;
   const delta = phone
     ? page.getByTestId('compare-card-Player-4184-000000A3').getByTestId('compare-card-delta')
@@ -376,7 +377,7 @@ test('a stale rankings answer for the metric that is no longer selected is dropp
   await started;
 
   // The visitor picks Healing before Damage's request has even arrived.
-  await page.getByTestId('rankings-metric').selectOption('hps');
+  await choose(page.getByTestId('rankings-metric'), 'hps');
   await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
 
   const answered = page.waitForResponse((response) => response.url().includes('metric=dps'));
@@ -482,7 +483,7 @@ test('a phase is a window preset, so every table reads per phase in one click', 
   await openChartIfCollapsed(page);
   // The six-button preset row is a select now (design review 2026-09-26 finding 4); the
   // option labels are the old buttons' own names, unchanged.
-  await page.getByTestId('window-select').selectOption({ label: 'Phase 2 · 14.0s to 1:00' });
+  await choose(page.getByTestId('window-select'), { label: 'Phase 2 · 14.0s to 1:00' });
   await expect(page).toHaveURL(/start=14000&end=60000/);
 });
 

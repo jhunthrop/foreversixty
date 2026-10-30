@@ -3,6 +3,7 @@
 // "who has the most threat on this enemy", and the taunt list under it, which answers
 // "who took the boss off me, and when" in one click.
 import { expect, test } from '@playwright/test';
+import { choose, fieldBox } from './support/select';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -14,8 +15,8 @@ test('threat on a target lists each player’s threat on the picked enemy, and t
 }) => {
   await page.goto(FIGHT);
   const picker = page.getByTestId('threat-target');
-  await expect(picker).toBeVisible();
-  await picker.selectOption({ label: 'Warden Kelthas' });
+  await expect(fieldBox(page, 'threat-target')).toBeVisible();
+  await choose(picker, { label: 'Warden Kelthas' });
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
   await expect(page.getByTestId('threat-on-target').getByTestId('threat-share').first()).toContainText('%');
   await expect(page.getByTestId('threat-taunts')).toContainText('Taunt');
@@ -30,7 +31,7 @@ test('every enemy keeps the totals table, and picking one swaps in that enemy’
   await expect(page.getByTestId('threat-table')).toContainText('Warden Kelthas');
   await expect(page.getByTestId('threat-on-target')).toHaveCount(0);
 
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   const rows = page.getByTestId('threat-on-target').locator('li');
   // The four players who built threat on the boss, largest first; the boss itself is not
   // one of its own attackers, so it has no row here.
@@ -54,7 +55,7 @@ test('a source scope narrows the rows but not the share they are measured agains
 
 test('the picked enemy rides in the URL, so the link opens on it', async ({ page }) => {
   await page.goto(FIGHT);
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page).toHaveURL(new RegExp(`target=${KELTHAS}`));
 
   await page.goto(`${FIGHT}&target=${KELTHAS}`);
@@ -106,7 +107,7 @@ test('the whole night names the pull each taunt came from', async ({ page }) => 
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
   await expect(page.getByTestId('threat-taunts')).toContainText('Warden Kelthas · pull 1');
   // Over the night a pair's target is the enemy's name, one row per name across pulls.
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
 });
 
@@ -116,11 +117,11 @@ test('the whole night names the pull each taunt came from', async ({ page }) => 
 // the filter bar still said "Every target".
 test('an enemy picked on the night’s Threat tab keeps the damage tabs’ rows', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page).toHaveURL(/target=Warden\+Kelthas/);
 
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
   else await page.getByTestId('tab-damage-done').click();
   const rows = page.getByTestId('actor-table').locator('li');
   await expect(rows.first()).toBeVisible();

@@ -21,6 +21,8 @@
   import { legendaryVariantLabel } from '../../../lib/sim/legendary-variants';
   import { groupSources, type LootFile, sourceLabel } from '../../../lib/sim/loot';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
+  import { selectCopy } from '../../../lib/ui/copy';
+  import Select from '../../ui/Select.svelte';
 
   let {
     items,
@@ -79,36 +81,42 @@
         class="border-line-warm rounded-control bg-bg text-text h-11 w-20 border px-2 text-[14px]"
       />
     </label>
-    <label class="text-muted flex items-center gap-2 text-[12px]">
-      {bulkCopy.searchSlot}
-      <select
+    <div class="flex items-center gap-2">
+      <label class="quiet-label" for="sim-search-slot-field">{bulkCopy.searchSlot}</label>
+      <Select
+        id="sim-search-slot-field"
+        class="w-[160px]"
+        size="compact"
         bind:value={query.slot}
-        data-testid="sim-search-slot"
-        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
-      >
-        <option value="">{bulkCopy.searchAnySlot}</option>
-        {#each slotOptions() as option (option.slot)}
-          <option value={option.slot}>{option.label}</option>
-        {/each}
-      </select>
-    </label>
-    <label class="text-muted flex items-center gap-2 text-[12px]">
-      {bulkCopy.searchSource}
-      <select
+        options={[
+          { value: '', label: bulkCopy.searchAnySlot },
+          ...slotOptions().map((option) => ({ value: option.slot, label: option.label })),
+        ]}
+        testid="sim-search-slot"
+      />
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="quiet-label" for="sim-search-source-field">{bulkCopy.searchSource}</label>
+      <Select
+        id="sim-search-source-field"
+        class="w-[240px]"
+        size="compact"
         bind:value={query.sourceId}
-        data-testid="sim-search-source"
-        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
-      >
-        <option value="">{bulkCopy.searchAnySource}</option>
-        {#each groups as group (group.kind)}
-          <optgroup label={group.label}>
-            {#each group.sources as source (source.id)}
-              <option value={source.id}>{sourceLabel(source)}</option>
-            {/each}
-          </optgroup>
-        {/each}
-      </select>
-    </label>
+        options={[
+          { value: '', label: bulkCopy.searchAnySource },
+          ...groups.flatMap((group) =>
+            group.sources.map((source) => ({
+              value: source.id,
+              label: sourceLabel(source),
+              group: group.label,
+            })),
+          ),
+        ]}
+        searchable
+        searchPlaceholder={selectCopy.filterSources}
+        testid="sim-search-source"
+      />
+    </div>
     <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
       <input
         type="checkbox"

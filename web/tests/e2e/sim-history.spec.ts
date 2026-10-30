@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+import { choose } from './support/select';
 
 const envelope = (data: unknown) => ({
   status: 200,
@@ -52,7 +53,7 @@ test('the history lists every kind and filters to one', async ({ page }) => {
   await expect(page.getByTestId('sim-history-kind-bbbbbbbbbbbb')).toHaveText(simCopy.kindLabel.gear);
   await expect(page.getByTestId('sim-history-headline-bbbbbbbbbbbb')).toHaveText('+41 DPS from Viskag');
 
-  await page.getByTestId('sim-history-filter').selectOption('gear');
+  await choose(page.getByTestId('sim-history-filter'), 'gear');
   await expect(page.getByTestId('sim-history-bbbbbbbbbbbb')).toBeVisible();
   await expect(page.getByTestId('sim-history-aaaaaaaaaaaa')).toHaveCount(0);
 });

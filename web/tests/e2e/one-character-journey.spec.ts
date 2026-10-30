@@ -10,6 +10,7 @@
 // 1280px capture of each stop.
 import { expect, test, type Page } from '@playwright/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
+import { nativeSelect } from './support/select';
 
 const WEB = process.env.W11_WEB ?? 'http://localhost:4331';
 const CAPTURES = process.env.W11_CAPTURES;
@@ -90,8 +91,8 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 2. The planner opens on that character: its race, level, talents and gear, not the first legal race.
   await page.goto('/planner');
-  await expect(page.getByLabel('Class')).toHaveValue('hunter');
-  await expect(page.getByLabel('Race')).toHaveValue(bow.raceSlug);
+  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
+  await expect(nativeSelect(page, 'Race')).toHaveValue(bow.raceSlug);
   await expect(page.getByTestId('planner-code-note')).toContainText('Talents loaded from a character');
   const main = page.getByRole('main');
   await expect(main).toContainText(`Hunter talents · ${bow.race} · Level 60 · ${bow.spec} Hunter`);
@@ -191,7 +192,7 @@ test('the chosen character follows the player through every page', async ({ page
     const named = exported.includes('who=') ? exported : `${exported}|who=Ashenveil:Realm`;
     await page.goto(`/planner?code=${encodeURIComponent(named)}`);
   }
-  await expect(page.getByLabel('Class')).toHaveValue('paladin');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   // Whose build it is, and never a Paladin build sent to a Hunter.
@@ -236,7 +237,7 @@ test('a class tile opens a class and leaves the character alone', async ({ page 
   await choose(page, BOW);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await page.goto('/planner?class=mage');
-  await expect(page.getByLabel('Class')).toHaveValue('mage');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('mage');
   await expect(page.getByTestId('planner-sim-link')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
@@ -259,7 +260,7 @@ test('a linked code never replaces the character, and a nameless one is never th
   await expect(page.getByTestId('sim-source-pill')).toHaveText('Entered by hand');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await page.goto(`/planner?code=${encodeURIComponent(nameless)}`);
-  await expect(page.getByLabel('Class')).toHaveValue('hunter');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await shot(page, '11-linked-code');

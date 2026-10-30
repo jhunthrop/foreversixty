@@ -4,6 +4,7 @@
 // same URL and move the same label.
 import { expect, test } from '@playwright/test';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose } from './support/select';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 const FIG = `${FIGHT}&tab=damage-done`;
@@ -92,11 +93,11 @@ test('a death preset sets the window to the seconds before it, and Whole fight c
     .locator('option')
     .filter({ hasText: 'before Thalgrit died' })
     .getAttribute('value');
-  await select.selectOption(value!);
+  await choose(select, value!);
   await expect(page).toHaveURL(/start=0&end=11000/);
 
   // The select's first option is the whole fight -- the old separate reset button's job.
-  await page.getByTestId('window-select').selectOption({ index: 0 });
+  await choose(page.getByTestId('window-select'), { index: 0 });
   await expect(page).not.toHaveURL(/start=/);
   await expect(page.getByTestId('brush-start-label')).toHaveCount(0);
 });

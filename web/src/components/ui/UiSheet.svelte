@@ -11,7 +11,7 @@
   import CardHead from './CardHead.svelte';
   import Glyph from './Glyph.svelte';
   import SettingsRow from './SettingsRow.svelte';
-  import Select from './Select.svelte';
+  import SelectSheet from './SelectSheet.svelte';
   import Spinner from './Spinner.svelte';
   import StatTile from './StatTile.svelte';
   import Switch from './Switch.svelte';
@@ -42,15 +42,9 @@
     ghost: { hover: 'text-gold-hover bg-gold/[.06]', 'focus-visible': RING, active: 'text-gold-hover' },
     danger: { hover: 'bg-wipe/[.12]', 'focus-visible': RING, active: 'bg-wipe/[.16]' },
   };
-  const REGIONS = [
-    { value: 'us', label: 'US' },
-    { value: 'eu', label: 'EU' },
-  ];
 
   let simSwitch = $state(true);
   let privateSwitch = $state(false);
-  let region = $state('us');
-  let emptyRegion = $state('');
 </script>
 
 {#snippet label(text: string)}
@@ -229,50 +223,7 @@
     </div>
   </section>
 
-  <section class="flex flex-col gap-4" aria-labelledby="sheet-select">
-    <h2 id="sheet-select" class="heading-section">Select</h2>
-    <div class="grid max-w-[720px] gap-4 sm:grid-cols-2" data-testid="sheet-selects">
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="sheet-region">default</label>
-        <Select id="sheet-region" bind:value={region} options={REGIONS} testid="sheet-select" />
-      </div>
-      <div class="flex flex-col gap-2" data-force="hover">
-        <label class="quiet-label" for="sheet-region-hover">hover</label>
-        <Select id="sheet-region-hover" value="us" options={REGIONS} />
-      </div>
-      <div class="flex flex-col gap-2" data-force="focus-visible">
-        <label class="quiet-label" for="sheet-region-focus">focus-visible</label>
-        <Select id="sheet-region-focus" value="us" options={REGIONS} />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="sheet-region-compact">filter bar (44 px)</label>
-        <Select id="sheet-region-compact" bind:value={region} options={REGIONS} compact />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="sheet-region-empty">empty</label>
-        <Select
-          id="sheet-region-empty"
-          bind:value={emptyRegion}
-          options={REGIONS}
-          placeholder="Choose a region"
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="sheet-region-error">error</label>
-        <Select
-          id="sheet-region-error"
-          value=""
-          options={REGIONS}
-          placeholder="Choose a region"
-          error="Pick a region."
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="sheet-region-off">disabled</label>
-        <Select id="sheet-region-off" value="us" options={REGIONS} disabled />
-      </div>
-    </div>
-  </section>
+  <SelectSheet />
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-head">
     <h2 id="sheet-head" class="heading-section">Card head</h2>
@@ -306,12 +257,5 @@
   }
   :global([data-force='active'] a[href]) {
     background: rgba(229, 185, 85, 0.1);
-  }
-  :global([data-force='hover'] select) {
-    border-color: rgba(229, 185, 85, 0.3);
-  }
-  :global([data-force='focus-visible'] select) {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
   }
 </style>

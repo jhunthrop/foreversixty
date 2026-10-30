@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { bulkCopy } from '../../src/lib/sim/copy';
+import { fieldBox } from './support/select';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -273,7 +274,7 @@ test('the run bar shows no combination count, but does show a working precision 
   await expect(page.getByTestId('sim-run-bulk-bar')).toBeVisible();
   await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
   const precision = page.getByTestId('sim-precision');
-  await expect(precision).toBeVisible();
+  await expect(fieldBox(page, 'sim-precision')).toBeVisible();
   await expect(precision.locator('option')).toHaveCount(3);
   // Task 8, sub-item 2: the option text itself is now the bulk tools' own bare
   // "Fast"/"Normal"/"High" -- the wire's nominal iteration count was never the real cost of

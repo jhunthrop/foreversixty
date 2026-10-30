@@ -7,6 +7,7 @@ import { expect, test } from '@playwright/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';
+import { nativeSelect } from './support/select';
 
 // The fixture Fury Warrior every other /sim* spec in this suite already pastes (grepped
 // across tests/e2e for `FS1:`) -- a known-good FS1 v2 code for the fixture data build,
@@ -37,8 +38,8 @@ test.describe('current character', () => {
     // dropped (sim-saved.spec.ts's own fixture result carries the identical final string,
     // "0-5530515-").
     await page.goto('/planner');
-    await expect(page.getByLabel('Class')).toHaveValue('warrior');
-    await expect(page.getByLabel('Race')).toHaveValue('orc');
+    await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
+    await expect(nativeSelect(page, 'Race')).toHaveValue('orc');
     await expect(page.getByTestId('tree-points-164')).toHaveText('24');
     await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   });

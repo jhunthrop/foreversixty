@@ -126,7 +126,6 @@
         choice={model.isDefault ? 'top' : 'custom'}
         presets={['top']}
         formatValue={formatAmount}
-        {coarse}
         onToggle={choose}
         onPreset={() => onChoose(null)}
         onCoarse={() => (legend.sheetOpen = true)}
@@ -168,7 +167,8 @@
     onToggle={(id) => legend.toggle(id)}
     onOnly={(id) => legend.only(id, model.series)}
     onHighlight={(id) => legend.highlight(id)}
-    onMore={() => (coarse ? (legend.sheetOpen = true) : document.getElementById('threat-players')?.click())}
+    onMore={() =>
+      coarse ? (legend.sheetOpen = true) : document.getElementById('threat-players-trigger')?.click()}
   />
   <TimeSeriesChart
     series={model.series}
