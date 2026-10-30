@@ -10,6 +10,9 @@
   import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
   import type { AuraTrack, Summary, Taunt } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
+  import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
+  import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
+  import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
 
   let {
     summary,
@@ -20,6 +23,7 @@
     players = new Set<string>(),
     allCasts = [],
     taunts = [],
+    syncKey = '',
   }: {
     summary: Summary;
     window: TimeWindow;
@@ -33,19 +37,19 @@
     allCasts?: Summary['casts'];
     /** Who taunted what, when: a mark on the taunter's lane and on the boss lane. */
     taunts?: Taunt[];
+    /** The page's chart cursor key (the fight): the lanes share the charts' crosshair. Empty over a night. */
+    syncKey?: string;
   } = $props();
+  const owner = 'timelines';
 
   const span = $derived(Math.max(current.endMs - current.startMs, 1));
   const pct = (ms: number): number => ((ms - current.startMs) / span) * 100;
 
-  /** Axis ticks every 10s, 30s or minute, whichever keeps them under about twelve. */
-  const axis = $derived.by(() => {
-    const step = span <= 120_000 ? 10_000 : span <= 360_000 ? 30_000 : 60_000;
-    const first = Math.ceil(current.startMs / step) * step;
-    const ticks: number[] = [];
-    for (let at = first; at <= current.endMs; at += step) ticks.push(at);
-    return ticks;
-  });
+  /** The time axis's ticks (lib/chart/time-axis: the step that keeps labels 64 px apart). */
+  let axisWidth = $state(600);
+  const axis = $derived(
+    timeTicks(current.startMs / 1000, current.endMs / 1000, axisWidth).map((seconds) => seconds * 1000),
+  );
 
   /** The cast last tapped or hovered, read out in the legend for screens with no hover. */
   let picked = $state<{ at: number; name: string } | null>(null);
@@ -56,7 +60,9 @@
    */
   /** A mouse leaving the lane takes its readout with it; a tap's readout stays for reading. */
   function clearPick(event: PointerEvent): void {
-    if (event.pointerType === 'mouse') picked = null;
+    if (event.pointerType !== 'mouse') return;
+    picked = null;
+    clearChartCursor(owner);
   }
 
   function pickNearest(
@@ -71,6 +77,7 @@
     if (lane === null) return;
     const bounds = lane.getBoundingClientRect();
     const at = current.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
+    if (syncKey !== '') setChartCursor({ syncKey, ms: Math.round(at / 1000) * 1000, owner });
     // The aura bands run from the lane's top, one per aura: the band under the pointer
     // names its aura and the segment's span; a gap in it says what else was up.
     const y = event.clientY - bounds.top;
@@ -287,12 +294,9 @@
       data-testid="timeline-axis"
     >
       <span></span>
-      <span
-        class="text-muted numeric relative block h-[14px] text-[10px] [&>span:nth-child(even)]:hidden md:[&>span:nth-child(even)]:inline"
-      >
+      <span class="text-muted numeric relative block h-[14px] text-[11px]" bind:clientWidth={axisWidth}>
         {#each axis as at (at)}
-          <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{formatDuration(at)}</span
-          >
+          <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{clockLabel(at)}</span>
         {/each}
       </span>
     </div>
@@ -325,6 +329,7 @@
                 title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
               ></span>
             {/each}
+            {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}
           </span>
         </li>
       {/each}
@@ -377,6 +382,7 @@
                 title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
               ></span>
             {/each}
+            {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}
           </span>
         </li>
       {/each}

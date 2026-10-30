@@ -128,6 +128,40 @@ for (const budget of BUDGETS) {
   }
 }
 
+// The report charts' lazy chunk (controls and charts spec 2026-10-30 §B3, §B11): uPlot 1.6.32
+// (about 22.5 KB gzipped) plus the plot, the tooltip and the brush that drive it. The spec's 30 KB
+// cap was raised to 32 KB by the coordinator's ruling of 2026-10-30, on a measured 31,697 bytes:
+// moving the tooltip and brush into the entry measured under 30 KB for the chunk, but Rollup then
+// split a 19 KB shared chunk out of report-island.js, so the page would have loaded no less.
+// The chunk's name is content-hashed, so it is found by uPlot's own class name.
+const CHART_CHUNK = { prefix: 'report-island-', marker: 'u-cursor-x', limitBytes: 32 * 1024 };
+{
+  const distFiles = await readdir(path.join(webRoot, 'dist'));
+  const chunks = [];
+  for (const name of distFiles) {
+    if (!name.startsWith(CHART_CHUNK.prefix) || !name.endsWith('.js')) continue;
+    const bytes = await readFile(path.join(webRoot, 'dist', name));
+    if (bytes.includes(CHART_CHUNK.marker)) chunks.push({ name, bytes });
+  }
+  if (chunks.length !== 1) {
+    console.error(
+      `Expected exactly one dist/${CHART_CHUNK.prefix}<hash>.js holding uPlot, found ${chunks.length}` +
+        (chunks.length ? `: ${chunks.map((chunk) => chunk.name).join(', ')}` : '.'),
+    );
+    failed = true;
+  } else {
+    const [{ name, bytes }] = chunks;
+    const gzipped = gzipSync(bytes, { level: 9 }).length;
+    console.log(`dist/${name} (the chart chunk): ${bytes.length} bytes raw, ${gzipped} bytes gzipped`);
+    if (gzipped > CHART_CHUNK.limitBytes) {
+      console.error(
+        `dist/${name} (the chart chunk) is ${gzipped} bytes gzipped, over the ${CHART_CHUNK.limitBytes} byte budget.`,
+      );
+      failed = true;
+    }
+  }
+}
+
 const astroChunksDir = path.join(webRoot, 'dist/_astro');
 const astroChunks = await readdir(astroChunksDir);
 for (const budget of PAGE_ISLAND_BUDGETS) {
