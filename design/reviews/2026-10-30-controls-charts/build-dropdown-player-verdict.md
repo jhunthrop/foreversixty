@@ -17,3 +17,22 @@ Verdict: HOLD
 - The Window select on the report chart still looks like a plain native control in the captures (not the new face), and so does "Enemy: Every enemy" under the threat table. The lane report says those two are the chart lane's, but a player will see two different dropdown styles on one page.
 - At 390 the capture shows only closed fields, so the phone picker was not reviewed.
 - The home search Region and Ruleset fields are fine (US, Normal), but the list was not captured open.
+
+## Re-check (2026-10-30, after fix round 1)
+
+Verdict: SHIP
+
+Fixed, seen in the captures:
+- Rankings labels are whole at 1440: "Every class", "Every spec", "All rulesets", "All regions", "Beta", "Both", "Damage". The Class list opens with crests and class colours.
+- Fight style list: it now opens upward, stays on screen and scrolls inside itself (the "Cleave, 3 targets" row is cut at the panel edge, which reads as a scrolling list).
+- Source list: every player row keeps the crest slot; Thalgrit and "Elyra Duskvale · Hardcore" show an empty neutral ring (agreed with the coordinator). Duskwalk was a misread; Skyborne is accepted as a real Forever race.
+- Chart Players control: Compare group with descriptions ("Median DPS of the 28 damage dealers"), Tanks/Healers groups with crests and class colours, field reads "Top 4, bottom 4 of 40", presets in the foot. Reads like a real raid-log picker.
+
+Remaining shoulds (not blockers):
+- Players list figures ("133", "67", "30") have no unit in the rows; the legend says "DPS". Add the unit or a "DPS" column head.
+- Fight style copy still says "no parse has measured the cost of that yet" (sim's copy); say "Melee leaves range 5 s every 20 s."
+- Source list has no Enemies group (a player will want the boss as a source).
+- Fight style list cuts a row mid-text with no scroll cue.
+- Planner race faction dots remain a should.
+
+Remaining blocker: none.
