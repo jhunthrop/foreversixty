@@ -7,6 +7,7 @@
   import { COOLDOWN_MODES, rowsFor, withCooldown, type CooldownMode } from '../../lib/sim/cooldowns';
   import { buffLabel, type BuffNames } from '../../lib/sim/buff-names';
   import type { SimSettings } from '../../lib/sim/settings';
+  import Select from '../ui/Select.svelte';
 
   let {
     settings,
@@ -47,21 +48,25 @@
         {#each rows as row (row.id)}
           {@const label = buffLabel(row.id, names)}
           <li class="flex min-h-11 flex-wrap items-center gap-2 text-[13px] md:min-h-9">
-            <label class="flex min-w-0 flex-1 items-center gap-2">
+            <div class="flex min-w-0 flex-1 items-center gap-2">
               <span class="min-w-0 flex-1 truncate">{label}</span>
-              <select
-                class={control}
+              <Select
+                id={`sim-cooldown-${row.id}-field`}
+                class="w-[150px]"
+                size="dense"
+                align="end"
                 {disabled}
-                aria-label={simCopy.cooldownModeFor(label)}
+                label={simCopy.cooldownModeFor(label)}
                 value={row.mode}
-                onchange={(event) => set(row.id, event.currentTarget.value as CooldownMode, row.atSec)}
-                data-testid={`sim-cooldown-${row.id}`}
-              >
-                {#each COOLDOWN_MODES as mode (mode)}
-                  <option value={mode}>{simCopy.cooldownModeLabel[mode]}</option>
-                {/each}
-              </select>
-            </label>
+                options={COOLDOWN_MODES.map((mode) => ({
+                  value: mode,
+                  label: simCopy.cooldownModeLabel[mode],
+                }))}
+                testid={`sim-cooldown-${row.id}`}
+                onchange={(event) =>
+                  set(row.id, (event.currentTarget as HTMLSelectElement).value as CooldownMode, row.atSec)}
+              />
+            </div>
             {#if row.mode === 'at-time'}
               <input
                 type="number"

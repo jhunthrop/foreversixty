@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { simCopy } from '../../src/lib/sim/copy';
+import { choose } from './support/select';
 
 // Same fixture as sim-settings.spec.ts and sim-sources.spec.ts: an addon export needs no
 // API stub, so this reads the site's own active build id rather than hardcoding one.
@@ -85,7 +86,7 @@ test('every settings control is disabled while the run control reads Stop, and r
 test('high precision runs 10,000 iterations instead of 3,000', async ({ page }) => {
   await loadFury(page);
 
-  await page.getByTestId('sim-precision').selectOption('high');
+  await choose(page.getByTestId('sim-precision'), 'high');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-progress')).toHaveText(/^10,000 iterations/, { timeout: 8000 });
 });
@@ -105,11 +106,11 @@ test('the precision select offers four choices and the details card states the r
   await expect(precision.locator('option')).toHaveCount(4);
   await expect(page.getByTestId('sim-target-error')).toBeHidden();
 
-  await precision.selectOption('target-error');
+  await choose(precision, 'target-error');
   await expect(page.getByTestId('sim-target-error')).toContainText('30,000');
 
   // Fast keeps the browser suite quick; the card is the same card at every precision.
-  await precision.selectOption('fast');
+  await choose(precision, 'fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId('sim-details-iterations')).toHaveText('500');
@@ -155,7 +156,7 @@ test('a finished run can be named, and the saved link opens in a new tab', async
   // the same reason `loadFury` above waits: the precision select is disabled while a run
   // is in flight.
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  await page.getByTestId('sim-precision').selectOption('fast');
+  await choose(page.getByTestId('sim-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
 

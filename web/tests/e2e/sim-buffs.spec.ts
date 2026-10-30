@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
 import { buffLabel } from '../../src/lib/sim/buff-names';
+import { choose, fieldBox } from './support/select';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -37,7 +38,7 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
 
   // The panel does not exist until Custom is chosen: a preset is a preset.
   await expect(page.getByTestId('sim-buff-panel')).toBeHidden();
-  await page.getByTestId('sim-preset').selectOption('custom');
+  await choose(page.getByTestId('sim-preset'), 'custom');
   await expect(page.getByTestId('sim-buff-panel')).toBeVisible();
 
   // Every group the design names has a section, and each one is closed on arrival.
@@ -56,14 +57,14 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   ]) {
     await expect(page.getByTestId(`sim-buff-group-${group}`)).toBeVisible();
   }
-  await expect(page.getByTestId('sim-buff-thorns')).toBeHidden();
+  await expect(fieldBox(page, 'sim-buff-thorns')).toBeHidden();
 
   const raid = page.getByTestId('sim-buff-group-raid-buffs');
   await raid.locator('summary').click();
-  await expect(page.getByTestId('sim-buff-thorns')).toBeVisible();
+  await expect(fieldBox(page, 'sim-buff-thorns')).toBeVisible();
   // Thorns is graded (the engine's TristateEffect), so its control is the three-way select,
   // not a checkbox: pick the talented form and the request carries `thorns:improved`.
-  await page.getByTestId('sim-buff-thorns').selectOption('improved');
+  await choose(page.getByTestId('sim-buff-thorns'), 'improved');
   await expect(page.getByTestId('sim-buff-thorns')).toHaveValue('improved');
 
   // Forever has no world buffs: no section for them, and none among the blessings either.
@@ -85,7 +86,7 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
 
   // The choice reaches the engine: run at the fastest precision and read back every request
   // string the run actually posted to a worker.
-  await page.getByTestId('sim-precision').selectOption('fast');
+  await choose(page.getByTestId('sim-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
 

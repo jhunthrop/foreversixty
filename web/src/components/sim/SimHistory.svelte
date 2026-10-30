@@ -32,22 +32,24 @@
 </script>
 
 {#snippet filter()}
-  <label class="flex items-center gap-2 text-[13px]">
-    <span class="quiet-label">{simCopy.historyFilter}</span>
+  <div class="flex items-center gap-2">
+    <label class="quiet-label" for="sim-history-filter">{simCopy.historyFilter}</label>
     <Select
       id="sim-history-filter"
-      compact
+      class="w-[150px]"
+      align="end"
+      size="compact"
       value={kind}
       options={KIND_FILTERS.map((option) => ({ value: option, label: simCopy.kindLabel[option] }))}
       onchange={(event) => onkind((event.currentTarget as HTMLSelectElement).value as KindFilter)}
       testid="sim-history-filter"
     />
-  </label>
+  </div>
 {/snippet}
 
 <Card
   glyph="chart"
-  compact
+  size="compact"
   title={simCopy.yourSims}
   aside={filter}
   testid="sim-history"

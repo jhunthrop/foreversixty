@@ -31,6 +31,7 @@
   import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
   import { specLabel } from '../../lib/sim/spec-label';
+  import Select from '../ui/Select.svelte';
 
   /** "high-order-skyborne" -> "High Order Skyborne". */
   function raceWords(slug: string): string {
@@ -186,20 +187,21 @@
       <!-- One question, asked once. The run control stays disabled until it is answered,
            because sim/request.ParseRace refuses an empty race at the boundary and a failed
            run is a worse answer than a question. -->
-      <label class="flex items-center gap-2">
-        <span class="text-strong text-[13px]" data-testid="sim-race-prompt">{simCopy.pickRace}</span>
-        <select
-          class="border-line-warm rounded-control bg-raised text-text min-h-11 border px-3 text-[14px] font-semibold md:min-h-9"
-          value=""
-          onchange={(event) => onrace(event.currentTarget.value)}
-          data-testid="sim-race-picker"
+      <div class="flex items-center gap-2">
+        <label class="text-strong text-[13px]" for="sim-race-field" data-testid="sim-race-prompt"
+          >{simCopy.pickRace}</label
         >
-          <option value="" disabled>{simCopy.pickRacePlaceholder}</option>
-          {#each races as race (race.slug)}
-            <option value={race.slug}>{race.name}</option>
-          {/each}
-        </select>
-      </label>
+        <Select
+          id="sim-race-field"
+          class="w-[180px]"
+          size="compact"
+          value=""
+          placeholder={simCopy.pickRacePlaceholder}
+          options={races.map((race) => ({ value: race.slug, label: race.name }))}
+          testid="sim-race-picker"
+          onchange={(event) => onrace((event.currentTarget as HTMLSelectElement).value)}
+        />
+      </div>
     {/if}
     <span class="pill pill-site" data-testid="sim-source-pill"
       >{sourcePill(character.source, new Date(), character.name)}</span

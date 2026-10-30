@@ -66,6 +66,9 @@ for (const route of ROUTES) {
         const box = element.getBoundingClientRect();
         if (box.width === 0 && box.height === 0) continue;
         if (getComputedStyle(element).clipPath !== 'none') continue;
+        // A field label above its control (the shared Select's quiet-label) names it; the
+        // field under it is the hit target, measured as itself.
+        if (element instanceof HTMLLabelElement && element.htmlFor !== '') continue;
         const hitTarget =
           element instanceof HTMLInputElement &&
           element.type === 'checkbox' &&
@@ -154,14 +157,13 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
       expect(box.height, `${id} label height`).toBeGreaterThanOrEqual(44);
     }
 
-    // BulkRunBar's precision label: `min-h-11` is explicit now (Task 5) instead of relying
-    // on the select child's own height to stretch a plain flex row tall enough by accident.
+    // BulkRunBar's precision field: the shared Select's box is the hit target.
     const precisionBox = await page.getByTestId('sim-precision').evaluate((element) => {
-      const rect = (element.closest('label') as HTMLElement).getBoundingClientRect();
+      const rect = (element.closest('.sel') as HTMLElement).getBoundingClientRect();
       return { width: rect.width, height: rect.height };
     });
-    expect(precisionBox.width, 'precision label width').toBeGreaterThanOrEqual(44);
-    expect(precisionBox.height, 'precision label height').toBeGreaterThanOrEqual(44);
+    expect(precisionBox.width, 'precision field width').toBeGreaterThanOrEqual(44);
+    expect(precisionBox.height, 'precision field height').toBeGreaterThanOrEqual(44);
   });
 
   test('/sim/gear: after a run, the results carry no hover-only title', async ({ page }) => {

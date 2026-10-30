@@ -23,6 +23,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import type { SimSettings } from '../../lib/sim/settings';
   import CooldownRows from './CooldownRows.svelte';
+  import Select from '../ui/Select.svelte';
 
   let {
     settings,
@@ -78,21 +79,22 @@
                 <img src={icon} alt="" width="20" height="20" class="rounded-[2px]" loading="lazy" />
               {/if}
               {#if row.graded}
-                <label class="flex min-w-0 flex-1 items-center gap-2">
+                <div class="flex min-w-0 flex-1 items-center gap-2">
                   <span class="truncate">{label}</span>
-                  <select
-                    class="border-line-warm rounded-control bg-raised text-text ml-auto min-h-11 border px-2 text-[12px] md:min-h-9"
+                  <Select
+                    id={`sim-buff-${row.id}-field`}
+                    class="ml-auto w-[130px]"
+                    size="dense"
+                    align="end"
                     {disabled}
-                    aria-label={simCopy.gradeFor(label)}
+                    label={simCopy.gradeFor(label)}
                     value={grade}
-                    onchange={(event) => set(row, event.currentTarget.value as BuffGrade)}
-                    data-testid={`sim-buff-${row.id}`}
-                  >
-                    {#each GRADES as option (option)}
-                      <option value={option}>{simCopy.gradeLabel[option]}</option>
-                    {/each}
-                  </select>
-                </label>
+                    options={GRADES.map((option) => ({ value: option, label: simCopy.gradeLabel[option] }))}
+                    testid={`sim-buff-${row.id}`}
+                    onchange={(event) =>
+                      set(row, (event.currentTarget as HTMLSelectElement).value as BuffGrade)}
+                  />
+                </div>
               {:else}
                 <label class="flex min-w-0 flex-1 items-center gap-2">
                   <input

@@ -7,6 +7,7 @@ import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { bulkCopy } from '../../src/lib/sim/copy';
+import { choose } from './support/select';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -114,7 +115,7 @@ test('the item search adds a candidate and says how it was filtered', async ({ p
 
 test('the source filter narrows the search to one boss’s loot', async ({ page }) => {
   await loadGear(page);
-  await page.getByTestId('sim-search-source').selectOption('world:azuregos');
+  await choose(page.getByTestId('sim-search-source'), 'world:azuregos');
   await expect(page.getByTestId('sim-search-result-19325')).toBeVisible();
   await expect(page.getByTestId('sim-search-result-16963')).toHaveCount(0);
 });
@@ -268,7 +269,7 @@ test('a run reports its stage line and ends with a ranked table', async ({ page 
 test('precision is three choices and normal runs two stages', async ({ page }) => {
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
-  await page.getByTestId('sim-precision').selectOption('normal');
+  await choose(page.getByTestId('sim-precision'), 'normal');
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-stage-progress')).toHaveText(/stage \d of 2 /);
 });
@@ -288,7 +289,7 @@ test('the results show the equipped baseline, a ranked table and a per-slot summ
   // the default precision would leave exactly one finalist, not a ranked table of more
   // than one row. Normal's 2-stage ladder halves once -- 3 -> 2 -- which is what this test
   // is actually asserting on.
-  await page.getByTestId('sim-precision').selectOption('normal');
+  await choose(page.getByTestId('sim-precision'), 'normal');
   await page.getByTestId('sim-run-bulk').click();
 
   const equipped = page.getByTestId('sim-equipped-line');

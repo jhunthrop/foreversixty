@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+import { fieldBox } from './support/select';
 
 test.describe.configure({ mode: 'serial' });
 // No test.use({ viewport }): the phone audit runs under --project=mobile (Pixel 7, 412px),
@@ -241,7 +242,7 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
   // The secondary encounter controls only exist while the disclosure is open; the audit
   // has to measure them, so it opens it the way a player does.
   await page.getByTestId('sim-settings-more').locator('summary').click();
-  await expect(page.getByTestId('sim-variation')).toBeVisible();
+  await expect(fieldBox(page, 'sim-variation')).toBeVisible();
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
