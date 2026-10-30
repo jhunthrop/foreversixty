@@ -672,7 +672,7 @@ def main(argv: list[str] | None = None) -> int:
         if github_output:
             with open(github_output, "a", encoding="utf-8") as fh:
                 for key, value in out.items():
-                    if key == "unmatched_newer":
+                    if isinstance(value, list):
                         value = json.dumps(value)
                     fh.write(f"{key}={str(value).lower() if isinstance(value, bool) else value}\n")
     elif args.command == "recorder":

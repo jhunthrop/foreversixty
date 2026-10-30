@@ -164,3 +164,96 @@ def test_newest_blizzard_takes_the_highest_version_across_products():
 
 def test_the_committed_config_names_blizzard_products():
     assert "wow_classic_beta" in load_config().blizzard_products
+
+
+# Launch-day shapes (rehearsal 2026-10-30). Forever goes live on 4 November 2026 and the
+# live client may arrive under a key the config has never seen and with a new number.
+
+#: wago.tools on 2026-10-30 still lists wow_classic_beta's Cataclysm and Mists betas
+#: (3.4/4.4/5.5, 2022-2025): numerically newer than any 1.60 build, so before the
+#: ingest-time rule every nightly warned about ~130 of them and buried a real rename.
+HISTORIC_BETAS = {
+    "wow_classic_beta": [
+        {"version": "5.5.0.62071", "created_at": "2025-07-18 01:19:04"},
+        {"version": "4.4.0.54737", "created_at": "2024-05-17 03:34:04"},
+        {"version": "1.60.1.70532", "created_at": "2026-10-22 19:09:04"},
+    ],
+}
+
+
+def test_unclaimed_builds_ingested_before_the_active_one_are_not_warned_about():
+    result = check({**BUILDS, **HISTORIC_BETAS}, "1.60.1.70532", CONFIG)
+    assert result.unmatched_newer == ()
+
+
+def test_a_launch_renumbering_to_2_0_under_a_new_key_is_warned_about_not_activated():
+    launch = {
+        **BUILDS,
+        **HISTORIC_BETAS,
+        "wow_forever": [{"version": "2.0.0.71000", "created_at": "2026-11-04 15:00:00"}],
+    }
+    result = check(launch, "1.60.1.70532", CONFIG)
+    assert [(b.product, b.version) for b in result.unmatched_newer] == [
+        ("wow_forever", "2.0.0.71000")
+    ]
+    assert not result.newer
+
+
+def test_a_launch_renumbering_under_a_listed_key_is_activated_with_its_interface():
+    launch = {**BUILDS, "wowf": [{"version": "2.0.0.71000", "created_at": "2026-11-04 15:00:00"}]}
+    out = report(check(launch, "1.60.1.70374", CONFIG))
+    assert out["newer"] is True
+    assert (out["newest_build"], out["newest_interface"]) == ("2.0.0.71000", 20000)
+
+
+def test_a_minor_bump_under_a_renamed_key_is_activated():
+    launch = {
+        **BUILDS,
+        "wow_forever": [{"version": "1.60.2.71000", "created_at": "2026-11-04 15:00:00"}],
+    }
+    result = check(launch, "1.60.1.70374", CONFIG)
+    assert result.newer and result.newest == Build(
+        "wow_forever", "1.60.2.71000", "2026-11-04 15:00:00"
+    )
+    assert report(result)["newest_interface"] == 16002
+
+
+def test_a_forever_version_under_an_ignored_key_is_warned_about_never_silently_dropped():
+    """Should the live client land on a key the config ignores (Era's own, say), a 1.60+
+    build there is not Forever by rule, but it is not Era either: say so."""
+    moved = {
+        **BUILDS,
+        "wow_classic_era": [
+            {"version": "1.15.9.70003", "created_at": "2026-09-29 14:06:05"},
+            {"version": "1.60.2.71000", "created_at": "2026-11-04 15:00:00"},
+        ],
+    }
+    result = check(moved, "1.60.1.70374", CONFIG)
+    assert not result.newer
+    assert [(b.product, b.version) for b in result.unmatched_newer] == [
+        ("wow_classic_era", "1.60.2.71000")
+    ]
+
+
+def test_a_forever_build_ingested_after_the_active_one_with_a_lower_number_is_reported():
+    """A renumbering DOWN (live as 1.16.0, say) under a listed key is never `newer`; it must
+    not pass as "nothing to do"."""
+    down = {
+        **BUILDS,
+        "wowf": [
+            {"version": "1.60.1.70245", "created_at": "2026-10-13 21:18:10"},
+            {"version": "1.16.0.71000", "created_at": "2026-11-04 15:00:00"},
+        ],
+    }
+    result = check(down, "1.60.1.70374", CONFIG)
+    assert not result.newer
+    assert [(b.product, b.version) for b in result.out_of_order] == [("wowf", "1.16.0.71000")]
+    assert report(result)["out_of_order"] == [
+        {"product": "wowf", "version": "1.16.0.71000", "created_at": "2026-11-04 15:00:00"}
+    ]
+    # The same build re-listed under a second key later is not out of order.
+    relisted = {
+        **BUILDS,
+        "wowf": [{"version": "1.60.1.70374", "created_at": "2026-10-20 00:00:00"}],
+    }
+    assert check(relisted, "1.60.1.70374", CONFIG).out_of_order == ()

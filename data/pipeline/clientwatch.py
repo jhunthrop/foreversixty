@@ -14,7 +14,12 @@ The newest matching build, by version then by wago's ingest time, is the candida
 `newer_than` compares it with the active build; `interface_number` is the TOC
 `## Interface:` value a client version implies. A build newer than the active one that
 matches neither rule is returned separately so the workflow can warn about it instead of
-silently missing a renumbering.
+silently missing a renumbering; so is a 1.60+ build under an ignored product (the live
+client landing on a key the config calls not-Forever). Both lists keep only builds wago
+ingested after the active build, so the old 3.4-5.5 betas still listed under
+`wow_classic_beta` are not reported every night. A Forever build ingested after the
+active one whose number is not above it (a renumbering down) is reported as
+`out_of_order`, because `newer` alone would read it as "nothing to do".
 
 Pure functions over the builds JSON, so the tests never touch the network; the CLI in
 `__main__.py` fetches `/api/builds` and reads `web/src/data/active-build.json`.
@@ -24,6 +29,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -75,6 +81,8 @@ class Check:
     #: after Blizzard ships it, and the fetch needs those exports, so this is the early
     #: warning, not the trigger.
     blizzard: Build | None = None
+    #: Forever builds wago ingested after the active build whose version is not above it.
+    out_of_order: tuple[Build, ...] = ()
 
     @property
     def newer(self) -> bool:
@@ -131,16 +139,35 @@ def read_active_build(path: Path = ACTIVE_BUILD_PATH) -> str:
     return build
 
 
-def is_forever(build: Build, config: ClientConfig) -> bool:
-    if build.product in config.products:
-        return True
-    if build.product in config.ignore_products:
-        return False
+def in_forever_family(build: Build, config: ClientConfig) -> bool:
+    """A 1.x version at or above `min_version`, whatever the product."""
     try:
         version = version_tuple(build.version)
     except ClientWatchError:
         return False
     return version[0] == 1 and version >= config.min_version
+
+
+def is_forever(build: Build, config: ClientConfig) -> bool:
+    if build.product in config.products:
+        return True
+    if build.product in config.ignore_products:
+        return False
+    return in_forever_family(build, config)
+
+
+def first_ingested(builds: list[Build], version: str) -> str:
+    """When wago first listed `version` under any product ("" when it does not list it)."""
+    stamps = [b.created_at for b in builds if b.version == version and b.created_at]
+    return min(stamps) if stamps else ""
+
+
+def is_unclaimed(build: Build, config: ClientConfig) -> bool:
+    """Not Forever by rule, yet worth a warning: an unknown product, or an ignored one
+    carrying a Forever-family version."""
+    if is_forever(build, config):
+        return False
+    return build.product not in config.ignore_products or in_forever_family(build, config)
 
 
 def all_builds(builds_json: dict[str, Any]) -> list[Build]:
@@ -209,20 +236,30 @@ def check(
     builds = all_builds(builds_json)
     newest = newest_forever(builds, config)
     blizzard = newest_blizzard(blizzard_versions) if blizzard_versions else None
-    unmatched = tuple(
-        sorted(
-            (
-                b
-                for b in builds
-                if not is_forever(b, config)
-                and b.product not in config.ignore_products
-                and newer_than(b.version, active)
-            ),
-            key=lambda b: b.key,
-            reverse=True,
-        )
+    since = first_ingested(builds, active)
+    later = [b for b in builds if not since or b.created_at > since]
+    unmatched = _newest_first(
+        b for b in later if is_unclaimed(b, config) and newer_than(b.version, active)
     )
-    return Check(active=active, newest=newest, unmatched_newer=unmatched, blizzard=blizzard)
+    out_of_order = _newest_first(
+        b
+        for b in later
+        if since
+        and is_forever(b, config)
+        and b.version != active
+        and not newer_than(b.version, active)
+    )
+    return Check(
+        active=active,
+        newest=newest,
+        unmatched_newer=unmatched,
+        blizzard=blizzard,
+        out_of_order=out_of_order,
+    )
+
+
+def _newest_first(builds: Iterable[Build]) -> tuple[Build, ...]:
+    return tuple(sorted(builds, key=lambda b: b.key, reverse=True))
 
 
 def fetch_builds(client: httpx.Client | None = None) -> dict[str, Any]:
@@ -253,8 +290,10 @@ def report(result: Check) -> dict[str, Any]:
         "blizzard_build": result.blizzard.version if result.blizzard else "",
         "blizzard_product": result.blizzard.product if result.blizzard else "",
         "wago_behind": result.wago_behind,
-        "unmatched_newer": [
-            {"product": b.product, "version": b.version, "created_at": b.created_at}
-            for b in result.unmatched_newer
-        ],
+        "unmatched_newer": [_row(b) for b in result.unmatched_newer],
+        "out_of_order": [_row(b) for b in result.out_of_order],
     }
+
+
+def _row(build: Build) -> dict[str, str]:
+    return {"product": build.product, "version": build.version, "created_at": build.created_at}
