@@ -177,3 +177,62 @@ If the activate job hits `timeout-minutes: 60` mid-move, `steps.move.outcome` is
 ## Verdict
 
 **FIX FIRST.** H1 leaves the main half-ship this lane exists to prevent: the addon tagged while the site's real build is red. H2 makes tonight's nightly the first-ever CI run of an unmeasured step that can discard the picks. Both fixes are small, and both should land before the eve check on Nov 3.
+
+---
+
+# Re-review (fix round 7840e0cdc..21a57952f)
+
+Read `git diff 11ff8a34d..HEAD` for activation-gate.sh, activate-build.sh, client.yml, bis.yml and ranking-wait.sh. Ran `tools/tests/test_activation.sh` (ok 91) and `tools/engine/tests/test_scripts.sh` (ok 59). Both exit 0.
+
+## Fixed
+
+- **H1.** The gate now runs check, lint, format:check, the real-data `CF_PAGES=1 npm run build` (FOREVER_DATA and PUBLIC_SIM_ENGINE unset) and then vitest.
+  - The order is right: check's presync publishes the real data, the build reads it, and the test's presync swaps in the fixture afterwards.
+  - Every script runs after a failure, and every red is listed.
+  - A wrong exit status fails closed: an empty `web-red` with a non-zero leg adds a "(suite)" line.
+  - `web/public/data` is untracked, so the fixture swap leaves nothing behind for `git add`.
+  - The end-to-end test shows a prerender failure leaves nothing committed, pushed or tagged.
+- **H2 / L3.** The re-measure now needs the `carried-from` marker, and nothing on main has one, so tonight does not re-measure.
+  - The step has `continue-on-error` and a 90-minute timeout, inside the 300-minute job.
+  - The figures and the marker's removal are staged only when `measured=true`.
+  - A partial file is restored by `git checkout` before addon-data renders.
+  - The marker survives a failure, so the next night retries.
+  - `dps-per-point.*` is out of the input hash.
+  - The marker is inside `$NEW_DIR`, which is in `MOVED_PATHS`, so the move commits it.
+  - L3 is gone: staging is now `git add -A --` on existing paths only.
+- **M1.** `ranking-wait.sh` returns rank, wait or stalled. Stalled (an unreadable stamp, or a move 20 hours old or more) fails the run at its last step, `if: always()`, after the crawl commit and the deploy dispatches.
+  - The earlier steps are gated on `skip`, which stays true while `follows=false`.
+  - The 20-hour threshold sits correctly between "the first night" and "the second night" of a 24-hour cron.
+- **M2.** `finish_move` is rerunnable, and `resume_move` finishes only a move whose own commit set the TOC version when the tag is missing or was never released. The checkout has `fetch-depth: 0`, so the `git log -- path` checks work. A nightly resumes only when `addon-v<version>` is absent on origin. After a normal tag the nightly stays quiet. The end-to-end test covers refuse, resume and "nothing to do".
+- **M3.** The hit-line test requires a talent name unless the build is in `HIT_LINE_FALLBACK_BUILDS` (empty). The move to 70707 will stop at the gate on this test until the mage lane acts; the report flags this and the runbook covers it.
+- **M4.** `tools.yml` runs both suites, shellcheck and actionlint.
+- **M5.** bis.yml dispatches `api.yml` as well.
+- **L1, L2, L6.** The trap reports every non-zero status. The breadcrumb and `always()` report step cover a timeout. The activate step has a 50-minute timeout inside the 60-minute job. The grep and the status listing can no longer stop the move.
+
+## New findings
+
+No HIGH.
+
+### MEDIUM
+
+- **`--no-commit` (the client.yml `inspect` input) is not honoured on the resume path.** `resume_move` runs before the mode is consulted. An `inspect=true` dispatch with `build=<active>` on an unreleased tag therefore tags, pushes and dispatches for real. This is unlikely, since the person asking to inspect usually names a new build. Fix: in `resume_move`, if `MODE` is inspect, print what would be done and exit 0.
+- **bis.yml, `IFS=$'\t' read -r verdict line < <(tools/engine/ranking-wait.sh ...)`.** The exit status of a process substitution is ignored. If `ranking-wait.sh` exits 2, `verdict` is empty, `follows=false` and the run is green and silent. The inputs are produced by the workflow itself, so this is a low likelihood. Fix: capture the output with `out=$(...)` first, so `set -e` fires, then split it.
+- **The `gh api` lookup of when active-build.json last changed falls back to "now".** If the call keeps failing (token or API), `moved=now` always yields `wait`, and the stall never fires. It does emit a `::warning`. Acceptable, but the stall guarantee is only as good as that call.
+
+### LOW
+
+- **Gate timing is unmeasured on CI.** The web leg is now sequential (check, lint, format, build, vitest), about 8 to 10 minutes on CI by the estimates in the review. This is well inside the 50-minute step timeout.
+- **A nightly with a missing tag runs the whole activate job's setup** (Postgres, pin-engine, npm ci) just to print "nothing to do" when the tag is missing for a reason unrelated to a move. This is cosmetic.
+
+## Half-ship and silent-failure check
+
+- A move that stops before the push leaves nothing committed, with a printed undo line.
+- A move that stops after the push is red with its hand command, and a rerun finishes it.
+- A timeout or cancel gets a report through the breadcrumb.
+- A stalled ranking is red, not green.
+- A failed re-measure keeps the carry and lets the picks land.
+- A gate-green, real-build-red sequence is no longer possible.
+
+## Verdict
+
+**MERGE.** No HIGH findings. The three MEDIUMs above are small and can follow.
