@@ -2,6 +2,7 @@
 // web/src/layouts/Content.astro
 import Base from './Base.astro';
 import SourcesList from '../components/SourcesList.astro';
+import PageHead from '../components/ui/PageHead.astro';
 import UpdatedStamp from '../components/UpdatedStamp.astro';
 import type { Source } from '../lib/sources';
 import { articleLd, breadcrumbLd } from '../lib/seo';
@@ -42,6 +43,8 @@ interface Props {
   hideConfidenceNote?: boolean;
   /** False for the legal pages: they state no fact about the world, so no Sources footer. */
   showSources?: boolean;
+  /** The page head's eyebrow (site alignment spec 2026-10-29 §5.15): ABOUT, or LEGAL on the legal pages. */
+  eyebrow?: string;
 }
 const {
   title,
@@ -56,6 +59,7 @@ const {
   wideProse = false,
   hideConfidenceNote = false,
   showSources = true,
+  eyebrow = 'About',
 } = Astro.props;
 // A page that fills the `aside` slot (the spec guides' table of contents) gets a wider main
 // with the article column and a sticky rail beside it at lg; below lg the rail is simply
@@ -76,29 +80,38 @@ const confidenceCopy: Record<Confidence, string> = {
     id="main"
     tabindex="-1"
     class:list={[
-      'w-full px-[18px] py-10 md:px-0',
-      hasAside
-        ? 'measure-aside grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12'
-        : wide
-          ? 'flex flex-col gap-6'
-          : 'measure-reading flex flex-col gap-6',
+      'w-full',
+      hideHeader ? 'px-[18px] py-10 md:px-0' : 'flex flex-col gap-8 px-[18px] pt-4 pb-10 md:px-0 md:pt-7',
+      hideHeader &&
+        (hasAside
+          ? 'measure-aside grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12'
+          : wide
+            ? 'flex flex-col gap-6'
+            : 'measure-reading flex flex-col gap-6'),
     ]}
   >
-    <div class:list={[hasAside ? 'flex min-w-0 flex-col gap-6 lg:max-w-(--measure-reading)' : 'contents']}>
-      {!hideHeader && (
-        <header class="border-line flex flex-col gap-2 border-b pb-5">
-          <h1 class="heading-page">{title}</h1>
-          <div class="text-muted flex flex-wrap items-center gap-3 text-[13px]">
-            <UpdatedStamp date={updated} />
-            {confidence !== undefined && confidencePlacement === 'header' && (
-              <>
-                <span>·</span>
-                <span>{confidenceCopy[confidence]}</span>
-              </>
-            )}
-          </div>
-        </header>
-      )}
+    {!hideHeader && (
+      <PageHead eyebrow={eyebrow.toUpperCase()} title={title}>
+        <Fragment slot="meta">
+          <UpdatedStamp date={updated} />
+          {confidence !== undefined && confidencePlacement === 'header' && (
+            <>
+              <span> · </span>
+              <span>{confidenceCopy[confidence]}</span>
+            </>
+          )}
+        </Fragment>
+      </PageHead>
+    )}
+    <div
+      class:list={[
+        hasAside
+          ? 'flex min-w-0 flex-col gap-6 lg:max-w-(--measure-reading)'
+          : hideHeader
+            ? 'contents'
+            : 'flex max-w-(--measure-reading) flex-col gap-6',
+      ]}
+    >
       <div class:list={['prose-forever text-[16px] leading-[1.6]', wideProse && 'prose-wide']}>
         <slot />
       </div>

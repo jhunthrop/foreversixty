@@ -2,7 +2,6 @@
 title: Roadmap
 description: 'Every dated milestone announced for World of Warcraft: Forever, from the Sept 17 beta through Summer 2027.'
 updated: 2026-09-14
-confidence: confirmed
 sources:
   - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap

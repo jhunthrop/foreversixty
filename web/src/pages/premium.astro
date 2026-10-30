@@ -7,6 +7,9 @@
 import Base from '../layouts/Base.astro';
 import GuildRules from '../components/premium/GuildRules.astro';
 import IntervalControl from '../components/premium/IntervalControl.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import Card from '../components/ui/Card.astro';
+import Disclosure from '../components/ui/Disclosure.astro';
 import PlanCard from '../components/premium/PlanCard.astro';
 import PremiumCoachSample from '../components/premium/PremiumCoachSample.astro';
 import { checkoutCopy } from '../lib/billing/copy';
@@ -23,32 +26,26 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     document.documentElement.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
-    <div class="band full-bleed">
-      <header class="hero page-column">
-        <p class="label eyebrow">
-          <i class="eyebrow-rule" aria-hidden="true"></i>
-          {copy.band.eyebrow}
-        </p>
-        <h1 class="h1 heading-page">{copy.band.heading}</h1>
-        <p class="lede">{copy.band.lede}</p>
-        <p class="founder-row" data-fd="open" data-testid="founder-row">
-          <span class="pill pill-site">{copy.founder.label}</span>
-          <span>{copy.founder.open}</span>
-        </p>
-        <p class="text-text hidden min-h-11 items-center gap-[6px] text-[13px] md:flex" data-band-guild-row>
-          <span>{copy.band.guildLead}</span>
-          <a
-            href="#guild-leaders"
-            class="inline-flex min-h-11 items-center hover:underline"
-            data-testid="band-guild-link"
-          >
-            {copy.band.guildLink}
-          </a>
-        </p>
-        <div class="interval-slot">
-          <IntervalControl />
+    <div class="px-[var(--page-inset)] pt-3">
+      <PageHead eyebrow={copy.band.eyebrow} title={copy.band.heading} job={copy.band.lede}>
+        <IntervalControl slot="aside" />
+        <div slot="below" class="flex flex-col gap-1">
+          <p class="founder-row" data-fd="open" data-testid="founder-row">
+            <span class="pill pill-site">{copy.founder.label}</span>
+            <span>{copy.founder.open}</span>
+          </p>
+          <p class="text-text hidden min-h-11 items-center gap-[6px] text-[13px] md:flex" data-band-guild-row>
+            <span>{copy.band.guildLead}</span>
+            <a
+              href="#guild-leaders"
+              class="inline-flex min-h-11 items-center hover:underline"
+              data-testid="band-guild-link"
+            >
+              {copy.band.guildLink}
+            </a>
+          </p>
         </div>
-      </header>
+      </PageHead>
     </div>
 
     <div class="body">
@@ -96,15 +93,13 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
 
       <p class="foot">{copy.foot}</p>
 
-      <section class="faq">
-        <h2 class="heading-section">FAQ</h2>
+      <Card glyph="book" title="Questions" body="rows" id="faq" testid="plans-faq">
         {copy.faq.map((entry) => (
-          <details>
-            <summary>{entry.question}</summary>
-            <p>{entry.answer}</p>
-          </details>
+          <Disclosure title={entry.question} row>
+            <p class="text-muted m-0 max-w-[80ch] px-5 pb-4 text-[14px] leading-[22px]">{entry.answer}</p>
+          </Disclosure>
         ))}
-      </section>
+      </Card>
     </div>
   </main>
 
@@ -136,39 +131,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     display: flex;
     flex-direction: column;
     width: 100%;
-  }
-  .band {
-    background: var(--color-raised);
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .hero {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 18px 12px;
-  }
-  .eyebrow {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    color: var(--color-gold);
-  }
-  .eyebrow-rule {
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--color-gold);
-  }
-  .h1 {
-    margin: 0;
-  }
-  .lede {
-    margin: 0;
-    max-width: 720px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--color-text);
   }
   .founder-row {
     display: flex;
@@ -206,70 +168,10 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     font-size: 13px;
     color: var(--color-muted);
   }
-  .faq {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .faq h2 {
-    margin: 0 0 8px;
-  }
-  details {
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  summary {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-  }
-  details p {
-    margin: 0 0 12px;
-    max-width: 80ch;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--color-muted);
-  }
-
   @media (min-width: 768px) {
-    .eyebrow {
-      display: flex;
-    }
-    .lede {
-      font-size: 15px;
-      line-height: 1.45;
-    }
-    /* The band's inner column takes the site gutter, so its edge is the cards' edge (UX 10).
-       12 px on top, not 28: the heading face's 44 px h1 (polish spec 2026-10-28 §4.4) is 17.6 px
-       taller than the 22 px Cinzel line it replaced, and Free's and Premium's buttons must still
-       end above y 520 and the band link above y 300 at 1280 x 800 (spec §3.1, unchanged); the sample
-       column leaves the band as it was. */
-    .hero {
-      gap: 8px;
-      padding: 12px var(--page-gutter) 12px;
-    }
     .body {
       gap: 32px;
       padding: 12px 0 64px;
-    }
-  }
-  @media (min-width: 1024px) {
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      column-gap: 24px;
-    }
-    .hero > :not(.interval-slot) {
-      grid-column: 1;
-    }
-    /* The control spans the eyebrow and h1 rows, so it never stretches the h1 row: the lede
-       sits 8 px under the h1 (UX 11). */
-    .interval-slot {
-      grid-column: 2;
-      grid-row: 1 / span 2;
-      align-self: end;
     }
   }
 </style>

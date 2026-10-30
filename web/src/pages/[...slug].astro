@@ -8,6 +8,7 @@ export async function getStaticPaths() {
   const pages = await getCollection('pages');
   return pages.map((p) => ({ params: { slug: p.id }, props: { page: p } }));
 }
+const LEGAL_SLUGS = new Set(['terms', 'privacy', 'refunds']);
 const { page } = Astro.props;
 const html = page.rendered?.html;
 if (html === undefined) throw new Error(`page ${page.id} has no rendered body`);
@@ -21,6 +22,7 @@ if (html === undefined) throw new Error(`page ${page.id} has no rendered body`);
   confidence={page.data.confidence}
   sources={page.data.sources}
   showSources={page.data.confidence !== undefined}
+  eyebrow={LEGAL_SLUGS.has(page.id) ? 'Legal' : 'About'}
 >
   <LegalBody slug={page.id} html={html} section={coachPrivacySection()} />
 </Content>

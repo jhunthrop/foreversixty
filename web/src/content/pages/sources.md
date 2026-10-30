@@ -2,7 +2,6 @@
 title: How sources are classified
 description: How this site labels where a fact comes from, what each pill means, and what "single-source" means.
 updated: 2026-09-14
-confidence: confirmed
 sources:
   - label: This site
     url: https://foreversixty.gg/sources

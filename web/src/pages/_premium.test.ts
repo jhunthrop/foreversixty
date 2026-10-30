@@ -113,7 +113,9 @@ describe('the plans page region B', () => {
 
   it('holds How the guild plans work', async () => {
     const s = guildSection(await renderPremium());
-    expect(s.querySelector('#guild-rules-heading')?.textContent?.trim()).toBe(plansPageCopy.howItWorks);
+    expect(s.querySelector('[data-testid=guild-rules] h3')?.textContent?.trim()).toBe(
+      plansPageCopy.howItWorks,
+    );
     expect(s.querySelectorAll('[data-rule-term]')).toHaveLength(plansPageCopy.rules.length);
   });
 

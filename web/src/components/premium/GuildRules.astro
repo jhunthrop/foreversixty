@@ -1,66 +1,29 @@
 ---
 // web/src/components/premium/GuildRules.astro
 // The rules an officer reads before putting the plan on a card. Never a disclosure. It sits
-// inside the plans page's #guild-leaders section, so its heading is an h3 at the section-title
-// size (spec 2026-10-27-launch-pricing §B3.3).
+// inside the plans page's #guild-leaders section, so it is a Card with an h3 head (site
+// alignment spec 2026-10-29 §5.13): each rule is a full-bleed row, the term (15 px 600) and the
+// answer (14/22 --text), no chevron.
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import Card from '../ui/Card.astro';
 ---
 
-<section class="rules" aria-labelledby="guild-rules-heading">
-  <h3 id="guild-rules-heading" class="section-title">
-    {plansPageCopy.howItWorks}
-  </h3>
-  <dl>
+<Card
+  glyph="book"
+  title={plansPageCopy.howItWorks}
+  headingLevel={3}
+  body="none"
+  id="guild-rules"
+  testid="guild-rules"
+>
+  <dl class="m-0">
     {plansPageCopy.rules.map((rule) => (
-      <div class="row">
-        <dt class="term" data-rule-term>
+      <div class="border-line-soft flex flex-col gap-1 border-t px-5 py-3 lg:grid lg:min-h-14 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-4">
+        <dt class="text-strong text-[15px] leading-6 font-semibold" data-rule-term>
           {rule.term}
         </dt>
-        <dd>{rule.sentence}</dd>
+        <dd class="text-text m-0 max-w-[80ch] text-[14px] leading-[22px]">{rule.sentence}</dd>
       </div>
     ))}
   </dl>
-</section>
-
-<style>
-  .rules {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .rules h3 {
-    margin: 0;
-  }
-  dl {
-    margin: 0;
-  }
-  .row {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-block: 10px;
-    border-top: 1px solid var(--color-line-soft);
-  }
-  /* The mock's term: 12 px --strong 600, so an officer can scan the eight rules (UX 25). */
-  .term {
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 20px;
-    color: var(--color-strong);
-  }
-  dd {
-    margin: 0;
-    max-width: 80ch;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--color-text);
-  }
-  @media (min-width: 1024px) {
-    .row {
-      display: grid;
-      grid-template-columns: 200px minmax(0, 1fr);
-      gap: 16px;
-      min-height: 44px;
-    }
-  }
-</style>
+</Card>

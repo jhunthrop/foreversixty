@@ -15,6 +15,8 @@ import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { button } from '../lib/ui/button';
 import Disclosure from '../components/ui/Disclosure.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import StepTile from '../components/ui/StepTile.astro';
 import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
@@ -66,17 +68,20 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
 ---
 
 <Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup">
-  <main id="main" tabindex="-1" class="measure-wide flex flex-col gap-5 px-[18px] py-10 md:px-0">
-    <header class="flex flex-col gap-3">
-      <h1 class="heading-page">{addonCopy.setupPageTitle}</h1>
-      <p class="text-muted text-[15px]">{addonCopy.setupSubline}</p>
+  <main
+    id="main"
+    tabindex="-1"
+    class="measure-wide flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
+  >
+    <PageHead eyebrow={addonCopy.setupEyebrow} title={addonCopy.setupPageTitle} job={addonCopy.setupSubline}>
       <!-- The checklist at a glance: three numbered anchors, gold with a check once the account
            shows the step done. They read the <html> hints before any script runs (global.css). -->
-      <SetupProgress client:idle />
-      <SetupBackToClaim client:only="svelte" />
-    </header>
+      <SetupProgress slot="aside" client:idle />
+      <SetupBackToClaim slot="below" client:only="svelte" />
+    </PageHead>
 
-    <Card glyph="user" title={addonCopy.setupStep1Title} body="none">
+    <Card title={addonCopy.setupStep1Title} body="none">
+      <StepTile slot="lead" step={1} />
       <div id="signin" class="flex scroll-mt-20 flex-col gap-3 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <a
@@ -90,7 +95,8 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
       </div>
     </Card>
 
-    <Card glyph="download" title={addonCopy.setupStep2Title} body="none">
+    <Card title={addonCopy.setupStep2Title} body="none">
+      <StepTile slot="lead" step={2} />
       <div id="addon" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <div class="flex flex-wrap gap-3">
           <a class={STEP_BUTTON} data-step="2" href={CURSEFORGE_URL} rel="noopener">
@@ -220,7 +226,8 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
       </div>
     </Card>
 
-    <Card glyph="device" title={addonCopy.setupStep3Title} body="none">
+    <Card title={addonCopy.setupStep3Title} body="none">
+      <StepTile slot="lead" step={3} />
       <div id="companion" class="flex scroll-mt-20 flex-col gap-4 border-line-soft border-t px-5 py-4">
         <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-note">
           {addonCopy.setupCompanionNote}

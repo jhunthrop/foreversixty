@@ -273,7 +273,7 @@ test('the guild section holds both guild plans, the history promise and the rule
   const paying = plansPageCopy.rules[2]?.term ?? '';
   const trimmed = terms.map((term) => term.trim());
   expect(trimmed.indexOf(paying)).toBe(trimmed.indexOf(sizeTerm) + 1);
-  await expect(section.locator('.row').first().locator('dd')).toHaveText(first?.sentence ?? '');
+  await expect(section.getByTestId('guild-rules').locator('dd').first()).toHaveText(first?.sentence ?? '');
   expect(await section.textContent()).not.toContain('Battle.net');
 });
 

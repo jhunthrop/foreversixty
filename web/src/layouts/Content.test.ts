@@ -60,7 +60,7 @@ describe('Content layout', () => {
       slots: { default: '<p>body</p>' },
     });
     const titleIndex = html.indexOf('Hall of Thanes</h1>');
-    const bodyEnd = html.indexOf('</header>', titleIndex);
+    const bodyEnd = html.indexOf('prose-forever', titleIndex);
     const footerNoteIndex = html.indexOf('data-testid="confidence-footer-note"');
     const sourcesIndex = html.indexOf('>Sources<');
     expect(html.slice(titleIndex, bodyEnd)).not.toContain('Reported by one outlet');

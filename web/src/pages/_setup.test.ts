@@ -70,11 +70,15 @@ beforeAll(async () => {
   html = await container.renderToString(SetupPage);
 });
 
+/** Copy shorter than this is too likely to occur in a comment to pin as absent from the page source. */
+const MIN_LITERAL_PINNED = 14;
+
 describe('/setup', () => {
   it('takes every visible string from the copy file, never a literal', () => {
     for (const key of STRING_COPY_KEYS) {
       expect(source).toContain(`addonCopy.${key}`);
-      expect(source).not.toContain(addonCopy[key]);
+      // A one or two word title ("Sign in") also appears in comments; only a sentence is pinned as absent.
+      if (addonCopy[key].length > MIN_LITERAL_PINNED) expect(source).not.toContain(addonCopy[key]);
     }
     expect(source).toContain('addonCopy.currentDataBuild(');
   });

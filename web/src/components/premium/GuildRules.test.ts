@@ -16,7 +16,7 @@ describe('GuildRules', () => {
     const doc = await renderRules();
     const heading = doc.querySelector('h3');
     expect(heading?.textContent?.trim()).toBe(plansPageCopy.howItWorks);
-    expect(heading?.className.split(/\s+/)).toContain('section-title');
+    expect(heading?.className.split(/\s+/)).toContain('heading-plan');
     expect(doc.querySelector('h2')).toBeNull();
     const terms = [...doc.querySelectorAll('[data-rule-term]')].map((n) => n.textContent?.trim());
     expect(terms).toEqual(plansPageCopy.rules.map((rule) => rule.term));

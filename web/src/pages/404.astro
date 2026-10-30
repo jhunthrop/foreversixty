@@ -1,15 +1,38 @@
 ---
 // web/src/pages/404.astro — served by Workers static assets for any path that has no file
-// (see `not_found_handling` in wrangler.jsonc).
+// (see `not_found_handling` in wrangler.jsonc). Site alignment spec 2026-10-29 §5.15: the page
+// head, a "pick your class" card with the nine crests, then the character lookup.
 import Base from '../layouts/Base.astro';
+import CharacterSearch from '../components/CharacterSearch.astro';
+import ClassCrest from '../components/ClassCrest.astro';
+import Card from '../components/ui/Card.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import classes from '../data/classes.json';
 ---
 
 <Base title="Page not found" description="No page exists at this address." path="/404">
-  <main id="main" tabindex="-1" class="measure-reading px-[18px] md:px-0 py-10 flex flex-col gap-4">
-    <h1 class="heading-page">No page here</h1>
-    <p class="text-[15px] text-muted">
-      Nothing exists at this address. It may have moved as the game changes. Try <a href="/guides">guides</a>,{' '}
-      <a href="/planner">the planner</a>, <a href="/sim">the simulator</a>, or <a href="/logs">logs</a>.
-    </p>
+  <main
+    id="main"
+    tabindex="-1"
+    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
+  >
+    <PageHead
+      eyebrow="NOT FOUND"
+      title="No page here"
+      job="Nothing exists at this address. It may have moved as the game changes."
+    />
+    <Card glyph="user" title="Pick your class" testid="not-found-classes">
+      <div class="grid grid-cols-5 gap-x-3 gap-y-4 md:flex md:justify-between">
+        {classes.map((c) => (
+          <a href={`/guides/${c.slug}`} class="flex shrink-0 flex-col items-center gap-[6px]">
+            <ClassCrest slug={c.slug} size={44} />
+            <span class="heading-name text-[10px]" style={`color: ${c.color}`}>
+              {c.name}
+            </span>
+          </a>
+        ))}
+      </div>
+    </Card>
+    <CharacterSearch />
   </main>
 </Base>
