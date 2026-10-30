@@ -3,7 +3,6 @@
 // "who has the most threat on this enemy", and the taunt list under it, which answers
 // "who took the boss off me, and when" in one click.
 import { expect, test } from '@playwright/test';
-import { openChartIfCollapsed } from './support/report-chart';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -205,23 +204,28 @@ test('the totals table shares the players to 100% and leaves the enemies out of 
 // rest of the page uses.
 test('the threat chart draws one line per player and marks the taunts', async ({ page }) => {
   await page.goto(FIGHT);
-  // The shared chart above this one is collapsed by default on a phone (design review
-  // 2026-09-26 finding 1); this test's first `chart-scale` assertion means the shared
-  // chart's own scale, so it has to be open for that to be the first one in the DOM.
-  await openChartIfCollapsed(page);
   const chart = page.getByTestId('threat-chart');
   await expect(chart).toBeVisible();
-  // Four players built threat on Warden Kelthas, so four legend entries.
-  await expect(chart.getByTestId('chart-line-label')).toHaveCount(4);
+  // One chart per tab (spec §B1.7): the main chart is not drawn on the Threat tab.
+  await expect(page.getByTestId('time-chart')).toHaveCount(0);
+  // Four players built threat on Warden Kelthas, so four legend chips.
+  await expect(chart.getByTestId('legend-chip')).toHaveCount(4);
   await expect(chart).toContainText('Baelgrim');
-  // With no enemy picked the chart says which one it is drawing.
-  await expect(page.getByTestId('threat-chart-note')).toContainText('Warden Kelthas');
-  await expect(chart.getByTestId('chart-mark')).toHaveCount(1);
-  await expect(chart.getByTestId('chart-mark').first()).toHaveAttribute('title', /Taunt/);
-  // The lines are a running total, not a rate: the scale gutter drops "/s", unlike the
-  // per-second chart above it on the same page.
-  await expect(page.getByTestId('chart-scale').first()).toContainText('/s');
-  await expect(chart.getByTestId('chart-scale')).not.toContainText(/\/s/);
+  // With no enemy picked the chart says which one it is drawing, and that it is an estimate.
+  const phone = (page.viewportSize()?.width ?? 1280) < 768;
+  await expect(chart.getByRole('heading')).toHaveText(
+    phone ? 'Estimated threat' : 'Estimated threat on Warden Kelthas',
+  );
+  const taunts = chart.locator('[data-testid="lane-marker"][data-kind="taunt"]');
+  await expect(taunts).toHaveCount(1);
+  await expect(taunts.first()).toHaveAttribute('aria-label', /Taunt · Baelgrim on Warden Kelthas/);
+  // The lines are a running total, not a rate: the head says so.
+  await expect(chart.getByTestId('chart-head-meta')).toHaveText('Cumulative · Whole fight');
+  // The caveat line says what the estimate leaves out and links to the glossary's entry.
+  await expect(chart.getByTestId('threat-caveat').getByRole('link')).toHaveAttribute(
+    'href',
+    '#glossary-threat',
+  );
 });
 
 test('the threat chart’s own brush sets the report’s window', async ({ page }) => {
@@ -249,7 +253,7 @@ test('the glossary explains standing and built', async ({ page }) => {
 test('the open More menu sits above the threat chart', async ({ page }) => {
   test.skip((page.viewportSize()?.width ?? 1280) < 1024, 'the More menu is the desktop tab row');
   await page.goto(FIGHT);
-  await openChartIfCollapsed(page);
+  await expect(page.getByTestId('threat-chart')).toBeVisible();
   await page.getByTestId('tab-more').click();
   const items = page.getByTestId('tab-more-menu').locator('[role="tab"], a, button');
   const count = await items.count();
