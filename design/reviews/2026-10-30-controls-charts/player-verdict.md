@@ -25,3 +25,20 @@ The dropdowns and the interaction model (crosshair, tooltip, brush, drag-zoom, l
 - The `Log scale` switch is a Retail-WCL idea few Classic players use; fine, but keep it out of the head's first read (put it after the Window select).
 - Tooltip "Died 2:06" row is a good touch; keep it, and also dim that player's line after death.
 - Phase names: "PHASE 1" and "SUBMERGE" mix a number and a boss mechanic. Use boss-specific names from the encounter data (Rag: "Ragnaros", "Submerge", "Sons of Flame").
+
+## Re-check (fix round 1)
+
+Verdict: SHIP. All five of my blockers are closed, and I confirmed the two UX blockers on the boards and in the spec. No blockers remain.
+
+1. Threat labelling: closed. The title reads "ESTIMATED THREAT ON RAGNAROS", the share column is "Share of estimated threat", and the foot line reads "An estimate: 1 threat per point of damage and 0.5 per point of healing... No stance, form, talent or taunt modifiers yet." with a link to the glossary. The target-change marker ("Ragnaros turned to Thandril") sits beside the taunt at 2:07. The tanks reading at about a third of the top damage dealers is explained in B12.
+2. Death tooltip: closed. The tooltip reads "Brokk died · Melee from Ragnaros · 3,862 (1,104 overkill)" at 2:06 and the 2:07 tooltip carries it. B6.6 makes a death marker a link to the Deaths tab, and a cluster links with the window set to its span. The wipe board counts 14 deaths in one circle and its list links to Deaths.
+3. Who is drawn: closed. The field reads "Top 8 of 40". The legend holds the raid median (dashed), YOU (Lightningbolltz at 310) and the 8, and the Players multi-select offers a same-class "Shaman median" and every player. The sheet on the phone does the same.
+4. Tanks always drawn: closed. Thandril and Brokk are drawn with a pin on the threat board even though they are outside the top 8, and the taunt marker has its line.
+5. Numbers: closed. Legend Garrosk 120.6k equals table 120,628, and "34 more rows" plus 6 makes 40. The damage per-player figures (Velyn 157,916 / 340 s = 464) match the chips. The submerge runs 3:00 to 4:30 at zero, named "SUBMERGE", which is right for Ragnaros.
+6. Phone fold: closed. The fold stack totals 581 px of the 640, with the brush inside it.
+7. Searchable focus: closed. A6.1 gives one rule: the plain list keeps focus on the trigger, and the searchable list moves focus to the filter input and returns it on close.
+
+Non-blocking, for build:
+- The Empty board (3:20 to 4:10) shows no legend row although its caption says the legend row stays.
+- Submerge is the window where the raid kills Sons of Flame. "No damage in this window." and "Submerge · no damage" should say "no damage to Ragnaros", and ideally offer the Enemy switch to Sons of Flame.
+- The threat tooltip covers the plot's left half at 2:07 (the cursor is at 2:07 of a 1:30 to 2:40 window), which is correct under the 45/55 rule but hides the lines you came to read; accept it.
