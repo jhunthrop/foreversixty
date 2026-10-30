@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -124,6 +125,26 @@ object RaidColors {
     }
 }
 
+/** The font scale from which rows restack (spec 10: iOS AX1, Android 1.5x and up). */
+private const val LARGE_FONT_SCALE = 1.5f
+
+/** True at the large text sizes, where rows restack instead of squeezing. */
+@Composable
+fun isLargeText(): Boolean = androidx.compose.ui.platform.LocalDensity.current.fontScale >= LARGE_FONT_SCALE
+
+/** A one-word name: one line at every size, shrinking before it would break inside the word. */
+@Composable
+fun NameText(text: String, style: TextStyle, color: Color, modifier: Modifier = Modifier) {
+    androidx.compose.foundation.text.BasicText(
+        text = text,
+        style = style.copy(color = color),
+        maxLines = 1,
+        softWrap = false,
+        autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 11.sp, maxFontSize = style.fontSize),
+        modifier = modifier,
+    )
+}
+
 /** Where the game icons come from: `/data/{build}/icons/{stem}.webp` on the site. */
 data class RaidIcons(val build: String?) {
     fun url(stem: String?): String? =
@@ -179,8 +200,9 @@ fun GameIcon(stem: String?, size: Dp, border: Color = RaidColors.iconBorder, bor
 /** `micro` uppercase section label, with an optional mono count. */
 @Composable
 fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
+    val tracking = if (isLargeText()) 0.sp else RaidType.micro.letterSpacing
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
-        Text(text.uppercase(), style = RaidType.micro, color = color)
+        Text(text.uppercase(), style = RaidType.micro.copy(letterSpacing = tracking), color = color, maxLines = 1, softWrap = false)
         trailing?.let { Text(it, style = RaidType.monoMeta, color = color) }
     }
 }
@@ -192,6 +214,8 @@ fun StatusTag(text: String, color: Color) {
         text.uppercase(),
         style = RaidType.micro.copy(letterSpacing = 0.8.sp),
         color = color,
+        maxLines = 1,
+        softWrap = false,
         modifier = Modifier
             .heightIn(min = 22.dp)
             .background(color.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.pill))
@@ -232,11 +256,12 @@ fun DateBlock(at: Instant, clock: RaidClock, width: Dp = 52.dp, height: Dp = 56.
     }
 }
 
-/** The 8 dp progress bar: line-soft track, gold fill. */
+/** The 8 dp progress bar: line-soft track, gold fill. A null width takes the full row. */
 @Composable
-fun FillBar(fill: Float, width: Dp, muted: Boolean = false) {
-    Box(Modifier.width(width).size(width, 8.dp).clip(CircleShape).background(FsColor.lineSoft)) {
-        Box(Modifier.fillMaxHeight().width(width * fill).clip(CircleShape).background(if (muted) FsColor.muted else FsColor.gold))
+fun FillBar(fill: Float, width: Dp?, muted: Boolean = false) {
+    val track = if (width == null) Modifier.fillMaxWidth() else Modifier.width(width)
+    Box(track.height(8.dp).clip(CircleShape).background(FsColor.lineSoft)) {
+        Box(Modifier.fillMaxHeight().fillMaxWidth(fill).clip(CircleShape).background(if (muted) FsColor.muted else FsColor.gold))
     }
 }
 
@@ -248,9 +273,15 @@ fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
     val breakdown = facts.breakdown(res)
     val a11y = stringResource(R.string.raids_a11y_count, line, breakdown.replace(RaidFacts.SEPARATOR, ", "))
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.clearAndSetSemantics { contentDescription = a11y }) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            facts.fill?.let { FillBar(it, 120.dp, muted) }
-            Text(line, style = RaidType.mono, color = FsColor.strong)
+        if (isLargeText()) {
+            // Large text: the count above a full-width bar (spec 10).
+            Text(line, style = RaidType.bodyStrong, color = FsColor.strong)
+            facts.fill?.let { FillBar(it, null, muted) }
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                facts.fill?.let { FillBar(it, 120.dp, muted) }
+                Text(line, style = RaidType.bodyStrong, color = FsColor.strong)
+            }
         }
         Text(breakdown, style = RaidType.meta, color = FsColor.muted)
     }
@@ -314,7 +345,7 @@ fun SecondaryButton(
             it()
             Box(Modifier.width(8.dp))
         }
-        Text(text.uppercase(), style = RaidType.button)
+        Text(text.uppercase(), style = RaidType.button, maxLines = 1, softWrap = false)
     }
 }
 
@@ -325,7 +356,7 @@ fun GoldLink(text: String, onClick: () -> Unit, trailing: Boolean = false) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.heightIn(min = 48.dp).clickable(onClick = onClick),
     ) {
-        Text(text + if (trailing) " ›" else "", style = RaidType.bodyStrong, color = FsColor.gold)
+        Text(text + if (trailing) " ›" else "", style = RaidType.bodyStrong, color = FsColor.gold, maxLines = 1, softWrap = false)
     }
 }
 

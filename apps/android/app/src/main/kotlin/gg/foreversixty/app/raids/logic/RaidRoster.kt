@@ -78,22 +78,6 @@ class RosterGroups(raid: RaidView, overrides: Map<String, SignupState?> = emptyM
     }
 }
 
-/** The classes strip (spec F4.2 item 6): In plus Late per class, in the game's order. */
-class ClassStrip(raid: RaidView) {
-    val entries: List<Pair<GameClass, Int>> = run {
-        val coming = raid.signups.filter { SignupState.of(it.state)?.isComing == true }
-        GameClass.entries.map { cls -> cls to coming.count { it.className.lowercase() == cls.slug } }
-    }
-
-    /** `Classes coming: Warrior 4, Hunter 2, …, no Paladins`. */
-    fun accessibilityLabel(res: Resources): String {
-        val present = entries.filter { it.second > 0 }
-            .map { res.getString(R.string.raids_a11y_classCount, res.getString(it.first.label), it.second) }
-        val missing = entries.filter { it.second == 0 }.map { res.getString(it.first.none) }
-        return res.getString(R.string.raids_a11y_classes, (present + missing).joinToString(", "))
-    }
-}
-
 /** The officer's Copy the list (the site's copyList). */
 object RosterCopy {
     fun text(raid: RaidView, clock: RaidClock, res: Resources, now: Instant): String {

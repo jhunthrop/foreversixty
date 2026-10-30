@@ -6,7 +6,7 @@ import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.network.ApiError
-import gg.foreversixty.app.raids.logic.ClassStrip
+import gg.foreversixty.app.raids.logic.CompositionRead
 import gg.foreversixty.app.raids.logic.NotesText
 import gg.foreversixty.app.raids.logic.PlannedRaids
 import gg.foreversixty.app.raids.logic.RaidChip
@@ -174,12 +174,17 @@ class RaidLogicTest {
     }
 
     @Test
-    fun `the classes strip counts In and Late per class, and reads every class to TalkBack`() {
-        val strip = ClassStrip(RaidFixture.raid())
-        assertEquals(listOf(5, 0, 2, 2, 4, 4, 2, 2, 3), strip.entries.map { it.second })
-        val label = strip.accessibilityLabel(resources())
-        assertTrue(label, label.startsWith("Classes coming: Warrior 5, Hunter 2"))
-        assertTrue(label.endsWith("no Paladins"))
+    fun `the composition block words the API's counts, targets and buff coverage`() {
+        val read = requireNotNull(CompositionRead.of(RaidFixture.raid().composition, resources()))
+        assertEquals(listOf(5, 0, 2, 2, 4, 4, 2, 2, 3), read.classes.map { it.count })
+        assertEquals("Paladin", read.classes[1].name)
+        assertEquals(listOf("Tanks 3", "Healers 6", "DPS 14"), read.roles)
+        assertEquals("Missing: Blessings", read.buffSummary)
+        assertEquals("Blessings, missing", read.buffs.first { it.key == "blessings" }.accessibilityLabel)
+        assertTrue(read.classesAccessibilityLabel.startsWith("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
+        val officer = requireNotNull(CompositionRead.of(RaidFixture.raid("guild.raid.officer").composition, resources()))
+        assertEquals(listOf("Tanks 3/4", "Healers 6/8", "DPS 14/28"), officer.roles)
+        assertNull(CompositionRead.of(null, resources()))
     }
 
     @Test
@@ -295,14 +300,15 @@ class RaidLogicTest {
     }
 
     @Test
-    fun `moved names the other character on its own block (R3)`() = runTest {
+    fun `moved draws Bench on the other character's block, with its line (R3, F4_12)`() = runTest {
         val service = FakeRaidService()
-        val two = RaidFixture.raid("guild.raid.two-characters")
-        val moved = RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved").moved
-        service.signupAnswer = { ok(SignupAnswer(two, moved)) }
-        val controller = makeController(two, service)
-        controller.press(key, SignupState.In)
-        assertEquals(StatusLine.Info("Yellfury moved to Bench."), controller.block("us/pvp/yellfury").status)
+        val answer = RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")
+        service.signupAnswer = { ok(answer) }
+        val controller = makeController(RaidFixture.raid("guild.raid.two-characters"), service)
+        controller.press("us/pvp/yellfury", SignupState.In)
+        assertEquals(SignupState.In, controller.block("us/pvp/yellfury").shown)
+        assertEquals(SignupState.Bench, controller.block(key).shown)
+        assertEquals(StatusLine.Info("Obnoxious Yell moved to Bench."), controller.block(key).status)
     }
 
     @Test
@@ -456,7 +462,7 @@ class RaidLogicTest {
         val service = FakeRaidService()
         service.signupAnswer = { ok(RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In) as RaidPushOutcome.Answered
-        assertTrue(outcome.answer.body.endsWith(" Yellfury moved to Bench."))
+        assertTrue(outcome.answer.body.endsWith(" Obnoxious Yell moved to Bench."))
     }
 
     @Test

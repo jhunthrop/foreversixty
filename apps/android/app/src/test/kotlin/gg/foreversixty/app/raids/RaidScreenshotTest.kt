@@ -189,8 +189,8 @@ class RaidScreenshotTest {
     @Test
     @Config(qualifiers = "w412dp-h1200dp-normal-long-notround-any-420dpi-keyshidden-nonav")
     fun raidPage_moved() {
-        val two = RaidFixture.raid("guild.raid.two-characters")
-        val controller = pressed(SignupState.In, { it.signupAnswer = { ok(SignupAnswer(two, "Yellfury")) } }, raid = "guild.raid.two-characters")
+        val answer = RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")
+        val controller = pressed(SignupState.In, { it.signupAnswer = { ok(answer) } }, raid = "guild.raid.two-characters", key = "us/pvp/yellfury")
         capture("raid-page-moved-and") { Page(controller) }
     }
 
@@ -207,6 +207,10 @@ class RaidScreenshotTest {
     @Test
     @Config(qualifiers = "w412dp-h3200dp-normal-long-notround-any-420dpi-keyshidden-nonav")
     fun raidPage_officer() = capture("raid-page-officer-and") { Page(makeController(RaidFixture.raid("guild.raid.officer"))) }
+
+    @Test
+    @Config(qualifiers = "w412dp-h3600dp-normal-long-notround-any-420dpi-keyshidden-nonav")
+    fun raidPage_officer_xl() = capture("raid-page-officer-xl-and", large = true) { Page(makeController(RaidFixture.raid("guild.raid.officer"))) }
 
     @Test
     fun raidPage_officerLocked() {
@@ -254,6 +258,10 @@ class RaidScreenshotTest {
 
     @Test
     fun raidNight_free() = capture("raid-night-free-and") { Night("me.raid-night.free") }
+
+    @Test
+    @Config(qualifiers = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav")
+    fun raidNight_xl() = capture("raid-night-xl-and", large = true) { Night("me.raid-night") }
 }
 
 /** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */

@@ -179,7 +179,7 @@ private fun Loaded(
 /** The guild head: crest 40, the name, `{Faction} · {Region} {Ruleset} · {n} on the roster`. */
 @Composable
 fun GuildHeadView(head: GuildHead) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.semantics(mergeDescendants = true) {}) {
+    val crest = @Composable {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(40.dp).clip(CircleShape).background(FsColor.raised).border(1.dp, FsColor.line, CircleShape),
@@ -190,9 +190,19 @@ fun GuildHeadView(head: GuildHead) {
                 Icon(Icons.Filled.Star, contentDescription = null, tint = if (head.faction == "alliance") FsColor.alliance else FsColor.horde)
             }
         }
+    }
+    val text = @Composable {
         Column {
             Text(head.name.uppercase(), style = RaidType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             head.line?.let { Text(it, style = RaidType.meta, color = FsColor.muted) }
+        }
+    }
+    if (isLargeText()) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.semantics(mergeDescendants = true) {}) { crest(); text() }
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.semantics(mergeDescendants = true) {}) {
+            crest()
+            text()
         }
     }
 }
@@ -212,8 +222,7 @@ fun NextRaidCard(
     val a11y = listOf(clock.longDate(facts.startsAt), raid.title).joinToString(", ")
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.primaryCard()) {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.clickable { open(false) }) {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                DateBlock(facts.startsAt, clock)
+            val heading = @Composable {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y }) {
                     SectionLabel(stringResource(R.string.raids_next), color = FsColor.gold)
                     Text(raid.title.uppercase(), style = RaidType.cardHead, color = FsColor.strong)
@@ -221,11 +230,23 @@ fun NextRaidCard(
                     CountdownLine(facts, clock, now)
                 }
             }
+            if (isLargeText()) {
+                // Large text: the date block above the title instead of beside it.
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    DateBlock(facts.startsAt, clock)
+                    heading()
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    DateBlock(facts.startsAt, clock)
+                    heading()
+                }
+            }
             CountBlock(facts)
         }
         HorizontalDivider(color = FsColor.lineSoft)
         SectionLabel(stringResource(R.string.raid_yourSignup))
-        facts.viewerCharacters(currentKey).firstOrNull()?.let { SignupBlockView(controller, it, showsNote = false) }
+        facts.viewerCharacters(currentKey).firstOrNull()?.let { SignupBlockView(controller, it, showsNote = false, reservesStatus = false) }
         if (controller.showsReminderAsk) {
             ReminderAsk(turnOn = { controller.dismissReminderAsk(); requestPermission() }, notNow = { controller.dismissReminderAsk() })
         }
@@ -246,19 +267,30 @@ fun NextRaidCard(
 fun PlannedRow(raid: RaidView, clock: RaidClock, now: Instant, currentKey: String?, open: () -> Unit) {
     val facts = RaidFacts(raid, now)
     val res = androidx.compose.ui.platform.LocalResources.current
+    val large = isLargeText()
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth().clickable(onClick = open).heightIn(min = 76.dp).padding(14.dp).semantics(mergeDescendants = true) {},
     ) {
-        DateBlock(facts.startsAt, clock, 48.dp, 52.dp)
+        // The date block keeps its width; the text column takes the rest.
+        DateBlock(facts.startsAt, clock, if (large) 56.dp else 48.dp, 52.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.weight(1f)) {
             Text(raid.title, style = RaidType.bodyStrong, color = FsColor.strong, maxLines = 2)
             Text(clock.whenPhrase(facts.startsAt, now), style = RaidType.meta, color = FsColor.muted)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = RaidType.monoMeta, color = FsColor.strong)
-                facts.fill?.let { FillBar(it, 64.dp) }
+                if (!large) facts.fill?.let { FillBar(it, 64.dp) }
             }
+            // Large text: the chip moves under the title.
+            if (large) PlannedChip(facts, currentKey)
         }
+        if (!large) PlannedChip(facts, currentKey)
+    }
+}
+
+@Composable
+private fun PlannedChip(facts: RaidFacts, currentKey: String?) {
+    run {
         when (val chip = facts.rowChip(currentKey)) {
             is RowChip.Status -> ChipTag(chip.chip)
             is RowChip.Signed -> StatusTag(

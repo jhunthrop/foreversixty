@@ -42,17 +42,17 @@ fun roleLabel(role: String): Int = when (role) {
     else -> R.string.raid_role_dps
 }
 
-/** The game's class order (the roster, the classes strip) and each class's names. */
-enum class GameClass(@param:StringRes val label: Int, @param:StringRes val none: Int) {
-    Warrior(R.string.raids_class_warrior, R.string.raids_classNone_warrior),
-    Paladin(R.string.raids_class_paladin, R.string.raids_classNone_paladin),
-    Hunter(R.string.raids_class_hunter, R.string.raids_classNone_hunter),
-    Rogue(R.string.raids_class_rogue, R.string.raids_classNone_rogue),
-    Priest(R.string.raids_class_priest, R.string.raids_classNone_priest),
-    Shaman(R.string.raids_class_shaman, R.string.raids_classNone_shaman),
-    Mage(R.string.raids_class_mage, R.string.raids_classNone_mage),
-    Warlock(R.string.raids_class_warlock, R.string.raids_classNone_warlock),
-    Druid(R.string.raids_class_druid, R.string.raids_classNone_druid),
+/** The game's class order (the roster) and each class's name. */
+enum class GameClass(@param:StringRes val label: Int) {
+    Warrior(R.string.raids_class_warrior),
+    Paladin(R.string.raids_class_paladin),
+    Hunter(R.string.raids_class_hunter),
+    Rogue(R.string.raids_class_rogue),
+    Priest(R.string.raids_class_priest),
+    Shaman(R.string.raids_class_shaman),
+    Mage(R.string.raids_class_mage),
+    Warlock(R.string.raids_class_warlock),
+    Druid(R.string.raids_class_druid),
     ;
 
     val slug: String get() = name.lowercase()

@@ -59,7 +59,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidView
-import gg.foreversixty.app.raids.logic.ClassStrip
 import gg.foreversixty.app.raids.logic.NotesText
 import gg.foreversixty.app.raids.logic.RaidChip
 import gg.foreversixty.app.raids.logic.RaidClock
@@ -165,7 +164,7 @@ fun RaidPageContent(
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.raid_menu_calendar), tint = FsColor.strong)
                     }
                     Box {
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = null, tint = FsColor.strong) }
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.raids_a11y_more), tint = FsColor.strong) }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                             DropdownMenuItem(text = { Text(stringResource(R.string.raid_menu_calendar)) }, onClick = { menu = false; addToCalendar() })
                             DropdownMenuItem(text = { Text(stringResource(R.string.raid_menu_share)) }, onClick = {
@@ -191,7 +190,6 @@ fun RaidPageContent(
                     raid.match?.reportId?.takeIf { facts.chip == RaidChip.Done }?.let { report ->
                         GoldLink(stringResource(R.string.raid_report), { uri.openUri(RaidLinks.report(report)) })
                     }
-                    ClassStripView(ClassStrip(raid))
                     Notes(raid)
                     Roster(controller, facts)
                 }
@@ -213,11 +211,14 @@ private fun calendarIntent(raid: RaidView, facts: RaidFacts, location: String, l
 @Composable
 fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Instant, guildName: String?) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        val large = isLargeText()
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = RaidType.micro, color = FsColor.gold)
+            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = RaidType.micro, color = FsColor.gold, maxLines = 1, softWrap = false)
             ChipTag(facts.chip)
-            guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = RaidType.meta, color = FsColor.muted) }
+            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = RaidType.meta, color = FsColor.muted, maxLines = 1) }
         }
+        // Large text: the guild name drops to its own line.
+        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = RaidType.meta, color = FsColor.muted) }
         if (raid.title != raid.zoneName) {
             Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = RaidType.body, color = FsColor.muted)
         }
@@ -246,7 +247,10 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
                 if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(RaidFacts.SEPARATOR) }
                 val (head, tail) = template.split(MARK, limit = 2).let { it[0] to it.getOrElse(1) { "" } }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
-                withStyle(RaidType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(time) }
+                // Only the digits are mono; `pm` stays in Barlow (UX should 2).
+                val digits = time.substringBefore(' ')
+                withStyle(RaidType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
+                withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(tail) }
             }
         },
@@ -273,7 +277,7 @@ fun CountdownLine(facts: RaidFacts, clock: RaidClock, now: () -> Instant) {
     Text(
         buildAnnotatedString {
             append(head)
-            withStyle(RaidType.mono.toSpanStyle().copy(color = if (running) FsColor.gold else FsColor.muted)) { append(countdown) }
+            withStyle(RaidType.bodyStrong.toSpanStyle().copy(color = if (running) FsColor.gold else FsColor.muted)) { append(countdown) }
             append(tail)
         },
         style = RaidType.body,
@@ -333,30 +337,6 @@ private fun NightRow(open: () -> Unit) {
     }
 }
 
-/** The classes strip (spec F4.2 item 6): nine crests with In plus Late under each. */
-@Composable
-fun ClassStripView(strip: ClassStrip) {
-    val res = androidx.compose.ui.platform.LocalResources.current
-    val label = strip.accessibilityLabel(res)
-    val large = androidx.compose.ui.platform.LocalDensity.current.fontScale >= LARGE_FONT_SCALE
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        SectionLabel(stringResource(R.string.raid_classes))
-        FlowRow(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            maxItemsInEachRow = if (large) LARGE_ROW else GameClassCount,
-            modifier = Modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = label },
-        ) {
-            strip.entries.forEach { (cls, count) ->
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.alpha(if (count == 0) 0.4f else 1f).width(if (large) 64.dp else 36.dp)) {
-                    Crest(cls.slug, if (large) 36.dp else 30.dp)
-                    Text("$count", style = RaidType.monoMeta, color = FsColor.strong)
-                }
-            }
-        }
-    }
-}
-
 @Composable
 private fun Notes(raid: RaidView) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -389,6 +369,3 @@ private fun Toast(text: String, modifier: Modifier) {
 
 private const val MARK = "\u0000"
 private const val MINUTE_MILLIS = 60_000L
-private const val LARGE_FONT_SCALE = 1.5f
-private const val LARGE_ROW = 5
-private const val GameClassCount = 9

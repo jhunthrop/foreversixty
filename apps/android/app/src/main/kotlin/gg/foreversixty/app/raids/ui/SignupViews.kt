@@ -152,13 +152,17 @@ private fun RowScope.Segment(state: SignupState, block: SignupBlock, enabled: Bo
                 }
             },
     ) {
-        Text(stringResource(state.label), style = RaidType.segment, color = if (checked) FsColor.strong else FsColor.muted)
+        Text(stringResource(state.label), style = RaidType.segment, color = if (checked) FsColor.strong else FsColor.muted, maxLines = 1, softWrap = false)
     }
 }
 
-/** The 20 dp status line, always present so nothing shifts; announced politely when it changes. */
+/**
+ * The 20 dp status line, announced politely when it changes. On the raid page it is always
+ * reserved so nothing shifts; on the next raid card it draws only with text (UX should 1).
+ */
 @Composable
-fun StatusLineText(status: StatusLine?) {
+fun StatusLineText(status: StatusLine?, reserves: Boolean = true) {
+    if (!reserves && status == null) return
     val color = when (status) {
         is StatusLine.Saved -> FsColor.kill
         is StatusLine.Error -> FsColor.wipe
@@ -182,10 +186,9 @@ fun WhoLine(
     role: String,
     trailing: (@Composable () -> Unit)? = null,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-        Crest(className, 36.dp)
-        Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
-            Text(name, style = RaidType.name, color = RaidColors.classColor(className))
+    val labels = @Composable { modifier: Modifier ->
+        Column(modifier.semantics(mergeDescendants = true) {}) {
+            NameText(name, RaidType.name, RaidColors.classColor(className))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 GameIcon(specIcon, 18.dp)
                 val roleText = if (role.isEmpty()) "" else stringResource(roleLabel(role))
@@ -196,13 +199,32 @@ fun WhoLine(
                 )
             }
         }
-        trailing?.invoke()
+    }
+    if (isLargeText()) {
+        // Large text: the crest above the name, Change spec below at full width (spec 10).
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Crest(className, 36.dp)
+            labels(Modifier)
+            trailing?.invoke()
+        }
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Crest(className, 36.dp)
+            labels(Modifier.weight(1f))
+            trailing?.invoke()
+        }
     }
 }
 
 /** One character's block on the sign-up card (spec F4.2 item 5). */
 @Composable
-fun SignupBlockView(controller: SignupController, character: RaidViewerCharacter, showsNote: Boolean = true) {
+fun SignupBlockView(
+    controller: SignupController,
+    character: RaidViewerCharacter,
+    showsNote: Boolean = true,
+    /** The raid page reserves the status line; the next raid card draws it only with text. */
+    reservesStatus: Boolean = true,
+) {
     val scope = rememberCoroutineScope()
     val key = character.characterKey
     val block = controller.block(key)
@@ -223,7 +245,7 @@ fun SignupBlockView(controller: SignupController, character: RaidViewerCharacter
             Segments(character.name, block, controller.segmentsEnabled(key)) { state ->
                 scope.launch { controller.press(key, state) }
             }
-            StatusLineText(controller.restingStatus(key))
+            StatusLineText(controller.restingStatus(key), reservesStatus)
             if (showsNote && block.shown != null) NoteField(controller, key, block)
         } else {
             Text(stringResource(R.string.raid_waitingCharacter), style = RaidType.meta, color = FsColor.muted)

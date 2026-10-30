@@ -124,6 +124,8 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
             Text(stringResource(R.string.raid_signups).uppercase(), style = RaidType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             Text(facts.ratio, style = RaidType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
+        val res = androidx.compose.ui.platform.LocalResources.current
+        gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it) }
         roster.groups.forEach { group ->
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 SectionLabel(stringResource(group.kind.label), trailing = "${group.rows.size}")
@@ -183,7 +185,7 @@ fun RosterRowView(row: RosterRow, officer: Boolean, error: String?, move: (Signu
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             GameIcon(row.specIcon, 28.dp)
             Column(Modifier.weight(1f).clearAndSetSemantics { contentDescription = label }) {
-                Text(row.name, style = RaidType.bodyStrong, color = RaidColors.classColor(row.className))
+                NameText(row.name, RaidType.bodyStrong, RaidColors.classColor(row.className))
                 if (row.specName.isNotEmpty()) Text(row.specName, style = RaidType.meta, color = FsColor.muted)
                 if (row.note.isNotEmpty()) Text(row.note, style = RaidType.meta, color = FsColor.text)
             }

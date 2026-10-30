@@ -63,6 +63,10 @@ class MainActivity : ComponentActivity() {
      * feature lanes open their screens from the other cases.
      */
     private fun handleAppLink(intent: Intent?) {
+        // Lane F4 review captures, debug builds only: post the fixture raid notification.
+        if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
+            gg.foreversixty.app.raids.push.RaidDebugPush.post(this)
+        }
         val link = intent?.dataString ?: return
         val parsed = DeepLink.parse(link)
         if (parsed is DeepLink.SignIn) {

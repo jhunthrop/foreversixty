@@ -93,17 +93,31 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock) {
         style = RaidType.meta,
         color = FsColor.muted,
     )
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.primaryCard()) {
+    val figures = @Composable {
         Figure(night.kills, pluralStringResource(R.plurals.night_kill, night.kills, night.kills))
         Figure(night.wipes, pluralStringResource(R.plurals.night_wipes, night.wipes, night.wipes))
         Figure(night.newBests, pluralStringResource(R.plurals.night_best, night.newBests, night.newBests))
-        Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
-            Text(night.character.name, style = RaidType.name, color = RaidColors.classColor(night.character.className))
+    }
+    val who = @Composable { alignment: Alignment.Horizontal, modifier: Modifier ->
+        Column(horizontalAlignment = alignment, modifier = modifier) {
+            NameText(night.character.name, RaidType.name, RaidColors.classColor(night.character.className))
             Text(
                 stringResource(R.string.raids_who, night.character.specName, stringResource(roleLabel(night.character.role))),
                 style = RaidType.meta,
                 color = FsColor.muted,
             )
+        }
+    }
+    if (isLargeText()) {
+        // Large text: the figures stack, the character under them.
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.primaryCard()) {
+            figures()
+            who(Alignment.Start, Modifier)
+        }
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.primaryCard()) {
+            figures()
+            who(Alignment.End, Modifier.weight(1f))
         }
     }
     if (night.loot.isNotEmpty()) Section(stringResource(R.string.night_loot)) { night.loot.forEachIndexed { i, loot -> if (i > 0) Divider(); LootRow(loot) } }
