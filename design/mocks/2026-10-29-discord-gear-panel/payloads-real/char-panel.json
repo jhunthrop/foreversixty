@@ -1,0 +1,177 @@
+{
+  "budget": {
+    "components": 28,
+    "text": 1172
+  },
+  "id": "char-panel",
+  "message": {
+    "flags": 32832,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### [Zulmara](https://foreversixty.gg/character/us/normal/zulmara)\nLevel 60 Beast Mastery Hunter · Olympus XXVII\n-# Item level 63.5 · Readiness: Ready · Synced \u003ct:1796767200:R\u003e"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 10,
+            "content": "**Top upgrades** · level 60 Phase 1 raid\n-# By DPS gained, against the guide build."
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Molten Heart of the Mountain**\nTrinket 2 · Gain not modelled yet\n-# Rare · item level 55 · Crafted: Enchanting"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/249470.png"
+              },
+              "description": "Molten Heart of the Mountain, Rare trinket 2 item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged · +23.1 DPS\n-# Epic · item level 65 · Crafted: Engineering\n-# Replaces Dark Iron Rifle, item level 55"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/279273.png"
+              },
+              "description": "Hyper Deluxe Sniper Rifle Mk XVII, Epic ranged item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Dawn Armor**\nChest · +11.0 DPS\n-# Epic · item level 61 · Crafted: Leatherworking\n-# Replaces Shadowcraft Tunic, item level 63"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/252483.png"
+              },
+              "description": "Dawn Armor, Epic chest item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Sentinel's Chain Leggings**\nLegs · +9.3 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze\n-# Replaces Marshal's Chain Legplates, item level 71"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/237819.png"
+              },
+              "description": "Sentinel's Chain Leggings, Epic legs item"
+            }
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Beastmaster's Bindings**\nWrist · +4.7 DPS\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58\n-# Replaces Forest Stalker's Bracers, item level 65"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/226885.png"
+              },
+              "description": "Beastmaster's Bindings, Rare wrist item"
+            }
+          },
+          {
+            "type": 10,
+            "content": "-# 4 more upgrades on the character page."
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Share in channel",
+            "custom_id": "share:SrdHIik4pFGVffwM29_p8nNK76jf-z-3qWn7jLSo_bQ"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Someone else",
+            "custom_id": "gchar:1:ask:"
+          },
+          {
+            "type": 2,
+            "style": 5,
+            "label": "Character page",
+            "url": "https://foreversixty.gg/character/us/normal/zulmara"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "gchar:1:pick:",
+            "placeholder": "Another of your characters",
+            "options": [
+              {
+                "label": "Zulmara",
+                "value": "Zulmara",
+                "description": "Beast Mastery Hunter · Level 60",
+                "default": true
+              },
+              {
+                "label": "Duskstrider",
+                "value": "Duskstrider",
+                "description": "Fury Warrior · Level 58"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  },
+  "title": "real payload: char-panel"
+}

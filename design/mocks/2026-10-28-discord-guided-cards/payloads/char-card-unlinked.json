@@ -3,8 +3,12 @@
   "title": "/char, not linked: asks",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "content": "Which character? Type a name, or link Discord to start from yours.",
+    "flags": 32832,
     "components": [
+      {
+        "type": 10,
+        "content": "Which character? Type a name, or link Discord to start from yours."
+      },
       {
         "type": 1,
         "components": [
@@ -23,7 +27,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }

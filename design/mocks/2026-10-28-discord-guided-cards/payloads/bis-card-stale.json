@@ -3,8 +3,13 @@
   "title": "a press on a card of an older shape",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "content": "This card is out of date. Run /bis again.",
-    "flags": 64,
+    "flags": 32832,
+    "components": [
+      {
+        "type": 10,
+        "content": "This card is out of date. Run /bis again."
+      }
+    ],
     "allowed_mentions": {
       "parse": []
     }

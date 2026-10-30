@@ -1,0 +1,55 @@
+{
+  "budget": {
+    "components": 5,
+    "text": 72
+  },
+  "id": "share-bis",
+  "message": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 10,
+            "content": "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://sheet.png"
+                },
+                "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 5,
+            "label": "All 17 slots",
+            "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+          }
+        ]
+      }
+    ],
+    "attachments": [
+      {
+        "id": 0,
+        "filename": "sheet.png",
+        "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
+      }
+    ],
+    "allowed_mentions": {
+      "parse": []
+    }
+  },
+  "title": "real payload: share-bis"
+}

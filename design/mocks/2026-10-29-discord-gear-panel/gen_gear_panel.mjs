@@ -10,7 +10,7 @@
 // web/public/icons/hd). Payloads land in payloads/, the sheets at their real size, the boards
 // at the Discord desktop-client (640) and phone-client (390) widths, as the kit does.
 // Run with Node 22 or later from anywhere: node design/mocks/2026-10-29-discord-gear-panel/gen_gear_panel.mjs
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { BUILD, bisRows, loadData } from "./data.mjs";
@@ -56,6 +56,18 @@ for (const f of frames) {
   writeFileSync(path.join(HERE, "payloads", f.id + ".json"), JSON.stringify({ id: f.id, title: f.title, budget: f.budget, message: f.message }, null, 2) + "\n");
   console.log(f.id.padEnd(20), "components", String(n).padStart(2), "text", t);
 }
+
+// ---- the real frames: the bot's own handlers' answers (payloads-real, written by
+// TestDumpGearPanelPayloads), drawn as <board>-real beside the board of the same name ----
+const REAL = path.join(HERE, "payloads-real");
+const realFrames = existsSync(REAL)
+  ? frames
+      .filter((f) => existsSync(path.join(REAL, f.id + ".json")))
+      .map((f) => {
+        const raw = JSON.parse(readFileSync(path.join(REAL, f.id + ".json"), "utf8"));
+        return { ...f, id: f.id + "-real", title: raw.title, message: raw.message };
+      })
+  : [];
 
 // ---- the V2 drawing ----
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -189,16 +201,15 @@ for (const [key, model] of Object.entries(sheetModels)) {
 }
 await sheetPage.close();
 
-const { readFileSync } = await import("node:fs");
 const dataPng = (file) => "data:image/png;base64," + readFileSync(file).toString("base64");
 
 const boardPage = await browser.newPage({ deviceScaleFactor: 2 });
 for (const client of CLIENTS)
-  for (const f of frames) {
+  for (const f of [...frames, ...realFrames]) {
     const sheets = f.sheet ? { "attachment://sheet.png": dataPng(sheetFiles[f.sheet]) } : {};
     await boardPage.setViewportSize({ width: client.width, height: 800 });
     await boardPage.setContent(page(f, client.width, sheets), { waitUntil: "load" });
     await boardPage.locator("#msg").screenshot({ path: path.join(HERE, `${f.id}-${client.name}.png`) });
   }
 await browser.close();
-console.log("wrote", frames.length * CLIENTS.length, "boards and 2 sheets to", HERE, "for", SITE);
+console.log("wrote", (frames.length + realFrames.length) * CLIENTS.length, "boards and 2 sheets to", HERE, "for", SITE);

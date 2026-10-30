@@ -3,8 +3,12 @@
   "title": "a name that is nobody",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "content": "No public character named Nobody. Try another name.",
+    "flags": 32832,
     "components": [
+      {
+        "type": 10,
+        "content": "No public character named Nobody. Try another name."
+      },
       {
         "type": 1,
         "components": [
@@ -39,7 +43,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }

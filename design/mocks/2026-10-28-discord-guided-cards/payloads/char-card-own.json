@@ -3,42 +3,55 @@
   "title": "/char, linked: the main and the own-characters select",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "embeds": [
+    "flags": 32832,
+    "components": [
       {
-        "title": "Zulmara",
-        "description": "Level 60 Marksmanship Hunter · Olympus XXVII",
-        "url": "https://site.test/character/us/normal/zulmara",
-        "fields": [
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
           {
-            "name": "Item level",
-            "value": "56.0",
-            "inline": true
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### [Zulmara](https://site.test/character/us/normal/zulmara)\nLevel 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://site.test/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
           },
           {
-            "name": "Top 3 upgrades · level 60 Phase 1 raid",
-            "value": "By DPS gained, against the guide build."
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 10,
+            "content": "**Top upgrades** · level 60 Phase 1 raid\n-# By DPS gained, against the guide build."
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Pick head**\nHead · +9.2 DPS\n-# Epic · item level 61"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/100.png"
+              },
+              "description": "Pick head, Epic head item"
+            }
           }
-        ],
-        "thumbnail": {
-          "url": "https://site.test/icons/hd/crests/hunter.webp"
-        },
-        "color": 11195250
+        ]
       },
-      {
-        "title": "Pick head",
-        "description": "Head · Epic · item level 61\n+9.2 DPS",
-        "url": "https://site.test/character/us/normal/zulmara#gear-slot-head",
-        "footer": {
-          "text": "Forever Sixty"
-        },
-        "thumbnail": {
-          "url": "https://site.test/data/1.60.1.99999/icons/inv_helmet_01.webp"
-        },
-        "timestamp": "2026-12-10T22:00:00Z",
-        "color": 10696174
-      }
-    ],
-    "components": [
       {
         "type": 1,
         "components": [
@@ -46,7 +59,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:6C6UoNxef7TrDI2_1c5droEAp4_C6QFKGg22VqAquZ4"
+            "custom_id": "share:jC98hsajYY75XLGDfZc2ZxRpYBUonhPecg1CBCxl4AA"
           },
           {
             "type": 2,
@@ -86,7 +99,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }

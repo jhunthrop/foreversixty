@@ -3,21 +3,18 @@
   "title": "not linked: the bare card",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "embeds": [
-      {
-        "title": "Choose a class",
-        "description": "Choose a class, a spec and a range, then Show BiS. Link Discord and this starts from your character.",
-        "footer": {
-          "text": "Forever Sixty"
-        },
-        "author": {
-          "name": "Best in slot"
-        },
-        "timestamp": "2026-12-10T22:00:00Z",
-        "color": 15055189
-      }
-    ],
+    "flags": 32832,
     "components": [
+      {
+        "type": 17,
+        "accent_color": 15055189,
+        "components": [
+          {
+            "type": 10,
+            "content": "-# Best in slot\n### Choose a class\nChoose a class, a spec and a range, then Show BiS. Link Discord and this starts from your character."
+          }
+        ]
+      },
       {
         "type": 1,
         "components": [
@@ -153,7 +150,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }

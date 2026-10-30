@@ -3,24 +3,30 @@
   "title": "Show BiS before a spec",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "embeds": [
-      {
-        "title": "Hunter · choose a spec",
-        "description": "**Choose a spec first.** Then Show BiS.",
-        "footer": {
-          "text": "Forever Sixty"
-        },
-        "author": {
-          "name": "Best in slot"
-        },
-        "thumbnail": {
-          "url": "https://site.test/icons/hd/crests/hunter.webp"
-        },
-        "timestamp": "2026-12-10T22:00:00Z",
-        "color": 11195250
-      }
-    ],
+    "flags": 32832,
     "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Best in slot\n### Hunter · choose a spec\n**Choose a spec first.** Then Show BiS."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://site.test/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          }
+        ]
+      },
       {
         "type": 1,
         "components": [
@@ -167,7 +173,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }

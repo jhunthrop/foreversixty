@@ -3,23 +3,83 @@
   "title": "Show BiS: the card becomes the typed answer",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-    "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
-    "embeds": [
-      {
-        "title": "Pick head",
-        "description": "Head · Epic · item level 61\n+9.2 DPS",
-        "url": "https://site.test/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-        "footer": {
-          "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
-        },
-        "thumbnail": {
-          "url": "https://site.test/data/1.60.1.99999/icons/inv_helmet_01.webp"
-        },
-        "timestamp": "2026-12-10T22:00:00Z",
-        "color": 10696174
-      }
-    ],
+    "flags": 32832,
     "components": [
+      {
+        "type": 17,
+        "accent_color": 11195250,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### Beast Mastery Hunter\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Head to Legs, 9 of 17 slots. Each gain is over the next best item."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://site.test/icons/hd/crests/hunter.webp"
+              },
+              "description": "Hunter crest"
+            }
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Pick head**\nHead · +9.2 DPS\n-# Epic · item level 61"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://api.test/v1/discord/tiles/1.60.1.99999/100.png"
+              },
+              "description": "Pick head, Epic head item"
+            }
+          },
+          {
+            "type": 10,
+            "content": "**Neck** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Shoulder** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Back** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Chest** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Wrist** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Hands** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Waist** · no pick for this range."
+          },
+          {
+            "type": 10,
+            "content": "**Legs** · no pick for this range."
+          }
+        ]
+      },
       {
         "type": 1,
         "components": [
@@ -27,7 +87,13 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:ETsckh0MUHCXRpYAXQoDPcxTEKAbZTDvN6CED4pY-QQ"
+            "custom_id": "share:D25BFxjJS0Eq7PRe6n5tiB_x77NuNw5ggosQs18Vw9g"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "label": "Feet to Ranged",
+            "custom_id": "gbis:1:pg:hunter:beast-mastery:p1::2"
           },
           {
             "type": 2,
@@ -44,7 +110,6 @@
         ]
       }
     ],
-    "flags": 64,
     "allowed_mentions": {
       "parse": []
     }
