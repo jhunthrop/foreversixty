@@ -32,8 +32,8 @@ test.describe('headers align with the body', () => {
       await page.goto('/tiers');
       const body = await left(page.locator('.tier-body'));
       expect(body).toBe(48);
-      expect(await left(page.locator('.tier-eyebrow'))).toBe(body);
-      expect(await left(page.locator('.tier-h1'))).toBe(body);
+      expect(await left(page.getByTestId('tier-page').locator('p.text-gold'))).toBe(body);
+      expect(await left(page.getByTestId('tier-page').locator('h1'))).toBe(body);
     });
   }
 
@@ -43,6 +43,6 @@ test.describe('headers align with the body', () => {
     await expect(page.locator('.planner-header-eyebrow')).toBeVisible();
     expect(await left(page.locator('.planner-header-eyebrow'))).toBe(18);
     await page.goto('/tiers');
-    expect(await left(page.locator('.tier-eyebrow'))).toBe(18);
+    expect(await left(page.getByTestId('tier-page').locator('p.text-gold'))).toBe(18);
   });
 });
