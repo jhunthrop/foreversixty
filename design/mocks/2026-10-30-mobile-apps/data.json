@@ -1,0 +1,3434 @@
+{
+ "bands": {
+  "bare": {
+   "reference_dps_per_point": 0.11101487492535314,
+   "set_dps": 149.20123824180146,
+   "slots": [
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 231663,
+       "item_name": "Warlord's Mail Helm",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 252604,
+       "item_name": "Blue Dragonscale Helm",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -7.858707982,
+       "item_id": 227002,
+       "item_name": "Coif of The Five Thunders",
+       "source": "Saving the Best for Last",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 16693,
+     "item_name": "Devout Crown",
+     "runners_up": [
+      {
+       "item_id": 231663,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 252604,
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "set_bonus": {
+      "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana.",
+      "pieces": 5,
+      "set": "Vestments of the Devout"
+     },
+     "sim_dps": 149.20123824180146,
+     "slot": "head",
+     "source": "Scholomance: Darkmaster Gandling",
+     "source_kind": "dungeon",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -0.327878399,
+       "item_id": 22149,
+       "item_name": "Beads of Ogre Mojo",
+       "source": "Falrin's Vendetta",
+       "source_kind": "quest"
+      },
+      {
+       "dps_delta": -0.59892831,
+       "item_id": 19426,
+       "item_name": "Orb of the Darkmoon",
+       "source": "1200 Tickets - Orb of the Darkmoon",
+       "source_kind": "quest"
+      },
+      {
+       "dps_delta": -0.59892831,
+       "item_id": 23125,
+       "item_name": "Chains of the Lich",
+       "source": "Stratholme: Balzaphon",
+       "source_kind": "dungeon"
+      }
+     ],
+     "item_id": 22657,
+     "item_name": "Amulet of the Dawn",
+     "runners_up": [
+      {
+       "item_id": 22149,
+       "source": "Falrin's Vendetta",
+       "source_kind": "quest"
+      },
+      {
+       "item_id": 19426,
+       "source": "1200 Tickets - Orb of the Darkmoon",
+       "source_kind": "quest"
+      }
+     ],
+     "score": 27.395027564,
+     "slot": "neck",
+     "source": "Epic Armaments of Battle - Friend of the Dawn",
+     "source_kind": "quest",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 231659,
+       "item_name": "Warlord's Mail Spaulders",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 272958,
+       "item_name": "Darkspear Shoulderguards",
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -5.610421474,
+       "item_id": 227808,
+       "item_name": "Rugged Mantle of the Timbermaw",
+       "source": "Meilosh",
+       "source_kind": "vendor",
+       "verified": true
+      }
+     ],
+     "item_id": 16695,
+     "item_name": "Devout Mantle",
+     "runners_up": [
+      {
+       "item_id": 231659,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 272958,
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor"
+      }
+     ],
+     "set_bonus": {
+      "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana.",
+      "pieces": 5,
+      "set": "Vestments of the Devout"
+     },
+     "sim_dps": 149.20123824180146,
+     "slot": "shoulder",
+     "source": "Blackrock Spire: Solakar Flamewreath",
+     "source_kind": "dungeon",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -0.327878399,
+       "item_id": 19121,
+       "item_name": "Deep Woodlands Cloak",
+       "source": "Wanted: Vile Priestess Hexx and Her Minions",
+       "source_kind": "quest"
+      },
+      {
+       "dps_delta": -0.423394595,
+       "item_id": 11623,
+       "item_name": "Spritecaster Cape",
+       "source": "Blackrock Depths: High Interrogator Gerstahn ",
+       "source_kind": "dungeon"
+      },
+      {
+       "dps_delta": -2.094756495,
+       "item_id": 272411,
+       "item_name": "Arcanoweave Cloak",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor",
+       "verified": true
+      }
+     ],
+     "item_id": 18510,
+     "item_name": "Hide of the Wild",
+     "runners_up": [
+      {
+       "item_id": 19121,
+       "source": "Wanted: Vile Priestess Hexx and Her Minions",
+       "source_kind": "quest"
+      },
+      {
+       "item_id": 11623,
+       "source": "Blackrock Depths: High Interrogator Gerstahn ",
+       "source_kind": "dungeon"
+      }
+     ],
+     "sim_dps": 149.20123824180146,
+     "slot": "back",
+     "source": "Leatherworking",
+     "source_kind": "crafted",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 16666,
+       "item_name": "Vest of Elements",
+       "source": "Blackrock Spire: General Drakkisath",
+       "source_kind": "dungeon"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 231662,
+       "item_name": "Warlord's Mail Breastplate",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -7.777171004,
+       "item_id": 227004,
+       "item_name": "Vest of The Five Thunders",
+       "source": "Saving the Best for Last",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 16690,
+     "item_name": "Devout Robe",
+     "runners_up": [
+      {
+       "item_id": 16666,
+       "source": "Blackrock Spire: General Drakkisath",
+       "source_kind": "dungeon"
+      },
+      {
+       "item_id": 231662,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      }
+     ],
+     "set_bonus": {
+      "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana.",
+      "pieces": 5,
+      "set": "Vestments of the Devout"
+     },
+     "sim_dps": 149.20123824180146,
+     "slot": "chest",
+     "source": "Blackrock Spire: General Drakkisath",
+     "source_kind": "dungeon",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 19596,
+       "item_name": "Dryad's Wrist Bindings",
+       "source": "Warsong Outriders",
+       "source_kind": "rep"
+      }
+     ],
+     "chance": 0.0371,
+     "dps_delta": 5.739969501759532,
+     "item_id": 16697,
+     "item_name": "Devout Bracers",
+     "runners_up": [
+      {
+       "item_id": 19596,
+       "source": "Warsong Outriders",
+       "source_kind": "rep"
+      }
+     ],
+     "set_bonus": {
+      "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana.",
+      "pieces": 5,
+      "set": "Vestments of the Devout"
+     },
+     "sim_dps": 149.20123824180146,
+     "slot": "wrist",
+     "source": "Stratholme: Crimson Priest",
+     "source_kind": "dungeon",
+     "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +5.7 DPS (149.2 vs 143.5 set DPS)",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 231660,
+       "item_name": "General's Mail Gauntlets",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 272097,
+       "item_name": "Raider Handwraps",
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -6.995265696,
+       "item_id": 272101,
+       "item_name": "Raider Handguards",
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor",
+       "verified": true
+      }
+     ],
+     "item_id": 16692,
+     "item_name": "Devout Gloves",
+     "runners_up": [
+      {
+       "item_id": 231660,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 272097,
+       "source": "Creeg Bothunk",
+       "source_kind": "vendor"
+      }
+     ],
+     "set_bonus": {
+      "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana.",
+      "pieces": 5,
+      "set": "Vestments of the Devout"
+     },
+     "sim_dps": 149.20123824180146,
+     "slot": "hands",
+     "source": "Stratholme: Archivist Galford",
+     "source_kind": "dungeon",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -1.453834467,
+       "item_id": 272399,
+       "item_name": "Stormseeker's Girdle",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.67069799,
+       "item_id": 18504,
+       "item_name": "Girdle of Insight",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -2.992898533,
+       "item_id": 18405,
+       "item_name": "Belt of the Archmage",
+       "source": "Tailoring",
+       "source_kind": "crafted",
+       "verified": true
+      }
+     ],
+     "item_id": 228190,
+     "item_name": "Knowledge of the Timbermaw",
+     "runners_up": [
+      {
+       "item_id": 272399,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 18504,
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "score": 51.978980663,
+     "slot": "waist",
+     "source": "Meilosh",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -0.475056856,
+       "item_id": 231664,
+       "item_name": "General's Mail Leggings",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -0.99924011,
+       "item_id": 237817,
+       "item_name": "Sentinel's Lizardhide Pants",
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.998179989,
+       "item_id": 237815,
+       "item_name": "Sentinel's Silk Leggings",
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor",
+       "verified": true
+      }
+     ],
+     "item_id": 252486,
+     "item_name": "Ironfeather Leggings",
+     "runners_up": [
+      {
+       "item_id": 231664,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 237817,
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 59.789098179,
+     "slot": "legs",
+     "source": "Leatherworking",
+     "source_kind": "crafted",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -0.005166226,
+       "item_id": 231661,
+       "item_name": "General's Mail Sabatons",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -0.777104124,
+       "item_id": 231667,
+       "item_name": "General's Mail Boots",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -2.634866924,
+       "item_id": 11822,
+       "item_name": "Omnicast Boots",
+       "source": "Blackrock Depths: Golem Lord Argelmach",
+       "source_kind": "dungeon",
+       "verified": true
+      }
+     ],
+     "item_id": 227007,
+     "item_name": "Slippers of The Five Thunders",
+     "runners_up": [
+      {
+       "item_id": 231661,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 231667,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      }
+     ],
+     "score": 36.25541854,
+     "slot": "feet",
+     "source": "Mokvar",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -1.988243937,
+       "item_id": 13001,
+       "item_name": "Maiden's Circle",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": -2.33678724,
+       "item_id": 19109,
+       "item_name": "Deep Rooted Ring",
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      },
+      {
+       "dps_delta": -2.579173254,
+       "item_id": 272406,
+       "item_name": "Channeler's Ring",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "effect_unmodelled": true,
+     "item_id": 234032,
+     "item_name": "Signet Ring of the Bronze Dragonflight",
+     "runners_up": [
+      {
+       "item_id": 13001,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "item_id": 19109,
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      }
+     ],
+     "score": 42.583953099,
+     "slot": "finger1",
+     "source": "Anachronos",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -1.215997398,
+       "item_id": 19109,
+       "item_name": "Deep Rooted Ring",
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      },
+      {
+       "dps_delta": -1.458383412,
+       "item_id": 272406,
+       "item_name": "Channeler's Ring",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.470198037,
+       "item_id": 13001,
+       "item_name": "Maiden's Circle",
+       "source": "World drop",
+       "source_kind": "world_drop",
+       "verified": true
+      }
+     ],
+     "chance": 0.339806,
+     "item_id": 20682,
+     "item_name": "Elemental Focus Band",
+     "runners_up": [
+      {
+       "item_id": 19109,
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      },
+      {
+       "item_id": 272406,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 32.488100246,
+     "slot": "finger2",
+     "source": "Prince Skaldrenox",
+     "source_kind": "world",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 11302,
+       "item_name": "Uther's Strength",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 249469,
+       "item_name": "Frozen Heart of the Mountain",
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 272438,
+       "item_name": "Weakness Analyzer",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "dps_delta": 8.655242670513047,
+     "item_id": 22678,
+     "item_name": "Talisman of Ascendance",
+     "runners_up": [
+      {
+       "item_id": 11302,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "item_id": 249469,
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      }
+     ],
+     "sim_dps": 149.20123824180146,
+     "slot": "trinket1",
+     "source": "Epic Armaments of Battle - Friend of the Dawn",
+     "source_kind": "quest",
+     "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +8.7 DPS (149.2 vs 140.5 set DPS)",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 272438,
+       "item_name": "Weakness Analyzer",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -0.888118999,
+       "item_id": 11302,
+       "item_name": "Uther's Strength",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": -0.954450148,
+       "item_id": 249469,
+       "item_name": "Frozen Heart of the Mountain",
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      }
+     ],
+     "effect_unmodelled": true,
+     "item_id": 272439,
+     "item_name": "Serenity Field",
+     "runners_up": [
+      {
+       "item_id": 272438,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 11302,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      }
+     ],
+     "sim_dps": 149.20123824180146,
+     "slot": "trinket2",
+     "source": "Pix Xizzix",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 12794,
+       "item_name": "Masterwork Stormhammer",
+       "source": "Blacksmithing",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 234549,
+       "item_name": "High Warlord's War Staff",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -2.747016616,
+       "item_id": 812,
+       "item_name": "Glowing Brightwood Staff",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      }
+     ],
+     "item_id": 2243,
+     "item_name": "Hand of Edward the Odd",
+     "runners_up": [
+      {
+       "item_id": 12794,
+       "source": "Blacksmithing",
+       "source_kind": "crafted"
+      },
+      {
+       "item_id": 234549,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      }
+     ],
+     "sim_dps": 149.20123824180146,
+     "slot": "main_hand",
+     "source": "World drop",
+     "source_kind": "world_drop",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 234563,
+       "item_name": "High Warlord's Tome of Destruction",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 235474,
+       "item_name": "High Warlord's Barricade",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.698312181,
+       "item_id": 11904,
+       "item_name": "Spirit of Aquementas",
+       "source": "It's Dangerous to Go Alone",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 19315,
+     "item_name": "Therazane's Touch",
+     "runners_up": [
+      {
+       "item_id": 234563,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 235474,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 29,
+     "slot": "off_hand",
+     "source": "Frostwolf Clan",
+     "source_kind": "rep",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 272432,
+       "item_name": "Totem of the Storm",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      }
+     ],
+     "empty_reason": "no_dps_value",
+     "slot": "ranged",
+     "verified": false
+    }
+   ],
+   "talent_points": 51,
+   "talents": "5510331300001350-030000000000000000-5033520000000000"
+  },
+  "raid": {
+   "reference_dps_per_point": 0.3940517089745433,
+   "set_dps": 453.607451436142,
+   "slots": [
+    {
+     "alternatives": [
+      {
+       "dps_delta": -1.308383672,
+       "item_id": 231663,
+       "item_name": "Warlord's Mail Helm",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -2.61198329,
+       "item_id": 252561,
+       "item_name": "Living Crown",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -3.488812824,
+       "item_id": 227002,
+       "item_name": "Coif of The Five Thunders",
+       "source": "Saving the Best for Last",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 252604,
+     "item_name": "Blue Dragonscale Helm",
+     "runners_up": [
+      {
+       "item_id": 231663,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 252561,
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "score": 38.314560195,
+     "slot": "head",
+     "source": "Leatherworking",
+     "source_kind": "crafted",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 19426,
+       "item_name": "Orb of the Darkmoon",
+       "source": "1200 Tickets - Orb of the Darkmoon",
+       "source_kind": "quest"
+      },
+      {
+       "dps_delta": -0.855565028,
+       "item_id": 22657,
+       "item_name": "Amulet of the Dawn",
+       "source": "Epic Armaments of Battle - Friend of the Dawn",
+       "source_kind": "quest"
+      },
+      {
+       "dps_delta": -1.790037441,
+       "item_id": 22149,
+       "item_name": "Beads of Ogre Mojo",
+       "source": "Falrin's Vendetta",
+       "source_kind": "quest"
+      }
+     ],
+     "item_id": 23125,
+     "item_name": "Chains of the Lich",
+     "runners_up": [
+      {
+       "item_id": 19426,
+       "source": "1200 Tickets - Orb of the Darkmoon",
+       "source_kind": "quest"
+      },
+      {
+       "item_id": 22657,
+       "source": "Epic Armaments of Battle - Friend of the Dawn",
+       "source_kind": "quest"
+      }
+     ],
+     "score": 22,
+     "slot": "neck",
+     "source": "Stratholme: Balzaphon",
+     "source_kind": "dungeon",
+     "ties": [
+      {
+       "item_id": 19426,
+       "item_name": "Orb of the Darkmoon"
+      }
+     ],
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -2.217941259,
+       "item_id": 231659,
+       "item_name": "Warlord's Mail Spaulders",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -4.23325508,
+       "item_id": 19050,
+       "item_name": "Mantle of the Timbermaw",
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -5.546521396,
+       "item_id": 227003,
+       "item_name": "Pauldrons of The Five Thunders",
+       "source": "Anthion's Parting Words",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 227808,
+     "item_name": "Rugged Mantle of the Timbermaw",
+     "runners_up": [
+      {
+       "item_id": 231659,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 19050,
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      }
+     ],
+     "score": 37.136994408,
+     "slot": "shoulder",
+     "source": "Meilosh",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -3.107348718,
+       "item_id": 18510,
+       "item_name": "Hide of the Wild",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -3.692824697,
+       "item_id": 11623,
+       "item_name": "Spritecaster Cape",
+       "source": "Blackrock Depths: High Interrogator Gerstahn ",
+       "source_kind": "dungeon"
+      },
+      {
+       "dps_delta": -4.041821131,
+       "item_id": 19121,
+       "item_name": "Deep Woodlands Cloak",
+       "source": "Wanted: Vile Priestess Hexx and Her Minions",
+       "source_kind": "quest"
+      }
+     ],
+     "item_id": 272411,
+     "item_name": "Arcanoweave Cloak",
+     "runners_up": [
+      {
+       "item_id": 18510,
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "item_id": 11623,
+       "source": "Blackrock Depths: High Interrogator Gerstahn ",
+       "source_kind": "dungeon"
+      }
+     ],
+     "score": 25.600098574,
+     "slot": "back",
+     "source": "Pix Xizzix",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 227165,
+       "item_name": "Legionnaire's Mail Breastplate",
+       "source": "PvP rank 12 \u00b7 Legionnaire \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 231662,
+       "item_name": "Warlord's Mail Breastplate",
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -0.529227215,
+       "item_id": 220844,
+       "item_name": "Stone Guard's Pulsing Breastplate",
+       "source": "Lady Palanseer",
+       "source_kind": "vendor"
+      }
+     ],
+     "item_id": 16666,
+     "item_name": "Vest of Elements",
+     "runners_up": [
+      {
+       "item_id": 227165,
+       "source": "PvP rank 12 \u00b7 Legionnaire \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 231662,
+       "source": "PvP rank 17 \u00b7 Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 30.428923242,
+     "slot": "chest",
+     "source": "Blackrock Spire: General Drakkisath",
+     "source_kind": "dungeon",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -4.041830809,
+       "item_id": 254123,
+       "item_name": "Runecloth Cuffs",
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -4.435882518,
+       "item_id": 15092,
+       "item_name": "Runic Leather Bracers",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -4.874989503,
+       "item_id": 252542,
+       "item_name": "Skycaller's Leather Bracers",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "item_id": 19595,
+     "item_name": "Dryad's Wrist Bindings",
+     "runners_up": [
+      {
+       "item_id": 254123,
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      },
+      {
+       "item_id": 15092,
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "score": 24.971569297,
+     "slot": "wrist",
+     "source": "Warsong Outriders",
+     "source_kind": "rep",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 231660,
+       "item_name": "General's Mail Gauntlets",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -0.193690155,
+       "item_id": 231666,
+       "item_name": "General's Mail Gloves",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -0.247673036,
+       "item_id": 17721,
+       "item_name": "Gloves of the Greatfather",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "effect_unmodelled": true,
+     "item_id": 12632,
+     "item_name": "Storm Gauntlets",
+     "runners_up": [
+      {
+       "item_id": 231660,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 231666,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 24.628529277,
+     "slot": "hands",
+     "source": "Blacksmithing",
+     "source_kind": "crafted",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -5.329463359,
+       "item_id": 18405,
+       "item_name": "Belt of the Archmage",
+       "source": "Tailoring",
+       "source_kind": "crafted",
+       "verified": true
+      },
+      {
+       "dps_delta": -5.865710681,
+       "item_id": 272399,
+       "item_name": "Stormseeker's Girdle",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -6.406131384,
+       "item_id": 18504,
+       "item_name": "Girdle of Insight",
+       "source": "Leatherworking",
+       "source_kind": "crafted"
+      }
+     ],
+     "item_id": 228190,
+     "item_name": "Knowledge of the Timbermaw",
+     "runners_up": [
+      {
+       "item_id": 18405,
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      },
+      {
+       "item_id": 272399,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 39.800344844,
+     "slot": "waist",
+     "source": "Meilosh",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -1.736297168,
+       "item_id": 237815,
+       "item_name": "Sentinel's Silk Leggings",
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.736297168,
+       "item_id": 237817,
+       "item_name": "Sentinel's Lizardhide Pants",
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -3.06230312,
+       "item_id": 231664,
+       "item_name": "General's Mail Leggings",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "pvp"
+      }
+     ],
+     "item_id": 252486,
+     "item_name": "Ironfeather Leggings",
+     "runners_up": [
+      {
+       "item_id": 237815,
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 237817,
+       "source": "Illiyana Moonblaze",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 49.251332895,
+     "slot": "legs",
+     "source": "Leatherworking",
+     "source_kind": "crafted",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -0.247682714,
+       "item_id": 231661,
+       "item_name": "General's Mail Sabatons",
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -1.159748793,
+       "item_id": 254013,
+       "item_name": "Earthen Silk Slippers",
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": -2.30494735,
+       "item_id": 11822,
+       "item_name": "Omnicast Boots",
+       "source": "Blackrock Depths: Golem Lord Argelmach",
+       "source_kind": "dungeon",
+       "verified": true
+      }
+     ],
+     "item_id": 227007,
+     "item_name": "Slippers of The Five Thunders",
+     "runners_up": [
+      {
+       "item_id": 231661,
+       "source": "PvP rank 16 \u00b7 General \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 254013,
+       "source": "Tailoring",
+       "source_kind": "crafted"
+      }
+     ],
+     "score": 26.943138594,
+     "slot": "feet",
+     "source": "Mokvar",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -6.845238369,
+       "item_id": 13001,
+       "item_name": "Maiden's Circle",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": -8.410251716,
+       "item_id": 272407,
+       "item_name": "Blessed Band of Light",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -8.770441638,
+       "item_id": 19109,
+       "item_name": "Deep Rooted Ring",
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      }
+     ],
+     "effect_unmodelled": true,
+     "item_id": 234032,
+     "item_name": "Signet Ring of the Bronze Dragonflight",
+     "runners_up": [
+      {
+       "item_id": 13001,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "item_id": 272407,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 37.971544736,
+     "slot": "finger1",
+     "source": "Anachronos",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -2.35748036,
+       "item_id": 13001,
+       "item_name": "Maiden's Circle",
+       "source": "World drop",
+       "source_kind": "world_drop",
+       "verified": true
+      },
+      {
+       "dps_delta": -3.726696163,
+       "item_id": 272407,
+       "item_name": "Blessed Band of Light",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -4.086886085,
+       "item_id": 19109,
+       "item_name": "Deep Rooted Ring",
+       "source": "Ivus the Forest Lord",
+       "source_kind": "world"
+      }
+     ],
+     "chance": 0.339806,
+     "item_id": 20682,
+     "item_name": "Elemental Focus Band",
+     "runners_up": [
+      {
+       "item_id": 13001,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "item_id": 272407,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 26.085907783,
+     "slot": "finger2",
+     "source": "Prince Skaldrenox",
+     "source_kind": "world",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 11302,
+       "item_name": "Uther's Strength",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 249469,
+       "item_name": "Frozen Heart of the Mountain",
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 272438,
+       "item_name": "Weakness Analyzer",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      }
+     ],
+     "dps_delta": 19.251268877003554,
+     "item_id": 22678,
+     "item_name": "Talisman of Ascendance",
+     "runners_up": [
+      {
+       "item_id": 11302,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "item_id": 249469,
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      }
+     ],
+     "sim_dps": 453.607451436142,
+     "slot": "trinket1",
+     "source": "Epic Armaments of Battle - Friend of the Dawn",
+     "source_kind": "quest",
+     "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +19.3 DPS (453.6 vs 434.4 set DPS)",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -2.909142867,
+       "item_id": 272438,
+       "item_name": "Weakness Analyzer",
+       "source": "Pix Xizzix",
+       "source_kind": "vendor",
+       "verified": true
+      },
+      {
+       "dps_delta": -3.152413672,
+       "item_id": 11302,
+       "item_name": "Uther's Strength",
+       "source": "World drop",
+       "source_kind": "world_drop"
+      },
+      {
+       "dps_delta": -3.165938965,
+       "item_id": 249469,
+       "item_name": "Frozen Heart of the Mountain",
+       "source": "Enchanting",
+       "source_kind": "crafted"
+      }
+     ],
+     "effect_unmodelled": true,
+     "item_id": 272439,
+     "item_name": "Serenity Field",
+     "runners_up": [
+      {
+       "item_id": 272438,
+       "source": "Pix Xizzix",
+       "source_kind": "vendor"
+      },
+      {
+       "item_id": 11302,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      }
+     ],
+     "sim_dps": 453.607451436142,
+     "slot": "trinket2",
+     "source": "Pix Xizzix",
+     "source_kind": "vendor",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 12794,
+       "item_name": "Masterwork Stormhammer",
+       "source": "Blacksmithing",
+       "source_kind": "crafted"
+      },
+      {
+       "dps_delta": 0,
+       "item_id": 234549,
+       "item_name": "High Warlord's War Staff",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -11.967920265,
+       "item_id": 11750,
+       "item_name": "Kindling Stave",
+       "source": "Blackrock Depths: Pyromancer Loregrain",
+       "source_kind": "dungeon"
+      }
+     ],
+     "item_id": 2243,
+     "item_name": "Hand of Edward the Odd",
+     "runners_up": [
+      {
+       "item_id": 12794,
+       "source": "Blacksmithing",
+       "source_kind": "crafted"
+      },
+      {
+       "item_id": 234549,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      }
+     ],
+     "sim_dps": 453.607451436142,
+     "slot": "main_hand",
+     "source": "World drop",
+     "source_kind": "world_drop",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": 0,
+       "item_id": 234563,
+       "item_name": "High Warlord's Tome of Destruction",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "dps_delta": -0.506568595,
+       "item_id": 235474,
+       "item_name": "High Warlord's Barricade",
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      },
+      {
+       "dps_delta": -3.878857156,
+       "item_id": 11904,
+       "item_name": "Spirit of Aquementas",
+       "source": "It's Dangerous to Go Alone",
+       "source_kind": "quest",
+       "verified": true
+      }
+     ],
+     "item_id": 19315,
+     "item_name": "Therazane's Touch",
+     "runners_up": [
+      {
+       "item_id": 234563,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "pvp"
+      },
+      {
+       "item_id": 235474,
+       "source": "PvP rank 18 \u00b7 High Warlord \u00b7 Horde",
+       "source_kind": "vendor"
+      }
+     ],
+     "score": 29,
+     "slot": "off_hand",
+     "source": "Frostwolf Clan",
+     "source_kind": "rep",
+     "verified": true
+    },
+    {
+     "alternatives": [
+      {
+       "dps_delta": -2.51784765,
+       "item_id": 272432,
+       "item_name": "Totem of the Storm",
+       "source": "World drop",
+       "source_kind": "world_drop",
+       "verified": true
+      }
+     ],
+     "item_id": 228176,
+     "item_name": "Totem of Thunder",
+     "runners_up": [
+      {
+       "item_id": 272432,
+       "source": "World drop",
+       "source_kind": "world_drop"
+      }
+     ],
+     "sim_dps": 453.607451436142,
+     "slot": "ranged",
+     "source": "Pix Xizzix",
+     "source_kind": "vendor",
+     "verified": true
+    }
+   ],
+   "talent_points": 51,
+   "talents": "5510331300001350-030000000000000000-0533520000000000"
+  }
+ },
+ "build": "1.60.1.70532",
+ "items": {
+  "11302": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "2% chance when struck in melee to gain a holy shield, absorbing 216 damage for 15 sec. This chance is doubled in Wasteland and Haunted areas.",
+   "icon": "inv_jewelry_talisman_06",
+   "item_level": 52,
+   "name": "Uther's Strength",
+   "quality": 3,
+   "required_level": 47,
+   "slot": "trinket",
+   "speed": 0.0,
+   "stats": {
+    "healing": 18,
+    "spell_power": 6
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "11623": {
+   "armor": 37,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_cape_20",
+   "item_level": 52,
+   "name": "Spritecaster Cape",
+   "quality": 3,
+   "required_level": 47,
+   "slot": "back",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 6,
+    "spell_power": 14,
+    "spirit": 6,
+    "stamina": 5
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "11750": {
+   "armor": 0,
+   "damage_max": 160,
+   "damage_min": 106,
+   "dps": 45.86,
+   "effect_text": "",
+   "icon": "inv_staff_18",
+   "item_level": 53,
+   "name": "Kindling Stave",
+   "quality": 3,
+   "required_level": 48,
+   "slot": "main_hand",
+   "speed": 2.9,
+   "stats": {
+    "fire_res": 10,
+    "healing": 60,
+    "intellect": 12,
+    "spell_power": 60,
+    "stamina": 10
+   },
+   "two_hand": true,
+   "weapon_type": "staff"
+  },
+  "11822": {
+   "armor": 58,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_boots_05",
+   "item_level": 59,
+   "name": "Omnicast Boots",
+   "quality": 3,
+   "required_level": 54,
+   "slot": "feet",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 12,
+    "spell_power": 20,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "11904": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_ore_arcanite_02",
+   "item_level": 56,
+   "name": "Spirit of Aquementas",
+   "quality": 3,
+   "required_level": 47,
+   "slot": "off_hand",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 21
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "12632": {
+   "armor": 218,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Adds 3 Lightning damage to your melee attacks.",
+   "icon": "inv_gauntlets_30",
+   "item_level": 59,
+   "name": "Storm Gauntlets",
+   "quality": 3,
+   "required_level": 54,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "spell_power": 18,
+    "stamina": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "12794": {
+   "armor": 0,
+   "damage_max": 108,
+   "damage_min": 58,
+   "dps": 41.5,
+   "effect_text": "Blasts up to 3 targets for 125 Nature damage.",
+   "icon": "inv_hammer_04",
+   "item_level": 63,
+   "name": "Masterwork Stormhammer",
+   "quality": 3,
+   "required_level": 57,
+   "slot": "main_hand",
+   "speed": 2.0,
+   "stats": {},
+   "two_hand": false,
+   "weapon_type": "mace"
+  },
+  "13001": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_ring_12",
+   "item_level": 61,
+   "name": "Maiden's Circle",
+   "quality": 3,
+   "required_level": 55,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 7,
+    "spell_power": 18,
+    "spirit": 6
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "15092": {
+   "armor": 63,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_bracer_11",
+   "item_level": 55,
+   "name": "Runic Leather Bracers",
+   "quality": 2,
+   "required_level": 50,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 10,
+    "spell_power": 10
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16666": {
+   "armor": 370,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_chain_11",
+   "item_level": 63,
+   "name": "Vest of Elements",
+   "quality": 3,
+   "required_level": 58,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 20,
+    "spell_power": 23,
+    "stamina": 13
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16690": {
+   "armor": 89,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_cloth_11",
+   "item_level": 63,
+   "name": "Devout Robe",
+   "quality": 3,
+   "required_level": 58,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "healing": 20,
+    "intellect": 24,
+    "spell_power": 7,
+    "spirit": 15,
+    "stamina": 13
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16692": {
+   "armor": 52,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_14",
+   "item_level": 59,
+   "name": "Devout Gloves",
+   "quality": 3,
+   "required_level": 54,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "healing": 15,
+    "intellect": 10,
+    "spell_power": 5,
+    "spirit": 17,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16693": {
+   "armor": 71,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_crown_01",
+   "item_level": 62,
+   "name": "Devout Crown",
+   "quality": 3,
+   "required_level": 57,
+   "slot": "head",
+   "speed": 0.0,
+   "stats": {
+    "healing": 20,
+    "intellect": 24,
+    "spell_power": 7,
+    "spirit": 15,
+    "stamina": 13
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16695": {
+   "armor": 64,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_02",
+   "item_level": 60,
+   "name": "Devout Mantle",
+   "quality": 3,
+   "required_level": 55,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "healing": 11,
+    "intellect": 21,
+    "spell_power": 4,
+    "spirit": 9,
+    "stamina": 4
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "16697": {
+   "armor": 35,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_31",
+   "item_level": 57,
+   "name": "Devout Bracers",
+   "quality": 3,
+   "required_level": 52,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "healing": 11,
+    "intellect": 8,
+    "spell_power": 4,
+    "spirit": 10,
+    "stamina": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "17721": {
+   "armor": 66,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_21",
+   "item_level": 38,
+   "name": "Gloves of the Greatfather",
+   "quality": 2,
+   "required_level": 33,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "healing": 26,
+    "spell_power": 24
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "18405": {
+   "armor": 54,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_31",
+   "item_level": 62,
+   "name": "Belt of the Archmage",
+   "quality": 4,
+   "required_level": 57,
+   "slot": "waist",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 16,
+    "spell_power": 20,
+    "stamina": 10
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "18504": {
+   "armor": 98,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_26",
+   "item_level": 62,
+   "name": "Girdle of Insight",
+   "quality": 3,
+   "required_level": 57,
+   "slot": "waist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 23,
+    "spell_power": 15,
+    "stamina": 9
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "18510": {
+   "armor": 48,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_cape_01",
+   "item_level": 62,
+   "name": "Hide of the Wild",
+   "quality": 4,
+   "required_level": 57,
+   "slot": "back",
+   "speed": 0.0,
+   "stats": {
+    "healing": 42,
+    "intellect": 10,
+    "spell_power": 14,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19050": {
+   "armor": 65,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_19",
+   "item_level": 61,
+   "name": "Mantle of the Timbermaw",
+   "quality": 3,
+   "required_level": 56,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 13,
+    "spell_power": 17
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19109": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_ring_35",
+   "item_level": 63,
+   "name": "Deep Rooted Ring",
+   "quality": 3,
+   "required_level": 58,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 10,
+    "spell_power": 12,
+    "stamina": 10
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19121": {
+   "armor": 37,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_cape_17",
+   "item_level": 51,
+   "name": "Deep Woodlands Cloak",
+   "quality": 3,
+   "required_level": 46,
+   "slot": "back",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 9,
+    "spell_power": 12,
+    "stamina": 6
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19315": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_branch_01",
+   "item_level": 60,
+   "name": "Therazane's Touch",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "off_hand",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 29
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19426": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_necklace_16",
+   "item_level": 65,
+   "name": "Orb of the Darkmoon",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "neck",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 22,
+    "spirit": 8,
+    "stamina": 11
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19595": {
+   "armor": 44,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_bracer_13",
+   "item_level": 65,
+   "name": "Dryad's Wrist Bindings",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 8,
+    "spell_power": 22,
+    "spirit": 7,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "19596": {
+   "armor": 37,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_bracer_13",
+   "item_level": 55,
+   "name": "Dryad's Wrist Bindings",
+   "quality": 4,
+   "required_level": 50,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 6,
+    "spell_power": 20,
+    "spirit": 6,
+    "stamina": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "20682": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_ring_23",
+   "item_level": 65,
+   "name": "Elemental Focus Band",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 11,
+    "spell_power": 22,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "220844": {
+   "armor": 317,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_chain_07",
+   "item_level": 53,
+   "name": "Stone Guard's Pulsing Breastplate",
+   "quality": 3,
+   "required_level": 50,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 12,
+    "spell_power": 18,
+    "stamina": 13
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "22149": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_amulet_05",
+   "item_level": 63,
+   "name": "Beads of Ogre Mojo",
+   "quality": 3,
+   "required_level": 58,
+   "slot": "neck",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 12,
+    "spell_power": 13,
+    "stamina": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "2243": {
+   "armor": 0,
+   "damage_max": 94,
+   "damage_min": 50,
+   "dps": 45.0,
+   "effect_text": "",
+   "icon": "inv_mace_14",
+   "item_level": 62,
+   "name": "Hand of Edward the Odd",
+   "quality": 4,
+   "required_level": 57,
+   "slot": "main_hand",
+   "speed": 1.6,
+   "stats": {
+    "healing": 90,
+    "intellect": 13,
+    "spell_power": 90,
+    "spirit": 10
+   },
+   "two_hand": false,
+   "weapon_type": "mace"
+  },
+  "22657": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_amulet_04",
+   "item_level": 60,
+   "name": "Amulet of the Dawn",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "neck",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 13,
+    "spell_power": 15,
+    "stamina": 13
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "22678": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Your next 5 damage or healing spells cast within 20 seconds will grant a bonus of up to 40 damage and up to 75 healing, stacking up to 5 times. Expires after 6 damage or healing spells or 20 seconds, whichever occurs first. ",
+   "icon": "inv_misc_gem_pearl_04",
+   "item_level": 60,
+   "name": "Talisman of Ascendance",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "trinket",
+   "speed": 0.0,
+   "stats": {},
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227002": {
+   "armor": 314,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_helmet_04",
+   "item_level": 60,
+   "name": "Coif of The Five Thunders",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "head",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 25,
+    "spell_power": 21,
+    "stamina": 12
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227003": {
+   "armor": 286,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_29",
+   "item_level": 65,
+   "name": "Pauldrons of The Five Thunders",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 12,
+    "spell_power": 19,
+    "stamina": 11
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227004": {
+   "armor": 387,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_chain_11",
+   "item_level": 60,
+   "name": "Vest of The Five Thunders",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 25,
+    "spell_power": 16,
+    "spirit": 11,
+    "stamina": 14
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227007": {
+   "armor": 266,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_boots_wolf",
+   "item_level": 60,
+   "name": "Slippers of The Five Thunders",
+   "quality": 4,
+   "required_level": 55,
+   "slot": "feet",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 16,
+    "spell_power": 21,
+    "spirit": 11,
+    "stamina": 12
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227165": {
+   "armor": 398,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_chain_16",
+   "item_level": 68,
+   "name": "Legionnaire's Mail Breastplate",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 18,
+    "spell_power": 20,
+    "stamina": 27
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "227808": {
+   "armor": 75,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_19",
+   "item_level": 65,
+   "name": "Rugged Mantle of the Timbermaw",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 15,
+    "spell_power": 27
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "228176": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases the critical strike chance of Lightning Bolt by 1%.",
+   "icon": "inv_relics_totemofrebirth",
+   "item_level": 65,
+   "name": "Totem of Thunder",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "ranged",
+   "speed": 0.0,
+   "stats": {},
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "228190": {
+   "armor": 56,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_09",
+   "item_level": 65,
+   "name": "Knowledge of the Timbermaw",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "waist",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 22,
+    "spell_power": 25
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "23125": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_18",
+   "item_level": 60,
+   "name": "Chains of the Lich",
+   "quality": 3,
+   "required_level": 55,
+   "slot": "neck",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 22
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231659": {
+   "armor": 353,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_29",
+   "item_level": 74,
+   "name": "Warlord's Mail Spaulders",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 16,
+    "spell_power": 21,
+    "stamina": 27
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231660": {
+   "armor": 283,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_11",
+   "item_level": 71,
+   "name": "General's Mail Gauntlets",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 15,
+    "spell_power": 21,
+    "stamina": 27
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231661": {
+   "armor": 311,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases the speed of your Ghost Wolf ability by 15%.",
+   "icon": "inv_boots_plate_06",
+   "item_level": 71,
+   "name": "General's Mail Sabatons",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "feet",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 17,
+    "spell_power": 20,
+    "stamina": 30
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231662": {
+   "armor": 470,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_chest_chain_11",
+   "item_level": 74,
+   "name": "Warlord's Mail Breastplate",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "chest",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 20,
+    "spell_power": 23,
+    "stamina": 52
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231663": {
+   "armor": 382,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_helmet_09",
+   "item_level": 74,
+   "name": "Warlord's Mail Helm",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "head",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 20,
+    "spell_power": 23,
+    "stamina": 52
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231664": {
+   "armor": 396,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_pants_mail_15",
+   "item_level": 71,
+   "name": "General's Mail Leggings",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "legs",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 24,
+    "spell_power": 28,
+    "stamina": 36
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231666": {
+   "armor": 283,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_11",
+   "item_level": 71,
+   "name": "General's Mail Gloves",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "healing": 26,
+    "intellect": 15,
+    "spell_power": 14,
+    "stamina": 27
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "231667": {
+   "armor": 311,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases the speed of your Ghost Wolf ability by 15%.",
+   "icon": "inv_boots_plate_06",
+   "item_level": 71,
+   "name": "General's Mail Boots",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "feet",
+   "speed": 0.0,
+   "stats": {
+    "healing": 26,
+    "intellect": 16,
+    "spell_power": 14,
+    "stamina": 28
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "234032": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases the casting speed of your spells by 2% per piece of Timeworn armor equipped.",
+   "icon": "inv_jewelry_ring_40",
+   "item_level": 80,
+   "name": "Signet Ring of the Bronze Dragonflight",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 9,
+    "spell_power": 28,
+    "stamina": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "234549": {
+   "armor": 0,
+   "damage_max": 289,
+   "damage_min": 192,
+   "dps": 80.17,
+   "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
+   "icon": "inv_misc_bone_elfskull_01",
+   "item_level": 80,
+   "name": "High Warlord's War Staff",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "main_hand",
+   "speed": 3.0,
+   "stats": {
+    "crit": 28,
+    "intellect": 23,
+    "spell_power": 81,
+    "stamina": 51
+   },
+   "two_hand": true,
+   "weapon_type": "staff"
+  },
+  "234563": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
+   "icon": "inv_misc_book_15",
+   "item_level": 80,
+   "name": "High Warlord's Tome of Destruction",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "off_hand",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 13,
+    "spell_power": 25,
+    "stamina": 24
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "235474": {
+   "armor": 3000,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Reduces all damage taken from players and their pets by $s2%. This effect cannot be combined from multiple sources.",
+   "icon": "inv_shield_19",
+   "item_level": 80,
+   "name": "High Warlord's Barricade",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "off_hand",
+   "speed": 0.0,
+   "stats": {
+    "healing": 20,
+    "intellect": 10,
+    "spell_power": 24,
+    "stamina": 26
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "237815": {
+   "armor": 104,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_pants_cloth_05",
+   "item_level": 78,
+   "name": "Sentinel's Silk Leggings",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "legs",
+   "speed": 0.0,
+   "stats": {
+    "crit": 28,
+    "intellect": 10,
+    "spell_power": 32,
+    "stamina": 39
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "237817": {
+   "armor": 201,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_pants_06",
+   "item_level": 78,
+   "name": "Sentinel's Lizardhide Pants",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "legs",
+   "speed": 0.0,
+   "stats": {
+    "crit": 28,
+    "intellect": 10,
+    "spell_power": 32,
+    "stamina": 39
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "249469": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases Frost and Shadow spell damage done by up to 29 for 15 sec. This effect is doubled in Snowy areas.",
+   "icon": "inv_misc_gem_sapphire_01",
+   "item_level": 55,
+   "name": "Frozen Heart of the Mountain",
+   "quality": 3,
+   "required_level": 50,
+   "slot": "trinket",
+   "speed": 0.0,
+   "stats": {
+    "fire_res": 7,
+    "frost_res": 7,
+    "hit": 9,
+    "nature_res": 7,
+    "shadow_res": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "252486": {
+   "armor": 164,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_pants_leather_26",
+   "item_level": 61,
+   "name": "Ironfeather Leggings",
+   "quality": 4,
+   "required_level": 56,
+   "slot": "legs",
+   "speed": 0.0,
+   "stats": {
+    "crit": 14,
+    "intellect": 18,
+    "spell_power": 38
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "252542": {
+   "armor": 64,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_bracer_22a",
+   "item_level": 50,
+   "name": "Skycaller's Leather Bracers",
+   "quality": 3,
+   "required_level": 45,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 7,
+    "spell_power": 10,
+    "spirit": 5,
+    "stamina": 6
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "252561": {
+   "armor": 152,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_helmet_32",
+   "item_level": 61,
+   "name": "Living Crown",
+   "quality": 4,
+   "required_level": 56,
+   "slot": "head",
+   "speed": 0.0,
+   "stats": {
+    "healing": 73,
+    "intellect": 18,
+    "spell_power": 25,
+    "spirit": 14
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "252604": {
+   "armor": 319,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_helmet_09",
+   "item_level": 61,
+   "name": "Blue Dragonscale Helm",
+   "quality": 4,
+   "required_level": 56,
+   "slot": "head",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 18,
+    "spell_power": 25
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "254013": {
+   "armor": 33,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_boots_cloth_22",
+   "item_level": 36,
+   "name": "Earthen Silk Slippers",
+   "quality": 2,
+   "required_level": 31,
+   "slot": "feet",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 24,
+    "spirit": 7
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "254123": {
+   "armor": 32,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_bracer_13",
+   "item_level": 57,
+   "name": "Runecloth Cuffs",
+   "quality": 2,
+   "required_level": 52,
+   "slot": "wrist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 10,
+    "spell_power": 11
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272097": {
+   "armor": 63,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_22",
+   "item_level": 65,
+   "name": "Raider Handwraps",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "healing": 24,
+    "intellect": 27,
+    "spell_power": 8,
+    "stamina": 15
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272101": {
+   "armor": 260,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_gauntlets_11",
+   "item_level": 65,
+   "name": "Raider Handguards",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "hands",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 21,
+    "spell_power": 16,
+    "stamina": 15
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272399": {
+   "armor": 217,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_belt_33",
+   "item_level": 60,
+   "name": "Stormseeker's Girdle",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "waist",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 24,
+    "spell_power": 16,
+    "stamina": 11
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272406": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_ring_24",
+   "item_level": 65,
+   "name": "Channeler's Ring",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 14,
+    "spirit": 8
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272407": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_jewelry_ring_60",
+   "item_level": 65,
+   "name": "Blessed Band of Light",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "finger",
+   "speed": 0.0,
+   "stats": {
+    "healing": 31,
+    "hit": 10,
+    "spell_power": 10,
+    "spirit": 8,
+    "stamina": 10
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272411": {
+   "armor": 46,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_misc_cape_05",
+   "item_level": 65,
+   "name": "Arcanoweave Cloak",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "back",
+   "speed": 0.0,
+   "stats": {
+    "hit": 10,
+    "intellect": 8,
+    "spell_power": 16
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272432": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Your Lightning Bolt ability can now also trigger the Maelstrom Weapon talent, but with a 50% reduced chance.",
+   "icon": "spell_shaman_stormtotem",
+   "item_level": 65,
+   "name": "Totem of the Storm",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "ranged",
+   "speed": 0.0,
+   "stats": {},
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272438": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases your critical strike chance with all spells and attacks by 5% for 20 sec or until you deal a non-periodic critical effect.",
+   "icon": "inv_misc_blizzcon09_graphicscard",
+   "item_level": 65,
+   "name": "Weakness Analyzer",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "trinket",
+   "speed": 0.0,
+   "stats": {
+    "spell_power": 22
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272439": {
+   "armor": 0,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "Increases Spirit by 72 for 15 sec.",
+   "icon": "inv_misc_enggizmos_36",
+   "item_level": 65,
+   "name": "Serenity Field",
+   "quality": 3,
+   "required_level": 60,
+   "slot": "trinket",
+   "speed": 0.0,
+   "stats": {
+    "healing": 42,
+    "spell_power": 14
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "272958": {
+   "armor": 312,
+   "damage_max": 0,
+   "damage_min": 0,
+   "dps": 0.0,
+   "effect_text": "",
+   "icon": "inv_shoulder_14",
+   "item_level": 65,
+   "name": "Darkspear Shoulderguards",
+   "quality": 4,
+   "required_level": 60,
+   "slot": "shoulder",
+   "speed": 0.0,
+   "stats": {
+    "intellect": 27,
+    "spell_power": 16,
+    "stamina": 12
+   },
+   "two_hand": false,
+   "weapon_type": null
+  },
+  "812": {
+   "armor": 0,
+   "damage_max": 191,
+   "damage_min": 127,
+   "dps": 51.29,
+   "effect_text": "",
+   "icon": "inv_staff_29",
+   "item_level": 54,
+   "name": "Glowing Brightwood Staff",
+   "quality": 4,
+   "required_level": 49,
+   "slot": "main_hand",
+   "speed": 3.1,
+   "stats": {
+    "healing": 150,
+    "intellect": 29,
+    "nature_res": 15,
+    "spell_power": 50,
+    "spirit": 9,
+    "stamina": 15
+   },
+   "two_hand": true,
+   "weapon_type": "staff"
+  }
+ },
+ "trees": [
+  {
+   "icon": "spell_nature_lightning",
+   "name": "Elemental",
+   "talents": [
+    {
+     "column": 1,
+     "icon": "spell_nature_wispsplode",
+     "max_rank": 5,
+     "name": "Convection",
+     "tier": 0
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_earthshock",
+     "max_rank": 5,
+     "name": "Concussion",
+     "tier": 0
+    },
+    {
+     "column": 0,
+     "icon": "spell_fire_elementaldevastation",
+     "max_rank": 3,
+     "name": "Elemental Devastation",
+     "tier": 1
+    },
+    {
+     "column": 1,
+     "icon": "spell_frost_frostward",
+     "max_rank": 5,
+     "name": "Reverberation",
+     "tier": 1
+    },
+    {
+     "column": 2,
+     "icon": "spell_lightning_lightningbolt01",
+     "max_rank": 3,
+     "name": "Elemental Alacrity",
+     "tier": 1
+    },
+    {
+     "column": 3,
+     "icon": "spell_fire_immolation",
+     "max_rank": 3,
+     "name": "Call of Flame",
+     "tier": 1
+    },
+    {
+     "column": 0,
+     "icon": "spell_shadow_manaburn",
+     "max_rank": 1,
+     "name": "Elemental Focus",
+     "tier": 2
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_spiritarmor",
+     "max_rank": 3,
+     "name": "Elemental Warding",
+     "tier": 2
+    },
+    {
+     "column": 0,
+     "icon": "spell_fire_sealoffire",
+     "max_rank": 2,
+     "name": "Trial by Fire",
+     "tier": 3
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_eyeofthestorm",
+     "max_rank": 3,
+     "name": "Eye of the Storm",
+     "tier": 3
+    },
+    {
+     "column": 3,
+     "icon": "spell_nature_stranglevines",
+     "max_rank": 1,
+     "name": "Earthbound",
+     "tier": 3
+    },
+    {
+     "column": 0,
+     "icon": "spell_nature_stormreach",
+     "max_rank": 2,
+     "name": "Elemental Reach",
+     "tier": 4
+    },
+    {
+     "column": 1,
+     "icon": "spell_shaman_lavaburst",
+     "max_rank": 1,
+     "name": "Lava Burst",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_lightningoverload",
+     "max_rank": 3,
+     "name": "Lightning Overload",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_fire_volcano",
+     "max_rank": 5,
+     "name": "Elemental Fury",
+     "tier": 5
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_wispheal",
+     "max_rank": 1,
+     "name": "Elemental Mastery",
+     "tier": 6
+    }
+   ]
+  },
+  {
+   "icon": "spell_nature_lightningshield",
+   "name": "Enhancement",
+   "talents": [
+    {
+     "column": 0,
+     "icon": "spell_nature_stoneclawtotem",
+     "max_rank": 2,
+     "name": "Earth's Grasp",
+     "tier": 0
+    },
+    {
+     "column": 1,
+     "icon": "ability_thunderbolt",
+     "max_rank": 5,
+     "name": "Thundering Strikes",
+     "tier": 0
+    },
+    {
+     "column": 2,
+     "icon": "spell_shadow_grimward",
+     "max_rank": 5,
+     "name": "Ancestral Knowledge",
+     "tier": 0
+    },
+    {
+     "column": 0,
+     "icon": "spell_nature_stoneskintotem",
+     "max_rank": 2,
+     "name": "Guardian Totems",
+     "tier": 1
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_mentalquickness",
+     "max_rank": 3,
+     "name": "Mental Dexterity",
+     "tier": 1
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_spiritwolf",
+     "max_rank": 2,
+     "name": "Improved Ghost Wolf",
+     "tier": 1
+    },
+    {
+     "column": 3,
+     "icon": "spell_nature_lightningshield",
+     "max_rank": 3,
+     "name": "Improved Lightning Shield",
+     "tier": 1
+    },
+    {
+     "column": 0,
+     "icon": "spell_fire_flametounge",
+     "max_rank": 3,
+     "name": "Elemental Weapons",
+     "tier": 2
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_elementalabsorption",
+     "max_rank": 1,
+     "name": "Shamanistic Focus",
+     "tier": 2
+    },
+    {
+     "column": 3,
+     "icon": "spell_nature_mirrorimage",
+     "max_rank": 3,
+     "name": "Anticipation",
+     "tier": 2
+    },
+    {
+     "column": 0,
+     "icon": "spell_holy_devotion",
+     "max_rank": 5,
+     "name": "Toughness",
+     "tier": 3
+    },
+    {
+     "column": 1,
+     "icon": "ability_ghoulfrenzy",
+     "max_rank": 5,
+     "name": "Flurry",
+     "tier": 3
+    },
+    {
+     "column": 2,
+     "icon": "ability_shaman_stormstrike",
+     "max_rank": 1,
+     "name": "Stormstrike",
+     "tier": 3
+    },
+    {
+     "column": 0,
+     "icon": "ability_parry",
+     "max_rank": 1,
+     "name": "Spirit Weapons",
+     "tier": 4
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_sleep",
+     "max_rank": 2,
+     "name": "Mental Quickness",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_shaman_improvedstormstrike",
+     "max_rank": 2,
+     "name": "Improved Stormstrike",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_shaman_maelstromweapon",
+     "max_rank": 5,
+     "name": "Maelstrom Weapon",
+     "tier": 5
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_bloodlust",
+     "max_rank": 1,
+     "name": "Rage of the Farseer",
+     "tier": 6
+    }
+   ]
+  },
+  {
+   "icon": "spell_nature_magicimmunity",
+   "name": "Restoration",
+   "talents": [
+    {
+     "column": 1,
+     "icon": "spell_nature_magicimmunity",
+     "max_rank": 5,
+     "name": "Improved Healing Wave",
+     "tier": 0
+    },
+    {
+     "column": 2,
+     "icon": "spell_frost_manarecharge",
+     "max_rank": 5,
+     "name": "Tidal Focus",
+     "tier": 0
+    },
+    {
+     "column": 0,
+     "icon": "spell_nature_sleep",
+     "max_rank": 3,
+     "name": "Mindfulness",
+     "tier": 1
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_healingtouch",
+     "max_rank": 3,
+     "name": "Natural Grace",
+     "tier": 1
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_moonglow",
+     "max_rank": 5,
+     "name": "Totemic Focus",
+     "tier": 1
+    },
+    {
+     "column": 3,
+     "icon": "spell_nature_reincarnation",
+     "max_rank": 2,
+     "name": "Improved Reincarnation",
+     "tier": 1
+    },
+    {
+     "column": 0,
+     "icon": "spell_nature_undyingstrength",
+     "max_rank": 3,
+     "name": "Ancestral Healing",
+     "tier": 2
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_healingwavelesser",
+     "max_rank": 3,
+     "name": "Healing Focus",
+     "tier": 2
+    },
+    {
+     "column": 2,
+     "icon": "ability_shaman_watershield",
+     "max_rank": 1,
+     "name": "Water Shield",
+     "tier": 2
+    },
+    {
+     "column": 0,
+     "icon": "spell_nature_tranquility",
+     "max_rank": 5,
+     "name": "Tidal Mastery",
+     "tier": 3
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_manaregentotem",
+     "max_rank": 5,
+     "name": "Restorative Totems",
+     "tier": 3
+    },
+    {
+     "column": 2,
+     "icon": "spell_frost_summonwaterelemental",
+     "max_rank": 1,
+     "name": "Mana Tide Totem",
+     "tier": 3
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_healingway",
+     "max_rank": 3,
+     "name": "Healing Way",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_nature_ravenform",
+     "max_rank": 1,
+     "name": "Nature's Swiftness",
+     "tier": 4
+    },
+    {
+     "column": 2,
+     "icon": "spell_frost_wizardmark",
+     "max_rank": 5,
+     "name": "Purification",
+     "tier": 5
+    },
+    {
+     "column": 1,
+     "icon": "spell_nature_riptide",
+     "max_rank": 1,
+     "name": "Riptide",
+     "tier": 6
+    }
+   ]
+  }
+ ]
+}
