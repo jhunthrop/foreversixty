@@ -472,21 +472,21 @@ html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
 }
 
 /* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
-   section 3.7): the heading (24px) and gap (12px), then the panel at the height it last
+   section 3.7): the card head (48px) and its rule (1px), then the rows at the height they last
    rendered. Base.astro sets --server-runs-reserve from fs.serverRuns.reserve (px) and
    data-server-sims from the cached /v1/me; a first visit falls back to one row, 64px on
    desktop and 100px on phone (a done row is 99.5px at 390). The static shell's copy of the
    box is hidden unless both the session and the entitlement are hinted, so a free member or
    a signed-out visitor reserves nothing. */
 .server-runs-reserve {
-  min-height: calc(36px + var(--server-runs-reserve, 100px));
+  min-height: calc(49px + var(--server-runs-reserve, 100px));
 }
 .server-runs-rows-reserve {
   min-height: var(--server-runs-reserve, 100px);
 }
 @media (min-width: 768px) {
   .server-runs-reserve {
-    min-height: calc(36px + var(--server-runs-reserve, 64px));
+    min-height: calc(49px + var(--server-runs-reserve, 64px));
   }
   .server-runs-rows-reserve {
     min-height: var(--server-runs-reserve, 64px);

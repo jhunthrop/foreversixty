@@ -10,7 +10,7 @@ function formatCount(value: number): string {
 }
 
 export const serverRunsCopy = {
-  heading: 'Your server runs',
+  heading: 'Server runs',
   empty: `No server runs yet. Choose ${simCopy.runOnServers} when you start a sim, and it keeps going after you close this tab.`,
   loadingSr: 'Reading your server runs…',
   loadFailed: 'Your server runs did not load.',

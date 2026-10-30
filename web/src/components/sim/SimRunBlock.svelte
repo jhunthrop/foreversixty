@@ -11,7 +11,8 @@
   import { hasBuild } from '../../lib/account/build-pill';
   import type { CharacterPath } from '../../lib/characters';
   import { landingCopy } from '../../lib/sim/landing-copy';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import { cardClass } from '../../lib/ui/card';
   import { buildSourcePill } from '../../lib/account/build-pill';
   import { characterIsSimulated, characterSpecName } from '../../lib/character-spec';
   import { classDisplayName } from '../../lib/sim/spec-label';
@@ -54,49 +55,50 @@
   const pill = $derived(buildSourcePill(character.build));
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-wrap items-center justify-between gap-3 border p-4 md:mx-0"
-  data-testid="sim-run-block"
->
-  <div class="flex min-w-0 flex-wrap items-center gap-3" data-testid="sim-run-block-identity">
-    <ClassCrestRing characterClass={classSlug} size={36} testid="sim-run-block-class-icon" />
-    <span
-      class="text-[17px] font-semibold"
-      style={`color: ${classColorVar(character.class)}`}
-      data-testid="sim-run-block-name">{character.name}</span
-    >
-    <span class="text-muted text-[13px]" data-testid="sim-run-block-descriptor">{descriptor}</span>
-    {#if canRun && pill.pillClass !== null}
-      <span class="pill {pill.pillClass}" data-testid="sim-run-block-pill">{pill.label}</span>
+<section class="{cardClass(false)} mx-[18px] md:mx-0" data-testid="sim-run-block">
+  <div class="flex flex-wrap items-center justify-between gap-x-[14px] gap-y-3 px-5 py-4">
+    <div class="flex min-w-0 flex-wrap items-center gap-3" data-testid="sim-run-block-identity">
+      <ClassCrestRing characterClass={classSlug} size={40} testid="sim-run-block-class-icon" />
+      <span class="flex min-w-0 flex-col gap-1">
+        <span
+          class="text-[17px] leading-6 font-semibold"
+          style={`color: ${classColorVar(character.class)}`}
+          data-testid="sim-run-block-name">{character.name}</span
+        >
+        <span class="text-muted text-[13px]" data-testid="sim-run-block-descriptor">{descriptor}</span>
+      </span>
+      {#if canRun && pill.pillClass !== null}
+        <span class="pill {pill.pillClass}" data-testid="sim-run-block-pill">{pill.label}</span>
+      {/if}
+    </div>
+    {#if canRun && !simulated}
+      <span class="text-muted text-[13px]" data-testid="sim-run-block-not-simulated"
+        >{landingCopy.notSimulatedYet}</span
+      >
+    {:else if canRun}
+      <button
+        type="button"
+        class="{button('primary', 'md')} shrink-0"
+        disabled={busy || path === null}
+        aria-busy={busy}
+        onclick={() => path !== null && onrun(path)}
+        data-testid="sim-run-block-action"
+      >
+        {landingCopy.runSim}
+      </button>
+    {:else}
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-muted text-[13px]" data-testid="sim-run-block-no-build">
+          {landingCopy.runBlockNoBuild(character.name)}
+        </span>
+        <a
+          class="{button('ghost', 'sm')} shrink-0"
+          href={landingCopy.pasteExportHref}
+          data-testid="sim-run-block-paste"
+        >
+          {landingCopy.pasteExport}
+        </a>
+      </div>
     {/if}
   </div>
-  {#if canRun && !simulated}
-    <span class="text-muted text-[13px]" data-testid="sim-run-block-not-simulated"
-      >{landingCopy.notSimulatedYet}</span
-    >
-  {:else if canRun}
-    <button
-      type="button"
-      class="{PRIMARY_BUTTON_FIXED} shrink-0 px-5 disabled:opacity-50"
-      disabled={busy || path === null}
-      aria-busy={busy}
-      onclick={() => path !== null && onrun(path)}
-      data-testid="sim-run-block-action"
-    >
-      {landingCopy.runSim}
-    </button>
-  {:else}
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="text-muted text-[13px]" data-testid="sim-run-block-no-build">
-        {landingCopy.runBlockNoBuild(character.name)}
-      </span>
-      <a
-        class="text-nav label inline-flex min-h-11 shrink-0 items-center underline md:min-h-9"
-        href={landingCopy.pasteExportHref}
-        data-testid="sim-run-block-paste"
-      >
-        {landingCopy.pasteExport}
-      </a>
-    </div>
-  {/if}
 </section>

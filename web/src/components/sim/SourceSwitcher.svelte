@@ -26,6 +26,7 @@
      neither prop, since they carry no hero and the one-paste-surface rule does not apply
      there. -->
 <script lang="ts">
+  import Card from '../ui/Card.svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import EmailLinkAlternative from '../EmailLinkAlternative.svelte';
@@ -75,7 +76,6 @@
   let buildRef = $state('');
   let fightRef = $state('');
 
-  const card = 'border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4';
   const field =
     'border-line-warm rounded-control bg-raised text-text min-h-11 w-full border px-3 py-2 text-[14px]';
   const action = 'border-line-warm-strong rounded-control text-strong label min-h-11 self-start border px-4';
@@ -117,8 +117,7 @@
 </script>
 
 {#snippet addonCard()}
-  <div class={card}>
-    <h2 class="section-title">{simCopy.sourceAddonTitle}</h2>
+  <Card glyph="download" compact title={simCopy.sourceAddonTitle}>
     <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
     <label class="sr-only" for="sim-addon">{simCopy.sourceAddonTitle}</label>
     <textarea
@@ -146,12 +145,11 @@
         >{currentCharacterCopy.getTheAddon}</a
       >
     </p>
-  </div>
+  </Card>
 {/snippet}
 
 {#snippet buildCard()}
-  <div class={card}>
-    <h2 class="section-title">{simCopy.sourceBuildTitle}</h2>
+  <Card glyph="tree" compact title={simCopy.sourceBuildTitle}>
     <p class="text-muted text-[13px]">{simCopy.sourceBuildBody}</p>
     <label class="sr-only" for="sim-build">{simCopy.sourceBuildTitle}</label>
     <input
@@ -170,12 +168,11 @@
       onclick={loadBuildInput}
       data-testid="sim-build-load">Load</button
     >
-  </div>
+  </Card>
 {/snippet}
 
 {#snippet fightCard()}
-  <div class={card}>
-    <h2 class="section-title">{simCopy.sourceFightTitle}</h2>
+  <Card glyph="chart" compact title={simCopy.sourceFightTitle}>
     <p class="text-muted text-[13px]">{simCopy.sourceFightBody}</p>
     <label class="sr-only" for="sim-fight">{simCopy.sourceFightTitle}</label>
     <input
@@ -194,7 +191,7 @@
       onclick={() => onfight(fightRefOf(fightRef))}
       data-testid="sim-fight-load">Load</button
     >
-  </div>
+  </Card>
 {/snippet}
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
@@ -207,8 +204,7 @@
          view whenever the hero renders (`showColdPasteHero`), so this takes the same
          secondary `action` look the non-hero branch below already uses for the identical
          button. -->
-    <div class={card} data-testid="sim-account-card">
-      <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
+    <Card glyph="user" compact title={simCopy.sourceAccountTitle} testid="sim-account-card">
       <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
       <div class="flex flex-wrap gap-3">
         <button type="button" class={signInButton} onclick={onsignin} data-testid="sim-signin">
@@ -219,7 +215,7 @@
         </button>
       </div>
       <EmailLinkAlternative testid="sim-email-link" action />
-    </div>
+    </Card>
 
     <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
       {#if showAddonCard}
@@ -236,8 +232,7 @@
       {@render buildCard()}
       {@render fightCard()}
 
-      <div class={card} data-testid="sim-account-card">
-        <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
+      <Card glyph="user" compact title={simCopy.sourceAccountTitle} testid="sim-account-card">
         {#if signedIn && hasCharacters}
           <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
             {simCopy.backToCharacters}
@@ -248,7 +243,7 @@
             {landingCopy.signInWithBattlenet}
           </button>
         {/if}
-      </div>
+      </Card>
     </div>
 
     <!-- task-2-brief.md: this switcher is what a signed-out visitor reads first on the bulk

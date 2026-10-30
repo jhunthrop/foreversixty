@@ -9,6 +9,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
+  import { button } from '../../lib/ui/button';
+  import { cardClass } from '../../lib/ui/card';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
   import { simCharacterHasGear } from '../../lib/addon-export';
@@ -167,12 +169,9 @@
   );
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-4 border p-4 md:mx-0"
-  data-testid="sim-character"
->
+<section class="{cardClass(false)} mx-[18px] flex flex-col gap-4 p-4 md:mx-0" data-testid="sim-character">
   <div class="flex flex-wrap items-center gap-3">
-    <ClassCrestRing characterClass={character.class_slug} size={36} testid="sim-character-class-icon" />
+    <ClassCrestRing characterClass={character.class_slug} size={40} testid="sim-character-class-icon" />
     <!-- A build that names no character has no name to show: the descriptor beside this
          already reads its race, spec and class, and a class word is never made a name. -->
     {#if character.name !== ''}
@@ -208,7 +207,7 @@
     {#if !readonly}
       <button
         type="button"
-        class="border-line-warm rounded-control text-nav label ml-auto min-h-11 border px-3 md:min-h-9"
+        class="{button('secondary', 'sm')} ml-auto"
         onclick={onchange}
         data-testid="sim-change-source"
       >

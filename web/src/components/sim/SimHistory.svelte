@@ -9,7 +9,9 @@
   import { KIND_FILTERS, headlineOf, kindOf, titleOf, type KindFilter } from '../../lib/sim/history';
   import type { SimListRow } from '../../lib/sim/types';
   import BestPerSpecTable from './BestPerSpecTable.svelte';
+  import Card from '../ui/Card.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
+  import Select from '../ui/Select.svelte';
 
   let {
     rows,
@@ -29,23 +31,28 @@
   const perSpec = $derived(rows === null ? [] : bestPerSpec(rows));
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-history">
-  <div class="flex flex-wrap items-baseline justify-between gap-3">
-    <h2 class="section-title">{simCopy.yourSims}</h2>
-    <label class="flex items-center gap-2 text-[13px]">
-      <span class="quiet-label">{simCopy.historyFilter}</span>
-      <select
-        class="border-line-warm rounded-control bg-raised text-text min-h-11 border px-2 text-[13px] md:min-h-9"
-        value={kind}
-        onchange={(event) => onkind(event.currentTarget.value as KindFilter)}
-        data-testid="sim-history-filter"
-      >
-        {#each KIND_FILTERS as filter (filter)}
-          <option value={filter}>{simCopy.kindLabel[filter]}</option>
-        {/each}
-      </select>
-    </label>
-  </div>
+{#snippet filter()}
+  <label class="flex items-center gap-2 text-[13px]">
+    <span class="quiet-label">{simCopy.historyFilter}</span>
+    <Select
+      id="sim-history-filter"
+      compact
+      value={kind}
+      options={KIND_FILTERS.map((option) => ({ value: option, label: simCopy.kindLabel[option] }))}
+      onchange={(event) => onkind((event.currentTarget as HTMLSelectElement).value as KindFilter)}
+      testid="sim-history-filter"
+    />
+  </label>
+{/snippet}
+
+<Card
+  glyph="chart"
+  compact
+  title={simCopy.yourSims}
+  aside={filter}
+  testid="sim-history"
+  class="mx-[18px] md:mx-0"
+>
   {#if perSpec.length >= 2}
     <BestPerSpecTable rows={perSpec} />
   {/if}
@@ -56,7 +63,7 @@
   {:else if rows.length === 0}
     <EmptyState message={simCopy.historyEmpty} testid="sim-history-empty" />
   {:else}
-    <ul class="border-line bg-raised rounded-panel flex flex-col border">
+    <ul class="flex flex-col">
       {#each rows as row (row.sim_id)}
         <li class="border-line-soft border-b last:border-b-0">
           <!-- Finding 6, 2026-09-26 layout pass: the date used to be `hidden md:inline`,
@@ -91,4 +98,4 @@
       {/each}
     </ul>
   {/if}
-</section>
+</Card>

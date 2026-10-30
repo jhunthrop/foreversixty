@@ -23,6 +23,7 @@
   import { heroCharacter } from '../lib/account/hero-character';
   import { mainCharacter } from '../lib/account/main-character';
   import { classColorVar, rowLink } from '../lib/report/format';
+  import { button } from '../lib/ui/button';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CurrentCharacterChip from './CurrentCharacterChip.svelte';
 
@@ -147,7 +148,7 @@
          data-pointer/data-session when either is real, so hiding it until hydration
          resolves is what stops it from ever painting a wrong guess. -->
     <div class={`chip-slot ${CHIP_HEIGHT} ${profile ? '-order-4' : ''}`} data-testid="current-character-bar">
-      <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4">
+      <div class="mx-[18px] flex h-full flex-col md:mx-0 md:flex-row md:items-center md:gap-4">
         {#if !identityOnCard}
           <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
             {#if displayCharacter !== null}
@@ -189,7 +190,7 @@
             {/if}
             <button
               type="button"
-              class="{rowLink} text-muted label min-w-11 shrink-0 justify-center"
+              class="{button('ghost', 'sm')} ml-auto shrink-0"
               onclick={forget}
               title={displayCharacter === null
                 ? undefined

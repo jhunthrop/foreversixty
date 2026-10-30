@@ -678,6 +678,8 @@ export const simCopy = {
    * shell -- near the `<h1>`, above the fold at 390x844 -- plus LandingState.svelte and
    * SourceSwitcher.svelte, since those are what a signed-out visitor reads first.
    */
+  /** The eyebrow over every simulator page's h1. */
+  pageEyebrow: 'Tools',
   scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
   /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
   specsSimulatedHeading: 'Damage specs',

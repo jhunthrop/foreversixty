@@ -6,7 +6,7 @@ import Base from '../layouts/Base.astro';
 import { CHIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import { landingCopy } from '../lib/sim/landing-copy';
-import SimTabs from '../components/sim/SimTabs.astro';
+import SimPageHead from '../components/sim/SimPageHead.astro';
 import IslandScript from '../components/IslandScript.astro';
 
 const COLD_PASTE_SECTION =
@@ -20,15 +20,9 @@ const COLD_PASTE_SECTION =
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
-    <!-- Polish spec 5.3: the h1 and its one intro line first, the tool tabs under them. The intro
-         is static here, outside the island, so it is the page's one copy of the sentence. -->
-    <div class="flex flex-col gap-2 px-[18px] md:px-0">
-      <h1 class="heading-page">Simulator</h1>
-      <p class="text-muted text-[14px]" data-testid="sim-intro-line">
-        {landingCopy.introLine}
-      </p>
-    </div>
-    <SimTabs currentPath="/sim" />
+    <!-- Site alignment §5.6: PageHead with the eyebrow "Tools", the h1, its one intro line and the
+         tool tabs under them. Static here, outside the island, so the intro is the page's one copy. -->
+    <SimPageHead title="Simulator" job={landingCopy.introLine} currentPath="/sim" />
     <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
          own largest early text used to be SourceSwitcher's addon-card body; the layout
          review promotes the Battle.net sign-in to a full-width hero ahead of that card

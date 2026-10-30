@@ -4,7 +4,7 @@ import { serverRunsCopy } from './server-runs-copy';
 
 describe('serverRunsCopy', () => {
   it('carries the fixed strings of spec section 6', () => {
-    expect(serverRunsCopy.heading).toBe('Your server runs');
+    expect(serverRunsCopy.heading).toBe('Server runs');
     expect(serverRunsCopy.empty).toBe(
       'No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close this tab.',
     );

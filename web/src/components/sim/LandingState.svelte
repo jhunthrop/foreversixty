@@ -24,7 +24,10 @@
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { armorySimHref } from '../../lib/sim/url';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import { CARD_FOOT } from '../../lib/ui/card';
+  import Card from '../ui/Card.svelte';
+  import Tag from '../ui/Tag.svelte';
   import { characterIsSimulated } from '../../lib/character-spec';
   import CharacterRow from '../character/CharacterRow.svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
@@ -102,21 +105,30 @@
   }
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-landing">
-  <h2 class="section-title">{simCopy.yourCharacters}</h2>
+<Card
+  glyph="user"
+  compact
+  body="none"
+  title={simCopy.yourCharacters}
+  testid="sim-landing"
+  class="mx-[18px] md:mx-0"
+>
   <!-- 2026-09-26 layout pass, Finding 3: the one copy of the DPS-only restriction on /sim,
        as the caption under this heading -- SimView.svelte no longer renders its own copy,
        and the source switcher's hero card (SourceSwitcher.svelte) carries the identical
        line under its own "Your characters" heading for a signed-out visitor, so the two
        states are never both on screen at once. -->
-  <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
+  <p class="text-muted border-line-soft border-t px-5 py-3 text-[13px]" data-testid="sim-scope-note">
+    {landingCopy.scopeCaveat}
+  </p>
 
-  <ul class="border-line bg-raised rounded-panel flex flex-col border px-3">
+  <ul class="flex flex-col">
     {#each ordered as character (character.key)}
       {@const path = pathOf(character)}
       <CharacterRow
         {character}
         descriptor="full"
+        settingsRow
         hidePillWhenNoBuild
         href={hrefFor(character)}
         onNameClick={(event) => path !== null && follow(event, path)}
@@ -126,9 +138,11 @@
       >
         {#snippet action()}
           {#if character.key === currentKey}
-            <span class="pill pill-sample ml-auto shrink-0" data-testid={`sim-current-${character.key}`}
-              >{currentCharacterCopy.switchCurrentMarker}</span
-            >
+            <span class="ml-auto shrink-0">
+              <Tag tone="muted" testid={`sim-current-${character.key}`}
+                >{currentCharacterCopy.switchCurrentMarker}</Tag
+              >
+            </span>
           {/if}
           {#if hasBuild(character) && !characterIsSimulated(character)}
             <span
@@ -138,7 +152,7 @@
           {:else if hasBuild(character)}
             <button
               type="button"
-              class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
+              class={`${button('secondary', 'sm')} ml-auto shrink-0 ${busyKey === character.key ? BUSY_CLASS : ''}`}
               disabled={busyKey !== null || path === null}
               aria-busy={busyKey === character.key}
               onclick={() => path !== null && onpick(path)}
@@ -150,7 +164,7 @@
             <!-- Finding 1: a character with no build gets no Sim button -- there is nothing
                  to sim yet -- and this link in its place. -->
             <a
-              class="text-nav label ml-auto inline-flex min-h-11 shrink-0 items-center underline md:min-h-9"
+              class="{button('ghost', 'sm')} ml-auto shrink-0"
               href={landingCopy.pasteExportHref}
               data-testid={`sim-paste-${character.key}`}
             >
@@ -170,7 +184,7 @@
          re-fetch of the same 404), built by hand rather than through that component: its
          `message` prop is plain text and cannot carry the two links this alert needs. -->
     <div
-      class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
+      class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-t px-5 py-3 text-[14px]"
       role="alert"
       data-testid="sim-landing-build-missing"
     >
@@ -187,12 +201,14 @@
     </div>
   {/if}
 
-  <button
-    type="button"
-    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
-    onclick={onother}
-    data-testid="sim-other-character"
-  >
-    {simCopy.otherCharacter}
-  </button>
-</section>
+  <div class={CARD_FOOT}>
+    <button
+      type="button"
+      class={button('secondary', 'md')}
+      onclick={onother}
+      data-testid="sim-other-character"
+    >
+      {simCopy.otherCharacter}
+    </button>
+  </div>
+</Card>

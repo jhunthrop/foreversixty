@@ -1,0 +1,27 @@
+---
+// web/src/components/sim/SimPageHead.astro
+// The head every simulator page shares (site alignment spec 2026-10-29 §5.6): `PageHead` with the
+// eyebrow "Tools", the page's h1 and one job line, and the tool tabs in its `below` slot. No
+// band. Static, outside every island's measured mount, so it moves nothing the CLS budget counts.
+import PageHead from '../ui/PageHead.astro';
+import SimTabs from './SimTabs.astro';
+import { simCopy } from '../../lib/sim/copy';
+
+interface Props {
+  title: string;
+  /** The one line that says what the page does; omitted where a page keeps its own intro. */
+  job?: string;
+  /** The tab strip's current path (`/sim` for Quick Sim). */
+  currentPath: string;
+}
+
+const { title, job, currentPath } = Astro.props;
+---
+
+<div class="px-[18px] md:px-0">
+  <PageHead eyebrow={simCopy.pageEyebrow} title={title} job={job} testid="sim-page-head">
+    <div slot="below" class="-mx-[var(--page-inset)] md:mx-0">
+      <SimTabs currentPath={currentPath} />
+    </div>
+  </PageHead>
+</div>

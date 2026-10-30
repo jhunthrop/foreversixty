@@ -4,6 +4,7 @@
      server sims. The parent reads and polls the list; this draws it, and owns the Run again
      calls because each row's button state belongs to the list, not to the page. -->
 <script lang="ts">
+  import Card from '../ui/Card.svelte';
   import { rerunSim } from '../../lib/sim/api';
   import { visibleRows } from '../../lib/sim/server-runs';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
@@ -70,15 +71,22 @@
   }
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" id="server-runs" data-testid="server-runs">
-  <h2 class="section-title flex h-6 items-center">{serverRunsCopy.heading}</h2>
+<Card
+  glyph="server"
+  compact
+  body="none"
+  title={serverRunsCopy.heading}
+  id="server-runs"
+  testid="server-runs"
+  class="mx-[18px] md:mx-0"
+>
   {#if failed}
-    <div class="border-line bg-raised rounded-panel server-runs-rows-reserve flex items-center border px-3.5">
+    <div class="border-line-soft server-runs-rows-reserve flex items-center border-t px-3.5">
       <LoadError message={serverRunsCopy.loadFailed} onRetry={onretry} testid="server-runs-error" />
     </div>
   {:else if shown === null}
     <div
-      class="border-line bg-raised rounded-panel server-runs-rows-reserve overflow-hidden border"
+      class="border-line-soft server-runs-rows-reserve overflow-hidden border-t"
       aria-busy="true"
       data-testid="server-runs-loading"
     >
@@ -100,16 +108,12 @@
   {:else if shown.rows.length === 0}
     <div
       bind:this={panel}
-      class="border-line bg-raised rounded-panel server-runs-rows-reserve flex items-center border px-3.5"
+      class="border-line-soft server-runs-rows-reserve flex items-center border-t px-3.5"
     >
       <EmptyState message={serverRunsCopy.empty} testid="server-runs-empty" />
     </div>
   {:else}
-    <div
-      bind:this={panel}
-      class="border-line bg-raised rounded-panel overflow-hidden border"
-      data-testid="server-runs-list"
-    >
+    <div bind:this={panel} class="border-line-soft overflow-hidden border-t" data-testid="server-runs-list">
       {#each shown.rows as row (row.sim_id)}
         <ServerRunRow
           {row}
@@ -125,4 +129,4 @@
       {/if}
     </div>
   {/if}
-</section>
+</Card>
