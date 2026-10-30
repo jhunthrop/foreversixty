@@ -383,6 +383,8 @@ A raider's questions at a chart are the three after a wipe: "Who died, and why?"
 
 The lane measures the gzipped chunk on install. A chart chunk (uPlot plus our wrapper) over 30 KB gzipped stops the lane for a ruling.
 
+**Ruling (2026-10-30, coordinator): the cap is 32 KB (32,768 B).** The chart lane measured the chunk at 31,697 B gzipped (level 9). uPlot 1.6.32 alone is about 22.5 KB, and the plot, the tooltip and the brush add about 9 KB. Moving the tooltip and the brush into the entry measured 28,957 B for the chunk, but Rollup then split a 19 KB shared chunk out of `report-island.js`, so the page would load no less. The budget is raised instead of moving files to pass the check.
+
 ### B4. Components
 
 | Component | Role |
@@ -726,7 +728,7 @@ Guild pages and the history pages draw no other chart today.
 
 1. `uplot-loader.ts` starts the import when the report island mounts, in parallel with the summary fetch. The chart never waits on the chunk after its data arrives on a warm cache.
 2. The frame reserves its exact height before the chunk or data arrives: head 48 px, legend 42 px (37 px on a phone), lane 26 px (when markers exist), plot, axis 22 px, brush 74 px (62 px on a phone), the caveat line 28 px on the threat chart. Every state of §B7 uses the same height. Cumulative Layout Shift on `/reports/*` stays under the 0.05 budget.
-3. The chart chunk (uPlot plus the wrapper) is under 30 KB gzipped. `check-island-size.mjs` gains it as a named budget.
+3. The chart chunk (uPlot plus the wrapper) is under 32 KB gzipped (raised from 30 KB by the §B3 ruling; measured 31,697 B). `check-island-size.mjs` gains it as a named budget. `report-island.js` stays within its existing 143,360 B budget.
 4. Report Total Blocking Time stays under 200 ms (`lighthouserc.json`); uPlot's first draw of 10 series over 252 points is under 10 ms on Lighthouse's throttled CPU.
 5. Every colour is read from tokens at draw time; no hex appears in chart code (today's rule in `TimeChart`).
 6. Icons in the lane are requested with the summary, at 18 px in a fixed 20 px tile with a `--color-raised` ground, so they never flash.
@@ -819,7 +821,7 @@ The implementer attaches each of these from the built fixture site (`FOREVER_DAT
 - [ ] Coarse pointer renders the native picker; `dense` renders 44 px there; the Players control opens the legend sheet.
 - [ ] Every list renders in the top layer; the More menu is on the popover core.
 - [ ] One open overlay at a time; charts stand down while one is open.
-- [ ] uPlot is a lazy chunk under 30 KB gzipped; `report-island.js` does not grow.
+- [ ] uPlot is a lazy chunk under 32 KB gzipped (§B3 ruling); `report-island.js` stays within its 143,360 B budget.
 - [ ] Both report charts use `TimeSeriesChart`.
 - [ ] Damage draws top 8 of N, plus the Source player and you, plus the raid median; the Players control and the `players=` URL key work.
 - [ ] The head's raid figure equals the sum of every player's figure (unit test on the adapter).

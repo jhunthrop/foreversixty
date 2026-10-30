@@ -52,7 +52,8 @@
     "astro": "^7.3.2",
     "svelte": "^5.57.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "uplot": "1.6.32"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
