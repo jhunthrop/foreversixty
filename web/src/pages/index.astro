@@ -284,7 +284,7 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
               const slot = document.getElementById('home-upgrades-slot');
               const reserve = Math.round(Number(localStorage.getItem(key)));
               if (slot && reserve > 0 && reserve <= max) slot.style.setProperty(prop, reserve + 'px');
-            } catch (_) {
+            } catch {
               // Storage is a convenience; the fallback height stands.
             }
           })();

@@ -819,11 +819,15 @@ html[data-pointer='1'] .setup-when-no-pointer {
 html:not([data-session='1'])
   :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-session='1'] :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done]) :is(.chip-todo, .chip-label-todo),
+html[data-session='1']
+  :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done])
+  :is(.chip-todo, .chip-label-todo),
 html:not([data-pointer='1'])
   :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-pointer='1'] :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done]) :is(.chip-todo, .chip-label-todo),
+html[data-pointer='1']
+  :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done])
+  :is(.chip-todo, .chip-label-todo),
 :is(.setup-chip, .setup-step-tag)[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
   display: none;
 }
