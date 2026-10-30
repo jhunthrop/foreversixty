@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- The device session and its Keystore-bound keyset never leave the device: a restored copy
-     could not decrypt anyway, and a device token belongs to one device. -->
+     could not decrypt anyway, and a device token belongs to one device. The X-App-Install id
+     (forever_install) must not follow a player to a new install either. -->
 <data-extraction-rules>
     <cloud-backup>
         <exclude domain="file" path="datastore/device_session.bin" />
         <exclude domain="sharedpref" path="forever_device_session_keys.xml" />
+        <exclude domain="sharedpref" path="forever_install.xml" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="file" path="datastore/device_session.bin" />
         <exclude domain="sharedpref" path="forever_device_session_keys.xml" />
+        <exclude domain="sharedpref" path="forever_install.xml" />
     </device-transfer>
 </data-extraction-rules>

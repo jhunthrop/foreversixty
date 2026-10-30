@@ -28,9 +28,15 @@ object ForeverHttpClient {
 
     /**
      * A client rooted at [config]'s base URL that sends `Authorization: Bearer <token>` whenever
-     * [tokens] has one. Status codes do not throw: [ApiClient] reads the envelope on every answer.
+     * [tokens] has one, plus [identity]'s `X-App` headers when given (the app always gives them).
+     * Status codes do not throw: [ApiClient] reads the envelope on every answer.
      */
-    fun create(config: ApiConfig, tokens: TokenProvider, engine: HttpClientEngine): HttpClient =
+    fun create(
+        config: ApiConfig,
+        tokens: TokenProvider,
+        engine: HttpClientEngine,
+        identity: ClientIdentity? = null,
+    ): HttpClient =
         HttpClient(engine) {
             expectSuccess = false
             install(HttpTimeout) {
@@ -38,6 +44,7 @@ object ForeverHttpClient {
                 connectTimeoutMillis = config.connectTimeoutMillis
             }
             install(bearerTokenPlugin(tokens))
+            if (identity != null) install(clientIdentityPlugin(identity))
             defaultRequest {
                 url.takeFrom(URLBuilder(config.baseUrl))
                 headers.append(HttpHeaders.Accept, ContentType.Application.Json.toString())

@@ -70,10 +70,33 @@ answers when the thing exists but is private to you.
 | `conflict` | 409 | the state does not allow this (a raid's status) |
 | `premium_required` | 402 | a Premium feature on a free account |
 | `rate_limited` | 429 | too many requests |
+| `update_required` | 426 | this app build is below the minimum; `fields.store_url` is the store page (see Forced update) |
 | `internal` | 500 | server fault |
 
 **Timestamps** are RFC 3339 with a zone, normally UTC (`Z`). Durations are `..._ms` or `..._sec`.
 Unknown numbers are `null`, never `0`.
+
+**Client identity (lane P2).** Both apps send two headers on every API request:
+
+| header | value | example |
+|---|---|---|
+| `X-App` | `<platform>/<version> (<build>)`; platform `ios` or `android`, version and build from `apps/VERSION` | `ios/1.2.0 (42)` |
+| `X-App-Install` | a random UUID made on first launch, tied to no user, gone on uninstall (not backed up) | `0b6f6b8e-…` |
+
+The site never sends them. The API logs them and counts requests and errors per platform and
+version (`APP_CLIENT_HEADERS`, off by default; docs/runbooks/mobile-apps.md). A missing or
+malformed `X-App` is not an error.
+
+**Forced update.** With a minimum set for a platform (`APP_MIN_VERSION_IOS`,
+`APP_MIN_VERSION_ANDROID`), a request whose `X-App` names an older version (semver compare on
+`<version>`; `<build>` is ignored) is answered before any route runs:
+
+```json
+{"ok":false,"data":null,"error":{"code":"update_required","message":"This version of Forever Sixty is too old. Update it from the store.","fields":{"store_url":"https://play.google.com/store/apps/details?id=gg.foreversixty.app","min_version":"1.2.0"}},"request_id":"…"}
+```
+
+with status `426`. Both apps then replace every screen with a blocking "Update Forever Sixty"
+screen whose one button opens `store_url` (https only; otherwise the app's own store page).
 
 **Character keys.** A character is `region/ruleset/slug`, for example `us/pvp/obnoxious-yell`.
 `region` is `us|eu|kr|tw|cn`, `ruleset` is `normal|pvp|rp|hardcore`, and the slug is the name

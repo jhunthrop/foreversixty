@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The update gate's screen (lane P2). Lane P1's copy catalog takes these over. -->
+<resources>
+    <string name="update_required_title">Update Forever Sixty</string>
+    <string name="update_required_body">This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.</string>
+    <string name="update_required_action">Open Google Play</string>
+</resources>

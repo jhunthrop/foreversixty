@@ -16,15 +16,19 @@ public struct APIClient: Sendable {
     }
 
     /// The client for a configuration: live over URLSession, or bundled fixtures.
+    /// Every request carries `identity`'s headers, and `updateGate` hears any 426 gate answer.
     public static func make(
         _ configuration: APIConfiguration,
         tokens: any BearerTokenSource,
+        identity: ClientIdentity,
+        updateGate: (any UpdateRequiredSink)? = nil,
         bundle: Bundle = .main
     ) -> APIClient {
-        let transport: any HTTPTransport = switch configuration.mode {
+        let base: any HTTPTransport = switch configuration.mode {
         case .live: URLSessionTransport()
         case .fixture: FixtureTransport.bundled(in: bundle) ?? FixtureTransport(directory: bundle.bundleURL)
         }
+        let transport = IdentifiedTransport(base, identity: identity, sink: updateGate)
         return APIClient(baseURL: configuration.baseURL, transport: transport, tokens: tokens)
     }
 
@@ -63,6 +67,9 @@ public struct APIClient: Sendable {
         response: HTTPURLResponse
     ) throws(APIError) -> Response {
         let status = response.statusCode
+        if let gate = UpdateRequired.answer(status: status, data: data) {
+            throw .updateRequired(storeURL: gate.storeURL)
+        }
         let success = (200..<300).contains(status)
         if data.isEmpty, success, let empty = Empty() as? Response {
             return empty

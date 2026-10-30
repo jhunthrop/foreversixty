@@ -3,4 +3,6 @@
 <full-backup-content>
     <exclude domain="file" path="datastore/device_session.bin" />
     <exclude domain="sharedpref" path="forever_device_session_keys.xml" />
+    <!-- The X-App-Install id must not follow a player to a new install. -->
+    <exclude domain="sharedpref" path="forever_install.xml" />
 </full-backup-content>
