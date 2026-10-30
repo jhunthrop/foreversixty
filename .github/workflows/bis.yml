@@ -189,7 +189,7 @@ jobs:
                 git checkout --theirs -- "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
                 git add "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
                 GIT_EDITOR=true git rebase --continue || git rebase --abort
-                git stash list | grep -q autostash && git stash pop || true
+                if git stash list | grep -q autostash; then git stash pop || true; fi
                 git push && break
               fi
               echo "push attempt $attempt failed; retrying"
@@ -339,7 +339,7 @@ jobs:
               git checkout --theirs -- "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
               git add "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
               GIT_EDITOR=true git rebase --continue || git rebase --abort
-              git stash list | grep -q autostash && git stash pop || true
+              if git stash list | grep -q autostash; then git stash pop || true; fi
               git push && exit 0
             fi
             echo "push attempt $attempt failed; retrying"
