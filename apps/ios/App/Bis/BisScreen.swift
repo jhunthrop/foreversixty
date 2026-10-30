@@ -6,7 +6,6 @@ import SwiftUI
 struct BisScreen: View {
     @State private var model: BisModel
     @State private var tooltip: ItemTooltipContent?
-    @State private var isSearching = false
     private let iconBase: URL
 
     init(model: BisModel, iconBase: URL = StaticDataClient.siteURL) {
@@ -27,14 +26,10 @@ struct BisScreen: View {
                 onOpenItem: { tooltip = $0 }
             )
             .refreshable { await model.refresh() }
-            .searchable(text: $model.searchText, isPresented: $isSearching, prompt: Copy.bisSearch)
-            .toolbar {
-                // The leading slot is the character selector (lane F1), the same on Home and Raids.
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { isSearching = true } label: { Image(systemName: "magnifyingglass") }
-                        .accessibilityLabel(Copy.bisSearch)
-                }
-            }
+            // The system search, minimised to the bar's trailing button (spec F3.1). The leading
+            // slot is the character selector (lane F1), the same on Home and Raids.
+            .searchable(text: $model.searchText, prompt: Copy.bisSearch)
+            .searchToolbarBehavior(.minimize)
             .toolbarBackground(Theme.Palette.background, for: .navigationBar)
             .sheet(isPresented: $model.isPickerPresented) {
                 BisPickerSheet(context: model.context, catalog: model.catalog) { selection in

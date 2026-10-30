@@ -151,6 +151,14 @@ class BisListTest {
     }
 
     @Test
+    fun `the raid list reads the file's preset label and the bare list reads Bare`() {
+        val file = BisTestData.bis()
+        val builder = BisListBuilder(res, emptyList(), emptySet())
+        assertEquals("Raid-ready, Phase 1", builder.presetLabel(file, requireNotNull(file.band(BisRange(60, "raid"), "horde"))))
+        assertEquals("Bare", builder.presetLabel(file, requireNotNull(file.band(BisRange(50, "bare"), "horde"))))
+    }
+
+    @Test
     fun `the app carries the spec catalogue and the fallback build`() {
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         val specs = context.assets.open(SpecCatalog.ASSET).bufferedReader().use { it.readText() }

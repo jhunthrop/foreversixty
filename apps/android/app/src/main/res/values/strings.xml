@@ -235,6 +235,7 @@
     <string name="bis_a11y_showsItem">Shows the item</string>
     <string name="bis_nextSameShort">same %1$s</string>
     <string name="bis_qualitySlot">%1$s · %2$s</string>
+    <string name="bis_preset_bare">Bare</string>
     <string name="raids_guildLine">%1$s · %2$s %3$s · %4$d on the roster</string>
     <string name="raids_next">Next raid</string>
     <string name="raids_whoIsComing">Who is coming</string>

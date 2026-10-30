@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,7 +62,7 @@ data class ItemTooltipContent(
 fun ItemTooltipBody(content: ItemTooltipContent, modifier: Modifier = Modifier) {
     val res = LocalResources.current
     Column(
-        modifier.background(GamePalette.sheet).verticalScroll(rememberScrollState()).padding(16.dp),
+        modifier.background(GamePalette.sheet).verticalScroll(rememberScrollState()).navigationBarsPadding().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {

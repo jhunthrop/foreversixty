@@ -102,9 +102,13 @@ class BisListBuilder(
             unit = unit,
             specLabel = specLabel,
             rangeLabel = rangeLabel,
-            presetLabel = file.presets[band.preset]?.label ?: band.preset,
+            presetLabel = presetLabel(file, band),
         )
     }
+
+    /** The file's own label for the preset; the bare character reads `Bare`, as the site's `presetLabelFor` does. */
+    fun presetLabel(file: BisFile, band: BisBand): String =
+        if (band.preset == BisRange.BARE) res.getString(R.string.bis_preset_bare) else file.presets[band.preset]?.label ?: band.preset
 
     fun row(slot: BisSlot, unit: BisUnit, mainHand: String?): BisRow {
         val label = ItemWords.slot(res, slot.slot)

@@ -38,7 +38,8 @@ targets:
     platform: iOS
     sources:
       - path: App
-      # The contract fixtures, copied into the bundle as "Fixtures" for fixture mode.
+      # The contract fixtures for fixture mode. A folder reference keeps its on-disk name, so they
+      # land in the bundle as `app/` (FixtureTransport.bundledFolder); `name` labels the group only.
       - path: ../../docs/contracts/fixtures/app
         name: Fixtures
         type: folder

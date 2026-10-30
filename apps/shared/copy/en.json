@@ -238,6 +238,7 @@
     "bis.a11y.showsItem": "Shows the item",
     "bis.nextSameShort": "same {unit}",
     "bis.qualitySlot": "{quality} · {slot}",
+    "bis.preset.bare": "Bare",
 
     "raids.guildLine": { "text": "{faction} · {region} {ruleset} · {n} on the roster", "args": { "n": "int" } },
     "raids.next": "Next raid",

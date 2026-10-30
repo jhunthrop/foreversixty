@@ -317,6 +317,17 @@
         }
       }
     },
+    "bis.preset.bare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bare"
+          }
+        }
+      }
+    },
     "bis.qualitySlot": {
       "comment": "Arguments: 1 quality (string), 2 slot (string)",
       "extractionState": "manual",

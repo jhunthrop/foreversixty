@@ -135,8 +135,15 @@ struct BisListBuilder {
             unit: unit,
             specLabel: specLabel,
             rangeLabel: rangeLabel,
-            presetLabel: file.presets[band.preset]?.label ?? band.preset
+            presetLabel: Self.presetLabel(file, band)
         )
+    }
+
+    /// The file's own label for the preset; the bare character reads `Bare`, as the site's
+    /// `presetLabelFor` does.
+    static func presetLabel(_ file: BisFile, _ band: BisBand) -> String {
+        if band.preset == BisRange.barePreset { return Copy.bisPresetBare }
+        return file.presets[band.preset]?.label ?? band.preset
     }
 
     func row(_ slot: BisSlot, unit: BisUnit, mainHand: String?) -> BisRow {

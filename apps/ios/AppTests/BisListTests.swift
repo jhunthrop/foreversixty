@@ -164,3 +164,25 @@ struct BisBundleTests {
         #expect(BrandImages.faction("horde") != nil)
     }
 }
+
+@Suite("Fixture mode")
+struct FixtureBundleTests {
+    @Test("the app bundle carries the contract fixtures where fixture mode reads them")
+    func bundledFixtures() {
+        #expect(FixtureTransport.bundled() != nil)
+        #expect(FixtureTransport.bundled()?.fileName(method: .get, path: "/v1/me") == "me.json")
+        #expect(Bundle.main.url(forResource: "me", withExtension: "json", subdirectory: FixtureTransport.bundledFolder) != nil)
+    }
+}
+
+@Suite("BiS preset label")
+struct BisPresetLabelTests {
+    @Test("the raid list reads the file's label; the bare list reads Bare")
+    func presetLabels() throws {
+        let file = try BisTestData.bis()
+        let raid = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde"))
+        let bare = try #require(file.band(for: BisRange(band: 50, preset: "bare"), faction: "horde"))
+        #expect(BisListBuilder.presetLabel(file, raid) == "Raid-ready, Phase 1")
+        #expect(BisListBuilder.presetLabel(file, bare) == "Bare")
+    }
+}

@@ -795,6 +795,9 @@ enum Copy {
         format("bis.qualitySlot", quality, slot)
     }
 
+    /// Bare
+    static var bisPresetBare: String { text("bis.preset.bare") }
+
     /// {faction} · {region} {ruleset} · {n} on the roster
     static func raidsGuildLine(faction: String, region: String, ruleset: String, n: Int) -> String {
         format("raids.guildLine", faction, region, ruleset, n)
