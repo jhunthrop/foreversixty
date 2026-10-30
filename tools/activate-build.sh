@@ -150,9 +150,14 @@ if [ ! -d "$NEW_DIR/bis" ] && [ -d "$OLD_DIR/bis" ]; then
   # items.json lacks is dropped with a report line (pipeline/bis_carry.py).
   run in_dir data uv run python -m pipeline carry-bis --from "$ACTIVE" --to "$NEW"; carried+=("bis/")
 fi
-for f in dps-per-point.json; do
-  if [ ! -e "$NEW_DIR/$f" ] && [ -e "$OLD_DIR/$f" ]; then cp "$OLD_DIR/$f" "$NEW_DIR/$f"; carried+=("$f"); fi
-done
+# dps-per-point.carried-from names the build the copy was measured on, so bis.yml knows
+# to re-measure it (on the first ranking with an engine stamped for $NEW) and never
+# re-measures a file measured for its own build.
+if [ ! -e "$NEW_DIR/dps-per-point.json" ] && [ -e "$OLD_DIR/dps-per-point.json" ]; then
+  cp "$OLD_DIR/dps-per-point.json" "$NEW_DIR/dps-per-point.json"
+  echo "$ACTIVE" > "$NEW_DIR/dps-per-point.carried-from"
+  carried+=("dps-per-point.json")
+fi
 [ ${#carried[@]} -eq 0 ] || echo "carried forward from $ACTIVE: ${carried[*]}"
 
 # 1. The active build.

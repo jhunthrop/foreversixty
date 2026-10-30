@@ -296,6 +296,9 @@ stub_npm "$d/npm-stub" 0 "$WEB_GREEN"
 stub_go "$d/go-stub" 0 "$API_GREEN"
 printf '#!/usr/bin/env bash\nexit 1\n' >"$d/stubs/gh"
 chmod +x "$d/stubs/gh"
+echo '{"warrior-arms": {"dps": 0.2}}' >"$d/data/builds/$OLD_BUILD/dps-per-point.json"
+git -C "$d" add -A && git -C "$d" -c user.name=test -c user.email=test@example.com commit --quiet -m figures
+git -C "$d" push --quiet origin main
 STATUS=0
 OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" \
 	GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" 2>&1) || STATUS=$?
@@ -303,6 +306,8 @@ assert "green move: pushed the move" contains "$(git -C "$d.git" log -1 --format
 assert "green move: tagged the addon" equal "$(git -C "$d.git" tag -l 'addon-v*')" "addon-v2.1.8"
 assert "green move: the ranking waits (the stub engine stamp is unreadable)" contains "$OUT" "ranking waits for engine follow"
 assert "green move: the failed dispatches fail the run" equal "$STATUS" 1
+assert "green move: dps-per-point is carried" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.json")" '{"warrior-arms": {"dps": 0.2}}'
+assert "green move: with a marker naming the build it was measured on" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.carried-from")" "$OLD_BUILD"
 
 
 

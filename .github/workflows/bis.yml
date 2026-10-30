@@ -199,10 +199,11 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
           ENGINE_FOLLOWS: ${{ steps.engine.outputs.follows }}
         run: |
-          # dps-per-point.json is an output of this workflow too (the re-measure below).
+          # dps-per-point.json and its carried-from marker are outputs of this workflow too
+          # (the re-measure below), so a re-measure does not re-rank the next night.
           hash=$( {
             git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml
-            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\.json"
+            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\."
           } | sha256sum | cut -c1-16)
           last=$(git log -1 --format=%B -- "data/builds/$BUILD/bis" | sed -n 's/^Inputs: //p' | head -1)
           echo "hash=$hash" >> "$GITHUB_OUTPUT"
@@ -255,25 +256,28 @@ jobs:
         working-directory: sim
         run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked' -count=1
       # tools/activate-build.sh carries the previous build's dps-per-point.json unchanged
-      # (the addon's "+N DPS" and the API's loot values read it). The first ranking on an
-      # engine stamped for the build re-measures it on the new picks: a file byte-equal to
-      # the nearest older build's is that carry.
-      - name: re-measure dps-per-point where it is still the carry
+      # (the addon's "+N DPS" and the API's loot values read it) and writes
+      # dps-per-point.carried-from beside it. Only then, on a move, does the first ranking
+      # on an engine stamped for the build re-measure it on the new picks; a build with no
+      # carried-from (every build before this rule, and any build already re-measured) is
+      # never re-measured here. Failure-isolated: a red or slow measure keeps the carry and
+      # the night's picks still land (the commit step stages the file only on success).
+      - name: re-measure dps-per-point where it is still a carry
+        id: dpp
         if: steps.inputs.outputs.skip != 'true'
+        continue-on-error: true
+        timeout-minutes: 90
         env: { BUILD: '${{ steps.identity.outputs.build }}' }
         run: |
-          file="data/builds/$BUILD/dps-per-point.json"
-          prev=""
-          for dir in $(find data/builds -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | grep -E '^[0-9]+(\.[0-9]+){3}$' | sort -V); do
-            [ "$dir" != "$BUILD" ] || break
-            [ ! -f "data/builds/$dir/dps-per-point.json" ] || prev=$dir
-          done
-          if [ -f "$file" ] && [ -n "$prev" ] && cmp -s "$file" "data/builds/$prev/dps-per-point.json"; then
-            echo "dps-per-point.json is $prev's carry; re-measuring on tonight's picks"
-            go run ./sim/cmd/dps-per-point -repo-root .
-          else
-            echo "dps-per-point.json was measured for $BUILD (or there is nothing to compare); kept"
+          marker="data/builds/$BUILD/dps-per-point.carried-from"
+          if [ ! -f "$marker" ]; then
+            echo "dps-per-point.json is $BUILD's own (no carried-from); kept"
+            exit 0
           fi
+          echo "dps-per-point.json is carried from $(cat "$marker"); re-measuring on tonight's picks"
+          go run ./sim/cmd/dps-per-point -repo-root .
+          rm "$marker"
+          echo "measured=true" >> "$GITHUB_OUTPUT"
       # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must
@@ -281,15 +285,24 @@ jobs:
       - name: regenerate the addon data with the new picks
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data
+        env: { MEASURED: '${{ steps.dpp.outputs.measured }}' }
         run: |
+          # A failed re-measure may have left a partial file; the carry stands instead.
+          if [ "$MEASURED" != true ]; then git checkout -- "builds/${{ steps.identity.outputs.build }}/dps-per-point.json" 2>/dev/null || true; fi
           uv sync
           uv run python -m pipeline addon-data --build "${{ steps.identity.outputs.build }}"
       - name: commit data/builds/*/bis if it changed
         if: steps.inputs.outputs.skip != 'true'
+        env: { MEASURED: '${{ steps.dpp.outputs.measured }}' }
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
-          git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.json" addon/ForeverSixty/Data.lua
+          git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" addon/ForeverSixty/Data.lua
+          # The re-measured figures and the carried-from marker's removal, only when the
+          # measure succeeded (and only paths that exist: a build may have no figures).
+          if [ "$MEASURED" = true ]; then
+            git add -A -- "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.json" "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.carried-from"
+          fi
           if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}" -m "Inputs: ${{ steps.inputs.outputs.hash }}"; then
             echo "nothing to commit"; exit 0
           fi
