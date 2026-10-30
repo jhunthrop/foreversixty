@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70658",
   "engine_version": "1f542def3",
-  "generated_at": "2026-10-29T13:39:05Z",
+  "generated_at": "2026-10-30T13:26:20Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -707,8 +707,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.113422557,
-      "verify_run_seconds": 0.746769813,
+      "weights_run_seconds": 0.915050755,
+      "verify_run_seconds": 0.687027123,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1515,8 +1515,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.113422557,
-      "verify_run_seconds": 0.725836972,
+      "weights_run_seconds": 0.915050755,
+      "verify_run_seconds": 0.613051066,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2390,8 +2390,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.2144235700000001,
-      "verify_run_seconds": 0.800055638,
+      "weights_run_seconds": 1.0151844,
+      "verify_run_seconds": 0.677088178,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3267,8 +3267,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.2144235700000001,
-      "verify_run_seconds": 0.843028799,
+      "weights_run_seconds": 1.0151844,
+      "verify_run_seconds": 0.709683194,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4173,8 +4173,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.312085189,
-      "verify_run_seconds": 0.920294458,
+      "weights_run_seconds": 1.031354571,
+      "verify_run_seconds": 0.754724616,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5060,8 +5060,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.312085189,
-      "verify_run_seconds": 0.971858749,
+      "weights_run_seconds": 1.031354571,
+      "verify_run_seconds": 0.830501889,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5937,8 +5937,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.215260884,
-      "verify_run_seconds": 1.187491758,
+      "weights_run_seconds": 1.030418449,
+      "verify_run_seconds": 1.004485076,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6820,8 +6820,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.215260884,
-      "verify_run_seconds": 1.122707842,
+      "weights_run_seconds": 1.030418449,
+      "verify_run_seconds": 0.931462977,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7777,8 +7777,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.336756702,
-      "verify_run_seconds": 3.5578574,
+      "weights_run_seconds": 1.107310517,
+      "verify_run_seconds": 3.039444552,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8743,8 +8743,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.336756702,
-      "verify_run_seconds": 3.507530892,
+      "weights_run_seconds": 1.107310517,
+      "verify_run_seconds": 2.907098462,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9701,8 +9701,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.534293326,
-      "verify_run_seconds": 2.712831655,
+      "weights_run_seconds": 1.21642315,
+      "verify_run_seconds": 2.27323001,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10660,8 +10660,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.534293326,
-      "verify_run_seconds": 2.443507629,
+      "weights_run_seconds": 1.21642315,
+      "verify_run_seconds": 2.048966836,
       "coverage": {
         "back": {
           "eligible": 390,
