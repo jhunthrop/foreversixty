@@ -24,7 +24,7 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { biggestFightIndex, defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
+  import { defaultFightIndex, resolveFightIndex, sampleFightIndex } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
   import {
     formatDuration,
@@ -175,9 +175,9 @@
   const inflight = new Map<number, Promise<void>>();
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
-  /** The fight a bare url opens on: the first boss pull, not the first trash. */
+  /** The fight a bare url opens on: the first boss pull, not the first trash; the sample's own rule for the sample. */
   const firstFight = $derived(
-    isSampleReport(reportId) ? biggestFightIndex(fights) : defaultFightIndex(fights),
+    isSampleReport(reportId) ? sampleFightIndex(fights) : defaultFightIndex(fights),
   );
   /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
   const showParse = $derived(hasRankedKill(fights));

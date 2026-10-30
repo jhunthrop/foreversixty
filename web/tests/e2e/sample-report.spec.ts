@@ -61,7 +61,8 @@ test('the sample report opens from /logs and shows fights, with no API', async (
     'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',
   );
   await expect(page).not.toHaveURL(/fight=/);
-  // Opens on the biggest pull (fight 6, 12:43), not the first.
+  // Opens on its first boss kill, else its longest boss attempt, else its longest pull. The
+  // sample has no boss, so that is its longest pull (fight 6, 12:43), not the first.
   await expect(page.getByTestId('fight-6')).toHaveAttribute('aria-current', 'true');
   // Class colours: no name keeps the plain text colour.
   const colours = await roster
