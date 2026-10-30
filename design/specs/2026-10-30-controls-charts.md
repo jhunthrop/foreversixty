@@ -33,6 +33,18 @@ Boards: `design/mocks/2026-10-30-controls-charts/renders/*.png`. Generator: `gen
 | `controls-charts-phone-360.png` | The 360 × 640 viewport after a tab change on the Threat tab, with every height in the fold stack (581 px) |
 | `legend-sheet-phone-360.png` | The sheet behind the legend's `+N` on a phone |
 
+**Fix round 2 (2026-10-30, build review).** Both reviewers held the built charts (`design/reviews/2026-10-30-controls-charts/build-charts-ux-verdict.md`, `build-charts-player-verdict.md`). The coordinator's rulings, which this spec now follows where they differ from the text below:
+
+- **Who the damage chart draws (supersedes D5's "Top 8 of N").** The default is the **top 4 and the bottom 4** by the window's figure, plus you, the Source player and the raid median. The reason: a top-8 default named only players at or above the median, so the low performers a raid leader looks for after a wipe were never on the chart. The bottom is taken from the metric's own role (damage dealers on Damage done, healers on Healing, everyone on Damage taken), so a healer's small damage never reads as a low performer. The Players control gains a preset row: `Top 4 + bottom 4` (the default), `Top 8`, `Bottom 8`, and `Custom` (lit while the reader's own set is drawn). The url carries `players=top` and `players=bottom`, and a guid list for Custom. The threat chart keeps its top 8 by standing.
+- **The Players field never names a limit above the roster.** With 8 or fewer players it reads `All {N}`; otherwise `Top 4, bottom 4 of {N}`, `Top 8 of {N}`, `Bottom 8 of {N}` or `{n} of {N}`.
+- **The median stays readable.** It is 2 px at 85 %, and a hovered chip dims every other line but never a median.
+- **Every figure says what it is.** The head reads `Raid {n} DPS over the whole fight` (or `over {start} to {end}`), each legend chip carries the unit (`444 DPS`), and the tooltip head reads `{phase} phase · DPS, 5 s average`. The head, the legend and the Players list use one definition, each player's DPS over the head's span, so the 40 figures add up to the head.
+- **Threat's title and the Enemy field agree.** With `Every enemy` picked the chart sums each player's estimated threat over every enemy and is titled `Estimated threat, every enemy`; with an enemy picked it is `Estimated threat on {enemy}`. The phone keeps the name and wraps. The tooltip head reads `{phase} phase · estimated threat, {every enemy | enemy}`.
+- **Pinned players lead the legend** at every width, after the medians and before `+{n}`. The phone caveat keeps the estimate wording: `An estimate: 1 per damage, 0.5 per heal.` and the link.
+- **Phone chart heads wrap**: the title on its row, then each field on its own full-width row.
+- **One chart per tab** includes Resources: its rows are the tab's lines, under a column head, with no damage chart above them.
+- **Tooltip event order**: by second, then death, target change, taunt, cast.
+
 ## 0. Decisions
 
 | # | Decision | Ruling in this spec |
