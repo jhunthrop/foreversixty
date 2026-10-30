@@ -29,3 +29,12 @@ The alignment itself lands. Every route now opens on the account's page head (go
 ## Checked and fine
 
 No navy band on any route. Account, guild overview, settings, raids, premium, setup, about, guides index, home (hero sky stays, by §3.7) and the 2000 captures hold the column and centre. Card heads, Tags (SUPPORTER, CONNECTED, CURRENT, MAIN), ActionLinks ("See all", "Open the planner") and icon tiles match /account.
+
+## Re-check
+
+Verdict: SHIP
+
+Blocker 1 resolved: /rankings 390 head shows "EVERY CLASS AND SPEC" on one line with the Characters | Guilds control wrapped under the title, no overlap; 1440 keeps the control right-aligned in the head.
+Blocker 2 resolved: /bis/warrior/fury 390 "This set" buttons wrap onto two rows, both fully inside the card edge.
+New from the fixes: none. /tiers now sits in a compact "DPS tier list" card with the faction as meta at 1440 and 390 (should 8 closed); the 1440 tier gutter bands render inside the card cleanly.
+Remaining shoulds from the original list stay open (sim strip, /bis answer placement, planner hole, guide left edge, home gap).

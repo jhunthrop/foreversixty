@@ -25,9 +25,12 @@ export function bandTreeRanksFrom(bandTalents: string): number[][] {
 }
 
 export interface BandDiff {
-  /** The band's points the build has not matched (`Σ max(band - build, 0)`, the home card's
-   *  `talentDeltaFor` rule), so it never exceeds the band's own point total. */
+  /** The build's own points spent where the band spends none (`Σ max(build - band, 0)`): the
+   *  "N of your points differ" count, so it never exceeds the build's own point total. */
   diffCount: number;
+  /** The band's points the build has not taken yet (`Σ max(band - build, 0)`, the home card's
+   *  `talentDeltaFor` rule): what a build short of the band, but inside it, still needs. */
+  missingCount: number;
   /** Talent ids whose rank differs from the band's own rank at that cell. */
   diffTalentIds: ReadonlySet<number>;
   /** The band's own rank at every talent id in the index, for the tooltip line. */
@@ -47,6 +50,7 @@ export function diffAgainstBand(
 ): BandDiff {
   const bandTrees = bandTreeRanksFrom(bandTalents);
   let diffCount = 0;
+  let missingCount = 0;
   const diffTalentIds = new Set<number>();
   const bandRankById = new Map<number, number>();
 
@@ -56,12 +60,14 @@ export function diffAgainstBand(
       const buildRank = ranks.get(talent.id) ?? 0;
       const bandRank = Math.min(bandDigits[talentIndex] ?? 0, talent.max_rank);
       bandRankById.set(talent.id, bandRank);
-      diffCount += unmatchedBandPoints(buildRank, bandRank);
+      // unmatchedBandPoints(a, b) is max(b - a, 0): swapped, it counts the build's stray points.
+      diffCount += unmatchedBandPoints(bandRank, buildRank);
+      missingCount += unmatchedBandPoints(buildRank, bandRank);
       if (buildRank !== bandRank) diffTalentIds.add(talent.id);
     });
   });
 
-  return { diffCount, diffTalentIds, bandRankById };
+  return { diffCount, missingCount, diffTalentIds, bandRankById };
 }
 
 /** `TreeGrid`/`TalentCell`'s own view of a loaded band diff (spec §4.E.4): the label for

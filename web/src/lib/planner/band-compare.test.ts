@@ -32,22 +32,24 @@ describe('diffAgainstBand', () => {
     expect(result.diffTalentIds.size).toBe(0);
   });
 
-  it('sums the unmatched band points per talent id', () => {
+  it('a build short of the band, but inside it, counts the band points still to take', () => {
     // Arms talent 1001 (tier 0, column 0) at rank 3 in the band, 0 in the build.
     const result = diffAgainstBand(index, new Map(), '3-0-0');
-    expect(result.diffCount).toBe(3);
+    expect(result.diffCount).toBe(0);
+    expect(result.missingCount).toBe(3);
     expect([...result.diffTalentIds]).toEqual([1001]);
     expect(result.bandRankById.get(1001)).toBe(3);
   });
 
-  it('marks a cell the build overspends but counts only the band points it misses, never more than the band holds', () => {
+  it('counts the build’s points spent where the band spends none', () => {
     const result = diffAgainstBand(index, new Map([[1001, 3]]), '0-0-0');
-    expect(result.diffCount).toBe(0);
+    expect(result.diffCount).toBe(3);
+    expect(result.missingCount).toBe(0);
     expect([...result.diffTalentIds]).toEqual([1001]);
   });
 
-  it('never reports more differing points than the band holds, however different the build', () => {
-    const bandPoints = 3;
+  it('never reports more differing points than the build holds, however different it is', () => {
+    const buildPoints = 3;
     const result = diffAgainstBand(
       index,
       new Map([
@@ -56,13 +58,15 @@ describe('diffAgainstBand', () => {
       ]),
       '3-0-0',
     );
-    expect(result.diffCount).toBeLessThanOrEqual(bandPoints);
+    expect(result.diffCount).toBeLessThanOrEqual(buildPoints);
     expect(result.diffCount).toBe(3);
+    expect(result.missingCount).toBe(3);
   });
 
   it('matches (zero diff, no ids) once the build equals the band', () => {
     const result = diffAgainstBand(index, new Map([[1001, 3]]), '3-0-0');
     expect(result.diffCount).toBe(0);
+    expect(result.missingCount).toBe(0);
     expect(result.diffTalentIds.size).toBe(0);
   });
 
@@ -70,7 +74,7 @@ describe('diffAgainstBand', () => {
     // 1001's max_rank is 3; a band digit of 9 clamps to 3, same as orderFromRanks would.
     const result = diffAgainstBand(index, new Map(), '9-0-0');
     expect(result.bandRankById.get(1001)).toBe(3);
-    expect(result.diffCount).toBe(3);
+    expect(result.missingCount).toBe(3);
   });
 });
 

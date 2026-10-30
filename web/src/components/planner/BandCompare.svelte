@@ -226,11 +226,14 @@
     </div>
 
     <p class="text-[13px]" data-testid="band-compare-differs">
-      {#if diff.diffCount === 0}
+      {#if diff.diffTalentIds.size === 0}
         <span class="font-semibold" style="color: var(--color-kill)">{bandCompareCopy.matches}</span>
-      {:else}
+      {:else if diff.diffCount > 0}
         <span class="text-gold numeric">{diff.diffCount}</span>
         {bandCompareCopy.differsSuffix}
+      {:else}
+        <span class="text-gold numeric">{diff.missingCount}</span>
+        {bandCompareCopy.toTakeSuffix}
       {/if}
     </p>
 
@@ -268,7 +271,7 @@
             {bandCompareCopy.loadButton(bandLabel)}
           </button>
         {/if}
-        {#if diff.diffCount > 0}
+        {#if diff.diffTalentIds.size > 0}
           <button
             type="button"
             class="{SECONDARY_BUTTON} border-line-warm text-text px-4"

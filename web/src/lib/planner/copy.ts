@@ -170,6 +170,8 @@ export const bandCompareCopy = {
    *  renders the count in its own mono/gold span and this text beside it, rather than
    *  string-surgery on `differs`' own output. */
   differsSuffix: 'of your points differ from this build',
+  /** A build inside the band's, only short of it: the count leads, this text follows it. */
+  toTakeSuffix: "of this build's points still to take",
   matches: 'Matches',
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */

@@ -73,9 +73,9 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
 // published `bis/hunter-marksmanship.json` (the fixture warrior's two trees, Arms/Fury,
 // have no published band file at all); 5 points in Lethal Shots (4001, tier 0, no prereq --
 // legal in one click each) against that file's own all-zero band 20 string, with 4001 itself
-// the one marked cell. Since 749c0c981 the count is the band's unmatched points (never more
-// than the band holds) and an overspent cell is marked but not counted, so against an
-// all-zero band the line reads Matches while 4001 still carries its differs marker.
+// the one marked cell. The count is the build's own points spent where the band spends none
+// (never more than the build holds), so the line reads 5 and Matches is reserved for a build
+// with no marked cell at all.
 const POPULATED_RECORD = {
   id: 'hunterpop1',
   class_id: 3,
@@ -100,7 +100,7 @@ test('a populated read-only build keeps every cell inert, in both directions', a
 
   // Differs-marked against the build's own band, Load hidden (nothing to overwrite into on a
   // read-only build), Fork offered in its place.
-  await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
+  await expect(page.getByTestId('band-compare-differs')).toHaveText(`5 ${bandCompareCopy.differsSuffix}`);
   await expect(page.getByTestId('talent-differs-4001')).toBeVisible();
   await expect(page.getByTestId('band-compare-load')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();
