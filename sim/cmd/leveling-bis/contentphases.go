@@ -390,11 +390,16 @@ func (g contentGates) missing(m matchedIDs) []string {
 	return out
 }
 
-// loadGatedLootIndex is loadLootIndex with data/curated/content-phases.json
-// applied: the index the ranker picks from. Any listed id the build's
+// loadGatedLootIndex is loadLootIndex with classic-db's honor ranks
+// (classicranks.go) and data/curated/content-phases.json applied: the index
+// the ranker picks from. Any listed id the build's
 // loot.json does not name is written to warn, and its gate is kept.
 func loadGatedLootIndex(repoRoot, buildDir string, itemFactionRestriction map[int]string, warn io.Writer) (lootIndex, map[int]int, error) {
 	idx, questFloors, err := loadLootIndex(buildDir, itemFactionRestriction)
+	if err != nil {
+		return nil, nil, err
+	}
+	unranked, err := loadClassicUnranked(buildDir)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -402,7 +407,7 @@ func loadGatedLootIndex(repoRoot, buildDir string, itemFactionRestriction map[in
 	if err != nil {
 		return nil, nil, err
 	}
-	gated, missing := gates.apply(idx)
+	gated, missing := gates.apply(dropNonRankRewards(idx, unranked))
 	if len(missing) > 0 {
 		if _, err := fmt.Fprintf(warn, "warning: content-phases: %d gated ids are not in %s's loot.json; their gates are kept: %s\n",
 			len(missing), filepath.Base(buildDir), strings.Join(missing, "; ")); err != nil {

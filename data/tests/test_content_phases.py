@@ -13,12 +13,14 @@ from pathlib import Path
 
 import pytest
 
+from pipeline.classicdb_items import classic_unranked_ids, load_extract
 from pipeline.loot.content_phases import (
     ContentPhaseError,
     apply_content_phases,
     load_content_phases,
     merge_duplicate_quests,
 )
+from pipeline.loot.pvp_faction import drop_non_rank_rewards
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
 
 CURATED = Path("curated")
@@ -458,10 +460,16 @@ def test_no_banned_item_has_an_open_way_in_the_active_build():
     phases = load_content_phases(CURATED)
     banned = _banned_while_closed(phases)
     build = json.loads(ACTIVE_BUILD.read_text(encoding="utf-8"))["build"]
-    document = LootFile(
-        **json.loads((Path("builds") / build / "loot.json").read_text(encoding="utf-8"))
+    build_dir = Path("builds") / build
+    document = LootFile(**json.loads((build_dir / "loot.json").read_text(encoding="utf-8")))
+    # The committed loot.json may predate the pipeline's own pvp clean-up;
+    # apply it the way `loot`/`loot-merge` do before gating.
+    extract = load_extract(build_dir)
+    assert extract is not None, f"no classic-db extract for {build}"
+    sources, _ = drop_non_rank_rewards(
+        document.sources, frozenset(classic_unranked_ids(extract[0]))
     )
-    gated, missing = apply_content_phases(document, phases)
+    gated, missing = apply_content_phases(document.model_copy(update={"sources": sources}), phases)
     leaks = _open_ways(gated, set(banned))
     assert not leaks, {item_id: banned[item_id] for item_id in sorted(leaks)}
     assert missing == [], missing

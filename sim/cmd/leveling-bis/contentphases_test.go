@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"io"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -234,13 +236,40 @@ func TestAContentGateWhoseSourceIsMissingIsKept(t *testing.T) {
 // a pick or alternative in any spec.
 func TestNoBannedItemIsObtainableAtLaunch(t *testing.T) {
 	idx := activeGatedLootIndex(t)
+	restriction := activeItemFactionRestrictions(t)
 	for id, gate := range bannedWhileClosed(t) {
 		for _, faction := range []string{"alliance", "horde"} {
-			if s, ok := sourceFor(id, 60, faction, faction, idx); ok {
+			// The item's own client restriction, as the ranker passes it:
+			// a faction-restricted item reaches only that faction.
+			if r := restriction[id]; r != "" && r != faction {
+				continue
+			}
+			if s, ok := sourceFor(id, 60, faction, restriction[id], idx); ok {
 				t.Errorf("item %d (gate %s) is obtainable at 60 for %s via %s %q", id, gate, faction, s.Kind, s.Label)
 			}
 		}
 	}
+}
+
+// activeItemFactionRestrictions is items.json's faction_restriction per
+// item id ("alliance"/"horde"), the same map main.go builds for the ranker.
+func activeItemFactionRestrictions(t *testing.T) map[int]string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join(activeBuildDir(t), "items.json"))
+	if err != nil {
+		t.Fatalf("reading items.json: %v", err)
+	}
+	var rows []flatItem
+	if err := json.Unmarshal(b, &rows); err != nil {
+		t.Fatalf("decoding items.json: %v", err)
+	}
+	out := map[int]string{}
+	for _, r := range rows {
+		if r.FactionRestriction != "" {
+			out[r.ID] = factionOfRestriction(r.FactionRestriction)
+		}
+	}
+	return out
 }
 
 func activeGatedLootIndex(t *testing.T) lootIndex {
@@ -251,4 +280,42 @@ func activeGatedLootIndex(t *testing.T) lootIndex {
 		t.Fatalf("loadGatedLootIndex(%s): %v", buildDir, err)
 	}
 	return idx
+}
+
+// Kelm Hargunth sells one title-ranked item, and the pipeline's vendor
+// backfill filed his whole stock under pvp:rank-12:horde - including
+// Dryad's Wrist Bindings, which classic-db names with no honor rank. The
+// ranker drops that pvp source, and the rank the vendor row inherited from
+// it, so the item is gated by its reputation alone.
+func TestAClassicItemWithNoHonorRankIsNoRankReward(t *testing.T) {
+	dir := t.TempDir()
+	loot := `{
+		"sources": [
+			{"id": "pvp:rank-12:horde", "kind": "pvp", "name": "Rank 12 (Horde)", "rank": 12, "faction": "horde", "title": "Legionnaire", "items": [19595, 16517]},
+			{"id": "vendor:14754", "kind": "vendor", "name": "Kelm Hargunth", "npc_id": 14754, "faction": "horde", "items": [19595]}
+		],
+		"quests": {}
+	}`
+	extract := `{"items": [{"id": 19595, "required_honor_rank": 0}, {"id": 16517, "required_honor_rank": 12}]}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), loot); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeFile(t, filepath.Join(dir, classicItemTemplate), extract); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadGatedLootIndex(repoRootFixture, dir, nil, io.Discard)
+	if err != nil {
+		t.Fatalf("loadGatedLootIndex: %v", err)
+	}
+	for _, s := range idx[19595] {
+		if s.Kind == "pvp" || s.Rank != 0 {
+			t.Errorf("Dryad's Wrist Bindings keeps a rank source: %+v", s)
+		}
+		if s.Kind == "vendor" && s.Label != "Kelm Hargunth" {
+			t.Errorf("vendor label = %q, want the vendor's own name back", s.Label)
+		}
+	}
+	if len(idx[16517]) != 1 || idx[16517][0].Kind != "pvp" {
+		t.Errorf("a real rank-12 reward lost its pvp source: %+v", idx[16517])
+	}
 }
