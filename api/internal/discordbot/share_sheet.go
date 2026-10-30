@@ -29,23 +29,38 @@ type sheetPost struct {
 	model  sheet.Sheet
 	accent int
 	head   string
-	legend string
 	link   Component
 }
 
-// sheetPostFor is the sheet a command's share posts; nil for one that posts its panel as it is
-// (/report, and /bis with a slot).
-func (s *Service) sheetPostFor(ctx context.Context, command string, guildID int64, opts map[string]string) (*sheetPost, error) {
+// publicAnswer is what Share in channel posts for command, from one read: the visitor's
+// answer, and for /bis without a slot and /char the sheet drawn from the same data. ok is
+// false when there is nothing public to show. A sheet that cannot be modelled leaves the
+// answer to post alone (spec §B.5), logged sheet_render.
+func (s *Service) publicAnswer(ctx context.Context, command string, guildID int64, opts map[string]string) (Message, *sheetPost, bool, error) {
 	switch command {
 	case "bis":
-		if opts[optSlot] != "" {
-			return nil, nil
+		d, found, err := s.loadBis(ctx, guildID, opts)
+		if err != nil || !found {
+			return Message{}, nil, false, err
 		}
-		return s.bisSheetPost(ctx, guildID, opts)
+		panel, ok, err := s.bisPanelOf(ctx, d, opts)
+		if err != nil || !ok || opts[optSlot] != "" {
+			return panel, nil, ok, err
+		}
+		return panel, s.bisSheet(d), true, nil
 	case "char":
-		return s.charSheetPost(ctx, guildID, opts)
+		d, found, err := s.loadChar(ctx, guildID, nil, opts)
+		if err != nil || !found {
+			return Message{}, nil, false, err
+		}
+		post := s.charSheet(d)
+		if post == nil {
+			s.log.Warn("discordbot", "op", "sheet_render", "outcome", "no_model", "class", d.class, "faction", d.faction)
+		}
+		return s.charPanel(ctx, d), post, true, nil
 	}
-	return nil, nil
+	m, ok, err := s.visitorAnswer(command)(ctx, guildID, opts)
+	return m, nil, ok, err
 }
 
 // publicShare is what Share in channel posts: the sheet with its words when it renders, else
@@ -69,30 +84,20 @@ func (s *Service) publicShare(post *sheetPost, panel Message, in Interaction) Me
 }
 
 // sheetMessage is the shared sheet's message: the heading, the sheet in a gallery with its
-// alt text, the legend when there is one, and the one link (spec §B.4).
+// alt text, and the one link (spec §B.4). The /char gold legend is on the image alone.
 func sheetMessage(post *sheetPost, png []byte) Message {
 	alt := sheet.Alt(post.model)
 	body := []Node{textNode(post.head), galleryNode("attachment://"+sheetFileName, alt)}
-	if post.legend != "" {
-		body = append(body, textNode(post.legend))
-	}
 	return Message{
-		Layout:     []Node{containerNode(post.accent, body...)},
-		Components: []ActionRow{{post.link}},
-		Files:      []Attachment{{Name: sheetFileName, Description: alt, ContentType: sheetContentType, Data: png}},
+		ComponentsV2: true,
+		Layout:       []Node{containerNode(post.accent, body...)},
+		Components:   []ActionRow{{post.link}},
+		Files:        []Attachment{{Name: sheetFileName, Description: alt, ContentType: sheetContentType, Data: png}},
 	}
 }
 
-// bisSheetPost is the /bis sheet: all 17 picks of the band, whichever page was shared.
-func (s *Service) bisSheetPost(ctx context.Context, guildID int64, opts map[string]string) (*sheetPost, error) {
-	d, found, err := s.loadBis(ctx, guildID, opts)
-	if err != nil || !found {
-		return nil, err
-	}
-	return s.bisSheet(d), nil
-}
-
-// bisSheet is a band's sheet and the words of its shared message.
+// bisSheet is the /bis sheet, all 17 picks of the band whichever page was shared, and the
+// words of its shared message.
 func (s *Service) bisSheet(d bisData) *sheetPost {
 	model := sheet.Sheet{Kind: sheet.KindBis, Class: d.spec.ClassSlug, Spec: d.spec.Name, Faction: d.faction,
 		Title: fill(strings.TrimPrefix(panelCopy.BisHeadTitle, heading("")), d.who()...), Kicker: sheet.CopyBisKicker,
@@ -114,15 +119,12 @@ func (s *Service) bisSheet(d bisData) *sheetPost {
 		link: Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.BisAllSlots, URL: d.page}}
 }
 
-// charSheetPost is the /char sheet: what the character wears, as a visitor sees it, with the
-// gold gain of each slot the band's pick improves.
-func (s *Service) charSheetPost(ctx context.Context, guildID int64, opts map[string]string) (*sheetPost, error) {
-	d, found, err := s.loadChar(ctx, guildID, nil, opts)
-	if err != nil || !found {
-		return nil, err
-	}
+// charSheet is the /char sheet: what the character wears, as a visitor sees it, with the
+// gold gain of each slot the band's pick improves; nil for a character the sheet cannot draw
+// (no class or faction it knows).
+func (s *Service) charSheet(d charData) *sheetPost {
 	if _, known := classColor(d.class); !known || (d.faction != "alliance" && d.faction != "horde") {
-		return nil, nil
+		return nil
 	}
 	level := 0
 	if d.card.Character.Level != nil {
@@ -141,13 +143,8 @@ func (s *Service) charSheetPost(ctx context.Context, guildID int64, opts map[str
 		link: Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}}
 	if d.ups.band != "" {
 		post.model.Footer = fill(panelCopy.SheetCharGold, "{band label}", d.ups.band)
-		legend := panelCopy.ShareCharGold
-		if !d.ups.byDPS {
-			legend = panelCopy.ShareCharGoldTank
-		}
-		post.legend = fill(legend, "{band label}", d.ups.band)
 	}
-	return post, nil
+	return post
 }
 
 // charSheetCells are the worn items, each with its upgrade's gold line; an empty slot says

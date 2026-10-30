@@ -93,7 +93,8 @@ export function bisSlotPanel(d, slotKey) {
   const r = rows.get(slotKey);
   const label = SLOT_LABELS[slotKey];
   const alts = r.alternatives.slice(0, 2).map((a) => {
-    const delta = r.unmodelled || a.unmodelled ? NOT_MODELLED : Math.abs(a.delta) >= 0.05 ? signedDPS(a.delta) : undefined;
+    // Each alternative's own measured gap to the pick, said as such (persona ruling P3).
+    const delta = r.unmodelled || a.unmodelled ? NOT_MODELLED : Math.abs(a.delta) >= 0.05 ? signedDPS(a.delta) + " vs the best pick" : undefined;
     return section(
       `${nameLine(a)}\n${slotLine(label, delta)}\n${facts(a, a.source)}`,
       thumb(tileURL(a.id), tileAlt(a, label)),
@@ -243,7 +244,6 @@ export function charShare(d) {
         components: [
           text(CHAR_HEAD),
           { type: T.GALLERY, items: [{ media: { url: SHEET }, description: alt }] },
-          text("-# Gold figures: the level 60 Phase 1 raid pick's gain over what is worn."),
         ],
       },
       row(link("Character page", CHAR_URL)),

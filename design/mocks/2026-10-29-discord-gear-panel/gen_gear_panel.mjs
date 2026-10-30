@@ -57,8 +57,10 @@ for (const f of frames) {
   console.log(f.id.padEnd(20), "components", String(n).padStart(2), "text", t);
 }
 
-// ---- the real frames: the bot's own handlers' answers (payloads-real, written by
-// TestDumpGearPanelPayloads), drawn as <board>-real beside the board of the same name ----
+// ---- the real frames: the bot's own handlers' answers (payloads-real), drawn as <board>-real
+// beside the board of the same name. Write them first, on a private test database:
+//   cd api && TEST_DATABASE_URL=<private db> GEAR_PAYLOADS_DIR=$PWD/../design/mocks/2026-10-29-discord-gear-panel/payloads-real \
+//     go test -tags payloaddump -p 1 -count=1 -run TestDumpGearPanelPayloads ./internal/discordbot/ ----
 const REAL = path.join(HERE, "payloads-real");
 const realFrames = existsSync(REAL)
   ? frames

@@ -108,6 +108,11 @@ func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, 
 	if err != nil || !found {
 		return Message{}, false, err
 	}
+	return s.charPanel(ctx, d), true, nil
+}
+
+// charPanel is answerChar over a character already read.
+func (s *Service) charPanel(ctx context.Context, d charData) Message {
 	head := []Node{sectionNode(s.charHeader(d, true), s.crestThumb(d.class)), separatorNode(), textNode(upgradesText(d.card, d.ups))}
 	var rows []panelRow
 	if len(d.card.Gear) > 0 {
@@ -121,7 +126,7 @@ func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, 
 	}
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}
 	body := s.guardedBody(ctx, d.build, head, rows)
-	return Message{Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}, true, nil
+	return Message{ComponentsV2: true, Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}
 }
 
 // charContainer is the panel's container in the class colour, or uncoloured for an unknown class.

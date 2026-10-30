@@ -171,3 +171,29 @@ func TestACardFailureOverAV2AnswerStaysV2(t *testing.T) {
 		t.Fatalf("the failure line stacked: %d then %d", len(list), len(again))
 	}
 }
+
+// A reply that changes only buttons over a V2 message is still a V2 edit: the flag and the rows,
+// never content or embeds (an empty content over a V2 message is a 400).
+func TestARowsOnlyUpdateOverAV2MessageStaysV2(t *testing.T) {
+	rows := []ActionRow{{shareButton("tok", true)}}
+	over := Message{Components: rows, Ephemeral: true, sourceV2: true}
+	body := wireOf(t, over.edit())
+	assertUpdateBody(t, "rows only over V2", body, false)
+	if list := body["components"].([]any); len(list) != 1 || list[0].(map[string]any)["type"] != float64(rowType) {
+		t.Fatalf("components = %v", list)
+	}
+	// Built V2 from the start with rows alone, it marshals as V2 too.
+	v2 := Message{ComponentsV2: true, Components: rows, Ephemeral: true}
+	if f := wireOf(t, v2)["flags"]; f != float64(componentsV2Flag|ephemeralFlag) {
+		t.Fatalf("flags = %v", f)
+	}
+	assertUpdateBody(t, "rows only over legacy", wireOf(t, v2.edit()), true)
+	// Through the flow wrapper, a reply of rows alone is V2.
+	h := componentsV2Flow(func(context.Context, Interaction) (Reply, error) {
+		return Reply{Message: Message{Components: rows}, Update: true}, nil
+	})
+	rep, err := h(context.Background(), Interaction{})
+	if err != nil || !rep.Message.componentsV2() {
+		t.Fatalf("flow = %+v %v", rep, err)
+	}
+}

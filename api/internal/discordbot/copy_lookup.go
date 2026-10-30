@@ -37,25 +37,27 @@ var lookupCopy = struct {
 var panelCopy = struct {
 	BisHeadTitle, BisHeadLine, BisHeadPage string
 	// BisPages are the two pages' ranges: Head to Legs, Feet to Ranged.
-	BisPages                                      [2]string
-	BisSlotTitle, BisSlotNext                     string
+	BisPages                  [2]string
+	BisSlotTitle, BisSlotNext string
+	// BisAltDelta is an alternative\'s line-2 figure: its own measured gap to the pick.
+	BisAltDelta                                   string
 	BisOffHandTwoHand, BisSlotNone                string
 	NotModelled                                   string
 	Replaces, ReplacesNoLevel                     string
 	UpgradesTitle, UpgradesByDPS, UpgradesByScore string
 	UpgradesMore, UpgradesMoreOne, UpgradesNone   string
-	ShareCharGold, ShareCharGoldTank              string
 	TileAlt, TileAltNoQuality, CrestAlt           string
 	// SheetRange is the /bis sheet's range under its level: the Phase 1 raid, level 60 bare,
 	// and the levels of a lower band.
 	SheetRangeRaid, SheetRangeBare, SheetRangeLevels string
-	SheetUpdated, SheetCharGold, SheetCharSynced     string
+	SheetUpdated, SheetCharGold                      string
 }{
 	BisHeadTitle:      "### {Spec} {Class}",
 	BisHeadLine:       "Best in slot · {band label} · {Faction}",
 	BisHeadPage:       "-# {Page range}, {n} of 17 slots. Each gain is over the next best item.",
 	BisPages:          [2]string{"Head to Legs", "Feet to Ranged"},
 	BisSlotTitle:      "### {Slot} · {Spec} {Class}",
+	BisAltDelta:       "{delta} vs the best pick",
 	BisSlotNext:       "-# The next best",
 	BisOffHandTwoHand: "**Off hand** · none: {main hand name} is two-handed.",
 	BisSlotNone:       "**{Slot}** · no pick for this range.",
@@ -68,8 +70,6 @@ var panelCopy = struct {
 	UpgradesMore:      "-# {n} more upgrades on the character page.",
 	UpgradesMoreOne:   "-# 1 more upgrade on the character page.",
 	UpgradesNone:      "Every slot already wears the guide's pick for {band label}.",
-	ShareCharGold:     "-# Gold figures: the {band label} pick's gain over what is worn.",
-	ShareCharGoldTank: "-# Gold figures: the {band label} pick's Forever Score gain over what is worn.",
 	TileAlt:           "{Item name}, {Quality} {slot} item",
 	TileAltNoQuality:  "{Item name}, {slot} item",
 	CrestAlt:          "{Class} crest",
@@ -78,7 +78,6 @@ var panelCopy = struct {
 	SheetRangeLevels:  "Levels {n} to {n+9}",
 	SheetUpdated:      "Updated {d Mon yyyy}",
 	SheetCharGold:     "Gold: gain over what is worn, {band label}",
-	SheetCharSynced:   "Synced {d Mon yyyy}",
 }
 
 // qualityWords are the item qualities in the game's words, by quality number (spec §6.2).

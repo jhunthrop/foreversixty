@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
@@ -110,8 +111,8 @@ func contentOf(m Message) string {
 	if !m.componentsV2() {
 		return m.Content
 	}
-	if first := m.Layout[0]; first.Kind == KindTextDisplay {
-		return first.Content
+	if len(m.Layout) > 0 && m.Layout[0].Kind == KindTextDisplay {
+		return m.Layout[0].Content
 	}
 	return ""
 }
@@ -124,4 +125,16 @@ func hasCard(m Message) bool {
 		}
 	}
 	return false
+}
+
+// boardClock is the instant every board frame is drawn at (the boards' clock).
+var boardClock = time.Date(2026, time.December, 10, 22, 0, 0, 0, time.UTC)
+
+func marshalled(t *testing.T, v any) json.RawMessage {
+	t.Helper()
+	raw, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return raw
 }

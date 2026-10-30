@@ -91,6 +91,12 @@ type bisBand struct {
 	ReferenceDpsPerPoint *float64 `json:"reference_dps_per_point"`
 }
 
+// stamped is b with the file's ranking time.
+func (f bisFile) stamped(b Band) Band {
+	b.GeneratedAt = f.GeneratedAt
+	return b
+}
+
 // band is the entry as the loaders return it.
 func (b bisBand) band() Band {
 	return Band{Slots: b.Slots, ScoreUnit: b.ScoreUnit, ReferenceDpsPerPoint: b.ReferenceDpsPerPoint}
@@ -123,7 +129,7 @@ func LoadBand(dataDir, build, fileSlug string, band int, faction string) (Band, 
 	}
 	for _, b := range file.Bands {
 		if b.Band == band && b.Faction == faction {
-			return b.band(), true, nil
+			return file.stamped(b.band()), true, nil
 		}
 	}
 	return Band{}, false, nil
@@ -137,10 +143,6 @@ func LoadPresetBand(dataDir, build, fileSlug string, band int, faction, preset s
 	if err != nil || !ok {
 		return Band{}, false, err
 	}
-	stamp := func(b Band) Band {
-		b.GeneratedAt = file.GeneratedAt
-		return b
-	}
 	var candidates []bisBand
 	for _, b := range file.Bands {
 		if b.Band == band && b.Faction == faction {
@@ -150,12 +152,12 @@ func LoadPresetBand(dataDir, build, fileSlug string, band int, faction, preset s
 	for _, want := range []string{preset, BarePreset} {
 		for _, b := range candidates {
 			if b.preset() == want {
-				return stamp(b.band()), true, nil
+				return file.stamped(b.band()), true, nil
 			}
 		}
 	}
 	if len(candidates) > 0 {
-		return stamp(candidates[0].band()), true, nil
+		return file.stamped(candidates[0].band()), true, nil
 	}
 	return Band{}, false, nil
 }

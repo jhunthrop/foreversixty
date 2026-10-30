@@ -1,3 +1,5 @@
+//go:build payloaddump
+
 package discordbot
 
 import (
@@ -25,9 +27,6 @@ const payloadDirEnv = "GUIDED_PAYLOADS_DIR"
 // gen_gear_panel.mjs beside the mock's own.
 const gearPayloadDirEnv = "GEAR_PAYLOADS_DIR"
 
-// boardClock is the instant every dumped card is drawn at (the boards' clock).
-var boardClock = time.Date(2026, time.December, 10, 22, 0, 0, 0, time.UTC)
-
 // signedUpOfForty is the roster size the reminder boards show: 33 of 40.
 const signedUpOfForty = 33
 
@@ -46,15 +45,6 @@ type dumpFrame struct {
 type frameDumper struct {
 	t   *testing.T
 	dir string
-}
-
-func marshalled(t *testing.T, v any) json.RawMessage {
-	t.Helper()
-	raw, err := json.Marshal(v)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return raw
 }
 
 func (d frameDumper) write(f dumpFrame) {

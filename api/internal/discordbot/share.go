@@ -115,16 +115,12 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 	if row.used {
 		return s.sharedReply(ctx, in, guildID, token, row, Message{})
 	}
-	public, ok, err := visitor(ctx, guildID, row.opts)
+	public, post, ok, err := s.publicAnswer(ctx, row.command, guildID, row.opts)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: share recompute: %w", err)
 	}
 	if !ok {
 		return pressReply(lookupCopy.NoLongerPublic, false), nil
-	}
-	post, err := s.sheetPostFor(ctx, row.command, guildID, row.opts)
-	if err != nil {
-		return Reply{}, fmt.Errorf("discordbot: share sheet: %w", err)
 	}
 	claimed, err := s.claimShare(ctx, token)
 	if err != nil || !claimed {

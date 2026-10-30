@@ -86,3 +86,31 @@ func TestSourceBuildFallsBackToTheNewestRankedBuild(t *testing.T) {
 		t.Fatalf("unknown active = %q", got)
 	}
 }
+
+// Both loaders carry the file's generated_at, the band's own scalar fields and a slot's flags.
+func TestLoadersCarryTheFileStampAndTheBandFields(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "b1", "bis")
+	if err := os.MkdirAll(path, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	raw := `{"generated_at": "2026-10-29T13:34:26Z", "bands": [{"band": 60, "faction": "alliance", "preset": "raid",
+	 "score_unit": "tank_score", "reference_dps_per_point": 0.25,
+	 "slots": [{"slot": "head", "item_id": 3, "score": 96.5, "effect_unmodelled": true},
+	           {"slot": "off_hand", "empty_reason": "two_hand_equipped"}]}]}`
+	if err := os.WriteFile(filepath.Join(path, "warrior-fury.json"), []byte(raw), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	plain, ok1, err1 := LoadBand(dir, "b1", "warrior-fury", 60, "alliance")
+	preset, ok2, err2 := LoadPresetBand(dir, "b1", "warrior-fury", 60, "alliance", RaidPreset)
+	for _, b := range []Band{plain, preset} {
+		if !ok1 || !ok2 || err1 != nil || err2 != nil || b.GeneratedAt != "2026-10-29T13:34:26Z" || b.ScoreUnit != TankScoreUnit ||
+			b.ReferenceDpsPerPoint == nil || *b.ReferenceDpsPerPoint != 0.25 {
+			t.Fatalf("band = %+v (%v %v %v %v)", b, ok1, ok2, err1, err2)
+		}
+		head, off := b.BySlot()["head"], b.BySlot()["off_hand"]
+		if head.Score == nil || *head.Score != 96.5 || !head.EffectUnmodelled || off.EmptyReason != EmptyTwoHand {
+			t.Fatalf("slots = %+v %+v", head, off)
+		}
+	}
+}

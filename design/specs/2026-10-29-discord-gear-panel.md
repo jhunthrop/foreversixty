@@ -185,7 +185,7 @@ The page button's id is `gbis:1:pg:{class}:{spec}:{phase}:{slot}:{page}`; the lo
    3. **The pick's row.**
    4. **Separator**.
    5. **Text Display**: `-# The next best`.
-   6. **The first two alternatives.** Line 2 is `{Slot}` plus ` · {delta}` only when the absolute delta is at least 0.05 (`−7.4 DPS`, U+2212). An unmodelled pick or alternative shows `Gain not modelled yet` instead.
+   6. **The first two alternatives.** Line 2 is `{Slot}` plus ` · {delta} vs the best pick` only when the absolute delta is at least 0.05 (`−7.4 DPS vs the best pick`, U+2212): each alternative's own measured gap to the pick, never the gap to the next row (ruling A12). An unmodelled pick or alternative shows `Gain not modelled yet` instead.
 2. **Action row**: `Share in channel`, `Change picks`, `Open on Forever Sixty` (Link).
 
 ### A.5.3 `/char` (`char-panel`, `char-panel-nogear`)
@@ -233,10 +233,10 @@ Every component counts, nested ones included. The counts come from `payloads/*.j
 | `/bis` page 1 | Container 1 + header Section 3 + Separator 1 + 9 x 3 + row 1 + 4 buttons | 37 | 1,355 |
 | `/bis` page 1 after a failed share | the above + the failure Text Display | **38** | 1,386 |
 | `/bis` page 2 | 1 + 3 + 1 + 7 x 3 + 1 + 1 + 4 | 32 | 1,070 |
-| `/bis slot:` | 1 + 3 + 1 + 3 + 1 + 1 + 6 + 1 + 3 | 20 | 493 |
+| `/bis slot:` | 1 + 3 + 1 + 3 + 1 + 1 + 6 + 1 + 3 | 20 | 527 |
 | `/char` | 1 + 3 + 1 + 1 + 15 + 1 + 4 + 2 | 28 | 1,172 |
 | `/char` no gear | | 12 | 241 |
-| Shared `/bis`, shared `/char` | | 5, 6 | 72, 185 |
+| Shared `/bis`, shared `/char` | | 5, 5 | 72, 112 |
 
 Rules:
 - **The ceiling is 38, not 40.** The largest message (page 1 with the failure line) is 38. Every handler test asserts at most 38. The 2 spare are held for Discord changes, never spent.
@@ -369,7 +369,7 @@ The follow-up is public: `flags` 32768, multipart, `files[0]` `sheet.png`, `atta
 1. **Container**, class accent.
    1. **Text Display.** `/bis`: `### {Spec} {Class}` and `Best in slot · {band label} · {Faction}`. `/char`: `### [{Name}]({character URL})` and `Level {n} {Spec} {Class} · {Guild}`.
    2. **Media Gallery**, one item, `attachment://sheet.png`, with the alt text.
-   3. `/char` only: `-# Gold figures: the {band label} pick's gain over what is worn.` (tank: `-# Gold figures: the {band label} pick's Forever Score gain over what is worn.`).
+   3. No legend line: the `/char` gold legend is on the sheet's footer alone (ruling A13), so the message does not say it twice.
 2. **Action row**: `All 17 slots` (Link) for `/bis`, `Character page` (Link) for `/char`. Nothing else.
 
 The `/bis` sheet always shows all 17 slots. A shared `/bis slot:{slot}` answer posts the slot panel publicly with no sheet.
@@ -438,6 +438,7 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `bis.page.two` | `Feet to Ranged` |
 | `bis.slot.title` | `### {Slot} · {Spec} {Class}` |
 | `bis.slot.next` | `-# The next best` |
+| `bis.slot.altDelta` | `{delta} vs the best pick` |
 | `bis.offhand.twoHand` | `**Off hand** · none: {main hand name} is two-handed.` |
 | `bis.slot.none` | `**{Slot}** · no pick for this range.` |
 | `item.notModelled` | `Gain not modelled yet` |
@@ -454,7 +455,6 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `char.upgrades.none` | `Every slot already wears the guide's pick for {band label}.` |
 | `char.noGear` | `No gear shared yet. Upgrades show once the character is synced.` (unchanged) |
 | `char.facts` | `-# Item level {x.x} · Readiness: {word} · Synced <t:{unix}:R>` |
-| `share.char.gold` | `-# Gold figures: the {band label} pick's gain over what is worn.`; tank `-# Gold figures: the {band label} pick's Forever Score gain over what is worn.` |
 | `tile.alt` | `{Item name}, {Quality} {slot} item`; without a quality `{Item name}, {slot} item` |
 | `crest.alt` | `{Class} crest` |
 | `sheet.bis.kicker` | `Best in slot` |
@@ -507,6 +507,10 @@ A10. (Coordinator, after the persona round.) Item names are plain bold text, not
 
 A11. (Coordinator, after the persona round.) An empty `/char` slot shows its real gain, or `Gain not modelled yet` for a pick the sim cannot model (an on-use trinket); `fills an empty slot` is retired.
 
+A12. (Coordinator, wow-player gate on the real output.) An alternative's figure says what it is measured against: `−7.4 DPS vs the best pick`. Checked against the band: Sentinel's Leather Pants (−7.40) and Marshal's Chain Legguards (−7.42) are each measured against the pick, so both round to −7.4. That is a real near-tie between them, not a bug.
+
+A13. (Coordinator, wow-player gate on the real output.) The shared `/char` message carries no gold legend line; the sheet's footer says it once.
+
 B1. The sheet goes only on the public share.
 
 B2. No Shirt or Tabard sockets: no data can ever fill them.
@@ -541,7 +545,7 @@ C1. One Go renderer in the API: attachment for the sheet, cached endpoint for th
    - The off-hand two-hander line; tile URL and alt; four buttons in order; page id under 100.
    - A page press answers type 7 with the other page and the same Share id.
    - **Every payload, the live-share failure line included, at or under 38 components** and at or under 3,800 text characters.
-3. **`/bis slot:`.** The pick, `-# The next best`, two alternatives with U+2212 deltas or none, `Gain not modelled yet` for an unmodelled pick or alternative, three buttons.
+3. **`/bis slot:`.** The pick, `-# The next best`, two alternatives with U+2212 deltas `vs the best pick` or none, `Gain not modelled yet` for an unmodelled pick or alternative, three buttons.
 4. **`/char`.** Header clauses present and absent, member-only clauses, the order empty, measured, unmodelled; at most five; `Replaces` with and without a level; `more` singular and plural; no gear and no upgrade; tank in points.
 5. **Sources.** `Quest: Saving the Best for Last · requires level 58` (`min_level`, not `level` 60). No `min_level` gives `Quest: {name}`. The site's `questSourceLabel` test changes in step.
 6. **Escaping.** Brackets, parentheses and `*` in names stay inside the bold, and no row carries a link.

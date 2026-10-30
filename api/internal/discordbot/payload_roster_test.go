@@ -1,3 +1,5 @@
+//go:build payloaddump
+
 package discordbot
 
 import (

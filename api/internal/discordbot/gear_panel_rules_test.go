@@ -136,6 +136,22 @@ func TestTheTextGuardDropsSourcesLastRowFirst(t *testing.T) {
 	}
 }
 
+// Past the sources, whole rows go from the end, and the cut is logged.
+func TestTheTextGuardCutsWholeRowsLast(t *testing.T) {
+	w := newGearWorld(t)
+	rows := make([]panelRow, 5)
+	for i := range rows {
+		rows[i] = panelRow{text: strings.Repeat("x", 1000)}
+	}
+	out := w.svc.guardedBody(context.Background(), gearBuild, []Node{textNode("head")}, rows)
+	if n := textLength(out); n > textBudget || len(out) != 4 || out[0].Content != "head" {
+		t.Fatalf("%d nodes, %d characters", len(out), n)
+	}
+	if log := w.log.String(); !strings.Contains(log, "op=panel_text_cut") || !strings.Contains(log, "rows=2") {
+		t.Fatalf("log = %s", log)
+	}
+}
+
 // realBandGuilds serve the newest build in data/builds with its own item tables.
 type realBandGuilds struct {
 	*gearGuilds
@@ -295,7 +311,7 @@ func TestTheCharSheetCellsCarryTheGold(t *testing.T) {
 		cells[c.Slot] = c
 	}
 	if model.Kind != sheet.KindChar || model.Title != "Zulmara" || model.Kicker != "Level 60 Beast Mastery Hunter · Olympus XXVII" ||
-		model.Subtitle != "63.5" || model.Footer != "Gold: gain over what is worn, level 60 Phase 1 raid" || model.FooterRight != "" || !model.TwoHand {
+		model.Subtitle != "63.5" || model.Footer != "Gold: gain over what is worn, level 60 Phase 1 raid" || !model.TwoHand {
 		t.Fatalf("sheet = %+v", model)
 	}
 	for slot, want := range map[string]string{"ranged": "+23.1 DPS", "head": panelCopy.NotModelled, "trinket2": sheet.CopyNotModelled, "neck": ""} {
@@ -384,5 +400,23 @@ func TestAFailedShareLogsNoToken(t *testing.T) {
 	rep.After(context.Background())
 	if strings.Contains(w.log.String(), "tok-share") {
 		t.Fatalf("the interaction token reached the log: %s", w.log.String())
+	}
+}
+
+// A sheet that cannot be modelled never fails the share: the panel posts alone, logged.
+func TestAnUnmodelledSheetPostsThePanel(t *testing.T) {
+	w := newGearWorld(t)
+	answer := w.command(t, pressDiscord, "char", nil).Message
+	odd := gearZulmara()
+	odd.Character.Class = "monk"
+	w.cards.cards["zulmara"] = odd
+	rep := w.pressShareFrom(t, answer)
+	rep.After(context.Background())
+	ups := w.followUps()
+	if len(ups) != 1 || len(ups[0].Message.Files) != 0 || len(w.sheets.models) != 0 || !ups[0].Message.componentsV2() {
+		t.Fatalf("follow-ups = %+v", ups)
+	}
+	if log := w.log.String(); !strings.Contains(log, "op=sheet_render") || !strings.Contains(log, "outcome=no_model") {
+		t.Fatalf("log = %s", log)
 	}
 }

@@ -181,7 +181,8 @@ func (m Message) componentCount() int {
 // top-level Text Display, each embed a Container in its colour holding the author as subtext,
 // the title as a heading (linked when it has a URL) and the description, beside the crest
 // thumbnail when the embed has one. Footers, timestamps and fields are dropped, as V2 has
-// none. crestAlt is the thumbnail's alt text. A message already V2 is returned as it is.
+// none. crestAlt is the thumbnail's alt text. A message already V2 is returned as it is; one
+// with rows alone becomes a V2 message of those rows.
 func asComponentsV2(m Message, crestAlt string) Message {
 	if m.componentsV2() {
 		return m
@@ -193,7 +194,7 @@ func asComponentsV2(m Message, crestAlt string) Message {
 	for _, e := range m.Embeds {
 		layout = append(layout, embedContainer(e, crestAlt))
 	}
-	m.Content, m.Embeds, m.Layout = "", nil, layout
+	m.Content, m.Embeds, m.Layout, m.ComponentsV2 = "", nil, layout, true
 	return m
 }
 

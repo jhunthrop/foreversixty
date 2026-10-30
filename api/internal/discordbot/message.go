@@ -101,13 +101,15 @@ func (r ActionRow) MarshalJSON() ([]byte, error) {
 	}{rowType, r})
 }
 
-// Message is everything the bot sends or edits. A message with a Layout is Components V2
-// (spec 2026-10-29 §0): it is drawn from Layout, then its action rows, and carries no Content
-// or Embeds.
+// Message is everything the bot sends or edits. A ComponentsV2 message (spec 2026-10-29 §0) is
+// drawn from Layout, then its action rows, and carries no Content or Embeds.
 type Message struct {
 	Content    string
 	Embeds     []notify.Embed
 	Components []ActionRow
+	// ComponentsV2 sends the message with IS_COMPONENTS_V2; it is set explicitly, never read
+	// off the layout, since a V2 update may carry rows alone.
+	ComponentsV2 bool
 	// Layout is a Components V2 message's top-level components before its action rows.
 	Layout []Node
 	// Files are uploaded with the message (multipart); a V2 message shows each one only
@@ -142,7 +144,7 @@ type attachmentJSON struct {
 }
 
 // componentsV2 reports a Components V2 message.
-func (m Message) componentsV2() bool { return len(m.Layout) > 0 }
+func (m Message) componentsV2() bool { return m.ComponentsV2 }
 
 // flags is the message's flags: ephemeral and Components V2.
 func (m Message) flags() int {

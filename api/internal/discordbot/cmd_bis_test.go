@@ -48,9 +48,9 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		want := []string{"### Head · Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance",
 			"**Pick head**\nHead · +15.0 DPS\n-# Epic · item level 61 · Source head",
 			panelCopy.BisSlotNext,
-			"**Alt one head**\nHead · −15.0 DPS\n-# Epic · item level 61 · PvP rank 14 · Lieutenant Commander · Alliance",
+			"**Alt one head**\nHead · −15.0 DPS vs the best pick\n-# Epic · item level 61 · PvP rank 14 · Lieutenant Commander · Alliance",
 			// An item the build does not know: no quality word or item level.
-			"**Alt two head**\nHead · −18.0 DPS\n-# Blacksmithing"}
+			"**Alt two head**\nHead · −18.0 DPS vs the best pick\n-# Blacksmithing"}
 		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("texts = %q", got)
 		}

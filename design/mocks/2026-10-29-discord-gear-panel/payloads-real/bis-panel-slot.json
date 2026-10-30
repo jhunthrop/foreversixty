@@ -1,7 +1,7 @@
 {
   "budget": {
     "components": 20,
-    "text": 493
+    "text": 527
   },
   "id": "bis-panel-slot",
   "message": {
@@ -62,7 +62,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Sentinel's Leather Pants**\nLegs · −7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Sentinel's Leather Pants**\nLegs · −7.4 DPS vs the best pick\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {
@@ -78,7 +78,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Marshal's Chain Legguards**\nLegs · −7.4 DPS\n-# Epic · item level 71 · PvP rank 16 · Marshal · Alliance"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Marshal's Chain Legguards**\nLegs · −7.4 DPS vs the best pick\n-# Epic · item level 71 · PvP rank 16 · Marshal · Alliance"
               }
             ],
             "accessory": {
@@ -98,7 +98,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:nV9lz_WPyVaZ9Ty1KYNhMxr7nhvgZfwcHuLqv8FX2Ro"
+            "custom_id": "share:JaUoIi0EYfbU9bOuZNgGwQe2XYvHaBx7EcXSRb6h25s"
           },
           {
             "type": 2,

@@ -81,6 +81,11 @@ func (s *Service) answerBis(ctx context.Context, guildID int64, _ *int64, opts m
 	if err != nil || !found {
 		return Message{}, false, err
 	}
+	return s.bisPanelOf(ctx, d, opts)
+}
+
+// bisPanelOf is answerBis over a band already read.
+func (s *Service) bisPanelOf(ctx context.Context, d bisData, opts map[string]string) (Message, bool, error) {
 	if slot := opts[optSlot]; slot != "" {
 		return s.bisSlotPanel(ctx, d, slot)
 	}
@@ -148,7 +153,7 @@ func (s *Service) bisPagePanel(ctx context.Context, d bisData, page int) Message
 	}
 	body := s.guardedBody(ctx, d.build, []Node{sectionNode(header, s.crestThumb(d.spec.ClassSlug)), separatorNode()}, rows)
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.BisAllSlots, URL: d.page}
-	return Message{Layout: []Node{containerNode(classColorOf(d.spec.ClassSlug), body...)}, Components: []ActionRow{{link}}}
+	return Message{ComponentsV2: true, Layout: []Node{containerNode(classColorOf(d.spec.ClassSlug), body...)}, Components: []ActionRow{{link}}}
 }
 
 // bisSlotRow is one slot of a page: the pick's row, or its one line when it has no pick.
@@ -183,13 +188,13 @@ func (s *Service) bisSlotPanel(ctx context.Context, d bisData, slot string) (Mes
 		case pick.EffectUnmodelled || alt.EffectUnmodelled:
 			gain = panelCopy.NotModelled
 		case math.Abs(alt.DpsDelta) >= minShownGain:
-			gain = d.figure(alt.DpsDelta)
+			gain = fill(panelCopy.BisAltDelta, "{delta}", d.figure(alt.DpsDelta))
 		}
 		rows = append(rows, panelRow{item: &itemRow{item: s.bisFacts(d, alt.ItemID, alt.ItemName, alt.SourceKind, alt.Source), slot: slot, gain: gain}})
 	}
 	body := s.guardedBody(ctx, d.build, []Node{sectionNode(header, s.crestThumb(d.spec.ClassSlug)), separatorNode()}, rows)
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.BisOpen, URL: d.page}
-	return Message{Layout: []Node{containerNode(classColorOf(d.spec.ClassSlug), body...)}, Components: []ActionRow{{link}}}, true, nil
+	return Message{ComponentsV2: true, Layout: []Node{containerNode(classColorOf(d.spec.ClassSlug), body...)}, Components: []ActionRow{{link}}}, true, nil
 }
 
 func pointerTo[T any](v T) *T { return &v }
@@ -202,7 +207,8 @@ type panelRow struct {
 }
 
 // guardedBody is head then rows, dropping line 3's source from item rows, last row first,
-// while the body's text would pass textBudget (spec §A.6). head and fixed lines always stay.
+// while the body's text would pass textBudget (spec §A.6); if that is not enough, whole rows go
+// from the end, logged panel_text_cut. head always stays.
 func (s *Service) guardedBody(ctx context.Context, build string, head []Node, rows []panelRow) []Node {
 	draw := func() []Node {
 		out := append(make([]Node, 0, len(head)+len(rows)), head...)
@@ -224,6 +230,14 @@ func (s *Service) guardedBody(ctx context.Context, build string, head []Node, ro
 			rows[i].item.noSource = true
 			out = draw()
 		}
+	}
+	cut := 0
+	for len(rows) > 0 && textLength(out) > textBudget {
+		rows, cut = rows[:len(rows)-1], cut+1
+		out = draw()
+	}
+	if cut > 0 {
+		s.log.Warn("discordbot", "op", "panel_text_cut", "rows", cut, "characters", textLength(out))
 	}
 	return out
 }
