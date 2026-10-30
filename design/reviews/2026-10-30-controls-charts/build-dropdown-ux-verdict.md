@@ -29,3 +29,18 @@ Spec: design/specs/2026-10-30-controls-charts.md Part A. Judged on the build cap
 - Raid form selects at 44 px: acceptable. They align with the 44 px inputs in the same grid. Seat and transfer pickers stay 52.
 - No Enemies group in Source: acceptable. The `All enemies` scope is kept and the roster has no enemy rows. Reinstate the group when the roster carries enemies.
 - Coarse-pointer fields at 44 px on a touch laptop: acceptable. It matches A9.2 and the 44 px touch target rule.
+
+## Re-check (fix round 1)
+
+**Verdict: SHIP**
+
+Blockers
+1. Rankings truncation: resolved. "Every class", "Every spec", "No encounters yet", "All rulesets", "All regions" read whole at 1024 (bar wraps to a second row), 1440 and 2000. At 390 the fields sit in the Filters panel, two per row, nothing truncated.
+2. Open-state captures: resolved. Seen and correct: searchable report Source with the 40-player pull (filter row, tracked group heads, crests, gold check), sim Source typed "black" (1 match, gold match text, group head), no-match ("Nothing matches "naxxblack"." with 0 matches), Players multi-select (Compare group with descriptions, checkbox rows, figures, foot presets "Top 4 + bottom 4 / Top 8 / Bottom 8 / Custom", "10 drawn"), flip-above (Enemy list opens upward, ×8 meta), rankings Class list with crests and class colours.
+
+Chart controls: Window and Enemy now use the shared dropdown face (dense, 36 px, chevron); Players field reads "Top 4, bottom 4 of 40". No regression seen. Shoulds 1 and 2 closed; 3 and 4 closed.
+
+Remaining polish, not blocking
+- The sim Source list opens above its field at 1440 and is narrower than the field (about 280 px against 240 px field plus clipped right edge of the "Only items" label beside it). Fine as shipped; watch that it never covers its own field.
+- Players list is cut mid-row at the foot by the scroll fade: intended.
+- Planner broken talent icons remain the planner owner's.
