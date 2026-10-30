@@ -59,7 +59,7 @@ On build 70658, `loot-merge` went from 4,481 quest entries to 3,133.
 | `scourge-invasion` | later | 1.11 | inferred | Balzaphon, Lord Blackwood, Revanchion, Scorn, Sever, Lady Falther'ess, Shadow of Doom; 6 quests |
 | `argent-dawn-armaments` | later | 1.11 | inferred | quests 9221 to 9228 (Argent Dawn reputation itself stays open) |
 | `tier-0-5` | later | 1.10 | uncertain | Mokvar, Deliana and their two guard copies; Valthalak, Mor Grayhoof, Isalien, Kormok, Jarien, Sothos, the Heirlooms chest, Magma Lord Bokk; 65 quests |
-| `honor-system` | later | 1.4 | uncertain | every `pvp` source; the six rank quartermasters |
+| `honor-system` | **launch (2026-11-04), open** | 1.4 | confirmed | every `pvp` source; the six rank quartermasters |
 | `battleground-reputation` | later | 1.5 to 1.7 | uncertain | the six battleground factions; 8 quartermasters; Ivus, Lokholar, Korrak; the Alterac Valley zone; 12 quests |
 | `darkspear-islands` | later | Forever | uncertain | Creeg Bothunk |
 | `darkmoon-faire` | later | 1.6 | uncertain | Lhara; 13 deck and ticket quests |
@@ -79,7 +79,6 @@ On build 70658, every listed id matches a source, so tonight there are no missin
 
 These are gated under the house rule because their original phase, or their status in Forever, is unsure:
 
-- **Honor rank rewards.** Blizzard's "How PvP Progression in Forever Works" says Honor and Rank Points run from launch, with rank rewards. This gate goes against that article, so the owner should look at it first.
 - **Battleground reputations, quartermasters and the Alterac Valley summons.** Blizzard gives no launch list.
 - **Darkspear Islands (Creeg Bothunk).** No timing.
 - **Darkmoon Faire.** No schedule.
@@ -239,6 +238,50 @@ The Timbermaw and Argent Dawn recipes were Phase 1 in Classic 2019. Blue Dragons
 
 Ranking was not a bottleneck. Each spec took about 55 seconds at band 60.
 
+## Honor opens at launch, and the mislabelled PvP sources it exposed
+
+Opening `honor-system` broke both launch tests on Dryad's Wrist Bindings (19595, gate `battleground-reputation`). The item had a source "PvP rank 12 · Legionnaire · Horde", so it looked obtainable through honor.
+
+**Where the row came from.** The client's `ItemSparse.RequiredPVPRank` for 19595 is 0 (checked against a fresh wago.tools export of 1.60.1.70658), and classic-db's `required_honor_rank` is 0 as well. Wowhead was not involved. The row was made in our own pipeline, in two steps:
+
+1. **The title fallback.** `HONOR_RANK_BY_TITLE` ranked classic items by name alone. "Legionnaire's Band", a Warsong Outriders reward, got rank 12. So did ordinary greens such as Legionnaire's Leggings and the Champion's armour.
+2. **The vendor backfill.** `pvp_faction._backfill_vendor_items_into_pvp_buckets` then treated Kelm Hargunth, the Horde Warsong Gulch quartermaster, as a rank-12 quartermaster because he sells one "ranked" item. It filed his whole stock under `pvp:rank-12:horde`: Dryad's Wrist Bindings, Forest Stalker's Bracers and the Season of Discovery Warsong items. The same happened to ordinary armour vendors that sell Legionnaire's Leggings, which put Scalemail and Polished Scale gear under the same rank.
+
+`loot-merge` then recovered these ranks from the committed `loot.json` every night, so the mistake was carried forward from build 70009 onwards.
+
+**The fix, in the pipeline:**
+
+- **classic-db is authoritative for every classic id it names, zero included.** `classicdb_items.honor_ranks` drops classic-unranked ids from the client ranks, from the ranks recovered in merge mode, and from the title fallback. `pvp_faction.drop_non_rank_rewards` removes them from every pvp source after the split and backfill. On the rows wago served (19,257 of the client's items), the client and classic-db agree on all 441 ids both rank, and the client ranks no classic id that classic-db leaves unranked.
+- **Merge mode keeps a recovered rank only with evidence on the item.** `pvp_faction.ranks_with_item_evidence` requires a rank title or a faction restriction. Every rank the client states meets this test.
+- **The backfill adds only items that name their own rank title.** A reputation quartermaster's other stock is no longer filed under a rank.
+- **The ranker applies the same classic-db rule** (`sim/cmd/leveling-bis/classicranks.go`, reading the build's committed `raw/classicdb/item_template.json`). The gate therefore also holds on the committed `loot.json` the nightly has not yet regenerated.
+
+**Faction mismatches, checked across every pvp source.** After `loot-merge` with the fix:
+
+- 664 pvp listings remain, down from 774. All 110 removed listings are non-rank items.
+- No item is on both sides.
+- No item's faction restriction or rank title disagrees with its bucket.
+- Every remaining item carries a rank title or a faction restriction.
+
+One general asymmetry turned up and is fixed. The title table named Horde's rank-11 to rank-13 titles (Blood Guard's, Legionnaire's) but not Alliance's (Knight-Lieutenant's, Knight-Captain's, Knight-Champion's). Captain Dirgehammer's re-itemised Knight-Lieutenant's sets therefore reached Alliance lists with no rank and no cap, while their Horde twins were capped. Every title from rank 10 up is now listed for both sides, except Alliance's rank-10 "Knight's", which also begins ordinary names such as Knight's Seal of the Dawn and Knight's Lance. A test holds the table to the two rank ladders.
+
+"Offered to Alliance too" was a flaw in my launch test, not in the data. The test passed the faction itself as the item's restriction, which waives the side check. It now passes each item's real restriction from `items.json`, as the ranker does.
+
+Dryad's Wrist Bindings stays on the banned list: it is gated by its battleground reputation, and it has no honor source. The honor-system examples on the list (Marshal's Silk Bracers, Knight-Lieutenant's Plate Helm) are no longer banned now that the gate is open, and no edit to the list was needed.
+
+**What honor adds to band-60 lists.** Six specs were re-ranked at band 60 with honor open and the pvp fix applied: Fury Warrior, Combat Rogue, Retribution Paladin, Survival Hunter, Enhancement Shaman and Fire Mage.
+
+- No default pick changed. The owner's existing `pvpRankCap` (rank 10, 2026-09-29: "a fresh level 60 can realistically get") keeps rank 11 and above out of the picks.
+- Honor gear now appears as alternatives in every spec: 4 to 19 per list. These are not the 1.12 rank 10 to 13 epic sets; they are Forever's re-itemised honor gear:
+  - Knight-Lieutenant's and Blood Guard's (rank 11)
+  - Knight-Captain's and Legionnaire's (rank 12)
+  - Lieutenant Commander's and Champion's (rank 14)
+  - Marshal's, General's, Field Marshal's and Warlord's (ranks 16 and 17)
+  - the Grand Marshal's and High Warlord's weapons (rank 18)
+- For example, Fury Warrior's head alternatives are Champion's Plate Helm (rank 14, 15.0 score behind) and Blood Guard's Plate Helm (rank 11, 18.7 behind).
+- One pick moved off honor gear. In the honor-open run before the title fix, Alliance Retribution's feet pick was Knight-Lieutenant's Lamellar Sabatons (rank 11, uncapped because the title was missing). With the fix it is capped like its Horde twin and listed as an alternative, so Alliance and Horde now match.
+- Raising `pvpRankCap` is how honor gear would become default picks. That is an owner decision, separate from this gate.
+
 ## Every surface reads the same generated data
 
 - **Site BiS pages and home upgrades** read `data/builds/<build>/bis/<spec>.json` (`web/src/lib/bis/load.ts`, `web/src/lib/home/upgrades.ts`).
@@ -274,7 +317,7 @@ Ranking was not a bottleneck. Each spec took about 55 seconds at band 60.
 ## For the owner to confirm
 
 1. **The house rule.** Forever launches "before Molten Core", which means the original Classic Phase 1 content set. Everything that opened after Phase 1 is gated until a date is announced.
-2. **Honor rank rewards.** Blizzard's PvP article says ranks and rewards run from launch. If that holds, set `honor-system` to `launch` / `2026-11-04`. `pvpRankCap` still limits which ranks count at band 60.
+2. **Honor rank rewards: decided.** Coordinator ruling: an announced date opens a gate, and Blizzard's PvP article dates honor ranks and rank rewards to launch. `honor-system` is `launch` / `2026-11-04`, `confirmed`. See "Honor opens at launch" below.
 3. **Battlegrounds:** Warsong Gulch, Arathi Basin, Alterac Valley and Darkspear Islands at launch.
 4. **Tier 0.5, the Darkmoon Faire and Dire Maul.**
 5. **The Season of Discovery-era vendor stock and the five Forever-new Undermine traders.**
