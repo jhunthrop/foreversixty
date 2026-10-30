@@ -12,6 +12,9 @@
      `†` mark unconditionally, exactly as ExchangeTable's Count does. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
+  import { clearChartCursor, cursorMsFor, setChartCursor } from '../../lib/chart/cursor.svelte';
+  import { clockLabel } from '../../lib/chart/time-axis';
+  import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import {
     formatAmount,
     formatDuration,
@@ -28,13 +31,30 @@
     durationMs,
     deaths = [],
     windowed = false,
+    syncKey = '',
+    windowStartMs = 0,
   }: {
     tracks: ResourceTrack[];
     durationMs: number;
     deaths?: { guid: string; at_ms: number }[];
     /** True while a window is brushed, so the at-cap figure can say what it measured. */
     windowed?: boolean;
+    /** The page's chart cursor key (the fight); empty draws no shared crosshair (a sim). */
+    syncKey?: string;
+    /** Where the sliced series starts on the fight's clock, so the cursor's ms finds its second. */
+    windowStartMs?: number;
   } = $props();
+  const owner = 'resource-graphs';
+  /** The page cursor's second inside this window, from any chart or lane on the page. */
+  const cursorMs = $derived(syncKey === '' ? null : cursorMsFor(syncKey));
+  const shownWindow = $derived({ startMs: windowStartMs, endMs: windowStartMs + durationMs });
+  /** The value at the shared cursor: the figure slot beside the line while the cursor is set. */
+  function atCursor(series: number[]): string | null {
+    if (cursorMs === null) return null;
+    const index = Math.floor((cursorMs - windowStartMs) / 1000);
+    if (index < 0 || index >= series.length) return null;
+    return `at ${clockLabel(cursorMs)} · ${formatAmount(series[index] ?? 0)}`;
+  }
   /**
    * What the at-cap share is a share of. The figure has always been the window's own --
    * the series is sliced and `durationMs` is the window's length -- but the words beside
@@ -50,6 +70,7 @@
     if (event.pointerType !== 'mouse') return;
     const { [key]: _gone, ...rest } = readouts;
     readouts = rest;
+    clearChartCursor(owner);
   }
   function readAt(event: PointerEvent, key: string, series: number[]): void {
     const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
@@ -60,8 +81,9 @@
     );
     readouts = {
       ...readouts,
-      [key]: `at ${formatDuration(index * 1000)} · ${formatAmount(series[index] ?? 0)}`,
+      [key]: `at ${clockLabel(windowStartMs + index * 1000)} · ${formatAmount(series[index] ?? 0)}`,
     };
+    if (syncKey !== '') setChartCursor({ syncKey, ms: windowStartMs + index * 1000, owner });
   }
 
   /** The lowest point of a series and the second it happened, for the figure beside the line. */
@@ -213,7 +235,7 @@
           {:else}
             <!-- A pointer over the line reads the second under it; a tap on a phone does the same. -->
             <span
-              class="block touch-none"
+              class="relative block touch-none"
               onpointermove={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
               onpointerdown={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
               onpointerleave={(event) => clearReadout(event, `${track.guid}-${track.power_type}`)}
@@ -282,11 +304,11 @@
                   vector-effect="non-scaling-stroke"
                 />
               </svg>
+              {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={shownWindow} />{/if}
             </span>
-            {#if readouts[`${track.guid}-${track.power_type}`]}
-              <span class="text-strong numeric text-[11px]" data-testid="resource-readout"
-                >{readouts[`${track.guid}-${track.power_type}`]}</span
-              >
+            {@const reading = readouts[`${track.guid}-${track.power_type}`] ?? atCursor(track.series)}
+            {#if reading}
+              <span class="text-strong numeric text-[11px]" data-testid="resource-readout">{reading}</span>
             {/if}
             <!-- The peak/low reading always renders; when the track carries a reported cap the
                same line also carries the cap figures, so a test (or a reader) that asks for

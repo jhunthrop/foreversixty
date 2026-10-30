@@ -4,6 +4,7 @@
      dependency for twenty divs would cost more than the whole island's budget allows.
      The bars are aria-hidden; a screen reader reads the numbers. -->
 <script lang="ts">
+  import { valueLabel } from '../../lib/chart/value-axis';
   import { simCopy } from '../../lib/sim/copy';
   import { confidenceBand } from '../../lib/sim/estimate';
   import type { Estimate } from '../../lib/sim/types';
@@ -29,6 +30,13 @@
     }));
   });
 
+  /** Where a DPS figure sits across the strip, 0..100 (controls and charts spec §B10 row 9). */
+  const pct = (value: number): number => {
+    const spread = estimate.max - estimate.min;
+    return spread <= 0 ? 50 : ((value - estimate.min) / spread) * 100;
+  };
+  const band = $derived(confidenceBand(estimate));
+
   const rows = $derived([
     [simCopy.distMean, Math.round(estimate.mean).toLocaleString('en-US')],
     [simCopy.distStdDev, Math.round(estimate.stddev).toLocaleString('en-US')],
@@ -40,13 +48,32 @@
 
 <div class="flex flex-col gap-4 p-4" data-testid="sim-distribution">
   {#if bars.length > 0}
-    <div class="flex h-32 items-end gap-[2px]" aria-hidden="true">
-      {#each bars as bar, i (i)}
+    <div class="flex flex-col gap-1" aria-hidden="true">
+      <div class="relative flex h-32 items-end gap-[2px]">
         <span
-          class={`flex-1 rounded-t-[2px] ${bar.inBand ? 'bg-gold' : 'bg-line'}`}
-          style={`height:${Math.max(2, bar.height)}%`}
+          class="absolute inset-y-0"
+          style={`left:${Math.max(0, pct(estimate.mean - band))}%; right:${Math.max(0, 100 - pct(estimate.mean + band))}%; background: rgba(229,185,85,.13)`}
+          data-testid="sim-distribution-band"
         ></span>
-      {/each}
+        {#each bars as bar, i (i)}
+          <span
+            class={`relative flex-1 rounded-t-[2px] ${bar.inBand ? 'bg-gold/70' : 'bg-line'}`}
+            style={`height:${Math.max(2, bar.height)}%`}
+          ></span>
+        {/each}
+        <span
+          class="bg-gold absolute inset-y-0 w-[2px] -translate-x-1/2"
+          style={`left:${pct(estimate.mean)}%`}
+          data-testid="sim-distribution-mean"
+        ></span>
+      </div>
+      <div class="text-muted numeric relative h-4 text-[11px]">
+        <span class="absolute left-0">{valueLabel(estimate.min)}</span>
+        <span class="absolute -translate-x-1/2" style={`left:${pct(estimate.mean)}%`}
+          >{valueLabel(estimate.mean)}</span
+        >
+        <span class="absolute right-0">{valueLabel(estimate.max)}</span>
+      </div>
     </div>
   {/if}
   <dl class="flex flex-col">
