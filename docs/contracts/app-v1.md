@@ -414,7 +414,7 @@ For the lists and the BiS, read the active build. Build ids look like `1.60.1.70
 `{ "build": "1.60.1.70658" }`. Fixture `cdn.active-build`. Fetch on launch; revalidate (an hour).
 
 ### /data/{build}/bis/{spec}.json
-The BiS lists for a spec (`warrior-fury`; one file per spec). Fixture `cdn.bis.warrior-fury`.
+The BiS lists for a spec (`warrior-fury`; one file per spec). Fixtures `cdn.bis.warrior-fury`, `cdn.bis.hunter-beast-mastery` (its level-60 bands).
 `{ spec, build, engine_version, generated_at, bands[], presets }`. A **band** is one level band
 (`20|30|40|50|60`) for one `faction` (`alliance|horde`) under one `preset` (`bare`, and `raid` at
 60): `{ spec, band, preset, faction, race, talents, talent_points, weights[], slots[], set_dps,
@@ -443,7 +443,20 @@ icon_source, weapon_type, superseded_by, required_level_source }`. `quality` is 
 legendary; draw the quality colours). `stats` and `percent_stats` are open maps of a stat to a
 number; `set_id` is nullable, with sets in `sets.json`. `slot` is the item slot
 (`head ... ranged`, `main_hand`, `off_hand`, `finger`, `trinket`). `client_unconfirmed` marks stats
-the client has not confirmed. The tooltip is built from these fields. Fixture `cdn.items.warrior`.
+the client has not confirmed. The tooltip is built from these fields. Fixtures `cdn.items.warrior`,
+`cdn.items.hunter`.
+
+**Pending (spec C6).** Three item facts the tooltip draws, which the data lane has not published
+yet: `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`), `armor_type`
+(`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; null for a cloak),
+and `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
+set). Each is nullable and absent until published; draw nothing for a missing one. The
+`cdn.items.hunter` fixture carries them, read from the client's own Item and ItemSparse rows.
+`stats_source` is null on most real rows.
+
+### /data/{build}/sets.json
+`[{ id, name, item_ids[], bonuses[] }]`, a bonus `{ pieces, description }`. An item's `set_id`
+names its set; the tooltip draws the set's name and bonuses. Fixture `cdn.sets`.
 
 ### /data/{build}/talents/{class}.json
 `{ build, class_id, class_slug, trees[] }`; a tree is `{ id, name, position, background, icon,

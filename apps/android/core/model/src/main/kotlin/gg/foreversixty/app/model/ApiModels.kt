@@ -151,7 +151,7 @@ data class BisBand(
     @SerialName("set_dps") val setDps: Double? = null,
     /** The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score. */
     @SerialName("role") val role: String? = null,
-    /** "<slot>: <item name>" for each pick new at this band. */
+    /** "slot: item name" for each pick new at this band. */
     @SerialName("new_at_band") val newAtBand: List<String>? = null,
     @SerialName("weights") val weights: List<BisWeight> = emptyList(),
     @SerialName("slots") val slots: List<BisSlot> = emptyList(),
@@ -173,6 +173,7 @@ data class BisPreset(
     @SerialName("label") val label: String,
 )
 
+/** The set bonus this piece is worn for. */
 @Serializable
 data class BisSetBonus(
     @SerialName("set") val set: String,
@@ -196,8 +197,9 @@ data class BisSlot(
     @SerialName("chance") val chance: Double? = null,
     @SerialName("effect_unmodelled") val effectUnmodelled: Boolean? = null,
     @SerialName("swap_note") val swapNote: String? = null,
-    /** Items that measure the same as the pick. */
+    /** Items with the pick's exact score. */
     @SerialName("ties") val ties: List<BisTie>? = null,
+    /** The set bonus this piece is worn for. */
     @SerialName("set_bonus") val setBonus: BisSetBonus? = null,
     @SerialName("low_value") val lowValue: Boolean? = null,
     @SerialName("faction_note") val factionNote: String? = null,
@@ -929,6 +931,27 @@ data class Item(
     @SerialName("icon_source") val iconSource: String,
     @SerialName("weapon_type") val weaponType: String? = null,
     @SerialName("superseded_by") val supersededBy: Int? = null,
+    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
+    @SerialName("bonding") val bonding: String? = null,
+    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published. */
+    @SerialName("armor_type") val armorType: String? = null,
+    /** Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published. */
+    @SerialName("min_standing") val minStanding: String? = null,
+)
+
+/** One item set of /data/{build}/sets.json. */
+@Serializable
+data class ItemSet(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("item_ids") val itemIds: List<Int> = emptyList(),
+    @SerialName("bonuses") val bonuses: List<ItemSetBonus> = emptyList(),
+)
+
+@Serializable
+data class ItemSetBonus(
+    @SerialName("pieces") val pieces: Int,
+    @SerialName("description") val description: String,
 )
 
 @Serializable

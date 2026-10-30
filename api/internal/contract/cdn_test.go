@@ -95,6 +95,26 @@ func TestCDNItemsFixtureMatchesTheGenerator(t *testing.T) {
 	}
 }
 
+// itemFactsPending are the spec's C6 item facts (bonding, armor type, minimum standing). The
+// hunter fixture carries them, read from the client's Item and ItemSparse tables, so the apps'
+// tooltips draw them; the generator does not publish them yet, so they are optional here.
+var itemFactsPending = []string{"items[].bonding", "items[].armor_type", "items[].min_standing"}
+
+func TestCDNHunterItemsFixtureMatchesTheGenerator(t *testing.T) {
+	got := readJSON(t, filepath.Join(activeBuildDir(t), "items", "hunter.json"))
+	opts := Options{Open: []string{"items[].stats", "items[].percent_stats"}, Optional: itemFactsPending}
+	if diffs := Compare(Load(t, "cdn.items.hunter"), got, opts); len(diffs) > 0 {
+		t.Fatalf("items/hunter.json: %v", diffs)
+	}
+}
+
+func TestCDNSetsFixtureMatchesTheGenerator(t *testing.T) {
+	got := readJSON(t, filepath.Join(activeBuildDir(t), "sets.json"))
+	if diffs := Compare(Load(t, "cdn.sets"), got, Options{}); len(diffs) > 0 {
+		t.Fatalf("sets.json: %v", diffs)
+	}
+}
+
 // bisOptional are the band and slot fields the ranker writes only when they apply.
 var bisOptional = []string{
 	"bands[].role", "bands[].slots[].item_id", "bands[].slots[].item_name", "bands[].slots[].source",
@@ -110,6 +130,13 @@ func TestCDNBisFixtureMatchesTheRanker(t *testing.T) {
 	got := readJSON(t, filepath.Join(activeBuildDir(t), "bis", "warrior-fury.json"))
 	if diffs := Compare(Load(t, "cdn.bis.warrior-fury"), got, Options{Optional: bisOptional}); len(diffs) > 0 {
 		t.Fatalf("bis/warrior-fury.json: %v", diffs)
+	}
+}
+
+func TestCDNHunterBisFixtureMatchesTheRanker(t *testing.T) {
+	got := readJSON(t, filepath.Join(activeBuildDir(t), "bis", "hunter-beast-mastery.json"))
+	if diffs := Compare(Load(t, "cdn.bis.hunter-beast-mastery"), got, Options{Optional: bisOptional}); len(diffs) > 0 {
+		t.Fatalf("bis/hunter-beast-mastery.json: %v", diffs)
 	}
 }
 

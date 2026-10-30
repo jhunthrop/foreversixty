@@ -364,7 +364,7 @@ public struct BisBand: Codable, Sendable, Equatable {
     public let setDps: Double?
     /// The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score.
     public let role: String?
-    /// "<slot>: <item name>" for each pick new at this band.
+    /// "slot: item name" for each pick new at this band.
     public let newAtBand: [String]?
     public let weights: [BisWeight]
     public let slots: [BisSlot]
@@ -469,6 +469,7 @@ public struct BisPreset: Codable, Sendable, Equatable {
     }
 }
 
+/// The set bonus this piece is worn for.
 public struct BisSetBonus: Codable, Sendable, Equatable {
     public let set: String
     public let pieces: Int
@@ -500,8 +501,9 @@ public struct BisSlot: Codable, Sendable, Equatable {
     public let chance: Double?
     public let effectUnmodelled: Bool?
     public let swapNote: String?
-    /// Items that measure the same as the pick.
+    /// Items with the pick's exact score.
     public let ties: [BisTie]?
+    /// The set bonus this piece is worn for.
     public let setBonus: BisSetBonus?
     public let lowValue: Bool?
     public let factionNote: String?
@@ -2434,6 +2436,12 @@ public struct Item: Codable, Sendable, Equatable {
     public let iconSource: String
     public let weaponType: String?
     public let supersededBy: Int?
+    /// Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+    public let bonding: String?
+    /// Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published.
+    public let armorType: String?
+    /// Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published.
+    public let minStanding: String?
 
     public init(
         id: Int,
@@ -2459,7 +2467,10 @@ public struct Item: Codable, Sendable, Equatable {
         clientUnconfirmed: Bool,
         iconSource: String,
         weaponType: String? = nil,
-        supersededBy: Int? = nil
+        supersededBy: Int? = nil,
+        bonding: String? = nil,
+        armorType: String? = nil,
+        minStanding: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -2485,6 +2496,9 @@ public struct Item: Codable, Sendable, Equatable {
         self.iconSource = iconSource
         self.weaponType = weaponType
         self.supersededBy = supersededBy
+        self.bonding = bonding
+        self.armorType = armorType
+        self.minStanding = minStanding
     }
 
     public init(from decoder: any Decoder) throws {
@@ -2513,6 +2527,50 @@ public struct Item: Codable, Sendable, Equatable {
         iconSource = try c.decode(String.self, forKey: .iconSource)
         weaponType = try c.decodeIfPresent(String.self, forKey: .weaponType)
         supersededBy = try c.decodeIfPresent(Int.self, forKey: .supersededBy)
+        bonding = try c.decodeIfPresent(String.self, forKey: .bonding)
+        armorType = try c.decodeIfPresent(String.self, forKey: .armorType)
+        minStanding = try c.decodeIfPresent(String.self, forKey: .minStanding)
+    }
+}
+
+/// One item set of /data/{build}/sets.json.
+public struct ItemSet: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let itemIds: [Int]
+    public let bonuses: [ItemSetBonus]
+
+    public init(
+        id: Int,
+        name: String,
+        itemIds: [Int] = [],
+        bonuses: [ItemSetBonus] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.itemIds = itemIds
+        self.bonuses = bonuses
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(Int.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        itemIds = try c.decodeIfPresent([Int].self, forKey: .itemIds) ?? []
+        bonuses = try c.decodeIfPresent([ItemSetBonus].self, forKey: .bonuses) ?? []
+    }
+}
+
+public struct ItemSetBonus: Codable, Sendable, Equatable {
+    public let pieces: Int
+    public let description: String
+
+    public init(
+        pieces: Int,
+        description: String
+    ) {
+        self.pieces = pieces
+        self.description = description
     }
 }
 

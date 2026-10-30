@@ -376,6 +376,268 @@ enum Copy {
         format("tooltip.a11yTile", item, quality, slot)
     }
 
+    /// {spec} gear for 20 to 29
+    static func homeAnswerUnder20Button(spec: String) -> String {
+        format("home.answer.under20Button", spec)
+    }
+
+    /// Open the planner
+    static var homeAnswerOpenPlanner: String { text("home.answer.openPlanner") }
+
+    /// No guide build for this level range yet.
+    static var homeNextTalentsNoBuild: String { text("home.next.talentsNoBuild") }
+
+    /// just now
+    static var homeAgeNow: String { text("home.age.now") }
+
+    /// {n} min ago
+    static func homeAgeMinutes(n: Int) -> String {
+        format("home.age.minutes", n)
+    }
+
+    /// {n} h ago
+    static func homeAgeHours(n: Int) -> String {
+        format("home.age.hours", n)
+    }
+
+    /// {n} d ago
+    static func homeAgeDays(n: Int) -> String {
+        format("home.age.days", n)
+    }
+
+    /// Poor
+    static var itemsQualityPoor: String { text("items.quality.poor") }
+
+    /// Common
+    static var itemsQualityCommon: String { text("items.quality.common") }
+
+    /// Uncommon
+    static var itemsQualityUncommon: String { text("items.quality.uncommon") }
+
+    /// Rare
+    static var itemsQualityRare: String { text("items.quality.rare") }
+
+    /// Epic
+    static var itemsQualityEpic: String { text("items.quality.epic") }
+
+    /// Legendary
+    static var itemsQualityLegendary: String { text("items.quality.legendary") }
+
+    /// Head
+    static var itemsSlotHead: String { text("items.slot.head") }
+
+    /// Neck
+    static var itemsSlotNeck: String { text("items.slot.neck") }
+
+    /// Shoulder
+    static var itemsSlotShoulder: String { text("items.slot.shoulder") }
+
+    /// Back
+    static var itemsSlotBack: String { text("items.slot.back") }
+
+    /// Chest
+    static var itemsSlotChest: String { text("items.slot.chest") }
+
+    /// Wrist
+    static var itemsSlotWrist: String { text("items.slot.wrist") }
+
+    /// Hands
+    static var itemsSlotHands: String { text("items.slot.hands") }
+
+    /// Waist
+    static var itemsSlotWaist: String { text("items.slot.waist") }
+
+    /// Legs
+    static var itemsSlotLegs: String { text("items.slot.legs") }
+
+    /// Feet
+    static var itemsSlotFeet: String { text("items.slot.feet") }
+
+    /// Ring 1
+    static var itemsSlotFinger1: String { text("items.slot.finger1") }
+
+    /// Ring 2
+    static var itemsSlotFinger2: String { text("items.slot.finger2") }
+
+    /// Trinket 1
+    static var itemsSlotTrinket1: String { text("items.slot.trinket1") }
+
+    /// Trinket 2
+    static var itemsSlotTrinket2: String { text("items.slot.trinket2") }
+
+    /// Main hand
+    static var itemsSlotMainHand: String { text("items.slot.mainHand") }
+
+    /// Off hand
+    static var itemsSlotOffHand: String { text("items.slot.offHand") }
+
+    /// Ranged
+    static var itemsSlotRanged: String { text("items.slot.ranged") }
+
+    /// Finger
+    static var itemsSlotFinger: String { text("items.slot.finger") }
+
+    /// Trinket
+    static var itemsSlotTrinket: String { text("items.slot.trinket") }
+
+    /// Strength
+    static var itemsStatStrength: String { text("items.stat.strength") }
+
+    /// Agility
+    static var itemsStatAgility: String { text("items.stat.agility") }
+
+    /// Stamina
+    static var itemsStatStamina: String { text("items.stat.stamina") }
+
+    /// Intellect
+    static var itemsStatIntellect: String { text("items.stat.intellect") }
+
+    /// Spirit
+    static var itemsStatSpirit: String { text("items.stat.spirit") }
+
+    /// Crit
+    static var itemsStatCrit: String { text("items.stat.crit") }
+
+    /// Hit
+    static var itemsStatHit: String { text("items.stat.hit") }
+
+    /// Spell power
+    static var itemsStatSpellPower: String { text("items.stat.spellPower") }
+
+    /// Healing
+    static var itemsStatHealing: String { text("items.stat.healing") }
+
+    /// Attack power
+    static var itemsStatAttackPower: String { text("items.stat.attackPower") }
+
+    /// Ranged attack power
+    static var itemsStatRangedAttackPower: String { text("items.stat.rangedAttackPower") }
+
+    /// Defense
+    static var itemsStatDefense: String { text("items.stat.defense") }
+
+    /// Dodge
+    static var itemsStatDodge: String { text("items.stat.dodge") }
+
+    /// Parry
+    static var itemsStatParry: String { text("items.stat.parry") }
+
+    /// Block
+    static var itemsStatBlock: String { text("items.stat.block") }
+
+    /// Block value
+    static var itemsStatBlockValue: String { text("items.stat.blockValue") }
+
+    /// Mana per 5
+    static var itemsStatMp5: String { text("items.stat.mp5") }
+
+    /// Spell penetration
+    static var itemsStatSpellPenetration: String { text("items.stat.spellPenetration") }
+
+    /// Fire spell damage
+    static var itemsStatFirePower: String { text("items.stat.firePower") }
+
+    /// Fire resistance
+    static var itemsStatFireRes: String { text("items.stat.fireRes") }
+
+    /// Frost resistance
+    static var itemsStatFrostRes: String { text("items.stat.frostRes") }
+
+    /// Nature resistance
+    static var itemsStatNatureRes: String { text("items.stat.natureRes") }
+
+    /// Shadow resistance
+    static var itemsStatShadowRes: String { text("items.stat.shadowRes") }
+
+    /// Arcane resistance
+    static var itemsStatArcaneRes: String { text("items.stat.arcaneRes") }
+
+    /// Hated
+    static var itemsStandingHated: String { text("items.standing.hated") }
+
+    /// Hostile
+    static var itemsStandingHostile: String { text("items.standing.hostile") }
+
+    /// Unfriendly
+    static var itemsStandingUnfriendly: String { text("items.standing.unfriendly") }
+
+    /// Neutral
+    static var itemsStandingNeutral: String { text("items.standing.neutral") }
+
+    /// Friendly
+    static var itemsStandingFriendly: String { text("items.standing.friendly") }
+
+    /// Honored
+    static var itemsStandingHonored: String { text("items.standing.honored") }
+
+    /// Revered
+    static var itemsStandingRevered: String { text("items.standing.revered") }
+
+    /// Exalted
+    static var itemsStandingExalted: String { text("items.standing.exalted") }
+
+    /// {min} - {max} Damage
+    static func itemsWeaponDamage(min: Int, max: Int) -> String {
+        format("items.weapon.damage", min, max)
+    }
+
+    /// Speed {speed}
+    static func itemsWeaponSpeed(speed: String) -> String {
+        format("items.weapon.speed", speed)
+    }
+
+    /// ({dps} damage per second)
+    static func itemsWeaponDps(dps: String) -> String {
+        format("items.weapon.dps", dps)
+    }
+
+    /// Two-Handed Weapon
+    static var itemsWeaponTwoHand: String { text("items.weapon.twoHand") }
+
+    /// One-Handed Weapon
+    static var itemsWeaponOneHand: String { text("items.weapon.oneHand") }
+
+    /// Ranged Weapon
+    static var itemsWeaponRanged: String { text("items.weapon.ranged") }
+
+    /// Quest Item
+    static var itemsBindQuest: String { text("items.bind.quest") }
+
+    /// {quality} · {slot}
+    static func itemsHeader(quality: String, slot: String) -> String {
+        format("items.header", quality, slot)
+    }
+
+    /// ilvl {n}
+    static func itemsIlvl(n: Int) -> String {
+        format("items.ilvl", n)
+    }
+
+    /// → {item}
+    static func itemsPickArrow(item: String) -> String {
+        format("items.pickArrow", item)
+    }
+
+    /// ({n}) Set: {text}
+    static func itemsSetBonus(n: Int, text: String) -> String {
+        format("items.setBonus", n, text)
+    }
+
+    /// Same DPS as the pick
+    static var itemsSameDps: String { text("items.sameDps") }
+
+    /// Loading the item…
+    static var itemsLoading: String { text("items.loading") }
+
+    /// This item did not load.
+    static var itemsFailed: String { text("items.failed") }
+
+    /// Not in our item data yet
+    static var itemsNotInData: String { text("items.notInData") }
+
+    /// Shows the item
+    static var itemsA11yHint: String { text("items.a11y.hint") }
+
     /// Best in slot
     static var bisTitle: String { text("bis.title") }
 

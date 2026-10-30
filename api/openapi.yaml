@@ -2389,7 +2389,7 @@ components:
         scale_reference_stat: { type: string }
         set_dps: { type: number }
         role: { type: string, enum: [dps, healer, tank], description: "The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score." }
-        new_at_band: { type: array, items: { type: string }, description: "\"<slot>: <item name>\" for each pick new at this band." }
+        new_at_band: { type: array, items: { type: string }, description: "\"slot: item name\" for each pick new at this band." }
         weights:
           type: array
           items:
@@ -2439,7 +2439,7 @@ components:
               swap_note: { type: string }
               ties:
                 type: array
-                description: Items that measure the same as the pick.
+                description: Items with the pick's exact score.
                 items:
                   type: object
                   title: BisTie
@@ -2450,6 +2450,7 @@ components:
               set_bonus:
                 type: object
                 title: BisSetBonus
+                description: The set bonus this piece is worn for.
                 required: [set, pieces, bonus]
                 properties:
                   set: { type: string }
@@ -2494,6 +2495,41 @@ components:
         icon_source: { type: string }
         weapon_type: { type: [string, "null"] }
         superseded_by: { type: [integer, "null"] }
+        bonding:
+          type: [string, "null"]
+          enum: [pickup, equip, use, quest, null]
+          description: >-
+            Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest);
+            null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+        armor_type:
+          type: [string, "null"]
+          enum: [cloth, leather, mail, plate, shield, null]
+          description: >-
+            Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a
+            ring, a trinket, a weapon or unknown. Omitted until published.
+        min_standing:
+          type: [string, "null"]
+          enum: [hated, hostile, unfriendly, neutral, friendly, honored, revered, exalted, null]
+          description: >-
+            Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else
+            null. Omitted until published.
+    ItemSet:
+      type: object
+      description: One item set of /data/{build}/sets.json.
+      required: [id, name, item_ids, bonuses]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        item_ids: { type: array, items: { type: integer } }
+        bonuses:
+          type: array
+          items:
+            type: object
+            title: ItemSetBonus
+            required: [pieces, description]
+            properties:
+              pieces: { type: integer }
+              description: { type: string }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -4753,7 +4789,7 @@ paths:
         '200':
           description: "Every band of the spec"
           x-fixture-route: cdn.bis.{spec}
-          x-fixtures: [cdn.bis.warrior-fury]
+          x-fixtures: [cdn.bis.warrior-fury, cdn.bis.hunter-beast-mastery]
           content: { application/json: { schema: { $ref: '#/components/schemas/BisFile' } } }
   /data/{build}/items/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
@@ -4768,8 +4804,21 @@ paths:
         '200':
           description: "The class's items"
           x-fixture-route: cdn.items.{class}
-          x-fixtures: [cdn.items.warrior]
+          x-fixtures: [cdn.items.warrior, cdn.items.hunter]
           content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
+  /data/{build}/sets.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every item set of a build, for the tooltip's set lines
+      operationId: getSets
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per set"
+          x-fixtures: [cdn.sets]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:
