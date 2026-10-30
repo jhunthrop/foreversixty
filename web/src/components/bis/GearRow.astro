@@ -57,7 +57,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
 ---
 
 <li
-  class:list={['gear-row-list', isNew && 'gear-row-new', you !== undefined && 'gear-row-list-4col']}
+  class:list={['gear-row-list', you !== undefined && 'gear-row-list-4col']}
   data-testid={slotTestId}
 >
   <span class="gear-row-slot-label">{slotLabel}</span>
@@ -314,9 +314,6 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   }
   .gear-row-list-4col {
     grid-template-columns: 90px 1fr 300px 190px;
-  }
-  .gear-row-new {
-    background: color-mix(in srgb, var(--color-gold, #c9a35e) 6%, transparent);
   }
   .gear-row-slot-label {
     /* The quiet-label recipe (global.css): a table's row label. */
