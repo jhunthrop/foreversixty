@@ -56,10 +56,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
 const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
 ---
 
-<li
-  class:list={['gear-row-list', you !== undefined && 'gear-row-list-4col']}
-  data-testid={slotTestId}
->
+<li class:list={['gear-row-list', you !== undefined && 'gear-row-list-4col']} data-testid={slotTestId}>
   <span class="gear-row-slot-label">{slotLabel}</span>
   {row.empty ? (
     <div class="gear-row-empty">
