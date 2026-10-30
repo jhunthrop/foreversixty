@@ -202,16 +202,21 @@ func (s *Service) bnetStart(w http.ResponseWriter, r *http.Request) {
 	s.sendToBattleNet(w, r, NewSessionID(), safeNext(r.URL.Query().Get("next")))
 }
 
-// sendToBattleNet is the start of every Battle.net sign-in, the site's and the app's: it
-// binds state to this browser in the state cookie, with next riding beside it, and sends
-// the browser to Battle.net.
+// sendToBattleNet is the start of a web Battle.net sign-in: it binds state to this browser
+// and sends the browser to Battle.net.
 func (s *Service) sendToBattleNet(w http.ResponseWriter, r *http.Request, state, next string) {
+	s.setBnetState(w, state, next)
+	http.Redirect(w, r, s.BNet.AuthURL(state), http.StatusFound)
+}
+
+// setBnetState binds every Battle.net sign-in, the site's and the app's, to this browser in
+// the state cookie, with next riding beside it.
+func (s *Service) setBnetState(w http.ResponseWriter, state, next string) {
 	http.SetCookie(w, &http.Cookie{
 		Name: bnetStateCookie, Value: encodeState(state, next), Path: "/",
 		Domain: s.Auth.CookieDomain, HttpOnly: true, Secure: s.Auth.Secure,
 		SameSite: http.SameSiteLaxMode, MaxAge: int(bnetStateTTL.Seconds()),
 	})
-	http.Redirect(w, r, s.BNet.AuthURL(state), http.StatusFound)
 }
 
 // bnetCallback finishes every Battle.net sign-in. A web sign-in starts a session and goes
@@ -380,15 +385,26 @@ func (s *Service) emailCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) logout(w http.ResponseWriter, r *http.Request) {
-	if err := s.Auth.EndSession(r.Context(), w, r); err != nil {
+	if err := s.endSignIn(w, r); err != nil {
 		s.fail(w, r, "logout", err, "could not sign you out just now")
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, map[string]bool{"signed_out": true})
 }
 
+// endSignIn is every generic sign-out: a browser's session ends, and an app calling it
+// revokes its own device rather than hearing success while its token stays live.
+func (s *Service) endSignIn(w http.ResponseWriter, r *http.Request) error {
+	if a := ActorFrom(r.Context()); a.IsApp() {
+		if _, err := s.Store.RevokeDeviceByID(r.Context(), a.DeviceID); err != nil {
+			return err
+		}
+	}
+	return s.Auth.EndSession(r.Context(), w, r)
+}
+
 func (s *Service) deleteSession(w http.ResponseWriter, r *http.Request) {
-	if err := s.Auth.EndSession(r.Context(), w, r); err != nil {
+	if err := s.endSignIn(w, r); err != nil {
 		s.fail(w, r, "logout", err, "could not sign you out just now")
 		return
 	}
@@ -464,7 +480,8 @@ type EntitlementsView struct {
 }
 
 func (s *Service) me(w http.ResponseWriter, r *http.Request) {
-	me, err := s.loadMe(r.Context(), ActorFrom(r.Context()).UserID)
+	a := ActorFrom(r.Context())
+	me, err := s.loadMe(r.Context(), a.UserID, a.IsModerator())
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
@@ -474,7 +491,9 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 }
 
 // loadMe assembles the account read GET /v1/me answers and the app exchange returns.
-func (s *Service) loadMe(ctx context.Context, userID int64) (Me, error) {
+// moderator is whether this caller may use the account's moderator powers, which an app
+// token never may, so each guild's Can list only offers what the caller can do.
+func (s *Service) loadMe(ctx context.Context, userID int64, moderator bool) (Me, error) {
 	u, err := s.Store.User(ctx, userID)
 	if err != nil {
 		return Me{}, err
@@ -494,7 +513,7 @@ func (s *Service) loadMe(ctx context.Context, userID int64) (Me, error) {
 	if guilds, err = s.attachGuildPlans(ctx, guilds, u.ID, facts.HeldGuildIDs); err != nil {
 		return Me{}, err
 	}
-	if guilds, err = s.attachGuildCapabilities(ctx, guilds, u); err != nil {
+	if guilds, err = s.attachGuildCapabilities(ctx, guilds, u.ID, moderator); err != nil {
 		return Me{}, err
 	}
 	guilds = s.attachStanding(ctx, u.ID, guilds)
@@ -595,7 +614,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 
 // attachGuildCapabilities fills Guild.Can for every guild the account belongs to, from the
 // one rule guilds.Capabilities holds. Every list is non-nil, so the JSON is [] and not null.
-func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u User) ([]Guild, error) {
+func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, userID int64, moderator bool) ([]Guild, error) {
 	out := make([]Guild, len(guilds))
 	copy(out, guilds)
 	var lists map[int64][]string
@@ -605,7 +624,7 @@ func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u
 			ids[i] = g.ID
 		}
 		var err error
-		lists, err = s.GuildCapabilities.CapabilitiesFor(ctx, ids, u.ID, u.Role == "moderator" || u.Role == "admin")
+		lists, err = s.GuildCapabilities.CapabilitiesFor(ctx, ids, userID, moderator)
 		if err != nil {
 			return nil, fmt.Errorf("auth: me: guild capabilities: %w", err)
 		}

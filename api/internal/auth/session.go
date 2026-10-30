@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -39,8 +40,9 @@ func (a Actor) IsDevice() bool { return a.DeviceID != "" }
 func (a Actor) IsApp() bool { return a.IsDevice() && a.DeviceKind == DeviceKindApp }
 
 // IsModerator reports whether the actor may act on other people's
-// reports and rankings.
-func (a Actor) IsModerator() bool { return a.Role == "moderator" || a.Role == "admin" }
+// reports and rankings. An app token never carries moderator powers: those
+// stay with a browser session.
+func (a Actor) IsModerator() bool { return !a.IsApp() && (a.Role == "moderator" || a.Role == "admin") }
 
 type ctxKey int
 
@@ -94,10 +96,14 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 				}
 				err = uerr
 			}
-			if err != ErrNotFound {
+			httpx.MarkDeadToken(TokenHash(token))
+			if errors.Is(err, ErrDeviceExpired) {
+				httpx.WriteError(w, r, http.StatusUnauthorized, "session_expired", "this sign-in has expired; sign in again", nil)
+				return
+			}
+			if !errors.Is(err, ErrNotFound) {
 				a.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "device", "err", err)
 			}
-			httpx.MarkDeadToken(TokenHash(token))
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "that device token is not valid", nil)
 			return
 		}
@@ -254,6 +260,24 @@ func RequireSession(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		h(w, r)
+	}
+}
+
+// RequireBrowserSession wraps a handler that only a browser session may reach: billing
+// writes, for one. An app token is told plainly to use the site; a companion token and an
+// anonymous caller get the usual 401.
+func RequireBrowserSession(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		a := ActorFrom(r.Context())
+		switch {
+		case a.IsApp():
+			httpx.WriteError(w, r, http.StatusForbidden, "browser_session_required",
+				"this can only be done on foreversixty.gg in a browser", nil)
+		case !a.Signed() || a.IsDevice():
+			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "sign in on the site first", nil)
+		default:
+			h(w, r)
+		}
 	}
 }
 

@@ -1540,16 +1540,23 @@ paths:
   /v1/auth/app/start:
     get:
       summary: Start a native app sign-in (dark unless APP_SIGN_IN=true; 60 per hour per IP)
-      description: Opened in the system browser. Records the PKCE challenge, platform and the app's state, then redirects to Battle.net through the site's own start. The Battle.net callback answers an app flow with a 302 to https://foreversixty.gg/app/auth?code=<one-time code>&state=<the app's state> and sets no web session. The code is single use and lives two minutes.
+      description: Opened in the system browser. Records the PKCE challenge, platform and the app's state, binds the flow to this browser in the Battle.net state cookie, and answers a self-contained confirm page (no script, no auto-redirect, framing refused) whose one link is GET /v1/auth/app/continue. Any redirect_uri the client sends is ignored. The Battle.net callback answers an app flow with a 302 to https://foreversixty.gg/app/auth?code=<one-time code>&state=<the app's state> and sets no web session. The code is single use and lives two minutes.
       parameters:
         - { name: platform, in: query, required: true, schema: { type: string, enum: [ios, android] } }
         - { name: code_challenge, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' } }
         - { name: code_challenge_method, in: query, required: true, schema: { type: string, enum: [S256] } }
         - { name: state, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9._~-]{16,128}$' } }
       responses:
-        '302': { description: "To Battle.net" }
+        '200': { description: "The confirm page (text/html; Cache-Control no-store, Referrer-Policy no-referrer)" }
         '400': { description: "invalid, with error.fields naming each bad parameter", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '429': { description: "Too many starts from this address", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/app/continue:
+    get:
+      summary: The confirm page's click; goes on to Battle.net (dark unless APP_SIGN_IN=true; shares start's budget)
+      parameters: [ { name: state, in: query, required: true, schema: { type: string } } ]
+      responses:
+        '302': { description: "To Battle.net, with the configured redirect_uri" }
+        '400': { description: "No app state cookie in this browser, or state does not match it", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/auth/app/exchange:
     post:
       summary: Swap the one-time code and the PKCE verifier for a device token (dark unless APP_SIGN_IN=true; 60 per hour per IP)

@@ -62,7 +62,21 @@ func TestMigrationAddsAppSignIn(t *testing.T) {
 	if _, err := pool.Exec(ctx, `truncate app_auth_flows`); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := pool.Exec(ctx,
+		`insert into devices (id, user_id, name, platform, token_hash, kind) values ('phone', $1, 'iPhone', 'ios', 'p', 'app')`, uid); err != nil {
+		t.Fatal(err)
+	}
 	migrateTo(t, url, appSignInVersion-1)
+	// Without kind the phone would read as a companion, so going down revokes it.
+	var phoneRevoked, oldRevoked bool
+	if err := pool.QueryRow(ctx,
+		`select (select revoked_at is not null from devices where id = 'phone'),
+		        (select revoked_at is not null from devices where id = 'old')`).Scan(&phoneRevoked, &oldRevoked); err != nil {
+		t.Fatal(err)
+	}
+	if !phoneRevoked || oldRevoked {
+		t.Fatalf("after down: app revoked = %v, companion revoked = %v; want true, false", phoneRevoked, oldRevoked)
+	}
 	var n int
 	if err := pool.QueryRow(ctx,
 		`select count(*) from information_schema.columns where table_name = 'devices' and column_name = 'kind'`).Scan(&n); err != nil || n != 0 {

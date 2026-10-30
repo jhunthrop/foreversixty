@@ -573,7 +573,8 @@ func serve(log *slog.Logger) error {
 		ResendCooldown: resendCooldown, MaxSendsPerHour: maxSendsPerHour,
 	}
 
-	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log}
+	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log,
+		AppTokenIdle: cfg.AppTokenIdle, AppTokenMaxAge: cfg.AppTokenMaxAge}
 	// The guild control centre's own claimed_by_name (home) and loot award
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.

@@ -4,8 +4,11 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"html"
+	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -44,13 +47,16 @@ func appStartQuery(platform, challenge, method, state string) string {
 	return "/v1/auth/app/start?" + q.Encode()
 }
 
-// appStart begins an app sign-in and returns the state Battle.net was sent.
+// appStart begins an app sign-in: the confirm page, then the click through to Battle.net.
+// It returns the state Battle.net was sent.
 func (h *harness) appStart(t *testing.T, platform string) string {
 	t.Helper()
-	res := h.do(t, http.MethodGet, appStartQuery(platform, challengeOf(testVerifier), "S256", testAppState), "")
+	page := h.do(t, http.MethodGet, appStartQuery(platform, challengeOf(testVerifier), "S256", testAppState), "")
+	cont := continueLink(t, page)
+	res := h.do(t, http.MethodGet, cont, "")
 	res.Body.Close()
 	if res.StatusCode != http.StatusFound {
-		t.Fatalf("app start = %d, want a redirect to Battle.net", res.StatusCode)
+		t.Fatalf("continue = %d, want a redirect to Battle.net", res.StatusCode)
 	}
 	target, err := url.Parse(res.Header.Get("Location"))
 	if err != nil {
@@ -61,6 +67,24 @@ func (h *harness) appStart(t *testing.T, platform string) string {
 		t.Fatalf("Battle.net state = %q, want a fresh server state", state)
 	}
 	return state
+}
+
+// continueLink reads the confirm page and returns the path its button goes to.
+func continueLink(t *testing.T, res *http.Response) string {
+	t.Helper()
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("app start = %d, want the confirm page", res.StatusCode)
+	}
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := regexp.MustCompile(`href="(/v1/auth/app/continue\?[^"]+)"`).FindStringSubmatch(string(b))
+	if m == nil {
+		t.Fatalf("the confirm page has no continue link:\n%s", b)
+	}
+	return html.UnescapeString(m[1])
 }
 
 // appCallback finishes Battle.net and returns the one-time code from the app link.
@@ -407,7 +431,7 @@ func TestAppStartAndExchangeAreRateLimited(t *testing.T) {
 	for i := range appStartsPerHour {
 		res := h.do(t, http.MethodGet, q, "")
 		res.Body.Close()
-		if res.StatusCode != http.StatusFound {
+		if res.StatusCode != http.StatusOK {
 			t.Fatalf("start %d = %d", i, res.StatusCode)
 		}
 	}

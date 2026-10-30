@@ -18,8 +18,12 @@ import (
 // binding the browser leg to the app that started it.
 //
 //  1. The app opens GET /v1/auth/app/start with its platform, a S256 code_challenge and its
-//     own state. The flow is recorded and the browser goes to Battle.net through the same
-//     start the site uses.
+//     own state. The flow is recorded, the state is bound to this browser in the same cookie
+//     the site's sign-in uses, and a confirm page (app_confirm.go) asks for a click. The
+//     click, GET /v1/auth/app/continue, goes to Battle.net. Nothing redirects on its own, so
+//     a link someone else sends cannot finish a sign-in while Battle.net consents silently.
+//     Any redirect_uri the client sends is ignored: Battle.net always gets the configured
+//     callback and the code always goes to appLinkPath.
 //  2. Battle.net returns to the shared callback. For an app flow it mints a one-time code
 //     (stored hashed, single use, two minutes) and redirects to the app link
 //     https://foreversixty.gg/app/auth?code=…&state=<the app's state>. No web session is set.
@@ -60,6 +64,7 @@ func mountApp(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	startLimit := httpx.RateLimitPer(appStartsPerHour, time.Hour, trustedProxyHops)
 	exchangeLimit := httpx.RateLimitPer(appExchangesPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("GET /v1/auth/app/start", startLimit(http.HandlerFunc(s.appStart)))
+	mux.Handle("GET /v1/auth/app/continue", startLimit(http.HandlerFunc(s.appContinue)))
 	mux.Handle("POST /v1/auth/app/exchange", exchangeLimit(http.HandlerFunc(s.appExchange)))
 	mux.HandleFunc("POST /v1/auth/app/logout", RequireDevice(s.appLogout))
 }
@@ -98,7 +103,26 @@ func (s *Service) appStart(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "app_start", err, "could not start that sign-in just now")
 		return
 	}
-	s.sendToBattleNet(w, r, state, appFlowNext)
+	s.setBnetState(w, state, appFlowNext)
+	s.writeAppConfirm(w, r, "/v1/auth/app/continue?"+url.Values{"state": {state}}.Encode())
+}
+
+// appContinue is the confirm page's button. It goes on to Battle.net only for the browser
+// whose start set the state cookie, and only for an app flow; the cookie stays for the
+// callback.
+func (s *Service) appContinue(w http.ResponseWriter, r *http.Request) {
+	httpx.CachePrivate(w)
+	c, err := r.Cookie(bnetStateCookie)
+	if err != nil || c.Value == "" {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in has expired; start again in the app", nil)
+		return
+	}
+	state, next := decodeState(c.Value)
+	if next != appFlowNext || state == "" || !SameToken(state, r.URL.Query().Get("state")) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in could not be verified; start again in the app", nil)
+		return
+	}
+	http.Redirect(w, r, s.BNet.AuthURL(state), http.StatusFound)
 }
 
 // finishAppSignIn is the app half of the Battle.net callback: the account is confirmed, so
@@ -182,7 +206,7 @@ func (s *Service) issueAppDevice(w http.ResponseWriter, r *http.Request, userID 
 		s.fail(w, r, "app_exchange", err, "could not sign you in just now")
 		return
 	}
-	me, err := s.loadMe(r.Context(), userID)
+	me, err := s.loadMe(r.Context(), userID, false)
 	if err != nil {
 		s.fail(w, r, "app_exchange", err, "could not sign you in just now")
 		return

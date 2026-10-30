@@ -22,7 +22,45 @@ const (
 	AppCodeTTL = 2 * time.Minute
 	// appFlowKeep is how long a finished or abandoned flow stays before the sweep takes it.
 	appFlowKeep = time.Hour
+	// DefaultAppTokenIdle and DefaultAppTokenMaxAge are config's defaults, used when a Store
+	// is built without them (tests).
+	DefaultAppTokenIdle   = 30 * 24 * time.Hour
+	DefaultAppTokenMaxAge = 180 * 24 * time.Hour
 )
+
+// ErrDeviceExpired is an app device token past its idle limit or maximum age.
+var ErrDeviceExpired = errors.New("auth: app sign-in expired")
+
+// liveAppClause keeps a device row only while it is a companion or an app inside both of
+// its limits; $2 is the idle interval and $3 the maximum age.
+const liveAppClause = `(kind <> 'app' or (coalesce(last_seen_at, created_at) > now() - $2::interval
+	   and created_at > now() - $3::interval))`
+
+func (s *Store) appTokenLimits() (idle, maxAge time.Duration) {
+	idle, maxAge = s.AppTokenIdle, s.AppTokenMaxAge
+	if idle <= 0 {
+		idle = DefaultAppTokenIdle
+	}
+	if maxAge <= 0 {
+		maxAge = DefaultAppTokenMaxAge
+	}
+	return idle, maxAge
+}
+
+// lapseAppDevice runs when a token matched no live device. A live row that is left can only
+// be an app past its limits: it is revoked, and the caller hears ErrDeviceExpired. Anything
+// else is ErrNotFound.
+func (s *Store) lapseAppDevice(ctx context.Context, hash []byte) error {
+	tag, err := s.Pool.Exec(ctx,
+		`update devices set revoked_at = now() where token_hash = $1 and revoked_at is null and kind = 'app'`, hash)
+	if err != nil {
+		return fmt.Errorf("auth: lapse app device: %w", err)
+	}
+	if tag.RowsAffected() == 1 {
+		return ErrDeviceExpired
+	}
+	return ErrNotFound
+}
 
 // AppFlow is what an app sign-in carries from start to exchange.
 type AppFlow struct {

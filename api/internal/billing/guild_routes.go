@@ -33,10 +33,10 @@ func mountGuild(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	const base = "/v1/guilds/{id}/billing"
 	mux.Handle("GET "+base, read(auth.RequireSession(s.guildBilling)))
 	mux.Handle("GET "+base+"/upgrade-preview", write(auth.RequireSession(s.upgradePreview)))
-	mux.Handle("POST "+base+"/upgrade", write(auth.RequireSession(s.upgrade)))
-	mux.Handle("POST "+base+"/transfer", write(auth.RequireSession(s.sendTransfer)))
-	mux.Handle("POST "+base+"/transfer/withdraw", write(auth.RequireSession(s.withdrawTransfer)))
-	mux.Handle("POST "+base+"/transfer/decline", write(auth.RequireSession(s.declineTransfer)))
+	mux.Handle("POST "+base+"/upgrade", write(auth.RequireBrowserSession(s.upgrade)))
+	mux.Handle("POST "+base+"/transfer", write(auth.RequireBrowserSession(s.sendTransfer)))
+	mux.Handle("POST "+base+"/transfer/withdraw", write(auth.RequireBrowserSession(s.withdrawTransfer)))
+	mux.Handle("POST "+base+"/transfer/decline", write(auth.RequireBrowserSession(s.declineTransfer)))
 }
 
 // guildActor is the caller of a guild billing route: a verified officer or
