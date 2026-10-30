@@ -1,0 +1,61 @@
+---
+// web/src/components/ui/TabStrip.astro
+// The static twin of TabStrip.svelte's link tabs (site alignment spec 2026-10-29 D3, S7): a `nav`
+// of links in the shared underline recipe (lib/ui/tabs.ts), the current one aria-current="page".
+// Its one small script keeps the 24 px edge fades current and scrolls the current tab into view
+// in the strip (never the page); it never touches layout.
+import { TAB_STRIP, tabClass, type TabItem } from '../../lib/ui/tabs';
+
+interface Props {
+  tabs: readonly TabItem[];
+  active: string;
+  label: string;
+  testid?: string;
+}
+
+const { tabs, active, label, testid } = Astro.props;
+---
+
+<div class={TAB_STRIP.wrapper} data-testid={testid} data-tab-strip>
+  <nav class={TAB_STRIP.strip} aria-label={label}>
+    {tabs.map((tab) => {
+      const current = tab.id === active;
+      return tab.href !== undefined && tab.disabled !== true ? (
+        <a
+          href={tab.href}
+          aria-current={current ? 'page' : undefined}
+          class={tabClass(current, false)}
+          data-tab-id={tab.id}
+          data-testid={tab.testid}
+        >
+          {tab.label}
+          {tab.suffix !== undefined && <span class={TAB_STRIP.suffix}>{tab.suffix}</span>}
+        </a>
+      ) : (
+        <span
+          aria-disabled="true"
+          class={tabClass(false, true)}
+          data-tab-id={tab.id}
+          data-testid={tab.testid}
+        >
+          {tab.label}
+        </span>
+      );
+    })}
+  </nav>
+  <div class={TAB_STRIP.fadeStart} aria-hidden="true" data-testid="tab-strip-fade-start"></div>
+  <div class={TAB_STRIP.fadeEnd} aria-hidden="true" data-testid="tab-strip-fade-end"></div>
+</div>
+
+<script>
+  import { scrollFade } from '../../lib/scroll-fade';
+  import { scrollTabIntoView } from '../../lib/ui/tabs';
+
+  for (const wrapper of document.querySelectorAll<HTMLElement>('[data-tab-strip]')) {
+    const nav = wrapper.querySelector<HTMLElement>('nav');
+    if (nav === null) continue;
+    const current = nav.querySelector<HTMLElement>('[aria-current="page"]');
+    if (current !== null) scrollTabIntoView(nav, current);
+    scrollFade(nav);
+  }
+</script>
