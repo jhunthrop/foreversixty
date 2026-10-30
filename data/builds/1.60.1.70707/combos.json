@@ -1,0 +1,282 @@
+[
+  {
+    "race_id": 1,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 1,
+    "class_id": 2,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 1,
+    "class_id": 3,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 1,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 1,
+    "class_id": 5,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 1,
+    "class_id": 8,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 1,
+    "class_id": 9,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 3,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 7,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 8,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 2,
+    "class_id": 9,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 2,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 3,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 5,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 3,
+    "class_id": 7,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 4,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 4,
+    "class_id": 3,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 4,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 4,
+    "class_id": 5,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 4,
+    "class_id": 11,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 5,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 5,
+    "class_id": 2,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 5,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 5,
+    "class_id": 5,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 5,
+    "class_id": 8,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 5,
+    "class_id": 9,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 6,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 6,
+    "class_id": 3,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 6,
+    "class_id": 7,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 6,
+    "class_id": 11,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 7,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 7,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 7,
+    "class_id": 5,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 7,
+    "class_id": 8,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 7,
+    "class_id": 9,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 1,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 3,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 4,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 5,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 7,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 8,
+    "new_in_forever": false
+  },
+  {
+    "race_id": 8,
+    "class_id": 9,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 95,
+    "class_id": 1,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 95,
+    "class_id": 3,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 95,
+    "class_id": 4,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 95,
+    "class_id": 8,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 95,
+    "class_id": 11,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 96,
+    "class_id": 1,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 96,
+    "class_id": 3,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 96,
+    "class_id": 4,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 96,
+    "class_id": 7,
+    "new_in_forever": true
+  },
+  {
+    "race_id": 96,
+    "class_id": 11,
+    "new_in_forever": true
+  }
+]
