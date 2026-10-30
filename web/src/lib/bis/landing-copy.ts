@@ -12,7 +12,7 @@ export const landingCopy = {
   h1: 'Best in slot',
   jobLine: 'The best gear you can wear at your level, for every spec. Open yours.',
   tierQuestion: 'Which spec is strongest?',
-  tierLink: 'Tier list →',
+  tierLink: 'Tier list',
   tierHref: '/tiers',
 
   /** The answer slot of the shared character header (spec 2026-10-11 section 4). */
@@ -37,7 +37,8 @@ export const landingCopy = {
   gridHeadingSignedOut: 'Pick a class and spec',
   gridHeadingSignedIn: 'Another class or spec',
 
-  stripHead: 'Spec links open at this level range',
+  stripTitle: 'Level range',
+  stripHead: 'Spec links open at this range',
   stripNote: (raidLabel: string): string => {
     const lead =
       'Each list is the best you can wear inside one level range; gear changes about every ten levels.';

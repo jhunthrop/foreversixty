@@ -10,7 +10,8 @@
 // model to run yet), so the link would only lead to an error.
 import { bisCopy } from '../../lib/bis/copy';
 import type { HealerSetView } from '../../lib/bis/heal-view';
-import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+import { button } from '../../lib/ui/button';
+import StatTile from '../ui/StatTile.svelte';
 import Card from '../ui/Card.astro';
 
 interface Props {
@@ -25,14 +26,15 @@ interface Props {
 const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref } = Astro.props;
 ---
 
-<Card glyph="bolt" title={bisCopy.thisSetLabel} compact testid="bis-this-set">
+<Card
+  glyph="bolt"
+  title={bisCopy.thisSetLabel}
+  meta={bisCopy.simmedLine(generatedAtDate)}
+  compact
+  testid="bis-this-set"
+>
   <div class="this-set-panel" data-role="healer">
-    <span class="this-set-figure-row">
-      <span class="figure-stat this-set-figure" data-testid="bis-healer-figure">
-        {healer.figure}
-      </span>
-      <span class="numeric this-set-unit">{healer.unit}</span>
-    </span>
+    <StatTile value={healer.figure} label={healer.unit} figureTestid="bis-healer-figure" />
     <span class="this-set-caption" data-testid="bis-healer-caption">
       {healer.caption}
     </span>
@@ -68,9 +70,8 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
         </div>
       </details>
     )}
-    <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
     <span class="this-set-actions">
-      <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={plannerHref}>
+      <a class={button('secondary', 'sm')} href={plannerHref}>
         {bisCopy.talentsInPlanner}
       </a>
     </span>
@@ -84,25 +85,11 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
     gap: 10px;
     min-width: 0;
   }
-  .this-set-figure-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .this-set-figure {
-    font-size: 28px;
-    color: var(--color-strong);
-  }
-  .this-set-unit {
-    font-size: 13px;
-    color: var(--color-muted);
-  }
   .this-set-caption {
     font-size: 13px;
     color: var(--color-nav);
   }
-  .this-set-build,
-  .this-set-simmed {
+  .this-set-build {
     font-size: 12px;
   }
   .this-set-metrics {

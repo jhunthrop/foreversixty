@@ -15,6 +15,7 @@
 import { bisCopy } from '../../lib/bis/copy';
 import { dataUrl } from '../../lib/planner/load';
 import type { RotationLineView } from '../../lib/bis/rotation-view';
+import ActionLink from '../ui/ActionLink.svelte';
 import Card from '../ui/Card.astro';
 
 interface Props {
@@ -65,9 +66,7 @@ const { bandLabel, lines, specName, guideHref, build } = Astro.props;
         </li>
       ))}
     </ul>
-    <a class="play-it-guide-link" href={guideHref}>
-      {bisCopy.openGuideLink(specName)}
-    </a>
+    <ActionLink href={guideHref}>{bisCopy.openGuideLink(specName)}</ActionLink>
   </div>
 </Card>
 
@@ -127,12 +126,5 @@ const { bandLabel, lines, specName, guideHref, build } = Astro.props;
     font-size: 13px;
     color: var(--color-text);
     /* No text-overflow/ellipsis, no max-height -- see the panel's own note above. */
-  }
-  .play-it-guide-link {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-top: auto;
   }
 </style>

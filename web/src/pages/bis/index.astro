@@ -11,6 +11,8 @@
 import Base from '../../layouts/Base.astro';
 import BisBandStrip from '../../components/bis/BisBandStrip.astro';
 import BisClassCard from '../../components/bis/BisClassCard.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import ActionLink from '../../components/ui/ActionLink.svelte';
 import BisLandingHeader from '../../components/bis/BisLandingHeader.svelte';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import activeBuild from '../../data/active-build.json';
@@ -22,46 +24,35 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 ---
 
 <Base title={landingCopy.title} description={landingCopy.description} path="/bis">
-  <main id="main" tabindex="-1" class="bis-page" data-testid="bis-landing">
-    <div class="band full-bleed">
-      <header class="hero page-column">
-        <p class="label eyebrow">
-          <i class="eyebrow-rule" aria-hidden="true"></i>
-          {landingCopy.eyebrow}
-        </p>
-        <div class="hero-head">
-          <h1 class="h1 heading-page">{landingCopy.h1}</h1>
-          {updated && (
-            <span class="stamp">
-              <UpdatedStamp date={updated} />
-            </span>
-          )}
-        </div>
-        <p class="job">{landingCopy.jobLine}</p>
-        <p class="tier">
-          <span class="tier-question">{landingCopy.tierQuestion}</span>{' '}
-          <a href={landingCopy.tierHref} class="tier-link" data-testid="bis-index-tier-link">
-            {landingCopy.tierLink}
-          </a>
-        </p>
-      </header>
-    </div>
-
-    <div class="body">
-      <div data-bis-header data-testid="bis-header-slot">
-        <BisLandingHeader config={config} />
+  <main
+    id="main"
+    tabindex="-1"
+    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
+    data-testid="bis-landing"
+  >
+    <PageHead eyebrow={landingCopy.eyebrow} title={landingCopy.h1} job={landingCopy.jobLine}>
+      <Fragment slot="meta">{updated && <UpdatedStamp date={updated} />}</Fragment>
+      <div slot="aside" class="tier">
+        <span class="tier-question">{landingCopy.tierQuestion}</span>{' '}
+        <ActionLink href={landingCopy.tierHref} data-testid="bis-index-tier-link">
+          {landingCopy.tierLink}
+        </ActionLink>
       </div>
-      <div class="grid-wrap" id="bis-classes">
-        <h2 class="grid-heading section-title" data-grid-heading data-testid="bis-grid-heading">
-          <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
-          <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>
-        </h2>
-        <BisBandStrip captions={captions} raidLabel={raidLabel} />
-        <div class="grid" data-testid="bis-class-grid">
-          {cards.map((card) => (
-            <BisClassCard name={card.name} slug={card.slug} color={card.color} specs={card.specs} />
-          ))}
-        </div>
+    </PageHead>
+
+    <div data-bis-header data-testid="bis-header-slot">
+      <BisLandingHeader config={config} />
+    </div>
+    <BisBandStrip captions={captions} raidLabel={raidLabel} />
+    <div class="grid-wrap" id="bis-classes">
+      <h2 class="grid-heading heading-section" data-grid-heading data-testid="bis-grid-heading">
+        <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
+        <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>
+      </h2>
+      <div class="grid" data-testid="bis-class-grid">
+        {cards.map((card) => (
+          <BisClassCard name={card.name} slug={card.slug} color={card.color} specs={card.specs} />
+        ))}
       </div>
     </div>
   </main>
@@ -76,84 +67,20 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 </Base>
 
 <style>
-  .bis-page {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .band {
-    position: relative;
-    background: var(--color-raised);
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .band::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, #26405c66 0%, #07090dcc 70%, #07090d 100%);
-    pointer-events: none;
-  }
-  .hero {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-block: 28px 24px;
-  }
-  .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    color: var(--color-gold);
-  }
-  .eyebrow-rule {
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--color-gold);
-  }
-  .hero-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .h1 {
-    margin: 0;
-  }
-  .job {
-    margin: 0;
-    max-width: 62ch;
-    font-size: 14px;
-    color: #c9c2b2;
-  }
   .tier {
-    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 8px;
     font-size: 14px;
   }
   .tier-question {
     color: var(--color-muted);
   }
-  .tier-link {
-    font-weight: 700;
-  }
-  .tier-link:hover {
-    color: var(--color-gold-hover);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .body {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding: 12px var(--page-inset) 40px;
-  }
   .grid-wrap {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
   .grid-heading {
     margin: 0;
@@ -170,29 +97,7 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (max-width: 767px) {
-    .hero {
-      padding-inline: 18px;
-    }
-  }
   @media (max-width: 599px) {
-    .hero {
-      gap: 10px;
-      padding-block: 22px 20px;
-    }
-    .h1 {
-      font-size: 26px;
-    }
-    /* The one Updated stamp sits under the tier pointer on a phone. */
-    .hero-head {
-      display: contents;
-    }
-    .stamp {
-      order: 5;
-    }
-    .body {
-      gap: 16px;
-    }
     .grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 12px;

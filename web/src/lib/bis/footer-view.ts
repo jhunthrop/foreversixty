@@ -10,10 +10,13 @@ import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import { bisCopy, joinWithAnd } from './copy';
 import type { BandInfo, RowView } from './panel-view';
 import type { SourceCell } from './source-cell';
+import type { ItemTooltipModel } from '../items/tooltip';
 
 export interface SourceGroupItem {
   itemId: number;
   itemName: string;
+  /** The tooltip model, so the item draws with its icon and quality colour (tenet 2). */
+  model?: ItemTooltipModel;
 }
 
 export interface SourceGroup {
@@ -63,7 +66,7 @@ export function sourceGroupsFor(rows: readonly RowView[]): SourceGroup[] {
       continue;
     }
     const label = sourceGroupKey(row.sourceCell);
-    const item: SourceGroupItem = { itemId: row.itemId, itemName: row.itemName };
+    const item: SourceGroupItem = { itemId: row.itemId, itemName: row.itemName, model: row.model };
     const existing = groups.get(label);
     if (existing === undefined) groups.set(label, { label, items: [item] });
     else existing.items.push(item);

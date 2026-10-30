@@ -92,6 +92,16 @@ describe('sourceGroupsFor (spec §4.E "Where to get it")', () => {
   });
 });
 
+describe('sourceGroupsFor item models (tenet 2)', () => {
+  it("carries each pick's tooltip model so the item draws with its icon and quality colour", () => {
+    const model = { name: 'A', icon: 'inv_a', quality: 4 } as unknown as NonNullable<RowView['model']>;
+    const rows: RowView[] = [
+      row({ slot: 'head', itemId: 1, itemName: 'A', model, sourceCell: { kind: 'world_drop' } }),
+    ];
+    expect(sourceGroupsFor(rows)[0]?.items[0]?.model).toBe(model);
+  });
+});
+
 describe('newAtBandLinesFor (spec §4.E "New at this band")', () => {
   it('is the fixed first-band sentence at bandIndex 0, never the templated "reaching" sentence', () => {
     const current = bandInfo({ bandIndex: 0, rows: [] });

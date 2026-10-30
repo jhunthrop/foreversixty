@@ -1,13 +1,14 @@
 ---
 // web/src/components/bis/BisBandStrip.astro
-// The /bis landing's band strip (design/specs/2026-10-10-bis-landing.md section 2.3): one compact
-// row, the grid's own header, that says where the spec links open. The five pills are links to
+// The /bis landing's band strip (design/specs/2026-10-10-bis-landing.md section 2.3), now the
+// "Level range" Card (site alignment 5.2): says where the spec links open. The five pills are links to
 // `?band=` for no-script and a radiogroup with the page script; the selected pill (gold) rewrites
 // every spec link's band and nothing above the grid. The character's own band is marked inside
 // its pill (the word `you` from 480px, a gold dot below) by the page script. Every pill has a
 // caption computed at build time from the BiS files.
 import { DEFAULT_LANDING_BAND, type BandCaption } from '../../lib/bis/landing-bands';
 import { landingCopy } from '../../lib/bis/landing-copy';
+import Card from '../ui/Card.astro';
 
 interface Props {
   captions: BandCaption[];
@@ -18,16 +19,17 @@ interface Props {
 const { captions, raidLabel } = Astro.props;
 ---
 
-<div class="strip" data-bis-strip data-testid="bis-band-strip">
-  <div class="strip-text">
-    <p class="strip-head" data-testid="bis-strip-head">
-      {landingCopy.stripHead}
-    </p>
-    <p class="strip-note" data-testid="bis-strip-note">
-      {landingCopy.stripNote(raidLabel)}
-    </p>
-  </div>
-  <div class="strip-bands" role="radiogroup" aria-label={landingCopy.bandGroupLabel}>
+<Card
+  glyph="layers"
+  title={landingCopy.stripTitle}
+  meta={landingCopy.stripHead}
+  testid="bis-band-strip"
+  class="strip"
+>
+  <p class="strip-note" data-testid="bis-strip-note">
+    {landingCopy.stripNote(raidLabel)}
+  </p>
+  <div class="strip-bands" data-bis-strip role="radiogroup" aria-label={landingCopy.bandGroupLabel}>
     {captions.map((caption) => {
       const selected = caption.band === DEFAULT_LANDING_BAND;
       return (
@@ -57,78 +59,60 @@ const { captions, raidLabel } = Astro.props;
       );
     })}
   </div>
-</div>
+</Card>
 
 <style>
-  .strip {
-    display: grid;
-    grid-template-columns: 440px minmax(0, 1fr);
-    gap: 28px;
-    align-items: start;
-    padding: 14px 18px;
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .strip-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .strip-head {
-    margin: 0;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-strong);
-  }
   .strip-note {
     margin: 0;
     font-size: 13px;
     line-height: 1.45;
     color: var(--color-muted);
   }
+  /* The SegmentedControl recipe (polish 4.2): a 3 px padded track, 44 px segments, the checked one
+     a 16% gold ground with a 1 px gold inset border. Pills sit in grid row 1, their captions in
+     row 2; the track is drawn behind row 1 only (an absolute layer, so it takes no grid cell). */
   .strip-bands {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 12px;
+    row-gap: 8px;
+  }
+  .strip-bands::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 52px;
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-control);
+    background: var(--color-raised);
   }
   .col {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
-  }
-  .cap {
-    font-size: 12px;
-    line-height: 1.35;
-    color: #c9c2b2;
-  }
-  .cap-same {
-    color: var(--color-muted);
+    display: contents;
   }
   .pb {
+    grid-row: 1;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     height: 44px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-control);
+    margin: 4px;
+    z-index: 1;
+    border-radius: calc(var(--radius-control) - 2px);
     font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--color-nav);
+    color: var(--color-strong);
     white-space: nowrap;
     transition:
       color 120ms ease-out,
-      border-color 120ms ease-out,
-      background-color 120ms ease-out;
+      background-color 120ms ease-out,
+      box-shadow 120ms ease-out;
   }
   .pb-you {
     display: none;
-    font-family: var(--font-body);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -146,30 +130,26 @@ const { captions, raidLabel } = Astro.props;
     background: var(--color-gold);
   }
   .pb:hover {
-    color: var(--color-strong);
-    border-color: var(--color-line-warm-strong);
+    background: var(--color-row-hover);
   }
   .pb:focus-visible {
     outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .pb:active {
-    background: #0a0d15;
-    color: #fff;
-    border-color: var(--color-line-warm-strong);
+    outline-offset: 1px;
   }
   .pb[aria-current='true'] {
-    border-color: var(--color-gold);
     color: var(--color-gold);
-    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+    background: color-mix(in srgb, var(--color-gold) 16%, transparent);
+    box-shadow: inset 0 0 0 1px rgb(229 185 85 / 55%);
   }
-  .pb[aria-current='true']:hover {
-    border-color: var(--color-gold-hover);
-    color: var(--color-gold-hover);
-    background: color-mix(in srgb, var(--color-gold) 14%, transparent);
+  .cap {
+    grid-row: 2;
+    padding: 0 6px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--color-text);
   }
-  .pb[aria-current='true']:active {
-    background: color-mix(in srgb, var(--color-gold) 4%, transparent);
+  .cap-same {
+    color: var(--color-muted);
   }
   /* The character's band: the word from 480px, a corner dot below. */
   .pb[data-you] .pb-you {
@@ -177,48 +157,34 @@ const { captions, raidLabel } = Astro.props;
   }
 
   @media (max-width: 899px) {
-    /* Stacked: head line, the five pills in one row, the selected band's caption, then the note. */
-    .strip {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 14px 16px;
-    }
-    .strip-text {
-      display: contents;
-    }
-    .strip-head {
-      order: 1;
-    }
-    .strip-bands {
-      order: 2;
-      gap: 3px;
-      row-gap: 10px;
-    }
-    .strip-note {
-      order: 3;
-    }
-    .col {
-      display: contents;
-    }
+    /* Only the selected band's caption shows, across the full width under the control. */
     .cap {
       display: none;
       grid-column: 1 / -1;
       grid-row: 2;
+      padding: 0;
       font-size: 13px;
     }
     .col[data-selected='true'] .cap {
       display: block;
     }
+  }
+  @media (max-width: 559px) {
+    /* Two rows (3 + 2), every segment 44 px, the label never touching an edge. */
+    .strip-bands {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .strip-bands::before {
+      height: 104px;
+    }
     .pb {
-      font-size: 12px;
-      letter-spacing: -0.04em;
+      grid-row: auto;
+    }
+    .cap {
+      grid-row: 3;
     }
   }
   @media (max-width: 479px) {
-    .strip {
-      padding: 14px 10px;
-    }
     .pb[data-you] .pb-you {
       display: none;
     }

@@ -6,7 +6,8 @@
 // real level -- the two are unrelated facts that happen to coincide in the mock's own
 // worked example (spec's own explicit warning).
 import { bisCopy, tankCopy } from '../../lib/bis/copy';
-import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+import { button } from '../../lib/ui/button';
+import StatTile from '../ui/StatTile.svelte';
 import type { TankHeadline } from '../../lib/bis/tank-view';
 import Card from '../ui/Card.astro';
 
@@ -26,15 +27,20 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
   Astro.props;
 ---
 
-<Card glyph="bolt" title={bisCopy.thisSetLabel} compact testid="bis-this-set">
+<Card
+  glyph="bolt"
+  title={bisCopy.thisSetLabel}
+  meta={bisCopy.simmedLine(generatedAtDate)}
+  compact
+  testid="bis-this-set"
+>
   <div class="this-set-panel">
     {tank === undefined ? (
-      <span class="this-set-figure-row">
-        <span class="figure-stat this-set-figure">{setDps.toFixed(1)}</span>
-        <span class="this-set-figure-caption">
-          {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
-        </span>
-      </span>
+      <StatTile
+        value={setDps.toFixed(1)}
+        label={bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+        figureTestid="bis-this-set-figure"
+      />
     ) : (
       <>
         <span class="tank-figures">
@@ -51,12 +57,11 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
         <span class="this-set-figure-caption">{tankCopy.figureLine(characterLevel, race, talentPoints)}</span>
       </>
     )}
-    <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
     <span class="this-set-actions">
-      <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={simHref}>
+      <a class={button('secondary', 'sm')} href={simHref}>
         {bisCopy.openInSimulator}
       </a>
-      <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={plannerHref}>
+      <a class={button('secondary', 'sm')} href={plannerHref}>
         {bisCopy.talentsInPlanner}
       </a>
     </span>
@@ -68,15 +73,6 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-  .this-set-figure-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .this-set-figure {
-    font-size: 28px;
-    color: var(--color-strong);
   }
   .this-set-figure-caption {
     font-size: 13px;
@@ -99,9 +95,6 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
   .tank-figure-value {
     font-size: 22px;
     color: var(--color-strong);
-  }
-  .this-set-simmed {
-    font-size: 12px;
   }
   .this-set-actions {
     display: flex;

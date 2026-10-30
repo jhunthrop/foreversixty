@@ -20,7 +20,7 @@ import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import type { ExpertiseCapLine } from '../../lib/bis/expertise-cap';
 import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
-import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+import { button } from '../../lib/ui/button';
 import Card from '../ui/Card.astro';
 
 interface Props {
@@ -115,11 +115,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
       </p>
     )}
     <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
-    <a
-      href="/addon"
-      class={`${SECONDARY_BUTTON} border-line-warm text-text justify-center px-4`}
-      data-testid="bis-weights-addon-button"
-    >
+    <a href="/addon" class={button('secondary', 'sm')} data-testid="bis-weights-addon-button">
       {bisCopy.weightsAddonButton}
     </a>
   </div>
@@ -145,8 +141,8 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   .stat-weights-header,
   .stat-weights-row {
     display: grid;
-    grid-template-columns: 140px 1fr 56px var(--per-point-col, 70px) 56px;
-    gap: 10px;
+    grid-template-columns: 104px minmax(40px, 1fr) 44px var(--per-point-col, 70px) 44px;
+    gap: 8px;
     align-items: center;
   }
   .stat-weights-header {
@@ -165,7 +161,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   }
   .stat-weights-bar {
     position: relative;
-    height: 6px;
+    height: 8px;
     border-radius: 999px;
     background: var(--color-line-soft);
     overflow: hidden;

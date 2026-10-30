@@ -6,6 +6,7 @@
 // that file's own header for why (the item tooltip needs those two functions but must
 // never pay for the rest of this much larger, /bis-page-only object).
 import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+import { utcDayMonth } from '../dates';
 import { bandRangeLabel } from '../planner/band-title';
 import type { RateUnit } from './types';
 
@@ -324,8 +325,8 @@ export const bisCopy = {
    *  the mock's own worked example). */
   thisSetFigureLine: (characterLevel: number, race: string, talentPoints: number): string =>
     `DPS on the training dummy, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
-  simmedLine: (generatedAtDate: string): string =>
-    `Simmed ${generatedAtDate}, every pick measured with the item equipped`,
+  /** The This set card's meta: the day the sim ran ("Simmed 29 Oct"). */
+  simmedLine: (generatedAtDate: string): string => `Simmed ${utcDayMonth(generatedAtDate)}`,
   openInSimulator: 'Open in simulator',
   talentsInPlanner: 'Talents in planner',
   /** The Stat weights card's title; its band label is the head's meta (site alignment §5.3). */

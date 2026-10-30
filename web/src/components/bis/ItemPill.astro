@@ -16,9 +16,11 @@ interface Props {
   model: ItemTooltipModel | undefined;
   build: string;
   class?: string;
+  /** The name to show when the build has no tooltip model for the item. */
+  fallbackName?: string;
 }
 
-const { itemId, model, build, class: className = '' } = Astro.props;
+const { itemId, model, build, class: className = '', fallbackName } = Astro.props;
 ---
 
 <span
@@ -43,7 +45,7 @@ const { itemId, model, build, class: className = '' } = Astro.props;
       <span class={rarityClassFor(model.quality)}>{model.name}</span>
     </>
   ) : (
-    <span class="text-muted">Item {itemId}</span>
+    <span class="text-muted">{fallbackName ?? `Item ${itemId}`}</span>
   )}
 </span>
 

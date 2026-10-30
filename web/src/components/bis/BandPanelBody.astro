@@ -8,10 +8,12 @@ import HealerSetPanel from './HealerSetPanel.astro';
 import StatWeightsPanel from './StatWeightsPanel.astro';
 import PlayItPanel from './PlayItPanel.astro';
 import GearRow from './GearRow.astro';
+import ItemPill from './ItemPill.astro';
 import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import { bandTopLevel } from '../../lib/bis/rotation-view';
 import type { BandView } from '../../lib/bis/band-view';
 import type { Faction } from '../../lib/bis/types';
+import ActionLink from '../ui/ActionLink.svelte';
 import Card from '../ui/Card.astro';
 
 interface Props {
@@ -117,15 +119,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
           </span>
           <span class="footer-group-items">
             {group.items.map((item) => (
-              <span
-                class="footer-group-item"
-                data-bis-item={item.itemId}
-                tabindex="0"
-                role="button"
-                aria-haspopup="true"
-              >
-                {item.itemName}
-              </span>
+              <ItemPill itemId={item.itemId} model={item.model} build={build} fallbackName={item.itemName} />
             ))}
           </span>
         </div>
@@ -142,9 +136,9 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
       <p class="text-muted new-at-band-line">{view.newAtBand.sentence2}</p>
     )}
     {view.nextBand !== undefined && (
-      <a class="new-at-band-see-link" href={`#band-${faction}-${view.nextBand}`}>
+      <ActionLink href={`#band-${faction}-${view.nextBand}`}>
         {bisCopy.seeBandLink(view.nextBandLabel!)}
-      </a>
+      </ActionLink>
     )}
   </Card>
 </section>
@@ -154,6 +148,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
+    align-items: start;
     padding: 28px var(--page-inset) 0 var(--page-inset);
   }
 
@@ -206,21 +201,14 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     flex-wrap: wrap;
     gap: 10px;
   }
-  .footer-group-item {
-    font-size: 13px;
+  .footer-group-items :global(.item-pill) {
+    font-size: 14px;
     cursor: pointer;
   }
   .new-at-band-line {
     margin: 0;
     font-size: 13px;
     color: var(--color-nav);
-  }
-  .new-at-band-see-link {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-top: 4px;
   }
   @media (max-width: 1023px) {
     .three-panel-row {
