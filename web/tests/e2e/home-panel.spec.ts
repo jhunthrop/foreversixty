@@ -199,6 +199,12 @@ test('a signed-in panel shows the shared header, the two next-action cards, and 
   await expect(page.getByTestId('home-class-picker-large')).toBeHidden();
   await expect(page.getByTestId('home-upgrades')).toBeVisible();
   await expect(page.getByTestId('home-upgrades-no-spec')).toBeVisible();
+  // A first visit holds the smallest real state, so the short card leaves no void under it.
+  const heights = await page.evaluate(() => ({
+    slot: document.querySelector('[data-testid="home-upgrades-slot"]')?.getBoundingClientRect().height,
+    card: document.querySelector('[data-testid="home-upgrades-body"]')?.getBoundingClientRect().height,
+  }));
+  expect(heights.slot! - heights.card!, 'no void under a short Your upgrades').toBeLessThanOrEqual(1);
   await expect(page.getByTestId('home-another-class').getByTestId(/^class-crest-/)).toHaveCount(9);
 });
 
@@ -467,6 +473,17 @@ test("a signed-in panel with a real gear/talent export sees the two upgrade figu
 
   // The worn side of a row names the item and nothing else: no "you wear this" filler.
   await expect(page.getByTestId('home-upgrades-list')).not.toContainText('you wear this');
+
+  // The settled height is stored, and the next visit reserves it before the island mounts.
+  await expect
+    .poll(() => page.evaluate(() => Number(localStorage.getItem('fs.home.upgrades.reserve'))))
+    .toBeGreaterThan(200);
+  const settled = await page.getByTestId('home-upgrades-body').boundingBox();
+  await page.reload();
+  await expect(page.getByTestId('home-upgrades-slot')).toHaveCSS(
+    'min-height',
+    `${Math.round(settled!.height)}px`,
+  );
   await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
 });
 
