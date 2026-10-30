@@ -23,9 +23,9 @@ struct HomeCard: Equatable {
         self.guild = guild
     }
 
-    init(_ character: CharacterCard) {
+    init(_ character: AccountCharacter) {
         let level = character.level.map { "Level \($0)" }
-        let kind = [character.spec, character.class].compactMap { $0?.capitalized }.joined(separator: " ")
+        let kind = [character.spec, character.className].compactMap { $0?.capitalized }.joined(separator: " ")
         self.init(
             name: character.name,
             detail: [level, kind.isEmpty ? nil : kind].compactMap(\.self).joined(separator: " · "),
@@ -46,7 +46,7 @@ struct HomeScreen: View {
 
     private func load() async -> HomeState {
         do {
-            let me = try await client.send(.me)
+            let me = try await client.send(.getMe)
             return me.mainCharacter.map { .loaded(HomeCard($0)) } ?? .empty
         } catch {
             return .failed(message(for: error))

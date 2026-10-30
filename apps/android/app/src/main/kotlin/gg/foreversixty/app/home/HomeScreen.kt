@@ -13,14 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
-import gg.foreversixty.app.model.Character
+import gg.foreversixty.app.model.AccountCharacter
+import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.dataOrNull
 
 /** Loads /v1/me and shows the main character. Placeholder until F2 builds the real home. */
 @Composable
 fun HomeRoute(accountApi: AccountApi) {
-    val character by produceState<Character?>(initialValue = null, accountApi) {
+    val character by produceState<AccountCharacter?>(initialValue = null, accountApi) {
         value = accountApi.me().dataOrNull()?.mainCharacter
     }
     HomeScreen(character)
@@ -28,7 +29,7 @@ fun HomeRoute(accountApi: AccountApi) {
 
 /** The placeholder home: the tagline over your main character, stateless for previews and tests. */
 @Composable
-fun HomeScreen(character: Character?) {
+fun HomeScreen(character: AccountCharacter?) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -51,14 +52,14 @@ fun HomeScreen(character: Character?) {
 }
 
 @Composable
-private fun CharacterHeader(character: Character) {
+private fun CharacterHeader(character: AccountCharacter) {
     Text(
         text = character.name,
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground,
     )
     val level = character.level
-    val characterClass = character.characterClass
+    val characterClass = character.className
     if (level != null && characterClass != null) {
         Text(
             text = stringResource(R.string.home_level_class, level, characterClass.replaceFirstChar { it.uppercase() }),

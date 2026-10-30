@@ -276,6 +276,7 @@ components:
         title: { type: string }
         visibility: { type: string, enum: [public, unlisted, private, guild] }
         owner:
+          title: ReportOwner
           type: object
           properties:
             id: { type: integer, format: int64 }
@@ -286,6 +287,7 @@ components:
                 anonymize. Never an email address: this body is public for a public or
                 unlisted report.
         guild:
+          title: ReportGuild
           type: object
           properties:
             id: { type: integer, format: int64 }
@@ -302,21 +304,19 @@ components:
         players: { type: array, items: { type: string } }
         created_at: { type: string, format: date-time }
         last_upload_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
           description: >-
             The newest of the report's fight uploads and its creation. A fight sent again counts.
             The waiting screen of a live report reads it.
         heartbeat_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
           description: >-
             When the companion last called POST /v1/reports/{id}/heartbeat; null before the first.
         logging_character:
-          type: object
-          nullable: true
+          title: ReportLoggingCharacter
+          type: [object, "null"]
           description: >-
             The character whose client wrote the log; null when the report names none. name is
             the characters table's when the key resolves, else the key's last segment
@@ -514,10 +514,10 @@ components:
       properties:
         channel_id: { type: string }
         name:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The webhook's own name at Discord, trimmed and at most 80 characters; null when Discord gave none.
         events:
+          title: DiscordEvents
           type: object
           properties:
             sim_finished: { type: boolean }
@@ -526,18 +526,16 @@ components:
               type: boolean
               description: A private report posts only when this and upload_parsed are both on.
         disabled_reason:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum: [failed five times, plan lapsed]
-        last_error: { type: string, nullable: true }
+        last_error: { type: [string, "null"] }
         failures: { type: integer }
         source:
           type: string
           enum: [pasted, connected]
           description: How the webhook got here. A connected webhook has a null name.
         guild_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The Discord server of the channel; null when Discord did not say.
     WeightsSpec:
       type: object
@@ -568,18 +566,20 @@ components:
           description: The short sha of the engine build, from sim/enginever.
         spec: { type: string, example: warrior-fury }
         source:
+          title: SimRequestSource
           type: object
           properties:
             kind: { type: string, enum: [armory, addon, build, fight, manual] }
             ref: { type: string }
             captured_at: { type: string, format: date-time }
         character:
+          title: SimRequestCharacter
           type: object
           required: [race, class, level]
           properties:
             name: { type: string }
             race: { type: string, example: orc }
-            class: { type: string, example: warrior }
+            class: { type: string, example: warrior, x-name: className }
             level: { type: integer, maximum: 60 }
             talents:
               type: string
@@ -591,6 +591,7 @@ components:
             consumes: { type: array, items: { type: string } }
             professions: { type: array, items: { type: string } }
         encounter:
+          title: SimRequestEncounter
           type: object
           properties:
             duration_sec: { type: integer, default: 180, minimum: 60, maximum: 480 }
@@ -624,6 +625,7 @@ components:
       required: [engine_version, lane, dps, iterations_run]
       properties:
         sim_id: { type: string }
+        title: { type: string, description: "The run's saved title; omitted when it has none." }
         engine_version: { type: string }
         request: { $ref: '#/components/schemas/SimRequest' }
         lane: { type: string, enum: [browser, server] }
@@ -856,7 +858,7 @@ components:
             melee_crit or spell_crit: the engine carries one hit and one
             crit.
         state: { type: string, enum: [validated, in_progress, unsupported] }
-        median_gap: { type: number, nullable: true }
+        median_gap: { type: [number, "null"] }
         parses: { type: integer }
         worst_actions:
           type: array
@@ -875,9 +877,8 @@ components:
               actual_casts: { type: number }
         engine_version: { type: string }
         updated_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
           description: Null until the nightly job has measured this spec.
     CharacterIdentity:
       type: object
@@ -888,8 +889,7 @@ components:
       required: [guild, level, race, realm]
       properties:
         guild:
-          type: object
-          nullable: true
+          type: [object, "null"]
           description: >-
             The character's verified guild membership (a guild_characters row with verified_at
             set). Null when it has none, or its membership is not verified yet.
@@ -898,23 +898,20 @@ components:
             name: { type: string }
             rank: { type: string, enum: [member, officer, leader] }
         level:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: >-
             From the newest of the stored addon export (its level= section, dated by when it was
             captured in game) and the Battle.net import (dated by when it ran). When the newer
             source does not carry a level, the older one's stands; on a tie the Battle.net import
             wins, as does a stored level with no import date. Null when neither has one.
         race:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: >-
             The race's display name ("Night Elf"), chosen like level: the newest of the addon
             export (its race slug, named by the build data) and the Battle.net import. Null when
             neither has one.
         realm:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: >-
             The realm as the client names it, from the first source that has one: the Battle.net
             import's realm name, else the addon export's who= realm, else the realm half of the
@@ -953,20 +950,17 @@ components:
             trinket1, trinket2, main_hand, off_hand, ranged) when the character has an export;
             [] when it has none (never null).
         gear_spec:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: >-
             The spec the gear picks are for, the site's slug ("warrior-fury"): the spec of the
             newest rated fight, else the one the export's talents name, else (no points spent) the
             class's first spec. Null when the character has no export or the data knows no spec.
         gear_spec_source:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum: [fight, talents, default]
           description: Where gear_spec came from; null exactly when gear_spec is.
         gear_gap_total:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: >-
             The score points the band's picks would add over what the character wears, summed
             over the slots: the plain sum of every non-null gap, one decimal. It is not the Gear
@@ -983,19 +977,19 @@ components:
       properties:
         slot: { $ref: '#/components/schemas/GearSlotName' }
         worn:
-          type: object
-          nullable: true
+          title: CharacterGearSlotWorn
+          type: [object, "null"]
           description: >-
             The item the character wears in the slot, from its newest addon export. Null when
             the slot is empty in the export.
           required: [id, name, item_level]
           properties:
             id: { type: integer }
-            name: { type: string, nullable: true, description: "Null when the export's data build does not have the item." }
-            item_level: { type: integer, nullable: true, description: "Null when the export's data build does not have the item." }
+            name: { type: [string, "null"], description: "Null when the export's data build does not have the item." }
+            item_level: { type: [integer, "null"], description: "Null when the export's data build does not have the item." }
         pick:
-          type: object
-          nullable: true
+          title: CharacterGearSlotPick
+          type: [object, "null"]
           description: >-
             The band's best-in-slot pick for the spec and the character's faction (from the
             export's race, else the faction the Battle.net import stored), as the Forever Sixty
@@ -1018,8 +1012,7 @@ components:
                 Where the item comes from, as a player knows it: "Wailing Caverns: Mutanus the
                 Devourer", "Blacksmithing", "The League of Arathor".
             chance:
-              type: number
-              nullable: true
+              type: [number, "null"]
               description: >-
                 The drop chance as a fraction (0.333333 is one in three), at the pick's own
                 source; a pick promoted past an item the client has not confirmed carries the
@@ -1027,8 +1020,7 @@ components:
                 quest, vendor, crafted, reputation and PvP source, and a drop whose loot table
                 gives none).
         gap:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: >-
             The Gear component points the pick would add over the worn item, one decimal: 500 x
             (the pick's gear score - the worn item's gear score) / the band's best set's gear
@@ -1043,8 +1035,7 @@ components:
             no pick, when an item is not in the data build, or when the band's best set cannot
             be scored.
     ExecutionScore:
-      type: number
-      nullable: true
+      type: [number, "null"]
       description: >-
         execution_score on ranking rows, on a character's best and history rows, and on the
         guild page's roster_best rows (GET /v1/guilds/{region}/{ruleset}/{name}): the
@@ -1070,8 +1061,7 @@ components:
         present: { type: integer, description: "How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once." }
         nights: { type: integer, description: "How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster." }
     GuildRosterAddon:
-      type: object
-      nullable: true
+      type: [object, "null"]
       description: >-
         A guild roster row's line from the guild's newest addon roster snapshot (roster[].addon
         and pending[].addon on GET /v1/guilds/{id}/home; the snapshot is the outbox's
@@ -1084,15 +1074,14 @@ components:
         a roster-consent member); seen_at and snapshot_at stay.
       required: [level, spec, gear_gap, build, seen_at, snapshot_at]
       properties:
-        level: { type: integer, nullable: true, description: "The level the member's addon announced; null without gear consent" }
-        spec: { type: string, nullable: true, description: "A spec slug, e.g. warrior-arms; null without gear consent" }
-        gear_gap: { type: integer, nullable: true, description: "The gear gap the member's addon announced (contract 2's hello); may be negative; null without gear consent" }
-        build: { type: string, nullable: true, description: "The build name the member's addon announced; null when it announced none or without gear consent" }
+        level: { type: [integer, "null"], description: "The level the member's addon announced; null without gear consent" }
+        spec: { type: [string, "null"], description: "A spec slug, e.g. warrior-arms; null without gear consent" }
+        gear_gap: { type: [integer, "null"], description: "The gear gap the member's addon announced (contract 2's hello); may be negative; null without gear consent" }
+        build: { type: [string, "null"], description: "The build name the member's addon announced; null when it announced none or without gear consent" }
         seen_at: { type: string, description: "The sender's local time, YYYY-MM-DD HH:MM, as stored" }
         snapshot_at: { type: string, format: date-time, description: "When the site received the snapshot (addon_snapshot.received_at), RFC 3339 UTC" }
     GuildAddonSnapshot:
-      type: object
-      nullable: true
+      type: [object, "null"]
       description: >-
         addon_snapshot on GET /v1/guilds/{id}/home: the guild's newest addon roster snapshot,
         null when it has none. The newest snapshot wins even when it lists nobody (members is
@@ -1113,20 +1102,17 @@ components:
         for nothing: no component, as_of or experience figure reads it, so a forged report
         cannot raise a score.
       properties:
-        score: { type: integer, nullable: true }
+        score: { type: [integer, "null"] }
         tier:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum: [common, uncommon, rare, epic, legendary, null]
           description: "common < 500, uncommon < 1000, rare < 1500, epic < 2000, legendary from 2000 (provisional)."
         as_of:
-          type: string
+          type: [string, "null"]
           format: date
-          nullable: true
           description: The newest rated fight's date (YYYY-MM-DD).
         components:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             gear: { type: integer, description: "The gear component in points, 0-500, comparable across specs: the character's gear score for its spec as a share of that spec's own best-in-slot set for your level (the highest best-in-slot band at or below the character's level, 20 to 60; below 20 there is none and the component is 0) in the same data build. This is contract 5's gear_score." }
             experience: { type: integer, description: "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters, capped at 700." }
@@ -1134,8 +1120,7 @@ components:
             attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }
             discipline: { type: integer, description: "Share of rated fights with a flask, a food and every enchantable slot (chest, feet, back, main hand) enchanted, times 100." }
         experience:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             dungeons: { type: integer, description: "Distinct dungeon instances cleared; 0 until dungeon logs are classified." }
             raid_kills: { type: integer, description: Distinct raid bosses killed by any linked character. }
@@ -1145,8 +1130,8 @@ components:
       required: [id, role, anonymize, premium]
       properties:
         id: { type: integer, format: int64 }
-        battletag: { type: string, nullable: true }
-        email: { type: string, nullable: true, description: Shown only to the account itself. }
+        battletag: { type: [string, "null"] }
+        email: { type: [string, "null"], description: Shown only to the account itself. }
         role: { type: string }
         anonymize: { type: boolean }
         premium:
@@ -1155,6 +1140,1431 @@ components:
             Whether this account may run sims on our servers. Set by hand until
             payments exist; the web reads it to decide whether to offer the
             server lane at all.
+    # ---------------------------------------------------------------------------------------
+    # Native apps v1 (docs/contracts/app-v1.md). The iOS and Android models are generated from
+    # these schemas (web/scripts/gen-mobile-api.mjs); api/internal/contract/openapi_test.go
+    # holds every fixture under docs/contracts/fixtures/app to them in strict mode.
+    #
+    # Conventions the generator reads:
+    #   - Every object is a component or carries a `title`, which names its generated type.
+    #   - A field is optional in the apps when it is not `required` or its type allows "null".
+    #   - `x-name` renames a field whose JSON key is a reserved word in Swift or Kotlin.
+    #   - An object with no `properties` and `additionalProperties: true` is open JSON: the
+    #     apps get a JSONValue (Swift) or JsonElement (Kotlin) until a lane types it here.
+    #   - Strings with an `enum` stay strings in the apps: a client ignores a word it does not
+    #     know, so a new value never breaks a decode.
+    #   - Operations tagged `app` become Endpoint members, `app-static` StaticResource members,
+    #     `app-browser` nothing (the app opens them in the system browser).
+    #   - `x-fixtures` on a response lists the fixtures the contract test holds to it; fixture
+    #     mode answers the first, or `x-fixture-route` (a `{param}` there fills from the path).
+    #   - `x-authenticated: false` sends no device token (sign-in exchange, config).
+    # ---------------------------------------------------------------------------------------
+    ErrorBody:
+      type: object
+      description: The envelope's error half (Go httpx.ErrorBody).
+      required: [code, message]
+      properties:
+        code: { type: string, description: "A machine word: unauthorized, session_expired, forbidden, not_found, invalid, ..." }
+        message: { type: string, description: "A sentence a person can read; show it as is." }
+        fields:
+          type: object
+          additionalProperties: { type: string }
+          description: Each invalid field and a short sentence; only on validation errors.
+    ErrorEnvelope:
+      type: object
+      description: Every failure. data is null and error carries the code.
+      required: [ok, data, error, request_id]
+      properties:
+        ok: { type: boolean, enum: [false] }
+        data: { type: "null" }
+        error: { $ref: '#/components/schemas/ErrorBody' }
+        request_id: { type: string }
+    OpenObject:
+      type: [object, "null"]
+      additionalProperties: true
+      description: JSON the v1 apps carry but do not read; the named Go type is its shape.
+
+    # Account ------------------------------------------------------------------------------
+    AppUser:
+      type: object
+      description: The signed-in account (Go auth.User).
+      required: [id, battletag, email, role, anonymize]
+      properties:
+        id: { type: integer, format: int64 }
+        battletag: { type: [string, "null"], description: Null for an account signed in by email. }
+        email: { type: [string, "null"], description: Shown only to the account itself. }
+        role: { type: string }
+        anonymize: { type: boolean }
+    Me:
+      type: object
+      description: >-
+        GET /v1/me's data (Go auth.Me): who you are, your characters, your guilds and what you
+        may use. The apps gate a feature on entitlements only.
+      required: [user, characters, guilds, entitlements, finished_sims, discord_link_available, discord_link, discord_link_suggested]
+      properties:
+        user: { $ref: '#/components/schemas/AppUser' }
+        characters: { type: array, items: { $ref: '#/components/schemas/AccountCharacter' } }
+        guilds: { type: array, items: { $ref: '#/components/schemas/AccountGuild' } }
+        entitlements: { $ref: '#/components/schemas/Entitlements' }
+        finished_sims:
+          type: array
+          description: Unseen finished server runs, newest first, at most three; [] without server_sims.
+          items: { $ref: '#/components/schemas/FinishedSim' }
+        discord_link_available: { type: boolean }
+        discord_link: { oneOf: [{ $ref: '#/components/schemas/DiscordLink' }, { type: "null" }] }
+        discord_link_suggested: { type: [string, "null"] }
+        main_character_key: { type: string, description: Omitted until the account picks a main. }
+        bnet_imported_at: { type: string, format: date-time, description: Omitted when the Battle.net import never ran. }
+        server_sims:
+          type: object
+          title: ServerSimsUsage
+          description: Omitted when the server has no sims store configured.
+          required: [runs_this_month]
+          properties:
+            runs_this_month: { type: integer }
+        notifications:
+          type: object
+          title: MeNotifications
+          description: Omitted when the deployment has notifications off.
+          required: [connect]
+          properties:
+            connect: { type: boolean, description: True when the one-click Discord connect is configured. }
+            discord: { oneOf: [{ $ref: '#/components/schemas/DiscordBlock' }, { type: "null" }] }
+        seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeat; omitted when none." }
+        seat_offer: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeatOffer; omitted when none." }
+        ended_seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeEndedSeat; omitted when none." }
+    AccountCharacter:
+      type: object
+      description: >-
+        One character linked to the account (Go auth.Character). key is opaque: build character
+        routes from region, ruleset and name. Every field but the first five is omitted when unknown.
+      required: [key, region, ruleset, name, source]
+      properties:
+        key: { type: string }
+        region: { type: string, enum: [us, eu, kr, tw, cn] }
+        ruleset: { type: string, enum: [normal, pvp, rp, hardcore] }
+        name: { type: string }
+        source: { type: string, description: "Which path last wrote this character: export (addon or companion) or bnet." }
+        class: { type: string, x-name: className, description: The class slug, lowercase. }
+        realm: { type: string }
+        level: { type: integer }
+        faction: { type: string, enum: [alliance, horde] }
+        race: { type: string }
+        gender: { type: string }
+        item_level: { type: integer }
+        avatar_url: { type: string, format: uri }
+        render_url: { type: string, format: uri, description: Blizzard's render CDN. }
+        spec: { type: string, description: The primary talent tree's name. }
+        build: { $ref: '#/components/schemas/CharacterBuild' }
+        guild: { $ref: '#/components/schemas/CharacterGuild' }
+    CharacterBuild:
+      type: object
+      description: The character's latest simmable build and its sync facts (Go auth.CharacterBuild).
+      required: [source, captured_at, median_sync_gap_sec, sync_error]
+      properties:
+        source: { type: string, enum: [addon, bnet, blizzard] }
+        captured_at: { type: string, format: date-time }
+        median_sync_gap_sec: { type: [integer, "null"], description: Null with fewer than three syncs on record. }
+        sync_error: { type: [string, "null"], description: "The last failed Battle.net refresh's code (bnet_refresh_failed), else null." }
+        gear: { type: object, additionalProperties: { type: integer }, description: Slot name to item id; omitted when not decoded. }
+        talents: { $ref: '#/components/schemas/BuildTalents' }
+        level: { type: integer }
+        data_build: { type: string, description: The client build the export was made on. }
+    BuildTalents:
+      type: object
+      description: Per-tree rank strings and point totals, in tree order.
+      required: [trees, points]
+      properties:
+        trees: { type: array, items: { type: string } }
+        points: { type: array, items: { type: integer } }
+    CharacterGuild:
+      type: object
+      description: The character's guild membership (Go auth.CharacterGuild).
+      required: [id, name, rank, verified]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        rank: { type: string }
+        verified: { type: boolean }
+        rank_index: { type: integer }
+        attendance: { $ref: '#/components/schemas/Attendance' }
+    Attendance:
+      type: object
+      description: Raid nights attended over raid nights counted.
+      required: [present, nights]
+      properties:
+        present: { type: integer }
+        nights: { type: integer }
+    AccountGuild:
+      type: object
+      description: >-
+        A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a
+        control exactly when its word is present, never from the rank.
+      required: [id, region, ruleset, name, verified, verified_count, can, crest_url, faction, roster_count, claim, verify, covered, subscribe]
+      properties:
+        id: { type: integer, format: int64 }
+        region: { type: string }
+        ruleset: { type: string }
+        name: { type: string }
+        verified: { type: boolean }
+        verified_count: { type: integer }
+        can: { type: array, items: { type: string, enum: [approve, remove, settings, award, billing, release] } }
+        crest_url: { type: [string, "null"], format: uri }
+        faction: { type: [string, "null"] }
+        roster_count: { type: [integer, "null"] }
+        claim: { $ref: '#/components/schemas/OpenObject', description: Go auth.GuildClaimView. }
+        verify: { $ref: '#/components/schemas/OpenObject', description: Go auth.GuildVerifyView. }
+        covered: { $ref: '#/components/schemas/OpenObject', description: Go auth.GuildCoveredView. }
+        subscribe: { $ref: '#/components/schemas/OpenObject', description: Go auth.GuildSubscribeView. }
+        rank: { type: string }
+        consent: { type: string }
+        plan: { $ref: '#/components/schemas/GuildPlan' }
+        ruleset_label: { type: string }
+        slug: { type: string }
+    GuildPlan:
+      type: object
+      description: A guild's billing state, shown only to its verified officers (Go auth.GuildBillingView).
+      required: [scope, tier, you_hold_seat, status, current_period_end, cancel_at_period_end, billed_by, you_are_billing_contact]
+      properties:
+        scope: { type: string, enum: [officer_tools, plan] }
+        tier: { type: string }
+        you_hold_seat: { type: boolean }
+        status: { type: string }
+        current_period_end: { type: [string, "null"] }
+        cancel_at_period_end: { type: boolean }
+        billed_by: { type: string }
+        you_are_billing_contact: { type: boolean }
+    Entitlements:
+      type: object
+      description: Every Premium feature pre-resolved for the caller (Go auth.EntitlementsView). A feature is available exactly when its flag is true.
+      required: [server_sims, retention, multi_compare, history, notifications, officer_views, roster_check, log_coach, supporter_mark, personal_portal, billing]
+      properties:
+        server_sims: { type: boolean }
+        retention: { type: boolean }
+        multi_compare: { type: boolean }
+        history: { type: boolean }
+        notifications: { type: boolean }
+        officer_views: { type: boolean }
+        roster_check: { type: boolean }
+        log_coach: { type: boolean }
+        supporter_mark: { type: boolean }
+        personal_portal: { type: boolean }
+        billing: { oneOf: [{ $ref: '#/components/schemas/Billing' }, { type: "null" }] }
+    Billing:
+      type: object
+      description: The caller's personal plan (Go auth.BillingView). The apps never show a purchase flow.
+      required: [plan, source, status, current_period_end, cancel_at_period_end]
+      properties:
+        plan: { type: string }
+        source: { type: string, enum: [stripe, grant] }
+        status: { type: string }
+        current_period_end: { type: [string, "null"] }
+        cancel_at_period_end: { type: boolean }
+        amount_cents: { type: integer, format: int64 }
+        interval: { type: string }
+        founder: { type: boolean }
+    FinishedSim:
+      type: object
+      required: [sim_id, spec, title, dps, finished_at]
+      properties:
+        sim_id: { type: string }
+        spec: { type: string }
+        title: { type: string }
+        dps: { type: number }
+        finished_at: { type: string, format: date-time }
+    DiscordLink:
+      type: object
+      required: [display_name]
+      properties:
+        display_name: { type: string }
+    MePatch:
+      type: object
+      description: PATCH /v1/me. At least one field.
+      properties:
+        anonymize: { type: boolean }
+        main_character_key: { type: string, description: One of your own character keys. }
+
+    # Characters ---------------------------------------------------------------------------
+    CharacterProfile:
+      type: object
+      description: >-
+        GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score
+        field is null for a character with no rated fight: render "no logs yet", never 0.
+      required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, experience]
+      properties:
+        character:
+          type: object
+          title: CharacterProfileHeader
+          required: [key, region, ruleset, name, guild, level, race, realm]
+          properties:
+            key: { type: string }
+            region: { type: string }
+            ruleset: { type: string }
+            name: { type: string }
+            guild:
+              type: [object, "null"]
+              title: CharacterProfileGuild
+              description: The verified guild membership; null when none.
+              required: [name, rank]
+              properties:
+                name: { type: string }
+                rank: { type: string, enum: [member, officer, leader] }
+            level: { type: [integer, "null"] }
+            race: { type: [string, "null"] }
+            realm: { type: [string, "null"] }
+            class: { type: string, x-name: className }
+            avatar_url: { type: string, format: uri }
+            render_url: { type: string, format: uri }
+        best: { type: array, items: { $ref: '#/components/schemas/CharacterFight' } }
+        history: { type: array, items: { $ref: '#/components/schemas/CharacterFight' } }
+        builds_seen:
+          type: array
+          items:
+            type: object
+            title: BuildSeen
+            required: [talent_split, spec, first_seen]
+            properties:
+              talent_split: { type: string }
+              spec: { type: string }
+              first_seen: { type: string, format: date-time }
+        score_history: { type: array, items: { $ref: '#/components/schemas/ScorePoint' } }
+        gear: { type: array, items: { $ref: '#/components/schemas/CharacterGearSlot' } }
+        gear_gap_total: { type: [number, "null"] }
+        gear_spec: { type: [string, "null"] }
+        gear_spec_source: { type: [string, "null"], enum: [fight, talents, default, null] }
+        supporter: { type: boolean }
+        score: { type: [integer, "null"] }
+        tier: { type: [string, "null"], enum: [common, uncommon, rare, epic, legendary, null] }
+        as_of: { type: [string, "null"], format: date }
+        components:
+          type: [object, "null"]
+          title: ScoreComponents
+          required: [gear, experience, parses, attendance, discipline]
+          properties:
+            gear: { type: integer }
+            experience: { type: integer }
+            parses: { type: integer }
+            attendance: { type: integer }
+            discipline: { type: integer }
+        experience:
+          type: [object, "null"]
+          title: ScoreExperience
+          required: [dungeons, raid_kills, alts]
+          properties:
+            dungeons: { type: integer }
+            raid_kills: { type: integer }
+            alts: { type: integer }
+    CharacterFight:
+      type: object
+      description: One rated fight on the character card (best[] and history[]); history[] adds kill, duration_ms, talent_split and execution_score.
+      required: [encounter, encounter_id, difficulty, metric, value, fought_at, report_id, fight_index]
+      properties:
+        encounter: { type: string }
+        encounter_id: { type: integer }
+        difficulty: { type: integer }
+        metric: { type: string }
+        value: { type: number }
+        percentile: { type: number, description: Omitted when unknown. }
+        spec: { type: string, description: Omitted when unknown. }
+        fought_at: { type: string, format: date-time }
+        report_id: { type: string }
+        fight_index: { type: integer }
+        kill: { type: boolean }
+        talent_split: { type: string }
+        duration_ms: { type: integer, format: int64 }
+        execution_score: { $ref: '#/components/schemas/ExecutionScore' }
+    CharacterSearch:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            title: CharacterSearchRow
+            required: [key, region, ruleset, name, class, level, spec]
+            properties:
+              key: { type: string }
+              region: { type: string }
+              ruleset: { type: string }
+              name: { type: string }
+              class: { type: [string, "null"], x-name: className }
+              level: { type: [integer, "null"] }
+              spec: { type: [string, "null"], description: Always null today. }
+    SimInput:
+      type: object
+      description: >-
+        The character model a sim starts from. gear is the FS1 export string for an export
+        (source addon or blizzard) and { trinkets } for a fight: branch on source, not on the shape.
+      required: [spec, spec_source, gear, talents, buffs, captured_at, source]
+      properties:
+        spec: { type: string }
+        spec_source: { type: string, enum: [fight, talents, default, ""] }
+        gear:
+          oneOf:
+            - { type: string }
+            - type: object
+              title: SimInputFightGear
+              required: [trinkets]
+              properties:
+                trinkets: { type: array, items: { type: integer } }
+        talents: { type: string }
+        buffs: { type: array, items: { type: string } }
+        captured_at: { type: string, format: date-time }
+        source: { type: string, enum: [addon, blizzard, fight] }
+    CharacterHome:
+      type: object
+      description: >-
+        GET /v1/characters/{region}/{ruleset}/{name}/home (lane A3): the home answer, computed in
+        Go by api/internal/upgrades. Show the rows in the server's order; never re-rank them.
+        Any state but ok has upgrades and already_best empty and total_gain null.
+      required: [character, state, spec, band, band_label, preset, unit, unit_word, data_build, upgrade_count, total_gain, not_sim_checked_count, not_modelled_count, synced_at, synced_from, upgrades, already_best, talents]
+      properties:
+        character: { type: string, description: The character key. }
+        state: { type: string, enum: [ok, no_gear, under_20, no_spec, no_list] }
+        spec: { type: [string, "null"] }
+        band: { type: [integer, "null"] }
+        band_label: { type: [string, "null"] }
+        preset: { type: [string, "null"], enum: [raid, bare, null] }
+        unit: { type: [string, "null"], enum: [dps, hps, tank_score, null] }
+        unit_word: { type: [string, "null"] }
+        data_build: { type: string }
+        upgrade_count: { type: integer }
+        total_gain: { type: [number, "null"] }
+        not_sim_checked_count: { type: integer }
+        not_modelled_count: { type: integer }
+        synced_at: { type: [string, "null"], format: date-time }
+        synced_from: { type: [string, "null"], enum: [addon, blizzard, null] }
+        upgrades:
+          type: array
+          items:
+            type: object
+            title: HomeUpgrade
+            required: [slot, slot_label, pick, worn, gain, gain_words, modelled]
+            properties:
+              slot: { type: string }
+              slot_label: { type: string }
+              pick:
+                type: object
+                title: HomePick
+                required: [id, name, quality, icon, item_level, source_line]
+                properties:
+                  id: { type: integer }
+                  name: { type: [string, "null"] }
+                  quality: { type: [integer, "null"] }
+                  icon: { type: [string, "null"] }
+                  item_level: { type: [integer, "null"] }
+                  source_line: { type: string }
+              worn:
+                type: [object, "null"]
+                title: HomeWorn
+                required: [id, name, quality, icon, item_level, known, label]
+                properties:
+                  id: { type: integer }
+                  name: { type: [string, "null"] }
+                  quality: { type: [integer, "null"] }
+                  icon: { type: [string, "null"] }
+                  item_level: { type: [integer, "null"] }
+                  known: { type: boolean }
+                  label: { type: string }
+              gain: { type: [number, "null"] }
+              gain_words: { type: string }
+              modelled: { type: boolean }
+        already_best:
+          type: array
+          items:
+            type: object
+            title: HomeAlreadyBest
+            required: [slot, slot_label, item]
+            properties:
+              slot: { type: string }
+              slot_label: { type: string }
+              item: { $ref: '#/components/schemas/HomeItem' }
+        talents:
+          type: object
+          title: HomeTalents
+          required: [state, points_differ, band_points]
+          properties:
+            state: { type: string, enum: [optimized, differs, no_export, no_build] }
+            points_differ: { type: [integer, "null"] }
+            band_points: { type: [integer, "null"] }
+    HomeItem:
+      type: object
+      description: An item read from the build's table; every field but id is null when the table lacks it.
+      required: [id, name, quality, icon, item_level]
+      properties:
+        id: { type: integer }
+        name: { type: [string, "null"] }
+        quality: { type: [integer, "null"] }
+        icon: { type: [string, "null"] }
+        item_level: { type: [integer, "null"] }
+
+    # Sims ---------------------------------------------------------------------------------
+    SimList:
+      type: object
+      required: [rows, total, page, per_page]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/SimRow' } }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer }
+    SimProgress:
+      type: object
+      description: Poll every 2 seconds; stop at done or error.
+      required: [state, iterations_done, stage, combos_done, combos_total]
+      properties:
+        state: { type: string, enum: [queued, running, done, error] }
+        iterations_done: { type: integer }
+        dps: { type: number, description: Omitted until running or done. }
+        stage: { type: integer }
+        combos_done: { type: integer }
+        combos_total: { type: integer }
+    SimStarted:
+      type: object
+      required: [sim_id]
+      properties:
+        sim_id: { type: string, description: The new run. }
+
+    # Guilds -------------------------------------------------------------------------------
+    GuildHome:
+      type: object
+      description: GET /v1/guilds/{id}/home. Verified members only.
+      required: [guild, viewer, claim, summary, reports, roster, pending, members, counts, addon_snapshot, attendance_source]
+      properties:
+        guild:
+          type: object
+          title: GuildHomeGuild
+          required: [id, region, ruleset, name, faction, crest_url]
+          properties:
+            id: { type: integer, format: int64 }
+            region: { type: string }
+            ruleset: { type: string }
+            name: { type: string }
+            faction: { type: [string, "null"] }
+            crest_url: { type: [string, "null"], format: uri }
+        viewer:
+          type: object
+          title: GuildHomeViewer
+          required: [role, verified, officer_tools, raid_guild_tools, verify]
+          properties:
+            role: { type: string }
+            verified: { type: boolean }
+            officer_tools: { type: boolean }
+            raid_guild_tools: { type: boolean }
+            verify:
+              type: object
+              title: GuildHomeVerify
+              required: [has_approver]
+              properties:
+                has_approver: { type: boolean }
+            character_key: { type: string }
+        claim:
+          type: object
+          title: GuildClaimState
+          required: [state, frozen]
+          properties:
+            state: { type: string }
+            frozen: { type: boolean }
+            since: { type: string, format: date-time }
+            claimed_by_name: { type: string }
+        summary:
+          type: object
+          title: GuildSummary
+          required: [raiders, waiting_for_approval, below_rating_floor, named_encounters_down, pulls_this_tier, updated_at]
+          properties:
+            raiders: { type: integer }
+            waiting_for_approval: { type: integer }
+            below_rating_floor: { type: integer }
+            named_encounters_down: { type: integer }
+            pulls_this_tier: { type: integer }
+            updated_at: { type: string, format: date-time }
+        standing:
+          type: object
+          title: GuildStanding
+          description: Omitted when it cannot be derived.
+          required: [spec, class, same_spec_count, rank_by_item_level, item_level, needs_before_next_raid]
+          properties:
+            spec: { type: string }
+            class: { type: string, x-name: className }
+            same_spec_count: { type: integer }
+            rank_by_item_level: { type: integer }
+            item_level: { type: integer }
+            needs_before_next_raid: { type: array, items: { type: string } }
+        reports:
+          type: array
+          description: The last 7 days.
+          items:
+            type: object
+            title: GuildReportRow
+            required: [id, title, zone, created_at, fight_count, kill_count, duration_ms]
+            properties:
+              id: { type: string }
+              title: { type: string }
+              zone: { type: string }
+              created_at: { type: string, format: date-time }
+              fight_count: { type: integer }
+              kill_count: { type: integer }
+              duration_ms: { type: integer, format: int64 }
+        next_cursor: { type: string }
+        roster: { type: array, items: { $ref: '#/components/schemas/GuildRosterRow' } }
+        pending: { type: array, description: "[] for a non-officer.", items: { $ref: '#/components/schemas/GuildRosterRow' } }
+        members:
+          type: array
+          items:
+            type: object
+            title: GuildMember
+            required: [name, character_key, state, rank]
+            properties:
+              name: { type: string }
+              character_key: { type: string }
+              state: { type: string, enum: [approved, waiting, no_account, not_seen] }
+              rank: { type: string }
+              class: { type: string, x-name: className }
+              level: { type: integer }
+              spec: { type: string }
+              seen_at: { type: string }
+        counts:
+          type: object
+          title: GuildMemberCounts
+          required: [on_roster, in_game_no_account, waiting, not_seen]
+          properties:
+            on_roster: { type: integer }
+            in_game_no_account: { type: integer }
+            waiting: { type: integer }
+            not_seen: { type: integer }
+        addon_snapshot: { $ref: '#/components/schemas/GuildAddonSnapshot' }
+        next_raid: { $ref: '#/components/schemas/RaidLine' }
+        attendance_source: { type: string, enum: [raids, reports] }
+    GuildRosterRow:
+      type: object
+      description: One roster row. Draw Remove and Approve exactly when may_remove and may_approve.
+      required: [character_key, region, ruleset, name, rank, verified, consent, logged_at, logged_recently, attendance, account_key, supporter, last_report_at, may_remove, may_approve, addon]
+      properties:
+        character_key: { type: string }
+        region: { type: string }
+        ruleset: { type: string }
+        name: { type: string }
+        rank: { type: string }
+        verified: { type: boolean }
+        consent: { type: string }
+        logged_at: { type: string, format: date-time }
+        logged_recently: { type: boolean }
+        attendance: { $ref: '#/components/schemas/GuildAttendance' }
+        account_key: { type: string }
+        supporter: { type: boolean }
+        last_report_at: { type: [string, "null"], format: date-time }
+        may_remove: { type: boolean }
+        may_approve: { type: boolean }
+        addon: { $ref: '#/components/schemas/GuildRosterAddon' }
+        class: { type: string, x-name: className }
+        spec: { type: string }
+        role: { type: string }
+        item_level: { type: integer, description: Withheld without gear consent. }
+        attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
+        best_parse:
+          type: object
+          title: RosterBestParse
+          required: [metric, value, percentile, encounter, report_id, fight_index]
+          properties:
+            metric: { type: string }
+            value: { type: number }
+            percentile: { type: number }
+            encounter: { type: string }
+            report_id: { type: string }
+            fight_index: { type: integer }
+        rating:
+          type: object
+          title: RosterRating
+          required: [overall, output, survival, mechanics, utility, preparation, activity]
+          properties:
+            overall: { type: number }
+            output: { type: number }
+            survival: { type: number }
+            mechanics: { type: number }
+            utility: { type: number }
+            preparation: { type: number }
+            activity: { type: number }
+        professions: { type: array, items: { type: string } }
+    RaidCounts:
+      type: object
+      description: Sign-up counts; the role counts count in only.
+      required: [in, late, tanks, healers, dps]
+      properties:
+        in: { type: integer, x-name: signedIn }
+        late: { type: integer }
+        bench: { type: integer }
+        out: { type: integer, x-name: signedOut }
+        tanks: { type: integer }
+        healers: { type: integer }
+        dps: { type: integer }
+    RaidLine:
+      type: object
+      description: A guild's next raid, the band's raid line; omitted when none.
+      required: [id, zone, zone_name, title, starts_at, status, size, guild_timezone, counts, own]
+      properties:
+        id: { type: integer, format: int64 }
+        zone: { type: string }
+        zone_name: { type: string }
+        title: { type: string }
+        starts_at: { type: string, format: date-time }
+        status: { type: string, enum: [planned, locked, done, cancelled] }
+        size: { type: integer }
+        guild_timezone: { type: string }
+        counts: { $ref: '#/components/schemas/RaidCounts' }
+        own:
+          oneOf:
+            - type: object
+              title: RaidOwnSignup
+              required: [character_key, state, role, note]
+              properties:
+                character_key: { type: string }
+                state: { type: string, enum: [in, late, bench, out] }
+                role: { type: string, enum: [tank, healer, dps] }
+                note: { type: string }
+            - { type: "null" }
+    GuildRaids:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/raids. rows are logged raid nights. A verified member also gets
+        planned, zones, guild_timezone and discord; anyone else gets none of those four keys.
+      required: [rows]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/RaidNightRow' } }
+        next_cursor: { type: string, description: Omitted at the end. }
+        planned: { type: array, items: { $ref: '#/components/schemas/RaidView' } }
+        zones:
+          type: array
+          items:
+            type: object
+            title: RaidZone
+            required: [key, name, size]
+            properties:
+              key: { type: string, description: 'The zone key PATCH takes, e.g. "raid:onyxias-lair".' }
+              name: { type: string }
+              size: { type: [integer, "null"] }
+        guild_timezone: { type: string }
+        discord: { $ref: '#/components/schemas/RaidDiscord' }
+    RaidNightRow:
+      type: object
+      description: A logged raid night. id is a report id; raid_id is the planned raid, or null.
+      required: [id, title, zone, created_at, duration_ms, fight_count, kill_count, wipe_count, raiders, deaths, fights, present, raid_id]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        zone: { type: string }
+        created_at: { type: string, format: date-time }
+        duration_ms: { type: integer, format: int64 }
+        fight_count: { type: integer }
+        kill_count: { type: integer }
+        wipe_count: { type: integer }
+        raiders: { type: integer }
+        deaths: { type: integer }
+        fights:
+          type: array
+          items:
+            type: object
+            title: RaidNightFight
+            required: [index, name, encounter_id, kill, duration_ms, deaths, players]
+            properties:
+              index: { type: integer }
+              name: { type: string }
+              encounter_id: { type: integer }
+              kill: { type: boolean }
+              duration_ms: { type: integer, format: int64 }
+              deaths: { type: integer }
+              players: { type: integer }
+        present: { type: array, items: { $ref: '#/components/schemas/RaidCharacter' } }
+        raid_id: { type: [integer, "null"], format: int64 }
+        top_parse:
+          type: object
+          title: RaidTopParse
+          required: [name, class, metric, value]
+          properties:
+            name: { type: string }
+            class: { type: string, x-name: className }
+            metric: { type: string }
+            value: { type: number }
+    RaidCharacter:
+      type: object
+      required: [character_key, name, class]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+    RaidDiscord:
+      type: object
+      required: [available, connected, post_default, remind_default, channel_name]
+      properties:
+        available: { type: boolean }
+        connected: { type: boolean }
+        post_default: { type: boolean }
+        remind_default: { type: boolean }
+        channel_name: { type: [string, "null"] }
+    RaidView:
+      type: object
+      description: >-
+        One raid (Go guilds.RaidView). A locked raid takes no sign-up from a member; an officer
+        may still write. match, night, attendance and report fill after the night (null before a
+        log is matched).
+      required: [id, zone, zone_name, title, starts_at, duration_minutes, status, size, guild_timezone, notes, notes_html, counts, signups, not_signed, viewer, discord, discord_post, pre_done_status, match, night, attendance, report]
+      properties:
+        id: { type: integer, format: int64 }
+        zone: { type: string }
+        zone_name: { type: string }
+        title: { type: string }
+        starts_at: { type: string, format: date-time }
+        duration_minutes: { type: integer }
+        status: { type: string, enum: [planned, locked, done, cancelled] }
+        size: { type: [integer, "null"] }
+        guild_timezone: { type: string }
+        notes: { type: string }
+        notes_html: { type: string, description: Sanitised HTML of notes; render it. }
+        counts: { $ref: '#/components/schemas/RaidCounts' }
+        signups:
+          type: array
+          items:
+            type: object
+            title: RaidSignup
+            required: [character_key, name, class, spec, role, state, note, own]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              spec: { type: string }
+              role: { type: string, enum: [tank, healer, dps] }
+              state: { type: string, enum: [in, late, bench, out] }
+              note: { type: string }
+              own: { type: boolean }
+        not_signed:
+          type: array
+          items:
+            type: object
+            title: RaidNotSigned
+            required: [character_key, name, class, spec]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              spec: { type: string }
+        viewer:
+          type: object
+          title: RaidViewer
+          required: [characters]
+          properties:
+            characters:
+              type: array
+              items:
+                type: object
+                title: RaidViewerCharacter
+                description: One of your characters in the guild. When raid_spec is null, ask "Which spec tonight?".
+                required: [character_key, name, class, spec, verified, state, role, raid_spec]
+                properties:
+                  character_key: { type: string }
+                  name: { type: string }
+                  class: { type: string, x-name: className }
+                  spec: { type: string }
+                  verified: { type: boolean }
+                  state: { type: [string, "null"], enum: [in, late, bench, out, null] }
+                  role: { type: string }
+                  raid_spec: { type: [string, "null"] }
+        discord: { $ref: '#/components/schemas/RaidDiscord' }
+        discord_post:
+          type: [object, "null"]
+          title: RaidDiscordPost
+          required: [posted_at, post_at, reminded_at, remind]
+          properties:
+            posted_at: { type: [string, "null"], format: date-time }
+            post_at: { type: [string, "null"], format: date-time }
+            reminded_at: { type: [string, "null"], format: date-time }
+            remind: { type: boolean }
+        pre_done_status: { type: [string, "null"] }
+        match:
+          type: [object, "null"]
+          title: RaidMatch
+          required: [report_id, zone_name, uploaded_at, uploaded_by_name, pulls, kills, duration_ms, how]
+          properties:
+            report_id: { type: string }
+            zone_name: { type: string }
+            uploaded_at: { type: string, format: date-time }
+            uploaded_by_name: { type: string }
+            pulls: { type: integer }
+            kills: { type: integer }
+            duration_ms: { type: integer, format: int64 }
+            how: { type: string }
+        night:
+          type: [object, "null"]
+          title: RaidNight
+          required: [signed, came, late, not_in_log, joined, excused, kills, wipes, deaths, duration_ms]
+          properties:
+            signed: { type: integer }
+            came: { type: integer }
+            late: { type: integer }
+            not_in_log: { type: integer }
+            joined: { type: integer }
+            excused: { type: integer }
+            kills: { type: integer }
+            wipes: { type: integer }
+            deaths: { type: integer }
+            duration_ms: { type: integer, format: int64 }
+        attendance:
+          type: [array, "null"]
+          description: Every row for an officer, your own characters for a member.
+          items:
+            type: object
+            title: RaidAttendanceRow
+            required: [character_key, name, class, spec, signed, role, outcome, came_as, first_seen_offset_s, pulls_present, pulls_total, excused, own]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              spec: { type: string }
+              signed: { type: string }
+              role: { type: string }
+              outcome: { type: string, description: "present, late, no_show, ..." }
+              came_as: { type: [string, "null"] }
+              first_seen_offset_s: { type: integer }
+              pulls_present: { type: integer }
+              pulls_total: { type: integer }
+              excused: { type: boolean }
+              own: { type: boolean }
+        report: { $ref: '#/components/schemas/OpenObject', description: "Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web." }
+    SignupRequest:
+      type: object
+      required: [state]
+      properties:
+        state: { type: string, enum: [in, late, bench, out] }
+        role: { type: string, enum: ["", tank, healer, dps], description: Empty takes the spec's default. }
+        note: { type: string, maxLength: 140, description: The PUT writes note; leaving it out clears the stored note. }
+        spec: { type: string, description: 'A specs.json key such as "warrior-fury", saved as the raid spec first.' }
+    SignupAnswer:
+      type: object
+      required: [raid, moved]
+      properties:
+        raid: { $ref: '#/components/schemas/RaidView' }
+        moved: { type: [string, "null"], description: Your other character the server moved to Bench; tell the player. }
+    RaidPatch:
+      type: object
+      description: The officer's whole raid form.
+      required: [zone, title, starts_at, duration_minutes, notes, timezone]
+      properties:
+        zone: { type: string }
+        title: { type: string }
+        starts_at: { type: string, format: date-time }
+        duration_minutes: { type: integer, minimum: 60, maximum: 240, multipleOf: 30 }
+        notes: { type: string, maxLength: 2000 }
+        timezone: { type: string, description: An IANA name. }
+        post_to_discord: { type: boolean }
+        remind_day_before: { type: boolean }
+    RaidCancel:
+      type: object
+      properties:
+        post_to_discord: { type: boolean }
+    GuildLoot:
+      type: object
+      required: [encounters, selected, items]
+      properties:
+        encounters:
+          type: array
+          items:
+            type: object
+            title: LootEncounter
+            required: [encounter_id, name, zone, killed]
+            properties:
+              encounter_id: { type: integer }
+              name: { type: string }
+              zone: { type: string }
+              killed: { type: boolean }
+        selected: { type: integer, format: int64 }
+        items:
+          type: array
+          items:
+            type: object
+            title: LootItem
+            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates]
+            properties:
+              item_id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              quality: { type: integer, minimum: 0, maximum: 5 }
+              slot: { type: string }
+              copies: { type: integer }
+              awarded_to:
+                type: [object, "null"]
+                title: LootAward
+                required: [award_id, character_key, name, at, by_name]
+                properties:
+                  award_id: { type: integer, format: int64 }
+                  character_key: { type: string }
+                  name: { type: string }
+                  at: { type: string, format: date-time }
+                  by_name: { type: string }
+              candidates:
+                type: array
+                description: Ranked best first.
+                items:
+                  type: object
+                  title: LootCandidate
+                  required: [character_key, name, class, spec, gain_dps, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, items_won]
+                  properties:
+                    character_key: { type: string }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    spec: { type: string }
+                    gain_dps: { type: [number, "null"] }
+                    not_sim_checked: { type: boolean }
+                    ilvl_delta: { type: [integer, "null"] }
+                    attendance: { $ref: '#/components/schemas/GuildAttendance' }
+                    already_equivalent: { type: boolean }
+                    replaces: { type: string }
+                    items_won: { type: integer }
+
+    # Reports and builds -------------------------------------------------------------------
+    ReportList:
+      type: object
+      required: [rows, total, page, per_page]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            title: ReportRow
+            required: [id, title, zone, status, visibility, created_at, fight_count, kill_count, boss_count, logging_character, last_upload_at, heartbeat_at]
+            properties:
+              id: { type: string }
+              title: { type: string, description: 'May be ""; show the zone.' }
+              zone: { type: string }
+              status: { type: string, enum: [live, processing, complete, failed] }
+              visibility: { type: string, enum: [public, unlisted, guild, private] }
+              created_at: { type: string, format: date-time }
+              fight_count: { type: integer }
+              kill_count: { type: integer }
+              boss_count: { type: integer }
+              logging_character: { oneOf: [{ $ref: '#/components/schemas/LoggingCharacter' }, { type: "null" }] }
+              last_upload_at: { type: [string, "null"], format: date-time }
+              heartbeat_at: { type: [string, "null"], format: date-time }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer }
+    LoggingCharacter:
+      type: object
+      required: [key, name]
+      properties:
+        key: { type: string }
+        name: { type: string }
+    BuildList:
+      type: object
+      required: [rows, total, page, per_page]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/Build' } }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer }
+    BuildSaved:
+      type: object
+      required: [id, url]
+      properties:
+        id: { type: string }
+        url: { type: string, format: uri }
+
+    # App sign-in, devices, notifications and config ---------------------------------------
+    AppExchangeRequest:
+      type: object
+      required: [code, code_verifier]
+      properties:
+        code: { type: string, description: The one-time code from the /app/auth landing. }
+        code_verifier: { type: string, minLength: 43, maxLength: 128 }
+        device_name: { type: string, description: 'Optional, trimmed to 60; otherwise "iOS" or "Android".' }
+    AppSession:
+      type: object
+      description: The device token (shown only here), the device row and the GET /v1/me body.
+      required: [token, device, me]
+      properties:
+        token: { type: string }
+        device: { $ref: '#/components/schemas/Device' }
+        me: { $ref: '#/components/schemas/Me' }
+    Device:
+      type: object
+      description: One signed-in install. The sign-in exchange carries only id, name and platform.
+      required: [id, name, platform]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        platform: { type: string, description: "ios, android, or a companion's OS." }
+        kind: { type: string, enum: [companion, app] }
+        created_at: { type: string, format: date-time }
+        last_seen_at: { type: string, format: date-time }
+    SignedOut:
+      type: object
+      required: [signed_out]
+      properties:
+        signed_out: { type: boolean }
+    NotificationSettings:
+      type: object
+      description: >-
+        The player's choices per event and channel, every catalogue event in catalogue order.
+        Show copy from the app's own strings keyed by kind; hide an unknown kind.
+      required: [time_zone, quiet_hours, events]
+      properties:
+        time_zone: { type: string, description: An IANA name. }
+        quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        events:
+          type: array
+          items:
+            type: object
+            title: NotificationEvent
+            required: [kind, who, officer, quiet_exempt, time_sensitive, channels]
+            properties:
+              kind: { type: string, description: "The catalogue's name: raid.posted, raid.starting, sim.finished, ..." }
+              who: { type: string, description: "player, guild_members, signed_up, in_and_late, raiders, officers, payer, everyone" }
+              officer: { type: boolean, description: Show only to officers. }
+              quiet_exempt: { type: boolean }
+              time_sensitive: { type: boolean }
+              channels: { $ref: '#/components/schemas/NotificationChannels' }
+    QuietHours:
+      type: object
+      required: [enabled, start, end]
+      properties:
+        enabled: { type: boolean }
+        start: { type: string, description: "HH:MM in time_zone." }
+        end: { type: string, description: "HH:MM in time_zone." }
+    NotificationChannels:
+      type: object
+      required: [push, discord]
+      properties:
+        push: { type: boolean }
+        discord: { type: boolean }
+    NotificationsPatch:
+      type: object
+      description: Every key optional but at least one.
+      properties:
+        time_zone: { type: string }
+        quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        events:
+          type: array
+          items:
+            type: object
+            title: NotificationChoice
+            required: [kind, channel, enabled]
+            properties:
+              kind: { type: string }
+              channel: { type: string, enum: [push, discord] }
+              enabled: { type: boolean }
+    PushTokenRequest:
+      type: object
+      required: [platform, token]
+      properties:
+        platform: { type: string, enum: [ios, android] }
+        token: { type: string, description: "iOS: 64 to 200 hex characters. Android: the FCM registration token." }
+        app_version: { type: string, maxLength: 32 }
+    PushTokenRegistered:
+      type: object
+      required: [platform, app_version]
+      properties:
+        platform: { type: string }
+        app_version: { type: string }
+    AppConfig:
+      type: object
+      description: >-
+        GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the
+        storefront country is in web_checkout_regions. Below min_app_version, block with the
+        update screen.
+      required: [web_checkout_regions, min_app_version, active_build]
+      properties:
+        web_checkout_regions: { type: array, items: { type: string, pattern: '^[A-Z]{2}$' }, description: "ISO 3166-1 alpha-2, upper case; never null." }
+        min_app_version:
+          type: object
+          title: MinAppVersion
+          required: [ios, android]
+          properties:
+            ios: { type: string, description: Dotted, compared numerically. }
+            android: { type: string }
+        active_build: { type: string, description: The client build the static data serves. }
+
+    # Static files (https://foreversixty.gg/data) -------------------------------------------
+    ActiveBuild:
+      type: object
+      required: [build]
+      properties:
+        build: { type: string, example: "1.60.1.70658" }
+    KeyDate:
+      type: object
+      description: One key date. Sort and compare by iso and endIso, never by key.
+      required: [key, value, iso]
+      properties:
+        key: { type: string, description: 'A display date, "Nov 4".' }
+        value: { type: string, description: The label. }
+        iso: { type: string, format: date }
+        note: { type: string }
+        endIso: { type: string, format: date }
+        time: { type: string }
+        running: { type: string, description: The sentence while the date is in progress. }
+        role: { type: string }
+        highlight: { type: boolean }
+    ClassInfo:
+      type: object
+      required: [id, name, slug, color, forever_changes]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        color: { type: string, description: "#RRGGBB" }
+        forever_changes:
+          type: array
+          items:
+            type: object
+            title: ForeverChange
+            required: [text, sources]
+            properties:
+              text: { type: string }
+              sources:
+                type: array
+                items:
+                  type: object
+                  title: ChangeSource
+                  required: [label, url, kind]
+                  properties:
+                    label: { type: string }
+                    url: { type: string }
+                    kind: { type: string }
+    BisFile:
+      type: object
+      description: The BiS lists for one spec. Pick a band by (band, faction, preset).
+      required: [spec, build, engine_version, generated_at, bands, presets]
+      properties:
+        spec: { type: string }
+        build: { type: string }
+        engine_version: { type: string }
+        generated_at: { type: string, format: date-time }
+        bands: { type: array, items: { $ref: '#/components/schemas/BisBand' } }
+        presets:
+          type: object
+          additionalProperties:
+            type: object
+            title: BisPreset
+            required: [label]
+            properties:
+              label: { type: string }
+            additionalProperties: true
+    BisBand:
+      type: object
+      required: [spec, band, preset, faction, race, talents, talent_points, score_unit, reference_dps_per_point, weights, slots]
+      properties:
+        spec: { type: string }
+        band: { type: integer }
+        preset: { type: string, enum: [bare, raid] }
+        faction: { type: string, enum: [alliance, horde] }
+        race: { type: string }
+        talents: { type: string }
+        talent_points: { type: integer }
+        score_unit: { type: string }
+        reference_dps_per_point: { type: number }
+        scale_reference_stat: { type: string }
+        set_dps: { type: number }
+        new_at_band: { type: array, items: { type: integer } }
+        weights:
+          type: array
+          items:
+            type: object
+            title: BisWeight
+            required: [stat, weight, error, scale_factor, dps_per_point, weight_per_percent, insignificant]
+            properties:
+              stat: { type: string }
+              weight: { type: number }
+              error: { type: number }
+              scale_factor: { type: number, description: "Normalised so the top stat is 1.00; show this." }
+              scale_error: { type: number }
+              dps_per_point: { type: number }
+              weight_per_percent: { type: number }
+              insignificant: { type: boolean }
+        slots:
+          type: array
+          items:
+            type: object
+            title: BisSlot
+            required: [slot, verified]
+            properties:
+              slot: { type: string }
+              verified: { type: boolean }
+              item_id: { type: integer, description: "Positive; absent or <= 0 means no pick." }
+              item_name: { type: string }
+              source: { type: string }
+              source_kind: { type: string }
+              alternatives:
+                type: array
+                items:
+                  type: object
+                  title: BisAlternative
+                  required: [item_id, item_name, source, source_kind, dps_delta]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+                    source: { type: string }
+                    source_kind: { type: string }
+                    dps_delta: { type: number, description: Negative against the pick. }
+              score: { type: number }
+              sim_dps: { type: number }
+              dps_delta: { type: number }
+              chance: { type: number }
+              effect_unmodelled: { type: boolean }
+              swap_note: { type: string }
+              ties: { type: array, items: { type: integer } }
+              set_bonus: { type: string }
+              faction_note: { type: string }
+              empty_reason: { type: string }
+    ItemsFile:
+      type: object
+      required: [build, class_slug, items]
+      properties:
+        build: { type: string }
+        class_slug: { type: string }
+        items: { type: array, items: { $ref: '#/components/schemas/Item' } }
+    Item:
+      type: object
+      description: One item; the tooltip is built from these fields. quality is 0 to 5.
+      required: [id, name, icon, slot, quality, required_level, item_level, armor, stats, damage_min, damage_max, speed, dps, two_hand, effect_text, stats_source, set_id, unique, client_unconfirmed, percent_stats, icon_source, weapon_type, superseded_by, required_level_source]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        icon: { type: string }
+        slot: { type: string }
+        quality: { type: integer, minimum: 0, maximum: 5 }
+        required_level: { type: integer }
+        required_level_source: { type: string }
+        item_level: { type: integer }
+        armor: { type: integer }
+        stats: { type: object, additionalProperties: { type: integer } }
+        percent_stats: { type: object, additionalProperties: { type: integer } }
+        damage_min: { type: number }
+        damage_max: { type: number }
+        speed: { type: number }
+        dps: { type: number }
+        two_hand: { type: boolean }
+        effect_text: { type: string }
+        stats_source: { type: string }
+        set_id: { type: [integer, "null"] }
+        unique: { type: boolean }
+        client_unconfirmed: { type: boolean }
+        icon_source: { type: string }
+        weapon_type: { type: [string, "null"] }
+        superseded_by: { type: [integer, "null"] }
+    TalentsFile:
+      type: object
+      required: [build, class_id, class_slug, trees]
+      properties:
+        build: { type: string }
+        class_id: { type: integer }
+        class_slug: { type: string }
+        trees:
+          type: array
+          items:
+            type: object
+            title: TalentTree
+            required: [id, name, position, background, icon, talents]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              position: { type: integer }
+              background: { type: string }
+              icon: { type: string }
+              talents:
+                type: array
+                items:
+                  type: object
+                  title: Talent
+                  required: [id, name, icon, max_rank, tier, column, prereq_talent_id, prereq_rank, ranks, spell_id]
+                  properties:
+                    id: { type: integer }
+                    name: { type: string }
+                    icon: { type: string }
+                    max_rank: { type: integer }
+                    tier: { type: integer }
+                    column: { type: integer }
+                    prereq_talent_id: { type: [integer, "null"] }
+                    prereq_rank: { type: [integer, "null"] }
+                    spell_id: { type: integer }
+                    ranks:
+                      type: array
+                      items:
+                        type: object
+                        title: TalentRank
+                        required: [spell_id, description]
+                        properties:
+                          spell_id: { type: integer }
+                          description: { type: string }
+
+    # Push payloads (lane A2, api/internal/push): what APNs and FCM hand the app -------------
+    ApnsPayload:
+      type: object
+      x-fixtures: [push.raid-posted.apns, push.raid-starting.apns]
+      required: [aps, kind, link, data]
+      properties:
+        aps:
+          type: object
+          required: [alert, sound, thread-id]
+          properties:
+            alert:
+              type: object
+              required: [title, body]
+              properties:
+                title: { type: string }
+                body: { type: string }
+            sound: { type: string, enum: [default] }
+            thread-id: { type: string, description: "raid-<raid id>" }
+            category: { type: string, enum: [RAID_SIGNUP] }
+            interruption-level: { type: string, enum: [time-sensitive] }
+        kind: { type: string }
+        link: { type: string, format: uri }
+        actions: { type: array, items: { $ref: '#/components/schemas/PushAction' } }
+        data: { type: object, additionalProperties: { type: string } }
+    FcmMessage:
+      type: object
+      x-fixtures: [push.raid-posted.fcm]
+      required: [message]
+      properties:
+        message:
+          type: object
+          required: [token, notification, data, android]
+          properties:
+            token: { type: string }
+            notification:
+              type: object
+              required: [title, body]
+              properties:
+                title: { type: string }
+                body: { type: string }
+            data:
+              type: object
+              description: Strings only; actions is the actions array as a JSON string.
+              required: [kind, link]
+              additionalProperties: { type: string }
+              properties:
+                kind: { type: string }
+                link: { type: string }
+                thread: { type: string }
+                category: { type: string }
+                actions: { type: string }
+            android:
+              type: object
+              required: [priority, collapse_key, notification]
+              properties:
+                priority: { type: string, enum: [HIGH, NORMAL] }
+                collapse_key: { type: string }
+                notification:
+                  type: object
+                  required: [tag]
+                  properties:
+                    tag: { type: string }
+                    click_action: { type: string }
+    PushAction:
+      type: object
+      description: 'One notification button. The app replaces {character} in path with the region/ruleset/name it answers for.'
+      required: [id, title, method, path, body]
+      properties:
+        id: { type: string, enum: [signup_in, signup_late, signup_out] }
+        title: { type: string }
+        method: { type: string, enum: [PUT] }
+        path: { type: string }
+        body: { type: object, required: [state], properties: { state: { type: string, enum: [in, late, out] } } }
   responses:
     NotFound:
       description: "Unmatched routes return the envelope with code not_found"
@@ -1237,6 +2647,8 @@ paths:
           description: "Redirect to configured public site base URL + /unsubscribed (success) or /subscribe-invalid (invalid token)"
   /v1/builds:
     post:
+      operationId: saveBuild
+      tags: [app]
       summary: Save a build
       description: >-
         The id is the first eight characters of the lowercase base32 SHA-256 of the canonical JSON of
@@ -1244,67 +2656,63 @@ paths:
         the same id and the first title wins.
       requestBody:
         required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/BuildInput' }
+        content: { application/json: { schema: { $ref: '#/components/schemas/BuildInput' } } }
       responses:
         '201':
-          description: "Saved. data is { id, url } where url is PUBLIC_BASE_URL + /b/ + id."
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
-        '200':
-          description: "That build was already saved; data is the same { id, url }."
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
-        '400':
-          description: >-
-            Body was not JSON or was larger than 8 KB, or the build breaks a talent rule. In the latter
-            case error.fields carries one message per offending field, keyed class_id, race_id,
-            tree_version, title, point_order, point_order[i], or gear.<slot>.
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
-        '429':
-          description: "Rate limited: 20 saves per IP per hour, and 120 requests per minute per IP overall"
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
-        '500':
-          description: "Unexpected store error; envelope with code internal"
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
-    get:
-      summary: The caller's own saved builds
-      operationId: listMyBuilds
-      parameters:
-        - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
-        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
-      responses:
-        '200':
-          description: One page of the caller's builds, newest first
+          description: "Saved; url is PUBLIC_BASE_URL + /b/ + id"
+          x-fixtures: [builds.save]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          rows:
-                            type: array
-                            items: { $ref: '#/components/schemas/Build' }
-                          total: { type: integer }
-                          page: { type: integer }
-                          per_page: { type: integer, example: 100 }
-        '400': { description: This list is mine=1 only }
-        '401': { description: Sign in first }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/BuildSaved' } } }
+        '200':
+          description: "That build was already saved; the same { id, url }"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/BuildSaved' } } }
+        '400':
+          description: "Body was not JSON or over 8 KB, or the build breaks a talent rule; fields is keyed class_id, race_id, tree_version, title, point_order, point_order[i] or gear.<slot>"
+          x-fixtures: [builds.save.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "Rate limited: 20 saves per IP per hour"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '500':
+          description: "Unexpected store error"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    get:
+      operationId: listMyBuilds
+      tags: [app]
+      summary: The caller's own saved builds
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: "One page of the caller's builds, newest first"
+          x-fixtures: [builds.list, builds.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/BuildList' } } }
+        '400':
+          description: "This list is mine=1 only"
+          x-fixtures: [builds.list.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/builds/{id}:
     get:
+      operationId: getBuild
+      tags: [app]
       summary: Fetch a build record
       parameters:
         - name: id
@@ -1313,20 +2721,21 @@ paths:
           schema: { type: string }
       responses:
         '200':
-          description: "The record, in the envelope's data. Cache-Control: public, max-age=86400"
+          description: "The record (Cache-Control: public, max-age=86400)"
+          x-fixtures: [builds.get]
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/Build' } } }
         '404':
-          description: "Unknown id; envelope with code not_found"
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
+          description: "Unknown id"
+          x-fixtures: [builds.get.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '500':
-          description: "Unexpected store error; envelope with code internal"
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Envelope' }
+          description: "Unexpected store error"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /b/{id}:
     get:
       summary: The shared build page
@@ -1441,6 +2850,8 @@ paths:
         '204': { description: "Signed out; both cookies cleared" }
   /v1/me:
     get:
+      operationId: getMe
+      tags: [app]
       summary: The signed-in account, its characters and its guilds
       description: >-
         Each character's build (present whenever addon_exports has a row for it, source
@@ -1475,49 +2886,22 @@ paths:
         addon export does not clear it.
       responses:
         '200':
-          description: OK
+          description: "The account"
+          x-fixtures: [me, me.premium, me.empty]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          user: { $ref: '#/components/schemas/User' }
-                          finished_sims:
-                            type: array
-                            description: >-
-                              Unseen finished server runs, newest first, at most three. Always
-                              present; [] unless the caller holds the server_sims entitlement.
-                            items:
-                              type: object
-                              properties:
-                                sim_id: { type: string }
-                                spec: { type: string }
-                                title: { type: string }
-                                dps: { type: number }
-                                finished_at: { type: string, format: date-time }
-                          server_sims:
-                            type: object
-                            description: Omitted when the server has no sims store configured.
-                            properties:
-                              runs_this_month: { type: integer }
-                          notifications:
-                            type: object
-                            description: Omitted when the deployment has notifications off.
-                            properties:
-                              connect:
-                                type: boolean
-                                description: True when the one-click Discord connect is configured.
-                              discord:
-                                nullable: true
-                                allOf: [{ $ref: '#/components/schemas/DiscordBlock' }]
-        '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/Me' } } }
+        '401':
+          description: "Not signed in, or the token is dead: clear it and sign in again"
+          x-fixtures: [error-unauthorized]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     patch:
-      summary: Set the read-time pseudonym flag
+      operationId: updateMe
+      tags: [app]
+      summary: Change the anonymize flag or the main character
       description: >-
         anonymize replaces your name on report pages: the owner of a report you posted reads as
         "user-<id>" instead of your battletag, for every reader of every report you own.
@@ -1528,15 +2912,24 @@ paths:
         regardless of the flag, no route shows your email address to anyone but you.
       requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [anonymize]
-              properties: { anonymize: { type: boolean } }
+        content: { application/json: { schema: { $ref: '#/components/schemas/MePatch' } } }
       responses:
-        '200': { description: "The account as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '400': { description: "Nothing to change", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: "The account as it now stands"
+          x-fixtures: [me.patch]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/Me' } } }
+        '400':
+          description: "A broken body, nothing to change, or a main key that is not yours"
+          x-fixtures: [me.patch.error-invalid, me.patch.error-not-your-character]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/devices/pair:
     post:
       summary: Issue a pairing code (session only)
@@ -1612,11 +3005,21 @@ paths:
         '409': { description: "Already decided", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices:
     get:
+      operationId: listDevices
+      tags: [app]
       summary: The account's devices
       responses:
         '200':
-          description: "data is the device array itself, with no wrapper object"
-          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+          description: "The account's devices, the array itself"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Device' } } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/devices/self:
     delete:
       summary: The calling device revokes itself (the companion's Forget)
@@ -1633,15 +3036,29 @@ paths:
         '404': { description: "Not one of yours", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports:
     get:
+      operationId: listMyReports
+      tags: [app]
       summary: The caller's own reports, newest first (session)
       parameters:
         - { name: mine, in: query, required: true, schema: { type: string, enum: ["1"] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
         '200':
-          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count, kill_count and boss_count (distinct bosses killed), plus logging_character ({key, name} or null), last_upload_at and heartbeat_at, each as GET /v1/reports/{id} answers them (last_upload_at is never null here; heartbeat_at is null before the first beat)."
-          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
-        '400': { description: "mine=1 is required", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+          description: "One page of the caller's reports, newest first (100 a page)"
+          x-fixtures: [reports.list, reports.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ReportList' } } }
+        '400':
+          description: "mine=1 is required"
+          x-fixtures: [reports.list.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     post:
       summary: Start a report
       requestBody:
@@ -1667,19 +3084,24 @@ paths:
         '401': { description: "No identity", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports/{id}:
     get:
+      operationId: getReport
+      tags: [app]
       summary: A report and its fights
       parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
       responses:
         '200':
-          description: OK
+          description: "The report summary"
+          x-fixtures: [reports.get]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties: { data: { $ref: '#/components/schemas/Report' } }
-        '404': { description: "Unknown, or not visible to you", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/Report' } } }
+        '404':
+          description: "Unknown, or not visible to you (never 403)"
+          x-fixtures: [reports.get.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     patch:
       summary: Change a report's title, visibility, guild, or logging character
       description: >-
@@ -1974,8 +3396,9 @@ paths:
                           sim_id: { type: string, minLength: 12, maxLength: 12 }
         '400': { description: The body is not a runnable browser result }
     get:
-      summary: The caller's own saved sims
       operationId: listMySims
+      tags: [app]
+      summary: The caller's own saved sims
       parameters:
         - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
@@ -1992,24 +3415,21 @@ paths:
             and running rows carry estimate_seconds.
       responses:
         '200':
-          description: One page of the caller's sims
+          description: "One page of the caller's sims, newest first"
+          x-fixtures: [sims.list, sims.list.empty]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          rows:
-                            type: array
-                            items: { $ref: '#/components/schemas/SimRow' }
-                          total: { type: integer }
-                          page: { type: integer }
-                          per_page: { type: integer, example: 100 }
-        '401': { description: Sign in first }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SimList' } } }
+        '400':
+          description: "mine=1 is required; an unknown kind or lane"
+          x-fixtures: [sims.list.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/sims/run:
     post:
       summary: Run a sim on our servers (premium)
@@ -2136,89 +3556,98 @@ paths:
         '504': { description: 'upstream: Discord did not answer (timeout or unreachable); error.message is a fixed sentence' }
   /v1/sims/{id}:
     get:
-      summary: One saved sim
       operationId: getSim
+      tags: [app]
+      summary: One saved sim
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
         '200':
-          description: The result
+          description: "The result"
+          x-fixtures: [sims.result]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data: { $ref: '#/components/schemas/SimResult' }
-        '404': { description: No such sim }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SimResult' } } }
+        '404':
+          description: "No such sim"
+          x-fixtures: [sims.result.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/sims/{id}/seen:
     post:
-      summary: Mark the caller's finished server run as looked at
       operationId: markSimSeen
+      tags: [app]
+      summary: Mark the caller's finished server run as looked at
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
-        '204': { description: Marked seen (marking twice is the same answer) }
-        '401': { description: Sign in first }
-        '404': { description: Not the caller's finished run }
+        '204': { description: "Marked seen (marking twice is the same answer)" }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Not the caller's finished run"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/sims/{id}/rerun:
     post:
+      operationId: rerunSim
+      tags: [app]
       summary: Run a failed server run again (premium)
       description: >-
         Starts the failed run's stored request as a new run, through the same
         checks POST /v1/sims/run applies. The failed row is left as it is.
-      operationId: rerunSim
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
         '202':
-          description: Dispatched as a new run
+          description: "Dispatched as a new run"
+          x-fixtures: [sims.rerun]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          sim_id: { type: string }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SimStarted' } } }
         '400':
-          description: >-
-            The stored request can no longer be run: error.code is "invalid",
-            "cap_exceeded" or "too_large", as for POST /v1/sims/run.
-        '401': { description: Sign in first }
-        '402': { description: 'premium_required: running on our servers is a premium feature' }
-        '404': { description: Not the caller's failed run }
-        '502': { description: The run was recorded but could not be started }
+          description: "The stored request can no longer be run: invalid, cap_exceeded or too_large"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '402':
+          description: "premium_required: running on our servers is a premium feature"
+          x-fixtures: [sims.rerun.error-premium-required]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Not the caller's failed run"
+          x-fixtures: [sims.rerun.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '502':
+          description: "upstream: the run was recorded but could not be started"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/sims/{id}/progress:
     get:
-      summary: How far a server-lane run has got
       operationId: getSimProgress
+      tags: [app]
+      summary: How far a server-lane run has got
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
         '200':
-          description: The run's state
+          description: "The run's state (Cache-Control: no-store)"
+          x-fixtures: [sims.progress, sims.progress.queued]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          state: { type: string, enum: [queued, running, done, error] }
-                          iterations_done: { type: integer }
-                          dps: { type: number, nullable: true }
-                          stage: { type: integer, description: Which stage of a bulk run is going; 0 for a plain run. }
-                          combos_done: { type: integer }
-                          combos_total: { type: integer }
-        '404': { description: No such sim }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SimProgress' } } }
+        '404':
+          description: "No such sim"
+          x-fixtures: [sims.progress.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/specs:
     get:
       summary: Every spec's simulator fidelity
@@ -2241,42 +3670,27 @@ paths:
                             items: { $ref: '#/components/schemas/SpecFidelity' }
   /v1/characters/{region}/{ruleset}/{name}/sim-input:
     get:
-      summary: The character model the sim page starts from
       operationId: getSimInput
+      tags: [app]
+      summary: The character model the sim page starts from
       parameters:
         - { name: region, in: path, required: true, schema: { type: string } }
         - { name: ruleset, in: path, required: true, schema: { type: string } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
         '200':
-          description: The newest of the addon export and the last fight
+          description: "The character model"
+          x-fixtures: [character.sim-input.addon, character.sim-input.fight]
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          spec: { type: string }
-                          spec_source:
-                            type: string
-                            enum: [fight, talents, default, ""]
-                            description: >-
-                              Where spec came from: fight (a logged fight named it), talents (the
-                              dominant tree of the export's talent points) or default (no points
-                              spent: the class's first spec). Empty when spec is.
-                          gear: { type: object }
-                          talents: { type: string }
-                          buffs:
-                            type: array
-                            items: { type: string }
-                            description: Engine buff ids, from sim/request/IDS.md.
-                          captured_at: { type: string, format: date-time }
-                          source: { type: string, enum: [addon, blizzard, fight] }
-        '404': { description: No such character }
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SimInput' } } }
+        '404':
+          description: "No such character"
+          x-fixtures: [character.sim-input.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/phases:
     get:
       summary: The content phase boundaries
@@ -2307,6 +3721,8 @@ paths:
                                 start: { type: string, format: date-time }
   /v1/characters/search:
     get:
+      operationId: searchCharacters
+      tags: [app]
       summary: Characters whose name starts with the typed text (the lookup typeahead)
       description: >-
         A case-insensitive prefix match on the character's name. q is trimmed; fewer than 2
@@ -2324,10 +3740,19 @@ paths:
         - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
       responses:
-        '200': { description: "rows[]", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: "Matching characters"
+          x-fixtures: [character.search, character.search.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CharacterSearch' } } }
         '400':
-          description: "An unknown region or ruleset, or a limit outside 1 to 10 (code bad_request)"
-          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+          description: "bad_request: an unknown region, ruleset or limit"
+          x-fixtures: [character.search.error-bad-request]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/characters/{region}/{ruleset}/{name}/history:
     get:
       summary: The owner's Forever Score and parse history
@@ -2352,6 +3777,8 @@ paths:
         '404': { description: 'not_found: not the owner, or an anonymised character' }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
+      operationId: getCharacter
+      tags: [app]
       summary: A character's bests, history, the builds they have been seen in, and their Forever Score
       description: >-
         character is { key, region, ruleset, name, class?, avatar_url?, render_url?, guild,
@@ -2378,10 +3805,19 @@ paths:
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
-        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: "The character card"
+          x-fixtures: [character.card, character.card.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CharacterProfile' } } }
         '404':
-          description: "No such character, or its account is anonymised (the same answer)"
-          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+          description: "Unknown region, ruleset or character, or an anonymous account"
+          x-fixtures: [character.card.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/reports:
     get:
       summary: A guild's own reports, newest first (session)
@@ -2404,6 +3840,8 @@ paths:
         '404': { description: "Unknown guild, or not a member", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{id}/home:
     get:
+      operationId: getGuildHome
+      tags: [app]
       summary: A guild's control centre home (session)
       description: >-
         The guild, the viewer's standing, the summary, the last week's reports, the roster and
@@ -2430,11 +3868,28 @@ paths:
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
       responses:
-        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '400': { description: "cursor is not a next_cursor this route returned", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '403': { description: "Not a verified member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: "The guild's home"
+          x-fixtures: [guild.home]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildHome' } } }
+        '400':
+          description: "cursor is not a next_cursor this route returned"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Not a verified member of the guild (an unknown numeric id answers 403 too: nobody is its member)"
+          x-fixtures: [guild.home.error-forbidden]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
@@ -2506,8 +3961,7 @@ paths:
                         code: { type: string, maxLength: 4096, description: "The FS1 export string" }
                         saved_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
                     sim_request:
-                      type: object
-                      nullable: true
+                      type: [object, "null"]
                       required: [character, spec, requested_at, gear_code]
                       properties:
                         character: { type: string, description: "Name-Realm" }
@@ -2515,8 +3969,7 @@ paths:
                         requested_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM; with the character, the request's identity" }
                         gear_code: { type: string, maxLength: 4096, description: "The FS1 export as of the request" }
                     roster_snapshot:
-                      type: object
-                      nullable: true
+                      type: [object, "null"]
                       required: [guild, members]
                       properties:
                         guild: { type: string, maxLength: 24 }
@@ -2616,3 +4069,534 @@ paths:
         '404':
           description: "Unknown or invisible report; the stand-in card, cached a minute"
           content: { image/png: { schema: { type: string, format: binary } } }
+  # -----------------------------------------------------------------------------------------
+  # Native apps v1 (docs/contracts/app-v1.md). Routes marked dark are unmounted until their
+  # flag is on: APP_SIGN_IN (lane A1), APP_NOTIFICATIONS_ENABLED (lane A2), APP_API (lane A3).
+  # -----------------------------------------------------------------------------------------
+  /v1/characters/{region}/{ruleset}/{name}/home:
+    get:
+      summary: The home answer for a character (dark, APP_API)
+      description: >-
+        Upgrades for the character's level band, computed in Go by api/internal/upgrades (the
+        site's upgrades.ts rule, pinned by a parity test). The character page's visibility and
+        cache: an unknown or anonymised character is 404; public, max-age=30,
+        stale-while-revalidate=300.
+      operationId: getCharacterHome
+      tags: [app]
+      parameters:
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The answer"
+          x-fixtures: [character.home, character.home.empty, character.home.no-gear]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CharacterHome' } } }
+        '404':
+          description: "Unknown region, ruleset or character, or an anonymous account"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids:
+    get:
+      summary: A guild's raid nights, and for a verified member its planned raids
+      description: >-
+        Auth none required (the actor is read if present). Caching private. A verified member
+        also gets planned, zones, guild_timezone and discord; anyone else gets none of those keys.
+      operationId: listGuildRaids
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+        - { name: cursor, in: query, schema: { type: string }, description: The next_cursor of a previous page. }
+      responses:
+        '200':
+          description: "One page of raid nights"
+          x-fixtures: [guild.raids, guild.raids.public]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildRaids' } } }
+        '400':
+          description: "invalid: a bad cursor"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}:
+    get:
+      summary: One raid (verified members only; anyone else gets 404, never 403)
+      operationId: getGuildRaid
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The raid view"
+          x-fixtures: [guild.raid, guild.raid.done]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '404':
+          description: "No such raid, or not yours to see"
+          x-fixtures: [guild.raid.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    patch:
+      summary: An officer edits a raid
+      description: >-
+        Verified officer or leader of a guild with the plan, claim not frozen. Budget 20 officer
+        raid writes a minute per account, shared with lock, unlock, cancel and create.
+      operationId: updateGuildRaid
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/RaidPatch' } } }
+      responses:
+        '200':
+          description: "The raid view as it now stands"
+          x-fixtures: [guild.raid.patch]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "forbidden, guild_plan_required or raid_guild_required"
+          x-fixtures: [guild.raid.patch.error-forbidden]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict for a cancelled or done raid, or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields"
+          x-fixtures: [guild.raid.patch.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/lock:
+    post:
+      summary: An officer locks sign-ups (from planned)
+      operationId: lockGuildRaid
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The raid view"
+          x-fixtures: [guild.raid.patch]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "Not an officer of a guild with the plan"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict: the raid's status does not allow the move"
+          x-fixtures: [guild.raid.error-conflict]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/unlock:
+    post:
+      summary: An officer unlocks sign-ups (from locked)
+      operationId: unlockGuildRaid
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The raid view"
+          x-fixture-route: guild.raid.patch
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "Not an officer of a guild with the plan"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict: the raid's status does not allow the move"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/cancel:
+    post:
+      summary: An officer cancels a raid (from planned or locked)
+      operationId: cancelGuildRaid
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: false
+        content: { application/json: { schema: { $ref: '#/components/schemas/RaidCancel' } } }
+      responses:
+        '200':
+          description: "The raid view"
+          x-fixture-route: guild.raid.patch
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "Not an officer of a guild with the plan"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict: the raid's status does not allow the move"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}:
+    put:
+      summary: Answer for one character (In, Late, Bench, Out)
+      description: >-
+        A member answers for their own verified characters; an officer of a guild with the
+        plan answers for any verified roster character and may write to a locked raid. A device
+        token is admitted while APP_NOTIFICATIONS_ENABLED is on (lane A2). Budget 30 writes a
+        minute per account. A sign-up refreshes the guild's Discord raid post.
+      operationId: putRaidSignup
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/SignupRequest' } } }
+      responses:
+        '200':
+          description: "The raid as it now stands, and the character the server moved to Bench"
+          x-fixtures: [guild.signup, guild.signup.moved]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SignupAnswer' } } }
+        '403':
+          description: "forbidden (the message is the sentence to show) or guild_plan_required"
+          x-fixtures: [guild.signup.error-forbidden]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "A raid you cannot see, or a character not in the guild"
+          x-fixtures: [guild.signup.error-character-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "raid_locked, raid_cancelled or claim_contested"
+          x-fixtures: [guild.signup.error-raid-locked]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields state, role, note or spec"
+          x-fixtures: [guild.signup.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/loot:
+    get:
+      summary: The loot picker (verified members only)
+      operationId: getGuildLoot
+      tags: [app]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "Encounters, the selected one and its items with ranked candidates"
+          x-fixtures: [guild.loot]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildLoot' } } }
+        '403':
+          description: "Not a verified member"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/auth/app/start:
+    get:
+      summary: Begin app sign-in in the system browser (dark, APP_SIGN_IN)
+      description: >-
+        Opened in ASWebAuthenticationSession or a Custom Tab, never called by the API client.
+        Answers a confirm page; "Continue to Battle.net" is GET /v1/auth/app/continue. The flow
+        ends at exactly https://foreversixty.gg/app/auth?code=...&state=...; any redirect_uri the
+        client sends is ignored. 60 an hour per IP, shared with continue.
+      operationId: startAppSignIn
+      tags: [app-browser]
+      parameters:
+        - { name: platform, in: query, required: true, schema: { type: string, enum: [ios, android] } }
+        - { name: code_challenge, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' } }
+        - { name: code_challenge_method, in: query, required: true, schema: { type: string, enum: [S256] } }
+        - { name: state, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9._~-]{16,128}$' } }
+      responses:
+        '200':
+          description: "The confirm page: no script, framing refused"
+          content: { text/html: { schema: { type: string } } }
+        '400':
+          description: "invalid, with fields naming each bad parameter"
+          x-fixtures: [app.signin.start.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/auth/app/continue:
+    get:
+      summary: The confirm page's Continue to Battle.net (dark, APP_SIGN_IN)
+      operationId: continueAppSignIn
+      tags: [app-browser]
+      parameters:
+        - { name: state, in: query, required: true, schema: { type: string } }
+      responses:
+        '302': { description: "To Battle.net" }
+        '400':
+          description: "invalid: this browser did not start the flow"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/auth/app/exchange:
+    post:
+      summary: Swap the one-time code and the PKCE verifier for a device token (dark, APP_SIGN_IN)
+      description: Public, no cookies; 60 an hour per IP. Any attempt spends the code.
+      operationId: exchangeAppSignIn
+      tags: [app]
+      x-authenticated: false
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AppExchangeRequest' } } }
+      responses:
+        '201':
+          description: "The device token (shown once), the device and the GET /v1/me body"
+          x-fixtures: [app.signin.exchange]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/AppSession' } } }
+        '400':
+          description: "invalid (malformed body, no code, a bad verifier) or invalid_grant (unknown, spent, expired or mismatched code: start again)"
+          x-fixtures: [app.signin.exchange.error-invalid, app.signin.exchange.error-invalid-grant]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/auth/app/logout:
+    post:
+      summary: The calling app device revokes its token (dark, APP_SIGN_IN)
+      operationId: logoutApp
+      tags: [app]
+      responses:
+        '200':
+          description: "Signed out"
+          x-fixtures: [app.logout]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/SignedOut' } } }
+        '401':
+          description: "No token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/notifications:
+    get:
+      summary: The player's notification choices (dark, APP_NOTIFICATIONS_ENABLED)
+      description: Session or device token. Cache-Control no-store.
+      operationId: getNotificationSettings
+      tags: [app]
+      responses:
+        '200':
+          description: "Every catalogue event in catalogue order"
+          x-fixtures: [app.notifications]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/NotificationSettings' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    patch:
+      summary: Change the player's notification choices (dark, APP_NOTIFICATIONS_ENABLED)
+      operationId: updateNotificationSettings
+      tags: [app]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/NotificationsPatch' } } }
+      responses:
+        '200':
+          description: "The GET body as it now stands"
+          x-fixture-route: app.notifications
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/NotificationSettings' } } }
+        '400':
+          description: "invalid: a body that is not JSON"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields time_zone, quiet_hours, events or events[i]; or nothing to change"
+          x-fixtures: [app.notifications.patch.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/push-tokens:
+    post:
+      summary: Register this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
+      description: >-
+        After the permission prompt and whenever the OS rotates the token. A device holds one
+        token at a time; registering an existing token moves it to this device.
+      operationId: registerPushToken
+      tags: [app]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/PushTokenRequest' } } }
+      responses:
+        '201':
+          description: "Registered"
+          x-fixtures: [app.push-tokens.register]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/PushTokenRegistered' } } }
+        '400':
+          description: "invalid: a body that is not JSON"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields platform, token or app_version"
+          x-fixtures: [app.push-tokens.register.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/push-tokens/{token}:
+    delete:
+      summary: Drop this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
+      description: On sign-out and when the player turns notifications off. 204 whether or not it was there.
+      operationId: deletePushToken
+      tags: [app]
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string } }
+      responses:
+        '204': { description: "Gone" }
+  /v1/app/config:
+    get:
+      summary: What the apps read once at launch (dark, APP_API)
+      description: Public. Cache-Control public, max-age=300. 503 unavailable when no client build is loaded.
+      operationId: getAppConfig
+      tags: [app]
+      x-authenticated: false
+      responses:
+        '200':
+          description: "The config"
+          x-fixtures: [app.config]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/AppConfig' } } }
+        '503':
+          description: "unavailable: no client build is loaded"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  # The site's static data on the CDN: bare JSON, no envelope. public, max-age=3600,
+  # stale-while-revalidate=86400. A /data/<build>/ directory is immutable per build in practice.
+  /data/active-build.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The client build the static data serves now
+      operationId: getActiveBuild
+      tags: [app-static]
+      responses:
+        '200':
+          description: "The active build"
+          x-fixtures: [cdn.active-build]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ActiveBuild' } } }
+  /data/dates.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The key dates
+      operationId: getKeyDates
+      tags: [app-static]
+      responses:
+        '200':
+          description: "The dates"
+          x-fixtures: [cdn.dates]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/KeyDate' } } } }
+  /data/{build}/classes.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every class of a build
+      operationId: getClasses
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per class"
+          x-fixtures: [cdn.classes]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ClassInfo' } } } }
+  /data/{build}/bis/{spec}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The best-in-slot lists of one spec
+      operationId: getBis
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: spec, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "Every band of the spec"
+          x-fixture-route: cdn.bis.{spec}
+          x-fixtures: [cdn.bis.warrior-fury]
+          content: { application/json: { schema: { $ref: '#/components/schemas/BisFile' } } }
+  /data/{build}/items/{class}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The items a class may use
+      operationId: getItems
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: class, in: path, required: true, schema: { type: string }, x-name: className }
+      responses:
+        '200':
+          description: "The class's items"
+          x-fixture-route: cdn.items.{class}
+          x-fixtures: [cdn.items.warrior]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
+  /data/{build}/talents/{class}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: A class's talent trees
+      operationId: getTalents
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: class, in: path, required: true, schema: { type: string }, x-name: className }
+      responses:
+        '200':
+          description: "The trees"
+          x-fixture-route: cdn.talents.{class}
+          x-fixtures: [cdn.talents.warrior]
+          content: { application/json: { schema: { $ref: '#/components/schemas/TalentsFile' } } }

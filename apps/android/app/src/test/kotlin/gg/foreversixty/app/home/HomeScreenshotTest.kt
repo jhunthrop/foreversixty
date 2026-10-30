@@ -9,6 +9,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.Me
+import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import kotlinx.serialization.json.jsonObject

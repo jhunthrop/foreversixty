@@ -2,13 +2,11 @@ package gg.foreversixty.app.network
 
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.AppExchangeRequest
-import gg.foreversixty.app.model.AppExchangeResponse
-import gg.foreversixty.app.model.ClassInfo
+import gg.foreversixty.app.model.AppSession
 import gg.foreversixty.app.model.Me
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonObject
 import org.junit.Assert.assertEquals
@@ -98,12 +96,7 @@ class FixtureEngineTest {
 
     @Test
     fun `the exchange is served from the contract fixture`() = runTest {
-        val result = client().post(
-            "/v1/auth/app/exchange",
-            AppExchangeRequest("code", "verifier", "Pixel"),
-            AppExchangeRequest.serializer(),
-            AppExchangeResponse.serializer(),
-        )
+        val result = client().send(ApiEndpoints.exchangeAppSignIn(AppExchangeRequest("code", "verifier", "Pixel")))
 
         val answer = (result as ApiResult.Success).data
         assertTrue(answer.token.startsWith("fsd_"))
@@ -122,7 +115,7 @@ class FixtureEngineTest {
         val static = StaticDataClient(FixtureEngine.create(source))
 
         val build = (static.activeBuild() as ApiResult.Success).data.build
-        val classes = static.get("/data/$build/classes.json", ListSerializer(ClassInfo.serializer()))
+        val classes = static.get(StaticEndpoints.getClasses(build))
 
         assertFalse(build.isEmpty())
         assertTrue((classes as ApiResult.Success).data.all { it.slug.isNotEmpty() })
@@ -130,7 +123,7 @@ class FixtureEngineTest {
 
     @Test
     fun `a path with no fixture answers a not found envelope`() = runTest {
-        val result = client().get("/v1/nothing/here", AppExchangeResponse.serializer())
+        val result = client().get("/v1/nothing/here", AppSession.serializer())
 
         val error = (result as ApiResult.Failure).error as ApiError.Server
         assertEquals(404, error.status)

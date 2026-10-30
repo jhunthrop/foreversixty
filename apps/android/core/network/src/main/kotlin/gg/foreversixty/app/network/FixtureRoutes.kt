@@ -72,58 +72,15 @@ sealed interface FixtureVariant {
 /**
  * The route-to-fixture table for docs/contracts/fixtures/app (lane C owns the files;
  * docs/contracts/app-v1.md names them). API fixtures are whole envelopes; `cdn.*` fixtures are
- * the static files as served, with no envelope. Feature lanes add a row per route they call.
+ * the static files as served, with no envelope. A route joins by being added to the spec.
  */
 object FixtureRoutes {
-    private val Get = HttpMethod.Get
-    private val Post = HttpMethod.Post
-    private val Put = HttpMethod.Put
-    private val Patch = HttpMethod.Patch
-    private val Delete = HttpMethod.Delete
 
-    val api: List<FixtureRoute> = listOf(
-        FixtureRoute(Get, "/v1/me", "me"),
-        FixtureRoute(Patch, "/v1/me", "me.patch"),
-        FixtureRoute(Get, "/v1/characters/search", "character.search"),
-        FixtureRoute(Get, "/v1/characters/{region}/{ruleset}/{name}", "character.card"),
-        FixtureRoute(Get, "/v1/characters/{region}/{ruleset}/{name}/sim-input", "character.sim-input.addon"),
-        FixtureRoute(Get, "/v1/sims", "sims.list"),
-        FixtureRoute(Get, "/v1/sims/{id}", "sims.result"),
-        FixtureRoute(Get, "/v1/sims/{id}/progress", "sims.progress"),
-        FixtureRoute(Post, "/v1/sims/{id}/rerun", "sims.rerun", HttpStatusCode.Accepted),
-        FixtureRoute(Post, "/v1/sims/{id}/seen", null, HttpStatusCode.NoContent),
-        FixtureRoute(Get, "/v1/guilds/{id}/home", "guild.home"),
-        FixtureRoute(Get, "/v1/guilds/{id}/raids", "guild.raids"),
-        FixtureRoute(Get, "/v1/guilds/{id}/raids/{raid}", "guild.raid"),
-        FixtureRoute(Patch, "/v1/guilds/{id}/raids/{raid}", "guild.raid.patch"),
-        FixtureRoute(Post, "/v1/guilds/{id}/raids/{raid}/lock", "guild.raid.patch"),
-        FixtureRoute(Post, "/v1/guilds/{id}/raids/{raid}/unlock", "guild.raid.patch"),
-        FixtureRoute(Post, "/v1/guilds/{id}/raids/{raid}/cancel", "guild.raid.patch"),
-        FixtureRoute(Put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", "guild.signup"),
-        FixtureRoute(Get, "/v1/guilds/{id}/loot", "guild.loot"),
-        FixtureRoute(Get, "/v1/reports", "reports.list"),
-        FixtureRoute(Get, "/v1/reports/{id}", "reports.get"),
-        FixtureRoute(Get, "/v1/builds", "builds.list"),
-        FixtureRoute(Get, "/v1/builds/{id}", "builds.get"),
-        FixtureRoute(Post, "/v1/builds", "builds.save", HttpStatusCode.Created),
-        FixtureRoute(Post, "/v1/auth/app/exchange", "app.signin.exchange", HttpStatusCode.Created),
-        FixtureRoute(Post, "/v1/auth/app/logout", "app.logout"),
-        FixtureRoute(Get, "/v1/me/notifications", "app.notifications"),
-        FixtureRoute(Patch, "/v1/me/notifications", "app.notifications"),
-        FixtureRoute(Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.Created),
-        FixtureRoute(Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.NoContent),
-        FixtureRoute(Get, "/v1/app/config", "app.config"),
-    )
+    /** Generated from api/openapi.yaml: a route's default fixture is its first `x-fixtures`, or `x-fixture-route`. */
+    val api: List<FixtureRoute> = ContractRoutes.api
 
     /** The site's static data (`https://foreversixty.gg/data/...`); bare JSON, no envelope. */
-    val cdn: List<FixtureRoute> = listOf(
-        FixtureRoute(Get, "/data/active-build.json", "cdn.active-build"),
-        FixtureRoute(Get, "/data/dates.json", "cdn.dates"),
-        FixtureRoute(Get, "/data/{build}/classes.json", "cdn.classes"),
-        FixtureRoute(Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}"),
-        FixtureRoute(Get, "/data/{build}/items/{class}.json", "cdn.items.{class}"),
-        FixtureRoute(Get, "/data/{build}/talents/{class}.json", "cdn.talents.{class}"),
-    )
+    val cdn: List<FixtureRoute> = ContractRoutes.staticData
 
     val all: List<FixtureRoute> = api + cdn
 

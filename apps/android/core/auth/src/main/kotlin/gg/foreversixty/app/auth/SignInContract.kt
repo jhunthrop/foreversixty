@@ -20,8 +20,6 @@ import java.net.URLEncoder
  */
 object SignInContract {
     const val START_PATH = "/v1/auth/app/start"
-    const val EXCHANGE_PATH = "/v1/auth/app/exchange"
-    const val LOGOUT_PATH = "/v1/auth/app/logout"
     const val PLATFORM = "android"
 
     /** The App Link the API hands the code to with `?code=…&state=…` (or `?error=…`). */

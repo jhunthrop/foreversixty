@@ -1,0 +1,29 @@
+{
+  "data": {
+    "already_best": [],
+    "band": 60,
+    "band_label": "60",
+    "character": "us/normal/velaren",
+    "data_build": "1.60.1.70658",
+    "not_modelled_count": 0,
+    "not_sim_checked_count": 0,
+    "preset": "raid",
+    "spec": "hunter-beast-mastery",
+    "state": "no_gear",
+    "synced_at": null,
+    "synced_from": null,
+    "talents": {
+      "band_points": null,
+      "points_differ": null,
+      "state": "no_export"
+    },
+    "total_gain": null,
+    "unit": "dps",
+    "unit_word": "DPS",
+    "upgrade_count": 0,
+    "upgrades": []
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "req_fixture"
+}

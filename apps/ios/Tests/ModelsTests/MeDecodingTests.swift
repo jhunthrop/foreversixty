@@ -59,7 +59,7 @@ struct MeDecodingTests {
             "notifications":false,"officer_views":false,"roster_check":false,"log_coach":false,
             "supporter_mark":false,"billing":{"plan":"premium","source":"grant","status":"active",
             "current_period_end":null,"cancel_at_period_end":false,"price_cents":600},"personal_portal":false},
-          "finished_sims":[]}}
+          "finished_sims":[],"discord_link_available":false,"discord_link":null,"discord_link_suggested":null}}
         """
         let me = try decodeMe(Data(json.utf8))
         #expect(me.characters.isEmpty)
@@ -73,7 +73,7 @@ struct MeDecodingTests {
     @Test("a character card with only the required fields decodes")
     func sparseCharacter() throws {
         let json = #"{"key":"us/normal/x","region":"us","ruleset":"normal","name":"X","source":"export"}"#
-        let card = try WireFormat.decoder().decode(CharacterCard.self, from: Data(json.utf8))
+        let card = try WireFormat.decoder().decode(AccountCharacter.self, from: Data(json.utf8))
         #expect(card.level == nil)
         #expect(card.build == nil)
         #expect(card.guild == nil)
@@ -89,9 +89,9 @@ struct MeDecodingTests {
            "talents":{"trees":["1","2","3"],"points":[1,2,3]},"median_sync_gap_sec":null,"sync_error":null},
          "guild":{"id":2,"name":"G","rank":"Officer","verified":false,"attendance":{"present":1,"nights":2}}}
         """
-        let card = try WireFormat.decoder().decode(CharacterCard.self, from: Data(json.utf8))
+        let card = try WireFormat.decoder().decode(AccountCharacter.self, from: Data(json.utf8))
         #expect(card.itemLevel == 62)
-        #expect(card.avatarUrl?.host == "render.example.test")
+        #expect(card.avatarUrl == "https://render.example.test/a.jpg")
         #expect(card.build?.talents?.points == [1, 2, 3])
         #expect(card.build?.gear?["head"] == 1)
         #expect(card.guild?.attendance?.present == 1)

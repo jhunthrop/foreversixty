@@ -20,9 +20,9 @@ envelope: `204 No Content` answers, `304 Not Modified`, and the redirects of sig
 
 **Fixtures.** A fixture is named for its endpoint and state, `<endpoint>[.<variant>].json`;
 failures carry `error-<code>` in the name. API fixtures are whole envelopes; `cdn.*` fixtures
-are the static files as served and `push.*` fixtures are push payloads, neither enveloped. Each
-app keeps one route table from method and path to these names (iOS `FixtureCatalog`, Android
-`FixtureRoutes`). A fixture is a floor, not a ceiling. Every field it
+are the static files as served and `push.*` fixtures are push payloads, neither enveloped. Both
+apps read one route table from method and path to these names, generated from the spec's
+`x-fixtures` (`ContractRoutes`, used by iOS `FixtureCatalog` and Android `FixtureRoutes`). A fixture is a floor, not a ceiling. Every field it
 names is in the live answer with the same JSON kind; a field the live answer adds is allowed, and a
 client ignores what it does not know. **Never pin a count, an id or a value from a fixture**: a
 fixture shows one state, and a list is longer or shorter in production. A field marked *omitted
@@ -146,6 +146,17 @@ is the band's recommendation `{ id, name, source, chance }` or null (`chance`, t
 is null for a source with no rate); `gap` is the score points the pick adds, or null. `gear` is
 `[]` for a character with no addon export. The rules (picks, gaps, scores) live in the API: the
 apps never re-derive them.
+
+### GET /v1/characters/{region}/{ruleset}/{name}/home
+The home answer (lane A3, dark behind `APP_API`; full rules in lane A3's
+`docs/contracts/app-v1-home-config.md`). The character page's visibility and caching. Computed in
+Go by `api/internal/upgrades`, the package the Discord `/char` panel reads; show the rows in the
+server's order and never re-rank them. `data` is `{ character, state (ok|no_gear|under_20|no_spec|
+no_list), spec, band, band_label, preset, unit, unit_word, data_build, upgrade_count, total_gain,
+not_sim_checked_count, not_modelled_count, synced_at, synced_from, upgrades[], already_best[],
+talents { state, points_differ, band_points } }`. Any state but `ok` has `upgrades` and
+`already_best` empty and `total_gain` null. Fixtures `character.home`, `character.home.empty`,
+`character.home.no-gear`. Errors: 404 `not_found`.
 
 ### GET /v1/characters/search
 Typeahead. Auth public. Caching `public, max-age=60, stale-while-revalidate=300`. Query `q` (2 to
@@ -547,13 +558,14 @@ while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a
 
 ### GET /v1/app/config
 Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
-`{ web_checkout_regions[], min_app_version { ios, android } }`. `web_checkout_regions` are the
+`{ web_checkout_regions[], min_app_version { ios, android }, active_build }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
 StoreKit or Play Billing and show the button exactly when it is in the list, and show no purchase
 prompt or call to action anywhere else. `min_app_version` is the lowest version the API supports
 for each platform (dotted, compared numerically): below it, block with an "Update the app" screen.
-Fixture `app.config`. No handler is written yet; the shape is the plan's.
+`active_build` is the client build the static data serves. Fixture `app.config`. The handler is
+lane A3's (`api/internal/app`, dark behind `APP_API`).
 
 ## Not in v1
 
@@ -563,6 +575,16 @@ loot awards, and the roster approve and remove routes (the officer roster action
 If a later lane needs one, it adds its section here and its fixtures in the same commit.
 
 ## How the tests pin this
+
+**`api/openapi.yaml` is the source of truth.** Every route and static file above is an operation
+there (tagged `app`, `app-static` or `app-browser`), and every fixture in
+`docs/contracts/fixtures/app/` is claimed by an `x-fixtures` list on its response (or on a schema,
+for the push payloads). `api/internal/contract/openapi_test.go` validates each fixture against its
+response schema with libopenapi-validator, and fails on any fixture key the spec does not declare
+and on any fixture no response claims. The apps' models, endpoints and fixture route tables are
+generated from the spec by `web/scripts/gen-mobile-api.mjs` (CI's `mobile-codegen` workflow fails
+on drift). To change a shape: edit the spec and the fixture together, run the generator, commit.
+
 
 `api/internal/contract` compares a response with a fixture (fields, kinds, nullability, never
 values or counts; nulls match any kind; `Optional` marks an omitted-when-empty field; `Open` marks

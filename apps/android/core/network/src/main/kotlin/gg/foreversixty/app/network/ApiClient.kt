@@ -24,6 +24,16 @@ import kotlinx.serialization.json.JsonObject
  */
 class ApiClient(private val http: HttpClient) {
 
+    /** Runs one generated [Endpoint] (`ApiEndpoints`). */
+    suspend fun <T> send(endpoint: Endpoint<T>): ApiResult<T> =
+        call(endpoint.method, endpoint.path, endpoint.response) {
+            endpoint.query.forEach { (name, value) -> url.parameters.append(name, value) }
+            endpoint.body?.let {
+                contentType(ContentType.Application.Json)
+                setBody(it)
+            }
+        }
+
     suspend fun <T> get(path: String, response: KSerializer<T>): ApiResult<T> =
         call(HttpMethod.Get, path, response) {}
 
