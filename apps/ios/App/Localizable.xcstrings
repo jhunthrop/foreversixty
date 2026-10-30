@@ -258,6 +258,17 @@
         }
       }
     },
+    "account.devices.loadFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load your devices just now."
+          }
+        }
+      }
+    },
     "account.deviceWord": {
       "extractionState": "manual",
       "localizations": {

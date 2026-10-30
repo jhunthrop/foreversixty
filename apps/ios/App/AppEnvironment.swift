@@ -12,6 +12,9 @@ struct AppEnvironment {
     let updateGate: UpdateGate
     /// Read at launch (RootView) and cached; feature lanes ask it `isEnabled(_:)`.
     let appConfig: AppConfigStore
+    /// The account (lane F1): signed in or out, the current character, sign-in and sign-out.
+    /// Feature lanes read it from the SwiftUI environment (`@Environment(SessionStore.self)`).
+    let session: SessionStore
 
     @MainActor
     init(
@@ -20,15 +23,25 @@ struct AppEnvironment {
         identity: ClientIdentity,
         updateGate: UpdateGate = UpdateGate(),
         bundle: Bundle = .main,
-        configCache: any AppConfigCache = UserDefaultsAppConfigCache()
+        configCache: any AppConfigCache = UserDefaultsAppConfigCache(),
+        account: AccountStorage = .device
     ) {
+        let sessionTokens = SessionTokenSource(tokens)
         self.configuration = configuration
-        self.tokens = tokens
+        self.tokens = sessionTokens
         self.updateGate = updateGate
         self.client = APIClient.make(
-            configuration, tokens: tokens, identity: identity, updateGate: updateGate, bundle: bundle
+            configuration, tokens: sessionTokens, identity: identity, updateGate: updateGate, bundle: bundle
         )
         self.appConfig = AppConfigStore(client: client, cache: configCache)
+        self.session = SessionStore(
+            client: client,
+            tokens: sessionTokens,
+            web: account.web(),
+            picked: account.picked,
+            deviceID: account.deviceID,
+            clearCaches: { URLCache.shared.removeAllCachedResponses() }
+        )
     }
 
     /// Fixture mode keeps its token in memory so a fixture session never reaches the Keychain.
@@ -44,8 +57,14 @@ struct AppEnvironment {
         case .live: KeychainTokenStore()
         case .fixture: InMemoryTokenStore(token: "fsd_fixture")
         }
+        let account: AccountStorage = switch configuration.mode {
+        case .live: .device
+        case .fixture: .fixture(bundle: bundle)
+        }
         let identity = ClientIdentity.bundled(bundle, installID: InstallID.current())
-        return AppEnvironment(configuration: configuration, tokens: tokens, identity: identity, bundle: bundle)
+        return AppEnvironment(
+            configuration: configuration, tokens: tokens, identity: identity, bundle: bundle, account: account
+        )
     }
 
     // TODO(lane A2, F7): register the APNs device token with the push_tokens

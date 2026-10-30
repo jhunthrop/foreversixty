@@ -14,7 +14,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .raids: Copy.tabRaids
         case .bis: Copy.tabBis
         case .sims: Copy.shellTabSims
-        case .account: Copy.shellTabAccount
+        case .account: Copy.tabYou
         }
     }
 
@@ -24,7 +24,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .raids: "calendar"
         case .bis: "list.star"
         case .sims: "chart.bar"
-        case .account: "gearshape"
+        case .account: "person"
         }
     }
 }
@@ -50,13 +50,33 @@ struct RootView: View {
             }
         }
         .tint(Theme.Palette.accent)
+        .environment(environment.session)
         .task { await environment.appConfig.refresh() }
+        .task { await environment.session.refresh() }
+        .task { await environment.session.watchForDeadTokens() }
     }
+
+    /// Lane F1: the account states, on by default in debug and fixture builds.
+    private var signInAvailable: Bool {
+        environment.appConfig.isAvailable(.signIn, mode: environment.configuration.mode, isDebugBuild: Self.isDebugBuild)
+    }
+
+    #if DEBUG
+    private static let isDebugBuild = true
+    #else
+    private static let isDebugBuild = false
+    #endif
 
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
+        case .home where signInAvailable:
+            HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) {
+                HomeScreen(client: environment.client)
+            }
         case .home: HomeScreen(client: environment.client)
+        case .account where signInAvailable:
+            YouScreen(session: environment.session, onPickClass: { selection = .bis })
         default: PlaceholderScreen(title: tab.title)
         }
     }
