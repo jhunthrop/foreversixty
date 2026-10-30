@@ -158,7 +158,12 @@ describe('resolveSourceCell', () => {
       'fallback',
     );
     const horde = resolveSourceCell(slot({ item_id: 71, source_kind: 'quest' }), 'horde', LOOT, 'fallback');
-    expect(alliance).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'alliance', minLevel: 5 });
+    expect(alliance).toEqual({
+      kind: 'quest',
+      questName: 'A Neutral Quest',
+      faction: 'alliance',
+      minLevel: 5,
+    });
     expect(horde).toEqual({ kind: 'quest', questName: 'A Neutral Quest', faction: 'horde', minLevel: 5 });
   });
 
@@ -347,7 +352,9 @@ describe('describeSourceCell', () => {
     expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', minLevel: 58 })).toBe(
       'Quest: Foo · requires level\u00a058',
     );
-    expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', minLevel: 0 })).toBe('Quest: Foo');
+    expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', minLevel: 0 })).toBe(
+      'Quest: Foo',
+    );
     expect(describeSourceCell({ kind: 'raid', instance: 'Molten Core', boss: 'Ragnaros' })).toBe(
       'Molten Core · Ragnaros',
     );
