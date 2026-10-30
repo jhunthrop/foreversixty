@@ -1,7 +1,7 @@
 // web/src/lib/current-character-layout.test.ts
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CHIP_HEIGHT, VIEW_GAP } from './current-character-layout';
+import { CHIP_HEIGHT, STRIP_HEIGHT, VIEW_GAP } from './current-character-layout';
 
 describe('chip-slot pre-paint rule', () => {
   it('reserves the slot while a pointer is stored or a session hint is set', () => {
@@ -15,6 +15,12 @@ describe('chip-slot pre-paint rule', () => {
 describe('CHIP_HEIGHT', () => {
   it('is the two-row-phone, one-row-desktop height every chip and its reserved slot share', () => {
     expect(CHIP_HEIGHT).toBe('h-[88px] md:h-11');
+  });
+});
+
+describe('STRIP_HEIGHT', () => {
+  it('is the card-row strip height: a 56 px row in a 2 px border, identity line plus two door lines on a phone', () => {
+    expect(STRIP_HEIGHT).toBe('h-[150px] md:h-[58px]');
   });
 });
 

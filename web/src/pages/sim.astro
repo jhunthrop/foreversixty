@@ -3,7 +3,7 @@
 // Static. The island reads ?source= and ?ref= in the browser, because the page is
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
-import { CHIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
+import { STRIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import { landingCopy } from '../lib/sim/landing-copy';
 import SimPageHead from '../components/sim/SimPageHead.astro';
@@ -80,7 +80,7 @@ const COLD_PASTE_SECTION =
          24px over each: 1202/834. -->
     <div id="sim" data-sim-mount class="min-h-[1202px] md:min-h-[834px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
+        <div class={STRIP_HEIGHT} data-testid="current-character-bar"></div>
         <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's
              "Your server runs" box, reserved before the island paints (spec 2026-10-24 3.7). -->
         <div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>

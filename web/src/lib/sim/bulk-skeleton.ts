@@ -5,7 +5,7 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
-import { CHIP_HEIGHT, VIEW_GAP } from '../current-character-layout';
+import { STRIP_HEIGHT, VIEW_GAP } from '../current-character-layout';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -57,7 +57,7 @@ const shell = (label: string, body: string): string =>
  * current-character chip slot above, so `ToolsView.svelte`'s own spine mount never causes a
  * shift once it hydrates.
  */
-const spineBarSlot = (): string => `<div class="${CHIP_HEIGHT}" data-testid="current-character-bar"></div>`;
+const spineBarSlot = (): string => `<div class="${STRIP_HEIGHT}" data-testid="current-character-bar"></div>`;
 
 /** The character strip's reserved band, which every tool page opens with. */
 const strip = (): string =>

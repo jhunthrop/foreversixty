@@ -4,7 +4,7 @@
 // is served by src/worker.ts from sim.html with its head rewritten. Prerendering the fixture
 // gives Lighthouse and Playwright a page with real content rather than an empty shell.
 import Base from '../../layouts/Base.astro';
-import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
+import { STRIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
 import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
 import fixtureResult from '../../fixtures/sim/result.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
@@ -18,6 +18,10 @@ export function getStaticPaths() {
 
 const { id } = Astro.params;
 const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined;
+// 2026-10-30 (leftovers lane A): the current-character strip became an account-style card row, so
+// the strip's slot (STRIP_HEIGHT) is `h-[150px] md:h-[58px]`, up from the chip's `h-[88px] md:h-11` (+62px phone, +14px desktop,
+// measured on the hydrated row: 148-150 / 56-58). Both min-h figures below rose by the same amount
+// so the footer stays put across the mount swap.
 ---
 
 <Base
@@ -67,10 +71,10 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
       data-sim-mount
       data-sim-id={id}
       data-sim-result={inline}
-      class="min-h-[1344px] md:min-h-[976px]"
+      class="min-h-[1406px] md:min-h-[990px]"
     >
       <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
+        <div class={STRIP_HEIGHT} data-testid="current-character-bar"></div>
         <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
       </div>
     </div>

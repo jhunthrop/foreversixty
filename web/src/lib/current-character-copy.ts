@@ -15,6 +15,8 @@ export const currentCharacterCopy = {
   /** The spine bar's signed-out, no-pointer line -- spec 2026-09-25 section 4.1, distinct
    *  from `noCharacterLine` above (that one names the planner/simulator paste boxes
    *  specifically; this one names both entry points the bar itself offers). */
+  /** The label of the strip's row when the page's own card already names the character. */
+  barDoorsLabel: 'Jump to',
   barSignedOutLine: 'Sign in with Battle.net or paste an export to point the site at your character.',
   barSignIn: 'Sign in with Battle.net',
   barPasteExport: 'Paste an export',

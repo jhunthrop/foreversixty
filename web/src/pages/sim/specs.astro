@@ -3,7 +3,7 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
-import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
+import { STRIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
 import { simCopy } from '../../lib/sim/copy';
 import {
   SPEC_CARD_SKELETON_CLASSES,
@@ -57,7 +57,7 @@ import IslandScript from '../../components/IslandScript.astro';
          was already right. -->
     <div id="sim" data-sim-mount data-sim-view="specs">
       <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
+        <div class={STRIP_HEIGHT} data-testid="current-character-bar"></div>
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-3">
             <h2 class="section-title px-[18px] md:px-0">{simCopy.specsSimulatedHeading}</h2>

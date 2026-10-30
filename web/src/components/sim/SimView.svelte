@@ -248,6 +248,18 @@
     runBlockCharacter === null ? null : parseCharacterPath(`/character/${runBlockCharacter.key}`),
   );
 
+  /** The landing's Your characters card is on screen (a signed-in member with characters and none
+   *  loaded): the current-character strip is its first row, not a card of its own above it. */
+  const landingCardShown = $derived(
+    !hasSavedSimId &&
+      bootstrap.view !== 'specs' &&
+      store.character === null &&
+      !switcherOpen &&
+      !sessionPending &&
+      me !== null &&
+      me.characters.length > 0,
+  );
+
   /** The name the page's own card shows (the simulator card, or the landing's), so the strip above
    *  it does not say the same character again. */
   const stripCardName = $derived(
@@ -560,10 +572,16 @@
   {/if}
 {/snippet}
 
+{#snippet currentStrip(inCard: boolean)}
+  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} cardName={stripCardName} {inCard} />
+{/snippet}
+
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
   <!-- The spine bar is the one current-character band on this page (the old chip said the
        same character a second time, 44px below it); it reserves CHIP_HEIGHT itself. -->
-  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} cardName={stripCardName} />
+  {#if !landingCardShown}
+    {@render currentStrip(false)}
+  {/if}
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->
@@ -670,7 +688,9 @@
           failedKey={landingFailedKey}
           onpick={(path) => void pickCharacter(path)}
           onother={() => (switcherOpen = true)}
-        />
+        >
+          {#snippet lead()}{@render currentStrip(true)}{/snippet}
+        </LandingState>
         {#if store.message !== null && landingFailedKey === null}
           <!-- The race refusal (sources.ts's "no race recorded", a combat log carries none
                and the API has not started sending one for a stored character either) is the

@@ -17,12 +17,15 @@
     type CurrentCharacter,
   } from '../lib/current-character';
   import { resolveSpineClassSlug, spineDoorsFor } from '../lib/current-character-bar';
-  import { CHIP_HEIGHT } from '../lib/current-character-layout';
+  import { CHIP_HEIGHT, STRIP_HEIGHT } from '../lib/current-character-layout';
   import { currentCharacterCopy } from '../lib/current-character-copy';
   import { guildRankLabel } from '../lib/characters';
   import { heroCharacter } from '../lib/account/hero-character';
   import { mainCharacter } from '../lib/account/main-character';
-  import { classColorVar, rowLink } from '../lib/report/format';
+  import { classColorVar } from '../lib/report/format';
+  import { cardClass } from '../lib/ui/card';
+  import { ROW, ROW_LABEL } from '../lib/ui/row';
+  import IconTile from './ui/IconTile.svelte';
   import { button } from '../lib/ui/button';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CurrentCharacterChip from './CurrentCharacterChip.svelte';
@@ -36,7 +39,10 @@
     profile = false,
     quietSignedOut = false,
     cardName = '',
+    inCard = false,
   }: {
+    /** The row sits inside another card (the sim landing's Your characters) instead of in a card of its own. */
+    inCard?: boolean;
     /** The name of the character the page's own card shows. When it is the one this strip speaks
      *  for, the strip shows only its doors: the card carries the identity, said once. */
     cardName?: string;
@@ -147,30 +153,44 @@
          stored pointer, the session) the pre-paint script has already hinted at via
          data-pointer/data-session when either is real, so hiding it until hydration
          resolves is what stops it from ever painting a wrong guess. -->
-    <div class={`chip-slot ${CHIP_HEIGHT} ${profile ? '-order-4' : ''}`} data-testid="current-character-bar">
-      <div class="mx-[18px] flex h-full flex-col md:mx-0 md:flex-row md:items-center md:gap-4">
+    <div
+      class="chip-slot {inCard ? '' : `${STRIP_HEIGHT} ${cardClass(false)} mx-[18px] md:mx-0`} {profile
+        ? '-order-4'
+        : ''}"
+      data-testid="current-character-bar"
+    >
+      <!-- One account-style row (polish spec 4.2): the crest and name on the left, the doors and
+           Forget as buttons on the right; the identity takes the whole first line on a phone and
+           the doors wrap under it. In a card of its own the row drops its top rule. -->
+      <div
+        class="{ROW} {inCard ? '' : 'h-full'} gap-y-2 py-2"
+        style:border-top-width={inCard ? undefined : '0'}
+        data-testid="current-character-bar-row"
+      >
         {#if !identityOnCard}
-          <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
+          <div class="min-w-0 basis-full md:flex-1 md:basis-0" data-testid="current-character-bar-identity">
             {#if displayCharacter !== null}
-              <CharacterIdentity character={displayCharacter} size="md" descriptor="realm" />
+              <CharacterIdentity character={displayCharacter} size="row" descriptor="realm" />
             {:else if current !== null}
               <span class="truncate font-semibold" style:color={classColorVar(current.classSlug)}>
                 {current.label}
               </span>
             {/if}
           </div>
+        {:else}
+          <div class="flex min-w-0 basis-full items-center gap-[14px] md:flex-1 md:basis-0">
+            <IconTile glyph="user" size={32} />
+            <span class="{ROW_LABEL} text-strong">{currentCharacterCopy.barDoorsLabel}</span>
+          </div>
         {/if}
-        <!-- Every child is shrink-0: a flex item with an explicit min-width (min-w-11) no longer
-             keeps its min-content width, so without it the phone row shrank the links onto
-             one another. The row wraps rather than scrolls: a scrolled row hid Forget past
-             the edge with nothing to say so. Six short labels fit one 390px line;
-             the restored note is desktop-only so it cannot push the row to a second line. -->
-        <div class="flex h-11 flex-wrap items-center gap-x-3 whitespace-nowrap md:h-auto md:flex-1">
+        <!-- Every child is shrink-0 and the row wraps rather than scrolls: a scrolled row hid
+             Forget past the edge with nothing to say so. -->
+        <div class="flex flex-wrap items-center gap-x-1 whitespace-nowrap md:ml-auto md:justify-end">
           {#each doors as door (door.id)}
             <a
-              class="{rowLink} label min-w-11 shrink-0 justify-center {door.id === currentDoor
-                ? 'text-gold'
-                : 'text-nav'}"
+              class="{button('ghost', 'sm')} min-w-11 shrink-0 {door.id === currentDoor
+                ? 'underline underline-offset-4'
+                : ''}"
               href={door.href}
               aria-current={door.id === currentDoor ? 'page' : undefined}
               data-testid={door.testid}
@@ -190,7 +210,7 @@
             {/if}
             <button
               type="button"
-              class="{button('ghost', 'sm')} ml-auto shrink-0"
+              class="{button('ghost', 'sm')} shrink-0"
               onclick={forget}
               title={displayCharacter === null
                 ? undefined

@@ -318,7 +318,9 @@ test('a returning signed-in visitor sees their characters from the session snaps
 // repeated it 44px below is gone, 2026-09-26 design loop). The chip-slot pre-paint rule
 // (global.css) hides the band before hydration unless `fs_csrf`/`data-pointer` is present,
 // so this test sets the cookie to see the bar, and checks nothing repeats it.
-test('the spine bar is the only current-character band on /sim, above the landing list', async ({ page }) => {
+test('the spine bar is the only current-character band on /sim, the first row of the Your characters card', async ({
+  page,
+}) => {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.goto('/sim');
@@ -327,11 +329,15 @@ test('the spine bar is the only current-character band on /sim, above the landin
   await expect(page.getByTestId('sim-landing')).toBeVisible();
   const bar = page.getByTestId('current-character-bar');
   await expect(bar).toBeVisible();
+  await expect(page.getByTestId('sim-landing').getByTestId('current-character-bar')).toHaveCount(1);
   await expect(page.getByTestId('sim-chip-slot')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
   const barBox = await bar.boundingBox();
   const listBox = await page.getByTestId('sim-landing').boundingBox();
   expect(barBox).not.toBeNull();
   expect(listBox).not.toBeNull();
-  expect((barBox as { y: number }).y).toBeLessThan((listBox as { y: number }).y);
+  // Inside the card, under its head and above the first character row.
+  expect((barBox as { y: number }).y).toBeGreaterThan((listBox as { y: number }).y);
+  const firstRow = await page.getByTestId('sim-character-us/normal/thrallgar').boundingBox();
+  expect((barBox as { y: number }).y).toBeLessThan((firstRow as { y: number }).y);
 });

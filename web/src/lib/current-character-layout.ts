@@ -8,6 +8,13 @@
 // importing a Svelte component into a plain build-time string.
 export const CHIP_HEIGHT = 'h-[88px] md:h-11';
 
+// The current-character strip's own fixed height on the sim pages (leftovers lane A): an
+// account-style card row -- the crest or tile and name, then the four doors and Forget. One
+// 56 px row inside the card's 2 px of border on desktop (measured 56-58); on a phone the
+// identity takes a line and the doors wrap to two (measured 148-150). Fixed so the hydrated
+// strip and the static slot that reserves it can never disagree.
+export const STRIP_HEIGHT = 'h-[150px] md:h-[58px]';
+
 // The flex gap SimView.svelte's and ToolsView.svelte's own root `<div>` both use between
 // the chip and whatever follows it. Fix round 1, Important #2: a static shell's
 // pre-hydration markup that stacks the chip slot directly against the next element with no

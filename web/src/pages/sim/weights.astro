@@ -17,6 +17,11 @@
 // (`gap-[22px]` on phone, `md:gap-8` desktop) -- +110px phone, +76px desktop, on top of
 // the Task 21 figures above. `bulk-skeleton.ts`'s own `chipSlot` reserves the identical
 // band, first, in the skeleton this div also renders.
+//
+// 2026-10-30 (leftovers lane A): the current-character strip became an account-style card row, so
+// the strip's slot (STRIP_HEIGHT) is `h-[150px] md:h-[58px]`, up from the chip's `h-[88px] md:h-11` (+62px phone, +14px desktop,
+// measured on the hydrated row: 148-150 / 56-58). Both min-h figures below rose by the same amount
+// so the footer stays put across the mount swap.
 import Base from '../../layouts/Base.astro';
 import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
@@ -30,7 +35,7 @@ import IslandScript from '../../components/IslandScript.astro';
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <SimPageHead title={bulkCopy.weightsTitle} job={bulkCopy.weightsIntro} currentPath="/sim/weights" />
     <ScopeNote />
-    <div id="sim-tools" data-sim-tool="weights" class="min-h-[2113px] md:min-h-[1187px]">
+    <div id="sim-tools" data-sim-tool="weights" class="min-h-[2175px] md:min-h-[1201px]">
       <Fragment set:html={TOOL_SKELETONS.weights} />
       <noscript>
         <p
