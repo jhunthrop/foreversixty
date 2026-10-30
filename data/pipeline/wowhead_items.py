@@ -37,7 +37,7 @@ import httpx
 from pydantic import BaseModel
 
 from pipeline.build_floors import MIN_LIVE_COVERAGE, previous_build_dir
-from pipeline.csvio import read_csv
+from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.models import GearItem, Item
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
@@ -489,16 +489,20 @@ def _seed_for(build_dir: Path) -> tuple[dict[int, dict], str | None]:
 
 
 def _client_ids(build_dir: Path) -> tuple[set[int], set[int]]:
-    """The ids of the client's ``Item.csv`` and ``ItemSparse.csv``."""
+    """The ids of the client's ``Item`` and ``ItemSparse`` tables, merged with the
+    build's hotfix dump the way ``normalize`` and ``simdb`` read them: a hotfix row
+    is the client's own row, and it outranks wowhead."""
     raw = build_dir / "raw"
-    tables = [raw / "Item.csv", raw / "ItemSparse.csv"]
-    for table in tables:
+    for table in (raw / "Item.csv", raw / "ItemSparse.csv"):
         if not table.exists():
             raise SystemExit(
                 f"no {table}: carrying the wowhead records forward needs the client's "
                 "item tables; run `python -m pipeline fetch` for this build first"
             )
-    item_ids, sparse_ids = ({int(row["ID"]) for row in read_csv(t)} for t in tables)
+    item_ids, sparse_ids = (
+        {int(row["ID"]) for row in merge_hotfix_table(raw, table)}
+        for table in ("Item", "ItemSparse")
+    )
     return item_ids, sparse_ids
 
 

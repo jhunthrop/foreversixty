@@ -146,6 +146,19 @@ def test_fetch_with_no_seed_anywhere_writes_the_live_feed_alone(tmp_path: Path) 
     assert document["seeded_from"] is None and len(document["items"]) == 6
 
 
+def test_a_hotfix_dump_row_is_the_clients_own_row(tmp_path: Path) -> None:
+    """The client ids are ItemSparse merged with the hotfix dump, as normalize and
+    simdb read them: the dump outranks wowhead, so a seeded record it covers is not
+    carried and does not count toward coverage."""
+    build_dir = tmp_path / "1.60.1.2"
+    _write_client(build_dir / "raw", item_ids=FIXTURE_IDS, sparse_ids={BELT})
+    _write_client(build_dir / "raw" / "hotfixes", item_ids=set(), sparse_ids={CLOAK})
+    _seed(build_dir)
+    path = wh.fetch_wowhead("1.60.1.2", root=tmp_path, client=_client(_payload_without(CLOAK)))
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["carried"] == [] and str(CLOAK) not in document["items"]
+
+
 def test_fetch_with_a_seed_needs_the_clients_item_tables(tmp_path: Path) -> None:
     _seed(tmp_path / "1.60.1.1")
     with pytest.raises(SystemExit, match="Item.csv"):
