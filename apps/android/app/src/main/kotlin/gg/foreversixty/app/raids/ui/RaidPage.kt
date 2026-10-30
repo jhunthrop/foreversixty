@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -116,6 +117,8 @@ private fun PageMessage(back: () -> Unit, content: @Composable () -> Unit) {
             title = {},
             navigationIcon = { BackButton(back) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
+            // The app scaffold already pads for the status bar.
+            windowInsets = WindowInsets(0, 0, 0, 0),
         )
         Box(Modifier.padding(16.dp)) { content() }
     }
@@ -174,6 +177,8 @@ fun RaidPageContent(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
+                // The app scaffold already pads for the status bar.
+                windowInsets = WindowInsets(0, 0, 0, 0),
             )
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                 offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, clock.stripTime(it, now()))) }

@@ -2,6 +2,7 @@ package gg.foreversixty.app.raids.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,6 +64,8 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
+            // The app scaffold already pads for the status bar.
+            windowInsets = WindowInsets(0, 0, 0, 0),
         )
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             model.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, clock.stripTime(it, now()))) }
