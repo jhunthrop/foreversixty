@@ -209,11 +209,13 @@
         </label>
         <!-- The six tabs raiders reach for first (finding 3), stuck under the page header
              once scrolled past (finding 1/6) so a table switch never asks for a scroll back
-             up. bg-bg keeps the rows sliding under it from showing through. -->
+             up. bg-bg keeps the rows sliding under it from showing through. A sticky element is
+             its own stacking context, so the row carries z-20: without it the More menu's z-10
+             only ranks inside the row, and the chart card after it painted over the open menu. -->
         <div
           role="tablist"
           aria-label="Table"
-          class="border-line-soft bg-bg hidden flex-wrap border-b md:sticky md:top-0 lg:flex"
+          class="border-line-soft bg-bg relative z-20 hidden flex-wrap border-b md:sticky md:top-0 lg:flex"
         >
           {#each firstTierTabs as tab (tab.id)}
             <button
