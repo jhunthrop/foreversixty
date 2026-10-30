@@ -3,7 +3,6 @@
 // and commit the result.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain .mjs script, no type declarations
 import { OUTPUTS, buildFeatures, generate } from '../../../scripts/gen-mobile-features.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-features.mjs` and commit the result';

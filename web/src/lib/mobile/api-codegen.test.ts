@@ -3,9 +3,7 @@
 // a fresh generation: after editing the spec run `node web/scripts/gen-mobile-api.mjs` and commit.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain .mjs script, no type declarations
 import { OUTPUTS, generate } from '../../../scripts/gen-mobile-api.mjs';
-// @ts-expect-error plain .mjs script, no type declarations
 import { buildModel } from '../../../scripts/mobile-codegen/openapi-model.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-api.mjs` and commit the result';

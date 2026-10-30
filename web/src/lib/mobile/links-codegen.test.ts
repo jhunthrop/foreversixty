@@ -4,7 +4,6 @@
 // `node web/scripts/gen-mobile-links.mjs` and commit the result.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error plain .mjs script, no type declarations
 import { OUTPUTS, appLinkPaths, buildRoutes, generate } from '../../../scripts/gen-mobile-links.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-links.mjs` and commit the result';
