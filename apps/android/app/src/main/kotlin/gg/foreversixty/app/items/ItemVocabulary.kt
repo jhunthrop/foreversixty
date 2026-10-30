@@ -70,6 +70,27 @@ object ItemVocabulary {
         else -> null
     }
 
+    private val subclasses = mapOf(
+        "axe" to R.string.items_subclass_axe, "bow" to R.string.items_subclass_bow, "gun" to R.string.items_subclass_gun,
+        "mace" to R.string.items_subclass_mace, "polearm" to R.string.items_subclass_polearm,
+        "sword" to R.string.items_subclass_sword, "staff" to R.string.items_subclass_staff,
+        "fist_weapon" to R.string.items_subclass_fistWeapon, "dagger" to R.string.items_subclass_dagger,
+        "thrown" to R.string.items_subclass_thrown, "crossbow" to R.string.items_subclass_crossbow,
+        "wand" to R.string.items_subclass_wand, "fishing_pole" to R.string.items_subclass_fishingPole,
+    )
+
+    @StringRes
+    fun subclassName(subclass: String?): Int? = subclasses[subclass]
+
+    private val weaponSlots = mapOf(
+        "one_hand" to R.string.items_weaponSlot_oneHand, "two_hand" to R.string.items_weaponSlot_twoHand,
+        "main_hand" to R.string.items_weaponSlot_mainHand, "off_hand" to R.string.items_weaponSlot_offHand,
+        "ranged" to R.string.items_weaponSlot_ranged, "thrown" to R.string.items_weaponSlot_thrown,
+    )
+
+    @StringRes
+    fun weaponSlotName(slot: String?): Int? = weaponSlots[slot]
+
     @StringRes
     fun armorTypeName(armorType: String?): Int? = when (armorType) {
         "cloth" -> R.string.tooltip_armorType_cloth

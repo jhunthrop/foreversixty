@@ -42,31 +42,37 @@ class HomePresenterTest {
     private fun upgrades(model: HomeAnswerModel) = model.body as HomeAnswerBody.Upgrades
 
     @Test
-    fun `the rows keep the server's order and the card shows the first five`() {
+    fun `rows read measured gains largest first, then not modelled, then empty, and the card shows five`() {
         val home = HomeFixtures.home()
+        val ordered = HomePresenter.presentationOrder(home.upgrades).map { it.slot }
+        assertEquals(
+            listOf("main_hand", "ranged", "legs", "feet", "chest", "head", "waist", "hands", "back", "finger2", "wrist", "trinket2"),
+            ordered,
+        )
         val body = upgrades(presenter.model(home))
-        assertEquals(home.upgrades.take(5).map { it.slot }, body.rows.map { it.slot })
-        assertEquals("6 more upgrades · all 17 slots", body.footer)
+        assertEquals(ordered.take(5), body.rows.map { it.slot })
+        assertEquals("7 more upgrades · all 17 slots", body.footer)
     }
 
     @Test
     fun `the hero shows two figures, the note with the unmodelled count, the sync age`() {
         val model = presenter.model(HomeFixtures.home())
         assertEquals("Orc Beast Mastery Hunter · Level 60 · Olympus XXVII", model.heroMeta)
-        assertEquals("11 upgrades", model.count)
-        assertEquals("+76.2", model.gainFigure)
+        assertEquals("12 upgrades", model.count)
+        assertEquals("+102.5", model.gainFigure)
         assertEquals("DPS", model.gainUnit)
-        assertEquals("Best in slot for 60, together · 6 gains not modelled yet", model.note)
+        assertEquals("Best in slot for 60, together · 2 gains not modelled yet", model.note)
         assertEquals("Synced 2 h ago from the addon", model.synced)
         assertEquals("60 · raid", model.bandHead)
     }
 
     @Test
-    fun `a measured gain is the server's figure, an unmodelled one the server's words`() {
-        val rows = upgrades(presenter.model(HomeFixtures.home())).rows
-        assertEquals(HomeUpgradeRow.Gain.Measured("+11.1", "DPS"), rows[0].gain)
-        assertEquals(HomeUpgradeRow.Gain.Words("Gain not modelled yet"), rows[1].gain)
-        assertEquals("Hands · Creeg Bothunk", rows[0].meta)
+    fun `a measured gain is the server's figure, the source the server's formatted line`() {
+        val home = HomeFixtures.home()
+        val rows = upgrades(presenter.model(home)).rows
+        assertEquals(HomeUpgradeRow.Gain.Measured("+21.2", "DPS"), rows[0].gain)
+        assertEquals("Main hand · Crafted: Blacksmithing", rows[0].meta)
+        assertEquals("Gain not modelled yet", HomePresenter.presentationOrder(home.upgrades).last().gainWords)
     }
 
     @Test
@@ -190,10 +196,10 @@ class HomeStoreTest {
         val store = HomeStore.live(client, MemoryHomeCache())
         store.load(HomeFixtures.velaren)
         val home = (store.phase.value as HomePhase.Loaded).home
-        assertEquals(11, home.upgradeCount)
+        assertEquals(12, home.upgradeCount)
         val catalog = ItemCatalog(StaticDataClient(FixtureEngine.create(source)))
-        val sources = catalog.sources(HomePresenter.tooltipRequest(ItemLook(226887), home, HomeFixtures.velaren))
-        assertTrue(sources?.items?.containsKey(226887) == true)
+        val sources = catalog.sources(HomePresenter.tooltipRequest(ItemLook(252605), home, HomeFixtures.velaren))
+        assertTrue(sources?.items?.containsKey(252605) == true)
         assertTrue(sources?.bis != null && sources.sets.isNotEmpty())
     }
 
@@ -220,35 +226,36 @@ class ItemTooltipTest {
 
     @Test
     fun `a pick shows binds, armor type, stats, levels, its source, the next best and the footer`() {
-        val model = ItemTooltipModel.build(request(226887), sources, res)
+        val model = ItemTooltipModel.build(request(252605), sources, res)
         assertEquals("Epic · Head", model.headerMeta)
-        assertEquals("Binds when picked up", model.binds)
+        assertEquals("Binds when equipped", model.binds)
         assertEquals("Head", model.slotName)
         assertEquals("Mail", model.typeName)
         assertTrue(model.armor.orEmpty().endsWith(" Armor"))
         assertTrue(model.stats.all { it.startsWith("+") })
-        assertEquals("Item Level 60", model.itemLevel)
-        assertEquals("Saving the Best for Last", model.source)
+        assertEquals("Item Level 61", model.itemLevel)
+        assertEquals("Crafted: Leatherworking", model.source)
         assertEquals(2, model.alternatives.size)
         assertEquals("Best in slot for Head · Beast Mastery 60 · Raid-ready, Phase 1", model.pickFooter)
     }
 
     @Test
-    fun `a rep reward names its standing, a vendor adds what it requires`() {
-        assertEquals("The Defilers (Exalted)", ItemTooltipModel.build(request(20068), sources, res).source)
-        assertEquals("Creeg Bothunk · requires Exalted", ItemTooltipModel.build(request(272099), sources, res).source)
+    fun `a vendor item adds the standing it requires to the site's line`() {
+        assertEquals("Vendor: Friz Frazzlespark · requires Friendly", ItemTooltipModel.build(request(276202), sources, res).source)
     }
 
     @Test
     fun `the worn runner-up leads with You wear this`() {
-        val model = ItemTooltipModel.build(request(234202, wornId = 9533), sources, res)
-        assertTrue(model.alternatives.map { it.meta }.contains("You wear this · −8.2 DPS vs the pick"))
+        val model = ItemTooltipModel.build(request(9533, wornId = 11862), sources, res)
+        assertTrue(model.alternatives.map { it.meta }.contains("You wear this · −2.3 DPS vs the pick"))
+        assertEquals("2% from Ancient Treasure", model.alternatives.first().source)
     }
 
     @Test
-    fun `a two-handed weapon names its handedness and its damage`() {
+    fun `a weapon reads Two-Hand and its type, as the client prints it`() {
         val model = ItemTooltipModel.build(request(250619), sources, res)
-        assertEquals("Two-Handed Weapon", model.typeName)
+        assertEquals("Two-Hand", model.slotName)
+        assertEquals("Polearm", model.typeName)
         assertTrue(model.weaponDamage.orEmpty().endsWith(" Damage"))
         assertTrue(model.weaponDps.orEmpty().endsWith("damage per second)"))
     }
@@ -262,16 +269,20 @@ class ItemTooltipTest {
     }
 
     @Test
-    fun `Your gear lists 17 rows in character-frame order, worn then the pick`() {
-        val rows = GearModel.rows(HomeFixtures.home(), mapOf("off_hand" to 16004), sources.items, res)
+    fun `Your gear lists 17 rows in frame order, and the off hand names the two-hander`() {
+        val home = HomeFixtures.home()
+        val blocker = GearModel.offHandBlocker(home, emptyMap(), sources.items, ItemTooltipModel.band(request(0), sources.bis))
+        assertEquals("Legionite Glaive", blocker)
+        val rows = GearModel.rows(home, emptyMap(), sources.items, res, blocker)
         assertEquals(ItemVocabulary.frameSlots, rows.map { it.slot })
         assertEquals(17, rows.size)
-        val hands = rows.first { it.slot == "hands" }
-        assertNull(hands.worn)
-        assertEquals("Empty", hands.wornName)
-        assertEquals(272099, hands.pick?.id)
+        assertEquals("none: Legionite Glaive is two-handed.", rows.first { it.slot == "off_hand" }.wornName)
+        val trinket = rows.first { it.slot == "trinket2" }
+        assertNull(trinket.worn)
+        assertEquals("Empty", trinket.wornName)
+        assertEquals(249469, trinket.pick?.id)
         assertTrue(rows.first { it.slot == "shoulder" }.isBestInSlot)
         assertEquals("Not in our item data yet", rows.first { it.slot == "wrist" }.wornName)
-        assertEquals("Dark Iron Rifle", rows.first { it.slot == "off_hand" }.wornName)
+        assertEquals("Mourning Handguards", rows.first { it.slot == "hands" }.wornName)
     }
 }

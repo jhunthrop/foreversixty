@@ -98,7 +98,7 @@ private fun Worn(row: GearRow, build: String, open: (ItemLook, Int?) -> Unit, mo
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        ItemIcon(worn?.icon, worn?.quality, build, 36.dp, dashed = worn == null)
+        ItemIcon(worn?.icon, worn?.quality, build, 36.dp, dashed = worn?.icon == null)
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(row.wornName, style = HomeType.meta, color = if (worn == null) FsColor.muted else ItemQuality(worn.quality).text)
             row.wornLevel?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }

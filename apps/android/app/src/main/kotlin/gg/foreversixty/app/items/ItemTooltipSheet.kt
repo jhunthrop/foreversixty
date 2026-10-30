@@ -124,6 +124,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
                     Column {
                         Text(alt.look.name ?: stringResource(R.string.items_notInData), style = HomeType.body, color = ItemQuality(alt.look.quality).text)
                         Text(alt.meta, style = HomeType.meta, color = FsColor.muted)
+                        alt.source?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }
                     }
                 }
                 HorizontalDivider(color = FsColor.lineSoft)

@@ -48,8 +48,8 @@ data class ItemTooltipSources(
     val bis: BisFile?,
 )
 
-/** One runner-up under "The next best". */
-data class ItemTooltipAlternative(val look: ItemLook, val meta: String)
+/** One runner-up under "The next best": its delta against the pick and where it comes from. */
+data class ItemTooltipAlternative(val look: ItemLook, val meta: String, val source: String?)
 
 /**
  * Everything the tooltip sheet draws, in the game's order (spec F2.6, the site's
@@ -95,8 +95,9 @@ data class ItemTooltipModel(
                 known = true,
                 binds = ItemVocabulary.bindsLine(item.bonding)?.let(res::getString),
                 unique = item.unique,
-                slotName = slotName,
-                typeName = typeName(item, weapon, res),
+                slotName = if (weapon) weaponSlotName(item, res) else slotName,
+                typeName = (if (weapon) ItemVocabulary.subclassName(item.subclass) else ItemVocabulary.armorTypeName(item.armorType))
+                    ?.let(res::getString),
                 armor = item.armor.takeIf { it > 0 }?.let { res.getString(R.string.tooltip_armor, it) },
                 weaponDamage = if (weapon) {
                     res.getString(R.string.items_weapon_damage, item.damageMin.roundToInt(), item.damageMax.roundToInt())
@@ -134,20 +135,16 @@ data class ItemTooltipModel(
         }
 
         /**
-         * The right-hand word on the slot line: the armor type from the client, else a weapon's
-         * handedness, which is exact from the published row (the site's `typeLabel`).
+         * The left word of a weapon's slot line as the client prints it (`Two-Hand`, `Main Hand`):
+         * the client's InventoryType when the data carries it, else what `two_hand` and the slot say.
          */
-        private fun typeName(item: Item, weapon: Boolean, res: Resources): String? {
-            ItemVocabulary.armorTypeName(item.armorType)?.let { return res.getString(it) }
-            if (!weapon) return null
-            return res.getString(
-                when {
-                    item.twoHand -> R.string.items_weapon_twoHand
-                    item.slot == "ranged" -> R.string.items_weapon_ranged
-                    else -> R.string.items_weapon_oneHand
-                },
-            )
-        }
+        private fun weaponSlotName(item: Item, res: Resources): String = res.getString(
+            ItemVocabulary.weaponSlotName(item.weaponSlot) ?: when {
+                item.twoHand -> R.string.items_weaponSlot_twoHand
+                item.slot == "ranged" -> R.string.items_weaponSlot_ranged
+                else -> R.string.items_weaponSlot_oneHand
+            },
+        )
 
         /** `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order. */
         private fun statLines(item: Item, res: Resources): List<String> =
@@ -157,25 +154,23 @@ data class ItemTooltipModel(
             }
 
         /**
-         * Where it comes from: the BiS row's words for the item, else the caller's, with the
-         * reputation standing the client requires (`Warsong Outriders (Exalted)`).
+         * Where it comes from: the site's formatted line (the BiS row's, else the caller's, which
+         * the API formats the same way), plus the standing a vendor requires (` · requires
+         * Friendly`). A reputation reward's line already names its standing.
          */
         private fun source(item: Item, request: ItemTooltipRequest, band: BisBand?, res: Resources): String? {
-            val (words, kind) = bisSource(item.id, band) ?: (request.sourceLine to null)
-            words ?: return null
-            val standing = ItemVocabulary.standingName(item.minStanding)?.let(res::getString) ?: return words
-            return if (kind == "rep") {
-                res.getString(R.string.tooltip_repSource, words, standing)
-            } else {
-                words + res.getString(R.string.tooltip_requiresStanding, standing)
-            }
+            val (line, kind) = bisSource(item.id, band) ?: (request.sourceLine to null)
+            line ?: return null
+            val standing = ItemVocabulary.standingName(item.minStanding)?.let(res::getString)
+            return if (kind == "vendor" && standing != null) line + res.getString(R.string.tooltip_requiresStanding, standing) else line
         }
 
         private fun bisSource(id: Int, band: BisBand?): Pair<String?, String?>? {
             band ?: return null
-            band.slots.firstOrNull { it.itemId == id && it.source != null }?.let { return it.source to it.sourceKind }
+            band.slots.firstOrNull { it.itemId == id && (it.sourceLine ?: it.source) != null }
+                ?.let { return (it.sourceLine ?: it.source) to it.sourceKind }
             band.slots.forEach { slot ->
-                slot.alternatives?.firstOrNull { it.itemId == id }?.let { return it.source to it.sourceKind }
+                slot.alternatives?.firstOrNull { it.itemId == id }?.let { return (it.sourceLine ?: it.source) to it.sourceKind }
             }
             return null
         }
@@ -195,7 +190,7 @@ data class ItemTooltipModel(
                 res.getString(R.string.tooltip_delta, ItemNumbers.delta(alt.dpsDelta))
             }
             val worn = if (alt.itemId == request.wornId) res.getString(R.string.tooltip_youWear) else ""
-            ItemTooltipAlternative(look, worn + delta)
+            ItemTooltipAlternative(look, worn + delta, alt.sourceLine ?: alt.source)
         }
 
         private fun footer(slotName: String?, request: ItemTooltipRequest, bis: BisFile?, res: Resources): String? {

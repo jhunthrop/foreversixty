@@ -4,6 +4,7 @@ import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemVocabulary
+import gg.foreversixty.app.model.BisBand
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.HomeItem
 import gg.foreversixty.app.model.HomeUpgrade
@@ -29,15 +30,49 @@ data class GearRow(
  * build's items file. Nothing is ranked or compared here.
  */
 object GearModel {
-    fun rows(home: CharacterHome, gear: Map<String, Int>, items: Map<Int, Item>, res: Resources): List<GearRow> {
+    /** [offHandBlockedBy] names the two-hander that leaves the off hand empty (see [offHandBlocker]). */
+    fun rows(
+        home: CharacterHome,
+        gear: Map<String, Int>,
+        items: Map<Int, Item>,
+        res: Resources,
+        offHandBlockedBy: String? = null,
+    ): List<GearRow> {
         val upgrades = home.upgrades.associateBy { it.slot }
         val best = home.alreadyBest.associateBy { it.slot }
         return ItemVocabulary.frameSlots.map { slot ->
             val name = ItemVocabulary.slotName(slot)?.let(res::getString) ?: slot
             upgrades[slot]?.let { return@map upgradeRow(it, name, res) }
             best[slot]?.let { return@map bestRow(it.item, slot, name, res) }
+            if (slot == OFF_HAND && gear[slot] == null && offHandBlockedBy != null) {
+                return@map GearRow(
+                    slot, name, null, res.getString(R.string.items_offHandTwoHand, offHandBlockedBy), null, null, isBestInSlot = false,
+                )
+            }
             exportRow(gear[slot], slot, name, items, res)
         }
+    }
+
+    private const val OFF_HAND = "off_hand"
+    private const val MAIN_HAND = "main_hand"
+    private const val TWO_HAND_EQUIPPED = "two_hand_equipped"
+
+    /**
+     * The two-hander that leaves the off hand empty, as the Discord panel words it: the worn main
+     * hand when the items file says it is two-handed, else the band's main-hand pick when the
+     * band's off hand is empty for that reason (`two_hand_equipped`).
+     */
+    fun offHandBlocker(home: CharacterHome, gear: Map<String, Int>, items: Map<Int, Item>, band: BisBand?): String? {
+        if (gear[OFF_HAND] != null) return null
+        val wornMain = home.upgrades.firstOrNull { it.slot == MAIN_HAND }?.worn?.id
+            ?: home.alreadyBest.firstOrNull { it.slot == MAIN_HAND }?.item?.id
+            ?: gear[MAIN_HAND]
+        wornMain?.let { items[it] }?.takeIf { it.twoHand }?.let { return it.name }
+        band ?: return null
+        if (band.slots.firstOrNull { it.slot == OFF_HAND }?.emptyReason != TWO_HAND_EQUIPPED) return null
+        val main = band.slots.firstOrNull { it.slot == MAIN_HAND } ?: return null
+        val id = main.itemId ?: return null
+        return items[id]?.name ?: main.itemName
     }
 
     private fun upgradeRow(upgrade: HomeUpgrade, slotName: String, res: Resources): GearRow {

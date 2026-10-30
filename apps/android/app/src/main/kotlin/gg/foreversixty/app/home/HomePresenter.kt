@@ -175,7 +175,7 @@ class HomePresenter(
 
     private fun upgradesBody(home: CharacterHome, band: String): HomeAnswerBody {
         if (home.upgradeCount <= 0) return HomeAnswerBody.AllMatch(res.getString(R.string.home_answer_allMatch, band))
-        val rows = home.upgrades.take(VISIBLE_ROWS).map { row(it, home.unitWord.orEmpty()) }
+        val rows = presentationOrder(home.upgrades).take(VISIBLE_ROWS).map { row(it, home.unitWord.orEmpty()) }
         val more = home.upgradeCount - rows.size
         val footer = if (more > 0) {
             res.getQuantityString(R.plurals.home_upgrades_more, more, more)
@@ -255,6 +255,20 @@ class HomePresenter(
             val level = worn.itemLevel
             if (!worn.known || name == null || level == null) return worn.label
             return res.getString(R.string.home_upgrades_replaces, name, level)
+        }
+
+        /**
+         * The rows in the coordinator's order (F2 fix round, 2026-10-31), for presentation only:
+         * measured gains largest first, then gains not modelled yet, then empty slots. The gains
+         * are the server's; this only arranges them. Equal rows keep the server's order.
+         */
+        fun presentationOrder(upgrades: List<HomeUpgrade>): List<HomeUpgrade> {
+            fun group(u: HomeUpgrade) = when {
+                u.modelled && u.gain != null -> 0
+                u.worn != null -> 1
+                else -> 2
+            }
+            return upgrades.sortedWith(compareBy<HomeUpgrade> { group(it) }.thenByDescending { if (group(it) == 0) it.gain else null })
         }
 
         /** `night_elf` → `Night Elf`; the API's slugs are lowercase. */

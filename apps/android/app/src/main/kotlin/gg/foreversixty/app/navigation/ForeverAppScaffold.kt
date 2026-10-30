@@ -10,12 +10,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
 import gg.foreversixty.app.home.HomeDependencies
@@ -24,11 +27,14 @@ import gg.foreversixty.app.home.HomeRoute
 /** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
 @Composable
 fun ForeverAppScaffold(home: HomeDependencies) {
-    var selected by rememberSaveable { mutableStateOf(ForeverTab.Character) }
+    var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
+        // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {
-            ForeverTab.Character -> HomeRoute(home, openBis = { selected = ForeverTab.Bis }) { ComingSoon(selected) }
-            ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
+            ForeverTab.Home -> HomeRoute(home, openBis = { selected = ForeverTab.Bis }) { ComingSoon(selected) }
+            ForeverTab.Raids -> ComingSoon(selected)
+            ForeverTab.Bis -> ComingSoon(selected)
+            ForeverTab.You -> ComingSoon(selected)
         }
     }
 }
@@ -49,13 +55,27 @@ fun ForeverTabScaffold(
                         selected = tab == selected,
                         onClick = { onSelect(tab) },
                         icon = { Icon(tab.icon, contentDescription = null) },
-                        label = { Text(stringResource(tab.label)) },
+                        label = { TabLabel(stringResource(tab.label)) },
                     )
                 }
             }
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) { content() }
+    }
+}
+
+/** The largest font scale a tab label grows to; past it the label stays one line (spec §10). */
+private const val TAB_LABEL_MAX_FONT_SCALE = 1.3f
+
+/** A tab label on one line whatever the font scale: the scale is capped, the icon carries the rest. */
+@Composable
+private fun TabLabel(text: String) {
+    val density = LocalDensity.current
+    CompositionLocalProvider(
+        LocalDensity provides Density(density.density, density.fontScale.coerceAtMost(TAB_LABEL_MAX_FONT_SCALE)),
+    ) {
+        Text(text, maxLines = 1, softWrap = false)
     }
 }
 

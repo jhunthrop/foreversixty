@@ -96,29 +96,53 @@ class HomeScreenshotTest {
     fun `F2_5 error with the cached Next rows`() = capture("home-error") { Answer(HomePhase.Failed(HomeFixtures.home())) }
 
     @Test
-    fun `F2_6 the tooltip partly expanded`() = capture("tooltip-medium") { TooltipOver(226887, 470) }
+    fun `F2_6 the tooltip partly expanded`() = capture("tooltip-medium") { TooltipOver(252605, 470) }
 
     @Test
-    fun `F2_6 the tooltip fully expanded`() = capture("tooltip-large") { TooltipOver(226887, 760) }
+    fun `F2_6 the tooltip fully expanded`() = capture("tooltip-large") { TooltipOver(252605, 760) }
 
     @Test
     fun `F2_6 the tooltip at font scale 2`() {
         RuntimeEnvironment.setFontScale(2f)
-        capture("tooltip-large-xl") { TooltipOver(226887, 760) }
+        capture("tooltip-large-xl") { TooltipOver(252605, 760) }
     }
 
     @Test
-    fun `F2_6 a reputation item`() = capture("tooltip-rep") { TooltipOver(20068, 760) }
+    fun `F2_6 a vendor item with a standing`() = capture("tooltip-vendor") { TooltipOver(276202, 760) }
 
     @Test
     fun `F2_6 a weapon`() = capture("tooltip-weapon") { TooltipOver(250619, 760) }
 
     @Test
-    fun `F2_7 Your gear`() = capture("gear-default") {
+    fun `F2_7 Your gear`() = capture("gear-default") { Gear() }
+
+    @Test
+    @Config(qualifiers = PIXEL_9_TALL)
+    fun `F2_7 Your gear, all 17 slots`() = capture("gear-full") { Gear() }
+
+    @Test
+    @Config(qualifiers = PIXEL_9_TALL)
+    fun `F2_1 the answer, full length`() = capture("home-full") { Answer(HomePhase.Loaded(HomeFixtures.home())) }
+
+    @Test
+    fun `F2_7 Your gear at font scale 2`() {
+        RuntimeEnvironment.setFontScale(2f)
+        capture("gear-default-xl") { Gear() }
+    }
+
+    @Composable
+    private fun Gear() {
         val res = LocalResources.current
         val home = HomeFixtures.home()
+        val sources = HomeFixtures.tooltipSources()
+        val probe = HomePresenter.tooltipRequest(ItemLook(0), home, HomeFixtures.velaren)
+        val blocker = GearModel.offHandBlocker(home, emptyMap(), sources.items, ItemTooltipModel.band(probe, sources.bis))
         Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-            GearList(GearModel.rows(home, emptyMap(), HomeFixtures.tooltipSources().items, res), "What you wear, and the pick for 60 · raid. Tap an item for its tooltip.", home.dataBuild)
+            GearList(
+                GearModel.rows(home, emptyMap(), sources.items, res, blocker),
+                "What you wear, and the pick for 60 · raid. Tap an item for its tooltip.",
+                home.dataBuild,
+            )
         }
     }
 
@@ -153,7 +177,7 @@ class HomeScreenshotTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    ForeverTabScaffold(selected = ForeverTab.Character, onSelect = {}) { screen() }
+                    ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { screen() }
                 }
             }
         }
@@ -168,3 +192,6 @@ private val TOLERANT = RoborazziOptions(
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+
+/** Pixel 9's width at a tall height, for the full-length captures. */
+private const val PIXEL_9_TALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"

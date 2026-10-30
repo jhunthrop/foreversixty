@@ -3,18 +3,8 @@
 <!-- Feature lanes reach these as they build screens; until then most are unused. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
     <string name="app_name">Forever Sixty</string>
-    <string name="shell_tab_character">Character</string>
-    <string name="shell_tab_sims">Sims</string>
-    <string name="shell_tab_account">Account</string>
-    <string name="shell_title">Forever Sixty</string>
     <string name="shell_comingSoon">Coming soon</string>
     <string name="shell_arrivesNext">%1$s arrives in the next build.</string>
-    <string name="shell_home_tagline">Play your class better.</string>
-    <string name="shell_home_noCharacter">Link a character with the addon or companion to see it here.</string>
-    <string name="shell_home_level">Level %1$d</string>
-    <string name="shell_home_levelClass">Level %1$d %2$s</string>
-    <string name="shell_home_signInFirst">Sign in to see your character.</string>
-    <string name="shell_home_failed">Could not load your character just now.</string>
     <string name="tab_home">Home</string>
     <string name="tab_raids">Raids</string>
     <string name="tab_bis">BiS</string>
@@ -183,10 +173,27 @@
     <string name="items_weapon_damage" tools:ignore="PluralsCandidate">%1$d - %2$d Damage</string>
     <string name="items_weapon_speed">Speed %1$s</string>
     <string name="items_weapon_dps">(%1$s damage per second)</string>
-    <string name="items_weapon_twoHand">Two-Handed Weapon</string>
-    <string name="items_weapon_oneHand">One-Handed Weapon</string>
-    <string name="items_weapon_ranged">Ranged Weapon</string>
     <string name="items_bind_quest">Quest Item</string>
+    <string name="items_weaponSlot_oneHand">One-Hand</string>
+    <string name="items_weaponSlot_twoHand">Two-Hand</string>
+    <string name="items_weaponSlot_mainHand">Main Hand</string>
+    <string name="items_weaponSlot_offHand">Off Hand</string>
+    <string name="items_weaponSlot_ranged">Ranged</string>
+    <string name="items_weaponSlot_thrown">Thrown</string>
+    <string name="items_subclass_axe">Axe</string>
+    <string name="items_subclass_bow">Bow</string>
+    <string name="items_subclass_gun">Gun</string>
+    <string name="items_subclass_mace">Mace</string>
+    <string name="items_subclass_polearm">Polearm</string>
+    <string name="items_subclass_sword">Sword</string>
+    <string name="items_subclass_staff">Staff</string>
+    <string name="items_subclass_fistWeapon">Fist Weapon</string>
+    <string name="items_subclass_dagger">Dagger</string>
+    <string name="items_subclass_thrown">Thrown</string>
+    <string name="items_subclass_crossbow">Crossbow</string>
+    <string name="items_subclass_wand">Wand</string>
+    <string name="items_subclass_fishingPole">Fishing Pole</string>
+    <string name="items_offHandTwoHand">none: %1$s is two-handed.</string>
     <string name="items_header">%1$s · %2$s</string>
     <string name="items_ilvl">ilvl %1$d</string>
     <string name="items_pickArrow">→ %1$s</string>

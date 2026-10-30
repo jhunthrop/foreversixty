@@ -35,11 +35,12 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemTooltipSheet
+import gg.foreversixty.app.items.ItemTooltipSources
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.FinishedSim
-import gg.foreversixty.app.model.Item
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.AccountApi
@@ -194,13 +195,13 @@ fun HomeCharacterScreen(
 @Composable
 private fun GearPage(home: CharacterHome, character: HomeCharacter, catalog: ItemCatalog, open: (ItemLook, Int?) -> Unit) {
     val res = LocalResources.current
-    val items by produceState<Map<Int, Item>>(emptyMap(), home) {
-        val probe = HomePresenter.tooltipRequest(ItemLook(0), home, character)
-        value = catalog.sources(probe)?.items.orEmpty()
-    }
+    val probe = HomePresenter.tooltipRequest(ItemLook(0), home, character)
+    val sources by produceState<ItemTooltipSources?>(null, home) { value = catalog.sources(probe) }
+    val items = sources?.items.orEmpty()
+    val blocker = GearModel.offHandBlocker(home, character.gear, items, ItemTooltipModel.band(probe, sources?.bis))
     Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
         GearList(
-            rows = GearModel.rows(home, character.gear, items, res),
+            rows = GearModel.rows(home, character.gear, items, res, blocker),
             intro = stringResource(R.string.gear_intro, HomePresenter.bandHead(home, res).orEmpty()),
             build = home.dataBuild,
             open = open,
