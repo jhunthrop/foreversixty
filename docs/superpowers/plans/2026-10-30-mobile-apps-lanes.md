@@ -101,6 +101,7 @@ The time-based events (`raid.signup_nudge`, `raid.starting`, `raid.short`) come 
 
 ## Guard rails
 
+- **API lanes merge after launch (coordinator ruling, 2026-10-30).** The A1, A2 and A3 branches change auth or add migrations, and the apps build against contract fixtures, so none of them merges to main before Nov 6. The app scaffolds, tokens, contracts and spec merge now.
 - **Launch week freeze.** Lanes A1 and A2 add endpoints and a migration. No API deploy that carries their migration from Nov 3 to Nov 5 (launch Nov 4). Their code lands dark, behind unmounted routes, before or after that window. Only the deployed API migrates.
 - **One behaviour, one place.** Rules stay in the API and the static data. Neither app re-derives BiS, gains or scores.
 - **No shared UI layer.** Swift and Kotlin each render natively from the same spec and contracts.
