@@ -1092,6 +1092,18 @@
         }
       }
     },
+    "items.offHandTwoHand": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none: %1$@ is two-handed."
+          }
+        }
+      }
+    },
     "items.pickArrow": {
       "comment": "Arguments: 1 item (string)",
       "extractionState": "manual",
@@ -1754,6 +1766,149 @@
         }
       }
     },
+    "items.subclass.axe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Axe"
+          }
+        }
+      }
+    },
+    "items.subclass.bow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bow"
+          }
+        }
+      }
+    },
+    "items.subclass.crossbow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crossbow"
+          }
+        }
+      }
+    },
+    "items.subclass.dagger": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dagger"
+          }
+        }
+      }
+    },
+    "items.subclass.fishingPole": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fishing Pole"
+          }
+        }
+      }
+    },
+    "items.subclass.fistWeapon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fist Weapon"
+          }
+        }
+      }
+    },
+    "items.subclass.gun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gun"
+          }
+        }
+      }
+    },
+    "items.subclass.mace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mace"
+          }
+        }
+      }
+    },
+    "items.subclass.polearm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polearm"
+          }
+        }
+      }
+    },
+    "items.subclass.staff": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staff"
+          }
+        }
+      }
+    },
+    "items.subclass.sword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sword"
+          }
+        }
+      }
+    },
+    "items.subclass.thrown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thrown"
+          }
+        }
+      }
+    },
+    "items.subclass.wand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wand"
+          }
+        }
+      }
+    },
     "items.weapon.damage": {
       "comment": "Arguments: 1 min (int), 2 max (int)",
       "extractionState": "manual",
@@ -1778,28 +1933,6 @@
         }
       }
     },
-    "items.weapon.oneHand": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One-Handed Weapon"
-          }
-        }
-      }
-    },
-    "items.weapon.ranged": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ranged Weapon"
-          }
-        }
-      }
-    },
     "items.weapon.speed": {
       "comment": "Arguments: 1 speed (string)",
       "extractionState": "manual",
@@ -1812,13 +1945,68 @@
         }
       }
     },
-    "items.weapon.twoHand": {
+    "items.weaponSlot.mainHand": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Two-Handed Weapon"
+            "value": "Main Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.offHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.oneHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-Hand"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.ranged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranged"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.thrown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thrown"
+          }
+        }
+      }
+    },
+    "items.weaponSlot.twoHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two-Hand"
           }
         }
       }
@@ -3897,118 +4085,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Coming soon"
-          }
-        }
-      }
-    },
-    "shell.home.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not load your character just now."
-          }
-        }
-      }
-    },
-    "shell.home.level": {
-      "comment": "Arguments: 1 n (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Level %1$lld"
-          }
-        }
-      }
-    },
-    "shell.home.levelClass": {
-      "comment": "Arguments: 1 n (int), 2 class (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Level %1$lld %2$@"
-          }
-        }
-      }
-    },
-    "shell.home.noCharacter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Link a character with the addon or Battle.net to see it here."
-          }
-        }
-      }
-    },
-    "shell.home.signInFirst": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in to see your character."
-          }
-        }
-      }
-    },
-    "shell.home.tagline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Play your class better."
-          }
-        }
-      }
-    },
-    "shell.tab.account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
-          }
-        }
-      }
-    },
-    "shell.tab.character": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Character"
-          }
-        }
-      }
-    },
-    "shell.tab.sims": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sims"
-          }
-        }
-      }
-    },
-    "shell.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Forever Sixty"
           }
         }
       }

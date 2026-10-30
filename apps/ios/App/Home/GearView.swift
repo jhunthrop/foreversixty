@@ -60,7 +60,7 @@ struct GearRowView: View {
     private var worn: some View {
         Button { if let look = row.worn { open(look, look.id) } } label: {
             HStack(alignment: .center, spacing: 12) {
-                ItemIconView(icon: row.worn?.icon, quality: row.worn?.quality, build: build, size: 36, dashed: row.worn == nil)
+                ItemIconView(icon: row.worn?.icon, quality: row.worn?.quality, build: build, size: 36, dashed: row.worn?.icon == nil)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(row.wornName).font(HomeType.meta)
                         .foregroundStyle(row.worn == nil ? FSColor.muted : ItemQuality(value: row.worn?.quality).text)

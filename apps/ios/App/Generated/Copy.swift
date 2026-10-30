@@ -8,18 +8,6 @@ enum Copy {
     /// Forever Sixty
     static var appName: String { text("app.name") }
 
-    /// Character
-    static var shellTabCharacter: String { text("shell.tab.character") }
-
-    /// Sims
-    static var shellTabSims: String { text("shell.tab.sims") }
-
-    /// Account
-    static var shellTabAccount: String { text("shell.tab.account") }
-
-    /// Forever Sixty
-    static var shellTitle: String { text("shell.title") }
-
     /// Coming soon
     static var shellComingSoon: String { text("shell.comingSoon") }
 
@@ -27,28 +15,6 @@ enum Copy {
     static func shellArrivesNext(tab: String) -> String {
         format("shell.arrivesNext", tab)
     }
-
-    /// Play your class better.
-    static var shellHomeTagline: String { text("shell.home.tagline") }
-
-    /// Link a character with the addon or Battle.net to see it here.
-    static var shellHomeNoCharacter: String { text("shell.home.noCharacter") }
-
-    /// Level {n}
-    static func shellHomeLevel(n: Int) -> String {
-        format("shell.home.level", n)
-    }
-
-    /// Level {n} {class}
-    static func shellHomeLevelClass(n: Int, className: String) -> String {
-        format("shell.home.levelClass", n, className)
-    }
-
-    /// Sign in to see your character.
-    static var shellHomeSignInFirst: String { text("shell.home.signInFirst") }
-
-    /// Could not load your character just now.
-    static var shellHomeFailed: String { text("shell.home.failed") }
 
     /// Home
     static var tabHome: String { text("tab.home") }
@@ -601,17 +567,70 @@ enum Copy {
         format("items.weapon.dps", dps)
     }
 
-    /// Two-Handed Weapon
-    static var itemsWeaponTwoHand: String { text("items.weapon.twoHand") }
-
-    /// One-Handed Weapon
-    static var itemsWeaponOneHand: String { text("items.weapon.oneHand") }
-
-    /// Ranged Weapon
-    static var itemsWeaponRanged: String { text("items.weapon.ranged") }
-
     /// Quest Item
     static var itemsBindQuest: String { text("items.bind.quest") }
+
+    /// One-Hand
+    static var itemsWeaponSlotOneHand: String { text("items.weaponSlot.oneHand") }
+
+    /// Two-Hand
+    static var itemsWeaponSlotTwoHand: String { text("items.weaponSlot.twoHand") }
+
+    /// Main Hand
+    static var itemsWeaponSlotMainHand: String { text("items.weaponSlot.mainHand") }
+
+    /// Off Hand
+    static var itemsWeaponSlotOffHand: String { text("items.weaponSlot.offHand") }
+
+    /// Ranged
+    static var itemsWeaponSlotRanged: String { text("items.weaponSlot.ranged") }
+
+    /// Thrown
+    static var itemsWeaponSlotThrown: String { text("items.weaponSlot.thrown") }
+
+    /// Axe
+    static var itemsSubclassAxe: String { text("items.subclass.axe") }
+
+    /// Bow
+    static var itemsSubclassBow: String { text("items.subclass.bow") }
+
+    /// Gun
+    static var itemsSubclassGun: String { text("items.subclass.gun") }
+
+    /// Mace
+    static var itemsSubclassMace: String { text("items.subclass.mace") }
+
+    /// Polearm
+    static var itemsSubclassPolearm: String { text("items.subclass.polearm") }
+
+    /// Sword
+    static var itemsSubclassSword: String { text("items.subclass.sword") }
+
+    /// Staff
+    static var itemsSubclassStaff: String { text("items.subclass.staff") }
+
+    /// Fist Weapon
+    static var itemsSubclassFistWeapon: String { text("items.subclass.fistWeapon") }
+
+    /// Dagger
+    static var itemsSubclassDagger: String { text("items.subclass.dagger") }
+
+    /// Thrown
+    static var itemsSubclassThrown: String { text("items.subclass.thrown") }
+
+    /// Crossbow
+    static var itemsSubclassCrossbow: String { text("items.subclass.crossbow") }
+
+    /// Wand
+    static var itemsSubclassWand: String { text("items.subclass.wand") }
+
+    /// Fishing Pole
+    static var itemsSubclassFishingPole: String { text("items.subclass.fishingPole") }
+
+    /// none: {item} is two-handed.
+    static func itemsOffHandTwoHand(item: String) -> String {
+        format("items.offHandTwoHand", item)
+    }
 
     /// {quality} · {slot}
     static func itemsHeader(quality: String, slot: String) -> String {

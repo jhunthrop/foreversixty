@@ -184,25 +184,27 @@ struct HomeCharacterScreen: View {
 
 /// Your gear, with the build's items file loaded for the slots the answer does not name.
 struct GearScreen: View {
+    private static let probe = HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil)
+
     let home: CharacterHome
     let character: HomeCharacter
     let catalog: ItemCatalog
     let open: (HomeItemLook, Int?) -> Void
 
-    @State private var items: [Int: Item] = [:]
+    @State private var sources: ItemTooltipSources?
 
     var body: some View {
+        let items = sources?.items ?? [:]
+        let band = ItemTooltipModel.band(for: .forHome(Self.probe, home: home, character: character), in: sources?.bis)
+        let blocker = GearModel.offHandBlocker(home: home, gear: character.gear, items: items, band: band)
         GearView(
-            rows: GearModel.rows(home: home, gear: character.gear, items: items),
+            rows: GearModel.rows(home: home, gear: character.gear, items: items, offHandBlockedBy: blocker),
             intro: Copy.gearIntro(band: HomePresenter.bandHeadText(home) ?? ""),
             build: home.dataBuild,
             open: open
         )
         .task {
-            let probe = ItemTooltipRequest.forHome(
-                HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil), home: home, character: character
-            )
-            items = (try? await catalog.sources(for: probe).items) ?? [:]
+            sources = try? await catalog.sources(for: .forHome(Self.probe, home: home, character: character))
         }
     }
 }

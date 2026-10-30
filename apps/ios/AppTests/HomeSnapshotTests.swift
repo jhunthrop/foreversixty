@@ -55,6 +55,11 @@ struct HomeSnapshotTests {
         snap(home(phase), large: true, named: "home-default-xl")
     }
 
+    @Test("F2.1 the answer, full length")
+    func answerFull() throws {
+        snap(home(.loaded(try HomeFixtures.home(), offlineSince: nil)), tall: true, named: "home-full")
+    }
+
     @Test("F2.2 loading")
     func loading() { snap(home(.loading), named: "home-loading") }
 
@@ -87,8 +92,8 @@ struct HomeSnapshotTests {
     @Test("F2.6 the tooltip at the medium and large detents, default and AX5")
     func tooltip() throws {
         let request = ItemTooltipRequest.forHome(
-            HomeItemLook(id: 226_887, name: "Beastmaster's Cap", quality: 4, icon: "inv_helmet_24", itemLevel: 60),
-            home: try HomeFixtures.home(), character: HomeFixtures.velaren, sourceLine: "Saving the Best for Last", wornID: 279_253
+            HomeItemLook(id: 252_605, name: "Black Dragonscale Helm", quality: 4, icon: nil, itemLevel: 61),
+            home: try HomeFixtures.home(), character: HomeFixtures.velaren, sourceLine: "Crafted: Leatherworking", wornID: 279_253
         )
         let model = ItemTooltipModel.build(request, sources: try HomeFixtures.tooltipSources())
         let behind = home(.loaded(try HomeFixtures.home(), offlineSince: nil))
@@ -97,10 +102,10 @@ struct HomeSnapshotTests {
         snap(SheetFrame(height: 800, behind: behind) { ItemTooltipContent(request: request, phase: .loaded(model)) }, large: true, named: "tooltip-large-xl")
     }
 
-    @Test("F2.6 a reputation item and a weapon")
+    @Test("F2.6 a vendor item with a standing, and a weapon")
     func tooltipVariants() throws {
         let sources = try HomeFixtures.tooltipSources()
-        for (id, name) in [(20068, "tooltip-rep"), (250_619, "tooltip-weapon")] {
+        for (id, name) in [(276_202, "tooltip-vendor"), (250_619, "tooltip-weapon")] {
             let item = try #require(sources.items[id])
             let request = ItemTooltipRequest.forHome(
                 HomeItemLook(id: id, name: item.name, quality: item.quality, icon: item.icon, itemLevel: item.itemLevel),
@@ -114,11 +119,15 @@ struct HomeSnapshotTests {
     @Test("F2.7 Your gear, all 17 slots")
     func gear() throws {
         let home = try HomeFixtures.home()
-        let rows = GearModel.rows(home: home, gear: [:], items: try HomeFixtures.tooltipSources().items)
+        let sources = try HomeFixtures.tooltipSources()
+        let probe = ItemTooltipRequest.forHome(HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil), home: home, character: HomeFixtures.velaren)
+        let blocker = GearModel.offHandBlocker(home: home, gear: [:], items: sources.items, band: ItemTooltipModel.band(for: probe, in: sources.bis))
+        let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: blocker)
         let view = HomeCaptureFrame(title: Copy.gearTitle, large: true) {
             GearView(rows: rows, intro: Copy.gearIntro(band: "60 · raid"), build: home.dataBuild)
         }
         snap(view, named: "gear-default")
+        snap(view, large: true, named: "gear-default-xl")
         snap(view, tall: true, named: "gear-full")
     }
 }

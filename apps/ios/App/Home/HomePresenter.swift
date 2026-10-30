@@ -192,7 +192,7 @@ struct HomePresenter {
             return .message(Copy.homeAnswerNoList, buttons: [], note: nil)
         default:
             guard home.upgradeCount > 0 else { return .allMatch(Copy.homeAnswerAllMatch(band: band)) }
-            let rows = home.upgrades.prefix(Self.visibleRows).map { row($0, unit: home.unitWord ?? "") }
+            let rows = Self.presentationOrder(home.upgrades).prefix(Self.visibleRows).map { row($0, unit: home.unitWord ?? "") }
             let more = home.upgradeCount - rows.count
             return .upgrades(rows: rows, footer: more > 0 ? Copy.homeUpgradesMore(n: more) : Copy.homeUpgradesAllSlots)
         }
@@ -214,6 +214,22 @@ struct HomePresenter {
                 : .words(upgrade.gainWords),
             sourceLine: upgrade.pick.sourceLine
         )
+    }
+
+    /// The rows in the coordinator's order (F2 fix round, 2026-10-31), for presentation only:
+    /// measured gains largest first, then gains not modelled yet, then empty slots. The gains
+    /// are the server's; this only arranges them. Equal rows keep the server's order.
+    static func presentationOrder(_ upgrades: [HomeUpgrade]) -> [HomeUpgrade] {
+        func group(_ upgrade: HomeUpgrade) -> Int {
+            if upgrade.modelled, upgrade.gain != nil { return 0 }
+            return upgrade.worn == nil ? 2 : 1
+        }
+        return upgrades.enumerated().sorted { lhs, rhs in
+            let (gl, gr) = (group(lhs.element), group(rhs.element))
+            if gl != gr { return gl < gr }
+            if gl == 0, let a = lhs.element.gain, let b = rhs.element.gain, a != b { return a > b }
+            return lhs.offset < rhs.offset
+        }.map(\.element)
     }
 
     /// `Replaces Belt of the Archmage, ilvl 62`; the server's own label for an item our data

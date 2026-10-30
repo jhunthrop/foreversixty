@@ -39,10 +39,11 @@ struct ItemTooltipSources: Sendable {
     let bis: BisFile?
 }
 
-/// One runner-up under "The next best".
+/// One runner-up under "The next best": its delta against the pick and where it comes from.
 struct ItemTooltipAlternative: Equatable, Identifiable {
     let look: HomeItemLook
     let meta: String
+    let source: String?
     var id: Int { look.id }
 }
 
@@ -85,8 +86,8 @@ struct ItemTooltipModel: Equatable {
             known: true,
             binds: ItemVocabulary.bindsLine(item.bonding),
             unique: item.unique,
-            slotName: slotName,
-            typeName: Self.typeName(item, isWeapon: weapon),
+            slotName: weapon ? Self.weaponSlotName(item) : slotName,
+            typeName: weapon ? item.subclass.flatMap(ItemVocabulary.subclassName) : ItemVocabulary.armorTypeName(item.armorType),
             armor: item.armor > 0 ? Copy.tooltipArmor(n: item.armor) : nil,
             weaponDamage: weapon ? Copy.itemsWeaponDamage(min: Int(item.damageMin.rounded()), max: Int(item.damageMax.rounded())) : nil,
             weaponSpeed: weapon ? Copy.itemsWeaponSpeed(speed: String(format: "%.2f", item.speed)) : nil,
@@ -127,13 +128,12 @@ struct ItemTooltipModel: Equatable {
         weaponSlots.contains(item.slot) && item.damageMax > 0
     }
 
-    /// The right-hand word on the slot line: the armor type from the client, else a weapon's
-    /// handedness, which is exact from the published row (the site's `typeLabel`).
-    private static func typeName(_ item: Item, isWeapon: Bool) -> String? {
-        if let armor = ItemVocabulary.armorTypeName(item.armorType) { return armor }
-        guard isWeapon else { return nil }
-        if item.twoHand { return Copy.itemsWeaponTwoHand }
-        return item.slot == "ranged" ? Copy.itemsWeaponRanged : Copy.itemsWeaponOneHand
+    /// The left word of a weapon's slot line as the client prints it (`Two-Hand`, `Main Hand`):
+    /// the client's InventoryType when the data carries it, else what `two_hand` and the slot say.
+    private static func weaponSlotName(_ item: Item) -> String? {
+        if let word = item.weaponSlot.flatMap(ItemVocabulary.weaponSlotName) { return word }
+        if item.twoHand { return Copy.itemsWeaponSlotTwoHand }
+        return item.slot == "ranged" ? Copy.itemsWeaponSlotRanged : Copy.itemsWeaponSlotOneHand
     }
 
     /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order.
@@ -149,23 +149,23 @@ struct ItemTooltipModel: Equatable {
         return text.isEmpty ? nil : text
     }
 
-    /// Where it comes from: the BiS row's words for the item, else the caller's, with the
-    /// reputation standing the client requires (`Warsong Outriders (Exalted)`).
+    /// Where it comes from: the site's formatted line (the BiS row's, else the caller's, which the
+    /// API formats the same way), plus the standing a vendor requires (` · requires Friendly`).
+    /// A reputation reward's line already names its standing.
     private static func source(_ item: Item, request: ItemTooltipRequest, band: BisBand?) -> String? {
-        let (words, kind) = bisSource(of: item.id, in: band) ?? (request.sourceLine, nil)
-        guard let words else { return nil }
-        guard let standing = item.minStanding.flatMap(ItemVocabulary.standingName) else { return words }
-        if kind == "rep" { return Copy.tooltipRepSource(faction: words, standing: standing) }
-        return words + Copy.tooltipRequiresStanding(standing: standing)
+        let (line, kind) = bisSource(of: item.id, in: band) ?? (request.sourceLine, nil)
+        guard let line else { return nil }
+        guard kind == "vendor", let standing = item.minStanding.flatMap(ItemVocabulary.standingName) else { return line }
+        return line + Copy.tooltipRequiresStanding(standing: standing)
     }
 
     private static func bisSource(of id: Int, in band: BisBand?) -> (String?, String?)? {
         guard let band else { return nil }
-        if let slot = band.slots.first(where: { $0.itemId == id }), let words = slot.source {
-            return (words, slot.sourceKind)
+        if let slot = band.slots.first(where: { $0.itemId == id }), let line = slot.sourceLine ?? slot.source {
+            return (line, slot.sourceKind)
         }
         for slot in band.slots {
-            if let alt = slot.alternatives?.first(where: { $0.itemId == id }) { return (alt.source, alt.sourceKind) }
+            if let alt = slot.alternatives?.first(where: { $0.itemId == id }) { return (alt.sourceLine ?? alt.source, alt.sourceKind) }
         }
         return nil
     }
@@ -177,7 +177,7 @@ struct ItemTooltipModel: Equatable {
             let look = HomeItemLook(id: alt.itemId, name: row?.name ?? alt.itemName, quality: row?.quality, icon: row?.icon, itemLevel: row?.itemLevel)
             let delta = alt.dpsDelta == 0 ? Copy.itemsSameDps : Copy.tooltipDelta(delta: ItemNumbers.delta(alt.dpsDelta))
             let worn = alt.itemId == request.wornID ? Copy.tooltipYouWear : ""
-            return ItemTooltipAlternative(look: look, meta: worn + delta)
+            return ItemTooltipAlternative(look: look, meta: worn + delta, source: alt.sourceLine ?? alt.source)
         }
     }
 

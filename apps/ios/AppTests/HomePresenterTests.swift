@@ -9,34 +9,37 @@ import Testing
 @MainActor
 @Suite("Home answer")
 struct HomePresenterTests {
-    @Test("the rows keep the server's order and the card shows the first five")
-    func serverOrder() throws {
+    @Test("rows read measured gains largest first, then not modelled, then empty; the card shows five")
+    func presentationOrder() throws {
         let home = try HomeFixtures.home()
+        let ordered = HomePresenter.presentationOrder(home.upgrades).map(\.slot)
+        #expect(ordered == ["main_hand", "ranged", "legs", "feet", "chest", "head", "waist", "hands", "back", "finger2", "wrist", "trinket2"])
         let model = HomeFixtures.presenter().model(home)
         guard case let .upgrades(rows, footer) = model.body else { Issue.record("no rows"); return }
-        #expect(rows.map(\.slot) == home.upgrades.prefix(5).map(\.slot))
-        #expect(footer == "6 more upgrades · all 17 slots")
+        #expect(rows.map(\.slot) == Array(ordered.prefix(5)))
+        #expect(footer == "7 more upgrades · all 17 slots")
     }
 
     @Test("the hero: two figures, the note with the unmodelled count, the sync age")
     func hero() throws {
         let model = HomeFixtures.presenter().model(try HomeFixtures.home())
         #expect(model.heroMeta == "Orc Beast Mastery Hunter · Level 60 · Olympus XXVII")
-        #expect(model.count == "11 upgrades")
-        #expect(model.gain?.figure == "+76.2")
+        #expect(model.count == "12 upgrades")
+        #expect(model.gain?.figure == "+102.5")
         #expect(model.gain?.unit == "DPS")
-        #expect(model.note == "Best in slot for 60, together · 6 gains not modelled yet")
+        #expect(model.note == "Best in slot for 60, together · 2 gains not modelled yet")
         #expect(model.synced == "Synced 2 h ago from the addon")
         #expect(model.bandHead == "60 · raid")
     }
 
-    @Test("a measured gain is the server's figure; an unmodelled one is the server's words")
+    @Test("a measured gain is the server's figure, the source the server's formatted line")
     func gains() throws {
-        let model = HomeFixtures.presenter().model(try HomeFixtures.home())
+        let home = try HomeFixtures.home()
+        let model = HomeFixtures.presenter().model(home)
         guard case let .upgrades(rows, _) = model.body else { Issue.record("no rows"); return }
-        #expect(rows[0].gain == .measured(figure: "+11.1", unit: "DPS"))
-        #expect(rows[1].gain == .words("Gain not modelled yet"))
-        #expect(rows[0].meta == "Hands · Creeg Bothunk")
+        #expect(rows[0].gain == .measured(figure: "+21.2", unit: "DPS"))
+        #expect(rows[0].meta == "Main hand · Crafted: Blacksmithing")
+        #expect(HomePresenter.presentationOrder(home.upgrades).last?.gainWords == "Gain not modelled yet")
     }
 
     @Test("a negative gain keeps its true minus")
@@ -168,13 +171,13 @@ struct HomeStoreTests {
         let home = HomeStore.live(client: client, cache: MemoryHomeCache())
         await home.load(HomeFixtures.velaren)
         guard case let .loaded(answer, _) = home.phase else { Issue.record("not loaded"); return }
-        #expect(answer.upgradeCount == 11)
+        #expect(answer.upgradeCount == 12)
         let catalog = ItemCatalog(client: StaticDataClient(transport: transport), directory: nil)
         let request = ItemTooltipRequest.forHome(
-            HomeItemLook(id: 226_887, name: nil, quality: nil, icon: nil, itemLevel: nil), home: answer, character: HomeFixtures.velaren
+            HomeItemLook(id: 252_605, name: nil, quality: nil, icon: nil, itemLevel: nil), home: answer, character: HomeFixtures.velaren
         )
         let sources = try await catalog.sources(for: request)
-        #expect(sources.items[226_887] != nil)
+        #expect(sources.items[252_605] != nil)
         #expect(sources.bis != nil && !sources.sets.isEmpty)
     }
 }
@@ -189,36 +192,37 @@ struct ItemTooltipTests {
 
     @Test("a pick: binds, armor type, stats, levels, its source, the next best and the footer")
     func pick() throws {
-        let model = ItemTooltipModel.build(try request(226_887), sources: try HomeFixtures.tooltipSources())
+        let model = ItemTooltipModel.build(try request(252_605), sources: try HomeFixtures.tooltipSources())
         #expect(model.headerMeta == "Epic · Head")
-        #expect(model.binds == "Binds when picked up")
+        #expect(model.binds == "Binds when equipped")
         #expect(model.slotName == "Head")
         #expect(model.typeName == "Mail")
         #expect(model.armor?.hasSuffix(" Armor") == true)
         #expect(model.stats.allSatisfy { $0.hasPrefix("+") })
-        #expect(model.itemLevel == "Item Level 60")
-        #expect(model.source == "Saving the Best for Last")
+        #expect(model.itemLevel == "Item Level 61")
+        #expect(model.source == "Crafted: Leatherworking")
         #expect(model.alternatives.count == 2)
         #expect(model.pickFooter == "Best in slot for Head · Beast Mastery 60 · Raid-ready, Phase 1")
     }
 
-    @Test("reputation: a rep reward names its standing; a vendor adds what it requires")
+    @Test("a vendor item adds the standing it requires to the site's line")
     func reputation() throws {
         let sources = try HomeFixtures.tooltipSources()
-        #expect(ItemTooltipModel.build(try request(20068), sources: sources).source == "The Defilers (Exalted)")
-        #expect(ItemTooltipModel.build(try request(272_099), sources: sources).source == "Creeg Bothunk · requires Exalted")
+        #expect(ItemTooltipModel.build(try request(276_202), sources: sources).source == "Vendor: Friz Frazzlespark · requires Friendly")
     }
 
     @Test("the worn runner-up leads with You wear this")
     func youWear() throws {
-        let model = ItemTooltipModel.build(try request(234_202, wornID: 9533), sources: try HomeFixtures.tooltipSources())
-        #expect(model.alternatives.map(\.meta).contains("You wear this · \u{2212}8.2 DPS vs the pick"))
+        let model = ItemTooltipModel.build(try request(9533, wornID: 11862), sources: try HomeFixtures.tooltipSources())
+        #expect(model.alternatives.map(\.meta).contains("You wear this · \u{2212}2.3 DPS vs the pick"))
+        #expect(model.alternatives.first?.source == "2% from Ancient Treasure")
     }
 
-    @Test("a two-handed weapon names its handedness and its damage")
+    @Test("a weapon reads Two-Hand and its type, as the client prints it")
     func weapon() throws {
         let model = ItemTooltipModel.build(try request(250_619), sources: try HomeFixtures.tooltipSources())
-        #expect(model.typeName == "Two-Handed Weapon")
+        #expect(model.slotName == "Two-Hand")
+        #expect(model.typeName == "Polearm")
         #expect(model.weaponDamage?.hasSuffix(" Damage") == true)
         #expect(model.weaponDPS?.hasSuffix("damage per second)") == true)
     }
@@ -231,17 +235,21 @@ struct ItemTooltipTests {
         #expect(model.source == "Somewhere")
     }
 
-    @Test("Your gear: 17 rows in character-frame order, worn then the pick")
+    @Test("Your gear: 17 rows in frame order; the off hand names the two-hander")
     func gear() throws {
         let home = try HomeFixtures.home()
-        let items = try HomeFixtures.tooltipSources().items
-        let rows = GearModel.rows(home: home, gear: ["off_hand": 16004], items: items)
+        let sources = try HomeFixtures.tooltipSources()
+        let band = ItemTooltipModel.band(for: try request(0), in: sources.bis)
+        let blocker = GearModel.offHandBlocker(home: home, gear: [:], items: sources.items, band: band)
+        #expect(blocker == "Legionite Glaive")
+        let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: blocker)
         #expect(rows.map(\.slot) == ItemVocabulary.frameSlots)
         #expect(rows.count == 17)
-        let hands = try #require(rows.first { $0.slot == "hands" })
-        #expect(hands.worn == nil && hands.wornName == "Empty" && hands.pick?.id == 272_099)
+        #expect(rows.first { $0.slot == "off_hand" }?.wornName == "none: Legionite Glaive is two-handed.")
+        let trinket = try #require(rows.first { $0.slot == "trinket2" })
+        #expect(trinket.worn == nil && trinket.wornName == "Empty" && trinket.pick?.id == 249_469)
         #expect(rows.first { $0.slot == "shoulder" }?.isBestInSlot == true)
         #expect(rows.first { $0.slot == "wrist" }?.wornName == "Not in our item data yet")
-        #expect(rows.first { $0.slot == "off_hand" }?.wornName == "Dark Iron Rifle")
+        #expect(rows.first { $0.slot == "hands" }?.wornName == "Mourning Handguards")
     }
 }

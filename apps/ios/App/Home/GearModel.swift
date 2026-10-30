@@ -21,15 +21,36 @@ struct GearRow: Equatable, Identifiable {
 /// already-best row names the one item, and any other slot shows the export's worn item looked
 /// up in the build's items file. Nothing is ranked or compared here.
 enum GearModel {
-    static func rows(home: CharacterHome, gear: [String: Int], items: [Int: Item]) -> [GearRow] {
+    /// `offHandBlockedBy` names the two-hander that leaves the off hand empty (see `offHandBlocker`).
+    static func rows(home: CharacterHome, gear: [String: Int], items: [Int: Item], offHandBlockedBy: String? = nil) -> [GearRow] {
         let upgrades = Dictionary(home.upgrades.map { ($0.slot, $0) }, uniquingKeysWith: { first, _ in first })
         let best = Dictionary(home.alreadyBest.map { ($0.slot, $0) }, uniquingKeysWith: { first, _ in first })
         return ItemVocabulary.frameSlots.map { slot in
             let name = ItemVocabulary.slotName(slot) ?? slot
             if let upgrade = upgrades[slot] { return upgradeRow(upgrade, slotName: name) }
             if let item = best[slot]?.item { return bestRow(item, slot: slot, slotName: name) }
+            if slot == offHand, gear[slot] == nil, let blocker = offHandBlockedBy {
+                return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.itemsOffHandTwoHand(item: blocker),
+                               wornLevel: nil, pick: nil, isBestInSlot: false)
+            }
             return exportRow(gear[slot], slot: slot, slotName: name, items: items)
         }
+    }
+
+    private static let offHand = "off_hand"
+
+    /// The two-hander that leaves the off hand empty, as the Discord panel words it: the worn
+    /// main hand when the items file says it is two-handed, else the band's main-hand pick when
+    /// the band's off hand is empty for that reason (`two_hand_equipped`).
+    static func offHandBlocker(home: CharacterHome, gear: [String: Int], items: [Int: Item], band: BisBand?) -> String? {
+        guard gear[offHand] == nil else { return nil }
+        let wornMain = home.upgrades.first { $0.slot == "main_hand" }?.worn?.id
+            ?? home.alreadyBest.first { $0.slot == "main_hand" }?.item.id ?? gear["main_hand"]
+        if let id = wornMain, let item = items[id], item.twoHand { return item.name }
+        guard let band, band.slots.first(where: { $0.slot == offHand })?.emptyReason == "two_hand_equipped",
+              let main = band.slots.first(where: { $0.slot == "main_hand" }), let id = main.itemId
+        else { return nil }
+        return items[id]?.name ?? main.itemName
     }
 
     private static func upgradeRow(_ upgrade: HomeUpgrade, slotName: String) -> GearRow {

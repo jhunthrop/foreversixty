@@ -71,7 +71,7 @@ struct ItemTooltipContent: View {
     }
 
     private func header(look: HomeItemLook, meta: String) -> some View {
-        HStack(alignment: .center, spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             ItemIconView(icon: look.icon, quality: look.quality, build: request.build, size: 56)
             VStack(alignment: .leading, spacing: 2) {
                 Text(look.name ?? Copy.itemsNotInData)
@@ -111,6 +111,9 @@ struct ItemTooltipContent: View {
                             Text(alt.look.name ?? Copy.itemsNotInData).font(HomeType.body)
                                 .foregroundStyle(ItemQuality(value: alt.look.quality).text)
                             Text(alt.meta).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                            if let source = alt.source {
+                                Text(source).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                            }
                         }
                     }
                     .padding(.vertical, 10)

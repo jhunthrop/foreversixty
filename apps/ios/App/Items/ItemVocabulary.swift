@@ -74,6 +74,37 @@ enum ItemVocabulary {
         }
     }
 
+    static func subclassName(_ subclass: String) -> String? {
+        switch subclass {
+        case "axe": Copy.itemsSubclassAxe
+        case "bow": Copy.itemsSubclassBow
+        case "gun": Copy.itemsSubclassGun
+        case "mace": Copy.itemsSubclassMace
+        case "polearm": Copy.itemsSubclassPolearm
+        case "sword": Copy.itemsSubclassSword
+        case "staff": Copy.itemsSubclassStaff
+        case "fist_weapon": Copy.itemsSubclassFistWeapon
+        case "dagger": Copy.itemsSubclassDagger
+        case "thrown": Copy.itemsSubclassThrown
+        case "crossbow": Copy.itemsSubclassCrossbow
+        case "wand": Copy.itemsSubclassWand
+        case "fishing_pole": Copy.itemsSubclassFishingPole
+        default: nil
+        }
+    }
+
+    static func weaponSlotName(_ slot: String) -> String? {
+        switch slot {
+        case "one_hand": Copy.itemsWeaponSlotOneHand
+        case "two_hand": Copy.itemsWeaponSlotTwoHand
+        case "main_hand": Copy.itemsWeaponSlotMainHand
+        case "off_hand": Copy.itemsWeaponSlotOffHand
+        case "ranged": Copy.itemsWeaponSlotRanged
+        case "thrown": Copy.itemsWeaponSlotThrown
+        default: nil
+        }
+    }
+
     static func armorTypeName(_ armorType: String?) -> String? {
         switch armorType {
         case "cloth": Copy.tooltipArmorTypeCloth
