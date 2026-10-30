@@ -28,7 +28,7 @@ struct HomeTime {
 
     private func format(_ date: Date, _ pattern: String) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_GB")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.calendar = calendar
         formatter.timeZone = calendar.timeZone
         formatter.dateFormat = pattern

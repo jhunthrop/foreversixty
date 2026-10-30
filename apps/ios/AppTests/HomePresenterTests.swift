@@ -151,13 +151,31 @@ struct HomeStoreTests {
         #expect(store.phase == .failed(cached: home))
     }
 
-    @Test("the fixture transport answers the home route")
+    @Test("the cache entry survives a round trip through its file")
+    func cacheRoundTrip() throws {
+        let directory = FileManager.default.temporaryDirectory.appending(path: "home-cache-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let cache = FileHomeCache(directory: directory)
+        let entry = HomeCacheEntry(home: try HomeFixtures.home(), fetchedAt: HomeFixtures.now)
+        cache.save(entry, for: HomeFixtures.velaren.key)
+        #expect(cache.load(HomeFixtures.velaren.key) == entry)
+    }
+
+    @Test("fixture mode answers the home route and the tooltip's static files")
     func fixtureRoute() async throws {
-        let client = APIClient(baseURL: URL(string: "https://api.foreversixty.gg")!, transport: FixtureTransport(directory: HomeFixtures.directory))
+        let transport = FixtureTransport(directory: HomeFixtures.directory)
+        let client = APIClient(baseURL: try #require(URL(string: "https://api.foreversixty.gg")), transport: transport)
         let home = HomeStore.live(client: client, cache: MemoryHomeCache())
         await home.load(HomeFixtures.velaren)
         guard case let .loaded(answer, _) = home.phase else { Issue.record("not loaded"); return }
         #expect(answer.upgradeCount == 11)
+        let catalog = ItemCatalog(client: StaticDataClient(transport: transport), directory: nil)
+        let request = ItemTooltipRequest.forHome(
+            HomeItemLook(id: 226_887, name: nil, quality: nil, icon: nil, itemLevel: nil), home: answer, character: HomeFixtures.velaren
+        )
+        let sources = try await catalog.sources(for: request)
+        #expect(sources.items[226_887] != nil)
+        #expect(sources.bis != nil && !sources.sets.isEmpty)
     }
 }
 

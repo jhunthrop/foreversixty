@@ -13,6 +13,8 @@ struct GearView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                Text(Copy.gearTitle.uppercased()).font(HomeType.pageTitle).foregroundStyle(FSColor.strong)
+                    .accessibilityAddTraits(.isHeader)
                 Text(intro).font(HomeType.body).foregroundStyle(FSColor.muted)
                 VStack(spacing: 0) {
                     ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
@@ -26,7 +28,7 @@ struct GearView: View {
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.gearTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -42,7 +44,7 @@ struct GearRowView: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
             : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
         layout {
-            MicroLabel(row.slotName).frame(minWidth: 62, alignment: .leading)
+            MicroLabel(row.slotName).frame(width: typeSize.isAccessibilitySize ? nil : 84, alignment: .leading)
             HStack(alignment: .center, spacing: 12) {
                 worn
                 Spacer(minLength: 0)
@@ -73,7 +75,7 @@ struct GearRowView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(row.worn == nil)
+        .allowsHitTesting(row.worn != nil)
         .accessibilityElement(children: .combine)
         .accessibilityLabel([row.slotName, row.wornName, row.wornLevel, row.pick.map { Copy.itemsPickArrow(item: $0.name ?? "") }]
             .compactMap(\.self).joined(separator: ", "))

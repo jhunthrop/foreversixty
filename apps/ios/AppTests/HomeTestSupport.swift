@@ -66,7 +66,7 @@ enum HomeFixtures {
 
     static var utc: Calendar {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "UTC")!
+        calendar.timeZone = TimeZone(identifier: "UTC") ?? .gmt
         return calendar
     }
 }
