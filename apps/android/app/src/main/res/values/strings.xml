@@ -14,6 +14,10 @@
     <string name="common_saved">Saved.</string>
     <string name="common_failed">That did not save. Try again.</string>
     <string name="common_cancel">Cancel</string>
+    <string name="common_age_now">just now</string>
+    <string name="common_age_minutes" tools:ignore="PluralsCandidate">%1$d min ago</string>
+    <string name="common_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
+    <string name="common_age_days" tools:ignore="PluralsCandidate">%1$d d ago</string>
     <string name="signin_line">Play your class better.</string>
     <string name="signin_body">Sign in and your characters arrive with their gear, talents and guild.</string>
     <string name="signin_button">Sign in with Battle.net</string>
@@ -109,10 +113,6 @@
     <string name="home_next_talentsNoBuild">No guide build for this level range yet.</string>
     <string name="home_hero_level">Level %1$d</string>
     <string name="home_upgrades_bandRaid">%1$s · raid</string>
-    <string name="home_age_now">just now</string>
-    <string name="home_age_minutes" tools:ignore="PluralsCandidate">%1$d min ago</string>
-    <string name="home_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
-    <string name="home_age_days" tools:ignore="PluralsCandidate">%1$d d ago</string>
     <string name="items_quality_poor">Poor</string>
     <string name="items_quality_common">Common</string>
     <string name="items_quality_uncommon">Uncommon</string>
@@ -471,7 +471,7 @@
     <string name="you_signOut">Sign out</string>
     <string name="you_signOut_confirm">Sign out of Forever Sixty on this %1$s?</string>
     <string name="you_version">Version %1$s (%2$s) · data %3$s</string>
-    <string name="about_notAffiliated">Not affiliated with or endorsed by Blizzard Entertainment.</string>
+    <string name="about_notAffiliated">Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</string>
     <string name="plan_includes">What your plan includes</string>
     <string name="plan_feature_serverSims">Server sims that keep running after you close the app</string>
     <string name="plan_feature_coach">Coach notes on your raid logs</string>
@@ -498,4 +498,39 @@
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
     <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out on You.</string>
+    <string name="account_deviceWord">phone</string>
+    <string name="account_selector_detail" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
+    <string name="account_switcher_detail" tools:ignore="PluralsCandidate">%1$s · Level %2$d</string>
+    <string name="account_switcher_open">Opens your characters</string>
+    <string name="account_switcher_action">Switch character</string>
+    <string name="account_signOut_action">Sign out</string>
+    <string name="account_devices_loadFailed">Could not load your devices just now.</string>
+    <string name="account_delete_row">Delete account</string>
+    <string name="account_delete_title">Delete account</string>
+    <string name="account_delete_intro">Deleting your account removes what Forever Sixty holds about you:</string>
+    <string name="account_delete_item_identity">Your Battle.net sign-in and email address</string>
+    <string name="account_delete_item_characters">Your characters, their addon exports and sync history</string>
+    <string name="account_delete_item_logs">The combat logs you uploaded</string>
+    <string name="account_delete_item_sims">Your saved sims and builds, and the ratings derived from them</string>
+    <string name="account_delete_item_links">Your notification settings, Discord link and devices</string>
+    <string name="account_delete_lose_title">Billing and seats</string>
+    <string name="account_delete_lose_premium">Your Premium plan is cancelled and does not renew.</string>
+    <string name="account_delete_lose_founder">Your founder price is gone for good. A plan taken later is billed at the full price.</string>
+    <string name="account_delete_lose_guildPlan">The %1$s plan you pay for is cancelled, and its seats end for every member.</string>
+    <string name="account_delete_lose_seat">Your Premium seat from %1$s ends.</string>
+    <string name="account_delete_reports">Guild reports stay for the raiders in them. Your name on them becomes Former raider.</string>
+    <string name="account_delete_timing">Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner.</string>
+    <string name="account_delete_email">You can also ask by email at help@foreversixty.gg.</string>
+    <string name="account_delete_button">Delete account</string>
+    <string name="account_delete_confirm_title">Delete your Forever Sixty account?</string>
+    <string name="account_delete_confirm_body">Your characters, logs and sims are removed within thirty days. Every device is signed out now.</string>
+    <string name="account_delete_failed">Could not delete your account just now. Try again.</string>
+    <string name="account_delete_done">Your account is deleted. Everything is removed by %1$s.</string>
+    <string name="account_you_character">Character</string>
+    <string name="account_character_where">%1$s · %2$s</string>
+    <string name="account_ruleset_normal">Normal</string>
+    <string name="account_ruleset_pvp">PvP</string>
+    <string name="account_ruleset_rp">Roleplay</string>
+    <string name="account_ruleset_hardcore">Hardcore</string>
+    <string name="account_version_noData">Version %1$s (%2$s)</string>
 </resources>

@@ -37,9 +37,33 @@ public extension Endpoint where Response == Me {
     }
 }
 
+public extension Endpoint where Response == AccountDeletion {
+    /// DELETE /v1/me: Delete the account (in-app deletion, App Store 5.1.1(v); dark until its handler lands)
+    static func deleteAccount(_ body: AccountDeletionRequest) throws(APIError) -> Endpoint {
+        try .json(.delete, "/v1/me", body: body)
+    }
+}
+
 public extension Endpoint where Response == [Device] {
     /// GET /v1/devices: The account's devices
     static var listDevices: Endpoint { Endpoint(method: .get, path: "/v1/devices") }
+}
+
+public extension Endpoint where Response == Empty {
+    /// DELETE /v1/devices/{id}: Revoke a device; its token answers 401 at once
+    static func revokeDevice(id: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/devices/\(id)")
+    }
+
+    /// POST /v1/sims/{id}/seen: Mark the caller's finished server run as looked at
+    static func markSimSeen(id: String) -> Endpoint {
+        Endpoint(method: .post, path: "/v1/sims/\(id)/seen")
+    }
+
+    /// DELETE /v1/me/push-tokens/{token}: Drop this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
+    static func deletePushToken(token: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
+    }
 }
 
 public extension Endpoint where Response == ReportList {
@@ -75,18 +99,6 @@ public extension Endpoint where Response == SimResult {
     /// GET /v1/sims/{id}: One saved sim
     static func getSim(id: String) -> Endpoint {
         Endpoint(method: .get, path: "/v1/sims/\(id)")
-    }
-}
-
-public extension Endpoint where Response == Empty {
-    /// POST /v1/sims/{id}/seen: Mark the caller's finished server run as looked at
-    static func markSimSeen(id: String) -> Endpoint {
-        Endpoint(method: .post, path: "/v1/sims/\(id)/seen")
-    }
-
-    /// DELETE /v1/me/push-tokens/{token}: Drop this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
-    static func deletePushToken(token: String) -> Endpoint {
-        Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
     }
 }
 
@@ -283,6 +295,9 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/builds/{id}", fixture: "builds.get", status: 200),
         FixtureRoute(.get, "/v1/me", fixture: "me", status: 200),
         FixtureRoute(.patch, "/v1/me", fixture: "me.patch", status: 200),
+        FixtureRoute(.delete, "/v1/me", fixture: "me.delete", status: 202),
+        FixtureRoute(.get, "/v1/devices", fixture: "devices.list", status: 200),
+        FixtureRoute(.delete, "/v1/devices/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/reports", fixture: "reports.list", status: 200),
         FixtureRoute(.get, "/v1/reports/{id}", fixture: "reports.get", status: 200),
         FixtureRoute(.get, "/v1/sims", fixture: "sims.list", status: 200),

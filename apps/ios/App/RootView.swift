@@ -48,16 +48,32 @@ struct RootView: View {
             }
         }
         .tint(Theme.Palette.accent)
+        .environment(environment.session)
         .task { await environment.appConfig.refresh() }
+        .task { await environment.session.refresh() }
+        .task { await environment.session.watchForDeadTokens() }
     }
+
+    /// Lane F1: the account states and the character selector.
+    private var signInAvailable: Bool { environment.isAvailable(.signIn) }
 
     /// The tab slots. Each lane replaces its placeholder line: F2 Home, F4 Raids, F3 BiS, F1 You.
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
+        case .home where signInAvailable:
+            HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) {
+                HomeTab(dependencies: .live(environment), session: environment.session, openBis: { selection = .bis })
+            }
         case .home: HomeTab(dependencies: .live(environment), openBis: { selection = .bis })
         case .raids: PlaceholderScreen(title: tab.title)
         case .bis: PlaceholderScreen(title: tab.title)
+        case .you where signInAvailable:
+            YouScreen(
+                session: environment.session,
+                version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
+                onPickClass: { selection = .bis }
+            )
         case .you: PlaceholderScreen(title: tab.title)
         }
     }

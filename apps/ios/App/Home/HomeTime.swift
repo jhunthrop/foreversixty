@@ -1,3 +1,4 @@
+import Auth
 import Foundation
 
 /// The two time phrases Home prints: the sync age (`2 h ago`) and the offline stamp
@@ -7,13 +8,7 @@ struct HomeTime {
     var calendar: Calendar = .current
 
     func age(since date: Date) -> String {
-        let minutes = Int(now.timeIntervalSince(date) / 60)
-        switch minutes {
-        case ..<1: return Copy.homeAgeNow
-        case ..<60: return Copy.homeAgeMinutes(n: minutes)
-        case ..<(24 * 60): return Copy.homeAgeHours(n: minutes / 60)
-        default: return Copy.homeAgeDays(n: minutes / (24 * 60))
-        }
+        RelativeAge(from: date, to: now).phrase
     }
 
     func stamp(_ date: Date) -> String {

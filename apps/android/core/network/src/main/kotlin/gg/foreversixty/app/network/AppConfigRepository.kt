@@ -63,6 +63,14 @@ class AppConfigRepository(private val client: ApiClient, private val cache: AppC
 
     fun isEnabled(feature: Feature): Boolean = current?.features?.get(feature.key) ?: feature.bundledDefault
 
+    /**
+     * A feature is on in debug and fixture builds whatever the config says, so every lane's screens
+     * can be built and captured before the API turns them on; a release build on the live API
+     * follows [isEnabled] alone (the Wave 1 brief).
+     */
+    fun isAvailable(feature: Feature, mode: ApiMode, isDebugBuild: Boolean): Boolean =
+        isDebugBuild || mode == ApiMode.Fixture || isEnabled(feature)
+
     /** True when the API no longer supports [version]: block with the update screen. */
     fun requiresUpdate(version: String): Boolean {
         val minimum = current?.minAppVersion?.android ?: return false

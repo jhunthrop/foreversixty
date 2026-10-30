@@ -32,6 +32,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
+import gg.foreversixty.app.account.CharacterSelectorBar
+import gg.foreversixty.app.auth.session.SessionManager
+import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.items.ItemLook
@@ -46,11 +49,8 @@ import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiConfig
-import gg.foreversixty.app.network.ApiMode
 import gg.foreversixty.app.network.ApiResult
-import gg.foreversixty.app.network.AppConfigRepository
 import gg.foreversixty.app.network.AssetFixtureSource
-import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
 import java.io.File
@@ -79,7 +79,7 @@ class HomeDependencies(
             config: ApiConfig,
             accountApi: AccountApi,
             client: ApiClient,
-            appConfig: AppConfigRepository,
+            isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
             return HomeDependencies(
@@ -87,24 +87,46 @@ class HomeDependencies(
                 client = client,
                 catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data")),
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
-                // The switch is on in fixture builds (debug) and wherever the API turns it on.
-                isOn = { config.mode == ApiMode.Fixture || appConfig.isEnabled(Feature.CharacterHome) },
+                isOn = isOn,
             )
         }
     }
 }
 
 /**
- * The Home tab: finds the character, then shows its answer. Lane F1's selector replaces the
- * `/v1/me` main-character pick with the player's current character. [openBis] switches to the
- * BiS tab (lane F3 owns it).
+ * The Home tab: finds the character, then shows its answer. Signed in ([session], lane F1), it
+ * follows the session's current character under the selector; without a session it shows the
+ * main. [openBis] switches to the BiS tab (lane F3 owns it).
  */
 @Composable
-fun HomeRoute(dependencies: HomeDependencies, openBis: () -> Unit = {}, placeholder: @Composable () -> Unit) {
+fun HomeRoute(
+    dependencies: HomeDependencies,
+    session: SessionManager? = null,
+    openBis: () -> Unit = {},
+    placeholder: @Composable () -> Unit,
+) {
     if (!dependencies.isEnabled) {
         placeholder()
         return
     }
+    val phase = session?.phase?.collectAsStateWithLifecycle()?.value
+    val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
+    val sessionMe = phase?.me
+    if (session != null && sessionMe != null) {
+        val character = session.currentCharacter(phase, picked)
+        if (character != null) {
+            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis) {
+                CharacterSelectorBar(session)
+            }
+            return
+        }
+    }
+    HomeFromMe(dependencies, openBis)
+}
+
+/** Home on its own `GET /v1/me`: the main character, before or without the session's copy. */
+@Composable
+private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit) {
     var attempt by remember { mutableStateOf(0) }
     val me by produceState<ApiResult<Me>?>(initialValue = null, attempt) { value = dependencies.accountApi.me() }
     when (val answer = me) {
@@ -128,13 +150,13 @@ fun HomeRoute(dependencies: HomeDependencies, openBis: () -> Unit = {}, placehol
 }
 
 /** Home for one character: the answer, Your gear and the tooltip sheet. */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeCharacterScreen(
     character: HomeCharacter,
     finishedSims: List<FinishedSim>,
     dependencies: HomeDependencies,
     openBis: () -> Unit,
+    topBar: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -159,18 +181,15 @@ fun HomeCharacterScreen(
         BackHandler { showGear = false }
         GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
     } else {
-        PullToRefreshBox(
-            isRefreshing = refreshing,
-            onRefresh = {
+        Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+            topBar()
+            HomeAnswerPane(refreshing, onRefresh = {
                 scope.launch {
                     refreshing = true
                     store.refresh(character)
                     refreshing = false
                 }
-            },
-            modifier = Modifier.fillMaxSize().background(FsColor.bg),
-        ) {
-            Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            }) {
                 HomeAnswer(phase, presenter, home?.dataBuild.orEmpty(), offline) { intent ->
                     when (intent) {
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
@@ -188,6 +207,19 @@ fun HomeCharacterScreen(
     }
     tooltip?.let { request ->
         ItemTooltipSheet(request, dependencies.catalog, onDismiss = { tooltip = null })
+    }
+}
+
+/** The answer under pull to refresh, scrolling on its own below the selector. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeAnswerPane(refreshing: Boolean, onRefresh: () -> Unit, content: @Composable () -> Unit) {
+    PullToRefreshBox(
+        isRefreshing = refreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) { content() }
     }
 }
 

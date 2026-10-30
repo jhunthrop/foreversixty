@@ -21,20 +21,34 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
+import gg.foreversixty.app.account.AccountDeps
+import gg.foreversixty.app.account.HomeAccountGate
+import gg.foreversixty.app.account.YouRoute
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.home.HomeRoute
 
-/** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
+/**
+ * The app shell: a Material 3 navigation bar over one screen per tab. [account] is lane F1's
+ * session and sign-in, null while its feature switch is off.
+ */
 @Composable
-fun ForeverAppScaffold(home: HomeDependencies) {
+fun ForeverAppScaffold(home: HomeDependencies, account: AccountDeps? = null) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
+    val openBis = { selected = ForeverTab.Bis }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {
-            ForeverTab.Home -> HomeRoute(home, openBis = { selected = ForeverTab.Bis }) { ComingSoon(selected) }
+            ForeverTab.Home ->
+                if (account == null) {
+                    HomeRoute(home, openBis = openBis) { ComingSoon(selected) }
+                } else {
+                    HomeAccountGate(account, openBis) {
+                        HomeRoute(home, account.session, openBis) { ComingSoon(selected) }
+                    }
+                }
             ForeverTab.Raids -> ComingSoon(selected)
             ForeverTab.Bis -> ComingSoon(selected)
-            ForeverTab.You -> ComingSoon(selected)
+            ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
         }
     }
 }

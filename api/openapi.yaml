@@ -1252,7 +1252,7 @@ components:
           properties:
             connect: { type: boolean, description: True when the one-click Discord connect is configured. }
             discord: { oneOf: [{ $ref: '#/components/schemas/DiscordBlock' }, { type: "null" }] }
-        seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeat; omitted when none." }
+        seat: { $ref: '#/components/schemas/MeSeat' }
         seat_offer: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeatOffer; omitted when none." }
         ended_seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeEndedSeat; omitted when none." }
     AccountCharacter:
@@ -2228,6 +2228,32 @@ components:
       required: [signed_out]
       properties:
         signed_out: { type: boolean }
+    MeSeat:
+      type: object
+      description: The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none.
+      required: [guild_name, given_by, since, starts_at]
+      properties:
+        guild_name: { type: string }
+        given_by: { type: string }
+        since: { type: string, format: date-time }
+        starts_at: { type: [string, "null"], format: date-time }
+    AccountDeletionRequest:
+      type: object
+      description: >-
+        The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the
+        person has read what is deleted and confirmed it; any other value answers 400 invalid.
+      required: [confirm]
+      properties:
+        confirm: { type: string, enum: ["delete my account"] }
+    AccountDeletion:
+      type: object
+      description: >-
+        An accepted deletion. Every device and session of the account is already signed out;
+        the data goes by complete_by (30 days after the request, the privacy page's promise).
+      required: [requested_at, complete_by]
+      properties:
+        requested_at: { type: string, format: date-time }
+        complete_by: { type: string, format: date-time }
     NotificationSettings:
       type: object
       description: >-
@@ -3035,7 +3061,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account"
-          x-fixtures: [me, me.premium, me.empty]
+          x-fixtures: [me, me.premium, me.empty, me.guild-payer, me.seat]
           content:
             application/json:
               schema:
@@ -3044,7 +3070,7 @@ paths:
                   - { type: object, properties: { data: { $ref: '#/components/schemas/Me' } } }
         '401':
           description: "Not signed in, or the token is dead: clear it and sign in again"
-          x-fixtures: [error-unauthorized]
+          x-fixtures: [error-unauthorized, error-session-expired]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     patch:
       operationId: updateMe
@@ -3081,6 +3107,46 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '401':
           description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      operationId: deleteAccount
+      tags: [app]
+      summary: Delete the account (in-app deletion, App Store 5.1.1(v); dark until its handler lands)
+      description: >-
+        Session or app device token. The body's confirm must be exactly "delete my account",
+        sent only after the person confirmed in the app. On 202 the account is signed out
+        everywhere at once (every device token and browser session revoked, so the app's token
+        now answers 401) and its data is removed by complete_by, the same removal as the
+        emailed request on the privacy page: the Battle.net sign-in identity and email, the
+        linked characters and their addon exports and sync history, uploaded combat logs and
+        the reports parsed from them, saved sims and builds, the ratings derived from them,
+        notification settings, push tokens, the Discord link and webhooks, and the Stripe
+        customer (any subscription is cancelled at once and does not renew). Repeating the
+        call while a deletion is pending answers 202 with the same dates.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AccountDeletionRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '202':
+          description: "Accepted: signed out everywhere, the data goes by complete_by"
+          x-fixtures: [me.delete]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/AccountDeletion' } } }
+        '400':
+          description: "A broken body, or confirm is not the phrase"
+          x-fixtures: [me.delete.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          x-fixtures: [me.delete.error-unauthorized]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/devices/pair:
     post:
@@ -3166,7 +3232,8 @@ paths:
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
-          description: "The account's devices, the array itself"
+          description: "The account's devices, the array itself. The app marks its own row by the device id the sign-in exchange gave it."
+          x-fixtures: [devices.list]
           content:
             application/json:
               schema:
@@ -3185,11 +3252,23 @@ paths:
         '401': { description: "Not a device token, or the token is already dead", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices/{id}:
     delete:
-      summary: Revoke a device
-      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      operationId: revokeDevice
+      tags: [app]
+      summary: Revoke a device; its token answers 401 at once
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Revoked" }
-        '404': { description: "Not one of yours", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404':
+          description: "Not one of yours"
+          x-fixtures: [devices.revoke.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/reports:
     get:
       operationId: listMyReports

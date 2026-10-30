@@ -71,3 +71,18 @@ struct AppConfigStoreTests {
         #expect(AppVersion.isBelow(version, minimum) == below)
     }
 }
+
+@Suite("Features in development builds")
+struct DevBuildFeatureTests {
+    private let store = AppConfigStore(
+        client: APIClient(baseURL: URL(string: "https://api.example.test")!, transport: RecordingTransport(body: "{}")),
+        cache: InMemoryAppConfigCache()
+    )
+
+    @Test("debug and fixture builds turn every feature on; a live release follows the config")
+    func availability() {
+        #expect(store.isAvailable(.signIn, mode: .fixture, isDebugBuild: false))
+        #expect(store.isAvailable(.signIn, mode: .live, isDebugBuild: true))
+        #expect(!store.isAvailable(.signIn, mode: .live, isDebugBuild: false))
+    }
+}

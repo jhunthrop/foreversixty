@@ -1,8 +1,8 @@
 package gg.foreversixty.app.home
 
 import android.content.res.Resources
-import gg.foreversixty.app.R
-import java.time.Duration
+import gg.foreversixty.app.auth.session.RelativeAge
+import gg.foreversixty.app.phrase
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -14,15 +14,7 @@ import java.util.Locale
  * today, `Thu 9:41 pm` this week, else `10 Dec, 9:41 pm`; spec §5.0).
  */
 class HomeTime(private val now: Instant, private val zone: ZoneId = ZoneId.systemDefault()) {
-    fun age(since: Instant, res: Resources): String {
-        val minutes = Duration.between(since, now).toMinutes()
-        return when {
-            minutes < 1 -> res.getString(R.string.home_age_now)
-            minutes < MINUTES_PER_HOUR -> res.getString(R.string.home_age_minutes, minutes.toInt())
-            minutes < MINUTES_PER_DAY -> res.getString(R.string.home_age_hours, (minutes / MINUTES_PER_HOUR).toInt())
-            else -> res.getString(R.string.home_age_days, (minutes / MINUTES_PER_DAY).toInt())
-        }
-    }
+    fun age(since: Instant, res: Resources): String = RelativeAge.of(since, now).phrase(res)
 
     fun stamp(at: Instant): String {
         val date = at.atZone(zone)
@@ -37,8 +29,6 @@ class HomeTime(private val now: Instant, private val zone: ZoneId = ZoneId.syste
     }
 
     private companion object {
-        const val MINUTES_PER_HOUR = 60L
-        const val MINUTES_PER_DAY = 24L * 60L
         const val DAYS_PER_WEEK = 7L
         val TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
         val WEEKDAY: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE", Locale.US)

@@ -31,6 +31,19 @@ data class AccountCharacter(
     @SerialName("guild") val guild: CharacterGuild? = null,
 )
 
+/** An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise). */
+@Serializable
+data class AccountDeletion(
+    @SerialName("requested_at") val requestedAt: String,
+    @SerialName("complete_by") val completeBy: String,
+)
+
+/** The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid. */
+@Serializable
+data class AccountDeletionRequest(
+    @SerialName("confirm") val confirm: String,
+)
+
 /** A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a control exactly when its word is present, never from the rank. */
 @Serializable
 data class AccountGuild(
@@ -1060,8 +1073,7 @@ data class Me(
     @SerialName("server_sims") val serverSims: ServerSimsUsage? = null,
     /** Omitted when the deployment has notifications off. */
     @SerialName("notifications") val notifications: MeNotifications? = null,
-    /** Go auth.MeSeat; omitted when none. */
-    @SerialName("seat") val seat: JsonElement? = null,
+    @SerialName("seat") val seat: MeSeat? = null,
     /** Go auth.MeSeatOffer; omitted when none. */
     @SerialName("seat_offer") val seatOffer: JsonElement? = null,
     /** Go auth.MeEndedSeat; omitted when none. */
@@ -1082,6 +1094,15 @@ data class MePatch(
     @SerialName("anonymize") val anonymize: Boolean? = null,
     /** One of your own character keys. */
     @SerialName("main_character_key") val mainCharacterKey: String? = null,
+)
+
+/** The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none. */
+@Serializable
+data class MeSeat(
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("given_by") val givenBy: String,
+    @SerialName("since") val since: String,
+    @SerialName("starts_at") val startsAt: String? = null,
 )
 
 @Serializable

@@ -45,6 +45,24 @@ enum Copy {
     /// Cancel
     static var commonCancel: String { text("common.cancel") }
 
+    /// just now
+    static var commonAgeNow: String { text("common.age.now") }
+
+    /// {n} min ago
+    static func commonAgeMinutes(n: Int) -> String {
+        format("common.age.minutes", n)
+    }
+
+    /// {n} h ago
+    static func commonAgeHours(n: Int) -> String {
+        format("common.age.hours", n)
+    }
+
+    /// {n} d ago
+    static func commonAgeDays(n: Int) -> String {
+        format("common.age.days", n)
+    }
+
     /// Play your class better.
     static var signinLine: String { text("signin.line") }
 
@@ -361,24 +379,6 @@ enum Copy {
     /// {band} · raid
     static func homeUpgradesBandRaid(band: String) -> String {
         format("home.upgrades.bandRaid", band)
-    }
-
-    /// just now
-    static var homeAgeNow: String { text("home.age.now") }
-
-    /// {n} min ago
-    static func homeAgeMinutes(n: Int) -> String {
-        format("home.age.minutes", n)
-    }
-
-    /// {n} h ago
-    static func homeAgeHours(n: Int) -> String {
-        format("home.age.hours", n)
-    }
-
-    /// {n} d ago
-    static func homeAgeDays(n: Int) -> String {
-        format("home.age.days", n)
     }
 
     /// Poor
@@ -1529,7 +1529,7 @@ enum Copy {
         format("you.version", version, build, data)
     }
 
-    /// Not affiliated with or endorsed by Blizzard Entertainment.
+    /// Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
     static var aboutNotAffiliated: String { text("about.notAffiliated") }
 
     /// What your plan includes
@@ -1623,6 +1623,125 @@ enum Copy {
 
     /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
     static var devicesFooter: String { text("devices.footer") }
+
+    /// iPhone
+    static var accountDeviceWord: String { text("account.deviceWord") }
+
+    /// {spec} · {n}
+    static func accountSelectorDetail(spec: String, n: Int) -> String {
+        format("account.selector.detail", spec, n)
+    }
+
+    /// {kind} · Level {n}
+    static func accountSwitcherDetail(kind: String, n: Int) -> String {
+        format("account.switcher.detail", kind, n)
+    }
+
+    /// Opens your characters
+    static var accountSwitcherOpen: String { text("account.switcher.open") }
+
+    /// Switch character
+    static var accountSwitcherAction: String { text("account.switcher.action") }
+
+    /// Sign out
+    static var accountSignOutAction: String { text("account.signOut.action") }
+
+    /// Could not load your devices just now.
+    static var accountDevicesLoadFailed: String { text("account.devices.loadFailed") }
+
+    /// Delete account
+    static var accountDeleteRow: String { text("account.delete.row") }
+
+    /// Delete account
+    static var accountDeleteTitle: String { text("account.delete.title") }
+
+    /// Deleting your account removes what Forever Sixty holds about you:
+    static var accountDeleteIntro: String { text("account.delete.intro") }
+
+    /// Your Battle.net sign-in and email address
+    static var accountDeleteItemIdentity: String { text("account.delete.item.identity") }
+
+    /// Your characters, their addon exports and sync history
+    static var accountDeleteItemCharacters: String { text("account.delete.item.characters") }
+
+    /// The combat logs you uploaded
+    static var accountDeleteItemLogs: String { text("account.delete.item.logs") }
+
+    /// Your saved sims and builds, and the ratings derived from them
+    static var accountDeleteItemSims: String { text("account.delete.item.sims") }
+
+    /// Your notification settings, Discord link and devices
+    static var accountDeleteItemLinks: String { text("account.delete.item.links") }
+
+    /// Billing and seats
+    static var accountDeleteLoseTitle: String { text("account.delete.lose.title") }
+
+    /// Your Premium plan is cancelled and does not renew.
+    static var accountDeleteLosePremium: String { text("account.delete.lose.premium") }
+
+    /// Your founder price is gone for good. A plan taken later is billed at the full price.
+    static var accountDeleteLoseFounder: String { text("account.delete.lose.founder") }
+
+    /// The {guild} plan you pay for is cancelled, and its seats end for every member.
+    static func accountDeleteLoseGuildPlan(guild: String) -> String {
+        format("account.delete.lose.guildPlan", guild)
+    }
+
+    /// Your Premium seat from {guild} ends.
+    static func accountDeleteLoseSeat(guild: String) -> String {
+        format("account.delete.lose.seat", guild)
+    }
+
+    /// Guild reports stay for the raiders in them. Your name on them becomes Former raider.
+    static var accountDeleteReports: String { text("account.delete.reports") }
+
+    /// Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner.
+    static var accountDeleteTiming: String { text("account.delete.timing") }
+
+    /// You can also ask by email at help@foreversixty.gg.
+    static var accountDeleteEmail: String { text("account.delete.email") }
+
+    /// Delete account
+    static var accountDeleteButton: String { text("account.delete.button") }
+
+    /// Delete your Forever Sixty account?
+    static var accountDeleteConfirmTitle: String { text("account.delete.confirm.title") }
+
+    /// Your characters, logs and sims are removed within thirty days. Every device is signed out now.
+    static var accountDeleteConfirmBody: String { text("account.delete.confirm.body") }
+
+    /// Could not delete your account just now. Try again.
+    static var accountDeleteFailed: String { text("account.delete.failed") }
+
+    /// Your account is deleted. Everything is removed by {date}.
+    static func accountDeleteDone(date: String) -> String {
+        format("account.delete.done", date)
+    }
+
+    /// Character
+    static var accountYouCharacter: String { text("account.you.character") }
+
+    /// {region} · {ruleset}
+    static func accountCharacterWhere(region: String, ruleset: String) -> String {
+        format("account.character.where", region, ruleset)
+    }
+
+    /// Normal
+    static var accountRulesetNormal: String { text("account.ruleset.normal") }
+
+    /// PvP
+    static var accountRulesetPvp: String { text("account.ruleset.pvp") }
+
+    /// Roleplay
+    static var accountRulesetRp: String { text("account.ruleset.rp") }
+
+    /// Hardcore
+    static var accountRulesetHardcore: String { text("account.ruleset.hardcore") }
+
+    /// Version {version} ({build})
+    static func accountVersionNoData(version: String, build: String) -> String {
+        format("account.version.noData", version, build)
+    }
 
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)

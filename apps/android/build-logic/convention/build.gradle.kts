@@ -37,6 +37,10 @@ gradlePlugin {
             id = "forever.app-version"
             implementationClass = "AppVersionConventionPlugin"
         }
+        register("brandArt") {
+            id = "forever.brand-art"
+            implementationClass = "BrandArtConventionPlugin"
+        }
         register("appIcon") {
             id = "forever.app-icon"
             implementationClass = "AppIconConventionPlugin"

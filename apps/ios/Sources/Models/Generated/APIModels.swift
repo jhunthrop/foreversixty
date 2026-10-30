@@ -85,6 +85,31 @@ public struct AccountCharacter: Codable, Sendable, Equatable {
     }
 }
 
+/// An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise).
+public struct AccountDeletion: Codable, Sendable, Equatable {
+    public let requestedAt: Date
+    public let completeBy: Date
+
+    public init(
+        requestedAt: Date,
+        completeBy: Date
+    ) {
+        self.requestedAt = requestedAt
+        self.completeBy = completeBy
+    }
+}
+
+/// The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid.
+public struct AccountDeletionRequest: Codable, Sendable, Equatable {
+    public let confirm: String
+
+    public init(
+        confirm: String
+    ) {
+        self.confirm = confirm
+    }
+}
+
 /// A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a control exactly when its word is present, never from the rank.
 public struct AccountGuild: Codable, Sendable, Equatable {
     public let id: Int64
@@ -2826,8 +2851,7 @@ public struct Me: Codable, Sendable, Equatable {
     public let serverSims: ServerSimsUsage?
     /// Omitted when the deployment has notifications off.
     public let notifications: MeNotifications?
-    /// Go auth.MeSeat; omitted when none.
-    public let seat: JSONValue?
+    public let seat: MeSeat?
     /// Go auth.MeSeatOffer; omitted when none.
     public let seatOffer: JSONValue?
     /// Go auth.MeEndedSeat; omitted when none.
@@ -2846,7 +2870,7 @@ public struct Me: Codable, Sendable, Equatable {
         bnetImportedAt: Date? = nil,
         serverSims: ServerSimsUsage? = nil,
         notifications: MeNotifications? = nil,
-        seat: JSONValue? = nil,
+        seat: MeSeat? = nil,
         seatOffer: JSONValue? = nil,
         endedSeat: JSONValue? = nil
     ) {
@@ -2881,7 +2905,7 @@ public struct Me: Codable, Sendable, Equatable {
         bnetImportedAt = try c.decodeIfPresent(Date.self, forKey: .bnetImportedAt)
         serverSims = try c.decodeIfPresent(ServerSimsUsage.self, forKey: .serverSims)
         notifications = try c.decodeIfPresent(MeNotifications.self, forKey: .notifications)
-        seat = try c.decodeIfPresent(JSONValue.self, forKey: .seat)
+        seat = try c.decodeIfPresent(MeSeat.self, forKey: .seat)
         seatOffer = try c.decodeIfPresent(JSONValue.self, forKey: .seatOffer)
         endedSeat = try c.decodeIfPresent(JSONValue.self, forKey: .endedSeat)
     }
@@ -2914,6 +2938,26 @@ public struct MePatch: Codable, Sendable, Equatable {
     ) {
         self.anonymize = anonymize
         self.mainCharacterKey = mainCharacterKey
+    }
+}
+
+/// The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none.
+public struct MeSeat: Codable, Sendable, Equatable {
+    public let guildName: String
+    public let givenBy: String
+    public let since: Date
+    public let startsAt: Date?
+
+    public init(
+        guildName: String,
+        givenBy: String,
+        since: Date,
+        startsAt: Date? = nil
+    ) {
+        self.guildName = guildName
+        self.givenBy = givenBy
+        self.since = since
+        self.startsAt = startsAt
     }
 }
 

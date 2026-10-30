@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.ForeverAppScaffold
+import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.update.PLAY_STORE_URL
 import gg.foreversixty.app.update.UpdateRequiredScreen
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 val gate by graph.updateGate.state.collectAsStateWithLifecycle()
                 val answer = gate
                 if (answer == null) {
-                    ForeverAppScaffold(home = graph.home)
+                    ForeverAppScaffold(home = graph.home, account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) })
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })
@@ -46,6 +47,17 @@ class MainActivity : ComponentActivity() {
         }
         handleAppLink(intent)
         lifecycleScope.launch { graph.appConfig.refresh() }
+        lifecycleScope.launch {
+            graph.session.start()
+            graph.session.refresh()
+        }
+        lifecycleScope.launch { graph.session.watchForDeadTokens() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // A Custom Tab closed without a redirect: back to signed out (spec F1.2's cancel).
+        graph.session.onReturnedToApp()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -59,14 +71,11 @@ class MainActivity : ComponentActivity() {
 
     /**
      * App Links arrive here (see the TODO in AndroidManifest.xml); [DeepLink] (generated from
-     * apps/shared/links.json) names the screen. Only the sign-in return is wired so far; the
-     * feature lanes open their screens from the other cases.
+     * apps/shared/links.json) names the screen. The sign-in return goes to the session, which
+     * shows F1.3 and then signed in or F1.4; the feature lanes open their screens from the others.
      */
     private fun handleAppLink(intent: Intent?) {
         val link = intent?.dataString ?: return
-        if (DeepLink.parse(link) is DeepLink.SignIn) {
-            // TODO(lane F1): surface the SignInOutcome (signed in, cancelled, rejected, failed).
-            lifecycleScope.launch { graph.signIn.complete(link) }
-        }
+        if (DeepLink.parse(link) is DeepLink.SignIn) graph.session.handleRedirect(link)
     }
 }

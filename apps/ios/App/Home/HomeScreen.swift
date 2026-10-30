@@ -1,3 +1,4 @@
+import Auth
 import DesignTokens
 import Models
 import Networking
@@ -26,31 +27,42 @@ struct HomeDependencies {
             client: environment.client,
             catalog: ItemCatalog(client: StaticDataClient(transport: staticTransport)),
             cache: FileHomeCache.standard() ?? MemoryHomeCache(),
-            // The switch is on in fixture builds (debug) and wherever the API turns it on.
-            isEnabled: environment.configuration.mode == .fixture || environment.appConfig.isEnabled(.characterHome)
+            isEnabled: environment.isAvailable(.characterHome)
         )
     }
 }
 
-/// The Home tab: finds the character, then shows its answer. Lane F1's selector replaces the
-/// `/v1/me` main-character pick with the player's current character.
+/// The Home tab: finds the character, then shows its answer. Signed in (lane F1), it follows the
+/// session's current character and carries the selector; without a session it shows the main.
 struct HomeTab: View {
     /// Switches to the BiS tab on the character's list (lane F3 owns that tab).
     let openBis: () -> Void
+    /// Lane F1's account, nil while its feature switch is off.
+    let session: SessionStore?
 
     @State private var dependencies: HomeDependencies
 
-    @State private var me: Me?
+    @State private var fetchedMe: Me?
     @State private var meFailed = false
+
+    /// The session's `/v1/me` when it has one, else Home's own read.
+    private var me: Me? { session?.phase.me ?? fetchedMe }
+
+    private var character: AccountCharacter? {
+        guard let me else { return nil }
+        guard let session else { return me.mainCharacter }
+        return CharacterSelection.current(in: me, picked: session.pickedKey)
+    }
 
     var body: some View {
         if !dependencies.isEnabled {
             PlaceholderScreen(title: Copy.tabHome)
-        } else if let me, let character = me.mainCharacter {
+        } else if let me, let character {
             HomeCharacterScreen(
                 character: HomeCharacter(character),
                 finishedSims: me.finishedSims,
                 dependencies: dependencies,
+                showsSelector: session != nil,
                 openBis: openBis
             )
             .id(character.key)
@@ -74,15 +86,16 @@ struct HomeTab: View {
         }
     }
 
-    init(dependencies: HomeDependencies, openBis: @escaping () -> Void = {}) {
+    init(dependencies: HomeDependencies, session: SessionStore? = nil, openBis: @escaping () -> Void = {}) {
         _dependencies = State(initialValue: dependencies)
+        self.session = session
         self.openBis = openBis
     }
 
     private func loadMe() async {
         meFailed = false
         do {
-            me = try await dependencies.client.send(.getMe)
+            fetchedMe = try await dependencies.client.send(.getMe)
         } catch {
             meFailed = true
         }
@@ -94,6 +107,8 @@ struct HomeCharacterScreen: View {
     let character: HomeCharacter
     let finishedSims: [FinishedSim]
     let dependencies: HomeDependencies
+    /// Signed in, the toolbar carries lane F1's selector in place of the name title.
+    let showsSelector: Bool
     let openBis: () -> Void
 
     @State private var store: HomeStore
@@ -102,10 +117,17 @@ struct HomeCharacterScreen: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
-    init(character: HomeCharacter, finishedSims: [FinishedSim], dependencies: HomeDependencies, openBis: @escaping () -> Void) {
+    init(
+        character: HomeCharacter,
+        finishedSims: [FinishedSim],
+        dependencies: HomeDependencies,
+        showsSelector: Bool = false,
+        openBis: @escaping () -> Void
+    ) {
         self.character = character
         self.finishedSims = finishedSims
         self.dependencies = dependencies
+        self.showsSelector = showsSelector
         self.openBis = openBis
         _store = State(initialValue: .live(client: dependencies.client, cache: dependencies.cache))
     }
@@ -123,9 +145,10 @@ struct HomeCharacterScreen: View {
             }
             .background(FSColor.bg)
             .refreshable { await store.refresh(character) }
-            .navigationTitle(character.name)
+            .navigationTitle(showsSelector ? "" : character.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showGear) { gear }
+            .modifier(OptionalCharacterSelector(isOn: showsSelector))
         }
         .sheet(item: $tooltip) { request in
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
@@ -206,5 +229,14 @@ struct GearScreen: View {
         .task {
             sources = try? await catalog.sources(for: .forHome(Self.probe, home: home, character: character))
         }
+    }
+}
+
+/// Lane F1's selector, only where the session is in the environment (signed-in Home).
+private struct OptionalCharacterSelector: ViewModifier {
+    let isOn: Bool
+
+    func body(content: Content) -> some View {
+        if isOn { content.characterSelector() } else { content }
     }
 }

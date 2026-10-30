@@ -51,6 +51,13 @@ targets:
         excludes: ["*.txt"]
       - path: ../shared/brand/ios/Brand.xcassets
         buildPhase: resources
+      # Lane F1: the HD class crests and the LX seal, from the site's own files (spec §4.3:
+      # crests are bundled): the `crests` folder and seal-400.png at the bundle root.
+      - path: ../../web/public/icons/hd/crests
+        type: folder
+        buildPhase: resources
+      - path: ../../web/public/seal-400.png
+        buildPhase: resources
     dependencies:
       - package: ForeverKit
         products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]
