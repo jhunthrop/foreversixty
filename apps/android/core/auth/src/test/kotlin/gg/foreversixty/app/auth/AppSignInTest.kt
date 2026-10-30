@@ -1,10 +1,19 @@
 package gg.foreversixty.app.auth
 
+import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
+import gg.foreversixty.app.network.ApiError
+import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.network.FixtureEngine
+import gg.foreversixty.app.network.FixtureVariant
 import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.ApiMode
 import gg.foreversixty.app.network.ClasspathFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -23,6 +32,7 @@ class AppSignInTest {
         override suspend fun bearerToken(): String? = state.value?.token
         override suspend fun save(session: DeviceSession) { state.value = session }
         override suspend fun clear() { state.value = null }
+        override suspend fun discardBearerToken() = clear()
     }
 
     private class FakeBrowser : BrowserLauncher {
@@ -59,7 +69,32 @@ class AppSignInTest {
         val outcome = signIn.complete("${SignInContract.REDIRECT_URI}?code=one-time&state=$state")
 
         assertTrue("expected signed in, got $outcome", outcome is SignInOutcome.SignedIn)
-        assertTrue(requireNotNull(tokens.bearerToken()).startsWith("fsd_"))
+        val session = (outcome as SignInOutcome.SignedIn).session
+        assertTrue(session.token.startsWith("fsd_"))
+        assertTrue(session.deviceId.isNotEmpty())
+        assertEquals(session.token, tokens.bearerToken())
+    }
+
+    @Test
+    fun `a spent code answers invalid_grant from the contract fixture`() = runTest {
+        val refusing = ApiClient(
+            ForeverHttpClient.create(
+                config,
+                tokens,
+                FixtureEngine.create(
+                    fixtures,
+                    mapOf("app.signin.exchange" to FixtureVariant.Error("invalid-grant", HttpStatusCode.BadRequest)),
+                ),
+            ),
+        )
+        val flow = AppSignIn(config.baseUrl, refusing, tokens, deviceName = "Pixel 9")
+        flow.begin(browser)
+
+        val outcome = flow.complete("${SignInContract.REDIRECT_URI}?code=spent&state=${browser.param("state")}")
+
+        val error = ((outcome as SignInOutcome.ExchangeFailed).result.error as ApiError.Server)
+        assertEquals("invalid_grant", error.code)
+        assertNull(tokens.bearerToken())
     }
 
     @Test
@@ -96,11 +131,51 @@ class AppSignInTest {
     }
 
     @Test
-    fun `sign out clears the token`() = runTest {
+    fun `sign out revokes the device on the server, then clears the token`() = runTest {
         tokens.save(DeviceSession("d", "fsd_x"))
+        var logout: String? = null
+        val recording = ApiClient(
+            ForeverHttpClient.create(
+                config,
+                tokens,
+                MockEngine { request ->
+                    logout = "${request.method.value} ${request.url.encodedPath} ${request.headers[HttpHeaders.Authorization]}"
+                    respond(requireNotNull(fixtures.read("app.logout.json")), HttpStatusCode.OK)
+                },
+            ),
+        )
 
-        signIn.signOut()
+        AppSignIn(config.baseUrl, recording, tokens, deviceName = "Pixel 9").signOut()
+
+        assertEquals("POST /v1/auth/app/logout Bearer fsd_x", logout)
+        assertNull(tokens.bearerToken())
+    }
+
+    @Test
+    fun `sign out clears the token even when the server cannot be reached`() = runTest {
+        tokens.save(DeviceSession("d", "fsd_x"))
+        val offline = ApiClient(
+            ForeverHttpClient.create(config, tokens, MockEngine { respond("", HttpStatusCode.InternalServerError) }),
+        )
+
+        AppSignIn(config.baseUrl, offline, tokens, deviceName = "Pixel 9").signOut()
 
         assertNull(tokens.bearerToken())
+    }
+
+    @Test
+    fun `a 401 on any call discards the stored token`() = runTest {
+        for (code in listOf("unauthorized", "session_expired")) {
+            tokens.save(DeviceSession("d", "fsd_dead"))
+            val body = """{"ok":false,"data":null,"error":{"code":"$code","message":"Sign in again."},"request_id":"r"}"""
+            val dead = ApiClient(
+                ForeverHttpClient.create(config, tokens, MockEngine { respond(body, HttpStatusCode.Unauthorized) }),
+            )
+
+            val result = AccountApi(dead).me()
+
+            assertTrue(((result as ApiResult.Failure).error as ApiError.Server).isUnauthorized)
+            assertNull(code, tokens.bearerToken())
+        }
     }
 }

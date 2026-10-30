@@ -26,4 +26,5 @@ public struct FixedToken: BearerTokenSource {
     public let token: String?
     public init(token: String?) { self.token = token }
     public func bearerToken() -> String? { token }
+    public func discardBearerToken() {}
 }

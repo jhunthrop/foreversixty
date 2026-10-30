@@ -10,11 +10,13 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 
 /**
  * The typed door to the API. Every call goes through [call], which unwraps the envelope and
@@ -66,8 +68,13 @@ class ApiClient(private val http: HttpClient) {
 
     private suspend fun <T> decode(answer: HttpResponse, response: KSerializer<T>): ApiResult<T> {
         val status = answer.status.value
+        val body = answer.bodyAsText()
+        if (body.isBlank() && answer.status.isSuccess()) {
+            // A 204 has no envelope; an empty object decodes as Unit.
+            return unwrap(status, ApiEnvelope(ok = true, data = JsonObject(emptyMap())), response)
+        }
         val envelope = try {
-            ApiJson.decodeFromString(ApiEnvelope.serializer(), answer.bodyAsText())
+            ApiJson.decodeFromString(ApiEnvelope.serializer(), body)
         } catch (e: SerializationException) {
             return ApiResult.Failure(ApiError.Decoding(status, requestId = null, cause = e))
         } catch (e: IllegalArgumentException) {

@@ -8,6 +8,7 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
 import io.ktor.http.takeFrom
 
@@ -43,11 +44,18 @@ object ForeverHttpClient {
             }
         }
 
+    /** Sends the token, and discards it when the API answers 401 to a request that carried it. */
     private fun bearerTokenPlugin(tokens: TokenProvider) = createClientPlugin("ForeverBearerToken") {
         onRequest { request, _ ->
             val token = tokens.bearerToken()
             if (token != null && !request.headers.contains(HttpHeaders.Authorization)) {
                 request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+            }
+        }
+        onResponse { response ->
+            val sentToken = response.call.request.headers.contains(HttpHeaders.Authorization)
+            if (response.status == HttpStatusCode.Unauthorized && sentToken) {
+                tokens.discardBearerToken()
             }
         }
     }

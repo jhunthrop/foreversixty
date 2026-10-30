@@ -1,7 +1,6 @@
 package gg.foreversixty.app.model
 
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -16,11 +15,9 @@ class MeFixtureTest {
             "fixture $name missing from docs/contracts/fixtures/app"
         }.readText()
 
-    /** A fixture is either the whole envelope or the data alone; both are accepted. */
-    private fun dataOf(raw: String): JsonElement {
-        val root = ApiJson.parseToJsonElement(raw).jsonObject
-        return if ("ok" in root) root.getValue("data") else JsonObject(root)
-    }
+    /** Lane C's API fixtures are whole envelopes; the models read their data. */
+    private fun dataOf(raw: String): JsonElement =
+        ApiJson.parseToJsonElement(raw).jsonObject.getValue("data")
 
     @Test
     fun `me fixture decodes into Me`() {
@@ -66,13 +63,50 @@ class MeFixtureTest {
     }
 
     @Test
-    fun `every app fixture whose name starts with me decodes`() {
-        val dir = requireNotNull(javaClass.classLoader?.getResource("fixtures/app")) { "fixtures dir missing" }
-        val names = java.io.File(dir.toURI()).listFiles().orEmpty()
-            .map { it.name }
-            .filter { it.startsWith("me") && it.endsWith(".json") }
+    fun `every me success fixture decodes`() {
+        for (name in listOf("me.json", "me.premium.json", "me.empty.json", "me.patch.json")) {
+            val me = ApiJson.decodeFromJsonElement(Me.serializer(), dataOf(fixture(name)))
 
-        assertTrue("no me*.json fixture found", names.isNotEmpty())
-        names.forEach { ApiJson.decodeFromJsonElement(Me.serializer(), dataOf(fixture(it))) }
+            assertTrue(name, me.user.id > 0)
+        }
+    }
+
+    @Test
+    fun `the premium fixture carries billing and the empty one no characters`() {
+        val premium = ApiJson.decodeFromJsonElement(Me.serializer(), dataOf(fixture("me.premium.json")))
+        val empty = ApiJson.decodeFromJsonElement(Me.serializer(), dataOf(fixture("me.empty.json")))
+
+        assertNotNull(premium.entitlements.billing)
+        assertTrue(empty.characters.isEmpty())
+        assertNull(empty.mainCharacter)
+    }
+
+    @Test
+    fun `the sign-in exchange fixture carries the token, device and me`() {
+        val answer = ApiJson.decodeFromJsonElement(AppExchangeResponse.serializer(), dataOf(fixture("app.signin.exchange.json")))
+
+        assertTrue(answer.token.startsWith("fsd_"))
+        assertTrue(answer.device.id.isNotEmpty())
+        assertTrue(answer.me.user.id > 0)
+    }
+
+    @Test
+    fun `a rated character card decodes its score and gear panel`() {
+        val card = ApiJson.decodeFromJsonElement(CharacterProfile.serializer(), dataOf(fixture("character.card.json")))
+
+        assertTrue(card.character.key.isNotEmpty())
+        assertNotNull(card.score)
+        assertNotNull(card.components)
+        assertTrue(card.gear.all { it.slot.isNotEmpty() })
+    }
+
+    @Test
+    fun `a character with no rated fight has every score field null`() {
+        val card = ApiJson.decodeFromJsonElement(CharacterProfile.serializer(), dataOf(fixture("character.card.empty.json")))
+
+        assertNull(card.score)
+        assertNull(card.tier)
+        assertNull(card.components)
+        assertNull(card.gearGapTotal)
     }
 }

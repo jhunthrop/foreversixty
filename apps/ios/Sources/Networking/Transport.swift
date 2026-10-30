@@ -34,10 +34,14 @@ public struct URLSessionTransport: HTTPTransport {
 /// Auth's token store conforms; Networking never reads the Keychain itself.
 public protocol BearerTokenSource: Sendable {
     func bearerToken() -> String?
+    /// The API answered 401 (`unauthorized` or `session_expired`) to a request that carried
+    /// the token: it is dead, so forget it and let the app sign in again.
+    func discardBearerToken()
 }
 
 /// No token: every authenticated request goes out without one and the API answers 401.
 public struct NoBearerToken: BearerTokenSource {
     public init() {}
     public func bearerToken() -> String? { nil }
+    public func discardBearerToken() {}
 }

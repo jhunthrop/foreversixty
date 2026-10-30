@@ -33,6 +33,8 @@ class EncryptedTokenStore(private val store: DataStore<DeviceSession?>) : TokenS
 
     override suspend fun bearerToken(): String? = store.data.first()?.token
 
+    override suspend fun discardBearerToken() = clear()
+
     override suspend fun save(session: DeviceSession) {
         store.updateData { session }
     }

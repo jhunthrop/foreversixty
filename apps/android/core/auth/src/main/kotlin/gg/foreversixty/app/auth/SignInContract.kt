@@ -5,18 +5,27 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 /**
- * The app sign-in contract (plan 2026-10-30, lane A1), in one place.
+ * The app sign-in contract (lane A1; docs/contracts/app-v1.md "Sign in"), in one place.
  *
- * TODO(lane A1): confirm the query parameter names and the redirect path against
- * docs/contracts/app-v1.md once lane C and A1 land; only this file changes.
+ * 1. A Custom Tab opens `GET /v1/auth/app/start?platform=android&code_challenge=…&
+ *    code_challenge_method=S256&state=…`. The API answers a confirm page; the player taps
+ *    "Continue to Battle.net" and signs in there.
+ * 2. The browser lands on exactly [REDIRECT_URI] `?code=…&state=…` (no `/callback` suffix). The
+ *    server picks that landing; a client `redirect_uri` is ignored, so the app sends none.
+ * 3. `POST /v1/auth/app/exchange {code, code_verifier, device_name}` answers 201
+ *    `{token, device, me}`.
+ *
+ * Afterwards a 401 (`unauthorized` or `session_expired`) means the token is dead: the client
+ * discards it and the app signs in again. Billing writes answer 403 `browser_session_required`.
  */
 object SignInContract {
     const val START_PATH = "/v1/auth/app/start"
     const val EXCHANGE_PATH = "/v1/auth/app/exchange"
+    const val LOGOUT_PATH = "/v1/auth/app/logout"
     const val PLATFORM = "android"
 
-    /** The App Link the API redirects to with `?code=…&state=…` (or `?error=…`). */
-    const val REDIRECT_URI = "https://foreversixty.gg/app/auth/callback"
+    /** The App Link the API hands the code to with `?code=…&state=…` (or `?error=…`). */
+    const val REDIRECT_URI = "https://foreversixty.gg/app/auth"
 
     /** The URL opened in a Custom Tab to begin Battle.net sign-in. */
     fun startUrl(baseUrl: String, challenge: String, state: String): String {
@@ -25,7 +34,6 @@ object SignInContract {
             "code_challenge_method" to Pkce.METHOD,
             "state" to state,
             "platform" to PLATFORM,
-            "redirect_uri" to REDIRECT_URI,
         ).joinToString("&") { (k, v) -> "$k=${encode(v)}" }
         return "${baseUrl.trimEnd('/')}$START_PATH?$query"
     }

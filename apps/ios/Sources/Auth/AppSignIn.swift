@@ -42,9 +42,13 @@ public struct AppSignIn: Sendable {
         return session
     }
 
-    /// Forgets the token on this device.
-    /// TODO(lane A1): also revoke the device server-side once its revoke route is in app-v1.md.
-    public func signOut() throws(AuthError) {
+    /// Revokes the device on the server (`POST /v1/auth/app/logout`), then forgets the token.
+    /// The local token goes even when the server cannot be reached: the player asked to sign
+    /// out, and the site's device list can still revoke a row left behind.
+    public func signOut() async throws(AuthError) {
+        if store.bearerToken() != nil {
+            _ = try? await client.send(.appLogout)
+        }
         do throws(TokenStoreError) {
             try store.clear()
         } catch {
@@ -53,12 +57,7 @@ public struct AppSignIn: Sendable {
     }
 
     private func exchange(code: String, verifier: String, deviceName: String) async throws(AuthError) -> AppSession {
-        let body = AppExchangeRequest(
-            code: code,
-            codeVerifier: verifier,
-            platform: AppAuthContract.platform,
-            deviceName: deviceName
-        )
+        let body = AppExchangeRequest(code: code, codeVerifier: verifier, deviceName: deviceName)
         do throws(APIError) {
             return try await client.send(.appExchange(body))
         } catch {

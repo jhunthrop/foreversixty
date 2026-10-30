@@ -2,22 +2,25 @@ import Foundation
 import Models
 import Networking
 
-/// The app sign-in contract (lane A1, docs/superpowers/plans/2026-10-30-mobile-apps-lanes.md):
+/// The app sign-in contract (lane A1; docs/contracts/app-v1.md "Sign in"):
 ///
 /// 1. The app opens `GET /v1/auth/app/start?platform=ios&code_challenge=…&code_challenge_method=S256&state=…`
-///    in ASWebAuthenticationSession. The API runs Battle.net OAuth.
-/// 2. The API redirects to the app link `https://foreversixty.gg/app/auth/callback?code=…&state=…`
-///    (or `?error=…&state=…`).
-/// 3. The app posts the one-time code with its verifier to `POST /v1/auth/app/exchange`
-///    and gets a device token (`fsd_…`).
+///    in ASWebAuthenticationSession. The API answers a confirm page; the player taps
+///    "Continue to Battle.net" and signs in there.
+/// 2. The API sends the browser to exactly `https://foreversixty.gg/app/auth?code=…&state=…`
+///    (no `/callback` suffix). The server picks that landing; any `redirect_uri` is ignored.
+/// 3. The app posts the one-time code with its verifier and a device name to
+///    `POST /v1/auth/app/exchange` and gets 201 `{token, device, me}`.
 ///
-/// Every name here is the one place to change if lane A1's final contract differs.
+/// Afterwards a 401 (`unauthorized` or `session_expired`) means the token is dead: the client
+/// discards it and the app signs in again. Billing writes answer 403 `browser_session_required`.
 public enum AppAuthContract {
     public static let platform = "ios"
     public static let startPath = "/v1/auth/app/start"
     public static let exchangePath = "/v1/auth/app/exchange"
+    public static let logoutPath = "/v1/auth/app/logout"
     public static let callbackHost = "foreversixty.gg"
-    public static let callbackPath = "/app/auth/callback"
+    public static let callbackPath = "/app/auth"
 
     public static func startURL(baseURL: URL, pkce: PKCE, state: String) -> URL {
         let start = baseURL.appending(path: startPath)
@@ -43,22 +46,34 @@ public enum AppAuthContract {
     }
 }
 
-/// `POST /v1/auth/app/exchange` request body.
+/// `POST /v1/auth/app/exchange` request body. `device_name` is optional on the server (it
+/// defaults to "iOS"); the app always sends one so /account names the phone.
 public struct AppExchangeRequest: Encodable, Sendable, Equatable {
     public let code: String
     public let codeVerifier: String
-    public let platform: String
     public let deviceName: String
 }
 
-/// `POST /v1/auth/app/exchange` data: the device token and the device row it created.
+/// `POST /v1/auth/app/exchange` data: the device token (shown only here), the device row it
+/// created and the `GET /v1/me` body, so the first screen needs no second call.
 public struct AppSession: Decodable, Sendable, Equatable {
     public let token: String
     public let device: Device
+    public let me: Me
+}
+
+/// `POST /v1/auth/app/logout` data.
+public struct SignedOut: Decodable, Sendable, Equatable {
+    public let signedOut: Bool
 }
 
 public extension Endpoint where Response == AppSession {
     static func appExchange(_ body: AppExchangeRequest) throws(APIError) -> Endpoint {
         try .json(.post, AppAuthContract.exchangePath, body: body, authenticated: false)
     }
+}
+
+public extension Endpoint where Response == SignedOut {
+    /// Revokes this device's token on the server.
+    static var appLogout: Endpoint { Endpoint(method: .post, path: AppAuthContract.logoutPath) }
 }

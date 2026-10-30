@@ -12,6 +12,9 @@ public protocol TokenStore: BearerTokenSource {
 
 public extension TokenStore {
     func bearerToken() -> String? { try? load() }
+
+    /// A dead token is cleared; a Keychain failure here leaves it to the next 401.
+    func discardBearerToken() { try? clear() }
 }
 
 public enum TokenStoreError: Error, Equatable {

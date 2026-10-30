@@ -5,7 +5,8 @@ import Foundation
 public enum APIError: Error, Sendable, Equatable {
     /// No response: offline, timed out, TLS. Carries the system description.
     case transport(String)
-    /// 401: the device token is missing, revoked or expired. Sign the user out.
+    /// 401 (`unauthorized` or `session_expired`): the device token is missing, revoked or
+    /// expired. The client has already discarded it; show sign-in.
     case unauthorized(requestID: String?)
     /// The API answered `ok: false` with its own code and message.
     case server(status: Int, body: ErrorBody, requestID: String?)
@@ -21,4 +22,12 @@ public enum APIError: Error, Sendable, Equatable {
         if case let .server(_, body, _) = self { return body.code }
         return nil
     }
+
+    /// 403 `browser_session_required`: billing writes happen on foreversixty.gg in a browser.
+    /// Send the player to the site; never retry from the app.
+    public var needsBrowserSession: Bool {
+        code == Self.browserSessionRequired
+    }
+
+    public static let browserSessionRequired = "browser_session_required"
 }

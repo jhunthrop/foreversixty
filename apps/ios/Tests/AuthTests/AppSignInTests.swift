@@ -1,5 +1,6 @@
 import Foundation
 @testable import Auth
+import Models
 import Networking
 import TestSupport
 import Testing
@@ -54,7 +55,7 @@ struct AppSignInTests {
         store: InMemoryTokenStore = InMemoryTokenStore(),
         transport: any HTTPTransport = FixtureTransport(directory: FixtureLocation.directory)
     ) -> AppSignIn {
-        AppSignIn(client: APIClient(baseURL: base, transport: transport), web: web, store: store)
+        AppSignIn(client: APIClient(baseURL: base, transport: transport, tokens: store), web: web, store: store)
     }
 
     @Test("start URL carries platform, S256 challenge and state")
@@ -78,12 +79,17 @@ struct AppSignInTests {
         let session = try await signIn(FakeWebAuthenticator(.echoState(code: "one-time")), store: store)
             .signIn(deviceName: "Test iPhone")
         #expect(session.token.hasPrefix("fsd_"))
+        #expect(session.device.platform == "ios")
+        #expect(session.me.user.id > 0)
         #expect(try store.load() == session.token)
     }
 
     @Test("the exchange posts the code with the verifier that matches the challenge")
     func exchangeBody() async throws {
-        let transport = RecordingTransport(body: String(decoding: try FixtureLocation.data("auth-app-exchange.json"), as: UTF8.self))
+        let transport = RecordingTransport(
+            status: 201,
+            body: String(decoding: try FixtureLocation.data("app.signin.exchange.json"), as: UTF8.self)
+        )
         let web = FakeWebAuthenticator(.echoState(code: "one-time"))
         _ = try await signIn(web, transport: transport).signIn(deviceName: "Test iPhone")
 
@@ -92,8 +98,8 @@ struct AppSignInTests {
         #expect(request.httpMethod == "POST")
         #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
         let body = try JSONSerialization.jsonObject(with: try #require(request.httpBody)) as? [String: String]
+        #expect(Set(body?.keys.map(\.self) ?? []) == ["code", "code_verifier", "device_name"])
         #expect(body?["code"] == "one-time")
-        #expect(body?["platform"] == "ios")
         #expect(body?["device_name"] == "Test iPhone")
 
         let start = try #require(web.startURLs.first)
@@ -125,31 +131,79 @@ struct AppSignInTests {
         }
     }
 
-    @Test("a refused exchange surfaces the API error")
+    @Test("a spent or mismatched code surfaces invalid_grant from lane C's fixture")
     func exchangeRefused() async {
-        let body = #"{"ok":false,"data":null,"error":{"code":"invalid_grant","message":"Sign in again."},"request_id":"r"}"#
-        let transport = RecordingTransport(status: 400, body: body)
-        await #expect(throws: AuthError.exchange(.server(
-            status: 400,
-            body: ErrorBody(code: "invalid_grant", message: "Sign in again."),
-            requestID: "r"
-        ))) {
-            try await signIn(FakeWebAuthenticator(.echoState(code: "c")), transport: transport).signIn(deviceName: "x")
+        let transport = FixtureTransport(
+            directory: FixtureLocation.directory,
+            variants: ["app.signin.exchange": .error("invalid-grant", status: 400)]
+        )
+        do {
+            _ = try await signIn(FakeWebAuthenticator(.echoState(code: "c")), transport: transport).signIn(deviceName: "x")
+            Issue.record("expected the exchange to be refused")
+        } catch {
+            guard case let .exchange(apiError) = error else {
+                Issue.record("unexpected \(error)")
+                return
+            }
+            #expect(apiError.code == "invalid_grant")
         }
     }
 
-    @Test("a callback on another host is rejected")
-    func wrongHost() {
-        let url = URL(string: "https://evil.example.test/app/auth/callback?code=c&state=s")!
-        #expect(throws: AuthError.callbackRejected("unexpected callback evil.example.test/app/auth/callback")) {
+    @Test("the callback lands on exactly https://foreversixty.gg/app/auth")
+    func callbackPath() throws {
+        let url = URL(string: "https://foreversixty.gg/app/auth?code=c&state=s")!
+        #expect(try AppAuthContract.code(fromCallback: url, expectedState: "s") == "c")
+    }
+
+    @Test("a callback on another path or host is rejected", arguments: [
+        "https://foreversixty.gg/app/auth/callback?code=c&state=s",
+        "https://evil.example.test/app/auth?code=c&state=s",
+    ])
+    func wrongCallback(raw: String) {
+        let url = URL(string: raw)!
+        #expect(throws: AuthError.callbackRejected("unexpected callback \(url.host ?? "")\(url.path)")) {
             try AppAuthContract.code(fromCallback: url, expectedState: "s")
         }
     }
 
-    @Test("sign out clears the token")
-    func signOut() throws {
+    @Test("sign out revokes the device on the server, then clears the token")
+    func signOut() async throws {
         let store = InMemoryTokenStore(token: "fsd_x")
-        try signIn(FakeWebAuthenticator(.wrongState), store: store).signOut()
+        let transport = RecordingTransport(body: String(decoding: try FixtureLocation.data("app.logout.json"), as: UTF8.self))
+        try await signIn(FakeWebAuthenticator(.wrongState), store: store, transport: transport).signOut()
+        let request = try #require(transport.requests.first)
+        #expect(request.url?.path == "/v1/auth/app/logout")
+        #expect(request.httpMethod == "POST")
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer fsd_x")
         #expect(try store.load() == nil)
+    }
+
+    @Test("sign out clears the token even when the server cannot be reached")
+    func signOutOffline() async throws {
+        let store = InMemoryTokenStore(token: "fsd_x")
+        let transport = RecordingTransport(status: 500, body: "")
+        try await signIn(FakeWebAuthenticator(.wrongState), store: store, transport: transport).signOut()
+        #expect(try store.load() == nil)
+    }
+
+    @Test("a 401 on any call discards the stored token", arguments: ["unauthorized", "session_expired"])
+    func unauthorizedDiscardsToken(code: String) async throws {
+        let store = InMemoryTokenStore(token: "fsd_dead")
+        let body = #"{"ok":false,"data":null,"error":{"code":"\#(code)","message":"Sign in again."},"request_id":"r"}"#
+        let client = APIClient(baseURL: base, transport: RecordingTransport(status: 401, body: body), tokens: store)
+        await #expect(throws: APIError.unauthorized(requestID: "r")) {
+            try await client.send(.me)
+        }
+        #expect(try store.load() == nil)
+    }
+
+    @Test("billing writes answer browser_session_required, which the app sends to the site")
+    func browserSessionRequired() {
+        let error = APIError.server(
+            status: 403,
+            body: ErrorBody(code: "browser_session_required", message: "This can only be done on foreversixty.gg."),
+            requestID: "r"
+        )
+        #expect(error.needsBrowserSession)
     }
 }

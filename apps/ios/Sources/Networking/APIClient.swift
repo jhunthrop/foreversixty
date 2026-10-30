@@ -31,6 +31,9 @@ public struct APIClient: Sendable {
     public func send<Response>(_ endpoint: Endpoint<Response>) async throws(APIError) -> Response {
         let request = try makeRequest(endpoint)
         let (data, response) = try await transport.send(request)
+        if response.statusCode == 401, request.value(forHTTPHeaderField: "Authorization") != nil {
+            tokens.discardBearerToken()
+        }
         return try decode(Response.self, data: data, response: response)
     }
 

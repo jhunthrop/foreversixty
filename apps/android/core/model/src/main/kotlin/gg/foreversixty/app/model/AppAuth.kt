@@ -4,26 +4,38 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * POST /v1/auth/app/exchange body (lane A1, plan 2026-10-30): swaps the one-time code the
- * sign-in redirect carried, plus the PKCE verifier, for a device token.
+ * POST /v1/auth/app/exchange body (lane A1, docs/contracts/app-v1.md "Sign in"): swaps the
+ * one-time code the sign-in redirect carried, plus the PKCE verifier, for a device token.
  */
 @Serializable
 data class AppExchangeRequest(
     val code: String,
     @SerialName("code_verifier") val codeVerifier: String,
-    /** "android"; the API records it on the device row. */
-    val platform: String,
-    /** The device name shown on /account, e.g. "Pixel 9". */
-    val name: String,
+    /** Shown on /account, e.g. "Pixel 9". Optional on the server, which defaults to "Android". */
+    @SerialName("device_name") val deviceName: String,
 )
 
 /**
- * POST /v1/auth/app/exchange answer. The same shape POST /v1/devices/claim answers
- * (api/internal/auth/handler.go claim): the token is readable this once only.
+ * POST /v1/auth/app/exchange answer (201): the token, readable this once only, the device row
+ * it created and the GET /v1/me body, so the first screen needs no second call.
  */
 @Serializable
 data class AppExchangeResponse(
-    @SerialName("device_id") val deviceId: String,
     val token: String,
-    @SerialName("account_label") val accountLabel: String? = null,
+    val device: AppDevice,
+    val me: Me,
+)
+
+/** The device row the exchange created. */
+@Serializable
+data class AppDevice(
+    val id: String,
+    val name: String,
+    val platform: String,
+)
+
+/** POST /v1/auth/app/logout answer. */
+@Serializable
+data class SignedOut(
+    @SerialName("signed_out") val signedOut: Boolean,
 )

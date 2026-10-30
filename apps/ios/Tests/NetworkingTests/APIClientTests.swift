@@ -126,11 +126,72 @@ struct APIClientTests {
         }
     }
 
-    @Test("every catalogued fixture file exists")
-    func catalogFilesExist() {
-        for route in FixtureCatalog.app {
-            let url = FixtureLocation.directory.appending(path: route.file)
-            #expect(FileManager.default.fileExists(atPath: url.path), "missing \(route.file)")
+    /// Sample values for a route's `{name}` segments; the CDN fixtures are for one spec and class.
+    private static let sampleParams = ["spec": "warrior-fury", "class": "warrior"]
+
+    private static func samplePath(_ pattern: String) -> String {
+        sampleParams.merging(["build": "1.60.1.70658"]) { first, _ in first }
+            .reduce(pattern) { $0.replacingOccurrences(of: "{\($1.key)}", with: $1.value) }
+            .replacing(/\{[a-z]+\}/, with: "1")
+    }
+
+    @Test("every catalogued route reads a fixture lane C wrote", arguments: FixtureCatalog.app)
+    func catalogFilesExist(route: FixtureRoute) throws {
+        let transport = FixtureTransport(directory: FixtureLocation.directory)
+        let path = Self.samplePath(route.pattern)
+        guard route.fixture != nil else {
+            #expect(transport.fileName(method: route.method, path: path) == nil)
+            return
         }
+        let file = try #require(transport.fileName(method: route.method, path: path), "\(route.pattern) unmatched")
+        let url = FixtureLocation.directory.appending(path: file)
+        #expect(FileManager.default.fileExists(atPath: url.path), "missing \(file)")
+    }
+
+    @Test("a success variant reads <endpoint>.<variant>.json")
+    func namedVariant() async throws {
+        let transport = FixtureTransport(directory: FixtureLocation.directory, variants: ["me": .named("empty")])
+        let me = try await APIClient(baseURL: base, transport: transport).send(.me)
+        #expect(me.characters.isEmpty)
+    }
+
+    @Test("an error variant answers its status with lane C's error body")
+    func errorVariant() async {
+        let transport = FixtureTransport(
+            directory: FixtureLocation.directory,
+            variants: ["character.card": .error("not-found", status: 404)]
+        )
+        let client = APIClient(baseURL: base, transport: transport)
+        do {
+            _ = try await client.send(Endpoint<Pong>(method: .get, path: "/v1/characters/us/pvp/nobody"))
+            Issue.record("expected a 404")
+        } catch {
+            #expect(error.code == "not_found")
+        }
+    }
+
+    @Test("the shared unauthorized fixture is a 401 on any route")
+    func unauthorizedVariant() async {
+        let transport = FixtureTransport(directory: FixtureLocation.directory, variants: ["me": .unauthorized])
+        await #expect(throws: APIError.unauthorized(requestID: "9f2c41d07ab3e655")) {
+            try await APIClient(baseURL: base, transport: transport).send(.me)
+        }
+    }
+
+    @Test("a 204 route answers an empty body")
+    func noContentRoute() async throws {
+        let client = APIClient(baseURL: base, transport: FixtureTransport(directory: FixtureLocation.directory))
+        let empty = try await client.send(Endpoint<Empty>(method: .post, path: "/v1/sims/7/seen"))
+        #expect(empty == Empty())
+    }
+
+    @Test("CDN fixtures are bare JSON, read through the static client")
+    func cdnBare() async throws {
+        let site = URL(string: "https://site.example.test")!
+        let client = StaticDataClient(baseURL: site, transport: FixtureTransport(directory: FixtureLocation.directory))
+        let active = try await client.activeBuild()
+        #expect(!active.build.isEmpty)
+        let classes = try await client.get([ClassInfo].self, path: "/data/\(active.build)/classes.json")
+        #expect(classes.allSatisfy { !$0.slug.isEmpty })
     }
 }

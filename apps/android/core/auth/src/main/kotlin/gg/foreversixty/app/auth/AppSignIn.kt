@@ -2,8 +2,10 @@ package gg.foreversixty.app.auth
 
 import gg.foreversixty.app.model.AppExchangeRequest
 import gg.foreversixty.app.model.AppExchangeResponse
+import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiResult
+import kotlinx.serialization.builtins.serializer
 import java.security.SecureRandom
 
 /** Opens a URL in the system browser surface (Custom Tabs in the app, a fake in tests). */
@@ -65,13 +67,20 @@ class AppSignIn(
         }
     }
 
+    /**
+     * Revokes the device on the server (`POST /v1/auth/app/logout`), then forgets the token. The
+     * local token goes whatever the server says: the player asked to sign out, and the site's
+     * device list can still revoke a row left behind.
+     */
     suspend fun signOut() {
-        // TODO(lane F1): call DELETE /v1/devices/self before clearing, so /account drops the row.
+        if (tokens.bearerToken() != null) {
+            client.post(SignInContract.LOGOUT_PATH, Unit, Unit.serializer(), SignedOut.serializer())
+        }
         tokens.clear()
     }
 
     private suspend fun exchange(code: String, verifier: String): SignInOutcome {
-        val request = AppExchangeRequest(code, verifier, SignInContract.PLATFORM, deviceName)
+        val request = AppExchangeRequest(code, verifier, deviceName)
         val result = client.post(
             SignInContract.EXCHANGE_PATH,
             request,
@@ -80,7 +89,8 @@ class AppSignIn(
         )
         return when (result) {
             is ApiResult.Success -> {
-                val session = DeviceSession(result.data.deviceId, result.data.token, result.data.accountLabel)
+                val answer = result.data
+                val session = DeviceSession(answer.device.id, answer.token, answer.me.user.battletag)
                 tokens.save(session)
                 SignInOutcome.SignedIn(session)
             }

@@ -20,6 +20,25 @@ struct MeDecodingTests {
         #expect(me.characters.allSatisfy { !$0.key.isEmpty && !$0.name.isEmpty })
     }
 
+    @Test("every /v1/me success fixture decodes", arguments: ["me.json", "me.premium.json", "me.empty.json", "me.patch.json"])
+    func decodesEveryMeFixture(file: String) throws {
+        let me = try decodeMe(FixtureLocation.data(file))
+        #expect(me.user.id > 0)
+    }
+
+    @Test("the premium fixture carries its billing")
+    func premiumBilling() throws {
+        let me = try decodeMe(FixtureLocation.data("me.premium.json"))
+        #expect(me.entitlements.billing != nil)
+    }
+
+    @Test("the empty fixture has no characters and no main")
+    func emptyAccount() throws {
+        let me = try decodeMe(FixtureLocation.data("me.empty.json"))
+        #expect(me.characters.isEmpty)
+        #expect(me.mainCharacter == nil)
+    }
+
     @Test("main character prefers main_character_key, else the first")
     func mainCharacter() throws {
         let me = try decodeMe(FixtureLocation.data("me.json"))
@@ -77,5 +96,32 @@ struct MeDecodingTests {
         #expect(card.build?.gear?["head"] == 1)
         #expect(card.guild?.attendance?.present == 1)
         #expect(card.guild?.attendance?.nights == 2)
+    }
+}
+
+/// `GET /v1/characters/{key}`: lane C's character card fixtures.
+@Suite("Character profile decoding")
+struct CharacterProfileDecodingTests {
+    private func decode(_ file: String) throws -> CharacterProfile {
+        let envelope = try WireFormat.decoder().decode(Envelope<CharacterProfile>.self, from: FixtureLocation.data(file))
+        return try #require(envelope.data)
+    }
+
+    @Test("a rated character decodes its score and gear panel")
+    func rated() throws {
+        let profile = try decode("character.card.json")
+        #expect(!profile.character.key.isEmpty)
+        #expect(profile.score != nil)
+        #expect(profile.components != nil)
+        #expect(profile.gear.allSatisfy { !$0.slot.isEmpty })
+    }
+
+    @Test("a character with no rated fight has every score field nil")
+    func unrated() throws {
+        let profile = try decode("character.card.empty.json")
+        #expect(profile.score == nil)
+        #expect(profile.tier == nil)
+        #expect(profile.components == nil)
+        #expect(profile.gearGapTotal == nil)
     }
 }

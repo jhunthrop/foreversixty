@@ -37,6 +37,18 @@ data class ApiConfig(
 }
 
 /** Supplies the device bearer token (`fsd_…`) for each request; null when signed out. */
-fun interface TokenProvider {
+interface TokenProvider {
     suspend fun bearerToken(): String?
+
+    /**
+     * The API answered 401 (`unauthorized` or `session_expired`) to a request that carried the
+     * token: it is dead, so forget it and let the app sign in again.
+     */
+    suspend fun discardBearerToken()
+}
+
+/** No token: every request goes out without one (fixture previews, sign-in tests). */
+object NoToken : TokenProvider {
+    override suspend fun bearerToken(): String? = null
+    override suspend fun discardBearerToken() = Unit
 }

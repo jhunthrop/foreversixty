@@ -33,11 +33,35 @@ class ApiClientTest {
             seen += request
             answer(request)
         }
-        return ApiClient(ForeverHttpClient.create(config, { token }, engine))
+        return ApiClient(ForeverHttpClient.create(config, FixedToken(token), engine))
+    }
+
+    private class FixedToken(private val token: String?) : TokenProvider {
+        override suspend fun bearerToken(): String? = token
+        override suspend fun discardBearerToken() = Unit
     }
 
     private fun MockRequestHandleScope.json(body: String, status: HttpStatusCode = HttpStatusCode.OK) =
         respond(body, status, headersOf(HttpHeaders.ContentType, "application/json"))
+
+    @Test
+    fun `a 204 with no body is a success`() = runTest {
+        val api = client { respond("", HttpStatusCode.NoContent) }
+
+        val result = api.delete("/v1/me/push-tokens/abc", Unit.serializer())
+
+        assertTrue("expected success, got $result", result is ApiResult.Success)
+    }
+
+    @Test
+    fun `browser_session_required is flagged for the site hand-off`() = runTest {
+        val body = """{"ok":false,"data":null,"error":{"code":"browser_session_required","message":"m"},"request_id":"r"}"""
+        val api = client { json(body, HttpStatusCode.Forbidden) }
+
+        val error = (api.get("/v1/billing/portal", Echo.serializer()) as ApiResult.Failure).error as ApiError.Server
+
+        assertTrue(error.needsBrowserSession)
+    }
 
     @Test
     fun `ok envelope yields the data and request id`() = runTest {

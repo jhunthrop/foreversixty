@@ -19,6 +19,18 @@ class SignInContractTest {
     }
 
     @Test
+    fun `start url sends no redirect_uri, which the server ignores`() {
+        val url = SignInContract.startUrl("https://api.example.test", "chal", "st8")
+
+        assertTrue(!url.contains("redirect_uri"))
+    }
+
+    @Test
+    fun `the redirect is exactly foreversixty gg app auth`() {
+        assertEquals("https://foreversixty.gg/app/auth", SignInContract.REDIRECT_URI)
+    }
+
+    @Test
     fun `a redirect with the issued state yields its code`() {
         assertEquals(RedirectResult.Code("abc"), SignInContract.parseRedirect("$redirect?code=abc&state=s1", "s1"))
     }
@@ -35,14 +47,16 @@ class SignInContractTest {
 
     @Test
     fun `a redirect to a lookalike path is malformed`() {
-        val result = SignInContract.parseRedirect("https://foreversixty.gg/app/auth/callbackx?code=a&state=s1", "s1")
+        for (path in listOf("/app/authx", "/app/auth/callback")) {
+            val result = SignInContract.parseRedirect("https://foreversixty.gg$path?code=a&state=s1", "s1")
 
-        assertEquals(RedirectResult.Malformed, result)
+            assertEquals(path, RedirectResult.Malformed, result)
+        }
     }
 
     @Test
     fun `a redirect to another host is malformed`() {
-        val result = SignInContract.parseRedirect("https://evil.example/app/auth/callback?code=a&state=s1", "s1")
+        val result = SignInContract.parseRedirect("https://evil.example/app/auth?code=a&state=s1", "s1")
 
         assertEquals(RedirectResult.Malformed, result)
     }
