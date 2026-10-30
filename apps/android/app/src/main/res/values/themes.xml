@@ -6,6 +6,6 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
-    <!-- Tokens.Colors.Bg; lane T's generator may emit this resource too. -->
+    <!-- FsColor.bg (Tokens.kt): the window shows before Compose can read the token. -->
     <color name="forever_bg">#FF07090D</color>
 </resources>

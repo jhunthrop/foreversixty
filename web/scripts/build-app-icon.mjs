@@ -18,11 +18,18 @@ const GROUND = '#07090d';
  *  66/108 of the canvas, so the foreground seal is sized to sit inside it. */
 const ANDROID_SEAL_RATIO = 0.6;
 
-const renderSeal = (diameter) => sharp(MARK_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
+const renderSeal = (diameter) =>
+  sharp(MARK_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
 
 async function ios() {
-  const dir = join(OUT, 'AppIcon.appiconset');
+  // A whole asset catalog, so the iOS target compiles it in place (actool skips symlinks).
+  const catalog = join(OUT, 'ios', 'Brand.xcassets');
+  const dir = join(catalog, 'AppIcon.appiconset');
   mkdirSync(dir, { recursive: true });
+  writeFileSync(
+    join(catalog, 'Contents.json'),
+    `${JSON.stringify({ info: { author: 'xcode', version: 1 } }, null, 2)}\n`,
+  );
   const seal = await renderSeal(SIZE);
   await sharp({ create: { width: SIZE, height: SIZE, channels: 3, background: GROUND } })
     .composite([{ input: seal }])
@@ -39,9 +46,11 @@ async function ios() {
 async function android() {
   const dir = join(OUT, 'android');
   mkdirSync(dir, { recursive: true });
-  const diameter = Math.round(SIZE * ANDROID_SEAL_RATIO / 0.88);
+  const diameter = Math.round((SIZE * ANDROID_SEAL_RATIO) / 0.88);
   const seal = await renderSeal(diameter);
-  await sharp({ create: { width: SIZE, height: SIZE, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+  await sharp({
+    create: { width: SIZE, height: SIZE, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
     .composite([{ input: seal, gravity: 'center' }])
     .png()
     .toFile(join(dir, 'ic_launcher_foreground.png'));

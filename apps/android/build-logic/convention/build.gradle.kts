@@ -29,5 +29,13 @@ gradlePlugin {
             id = "forever.contract-fixtures"
             implementationClass = "ContractFixturesConventionPlugin"
         }
+        register("sharedFonts") {
+            id = "forever.shared-fonts"
+            implementationClass = "SharedFontsConventionPlugin"
+        }
+        register("appIcon") {
+            id = "forever.app-icon"
+            implementationClass = "AppIconConventionPlugin"
+        }
     }
 }

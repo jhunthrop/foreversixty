@@ -26,12 +26,12 @@ copies them to `res/font` with lowercase names.
 The app icon is the LX seal from `design/logo/foreversixty-mark.svg`, unmodified, scaled and
 placed only. `node web/scripts/build-app-icon.mjs` regenerates it.
 
-- `AppIcon.appiconset/`: the iOS asset catalog set (single 1024 px opaque image; the OS masks it).
-  Drop it into the app's `Assets.xcassets`.
+- `ios/Brand.xcassets/AppIcon.appiconset/`: the iOS app icon (single 1024 px opaque image; the
+  OS masks it). `apps/ios/project.yml` compiles the catalog in place.
 - `android/`: adaptive icon layers. `ic_launcher_foreground.png` (the seal inside the 66/108 safe
   zone, transparent elsewhere), `ic_launcher_background.png` (flat `#07090d`) and the
-  `ic_launcher.xml` adaptive-icon wrapper. Put the PNGs in `mipmap-xxxhdpi` and the XML in
-  `mipmap-anydpi-v26`, or regenerate density sizes from the 1024 masters.
+  `ic_launcher.xml` adaptive-icon wrapper. The `forever.app-icon` Gradle plugin copies the PNGs
+  to `mipmap-nodpi` and the XML to `mipmap-anydpi-v26` at build time.
 
 ## Crests and icons: one crest language
 

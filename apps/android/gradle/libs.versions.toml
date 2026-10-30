@@ -75,3 +75,5 @@ forever-android-application = { id = "forever.android.application" }
 forever-android-library = { id = "forever.android.library" }
 forever-android-compose = { id = "forever.android.compose" }
 forever-contract-fixtures = { id = "forever.contract-fixtures" }
+forever-shared-fonts = { id = "forever.shared-fonts" }
+forever-app-icon = { id = "forever.app-icon" }

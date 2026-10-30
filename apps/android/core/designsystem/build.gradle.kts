@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.forever.android.library)
     alias(libs.plugins.forever.android.compose)
+    alias(libs.plugins.forever.shared.fonts)
 }
 
 dependencies {

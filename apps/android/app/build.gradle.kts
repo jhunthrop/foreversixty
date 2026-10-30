@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.forever.android.compose)
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.forever.contract.fixtures)
+    alias(libs.plugins.forever.app.icon)
 }
 
 /**

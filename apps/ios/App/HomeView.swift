@@ -84,19 +84,20 @@ struct HomeView: View {
             ProgressView().frame(maxWidth: .infinity)
         case let .loaded(card):
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                Text(card.name).font(.title2.bold()).foregroundStyle(Theme.Palette.strong)
-                Text(card.detail).foregroundStyle(Theme.Palette.text)
+                Text(card.name).font(Theme.Typography.title).foregroundStyle(Theme.Palette.strong)
+                Text(card.detail).font(Theme.Typography.body).foregroundStyle(Theme.Palette.text)
                 if let guild = card.guild {
-                    Text(guild).font(.subheadline).foregroundStyle(Theme.Palette.accent)
+                    Text(guild).font(Theme.Typography.meta).foregroundStyle(Theme.Palette.accent)
                 }
             }
             .cardSurface()
         case .empty:
             Text("Link a character with the addon or Battle.net to see it here.")
+                .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.muted)
                 .cardSurface()
         case let .failed(message):
-            Text(message).foregroundStyle(Theme.Palette.muted).cardSurface()
+            Text(message).font(Theme.Typography.body).foregroundStyle(Theme.Palette.muted).cardSurface()
         }
     }
 }

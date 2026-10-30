@@ -1,36 +1,39 @@
 import DesignTokens
 import SwiftUI
 
-/// SwiftUI values from the generated `DesignTokens`. Views use `Theme`, never
-/// raw hex, so a token regeneration reaches every screen through this file.
+/// The app's semantic roles over the generated tokens (`FSColor`, `FSFont`, `FSTextSize`,
+/// `FSSpacing`, `FSRadius`; Shared/DesignTokens.swift, from web/src/styles/tokens.css).
+/// Views use `Theme`, never raw hex or sizes, so a token regeneration reaches every screen
+/// through this file.
 public enum Theme {
     public enum Palette {
-        public static let background = Color(hex: DesignTokens.Color.bg)
-        public static let raised = Color(hex: DesignTokens.Color.raised)
-        public static let line = Color(hex: DesignTokens.Color.line)
-        public static let text = Color(hex: DesignTokens.Color.text)
-        public static let strong = Color(hex: DesignTokens.Color.strong)
-        public static let muted = Color(hex: DesignTokens.Color.muted)
-        public static let accent = Color(hex: DesignTokens.Color.gold)
+        public static let background = FSColor.bg
+        public static let raised = FSColor.raised
+        public static let line = FSColor.line
+        public static let text = FSColor.text
+        public static let strong = FSColor.strong
+        public static let muted = FSColor.muted
+        public static let accent = FSColor.gold
+    }
+
+    /// The site's type: Cinzel for the wordmark, Barlow Condensed for headings, Barlow for
+    /// body copy. The faces are bundled from apps/shared/fonts and listed under UIAppFonts.
+    public enum Typography {
+        public static let title = FSFont.headingBold(FSTextSize.h2)
+        public static let cardTitle = FSFont.headingBold(FSTextSize.cardTitle)
+        public static let body = FSFont.bodyRegular(FSTextSize.body)
+        public static let meta = FSFont.bodySemibold(FSTextSize.meta)
     }
 
     public enum Spacing {
-        public static let xs = CGFloat(DesignTokens.Spacing.xs)
-        public static let sm = CGFloat(DesignTokens.Spacing.sm)
-        public static let md = CGFloat(DesignTokens.Spacing.md)
-        public static let lg = CGFloat(DesignTokens.Spacing.lg)
+        public static let xs = FSSpacing.space1
+        public static let sm = FSSpacing.space2
+        public static let md = FSSpacing.space4
+        public static let lg = FSSpacing.space6
     }
 
     public enum Radius {
-        public static let card = CGFloat(DesignTokens.Radius.card)
-    }
-}
-
-public extension Color {
-    /// An opaque sRGB colour from 0xRRGGBB.
-    init(hex: UInt32) {
-        let channel = { (shift: UInt32) in Double((hex >> shift) & 0xFF) / 255 }
-        self.init(.sRGB, red: channel(16), green: channel(8), blue: channel(0), opacity: 1)
+        public static let card = FSRadius.control
     }
 }
 

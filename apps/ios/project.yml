@@ -5,7 +5,9 @@ options:
   bundleIdPrefix: gg.foreversixty
   deploymentTarget:
     iOS: "26.0"
-  createIntermediateGroups: true
+  # Off: XcodeGen 2.46 mis-paths intermediate groups for sources outside apps/ios
+  # (apps/shared), and actool then cannot find the icon catalog.
+  createIntermediateGroups: false
   generateEmptyDirectories: true
 settings:
   base:
@@ -37,6 +39,14 @@ targets:
         name: Fixtures
         type: folder
         buildPhase: resources
+      # The brand faces from apps/shared/fonts (lane T), copied flat into the bundle and
+      # registered under UIAppFonts; FSFont names them by PostScript name.
+      - path: ../shared/fonts
+        name: Fonts
+        buildPhase: resources
+        excludes: ["*.txt"]
+      - path: ../shared/brand/ios/Brand.xcassets
+        buildPhase: resources
     dependencies:
       - package: ForeverKit
         products: [Models, Networking, Auth, DesignSystem]
@@ -54,6 +64,13 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
+        UIAppFonts:
+          - Barlow-Regular.ttf
+          - Barlow-SemiBold.ttf
+          - Barlow-Bold.ttf
+          - BarlowCondensed-Bold.ttf
+          - BarlowCondensed-ExtraBold.ttf
+          - Cinzel-Bold.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         FSAPIBaseURL: $(API_BASE_URL)
@@ -67,6 +84,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: NO
         API_BASE_URL: https://api.foreversixty.gg
+        # AppIcon lives in apps/shared/brand/ios/Brand.xcassets (lane T), compiled in place.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       configs:
         # Debug runs on contract fixtures until lane A1's sign-in is live;
         # override with `xcodebuild ... API_MODE=live`.

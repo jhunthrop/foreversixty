@@ -5,41 +5,68 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.TextUnit
 
 /**
- * Material 3 mapped onto the house tokens. The site is dark only, so the app is too.
- * TODO(lane T): Barlow, Barlow Condensed and Cinzel (wordmark) font families once the
- * generator ships them; the system sans stands in until then.
+ * Material 3 mapped onto the generated tokens (Tokens.kt: FsColor, FsFontWeight, FsTextSize,
+ * FsRadius, FsSpacing, from web/src/styles/tokens.css). The site is dark only, so the app is too.
+ * The faces come from apps/shared/fonts through the forever.shared-fonts plugin (res/font).
  */
 private val ForeverColors = darkColorScheme(
-    primary = Tokens.Colors.Gold,
-    onPrimary = Tokens.Colors.Bg,
-    primaryContainer = Tokens.Colors.GoldDeep,
-    onPrimaryContainer = Tokens.Colors.Strong,
-    secondary = Tokens.Colors.Gold,
-    onSecondary = Tokens.Colors.Bg,
-    secondaryContainer = Tokens.Colors.CardTop,
-    onSecondaryContainer = Tokens.Colors.Gold,
-    tertiary = Tokens.Colors.Ember,
-    background = Tokens.Colors.Bg,
-    onBackground = Tokens.Colors.Text,
-    surface = Tokens.Colors.Raised,
-    onSurface = Tokens.Colors.Text,
-    surfaceVariant = Tokens.Colors.CardTop,
-    onSurfaceVariant = Tokens.Colors.Muted,
-    surfaceContainer = Tokens.Colors.Raised,
-    outline = Tokens.Colors.Line,
-    error = Tokens.Colors.Wipe,
+    primary = FsColor.gold,
+    onPrimary = FsColor.bg,
+    primaryContainer = FsColor.goldDeep,
+    onPrimaryContainer = FsColor.strong,
+    secondary = FsColor.gold,
+    onSecondary = FsColor.bg,
+    secondaryContainer = FsColor.cardTop,
+    onSecondaryContainer = FsColor.gold,
+    tertiary = FsColor.ember,
+    background = FsColor.bg,
+    onBackground = FsColor.text,
+    surface = FsColor.raised,
+    onSurface = FsColor.text,
+    surfaceVariant = FsColor.cardTop,
+    onSurfaceVariant = FsColor.muted,
+    surfaceContainer = FsColor.raised,
+    outline = FsColor.line,
+    error = FsColor.wipe,
 )
 
+/** Cinzel: the wordmark only. */
+val DisplayFamily = FontFamily(Font(R.font.cinzel_bold, FsFontWeight.display))
+
+/** Barlow Condensed: headings and titles. */
+val HeadingFamily = FontFamily(
+    Font(R.font.barlowcondensed_bold, FsFontWeight.headingBold),
+    Font(R.font.barlowcondensed_extrabold, FsFontWeight.headingHeavy),
+)
+
+/** Barlow: body copy, labels and meta lines. */
+val BodyFamily = FontFamily(
+    Font(R.font.barlow_regular, FsFontWeight.bodyRegular),
+    Font(R.font.barlow_semibold, FsFontWeight.bodySemibold),
+    Font(R.font.barlow_bold, FsFontWeight.bodyBold),
+)
+
+private fun heading(size: TextUnit) =
+    TextStyle(fontFamily = HeadingFamily, fontWeight = FsFontWeight.headingBold, fontSize = size)
+
+private fun body(size: TextUnit) =
+    TextStyle(fontFamily = BodyFamily, fontWeight = FsFontWeight.bodyRegular, fontSize = size)
+
 private val ForeverTypography = Typography(
-    headlineMedium = TextStyle(fontSize = Tokens.TypeScale.H1),
-    headlineSmall = TextStyle(fontSize = Tokens.TypeScale.H2),
-    titleMedium = TextStyle(fontSize = Tokens.TypeScale.CardTitle),
-    bodyLarge = TextStyle(fontSize = Tokens.TypeScale.Body, lineHeight = Tokens.TypeScale.BodyLineHeight),
-    bodyMedium = TextStyle(fontSize = Tokens.TypeScale.Body, lineHeight = Tokens.TypeScale.BodyLineHeight),
-    labelMedium = TextStyle(fontSize = Tokens.TypeScale.Meta),
-    labelSmall = TextStyle(fontSize = Tokens.TypeScale.Micro),
+    headlineMedium = heading(FsTextSize.h1Phone),
+    headlineSmall = heading(FsTextSize.h2),
+    titleLarge = heading(FsTextSize.h2),
+    titleMedium = heading(FsTextSize.cardTitle),
+    bodyLarge = body(FsTextSize.body).copy(lineHeight = FsTextSize.bodyLineHeight),
+    bodyMedium = body(FsTextSize.body).copy(lineHeight = FsTextSize.bodyLineHeight),
+    labelLarge = body(FsTextSize.meta).copy(fontWeight = FsFontWeight.bodySemibold),
+    labelMedium = body(FsTextSize.meta).copy(fontWeight = FsFontWeight.bodySemibold),
+    labelSmall = body(FsTextSize.micro).copy(fontWeight = FsFontWeight.bodySemibold),
 )
 
 @Composable
