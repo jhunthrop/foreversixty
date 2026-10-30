@@ -1,0 +1,32 @@
+{
+  "data": {
+    "as_of": null,
+    "best": [],
+    "builds_seen": [],
+    "character": {
+      "class": "Mage",
+      "guild": null,
+      "key": "us/pvp/freshling",
+      "level": null,
+      "name": "Freshling",
+      "race": null,
+      "realm": null,
+      "region": "us",
+      "ruleset": "pvp"
+    },
+    "components": null,
+    "experience": null,
+    "gear": [],
+    "gear_gap_total": null,
+    "gear_spec": null,
+    "gear_spec_source": null,
+    "history": [],
+    "score": null,
+    "score_history": [],
+    "supporter": false,
+    "tier": null
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "9f2c41d07ab3e655"
+}

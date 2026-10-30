@@ -1,0 +1,33 @@
+{
+  "data": {
+    "characters": [],
+    "discord_link": null,
+    "discord_link_available": false,
+    "discord_link_suggested": null,
+    "entitlements": {
+      "billing": null,
+      "history": false,
+      "log_coach": false,
+      "multi_compare": false,
+      "notifications": false,
+      "officer_views": false,
+      "personal_portal": false,
+      "retention": false,
+      "roster_check": false,
+      "server_sims": false,
+      "supporter_mark": false
+    },
+    "finished_sims": [],
+    "guilds": [],
+    "user": {
+      "id": 1913,
+      "battletag": "Newcomer#2210",
+      "email": null,
+      "role": "user",
+      "anonymize": false
+    }
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "9f2c41d07ab3e655"
+}

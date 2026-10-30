@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "data": {
+    "spec": "warrior-fury",
+    "spec_source": "fight",
+    "gear": {
+      "trinkets": [
+        19406,
+        13965
+      ]
+    },
+    "talents": "31/20/0",
+    "buffs": [
+      "battle_shout",
+      "blessing_of_kings"
+    ],
+    "captured_at": "2026-12-15T02:41:08Z",
+    "source": "fight"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

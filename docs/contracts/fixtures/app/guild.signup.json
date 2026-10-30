@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "data": {
+    "raid": {
+      "id": 31,
+      "zone": "raid:onyxias-lair",
+      "zone_name": "Onyxia's Lair",
+      "title": "Onyxia's Lair",
+      "starts_at": "2026-12-20T01:00:00Z",
+      "duration_minutes": 180,
+      "status": "planned",
+      "size": 40,
+      "guild_timezone": "America/Chicago",
+      "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
+      "notes": "Bring **flasks**",
+      "counts": {
+        "in": 18,
+        "late": 2,
+        "bench": 1,
+        "out": 3,
+        "tanks": 2,
+        "healers": 5,
+        "dps": 11
+      },
+      "signups": [
+        {
+          "character_key": "us/pvp/obnoxious-yell",
+          "name": "Obnoxious Yell",
+          "class": "warrior",
+          "spec": "warrior-fury",
+          "role": "dps",
+          "state": "in",
+          "note": "",
+          "own": true
+        },
+        {
+          "character_key": "us/pvp/kraggor",
+          "name": "Kraggor",
+          "class": "warrior",
+          "spec": "warrior-protection",
+          "role": "tank",
+          "state": "in",
+          "note": "",
+          "own": false
+        }
+      ],
+      "not_signed": [
+        {
+          "character_key": "us/pvp/zulmara",
+          "name": "Zulmara",
+          "class": "hunter",
+          "spec": "hunter-marksmanship"
+        }
+      ],
+      "viewer": {
+        "characters": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "spec": "warrior-fury",
+            "verified": true,
+            "state": "in",
+            "role": "dps",
+            "raid_spec": "warrior-fury"
+          }
+        ]
+      },
+      "discord": {
+        "available": true,
+        "connected": true,
+        "post_default": true,
+        "remind_default": true,
+        "channel_name": "raid-signups"
+      },
+      "discord_post": {
+        "posted_at": "2026-12-13T18:00:00Z",
+        "post_at": "2026-12-13T18:00:00Z",
+        "reminded_at": null,
+        "remind": true
+      },
+      "pre_done_status": null,
+      "match": null,
+      "night": null,
+      "attendance": null,
+      "report": null
+    },
+    "moved": null
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

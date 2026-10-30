@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "some settings are not valid",
+    "fields": {
+      "quiet_hours": "start and end are HH:MM and differ",
+      "time_zone": "not a time zone"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

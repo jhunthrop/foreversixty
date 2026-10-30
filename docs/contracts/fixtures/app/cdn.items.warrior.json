@@ -1,0 +1,70 @@
+{
+  "build": "1.60.1.70658",
+  "class_slug": "warrior",
+  "items": [
+    {
+      "id": 18421,
+      "name": "Backwood Helm",
+      "icon": "inv_helmet_19",
+      "slot": "head",
+      "quality": 3,
+      "required_level": 0,
+      "required_level_source": "classic-db",
+      "item_level": 63,
+      "armor": 301,
+      "stats": {
+        "agility": 21,
+        "intellect": 9,
+        "spirit": 9,
+        "stamina": 13,
+        "crit": 1
+      },
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0.0,
+      "dps": 0.0,
+      "two_hand": false,
+      "effect_text": "",
+      "stats_source": "classic-db",
+      "set_id": null,
+      "unique": false,
+      "client_unconfirmed": true,
+      "percent_stats": {
+        "crit": 1
+      },
+      "icon_source": "client",
+      "weapon_type": null,
+      "superseded_by": null
+    },
+    {
+      "id": 13249,
+      "name": "Argent Crusader",
+      "icon": "inv_staff_13",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "required_level_source": "classic-db",
+      "item_level": 62,
+      "armor": 0,
+      "stats": {
+        "intellect": 30,
+        "stamina": 6,
+        "spirit": 10
+      },
+      "damage_min": 127,
+      "damage_max": 191,
+      "speed": 3.0,
+      "dps": 53.0,
+      "two_hand": true,
+      "effect_text": "",
+      "stats_source": "classic-db",
+      "set_id": null,
+      "unique": false,
+      "client_unconfirmed": true,
+      "percent_stats": {},
+      "icon_source": "client",
+      "weapon_type": "staff",
+      "superseded_by": null
+    }
+  ]
+}
