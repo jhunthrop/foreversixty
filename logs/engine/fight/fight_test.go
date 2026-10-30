@@ -193,8 +193,8 @@ func TestKillsAndDeathsAreCounted(t *testing.T) {
 	if f == nil {
 		t.Fatal("no fight")
 	}
-	if f.NPCKills != 1 {
-		t.Errorf("npc kills = %d, want 1", f.NPCKills)
+	if f.MobDeaths != 1 {
+		t.Errorf("mob deaths = %d, want 1", f.MobDeaths)
 	}
 	if f.Deaths != 1 {
 		t.Errorf("player deaths = %d, want 1", f.Deaths)
