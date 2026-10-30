@@ -7,6 +7,7 @@
      Tasks 10 to 17 add panels inside the content column. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import Card from '../ui/Card.svelte';
   import PageHead from '../ui/PageHead.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -671,6 +672,13 @@
     }
   }
   let chartOpen = $state(prefersOpenChart());
+  /**
+   * The sample report draws the 74 px strip only on a phone, where its first screen promises the
+   * damage rows (onboarding-second-screen.spec.ts). From md up it draws the full chart, head,
+   * legend, presets and brush, as a real report does (owner, 2026-10-30: "still too small").
+   */
+  const wideViewport = new MediaQuery('min-width: 768px', true);
+  const compactChart = $derived(isSampleReport(reportId) && !wideViewport.current);
   $effect(() => {
     // The visitor's remembered choice, read once after mount -- never at the component's
     // own evaluation, so there is nothing here for a server render to disagree with.
@@ -1882,7 +1890,7 @@
                 : { label: chartedAbility.label, series: chartedAbility.series }}
               syncKey={chartSyncKey}
               onOpenDeath={openDeaths}
-              compact={isSampleReport(reportId)}
+              compact={compactChart}
             />
           {:else}
             <div

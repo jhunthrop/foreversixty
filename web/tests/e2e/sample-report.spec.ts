@@ -1,10 +1,38 @@
 // web/tests/e2e/sample-report.spec.ts
 // The sample report is bundled with the site (lib/report/sample.ts): /logs offers it, the
 // click lands on fights, and no API is involved at any step.
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { SAMPLE_REPORT_META } from './support/logs-sample-fixture';
+import { fieldBox } from './support/select';
 
 const SHOT_DIR = process.env.SAMPLE_SHOT_DIR;
+
+/**
+ * From the next navigation on, sums the layout shifts of anything inside the report. The site
+ * header's own font-swap nudge (a 3 px text move in the nav, before the island mounts) is not
+ * the report's and is left to the header's specs.
+ */
+async function recordReportShifts(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const w = window as unknown as { __reportShift: number };
+    w.__reportShift = 0;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries() as (PerformanceEntry & {
+        value: number;
+        hadRecentInput: boolean;
+        sources?: { node?: Node | null }[];
+      })[]) {
+        const inReport = (entry.sources ?? []).some(
+          (source) => source.node?.parentElement?.closest('#report') != null,
+        );
+        if (!entry.hadRecentInput && inReport) w.__reportShift += entry.value;
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  });
+}
+
+const reportShift = (page: Page): Promise<number> =>
+  page.evaluate(() => (window as unknown as { __reportShift: number }).__reportShift);
 
 test('the sample report opens from /logs and shows fights, with no API', async ({ page }, info) => {
   const api: string[] = [];
@@ -79,4 +107,40 @@ test('the sample report opens from /logs and shows fights, with no API', async (
     const width = info.project.name === 'mobile' ? 390 : 1280;
     await page.screenshot({ path: `${SHOT_DIR}/l8-sample-${width}.png`, fullPage: false });
   }
+});
+
+test.describe('the sample report’s chart', () => {
+  test('on a desktop is the full chart, as a real report draws it', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'the desktop layout');
+    await recordReportShifts(page);
+    for (const width of [1280, 1440, 2000]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/reports/sample');
+      const chart = page.getByTestId('time-chart');
+      await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+      await expect(chart).not.toHaveAttribute('data-compact', 'true');
+      // The head with its title and units, the legend, the Window presets and the brush.
+      await expect(chart.getByText('Damage done', { exact: true }).first()).toBeVisible();
+      await expect(chart.getByTestId('chart-head-meta')).toContainText('DPS');
+      await expect(chart.getByTestId('chart-legend')).toBeVisible();
+      await expect(fieldBox(chart, 'window-select')).toBeVisible();
+      await expect(chart.getByTestId('overview-brush')).toBeVisible();
+      // A plot of about 200 px (220 from 1440), plus its 22 px axis.
+      const plot = (await chart.getByTestId('chart-plot').boundingBox())!;
+      expect(plot.height).toBeGreaterThanOrEqual(200 + 22);
+      // The full chart's frame reserves its loaded height: nothing moves as it arrives.
+      expect(await reportShift(page)).toBe(0);
+    }
+  });
+
+  test('on a phone stays the compact strip, once opened', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'the phone layout');
+    await page.goto('/reports/sample');
+    await page.getByTestId('chart-toggle').click();
+    const chart = page.getByTestId('time-chart');
+    await expect(chart).toHaveAttribute('data-compact', 'true');
+    await expect(chart.getByTestId('chart-legend')).toHaveCount(0);
+    const box = (await chart.boundingBox())!;
+    expect(box.height).toBeLessThanOrEqual(100);
+  });
 });

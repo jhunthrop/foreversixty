@@ -17,6 +17,7 @@ import {
   routeGearIcons,
 } from './support/character-fixture';
 import { SAMPLE_REPORT_META, routeSampleReportMeta } from './support/logs-sample-fixture';
+import { fieldBox } from './support/select';
 
 const SHOTS = process.env.P1_SHOTS;
 const SIZES = [
@@ -195,16 +196,17 @@ for (const size of SIZES) {
         await expect(span).toBeVisible();
         expect(await span.evaluate((el) => getComputedStyle(el).whiteSpace)).toBe('nowrap');
       }
-      const visible = await rows.evaluateAll(
-        (all, height) => all.filter((row) => row.getBoundingClientRect().bottom <= height).length,
-        size.height,
-      );
       if (size.width >= 768) {
-        // The chart is a 96 px strip, so the table shows more than one row in a 720 px window.
-        const chart = await page.getByTestId('time-chart').boundingBox();
-        expect(chart?.height ?? 999).toBeLessThanOrEqual(100);
-        expect(visible).toBeGreaterThanOrEqual(2);
-        await expect(page.getByTestId('window-select')).toBeHidden();
+        // From md up the sample draws the full chart, as a real report does (owner, 2026-10-30:
+        // the 96 px strip was "still too small"), so the table starts below a 720 px fold; the
+        // first-screen promise is the phone's (onboarding-second-screen.spec.ts). Measured at
+        // 1280 x 720: the chart is 390 to 885 px, the first row at 986 px.
+        const chart = page.getByTestId('time-chart');
+        await expect(chart).not.toHaveAttribute('data-compact', 'true');
+        await expect(fieldBox(chart, 'window-select')).toBeVisible();
+        const box = (await chart.boundingBox())!;
+        const first = (await rows.first().boundingBox())!;
+        expect(first.y).toBeGreaterThan(box.y + box.height);
       } else {
         // The title shows its date, not an ellipsis.
         const title = page.getByTestId('report-title');

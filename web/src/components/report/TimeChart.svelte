@@ -3,7 +3,7 @@
      averaged over the fight's bucket (lib/chart/buckets.ts: every second on a short pull, 5 s on a long fight), the top 4 and the bottom 4 of N (fix round 2) plus the Source player and you, the raid median, the Players
      control, the Window presets and the log scale, all on the shared TimeSeriesChart. The head's
      raid figure is the sum of every player's figure as the legend shows it. The sample report's
-     `compact` strip is the same chart at 96 px with no legend, lane or brush. -->
+     `compact` strip, on a phone only, is the same chart at 96 px with no legend, lane or brush. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { togglePlayer } from '../../lib/chart/choice';
