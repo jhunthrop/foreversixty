@@ -695,3 +695,24 @@ test('a guild page leads with the pull count and kills, and its Progression tab 
   await expect(best).toContainText('Warden Kelthas');
   await expect(best).not.toContainText('NaN');
 });
+
+// Stage 2 fix round: the card head's board switch never overlaps the scope title, at any width.
+test('the board switch and the scope title never overlap from 320 to 2000', async ({ page }) => {
+  await stubRankingsApi(page);
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
+  for (const width of [320, 360, 390, 480, 768, 1024, 1440, 2000]) {
+    await page.setViewportSize({ width, height: 900 });
+    const title = await page.getByTestId('rankings-scope').boundingBox();
+    const switchBox = await page
+      .locator('[role="tablist"]:has([data-testid="board-character"])')
+      .boundingBox();
+    expect(title, `title at ${width}`).not.toBeNull();
+    expect(switchBox, `switch at ${width}`).not.toBeNull();
+    const apart =
+      (title?.x ?? 0) + (title?.width ?? 0) <= (switchBox?.x ?? 0) ||
+      (switchBox?.x ?? 0) + (switchBox?.width ?? 0) <= (title?.x ?? 0) ||
+      (title?.y ?? 0) + (title?.height ?? 0) <= (switchBox?.y ?? 0) ||
+      (switchBox?.y ?? 0) + (switchBox?.height ?? 0) <= (title?.y ?? 0);
+    expect(apart, `overlap at ${width}`).toBe(true);
+  }
+});
