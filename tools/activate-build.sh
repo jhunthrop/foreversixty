@@ -27,22 +27,30 @@
 #      build (pipeline coach-rules); a spell the new tables lost stops the move.
 #   6. The --check gates data.yml runs are run here first; a drift stops the move
 #      before anything is committed.
+#   7. The test gate (tools/activation-gate.sh): the web vitest suite web.yml's deploy
+#      waits on and the API packages that read the active build, against the moved tree.
+#      A red test stops the move before the commit, so the addon is never tagged for a
+#      client the site then refuses to deploy; the failing tests go to the run summary.
 #
 # --no-commit leaves the working tree changed and stops (inspect with git diff).
 # --no-publish commits and stops (no push, no tag, no ranking dispatch).
+# --no-gate skips step 7; only with --no-commit, for a quick local look at a move.
 set -euo pipefail
 
-usage() { echo "usage: $0 <build> [--no-commit | --no-publish]" >&2; exit 2; }
+usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish]" >&2; exit 2; }
 [ $# -ge 1 ] || usage
 NEW="$1"; shift
 MODE=publish
+GATE=on
 for arg in "$@"; do
   case "$arg" in
     --no-commit) MODE=inspect ;;
     --no-publish) MODE=commit ;;
+    --no-gate) GATE=off ;;
     *) usage ;;
   esac
 done
+[ "$GATE" = on ] || [ "$MODE" = inspect ] || { echo "--no-gate is only for --no-commit: a move that commits is always gated" >&2; exit 2; }
 [[ "$NEW" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "$NEW is not a four-part client build" >&2; exit 2; }
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -126,6 +134,18 @@ PY
 # 6. The gates data.yml runs, before anything is committed.
 ( cd data && uv run python -m pipeline weights --build "$NEW" --check && uv run python -m pipeline addon-data --build "$NEW" --check && uv run python -m pipeline coach-rules --build "$NEW" --check )
 
+# 7. The test gate, before anything is committed, pushed or tagged.
+if [ "$GATE" = on ]; then
+  GATE_FAILURES="$(mktemp)"
+  if ! tools/activation-gate.sh "$GATE_FAILURES"; then
+    if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+      { echo "### Failing tests"; echo; sed 's/^/- /' "$GATE_FAILURES"; echo; } >> "$GITHUB_STEP_SUMMARY"
+    fi
+    echo "the test gate is red for $NEW; nothing was committed, pushed or tagged" >&2
+    exit 1
+  fi
+fi
+
 git add "$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1
 git status --short | head -40
 [ "$MODE" != inspect ] || { echo "--no-commit: stopping with the tree changed and staged"; exit 0; }
@@ -149,8 +169,10 @@ rm -f "$MSG"
 echo "committed $(git rev-parse --short HEAD)"
 [ "$MODE" != commit ] || { echo "--no-publish: stopping after the commit"; exit 0; }
 
+# --autostash: in CI the gate's Go run needs .github/actions/pin-engine, which leaves
+# sim/go.mod and sim/go.sum dirty, and a plain rebase refuses a dirty tree.
 for attempt in 1 2 3 4 5; do
-  if git pull --rebase --quiet origin main && git push --quiet origin HEAD:main; then break; fi
+  if git pull --rebase --autostash --quiet origin main && git push --quiet origin HEAD:main; then break; fi
   [ "$attempt" -lt 5 ] || { echo "could not push the activation after 5 attempts" >&2; exit 1; }
   echo "push attempt $attempt failed; retrying"; sleep 20
 done

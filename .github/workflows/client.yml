@@ -10,7 +10,9 @@
 #               which commits data/builds/<build>/ to main; skipped when the build's
 #               directory is already there;
 #   activate -- runs tools/activate-build.sh, which moves the site, the addon and the
-#               guides to the build, commits and pushes, tags the addon patch release
+#               guides to the build, runs the test gate (tools/activation-gate.sh: the web
+#               vitest suite and the API's active-build tests; red stops the move before
+#               anything is committed), commits and pushes, tags the addon patch release
 #               (addon-release.yml publishes it) and dispatches the ranking (bis.yml,
 #               force) so the carried-forward picks are replaced the same day, and the
 #               engine follow (engine.yml, force) so the wowsims fork regenerates from
@@ -115,8 +117,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: { contents: write, actions: write }
+    # The activation's test gate (tools/activation-gate.sh) runs the API packages that
+    # read the active build; the database-backed ones need api.yml's Postgres.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U forever" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       GH_TOKEN: ${{ github.token }}
+      TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
     steps:
       # main as it is AFTER the fetch job's commit, with history and tags so the
       # script's rebase and the addon tag work.
@@ -124,9 +136,21 @@ jobs:
         with: { ref: main, fetch-depth: 0 }
       - uses: astral-sh/setup-uv@v3
       - uses: actions/setup-go@v5
-        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+        with:
+          go-version-file: sim/go.mod
+          cache-dependency-path: |
+            sim/go.sum
+            api/go.sum
+      # The gate's go test resolves the workspace, whose sim/go.mod replace points at a
+      # laptop path until this rewrites it to the pinned fork (as api.yml does). The
+      # activation's push rebases with --autostash over the dirty sim/go.mod.
+      - uses: ./.github/actions/pin-engine
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+        with:
+          { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+      # The gate's vitest run, the same install web.yml's build job makes.
+      - run: npm ci
+        working-directory: web
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
       - name: activate ${{ needs.watch.outputs.build }}
         env:
