@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "update_required",
+    "message": "This version of Forever Sixty is too old. Update it from the store.",
+    "fields": {
+      "store_url": "https://play.google.com/store/apps/details?id=gg.foreversixty.app",
+      "min_version": "1.2.0"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

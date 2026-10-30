@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -38,16 +39,20 @@ const specVersion float32 = 3.1
 // fixtureClaim is one fixture and where the spec claims it.
 type fixtureClaim struct {
 	fixture string
-	// method, path, status and server name a response; schema names a component schema.
+	// method, path, status and server name a response; schema names a component schema and
+	// response a shared response (its JSON schema).
 	method, path, server string
 	status               int
 	query                url.Values
-	schema               string
+	schema, response     string
 }
 
 func (c fixtureClaim) String() string {
 	if c.schema != "" {
 		return fmt.Sprintf("%s as schema %s", c.fixture, c.schema)
+	}
+	if c.response != "" {
+		return fmt.Sprintf("%s as response %s", c.fixture, c.response)
 	}
 	return fmt.Sprintf("%s as %s %s %d", c.fixture, c.method, c.path, c.status)
 }
@@ -59,7 +64,8 @@ type specDoc struct {
 	} `yaml:"servers"`
 	Paths      map[string]map[string]any `yaml:"paths"`
 	Components struct {
-		Schemas map[string]map[string]any `yaml:"schemas"`
+		Schemas   map[string]map[string]any `yaml:"schemas"`
+		Responses map[string]map[string]any `yaml:"responses"`
 	} `yaml:"components"`
 }
 
@@ -84,6 +90,9 @@ func claimSchema(t *testing.T, root map[string]any, c fixtureClaim) map[string]a
 	refs := localRefs(root)
 	if c.schema != "" {
 		return refs("#/components/schemas/" + c.schema)
+	}
+	if c.response != "" {
+		return refs("#/components/responses/" + c.response + "/content/" + escapePointer(specMediaType) + "/schema")
 	}
 	pointer := fmt.Sprintf("#/paths/%s/%s/responses/%d/content/%s/schema",
 		escapePointer(c.path), strings.ToLower(c.method), c.status, escapePointer(specMediaType))
@@ -118,6 +127,11 @@ func claims(t *testing.T, doc specDoc) []fixtureClaim {
 	for _, name := range sortedMapKeys(doc.Components.Schemas) {
 		for _, fixture := range stringList(doc.Components.Schemas[name]["x-fixtures"]) {
 			out = append(out, fixtureClaim{fixture: fixture, schema: name})
+		}
+	}
+	for _, name := range sortedMapKeys(doc.Components.Responses) {
+		for _, fixture := range stringList(doc.Components.Responses[name]["x-fixtures"]) {
+			out = append(out, fixtureClaim{fixture: fixture, response: name})
 		}
 	}
 	return out
@@ -243,6 +257,18 @@ func TestEveryFixtureMatchesTheOpenAPISpec(t *testing.T) {
 				assertSchema(t, proxy.Schema(), body)
 				return
 			}
+			if c.response != "" {
+				response, ok := model.Model.Components.Responses.Get(c.response)
+				if !ok {
+					t.Fatalf("no response %s", c.response)
+				}
+				media, ok := response.Content.Get(specMediaType)
+				if !ok {
+					t.Fatalf("response %s has no %s", c.response, specMediaType)
+				}
+				assertSchema(t, media.Schema.Schema(), body)
+				return
+			}
 			assertResponse(t, v, c, body)
 		})
 	}
@@ -312,4 +338,36 @@ func stringList(v any) []string {
 		out = append(out, fmt.Sprint(item))
 	}
 	return out
+}
+
+// Every app call carries the client identity headers and may meet the minimum-version gate, so
+// every operation the apps' clients are generated from says so, through the shared components.
+func TestEveryAppOperationDeclaresIdentityAndTheUpdateGate(t *testing.T) {
+	_, doc := loadSpec(t)
+	want := []string{"#/components/parameters/XApp", "#/components/parameters/XAppInstall"}
+	for _, path := range sortedMapKeys(doc.Paths) {
+		for _, method := range httpMethods {
+			op, ok := doc.Paths[path][method].(map[string]any)
+			if !ok || !slices.Contains(stringList(op["tags"]), "app") {
+				continue
+			}
+			var refs []string
+			params, _ := op["parameters"].([]any)
+			for _, p := range params {
+				if m, ok := p.(map[string]any); ok {
+					refs = append(refs, fmt.Sprint(m["$ref"]))
+				}
+			}
+			for _, ref := range want {
+				if !slices.Contains(refs, ref) {
+					t.Errorf("%s %s does not list %s", method, path, ref)
+				}
+			}
+			responses, _ := op["responses"].(map[string]any)
+			gate, _ := responses["426"].(map[string]any)
+			if gate["$ref"] != "#/components/responses/UpdateRequired" {
+				t.Errorf("%s %s has no 426 UpdateRequired response", method, path)
+			}
+		}
+	}
 }

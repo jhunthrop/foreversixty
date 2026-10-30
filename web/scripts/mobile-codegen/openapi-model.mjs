@@ -117,6 +117,12 @@ export function buildModel(specText) {
     }
   }
 
+  function resolveParameter(param) {
+    if (!param.$ref) return param;
+    const name = param.$ref.replace('#/components/parameters/', '');
+    return spec.components?.parameters?.[name] ?? fail(`unknown parameter ${param.$ref}`);
+  }
+
   const operations = [];
   for (const [path, item] of Object.entries(spec.paths ?? {})) {
     for (const method of METHODS) {
@@ -131,7 +137,9 @@ export function buildModel(specText) {
   function operation(kind, method, path, op) {
     const where = `${method.toUpperCase()} ${path}`;
     if (!op.operationId) fail(`${where} needs an operationId`);
-    const params = op.parameters ?? [];
+    // Header parameters (X-App, X-App-Install) are sent by each app's transport on every call,
+    // so the generated endpoints never take or set them.
+    const params = (op.parameters ?? []).map(resolveParameter).filter((p) => p.in !== 'header');
     const pathParams = params
       .filter((p) => p.in === 'path')
       .map((p) => ({ json: p.name, name: p['x-name'] ?? camel(p.name), type: typeOf(p.schema, where).type }));

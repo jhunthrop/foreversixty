@@ -16,7 +16,9 @@ paths:
     get:
       operationId: getThing
       tags: [app]
-      parameters: [{ name: id, in: path, required: true, schema: { type: integer } }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+        - $ref: '#/components/parameters/XApp'
       responses:
         '200':
           x-fixtures: [thing]
@@ -27,6 +29,8 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - { type: object, properties: { data: { $ref: '#/components/schemas/Thing' } } }
 components:
+  parameters:
+    XApp: { name: X-App, in: header, schema: { type: string } }
   schemas:
     Envelope: { type: object }
 ${body}`;
@@ -66,6 +70,9 @@ describe('mobile API codegen', () => {
     expect(field('className')).toMatchObject({ json: 'class' });
     expect(field('open')).toMatchObject({ type: { kind: 'json' } });
     expect(model.operations[0]).toMatchObject({ id: 'getThing', status: 200, fixture: 'thing' });
+    // The identity headers are the transports' job: no endpoint takes them.
+    expect(model.operations[0].pathParams.map((p: { json: string }) => p.json)).toEqual(['id']);
+    expect(model.operations[0].query).toEqual([]);
   });
 
   it('refuses a reserved word without an x-name and an untitled inline object', () => {

@@ -1291,8 +1291,14 @@ enum Copy {
     /// Founder price, kept while your plan stays active.
     static var planFounderNote: String { text("plan.founderNote") }
 
-    /// Update Forever Sixty to keep signing up for raids.
-    static var updateRequired: String { text("update.required") }
+    /// Update Forever Sixty
+    static var updateRequiredTitle: String { text("update.required.title") }
+
+    /// This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.
+    static var updateRequiredBody: String { text("update.required.body") }
+
+    /// Open the App Store
+    static var updateRequiredAction: String { text("update.required.action") }
 
     /// Devices
     static var devicesTitle: String { text("devices.title") }

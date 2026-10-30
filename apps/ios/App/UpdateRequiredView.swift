@@ -37,18 +37,18 @@ struct UpdateRequiredView: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.md) {
             Spacer()
-            Text("Update Forever Sixty")
+            Text(Copy.updateRequiredTitle)
                 .font(Theme.Typography.title)
                 .foregroundStyle(Theme.Palette.strong)
                 .multilineTextAlignment(.center)
-            Text("This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.")
+            Text(Copy.updateRequiredBody)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.text)
                 .multilineTextAlignment(.center)
             Button {
                 openURL(storeURL)
             } label: {
-                Text("Open the App Store")
+                Text(Copy.updateRequiredAction)
                     .font(Theme.Typography.meta)
                     .foregroundStyle(Theme.Palette.background)
                     .frame(maxWidth: .infinity)

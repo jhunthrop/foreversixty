@@ -614,6 +614,9 @@ response schema with libopenapi-validator, and fails on any fixture key the spec
 and on any fixture no response claims. The apps' models, endpoints and fixture route tables are
 generated from the spec by `web/scripts/gen-mobile-api.mjs` (CI's `mobile-codegen` workflow fails
 on drift). To change a shape: edit the spec and the fixture together, run the generator, commit.
+Every `app` operation lists the shared `X-App` and `X-App-Install` header parameters and the shared
+`426` `UpdateRequired` response (fixture `error-update-required`); a test holds every operation to
+that. The headers are sent by each app's transport, never by the generated endpoints.
 
 
 `api/internal/contract` compares a response with a fixture (fields, kinds, nullability, never

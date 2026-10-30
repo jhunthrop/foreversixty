@@ -4113,13 +4113,35 @@
         }
       }
     },
-    "update.required": {
+    "update.required.action": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Update Forever Sixty to keep signing up for raids."
+            "value": "Open the App Store"
+          }
+        }
+      }
+    },
+    "update.required.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync."
+          }
+        }
+      }
+    },
+    "update.required.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update Forever Sixty"
           }
         }
       }

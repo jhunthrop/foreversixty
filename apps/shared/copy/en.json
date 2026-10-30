@@ -401,7 +401,9 @@
     "plan.seatGivenBy": "Given by {name}. It lasts while the guild's plan does; nothing is billed to you.",
     "plan.founder": "Founder",
     "plan.founderNote": "Founder price, kept while your plan stays active.",
-    "update.required": "Update Forever Sixty to keep signing up for raids.",
+    "update.required.title": "Update Forever Sixty",
+    "update.required.body": "This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.",
+    "update.required.action": { "ios": "Open the App Store", "android": "Open Google Play" },
 
     "devices.title": "Devices",
     "devices.this": { "ios": "This iPhone", "android": "This phone" },

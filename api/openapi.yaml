@@ -1179,6 +1179,28 @@ components:
         data: { type: "null" }
         error: { $ref: '#/components/schemas/ErrorBody' }
         request_id: { type: string }
+    UpdateRequiredError:
+      type: object
+      description: The 426 answer of the minimum-version gate.
+      required: [ok, data, error, request_id]
+      properties:
+        ok: { type: boolean, enum: [false] }
+        data: { type: "null" }
+        error:
+          type: object
+          title: UpdateRequiredBody
+          required: [code, message, fields]
+          properties:
+            code: { type: string, enum: [update_required] }
+            message: { type: string }
+            fields:
+              type: object
+              title: UpdateRequiredFields
+              required: [store_url, min_version]
+              properties:
+                store_url: { type: string, format: uri, description: Open it only when it is https; else the app's own store page. }
+                min_version: { type: string, description: The lowest x.y.z the API serves to this platform. }
+        request_id: { type: string }
     OpenObject:
       type: [object, "null"]
       additionalProperties: true
@@ -2571,7 +2593,35 @@ components:
         method: { type: string, enum: [PUT] }
         path: { type: string }
         body: { type: object, required: [state], properties: { state: { type: string, enum: [in, late, out] } } }
+  parameters:
+    XApp:
+      name: X-App
+      in: header
+      required: false
+      description: >-
+        Which app build sends the request: `<platform>/<version> (<build>)`, platform ios or
+        android, version and build from apps/VERSION ("ios/1.2.0 (42)"). Both apps send it on
+        every call from their transport (iOS IdentifiedTransport, Android's client identity
+        plugin), so the generated endpoints never set it. A missing or malformed value is not an
+        error; the API logs it and gates outdated builds on it (426).
+      schema: { type: string, pattern: '^(ios|android)/[0-9A-Za-z.\-]+ \([0-9]+\)$' }
+    XAppInstall:
+      name: X-App-Install
+      in: header
+      required: false
+      description: >-
+        A random UUID made on first launch, tied to no account and gone on uninstall (never
+        backed up). Sent with X-App by the same transports.
+      schema: { type: string, format: uuid }
   responses:
+    UpdateRequired:
+      description: >-
+        update_required: this app build (X-App) is below the API's minimum for its platform.
+        error.fields.store_url is the store page to send the player to and min_version the lowest
+        version served. The apps' UpdateGate replaces every screen with the update screen; a
+        feature never handles it.
+      x-fixtures: [error-update-required]
+      content: { application/json: { schema: { $ref: '#/components/schemas/UpdateRequiredError' } } }
     NotFound:
       description: "Unmatched routes return the envelope with code not_found"
       content:
@@ -2663,7 +2713,11 @@ paths:
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/BuildInput' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '201':
           description: "Saved; url is PUBLIC_BASE_URL + /b/ + id"
           x-fixtures: [builds.save]
@@ -2696,9 +2750,12 @@ paths:
       tags: [app]
       summary: The caller's own saved builds
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of the caller's builds, newest first"
           x-fixtures: [builds.list, builds.list.empty]
@@ -2721,11 +2778,14 @@ paths:
       tags: [app]
       summary: Fetch a build record
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - name: id
           in: path
           required: true
           schema: { type: string }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The record (Cache-Control: public, max-age=86400)"
           x-fixtures: [builds.get]
@@ -2890,7 +2950,11 @@ paths:
         sync_error is a short machine code for the last failed Battle.net refresh
         ("bnet_refresh_failed"), null when the last refresh succeeded or none has run; an
         addon export does not clear it.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account"
           x-fixtures: [me, me.premium, me.empty]
@@ -2919,7 +2983,11 @@ paths:
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/MePatch' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account as it now stands"
           x-fixtures: [me.patch]
@@ -3014,7 +3082,11 @@ paths:
       operationId: listDevices
       tags: [app]
       summary: The account's devices
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account's devices, the array itself"
           content:
@@ -3046,9 +3118,12 @@ paths:
       tags: [app]
       summary: The caller's own reports, newest first (session)
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: mine, in: query, required: true, schema: { type: string, enum: ["1"] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of the caller's reports, newest first (100 a page)"
           x-fixtures: [reports.list, reports.list.empty]
@@ -3093,8 +3168,12 @@ paths:
       operationId: getReport
       tags: [app]
       summary: A report and its fights
-      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The report summary"
           x-fixtures: [reports.get]
@@ -3406,6 +3485,8 @@ paths:
       tags: [app]
       summary: The caller's own saved sims
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
         - name: kind
@@ -3420,6 +3501,7 @@ paths:
             browser. Omitted or empty is both; an unknown value is 400. Queued
             and running rows carry estimate_seconds.
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of the caller's sims, newest first"
           x-fixtures: [sims.list, sims.list.empty]
@@ -3566,8 +3648,11 @@ paths:
       tags: [app]
       summary: One saved sim
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The result"
           x-fixtures: [sims.result]
@@ -3587,8 +3672,11 @@ paths:
       tags: [app]
       summary: Mark the caller's finished server run as looked at
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Marked seen (marking twice is the same answer)" }
         '401':
           description: "No session or device token, or a dead one"
@@ -3605,8 +3693,11 @@ paths:
         Starts the failed run's stored request as a new run, through the same
         checks POST /v1/sims/run applies. The failed row is left as it is.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '202':
           description: "Dispatched as a new run"
           x-fixtures: [sims.rerun]
@@ -3639,8 +3730,11 @@ paths:
       tags: [app]
       summary: How far a server-lane run has got
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The run's state (Cache-Control: no-store)"
           x-fixtures: [sims.progress, sims.progress.queued]
@@ -3680,10 +3774,13 @@ paths:
       tags: [app]
       summary: The character model the sim page starts from
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: region, in: path, required: true, schema: { type: string } }
         - { name: ruleset, in: path, required: true, schema: { type: string } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character model"
           x-fixtures: [character.sim-input.addon, character.sim-input.fight]
@@ -3741,11 +3838,14 @@ paths:
         (null when unknown; the addon export's level is not consulted), and spec is always null.
         rows is never null.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: q, in: query, schema: { type: string }, description: "The start of the name; fewer than 2 characters answers rows []." }
         - { name: region, in: query, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Matching characters"
           x-fixtures: [character.search, character.search.empty]
@@ -3807,10 +3907,13 @@ paths:
         owning account shows the supporter mark, and false for a character with no linked
         account.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character card"
           x-fixtures: [character.card, character.card.empty]
@@ -3871,9 +3974,12 @@ paths:
         guild (an account with a verified character on its roster) may read it; anyone else,
         an account whose rows are all unverified included, gets 403.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The guild's home"
           x-fixtures: [guild.home]
@@ -4090,10 +4196,13 @@ paths:
       operationId: getCharacterHome
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: region, in: path, required: true, schema: { type: string } }
         - { name: ruleset, in: path, required: true, schema: { type: string } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The answer"
           x-fixtures: [character.home, character.home.empty, character.home.no-gear]
@@ -4115,10 +4224,13 @@ paths:
       operationId: listGuildRaids
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
         - { name: cursor, in: query, schema: { type: string }, description: The next_cursor of a previous page. }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of raid nights"
           x-fixtures: [guild.raids, guild.raids.public]
@@ -4140,9 +4252,12 @@ paths:
       operationId: getGuildRaid
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view"
           x-fixtures: [guild.raid, guild.raid.done]
@@ -4164,12 +4279,15 @@ paths:
       operationId: updateGuildRaid
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/RaidPatch' } } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view as it now stands"
           x-fixtures: [guild.raid.patch]
@@ -4199,9 +4317,12 @@ paths:
       operationId: lockGuildRaid
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view"
           x-fixtures: [guild.raid.patch]
@@ -4224,9 +4345,12 @@ paths:
       operationId: unlockGuildRaid
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view"
           x-fixture-route: guild.raid.patch
@@ -4248,12 +4372,15 @@ paths:
       operationId: cancelGuildRaid
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
       requestBody:
         required: false
         content: { application/json: { schema: { $ref: '#/components/schemas/RaidCancel' } } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid view"
           x-fixture-route: guild.raid.patch
@@ -4280,6 +4407,8 @@ paths:
       operationId: putRaidSignup
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: region, in: path, required: true, schema: { type: string } }
@@ -4289,6 +4418,7 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/SignupRequest' } } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The raid as it now stands, and the character the server moved to Bench"
           x-fixtures: [guild.signup, guild.signup.moved]
@@ -4323,8 +4453,11 @@ paths:
       operationId: getGuildLoot
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Encounters, the selected one and its items with ranked candidates"
           x-fixtures: [guild.loot]
@@ -4388,7 +4521,11 @@ paths:
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/AppExchangeRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '201':
           description: "The device token (shown once), the device and the GET /v1/me body"
           x-fixtures: [app.signin.exchange]
@@ -4410,7 +4547,11 @@ paths:
       summary: The calling app device revokes its token (dark, APP_SIGN_IN)
       operationId: logoutApp
       tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Signed out"
           x-fixtures: [app.logout]
@@ -4429,7 +4570,11 @@ paths:
       description: Session or device token. Cache-Control no-store.
       operationId: getNotificationSettings
       tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Every catalogue event in catalogue order"
           x-fixtures: [app.notifications]
@@ -4449,7 +4594,11 @@ paths:
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/NotificationsPatch' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The GET body as it now stands"
           x-fixture-route: app.notifications
@@ -4477,7 +4626,11 @@ paths:
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/PushTokenRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '201':
           description: "Registered"
           x-fixtures: [app.push-tokens.register]
@@ -4501,8 +4654,11 @@ paths:
       operationId: deletePushToken
       tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: token, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Gone" }
   /v1/app/config:
     get:
@@ -4511,7 +4667,11 @@ paths:
       operationId: getAppConfig
       tags: [app]
       x-authenticated: false
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The config"
           x-fixtures: [app.config]

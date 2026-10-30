@@ -397,7 +397,9 @@
     <string name="plan_seatGivenBy">Given by %1$s. It lasts while the guild\'s plan does; nothing is billed to you.</string>
     <string name="plan_founder">Founder</string>
     <string name="plan_founderNote">Founder price, kept while your plan stays active.</string>
-    <string name="update_required">Update Forever Sixty to keep signing up for raids.</string>
+    <string name="update_required_title">Update Forever Sixty</string>
+    <string name="update_required_body">This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.</string>
+    <string name="update_required_action">Open Google Play</string>
     <string name="devices_title">Devices</string>
     <string name="devices_this">This phone</string>
     <string name="devices_lastUsed">Last used %1$s</string>
