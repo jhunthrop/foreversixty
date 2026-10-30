@@ -22,7 +22,11 @@ AVD_DEVICE="pixel_9"
 LOCK_DIR="${TMPDIR:-/tmp}"
 IOS_LOCK="$LOCK_DIR/foreversixty-ios-simulator.lock"
 ANDROID_LOCK="$LOCK_DIR/foreversixty-android-emulator.lock"
-SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+# The Android Studio SDK under ~/Library holds the system images; a Homebrew ANDROID_HOME
+# (command-line tools only) does not, so it is used only when it actually has images.
+SDK="$HOME/Library/Android/sdk"
+if [ -n "${ANDROID_HOME:-}" ] && [ -d "$ANDROID_HOME/system-images" ]; then SDK="$ANDROID_HOME"; fi
+export ANDROID_HOME="$SDK" ANDROID_SDK_ROOT="$SDK"
 
 die() { echo "mobile-device: $*" >&2; exit 1; }
 
@@ -66,7 +70,10 @@ ios_run() {
 
 android_boot() {
 	local adb="$SDK/platform-tools/adb" emulator="$SDK/emulator/emulator" avdmanager
-	avdmanager=$(command -v avdmanager || echo "$SDK/cmdline-tools/latest/bin/avdmanager")
+	# The SDK's own avdmanager knows its SDK root; Homebrew's points at a tools-only tree.
+	avdmanager="$SDK/cmdline-tools/latest/bin/avdmanager"
+	[ -x "$avdmanager" ] || die "no avdmanager at $avdmanager (install the SDK command-line tools)"
+	export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home}"
 	if ! "$emulator" -list-avds | grep -qx "$AVD_NAME"; then
 		local image api pkg
 		image=$(find "$SDK"/system-images -maxdepth 3 -path '*/google_apis/arm64-v8a' -type d 2>/dev/null | sort -V | tail -1)
