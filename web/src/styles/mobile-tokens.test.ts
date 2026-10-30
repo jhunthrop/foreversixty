@@ -25,7 +25,13 @@ describe('mobile design tokens', () => {
   });
 
   it('covers class, rarity and brand colours', () => {
-    const names = new Set((buildModel(readFileSync(new URL('./tokens.css', import.meta.url), 'utf8')).colors as { name: string }[]).map((c) => c.name));
+    const names = new Set(
+      (
+        buildModel(readFileSync(new URL('./tokens.css', import.meta.url), 'utf8')).colors as {
+          name: string;
+        }[]
+      ).map((c) => c.name),
+    );
     for (const name of ['gold', 'bg', 'classHunter', 'rarityEpic', 'rarityEpicText', 'kill']) {
       expect(names.has(name), name).toBe(true);
     }
