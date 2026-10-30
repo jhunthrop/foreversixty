@@ -9,6 +9,8 @@
   import type { FightEntry } from '../../lib/report/types';
   import { ALL_FIGHTS } from '../../lib/report/url';
   import Card from '../ui/Card.svelte';
+  import Glyph from '../ui/Glyph.svelte';
+  import { ROW_INTERACTIVE } from '../../lib/ui/row';
 
   let {
     fights,
@@ -237,11 +239,17 @@
         {#if trashCount > 0 && encounters.length > 0}
           <button
             type="button"
-            class="text-muted inline-flex min-h-11 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase"
+            class="{ROW_INTERACTIVE} border-line-soft text-strong flex min-h-11 w-full items-center gap-2 border-t px-3 text-left text-[13px] font-semibold"
             onclick={() => (showTrash = !showTrash)}
+            aria-expanded={showTrash}
             data-testid="toggle-trash"
           >
-            {showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}
+            <span class="flex-1">{showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}</span>
+            <Glyph
+              name="chevron"
+              size={16}
+              class="text-muted shrink-0 {showTrash ? '-rotate-90' : 'rotate-90'}"
+            />
           </button>
         {/if}
       </div>

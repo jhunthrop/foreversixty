@@ -30,6 +30,8 @@ export const reportCopy = {
   /** The badge where "Live" goes on the bundled sample report. */
   eyebrow: 'Report',
   sampleBadge: 'Sample report',
+  /** The state tag beside the credit sentence of a report no character is credited for. */
+  notCreditedTag: 'Not credited',
   /** The one muted line under the sample's subtitle: what it is, and that yours look like it. */
   sampleNote:
     'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',

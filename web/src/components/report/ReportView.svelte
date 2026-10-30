@@ -9,6 +9,7 @@
   import { untrack } from 'svelte';
   import Card from '../ui/Card.svelte';
   import PageHead from '../ui/PageHead.svelte';
+  import Tag from '../ui/Tag.svelte';
   import {
     POLL_INTERVAL_MS,
     REPORT_LOAD_FAILED,
@@ -1515,10 +1516,15 @@
 {/snippet}
 
 {#snippet creditLine()}
-  <span class="block" data-testid="report-credit"
-    >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}>{credit.name}</a
-      >{:else}{credit.name}{/if}</span
-  >
+  <span class="flex flex-wrap items-center gap-x-2 gap-y-1">
+    {#if !credit.credited}<Tag tone="muted" testid="report-not-credited">{reportCopy.notCreditedTag}</Tag
+      >{/if}
+    <span data-testid="report-credit"
+      >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
+          >{credit.name}</a
+        >{:else}{credit.name}{/if}</span
+    >
+  </span>
 {/snippet}
 
 <!-- The processing and waiting head's meta line: the live badge, who owns it, its state, and the credit. -->
