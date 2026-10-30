@@ -31,6 +31,19 @@ data class AccountCharacter(
     @SerialName("guild") val guild: CharacterGuild? = null,
 )
 
+/** An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise). */
+@Serializable
+data class AccountDeletion(
+    @SerialName("requested_at") val requestedAt: String,
+    @SerialName("complete_by") val completeBy: String,
+)
+
+/** The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid. */
+@Serializable
+data class AccountDeletionRequest(
+    @SerialName("confirm") val confirm: String,
+)
+
 /** A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a control exactly when its word is present, never from the rank. */
 @Serializable
 data class AccountGuild(

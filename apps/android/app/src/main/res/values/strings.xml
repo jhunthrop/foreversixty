@@ -409,4 +409,32 @@
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
     <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out on You.</string>
+    <string name="account_deviceWord">phone</string>
+    <string name="account_selector_detail" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
+    <string name="account_switcher_detail" tools:ignore="PluralsCandidate">%1$s · Level %2$d</string>
+    <string name="account_switcher_open">Opens your characters</string>
+    <string name="account_switcher_action">Switch character</string>
+    <string name="account_age_now">just now</string>
+    <string name="account_age_minutes" tools:ignore="PluralsCandidate">%1$d min ago</string>
+    <string name="account_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
+    <string name="account_age_days" tools:ignore="PluralsCandidate">%1$d d ago</string>
+    <string name="account_signOut_action">Sign out</string>
+    <string name="account_browserOnly">That is done on foreversixty.gg. It opens in your browser.</string>
+    <string name="account_delete_row">Delete account</string>
+    <string name="account_delete_title">Delete account</string>
+    <string name="account_delete_intro">Deleting your account removes what Forever Sixty holds about you:</string>
+    <string name="account_delete_item_identity">Your Battle.net sign-in and email address</string>
+    <string name="account_delete_item_characters">Your characters, their addon exports and sync history</string>
+    <string name="account_delete_item_logs">The combat logs you uploaded and the reports parsed from them</string>
+    <string name="account_delete_item_sims">Your saved sims and builds, and the ratings derived from them</string>
+    <string name="account_delete_item_links">Your notification settings, Discord link and devices</string>
+    <string name="account_delete_plan">Your plan is cancelled and does not renew.</string>
+    <string name="account_delete_timing">Every device is signed out at once. The rest is gone within thirty days, and usually much sooner.</string>
+    <string name="account_delete_email">You can also ask by email at help@foreversixty.gg.</string>
+    <string name="account_delete_button">Delete account</string>
+    <string name="account_delete_confirm_title">Delete your Forever Sixty account?</string>
+    <string name="account_delete_confirm_body">This cannot be undone.</string>
+    <string name="account_delete_confirm_action">Delete</string>
+    <string name="account_delete_failed">Could not delete your account just now. Try again.</string>
+    <string name="account_delete_done">Your account is being deleted. It is gone by %1$s.</string>
 </resources>

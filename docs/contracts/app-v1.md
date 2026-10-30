@@ -37,7 +37,7 @@ always present (null when unknown, `[]` when an empty list).
   still refused on session routes). A bearer request needs no CSRF header.
 - **device**: a bearer token only. A cookie is refused.
 
-A missing or dead credential answers `401 unauthorized`. A dead bearer token is `401` with
+A missing or dead credential answers `401 unauthorized` (fixture `error-unauthorized`; a lapsed app token's one-time answer is `error-session-expired`). A dead bearer token is `401` with
 `"that device token is not valid"`. An app token that lapsed (30 days unused or 180 days from
 sign-in) answers `401 session_expired` once, then `401 unauthorized`. **On either 401 the app
 clears its token and signs in again.** Billing writes (checkout, portal, guild upgrade, transfer)
@@ -139,6 +139,25 @@ The home answer: who you are, your characters, your guilds and what you may use.
   `ended_seat`.
 
 A new account with no characters answers `characters: []`, `guilds: []` (fixture `me.empty`).
+
+### DELETE /v1/me
+Auth session or app device token. In-app account deletion (App Store guideline 5.1.1(v), lane F1).
+Dark: no handler on main yet (the API lanes merge after Nov 6); the shape is final. Body
+`{ "confirm": "delete my account" }`, sent only after the person has read what is deleted and
+confirmed. Answer **202** `{ requested_at, complete_by }` (`me.delete`): every device token and
+browser session of the account is revoked at once, so the app's next call answers 401, and the
+data goes by `complete_by`, 30 days on, the privacy page's promise. Errors: 400 `invalid` when
+`confirm` is not the phrase (`me.delete.error-invalid`), 401 (`me.delete.error-unauthorized`).
+What is removed is the privacy page's list, the same as today's emailed request: see the
+operation's description in `api/openapi.yaml`. The app shows `account.delete.done` with
+`complete_by`, clears its token and every cache, and returns to signed out.
+
+### GET /v1/devices and DELETE /v1/devices/{id}
+Auth session or app device token. `GET` answers the account's devices, the array itself
+(`devices.list`): `{ id, name, platform, kind, created_at, last_seen_at? }`. The app marks its own
+row by the `device.id` the sign-in exchange returned, which it keeps beside the token. `DELETE`
+revokes one device and answers 204; that device's token answers 401 at once; 404 `not_found`
+for a device that is not yours (`devices.revoke.error-not-found`).
 
 ### PATCH /v1/me
 Auth session. Request JSON, at least one of `anonymize` (bool) and `main_character_key` (one of your

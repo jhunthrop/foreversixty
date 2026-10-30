@@ -1333,6 +1333,102 @@ enum Copy {
     /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
     static var devicesFooter: String { text("devices.footer") }
 
+    /// iPhone
+    static var accountDeviceWord: String { text("account.deviceWord") }
+
+    /// {spec} · {n}
+    static func accountSelectorDetail(spec: String, n: Int) -> String {
+        format("account.selector.detail", spec, n)
+    }
+
+    /// {kind} · Level {n}
+    static func accountSwitcherDetail(kind: String, n: Int) -> String {
+        format("account.switcher.detail", kind, n)
+    }
+
+    /// Opens your characters
+    static var accountSwitcherOpen: String { text("account.switcher.open") }
+
+    /// Switch character
+    static var accountSwitcherAction: String { text("account.switcher.action") }
+
+    /// just now
+    static var accountAgeNow: String { text("account.age.now") }
+
+    /// {n} min ago
+    static func accountAgeMinutes(n: Int) -> String {
+        format("account.age.minutes", n)
+    }
+
+    /// {n} h ago
+    static func accountAgeHours(n: Int) -> String {
+        format("account.age.hours", n)
+    }
+
+    /// {n} d ago
+    static func accountAgeDays(n: Int) -> String {
+        format("account.age.days", n)
+    }
+
+    /// Sign out
+    static var accountSignOutAction: String { text("account.signOut.action") }
+
+    /// That is done on foreversixty.gg. It opens in your browser.
+    static var accountBrowserOnly: String { text("account.browserOnly") }
+
+    /// Delete account
+    static var accountDeleteRow: String { text("account.delete.row") }
+
+    /// Delete account
+    static var accountDeleteTitle: String { text("account.delete.title") }
+
+    /// Deleting your account removes what Forever Sixty holds about you:
+    static var accountDeleteIntro: String { text("account.delete.intro") }
+
+    /// Your Battle.net sign-in and email address
+    static var accountDeleteItemIdentity: String { text("account.delete.item.identity") }
+
+    /// Your characters, their addon exports and sync history
+    static var accountDeleteItemCharacters: String { text("account.delete.item.characters") }
+
+    /// The combat logs you uploaded and the reports parsed from them
+    static var accountDeleteItemLogs: String { text("account.delete.item.logs") }
+
+    /// Your saved sims and builds, and the ratings derived from them
+    static var accountDeleteItemSims: String { text("account.delete.item.sims") }
+
+    /// Your notification settings, Discord link and devices
+    static var accountDeleteItemLinks: String { text("account.delete.item.links") }
+
+    /// Your plan is cancelled and does not renew.
+    static var accountDeletePlan: String { text("account.delete.plan") }
+
+    /// Every device is signed out at once. The rest is gone within thirty days, and usually much sooner.
+    static var accountDeleteTiming: String { text("account.delete.timing") }
+
+    /// You can also ask by email at help@foreversixty.gg.
+    static var accountDeleteEmail: String { text("account.delete.email") }
+
+    /// Delete account
+    static var accountDeleteButton: String { text("account.delete.button") }
+
+    /// Delete your Forever Sixty account?
+    static var accountDeleteConfirmTitle: String { text("account.delete.confirm.title") }
+
+    /// This cannot be undone.
+    static var accountDeleteConfirmBody: String { text("account.delete.confirm.body") }
+
+    /// Delete
+    static var accountDeleteConfirmAction: String { text("account.delete.confirm.action") }
+
+    /// Could not delete your account just now. Try again.
+    static var accountDeleteFailed: String { text("account.delete.failed") }
+
+    /// Your account is being deleted. It is gone by {date}.
+    static func accountDeleteDone(date: String) -> String {
+        format("account.delete.done", date)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

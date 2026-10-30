@@ -85,6 +85,31 @@ public struct AccountCharacter: Codable, Sendable, Equatable {
     }
 }
 
+/// An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise).
+public struct AccountDeletion: Codable, Sendable, Equatable {
+    public let requestedAt: Date
+    public let completeBy: Date
+
+    public init(
+        requestedAt: Date,
+        completeBy: Date
+    ) {
+        self.requestedAt = requestedAt
+        self.completeBy = completeBy
+    }
+}
+
+/// The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid.
+public struct AccountDeletionRequest: Codable, Sendable, Equatable {
+    public let confirm: String
+
+    public init(
+        confirm: String
+    ) {
+        self.confirm = confirm
+    }
+}
+
 /// A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a control exactly when its word is present, never from the rank.
 public struct AccountGuild: Codable, Sendable, Equatable {
     public let id: Int64
