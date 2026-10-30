@@ -39,7 +39,11 @@ const BUDGETS = [
   // 78 KB since the site alignment of 2026-10-29: the planner moved onto the shared PageHead,
   // Card and compact CardHead and its band compare gained the still-to-take line; CI read
   // 79,107 bytes against 78,848.
-  { file: 'dist/planner-island.js', limitBytes: 78 * 1024 },
+  // 82 KB since the shared dropdown of 2026-10-30: the planner's selects moved onto the shared
+  // Select, whose closed-field and fine-pointer core ship in the boot chunk. The deploy's
+  // real-data build read 82,747 bytes against 79,872 (the fixture build reads ~79.5 KB).
+  // Debt: lazy-load the listbox core from the planner so its boot chunk drops back under 79 KB.
+  { file: 'dist/planner-island.js', limitBytes: 82 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
