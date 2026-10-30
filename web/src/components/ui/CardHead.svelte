@@ -28,6 +28,7 @@
     aside,
     headingLevel = 2,
     compact = false,
+    class: className = '',
     testid,
   }: {
     /** The tile's glyph; omitted (and no `lead`), the head has no tile (a prose aside). */
@@ -54,6 +55,8 @@
     aside?: Snippet;
     headingLevel?: 2 | 3;
     compact?: boolean;
+    /** Layout classes from the card's parent (a phone fold that hides the head). */
+    class?: string;
     testid?: string;
   } = $props();
 
@@ -62,7 +65,7 @@
 </script>
 
 <div
-  class={compact ? CARD_HEAD.compact : CARD_HEAD.root}
+  class={[compact ? CARD_HEAD.compact : CARD_HEAD.root, className]}
   data-testid={testid}
   data-compact={compact || undefined}
 >

@@ -129,8 +129,12 @@
     meta={`${encounters.length} ${encounters.length === 1 ? 'pull' : 'pulls'}`}
     body="none"
     compact
+    headClass={foldOnPhone ? 'max-md:hidden' : ''}
   >
-    <div class="border-line-soft flex flex-col border-t">
+    <!-- Folded on a phone, the toggle is the card's one row and stands in for its head: the
+         head on top of it took the folded list from 46 to 95 px and pushed the sample
+         report's first damage row below the first screen (onboarding-second-screen). -->
+    <div class="border-line-soft flex flex-col {foldOnPhone ? 'md:border-t' : 'border-t'}">
       {#if foldOnPhone}
         <button
           type="button"

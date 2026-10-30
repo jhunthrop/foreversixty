@@ -28,6 +28,7 @@
     foot,
     headingLevel = 2,
     compact = false,
+    headClass = '',
     testid,
     id,
     class: className = '',
@@ -55,6 +56,8 @@
     headingLevel?: 2 | 3;
     /** The 48 px head for dense data cards. */
     compact?: boolean;
+    /** Layout classes on the head (a phone fold whose own row stands in for it). */
+    headClass?: string;
     testid?: string;
     id?: string;
     /** Layout classes from the parent (a grid span, a scroll margin). */
@@ -78,6 +81,7 @@
     {aside}
     {headingLevel}
     {compact}
+    class={headClass}
   />
   {#if body === 'none'}
     {@render children()}
