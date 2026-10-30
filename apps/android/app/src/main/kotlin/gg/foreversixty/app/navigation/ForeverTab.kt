@@ -16,9 +16,9 @@ import gg.foreversixty.app.R
  * (the house crests and game icons replace these Material stand-ins).
  */
 enum class ForeverTab(@param:StringRes val label: Int, val icon: ImageVector) {
-    Character(R.string.tab_character, Icons.Filled.Home),
+    Character(R.string.shell_tab_character, Icons.Filled.Home),
     Bis(R.string.tab_bis, Icons.AutoMirrored.Filled.List),
     Raids(R.string.tab_raids, Icons.Filled.DateRange),
-    Sims(R.string.tab_sims, Icons.Filled.PlayArrow),
-    Account(R.string.tab_account, Icons.Filled.AccountCircle),
+    Sims(R.string.shell_tab_sims, Icons.Filled.PlayArrow),
+    Account(R.string.shell_tab_account, Icons.Filled.AccountCircle),
 }

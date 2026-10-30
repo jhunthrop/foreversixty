@@ -69,6 +69,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from pipeline.classic_sources import ClassicDbSourceRecord
+from pipeline.classicdb_items import honor_rank_for_name
 from pipeline.models import LootFile, LootSource
 
 logger = logging.getLogger(__name__)
@@ -222,8 +223,14 @@ def _item_vendor_npcs(
     ]
 
 
+def _carries_rank_title(name: str | None) -> bool:
+    return bool(name) and (
+        title_faction(name) is not None or honor_rank_for_name(name) is not None
+    )
+
+
 def _backfill_vendor_items_into_pvp_buckets(
-    sources: list[LootSource], npc_factions: dict[int, Faction]
+    sources: list[LootSource], npc_factions: dict[int, Faction], item_names: dict[int, str]
 ) -> tuple[list[LootSource], int]:
     """Fourth wow-player sweep, item 1 (found regenerating band 60 for
     this lane's own report): a rank quartermaster's own "vendor" row
@@ -271,7 +278,11 @@ def _backfill_vendor_items_into_pvp_buckets(
             continue
         faction = npc_factions[s.npc_id]
         for item_id in s.items or []:
-            if item_id not in item_rank:
+            # Only an item that names its own rank title: a reputation
+            # quartermaster selling one ranked item (Kelm Hargunth) is not
+            # a rank quartermaster for the rest of its stock
+            # (bis-phase-gate lane, 2026-10-30).
+            if item_id not in item_rank and _carries_rank_title(item_names.get(item_id)):
                 additions[(rank, faction)].add(item_id)
 
     if not additions:
@@ -296,6 +307,62 @@ def _backfill_vendor_items_into_pvp_buckets(
     return out, backfilled
 
 
+def ranks_with_item_evidence(ranks: dict[int, int], item_rows: list[dict]) -> dict[int, int]:
+    """The `ranks` whose item carries its own evidence of being a rank
+    reward: a rank title (`title_faction`, or the shared "Sergeant's" rank
+    `pipeline.classicdb_items.honor_rank_for_name` reads) or a faction
+    restriction.
+
+    For ranks recovered from a committed loot.json in merge-only mode,
+    which carry whatever an earlier run filed wrongly (Scalemail Vest and
+    the Season of Discovery Warsong stock under pvp:rank-12:horde). Every
+    rank the client's RequiredPVPRank states on 1.60.1.70658 is on such an
+    item, so this drops no real one (bis-phase-gate lane, 2026-10-30).
+    """
+    evidenced = {
+        int(row["id"])
+        for row in item_rows
+        if row.get("faction_restriction")
+        or title_faction(str(row["name"])) is not None
+        or honor_rank_for_name(str(row["name"])) is not None
+    }
+    return {item_id: rank for item_id, rank in ranks.items() if item_id in evidenced}
+
+
+def drop_non_rank_rewards(
+    sources: list[LootSource], not_rank_rewards: frozenset[int]
+) -> tuple[list[LootSource], int]:
+    """`sources` with every id in `not_rank_rewards` (classic ids
+    classic-db names with no honor rank) removed from every `pvp`
+    source, and how many listings went; a pvp source left empty is
+    dropped.
+
+    However an item reached a rank bucket -- its title (Legionnaire's
+    Band, a Warsong Outriders reward; Legionnaire's Leggings, a level-24
+    green), a rank recovered from an earlier loot.json, or the vendor
+    backfill above filing a reputation quartermaster's whole stock under
+    the one ranked item it sells (Kelm Hargunth put Dryad's Wrist
+    Bindings in pvp:rank-12:horde) -- classic-db is authoritative for a
+    classic id, and agrees with the client's RequiredPVPRank on every
+    ranked id of 1.60.1.70658. bis-phase-gate lane, 2026-10-30:
+    sim/cmd/leveling-bis applies the same rule to whatever loot.json it
+    loads (classicranks.go).
+    """
+    if not not_rank_rewards:
+        return sources, 0
+    out: list[LootSource] = []
+    dropped = 0
+    for source in sources:
+        if source.kind != "pvp":
+            out.append(source)
+            continue
+        kept = [item for item in source.items or [] if item not in not_rank_rewards]
+        dropped += len(source.items or []) - len(kept)
+        if kept:
+            out.append(source.model_copy(update={"items": kept}))
+    return out, dropped
+
+
 @dataclass(frozen=True)
 class PvpFactionStats:
     """Lane report counters for `split_pvp_sources_by_faction`: how many
@@ -316,6 +383,8 @@ def split_pvp_sources_by_faction(
     item_names: dict[int, str],
     classic_sources: dict[int, list[ClassicDbSourceRecord]] | None,
     zone_rows: list[dict] | None,
+    *,
+    not_rank_rewards: frozenset[int] = frozenset(),
 ) -> tuple[LootFile, PvpFactionStats]:
     """`document` with every `kind == "pvp"` source replaced by its
     alliance/horde split (module doc). Runs BEFORE
@@ -345,9 +414,7 @@ def split_pvp_sources_by_faction(
             # is written straight onto the vendor row here rather than
             # re-derived a second time downstream.
             if source.kind == "vendor" and source.npc_id in npc_factions:
-                sources.append(
-                    source.model_copy(update={"faction": npc_factions[source.npc_id]})
-                )
+                sources.append(source.model_copy(update={"faction": npc_factions[source.npc_id]}))
             else:
                 sources.append(source)
             continue
@@ -397,7 +464,15 @@ def split_pvp_sources_by_faction(
             len(unresolved),
             sorted(set(unresolved)),
         )
-    sources, backfilled = _backfill_vendor_items_into_pvp_buckets(sources, npc_factions)
+    sources, backfilled = _backfill_vendor_items_into_pvp_buckets(
+        sources, npc_factions, item_names
+    )
+    sources, dropped = drop_non_rank_rewards(sources, not_rank_rewards)
+    if dropped:
+        logger.info(
+            "pvp-faction: %d item(s) classic-db names with no honor rank dropped from pvp sources",
+            dropped,
+        )
     if backfilled:
         logger.info(
             "pvp-faction: %d rank quartermaster item(s) had no pvp source of their own, "

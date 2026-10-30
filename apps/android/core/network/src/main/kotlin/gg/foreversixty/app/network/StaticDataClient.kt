@@ -36,8 +36,10 @@ class StaticDataClient(
         }
     }
 
-    suspend fun <T> get(path: String, response: KSerializer<T>): ApiResult<T> {
-        require(path.startsWith(DATA_PREFIX)) { "static paths live under $DATA_PREFIX: $path" }
+    /** Reads one generated [StaticResource] (`StaticEndpoints`). */
+    suspend fun <T> get(resource: StaticResource<T>): ApiResult<T> = get(resource.path, resource.response)
+
+    private suspend fun <T> get(path: String, response: KSerializer<T>): ApiResult<T> {
         val answer = try {
             http.get(siteUrl.trimEnd('/') + path) {
                 header(HttpHeaders.Accept, ContentType.Application.Json.toString())
@@ -59,11 +61,10 @@ class StaticDataClient(
     }
 
     /** The build to read the lists and BiS from. */
-    suspend fun activeBuild(): ApiResult<ActiveBuild> = get(ACTIVE_BUILD_PATH, ActiveBuild.serializer())
+    suspend fun activeBuild(): ApiResult<ActiveBuild> = get(StaticEndpoints.getActiveBuild())
 
     companion object {
         const val SITE_URL = "https://foreversixty.gg"
         const val DATA_PREFIX = "/data/"
-        const val ACTIVE_BUILD_PATH = "/data/active-build.json"
     }
 }

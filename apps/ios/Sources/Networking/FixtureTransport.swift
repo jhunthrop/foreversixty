@@ -75,53 +75,15 @@ public enum FixtureVariant: Sendable, Hashable {
     }
 }
 
-/// The route-to-fixture table for docs/contracts/fixtures/app (lane C owns the files;
-/// docs/contracts/app-v1.md names them). API fixtures are whole envelopes; `cdn.*` fixtures are
-/// the static files as served, with no envelope. Feature lanes add a row per route they call.
+/// The route-to-fixture table for docs/contracts/fixtures/app, generated from api/openapi.yaml
+/// (`ContractRoutes`, web/scripts/gen-mobile-api.mjs): a route's default fixture is the first of
+/// its `x-fixtures`, or its `x-fixture-route`. API fixtures are whole envelopes; `cdn.*` fixtures
+/// are the static files as served. A new route joins by being added to the spec.
 public enum FixtureCatalog {
-    public static let api: [FixtureRoute] = [
-        FixtureRoute(.get, "/v1/me", fixture: "me"),
-        FixtureRoute(.patch, "/v1/me", fixture: "me.patch"),
-        FixtureRoute(.get, "/v1/characters/search", fixture: "character.search"),
-        FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}", fixture: "character.card"),
-        FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/sim-input", fixture: "character.sim-input.addon"),
-        FixtureRoute(.get, "/v1/sims", fixture: "sims.list"),
-        FixtureRoute(.get, "/v1/sims/{id}", fixture: "sims.result"),
-        FixtureRoute(.get, "/v1/sims/{id}/progress", fixture: "sims.progress"),
-        FixtureRoute(.post, "/v1/sims/{id}/rerun", fixture: "sims.rerun", status: 202),
-        FixtureRoute(.post, "/v1/sims/{id}/seen", fixture: nil, status: 204),
-        FixtureRoute(.get, "/v1/guilds/{id}/home", fixture: "guild.home"),
-        FixtureRoute(.get, "/v1/guilds/{id}/raids", fixture: "guild.raids"),
-        FixtureRoute(.get, "/v1/guilds/{id}/raids/{raid}", fixture: "guild.raid"),
-        FixtureRoute(.patch, "/v1/guilds/{id}/raids/{raid}", fixture: "guild.raid.patch"),
-        FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/lock", fixture: "guild.raid.patch"),
-        FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/unlock", fixture: "guild.raid.patch"),
-        FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/cancel", fixture: "guild.raid.patch"),
-        FixtureRoute(.put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", fixture: "guild.signup"),
-        FixtureRoute(.get, "/v1/guilds/{id}/loot", fixture: "guild.loot"),
-        FixtureRoute(.get, "/v1/reports", fixture: "reports.list"),
-        FixtureRoute(.get, "/v1/reports/{id}", fixture: "reports.get"),
-        FixtureRoute(.get, "/v1/builds", fixture: "builds.list"),
-        FixtureRoute(.get, "/v1/builds/{id}", fixture: "builds.get"),
-        FixtureRoute(.post, "/v1/builds", fixture: "builds.save", status: 201),
-        FixtureRoute(.post, "/v1/auth/app/exchange", fixture: "app.signin.exchange", status: 201),
-        FixtureRoute(.post, "/v1/auth/app/logout", fixture: "app.logout"),
-        FixtureRoute(.get, "/v1/me/notifications", fixture: "app.notifications"),
-        FixtureRoute(.patch, "/v1/me/notifications", fixture: "app.notifications"),
-        FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
-        FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
-        FixtureRoute(.get, "/v1/app/config", fixture: "app.config"),
-    ]
+    public static let api: [FixtureRoute] = ContractRoutes.api
 
     /// The site's static data (`https://foreversixty.gg/data/...`); bare JSON, no envelope.
-    public static let cdn: [FixtureRoute] = [
-        FixtureRoute(.get, "/data/active-build.json", fixture: "cdn.active-build"),
-        FixtureRoute(.get, "/data/dates.json", fixture: "cdn.dates"),
-        FixtureRoute(.get, "/data/{build}/classes.json", fixture: "cdn.classes"),
-        FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}"),
-        FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}"),
-        FixtureRoute(.get, "/data/{build}/talents/{class}.json", fixture: "cdn.talents.{class}"),
-    ]
+    public static let cdn: [FixtureRoute] = ContractRoutes.staticData
 
     public static let app: [FixtureRoute] = api + cdn
 }

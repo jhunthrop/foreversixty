@@ -39,7 +39,7 @@ class MeFixtureTest {
     @Test
     fun `a character with only the required fields decodes with nulls`() {
         val json = """{"key":"k","region":"eu","ruleset":"forever","name":"Alt","source":"bnet"}"""
-        val character = ApiJson.decodeFromString(Character.serializer(), json)
+        val character = ApiJson.decodeFromString(AccountCharacter.serializer(), json)
 
         assertNull(character.level)
         assertNull(character.build)
@@ -49,15 +49,15 @@ class MeFixtureTest {
     @Test
     fun `a null slice from Go decodes as an empty list`() {
         val json = """{"id":1,"region":"eu","ruleset":"forever","name":"G","verified":true,"verified_count":1,"can":null}"""
-        val guild = ApiJson.decodeFromString(Guild.serializer(), json)
+        val guild = ApiJson.decodeFromString(AccountGuild.serializer(), json)
 
         assertEquals(emptyList<String>(), guild.can)
     }
 
     @Test
     fun `unknown fields added by the API are ignored`() {
-        val json = """{"id":1,"role":"user","brand_new_field":{"x":1}}"""
-        val user = ApiJson.decodeFromString(User.serializer(), json)
+        val json = """{"id":1,"role":"user","anonymize":false,"brand_new_field":{"x":1}}"""
+        val user = ApiJson.decodeFromString(AppUser.serializer(), json)
 
         assertEquals(1L, user.id)
     }
@@ -83,7 +83,7 @@ class MeFixtureTest {
 
     @Test
     fun `the sign-in exchange fixture carries the token, device and me`() {
-        val answer = ApiJson.decodeFromJsonElement(AppExchangeResponse.serializer(), dataOf(fixture("app.signin.exchange.json")))
+        val answer = ApiJson.decodeFromJsonElement(AppSession.serializer(), dataOf(fixture("app.signin.exchange.json")))
 
         assertTrue(answer.token.startsWith("fsd_"))
         assertTrue(answer.device.id.isNotEmpty())

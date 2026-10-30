@@ -43,7 +43,7 @@ Each feature is independent. Up to four features run at once per platform, so ei
 
 | Feature | Needs | Scope (subject to lane D's spec) |
 |---|---|---|
-| **F1. Sign-in, account, character switcher** | A1 | Battle.net sign-in; the header's character selector as the app's switcher; the plan row; sign out; the device list. |
+| **F1. Sign-in, account, character switcher** | A1 | Battle.net sign-in; the header's character selector as the app's switcher; the plan row; sign out; the device list. **In-app account deletion** (App Store guideline 5.1.1(v): an app that creates accounts must let people delete them in the app). Needs an API endpoint for deletion with a confirmation step and the same data removal as today's emailed request. Today deletion is only by emailed request. |
 | **F2. Your character** | C | The home answer: upgrades for your level range, worn vs BiS with icons, quality colours and item tooltips (tap), talents status, last sync. |
 | **F3. BiS lists** | C, static data | Class, spec, range and faction picker; the list with sources and runners-up. Read-only and cached offline. |
 | **F4. Guild and raids** | C | Guild home, raids list, raid detail with roster and spec icons, sign up In / Late / Bench / Out, reminders. Likely the flagship mobile use. |

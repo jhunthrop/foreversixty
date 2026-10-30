@@ -62,7 +62,6 @@
     combinedSeries,
     isFullWindow,
     scopeSummary,
-    sliceSeries,
     windowMs,
     windowOf,
     windowPresets,
@@ -92,6 +91,12 @@
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
+  import { loadChartChunk } from '../../lib/chart/uplot-loader';
+  import { deathKey, rateMarkers, threatMarkers } from '../../lib/chart/report-markers';
+  import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
+  import type { ThreatPlayer } from '../../lib/chart/threat';
+  import { readCurrent } from '../../lib/current-character';
+  import { dataUrl } from '../../lib/planner/load';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
@@ -482,7 +487,14 @@
     const tab = state.tab;
     if (tab === shownTab) return;
     shownTab = tab;
-    bringIntoView(tabAnchor);
+    // The Threat tab's chart is the tab's answer (spec §B1.6): on a phone the Source row goes to
+    // the top, 8 px down, so the whole chart fits the first screen; every other tab scrolls to its table.
+    const sourceRow =
+      tab === 'threat' ? (document.getElementById('report-source')?.closest('label') ?? null) : null;
+    if (sourceRow instanceof HTMLElement) {
+      sourceRow.style.scrollMarginTop = '8px';
+      bringIntoView(sourceRow);
+    } else bringIntoView(tabAnchor);
   });
   $effect(() => {
     const mode = state.mode;
@@ -547,66 +559,96 @@
     if (own !== '' && fight !== null) out.set(fight.index, own);
     return out;
   });
-  /** What the chart draws: the table the tab shows, under the source scope. */
-  const chartActors = $derived.by(() => {
-    if (scoped === null) return [];
+  /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
+  const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
+    state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
+  );
+  /** The source scope over the whole fight: the chart's lines run across the fight and the window zooms them. */
+  const wholeScoped = $derived(
+    base === null || nightMode ? null : scopeSource(base, state.source, playerSet, friendlySet),
+  );
+  const wholeChartActors = $derived.by(() => {
+    if (wholeScoped === null) return [];
     const table =
-      state.tab === 'damage-taken'
-        ? scoped.damage_taken
-        : state.tab === 'healing'
-          ? scoped.healing
-          : scoped.damage_done;
+      chartMetric === 'damage-taken'
+        ? wholeScoped.damage_taken
+        : chartMetric === 'healing'
+          ? wholeScoped.healing
+          : wholeScoped.damage_done;
     return table.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet));
   });
-  const chartSeries = $derived(combinedSeries(chartActors));
-  /** On the summary, damage taken and healing ride behind the damage line. */
-  const chartExtra = $derived([
-    ...(scoped === null || state.tab !== 'summary'
+  /** The brush's shape on every chart: the raid's damage per second over the whole fight. */
+  const brushShape = $derived(
+    base === null
       ? []
-      : [
-          {
-            label: 'Damage taken',
-            series: combinedSeries(
-              scoped.damage_taken.filter((actor) =>
-                inSource(actor.guid, state.source, playerSet, friendlySet),
-              ),
-            ),
-            token: 'var(--color-death)',
-          },
-          {
-            label: 'Healing',
-            series: combinedSeries(
-              scoped.healing.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet)),
-            ),
-            token: 'var(--color-kill)',
-          },
-        ]),
-    // The measure ran once, over the whole fight (see toggleAbilityOnChart); the brush
-    // still has to cut it down every time it moves, the same way scopeSummary cuts down
-    // every actor's own series for the main line -- TimeChart stretches whatever length
-    // of series it is handed across the whole canvas, so an unsliced line here would be
-    // drawn at the whole fight's scale behind a main line drawn at the window's.
-    ...(chartedAbility === null
-      ? []
-      : [
-          {
-            label: chartedAbility.label,
-            series: sliceSeries(chartedAbility.series, cutWindow),
-            token: chartedAbility.token,
-          },
-        ]),
-  ]);
-  // The chart is the fight's damage on every tab but the two that have their own series;
-  // its caption says so, or nine tabs read as a damage table with a stranger's heading.
-  const chartLabel = $derived(
-    state.tab === 'damage-taken'
-      ? 'Damage taken'
-      : state.tab === 'healing'
-        ? 'Healing'
-        : state.tab === 'damage-done'
-          ? 'Damage'
-          : 'Damage, the fight’s pace',
+      : combinedSeries(base.damage_done.filter((actor) => playerSet.size === 0 || playerSet.has(actor.guid))),
   );
+  const chartPhases = $derived<ChartPhase[]>(
+    (base?.phases ?? []).map((phase) => ({ name: phase.name, startMs: phase.start_ms, endMs: phase.end_ms })),
+  );
+  /** One player as the Source, by GUID. */
+  const sourcePlayer = $derived(playerSet.has(state.source) ? state.source : undefined);
+  /** The viewer's own character in this fight, matched by name and class from the current character. */
+  let youGuid = $state<string | undefined>(undefined);
+  $effect(() => {
+    const rows = base?.roster ?? [];
+    const current = readCurrent();
+    if (current === null) {
+      youGuid = undefined;
+      return;
+    }
+    const name = current.label.split(' · ')[0]?.trim().toLowerCase() ?? '';
+    youGuid = rows.find(
+      (row) =>
+        splitUnitName(row.name).name.toLowerCase() === name &&
+        (row.class ?? '').toLowerCase().replace(/\s+/g, '-') === current.classSlug,
+    )?.guid;
+  });
+  /** A death's link on the Deaths tab, keeping the fight and the window (spec §B6.6). */
+  function deathHref(death: { guid: string; at_ms: number }): string {
+    return `${window.location.pathname}${reportSearch(
+      withState(state, { mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: [deathKey(death)] }),
+      firstFight,
+    )}`;
+  }
+  function openDeaths(deaths: readonly ChartEvent[]): void {
+    const keys = deaths.map((event) => event.key.replace(/^death-/, ''));
+    const span =
+      deaths.length > 1 ? { start: deaths[0].atMs, end: deaths[deaths.length - 1].atMs + 1000 } : {};
+    patch({ mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: keys, ...span });
+  }
+  const iconOf = (_spellId: number, stem?: string): string | null =>
+    stem === undefined ? null : dataUrl(activeBuild.build, `icons/${stem}.webp`);
+  const mainMarkers = $derived(
+    base === null || nightMode
+      ? []
+      : rateMarkers({ deaths: base.deaths, casts: base.casts, sourcePlayer, deathHref, iconOf }),
+  );
+  const threatPlayers = $derived(
+    new Map<string, ThreatPlayer>(
+      (base?.roster ?? []).map((row) => [
+        row.guid,
+        {
+          name: row.name,
+          className: classOf.get(row.guid),
+          role: row.role === 'tank' || row.role === 'healer' || row.role === 'dps' ? row.role : 'other',
+        },
+      ]),
+    ),
+  );
+  const chartSyncKey = $derived(`${reportId}:${state.fight}`);
+  /** The tabs whose table is itself a time chart: the shared damage chart is not drawn above them. */
+  const tabDrawsOwnChart = $derived(
+    state.mode === 'analyze' &&
+      state.view === 'tables' &&
+      (state.tab === 'threat' || state.tab === 'resources'),
+  );
+  // The chart chunk loads in parallel with the summary, so a chart never waits on it (spec §B11).
+  $effect(() => {
+    loadChartChunk().catch(() => {
+      /* the chart shows its own error state and Try again */
+    });
+  });
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
   const windowIsWhole = $derived(base !== null && isFullWindow(cutWindow, base.duration_ms));
@@ -1805,21 +1847,41 @@
            Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
            opens is a canvas nobody should pay the scroll distance for. -->
         <!-- The Coach tab reads a review, not a window: no chart, so Fix first opens in view. -->
-        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach'}
+        <!-- One chart per tab (spec §B1.7): Threat draws its own chart below, and Resources is its
+             own set of lines (fix round 2), so neither repeats the damage chart above it. -->
+        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach' && !tabDrawsOwnChart}
           {#if chartOpen}
             <TimeChart
-              series={chartSeries}
-              extra={chartExtra}
-              phases={summary.phases ?? []}
+              metric={chartMetric}
+              actors={wholeChartActors}
+              roster={summary.roster}
               durationMs={summary.duration_ms}
               window={timeWindow}
-              deaths={summary.deaths
-                .filter((death) => !playerSet.has(state.source) || death.guid === state.source)
-                .map((death) => ({ at_ms: death.at_ms, name: death.name }))}
-              label={chartLabel}
+              phases={chartPhases}
+              events={mainMarkers}
+              {deadSpans}
+              {brushShape}
               {presets}
               onSelectPreset={(index) => setWindow(presets[index]?.window ?? null)}
               onWindow={setWindow}
+              {sourcePlayer}
+              enemies={state.source === SOURCE_ENEMIES}
+              {youGuid}
+              chosen={state.players}
+              preset={state.playersPreset === null ? 'split' : state.playersPreset}
+              onChoose={(players) => patch({ players })}
+              onPreset={(preset) =>
+                patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
+              logScale={state.logScale}
+              onLogScale={(logScale) => patch({ logScale })}
+              targetName={state.target === ''
+                ? undefined
+                : splitUnitName(unitNames.get(state.target) ?? state.target).name}
+              extra={chartedAbility === null
+                ? null
+                : { label: chartedAbility.label, series: chartedAbility.series }}
+              syncKey={chartSyncKey}
+              onOpenDeath={openDeaths}
               compact={isSampleReport(reportId)}
             />
           {:else}
@@ -1977,6 +2039,7 @@
               window={cutWindow}
               deaths={scoped.deaths}
               names={unitNames}
+              syncKey={nightMode ? '' : chartSyncKey}
             />
             <AuraTable
               tracks={scoped.auras}
@@ -2045,6 +2108,8 @@
                 guid: death.guid,
                 at_ms: death.at_ms - timeWindow.startMs,
               }))}
+              syncKey={nightMode ? '' : chartSyncKey}
+              windowStartMs={timeWindow.startMs}
             />
           {:else if state.tab === 'threat'}
             <ThreatTable
@@ -2071,6 +2136,31 @@
               totalThreat={windowed?.threat
                 .filter((row) => playerSet.has(row.guid))
                 .reduce((sum, row) => sum + row.threat, 0)}
+              chart={base === null || nightMode
+                ? undefined
+                : {
+                    pairs: base.threat_by_target ?? [],
+                    players: threatPlayers,
+                    taunts: base.taunts ?? [],
+                    targetChanges: base.target_changes,
+                    damageTaken: base.damage_taken,
+                    events: (enemyGuids) =>
+                      threatMarkers({
+                        deaths: base?.deaths ?? [],
+                        taunts: base?.taunts ?? [],
+                        targetChanges: base?.target_changes,
+                        enemyGuids,
+                        deathHref,
+                      }),
+                    phases: chartPhases,
+                    sourcePlayer,
+                    youGuid,
+                    chosen: state.players,
+                    onChoose: (players) => patch({ players }),
+                    brushShape,
+                    syncKey: chartSyncKey,
+                    onOpenDeath: openDeaths,
+                  }}
             />
           {:else if state.tab === 'deaths'}
             <DeathsTab
@@ -2138,6 +2228,7 @@
               players={playerSet}
               allCasts={summary?.casts ?? []}
               taunts={scoped.taunts ?? []}
+              syncKey={chartSyncKey}
               auraOrder={[
                 ...new Set(
                   (summary?.auras ?? [])

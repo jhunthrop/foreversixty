@@ -26,6 +26,12 @@ sealed interface ApiError {
         val needsBrowserSession: Boolean get() = code == BROWSER_SESSION_REQUIRED
     }
 
+    /**
+     * 426 `update_required`: this build is below the API's minimum. The [UpdateGate] has already
+     * shut, so the app is on its update screen; [storeUrl] is the gate's store page.
+     */
+    data class UpdateRequired(val storeUrl: String?) : ApiError
+
     /** A non-2xx answer with no envelope: a static file the CDN does not have (404), or an outage. */
     data class Status(val status: Int) : ApiError
 

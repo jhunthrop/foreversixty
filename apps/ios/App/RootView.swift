@@ -10,11 +10,11 @@ enum AppTab: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .home: "Character"
-        case .raids: "Raids"
-        case .bis: "BiS"
-        case .sims: "Sims"
-        case .account: "Account"
+        case .home: Copy.shellTabCharacter
+        case .raids: Copy.tabRaids
+        case .bis: Copy.tabBis
+        case .sims: Copy.shellTabSims
+        case .account: Copy.shellTabAccount
         }
     }
 
@@ -34,6 +34,14 @@ struct RootView: View {
     @State private var selection: AppTab = .home
 
     var body: some View {
+        if environment.updateGate.isRequired {
+            UpdateRequiredView(storeURL: environment.updateGate.storeURL)
+        } else {
+            tabs
+        }
+    }
+
+    private var tabs: some View {
         TabView(selection: $selection) {
             ForEach(AppTab.allCases) { tab in
                 Tab(tab.title, systemImage: tab.systemImage, value: tab) {
@@ -42,6 +50,7 @@ struct RootView: View {
             }
         }
         .tint(Theme.Palette.accent)
+        .task { await environment.appConfig.refresh() }
     }
 
     @ViewBuilder
@@ -58,7 +67,7 @@ struct PlaceholderScreen: View {
 
     var body: some View {
         NavigationStack {
-            Text("Coming soon")
+            Text(Copy.shellComingSoon)
                 .foregroundStyle(Theme.Palette.muted)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Theme.Palette.background)

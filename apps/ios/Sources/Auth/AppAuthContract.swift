@@ -17,8 +17,6 @@ import Networking
 public enum AppAuthContract {
     public static let platform = "ios"
     public static let startPath = "/v1/auth/app/start"
-    public static let exchangePath = "/v1/auth/app/exchange"
-    public static let logoutPath = "/v1/auth/app/logout"
     public static let callbackHost = "foreversixty.gg"
     public static let callbackPath = "/app/auth"
 
@@ -44,36 +42,4 @@ public enum AppAuthContract {
         guard let code = value("code"), !code.isEmpty else { throw .callbackRejected("no code") }
         return code
     }
-}
-
-/// `POST /v1/auth/app/exchange` request body. `device_name` is optional on the server (it
-/// defaults to "iOS"); the app always sends one so /account names the phone.
-public struct AppExchangeRequest: Encodable, Sendable, Equatable {
-    public let code: String
-    public let codeVerifier: String
-    public let deviceName: String
-}
-
-/// `POST /v1/auth/app/exchange` data: the device token (shown only here), the device row it
-/// created and the `GET /v1/me` body, so the first screen needs no second call.
-public struct AppSession: Decodable, Sendable, Equatable {
-    public let token: String
-    public let device: Device
-    public let me: Me
-}
-
-/// `POST /v1/auth/app/logout` data.
-public struct SignedOut: Decodable, Sendable, Equatable {
-    public let signedOut: Bool
-}
-
-public extension Endpoint where Response == AppSession {
-    static func appExchange(_ body: AppExchangeRequest) throws(APIError) -> Endpoint {
-        try .json(.post, AppAuthContract.exchangePath, body: body, authenticated: false)
-    }
-}
-
-public extension Endpoint where Response == SignedOut {
-    /// Revokes this device's token on the server.
-    static var appLogout: Endpoint { Endpoint(method: .post, path: AppAuthContract.logoutPath) }
 }

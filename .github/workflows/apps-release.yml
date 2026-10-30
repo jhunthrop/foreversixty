@@ -1,0 +1,131 @@
+# .github/workflows/apps-release.yml
+#
+# The apps' one release path: runs tools/release-apps.sh (docs/runbooks/mobile-apps.md
+# "Cutting a release"). Dispatched by hand. A dry run by default: it prints the version it
+# would cut and what is missing, and changes nothing. With execute it bumps apps/VERSION,
+# builds and signs, uploads Android to the Play track and iOS to TestFlight (iOS is skipped,
+# with the reason, until the Apple secrets exist), then pushes the release commit and tag.
+#
+# Secrets, in the play-internal environment (the names android.yml's old play-internal
+# job used, so nothing is re-entered):
+#   PLAY_SERVICE_ACCOUNT_JSON        Play Developer API key, "Release to testing tracks"
+#   ANDROID_UPLOAD_KEYSTORE_BASE64   the upload keystore, base64 (Play App Signing holds the app key)
+#   ANDROID_UPLOAD_KEYSTORE_PASSWORD, ANDROID_UPLOAD_KEY_ALIAS, ANDROID_UPLOAD_KEY_PASSWORD
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8   App Store Connect API key (App Manager), once Apple
+#                                           enrollment clears
+# Variables: APPLE_TEAM_ID, SENTRY_DSN_ANDROID, SENTRY_DSN_IOS (a DSN is not a secret; empty
+# means that build reports no crashes).
+name: apps-release
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: What to bump. build keeps the version and only raises the build number.
+        type: choice
+        options: [build, patch, minor, major]
+        default: build
+      platform:
+        description: Which apps to release
+        type: choice
+        options: [both, android, ios]
+        default: both
+      play_status:
+        description: Play release status. draft until the app's first review; completed after.
+        type: choice
+        options: [draft, completed]
+        default: draft
+      execute:
+        description: Release for real. Off, this is a dry run that changes nothing.
+        type: boolean
+        default: false
+permissions: { contents: read }
+concurrency:
+  group: apps-release
+  cancel-in-progress: false
+env:
+  XCODE_VERSION: '27.1'
+  XCODEGEN_VERSION: '2.46.0'
+jobs:
+  release:
+    # macOS so one run builds both apps and makes one release commit.
+    runs-on: macos-latest
+    timeout-minutes: 60
+    environment: play-internal
+    permissions:
+      contents: write
+    steps:
+      - name: Releases are cut from main
+        if: inputs.execute && github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Run the release from main; this run is on ${GITHUB_REF}"
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - name: Install XcodeGen
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" \
+            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          working-directory: apps
+          bundler-cache: true
+      - name: Git identity for the release commit
+        run: |
+          git config user.name "apps-release"
+          git config user.email "ci@foreversixty.gg"
+      - name: Write the upload keystore
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE" ]; then
+            echo "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+            echo "FOREVER_UPLOAD_KEYSTORE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+          fi
+      - name: Release
+        env:
+          BUMP: ${{ inputs.bump }}
+          PLATFORM: ${{ inputs.platform }}
+          EXECUTE: ${{ inputs.execute }}
+          PLAY_RELEASE_STATUS: ${{ inputs.play_status }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          FOREVER_UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          FOREVER_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          FOREVER_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          SENTRY_DSN_ANDROID: ${{ vars.SENTRY_DSN_ANDROID }}
+          SENTRY_DSN_IOS: ${{ vars.SENTRY_DSN_IOS }}
+        run: |
+          args=(--bump "$BUMP" --platform "$PLATFORM")
+          if [ "$EXECUTE" = true ]; then args+=(--execute); fi
+          tools/release-apps.sh "${args[@]}"
+      # The release commit is pushed even when an upload failed after it, so the build
+      # number an upload may have spent is never offered again.
+      - name: Push the release commit and tag
+        if: always() && inputs.execute
+        run: |
+          if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
+            git push --follow-tags origin HEAD:main
+          fi
+      - name: Keep the Android mapping and bundle
+        if: always() && inputs.execute
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: |
+            apps/android/app/build/outputs/bundle/release/
+            apps/android/app/build/outputs/mapping/release/
+          if-no-files-found: ignore
+          retention-days: 90
+      - if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"

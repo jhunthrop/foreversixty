@@ -16,6 +16,8 @@ let package = Package(
         .library(name: "Networking", targets: ["Networking"]),
         .library(name: "Auth", targets: ["Auth"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
+        .library(name: "Routing", targets: ["Routing"]),
+        .library(name: "Telemetry", targets: ["Telemetry"]),
     ],
     targets: [
         .target(name: "Models", path: "Sources/Models", swiftSettings: strictSettings),
@@ -26,6 +28,8 @@ let package = Package(
             path: "Sources/Auth",
             swiftSettings: strictSettings
         ),
+        // Generated/DeepLink.swift is generated from apps/shared/links.json.
+        .target(name: "Routing", path: "Sources/Routing", swiftSettings: strictSettings),
         // Shared/DesignTokens.swift is generated from web/src/styles/tokens.css
         // (lane T); it is its own target so the generator owns the whole folder.
         .target(name: "DesignTokens", path: "Shared", swiftSettings: strictSettings),
@@ -35,6 +39,9 @@ let package = Package(
             path: "Sources/DesignSystem",
             swiftSettings: strictSettings
         ),
+        // Crash-report scrubbing and the on/off rule. No SDK here: the app target links Sentry
+        // and calls into these, so the privacy rules are tested without the SDK.
+        .target(name: "Telemetry", path: "Sources/Telemetry", swiftSettings: strictSettings),
         // Shared test helpers: the repo's fixture folder and a recording transport.
         .target(
             name: "TestSupport",
@@ -55,9 +62,21 @@ let package = Package(
             swiftSettings: strictSettings
         ),
         .testTarget(
+            name: "RoutingTests",
+            dependencies: ["Routing"],
+            path: "Tests/RoutingTests",
+            swiftSettings: strictSettings
+        ),
+        .testTarget(
             name: "AuthTests",
             dependencies: ["Auth", "Networking", "Models", "TestSupport"],
             path: "Tests/AuthTests",
+            swiftSettings: strictSettings
+        ),
+        .testTarget(
+            name: "TelemetryTests",
+            dependencies: ["Telemetry"],
+            path: "Tests/TelemetryTests",
             swiftSettings: strictSettings
         ),
     ]

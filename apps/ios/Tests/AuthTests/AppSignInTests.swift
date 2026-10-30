@@ -192,7 +192,7 @@ struct AppSignInTests {
         let body = #"{"ok":false,"data":null,"error":{"code":"\#(code)","message":"Sign in again."},"request_id":"r"}"#
         let client = APIClient(baseURL: base, transport: RecordingTransport(status: 401, body: body), tokens: store)
         await #expect(throws: APIError.unauthorized(requestID: "r")) {
-            try await client.send(.me)
+            try await client.send(.getMe)
         }
         #expect(try store.load() == nil)
     }

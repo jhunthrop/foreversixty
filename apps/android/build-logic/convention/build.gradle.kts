@@ -33,6 +33,10 @@ gradlePlugin {
             id = "forever.shared-fonts"
             implementationClass = "SharedFontsConventionPlugin"
         }
+        register("appVersion") {
+            id = "forever.app-version"
+            implementationClass = "AppVersionConventionPlugin"
+        }
         register("appIcon") {
             id = "forever.app-icon"
             implementationClass = "AppIconConventionPlugin"

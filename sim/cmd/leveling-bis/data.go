@@ -518,6 +518,10 @@ type lootBoss struct {
 	// classic-db creature with a pooled or open-world spawn - Ironspine),
 	// not there on every run. False for a boss or trash mob.
 	RareSpawn bool `json:"rare_spawn"`
+	// NpcID is the creature's npc id (or, for a reward chest, its game
+	// object id): what data/curated/content-phases.json gates a single
+	// boss by inside an otherwise open instance.
+	NpcID int `json:"npc_id"`
 }
 
 // lootSource is one row of data/builds/<build>/loot.json's sources
@@ -564,6 +568,10 @@ type lootSource struct {
 	// RareSpawn is a `world` source's own `rare_spawn` (task L1.7): the
 	// named creature is a rare spawn (Swiftmane, Lupos).
 	RareSpawn bool `json:"rare_spawn"`
+	// NpcID is a vendor's npc id and ZoneID an instance's or zone
+	// source's zone id: two of the keys content-phases.json gates by.
+	NpcID  int `json:"npc_id"`
+	ZoneID int `json:"zone_id"`
 	// Opens is the content phase this source unlocks in
 	// (data/curated/loot/forever-raid-phases.json's own curated fact,
 	// "later" for every Era raid this build's generator emits and
@@ -579,19 +587,11 @@ type lootSource struct {
 	// possibly have - see that lane's report for which band-60 picks
 	// moved once this landed.
 	//
-	// bis-ranker-integrity-5 lane, item 4: that "every reputation
-	// source is open at launch" confirmation has one real exception
-	// loot.json itself never states - a rep-kind source's own faction
-	// can be locked behind the same raid-era content patch as a raid
-	// itself (Cenarion Circle, faction 609: introduced in Patch 1.9,
-	// Gates of Ahn'Qiraj, the same patch that opens the Ahn'Qiraj raid
-	// this build already gates "later" above and starts the AQ War
-	// Effort the reputation is earned through - Wowhead's own Cenarion
-	// Circle faction page dates its earliest quest to that event
-	// chain). loadLootIndex applies repFactionRaidPhaseOpens (below) on
-	// top of this field for exactly that case, since forever-raid-
-	// phases.json's own curated facts patch raid/dungeon sources by id,
-	// never a reputation faction.
+	// Every other content phase - a reputation, an event, a vendor,
+	// a boss inside an open instance - is gated by game id in
+	// data/curated/content-phases.json; loadGatedLootIndex applies those
+	// gates on top of this field (contentphases.go), so they hold even
+	// for a loot.json generated before a gate was added.
 	Opens string `json:"opens,omitempty"`
 }
 
@@ -628,6 +628,11 @@ type lootQuestEntry struct {
 	// it correctly before the data lane ever lands the field, and start
 	// gating the moment it does, with no second code change needed.
 	Classes []string `json:"classes,omitempty"`
+	// RequiredRepFaction/RequiredRepStanding are the reputation the
+	// quest needs (classic-db's RequiredMinRepFaction), 0/"" for none:
+	// a content-phase faction gate closes every quest that needs it.
+	RequiredRepFaction  int    `json:"required_rep_faction"`
+	RequiredRepStanding string `json:"required_rep_standing"`
 }
 
 type lootFile struct {
@@ -695,6 +700,17 @@ type itemSource struct {
 	// published-file check reads it: an older build's frozen files name
 	// one of these creatures.
 	SharedTrashCreatures []string
+	// The keys data/curated/content-phases.json gates by
+	// (contentphases.go): the vendor's or boss's npc id, the source's
+	// own name (a world source carries no npc id), its zone id, a rep
+	// source's faction id, and a quest's id and the reputation it needs.
+	NpcID       int
+	SourceName  string
+	ZoneID      int
+	FactionID   int
+	QuestID     int
+	RepFaction  int
+	RepStanding string
 }
 
 // rareLabelSuffix ends a rare spawn's source label (task L1.7: "otherwise
@@ -791,133 +807,6 @@ var repSide = map[int]string{
 // Side (always "", since its id is literally "quest") - see loadLootIndex's
 // own doc for why a per-quest record, not a per-item merge, is required.
 var questFactionSide = map[string]string{"alliance": "alliance", "horde": "horde", "both": ""}
-
-// raidLockedQuestOpens is quest_id -> the content phase it needs, for a
-// quest reward whose own loot.json entry reads "kind": "quest" (so the
-// general Opens-from-a-raid-source gate in sourceObtainable never sees
-// it - loadLootIndex skips "quest"-kind rows from that loop entirely
-// and builds this one's itemSource separately, below) but whose quest
-// chain is actually gated behind raid boss kills or a raid-tier
-// community event - this lane's brief, item 3's own named example was
-// "Atiesh, Greatstaff of the Guardian" (the Naxxramas class-quest
-// chain's reward, not obtainable without having already killed
-// Kel'Thuzad) and "Rise, Thunderfury!" (needs 8 Bindings of the
-// Windseeker, which drop randomly off EVERY Molten Core boss); both are
-// legendaries (items.json quality 5) and are gated by
-// band.go's legendaryGatedLater now (bis-ranker-integrity-2 lane, item
-// 2: "any item of quality 5 is gated later regardless of source kind"
-// replaces the two hand-picked quest-id rows this map used to carry for
-// them - one rule instead of one row per legendary this build ever
-// adds).
-//
-// What is LEFT here is not a legendary at all: 8756/8789/8790 are the
-// Ahn'Qiraj War Effort's three reward-item quests ("The Qiraji
-// Conqueror", "Imperial Qiraji Armaments", "Imperial Qiraji Regalia" -
-// found re-checking mage-fire band 60 after the Atiesh fix landed:
-// "Blessed Qiraji Acolyte Staff", quest 8790, immediately became the
-// new band-60 main_hand pick, itself gated behind the same War Effort a
-// direct Ahn'Qiraj raid drop already is via forever-raid-phases.json's
-// `raid:ahnqiraj` curated fact) - their own items.json quality is well
-// below 5, so legendaryGatedLater's rule has no way to catch them; their
-// gate is the war-effort RAID EVENT itself, which loot.json's own
-// quest-kind rows never state.
-//
-// A broader systematic audit of every OTHER quest-kind reward that
-// turns out to be raid-gated (the same category of gap
-// forever-raid-phases.json's own curated facts fill for direct raid
-// sources) is a follow-up beyond this lane's scope - see this lane's
-// report for exactly what was and was not checked.
-var raidLockedQuestOpens = map[int]string{
-	8756: "later", // The Qiraji Conqueror - Ahn'Qiraj War Effort reward
-	8789: "later", // Imperial Qiraji Armaments - Ahn'Qiraj War Effort reward
-	8790: "later", // Imperial Qiraji Regalia - Ahn'Qiraj War Effort reward
-}
-
-// repFactionRaidPhaseOpens is a reputation faction id -> the content
-// phase its OWN reputation track requires, for a faction loot.json's
-// "rep"-kind sources never carry an Opens value for at all
-// (lootSource.Opens' own doc above: forever-raid-phases.json's curated
-// facts patch a raid/dungeon source by id, never a reputation
-// faction) but whose reputation is not actually earnable until the
-// same content patch that opens a raid this build already gates
-// "later".
-//
-// bis-ranker-integrity-5 lane, 2026-09-30, this lane's brief item 4:
-// Earthstrike (21180, rep:cenarion-circle:exalted) and its two
-// standing-mates published as launch-day gear with no gate at all -
-// Cenarion Circle (faction 609) is Gates of Ahn'Qiraj (Patch 1.9)
-// content, the same patch this build's own raid:ahnqiraj source is
-// already gated "later" for, so its reputation cannot be earned any
-// earlier than the raid itself opens. A rep-kind source's Opens is
-// firstNonEmpty(src.Opens, this map[factionID]) in loadLootIndex - the
-// pipeline-curated fact wins when one exists; this hand-maintained
-// fallback only fires where loot.json is silent.
-//
-// bis-ranker-integrity-17 lane, 2026-09-30, player-review sweep 15/16:
-// the same gap, a second AQ War Effort faction. "Signet Ring of the
-// Bronze Dragonflight" (items 21200/21205/21210, band-60 finger) is
-// reachable both by a quest reward (fixed at the pipeline level -
-// pipeline.loot.sources.REP_FACTION_RAID_PHASE_OPENS, which bakes the
-// gate straight into loot.json's own quest entries) AND directly by
-// reputation (loot.json's own rep:brood-of-nozdormu:exalted source,
-// which - like every rep-kind source - never carries an Opens value of
-// its own). Without this fallback the rep-kind path stayed ungated
-// even after the quest path was fixed, which is enough on its own to
-// keep the item showing as a launch-day pick (an item counts as
-// reachable the moment ANY one of its sources is ungated). Brood of
-// Nozdormu (faction 910) is confirmed the same Gates of Ahn'Qiraj
-// (Patch 1.9) War Effort reputation Cenarion Circle is, off this same
-// build's loot.json ("Brood of Nozdormu" rep sources at every standing)
-// and spells.json ("Brood of Nozdormu Factoin +1000").
-var repFactionRaidPhaseOpens = map[int]string{
-	609: "later", // Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
-	910: "later", // Brood of Nozdormu - Gates of Ahn'Qiraj (AQ War Effort)
-}
-
-// worldBossSources is a loot.json "world"-kind source id -> the content
-// phase its OWN world boss opens in, for the six world bosses whose
-// loot.json entry (`kind: "world"`, the SAME generic bucket every
-// ordinary named-mob world drop uses) carries no `opens` value at all -
-// this lane's brief, item 3: "World bosses are raid content." A fresh
-// level-60 character does not solo Lord Kazzak, Azuregos, or the four
-// Dragons of Nightmare (Emeriss, Lethon, Taerar, Ysondre) - each needs a
-// raid-sized group, exactly the same barrier forever-raid-phases.json's
-// own curated facts already gate every direct raid-instance source
-// behind (raid:onyxias-lair's own "raids-1", the earliest phase any
-// raid content opens) - so each one is hand-listed here at that same
-// phase, the way data.go's own raidLockedQuestOpens (above) hand-lists
-// a quest reward loot.json's own per-item shape cannot state a raid
-// gate for either. loadLootIndex's own `add` closure reads this with
-// firstNonEmpty(src.Opens, worldBossSources[src.ID]) - the pipeline's
-// own computed Opens wins the moment a data lane teaches
-// pipeline.loot.classicdb (or a future world-boss-specific curated
-// fact) to state one, exactly like every other firstNonEmpty gate in
-// this file. Found dogfooding this lane's brief: warlock-affliction/
-// -demonology/-destruction band 60 main_hand (both factions) published
-// Amberseal Keeper, sourced to world:lord-kazzak with no gate at all,
-// 2.3 DPS ahead of Ironbark Staff (a real, obtainable alternative).
-var worldBossSources = map[string]string{
-	"world:lord-kazzak": "raids-1",
-	"world:azuregos":    "raids-1",
-	"world:emeriss":     "raids-1",
-	"world:lethon":      "raids-1",
-	"world:taerar":      "raids-1",
-	"world:ysondre":     "raids-1",
-}
-
-// firstNonEmpty returns the first non-empty string, or "" when every one
-// is - used wherever a computed fact (the pipeline's own
-// QuestSource.opens) should win over a hand-maintained fallback
-// (raidLockedQuestOpens) without a chain of if-empty checks at the call
-// site.
-func firstNonEmpty(values ...string) string {
-	for _, v := range values {
-		if v != "" {
-			return v
-		}
-	}
-	return ""
-}
 
 // repFactionSwap pairs the six battleground faction ids with their
 // opposite number, for correctedRepSource's fix below.
@@ -1023,10 +912,10 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		if src.Kind == "quest" {
 			continue
 		}
-		add := func(id int, label string, chance float64, rare bool) {
+		add := func(id int, label string, chance float64, rare bool, npcID int) {
 			is := itemSource{
 				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance, Opens: src.Opens,
-				RareSpawn: rare,
+				RareSpawn: rare, NpcID: npcID, SourceName: src.Name, ZoneID: src.ZoneID,
 			}
 			if rare {
 				is.Label += rareLabelSuffix
@@ -1048,14 +937,6 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				// rank, its in-game title and the faction together.
 				is.Label = pvpSourceLabel(is.Rank, is.Title, is.Side)
 			}
-			if src.Kind == "world" {
-				// This lane's brief, item 3: worldBossSources' own doc
-				// above - the six named world bosses are raid content
-				// even though loot.json's own "world" kind (shared with
-				// every ordinary named-mob world drop) never carries an
-				// opens value at all.
-				is.Opens = firstNonEmpty(src.Opens, worldBossSources[src.ID])
-			}
 			if src.Kind == "vendor" && src.Faction != "" {
 				// Fourth wow-player sweep, item 1: pipeline.loot.
 				// pvp_faction already resolved this rank quartermaster's
@@ -1073,21 +954,17 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				}
 				is.Side = repSide[factionID]
 				is.Standing = src.Standing
-				// This lane's brief, item 4: repFactionRaidPhaseOpens'
-				// own doc above - a reputation faction can be raid-era
-				// content even though loot.json's own rep sources never
-				// carry an opens value at all.
-				is.Opens = firstNonEmpty(src.Opens, repFactionRaidPhaseOpens[factionID])
+				is.FactionID = factionID
 			}
 			idx[id] = append(idx[id], is)
 		}
 		for _, id := range src.Items {
-			add(id, src.Name, src.ItemChances[strconv.Itoa(id)], src.RareSpawn)
+			add(id, src.Name, src.ItemChances[strconv.Itoa(id)], src.RareSpawn, src.NpcID)
 		}
 		shared := sharedTrashDrops(src)
 		for _, id := range src.Trash {
 			if rare, ok := shared[id]; ok {
-				add(id, src.Name, 0, rare)
+				add(id, src.Name, 0, rare, 0)
 				if srcs := idx[id]; len(srcs) > 0 {
 					srcs[len(srcs)-1].SharedTrashCreatures = trashCreatures(src, id)
 				}
@@ -1102,7 +979,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				if _, ok := shared[id]; ok {
 					continue
 				}
-				add(id, label, boss.ItemChances[strconv.Itoa(id)], boss.RareSpawn)
+				add(id, label, boss.ItemChances[strconv.Itoa(id)], boss.RareSpawn, boss.NpcID)
 			}
 		}
 	}
@@ -1124,13 +1001,13 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				Kind:  "quest",
 				Label: e.Name,
 				Side:  questFactionSide[e.Faction],
-				// e.Opens (the pipeline's own computed gate, quest-gates
-				// lane 2026-09-29) wins when set; raidLockedQuestOpens
-				// stays as the fallback for the Ahn'Qiraj war-effort
-				// three (8756/8789/8790), whose own gate is the war
-				// EVENT itself, not a classic-db turn-in item the
-				// generic computation can see (that map's own doc).
-				Opens: firstNonEmpty(e.Opens, raidLockedQuestOpens[e.QuestID]),
+				// e.Opens is the pipeline's own computed gate; the
+				// content-phase gates (contentphases.go) are applied on
+				// top by loadGatedLootIndex.
+				Opens:       e.Opens,
+				QuestID:     e.QuestID,
+				RepFaction:  e.RequiredRepFaction,
+				RepStanding: e.RequiredRepStanding,
 				// e.Classes (this lane's brief, item 3): nil for every
 				// quest in this build today, carried through unchanged
 				// so classAllowed (band.go) gates on it the moment the

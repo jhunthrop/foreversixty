@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.forever.contract.fixtures)
     alias(libs.plugins.forever.app.icon)
+    alias(libs.plugins.forever.app.version)
 }
 
 /**
@@ -12,10 +13,17 @@ plugins {
  */
 val uploadKeystore: String? = providers.environmentVariable("FOREVER_UPLOAD_KEYSTORE").orNull
 
+/**
+ * The Sentry DSN for release builds (apps/shared/privacy.md). Empty, the placeholder, keeps crash
+ * reporting off; the release command passes SENTRY_DSN_ANDROID. Debug builds never get one.
+ */
+val releaseSentryDsn: String = providers.environmentVariable("SENTRY_DSN_ANDROID").orElse("").get()
+
 android {
+    // BuildConfig.VERSION_NAME and VERSION_CODE feed the X-App header and the crash reporter.
+    buildFeatures { buildConfig = true }
+    // versionName and versionCode come from apps/VERSION (the forever.app-version plugin).
     defaultConfig {
-        versionCode = providers.gradleProperty("forever.versionCode").orElse("1").get().toInt()
-        versionName = providers.gradleProperty("forever.versionName").orElse("0.1.0").get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -31,8 +39,10 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            buildConfigField("String", "SENTRY_DSN", "\"\"")
         }
         release {
+            buildConfigField("String", "SENTRY_DSN", "\"$releaseSentryDsn\"")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -56,6 +66,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:network"))
+    implementation(project(":core:telemetry"))
+    implementation(libs.sentry.android.core)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

@@ -247,7 +247,8 @@ test('interrupts, dispels, resources and threat each render or say they are empt
 
   await page.goto(`${FIGHT}&tab=threat`);
   await expect(page.getByTestId('threat-table')).toContainText('Baelgrim');
-  await expect(page.getByTestId('threat-incomplete')).toContainText('does not yet carry every class');
+  // The base model's gaps are said once, in the chart's caveat line (spec §B12).
+  await expect(page.getByTestId('threat-caveat')).toContainText(/An estimate|Damage and healing only/);
 });
 
 test('the trash fight’s interrupts and dispels do have rows', async ({ page }) => {

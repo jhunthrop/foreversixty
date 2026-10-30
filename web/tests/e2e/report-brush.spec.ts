@@ -7,39 +7,84 @@ import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
+const FIG = `${FIGHT}&tab=damage-done`;
 
-test('dragging across the chart sets the window in the URL and rescopes the page', async ({ page }) => {
-  await page.goto(FIGHT);
+test('dragging across the chart sets the window in the URL and rescopes the page', async ({
+  page,
+}, testInfo) => {
+  // Drag-to-zoom is a fine pointer's (spec §B6.8: a phone zooms with the brush and the presets).
+  test.skip(testInfo.project.name === 'mobile', 'the plot takes no drag on touch');
+  await page.goto(FIG);
   await openChartIfCollapsed(page);
-  await expect(page.getByTestId('window-label')).toContainText('Whole fight');
+  const chart = page.getByTestId('time-chart');
+  await expect(chart.getByTestId('window-select')).toHaveValue('0');
+  await expect(chart.locator('[data-testid="chart-frame"][data-state="ready"]')).toBeVisible();
 
-  const canvas = page.getByTestId('time-chart-canvas');
-  // On a phone the chart sits below the fight list; a drag at coordinates off the screen
-  // lands nowhere.
-  await canvas.scrollIntoViewIfNeeded();
-  const box = (await canvas.boundingBox())!;
-  await page.mouse.move(box.x + box.width * 0.1, box.y + box.height / 2);
+  const plot = chart.getByTestId('chart-plot');
+  await plot.scrollIntoViewIfNeeded();
+  const box = (await plot.boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height / 2);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width * 0.35, box.y + box.height / 2, { steps: 8 });
+  await page.mouse.move(box.x + box.width * 0.6, box.y + box.height / 2, { steps: 8 });
+  // The drag names its span while it is in progress (spec §B6.2).
+  await expect(chart.getByTestId('drag-label')).toContainText(/\d:\d\d to \d:\d\d · \d+ s/);
   await page.mouse.up();
 
   await expect(page).toHaveURL(/start=\d+&end=\d+/);
-  await expect(page.getByTestId('window-label')).not.toContainText('Whole fight');
+  // The Window select names the dragged window, and the brush shows its edges.
+  await expect(chart.getByTestId('window-select')).toHaveValue('custom');
+  await expect(chart.getByTestId('window-select')).toContainText(/\d:\d\d to \d:\d\d/);
+  await expect(chart.getByTestId('brush-start-label')).toBeVisible();
+});
+
+test('zoom keeps the plot, the brush and the URL on one window, and double-click returns', async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile', 'the plot takes no drag on touch');
+  await page.goto(FIG);
+  const chart = page.getByTestId('time-chart');
+  await expect(chart.locator('[data-testid="chart-frame"][data-state="ready"]')).toBeVisible();
+  const plot = chart.getByTestId('chart-plot');
+  const box = (await plot.boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.3, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.7, box.y + box.height / 2, { steps: 6 });
+  await page.mouse.up();
+  await expect(page).toHaveURL(/start=(\d+)&end=(\d+)/);
+  const url = new URL(page.url());
+  const start = Number(url.searchParams.get('start'));
+  const end = Number(url.searchParams.get('end'));
+  // The brush's handles sit on the same window the URL carries.
+  await expect(chart.getByTestId('window-start')).toHaveValue(String(start));
+  await expect(chart.getByTestId('window-end')).toHaveValue(String(end));
+  // The plot's accessible name reads the window it is zoomed to.
+  await expect(plot).toHaveAttribute('aria-label', /chart, 0:\d\d to 0:\d\d\. Arrow keys/);
+  // Moving the brush's handle moves the URL too.
+  await chart.getByTestId('window-start').focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page).toHaveURL(new RegExp(`start=${start - 1000}&`));
+  // A double-click on the plot is the whole fight again.
+  await plot.dblclick({ position: { x: box.width / 2, y: box.height / 2 } });
+  await expect(page).not.toHaveURL(/start=/);
+  await expect(chart.getByTestId('window-select')).toHaveValue('0');
 });
 
 test('the range inputs move the same window, so a keyboard can brush', async ({ page }) => {
-  await page.goto(FIGHT);
+  await page.goto(FIG);
   await openChartIfCollapsed(page);
   await page.getByTestId('window-start').focus();
   for (let press = 0; press < 5; press += 1) await page.keyboard.press('ArrowRight');
   await expect(page).toHaveURL(/start=5000/);
-  await expect(page.getByTestId('window-label')).toContainText('5.0s to');
+  await expect(page.getByTestId('brush-start-label')).toHaveText('0:05');
+  // Shift moves ten seconds, End goes to the fight's end.
+  await page.keyboard.press('Shift+ArrowRight');
+  await expect(page).toHaveURL(/start=15000/);
 });
 
 test('a death preset sets the window to the seconds before it, and Whole fight clears it', async ({
   page,
 }) => {
-  await page.goto(FIGHT);
+  await page.goto(FIG);
   await openChartIfCollapsed(page);
   const select = page.getByTestId('window-select');
   // The label carries the death's own timestamp (a battle-rez can die twice), so this
@@ -54,7 +99,7 @@ test('a death preset sets the window to the seconds before it, and Whole fight c
   // The select's first option is the whole fight -- the old separate reset button's job.
   await choose(page.getByTestId('window-select'), { index: 0 });
   await expect(page).not.toHaveURL(/start=/);
-  await expect(page.getByTestId('window-label')).toContainText('Whole fight');
+  await expect(page.getByTestId('brush-start-label')).toHaveCount(0);
 });
 
 test('switching fight drops the window, because milliseconds do not carry across', async ({ page }) => {

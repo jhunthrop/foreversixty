@@ -23,9 +23,9 @@ struct HomeCard: Equatable {
         self.guild = guild
     }
 
-    init(_ character: CharacterCard) {
-        let level = character.level.map { "Level \($0)" }
-        let kind = [character.spec, character.class].compactMap { $0?.capitalized }.joined(separator: " ")
+    init(_ character: AccountCharacter) {
+        let level = character.level.map { Copy.shellHomeLevel(n: $0) }
+        let kind = [character.spec, character.className].compactMap { $0?.capitalized }.joined(separator: " ")
         self.init(
             name: character.name,
             detail: [level, kind.isEmpty ? nil : kind].compactMap(\.self).joined(separator: " · "),
@@ -46,7 +46,7 @@ struct HomeScreen: View {
 
     private func load() async -> HomeState {
         do {
-            let me = try await client.send(.me)
+            let me = try await client.send(.getMe)
             return me.mainCharacter.map { .loaded(HomeCard($0)) } ?? .empty
         } catch {
             return .failed(message(for: error))
@@ -56,8 +56,8 @@ struct HomeScreen: View {
     private func message(for error: APIError) -> String {
         switch error {
         case let .server(_, body, _): body.message
-        case .unauthorized: "Sign in to see your character."
-        default: "Could not load your character just now."
+        case .unauthorized: Copy.shellHomeSignInFirst
+        default: Copy.shellHomeFailed
         }
     }
 }
@@ -73,7 +73,7 @@ struct HomeView: View {
                     .padding(Theme.Spacing.md)
             }
             .background(Theme.Palette.background)
-            .navigationTitle("Forever Sixty")
+            .navigationTitle(Copy.shellTitle)
         }
     }
 
@@ -92,7 +92,7 @@ struct HomeView: View {
             }
             .cardSurface()
         case .empty:
-            Text("Link a character with the addon or Battle.net to see it here.")
+            Text(Copy.shellHomeNoCharacter)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.muted)
                 .cardSurface()

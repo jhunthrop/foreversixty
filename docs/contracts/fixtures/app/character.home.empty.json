@@ -1,0 +1,206 @@
+{
+  "data": {
+    "already_best": [
+      {
+        "item": {
+          "icon": "inv_helmet_24",
+          "id": 226887,
+          "item_level": 60,
+          "name": "Beastmaster's Cap",
+          "quality": 4
+        },
+        "slot": "head",
+        "slot_label": "Head"
+      },
+      {
+        "item": {
+          "icon": "inv_jewelry_necklace_14",
+          "id": 19491,
+          "item_level": 65,
+          "name": "Amulet of the Darkmoon",
+          "quality": 4
+        },
+        "slot": "neck",
+        "slot_label": "Neck"
+      },
+      {
+        "item": {
+          "icon": "inv_shoulder_06",
+          "id": 272105,
+          "item_level": 65,
+          "name": "Darkspear Pauldrons",
+          "quality": 4
+        },
+        "slot": "shoulder",
+        "slot_label": "Shoulder"
+      },
+      {
+        "item": {
+          "icon": "inv_misc_cape_20",
+          "id": 13340,
+          "item_level": 63,
+          "name": "Cape of the Black Baron",
+          "quality": 3
+        },
+        "slot": "back",
+        "slot_label": "Back"
+      },
+      {
+        "item": {
+          "icon": "inv_chest_leather_08",
+          "id": 252483,
+          "item_level": 61,
+          "name": "Dawn Armor",
+          "quality": 4
+        },
+        "slot": "chest",
+        "slot_label": "Chest"
+      },
+      {
+        "item": {
+          "icon": "inv_bracer_17",
+          "id": 226885,
+          "item_level": 65,
+          "name": "Beastmaster's Bindings",
+          "quality": 3
+        },
+        "slot": "wrist",
+        "slot_label": "Wrist"
+      },
+      {
+        "item": {
+          "icon": "inv_gauntlets_27",
+          "id": 272099,
+          "item_level": 65,
+          "name": "Raider Gloves",
+          "quality": 4
+        },
+        "slot": "hands",
+        "slot_label": "Hands"
+      },
+      {
+        "item": {
+          "icon": "inv_belt_14",
+          "id": 20216,
+          "item_level": 70,
+          "name": "Belt of Preserved Heads",
+          "quality": 3
+        },
+        "slot": "waist",
+        "slot_label": "Waist"
+      },
+      {
+        "item": {
+          "icon": "inv_pants_03",
+          "id": 237819,
+          "item_level": 78,
+          "name": "Sentinel's Chain Leggings",
+          "quality": 4
+        },
+        "slot": "legs",
+        "slot_label": "Legs"
+      },
+      {
+        "item": {
+          "icon": "inv_boots_plate_07",
+          "id": 226881,
+          "item_level": 60,
+          "name": "Beastmaster's Treads",
+          "quality": 4
+        },
+        "slot": "feet",
+        "slot_label": "Feet"
+      },
+      {
+        "item": {
+          "icon": "inv_jewelry_ring_40",
+          "id": 234202,
+          "item_level": 80,
+          "name": "Signet Ring of the Bronze Dragonflight",
+          "quality": 4
+        },
+        "slot": "finger1",
+        "slot_label": "Ring 1"
+      },
+      {
+        "item": {
+          "icon": "inv_jewelry_ring_01",
+          "id": 272408,
+          "item_level": 65,
+          "name": "Cutthroat's Signet",
+          "quality": 3
+        },
+        "slot": "finger2",
+        "slot_label": "Ring 2"
+      },
+      {
+        "item": {
+          "icon": "inv_misc_gem_sapphire_01",
+          "id": 249469,
+          "item_level": 55,
+          "name": "Frozen Heart of the Mountain",
+          "quality": 3
+        },
+        "slot": "trinket1",
+        "slot_label": "Trinket 1"
+      },
+      {
+        "item": {
+          "icon": "inv_misc_gem_ruby_01",
+          "id": 249470,
+          "item_level": 55,
+          "name": "Molten Heart of the Mountain",
+          "quality": 3
+        },
+        "slot": "trinket2",
+        "slot_label": "Trinket 2"
+      },
+      {
+        "item": {
+          "icon": "inv_spear_05",
+          "id": 250619,
+          "item_level": 63,
+          "name": "Legionite Glaive",
+          "quality": 3
+        },
+        "slot": "main_hand",
+        "slot_label": "Main hand"
+      },
+      {
+        "item": {
+          "icon": "inv_weapon_rifle_05",
+          "id": 279273,
+          "item_level": 65,
+          "name": "Hyper Deluxe Sniper Rifle Mk XVII",
+          "quality": 4
+        },
+        "slot": "ranged",
+        "slot_label": "Ranged"
+      }
+    ],
+    "band": 60,
+    "band_label": "60",
+    "character": "us/normal/velaren",
+    "data_build": "1.60.1.70658",
+    "not_modelled_count": 0,
+    "not_sim_checked_count": 0,
+    "preset": "raid",
+    "spec": "hunter-beast-mastery",
+    "state": "ok",
+    "synced_at": "2026-10-29T21:15:00Z",
+    "synced_from": "addon",
+    "talents": {
+      "band_points": 51,
+      "points_differ": 1,
+      "state": "differs"
+    },
+    "total_gain": null,
+    "unit": "dps",
+    "unit_word": "DPS",
+    "upgrade_count": 0,
+    "upgrades": []
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "req_fixture"
+}

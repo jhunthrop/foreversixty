@@ -1,11 +1,9 @@
 package gg.foreversixty.app.auth
 
 import gg.foreversixty.app.model.AppExchangeRequest
-import gg.foreversixty.app.model.AppExchangeResponse
-import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.network.ApiClient
+import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiResult
-import kotlinx.serialization.builtins.serializer
 import java.security.SecureRandom
 
 /** Opens a URL in the system browser surface (Custom Tabs in the app, a fake in tests). */
@@ -74,19 +72,14 @@ class AppSignIn(
      */
     suspend fun signOut() {
         if (tokens.bearerToken() != null) {
-            client.post(SignInContract.LOGOUT_PATH, Unit, Unit.serializer(), SignedOut.serializer())
+            client.send(ApiEndpoints.logoutApp())
         }
         tokens.clear()
     }
 
     private suspend fun exchange(code: String, verifier: String): SignInOutcome {
         val request = AppExchangeRequest(code, verifier, deviceName)
-        val result = client.post(
-            SignInContract.EXCHANGE_PATH,
-            request,
-            AppExchangeRequest.serializer(),
-            AppExchangeResponse.serializer(),
-        )
+        val result = client.send(ApiEndpoints.exchangeAppSignIn(request))
         return when (result) {
             is ApiResult.Success -> {
                 val answer = result.data

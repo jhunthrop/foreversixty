@@ -47,7 +47,7 @@ public struct AppSignIn: Sendable {
     /// out, and the site's device list can still revoke a row left behind.
     public func signOut() async throws(AuthError) {
         if store.bearerToken() != nil {
-            _ = try? await client.send(.appLogout)
+            _ = try? await client.send(.logoutApp)
         }
         do throws(TokenStoreError) {
             try store.clear()
@@ -59,7 +59,7 @@ public struct AppSignIn: Sendable {
     private func exchange(code: String, verifier: String, deviceName: String) async throws(AuthError) -> AppSession {
         let body = AppExchangeRequest(code: code, codeVerifier: verifier, deviceName: deviceName)
         do throws(APIError) {
-            return try await client.send(.appExchange(body))
+            return try await client.send(.exchangeAppSignIn(body))
         } catch {
             throw .exchange(error)
         }

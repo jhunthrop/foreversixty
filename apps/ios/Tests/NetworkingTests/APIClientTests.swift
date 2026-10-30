@@ -114,7 +114,7 @@ struct APIClientTests {
     @Test("fixture mode answers /v1/me from the contract fixture")
     func fixtureMe() async throws {
         let client = APIClient(baseURL: base, transport: FixtureTransport(directory: FixtureLocation.directory))
-        let me = try await client.send(.me)
+        let me = try await client.send(.getMe)
         #expect(!me.characters.isEmpty)
     }
 
@@ -151,7 +151,7 @@ struct APIClientTests {
     @Test("a success variant reads <endpoint>.<variant>.json")
     func namedVariant() async throws {
         let transport = FixtureTransport(directory: FixtureLocation.directory, variants: ["me": .named("empty")])
-        let me = try await APIClient(baseURL: base, transport: transport).send(.me)
+        let me = try await APIClient(baseURL: base, transport: transport).send(.getMe)
         #expect(me.characters.isEmpty)
     }
 
@@ -174,7 +174,7 @@ struct APIClientTests {
     func unauthorizedVariant() async {
         let transport = FixtureTransport(directory: FixtureLocation.directory, variants: ["me": .unauthorized])
         await #expect(throws: APIError.unauthorized(requestID: "9f2c41d07ab3e655")) {
-            try await APIClient(baseURL: base, transport: transport).send(.me)
+            try await APIClient(baseURL: base, transport: transport).send(.getMe)
         }
     }
 
@@ -191,7 +191,7 @@ struct APIClientTests {
         let client = StaticDataClient(baseURL: site, transport: FixtureTransport(directory: FixtureLocation.directory))
         let active = try await client.activeBuild()
         #expect(!active.build.isEmpty)
-        let classes = try await client.get([ClassInfo].self, path: "/data/\(active.build)/classes.json")
+        let classes = try await client.get(.getClasses(build: active.build))
         #expect(classes.allSatisfy { !$0.slug.isEmpty })
     }
 }

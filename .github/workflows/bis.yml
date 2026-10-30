@@ -189,7 +189,7 @@ jobs:
                 git checkout --theirs -- "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
                 git add "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
                 GIT_EDITOR=true git rebase --continue || git rebase --abort
-                git stash list | grep -q autostash && git stash pop || true
+                if git stash list | grep -q autostash; then git stash pop || true; fi
                 git push && break
               fi
               echo "push attempt $attempt failed; retrying"
@@ -266,11 +266,16 @@ jobs:
       # against tonight's picks: is each one sourced, and was it actually
       # competitive? See docs/superpowers/specs/2026-09-28-leveling-bis-
       # design.md's "Guardrails" section.
+      # bis-phase-gate lane, 2026-10-30: the two launch-phase checks over
+      # the published files run here too - no band-60 entry names an item
+      # testdata/launch-banned.json bans, and every one has a source still
+      # open after data/curated/content-phases.json. The ranker's own input
+      # is guarded on every CI run by TestNoBannedItemIsObtainableAtLaunch.
       - name: sanity-check tonight's picks
         if: steps.inputs.outputs.skip != 'true'
         continue-on-error: true
         working-directory: sim
-        run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked' -count=1
+        run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked|TestNoBannedItemIsAPublishedBand60Pick|TestTheBand60PicksComeOnlyFromContentOpenAtLaunch' -count=1
       # tools/activate-build.sh carries the previous build's dps-per-point.json unchanged
       # (the addon's "+N DPS" and the API's loot values read it) and writes
       # dps-per-point.carried-from beside it. Only then, on a move, does the first ranking
@@ -339,7 +344,7 @@ jobs:
               git checkout --theirs -- "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
               git add "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
               GIT_EDITOR=true git rebase --continue || git rebase --abort
-              git stash list | grep -q autostash && git stash pop || true
+              if git stash list | grep -q autostash; then git stash pop || true; fi
               git push && exit 0
             fi
             echo "push attempt $attempt failed; retrying"

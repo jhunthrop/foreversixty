@@ -21,8 +21,19 @@ import kotlinx.serialization.json.JsonObject
 /**
  * The typed door to the API. Every call goes through [call], which unwraps the envelope and
  * turns every failure into an [ApiResult.Failure]; the feature lanes never see an exception.
+ * A 426 `update_required` also shuts [updateGate], which the app watches.
  */
-class ApiClient(private val http: HttpClient) {
+class ApiClient(private val http: HttpClient, private val updateGate: UpdateGate? = null) {
+
+    /** Runs one generated [Endpoint] (`ApiEndpoints`). */
+    suspend fun <T> send(endpoint: Endpoint<T>): ApiResult<T> =
+        call(endpoint.method, endpoint.path, endpoint.response) {
+            endpoint.query.forEach { (name, value) -> url.parameters.append(name, value) }
+            endpoint.body?.let {
+                contentType(ContentType.Application.Json)
+                setBody(it)
+            }
+        }
 
     suspend fun <T> get(path: String, response: KSerializer<T>): ApiResult<T> =
         call(HttpMethod.Get, path, response) {}
@@ -85,6 +96,10 @@ class ApiClient(private val http: HttpClient) {
 
     private fun <T> unwrap(status: Int, envelope: ApiEnvelope, response: KSerializer<T>): ApiResult<T> {
         if (!envelope.ok) {
+            UpdateGate.answer(status, envelope.error)?.let { gate ->
+                updateGate?.require(gate)
+                return ApiResult.Failure(ApiError.UpdateRequired(gate.storeUrl))
+            }
             val error = envelope.error ?: ApiErrorBody(code = "unknown", message = UNKNOWN_ERROR_MESSAGE)
             return ApiResult.Failure(
                 ApiError.Server(status, error.code, error.message, error.fields, envelope.requestId),

@@ -18,7 +18,7 @@ import (
 type panelReader struct{}
 
 func (panelReader) ScoreAndGear(context.Context, string) (ForeverScore, CharacterGear, error) {
-	score, tier, asOf := 74, "gold", "2026-10-30"
+	score, tier, asOf := 74, "common", "2026-10-30"
 	gap, chance := 12.6, 0.12
 	worn, level := "Green Lens", 49
 	pick := 18814

@@ -52,6 +52,9 @@ export const GLYPHS = {
   close: CLOSE_GLYPH,
   search: SEARCH_GLYPH,
   news: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',
+  // Controls and charts spec 2026-10-30 §B5.6: the death marker.
+  skull:
+    '<path d="M12 3a7 7 0 00-7 7c0 2.4 1.2 4 2.5 5v3h9v-3c1.3-1 2.5-2.6 2.5-5a7 7 0 00-7-7z"/><circle cx="9.5" cy="10.5" r="1.3"/><circle cx="14.5" cy="10.5" r="1.3"/><path d="M10 18v3M14 18v3"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;
