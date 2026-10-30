@@ -10,9 +10,11 @@
 #   1. web/src/data/active-build.json names the new build.
 #   2. The ranking's outputs that no fetch produces are carried forward from the build
 #      that was active (bis/, dps-per-point.json), each only where the new build has
-#      none, so the site has picks the same morning; the nightly ranking (bis.yml,
-#      dispatched with force at the end) replaces bis/ with the new build's own within
-#      hours. addon-builds.json is NOT carried: it is rebuilt from the moved guides.
+#      none, so the site has picks the same morning. The ranking (bis.yml) replaces
+#      bis/ and re-measures dps-per-point.json once the pinned engine is stamped for the
+#      new build: dispatched with force at the end when it already is, else by
+#      engine.yml's green pin of the follow (bis.yml itself refuses a mismatched
+#      engine). addon-builds.json is NOT carried: it is rebuilt from the moved guides.
 #   3. The build's stat-weights copy, addon-data.json and addon/ForeverSixty/Data.lua
 #      are rendered for the new build (the documented exception to "nightly owns
 #      generated data": Data.lua tracks the ACTIVE build).
@@ -182,16 +184,34 @@ TAG="addon-v$NEW_VER"
 git tag -a "$TAG" -m "Forever Sixty $NEW_VER: data for client build $NEW" && git push --quiet origin "$TAG"
 echo "tagged $TAG (addon-release.yml publishes it to CurseForge and Wago)"
 
+# The ranking (bis.yml) and the dps-per-point re-measure it makes run only on an engine
+# stamped for the new build (tools/engine/pinned-build.sh): an engine on the old trees
+# reads the new client's talent strings by the old indexes, so its picks would be
+# quietly wrong. Until engine.yml pins an engine that follows $NEW, the carried picks
+# and figures stay live, and that pin's green push dispatches bis.yml with force.
+ENGINE_PIN="$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)"
+ENGINE_BUILD="$(tools/engine/pinned-build.sh . 2>/dev/null)" || ENGINE_BUILD="an unreadable build"
+RANK_NOW=false
+if [ "$ENGINE_BUILD" = "$NEW" ]; then
+  RANK_NOW=true
+else
+  WAIT_LINE="ranking waits for engine follow: the pinned engine $ENGINE_PIN is stamped for $ENGINE_BUILD, not $NEW. The picks and dps-per-point carried from $ACTIVE stay live; engine.yml's green pin of an engine that follows $NEW dispatches bis.yml with force, which ranks and re-measures."
+  echo "$WAIT_LINE"
+  [ -z "${GITHUB_STEP_SUMMARY:-}" ] || printf '%s\n\n' "- $WAIT_LINE" >> "$GITHUB_STEP_SUMMARY"
+fi
+
 # A push made with GITHUB_TOKEN triggers no workflow (the 2026-10-16 move landed
 # with no deploy, no addon publish and no ranking until each was dispatched by
 # hand), so every consumer of the new build is dispatched here: the site, the
 # API image (its simdb), the sim artifacts, the addon release for the tag, the
-# engine follow, and the ranking that replaces the carried-forward picks.
+# engine follow, and (on an engine already stamped for it) the ranking.
 if command -v gh >/dev/null 2>&1; then
   gh workflow run web.yml --ref main && echo "dispatched the site deploy"
   gh workflow run api.yml --ref main && echo "dispatched the API build and deploy"
   gh workflow run sim.yml --ref main && echo "dispatched the sim artifacts"
   gh workflow run addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true && echo "dispatched the addon release for $TAG"
-  gh workflow run bis.yml --ref main -f force=true && echo "dispatched the ranking for $NEW"
+  if [ "$RANK_NOW" = true ]; then
+    gh workflow run bis.yml --ref main -f force=true && echo "dispatched the ranking for $NEW"
+  fi
   gh workflow run engine.yml --ref main -f force=true && echo "dispatched the engine follow for $NEW"
 fi

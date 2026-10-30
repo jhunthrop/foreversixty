@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Tests for tools/engine/follow-inputs-hash.sh, tools/engine/pin-conditions.sh
-# and tools/engine/push-review-branch.sh, the scripts .github/workflows/engine.yml calls. Plain bash, no bats: each
+# Tests for tools/engine/follow-inputs-hash.sh, tools/engine/pin-conditions.sh,
+# tools/engine/push-review-branch.sh and tools/engine/pinned-build.sh, the scripts
+# .github/workflows/engine.yml, bis.yml and tools/activate-build.sh call. Plain bash, no bats: each
 # case builds scratch git repositories under mktemp -d and stubs `gh`.
 #
 #   bash tools/engine/tests/test_scripts.sh
@@ -14,6 +15,7 @@ readonly HERE
 readonly HASH=$HERE/../follow-inputs-hash.sh
 readonly PIN=$HERE/../pin-conditions.sh
 readonly PUSH=$HERE/../push-review-branch.sh
+readonly PINNED=$HERE/../pinned-build.sh
 readonly BUILD=1.60.1.70532
 readonly OTHER_BUILD=1.60.1.70425
 
@@ -335,6 +337,45 @@ test_pin_refuses_a_failed_fork_ci
 test_pin_refuses_a_fork_ci_that_never_ran
 test_pin_waits_for_a_fork_ci_not_registered_yet
 test_pin_waits_for_a_running_fork_ci
+
+test_pinned_build_reads_the_forks_stamp_at_the_pin() {
+	local site=$SCRATCH/pb-site fork=$SCRATCH/pb-fork sha out
+	make_fork "$fork" "$OTHER_BUILD"
+	sha=$(git -C "$fork" rev-parse --short HEAD)
+	echo "$BUILD" >"$fork/assets/db_inputs/FOREVER_BUILD"
+	commit_all "$fork" "a later follow the site has not pinned"
+	make_site "$site" "$sha"
+	out=$(bash "$PINNED" "$site" "$fork")
+	assert "the stamp at the pinned sha, not the fork's HEAD (got '$out')" equal "$out" "$OTHER_BUILD"
+}
+
+test_pinned_build_asks_github_without_a_fork() {
+	local site=$SCRATCH/pb-gh-site stub=$SCRATCH/pb-gh out
+	make_site "$site" abcdef123
+	stub_gh "$stub" "$BUILD"
+	out=$(GH_BIN="$stub/gh" bash "$PINNED" "$site")
+	assert "the stamp from GitHub (got '$out')" equal "$out" "$BUILD"
+	assert "asks for the file at the pinned sha" contains "$(cat "$stub/calls")" "FOREVER_BUILD?ref=abcdef123"
+}
+
+test_pinned_build_fails_rather_than_guess() {
+	local site=$SCRATCH/pb-bad-site stub=$SCRATCH/pb-bad fork=$SCRATCH/pb-bad-fork out status
+	make_site "$site" abcdef123
+	stub_gh "$stub" '{"message": "Not Found"}'
+	status=0
+	out=$(GH_BIN="$stub/gh" bash "$PINNED" "$site" 2>&1) || status=$?
+	assert "a reply that is not a build exits 1" equal "$status" 1
+	assert "and says what it read" contains "$out" "not a client build"
+	make_fork "$fork" "$BUILD"
+	status=0
+	out=$(bash "$PINNED" "$site" "$fork" 2>&1) || status=$?
+	assert "a sha the fork does not have exits 1" equal "$status" 1
+	assert "and names the sha" contains "$out" "abcdef123"
+	status=0
+	bash "$PINNED" >/dev/null 2>&1 || status=$?
+	assert "no arguments is a usage error" equal "$status" 2
+}
+
 test_pin_gives_up_on_a_fork_ci_that_never_finishes
 test_pin_refuses_a_fork_on_another_build
 test_pin_refuses_the_sha_already_pinned
@@ -344,6 +385,9 @@ test_push_review_branch_replaces_the_bots_own_head
 test_push_review_branch_keeps_hand_work
 test_push_review_branch_replaces_merged_hand_work
 test_push_review_branch_fails_on_a_bad_remote
+test_pinned_build_reads_the_forks_stamp_at_the_pin
+test_pinned_build_asks_github_without_a_fork
+test_pinned_build_fails_rather_than_guess
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "FAILED $FAILED of $((PASSED + FAILED)) assertions" >&2
