@@ -67,17 +67,11 @@ echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
 # 2. Carry the ranking's outputs forward where the new build has none.
 carried=()
 if [ ! -d "$NEW_DIR/bis" ] && [ -d "$OLD_DIR/bis" ]; then
-  cp -R "$OLD_DIR/bis" "$NEW_DIR/bis"; carried+=("bis/")
   # The carried files now stand for the new build (web/src/lib/bis reads them from its
   # directory and expects their build field to agree); generated_at and engine_version
-  # keep saying which ranking they came from.
-  python3 - "$ACTIVE" "$NEW" "$NEW_DIR"/bis/*.json <<'PYEOF'
-import sys
-old, new, *paths = sys.argv[1:]
-for path in paths:
-    text = open(path, encoding="utf-8").read()
-    open(path, "w", encoding="utf-8").write(text.replace(f'"build": "{old}"', f'"build": "{new}"', 1))
-PYEOF
+  # keep saying which ranking they came from. A pick or alternative the new client's
+  # items.json lacks is dropped with a report line (pipeline/bis_carry.py).
+  ( cd data && uv run python -m pipeline carry-bis --from "$ACTIVE" --to "$NEW" ); carried+=("bis/")
 fi
 for f in dps-per-point.json; do
   if [ ! -e "$NEW_DIR/$f" ] && [ -e "$OLD_DIR/$f" ]; then cp "$OLD_DIR/$f" "$NEW_DIR/$f"; carried+=("$f"); fi
