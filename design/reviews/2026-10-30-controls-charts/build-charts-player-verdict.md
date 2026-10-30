@@ -27,3 +27,21 @@ The threat tooltip and the damage tooltip are right. Death rows say who, what hi
 ## Reconciles
 - Threat legend leader equals table leader (Kargath 95,971 both); Brokk 22,820 in tooltip equals the table. Taunt row (2:07) matches the Taunts list under the table.
 - Brokk's death at 2:06 matches the red line on the damage chart and the "1 death" in the report head.
+
+## Re-check (fix round 2)
+
+Seen: threat 390, damage 1440, players menu 1440, resources 1440, damage tooltip with death (before), Deaths tab (after). Not opened: 2000 captures, timelines.
+
+Verdict: SHIP.
+
+1. "All M" clamping: fixed. Damage head reads "All 3" on the 3-player fight and "Top 4, bottom 4 of 40" on the raid.
+2. Phone tanks: fixed. Legend reads "Thandril 45,325, Brokk 22,820, +38" with tank markers, and the foot keeps "An estimate: 1 per damage, 0.5 per heal. What it leaves out". Title now says "Estimated threat, every enemy".
+3. Damage defaults: fixed. Top four (444, 432, 428, 426) and bottom four (327, 326, 322, 318) are named around a 377 median; the median is a visible white dashed line. Presets "Top 4 + bottom 4 / Top 8 / Bottom 8 / Custom" sit in the Players menu. Healers/tanks are separate groups; a "28 damage dealers" median is stated.
+4. Units: fixed. "Raid 11,015 DPS over the whole fight", every chip "DPS", tooltip "DPS, 5 s average". Sums plausibly (28 dealers around 377).
+5. Resources: fixed. No damage chart; header row Player / Power / Over the fight / Time empty.
+6. Death link: demonstrated. Tooltip shows "Thalgrit died - Anima Lash from Warden Kelthas - 2,400 (100 overkill)"; the after capture lands on the Thalgrit death card with the 20s-before and Sim buttons.
+
+Nothing new that blocks. Minor, not blockers:
+- The before-capture tooltip has no visible "Open in Deaths" cue; a raider will not know it is clickable.
+- Resources rows: Baelgrim appears twice (Mana, Rage) with tiny grey stat text; the "wasted" dagger footnote is dense.
+- Still open from my earlier shoulds: "vs tank" share, tank-understated note, end-of-window legend label, sidebar/fixture mismatch (Warden Kelthas 1:00 vs Ragnaros 5:40 in the raid captures).

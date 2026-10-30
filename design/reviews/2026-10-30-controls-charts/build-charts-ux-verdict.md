@@ -30,3 +30,12 @@ Spec: design/specs/2026-10-30-controls-charts.md Part B. Reviewed from the captu
 - Brush: window handles, whole-fight strip with death and phase ticks, `Whole fight` ghost button when zoomed.
 - 2000 px: chart stays in the 1248 px column, centred.
 - Consistency with /account and the alignment pass: quiet card frame, 12 px radius, section-title head, same field recipe, gold focus ring on the open Players filter.
+
+## Re-check (fix round 2)
+
+Verdict: SHIP.
+
+- Blocker 1 resolved. build-charts-damage-390.png: Players, Window and Log scale each sit on a full-width row, and Window reads `Whole fight` in full.
+- Blocker 2 resolved. build-charts-threat-1440.png and -390.png: the title reads `Estimated threat, every enemy` and the Enemy field reads `Every enemy`. The tooltip head agrees but truncates at 1440 (`estimated threat, every e...`). Polish.
+- Nothing new from the fix round. The 390 fold holds, the phone head drops its meta line, and the legend lists pinned players first.
+- Still open from the shoulds, unchanged: the threat table lists all 40 rows, and the state captures D13, D15, D17 and D18 are missing. Neither blocks.
