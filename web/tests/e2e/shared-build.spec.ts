@@ -1,6 +1,7 @@
 // web/tests/e2e/shared-build.spec.ts
 import { expect, test } from '@playwright/test';
 
+import { bandCompareCopy } from '../../src/lib/planner/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
@@ -71,8 +72,10 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
 // rather than merely looking disabled. The fixture's hunter class pairs with its own
 // published `bis/hunter-marksmanship.json` (the fixture warrior's two trees, Arms/Fury,
 // have no published band file at all); 5 points in Lethal Shots (4001, tier 0, no prereq --
-// legal in one click each) against that file's own all-zero band 20 string differ by
-// exactly 5, with 4001 itself the one marked cell.
+// legal in one click each) against that file's own all-zero band 20 string, with 4001 itself
+// the one marked cell. Since 749c0c981 the count is the band's unmatched points (never more
+// than the band holds) and an overspent cell is marked but not counted, so against an
+// all-zero band the line reads Matches while 4001 still carries its differs marker.
 const POPULATED_RECORD = {
   id: 'hunterpop1',
   class_id: 3,
@@ -95,9 +98,9 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
   await expect(page.getByTestId('tree-points-302')).toHaveText('5');
 
-  // Differs-marked and counted against the build's own band, Load hidden (nothing to
-  // overwrite into on a read-only build), Fork offered in its place.
-  await expect(page.getByTestId('band-compare')).toContainText('5');
+  // Differs-marked against the build's own band, Load hidden (nothing to overwrite into on a
+  // read-only build), Fork offered in its place.
+  await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
   await expect(page.getByTestId('talent-differs-4001')).toBeVisible();
   await expect(page.getByTestId('band-compare-load')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();
