@@ -2,8 +2,6 @@ package gg.foreversixty.app.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -42,7 +41,7 @@ fun DevicesScreen(
     AccountPage(stringResource(R.string.devices_title)) {
         when (state) {
             DevicesState.Loading -> AccountCard {
-                repeat(3) { AccountRow(Icons.Filled.Phone, " ", subtitle = " ") }
+                repeat(3) { AccountRow(painterResource(R.drawable.ic_smartphone), " ", subtitle = " ") }
             }
             is DevicesState.Loaded -> AccountCard {
                 state.rows.forEachIndexed { index, row ->
@@ -79,9 +78,10 @@ fun DevicesScreen(
 @Composable
 private fun DeviceItem(row: DeviceRow, revokeFailed: Boolean, onRevoke: () -> Unit) {
     Column {
-        AccountRow(Icons.Filled.Phone, AccountCopy.deviceName(row), subtitle = AccountCopy.deviceMeta(row)) {
+        val icon = if (row.isCompanion) R.drawable.ic_desktop else R.drawable.ic_smartphone
+        AccountRow(painterResource(icon), AccountCopy.deviceName(row), subtitle = AccountCopy.deviceMeta(row)) {
             if (row.canRevoke) {
-                BrandButton(stringResource(R.string.devices_revoke), BrandButtonKind.Destructive, onRevoke, height = 36.dp, fill = false)
+                BrandButton(stringResource(R.string.devices_revoke), BrandButtonKind.Destructive, onRevoke, height = 44.dp, fill = false)
             }
         }
         if (revokeFailed) {

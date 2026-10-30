@@ -74,10 +74,16 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     )
 
     /** Fixture builds sign in against the contract fixtures; live builds open a Custom Tab. */
-    val account = AccountDeps(session) { activity ->
-        when (config.mode) {
-            ApiMode.Fixture -> FixtureBrowser { session.handleRedirect(it) }
-            ApiMode.Live -> CustomTabsLauncher(activity)
-        }
-    }
+    val account = AccountDeps(
+        session = session,
+        browser = { activity ->
+            when (config.mode) {
+                ApiMode.Fixture -> FixtureBrowser { session.handleRedirect(it) }
+                ApiMode.Live -> CustomTabsLauncher(activity)
+            }
+        },
+        versionName = identity.version,
+        versionCode = identity.build,
+        dataBuild = { appConfig.current?.activeBuild },
+    )
 }

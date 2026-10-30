@@ -37,7 +37,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
@@ -127,10 +130,14 @@ private fun SwitcherRow(character: AccountCharacter, current: Boolean, onClick: 
     ) {
         ClassCrest(character.className, 44.dp)
         Column(Modifier.weight(1f)) {
+            // `Thrall · US · PvP`: same-named characters differ by region and ruleset.
+            val place = AccountCopy.place(character)
             Text(
-                character.name,
+                buildAnnotatedString {
+                    withStyle(SpanStyle(color = classColor(character.className))) { append(character.name) }
+                    withStyle(AccountType.meta.toSpanStyle().copy(color = FsColor.muted)) { append(" · $place") }
+                },
                 style = AccountType.name.copy(lineBreak = LineBreak.Simple, hyphens = Hyphens.None),
-                color = classColor(character.className),
             )
             Text(AccountCopy.switcherDetail(character), style = AccountType.meta, color = FsColor.text)
             Text(character.guild?.name ?: stringResource(R.string.switcher_noGuild), style = AccountType.meta, color = FsColor.muted)

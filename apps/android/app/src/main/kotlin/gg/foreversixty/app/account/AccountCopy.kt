@@ -3,6 +3,7 @@ package gg.foreversixty.app.account
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
+import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.auth.session.SignInFailure
@@ -21,6 +22,43 @@ object AccountCopy {
         is SignedOutNotice.SignInFailed -> signInFailure(notice.failure)
         SignedOutNotice.SessionEnded -> stringResource(R.string.signin_signedOut)
         is SignedOutNotice.AccountDeleted -> stringResource(R.string.account_delete_done, longDate(notice.completeBy))
+    }
+
+    /** Red is for failures only (spec §5.0): a completed deletion reads neutral. */
+    fun isFailure(notice: SignedOutNotice): Boolean = when (notice) {
+        is SignedOutNotice.SignInFailed, SignedOutNotice.SessionEnded -> true
+        is SignedOutNotice.AccountDeleted -> false
+    }
+
+    /** `US · PvP`: Forever has no realms, so a character is its region, ruleset and name. */
+    @Composable
+    fun place(character: AccountCharacter): String =
+        stringResource(R.string.account_character_where, character.region.uppercase(), ruleset(character.ruleset))
+
+    /** The site's ruleset labels (web/src/lib/characters.ts); an unknown one is echoed. */
+    @Composable
+    fun ruleset(id: String): String = when (id) {
+        "normal" -> stringResource(R.string.account_ruleset_normal)
+        "pvp" -> stringResource(R.string.account_ruleset_pvp)
+        "rp" -> stringResource(R.string.account_ruleset_rp)
+        "hardcore" -> stringResource(R.string.account_ruleset_hardcore)
+        else -> id
+    }
+
+    @Composable
+    fun consequence(consequence: DeletionConsequence): String = when (consequence) {
+        DeletionConsequence.PremiumPlan -> stringResource(R.string.account_delete_lose_premium)
+        DeletionConsequence.FounderPrice -> stringResource(R.string.account_delete_lose_founder)
+        is DeletionConsequence.GuildPlan -> stringResource(R.string.account_delete_lose_guildPlan, consequence.guild)
+        is DeletionConsequence.Seat -> stringResource(R.string.account_delete_lose_seat, consequence.guild)
+    }
+
+    /** `Version 0.1.0 (1) · data 1.60.1.70658`, without the data part before the config answers. */
+    @Composable
+    fun version(version: String, build: Int, data: String?): String = if (data == null) {
+        stringResource(R.string.account_version_noData, version, build.toString())
+    } else {
+        stringResource(R.string.you_version, version, build.toString(), data)
     }
 
     @Composable

@@ -11,6 +11,8 @@ data class DeviceRow(
     val name: String,
     val isThisDevice: Boolean,
     val meta: Meta,
+    /** The desktop companion, drawn with a monitor rather than a phone. */
+    val isCompanion: Boolean = false,
 ) {
     /** Every device but this one carries Revoke. */
     val canRevoke: Boolean get() = !isThisDevice
@@ -27,6 +29,8 @@ data class DeviceRow(
 }
 
 object DeviceList {
+    private const val COMPANION = "companion"
+
     /** This device first, then the others by last use, newest first. */
     fun rows(devices: List<Device>, thisDevice: String?, now: Instant): List<DeviceRow> {
         val (mine, others) = devices.partition { it.id == thisDevice }
@@ -43,7 +47,7 @@ object DeviceList {
         } else {
             parse(device.lastSeenAt ?: device.createdAt)?.let { DeviceRow.Meta.LastUsed(RelativeAge.of(it, now)) }
         }
-        return DeviceRow(device.id, device.name, isThis, meta ?: DeviceRow.Meta.None)
+        return DeviceRow(device.id, device.name, isThis, meta ?: DeviceRow.Meta.None, isCompanion = device.kind == COMPANION)
     }
 
     private fun parse(stamp: String?): Instant? = stamp?.let { runCatching { Instant.parse(it) }.getOrNull() }

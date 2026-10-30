@@ -40,6 +40,7 @@ fun SignedOutScreen(
     onSignIn: () -> Unit,
     onPickClass: () -> Unit,
     variant: SignedOutVariant = SignedOutVariant.Home,
+    noticeIsFailure: Boolean = true,
 ) {
     Box(Modifier.fillMaxSize().bandBackground()) {
         Column(
@@ -69,7 +70,7 @@ fun SignedOutScreen(
             Text(stringResource(R.string.signin_pickClassNote), style = AccountType.meta, color = FsColor.muted)
         }
         if (notice != null) {
-            NoticeToast(notice, Modifier.padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space3))
+            NoticeToast(notice, Modifier.padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space3), isFailure = noticeIsFailure)
         }
     }
 }

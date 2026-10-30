@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.BrowserLauncher
 import gg.foreversixty.app.auth.session.AccountActionOutcome
+import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.FsColor
@@ -40,13 +41,26 @@ object AccountLinks {
     /** F1.3's `Get the addon`. */
     const val SETUP = "$SITE/setup"
 
+    /** You's Privacy and Terms rows (App Store 5.1.1(i)). */
+    const val PRIVACY = "$SITE/privacy"
+    const val TERMS = "$SITE/terms"
+
     fun open(context: Context, url: String) {
         context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     }
 }
 
-/** What F1 needs from the app graph: the session and the browser sign-in opens in. */
-class AccountDeps(val session: SessionManager, val browser: (Context) -> BrowserLauncher)
+/**
+ * What F1 needs from the app graph: the session, the browser sign-in opens in, and this build's
+ * version (apps/VERSION through BuildConfig, lane P2) with the static data build, when known.
+ */
+class AccountDeps(
+    val session: SessionManager,
+    val browser: (Context) -> BrowserLauncher,
+    val versionName: String,
+    val versionCode: Int,
+    val dataBuild: () -> String?,
+)
 
 /**
  * Home's account states around the signed-in home (F1.1 to F1.4 and F1.3's no-characters
@@ -73,7 +87,8 @@ fun HomeAccountGate(deps: AccountDeps, onPickClass: () -> Unit, signedIn: @Compo
 fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOutVariant = SignedOutVariant.Home) {
     val phase by deps.session.phase.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val notice = (phase as? SessionPhase.SignedOut)?.notice?.let { AccountCopy.notice(it) }
+    val signedOutNotice = (phase as? SessionPhase.SignedOut)?.notice
+    val notice = signedOutNotice?.let { AccountCopy.notice(it) }
     SignedOutScreen(
         notice = notice,
         signingIn = phase == SessionPhase.SigningIn,
@@ -86,10 +101,11 @@ fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOu
             onPickClass()
         },
         variant = variant,
+        noticeIsFailure = signedOutNotice?.let(AccountCopy::isFailure) ?: true,
     )
 }
 
-private enum class YouPage { Root, Devices, Delete }
+private enum class YouPage { Root, Devices, Delete, About }
 
 /** The You tab: the account section when signed in, the sign-in panel when not. */
 @Composable
@@ -109,10 +125,13 @@ fun YouRoute(deps: AccountDeps, onPickClass: () -> Unit) {
 private fun SignedInYou(deps: AccountDeps) {
     val session = deps.session
     val phase by session.phase.collectAsStateWithLifecycle()
+    val picked by session.pickedKey.collectAsStateWithLifecycle()
     val me = phase.let { (it as? SessionPhase.SignedIn)?.me } ?: return
     var page by rememberSaveable { mutableStateOf(YouPage.Root) }
     var deviceCount by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val version = AccountCopy.version(deps.versionName, deps.versionCode, deps.dataBuild())
     BackHandler(enabled = page != YouPage.Root) { page = YouPage.Root }
     LaunchedEffect(Unit) {
         deviceCount = (session.devices() as? ApiResult.Success)?.data?.size
@@ -123,16 +142,26 @@ private fun SignedInYou(deps: AccountDeps) {
                 battletag = me.user.battletag.orEmpty(),
                 plan = AccountCopy.planLine(me.entitlements.billing),
                 founder = me.entitlements.billing?.founder == true,
+                character = session.currentCharacter(phase, picked)?.let {
+                    CharacterLine(it.name, it.className, AccountCopy.place(it))
+                },
                 devices = deviceCount?.let {
                     stringResource(R.string.you_devices_sub, stringResource(R.string.account_deviceWord), (it - 1).coerceAtLeast(0))
                 },
+                version = version,
             ),
-            onDevices = { page = YouPage.Devices },
-            onDeleteAccount = { page = YouPage.Delete },
-            onSignOut = { scope.launch { session.signOut() } },
+            actions = YouActions(
+                onDevices = { page = YouPage.Devices },
+                onPrivacy = { AccountLinks.open(context, AccountLinks.PRIVACY) },
+                onTerms = { AccountLinks.open(context, AccountLinks.TERMS) },
+                onAbout = { page = YouPage.About },
+                onDeleteAccount = { page = YouPage.Delete },
+                onSignOut = { scope.launch { session.signOut() } },
+            ),
         )
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
-        YouPage.Delete -> DeleteRoute(session, hasPlan = me.entitlements.billing != null)
+        YouPage.Delete -> DeleteRoute(session, DeletionConsequence.of(me))
+        YouPage.About -> AboutScreen(version)
     }
 }
 
@@ -171,12 +200,12 @@ private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
 
 /** Runs `DELETE /v1/me` after the dialog; on success the session shows signed out with the date. */
 @Composable
-private fun DeleteRoute(session: SessionManager, hasPlan: Boolean) {
+private fun DeleteRoute(session: SessionManager, consequences: List<DeletionConsequence>) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var deleting by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
-    DeleteAccountScreen(hasPlan = hasPlan, deleting = deleting, failed = failed, onDelete = {
+    DeleteAccountScreen(consequences = consequences, deleting = deleting, failed = failed, onDelete = {
         deleting = true
         scope.launch {
             val outcome = session.deleteAccount()

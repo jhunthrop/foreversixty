@@ -36,7 +36,7 @@ fun ForeverAppScaffold(accountApi: AccountApi, account: AccountDeps? = null) {
         when (selected) {
             ForeverTab.Character ->
                 if (account == null) HomeRoute(accountApi) else HomeAccountGate(account, pickClass) { HomeRoute(accountApi) }
-            ForeverTab.Account -> if (account == null) ComingSoon(selected) else YouRoute(account, pickClass)
+            ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, pickClass)
             ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims -> ComingSoon(selected)
         }
     }

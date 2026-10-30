@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -139,19 +140,24 @@ fun Modifier.bandBackground(): Modifier = background(FsColor.bg).background(
     Brush.radialGradient(listOf(FsColor.ember.copy(alpha = 0.28f), Color.Transparent), radius = 1_400f, center = androidx.compose.ui.geometry.Offset(600f, 0f)),
 )
 
-/** The toast at the top of F1.1: wipe-red border, announced as it appears. */
+/** The toast at the top of F1.1: failures in wipe red, a finished deletion neutral. */
 @Composable
-fun NoticeToast(text: String, modifier: Modifier = Modifier) {
+fun NoticeToast(text: String, modifier: Modifier = Modifier, isFailure: Boolean = true) {
+    val border = if (isFailure) FsColor.wipe.copy(alpha = 0.45f) else FsColor.line
     Row(
         modifier
             .fillMaxWidth()
             .background(FsColor.raised, RoundedCornerShape(FsRadius.panel))
-            .border(1.dp, FsColor.wipe.copy(alpha = 0.45f), RoundedCornerShape(FsRadius.panel))
+            .border(1.dp, border, RoundedCornerShape(FsRadius.panel))
             .padding(FsSpacing.space4)
             .semantics { liveRegion = LiveRegionMode.Assertive },
         horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
     ) {
-        Icon(Icons.Outlined.Info, contentDescription = null, tint = FsColor.wipe)
+        Icon(
+            if (isFailure) Icons.Outlined.Info else Icons.Outlined.CheckCircle,
+            contentDescription = null,
+            tint = if (isFailure) FsColor.wipe else FsColor.gold,
+        )
         Text(text, style = AccountType.body, color = FsColor.strong)
     }
 }

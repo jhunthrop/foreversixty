@@ -16,6 +16,7 @@ import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
+import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.DeviceList
 import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.SignInFailure
@@ -91,30 +92,36 @@ class AccountScreenshotTest {
     @Test fun `signed out by a 401`() = tab("signedout-401") { SignedOut(AccountCopy.notice(SignedOutNotice.SessionEnded)) }
 
     @Test fun `signed out after deletion`() = tab("signedout-deleted") {
-        SignedOut(AccountCopy.notice(SignedOutNotice.AccountDeleted(Instant.parse("2026-11-29T21:41:00Z"))))
+        SignedOutScreen(
+            AccountCopy.notice(SignedOutNotice.AccountDeleted(Instant.parse("2026-11-29T21:41:00Z"))),
+            signingIn = false,
+            onSignIn = {},
+            onPickClass = {},
+            noticeIsFailure = false,
+        )
     }
 
     @Test fun `no characters`() = tab("home-no-characters") { NoCharactersScreen {} }
 
     @Test fun `signed out at font scale 2`() {
         RuntimeEnvironment.setFontScale(2f)
-        tab("signedout-xl") { SignedOut(null) }
+        tab("signedout-ax5") { SignedOut(null) }
     }
 
     @Test fun `switcher`() = capture("switcher-default") { Switcher(threeCharacters()) }
 
     @Test fun `switcher at font scale 2`() {
         RuntimeEnvironment.setFontScale(2f)
-        capture("switcher-xl") { Switcher(threeCharacters()) }
+        capture("switcher-ax5") { Switcher(threeCharacters()) }
     }
 
-    @Test fun `you free`() = tab("you-free", ForeverTab.Account) { You(me("me.json")) }
+    @Test fun `you free`() = tab("you-free", ForeverTab.You) { You(me("me.json")) }
 
-    @Test fun `you premium`() = tab("you-premium", ForeverTab.Account) { You(me("me.premium.json")) }
+    @Test fun `you premium`() = tab("you-premium", ForeverTab.You) { You(me("me.premium.json")) }
 
     @Test fun `sign out confirmation`() = screen("you-signout-confirm") { You(me("me.json"), confirming = true) }
 
-    @Test fun `devices`() = tab("devices-default", ForeverTab.Account) {
+    @Test fun `devices`() = tab("devices-default", ForeverTab.You) {
         DevicesScreen(DevicesState.Loaded(deviceRows()), null, {}, {})
     }
 
@@ -125,31 +132,50 @@ class AccountScreenshotTest {
 
     @Test fun `revoke failed`() {
         val rows = deviceRows()
-        tab("devices-revoke-failed", ForeverTab.Account) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
+        tab("devices-revoke-failed", ForeverTab.You) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
     }
 
-    @Test fun `delete account`() = tab("delete-default", ForeverTab.Account) { DeleteAccountScreen(false, false, false, {}) }
+    @Test fun `delete account, free`() = delete("delete-free", "me.json")
 
-    @Test fun `delete account with a plan, failed`() = tab("delete-plan-failed", ForeverTab.Account) { DeleteAccountScreen(true, false, true, {}) }
+    @Test fun `delete account, Premium founder`() = delete("delete-premium", "me.premium.json")
 
-    @Test fun `delete confirmation`() = screen("delete-confirm") { DeleteAccountScreen(false, false, false, {}, initiallyConfirming = true) }
+    @Test fun `delete account, guild plan payer`() = delete("delete-guild-payer", "me.guild-payer.json")
+
+    @Test fun `delete account, seat holder`() = delete("delete-seat", "me.seat.json")
+
+    @Test fun `delete account, failed`() = delete("delete-failed", "me.json", failed = true)
+
+    @Test fun `delete confirmation, Premium founder`() {
+        val consequences = DeletionConsequence.of(me("me.premium.json"))
+        screen("delete-confirm") { DeleteAccountScreen(consequences, false, false, {}, initiallyConfirming = true) }
+    }
+
+    @Test fun `about`() = tab("about-default", ForeverTab.You) { AboutScreen(VERSION) }
+
+    private fun delete(name: String, file: String, failed: Boolean = false) {
+        val consequences = DeletionConsequence.of(me(file))
+        tab(name, ForeverTab.You) { DeleteAccountScreen(consequences, false, failed, {}) }
+    }
 
     @Composable
     private fun SignedOut(notice: String?) = SignedOutScreen(notice, signingIn = false, onSignIn = {}, onPickClass = {})
 
     @Composable
-    private fun You(me: Me, confirming: Boolean = false) = YouScreen(
-        summary = YouSummary(
-            battletag = me.user.battletag.orEmpty(),
-            plan = AccountCopy.planLine(me.entitlements.billing),
-            founder = me.entitlements.billing?.founder == true,
-            devices = "This phone and 2 more",
-        ),
-        onDevices = {},
-        onDeleteAccount = {},
-        onSignOut = {},
-        confirmingSignOut = confirming,
-    )
+    private fun You(me: Me, confirming: Boolean = false) {
+        val current = me.characters.first { it.key == me.mainCharacterKey }
+        YouScreen(
+            summary = YouSummary(
+                battletag = me.user.battletag.orEmpty(),
+                plan = AccountCopy.planLine(me.entitlements.billing),
+                founder = me.entitlements.billing?.founder == true,
+                character = CharacterLine(current.name, current.className, AccountCopy.place(current)),
+                devices = "This phone and 2 more",
+                version = VERSION,
+            ),
+            actions = YouActions({}, {}, {}, {}, {}, {}),
+            confirmingSignOut = confirming,
+        )
+    }
 
     /** The selector open, and the sheet drawn as it presents. */
     @Composable
@@ -174,7 +200,7 @@ class AccountScreenshotTest {
     /** Dialogs live in their own window, so these capture the whole screen. */
     @OptIn(ExperimentalRoborazziApi::class)
     private fun screen(name: String, content: @Composable () -> Unit) {
-        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.Account, onSelect = {}) { content() } } }
+        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.You, onSelect = {}) { content() } } }
         compose.waitForIdle()
         captureScreenRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = TOLERANT)
     }
@@ -184,6 +210,8 @@ class AccountScreenshotTest {
 private val TOLERANT = RoborazziOptions(
     compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F),
 )
+
+private const val VERSION = "Version 0.1.0 (1) · data 1.60.1.70658"
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

@@ -3,6 +3,7 @@ package gg.foreversixty.app.auth
 import gg.foreversixty.app.auth.session.AccountActionOutcome
 import gg.foreversixty.app.auth.session.CONFIRMED_DELETION
 import gg.foreversixty.app.auth.session.CharacterSelection
+import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.MemoryValue
 import gg.foreversixty.app.auth.session.RelativeAge
@@ -238,5 +239,30 @@ class SessionManagerTest {
         val now = Instant.ofEpochSecond(1_000_000)
         val cases = mapOf(30L to RelativeAge.Now, 300L to RelativeAge.Minutes(5), 7_200L to RelativeAge.Hours(2), 259_200L to RelativeAge.Days(3), -10L to RelativeAge.Now)
         cases.forEach { (seconds, age) -> assertEquals(age, RelativeAge.of(now.minusSeconds(seconds), now)) }
+    }
+
+    private fun meOf(name: String): Me {
+        val root = ApiJson.parseToJsonElement(fixture(name)).jsonObject
+        return ApiJson.decodeFromJsonElement(Me.serializer(), requireNotNull(root["data"]))
+    }
+
+    @Test
+    fun `a free account with no guild plan or seat loses only its data`() {
+        assertTrue(DeletionConsequence.of(meOf("me.json")).isEmpty())
+    }
+
+    @Test
+    fun `a founder Premium plan names the plan and the founder price`() {
+        assertEquals(listOf(DeletionConsequence.PremiumPlan, DeletionConsequence.FounderPrice), DeletionConsequence.of(meOf("me.premium.json")))
+    }
+
+    @Test
+    fun `a guild plan the account pays for ends with its seats`() {
+        assertEquals(listOf(DeletionConsequence.GuildPlan("OLYMPUS XXVII")), DeletionConsequence.of(meOf("me.guild-payer.json")))
+    }
+
+    @Test
+    fun `a seat held from a guild ends`() {
+        assertEquals(listOf(DeletionConsequence.Seat("OLYMPUS XXVII")), DeletionConsequence.of(meOf("me.seat.json")))
     }
 }
