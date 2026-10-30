@@ -17,6 +17,7 @@ readonly PIN=$HERE/../pin-conditions.sh
 readonly PUSH=$HERE/../push-review-branch.sh
 readonly PINNED=$HERE/../pinned-build.sh
 readonly WAIT=$HERE/../ranking-wait.sh
+readonly VERDICT=$HERE/../ranking-verdict.sh
 readonly BUILD=1.60.1.70532
 readonly OTHER_BUILD=1.60.1.70425
 
@@ -397,6 +398,37 @@ test_ranking_wait_verdicts() {
 	assert "non-integer epochs are a usage error" equal "$status" 2
 }
 
+
+test_ranking_verdict() {
+	local fork=$SCRATCH/rv-fork other=$SCRATCH/rv-other site=$SCRATCH/rv-site osite=$SCRATCH/rv-osite now=1730100000 out status
+	make_fork "$fork" "$BUILD"
+	make_fork "$other" "$OTHER_BUILD"
+	make_site "$site" "$(git -C "$fork" rev-parse --short HEAD)"
+	make_site "$osite" "$(git -C "$other" rev-parse --short HEAD)"
+
+	out=$(bash "$VERDICT" "$site" "$fork" "$BUILD" $((now - 3600)) "$now")
+	assert "verdict: an engine on the active build ranks (got '$out')" equal "${out%%$'\t'*}" rank
+	out=$(bash "$VERDICT" "$site" "$fork" "$BUILD" unknown "$now")
+	assert "verdict: and still ranks when the move time is unknown (got '$out')" equal "${out%%$'\t'*}" rank
+
+	out=$(bash "$VERDICT" "$osite" "$other" "$BUILD" $((now - 3 * 3600)) "$now")
+	assert "verdict: the move night waits (got '$out')" equal "${out%%$'\t'*}" wait
+	out=$(bash "$VERDICT" "$osite" "$other" "$BUILD" $((now - 26 * 3600)) "$now")
+	assert "verdict: the second night stalls (got '$out')" equal "${out%%$'\t'*}" stalled
+
+	out=$(bash "$VERDICT" "$osite" "$other" "$BUILD" unknown "$now")
+	assert "verdict: a failed move-time lookup stalls, never waits as now (got '$out')" equal "${out%%$'\t'*}" stalled
+	assert "verdict: and says the lookup failed" contains "$out" "could not be read"
+
+	out=$(bash "$VERDICT" "$osite" "$SCRATCH/no-such-fork" "$BUILD" $((now - 60)) "$now")
+	assert "verdict: an unreadable stamp stalls (got '$out')" equal "${out%%$'\t'*}" stalled
+
+	status=0
+	out=$(bash "$VERDICT" "$osite" "$other" "$BUILD" "not-a-time" "$now" 2>&1) || status=$?
+	assert "verdict: ranking-wait's own failure is the verdict's failure (got $status)" differ "$status" 0
+	assert "verdict: and prints no verdict" lacks "$out" "wait"$'\t'
+}
+
 test_pin_gives_up_on_a_fork_ci_that_never_finishes
 test_pin_refuses_a_fork_on_another_build
 test_pin_refuses_the_sha_already_pinned
@@ -410,6 +442,7 @@ test_pinned_build_reads_the_forks_stamp_at_the_pin
 test_pinned_build_asks_github_without_a_fork
 test_pinned_build_fails_rather_than_guess
 test_ranking_wait_verdicts
+test_ranking_verdict
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "FAILED $FAILED of $((PASSED + FAILED)) assertions" >&2

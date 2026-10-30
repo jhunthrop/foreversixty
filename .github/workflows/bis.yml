@@ -93,16 +93,18 @@ jobs:
           SHA: ${{ steps.identity.outputs.sha }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          stamp=$(tools/engine/pinned-build.sh . .engine) || stamp=""
-          # When active-build.json last changed: the checkout is shallow, so ask GitHub.
+          # When active-build.json last changed: the checkout is shallow, so ask GitHub. A
+          # failed lookup is "unknown", which stalls a mismatched engine (a red run naming
+          # the lookup) and never reads as "now" (tools/engine/ranking-verdict.sh).
           moved=$(gh api "repos/$GITHUB_REPOSITORY/commits?path=web/src/data/active-build.json&per_page=1" --jq '.[0].commit.committer.date' 2>/dev/null) || moved=""
-          if [ -n "$moved" ]; then
-            moved=$(date -u -d "$moved" +%s)
-          else
-            echo "::warning::could not read when active-build.json last changed; tonight counts as the move night"
-            moved=$(date -u +%s)
+          if [ -n "$moved" ] && moved=$(date -u -d "$moved" +%s 2>/dev/null); then :; else
+            echo "::warning::could not read when active-build.json last changed"
+            moved=unknown
           fi
-          IFS=$'\t' read -r verdict line < <(tools/engine/ranking-wait.sh "$BUILD" "$stamp" "$moved" "$(date -u +%s)")
+          # Captured, not read from a process substitution, so a failing verdict fails here.
+          out=$(tools/engine/ranking-verdict.sh . .engine "$BUILD" "$moved")
+          verdict=${out%%$'\t'*}
+          line=${out#*$'\t'}
           echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
           if [ "$verdict" = rank ]; then
             echo "follows=true" >> "$GITHUB_OUTPUT"
