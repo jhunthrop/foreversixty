@@ -390,7 +390,7 @@
 
 {#if view === 'ready' && character !== null && resolvedAction !== null}
   <section
-    class="ch ch-{layout} ch-{emphasis}"
+    class="ch card-surface ch-{layout} ch-{emphasis}"
     class:ch-no-answer={!hasAnswerColumn}
     class:ch-has-foot={finishedRuns !== null}
     aria-label={characterHeaderCopy.label}
@@ -410,7 +410,7 @@
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut />{/if}
 {:else if view === 'loading'}
   <section
-    class="ch ch-{layout} ch-{emphasis} ch-hint-only ch-loading"
+    class="ch card-surface ch-{layout} ch-{emphasis} ch-hint-only ch-loading"
     class:ch-no-answer={!hasAnswerColumn}
     role="status"
     aria-busy="true"
@@ -464,9 +464,9 @@
     align-items: center;
     box-sizing: border-box;
     padding: var(--ch-pad-y) var(--ch-pad-x);
-    background: var(--color-raised);
-    border: 1px solid var(--color-gold);
-    border-radius: var(--radius-panel);
+    /* The surface is the shared card-surface class on the element (site alignment spec
+       2026-10-29 S3): the account card's warm gradient, gold-tinted border and top edge. Its
+       emphasis comes from the crest, the class-coloured name and its one primary button. */
   }
   @media (min-width: 1024px) {
     .ch-band {
