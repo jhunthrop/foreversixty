@@ -36,3 +36,8 @@ export async function enhanced(scope: Page | Locator, testid: string): Promise<L
 export function nativeSelect(scope: Page | Locator, label: string): Locator {
   return scope.getByLabel(label).and(scope.locator('select'));
 }
+
+/** The open list of the field whose select carries this test id. */
+export function listOf(scope: Page | Locator, testid: string): Locator {
+  return scope.locator(`.sel:has(> select[data-testid="${testid}"]) > .sel-pop`);
+}

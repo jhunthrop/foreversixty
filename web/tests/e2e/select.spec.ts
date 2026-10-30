@@ -9,8 +9,7 @@ import path from 'node:path';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
-import { openChartIfCollapsed } from './support/report-chart';
-import { enhanced, fieldBox } from './support/select';
+import { enhanced, fieldBox, listOf } from './support/select';
 
 const SHEET = '/design-sheet';
 const THREAT = '/reports/fixture2abcd?fight=3&tab=threat';
@@ -28,10 +27,6 @@ async function openSheet(page: Page): Promise<void> {
   await gotoHydrated(page, SHEET, 'sheet-dialog-open');
 }
 
-/** The open list of the field whose select carries this test id. */
-const listOf = (page: Page, testid: string): Locator =>
-  page.locator(`.sel:has(> select[data-testid="${testid}"]) > .sel-pop`);
-
 const row = (list: Locator, label: string): Locator =>
   list.locator('[role="option"]').filter({ has: list.page().locator('.sel-row-label', { hasText: label }) });
 
@@ -40,20 +35,26 @@ async function activeLabel(page: Page, holder: Locator): Promise<string> {
   return id === null ? '' : ((await page.locator(`[id="${id}"] .sel-row-label`).textContent()) ?? '');
 }
 
-/** True when the topmost element at the centre of each of `targets` is inside `owner`. */
+/** True when the topmost element at the centre of each of `targets` is inside `owner`. Rows the
+ *  list has scrolled out of its own view are skipped: only the rows a person can see count. */
 async function topmostInside(page: Page, targets: Locator, owner: string): Promise<boolean[]> {
-  const boxes = await targets.evaluateAll((nodes) =>
-    nodes.map((node) => {
-      const box = node.getBoundingClientRect();
-      return { x: box.x + box.width / 2, y: box.y + box.height / 2, visible: box.height > 0 };
-    }),
-  );
-  return page.evaluate(
-    ({ points, selector }) =>
-      points
-        .filter((point) => point.visible && point.y > 0 && point.y < window.innerHeight)
+  return targets.evaluateAll(
+    (nodes, selector) =>
+      nodes
+        .map((node) => {
+          const box = node.getBoundingClientRect();
+          const scroller = node.closest('.sel-scroll')?.getBoundingClientRect();
+          const y = box.y + box.height / 2;
+          const shown =
+            box.height > 0 &&
+            y > 0 &&
+            y < window.innerHeight &&
+            (scroller === undefined || (y > scroller.top && y < scroller.bottom));
+          return { x: box.x + box.width / 2, y, shown };
+        })
+        .filter((point) => point.shown)
         .map((point) => document.elementFromPoint(point.x, point.y)?.closest(selector) !== null),
-    { points: boxes, selector: owner },
+    owner,
   );
 }
 
@@ -275,8 +276,7 @@ test.describe('fine pointer: call sites', () => {
   // top layer now, so the topmost element at each row's centre is that row.
   test('an open list is topmost over the report chart', async ({ page }) => {
     await page.goto(THREAT);
-    await openChartIfCollapsed(page);
-    await expect(page.getByTestId('time-chart').or(page.getByTestId('threat-chart')).first()).toBeVisible();
+    await expect(page.getByTestId('threat-chart')).toBeVisible();
     const trigger = await enhanced(page, 'source-scope');
     await trigger.click();
     const list = listOf(page, 'source-scope');
@@ -309,6 +309,38 @@ test.describe('fine pointer: call sites', () => {
     await row(list, 'Execute').click();
     await expect(page.getByTestId('sim-style')).toHaveValue('execute');
   });
+});
+
+// Reviewer hold, 2026-10-30: the Fight style list of described rows ran off the bottom of a short
+// screen. It flips above when it does not fit below and more room is above, and is capped to its
+// side's room less 16 px either way, so every row is reachable inside the list.
+test('on a short screen the Fight style list stays inside the viewport', async ({ page }) => {
+  test.skip(isPhone(page), 'the listbox is the fine-pointer control');
+  await page.setViewportSize({ width: 1440, height: 620 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/sim');
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  const trigger = await enhanced(page, 'sim-style');
+  for (const offset of [80, 260, 420]) {
+    // The field `offset` px above the viewport's bottom edge.
+    await trigger.evaluate(
+      (node, by) => window.scrollBy(0, node.getBoundingClientRect().bottom - window.innerHeight + by),
+      offset,
+    );
+    await trigger.click();
+    const list = listOf(page, 'sim-style');
+    await expect(list).toBeVisible();
+    const box = (await list.boundingBox())!;
+    expect(box.y, `top at ${offset}`).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height, `bottom at ${offset}`).toBeLessThanOrEqual(620);
+    // The last style is reachable by scrolling inside the list.
+    await page.keyboard.press('End');
+    await expect(list.locator('[role="option"]').last()).toBeInViewport();
+    await page.keyboard.press('Escape');
+    await expect(list).toHaveCount(0);
+  }
 });
 
 test.describe('coarse pointer: the native picker behind the same face', () => {
