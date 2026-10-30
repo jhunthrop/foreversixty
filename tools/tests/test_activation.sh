@@ -220,7 +220,9 @@ activate() {
 	local dir=$1
 	shift
 	STATUS=0
-	OUT=$(cd "$dir" && PATH="$dir/stubs:$PATH" GITHUB_STEP_SUMMARY="$dir/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$@" 2>&1) || STATUS=$?
+	# A local run: GITHUB_ACTIONS is cleared so a run of this suite inside Actions still sees
+	# the local-only lines (the undo hint); the Actions-only cases set it themselves.
+	OUT=$(cd "$dir" && env -u GITHUB_ACTIONS PATH="$dir/stubs:$PATH" GITHUB_STEP_SUMMARY="$dir/summary.md" PRODUCT=wowf bash tools/activate-build.sh "$@" 2>&1) || STATUS=$?
 	SUMMARY=$(cat "$dir/summary.md" 2>/dev/null)
 }
 

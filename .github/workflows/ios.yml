@@ -11,9 +11,10 @@ concurrency:
   group: ios-${{ github.ref }}
   cancel-in-progress: true
 env:
-  # The app needs Xcode 27.1 (iOS 26 deployment target, Swift 6.4, iOS 27 simulator
-  # runtimes). setup-xcode fails the job loudly when the runner image lacks it.
-  XCODE_VERSION: '27.1'
+  # The newest stable Xcode on the runner image. The app targets iOS 26 and was built locally
+  # on 27.1; GitHub's macos-latest image lagged 27.1 on 2026-10-30, so CI takes the newest
+  # stable it has rather than failing on an exact version. Pin it again once the image has it.
+  XCODE_VERSION: 'latest-stable'
   XCODEGEN_VERSION: '2.46.0'
   SIMULATOR: 'platform=iOS Simulator,name=iPhone 17'
 jobs:
