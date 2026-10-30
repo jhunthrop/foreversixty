@@ -109,6 +109,10 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	if cmd.Note != nil {
 		sg.Note = *cmd.Note
 	}
+	was, err := s.rosterPlaceBefore(ctx, raid, cmd, char, asOfficer)
+	if err != nil {
+		return SignupResult{}, err
+	}
 	wrote := true
 	if skipUnchanged {
 		result.Moved, wrote, err = s.Store.UpsertSignupIfChanged(ctx, sg)
@@ -128,6 +132,9 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	s.markRaid(ctx, raid.ID)
 	if cmd.State == SignupOut {
 		s.publishLateChange(ctx, raid, char.CharacterKey, char.Name, time.Now())
+	}
+	if was != nil && *was != cmd.State {
+		s.publishRosterMoved(ctx, raid, char.userID, char.Name, *was, cmd.State)
 	}
 	result.Raid, err = s.signupRaidView(ctx, cmd)
 	return result, err

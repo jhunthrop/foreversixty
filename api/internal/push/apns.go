@@ -150,6 +150,9 @@ type apnsPayload struct {
 		Sound    string `json:"sound"`
 		ThreadID string `json:"thread-id,omitempty"`
 		Category string `json:"category,omitempty"`
+		// InterruptionLevel is "time-sensitive" for a time-sensitive message, else absent
+		// (active, the default).
+		InterruptionLevel string `json:"interruption-level,omitempty"`
 	} `json:"aps"`
 	Kind    string            `json:"kind"`
 	Link    string            `json:"link,omitempty"`
@@ -162,6 +165,9 @@ func apnsBody(m Message) ([]byte, error) {
 	p.APS.Alert.Title, p.APS.Alert.Body = m.Title, m.Body
 	p.APS.Sound, p.APS.ThreadID, p.APS.Category = "default", m.Thread, m.Category
 	p.Kind, p.Link, p.Data = string(m.Kind), m.Link, m.Data
+	if m.TimeSensitive {
+		p.APS.InterruptionLevel = "time-sensitive"
+	}
 	if len(m.Actions) > 0 {
 		p.Actions = m.Actions
 	}

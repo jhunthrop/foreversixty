@@ -13,8 +13,8 @@ func TestEveryKindHasOneSpec(t *testing.T) {
 		}
 		seen[s.Kind] = true
 	}
-	if len(seen) != 20 {
-		t.Fatalf("catalogue has %d kinds, want the plan's 20", len(seen))
+	if len(seen) != 22 {
+		t.Fatalf("catalogue has %d kinds, want the plan's 20 and the ruling's two", len(seen))
 	}
 	if s, _ := Lookup(RaidStarting); !s.QuietExempt {
 		t.Fatal("raid.starting must be exempt from quiet hours")
@@ -90,5 +90,22 @@ func TestQuietHoursValidate(t *testing.T) {
 	}
 	if ValidTimeZone("Not/AZone") || !ValidTimeZone("Europe/Berlin") || ValidTimeZone("") {
 		t.Fatal("time zones")
+	}
+}
+
+func TestTheSummaryCarriesCoachAndBestsByDefault(t *testing.T) {
+	p := Prefs{}
+	if !p.Allows(RaidSummary, ChannelPush) || p.Allows(CoachReady, ChannelPush) || p.Allows(RankingBest, ChannelPush) || p.Allows(LootAwarded, ChannelPush) {
+		t.Fatal("defaults with the summary on")
+	}
+	off := p.With(RaidSummary, ChannelPush, false)
+	if !off.Allows(CoachReady, ChannelPush) || !off.Allows(RankingBest, ChannelPush) || off.Allows(CoachReady, ChannelDiscord) {
+		t.Fatal("with the summary off, coach and bests default on for that channel only")
+	}
+	if !p.With(LootAwarded, ChannelPush, true).Allows(LootAwarded, ChannelPush) {
+		t.Fatal("standalone loot cannot be turned on")
+	}
+	if s, _ := Lookup(RaidRosterMoved); !s.QuietExempt || !s.TimeSensitive || !s.DefaultOn {
+		t.Fatalf("raid.roster_moved %+v", s)
 	}
 }

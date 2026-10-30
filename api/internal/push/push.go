@@ -45,6 +45,9 @@ type Message struct {
 	Data     map[string]string
 	// Kind is the event's kind, sent as data so the app can route it.
 	Kind events.Kind
+	// TimeSensitive breaks through Focus (APNs interruption-level time-sensitive) and goes at
+	// high priority on FCM; any other message goes at normal priority there.
+	TimeSensitive bool
 }
 
 // Sender sends one message. It returns ErrInvalidToken (wrapped or not) when the service

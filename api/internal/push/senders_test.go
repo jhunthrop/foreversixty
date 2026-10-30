@@ -258,3 +258,24 @@ func TestNewFCMRefusesABadServiceAccount(t *testing.T) {
 		}
 	}
 }
+
+func TestTimeSensitiveMessagesBreakThrough(t *testing.T) {
+	m := raidMessage("aa")
+	m.TimeSensitive = true
+	raw, _ := apnsBody(m)
+	if !strings.Contains(string(raw), `"interruption-level":"time-sensitive"`) {
+		t.Fatalf("apns %s", raw)
+	}
+	plain, _ := apnsBody(raidMessage("aa"))
+	if strings.Contains(string(plain), "interruption-level") {
+		t.Fatalf("plain apns %s", plain)
+	}
+	hi, _ := fcmBody(m)
+	lo, _ := fcmBody(raidMessage("aa"))
+	if !strings.Contains(string(hi), `"priority":"HIGH"`) || !strings.Contains(string(lo), `"priority":"NORMAL"`) {
+		t.Fatalf("fcm %s / %s", hi, lo)
+	}
+	if !MessageOf(events.Event{Kind: events.RaidRosterMoved}, Token{}).TimeSensitive || MessageOf(events.Event{Kind: events.RaidPosted}, Token{}).TimeSensitive {
+		t.Fatal("MessageOf time-sensitive")
+	}
+}

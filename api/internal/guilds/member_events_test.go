@@ -35,12 +35,30 @@ func TestALootAwardTellsTheWinner(t *testing.T) {
 	pub.waitFor(t, events.LootAwarded, 1)
 }
 
-func TestTheNightsReportTellsItsRaiders(t *testing.T) {
+func TestTheNightsSummaryTellsEachRaiderTheirOwnNight(t *testing.T) {
 	w, _ := eventsWorld(t)
 	raid := w.createRaid(t)
-	got := w.h.svc.nightReadyEvents(context.Background(), raid.ID, "rep-1")
-	if len(got) != 1 || got[0].Kind != events.ReportReady || got[0].Audience.Kind != events.ToRaidInLate ||
-		got[0].Data["report_id"] != "rep-1" || got[0].Validate() != nil {
-		t.Fatalf("night %+v", got)
+	w.as(w.member)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
+	w.as(w.member2)
+	w.signup(t, raid.ID, member2Key, `{"state":"out"}`)
+	exec := func(q string, args ...any) {
+		if _, err := w.h.pool.Exec(context.Background(), q, args...); err != nil {
+			t.Fatal(err)
+		}
+	}
+	exec(`insert into reports (id, owner_id, title, visibility, status) values ('rep-1', $1, 'Ony', 'guild', 'complete')`, w.officer)
+	exec(`insert into loot_awards (guild_id, encounter_id, item_id, character_key, report_id) values ($1, 1084, 17078, $2, 'rep-1')`, w.gid, memberKeyA)
+	got := w.h.svc.summaryEvents(context.Background(), raid.ID, "rep-1")
+	if len(got) != 1 {
+		t.Fatalf("summaries %+v", got)
+	}
+	e := got[0]
+	if e.Kind != events.RaidSummary || e.Audience.UserIDs[0] != w.member || e.DedupeKey != "raid.summary:rep-1" ||
+		!strings.HasPrefix(e.Body, summaryCopy.Report) || e.Data["loot_item_ids"] != "17078" || e.Validate() != nil {
+		t.Fatalf("summary %+v", e)
+	}
+	if !strings.Contains(e.Body, "You won") {
+		t.Fatalf("no loot line: %q", e.Body)
 	}
 }

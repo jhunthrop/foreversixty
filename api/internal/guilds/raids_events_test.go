@@ -222,3 +222,29 @@ func TestRunEventSchedulePublishesWhatIsDue(t *testing.T) {
 		t.Fatalf("without events %+v %v", run, err)
 	}
 }
+
+func TestAnOfficerMovingAPlayerOnASetRosterTellsThem(t *testing.T) {
+	w, pub := eventsWorld(t)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
+	// Before the roster is set an officer's change tells nothing.
+	w.as(w.officer)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"late"}`)
+	if res := w.h.do(http.MethodPost, w.path("/raids/%d/lock", raid.ID), ""); res.StatusCode != http.StatusOK {
+		t.Fatalf("lock %d", res.StatusCode)
+	}
+	w.signup(t, raid.ID, memberKeyA, `{"state":"bench"}`)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"bench"}`) // the same place again tells nothing
+	w.signup(t, raid.ID, member2Key, `{"state":"in"}`)    // added by the officer
+	got := pub.waitFor(t, events.RaidRosterMoved, 2)
+	time.Sleep(100 * time.Millisecond)
+	got = pub.ofKind(events.RaidRosterMoved)
+	if len(got) != 2 {
+		t.Fatalf("moves %+v", got)
+	}
+	bodies := map[int64]string{got[0].Audience.UserIDs[0]: got[0].Body, got[1].Audience.UserIDs[0]: got[1].Body}
+	if bodies[w.member] != "An officer moved Kraggor to the bench." || bodies[w.member2] != "An officer moved Mirelle to In." {
+		t.Fatalf("bodies %v", bodies)
+	}
+}

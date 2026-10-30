@@ -10,9 +10,12 @@ package guilds
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -23,6 +26,7 @@ import (
 var raidEventCopy = struct {
 	Posted, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
 	Starting, Short, ShortOpen, LateChange                              string
+	MovedIn, MovedBench, MovedLate, MovedOut                            string
 	ActionIn, ActionLate, ActionOut                                     string
 }{
 	Posted:      "Sign-ups are open: %s.",
@@ -36,6 +40,10 @@ var raidEventCopy = struct {
 	Short:       "%d of %d signed, 24 hours out.",
 	ShortOpen:   "%d signed, 24 hours out.",
 	LateChange:  "%s changed to Out, %s before the start.",
+	MovedIn:     "An officer moved %s to In.",
+	MovedBench:  "An officer moved %s to the bench.",
+	MovedLate:   "An officer marked %s Late.",
+	MovedOut:    "An officer took %s off the roster.",
 	ActionIn:    "In",
 	ActionLate:  "Late",
 	ActionOut:   "Out",
@@ -291,6 +299,59 @@ func (s *Service) publishLateChange(ctx context.Context, raid Raid, characterKey
 		}
 		return []events.Event{lateChangeEvent(facts.GuildID, facts.Post.RaidPosted, characterKey, name, before)}
 	})
+}
+
+// rosterMovedEvent tells one account an officer changed its character's place on a set
+// roster; was is "" for a character the officer added.
+func rosterMovedEvent(guildID int64, p notify.RaidPosted, userID int64, name, was, now string, at time.Time) events.Event {
+	e := raidEvent(events.RaidRosterMoved, guildID, p,
+		raidKey(events.RaidRosterMoved, p, name, was, now, strconv.FormatInt(at.UnixNano(), 10)), events.Users(userID))
+	format := map[string]string{
+		SignupIn: raidEventCopy.MovedIn, SignupBench: raidEventCopy.MovedBench,
+		SignupLate: raidEventCopy.MovedLate, SignupOut: raidEventCopy.MovedOut,
+	}[now]
+	e.Body = fmt.Sprintf(format, name)
+	return e
+}
+
+// rosterPlaceBefore is the character's place before an officer's write to a set (locked)
+// roster for another account: "" when the officer adds it. nil for every other write, which
+// raid.roster_moved does not tell.
+func (s *Service) rosterPlaceBefore(ctx context.Context, raid Raid, cmd SignupCommand, char raidRosterChar, asOfficer bool) (*string, error) {
+	if s.Events == nil || !asOfficer || raid.Status != RaidLocked || char.userID == cmd.ActorID {
+		return nil, nil
+	}
+	state, err := s.Store.signupState(ctx, raid.ID, char.CharacterKey)
+	if err != nil {
+		return nil, err
+	}
+	return &state, nil
+}
+
+// publishRosterMoved tells the account its character's place on the set roster changed.
+func (s *Service) publishRosterMoved(ctx context.Context, raid Raid, userID int64, name, was, now string) {
+	at := time.Now()
+	s.background(ctx, func(ctx context.Context) []events.Event {
+		facts, ok := s.raidFacts(ctx, raid.ID, "event_roster_moved")
+		if !ok {
+			return nil
+		}
+		return []events.Event{rosterMovedEvent(facts.GuildID, facts.Post.RaidPosted, userID, name, was, now, at)}
+	})
+}
+
+// signupState is a character's sign-up state on a raid; "" when it has none.
+func (s *Store) signupState(ctx context.Context, raidID int64, characterKey string) (string, error) {
+	var state string
+	err := s.Pool.QueryRow(ctx, `select state from guild_raid_signups where raid_id = $1 and character_key = $2`,
+		raidID, characterKey).Scan(&state)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("guilds: signup state: %w", err)
+	}
+	return state, nil
 }
 
 // accountPlaces is each signed-up account's best place on a raid: In over Late over Bench

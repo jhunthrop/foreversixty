@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
@@ -55,7 +56,8 @@ func newJobGuilds(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *guil
 		return g
 	}
 	if router := newEventsRouter(context.Background(), cfg, pool, nil, log); router != nil {
-		g.Events = router
+		// The night's raid.summary names the coach notes to an account that holds the coach.
+		g.Events, g.Entitlements = router, &entitlements.Store{Pool: pool}
 	}
 	return g
 }

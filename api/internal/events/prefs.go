@@ -74,6 +74,9 @@ func (p Prefs) Allows(kind Kind, channel Channel) bool {
 	if on, set := p.Overrides[PrefKey{kind, channel}]; set {
 		return on
 	}
+	if spec.OffWhenOn != "" && p.Allows(spec.OffWhenOn, channel) {
+		return false
+	}
 	return spec.DefaultOn
 }
 

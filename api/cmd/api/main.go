@@ -665,11 +665,12 @@ func serve(log *slog.Logger) error {
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
-	wireEvents(ctx, cfg, pool, &deps, log)
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
+	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
+	wireEvents(ctx, cfg, pool, &deps, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer

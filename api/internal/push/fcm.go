@@ -54,9 +54,16 @@ func newFCM(project, baseURL string, tokens oauth2.TokenSource, client *http.Cli
 }
 
 type fcmAndroidNotification struct {
-	Tag         string `json:"tag,omitempty"`
-	ClickAction string `json:"click_action,omitempty"`
+	Tag                  string `json:"tag,omitempty"`
+	ClickAction          string `json:"click_action,omitempty"`
+	NotificationPriority string `json:"notification_priority,omitempty"`
 }
+
+// The FCM priorities: high wakes the device at once and is kept for time-sensitive messages.
+const (
+	fcmPriorityHigh   = "HIGH"
+	fcmPriorityNormal = "NORMAL"
+)
 
 type fcmMessage struct {
 	Token        string            `json:"token"`
@@ -88,9 +95,13 @@ func fcmBody(m Message) ([]byte, error) {
 		}
 		msg.Data["actions"] = string(actions)
 	}
-	msg.Android.Priority = "HIGH"
+	msg.Android.Priority = fcmPriorityNormal
 	msg.Android.CollapseKey = m.Collapse
 	msg.Android.Notification = fcmAndroidNotification{Tag: m.Collapse, ClickAction: m.Category}
+	if m.TimeSensitive {
+		msg.Android.Priority = fcmPriorityHigh
+		msg.Android.Notification.NotificationPriority = "PRIORITY_HIGH"
+	}
 	return json.Marshal(map[string]fcmMessage{"message": msg})
 }
 

@@ -49,11 +49,13 @@ type QuietHoursView struct {
 
 // EventPrefView is one event's switches.
 type EventPrefView struct {
-	Kind        Kind             `json:"kind"`
-	Who         string           `json:"who"`
-	Officer     bool             `json:"officer"`
-	QuietExempt bool             `json:"quiet_exempt"`
-	Channels    map[Channel]bool `json:"channels"`
+	Kind        Kind   `json:"kind"`
+	Who         string `json:"who"`
+	Officer     bool   `json:"officer"`
+	QuietExempt bool   `json:"quiet_exempt"`
+	// TimeSensitive is an event that breaks through Focus and quiet hours.
+	TimeSensitive bool             `json:"time_sensitive"`
+	Channels      map[Channel]bool `json:"channels"`
 }
 
 // PrefsView is the GET body.
@@ -79,7 +81,8 @@ func ViewOf(p Prefs) PrefsView {
 		for _, ch := range Channels {
 			channels[ch] = p.Allows(s.Kind, ch)
 		}
-		v.Events[i] = EventPrefView{Kind: s.Kind, Who: s.Who, Officer: s.Officer, QuietExempt: s.QuietExempt, Channels: channels}
+		v.Events[i] = EventPrefView{Kind: s.Kind, Who: s.Who, Officer: s.Officer, QuietExempt: s.QuietExempt,
+			TimeSensitive: s.TimeSensitive, Channels: channels}
 	}
 	return v
 }

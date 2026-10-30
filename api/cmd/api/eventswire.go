@@ -96,15 +96,21 @@ func wireEvents(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, deps
 	if router == nil {
 		return
 	}
-	connectProducers(deps, router, cfg.PublicBaseURL, log)
+	connectProducers(deps, router, cfg.PublicBaseURL)
 }
 
 // connectProducers gives every producer serve holds the router.
-func connectProducers(deps *server.Deps, router events.Publisher, publicBaseURL string, log *slog.Logger) {
+func connectProducers(deps *server.Deps, router events.Publisher, publicBaseURL string) {
 	if deps.Guilds != nil {
 		deps.Guilds.Events = router
 	}
 	if deps.Addon != nil {
 		deps.Addon.Events, deps.Addon.PublicBaseURL = router, publicBaseURL
+	}
+	if deps.Billing != nil {
+		deps.Billing.Events = router
+	}
+	if deps.Seats != nil {
+		deps.Seats.Events = router
 	}
 }

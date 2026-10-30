@@ -21,9 +21,11 @@ const (
 	RaidSignupNudge Kind = "raid.signup_nudge"
 	RaidChanged     Kind = "raid.changed"
 	RaidRosterSet   Kind = "raid.roster_set"
+	RaidRosterMoved Kind = "raid.roster_moved"
 	RaidStarting    Kind = "raid.starting"
 	LootAwarded     Kind = "loot.awarded"
 	ReportReady     Kind = "report.ready"
+	RaidSummary     Kind = "raid.summary"
 	CoachReady      Kind = "coach.ready"
 	RankingBest     Kind = "ranking.best"
 	SimFinished     Kind = "sim.finished"
@@ -71,10 +73,18 @@ type Spec struct {
 	QuietExempt bool
 	// Officer marks an event only officers receive.
 	Officer bool
+	// TimeSensitive breaks through Focus on iOS (interruption-level time-sensitive) and goes
+	// at high priority on Android; such an event also ignores quiet hours.
+	TimeSensitive bool
+	// OffWhenOn names an event that carries this one: with no override, this event defaults
+	// to off on a channel where that one is on (raid.summary holds coach.ready and
+	// ranking.best).
+	OffWhenOn Kind
 }
 
 // Catalogue is every event and its defaults. bis.changed is off by default: it is the
-// weekly digest a player opts into.
+// weekly digest a player opts into. loot.awarded is off by default because raid.summary
+// carries the night's loot (coordinator ruling 2026-10-30, from the wow-player review).
 var Catalogue = []Spec{
 	{Kind: CharacterLinked, Who: WhoPlayer, DefaultOn: true},
 	{Kind: GuildApproved, Who: WhoPlayer, DefaultOn: true},
@@ -84,11 +94,13 @@ var Catalogue = []Spec{
 	{Kind: RaidSignupNudge, Who: WhoMembers, DefaultOn: true},
 	{Kind: RaidChanged, Who: WhoSigned, DefaultOn: true},
 	{Kind: RaidRosterSet, Who: WhoSigned, DefaultOn: true},
-	{Kind: RaidStarting, Who: WhoInLate, DefaultOn: true, QuietExempt: true},
-	{Kind: LootAwarded, Who: WhoPlayer, DefaultOn: true},
+	{Kind: RaidRosterMoved, Who: WhoPlayer, DefaultOn: true, QuietExempt: true, TimeSensitive: true},
+	{Kind: RaidStarting, Who: WhoInLate, DefaultOn: true, QuietExempt: true, TimeSensitive: true},
+	{Kind: LootAwarded, Who: WhoPlayer, DefaultOn: false},
 	{Kind: ReportReady, Who: WhoRaiders, DefaultOn: true},
-	{Kind: CoachReady, Who: WhoPlayer, DefaultOn: true},
-	{Kind: RankingBest, Who: WhoPlayer, DefaultOn: true},
+	{Kind: RaidSummary, Who: WhoRaiders, DefaultOn: true},
+	{Kind: CoachReady, Who: WhoPlayer, DefaultOn: true, OffWhenOn: RaidSummary},
+	{Kind: RankingBest, Who: WhoPlayer, DefaultOn: true, OffWhenOn: RaidSummary},
 	{Kind: SimFinished, Who: WhoPlayer, DefaultOn: true},
 	{Kind: RosterPending, Who: WhoOfficers, DefaultOn: true, Officer: true},
 	{Kind: RaidShort, Who: WhoOfficers, DefaultOn: true, Officer: true},
