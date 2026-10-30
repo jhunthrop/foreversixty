@@ -596,6 +596,9 @@ export const simCopy = {
   // --- Task 15: the request drawer (design 8). The exact JSON a run sends, editable, with
   // simValidate's own errors beside the fields they name. ---
   requestDrawer: 'Request',
+  /** The closed drawer's own line: what it is and what it is for, since "Request" alone says neither. */
+  requestDrawerSummary: 'Edit the raw request',
+  requestDrawerHint: 'The JSON this run sends to the engine',
   requestNote:
     'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
   requestApply: 'Apply to the page',

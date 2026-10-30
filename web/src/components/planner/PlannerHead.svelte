@@ -205,9 +205,6 @@
         {plannerCharacterCardCopy.leftOut(store.leftOutSlots)}
       </p>
     {/if}
-    {#if unread}
-      <ExportNotRead capturedAt={character?.build?.captured_at ?? null} testid="planner-export-not-read" />
-    {/if}
   </div>
 {/snippet}
 
@@ -217,19 +214,27 @@
 
 <!-- The card is a column of its own beside the head, top-aligned: as the PageHead aside it is
      bottom-aligned, which leaves the title floating under a card-tall gap. -->
-<div
-  class="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-6"
-  data-testid="planner-header-band"
->
-  <PageHead
-    eyebrow={plannerHeaderCopy.eyebrow}
-    title={plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
-    titleColor={color}
-    job={plannerHeaderCopy.description}
-    lead={crest}
-    {meta}
-    below={controls}
-    testid="planner-head"
-  />
-  {@render characterCard()}
+<div class="flex flex-col gap-[22px] md:gap-8">
+  <div
+    class="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-6"
+    data-testid="planner-header-band"
+  >
+    <PageHead
+      eyebrow={plannerHeaderCopy.eyebrow}
+      title={plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
+      titleColor={color}
+      job={plannerHeaderCopy.description}
+      lead={crest}
+      {meta}
+      below={controls}
+      testid="planner-head"
+    />
+    {@render characterCard()}
+  </div>
+  <!-- The unread-export notice runs the full width under the head, not as a third card in the
+       character column: beside the title block it left a ~200 px hole under the stat tiles
+       (leftovers lane A, planner row). -->
+  {#if unread}
+    <ExportNotRead capturedAt={character?.build?.captured_at ?? null} testid="planner-export-not-read" />
+  {/if}
 </div>
