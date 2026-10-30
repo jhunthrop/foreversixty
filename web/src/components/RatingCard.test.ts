@@ -33,7 +33,7 @@ describe('RatingCard', () => {
     });
     const card = /<div class="([^"]*)" data-testid="rating-card"/.exec(body)?.[1] ?? '';
     expect(card.split(' ')).toEqual(
-      expect.arrayContaining(['bg-raised', 'border-line', 'rounded-panel', 'border']),
+      expect.arrayContaining(['card-surface']),
     );
     expect(body).toMatch(/data-testid="character-rating-overall">65</);
     expect(body).toContain(`>${ratingCopy.outOf100}<`);

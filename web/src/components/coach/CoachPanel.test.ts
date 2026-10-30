@@ -221,7 +221,7 @@ describe('CoachPanel', () => {
   it('the rail is three card surfaces', () => {
     const body = panel(coachModelReview());
     for (const id of ['coach-player-card', 'coach-cannot', 'coach-footer-card']) {
-      expect(body).toMatch(new RegExp(`bg-raised border-line[^"]*"[^>]*data-testid="${id}"`));
+      expect(body).toMatch(new RegExp(`card-surface[^"]*"[^>]*data-testid="${id}"`));
     }
   });
 

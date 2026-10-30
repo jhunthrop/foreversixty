@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-import { CARD, CARD_SURFACE } from '../../lib/ui/card';
+import { CARD, CARD_QUIET } from '../../lib/ui/card';
 import { createPageContainer } from '../../test-support/page-container';
 import PlanCard from './PlanCard.astro';
 import { trialParts } from './model';
@@ -46,13 +46,11 @@ describe('PlanCard, Premium', () => {
     expect(list && scope && list.compareDocumentPosition(scope) & 4).toBeTruthy();
   });
 
-  it.each(['free', 'premium', 'guild', 'raid_guild'] as const)(
-    '%s card wears the shared CARD_SURFACE',
-    async (plan) => {
-      const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
-      for (const cls of CARD_SURFACE.split(' ')) expect(card?.classList.contains(cls)).toBe(true);
-    },
-  );
+  it.each(['guild', 'raid_guild'] as const)('%s card wears the quiet card surface', async (plan) => {
+    const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
+    expect(card?.classList.contains(CARD_QUIET)).toBe(true);
+    expect(card?.hasAttribute('data-highlight')).toBe(false);
+  });
 
   it.each(['free', 'premium'] as const)('%s card keeps the gold top highlight', async (plan) => {
     const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);

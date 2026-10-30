@@ -8,7 +8,7 @@ import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { BUTTON_MD, BUTTON_PRIMARY } from '../../lib/ui/button';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
-import { CARD, CARD_SURFACE } from '../../lib/ui/card';
+import { CARD, CARD_QUIET } from '../../lib/ui/card';
 import PriceBlock from './PriceBlock.astro';
 import {
   FOUNDER_STATES,
@@ -47,7 +47,7 @@ const lines = featureLines(block.features);
 ---
 
 <article
-  class={`plan-card ${guild ? CARD_SURFACE : CARD}`}
+  class={`plan-card ${guild ? CARD_QUIET : CARD}`}
   id={cardId}
   data-testid={`plan-${plan}`}
   data-plan={plan}
