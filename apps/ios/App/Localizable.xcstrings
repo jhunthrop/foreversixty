@@ -2760,6 +2760,346 @@
         }
       }
     },
+    "raids.a11y.classCount": {
+      "comment": "Arguments: 1 class (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "raids.a11y.classes": {
+      "comment": "Arguments: 1 list (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classes coming: %1$@"
+          }
+        }
+      }
+    },
+    "raids.a11y.count": {
+      "comment": "Arguments: 1 count (string), 2 breakdown (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "raids.a11y.pending": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pending, choose a spec"
+          }
+        }
+      }
+    },
+    "raids.a11y.place": {
+      "comment": "Arguments: 1 name (string), 2 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@. Change the place"
+          }
+        }
+      }
+    },
+    "raids.a11y.roster": {
+      "comment": "Arguments: 1 name (string), 2 spec (string), 3 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "raids.a11y.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving"
+          }
+        }
+      }
+    },
+    "raids.a11y.segments": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@'s sign-up"
+          }
+        }
+      }
+    },
+    "raids.calendarLocation": {
+      "comment": "Arguments: 1 guild (string), 2 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raids.chip.signed": {
+      "comment": "Arguments: 1 state (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raids.class.druid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Druid"
+          }
+        }
+      }
+    },
+    "raids.class.hunter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunter"
+          }
+        }
+      }
+    },
+    "raids.class.mage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mage"
+          }
+        }
+      }
+    },
+    "raids.class.paladin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paladin"
+          }
+        }
+      }
+    },
+    "raids.class.priest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priest"
+          }
+        }
+      }
+    },
+    "raids.class.rogue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rogue"
+          }
+        }
+      }
+    },
+    "raids.class.shaman": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shaman"
+          }
+        }
+      }
+    },
+    "raids.class.warlock": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warlock"
+          }
+        }
+      }
+    },
+    "raids.class.warrior": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warrior"
+          }
+        }
+      }
+    },
+    "raids.classNone.druid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Druids"
+          }
+        }
+      }
+    },
+    "raids.classNone.hunter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Hunters"
+          }
+        }
+      }
+    },
+    "raids.classNone.mage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Mages"
+          }
+        }
+      }
+    },
+    "raids.classNone.paladin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Paladins"
+          }
+        }
+      }
+    },
+    "raids.classNone.priest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Priests"
+          }
+        }
+      }
+    },
+    "raids.classNone.rogue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Rogues"
+          }
+        }
+      }
+    },
+    "raids.classNone.shaman": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Shamans"
+          }
+        }
+      }
+    },
+    "raids.classNone.warlock": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Warlocks"
+          }
+        }
+      }
+    },
+    "raids.classNone.warrior": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no Warriors"
+          }
+        }
+      }
+    },
+    "raids.copy.group": {
+      "comment": "Arguments: 1 label (string), 2 names (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "raids.copy.size": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "raids.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -2816,6 +3156,41 @@
         }
       }
     },
+    "raids.night.dps": {
+      "comment": "Arguments: 1 dps (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ DPS"
+          }
+        }
+      }
+    },
+    "raids.night.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your raid night"
+          }
+        }
+      }
+    },
+    "raids.nightMeta": {
+      "comment": "Arguments: 1 date (string), 2 kills (string), 3 wipes (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
     "raids.nights": {
       "extractionState": "manual",
       "localizations": {
@@ -2857,6 +3232,101 @@
           "stringUnit": {
             "state": "translated",
             "value": "No guild yet"
+          }
+        }
+      }
+    },
+    "raids.note.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving…"
+          }
+        }
+      }
+    },
+    "raids.notSignedCount": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed up %1$lld"
+          }
+        }
+      }
+    },
+    "raids.part.dps": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld DPS"
+          }
+        }
+      }
+    },
+    "raids.part.healers": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 healer"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld healers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raids.part.late": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld late"
+          }
+        }
+      }
+    },
+    "raids.part.tanks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 tank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld tanks"
+                }
+              }
+            }
           }
         }
       }
@@ -2929,6 +3399,126 @@
         }
       }
     },
+    "raids.span.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raids.span.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h"
+          }
+        }
+      }
+    },
+    "raids.span.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min"
+          }
+        }
+      }
+    },
+    "raids.spanWords.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raids.spanWords.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 hour"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raids.spanWords.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 minute"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "raids.waiting": {
       "extractionState": "manual",
       "localizations": {
@@ -2940,6 +3530,18 @@
         }
       }
     },
+    "raids.who": {
+      "comment": "Arguments: 1 spec (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "raids.whoIsComing": {
       "extractionState": "manual",
       "localizations": {
@@ -2947,6 +3549,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Who is coming"
+          }
+        }
+      }
+    },
+    "raids.zoneSuffix": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · %1$@"
           }
         }
       }

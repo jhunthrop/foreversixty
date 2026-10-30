@@ -28,9 +28,9 @@ const privateCache = "private, no-cache"
 
 // raidViewOptions are the options for a raid view found at prefix ("data" or "data.raid").
 func raidViewOptions(prefix string) contract.Options {
-	return contract.Options{Optional: []string{
+	return contract.Options{Optional: append([]string{
 		prefix + ".viewer.characters[].raid_spec",
-	}}
+	}, raidViewPending(prefix)...)}
 }
 
 func TestAppContractGuildHome(t *testing.T) {

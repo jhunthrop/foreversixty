@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [],
+    "planned": [],
+    "zones": [
+      {
+        "key": "raid:barrow-deeps",
+        "name": "Barrow Deeps",
+        "size": null
+      },
+      {
+        "key": "raid:hyjal-summit",
+        "name": "Hyjal Summit",
+        "size": null
+      },
+      {
+        "key": "raid:onyxias-lair",
+        "name": "Onyxia's Lair",
+        "size": 40
+      }
+    ],
+    "guild_timezone": "America/Chicago",
+    "discord": {
+      "available": true,
+      "connected": true,
+      "post_default": true,
+      "remind_default": true,
+      "channel_name": "raid-signups"
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

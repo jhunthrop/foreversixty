@@ -490,6 +490,197 @@ enum Copy {
     /// Planned raids did not load.
     static var raidsFailed: String { text("raids.failed") }
 
+    /// {state} · {role}
+    static func raidsChipSigned(state: String, role: String) -> String {
+        format("raids.chip.signed", state, role)
+    }
+
+    /// {spec} · {role}
+    static func raidsWho(spec: String, role: String) -> String {
+        format("raids.who", spec, role)
+    }
+
+    /// {date} · {kills} · {wipes}
+    static func raidsNightMeta(date: String, kills: String, wipes: String) -> String {
+        format("raids.nightMeta", date, kills, wipes)
+    }
+
+    /// {n} tanks
+    static func raidsPartTanks(n: Int) -> String {
+        format("raids.part.tanks", n)
+    }
+
+    /// {n} healers
+    static func raidsPartHealers(n: Int) -> String {
+        format("raids.part.healers", n)
+    }
+
+    /// {n} DPS
+    static func raidsPartDps(n: Int) -> String {
+        format("raids.part.dps", n)
+    }
+
+    /// {n} late
+    static func raidsPartLate(n: Int) -> String {
+        format("raids.part.late", n)
+    }
+
+    /// {n} days
+    static func raidsSpanDays(n: Int) -> String {
+        format("raids.span.days", n)
+    }
+
+    /// {n} h
+    static func raidsSpanHours(n: Int) -> String {
+        format("raids.span.hours", n)
+    }
+
+    /// {n} min
+    static func raidsSpanMinutes(n: Int) -> String {
+        format("raids.span.minutes", n)
+    }
+
+    /// {n} days
+    static func raidsSpanWordsDays(n: Int) -> String {
+        format("raids.spanWords.days", n)
+    }
+
+    /// {n} hours
+    static func raidsSpanWordsHours(n: Int) -> String {
+        format("raids.spanWords.hours", n)
+    }
+
+    /// {n} minutes
+    static func raidsSpanWordsMinutes(n: Int) -> String {
+        format("raids.spanWords.minutes", n)
+    }
+
+    /// Warrior
+    static var raidsClassWarrior: String { text("raids.class.warrior") }
+
+    /// Paladin
+    static var raidsClassPaladin: String { text("raids.class.paladin") }
+
+    /// Hunter
+    static var raidsClassHunter: String { text("raids.class.hunter") }
+
+    /// Rogue
+    static var raidsClassRogue: String { text("raids.class.rogue") }
+
+    /// Priest
+    static var raidsClassPriest: String { text("raids.class.priest") }
+
+    /// Shaman
+    static var raidsClassShaman: String { text("raids.class.shaman") }
+
+    /// Mage
+    static var raidsClassMage: String { text("raids.class.mage") }
+
+    /// Warlock
+    static var raidsClassWarlock: String { text("raids.class.warlock") }
+
+    /// Druid
+    static var raidsClassDruid: String { text("raids.class.druid") }
+
+    /// no Warriors
+    static var raidsClassNoneWarrior: String { text("raids.classNone.warrior") }
+
+    /// no Paladins
+    static var raidsClassNonePaladin: String { text("raids.classNone.paladin") }
+
+    /// no Hunters
+    static var raidsClassNoneHunter: String { text("raids.classNone.hunter") }
+
+    /// no Rogues
+    static var raidsClassNoneRogue: String { text("raids.classNone.rogue") }
+
+    /// no Priests
+    static var raidsClassNonePriest: String { text("raids.classNone.priest") }
+
+    /// no Shamans
+    static var raidsClassNoneShaman: String { text("raids.classNone.shaman") }
+
+    /// no Mages
+    static var raidsClassNoneMage: String { text("raids.classNone.mage") }
+
+    /// no Warlocks
+    static var raidsClassNoneWarlock: String { text("raids.classNone.warlock") }
+
+    /// no Druids
+    static var raidsClassNoneDruid: String { text("raids.classNone.druid") }
+
+    /// {class} {n}
+    static func raidsA11yClassCount(className: String, n: Int) -> String {
+        format("raids.a11y.classCount", className, n)
+    }
+
+    /// Classes coming: {list}
+    static func raidsA11yClasses(list: String) -> String {
+        format("raids.a11y.classes", list)
+    }
+
+    /// {count}: {breakdown}
+    static func raidsA11yCount(count: String, breakdown: String) -> String {
+        format("raids.a11y.count", count, breakdown)
+    }
+
+    /// {name}'s sign-up
+    static func raidsA11ySegments(name: String) -> String {
+        format("raids.a11y.segments", name)
+    }
+
+    /// Saving
+    static var raidsA11ySaving: String { text("raids.a11y.saving") }
+
+    /// Pending, choose a spec
+    static var raidsA11yPending: String { text("raids.a11y.pending") }
+
+    /// {name}, {state}. Change the place
+    static func raidsA11yPlace(name: String, state: String) -> String {
+        format("raids.a11y.place", name, state)
+    }
+
+    /// {name}, {spec} {class}
+    static func raidsA11yRoster(name: String, spec: String, className: String) -> String {
+        format("raids.a11y.roster", name, spec, className)
+    }
+
+    /// Saving…
+    static var raidsNoteSaving: String { text("raids.note.saving") }
+
+    /// {n} of {size}
+    static func raidsCopySize(n: Int, size: Int) -> String {
+        format("raids.copy.size", n, size)
+    }
+
+    /// {label}: {names}
+    static func raidsCopyGroup(label: String, names: String) -> String {
+        format("raids.copy.group", label, names)
+    }
+
+    /// {guild} · {zone}
+    static func raidsCalendarLocation(guild: String, zone: String) -> String {
+        format("raids.calendarLocation", guild, zone)
+    }
+
+    /// {dps} DPS
+    static func raidsNightDps(dps: String) -> String {
+        format("raids.night.dps", dps)
+    }
+
+    /// Your raid night
+    static var raidsNightOpen: String { text("raids.night.open") }
+
+    /// · {zone}
+    static func raidsZoneSuffix(zone: String) -> String {
+        format("raids.zoneSuffix", zone)
+    }
+
+    /// Not signed up {n}
+    static func raidsNotSignedCount(n: Int) -> String {
+        format("raids.notSignedCount", n)
+    }
+
     /// Raid
     static var raidEyebrow: String { text("raid.eyebrow") }
 

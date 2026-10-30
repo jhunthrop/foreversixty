@@ -1940,6 +1940,8 @@ public struct GuildRaids: Codable, Sendable, Equatable {
     public let zones: [RaidZone]?
     public let guildTimezone: String?
     public let discord: RaidDiscord?
+    /// Characters waiting for approval; present only when the viewer's guild can lists approve (lane F4 contract, handler pending). The Raids tab's officer row.
+    public let waitingForApproval: Int?
 
     public init(
         rows: [RaidNightRow] = [],
@@ -1947,7 +1949,8 @@ public struct GuildRaids: Codable, Sendable, Equatable {
         planned: [RaidView]? = nil,
         zones: [RaidZone]? = nil,
         guildTimezone: String? = nil,
-        discord: RaidDiscord? = nil
+        discord: RaidDiscord? = nil,
+        waitingForApproval: Int? = nil
     ) {
         self.rows = rows
         self.nextCursor = nextCursor
@@ -1955,6 +1958,7 @@ public struct GuildRaids: Codable, Sendable, Equatable {
         self.zones = zones
         self.guildTimezone = guildTimezone
         self.discord = discord
+        self.waitingForApproval = waitingForApproval
     }
 
     public init(from decoder: any Decoder) throws {
@@ -1965,6 +1969,7 @@ public struct GuildRaids: Codable, Sendable, Equatable {
         zones = try c.decodeIfPresent([RaidZone].self, forKey: .zones)
         guildTimezone = try c.decodeIfPresent(String.self, forKey: .guildTimezone)
         discord = try c.decodeIfPresent(RaidDiscord.self, forKey: .discord)
+        waitingForApproval = try c.decodeIfPresent(Int.self, forKey: .waitingForApproval)
     }
 }
 
@@ -3239,6 +3244,60 @@ public struct RaidNight: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidNightBest: Codable, Sendable, Equatable {
+    public let boss: String
+    public let dps: Double
+    /// 0 to 100
+    public let percentile: Int
+    public let killMs: Int64
+
+    public init(
+        boss: String,
+        dps: Double,
+        percentile: Int,
+        killMs: Int64
+    ) {
+        self.boss = boss
+        self.dps = dps
+        self.percentile = percentile
+        self.killMs = killMs
+    }
+}
+
+public struct RaidNightCharacter: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let spec: String
+    public let specName: String
+    public let role: String
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        spec: String,
+        specName: String,
+        role: String
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specName = specName
+        self.role = role
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+        case specName
+        case role
+    }
+}
+
 public struct RaidNightFight: Codable, Sendable, Equatable {
     public let index: Int
     public let name: String
@@ -3264,6 +3323,60 @@ public struct RaidNightFight: Codable, Sendable, Equatable {
         self.durationMs = durationMs
         self.deaths = deaths
         self.players = players
+    }
+}
+
+public struct RaidNightLoot: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let name: String
+    /// 0 (poor) to 5 (legendary).
+    public let quality: Int
+    /// The icon stem.
+    public let icon: String
+    /// The slot label
+    public let slot: String
+    public let boss: String
+    /// The awarding officer's main character name.
+    public let awardedBy: String
+    public let replaces: RaidNightReplaces?
+
+    public init(
+        itemId: Int,
+        name: String,
+        quality: Int,
+        icon: String,
+        slot: String,
+        boss: String,
+        awardedBy: String,
+        replaces: RaidNightReplaces? = nil
+    ) {
+        self.itemId = itemId
+        self.name = name
+        self.quality = quality
+        self.icon = icon
+        self.slot = slot
+        self.boss = boss
+        self.awardedBy = awardedBy
+        self.replaces = replaces
+    }
+}
+
+public struct RaidNightReplaces: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let name: String
+    public let quality: Int
+    public let itemLevel: Int
+
+    public init(
+        itemId: Int,
+        name: String,
+        quality: Int,
+        itemLevel: Int
+    ) {
+        self.itemId = itemId
+        self.name = name
+        self.quality = quality
+        self.itemLevel = itemLevel
     }
 }
 
@@ -3335,22 +3448,100 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
     }
 }
 
+/// GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach.
+public struct RaidNightSummary: Codable, Sendable, Equatable {
+    public let raidId: Int64
+    public let guildId: Int64
+    public let guildName: String
+    public let zoneName: String
+    public let startsAt: Date
+    /// The matched report; the full report opens at /reports/{report_id} on the web.
+    public let reportId: String
+    public let character: RaidNightCharacter
+    public let kills: Int
+    public let wipes: Int
+    public let newBests: Int
+    public let loot: [RaidNightLoot]
+    public let bests: [RaidNightBest]
+    /// Up to three; null without log_coach.
+    public let coachNotes: [String]?
+
+    public init(
+        raidId: Int64,
+        guildId: Int64,
+        guildName: String,
+        zoneName: String,
+        startsAt: Date,
+        reportId: String,
+        character: RaidNightCharacter,
+        kills: Int,
+        wipes: Int,
+        newBests: Int,
+        loot: [RaidNightLoot] = [],
+        bests: [RaidNightBest] = [],
+        coachNotes: [String]? = nil
+    ) {
+        self.raidId = raidId
+        self.guildId = guildId
+        self.guildName = guildName
+        self.zoneName = zoneName
+        self.startsAt = startsAt
+        self.reportId = reportId
+        self.character = character
+        self.kills = kills
+        self.wipes = wipes
+        self.newBests = newBests
+        self.loot = loot
+        self.bests = bests
+        self.coachNotes = coachNotes
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        raidId = try c.decode(Int64.self, forKey: .raidId)
+        guildId = try c.decode(Int64.self, forKey: .guildId)
+        guildName = try c.decode(String.self, forKey: .guildName)
+        zoneName = try c.decode(String.self, forKey: .zoneName)
+        startsAt = try c.decode(Date.self, forKey: .startsAt)
+        reportId = try c.decode(String.self, forKey: .reportId)
+        character = try c.decode(RaidNightCharacter.self, forKey: .character)
+        kills = try c.decode(Int.self, forKey: .kills)
+        wipes = try c.decode(Int.self, forKey: .wipes)
+        newBests = try c.decode(Int.self, forKey: .newBests)
+        loot = try c.decodeIfPresent([RaidNightLoot].self, forKey: .loot) ?? []
+        bests = try c.decodeIfPresent([RaidNightBest].self, forKey: .bests) ?? []
+        coachNotes = try c.decodeIfPresent([String].self, forKey: .coachNotes)
+    }
+}
+
 public struct RaidNotSigned: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
     public let className: String
     public let spec: String
+    /// The spec's role, for an officer's Add. Lane F4 contract, handler pending.
+    public let role: String?
+    /// The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending.
+    public let specName: String?
+    /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
+    public let specIcon: String?
 
     public init(
         characterKey: String,
         name: String,
         className: String,
-        spec: String
+        spec: String,
+        role: String? = nil,
+        specName: String? = nil,
+        specIcon: String? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
         self.className = className
         self.spec = spec
+        self.role = role
+        self.specName = specName
+        self.specIcon = specIcon
     }
 
     enum CodingKeys: String, CodingKey {
@@ -3358,6 +3549,9 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         case name
         case className = "class"
         case spec
+        case role
+        case specName
+        case specIcon
     }
 }
 
@@ -3422,6 +3616,10 @@ public struct RaidSignup: Codable, Sendable, Equatable {
     public let state: String
     public let note: String
     public let own: Bool
+    /// The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending.
+    public let specName: String?
+    /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
+    public let specIcon: String?
 
     public init(
         characterKey: String,
@@ -3431,7 +3629,9 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         role: String,
         state: String,
         note: String,
-        own: Bool
+        own: Bool,
+        specName: String? = nil,
+        specIcon: String? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
@@ -3441,6 +3641,8 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         self.state = state
         self.note = note
         self.own = own
+        self.specName = specName
+        self.specIcon = specIcon
     }
 
     enum CodingKeys: String, CodingKey {
@@ -3452,6 +3654,29 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         case state
         case note
         case own
+        case specName
+        case specIcon
+    }
+}
+
+public struct RaidSpecOption: Codable, Sendable, Equatable {
+    /// The specs.json key the PUT takes, e.g. "shaman-elemental".
+    public let spec: String
+    public let name: String
+    public let role: String
+    /// The talent-tab icon stem.
+    public let icon: String
+
+    public init(
+        spec: String,
+        name: String,
+        role: String,
+        icon: String
+    ) {
+        self.spec = spec
+        self.name = name
+        self.role = role
+        self.icon = icon
     }
 }
 
@@ -3488,6 +3713,8 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let zoneName: String
     public let title: String
     public let startsAt: Date
+    /// When invites go out, before starts_at (the pull); null when the guild sets none. The web form sets it and raid.starting fires at it minus the lead (lane F4 contract, handler pending: omitted until the column exists, which reads as null).
+    public let inviteAt: Date?
     public let durationMinutes: Int
     public let status: String
     public let size: Int?
@@ -3515,6 +3742,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         zoneName: String,
         title: String,
         startsAt: Date,
+        inviteAt: Date? = nil,
         durationMinutes: Int,
         status: String,
         size: Int? = nil,
@@ -3538,6 +3766,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.zoneName = zoneName
         self.title = title
         self.startsAt = startsAt
+        self.inviteAt = inviteAt
         self.durationMinutes = durationMinutes
         self.status = status
         self.size = size
@@ -3564,6 +3793,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         zoneName = try c.decode(String.self, forKey: .zoneName)
         title = try c.decode(String.self, forKey: .title)
         startsAt = try c.decode(Date.self, forKey: .startsAt)
+        inviteAt = try c.decodeIfPresent(Date.self, forKey: .inviteAt)
         durationMinutes = try c.decode(Int.self, forKey: .durationMinutes)
         status = try c.decode(String.self, forKey: .status)
         size = try c.decodeIfPresent(Int.self, forKey: .size)
@@ -3586,16 +3816,31 @@ public struct RaidView: Codable, Sendable, Equatable {
 
 public struct RaidViewer: Codable, Sendable, Equatable {
     public let characters: [RaidViewerCharacter]
+    /// What the viewer may do on this raid, from the guild's capability rule: lock (lock and unlock sign-ups) and move (an officer's PUT for any roster character). Draw officer tools exactly when the word is present, never from a rank. Lane F4 contract, handler pending; missing reads as [].
+    public let can: [String]?
+    /// True for an officer of a guild whose plan ended (officer read-only): the officer tools draw disabled with the plan sentence. Lane F4 contract, handler pending.
+    public let toolsEnded: Bool?
+    /// True when GET /v1/me/raid-nights/{raid} has a summary for the viewer (a done raid whose log has one of the viewer's characters). Lane F4 contract, handler pending.
+    public let raidNight: Bool?
 
     public init(
-        characters: [RaidViewerCharacter] = []
+        characters: [RaidViewerCharacter] = [],
+        can: [String]? = nil,
+        toolsEnded: Bool? = nil,
+        raidNight: Bool? = nil
     ) {
         self.characters = characters
+        self.can = can
+        self.toolsEnded = toolsEnded
+        self.raidNight = raidNight
     }
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         characters = try c.decodeIfPresent([RaidViewerCharacter].self, forKey: .characters) ?? []
+        can = try c.decodeIfPresent([String].self, forKey: .can)
+        toolsEnded = try c.decodeIfPresent(Bool.self, forKey: .toolsEnded)
+        raidNight = try c.decodeIfPresent(Bool.self, forKey: .raidNight)
     }
 }
 
@@ -3609,6 +3854,12 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
     public let state: String?
     public let role: String
     public let raidSpec: String?
+    /// The display name of raid_spec, else of spec. Lane F4 contract, handler pending.
+    public let specName: String?
+    /// The icon stem of raid_spec, else of spec. Lane F4 contract, handler pending.
+    public let specIcon: String?
+    /// The class's specs in catalogue order, for "Which spec tonight?" (specs.json filtered by class). Lane F4 contract, handler pending.
+    public let specOptions: [RaidSpecOption]?
 
     public init(
         characterKey: String,
@@ -3618,7 +3869,10 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         verified: Bool,
         state: String? = nil,
         role: String,
-        raidSpec: String? = nil
+        raidSpec: String? = nil,
+        specName: String? = nil,
+        specIcon: String? = nil,
+        specOptions: [RaidSpecOption]? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
@@ -3628,6 +3882,9 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         self.state = state
         self.role = role
         self.raidSpec = raidSpec
+        self.specName = specName
+        self.specIcon = specIcon
+        self.specOptions = specOptions
     }
 
     enum CodingKeys: String, CodingKey {
@@ -3639,6 +3896,9 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         case state
         case role
         case raidSpec
+        case specName
+        case specIcon
+        case specOptions
     }
 }
 

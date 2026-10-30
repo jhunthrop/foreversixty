@@ -6,6 +6,7 @@
     "zone_name": "Onyxia's Lair",
     "title": "Onyxia's Lair",
     "starts_at": "2026-12-20T01:00:00Z",
+    "invite_at": "2026-12-20T00:45:00Z",
     "duration_minutes": 180,
     "status": "planned",
     "size": 40,
@@ -30,7 +31,9 @@
         "role": "dps",
         "state": "in",
         "note": "",
-        "own": true
+        "own": true,
+        "spec_name": "Fury",
+        "spec_icon": "ability_warrior_innerrage"
       },
       {
         "character_key": "us/pvp/kraggor",
@@ -40,7 +43,9 @@
         "role": "tank",
         "state": "in",
         "note": "",
-        "own": false
+        "own": false,
+        "spec_name": "Protection",
+        "spec_icon": "inv_shield_06"
       }
     ],
     "not_signed": [
@@ -48,7 +53,10 @@
         "character_key": "us/pvp/zulmara",
         "name": "Zulmara",
         "class": "hunter",
-        "spec": "hunter-marksmanship"
+        "spec": "hunter-marksmanship",
+        "role": "dps",
+        "spec_name": "Marksmanship",
+        "spec_icon": "ability_marksmanship"
       }
     ],
     "viewer": {
@@ -61,9 +69,37 @@
           "verified": true,
           "state": "in",
           "role": "dps",
-          "raid_spec": "warrior-fury"
+          "raid_spec": "warrior-fury",
+          "spec_name": "Fury",
+          "spec_icon": "ability_warrior_innerrage",
+          "spec_options": [
+            {
+              "spec": "warrior-arms",
+              "name": "Arms",
+              "role": "dps",
+              "icon": "ability_rogue_eviscerate"
+            },
+            {
+              "spec": "warrior-fury",
+              "name": "Fury",
+              "role": "dps",
+              "icon": "ability_warrior_innerrage"
+            },
+            {
+              "spec": "warrior-protection",
+              "name": "Protection",
+              "role": "tank",
+              "icon": "inv_shield_06"
+            }
+          ]
         }
-      ]
+      ],
+      "can": [
+        "lock",
+        "move"
+      ],
+      "tools_ended": false,
+      "raid_night": false
     },
     "discord": {
       "available": true,

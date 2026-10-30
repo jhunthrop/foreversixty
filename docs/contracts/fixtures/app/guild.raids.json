@@ -48,6 +48,7 @@
         "zone_name": "Onyxia's Lair",
         "title": "Onyxia's Lair",
         "starts_at": "2026-12-20T01:00:00Z",
+        "invite_at": "2026-12-20T00:45:00Z",
         "duration_minutes": 180,
         "status": "planned",
         "size": 40,
@@ -55,25 +56,15 @@
         "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
         "notes": "Bring **flasks**",
         "counts": {
-          "in": 18,
-          "late": 2,
+          "in": 23,
+          "late": 1,
           "bench": 1,
           "out": 3,
-          "tanks": 2,
-          "healers": 5,
-          "dps": 11
+          "tanks": 3,
+          "healers": 6,
+          "dps": 14
         },
         "signups": [
-          {
-            "character_key": "us/pvp/obnoxious-yell",
-            "name": "Obnoxious Yell",
-            "class": "warrior",
-            "spec": "warrior-fury",
-            "role": "dps",
-            "state": "in",
-            "note": "",
-            "own": true
-          },
           {
             "character_key": "us/pvp/kraggor",
             "name": "Kraggor",
@@ -82,7 +73,333 @@
             "role": "tank",
             "state": "in",
             "note": "",
-            "own": false
+            "own": false,
+            "spec_name": "Protection",
+            "spec_icon": "inv_shield_06"
+          },
+          {
+            "character_key": "us/pvp/ironhide",
+            "name": "Ironhide",
+            "class": "warrior",
+            "spec": "warrior-protection",
+            "role": "tank",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Protection",
+            "spec_icon": "inv_shield_06"
+          },
+          {
+            "character_key": "us/pvp/bramblehoof",
+            "name": "Bramblehoof",
+            "class": "druid",
+            "spec": "druid-feral-bear",
+            "role": "tank",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Feral Bear",
+            "spec_icon": "ability_racial_bearform"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest",
+            "spec": "priest-holy",
+            "role": "healer",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Holy",
+            "spec_icon": "spell_holy_guardianspirit"
+          },
+          {
+            "character_key": "us/pvp/gravemend",
+            "name": "Gravemend",
+            "class": "priest",
+            "spec": "priest-holy",
+            "role": "healer",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Holy",
+            "spec_icon": "spell_holy_guardianspirit"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman",
+            "spec": "shaman-restoration",
+            "role": "healer",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Restoration",
+            "spec_icon": "spell_nature_magicimmunity"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman",
+            "spec": "shaman-restoration",
+            "role": "healer",
+            "state": "in",
+            "note": "Can swap to Elemental",
+            "own": false,
+            "spec_name": "Restoration",
+            "spec_icon": "spell_nature_magicimmunity"
+          },
+          {
+            "character_key": "us/pvp/oakenmother",
+            "name": "Oakenmother",
+            "class": "druid",
+            "spec": "druid-restoration",
+            "role": "healer",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Restoration",
+            "spec_icon": "spell_nature_healingtouch"
+          },
+          {
+            "character_key": "us/pvp/soothfang",
+            "name": "Soothfang",
+            "class": "priest",
+            "spec": "priest-discipline",
+            "role": "healer",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Discipline",
+            "spec_icon": "spell_holy_wordfortitude"
+          },
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "spec": "warrior-fury",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": true,
+            "spec_name": "Fury",
+            "spec_icon": "ability_warrior_innerrage"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior",
+            "spec": "warrior-fury",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Fury",
+            "spec_icon": "ability_warrior_innerrage"
+          },
+          {
+            "character_key": "us/pvp/ruzga",
+            "name": "Ruzga",
+            "class": "warrior",
+            "spec": "warrior-fury",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Fury",
+            "spec_icon": "ability_warrior_innerrage"
+          },
+          {
+            "character_key": "us/pvp/ashfang",
+            "name": "Ashfang",
+            "class": "hunter",
+            "spec": "hunter-marksmanship",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Marksmanship",
+            "spec_icon": "ability_marksmanship"
+          },
+          {
+            "character_key": "us/pvp/talonmaw",
+            "name": "Talonmaw",
+            "class": "hunter",
+            "spec": "hunter-survival",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Survival",
+            "spec_icon": "ability_hunter_swiftstrike"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue",
+            "spec": "rogue-combat",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Combat",
+            "spec_icon": "ability_backstab"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue",
+            "spec": "rogue-combat",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Combat",
+            "spec_icon": "ability_backstab"
+          },
+          {
+            "character_key": "us/pvp/grimshade",
+            "name": "Grimshade",
+            "class": "priest",
+            "spec": "priest-shadow",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Shadow",
+            "spec_icon": "spell_shadow_shadowwordpain"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman",
+            "spec": "shaman-elemental",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Elemental",
+            "spec_icon": "spell_nature_lightning"
+          },
+          {
+            "character_key": "us/pvp/emberfang",
+            "name": "Emberfang",
+            "class": "mage",
+            "spec": "mage-fire",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Fire",
+            "spec_icon": "spell_fire_firebolt02"
+          },
+          {
+            "character_key": "us/pvp/frostjaw",
+            "name": "Frostjaw",
+            "class": "mage",
+            "spec": "mage-frost",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Frost",
+            "spec_icon": "spell_frost_frostbolt02"
+          },
+          {
+            "character_key": "us/pvp/vexmora",
+            "name": "Vexmora",
+            "class": "warlock",
+            "spec": "warlock-destruction",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Destruction",
+            "spec_icon": "spell_shadow_rainoffire"
+          },
+          {
+            "character_key": "us/pvp/hexbane",
+            "name": "Hexbane",
+            "class": "warlock",
+            "spec": "warlock-affliction",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Affliction",
+            "spec_icon": "spell_shadow_deathcoil"
+          },
+          {
+            "character_key": "us/pvp/moonclaw",
+            "name": "Moonclaw",
+            "class": "druid",
+            "spec": "druid-balance",
+            "role": "dps",
+            "state": "in",
+            "note": "",
+            "own": false,
+            "spec_name": "Balance",
+            "spec_icon": "spell_nature_starfall"
+          },
+          {
+            "character_key": "us/pvp/gorehowl",
+            "name": "Gorehowl",
+            "class": "shaman",
+            "spec": "shaman-enhancement",
+            "role": "dps",
+            "state": "late",
+            "note": "Late from work, there by 8:30",
+            "own": false,
+            "spec_name": "Enhancement",
+            "spec_icon": "spell_nature_lightningshield"
+          },
+          {
+            "character_key": "us/pvp/varkas",
+            "name": "Varkas",
+            "class": "warlock",
+            "spec": "warlock-demonology",
+            "role": "dps",
+            "state": "bench",
+            "note": "",
+            "own": false,
+            "spec_name": "Demonology",
+            "spec_icon": "spell_shadow_metamorphosis"
+          },
+          {
+            "character_key": "us/pvp/snaggle",
+            "name": "Snaggle",
+            "class": "rogue",
+            "spec": "rogue-assassination",
+            "role": "dps",
+            "state": "out",
+            "note": "Away this week",
+            "own": false,
+            "spec_name": "Assassination",
+            "spec_icon": "ability_rogue_eviscerate"
+          },
+          {
+            "character_key": "us/pvp/wyrmtalon",
+            "name": "Wyrmtalon",
+            "class": "hunter",
+            "spec": "hunter-beast-mastery",
+            "role": "dps",
+            "state": "out",
+            "note": "",
+            "own": false,
+            "spec_name": "Beast Mastery",
+            "spec_icon": "ability_hunter_beasttaming"
+          },
+          {
+            "character_key": "us/pvp/felgrin",
+            "name": "Felgrin",
+            "class": "mage",
+            "spec": "mage-arcane",
+            "role": "dps",
+            "state": "out",
+            "note": "",
+            "own": false,
+            "spec_name": "Arcane",
+            "spec_icon": "spell_holy_magicalsentry"
           }
         ],
         "not_signed": [
@@ -90,7 +407,28 @@
             "character_key": "us/pvp/zulmara",
             "name": "Zulmara",
             "class": "hunter",
-            "spec": "hunter-marksmanship"
+            "spec": "hunter-marksmanship",
+            "role": "dps",
+            "spec_name": "Marksmanship",
+            "spec_icon": "ability_marksmanship"
+          },
+          {
+            "character_key": "us/pvp/brokk",
+            "name": "Brokk",
+            "class": "warrior",
+            "spec": "warrior-arms",
+            "role": "dps",
+            "spec_name": "Arms",
+            "spec_icon": "ability_rogue_eviscerate"
+          },
+          {
+            "character_key": "us/pvp/sennah",
+            "name": "Sennah",
+            "class": "priest",
+            "spec": "priest-holy",
+            "role": "healer",
+            "spec_name": "Holy",
+            "spec_icon": "spell_holy_guardianspirit"
           }
         ],
         "viewer": {
@@ -103,9 +441,198 @@
               "verified": true,
               "state": "in",
               "role": "dps",
-              "raid_spec": "warrior-fury"
+              "raid_spec": "warrior-fury",
+              "spec_name": "Fury",
+              "spec_icon": "ability_warrior_innerrage",
+              "spec_options": [
+                {
+                  "spec": "warrior-arms",
+                  "name": "Arms",
+                  "role": "dps",
+                  "icon": "ability_rogue_eviscerate"
+                },
+                {
+                  "spec": "warrior-fury",
+                  "name": "Fury",
+                  "role": "dps",
+                  "icon": "ability_warrior_innerrage"
+                },
+                {
+                  "spec": "warrior-protection",
+                  "name": "Protection",
+                  "role": "tank",
+                  "icon": "inv_shield_06"
+                }
+              ]
             }
-          ]
+          ],
+          "can": [],
+          "tools_ended": false,
+          "raid_night": false
+        },
+        "discord": {
+          "available": true,
+          "connected": true,
+          "post_default": true,
+          "remind_default": true,
+          "channel_name": "raid-signups"
+        },
+        "discord_post": {
+          "posted_at": "2026-12-13T18:00:00Z",
+          "post_at": "2026-12-13T18:00:00Z",
+          "reminded_at": null,
+          "remind": true
+        },
+        "pre_done_status": null,
+        "match": null,
+        "night": null,
+        "attendance": null,
+        "report": null
+      },
+      {
+        "id": 32,
+        "zone": "raid:barrow-deeps",
+        "zone_name": "Barrow Deeps",
+        "title": "Barrow Deeps",
+        "starts_at": "2026-12-23T01:00:00Z",
+        "invite_at": null,
+        "duration_minutes": 180,
+        "status": "planned",
+        "size": null,
+        "guild_timezone": "America/Chicago",
+        "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
+        "notes": "Bring **flasks**",
+        "counts": {
+          "in": 9,
+          "late": 2,
+          "bench": 0,
+          "out": 1,
+          "tanks": 2,
+          "healers": 2,
+          "dps": 5
+        },
+        "signups": [],
+        "not_signed": [],
+        "viewer": {
+          "characters": [
+            {
+              "character_key": "us/pvp/obnoxious-yell",
+              "name": "Obnoxious Yell",
+              "class": "warrior",
+              "spec": "warrior-fury",
+              "verified": true,
+              "state": null,
+              "role": "dps",
+              "raid_spec": "warrior-fury",
+              "spec_name": "Fury",
+              "spec_icon": "ability_warrior_innerrage",
+              "spec_options": [
+                {
+                  "spec": "warrior-arms",
+                  "name": "Arms",
+                  "role": "dps",
+                  "icon": "ability_rogue_eviscerate"
+                },
+                {
+                  "spec": "warrior-fury",
+                  "name": "Fury",
+                  "role": "dps",
+                  "icon": "ability_warrior_innerrage"
+                },
+                {
+                  "spec": "warrior-protection",
+                  "name": "Protection",
+                  "role": "tank",
+                  "icon": "inv_shield_06"
+                }
+              ]
+            }
+          ],
+          "can": [],
+          "tools_ended": false,
+          "raid_night": false
+        },
+        "discord": {
+          "available": true,
+          "connected": true,
+          "post_default": true,
+          "remind_default": true,
+          "channel_name": "raid-signups"
+        },
+        "discord_post": {
+          "posted_at": "2026-12-13T18:00:00Z",
+          "post_at": "2026-12-13T18:00:00Z",
+          "reminded_at": null,
+          "remind": true
+        },
+        "pre_done_status": null,
+        "match": null,
+        "night": null,
+        "attendance": null,
+        "report": null
+      },
+      {
+        "id": 33,
+        "zone": "raid:onyxias-lair",
+        "zone_name": "Onyxia's Lair",
+        "title": "Onyxia's Lair",
+        "starts_at": "2026-12-27T02:00:00Z",
+        "invite_at": "2026-12-27T01:45:00Z",
+        "duration_minutes": 180,
+        "status": "locked",
+        "size": 40,
+        "guild_timezone": "America/Chicago",
+        "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
+        "notes": "Bring **flasks**",
+        "counts": {
+          "in": 8,
+          "late": 0,
+          "bench": 0,
+          "out": 0,
+          "tanks": 1,
+          "healers": 2,
+          "dps": 5
+        },
+        "signups": [],
+        "not_signed": [],
+        "viewer": {
+          "characters": [
+            {
+              "character_key": "us/pvp/obnoxious-yell",
+              "name": "Obnoxious Yell",
+              "class": "warrior",
+              "spec": "warrior-fury",
+              "verified": true,
+              "state": "in",
+              "role": "dps",
+              "raid_spec": "warrior-fury",
+              "spec_name": "Fury",
+              "spec_icon": "ability_warrior_innerrage",
+              "spec_options": [
+                {
+                  "spec": "warrior-arms",
+                  "name": "Arms",
+                  "role": "dps",
+                  "icon": "ability_rogue_eviscerate"
+                },
+                {
+                  "spec": "warrior-fury",
+                  "name": "Fury",
+                  "role": "dps",
+                  "icon": "ability_warrior_innerrage"
+                },
+                {
+                  "spec": "warrior-protection",
+                  "name": "Protection",
+                  "role": "tank",
+                  "icon": "inv_shield_06"
+                }
+              ]
+            }
+          ],
+          "can": [],
+          "tools_ended": false,
+          "raid_night": false
         },
         "discord": {
           "available": true,
@@ -151,7 +678,8 @@
       "post_default": true,
       "remind_default": true,
       "channel_name": "raid-signups"
-    }
+    },
+    "waiting_for_approval": 2
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"
