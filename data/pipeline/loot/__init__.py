@@ -57,6 +57,7 @@ from pipeline.loot.buffs import (
     load_simbuffs,
     merge_simbuffs,
 )
+from pipeline.loot.content_phases import apply_content_phases, load_content_phases
 from pipeline.loot.gear import (
     apply_fork_columns,
     build_enchants,
@@ -250,6 +251,10 @@ def write_loot_files(
     superseded = superseded_pairs(document, item_rows)
     document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    # bis-phase-gate lane, 2026-10-30: every content phase keyed by game id
+    # (curated/content-phases.json), AFTER the overlay and BEFORE the quest
+    # turn-in gate, so a quest whose turn-in item is now gated is gated too.
+    document, _ = apply_content_phases(document, load_content_phases(curated_dir))
     # Quest-gates lane, 2026-09-29: AFTER the overlay, which is what
     # actually sets a raid's own LootSource.opens
     # (curated/loot/forever-raid-phases.json) -- see apply_quest_opens_
@@ -464,6 +469,7 @@ def merge_loot_files(
     engine_dir: Path,
     root: Path = Path("builds"),
     overlay_dir: Path = Path("curated/loot"),
+    curated_dir: Path = Path("curated"),
 ) -> list[Path]:
     """`python -m pipeline loot-merge`: re-derives `loot.json` ALONE from
     inputs already committed -- the engine fork checkout, and the
@@ -538,6 +544,7 @@ def merge_loot_files(
     superseded = superseded_pairs(document, item_rows)
     document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    document, _ = apply_content_phases(document, load_content_phases(curated_dir))
     document = apply_quest_opens_gate(document, classic_sources)
     document = apply_crafted_opens_gate(document, classic_crafted)
     # vendor-11036 lane, 2026-09-30: same placement/reasoning as

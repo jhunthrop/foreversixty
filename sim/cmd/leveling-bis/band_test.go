@@ -171,29 +171,21 @@ func TestSourceForFallsBackToANonRaidSourceWhenTheRaidOneIsPhaseGated(t *testing
 // content - Cenarion Circle (faction 609), earnable only through the
 // Ahn'Qiraj War Effort, the same patch this build already gates its
 // raid:ahnqiraj source "later" for - would otherwise read as launch-day
-// obtainable. loadLootIndex (data.go) closes that gap by applying
-// repFactionRaidPhaseOpens[factionID] whenever the pipeline itself is
-// silent (firstNonEmpty(src.Opens, repFactionRaidPhaseOpens[factionID])),
-// which is already covered by TestLoadLootIndexGatesCenarionCircleRepToLaterPhase
-// (data_test.go). What that test does NOT show is that the ranker's own
-// gate - sourceObtainable/sourceFor, exactly what band.go's sourceFor
-// doc calls "what a launch-day character can get" - actually treats the
-// resulting Opens:"later" the same way it treats a raid source: this
-// test builds the exact itemSource loadLootIndex produces for
-// Earthstrike (item 21180, Cenarion Circle exalted reward, the repro
-// this lane's brief names) and confirms sourceFor refuses it even at
-// band 60, a Cenarion Circle character could never be exalted before
-// launch.
-//
-// repFactionRaidPhaseOpens (data.go) gates exactly one reputation
-// faction id today: 609 (Cenarion Circle).
+// obtainable. data/curated/content-phases.json closes that gap
+// (loadGatedLootIndex, covered by
+// TestLoadLootIndexGatesCenarionCircleRepToLaterPhase in data_test.go).
+// What that test does NOT show is that the ranker's own gate -
+// sourceObtainable/sourceFor - treats the resulting Opens:"later" the same
+// way it treats a raid source: this test builds the itemSource the gated
+// index produces for Earthstrike (item 21180, Cenarion Circle exalted) and
+// confirms sourceFor refuses it even at band 60.
 func TestSourceForRefusesEarthstrikesCenarionCircleRepEvenAtLevel60(t *testing.T) {
 	const earthstrikeItemID = 21180
 	idx := lootIndex{earthstrikeItemID: {{
 		Kind:     "rep",
 		Label:    "Cenarion Circle",
 		Standing: "exalted",
-		Opens:    repFactionRaidPhaseOpens[609],
+		Opens:    opensLater,
 	}}}
 	if _, ok := sourceFor(earthstrikeItemID, 60, "alliance", "", idx); ok {
 		t.Fatal("sourceFor(21180 Earthstrike, level 60) with the Cenarion Circle rep source's Opens gate applied: want ok=false")
@@ -538,7 +530,7 @@ func TestSourceForOrdinaryVendorWithNoMatchingRepStaysUngated(t *testing.T) {
 // TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind is this
 // lane's brief, item 2: a quality-5 item is gated "later" no matter
 // which loot.json source kind names it - unlike the old
-// raidLockedQuestOpens hand list (data.go), which needed a manual
+// raidLockedQuestOpens hand list data.go once had, which needed a manual
 // quest-id entry per legendary, this is one rule. Four different
 // source kinds are asserted here (quest - Atiesh's own real shape;
 // raid, which was already gated by Opens before this lane and must

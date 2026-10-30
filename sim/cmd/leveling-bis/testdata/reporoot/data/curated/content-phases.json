@@ -1,0 +1,5 @@
+{
+  "sources": [],
+  "notes": "The fixture repo root gates nothing; contentphases_test.go covers the gates themselves.",
+  "gates": []
+}
