@@ -20,7 +20,8 @@
      own root used to render nothing at all before `ready` -- a zero-area `<astro-island>`
      wrapper, which `IntersectionObserver` can fail to ever report as intersecting (its
      ratio is undefined for a zero-size box on some engines) -- so the root below always
-     renders a `min-h-11` div, giving `client:visible` a real target to observe from first
+     renders a div (1 px signed out, where it sits under the card and must not add a band; the 44 px
+     of the line it becomes, from the session hint, signed in -- global.css), giving `client:visible` a real target to observe from first
      paint regardless of session state. -->
 <script module lang="ts">
   export const HOME_GET_SET_UP_SIGNED_OUT_ID = 'home-get-set-up-signed-out';
@@ -52,7 +53,7 @@
   const line = $derived(me === null ? '' : getSetUpLine(me));
 </script>
 
-<div class="min-h-11">
+<div class="home-get-set-up-root min-h-px">
   {#if ready && me !== null}
     <a
       class="text-nav inline-flex min-h-11 items-center text-[13px] font-semibold"

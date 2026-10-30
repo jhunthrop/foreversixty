@@ -42,7 +42,8 @@ test('homepage states the one fixed sentence (tenet 14) and stops, not a marketi
   expect(heading.length).toBeLessThanOrEqual(90);
   expect(heading).not.toMatch(/[!?]$/);
   expect(heading).toBe('Play your class better.');
-  await expect(page.getByTestId('home-dates-line')).toBeVisible();
+  // The launch card counts down to the next date, so the dates line steps aside signed out.
+  await expect(page.getByTestId('home-dates-line')).toBeHidden();
   // The nine-class picker (§3.A.1) and the larger "Best in slot by class" row (§3.A.4).
   await expect(page.getByTestId('home-class-picker').getByTestId(/^home-class-picker-/)).toHaveCount(9);
   await expect(
@@ -121,14 +122,6 @@ test('at desktop width, the hero class picker stays inside its own column, never
     accountBlockBox!.x + accountBlockBox!.width,
     'the hero column stays inside the viewport',
   ).toBeLessThanOrEqual(viewportWidth + 1);
-
-  // The dates line sits under the sky band, outside its hero grid, so it cannot inherit a
-  // column's overflow bug; it must still wrap inside the viewport.
-  const line = page.getByTestId('home-dates-line');
-  const lineBox = await line.boundingBox();
-  expect(lineBox!.x + lineBox!.width, 'the dates line stays inside the viewport').toBeLessThanOrEqual(
-    viewportWidth + 1,
-  );
 });
 
 test('the homepage planner row points at the live planner', async ({ page }) => {

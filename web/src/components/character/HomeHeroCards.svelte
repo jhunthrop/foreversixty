@@ -24,6 +24,8 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import { loadBisContextFor, specKeyForCharacter, type BisContext } from '../../lib/home/upgrades-loader';
   import { talentDeltaFor } from '../../lib/home/talent-delta';
+  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+  import Glyph from '../ui/Glyph.svelte';
   import { bisCopy } from '../../lib/bis/copy';
   import { presetLabelFor } from '../../lib/bis/presets';
 
@@ -116,6 +118,14 @@
   const CARD_FIGURE_CLASS = 'figure-stat text-[22px] text-strong';
 </script>
 
+<!-- The card is itself the link to the simulator, so its action is an action-link look-alike (gold,
+     chevron, 44 px) rather than a nested anchor. -->
+{#snippet runAction()}
+  <span class={ACTION_LINK} data-testid="home-hero-card-sim-run">
+    {homePanelCopy.runAction}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+  </span>
+{/snippet}
+
 <div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
   <a href={talentsHref} class={CARD_CLASS} data-testid="home-hero-card-talents">
     <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
@@ -146,7 +156,8 @@
     {#if simStatus === 'loading'}
       <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-sim-skeleton" />
     {:else if simStatus === 'failed'}
-      <span class="text-muted text-[12px]">{homePanelCopy.noSimYet}</span>
+      <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
+      {@render runAction()}
     {:else if simFigures !== null && simFigures.nowDps !== null}
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
@@ -163,10 +174,10 @@
       <span class="text-muted numeric text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
         >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
       >
-      <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>
+      {@render runAction()}
     {:else}
       <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-      <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>
+      {@render runAction()}
     {/if}
   </a>
 </div>

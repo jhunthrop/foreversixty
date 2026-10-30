@@ -32,7 +32,7 @@ describe('diffAgainstBand', () => {
     expect(result.diffTalentIds.size).toBe(0);
   });
 
-  it('sums the absolute rank difference per talent id, same as talentDeltaFor', () => {
+  it('sums the absolute rank difference per talent id, ', () => {
     // Arms talent 1001 (tier 0, column 0) at rank 3 in the band, 0 in the build.
     const result = diffAgainstBand(index, new Map(), '3-0-0');
     expect(result.diffCount).toBe(3);

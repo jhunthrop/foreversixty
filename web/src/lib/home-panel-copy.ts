@@ -25,7 +25,7 @@ export const homePanelCopy = {
    *  from the pre-rebuild next-steps grid, since the spec's own Empty-state row for this
    *  card names these exact two strings. */
   noSimYet: 'No sim yet.',
-  runAction: 'Run',
+  runAction: 'Run a sim',
   /** The shared character header's words on the home page (spec 2026-10-11 section 4). */
   headerAnswerLabel: 'Upgrades for your level range',
   headerNote: (bandLabel: string): string => `Best in slot for ${bandLabel}, together`,

@@ -190,6 +190,8 @@ test('a signed-in panel shows the shared header, the two next-action cards, and 
   // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
   // the existing empty-state copy/action shows.
   await expect(panel.getByTestId('home-hero-card-sim')).toContainText('No sim yet.');
+  await expect(panel.getByTestId('home-hero-card-sim-run')).toHaveText('Run a sim');
+  await expect(panel.getByTestId('home-hero-card-sim-run').locator('[data-glyph="chevron"]')).toHaveCount(1);
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
   // §3.A.4/§3.B.3/§3.B.5: the signed-out class-picker row is gone, replaced by the
@@ -446,6 +448,10 @@ test("a signed-in panel with a real gear/talent export sees the two upgrade figu
   const talentsCard = panel.getByTestId('home-hero-card-talents');
   await expect(talentsCard.getByTestId('home-hero-card-talents-value')).toHaveText('Unoptimized');
   await expect(talentsCard).toContainText(/\d+ of the \d+ points in the 20 to 29 build differ/);
+  // The count is the band's own points that differ, so it can never exceed the band's total.
+  const [, differ, total] = /(\d+) of the (\d+) points/.exec((await talentsCard.textContent()) ?? '') ?? [];
+  expect(Number(differ)).toBeGreaterThan(0);
+  expect(Number(differ)).toBeLessThanOrEqual(Number(total));
 
   // "Your upgrades" (§3.B.3): one row per slot the fixture's own worn item differs from the
   // band's pick, each reading the band's own sim-verified gain.
@@ -506,7 +512,7 @@ for (const width of [390, 1440]) {
   });
 }
 
-test('signed out the lookup stays in the hero, above the dates line', async ({ page }) => {
+test('signed out the lookup stays in the hero, above Best in slot by class', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
@@ -514,6 +520,44 @@ test('signed out the lookup stays in the hero, above the dates line', async ({ p
   await page.goto('/');
   await expect(page.getByTestId('home-lookup-slot')).toBeHidden();
   const lookup = (await page.getByTestId('home-lookup-cell').boundingBox())!.y;
-  const line = (await page.getByTestId('home-dates-line').boundingBox())!.y;
-  expect(lookup).toBeLessThan(line);
+  const classes = (await page.getByTestId('home-class-picker-large').boundingBox())!.y;
+  expect(lookup).toBeLessThan(classes);
 });
+
+// Fix round 1: no empty band above "Latest" -- the signed-in Get set up card used to hold its height
+// invisibly until its island ran, and signed out the island's 44 px sat under the card.
+const MAX_BAND_ABOVE_LATEST_PX = 64;
+for (const width of [390, 1440]) {
+  test(`signed in at ${width}: Latest follows the panels above by at most ${MAX_BAND_ABOVE_LATEST_PX}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await stubHeroExtras(page);
+    await signInWith(page, [OBNOXIOUS]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/');
+    await expect(page.getByTestId('home-upgrades')).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    const gap = await page.evaluate(() => {
+      const bottomOf = (testId: string): number =>
+        document.querySelector(`[data-testid="${testId}"]`)!.getBoundingClientRect().bottom;
+      const latest = [...document.querySelectorAll('h2')].find((h) => h.textContent === 'Latest')!;
+      return latest.getBoundingClientRect().top - bottomOf('home-around-the-site');
+    });
+    expect(gap).toBeLessThanOrEqual(MAX_BAND_ABOVE_LATEST_PX);
+    await expect(page.locator('#home-get-set-up-signed-out')).toBeHidden();
+  });
+
+  test(`signed out at ${width}: Latest follows the Get set up card by at most ${MAX_BAND_ABOVE_LATEST_PX}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.route('**/v1/me', (route) =>
+      route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
+    );
+    await page.goto('/');
+    const card = (await page.getByTestId('home-get-set-up-signed-out').boundingBox())!;
+    const latest = (await page.getByRole('heading', { name: 'Latest' }).boundingBox())!;
+    expect(latest.y - (card.y + card.height)).toBeLessThanOrEqual(MAX_BAND_ABOVE_LATEST_PX);
+  });
+}

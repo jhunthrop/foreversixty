@@ -52,11 +52,11 @@ describe('the landing launch card', () => {
     expect(textOf(html)).not.toMatch(/\bbands?\b/i);
   });
 
-  it('leads the dates line with the next date still to come, never the beta the card already says is live', () => {
+  it('leads the dates line with what is running now, then what is still to come', () => {
     const now = new Date('2026-10-20T12:00:00Z');
     expect(heroCardFor(dates, now).eyebrow).toBe('Beta is live');
     const items = datesLineItems(timelineRows(dates, now), now);
-    expect(items[0]).toEqual({ text: 'Name reservation Oct 27', next: true });
+    expect(items[0]).toEqual({ text: 'Beta live through Oct 21', next: true });
     const launchDay = new Date('2026-11-05T12:00:00Z');
     expect(datesLineItems(timelineRows(dates, launchDay), launchDay).map((i) => i.text)).toEqual([
       'First raids Dec 9',
@@ -77,9 +77,8 @@ describe('the home page sections', () => {
     expect(html).not.toContain('data-testid="subscribe"');
   });
 
-  it('puts the dates line under the hero, then the signed-in order: upgrades, lookup, the rest', () => {
-    expect(at('data-testid="home-dates-wrap"')).toBeGreaterThan(at('data-testid="home-launch-block"'));
-    expect(at('data-testid="home-upgrades"')).toBeGreaterThan(at('data-testid="home-dates-wrap"'));
+  it('has the signed-in order under the hero: upgrades, lookup, the rest', () => {
+    expect(at('data-testid="home-upgrades"')).toBeGreaterThan(at('data-testid="home-launch-block"'));
     expect(at('data-testid="home-lookup-slot"')).toBeGreaterThan(at('data-testid="home-upgrades"'));
     expect(at('data-testid="home-outcome-planner"')).toBeGreaterThan(at('data-testid="home-lookup-slot"'));
   });

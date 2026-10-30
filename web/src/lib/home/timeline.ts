@@ -18,6 +18,8 @@ export interface DateEntry {
   endIso?: string;
   /** Which entry the hero card follows: "beta" (the span the card says is live) or "launch". */
   role?: string;
+  /** What the dates line says while this entry is running ("Name reservation open through Nov 3"). */
+  running?: string;
   /** The clock time shown beside the date on the home dates line ("15:00 PST"). */
   time?: string;
   /** The exact moment (ISO instant) the hero's countdown runs to; the day's start when absent. */
@@ -56,24 +58,30 @@ export interface DatesLineItem {
   next: boolean;
 }
 
-/** Still to come: not yet started, or (with an exact `at` moment, like the launch hour) not yet reached. */
-function isComing(row: TimelineRow, now: Date): boolean {
-  if (row.status === 'next' || row.status === 'future') return true;
-  return row.at !== undefined && !isPast(new Date(row.at), now);
+/**
+ * Still to show: not yet started, or running (a span, or a day that has begun) until it ends. An
+ * entry with an exact `at` moment (the launch hour) goes at that moment, not at the day's end.
+ */
+function isShown(row: TimelineRow, now: Date): boolean {
+  if (row.status === 'past') return false;
+  if (row.status === 'live' && row.at !== undefined) return !isPast(new Date(row.at), now);
+  return true;
+}
+
+/** An entry's words on the line: while it runs its `running` phrase when it has one, else "{value} {key}" and its `time`. */
+function lineText(row: TimelineRow): string {
+  if (row.status === 'live' && row.running !== undefined) return row.running;
+  return [`${row.value} ${row.key}`, row.time].filter((part) => part !== undefined).join(' · ');
 }
 
 /**
- * The events the dates line shows: only what is still to come (a span already live, like the name
- * reservation, is not a date to wait for), in the order the data file lists them, each as
- * "{value} {key}" plus its `time` when it has one ("Launch Nov 4 · 15:00 PST"). The first is the
- * next event, which the line sets in gold. Empty once every date has passed, which is when the
- * line goes.
+ * The events the dates line shows, in the order the data file lists them: what is running now
+ * (a span like the name reservation, "Name reservation open through Nov 3") until it ends, then
+ * what is still to come ("Launch Nov 4 · 15:00 PST"). The first is the one the line sets in gold.
+ * Empty once every date has passed, which is when the line goes.
  */
 export function datesLineItems(rows: readonly TimelineRow[], now: Date = new Date()): DatesLineItem[] {
   return rows
-    .filter((row) => isComing(row, now))
-    .map((row, index) => ({
-      text: [`${row.value} ${row.key}`, row.time].filter((part) => part !== undefined).join(' · '),
-      next: index === 0,
-    }));
+    .filter((row) => isShown(row, now))
+    .map((row, index) => ({ text: lineText(row), next: index === 0 }));
 }

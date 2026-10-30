@@ -208,12 +208,10 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
     <!-- §3.A.3 The dates line, directly under the hero for everyone (polish spec 2026-10-28 §5.6):
          one thin line, absent once every date has passed. It sits OUTSIDE SkyBand's own wrapper,
          a sibling of the sky band, so the atmosphere (stars, the ember/night radial glows) never
-         bleeds under it. The negative bottom margin keeps the line-to-content gap short (16px) while the
-         section gap is 32px (48px from md up). -->
+         bleeds under it. The line carries its own negative bottom margin (short line-to-content gap, and nothing
+         left in the column when it is hidden or gone). Signed out it hides while the launch card counts down. -->
     <div class="flex flex-col gap-8 md:gap-12 px-[18px] md:px-0 pb-8 pt-1">
-      <div class="-mb-3 md:-mb-5" data-testid="home-dates-wrap">
-        <HomeDatesLine dates={dates} />
-      </div>
+      <HomeDatesLine dates={dates} />
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint

@@ -6,9 +6,8 @@
 //
 // Two small, pure functions, each reusing an existing, unchanged primitive rather than
 // forking a second traversal of the tree:
-//  - `diffAgainstBand` walks the same tree/talent shape `lib/home/talent-delta.ts`'s
-//    `talentDeltaFor` sums over (`Σ|build - band|` per talent cell), but keyed by talent id
-//    instead of string position, so it can also report which ids differ -- the per-cell
+//  - `diffAgainstBand` walks the same tree/talent shape `lib/home/talent-delta.ts`'s loop does,
+//    summing `|build - band|` per talent cell, keyed by talent id instead of string position, so it can also report which ids differ -- the per-cell
 //    marker `TalentCell.svelte` needs (spec §4.E.4).
 //  - `loadFromBand` reconstructs a legal point order for a band's own ranks with
 //    `orderFromRanks` (fs1.ts), the exact same reconstruction an addon import already runs.
@@ -25,8 +24,8 @@ export function bandTreeRanksFrom(bandTalents: string): number[][] {
 }
 
 export interface BandDiff {
-  /** `Σ|build - band|` across every talent cell in every tree -- the same sum
-   *  `talentDeltaFor` computes, generalised to talent ids. */
+  /** `Σ|build - band|` across every talent cell in every tree (the planner's own count; the home
+   *  card's `talentDeltaFor` counts only the band's unmatched points). */
   diffCount: number;
   /** Talent ids whose rank differs from the band's own rank at that cell. */
   diffTalentIds: ReadonlySet<number>;

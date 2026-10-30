@@ -767,6 +767,26 @@ html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
   }
 }
 
+/* Home "Get set up" row, signed in (owner 2026-10-29, fix round 1): the signed-out three-step card
+   is gone from first paint (display:none off the same hint as the hero, not the visibility hide
+   that kept its ~100 px as an empty band above "Latest" until the island ran), and the one line
+   that replaces it sits tight under the panels above and Latest below (the column's 32/48 px gaps
+   less the margins here leave 16 px above and 4 px below the 44 px line). */
+html[data-session='1']:not([data-home-signed-out]) #home-get-set-up-signed-out {
+  display: none;
+}
+html[data-session='1'] .home-get-set-up-root {
+  min-height: 2.75rem;
+}
+html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-row'] {
+  margin-block: -1rem -1.75rem;
+}
+@media (min-width: 768px) {
+  html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-row'] {
+    margin-block: -2rem -2.75rem;
+  }
+}
+
 /* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
    in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
    session hint `.chip-slot` above already uses for a `display:none` swap -- the hint

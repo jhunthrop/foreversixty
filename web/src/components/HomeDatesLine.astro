@@ -1,12 +1,17 @@
 ---
 // web/src/components/HomeDatesLine.astro
 // The home page's one thin dates line under the hero (polish spec 2026-10-28 §5.6, owner
-// 2026-10-29), for every visitor: "Launch Nov 4 · 15:00 PST · First raids Dec 9". Only dates still
-// to come show, the next one in gold, and the whole line is absent once every date has passed.
-// The page is built once per deploy, so the markup is right for that day (`now` is a prop only so
-// the SSR test can pin it) and a small script re-reads it against the visitor's clock after first
-// paint, once a minute, so an event drops as soon as it passes with no edit or redeploy. Each
-// entry rides along as JSON for that script. Plain text, not a link, so no 44 px target is owed.
+// 2026-10-29): "Name reservation open through Nov 3 · Launch Nov 4 · 15:00 PST · First raids Dec 9".
+// What is running now and what is still to come show, the first in gold, and the whole line is
+// absent once every date has passed. Signed out it also steps aside while the hero's launch
+// countdown card is up (that card already says the next date); signed in it reads a little
+// heavier (15 px, the gold one semibold), since nothing else on the page carries the dates.
+// The page is built once per deploy, so the markup is right for that day (`now` is a prop only
+// so the SSR test can pin it) and a small script re-reads it against the visitor's clock after
+// first paint, once a minute, so an event drops as soon as it ends with no edit or redeploy.
+// Each entry rides along as JSON for that script. Plain text, not a link, so no 44 px target is
+// owed. The line owns its own spacing, so a hidden or absent line leaves no gap in the column.
+import { heroCardFor } from '../lib/home/hero-card';
 import { datesLineItems, timelineRows, type DateEntry } from '../lib/home/timeline';
 
 interface Props {
@@ -14,14 +19,16 @@ interface Props {
   now?: Date;
 }
 const { dates, now } = Astro.props;
-const SEPARATOR = '\u00a0·';
 const items = datesLineItems(timelineRows(dates, now), now);
+const cardCountsDown = heroCardFor(dates, now).countdown !== null;
+const SEPARATOR = `${String.fromCharCode(0xa0)}·`;
 ---
 
 {items.length > 0 && (
   <p
-    class="numeric text-muted text-[13px] leading-snug"
+    class="dates-line numeric text-muted -mb-3 text-[13px] leading-snug md:-mb-5"
     data-testid="home-dates-line"
+    data-under-card={cardCountsDown ? '' : undefined}
     data-entries={JSON.stringify(dates)}
   >
     {items.map((item, index) => (
@@ -48,6 +55,18 @@ const items = datesLineItems(timelineRows(dates, now), now);
   .dates-sep {
     white-space: nowrap;
   }
+  /* Signed out the launch card above already counts down to the next date; with the hint wrong
+     (the island found no session) the signed-out hero is back, so the same rule applies. */
+  :global(html:not([data-session='1'])) .dates-line[data-under-card],
+  :global(html[data-home-signed-out]) .dates-line[data-under-card] {
+    display: none;
+  }
+  :global(html[data-session='1']:not([data-home-signed-out])) .dates-line {
+    font-size: 15px;
+  }
+  :global(html[data-session='1']:not([data-home-signed-out])) .dates-line [data-next] {
+    font-weight: 600;
+  }
 </style>
 
 <script>
@@ -55,7 +74,7 @@ const items = datesLineItems(timelineRows(dates, now), now);
   import type { DateEntry } from '../lib/home/timeline';
 
   const REFRESH_MS = 60_000;
-  const SEPARATOR = '\u00a0·';
+  const SEPARATOR = `${String.fromCharCode(0xa0)}·`;
 
   function itemEl(text: string, next: boolean): HTMLElement {
     const el = document.createElement('span');
@@ -75,34 +94,36 @@ const items = datesLineItems(timelineRows(dates, now), now);
 
   // Wired after first paint (src/lib/after-paint.ts); the server markup is already right for the deploy.
   afterPaint(() => {
-    void import('../lib/home/timeline').then(({ datesLineItems, timelineRows }) => {
-      const root = document.querySelector<HTMLElement>('[data-testid="home-dates-line"]');
-      if (!root?.dataset.entries) return;
-      const entries = JSON.parse(root.dataset.entries) as DateEntry[];
-      const refresh = (): void => {
-        const now = new Date();
-        const items = datesLineItems(timelineRows(entries, now), now);
-        const shown = Array.from(root.querySelectorAll('.dates-item')).map((el) => el.textContent);
-        const unchanged =
-          shown.length === items.length &&
-          items.every((item, index) => item.text === shown[index]) &&
-          root.querySelector('[data-next]')?.textContent === items[0]?.text;
-        if (unchanged) return;
-        // The line only ever loses events (or its first one), so a rebuild never grows the page.
-        if (items.length === 0) {
-          root.remove();
-          window.clearInterval(timer);
-          return;
-        }
-        root.replaceChildren(
-          ...items.flatMap((item, index) => [
-            ...(index > 0 ? [separatorEl(), document.createTextNode(' ')] : []),
-            itemEl(item.text, item.next),
-          ]),
-        );
-      };
-      const timer = window.setInterval(refresh, REFRESH_MS);
-      refresh();
-    });
+    void Promise.all([import('../lib/home/timeline'), import('../lib/home/hero-card')]).then(
+      ([{ datesLineItems, timelineRows }, { heroCardFor }]) => {
+        const root = document.querySelector<HTMLElement>('[data-testid="home-dates-line"]');
+        if (!root?.dataset.entries) return;
+        const entries = JSON.parse(root.dataset.entries) as DateEntry[];
+        const refresh = (): void => {
+          const now = new Date();
+          root.toggleAttribute('data-under-card', heroCardFor(entries, now).countdown !== null);
+          const items = datesLineItems(timelineRows(entries, now), now);
+          const shown = Array.from(root.querySelectorAll('.dates-item')).map((el) => el.textContent);
+          const unchanged =
+            shown.length === items.length &&
+            items.every((item, index) => item.text === shown[index]) &&
+            root.querySelector('[data-next]')?.textContent === items[0]?.text;
+          if (unchanged) return;
+          if (items.length === 0) {
+            root.remove();
+            window.clearInterval(timer);
+            return;
+          }
+          root.replaceChildren(
+            ...items.flatMap((item, index) => [
+              ...(index > 0 ? [separatorEl(), document.createTextNode(' ')] : []),
+              itemEl(item.text, item.next),
+            ]),
+          );
+        };
+        const timer = window.setInterval(refresh, REFRESH_MS);
+        refresh();
+      },
+    );
   });
 </script>

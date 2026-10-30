@@ -74,8 +74,20 @@ describe('timelineRows', () => {
 
 describe('datesLineItems', () => {
   const LINE: DateEntry[] = [
-    { key: 'Sept 17', value: 'Beta opens', iso: '2026-09-17', endIso: '2026-10-21' },
-    { key: 'Oct 27', value: 'Name reservation', iso: '2026-10-27', endIso: '2026-11-03' },
+    {
+      key: 'Sept 17',
+      value: 'Beta opens',
+      iso: '2026-09-17',
+      endIso: '2026-10-21',
+      running: 'Beta live through Oct 21',
+    },
+    {
+      key: 'Oct 27',
+      value: 'Name reservation',
+      iso: '2026-10-27',
+      endIso: '2026-11-03',
+      running: 'Name reservation open through Nov 3',
+    },
     { key: 'Nov 4', value: 'Launch', iso: '2026-11-04', time: '15:00 PST', at: '2026-11-04T23:00:00Z' },
     { key: 'Dec 9', value: 'First raids', iso: '2026-12-09', note: 'Barrow Deeps' },
   ];
@@ -84,14 +96,22 @@ describe('datesLineItems', () => {
     return datesLineItems(timelineRows(LINE, now), now);
   };
 
-  it('lists only what is still to come, the first as the next, with the time where there is one', () => {
+  it('leads with what is running now, in its own words, then what is still to come', () => {
     expect(itemsAt('2026-10-29T12:00:00Z')).toEqual([
-      { text: 'Launch Nov 4 · 15:00 PST', next: true },
+      { text: 'Name reservation open through Nov 3', next: true },
+      { text: 'Launch Nov 4 · 15:00 PST', next: false },
       { text: 'First raids Dec 9', next: false },
     ]);
   });
 
-  it('leads with a span that has not started yet', () => {
+  it('drops a running span the day after it ends', () => {
+    expect(itemsAt('2026-11-04T01:00:00Z').map((i) => i.text)).toEqual([
+      'Launch Nov 4 · 15:00 PST',
+      'First raids Dec 9',
+    ]);
+  });
+
+  it('says a span that has not started yet the plain way', () => {
     expect(itemsAt('2026-10-23T12:00:00Z').map((i) => i.text)).toEqual([
       'Name reservation Oct 27',
       'Launch Nov 4 · 15:00 PST',

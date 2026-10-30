@@ -233,7 +233,7 @@ for (const size of SIZES) {
       await shot(page, `landing-after-beta-full-${size.name}`);
     });
 
-    test('the landing while the beta runs: the dates line leads with Name reservation', async ({ page }) => {
+    test('the landing while the beta runs: the dates line leads with the running beta', async ({ page }) => {
       await page.clock.install({ time: new Date('2026-10-20T12:00:00Z') });
       await signedOut(page);
       await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
@@ -245,7 +245,7 @@ for (const size of SIZES) {
       await expect(page.getByTestId('home-hero-card')).toContainText('Beta is live');
       await expect(page.getByTestId('home-hero-bands')).toHaveText('Leveling best in slot, levels 10 to 30');
       await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
-        'Name reservation Oct 27',
+        'Beta live through Oct 21',
       );
       await shot(page, `landing-beta-live-full-${size.name}`);
     });

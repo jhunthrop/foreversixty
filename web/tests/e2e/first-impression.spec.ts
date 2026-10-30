@@ -60,9 +60,11 @@ for (const size of SIZES) {
       await signedOutWithFeeds(page);
       await page.goto('/');
       const line = page.getByTestId('home-dates-line');
-      await expect(line).toBeVisible();
+      // The launch card already counts down to the next date, so the line steps aside.
+      await expect(page.getByTestId('home-hero-countdown')).toBeVisible();
+      await expect(line).toBeHidden();
       await expect(line).not.toContainText('Updated');
-      // Only dates still to come, the next one first and in gold.
+      // What it holds: the running or next date first, and in gold.
       await expect(line.locator('[data-next]')).toHaveCount(1);
       await expect(line.locator('.dates-item').first()).toHaveAttribute('data-next', '');
       await expect(page.getByRole('heading', { name: 'Get started' })).toBeVisible();
