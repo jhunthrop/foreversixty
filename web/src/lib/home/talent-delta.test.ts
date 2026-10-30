@@ -1,6 +1,6 @@
 // web/src/lib/home/talent-delta.test.ts
 import { describe, expect, it } from 'vitest';
-import { talentDeltaFor } from './talent-delta';
+import { talentDeltaFor, unmatchedBandPoints } from './talent-delta';
 
 describe('talentDeltaFor', () => {
   it('is zero when the character matches the band exactly', () => {
@@ -43,5 +43,14 @@ describe('talentDeltaFor', () => {
   it('treats a shorter string (missing trailing cells) as trailing zeros on either side', () => {
     expect(talentDeltaFor(['3'], '0')).toBe(0);
     expect(talentDeltaFor(['0'], '3')).toBe(3);
+  });
+});
+
+describe('unmatchedBandPoints', () => {
+  it('counts only the band points a character has not matched, never more than the band holds', () => {
+    expect(unmatchedBandPoints(0, 5)).toBe(5);
+    expect(unmatchedBandPoints(3, 5)).toBe(2);
+    expect(unmatchedBandPoints(5, 5)).toBe(0);
+    expect(unmatchedBandPoints(5, 0)).toBe(0);
   });
 });

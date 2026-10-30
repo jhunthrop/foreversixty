@@ -2,6 +2,11 @@
 // Home rebuild spec §3.B.2's Talents card: how far a character's actual talent split has
 // drifted from a leveling-BiS band's own recommended build.
 
+/** One talent cell's share of the count: the band's points there the character has not matched. */
+export function unmatchedBandPoints(wornRank: number, bandRank: number): number {
+  return Math.max(bandRank - wornRank, 0);
+}
+
 /**
  * `trees` (`MeCharacter.build.talents.trees`: three per-tree rank strings in tree order,
  * one digit per talent cell, e.g. `"503200000"`) against `bandTalents` (a BiS band's own
@@ -30,7 +35,7 @@ export function talentDeltaFor(trees: readonly string[], bandTalents: string): n
     for (let cell = 0; cell < cellCount; cell += 1) {
       const wornRank = Number.parseInt(worn[cell] ?? '0', 10) || 0;
       const bandRank = Number.parseInt(band[cell] ?? '0', 10) || 0;
-      unmatched += Math.max(bandRank - wornRank, 0);
+      unmatched += unmatchedBandPoints(wornRank, bandRank);
     }
   }
   return unmatched;

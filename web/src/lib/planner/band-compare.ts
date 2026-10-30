@@ -7,7 +7,7 @@
 // Two small, pure functions, each reusing an existing, unchanged primitive rather than
 // forking a second traversal of the tree:
 //  - `diffAgainstBand` walks the same tree/talent shape `lib/home/talent-delta.ts`'s loop does,
-//    summing `|build - band|` per talent cell, keyed by talent id instead of string position, so it can also report which ids differ -- the per-cell
+//    summing the band's unmatched points per talent cell, keyed by talent id instead of string position, so it can also report which ids differ -- the per-cell
 //    marker `TalentCell.svelte` needs (spec §4.E.4).
 //  - `loadFromBand` reconstructs a legal point order for a band's own ranks with
 //    `orderFromRanks` (fs1.ts), the exact same reconstruction an addon import already runs.
@@ -16,6 +16,7 @@ import { specKeyFor } from '../addon/score';
 import { specDisplayName, specRow } from '../sim/spec-label';
 import { bandBuildTitle } from './band-title';
 import { orderFromRanks } from './fs1';
+import { unmatchedBandPoints } from '../home/talent-delta';
 
 /** One base-36 digit per talent, tab order -- the convention every tree-rank string on the
  *  site already shares (FS1, `MeCharacter.build.talents.trees`, a BiS band's `talents`). */
@@ -24,8 +25,8 @@ export function bandTreeRanksFrom(bandTalents: string): number[][] {
 }
 
 export interface BandDiff {
-  /** `Σ|build - band|` across every talent cell in every tree (the planner's own count; the home
-   *  card's `talentDeltaFor` counts only the band's unmatched points). */
+  /** The band's points the build has not matched (`Σ max(band - build, 0)`, the home card's
+   *  `talentDeltaFor` rule), so it never exceeds the band's own point total. */
   diffCount: number;
   /** Talent ids whose rank differs from the band's own rank at that cell. */
   diffTalentIds: ReadonlySet<number>;
@@ -55,11 +56,8 @@ export function diffAgainstBand(
       const buildRank = ranks.get(talent.id) ?? 0;
       const bandRank = Math.min(bandDigits[talentIndex] ?? 0, talent.max_rank);
       bandRankById.set(talent.id, bandRank);
-      const delta = Math.abs(buildRank - bandRank);
-      if (delta > 0) {
-        diffCount += delta;
-        diffTalentIds.add(talent.id);
-      }
+      diffCount += unmatchedBandPoints(buildRank, bandRank);
+      if (buildRank !== bandRank) diffTalentIds.add(talent.id);
     });
   });
 

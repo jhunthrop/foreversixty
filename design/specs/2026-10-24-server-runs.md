@@ -15,7 +15,7 @@ A payer who started a run on our servers and closed the tab comes back to a page
 | | 360 / 390 px phone | 1280 / 1440 px desktop |
 |---|---|---|
 | Any page with the band, a run finished while away | The band's footer line, directly under the band's action button, inside the first screen (the stacked band ends near y 400 at 390). | The footer line inside the band, y about 230 at 1440. The DPS figure is in the sentence. |
-| `/sim`, a payer with runs | `Your server runs` heading and the newest rows. The newest row (state and result) starts above y 560 at 390 x 844 and is the first thing under the static `Simulator` heading and scope note. At 360 x 640 the first row's state line is inside the screen. | Heading and the newest three rows inside 900 px at 1440; the `Run sim` block follows directly. |
+| `/sim`, a payer with runs | `Server runs` card head (alignment 2026-10-29) and the newest rows. The newest row (state and result) starts above y 560 at 390 x 844 and is the first thing under the static `Simulator` heading and scope note. At 360 x 640 the first row's state line is inside the screen. | Heading and the newest three rows inside 900 px at 1440; the `Run sim` block follows directly. |
 | `/sim`, a payer with no runs | One line of 64 px: the empty sentence. The `Run sim` block is under it, inside the first screen. | Same. |
 
 The job is to answer "did it finish" and hand over the number. Opening the result is one tap. Everything else on the page (the run block, the character list, Your sims) keeps its job and its place.
@@ -45,7 +45,7 @@ Top to bottom: static `Simulator` h1 and scope sentence (unchanged, in the astro
 
 ### 3.2 `ServerRuns` region (section element, `data-testid="server-runs"`, id `server-runs`)
 
-- Heading row: h2 `Your server runs` (`section-title`, 15 px). Nothing else on the row: no filter, no count, no refresh control (the list refreshes itself, 3.5).
+- Card head (alignment 2026-10-29 §5.6): compact `server` head, h2 `Server runs`. Nothing else on the row: no filter, no count, no refresh control (the list refreshes itself, 3.5).
 - Panel: `border-line bg-raised rounded-panel` 1 px, the panel `SimHistory` draws. Rows separated by 1 px `--line-soft`. At most **5 rows**, newest first by `created_at`. If the API returned more than five rows, a 12 px muted footer line inside the panel: `Older finished runs are in Your sims below.`
 - Margins: `mx-[18px] md:mx-0`, gap 12 px under the heading, 24 px under the panel (before `SimRunBlock`), as the sibling sections.
 
@@ -144,7 +144,7 @@ New strings live in `web/src/lib/sim/server-runs-copy.ts`; the account strings i
 
 | Where | String |
 |---|---|
-| List heading | `Your server runs` |
+| List heading | `Server runs` |
 | Empty (payer, no runs) | `No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close this tab.` One `EmptyState`, no action. `Run on our servers` is `simCopy.runOnServers`, not retyped. |
 | Loading | none visible (skeleton); sr-only `Reading your server runs…` |
 | List error | `Your server runs did not load.` + `Try again` (`uiCopy.retry`) |

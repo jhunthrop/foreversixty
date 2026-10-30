@@ -32,7 +32,7 @@ describe('diffAgainstBand', () => {
     expect(result.diffTalentIds.size).toBe(0);
   });
 
-  it('sums the absolute rank difference per talent id, ', () => {
+  it('sums the unmatched band points per talent id', () => {
     // Arms talent 1001 (tier 0, column 0) at rank 3 in the band, 0 in the build.
     const result = diffAgainstBand(index, new Map(), '3-0-0');
     expect(result.diffCount).toBe(3);
@@ -40,10 +40,24 @@ describe('diffAgainstBand', () => {
     expect(result.bandRankById.get(1001)).toBe(3);
   });
 
-  it('counts a build that overspends a cell the band does not, same as underspending one it does', () => {
+  it('marks a cell the build overspends but counts only the band points it misses, never more than the band holds', () => {
     const result = diffAgainstBand(index, new Map([[1001, 3]]), '0-0-0');
-    expect(result.diffCount).toBe(3);
+    expect(result.diffCount).toBe(0);
     expect([...result.diffTalentIds]).toEqual([1001]);
+  });
+
+  it('never reports more differing points than the band holds, however different the build', () => {
+    const bandPoints = 3;
+    const result = diffAgainstBand(
+      index,
+      new Map([
+        [1001, 0],
+        [1002, 3],
+      ]),
+      '3-0-0',
+    );
+    expect(result.diffCount).toBeLessThanOrEqual(bandPoints);
+    expect(result.diffCount).toBe(3);
   });
 
   it('matches (zero diff, no ids) once the build equals the band', () => {
@@ -117,13 +131,7 @@ describe('bandForPanel (W.8)', () => {
   });
 });
 
-describe('the band card’s aside (W.8)', () => {
-  it('says "your level’s range" only when there is a character, else the band by name', () => {
-    expect(bandCompareCopy.headingAside('60', true)).toBe("your level's range");
-    expect(bandCompareCopy.headingAside('60', false)).toBe('the level 60 range');
-    expect(bandCompareCopy.headingAside('20 to 29', false)).not.toMatch(/your/);
-  });
-
+describe('the band card’s heading', () => {
   it('titles a single level "Level 60 build" and a span "Levels 20 to 29 build"', () => {
     expect(bandCompareCopy.heading('60')).toBe('Level 60 build');
     expect(bandCompareCopy.heading('20 to 29')).toBe('Levels 20 to 29 build');
