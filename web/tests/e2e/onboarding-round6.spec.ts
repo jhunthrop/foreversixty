@@ -211,7 +211,7 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['3']);
     });
 
-    test('the landing after the beta: the example label, "levels", the dot on Name reservation, full page', async ({
+    test('the landing after the beta: the example label, "levels", the next date in gold on Name reservation, full page', async ({
       page,
     }) => {
       await page.clock.install({ time: new Date('2026-10-23T12:00:00Z') });
@@ -227,14 +227,13 @@ for (const size of SIZES) {
       await expect(page.getByTestId('home-hero-bands')).toHaveText(
         'Leveling best in slot, levels 20, 30, 40, 50, 60',
       );
-      await expect(page.getByTestId('home-timeline-dot')).toHaveCount(1);
-      await expect(
-        page.locator('[data-testid="home-timeline-row"]', { has: page.getByTestId('home-timeline-dot') }),
-      ).toContainText('Name reservation');
+      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
+        'Name reservation Oct 27',
+      );
       await shot(page, `landing-after-beta-full-${size.name}`);
     });
 
-    test('the landing while the beta runs: the dot sits on the Beta tile', async ({ page }) => {
+    test('the landing while the beta runs: the dates line leads with Name reservation', async ({ page }) => {
       await page.clock.install({ time: new Date('2026-10-20T12:00:00Z') });
       await signedOut(page);
       await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
@@ -245,10 +244,9 @@ for (const size of SIZES) {
       await settle(page);
       await expect(page.getByTestId('home-hero-card')).toContainText('Beta is live');
       await expect(page.getByTestId('home-hero-bands')).toHaveText('Leveling best in slot, levels 10 to 30');
-      await expect(page.getByTestId('home-timeline-dot')).toHaveCount(1);
-      await expect(
-        page.locator('[data-testid="home-timeline-row"]', { has: page.getByTestId('home-timeline-dot') }),
-      ).toContainText('Beta opens');
+      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
+        'Name reservation Oct 27',
+      );
       await shot(page, `landing-beta-live-full-${size.name}`);
     });
 

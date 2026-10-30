@@ -767,17 +767,6 @@ html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
   }
 }
 
-/* Signed-in phone: the dates timeline is reference, so "Your upgrades" (the answer's detail)
-   comes first and the timeline follows it (index.astro keeps one HomeTimeline in the DOM
-   and reorders). The top margin keeps the heading 32px under the sky band, where the
-   timeline's strip used to sit. */
-@media (max-width: 767px) {
-  html[data-session='1'] .home-upgrades-section {
-    order: -1;
-    margin-top: 2.5rem;
-  }
-}
-
 /* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
    in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
    session hint `.chip-slot` above already uses for a `display:none` swap -- the hint

@@ -42,7 +42,7 @@ test('homepage states the one fixed sentence (tenet 14) and stops, not a marketi
   expect(heading.length).toBeLessThanOrEqual(90);
   expect(heading).not.toMatch(/[!?]$/);
   expect(heading).toBe('Play your class better.');
-  await expect(page.getByTestId('home-timeline')).toBeVisible();
+  await expect(page.getByTestId('home-dates-line')).toBeVisible();
   // The nine-class picker (§3.A.1) and the larger "Best in slot by class" row (§3.A.4).
   await expect(page.getByTestId('home-class-picker').getByTestId(/^home-class-picker-/)).toHaveCount(9);
   await expect(
@@ -122,14 +122,19 @@ test('at desktop width, the hero class picker stays inside its own column, never
     'the hero column stays inside the viewport',
   ).toBeLessThanOrEqual(viewportWidth + 1);
 
-  // The timeline now lives in its own full-width section, outside the sky band's hero grid
-  // entirely (home rebuild spec §3.A.3 must-fix), so it can no longer inherit a column's
-  // overflow bug the way the old two-column layout could -- this still checks it stays on
-  // screen at desktop width.
-  const timeline = page.getByTestId('home-timeline');
-  const timelineBox = await timeline.boundingBox();
-  expect(
-    timelineBox!.x + timelineBox!.width,
-    'the timeline card stays inside the viewport',
-  ).toBeLessThanOrEqual(viewportWidth + 1);
+  // The dates line sits under the sky band, outside its hero grid, so it cannot inherit a
+  // column's overflow bug; it must still wrap inside the viewport.
+  const line = page.getByTestId('home-dates-line');
+  const lineBox = await line.boundingBox();
+  expect(lineBox!.x + lineBox!.width, 'the dates line stays inside the viewport').toBeLessThanOrEqual(
+    viewportWidth + 1,
+  );
+});
+
+test('the homepage planner row points at the live planner', async ({ page }) => {
+  await page.goto('/');
+  const link = page.getByTestId('home-outcome-planner');
+  await expect(link).toHaveAttribute('href', '/planner');
+  await link.click();
+  await expect(page).toHaveURL(/\/planner$/);
 });

@@ -11,7 +11,7 @@
      not to reserve the taller card's space forever.
 
      Home rebuild review round 3: mounts `client:visible` (index.astro), like every other
-     below-the-fold island on this page (RecentReports/HomeTopGuilds/SubscribeBox) -- this
+     below-the-fold island on this page (RecentReports/HomeTopGuilds) -- this
      card sits well below the signed-out fold, so its chunk has no business loading, or
      counting against the signed-out Lighthouse budget, until it actually scrolls into
      view. A signed-in visitor who never scrolls this far keeps seeing the static

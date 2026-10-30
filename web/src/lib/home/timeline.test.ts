@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { timelineDisplayRows, timelineRows, type DateEntry } from './timeline';
+import { datesLineItems, timelineRows, type DateEntry } from './timeline';
 
 const DATES: DateEntry[] = [
   { key: 'Sept 13', value: 'Deep Dive panel', iso: '2026-09-13' },
@@ -61,20 +61,50 @@ describe('timelineRows', () => {
       const rows = timelineRows(SPAN, new Date('2026-10-22T08:00:00Z'));
       expect(rows.map((r) => r.status)).toEqual(['past', 'past', 'next', 'future']);
     });
-
-    it('drops the past dates and keeps the rest in date order', () => {
-      const rows = timelineRows(SPAN, new Date('2026-10-22T08:00:00Z'));
-      expect(timelineDisplayRows(rows).map((r) => r.value)).toEqual(['Name reservation', 'Launch']);
-      const live = timelineRows(SPAN, new Date('2026-10-20T08:00:00Z'));
-      expect(timelineDisplayRows(live).map((r) => r.status)).toEqual(['live', 'next', 'future']);
-    });
   });
 
   describe('a single day', () => {
-    it('stays on the strip through its own day and drops off the day after', () => {
+    it('stays live through its own day and drops off the day after', () => {
       const day = [{ key: 'Nov 4', value: 'Launch', iso: '2026-11-04' }];
       expect(timelineRows(day, new Date('2026-11-04T22:00:00Z'))[0].status).toBe('live');
       expect(timelineRows(day, new Date('2026-11-05T00:30:00Z'))[0].status).toBe('past');
     });
+  });
+});
+
+describe('datesLineItems', () => {
+  const LINE: DateEntry[] = [
+    { key: 'Sept 17', value: 'Beta opens', iso: '2026-09-17', endIso: '2026-10-21' },
+    { key: 'Oct 27', value: 'Name reservation', iso: '2026-10-27', endIso: '2026-11-03' },
+    { key: 'Nov 4', value: 'Launch', iso: '2026-11-04', time: '15:00 PST', at: '2026-11-04T23:00:00Z' },
+    { key: 'Dec 9', value: 'First raids', iso: '2026-12-09', note: 'Barrow Deeps' },
+  ];
+  const itemsAt = (iso: string) => {
+    const now = new Date(iso);
+    return datesLineItems(timelineRows(LINE, now), now);
+  };
+
+  it('lists only what is still to come, the first as the next, with the time where there is one', () => {
+    expect(itemsAt('2026-10-29T12:00:00Z')).toEqual([
+      { text: 'Launch Nov 4 · 15:00 PST', next: true },
+      { text: 'First raids Dec 9', next: false },
+    ]);
+  });
+
+  it('leads with a span that has not started yet', () => {
+    expect(itemsAt('2026-10-23T12:00:00Z').map((i) => i.text)).toEqual([
+      'Name reservation Oct 27',
+      'Launch Nov 4 · 15:00 PST',
+      'First raids Dec 9',
+    ]);
+  });
+
+  it('keeps the launch until its own hour, then drops it', () => {
+    expect(itemsAt('2026-11-04T22:59:00Z')[0]?.text).toBe('Launch Nov 4 · 15:00 PST');
+    expect(itemsAt('2026-11-04T23:01:00Z')).toEqual([{ text: 'First raids Dec 9', next: true }]);
+  });
+
+  it('is empty once every date has passed', () => {
+    expect(itemsAt('2026-12-10T12:00:00Z')).toEqual([]);
   });
 });

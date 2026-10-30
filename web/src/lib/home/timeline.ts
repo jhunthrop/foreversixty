@@ -1,9 +1,9 @@
-// The homepage's horizontal dates row (spec 2026-09-24 §2.2), replacing the "Right now"
-// StatePanel. Every status is decided by the clock, never by hand, so the row stays true
-// without an edit: a date before `now` is past, a span (a start and an `endIso`) is live
+// The homepage's dates line (polish spec 2026-10-28 §5.6, owner 2026-10-29), which replaced the
+// horizontal dates strip (spec 2026-09-24 §2.2). Every status is decided by the clock, never by
+// hand, so the line stays true without an edit: a date before `now` is past, a span (a start and an `endIso`) is live
 // from its start through the end of its last day, the first date still to come is the next
-// one, and everything after that is future. The strip shows only what is live or still to come,
-// in date order; a date drops off the day after it ends (the changelog keeps the history).
+// one, and everything after that is future. The line shows only what is still to come, in date
+// order; a date drops off when its day starts (the changelog keeps the history).
 // Reuses lib/dates.ts's own `isPast` (strict less-than) rather than a second date comparison.
 import { isPast } from '../dates';
 
@@ -18,6 +18,8 @@ export interface DateEntry {
   endIso?: string;
   /** Which entry the hero card follows: "beta" (the span the card says is live) or "launch". */
   role?: string;
+  /** The clock time shown beside the date on the home dates line ("15:00 PST"). */
+  time?: string;
   /** The exact moment (ISO instant) the hero's countdown runs to; the day's start when absent. */
   at?: string;
 }
@@ -48,18 +50,30 @@ export function timelineRows(dates: readonly DateEntry[], now: Date = new Date()
   });
 }
 
-/** The rows the strip shows: everything not yet past, in the order the data file lists them. */
-export function timelineDisplayRows(rows: readonly TimelineRow[]): TimelineRow[] {
-  return rows.filter((row) => row.status !== 'past');
+/** One event of the dates line: its text, and whether it is the next one (the gold one). */
+export interface DatesLineItem {
+  text: string;
+  next: boolean;
+}
+
+/** Still to come: not yet started, or (with an exact `at` moment, like the launch hour) not yet reached. */
+function isComing(row: TimelineRow, now: Date): boolean {
+  if (row.status === 'next' || row.status === 'future') return true;
+  return row.at !== undefined && !isPast(new Date(row.at), now);
 }
 
 /**
- * Which of the shown rows carries the gold dot: the live one (the Beta tile while the hero card says
- * "Beta is live"), and only when nothing is live, the next one to come. Null for no rows.
+ * The events the dates line shows: only what is still to come (a span already live, like the name
+ * reservation, is not a date to wait for), in the order the data file lists them, each as
+ * "{value} {key}" plus its `time` when it has one ("Launch Nov 4 · 15:00 PST"). The first is the
+ * next event, which the line sets in gold. Empty once every date has passed, which is when the
+ * line goes.
  */
-export function dotIndex(shown: readonly TimelineRow[]): number | null {
-  const live = shown.findIndex((row) => row.status === 'live');
-  if (live !== -1) return live;
-  const next = shown.findIndex((row) => row.status === 'next');
-  return next === -1 ? null : next;
+export function datesLineItems(rows: readonly TimelineRow[], now: Date = new Date()): DatesLineItem[] {
+  return rows
+    .filter((row) => isComing(row, now))
+    .map((row, index) => ({
+      text: [`${row.value} ${row.key}`, row.time].filter((part) => part !== undefined).join(' · '),
+      next: index === 0,
+    }));
 }

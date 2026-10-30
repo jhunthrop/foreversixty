@@ -1,14 +1,14 @@
 // web/src/pages/_index-hero.test.ts
 // The landing's example card (W.10, UX review r6 F6-4, player review P6-10): one label that says
-// whose list it is, "levels 20, 30, 40, 50, 60" (never "bands"), and the dates strip's live dot on
-// the tile that matches the card. Underscore-prefixed like the other page tests.
+// whose list it is, "levels 20, 30, 40, 50, 60" (never "bands"), and the dates line's next date in
+// gold, and the page's section order. Underscore-prefixed like the other page tests.
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import dates from '../data/dates.json';
 import { homeHeroCopy, homeHeroStatePanelCopy } from '../lib/home-landing-copy';
 import { heroCardFor } from '../lib/home/hero-card';
-import { dotIndex, timelineDisplayRows, timelineRows } from '../lib/home/timeline';
+import { datesLineItems, timelineRows } from '../lib/home/timeline';
 import Index from './index.astro';
 
 let container: AstroContainer;
@@ -52,17 +52,36 @@ describe('the landing launch card', () => {
     expect(textOf(html)).not.toMatch(/\bbands?\b/i);
   });
 
-  it('puts the live dot on the Beta tile while the card says "Beta is live"', () => {
+  it('leads the dates line with the next date still to come, never the beta the card already says is live', () => {
     const now = new Date('2026-10-20T12:00:00Z');
     expect(heroCardFor(dates, now).eyebrow).toBe('Beta is live');
-    const shown = timelineDisplayRows(timelineRows(dates, now));
-    const at = dotIndex(shown);
-    expect(at).not.toBeNull();
-    expect(shown[at ?? 0].role).toBe('beta');
-    // After the beta only the next date carries it.
-    const later = timelineDisplayRows(timelineRows(dates, new Date('2026-10-22T08:00:00Z')));
-    expect(later[dotIndex(later) ?? 0].value).toBe('Name reservation');
-    expect(dotIndex([])).toBeNull();
+    const items = datesLineItems(timelineRows(dates, now), now);
+    expect(items[0]).toEqual({ text: 'Name reservation Oct 27', next: true });
+    const launchDay = new Date('2026-11-05T12:00:00Z');
+    expect(datesLineItems(timelineRows(dates, launchDay), launchDay).map((i) => i.text)).toEqual([
+      'First raids Dec 9',
+    ]);
+  });
+});
+
+describe('the home page sections', () => {
+  const at = (marker: string): number => {
+    const index = html.indexOf(marker);
+    expect(index, `${marker} is on the page`).toBeGreaterThan(-1);
+    return index;
+  };
+
+  it('has no Dates section and no Help build this panel', () => {
+    expect(html).not.toContain('>Dates<');
+    expect(html).not.toContain('Help build this');
+    expect(html).not.toContain('data-testid="subscribe"');
+  });
+
+  it('puts the dates line under the hero, then the signed-in order: upgrades, lookup, the rest', () => {
+    expect(at('data-testid="home-dates-wrap"')).toBeGreaterThan(at('data-testid="home-launch-block"'));
+    expect(at('data-testid="home-upgrades"')).toBeGreaterThan(at('data-testid="home-dates-wrap"'));
+    expect(at('data-testid="home-lookup-slot"')).toBeGreaterThan(at('data-testid="home-upgrades"'));
+    expect(at('data-testid="home-outcome-planner"')).toBeGreaterThan(at('data-testid="home-lookup-slot"'));
   });
 });
 

@@ -59,14 +59,12 @@ for (const size of SIZES) {
       mkdirSync(SHOTS, { recursive: true });
       await signedOutWithFeeds(page);
       await page.goto('/');
-      const timeline = page.getByTestId('home-timeline');
-      await expect(timeline).toBeVisible();
-      await expect(timeline).not.toContainText('Updated');
-      const rows = timeline.getByTestId('home-timeline-row');
-      await expect(rows.first()).not.toHaveAttribute('data-status', 'past');
-      const statuses = await rows.evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.status));
-      // Past dates come last: no past row is followed by a live, next or future one.
-      expect(statuses.join(' ')).not.toMatch(/past (live|next|future)/);
+      const line = page.getByTestId('home-dates-line');
+      await expect(line).toBeVisible();
+      await expect(line).not.toContainText('Updated');
+      // Only dates still to come, the next one first and in gold.
+      await expect(line.locator('[data-next]')).toHaveCount(1);
+      await expect(line.locator('.dates-item').first()).toHaveAttribute('data-next', '');
       await expect(page.getByRole('heading', { name: 'Get started' })).toBeVisible();
       await expect(page.getByText('Five doors')).toHaveCount(0);
       await expect(page.getByTestId('home-get-set-up-signed-out')).toContainText(

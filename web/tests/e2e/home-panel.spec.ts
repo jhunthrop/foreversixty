@@ -463,3 +463,57 @@ test("a signed-in panel with a real gear/talent export sees the two upgrade figu
   await expect(page.getByTestId('home-upgrades-list')).not.toContainText('you wear this');
   await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
 });
+
+// The first layout settles inside this window (the hero's font swap moves it once, the same with or
+// without the reorder); anything after it would be the island or a reserve moving the page.
+const FIRST_PAINT_SETTLE_MS = 300;
+
+// Owner 2026-10-29: signed in, "Your upgrades" sits directly under the character cards, then the
+// lookup, then the rest; the lookup is moved there before first paint, so nothing shifts.
+for (const width of [390, 1440]) {
+  test(`signed in at ${width}: dates line, cards, upgrades, lookup, then the rest, nothing moving after the first layout`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await stubHeroExtras(page);
+    await signInWith(page, [OBNOXIOUS]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.addInitScript((afterMs) => {
+      const late: number[] = [];
+      (window as unknown as { __lateShifts: number[] }).__lateShifts = late;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as unknown as { value: number; startTime: number }[]) {
+          if (entry.startTime > afterMs) late.push(entry.value);
+        }
+      }).observe({ type: 'layout-shift', buffered: true });
+    }, FIRST_PAINT_SETTLE_MS);
+    await page.goto('/');
+    await expect(page.getByTestId('home-upgrades')).toBeVisible();
+    const top = async (testId: string): Promise<number> => (await page.getByTestId(testId).boundingBox())!.y;
+    const cards = await top('home-account-block');
+    const line = await top('home-dates-line');
+    const upgrades = await top('home-upgrades');
+    const lookup = await top('home-lookup-cell');
+    const outcomes = await top('home-outcome-planner');
+    expect(line).toBeGreaterThan(cards);
+    expect(upgrades).toBeGreaterThan(line);
+    expect(lookup).toBeGreaterThan(upgrades);
+    expect(outcomes).toBeGreaterThan(lookup);
+    await expect(page.getByTestId('home-lookup-slot').getByTestId('home-lookup-cell')).toHaveCount(1);
+    await page.waitForTimeout(500);
+    const late = await page.evaluate(() => (window as unknown as { __lateShifts: number[] }).__lateShifts);
+    expect(late, 'nothing moves once the first layout has settled (hydration, reserves)').toEqual([]);
+  });
+}
+
+test('signed out the lookup stays in the hero, above the dates line', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
+  );
+  await page.goto('/');
+  await expect(page.getByTestId('home-lookup-slot')).toBeHidden();
+  const lookup = (await page.getByTestId('home-lookup-cell').boundingBox())!.y;
+  const line = (await page.getByTestId('home-dates-line').boundingBox())!.y;
+  expect(lookup).toBeLessThan(line);
+});

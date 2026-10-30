@@ -1,0 +1,108 @@
+---
+// web/src/components/HomeDatesLine.astro
+// The home page's one thin dates line under the hero (polish spec 2026-10-28 §5.6, owner
+// 2026-10-29), for every visitor: "Launch Nov 4 · 15:00 PST · First raids Dec 9". Only dates still
+// to come show, the next one in gold, and the whole line is absent once every date has passed.
+// The page is built once per deploy, so the markup is right for that day (`now` is a prop only so
+// the SSR test can pin it) and a small script re-reads it against the visitor's clock after first
+// paint, once a minute, so an event drops as soon as it passes with no edit or redeploy. Each
+// entry rides along as JSON for that script. Plain text, not a link, so no 44 px target is owed.
+import { datesLineItems, timelineRows, type DateEntry } from '../lib/home/timeline';
+
+interface Props {
+  dates: DateEntry[];
+  now?: Date;
+}
+const { dates, now } = Astro.props;
+const SEPARATOR = '\u00a0·';
+const items = datesLineItems(timelineRows(dates, now), now);
+---
+
+{items.length > 0 && (
+  <p
+    class="numeric text-muted text-[13px] leading-snug"
+    data-testid="home-dates-line"
+    data-entries={JSON.stringify(dates)}
+  >
+    {items.map((item, index) => (
+      <>
+        {index > 0 && (
+          <>
+            <span class="dates-sep" aria-hidden="true">
+              {SEPARATOR}
+            </span>{' '}
+          </>
+        )}
+        <span class:list={['dates-item', item.next && 'text-gold']} data-next={item.next ? '' : undefined}>
+          {item.text}
+        </span>
+      </>
+    ))}
+  </p>
+)}
+
+<style>
+  /* Each event is one unbreakable unit, and the dot hangs on the end of the one before it, so a
+     wrapped line at 390 never starts with a separator. */
+  .dates-item,
+  .dates-sep {
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  import { afterPaint } from '../lib/after-paint';
+  import type { DateEntry } from '../lib/home/timeline';
+
+  const REFRESH_MS = 60_000;
+  const SEPARATOR = '\u00a0·';
+
+  function itemEl(text: string, next: boolean): HTMLElement {
+    const el = document.createElement('span');
+    el.className = next ? 'dates-item text-gold' : 'dates-item';
+    el.textContent = text;
+    if (next) el.dataset.next = '';
+    return el;
+  }
+
+  function separatorEl(): HTMLElement {
+    const el = document.createElement('span');
+    el.className = 'dates-sep';
+    el.setAttribute('aria-hidden', 'true');
+    el.textContent = SEPARATOR;
+    return el;
+  }
+
+  // Wired after first paint (src/lib/after-paint.ts); the server markup is already right for the deploy.
+  afterPaint(() => {
+    void import('../lib/home/timeline').then(({ datesLineItems, timelineRows }) => {
+      const root = document.querySelector<HTMLElement>('[data-testid="home-dates-line"]');
+      if (!root?.dataset.entries) return;
+      const entries = JSON.parse(root.dataset.entries) as DateEntry[];
+      const refresh = (): void => {
+        const now = new Date();
+        const items = datesLineItems(timelineRows(entries, now), now);
+        const shown = Array.from(root.querySelectorAll('.dates-item')).map((el) => el.textContent);
+        const unchanged =
+          shown.length === items.length &&
+          items.every((item, index) => item.text === shown[index]) &&
+          root.querySelector('[data-next]')?.textContent === items[0]?.text;
+        if (unchanged) return;
+        // The line only ever loses events (or its first one), so a rebuild never grows the page.
+        if (items.length === 0) {
+          root.remove();
+          window.clearInterval(timer);
+          return;
+        }
+        root.replaceChildren(
+          ...items.flatMap((item, index) => [
+            ...(index > 0 ? [separatorEl(), document.createTextNode(' ')] : []),
+            itemEl(item.text, item.next),
+          ]),
+        );
+      };
+      const timer = window.setInterval(refresh, REFRESH_MS);
+      refresh();
+    });
+  });
+</script>
