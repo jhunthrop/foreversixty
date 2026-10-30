@@ -214,3 +214,19 @@ func TestQuietlyIsNilSafe(t *testing.T) {
 		t.Fatal("sent")
 	}
 }
+
+type simOnlySink struct{ fakeSink }
+
+func (s *simOnlySink) Renders(k Kind) bool { return k == SimFinished }
+
+func TestASinkThatDoesNotRenderAKindIsSkippedBeforeAnyRead(t *testing.T) {
+	st := &fakeStore{users: []int64{1}}
+	sink := &simOnlySink{}
+	r := &Router{Store: st, Sinks: map[Channel]Sink{ChannelDiscord: sink}}
+	if err := r.Publish(context.Background(), raidPosted(1)); err != nil || len(st.audiences) != 0 || len(st.claims) != 0 {
+		t.Fatalf("err %v audiences %v claims %v", err, st.audiences, st.claims)
+	}
+	if err := r.Publish(context.Background(), Event{Kind: SimFinished, Audience: Users(1), DedupeKey: "s"}); err != nil || len(sink.got) != 1 {
+		t.Fatalf("sim: %v %v", err, sink.got)
+	}
+}

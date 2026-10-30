@@ -173,6 +173,8 @@ type Config struct {
 
 	// Coach is the Log Coach's model client and cap settings.
 	Coach CoachConfig
+	// Push is the apps' notifications: the dark-launch flag and the APNs and FCM keys.
+	Push PushConfig
 }
 
 // String and GoString redact the whole Config so a stray %v or %+v never prints the
@@ -311,6 +313,9 @@ func Load(getenv func(string) string) (Config, error) {
 		return c, err
 	}
 	if c.Coach, err = loadCoach(getenv); err != nil {
+		return c, err
+	}
+	if c.Push, err = loadPush(getenv); err != nil {
 		return c, err
 	}
 

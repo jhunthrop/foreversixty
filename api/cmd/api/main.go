@@ -263,8 +263,8 @@ func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, t
 		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
 		Completed: newJobGuilds(cfg, pool, log),
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(context.Background(), cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return deps
 }
@@ -288,8 +288,8 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return sims.Run(ctx, deps, args[0])
 }
@@ -665,6 +665,7 @@ func serve(log *slog.Logger) error {
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
+	wireEvents(ctx, cfg, pool, &deps, log)
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,

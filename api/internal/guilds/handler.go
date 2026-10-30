@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -71,6 +72,11 @@ type Service struct {
 	// builds the default on first use.
 	SignupLimiter *httpx.KeyLimiter
 	limiterOnce   sync.Once
+	// Events publishes the player notifications (events.Router); nil publishes nothing.
+	Events events.Publisher
+	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a device token answer the sign-up PUT, the
+	// route the apps' In, Late and Out buttons call. Off, the route takes a session only.
+	AppSignups bool
 	// raidPostBudget bounds one request's raid posts together; zero means the default.
 	raidPostBudget time.Duration
 }
@@ -127,7 +133,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mountRaidMatchRoutes(mux, s, officerLimit)
 	mountRaidReportRoutes(mux, s, officerLimit)
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
-		s.signupRateLimit()(auth.RequireSession(s.putSignup)))
+		s.signupRateLimit()(s.signupAuth()(s.putSignup)))
 	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts
 	// depend on the viewer: the handler reads whatever actor the auth middleware put in
 	// context, and a verified member gets the guild's own numbers (private nights counted,
@@ -222,6 +228,15 @@ func (s *Service) freezeCheck(ctx context.Context, guildID int64, moderatorExemp
 
 // decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400
 // in the envelope on failure. Callers return immediately when it errors.
+// signupAuth is who may call the sign-up PUT: a session, and a device token too when the
+// apps' sign-up is on.
+func (s *Service) signupAuth() func(http.HandlerFunc) http.HandlerFunc {
+	if s.AppSignups {
+		return auth.Require
+	}
+	return auth.RequireSession
+}
+
 func decodeJSON(w http.ResponseWriter, r *http.Request, v any) error {
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxJSONBody)).Decode(v); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)

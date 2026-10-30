@@ -14,6 +14,12 @@ type Sink interface {
 	Deliver(ctx context.Context, userID int64, e Event) error
 }
 
+// KindFilter is a Sink that renders only some kinds; the router skips it for the rest
+// before claiming anything.
+type KindFilter interface {
+	Renders(kind Kind) bool
+}
+
 // RouterStore is what the router reads and writes (Store).
 type RouterStore interface {
 	// Recipients resolves an audience to account ids, each once.
@@ -64,7 +70,7 @@ func (r *Router) Publish(ctx context.Context, e Event) error {
 	if spec.Officer && e.Audience.Kind != ToGuildOfficers {
 		return errOfficerAudience
 	}
-	if len(r.Sinks) == 0 {
+	if !r.anySinkRenders(e.Kind) {
 		return nil
 	}
 	users, err := r.Store.Recipients(ctx, e.Audience)
@@ -97,6 +103,9 @@ func (r *Router) Publish(ctx context.Context, e Event) error {
 func (r *Router) deliverOne(ctx context.Context, uid int64, ch Channel, spec Spec, p Prefs, e Event, now time.Time) error {
 	sink, ok := r.Sinks[ch]
 	if !ok || !p.Allows(e.Kind, ch) {
+		return nil
+	}
+	if f, ok := sink.(KindFilter); ok && !f.Renders(e.Kind) {
 		return nil
 	}
 	if ch == ChannelPush && !spec.QuietExempt && p.InQuiet(now) {
@@ -133,4 +142,15 @@ func Quietly(ctx context.Context, p Publisher, log *slog.Logger, e Event) {
 		}
 		log.Error("events", "op", "publish", "kind", string(e.Kind), "err", err)
 	}
+}
+
+// anySinkRenders reports whether some sink can deliver kind, so an event no channel renders
+// costs no read.
+func (r *Router) anySinkRenders(kind Kind) bool {
+	for _, sink := range r.Sinks {
+		if f, ok := sink.(KindFilter); !ok || f.Renders(kind) {
+			return true
+		}
+	}
+	return false
 }

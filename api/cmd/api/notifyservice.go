@@ -8,7 +8,6 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
@@ -43,17 +42,6 @@ func newDiscordOAuth(cfg config.Config) notify.OAuthClient {
 		return nil
 	}
 	return notify.NewHTTPOAuthClient(cfg.DiscordClientID, cfg.DiscordClientSecret, notify.CallbackURL(cfg.APIBaseURL))
-}
-
-// newJobDeliverer is the poster the sim and parse jobs use, built from the
-// same wiring as the routes. It is nil when notifications are off, so the
-// jobs' optional Notify stays a true nil interface.
-func newJobDeliverer(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *notify.Deliverer {
-	service := newNotifyService(cfg, pool, &entitlements.Store{Pool: pool}, log)
-	if service == nil {
-		return nil
-	}
-	return service.Deliverer()
 }
 
 // newJobGuilds is the guilds service a job tells of a completed report

@@ -71,11 +71,15 @@ func (d *Deliverer) SimFinished(ctx context.Context, e SimFinished) {
 // UploadParsed posts the log message; see SimFinished. A private report
 // also needs the upload_private opt-in.
 func (d *Deliverer) UploadParsed(ctx context.Context, e UploadParsed) {
-	needs := []EventName{EventUploadParsed}
+	d.deliverQuietly(ctx, e.UserID, UploadParsedEmbed(d.PublicBaseURL, e), uploadNeeds(e)...)
+}
+
+// uploadNeeds is the events an upload's post needs on.
+func uploadNeeds(e UploadParsed) []EventName {
 	if e.Private {
-		needs = append(needs, EventUploadPrivate)
+		return []EventName{EventUploadParsed, EventUploadPrivate}
 	}
-	d.deliverQuietly(ctx, e.UserID, UploadParsedEmbed(d.PublicBaseURL, e), needs...)
+	return []EventName{EventUploadParsed}
 }
 
 func (d *Deliverer) deliverQuietly(ctx context.Context, userID int64, embed Embed, needs ...EventName) {
