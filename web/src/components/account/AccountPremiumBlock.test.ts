@@ -167,7 +167,7 @@ describe('AccountPremiumBlock plan headline', () => {
     const html = renderPlan({ ...PLAN, founder: true });
     expect(text(html)).toContain('Premium · renews 20 Dec 2026 · $6 a month');
     expect(html).toContain('data-testid="account-founder"');
-    expect(html).toContain('<h2 class="heading-plan">Premium</h2>');
+    expect(html.replace(/<!--[^>]*-->/g, '')).toContain('<h2 class="heading-plan">Premium</h2>');
     expect(text(html)).toContain('Renews 20 Dec 2026');
     expect(html).toContain('title="Founder price, kept while your plan stays active."');
     expect(html).toMatch(/class="sr-only"> ?Founder price, kept while your plan stays active\./);
