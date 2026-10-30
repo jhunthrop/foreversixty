@@ -77,13 +77,12 @@ function text(html: string): string {
 }
 
 describe('CharacterRatingPanel Forever Score card', () => {
-  it('is a design-system card: raised ground, 1px border, gold top highlight, 6px radius', () => {
+  it('is a design-system card: the account card surface with its gold top edge', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
     const card = /<div class="([^"]*)" data-testid="forever-score-card"/.exec(body)?.[1] ?? '';
-    for (const token of ['bg-raised', 'border-line', 'rounded-panel', 'border', 'p-4', 'md:p-5']) {
+    for (const token of ['card-surface', 'p-4', 'md:p-5']) {
       expect(card.split(' '), token).toContain(token);
     }
-    expect(card).toContain('shadow-[inset_0_1px_0_rgba(229,185,85,.35)]');
     // Fix round 2 item 4: no fixed minimum height; the no-logs card takes the scored shape.
     expect(card).not.toContain('min-h-');
   });
