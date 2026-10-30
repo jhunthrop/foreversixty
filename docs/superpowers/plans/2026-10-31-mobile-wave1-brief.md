@@ -30,5 +30,10 @@ Each lane builds ONE feature on BOTH platforms, iOS (SwiftUI) and Android (Compo
   - in web, `npm run check`, `lint` and `format:check`, whenever you touched anything under web/ (the drift tests live there, and CI's type check has failed twice on them)
   - the codegen drift checks, if you touched a source: `npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts` in web, with web/node_modules symlinked from `/Users/jh/code/forever/.claude/worktrees/lane-discord-bot/web/node_modules` and removed before committing
   - the Go contract tests, if you touched openapi.yaml or fixtures, on a private database you create and then drop
+- **One shared device per platform (owner 2026-10-30).** Never create, boot, erase or delete your own simulator or emulator.
+  - iOS: `make -C apps/ios test` runs on the shared simulator "Forever Sixty Test (iPhone 17)" and queues on a lock behind any other lane. For captures, wrap every simctl call: `tools/mobile-device.sh ios-run sh -c 'xcrun simctl io "$FS_SIM_UDID" screenshot …'`.
+  - Android: unit and Roborazzi tests run on the JVM and need no emulator. For emulator captures, wrap the whole capture: `tools/mobile-device.sh android-run <your capture script>`. It boots the one shared AVD, `foreversixty-test`, if it isn't already running.
+  - A lane waiting on a lock just waits. Never work around the lock.
+- **Tests never crash the app.** A missing fixture or a failed decode in a test helper throws, or records an issue and fails that one test. Never use `fatalError`, `assertionFailure`, `preconditionFailure`, `try!` or a force unwrap in test support. A crashed test host takes every other test with it, and macOS puts a crash dialog on the owner's screen.
 - **Captures.** Simulator and emulator screenshots of every screen and state, both platforms, saved to `design/reviews/2026-10-31-mobile-<feature>/` as `<screen>-<state>-ios.png` and `-and.png`. The two reviewers judge from these.
 - **Report.** Write it to `docs/superpowers/reports/2026-10-31-mobile-<feature>.md`. Return only STATUS, commits, a test summary and concerns.
