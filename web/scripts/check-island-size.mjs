@@ -79,7 +79,7 @@ const PAGE_ISLAND_BUDGETS = [
   { component: 'BisTooltipHost', limitBytes: 8 * 1024 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
-  // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,040 bytes
+  // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
   // gzipped on the fixture build of 2026-10-30, of which Floating UI's computePosition with
   // offset, shift and size is about 5.1 KB on its own (its autoUpdate and hide were replaced
   // by popover.ts's own watcher to save 1 KB). 10.5 KB holds it with the fixture/CI gap.

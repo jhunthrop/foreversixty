@@ -115,6 +115,12 @@ describe('placement', () => {
     expect(chooseSide(120, 600, 100)).toBe('bottom');
   });
 
+  it('a tall list that does not fit below flips to the roomier side above', () => {
+    expect(chooseSide(300, 600, 500)).toBe('top');
+    expect(chooseSide(300, 200, 500)).toBe('bottom');
+    expect(chooseSide(500, 600, 300)).toBe('bottom');
+  });
+
   it('caps the height at 360 px and at the room less 16 px', () => {
     expect(listMaxHeight(1000)).toBe(360);
     expect(listMaxHeight(200)).toBe(184);

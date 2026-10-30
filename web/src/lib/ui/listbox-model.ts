@@ -210,11 +210,13 @@ export function centredScrollTop(rowTop: number, rowHeight: number, viewportHeig
 
 export type Side = 'bottom' | 'top';
 
-/** Below, unless less than FLIP_THRESHOLD_PX fits there (or less than the list needs) and
- *  more fits above (§A4.2). */
+/** Below, unless the list does not fit there and more room is above (§A4.2: less than 240 px
+ *  below always flips when more fits above; a tall list of described rows flips sooner, so it
+ *  shows whole rather than a sliver). The panel is capped to its side's room either way. */
 export function chooseSide(spaceBelow: number, spaceAbove: number, listHeight: number): Side {
-  const needed = Math.min(FLIP_THRESHOLD_PX, listHeight);
-  return spaceBelow < needed && spaceAbove > spaceBelow ? 'top' : 'bottom';
+  const fitsBelow = spaceBelow >= listHeight + 2 * VIEWPORT_PADDING_PX;
+  const short = spaceBelow < Math.min(FLIP_THRESHOLD_PX, listHeight);
+  return (short || !fitsBelow) && spaceAbove > spaceBelow ? 'top' : 'bottom';
 }
 
 /** The list's max height on the chosen side: min(cap, available − 16) (§A4.2). The rows cap
@@ -250,8 +252,36 @@ export function qualityBorder(icon: OptionIcon | undefined): string | undefined 
   return icon?.quality === undefined ? undefined : `var(--color-rarity-${icon.quality})`;
 }
 
-/** The event the multi-select foot's button dispatches on the field (`Top 8`, §A4.5). */
+/** The event a multi-select foot action dispatches on the field, `detail.id` naming it (§A4.5). */
 export const FOOT_EVENT = 'selectfoot';
+
+/** One action in a multi-select's foot: a preset button (`Top 8`), or an inert tag that is lit
+ *  while it holds (`Custom`). */
+export interface FootAction {
+  id: string;
+  label: string;
+  pressed?: boolean;
+  /** A state, not a button: it lights while `pressed` and cannot be pressed. */
+  inert?: boolean;
+}
+
+/** Reads the foot actions a field carries as JSON in `data-foot`; malformed data reads as none. */
+export function readFootActions(raw: string | undefined): FootAction[] {
+  if (raw === undefined || raw === '') return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item): item is FootAction =>
+        typeof item === 'object' &&
+        item !== null &&
+        typeof item.id === 'string' &&
+        typeof item.label === 'string',
+    );
+  } catch {
+    return [];
+  }
+}
 
 /** A crest's class ring: the option's class token (§A4.1). */
 export function crestRing(icon: OptionIcon | undefined, colour: string | undefined): string | undefined {

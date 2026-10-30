@@ -119,14 +119,16 @@ describe('Select', () => {
       multiple: true,
       values: ['us'],
       fieldLabel: 'Top 8 of 40',
-      footLabel: 'Top 8',
+      footActions: [{ id: 'top', label: 'Top 8' }],
       footCount: '9 drawn',
       testid: 'players',
     });
     expect(body).toMatch(/<select class="sel-native"[^>]*multiple[^>]*hidden/);
     expect(body).toMatch(/<option value="us" selected/);
     expect(body).toContain('data-multiple="true"');
-    expect(body).toContain('data-foot-label="Top 8"');
+    expect(body).toContain(
+      'data-foot="[{&quot;id&quot;:&quot;top&quot;,&quot;label&quot;:&quot;Top 8&quot;}]"',
+    );
     expect(body).toContain('data-testid="players-sheet"');
     expect(body).toMatch(/class="sel-label"[^>]*>Top 8 of 40</);
   });

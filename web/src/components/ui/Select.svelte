@@ -15,6 +15,7 @@
   import { selectCopy } from '../../lib/ui/copy';
   import {
     FOOT_EVENT,
+    type FootAction,
     crestRing,
     labelColour,
     optionAttributes,
@@ -49,12 +50,13 @@
     testid,
     class: className = '',
     fieldLabel,
-    footLabel,
+    footActions = [],
     footCount,
     onfoot,
     oncoarseopen,
     staticField = false,
     focusOnMount = false,
+    fit = false,
     onchange,
   }: {
     value?: string;
@@ -92,16 +94,19 @@
     class?: string;
     /** A `multiple` field's closed text (`Top 8 of 40`, §A4.5). */
     fieldLabel?: string;
-    /** A `multiple` field's foot button (`Top 8`) and count (`9 drawn`). */
-    footLabel?: string;
+    /** A `multiple` field's foot: its presets (`Top 8`) and count (`9 drawn`). */
+    footActions?: readonly FootAction[];
     footCount?: string;
-    onfoot?: () => void;
+    /** A foot preset was pressed; its id. */
+    onfoot?: (id: string) => void;
     /** A `multiple` field on a coarse pointer has no native picker: the caller opens its sheet. */
     oncoarseopen?: () => void;
     /** Select.astro's server-rendered field: its script boots it, not this component. */
     staticField?: boolean;
     /** Takes focus when it mounts (a picker that opens in place of a button). */
     focusOnMount?: boolean;
+    /** As wide as the longest label it can show (a filter bar that wraps instead of truncating). */
+    fit?: boolean;
     onchange?: (event: Event) => void;
   } = $props();
 
@@ -114,6 +119,11 @@
   assertProps();
 
   const errorId = $derived(`${id}-error`);
+  const sizerLabels = $derived(
+    fit ? [...options.map((option) => option.label), placeholder ?? '', emptyLabel ?? ''] : [],
+  );
+  const anyIcon = $derived(fit && options.some((option) => option.icon !== undefined));
+  const footJson = $derived(footActions.length === 0 ? undefined : JSON.stringify(footActions));
   const showsError = $derived(error !== undefined || invalid);
   const describedIds = $derived(
     [describedBy, error === undefined ? undefined : errorId].filter(Boolean).join(' ') || undefined,
@@ -151,7 +161,10 @@
     if (focusOnMount) node.querySelector<HTMLElement>('.sel-native')?.focus();
     const attached = attachListbox(node);
     field = attached;
-    const onFoot = (): void => onfoot?.();
+    const onFoot = (event: Event): void => {
+      const id = (event as CustomEvent<{ id?: string }>).detail?.id;
+      if (id !== undefined) onfoot?.(id);
+    };
     node.addEventListener(FOOT_EVENT, onFoot);
     return () => {
       node.removeEventListener(FOOT_EVENT, onFoot);
@@ -162,7 +175,7 @@
 
   // The enhanced trigger and an open list follow every change the page makes.
   $effect(() => {
-    void [options, value, values, blocked, busy, showsError, faceText, footCount, describedIds];
+    void [options, value, values, blocked, busy, showsError, faceText, footCount, footJson, describedIds];
     field?.refresh();
   });
 
@@ -200,6 +213,7 @@
     class="sel"
     data-listbox
     data-size={size}
+    data-fit={fit ? 'true' : undefined}
     data-align={align}
     data-searchable={searchable || multiple ? 'true' : undefined}
     data-search-placeholder={searchPlaceholder}
@@ -211,7 +225,7 @@
     data-blocked={blocked ? 'true' : undefined}
     data-error={showsError ? 'true' : undefined}
     data-static={staticField ? 'true' : undefined}
-    data-foot-label={footLabel}
+    data-foot={footJson}
     data-foot-count={footCount}
     {@attach listbox}
   >
@@ -266,12 +280,31 @@
           style:--sel-quality={qualityBorder(picked.icon)}
           style:--sel-ring={crestRing(picked.icon, picked.colour)}
         >
-          <img src={picked.icon.src} alt="" width="20" height="20" decoding="async" />
+          {#if picked.icon.src !== ''}<img
+              src={picked.icon.src}
+              alt=""
+              width="20"
+              height="20"
+              decoding="async"
+            />{/if}
         </span>
       {/if}
-      <span class="sel-label" class:is-placeholder={showsPlaceholder} style:color={faceColour}
-        >{faceText}</span
-      >
+      {#snippet faceLabel()}
+        <span class="sel-label" class:is-placeholder={showsPlaceholder} style:color={faceColour}
+          >{faceText}</span
+        >
+      {/snippet}
+      {#if fit}
+        <!-- Every label the field can show, invisible in the label's own grid cell, so the field
+             is as wide as its longest value and the picked one never truncates. -->
+        <span class="sel-fit" class:has-icon={anyIcon && picked?.icon === undefined}>
+          {@render faceLabel()}
+          {#each sizerLabels as text, index (index)}<span class="sel-sizer" aria-hidden="true">{text}</span
+            >{/each}
+        </span>
+      {:else}
+        {@render faceLabel()}
+      {/if}
       {#if loading}
         <span class="sel-spin"><Spinner /></span>
       {:else if !empty}

@@ -70,7 +70,7 @@ interface FieldProps {
   searchPlaceholder?: string;
   multiple?: boolean;
   fieldLabel?: string;
-  footLabel?: string;
+  foot?: string;
   footCount?: string;
   placeholder?: string;
   required?: boolean;
@@ -87,7 +87,7 @@ function fieldMarkup(props: FieldProps, id: string): HTMLElement {
   if (props.searchPlaceholder !== undefined) field.dataset.searchPlaceholder = props.searchPlaceholder;
   if (props.multiple) field.dataset.multiple = 'true';
   if (props.placeholder !== undefined) field.dataset.placeholder = 'true';
-  if (props.footLabel !== undefined) field.dataset.footLabel = props.footLabel;
+  if (props.foot !== undefined) field.dataset.foot = props.foot;
   if (props.footCount !== undefined) field.dataset.footCount = props.footCount;
   const select = document.createElement('select');
   select.className = 'sel-native';
@@ -404,7 +404,10 @@ describe('the multi-select', () => {
     multiple: true,
     values: ['garrosk'],
     fieldLabel: 'Top 8 of 6',
-    footLabel: 'Top 8',
+    foot: JSON.stringify([
+      { id: 'top', label: 'Top 8' },
+      { id: 'custom', label: 'Custom', pressed: true, inert: true },
+    ]),
     footCount: '1 drawn',
   };
 
@@ -424,13 +427,17 @@ describe('the multi-select', () => {
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
   });
 
-  it('the foot button dispatches the foot event and shows the count', () => {
+  it('a foot preset dispatches the foot event with its id; the inert tag lights and never fires', () => {
     const { field, trigger } = mount(multi);
     const foot = vi.fn();
     field.addEventListener('selectfoot', foot);
     key(trigger, 'ArrowDown');
-    field.querySelector<HTMLButtonElement>('.sel-foot-button')!.click();
+    field.querySelector<HTMLElement>('[data-foot-id="custom"]')!.click();
+    expect(foot).not.toHaveBeenCalled();
+    expect(field.querySelector('[data-foot-id="custom"]')?.getAttribute('data-lit')).toBe('true');
+    field.querySelector<HTMLButtonElement>('button[data-foot-id="top"]')!.click();
     expect(foot).toHaveBeenCalledTimes(1);
+    expect((foot.mock.calls[0][0] as CustomEvent).detail).toEqual({ id: 'top' });
     expect(field.querySelector('.sel-foot-count')?.textContent).toBe('1 drawn');
   });
 });

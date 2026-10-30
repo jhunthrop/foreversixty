@@ -98,6 +98,31 @@
       border-color 120ms,
       background-color 120ms;
   }
+  /* A fitted field takes its width from its longest label, so its picked value never
+     truncates; the row around it wraps instead. The face joins the flow to give the width. */
+  .sel-root:has(> .sel[data-fit='true']) {
+    min-width: max-content;
+  }
+  .sel[data-fit='true'] > .sel-face {
+    position: relative;
+    height: 100%;
+  }
+  .sel-fit {
+    display: grid;
+  }
+  .sel-fit > * {
+    grid-area: 1 / 1;
+  }
+  .sel-sizer {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+  /* The longest label may be an option with an icon while the picked one has none. */
+  .sel-fit.has-icon > .sel-sizer {
+    padding-left: 28px;
+  }
   .sel-label {
     min-width: 0;
     overflow: hidden;
@@ -483,6 +508,48 @@
     gap: 8px;
     padding: 6px 8px;
     border-top: 1px solid var(--color-line-soft);
+  }
+  .sel-foot-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* A preset chip: the Players presets in the list's foot and in the chart's legend sheet. */
+  .chip-preset {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  button.chip-preset:hover {
+    border-color: rgb(229 185 85 / 0.45);
+  }
+  button.chip-preset[aria-pressed='true'],
+  .chip-preset.is-inert[data-lit='true'] {
+    border-color: var(--color-gold);
+    background: rgb(229 185 85 / 0.1);
+    color: var(--color-gold);
+  }
+  button.chip-preset:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  .chip-preset.is-inert:not([data-lit='true']) {
+    border-style: dashed;
+    color: var(--color-muted);
+  }
+  @media (pointer: coarse), (hover: none) {
+    .chip-preset {
+      min-height: 44px;
+    }
   }
   .sel-foot-count {
     margin-left: auto;

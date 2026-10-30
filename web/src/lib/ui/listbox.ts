@@ -20,11 +20,12 @@ import {
   filterRows,
   initialActive,
   moveActive,
+  readFootActions,
   readOptions,
   typeaheadMatch,
   type ListRow,
 } from './listbox-model';
-import { buildPanel, listContent, type PanelParts } from './listbox-render';
+import { buildPanel, footContent, listContent, type PanelParts } from './listbox-render';
 import { openPopover, type PopoverHandle } from './popover';
 
 export interface Listbox {
@@ -200,6 +201,7 @@ function create(field: HTMLElement): Listbox {
       panel.count.textContent = query.trim() === '' ? '' : selectCopy.matchCount(visible.length);
     if (panel.clear !== null) panel.clear.hidden = query === '';
     if (panel.footCount !== null) panel.footCount.textContent = field.dataset.footCount ?? '';
+    panel.footActions?.replaceChildren(footContent(readFootActions(field.dataset.foot)));
   }
 
   /** Moves among the visible rows by `step` from the active one. */
@@ -302,8 +304,12 @@ function create(field: HTMLElement): Listbox {
     panel.input.focus();
   }
 
-  function onFoot(): void {
-    field.dispatchEvent(new CustomEvent(FOOT_EVENT, { bubbles: true }));
+  function onFoot(event: MouseEvent): void {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>('button[data-foot-id]');
+    if (button === null || button === undefined) return;
+    field.dispatchEvent(
+      new CustomEvent(FOOT_EVENT, { bubbles: true, detail: { id: button.dataset.footId } }),
+    );
   }
 
   function mountPanel(): PanelParts {
@@ -315,7 +321,6 @@ function create(field: HTMLElement): Listbox {
       searchPlaceholder: field.dataset.searchPlaceholder ?? '',
       multiple,
       dense,
-      footLabel: field.dataset.footLabel,
     });
     built.scroller.addEventListener('scroll', onScroll, { passive: true });
     built.list.addEventListener('pointermove', onListPointerMove);
@@ -324,7 +329,7 @@ function create(field: HTMLElement): Listbox {
     built.input?.addEventListener('input', onFilterInput);
     built.input?.addEventListener('keydown', onKeydown);
     built.clear?.addEventListener('click', onClear);
-    built.foot?.addEventListener('click', onFoot);
+    built.footActions?.addEventListener('click', onFoot);
     field.append(built.panel);
     return built;
   }
@@ -499,7 +504,7 @@ function create(field: HTMLElement): Listbox {
     iconsPreloaded = true;
     [...select.options]
       .map((option) => option.dataset.icon)
-      .filter((src): src is string => src !== undefined)
+      .filter((src): src is string => src !== undefined && src !== '')
       .slice(0, PRELOAD_ICON_COUNT)
       .forEach((src) => {
         new Image().src = src;

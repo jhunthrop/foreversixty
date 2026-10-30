@@ -238,7 +238,10 @@
             ? `Top 8 of ${COMPARE.length - 1}`
             : `${drawn.length} of ${COMPARE.length - 1}`}
           searchPlaceholder={selectCopy.filterPlayers}
-          footLabel="Top 8"
+          footActions={[
+            { id: 'top', label: 'Top 8', pressed: drawn.join() === TOP.join() },
+            { id: 'custom', label: 'Custom', pressed: drawn.join() !== TOP.join(), inert: true },
+          ]}
           footCount="{drawn.length} drawn"
           onfoot={() => (drawn = [...TOP])}
           testid="sheet-players"

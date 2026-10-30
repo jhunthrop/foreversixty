@@ -3,13 +3,19 @@
 // panel, the filter row, the option rows with their icon, You tag, meta, description and
 // check, the group heads, the no-match row and the multi-select foot. Built from data only;
 // listbox.ts owns state and events.
-import { BUTTON_GHOST, BUTTON_SM } from './button';
 import { selectCopy } from './copy';
 import { CHECK_GLYPH, CLOSE_GLYPH, SEARCH_GLYPH } from './glyphs';
 
 const LIST_GLYPHS = { check: CHECK_GLYPH, close: CLOSE_GLYPH, search: SEARCH_GLYPH } as const;
 type ListGlyph = keyof typeof LIST_GLYPHS;
-import { crestRing, labelColour, matchSpan, qualityBorder, type ListRow } from './listbox-model';
+import {
+  crestRing,
+  labelColour,
+  matchSpan,
+  qualityBorder,
+  type FootAction,
+  type ListRow,
+} from './listbox-model';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -49,6 +55,8 @@ export function iconSlot(icon: NonNullable<ListRow['icon']>, colour: string | un
   if (border !== undefined) slot.style.setProperty('--sel-quality', border);
   const ring = crestRing(icon, colour);
   if (ring !== undefined) slot.style.setProperty('--sel-ring', ring);
+  // An empty src is a class the log never named: the slot stays, an empty neutral ring.
+  if (icon.src === '') return slot;
   const img = el('img', '');
   img.src = icon.src;
   img.alt = '';
@@ -167,7 +175,7 @@ export interface PanelParts {
   input: HTMLInputElement | null;
   clear: HTMLButtonElement | null;
   count: HTMLElement | null;
-  foot: HTMLButtonElement | null;
+  footActions: HTMLElement | null;
   footCount: HTMLElement | null;
 }
 
@@ -178,7 +186,6 @@ export interface PanelConfig {
   searchPlaceholder: string;
   multiple: boolean;
   dense: boolean;
-  footLabel: string | undefined;
 }
 
 function filterRow(
@@ -234,17 +241,15 @@ export function buildPanel(config: PanelConfig): PanelParts {
   body.append(scroller, el('span', 'sel-fade sel-fade-top'), el('span', 'sel-fade sel-fade-bottom'));
   panel.append(body);
 
-  let foot: HTMLButtonElement | null = null;
+  let footActions: HTMLElement | null = null;
   let footCount: HTMLElement | null = null;
   if (config.multiple) {
     const row = el('div', 'sel-foot');
-    if (config.footLabel !== undefined) {
-      foot = el('button', `${BUTTON_GHOST} ${BUTTON_SM} sel-foot-button`, config.footLabel);
-      foot.type = 'button';
-      row.append(foot);
-    }
+    footActions = el('div', 'sel-foot-actions');
+    footActions.setAttribute('role', 'group');
+    footActions.setAttribute('aria-labelledby', config.labelledBy);
     footCount = el('span', 'sel-foot-count');
-    row.append(footCount);
+    row.append(footActions, footCount);
     panel.append(row);
   }
   return {
@@ -255,7 +260,27 @@ export function buildPanel(config: PanelConfig): PanelParts {
     input: filter?.input ?? null,
     clear: filter?.clear ?? null,
     count: filter?.count ?? null,
-    foot,
+    footActions,
     footCount,
   };
+}
+
+/** The foot's presets: buttons with aria-pressed, and an inert tag lit while it holds (§A4.5). */
+export function footContent(actions: readonly FootAction[]): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  for (const action of actions) {
+    const node =
+      action.inert === true
+        ? el('span', 'chip-preset is-inert', action.label)
+        : el('button', 'chip-preset', action.label);
+    node.dataset.footId = action.id;
+    if (node instanceof HTMLButtonElement) {
+      node.type = 'button';
+      node.setAttribute('aria-pressed', action.pressed === true ? 'true' : 'false');
+    } else if (action.pressed === true) {
+      node.dataset.lit = 'true';
+    }
+    fragment.append(node);
+  }
+  return fragment;
 }

@@ -19,7 +19,9 @@ export interface ClassOptionInput {
   description?: string;
 }
 
-/** A player or class: the crest (where one exists) and the class colour on the label. */
+/** A player or class: the crest and the class colour on the label. A player whose class the log
+ *  never named keeps the crest's place as an empty neutral ring, so every player row reads the
+ *  same and the names stay in one column. */
 export function classOption(input: ClassOptionInput): SelectOption {
   const slug = classSlug(input.className);
   return {
@@ -30,7 +32,7 @@ export function classOption(input: ClassOptionInput): SelectOption {
     meta: input.meta,
     description: input.description,
     colour: classColorToken(input.className),
-    icon: slug !== undefined && hasClassCrest(slug) ? { kind: 'crest', src: classCrestSrc(slug) } : undefined,
+    icon: { kind: 'crest', src: slug !== undefined && hasClassCrest(slug) ? classCrestSrc(slug) : '' },
   };
 }
 

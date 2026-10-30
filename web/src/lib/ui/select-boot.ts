@@ -87,7 +87,8 @@ export function paintFace(field: HTMLElement): void {
   const colour = option?.dataset.colour;
   label.style.color = colour !== undefined && /^--[a-z0-9-]+$/.test(colour) ? `var(${colour})` : '';
   const icon = field.querySelector<HTMLImageElement>('.sel-face .sel-icon img');
-  if (icon !== null && option?.dataset.icon !== undefined) icon.src = option.dataset.icon;
+  if (icon !== null && option?.dataset.icon !== undefined && option.dataset.icon !== '')
+    icon.src = option.dataset.icon;
 }
 
 /** Boots every static field under `root` (Select.astro's script). */
