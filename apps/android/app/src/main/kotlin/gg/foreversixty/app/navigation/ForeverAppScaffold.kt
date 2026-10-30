@@ -18,16 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
+import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.home.HomeRoute
-import gg.foreversixty.app.network.AccountApi
 
 /** The app shell: a Material 3 navigation bar over one placeholder screen per tab. */
 @Composable
-fun ForeverAppScaffold(accountApi: AccountApi) {
+fun ForeverAppScaffold(home: HomeDependencies) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Character) }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         when (selected) {
-            ForeverTab.Character -> HomeRoute(accountApi)
+            ForeverTab.Character -> HomeRoute(home, openBis = { selected = ForeverTab.Bis }) { ComingSoon(selected) }
             ForeverTab.Bis, ForeverTab.Raids, ForeverTab.Sims, ForeverTab.Account -> ComingSoon(selected)
         }
     }

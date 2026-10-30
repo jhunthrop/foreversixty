@@ -6,6 +6,7 @@ import java.io.File
 import gg.foreversixty.app.auth.AndroidTokenStore
 import gg.foreversixty.app.auth.AppSignIn
 import gg.foreversixty.app.auth.TokenStore
+import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -47,6 +48,9 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
 
     /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
     val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
+
+    /** Lane F2: the home answer, its static item data and its cache. */
+    val home = HomeDependencies.create(context, config, accountApi, apiClient, appConfig)
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,
