@@ -52,7 +52,7 @@ Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerabilit
 
 ## Talents and builds
 
-- **Accelerant** — up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot. Fireball is the filler only until you train Scorch: from then on Scorch is the filler, so Accelerant speeds up nothing the level-60 rotation casts. The leveling build keeps one point, to open the tree's second row, and the raid build keeps four.
+- **Accelerant** — up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot. Fireball is the filler only until you train Scorch: from then on Scorch is the filler, so Accelerant speeds up nothing the level-60 rotation casts. The leveling build keeps one point, to open the tree's second row. The raid build's four are spare points: with raid buffs and a mana potion, moving them to Arcane measured under 1%, too little to change the build, so they stay.
 - **Incineration** — up to 10% more critical strike chance on Fire Blast and Scorch at rank 5. The client gave it two more ranks when it took two from Critical Mass, and the build moves its two points with them: 5/5.
 - **Ignite** — Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage.
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.

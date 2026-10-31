@@ -44,7 +44,7 @@ Discipline is the Priest shield-and-mitigation healing tree: Power Word: Shield 
 ### In a raid
 
 - **Role:** Tank healer; damage prevention more than raw throughput
-- **Brings:** Power Word: Fortitude for the group, with shields and Prayer of Mending on the tank
+- **Brings:** Power Word: Fortitude for the group, with shields and Renew on the tank
 
 ## Talents and builds
 
@@ -53,13 +53,13 @@ The build spends its deep points in Discipline and fills Holy with the points th
 - **Twin Disciplines, Improved Power Word: Shield and Mental Agility** are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
 - **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Inner Focus** is a free, extra-critical heal on demand.
 - **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals. Divine Aegis takes all three ranks: the client removed Binding Heal, and its point measured about +1.7% healing as Divine Aegis's third rank in our run.
-- In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration** and **Improved Renew** fill the remaining points.
+- In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration** fills the row below, and **Improved Renew** makes the Renew you keep on the tank heal more (about +1% healing over spending those points elsewhere in our run).
 
 Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
 ## Rotation and priority
 
-The curated rotation leads with **Penance** whenever it is ready, and keeps **Power Word: Shield** on a tank who is taking damage and is not under Weakened Soul. **Renew** and **Prayer of Mending** go on the tank; **Flash Heal** is the emergency button for a nearly dead tank or member; **Prayer of Healing** answers several party members being hurt together; **Heal** is the efficient filler.
+The curated rotation leads with **Penance** whenever it is ready, and keeps **Power Word: Shield** on a tank who is taking damage and is not under Weakened Soul. **Renew** stays on the tank at a cheap rank (keeping it up measured about +2% healing and a tenth more of the ranker's score in our run); **Flash Heal** is the emergency button for a nearly dead tank or member; **Prayer of Healing** answers several party members being hurt together; **Heal** is the efficient filler.
 
 The shield, the filler and Prayer of Healing are paced against your mana the way Holy's are: they fire at their normal thresholds only while your mana is keeping up with the share of the fight that is left. Discipline lasts longer on its mana than Holy does under the same fight, which is why the shield is worth pacing rather than dropping.
 
