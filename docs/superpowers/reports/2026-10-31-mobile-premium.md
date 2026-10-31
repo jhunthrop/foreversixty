@@ -25,8 +25,8 @@ Branch `wt/mobile-f8-premium`, one lane building both platforms. Spec: `design/s
 
 | Gate | Result |
 |---|---|
-| `make -C apps/ios test` (shared simulator, iOS 26.5) | exit 0, TEST SUCCEEDED: app-hosted 226 in 28 suites, packages 115 |
-| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` (JDK 21) | exit 0, 339 JVM tests, 0 failures |
+| `make -C apps/ios test` (shared simulator, iOS 26.5) | exit 0, TEST SUCCEEDED: app-hosted 267 in 32 suites, packages 115 |
+| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` (JDK 21) | exit 0, 380 JVM tests, 0 failures |
 | `npm run check`, `lint`, `format:check` | exit 0 each |
 | `npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts` | exit 0, 35 passed (7 new) |
 | `node web/scripts/gen-mobile-{api,copy,features,links,tokens}.mjs` | no drift |
@@ -37,6 +37,10 @@ Branch `wt/mobile-f8-premium`, one lane building both platforms. Spec: `design/s
 - Mock: ux-designer SHIP; wow-player HOLD (includes wording), then SHIP.
 - Build captures: ux-designer SHIP; wow-player HOLD (the See plans capture showed Chrome's first run), then SHIP on the re-capture of foreversixty.gg/premium.
 - Open shoulds are listed in `ux-verdict-build.md` and `player-verdict-build.md`. They cover the Founder tag position at the largest size across platforms, a line starting with `·` at Android 2.0, tick weight parity, and crown vs star tile icons.
+
+## After merging F5
+
+F5 (sims) left a fail-closed `mayLinkToPlans` hook for its lapsed-plan line. On both platforms it now reads `PlansLink`, so the second `See plans` (spec §5.8: at most two) follows the same rule. F5's copy of the plans URL is replaced by the one in `AccountLinks`.
 
 ## Concerns
 

@@ -62,7 +62,7 @@ struct SimsScreen: View {
             runAgain: { id in Task { await store.runAgain(id) } },
             retry: { Task { await store.load() } },
             loadMore: { Task { await store.loadMore() } },
-            openPlans: { openURL(SimsDependencies.plansURL) }
+            openPlans: { openURL(AccountLinks.premium) }
         )
     }
 
