@@ -17,6 +17,12 @@ import (
 // moving a number.
 const clientSpellconstDir = "../../data/builds/1.60.1.70009/spellconst/"
 
+// trueshotAuraSpellconstDir is the build Trueshot Aura's ranks are pinned
+// against: client 1.60.1.70707 cut them to 15/22/30/40/50 (from
+// 30/40/50/75/50), which the engine follows. The other buffs stay on
+// 70009, whose armor rows this reader still decodes.
+const trueshotAuraSpellconstDir = "../../data/builds/1.60.1.70707/spellconst/"
+
 // SpellEffect aura codes and misc values the buffs use.
 const (
 	auraModResistance  = 22 // misc 1 = armor, a school mask otherwise
@@ -46,7 +52,13 @@ var resistanceMasks = []int32{4, 8, 16, 32, 64}
 
 func loadClass(t *testing.T, class string) spellconst.Class {
 	t.Helper()
-	loaded, err := spellconst.Load(clientSpellconstDir + class + ".json")
+	return loadClassFrom(t, clientSpellconstDir, class)
+}
+
+// loadClassFrom is loadClass for a spellconst directory of another build.
+func loadClassFrom(t *testing.T, dir, class string) spellconst.Class {
+	t.Helper()
+	loaded, err := spellconst.Load(dir + class + ".json")
 	if err != nil {
 		t.Fatalf("loading the client's %s spellconst: %v", class, err)
 	}
@@ -114,7 +126,7 @@ func TestBattleShoutRanksMatchTheClient(t *testing.T) {
 }
 
 func TestTrueshotAuraRanksMatchTheClient(t *testing.T) {
-	assertRanks(t, "Trueshot Aura", loadClass(t, "hunter"), core.TrueshotAuraRanks, auraModRangedAttackPower, 0, false)
+	assertRanks(t, "Trueshot Aura", loadClassFrom(t, trueshotAuraSpellconstDir, "hunter"), core.TrueshotAuraRanks, auraModRangedAttackPower, 0, false)
 }
 
 func TestDevotionAuraRanksMatchTheClient(t *testing.T) {
