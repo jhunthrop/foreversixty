@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70658:druid:night-elf:45322001/0/50500351531132:'
+build: 'FS1:1.60.1.70707:druid:night-elf:45322001/0/50530051531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Talents, rotation, stats, and gear for Restoration Druid in Forever, and what is confirmed versus projected from the beta.'
@@ -50,12 +50,13 @@ Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets,
 
 The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal, and **Improved Rejuvenation** strengthens Rejuvenation.
+- **Naturalist** shortens Healing Touch and Wild Growth, **Gift of Nature** strengthens every heal, and **Improved Rejuvenation** strengthens Rejuvenation.
 - **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
-- **Gift of the Earthmother** shortens the global cooldown on Rejuvenation and Swiftmend, **Swiftmend** and **Nature's Swiftness** are the burst tools.
-- From Balance, **Genesis** adds to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells.
+- **Bloom** (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
+- **Swiftmend** (it eats the heal over time it reads) and **Nature's Swiftness** are the burst tools.
+- From Balance, **Genesis** adds 10% to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells.
 
-The sim measured the capstone Wild Growth and Improved Regrowth against spending those points elsewhere, and under this profile and rotation the points did better elsewhere. That is a statement about this rotation's mana pacing, not about the spells. Open the planner at [/planner?class=druid](/planner?class=druid) to adjust it.
+The sim measured the capstone Wild Growth and Improved Regrowth against spending those points elsewhere, and under this profile and rotation the points did better elsewhere; since 1.60.1.70707 Wild Growth also has a 3 second cast. Swapping Nature's Focus for Heart of the Wild (10% more Intellect, now on Restoration's top row) measured under 1% better and is not taken, because the sim cannot see what Nature's Focus does against interrupts. That is a statement about this rotation's mana pacing, not about the spells. Open the planner at [/planner?class=druid](/planner?class=druid) to adjust it.
 
 ## Rotation and priority
 

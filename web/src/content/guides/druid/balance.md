@@ -3,8 +3,8 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70658:druid:night-elf:5232221115400051/05/503301:'
-raidBuild: 'FS1:1.60.1.70658:druid:night-elf:5232220115501351/0/5053:'
+build: 'FS1:1.60.1.70707:druid:night-elf:5232221115100151/0/553303:'
+raidBuild: 'FS1:1.60.1.70707:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
@@ -54,13 +54,16 @@ Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm dam
 ## Talents and builds
 
 - **Improved Wrath** — up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke.
+- **Genesis** (2 points) — 2% more periodic damage a rank on Moonfire and Insect Swarm (doubled in the 1.60.1.70707 hotfix).
 - **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
-- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5; the leveling build takes rank 4 (0.4 seconds, 12% stun chance) to free a point for Insect Swarm below, and the raid build takes all five.
-- **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire; skipping it was an earlier error in this build, fixed by moving a point off Improved Starfire's last rank.
-- **Nature's Splendor** (1 point) — the one-point talent that the simulator credits with the largest single gain in this tree, taken with the point Nature's Grace used to hold.
+- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5. The raid build takes all five; the leveling build keeps one rank and moves the rest into Eclipse and Reflection, which our level-60 search measured at about +15% for the leveling build on the 1.60.1.70707 trees, mostly from the mana Reflection saves.
+- **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire.
+- **Nature's Splendor** (1 point) — the one-point talent that the simulator credits with the largest single gain in this tree.
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
-- **Eclipse** (raid build, 3 points) — reworked in Forever: each Wrath banks two charges, up to four, that take 0.5 seconds off your next two Starfires for 15 seconds. The raid build takes all three ranks and the fifth rank of Improved Wrath with the points Heart of the Wild held, which gained about 8% in our level-60 raid run with the Wrath-weaving loop below.
-- **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
+- **Eclipse** — reworked in Forever: each Wrath banks two charges, up to four, that take 0.17 seconds a rank off your next two Starfires for 15 seconds. The raid build takes all three ranks (0.5 seconds) and the fifth rank of Improved Wrath; the leveling build takes one.
+- **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party and raid members within 45 yards, on spells and attacks alike.
+
+The Restoration points reach **Naturalist**, 2% more damage of every kind a rank (10% at 5/5 in the raid build, 6% in the leveling build). **Nature's Focus** opens the tree and **Subtlety** cuts the threat of your Nature and Arcane spells. The leveling build also takes **Heart of the Wild** (10% more Intellect; it moved from Feral to Restoration's top row in 1.60.1.70707) and **Reflection** (half your mana regeneration keeps running while you cast).
 
 ## Rotation and priority
 

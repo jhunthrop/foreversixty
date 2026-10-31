@@ -23,7 +23,7 @@ Druid is the class built around shapeshifting: the same character can cast from 
 
 The three specs:
 
-- **Balance** is the ranged caster tree, built around Moonfire and Starfire and, at the capstone, a Moonkin Form that boosts the whole group's spell crit.
+- **Balance** is the ranged caster tree, built around Moonfire and Starfire and, at the capstone, a Moonkin Form that boosts the whole group's critical strike chance.
 - **Feral** covers both melee roles from a single tree: Cat Form for combo-point DPS built on Rake, Rip, and Shred, and Bear Form for tanking, built on threat generation and mitigation talents in the same tree.
 - **Restoration** is the healer tree, centered on Rejuvenation and Regrowth with mana-efficiency talents that let it out-sustain other healers over a long fight.
 
