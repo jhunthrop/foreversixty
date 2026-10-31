@@ -515,10 +515,11 @@ number; `set_id` is nullable, with sets in `sets.json`. `slot` is the item slot
 the client has not confirmed. The tooltip is built from these fields. Fixtures `cdn.items.warrior`,
 `cdn.items.hunter`.
 
-**Pending (spec C6).** Three item facts the tooltip draws, which the data lane has not published
-yet: `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`), `armor_type`
-(`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; null for a cloak),
-and `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
+**Spec C6 item facts.** `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`; for an
+item the client's ItemSparse lacks, classic-db's `item_template.bonding`, the same enum) and
+`armor_type` (`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; a
+cloak is `cloth`, as the client prints `Back ... Cloth`) are published by the generator from the
+next data run of each build. Still pending: `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
 set). Each is nullable and absent until published; draw nothing for a missing one. The
 `cdn.items.hunter` fixture carries them, read from the client's own Item and ItemSparse rows.
 `stats_source` is null on most real rows.

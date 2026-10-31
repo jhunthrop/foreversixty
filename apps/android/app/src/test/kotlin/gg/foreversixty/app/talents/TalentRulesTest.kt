@@ -58,7 +58,7 @@ class TalentRulesTest {
     fun `the same build matches, with nothing marked, totals 30 3 18`() {
         val guide = TalentRules.rankById(shaman, TalentRules.ranksOfBand(TalentTestData.SHAMAN_GUIDE))
         val diff = TalentRules.compare(shaman, guide, guide)
-        assertEquals(TalentDiff(0, 0, emptySet()), diff)
+        assertEquals(TalentDiff(0, 0, 0, emptySet()), diff)
         assertEquals(TalentStatus.Matches, diff.status)
         assertEquals(listOf(30, 3, 18), TalentRules.pointsPerTree(shaman, guide))
     }
@@ -69,7 +69,30 @@ class TalentRulesTest {
         val yours = TalentRules.rankById(warrior, TalentRules.ranksOfBand(TalentTestData.BAND_50))
         val diff = TalentRules.compare(warrior, yours, guide)
         assertEquals(0, diff.diffCount)
+        assertEquals(0, diff.extraCount)
         assertEquals(TalentStatus.ToTake(10), diff.status)
+    }
+
+    @Test
+    fun `level 58 - 49 points holding the whole 41-point guide match, 8 beyond it`() {
+        val guide = TalentRules.rankById(warrior, TalentRules.ranksOfBand(TalentTestData.BAND_50))
+        val yours = TalentRules.rankById(warrior, TalentTestData.yoursTrees)
+        val diff = TalentRules.compare(warrior, yours, guide)
+        assertEquals(0, diff.diffCount)
+        assertEquals(0, diff.missingCount)
+        assertEquals(8, diff.extraCount)
+        assertEquals(TalentStatus.Matches, diff.status)
+    }
+
+    @Test
+    fun `stray points differ only up to the guide's total - 10 stray minus (46 - 41) = 5`() {
+        val guide = TalentRules.rankById(warrior, TalentRules.ranksOfBand(TalentTestData.BAND_50))
+        val yours = TalentRules.rankById(warrior, TalentRules.ranksOfBand(TalentTestData.STRAY_AND_SHORT))
+        val diff = TalentRules.compare(warrior, yours, guide)
+        assertEquals(5, diff.diffCount)
+        assertEquals(5, diff.missingCount)
+        assertEquals(5, diff.extraCount)
+        assertEquals(TalentStatus.Differs(5), diff.status)
     }
 
     @Test

@@ -55,6 +55,20 @@ class TalentsScreenshotTest {
 
     @Test fun `matches`() = capture("talents_matches_default", 1f, page = page(TalentsPhase.Loaded(presenter(TalentTestData.SHAMAN_GUIDE), null)))
 
+    @Test fun `matches with points beyond the guide`() = capture(
+        "talents_matches_beyond_default", 1f,
+        page = page(
+            TalentsPhase.Loaded(
+                TalentsPresenter(
+                    TalentTestData.warrior(), TalentGuideBuild.Build(TalentTestData.BAND_50, 50),
+                    TalentExport.Ranks(TalentTestData.yoursTrees), 58, "Fury",
+                ),
+                null,
+            ),
+            tree = 1,
+        ),
+    )
+
     @Test fun `guide segment`() = capture("talents_guide_default", 1f, page = page(TalentsPhase.Loaded(presenter(), null), TalentBuildKind.Guide))
 
     @Test fun `no export`() =

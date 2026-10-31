@@ -132,7 +132,6 @@ struct TalentsPresenter: Equatable, Sendable {
     }
 
     var yourTotal: Int? { yourRanks.map { $0.values.reduce(0, +) } }
-    var guideTotal: Int? { guideRanks.map { $0.values.reduce(0, +) } }
 
     /// The builds that can be drawn; the segments show only when both can.
     var builds: [TalentBuildKind] {
@@ -176,7 +175,10 @@ struct TalentsPresenter: Equatable, Sendable {
         }
         switch diff.status {
         case .matches:
-            return TalentStatusLine(tag: Copy.talentsMatches, tagKind: .matches, sentence: Copy.talentsMatch(spec: specName, band: bandLabel))
+            let sentence = diff.extraCount > 0
+                ? Copy.talentsMatchBeyond(spec: specName, band: bandLabel)
+                : Copy.talentsMatch(spec: specName, band: bandLabel)
+            return TalentStatusLine(tag: Copy.talentsMatches, tagKind: .matches, sentence: sentence)
         case let .differs(count):
             return TalentStatusLine(
                 tag: Copy.talentsDiffers, tagKind: .differs,
@@ -197,8 +199,8 @@ struct TalentsPresenter: Equatable, Sendable {
         if let diff, diff.diffCount > 0, diff.missingCount > 0 {
             lines.append(Copy.talentsMissing(n: diff.missingCount))
         }
-        if let diff, !diff.differing.isEmpty, let yourTotal, let guideTotal, let bandLabel, let level, yourTotal > guideTotal {
-            lines.append(Copy.talentsBeyond(l: level, band: bandLabel, g: guideTotal))
+        if let diff, diff.extraCount > 0 {
+            lines.append(Copy.talentsBeyond(n: diff.extraCount))
         }
         // No export and no guide either: say both, and draw no tree (spec F6 §6, No export).
         if !hasTree { lines.append(Copy.talentsNoList) }

@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
@@ -484,7 +485,11 @@ type Service struct {
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.
 	SimRequests SimRequester
-	Log         *slog.Logger
+	// Events publishes character.linked and band.entered after a sync; nil publishes nothing.
+	Events events.Publisher
+	// PublicBaseURL is the site origin the notifications link to.
+	PublicBaseURL string
+	Log           *slog.Logger
 }
 
 // SimRequester is enough of sims.Service to start the run an in-game
@@ -592,7 +597,11 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 	}
 	userID := auth.ActorFrom(r.Context()).UserID
 	out := ExportsResult{Stored: len(in.Characters)}
+	notifier := s.beforeSync(r.Context(), userID, in.Characters)
 	err := s.Store.PutExports(r.Context(), userID, in.Characters)
+	if err == nil {
+		s.afterSync(r.Context(), notifier, in.Characters)
+	}
 	if err == nil && hasOutbox {
 		var key string
 		out.Outbox, key, err = s.applyOutbox(r.Context(), userID, outbox)
@@ -647,6 +656,7 @@ func (s *Service) putMyExports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userID := auth.ActorFrom(r.Context()).UserID
+	notifier := s.beforeSync(r.Context(), userID, in.Exports)
 	if err := s.Store.PutExports(r.Context(), userID, in.Exports); err != nil {
 		if errors.Is(err, ErrCharacterClaimed) {
 			httpx.WriteError(w, r, http.StatusConflict, "conflict",
@@ -657,6 +667,7 @@ func (s *Service) putMyExports(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "my_exports", err, "could not store those exports just now")
 		return
 	}
+	s.afterSync(r.Context(), notifier, in.Exports)
 	chars, err := s.writtenCharacters(r.Context(), in.Exports)
 	if err != nil {
 		s.fail(w, r, "my_exports", err, "could not store those exports just now")

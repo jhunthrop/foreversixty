@@ -92,7 +92,6 @@ class TalentsPresenter(
     fun bandLabel(res: Resources): String? = (guide as? TalentGuideBuild.Build)?.let { TalentGuide.label(it.band, res) }
 
     val yourTotal: Int? get() = yourRanks?.values?.sum()
-    val guideTotal: Int? get() = guideRanks?.values?.sum()
 
     /** The builds that can be drawn; the segments show only when both can. */
     val builds: List<TalentBuildKind>
@@ -129,8 +128,10 @@ class TalentsPresenter(
         val band = bandLabel(res).orEmpty()
         val differs = res.getString(R.string.talents_differs)
         return when (val status = diff.status) {
-            TalentStatus.Matches ->
-                TalentStatusLine(res.getString(R.string.talents_matches), TalentTagKind.Matches, res.getString(R.string.talents_match, specName, band))
+            TalentStatus.Matches -> {
+                val sentence = if (diff.extraCount > 0) R.string.talents_matchBeyond else R.string.talents_match
+                TalentStatusLine(res.getString(R.string.talents_matches), TalentTagKind.Matches, res.getString(sentence, specName, band))
+            }
             is TalentStatus.Differs ->
                 TalentStatusLine(differs, TalentTagKind.Differs, res.getString(R.string.talents_differ, status.count, yourTotal ?: 0, band))
             is TalentStatus.ToTake ->
@@ -149,13 +150,7 @@ class TalentsPresenter(
         if (diff != null && diff.diffCount > 0 && diff.missingCount > 0) {
             add(res.getQuantityString(R.plurals.talents_missing, diff.missingCount, diff.missingCount))
         }
-        val guideTotal = guideTotal
-        val band = bandLabel(res)
-        if (diff != null && diff.differing.isNotEmpty() && yours != null && guideTotal != null && band != null &&
-            level != null && yours > guideTotal
-        ) {
-            add(res.getString(R.string.talents_beyond, level, band, guideTotal))
-        }
+        if (diff != null && diff.extraCount > 0) add(res.getString(R.string.talents_beyond, diff.extraCount))
         // No export and no guide either: say both, and draw no tree (spec F6 §6, No export).
         if (!hasTree) add(res.getString(R.string.talents_noList))
     }

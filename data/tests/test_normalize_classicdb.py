@@ -19,6 +19,8 @@ from pipeline.classicdb_items import ClassicDbItem, write_extract
 from pipeline.models import ClassItems, Item, ItemSetRecord
 from pipeline.normalize import normalize_build
 from pipeline.normalize.classicdb import (
+    classicdb_bonding,
+    fill_bonding,
     load_classicdb_supplement,
     merge_class_items,
     merge_items,
@@ -58,6 +60,52 @@ def _empty_spell_text() -> SpellText:
 
 
 # --- Unit tests for the small merge helpers ---------------------------------
+
+
+def _gear(item_id: int, stats_source: str | None, bonding: str | None):
+    from pipeline.models import GearItem
+
+    return GearItem(
+        id=item_id,
+        name=f"Item {item_id}",
+        icon="inv_misc_questionmark",
+        slot="back",
+        quality=3,
+        required_level=40,
+        required_level_source="client",
+        item_level=45,
+        armor=0,
+        stats={},
+        stats_source=stats_source,
+        bonding=bonding,
+        set_id=None,
+        unique=False,
+    )
+
+
+def test_fill_bonding_fills_only_wowhead_rows_that_state_none() -> None:
+    """The client's own Bonding (even 0, published as None) is the truth for its
+    rows; only a wowhead row, whose source states no binding, takes classic-db's."""
+    record = ClassItems(
+        build="1.0.0.1",
+        class_slug="mage",
+        items=[
+            _gear(1, "wowhead", None),
+            _gear(2, None, None),  # a client row with no binding
+            _gear(3, "wowhead", "use"),
+            _gear(4, "wowhead", None),  # classic-db has no row
+            _gear(5, "wowhead", None),  # classic-db says no binding
+        ],
+    )
+    [filled] = fill_bonding([record], {1: 2, 2: 1, 3: 1, 5: 0})
+    assert [item.bonding for item in filled.items] == ["equip", None, "use", None, None]
+    assert record.items[0].bonding is None  # the input is not mutated
+
+
+def test_classicdb_bonding_reads_the_extract(tmp_path: Path) -> None:
+    write_extract(tmp_path, [_item(id=7, bonding=2), _item(id=8)], {}, source_commit="x")
+    assert classicdb_bonding(tmp_path) == {7: 2}
+    assert classicdb_bonding(tmp_path / "none") == {}
 
 
 def test_load_classicdb_supplement_is_none_and_logs_when_the_build_has_no_extract(
@@ -171,8 +219,8 @@ def _write_item_template_extract(root: Path) -> None:
     write_extract(
         build_dir,
         [
-            _item(id=11815, allowable_class=-1),
-            _item(id=271218, name="Vileblood Scimitar", allowable_class=-1),
+            _item(id=11815, allowable_class=-1, bonding=2),
+            _item(id=271218, name="Vileblood Scimitar", allowable_class=-1, bonding=1),
         ],
         {},
         source_commit="deadbeef",
@@ -206,6 +254,10 @@ def test_normalize_build_merges_the_classicdb_supplement_after_wowhead(
     assert hand_of_justice["required_level_source"] == "classic-db"
     assert hand_of_justice["client_unconfirmed"] is True
     assert hand_of_justice["slot"] == "trinket"
+    assert hand_of_justice["bonding"] == "equip"
+    # wowhead's planner states no binding; the same id's classic-db row fills it.
+    scimitar = next(item for item in warrior["items"] if item["id"] == 271218)
+    assert (scimitar["stats_source"], scimitar["bonding"]) == ("wowhead", "pickup")
 
 
 def test_a_build_with_no_classicdb_extract_matches_todays_golden_output(

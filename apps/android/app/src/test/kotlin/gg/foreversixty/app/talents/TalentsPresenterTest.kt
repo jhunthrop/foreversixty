@@ -75,13 +75,26 @@ class TalentsPresenterTest {
     }
 
     @Test
-    fun `a level past the band's build says why it differs`() {
+    fun `level 58 holding the whole 41-point guide matches, with the points beyond it noted`() {
         val model = TalentsPresenter(
             warrior, TalentGuideBuild.Build(TalentTestData.BAND_50, 50), TalentExport.Ranks(TalentTestData.yoursTrees), 58, "Fury",
         )
-        assertEquals("8 of your 49 points differ from the 50 to 59 guide build.", model.status(res).sentence)
         assertEquals(
-            listOf("Level 58 is past the 50 to 59 guide build's 41 points, so points past it show as differing."),
+            TalentStatusLine("Matches", TalentTagKind.Matches, "Your build has every point of the Fury 50 to 59 guide build."),
+            model.status(res),
+        )
+        assertEquals(listOf("+8 beyond the guide"), model.notes(res))
+    }
+
+    @Test
+    fun `stray points past the guide's total do not differ, the rest do`() {
+        val model = TalentsPresenter(
+            warrior, TalentGuideBuild.Build(TalentTestData.BAND_50, 50),
+            TalentExport.Ranks(TalentRules.ranksOfBand(TalentTestData.STRAY_AND_SHORT)), 58, "Fury",
+        )
+        assertEquals("5 of your 46 points differ from the 50 to 59 guide build.", model.status(res).sentence)
+        assertEquals(
+            listOf("3 points unspent.", "The guide build takes 5 points you have not.", "+5 beyond the guide"),
             model.notes(res),
         )
     }
