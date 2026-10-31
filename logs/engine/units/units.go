@@ -42,6 +42,9 @@ const FlagAffiliationGroup = FlagAffiliationMine | FlagAffiliationParty | FlagAf
 // logger, a party or raid member, or one of their pets) on this line.
 func InGroup(f uint32) bool { return f&FlagAffiliationGroup != 0 }
 
+// Neutral reports whether the flags mark a neutral (yellow) unit.
+func Neutral(f uint32) bool { return f&FlagReactionNeutral != 0 }
+
 // Friendly reports whether the flags mark a friendly unit.
 func Friendly(f uint32) bool { return f&FlagReactionFriendly != 0 }
 

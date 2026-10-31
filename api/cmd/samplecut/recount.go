@@ -56,7 +56,7 @@ func countFight(dir string, e store.FightEntry) (store.FightEntry, error) {
 	if err != nil {
 		return e, fmt.Errorf("samplecut: %s: %w", path, err)
 	}
-	c := fight.NewCounter()
+	c := fight.NewCounter(fight.DefaultOptions())
 	for _, ev := range events {
 		c.Observe(ev)
 	}

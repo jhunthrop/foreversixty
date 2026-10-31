@@ -288,14 +288,14 @@
     state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped ? groupScopeNow.group : playerSet,
   );
   /**
-   * The subtitle's deaths: the fight's own count, or under the group scope the group's: the
-   * pull's own group_deaths from engine 0.6.0, else the group's deaths in the fight's summary.
+   * The subtitle's deaths: the fight's own count, or under the group scope the group's deaths in
+   * the fight's summary, the same list the Deaths tab shows below it (the fight list's mark reads
+   * the engine's group_deaths, which also takes back a hunter's Feign Death).
    */
   const subtitleDeaths = $derived(
     !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES
       ? (fight?.deaths ?? 0)
-      : (fight?.group_deaths ??
-          (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length),
+      : (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length,
   );
   /** What the scope's players are called on the chart and the tables. */
   const noun = $derived(scopeNoun(groupScopeNow, state.source));

@@ -1288,8 +1288,8 @@
         "Player-4184-000002C5"
       ],
       "deaths": 0,
-      "mob_deaths": 3,
-      "group_kills": 0,
+      "mob_deaths": 5,
+      "group_kills": 2,
       "group_deaths": 0,
       "group": [
         "Player-4184-00000038"
@@ -1311,8 +1311,8 @@
         "Player-4184-000002C4"
       ],
       "deaths": 0,
-      "mob_deaths": 1,
-      "group_kills": 0,
+      "mob_deaths": 2,
+      "group_kills": 1,
       "group_deaths": 0,
       "group": [
         "Player-4184-00000038"

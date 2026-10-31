@@ -188,7 +188,7 @@ func Rebuild(index int, h Header, events []event.Event) (fight.Fight, summary.Su
 	reg := units.NewRegistry(UnitOptions())
 	acc := summary.New(SummaryOptions(reg))
 	acc.Start(f.Start)
-	counts := fight.NewCounter()
+	counts := fight.NewCounter(fight.DefaultOptions())
 	for _, e := range events {
 		if e.Time.After(f.End) {
 			f.End = e.Time

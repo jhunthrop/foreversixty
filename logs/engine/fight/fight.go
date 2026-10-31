@@ -92,13 +92,20 @@ type Options struct {
 	// Trailing keeps an encounter open after ENCOUNTER_END so that the
 	// damage-over-time ticks that land afterwards are counted.
 	Trailing time.Duration
+	// CritterMaxHP is the most maximum health a neutral unit can have and
+	// still be a critter, never a mob death (see Counter). The game data in
+	// this repository has no creature types, so the line is drawn by health:
+	// a critter has a handful of points, the weakest level-one neutral beast
+	// on Forever has 42. Zero takes the default.
+	CritterMaxHP int64
 }
 
 // DefaultOptions are the values the CLI and the session use. A zero Gap
 // takes the default; a zero MinTrash or Trailing disables that behaviour on
 // purpose, so pass a negative value to ask for the default instead.
 func DefaultOptions() Options {
-	return Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second, Trailing: 2 * time.Second}
+	return Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second, Trailing: 2 * time.Second,
+		CritterMaxHP: 10}
 }
 
 func (o Options) withDefaults() Options {
@@ -111,6 +118,9 @@ func (o Options) withDefaults() Options {
 	}
 	if o.Trailing < 0 {
 		o.Trailing = d.Trailing
+	}
+	if o.CritterMaxHP <= 0 {
+		o.CritterMaxHP = d.CritterMaxHP
 	}
 	return o
 }
@@ -168,7 +178,7 @@ func RestoreSegmenter(o Options, s State) *Segmenter {
 	sg.lastFight, sg.ending, sg.endAt = s.LastFight, s.Ending, s.EndAt
 	if s.Open != nil {
 		f := *s.Open
-		f.counts = restoreCounter(f)
+		f.counts = restoreCounter(sg.opt, f)
 		f.markers = map[string]Marker{}
 		for _, m := range f.Markers {
 			f.markers[m.GUID] = m
@@ -297,7 +307,7 @@ func (s *Segmenter) newFight(k Kind, e event.Event) *Fight {
 		StartLine: e.Line, EndLine: e.Line,
 		StartOffset: e.Offset, EndOffset: e.Offset,
 		InProgress: true,
-		counts:     NewCounter(),
+		counts:     NewCounter(s.opt),
 		markers:    map[string]Marker{},
 	}
 }
@@ -360,7 +370,9 @@ func (f *Fight) snapshotMarkers() []Marker {
 
 // hostileCombat reports whether an event is combat between opposed sides,
 // which is what starts and sustains a trash fight. Buffs cast in a city and
-// a player eating do not.
+// a player eating do not. A neutral (yellow) beast the group fights is the
+// other side as much as a hostile one is: it keeps its neutral flags for the
+// whole fight, and the summary already counts it as an enemy (units.Enemy).
 func hostileCombat(e event.Event) bool {
 	switch e.Kind {
 	case event.Damage, event.DamageLanded, event.Missed, event.Absorbed, event.PartyKill:
@@ -371,7 +383,7 @@ func hostileCombat(e event.Event) bool {
 	if src == 0 && dst == 0 {
 		return false
 	}
-	return units.Hostile(src) != units.Hostile(dst)
+	return units.Enemy(src) != units.Enemy(dst)
 }
 
 // watchBoss remembers the boss's health from any advanced block that

@@ -2,6 +2,8 @@
 package session
 
 import (
+	"encoding/csv"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -10,32 +12,83 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
-// hostileDeathsInText is the oracle for a fight's mob deaths, read straight
-// from the log text rather than through the engine: the distinct hostile,
-// non-player units a UNIT_DIED or PARTY_KILL line names between two
-// offsets. Both line kinds put the dead unit in the dest fields (GUID at 5,
-// flags at 7).
-func hostileDeathsInText(t *testing.T, src []byte, start, end int64) map[string]bool {
+// mobDeathsInText is the oracle for a fight's mob deaths, read straight from
+// the log text rather than through the engine: the distinct non-player units
+// a UNIT_DIED or PARTY_KILL line names between two offsets that were hostile
+// on some line of the range, or neutral and damaged or killed by a unit
+// flagged MINE, PARTY or RAID. The fixtures hold no critter, so the critter
+// cutoff is not modelled here (fight/counts_test.go covers it).
+func mobDeathsInText(t *testing.T, src []byte, start, end int64) map[string]bool {
 	t.Helper()
-	out := map[string]bool{}
+	hostile, groupTouched, dead := map[string]bool{}, map[string]bool{}, map[string]bool{}
 	for _, line := range strings.Split(string(src[start:min(end+1, int64(len(src)))]), "\n") {
 		_, body, ok := strings.Cut(line, "  ")
 		if !ok {
 			continue
 		}
-		f := strings.Split(body, ",")
-		if len(f) < 8 || (f[0] != "UNIT_DIED" && f[0] != "PARTY_KILL") {
+		r := csv.NewReader(strings.NewReader(body))
+		r.LazyQuotes = true
+		f, err := r.Read()
+		if err != nil || len(f) < 8 {
 			continue
 		}
-		flags, err := strconv.ParseUint(strings.TrimPrefix(f[7], "0x"), 16, 32)
-		if err != nil {
-			t.Fatalf("flags %q: %v", f[7], err)
+		srcFlags, dstFlags := flagsOf(f[3]), flagsOf(f[7])
+		for _, u := range [][2]string{{f[1], f[3]}, {f[5], f[7]}} {
+			if units.Hostile(flagsOf(u[1])) && units.Parse(u[0]).Kind != units.KindPlayer {
+				hostile[u[0]] = true
+			}
 		}
-		if units.Hostile(uint32(flags)) && units.Parse(f[5]).Kind != units.KindPlayer {
-			out[f[5]] = true
+		damage := strings.HasSuffix(f[0], "_DAMAGE")
+		if (damage || f[0] == "PARTY_KILL") && units.InGroup(srcFlags) {
+			groupTouched[f[5]] = true
+		}
+		if (f[0] == "UNIT_DIED" || f[0] == "PARTY_KILL") && units.Parse(f[5]).Kind != units.KindPlayer {
+			dead[f[5]] = units.Hostile(dstFlags) || units.Neutral(dstFlags)
+		}
+	}
+	out := map[string]bool{}
+	for guid, reacts := range dead {
+		if reacts && (hostile[guid] || groupTouched[guid]) {
+			out[guid] = true
 		}
 	}
 	return out
+}
+
+func flagsOf(s string) uint32 {
+	v, err := strconv.ParseUint(strings.TrimPrefix(s, "0x"), 16, 32)
+	if err != nil {
+		return 0
+	}
+	return uint32(v)
+}
+
+// Every fixture dialect, so the oracle sees v16, v22 and a real Forever log.
+var countFixtures = []string{"../event/testdata/v16.log", "../event/testdata/v22.log", "../event/testdata/forever-1.60.log"}
+
+func TestEveryFixturesMobDeathsMatchTheText(t *testing.T) {
+	for _, path := range countFixtures {
+		t.Run(path, func(t *testing.T) {
+			src, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, _ := feed(t, opts(), src, 512)
+			if len(got.Closed) == 0 {
+				t.Fatal("the fixture closed no fight")
+			}
+			for _, c := range got.Closed {
+				f := c.Fight
+				want := mobDeathsInText(t, src, f.StartOffset, f.EndOffset)
+				if f.MobDeaths != len(want) {
+					t.Errorf("fight %d: mob deaths = %d, the text names %d", f.Index, f.MobDeaths, len(want))
+				}
+				if f.GroupKills > f.MobDeaths {
+					t.Errorf("fight %d: group kills %d exceed mob deaths %d", f.Index, f.GroupKills, f.MobDeaths)
+				}
+			}
+		})
+	}
 }
 
 // The v16 fixture's Hollow Sentinel dies on a UNIT_DIED and a PARTY_KILL.
@@ -46,7 +99,7 @@ func TestTheFixtureCountsEachMobDeathOnce(t *testing.T) {
 	sawSentinel := false
 	for _, c := range got.Closed {
 		f := c.Fight
-		want := hostileDeathsInText(t, src, f.StartOffset, f.EndOffset)
+		want := mobDeathsInText(t, src, f.StartOffset, f.EndOffset)
 		if f.MobDeaths != len(want) {
 			t.Errorf("fight %d: mob deaths = %d, the text names %d distinct hostile units dying",
 				f.Index, f.MobDeaths, len(want))
