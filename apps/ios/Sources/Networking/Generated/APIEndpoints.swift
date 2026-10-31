@@ -245,6 +245,14 @@ public extension Endpoint where Response == PushTokenRegistered {
     }
 }
 
+public extension Endpoint where Response == CalendarFeed {
+    /// GET /v1/me/calendar-feed: Your calendar link, made on first call (W3-C17; session or app token)
+    static var getCalendarFeed: Endpoint { Endpoint(method: .get, path: "/v1/me/calendar-feed") }
+
+    /// POST /v1/me/calendar-feed/reset: Replace your calendar link; the old one stops working (W3-C17; session or app token)
+    static var resetCalendarFeed: Endpoint { Endpoint(method: .post, path: "/v1/me/calendar-feed/reset") }
+}
+
 public extension Endpoint where Response == AppConfig {
     /// GET /v1/app/config: What the apps read once at launch (dark, APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
@@ -332,6 +340,8 @@ public enum ContractRoutes {
         FixtureRoute(.patch, "/v1/me/notifications", fixture: "app.notifications", status: 200),
         FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
         FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
+        FixtureRoute(.get, "/v1/me/calendar-feed", fixture: "calendar.feed", status: 200),
+        FixtureRoute(.post, "/v1/me/calendar-feed/reset", fixture: "calendar.feed", status: 200),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
     ]
 

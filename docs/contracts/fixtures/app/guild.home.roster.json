@@ -1,0 +1,1872 @@
+{
+  "data": {
+    "addon_snapshot": {
+      "received_at": "2026-12-17T03:11:00Z",
+      "by_character": "us/pvp/kraggor",
+      "members": 38
+    },
+    "attendance_source": "raids",
+    "claim": {
+      "state": "claimed",
+      "since": "2026-10-04T18:00:00Z",
+      "frozen": false,
+      "claimed_by_name": "Kraggor#1187"
+    },
+    "counts": {
+      "on_roster": 38,
+      "in_game_no_account": 4,
+      "waiting": 2,
+      "not_seen": 0
+    },
+    "guild": {
+      "id": 2,
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "OLYMPUS XXVII",
+      "faction": "horde",
+      "crest_url": null
+    },
+    "members": [
+      {
+        "name": "Kraggor",
+        "state": "approved",
+        "rank": "leader",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-protection",
+        "seen_at": "2026-12-16 21:40",
+        "role": "tank",
+        "spec_name": "Protection Warrior",
+        "spec_icon": "inv_shield_06",
+        "character_key": "us/pvp/kraggor"
+      },
+      {
+        "name": "Mendara",
+        "state": "approved",
+        "rank": "officer",
+        "class": "priest",
+        "level": 60,
+        "spec": "priest-holy",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit",
+        "character_key": "us/pvp/mendara"
+      },
+      {
+        "name": "Draknar",
+        "state": "approved",
+        "rank": "officer",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-fury",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage",
+        "character_key": "us/pvp/draknar"
+      },
+      {
+        "name": "Lightningbolltz",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-elemental",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Elemental Shaman",
+        "spec_icon": "spell_nature_lightning",
+        "character_key": "us/pvp/lightningbolltz"
+      },
+      {
+        "name": "Rainspeaker",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity",
+        "character_key": "us/pvp/rainspeaker"
+      },
+      {
+        "name": "Skarn",
+        "state": "approved",
+        "rank": "member",
+        "class": "rogue",
+        "level": 60,
+        "spec": "rogue-combat",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab",
+        "character_key": "us/pvp/skarn"
+      },
+      {
+        "name": "Zekra",
+        "state": "approved",
+        "rank": "member",
+        "class": "rogue",
+        "level": 60,
+        "spec": "rogue-combat",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab",
+        "character_key": "us/pvp/zekra"
+      },
+      {
+        "name": "Morvane",
+        "state": "approved",
+        "rank": "member",
+        "class": "warlock",
+        "level": 60,
+        "spec": "warlock-affliction",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Affliction Warlock",
+        "spec_icon": "spell_shadow_deathcoil",
+        "character_key": "us/pvp/morvane"
+      },
+      {
+        "name": "Thokgar",
+        "state": "approved",
+        "rank": "officer",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-protection",
+        "seen_at": "2026-12-16 21:40",
+        "role": "tank",
+        "spec_name": "Protection Warrior",
+        "spec_icon": "inv_shield_06",
+        "character_key": "us/pvp/thokgar"
+      },
+      {
+        "name": "Ursoka",
+        "state": "approved",
+        "rank": "member",
+        "class": "druid",
+        "level": 60,
+        "spec": "druid-feral-bear",
+        "seen_at": "2026-12-16 21:40",
+        "role": "tank",
+        "spec_name": "Feral Bear Druid",
+        "spec_icon": "ability_racial_bearform",
+        "character_key": "us/pvp/ursoka"
+      },
+      {
+        "name": "Hollowmere",
+        "state": "approved",
+        "rank": "member",
+        "class": "priest",
+        "level": 60,
+        "spec": "priest-holy",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit",
+        "character_key": "us/pvp/hollowmere"
+      },
+      {
+        "name": "Sennari",
+        "state": "approved",
+        "rank": "member",
+        "class": "priest",
+        "level": 60,
+        "spec": "priest-holy",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit",
+        "character_key": "us/pvp/sennari"
+      },
+      {
+        "name": "Tidecaller",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity",
+        "character_key": "us/pvp/tidecaller"
+      },
+      {
+        "name": "Zul'jak",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity",
+        "character_key": "us/pvp/zuljak"
+      },
+      {
+        "name": "Ombrewood",
+        "state": "approved",
+        "rank": "member",
+        "class": "druid",
+        "level": 60,
+        "spec": "druid-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Druid",
+        "spec_icon": "spell_nature_healingtouch",
+        "character_key": "us/pvp/ombrewood"
+      },
+      {
+        "name": "Fernhoof",
+        "state": "approved",
+        "rank": "member",
+        "class": "druid",
+        "level": 59,
+        "spec": "druid-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Druid",
+        "spec_icon": "spell_nature_healingtouch",
+        "character_key": "us/pvp/fernhoof"
+      },
+      {
+        "name": "Vashkar",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-restoration",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity",
+        "character_key": "us/pvp/vashkar"
+      },
+      {
+        "name": "Grimtusk",
+        "state": "approved",
+        "rank": "member",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-fury",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage",
+        "character_key": "us/pvp/grimtusk"
+      },
+      {
+        "name": "Bloodmaw",
+        "state": "approved",
+        "rank": "member",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-fury",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage",
+        "character_key": "us/pvp/bloodmaw"
+      },
+      {
+        "name": "Korrakh",
+        "state": "approved",
+        "rank": "member",
+        "class": "warrior",
+        "level": 60,
+        "spec": "warrior-arms",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Arms Warrior",
+        "spec_icon": "ability_rogue_eviscerate",
+        "character_key": "us/pvp/korrakh"
+      },
+      {
+        "name": "Sliverfang",
+        "state": "approved",
+        "rank": "member",
+        "class": "rogue",
+        "level": 60,
+        "spec": "rogue-combat",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab",
+        "character_key": "us/pvp/sliverfang"
+      },
+      {
+        "name": "Nightvex",
+        "state": "approved",
+        "rank": "member",
+        "class": "rogue",
+        "level": 60,
+        "spec": "rogue-combat",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab",
+        "character_key": "us/pvp/nightvex"
+      },
+      {
+        "name": "Pyrelle",
+        "state": "approved",
+        "rank": "member",
+        "class": "mage",
+        "level": 60,
+        "spec": "mage-fire",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fire Mage",
+        "spec_icon": "spell_fire_firebolt02",
+        "character_key": "us/pvp/pyrelle"
+      },
+      {
+        "name": "Frostmaw",
+        "state": "approved",
+        "rank": "member",
+        "class": "mage",
+        "level": 60,
+        "spec": "mage-frost",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02",
+        "character_key": "us/pvp/frostmaw"
+      },
+      {
+        "name": "Embersong",
+        "state": "approved",
+        "rank": "member",
+        "class": "mage",
+        "level": 60,
+        "spec": "mage-frost",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02",
+        "character_key": "us/pvp/embersong"
+      },
+      {
+        "name": "Quillara",
+        "state": "approved",
+        "rank": "member",
+        "class": "mage",
+        "level": 58,
+        "spec": "mage-frost",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02",
+        "character_key": "us/pvp/quillara"
+      },
+      {
+        "name": "Hexmire",
+        "state": "approved",
+        "rank": "member",
+        "class": "warlock",
+        "level": 60,
+        "spec": "warlock-destruction",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Destruction Warlock",
+        "spec_icon": "spell_shadow_rainoffire",
+        "character_key": "us/pvp/hexmire"
+      },
+      {
+        "name": "Duskwhisper",
+        "state": "approved",
+        "rank": "member",
+        "class": "warlock",
+        "level": 60,
+        "spec": "warlock-affliction",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Affliction Warlock",
+        "spec_icon": "spell_shadow_deathcoil",
+        "character_key": "us/pvp/duskwhisper"
+      },
+      {
+        "name": "Arrowmane",
+        "state": "approved",
+        "rank": "member",
+        "class": "hunter",
+        "level": 60,
+        "spec": "hunter-marksmanship",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship",
+        "character_key": "us/pvp/arrowmane"
+      },
+      {
+        "name": "Talonstrike",
+        "state": "approved",
+        "rank": "member",
+        "class": "hunter",
+        "level": 60,
+        "spec": "hunter-marksmanship",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship",
+        "character_key": "us/pvp/talonstrike"
+      },
+      {
+        "name": "Grizzlepaw",
+        "state": "approved",
+        "rank": "member",
+        "class": "hunter",
+        "level": 60,
+        "spec": "hunter-beast-mastery",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Beast Mastery Hunter",
+        "spec_icon": "ability_hunter_beasttaming",
+        "character_key": "us/pvp/grizzlepaw"
+      },
+      {
+        "name": "Stormhide",
+        "state": "approved",
+        "rank": "member",
+        "class": "shaman",
+        "level": 60,
+        "spec": "shaman-enhancement",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Enhancement Shaman",
+        "spec_icon": "spell_nature_lightningshield",
+        "character_key": "us/pvp/stormhide"
+      },
+      {
+        "name": "Voidsong",
+        "state": "waiting",
+        "rank": "member",
+        "class": "priest",
+        "level": 57,
+        "spec": "priest-shadow",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Shadow Priest",
+        "spec_icon": "spell_shadow_shadowwordpain",
+        "character_key": "us/pvp/voidsong"
+      },
+      {
+        "name": "Moonveil",
+        "state": "waiting",
+        "rank": "member",
+        "class": "druid",
+        "level": 56,
+        "spec": "druid-balance",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Balance Druid",
+        "spec_icon": "spell_nature_starfall",
+        "character_key": "us/pvp/moonveil"
+      },
+      {
+        "name": "Gruzz",
+        "state": "no_account",
+        "rank": "member",
+        "class": "warrior",
+        "level": 54,
+        "spec": "warrior-fury",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
+      },
+      {
+        "name": "Shadeleaf",
+        "state": "no_account",
+        "rank": "member",
+        "class": "priest",
+        "level": 60,
+        "spec": "priest-holy",
+        "seen_at": "2026-12-16 21:40",
+        "role": "healer",
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit"
+      },
+      {
+        "name": "Tazzlo",
+        "state": "no_account",
+        "rank": "member",
+        "class": "mage",
+        "level": 52,
+        "spec": "mage-fire",
+        "seen_at": "2026-12-16 21:40",
+        "role": "dps",
+        "spec_name": "Fire Mage",
+        "spec_icon": "spell_fire_firebolt02"
+      },
+      {
+        "name": "Brokkar",
+        "state": "no_account",
+        "rank": "member",
+        "class": "warrior",
+        "level": 49,
+        "spec": "warrior-protection",
+        "seen_at": "2026-12-16 21:40",
+        "role": "tank",
+        "spec_name": "Protection Warrior",
+        "spec_icon": "inv_shield_06"
+      }
+    ],
+    "next_raid": {
+      "id": 31,
+      "zone": "raid:onyxias-lair",
+      "zone_name": "Onyxia's Lair",
+      "title": "Onyxia's Lair",
+      "starts_at": "2026-12-20T01:00:00Z",
+      "status": "planned",
+      "size": 40,
+      "guild_timezone": "America/Chicago",
+      "counts": {
+        "in": 18,
+        "late": 2,
+        "tanks": 2,
+        "healers": 5,
+        "dps": 11
+      },
+      "own": {
+        "character_key": "us/pvp/obnoxious-yell",
+        "state": "in",
+        "role": "dps",
+        "note": ""
+      }
+    },
+    "pending": [],
+    "reports": [
+      {
+        "id": "ewlrx3enxbeb",
+        "title": "Onyxia, Tuesday",
+        "zone": "Onyxia's Lair",
+        "created_at": "2026-12-15T01:58:00Z",
+        "fight_count": 9,
+        "kill_count": 1,
+        "duration_ms": 4080000
+      }
+    ],
+    "roster": [
+      {
+        "account_key": "u:1800",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-protection",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/kraggor",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Kraggor",
+        "rank": "leader",
+        "region": "us",
+        "role": "tank",
+        "ruleset": "hardcore",
+        "spec": "Protection",
+        "supporter": true,
+        "verified": true,
+        "item_level": 58,
+        "spec_name": "Protection Warrior",
+        "spec_icon": "inv_shield_06"
+      },
+      {
+        "account_key": "u:1801",
+        "addon": {
+          "level": 60,
+          "spec": "priest-holy",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/mendara",
+        "class": "priest",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Mendara",
+        "rank": "officer",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Holy",
+        "supporter": false,
+        "verified": true,
+        "item_level": 65,
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit"
+      },
+      {
+        "account_key": "u:1802",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-fury",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/draknar",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Draknar",
+        "rank": "officer",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Fury",
+        "supporter": false,
+        "verified": true,
+        "item_level": 63,
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
+      },
+      {
+        "account_key": "u:1803",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-elemental",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/lightningbolltz",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Lightningbolltz",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Elemental",
+        "supporter": true,
+        "verified": true,
+        "item_level": 61,
+        "spec_name": "Elemental Shaman",
+        "spec_icon": "spell_nature_lightning"
+      },
+      {
+        "account_key": "u:1804",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-restoration",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/rainspeaker",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Rainspeaker",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 59,
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity"
+      },
+      {
+        "account_key": "u:1805",
+        "addon": {
+          "level": 60,
+          "spec": "rogue-combat",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 5,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 5,
+          "nights": 8
+        },
+        "character_key": "us/pvp/skarn",
+        "class": "rogue",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Skarn",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Combat",
+        "supporter": false,
+        "verified": true,
+        "item_level": 66,
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab"
+      },
+      {
+        "account_key": "u:1806",
+        "addon": {
+          "level": 60,
+          "spec": "rogue-combat",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 5,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 5,
+          "nights": 8
+        },
+        "character_key": "us/pvp/zekra",
+        "class": "rogue",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Zekra",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Combat",
+        "supporter": false,
+        "verified": true,
+        "item_level": 64,
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab"
+      },
+      {
+        "account_key": "u:1807",
+        "addon": {
+          "level": 60,
+          "spec": "warlock-affliction",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/morvane",
+        "class": "warlock",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Morvane",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Affliction",
+        "supporter": false,
+        "verified": true,
+        "item_level": 62,
+        "spec_name": "Affliction Warlock",
+        "spec_icon": "spell_shadow_deathcoil"
+      },
+      {
+        "account_key": "u:1808",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-protection",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/thokgar",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Thokgar",
+        "rank": "officer",
+        "region": "us",
+        "role": "tank",
+        "ruleset": "hardcore",
+        "spec": "Protection",
+        "supporter": false,
+        "verified": true,
+        "item_level": 60,
+        "spec_name": "Protection Warrior",
+        "spec_icon": "inv_shield_06"
+      },
+      {
+        "account_key": "u:1809",
+        "addon": {
+          "level": 60,
+          "spec": "druid-feral-bear",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/ursoka",
+        "class": "druid",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Ursoka",
+        "rank": "member",
+        "region": "us",
+        "role": "tank",
+        "ruleset": "hardcore",
+        "spec": "Feral Bear",
+        "supporter": false,
+        "verified": true,
+        "item_level": 58,
+        "spec_name": "Feral Bear Druid",
+        "spec_icon": "ability_racial_bearform"
+      },
+      {
+        "account_key": "u:1810",
+        "addon": {
+          "level": 60,
+          "spec": "priest-holy",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/hollowmere",
+        "class": "priest",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Hollowmere",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Holy",
+        "supporter": false,
+        "verified": true,
+        "item_level": 65,
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit"
+      },
+      {
+        "account_key": "u:1811",
+        "addon": {
+          "level": 60,
+          "spec": "priest-holy",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 4,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 4,
+          "nights": 8
+        },
+        "character_key": "us/pvp/sennari",
+        "class": "priest",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Sennari",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Holy",
+        "supporter": false,
+        "verified": true,
+        "item_level": 63,
+        "spec_name": "Holy Priest",
+        "spec_icon": "spell_holy_guardianspirit"
+      },
+      {
+        "account_key": "u:1812",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-restoration",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/tidecaller",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Tidecaller",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 61,
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity"
+      },
+      {
+        "account_key": "u:1813",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-restoration",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/zuljak",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Zul'jak",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 59,
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity"
+      },
+      {
+        "account_key": "u:1814",
+        "addon": {
+          "level": 60,
+          "spec": "druid-restoration",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/ombrewood",
+        "class": "druid",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Ombrewood",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 66,
+        "spec_name": "Restoration Druid",
+        "spec_icon": "spell_nature_healingtouch"
+      },
+      {
+        "account_key": "u:1815",
+        "addon": {
+          "level": 59,
+          "spec": "druid-restoration",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 3,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 3,
+          "nights": 8
+        },
+        "character_key": "us/pvp/fernhoof",
+        "class": "druid",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Fernhoof",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 64,
+        "spec_name": "Restoration Druid",
+        "spec_icon": "spell_nature_healingtouch"
+      },
+      {
+        "account_key": "u:1816",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-restoration",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 5,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 5,
+          "nights": 8
+        },
+        "character_key": "us/pvp/vashkar",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Vashkar",
+        "rank": "member",
+        "region": "us",
+        "role": "healer",
+        "ruleset": "hardcore",
+        "spec": "Restoration",
+        "supporter": false,
+        "verified": true,
+        "item_level": 62,
+        "spec_name": "Restoration Shaman",
+        "spec_icon": "spell_nature_magicimmunity"
+      },
+      {
+        "account_key": "u:1817",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-fury",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/grimtusk",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Grimtusk",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Fury",
+        "supporter": false,
+        "verified": true,
+        "item_level": 60,
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
+      },
+      {
+        "account_key": "u:1818",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-fury",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/bloodmaw",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Bloodmaw",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Fury",
+        "supporter": false,
+        "verified": true,
+        "item_level": 58,
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
+      },
+      {
+        "account_key": "u:1819",
+        "addon": {
+          "level": 60,
+          "spec": "warrior-arms",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 2,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 2,
+          "nights": 8
+        },
+        "character_key": "us/pvp/korrakh",
+        "class": "warrior",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Korrakh",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Arms",
+        "supporter": false,
+        "verified": true,
+        "item_level": 65,
+        "spec_name": "Arms Warrior",
+        "spec_icon": "ability_rogue_eviscerate"
+      },
+      {
+        "account_key": "u:1820",
+        "addon": {
+          "level": 60,
+          "spec": "rogue-combat",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/sliverfang",
+        "class": "rogue",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Sliverfang",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Combat",
+        "supporter": false,
+        "verified": true,
+        "item_level": 63,
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab"
+      },
+      {
+        "account_key": "u:1821",
+        "addon": {
+          "level": 60,
+          "spec": "rogue-combat",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/nightvex",
+        "class": "rogue",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Nightvex",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Combat",
+        "supporter": false,
+        "verified": true,
+        "item_level": 61,
+        "spec_name": "Combat Rogue",
+        "spec_icon": "ability_backstab"
+      },
+      {
+        "account_key": "u:1822",
+        "addon": {
+          "level": 60,
+          "spec": "mage-fire",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/pyrelle",
+        "class": "mage",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Pyrelle",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Fire",
+        "supporter": false,
+        "verified": true,
+        "item_level": 59,
+        "spec_name": "Fire Mage",
+        "spec_icon": "spell_fire_firebolt02"
+      },
+      {
+        "account_key": "u:1823",
+        "addon": {
+          "level": 60,
+          "spec": "mage-frost",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/frostmaw",
+        "class": "mage",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Frostmaw",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Frost",
+        "supporter": false,
+        "verified": true,
+        "item_level": 66,
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02"
+      },
+      {
+        "account_key": "u:1824",
+        "addon": {
+          "level": 60,
+          "spec": "mage-frost",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/embersong",
+        "class": "mage",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Embersong",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Frost",
+        "supporter": false,
+        "verified": true,
+        "item_level": 64,
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02"
+      },
+      {
+        "account_key": "u:1825",
+        "addon": {
+          "level": 58,
+          "spec": "mage-frost",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 1,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 1,
+          "nights": 8
+        },
+        "character_key": "us/pvp/quillara",
+        "class": "mage",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Quillara",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Frost",
+        "supporter": false,
+        "verified": true,
+        "item_level": 62,
+        "spec_name": "Frost Mage",
+        "spec_icon": "spell_frost_frostbolt02"
+      },
+      {
+        "account_key": "u:1826",
+        "addon": {
+          "level": 60,
+          "spec": "warlock-destruction",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 7,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 7,
+          "nights": 8
+        },
+        "character_key": "us/pvp/hexmire",
+        "class": "warlock",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Hexmire",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Destruction",
+        "supporter": false,
+        "verified": true,
+        "item_level": 60,
+        "spec_name": "Destruction Warlock",
+        "spec_icon": "spell_shadow_rainoffire"
+      },
+      {
+        "account_key": "u:1827",
+        "addon": {
+          "level": 60,
+          "spec": "warlock-affliction",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 5,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 5,
+          "nights": 8
+        },
+        "character_key": "us/pvp/duskwhisper",
+        "class": "warlock",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Duskwhisper",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Affliction",
+        "supporter": false,
+        "verified": true,
+        "item_level": 58,
+        "spec_name": "Affliction Warlock",
+        "spec_icon": "spell_shadow_deathcoil"
+      },
+      {
+        "account_key": "u:1828",
+        "addon": {
+          "level": 60,
+          "spec": "hunter-marksmanship",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 8,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 8,
+          "nights": 8
+        },
+        "character_key": "us/pvp/arrowmane",
+        "class": "hunter",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Arrowmane",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Marksmanship",
+        "supporter": false,
+        "verified": true,
+        "item_level": 65,
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship"
+      },
+      {
+        "account_key": "u:1829",
+        "addon": {
+          "level": 60,
+          "spec": "hunter-marksmanship",
+          "gear_gap": 4,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 6,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 6,
+          "nights": 8
+        },
+        "character_key": "us/pvp/talonstrike",
+        "class": "hunter",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Talonstrike",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Marksmanship",
+        "supporter": false,
+        "verified": true,
+        "item_level": 63,
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship"
+      },
+      {
+        "account_key": "u:1830",
+        "addon": {
+          "level": 60,
+          "spec": "hunter-beast-mastery",
+          "gear_gap": 0,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 4,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 4,
+          "nights": 8
+        },
+        "character_key": "us/pvp/grizzlepaw",
+        "class": "hunter",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Grizzlepaw",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Beast Mastery",
+        "supporter": false,
+        "verified": true,
+        "item_level": 61,
+        "spec_name": "Beast Mastery Hunter",
+        "spec_icon": "ability_hunter_beasttaming"
+      },
+      {
+        "account_key": "u:1831",
+        "addon": {
+          "level": 60,
+          "spec": "shaman-enhancement",
+          "gear_gap": 1,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 3,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 3,
+          "nights": 8
+        },
+        "character_key": "us/pvp/stormhide",
+        "class": "shaman",
+        "consent": "gear",
+        "last_report_at": "2026-12-17T05:02:00Z",
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Stormhide",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Enhancement",
+        "supporter": false,
+        "verified": true,
+        "item_level": 59,
+        "spec_name": "Enhancement Shaman",
+        "spec_icon": "spell_nature_lightningshield"
+      },
+      {
+        "account_key": "u:1832",
+        "addon": {
+          "level": 57,
+          "spec": "priest-shadow",
+          "gear_gap": 2,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 0,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 0,
+          "nights": 8
+        },
+        "character_key": "us/pvp/voidsong",
+        "class": "priest",
+        "consent": "gear",
+        "last_report_at": null,
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Voidsong",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Shadow",
+        "supporter": false,
+        "verified": false,
+        "item_level": 66,
+        "spec_name": "Shadow Priest",
+        "spec_icon": "spell_shadow_shadowwordpain"
+      },
+      {
+        "account_key": "u:1833",
+        "addon": {
+          "level": 56,
+          "spec": "druid-balance",
+          "gear_gap": 3,
+          "build": null,
+          "seen_at": "2026-12-16 21:40",
+          "snapshot_at": "2026-12-17T03:11:00Z"
+        },
+        "attendance": {
+          "present": 0,
+          "nights": 8
+        },
+        "attendance_30": {
+          "present": 0,
+          "nights": 8
+        },
+        "character_key": "us/pvp/moonveil",
+        "class": "druid",
+        "consent": "gear",
+        "last_report_at": null,
+        "logged_at": "2026-12-17T03:10:00Z",
+        "logged_recently": true,
+        "may_approve": false,
+        "may_remove": false,
+        "name": "Moonveil",
+        "rank": "member",
+        "region": "us",
+        "role": "dps",
+        "ruleset": "hardcore",
+        "spec": "Balance",
+        "supporter": false,
+        "verified": false,
+        "item_level": 64,
+        "spec_name": "Balance Druid",
+        "spec_icon": "spell_nature_starfall"
+      }
+    ],
+    "summary": {
+      "raiders": 34,
+      "waiting_for_approval": 2,
+      "below_rating_floor": 2,
+      "named_encounters_down": 1,
+      "pulls_this_tier": 27,
+      "updated_at": "2026-12-15T05:11:00Z"
+    },
+    "viewer": {
+      "role": "member",
+      "character_key": "us/pvp/lightningbolltz",
+      "verified": true,
+      "officer_tools": false,
+      "raid_guild_tools": false,
+      "verify": {
+        "has_approver": true
+      }
+    }
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "9f2c41d07ab3e655"
+}

@@ -18,6 +18,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case notifications = "notifications"
     /// F8: See plans, where the storefront allows a web checkout link
     case premiumLink = "premium_link"
+    /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
+    case guildExtras = "guild_extras"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -30,6 +32,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .talents: false
         case .notifications: false
         case .premiumLink: false
+        case .guildExtras: false
         }
     }
 }

@@ -2277,6 +2277,337 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Roster
+    static var raidsRosterRow: String { text("raids.rosterRow") }
+
+    /// {n} on the roster · attendance
+    static func raidsRosterRowSub(n: Int) -> String {
+        format("raids.rosterRow.sub", n)
+    }
+
+    /// Raid history
+    static var raidsHistoryRow: String { text("raids.historyRow") }
+
+    /// Logged raid nights
+    static var raidsHistoryRowSub: String { text("raids.historyRow.sub") }
+
+    /// Roster
+    static var rosterTitle: String { text("roster.title") }
+
+    /// on the roster
+    static var rosterCountsOnRoster: String { text("roster.counts.onRoster") }
+
+    /// in game, no account
+    static var rosterCountsNoAccount: String { text("roster.counts.noAccount") }
+
+    /// waiting
+    static var rosterCountsWaiting: String { text("roster.counts.waiting") }
+
+    /// All
+    static var rosterChipAll: String { text("roster.chip.all") }
+
+    /// Tanks
+    static var rosterChipTanks: String { text("roster.chip.tanks") }
+
+    /// Healers
+    static var rosterChipHealers: String { text("roster.chip.healers") }
+
+    /// DPS
+    static var rosterChipDps: String { text("roster.chip.dps") }
+
+    /// Sort: {by}
+    static func rosterSort(by: String) -> String {
+        format("roster.sort", by)
+    }
+
+    /// Rank
+    static var rosterSortRank: String { text("roster.sort.rank") }
+
+    /// Class
+    static var rosterSortClassName: String { text("roster.sort.className") }
+
+    /// Name
+    static var rosterSortName: String { text("roster.sort.name") }
+
+    /// Attendance
+    static var rosterSortAttendance: String { text("roster.sort.attendance") }
+
+    /// Level
+    static var rosterSortLevel: String { text("roster.sort.level") }
+
+    /// Guild Master
+    static var rosterRankLeader: String { text("roster.rank.leader") }
+
+    /// Officer
+    static var rosterRankOfficer: String { text("roster.rank.officer") }
+
+    /// Member
+    static var rosterRankMember: String { text("roster.rank.member") }
+
+    /// {spec} · {level} · {rank}
+    static func rosterMeta(spec: String, level: Int, rank: String) -> String {
+        format("roster.meta", spec, level, rank)
+    }
+
+    /// {spec} · {rank}
+    static func rosterMetaNoLevel(spec: String, rank: String) -> String {
+        format("roster.metaNoLevel", spec, rank)
+    }
+
+    /// {present} of {nights}
+    static func rosterAttendance(present: Int, nights: Int) -> String {
+        format("roster.attendance", present, nights)
+    }
+
+    /// Waiting
+    static var rosterWaitingTag: String { text("roster.waitingTag") }
+
+    /// No account
+    static var rosterNoAccountTag: String { text("roster.noAccountTag") }
+
+    /// No logged nights yet.
+    static var rosterNoNights: String { text("roster.noNights") }
+
+    /// No raiders match.
+    static var rosterEmptyTitle: String { text("roster.empty.title") }
+
+    /// Change the role or clear the search.
+    static var rosterEmptyBody: String { text("roster.empty.body") }
+
+    /// Attendance is the last 8 raid nights with a log. Tap a raider for their page.
+    static var rosterFooter: String { text("roster.footer") }
+
+    /// The roster did not load.
+    static var rosterError: String { text("roster.error") }
+
+    /// Search the roster
+    static var rosterSearch: String { text("roster.search") }
+
+    /// Supporter
+    static var rosterSupporter: String { text("roster.supporter") }
+
+    /// attended {present} of {nights} recent raid nights
+    static func rosterA11yAttended(present: Int, nights: Int) -> String {
+        format("roster.a11y.attended", present, nights)
+    }
+
+    /// waiting for approval
+    static var rosterA11yWaiting: String { text("roster.a11y.waiting") }
+
+    /// level {level}
+    static func rosterA11yLevel(level: Int) -> String {
+        format("roster.a11y.level", level)
+    }
+
+    /// Raid history
+    static var historyTitle: String { text("history.title") }
+
+    /// Logged raid nights
+    static var historyLabel: String { text("history.label") }
+
+    /// You were there
+    static var historyThere: String { text("history.there") }
+
+    /// Load more
+    static var historyMore: String { text("history.more") }
+
+    /// No logged raid nights yet.
+    static var historyEmptyTitle: String { text("history.empty.title") }
+
+    /// Nights show here once someone uploads a log.
+    static var historyEmptyBody: String { text("history.empty.body") }
+
+    /// A night opens your raid night when you were in it, otherwise its report.
+    static var historyFooter: String { text("history.footer") }
+
+    /// Raid history did not load.
+    static var historyError: String { text("history.error") }
+
+    /// The next nights did not load.
+    static var historyMoreError: String { text("history.moreError") }
+
+    /// {n} bosses
+    static func historyBosses(n: Int) -> String {
+        format("history.bosses", n)
+    }
+
+    /// {n} kills
+    static func historyKills(n: Int) -> String {
+        format("history.kills", n)
+    }
+
+    /// {n} wipes
+    static func historyWipes(n: Int) -> String {
+        format("history.wipes", n)
+    }
+
+    /// no wipes
+    static var historyNoWipes: String { text("history.noWipes") }
+
+    /// {n} raiders
+    static func historyRaiders(n: Int) -> String {
+        format("history.raiders", n)
+    }
+
+    /// {n} players
+    static func historyPlayers(n: Int) -> String {
+        format("history.players", n)
+    }
+
+    /// {h} h {m} m
+    static func historyLength(h: Int, m: Int) -> String {
+        format("history.length", h, m)
+    }
+
+    /// {m} m
+    static func historyLengthMinutes(m: Int) -> String {
+        format("history.lengthMinutes", m)
+    }
+
+    /// {n} hours
+    static func historyA11yHours(n: Int) -> String {
+        format("history.a11y.hours", n)
+    }
+
+    /// {n} minutes
+    static func historyA11yMinutes(n: Int) -> String {
+        format("history.a11y.minutes", n)
+    }
+
+    /// You were there.
+    static var historyA11yThere: String { text("history.a11y.there") }
+
+    /// Calendar
+    static var calendarTitle: String { text("calendar.title") }
+
+    /// Raids in your calendar
+    static var calendarYouRowSub: String { text("calendar.youRow.sub") }
+
+    /// Calendar
+    static var calendarSection: String { text("calendar.section") }
+
+    /// Raids in my calendar
+    static var calendarSwitch: String { text("calendar.switch") }
+
+    /// A calendar called Forever Sixty raids. The app keeps it up to date.
+    static var calendarSwitchNote: String { text("calendar.switchNote") }
+
+    /// Which raids
+    static var calendarWhich: String { text("calendar.which") }
+
+    /// All planned
+    static var calendarWhichAll: String { text("calendar.which.all") }
+
+    /// Only ones I am In or Late for
+    static var calendarWhichMine: String { text("calendar.which.mine") }
+
+    /// Alert
+    static var calendarAlert: String { text("calendar.alert") }
+
+    /// None
+    static var calendarAlertNone: String { text("calendar.alert.none") }
+
+    /// 15 minutes before
+    static var calendarAlertMinutes15: String { text("calendar.alert.minutes15") }
+
+    /// 1 hour before invites
+    static var calendarAlertHourBeforeInvites: String { text("calendar.alert.hourBeforeInvites") }
+
+    /// 1 day before
+    static var calendarAlertDay: String { text("calendar.alert.day") }
+
+    /// Calendar access is off for Forever Sixty.
+    static var calendarOff: String { text("calendar.off") }
+
+    /// Turn it on in Settings to add raids to your calendar.
+    static var calendarOffBody: String { text("calendar.offBody") }
+
+    /// Open Settings
+    static var calendarOpenSettings: String { text("calendar.openSettings") }
+
+    /// The calendar was removed. Turn it on again.
+    static var calendarRemoved: String { text("calendar.removed") }
+
+    /// The calendar did not update. It tries again on the next refresh.
+    static var calendarSyncFailed: String { text("calendar.syncFailed") }
+
+    /// Share
+    static var calendarShare: String { text("calendar.share") }
+
+    /// Calendar link
+    static var calendarLink: String { text("calendar.link") }
+
+    /// For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild's raid times.
+    static var calendarLinkNote: String { text("calendar.linkNote") }
+
+    /// Copy link
+    static var calendarCopy: String { text("calendar.copy") }
+
+    /// Reset link
+    static var calendarReset: String { text("calendar.reset") }
+
+    /// Add to Calendar
+    static var calendarAddToCalendar: String { text("calendar.addToCalendar") }
+
+    /// Link copied.
+    static var calendarCopied: String { text("calendar.copied") }
+
+    /// Reset the link? The old link stops working.
+    static var calendarResetAsk: String { text("calendar.resetAsk") }
+
+    /// Reset
+    static var calendarResetConfirm: String { text("calendar.resetConfirm") }
+
+    /// This link was shown on another phone or browser. Reset it to copy a link here.
+    static var calendarLinkElsewhere: String { text("calendar.linkElsewhere") }
+
+    /// The link did not load. Try again.
+    static var calendarLinkError: String { text("calendar.linkError") }
+
+    /// The link was not reset. Try again.
+    static var calendarResetError: String { text("calendar.resetError") }
+
+    /// Your sign-up shows in the event title: “Onyxia's Lair · In”. Changing it in the app changes the event.
+    static var calendarFooter: String { text("calendar.footer") }
+
+    /// Forever Sixty raids
+    static var calendarName: String { text("calendar.name") }
+
+    /// {zone} · {state}
+    static func calendarEventTitle(zone: String, state: String) -> String {
+        format("calendar.event.title", zone, state)
+    }
+
+    /// In
+    static var calendarEventIn: String { text("calendar.event.in") }
+
+    /// Late
+    static var calendarEventLate: String { text("calendar.event.late") }
+
+    /// Bench
+    static var calendarEventBench: String { text("calendar.event.bench") }
+
+    /// Out
+    static var calendarEventOut: String { text("calendar.event.out") }
+
+    /// Not signed up
+    static var calendarEventNotSigned: String { text("calendar.event.notSigned") }
+
+    /// {guild} · {zone}
+    static func calendarEventLocation(guild: String, zone: String) -> String {
+        format("calendar.event.location", guild, zone)
+    }
+
+    /// Pull {time}. {n} of {size} signed up.
+    static func calendarEventNotes(time: String, n: Int, size: Int) -> String {
+        format("calendar.event.notes", time, n, size)
+    }
+
+    /// Pull {time}. {n} signed up.
+    static func calendarEventNotesNoSize(time: String, n: Int) -> String {
+        format("calendar.event.notesNoSize", time, n)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

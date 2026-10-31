@@ -838,6 +838,22 @@ public struct BulkSpec: Codable, Sendable, Equatable {
     }
 }
 
+/// The calendar link (W3-C17). url is the link a calendar app subscribes to, shown once: it is non-null on the call that makes the link and on a reset, and null on every later read, because only the token's SHA-256 is stored. An app keeps the url it was shown in its secure store; with none, it offers Reset link to show a new one.
+public struct CalendarFeed: Codable, Sendable, Equatable {
+    /// https://api.foreversixty.gg/v1/calendar/{token}.ics; the token is 256 random bits, base64url (43 characters).
+    public let url: String?
+    /// When the live link was made.
+    public let createdAt: Date
+
+    public init(
+        url: String? = nil,
+        createdAt: Date
+    ) {
+        self.url = url
+        self.createdAt = createdAt
+    }
+}
+
 /// One item the planner may substitute in.
 public struct Candidate: Codable, Sendable, Equatable {
     /// The planner slot, or "" for "wherever it fits", which is how a ring, a trinket or a one-hander is offered. A slot named in bulk.locked cannot also carry a candidate.
@@ -1942,23 +1958,34 @@ public struct GuildLoot: Codable, Sendable, Equatable {
 
 public struct GuildMember: Codable, Sendable, Equatable {
     public let name: String
-    public let characterKey: String
+    /// Absent for a name the addon sees in game that no account has claimed (no_account) and for an invited member.
+    public let characterKey: String?
     public let state: String
+    /// leader, officer or member.
     public let rank: String
     public let className: String?
     public let level: Int?
     public let spec: String?
     public let seenAt: String?
+    /// W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word.
+    public let role: String?
+    /// W3-C16: the full spec name, catalogue name then class ("Holy Priest", "Feral Bear Druid"); null with role.
+    public let specName: String?
+    /// W3-C16: the spec's talent-tab icon stem; null with role.
+    public let specIcon: String?
 
     public init(
         name: String,
-        characterKey: String,
+        characterKey: String? = nil,
         state: String,
         rank: String,
         className: String? = nil,
         level: Int? = nil,
         spec: String? = nil,
-        seenAt: String? = nil
+        seenAt: String? = nil,
+        role: String? = nil,
+        specName: String? = nil,
+        specIcon: String? = nil
     ) {
         self.name = name
         self.characterKey = characterKey
@@ -1968,6 +1995,9 @@ public struct GuildMember: Codable, Sendable, Equatable {
         self.level = level
         self.spec = spec
         self.seenAt = seenAt
+        self.role = role
+        self.specName = specName
+        self.specIcon = specIcon
     }
 
     enum CodingKeys: String, CodingKey {
@@ -1979,6 +2009,9 @@ public struct GuildMember: Codable, Sendable, Equatable {
         case level
         case spec
         case seenAt
+        case role
+        case specName
+        case specIcon
     }
 }
 
@@ -2156,6 +2189,10 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let className: String?
     public let spec: String?
     public let role: String?
+    /// W3-C16: the full spec name ("Fury Warrior"), withheld with spec.
+    public let specName: String?
+    /// W3-C16: the spec's talent-tab icon stem, withheld with spec.
+    public let specIcon: String?
     /// Withheld without gear consent.
     public let itemLevel: Int?
     public let attendance30: GuildAttendance?
@@ -2183,6 +2220,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         className: String? = nil,
         spec: String? = nil,
         role: String? = nil,
+        specName: String? = nil,
+        specIcon: String? = nil,
         itemLevel: Int? = nil,
         attendance30: GuildAttendance? = nil,
         bestParse: RosterBestParse? = nil,
@@ -2208,6 +2247,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.className = className
         self.spec = spec
         self.role = role
+        self.specName = specName
+        self.specIcon = specIcon
         self.itemLevel = itemLevel
         self.attendance30 = attendance30
         self.bestParse = bestParse
@@ -2235,6 +2276,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case className = "class"
         case spec
         case role
+        case specName
+        case specIcon
         case itemLevel
         case attendance30
         case bestParse

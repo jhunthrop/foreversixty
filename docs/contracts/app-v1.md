@@ -289,6 +289,16 @@ may_approve, addon }` plus omitted `class`, `spec`, `role`, `item_level` (withhe
 consent), `attendance_30`, `best_parse`, `rating`, `professions`. Draw Remove and Approve exactly
 when `may_remove` and `may_approve`.
 
+**Wave 3 W3-C16 (lane F16, the app's roster).** Each roster row also carries omitted `spec_name`
+(the full spec name, catalogue name then class: `Fury Warrior`, never a bare `Fury`) and
+`spec_icon` (the talent-tab icon stem), both withheld with `spec`. Each `members[]` entry carries
+`role` (`tank|healer|dps`), `spec_name` and `spec_icon`, always present and null when unknown:
+read from the entry's own `spec` (the addon snapshot's specs.json key), else from its roster row's
+logged spec, and withheld with them. The role chips read `role`; the app never derives a role or a
+name from a spec word. `members[].character_key` is absent for a `no_account` name. Fixture
+`guild.home.roster` is a 38-person guild for the roster screen (4 in game with no account, 2
+waiting).
+
 ### GET /v1/guilds/{id}/raids
 Auth none required (the actor is read if present). Caching private. Query `limit` (default 20,
 max 50), `cursor` (the `next_cursor` of a previous page). Answer `{ rows[], next_cursor (omitted at
@@ -364,6 +374,40 @@ character not verified in the guild; 403 `guild_plan_required` for an officer si
 without the plan; 404 `not_found` for a raid you cannot see or a character not in the guild
 (`...error-character-not-found`); 409 `raid_locked` (`...error-raid-locked`), `raid_cancelled`,
 `claim_contested`; 429 `rate_limited`.
+
+### Raid history (Wave 3 F16)
+The app's Raid history reads `GET /v1/guilds/{id}/raids` above, 20 rows a page, `next_cursor` for
+Load more. Fixtures `guild.raids.history` (a first page from Wed 9 Dec 2026, when raids open, to
+31 Dec, with Onyxia at 38 to 40 raiders, Upper Blackrock Spire at 10 and five-player Blackrock
+Depths and Lower Blackrock Spire runs, every night a different length) and `guild.raids.history-2`
+(the last page, no `next_cursor`). A row's boss count is the distinct `fights[].name`; its size is
+`raiders`, which is never below a fight's `players`.
+
+### Calendar link (Wave 3 W3-C17)
+- `GET /v1/me/calendar-feed`: auth session or app token. Caching `private, no-store`. Answer
+  `{ url, created_at }` (schema `CalendarFeed`). The first call makes the link and answers its
+  `url`; every later call answers `url: null` with the same `created_at`, because only the token's
+  SHA-256 is stored. Keep the url you were shown in the secure store (Keychain, Android's encrypted
+  store), clear it at sign-out, and offer Reset link when you have none. Fixtures `calendar.feed`
+  and `calendar.feed.shown`.
+- `POST /v1/me/calendar-feed/reset`: revokes the live link and answers a new `{ url, created_at }`
+  in one transaction; the old link answers 404 at once. 10 an hour per account (429
+  `rate_limited`). Fixture `calendar.feed`.
+- `GET /v1/calendar/{token}.ics`: public by token, opened by calendar apps (tag `app-browser`).
+  `text/calendar; charset=utf-8`, `Cache-Control: private, max-age=300`, `Referrer-Policy:
+  no-referrer`. RFC 5545, one `VEVENT` per planned, locked or done raid of every guild where the
+  account is a verified member, from 30 days back; cancelled raids are left out so a subscribed
+  calendar drops them; membership is read on every fetch. `UID raid-{id}@foreversixty.gg`,
+  `SUMMARY {zone} · {In|Late|Bench|Out|Not signed up}`, `DTSTART` the start, `DTEND` the end,
+  `LOCATION {guild} · {zone}`, `DESCRIPTION Pull {time}. {n} of {size} signed up.`, `URL` the raid
+  page, no `VALARM`. Golden body: `docs/contracts/fixtures/app/calendar.ics`. 404 `not_found`,
+  one body, for a malformed, unknown or revoked token (`calendar.ics.error-not-found`); 60 reads an
+  hour per token and 600 an hour per address (429).
+- **Security.** The token is 256 random bits (base64url, 43 characters), shown once, stored only
+  as its SHA-256 (`calendar_feeds`, migration 0063, one live row per account), revocable, and never
+  logged: the API's request and panic logs write the route as `/v1/calendar/:redacted`
+  (`httpx.LogPath`). The feed carries the guild's raid times and your own answers, nothing else:
+  no raid notes, no other player's name.
 
 ### GET /v1/me/raid-nights/{raid}
 Your raid night (lane F4 contract; dark, handler pending): the after-raid summary behind the app's

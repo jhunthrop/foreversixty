@@ -49,7 +49,7 @@ func Logger(log *slog.Logger) func(http.Handler) http.Handler {
 			start := time.Now()
 			sw := &statusWriter{ResponseWriter: w, status: 200}
 			next.ServeHTTP(sw, r)
-			log.Info("request", "id", RequestIDFrom(r.Context()), "method", r.Method, "path", r.URL.Path, "status", sw.status, "ms", time.Since(start).Milliseconds())
+			log.Info("request", "id", RequestIDFrom(r.Context()), "method", r.Method, "path", LogPath(r.URL.Path), "status", sw.status, "ms", time.Since(start).Milliseconds())
 		})
 	}
 }
@@ -59,7 +59,7 @@ func Recover(log *slog.Logger) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if rec := recover(); rec != nil {
-					log.Error("panic", "id", RequestIDFrom(r.Context()), "method", r.Method, "path", r.URL.Path, "err", rec)
+					log.Error("panic", "id", RequestIDFrom(r.Context()), "method", r.Method, "path", LogPath(r.URL.Path), "err", rec)
 					WriteError(w, r, http.StatusInternalServerError, "internal", "internal error", nil)
 				}
 			}()

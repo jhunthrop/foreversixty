@@ -19,4 +19,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Notifications("notifications", false),
     /** F8: See plans, where the storefront allows a web checkout link */
     PremiumLink("premium_link", false),
+    /** F16: Guild roster with attendance, raid history, calendar sync and the calendar link */
+    GuildExtras("guild_extras", false),
 }

@@ -1746,16 +1746,19 @@ components:
           items:
             type: object
             title: GuildMember
-            required: [name, character_key, state, rank]
+            required: [name, state, rank, role, spec_name, spec_icon]
             properties:
               name: { type: string }
-              character_key: { type: string }
+              character_key: { type: string, description: "Absent for a name the addon sees in game that no account has claimed (no_account) and for an invited member." }
               state: { type: string, enum: [approved, waiting, no_account, not_seen] }
-              rank: { type: string }
+              rank: { type: string, description: "leader, officer or member." }
               class: { type: string, x-name: className }
               level: { type: integer }
               spec: { type: string }
               seen_at: { type: string }
+              role: { type: [string, "null"], enum: [tank, healer, dps, null], description: "W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word." }
+              spec_name: { type: [string, "null"], description: "W3-C16: the full spec name, catalogue name then class (\"Holy Priest\", \"Feral Bear Druid\"); null with role." }
+              spec_icon: { type: [string, "null"], description: "W3-C16: the spec's talent-tab icon stem; null with role." }
         counts:
           type: object
           title: GuildMemberCounts
@@ -1792,6 +1795,8 @@ components:
         class: { type: string, x-name: className }
         spec: { type: string }
         role: { type: string }
+        spec_name: { type: string, description: "W3-C16: the full spec name (\"Fury Warrior\"), withheld with spec." }
+        spec_icon: { type: string, description: "W3-C16: the spec's talent-tab icon stem, withheld with spec." }
         item_level: { type: integer, description: Withheld without gear consent. }
         attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
         best_parse:
@@ -2483,6 +2488,17 @@ components:
       properties:
         platform: { type: string }
         app_version: { type: string }
+    CalendarFeed:
+      type: object
+      description: >-
+        The calendar link (W3-C17). url is the link a calendar app subscribes to, shown once: it
+        is non-null on the call that makes the link and on a reset, and null on every later read,
+        because only the token's SHA-256 is stored. An app keeps the url it was shown in its secure
+        store; with none, it offers Reset link to show a new one.
+      required: [url, created_at]
+      properties:
+        url: { type: [string, "null"], description: "https://api.foreversixty.gg/v1/calendar/{token}.ics; the token is 256 random bits, base64url (43 characters)." }
+        created_at: { type: string, format: date-time, description: "When the live link was made." }
     AppConfig:
       type: object
       description: >-
@@ -4322,7 +4338,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The guild's home"
-          x-fixtures: [guild.home]
+          x-fixtures: [guild.home, guild.home.roster]
           content:
             application/json:
               schema:
@@ -4573,7 +4589,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of raid nights"
-          x-fixtures: [guild.raids, guild.raids.public, guild.raids.empty]
+          x-fixtures: [guild.raids, guild.raids.public, guild.raids.empty, guild.raids.history, guild.raids.history-2]
           content:
             application/json:
               schema:
@@ -5035,6 +5051,89 @@ paths:
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Gone" }
+  /v1/me/calendar-feed:
+    get:
+      summary: Your calendar link, made on first call (W3-C17; session or app token)
+      description: >-
+        Makes the account's calendar link the first time and answers its url once; later reads
+        answer url null and the link's created_at (the token is stored as its SHA-256 only).
+        Cache-Control private, no-store. The link lists the planned raids of every guild where
+        the account is a verified member, titled "{zone} · {your answer}".
+      operationId: getCalendarFeed
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The link; url only on the call that made it"
+          x-fixtures: [calendar.feed, calendar.feed.shown]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CalendarFeed' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/calendar-feed/reset:
+    post:
+      summary: Replace your calendar link; the old one stops working (W3-C17; session or app token)
+      description: >-
+        Revokes the live link and makes a new one in one transaction, answering the new url.
+        Cache-Control private, no-store. 10 resets an hour per account (429 rate_limited).
+      operationId: resetCalendarFeed
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The new link"
+          x-fixtures: [calendar.feed]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CalendarFeed' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/calendar/{token}.ics:
+    get:
+      summary: The calendar link itself, public by token (W3-C17)
+      description: >-
+        RFC 5545, text/calendar; charset=utf-8, Cache-Control private, max-age=300. One VEVENT per
+        planned, locked or done raid of the account's guilds from 30 days back: UID
+        raid-{id}@foreversixty.gg, SUMMARY "{zone} · {In|Late|Bench|Out|Not signed up}", DTSTART
+        the raid's start, DTEND its end, LOCATION "{guild} · {zone}", DESCRIPTION "Pull {time}.
+        {n} of {size} signed up.", URL the raid page, no VALARM. Cancelled raids are left out, so
+        a subscribed calendar drops them. Membership is read on every fetch. The golden body is
+        docs/contracts/fixtures/app/calendar.ics. 404 not_found, one body, for a malformed,
+        unknown or revoked token; 60 reads an hour per token and 600 per address (429). The path
+        is redacted in the API's logs. Opened by calendar apps, never by the API client.
+      operationId: getCalendarICS
+      tags: [app-browser]
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' } }
+      responses:
+        '200':
+          description: "The calendar"
+          content: { text/calendar: { schema: { type: string } } }
+        '404':
+          description: "not_found: no live link with this token"
+          x-fixtures: [calendar.ics.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/app/config:
     get:
       summary: What the apps read once at launch (dark, APP_API)

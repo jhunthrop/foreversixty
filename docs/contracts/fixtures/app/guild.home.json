@@ -35,7 +35,10 @@
         "class": "warrior",
         "level": 58,
         "spec": "warrior-fury",
-        "seen_at": "2026-12-15 05:01"
+        "seen_at": "2026-12-15 05:01",
+        "role": "dps",
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
       },
       {
         "name": "Zulmara",
@@ -45,13 +48,19 @@
         "class": "hunter",
         "level": 57,
         "spec": "hunter-marksmanship",
-        "seen_at": "2026-12-14 21:40"
+        "seen_at": "2026-12-14 21:40",
+        "role": "dps",
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship"
       },
       {
         "name": "Rootgall",
         "character_key": "us/pvp/rootgall",
         "state": "waiting",
-        "rank": "member"
+        "rank": "member",
+        "role": null,
+        "spec_name": null,
+        "spec_icon": null
       }
     ],
     "next_raid": {
@@ -171,7 +180,9 @@
         "professions": [
           "Blacksmithing",
           "Mining"
-        ]
+        ],
+        "spec_name": "Fury Warrior",
+        "spec_icon": "ability_warrior_innerrage"
       },
       {
         "account_key": "u:1830",
@@ -200,7 +211,9 @@
         "spec": "Marksmanship",
         "supporter": false,
         "verified": true,
-        "item_level": 64
+        "item_level": 64,
+        "spec_name": "Marksmanship Hunter",
+        "spec_icon": "ability_marksmanship"
       }
     ],
     "summary": {

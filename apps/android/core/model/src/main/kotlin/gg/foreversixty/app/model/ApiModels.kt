@@ -322,6 +322,15 @@ data class BulkSpec(
     @SerialName("cap") val cap: Int? = null,
 )
 
+/** The calendar link (W3-C17). url is the link a calendar app subscribes to, shown once: it is non-null on the call that makes the link and on a reset, and null on every later read, because only the token's SHA-256 is stored. An app keeps the url it was shown in its secure store; with none, it offers Reset link to show a new one. */
+@Serializable
+data class CalendarFeed(
+    /** https://api.foreversixty.gg/v1/calendar/{token}.ics; the token is 256 random bits, base64url (43 characters). */
+    @SerialName("url") val url: String? = null,
+    /** When the live link was made. */
+    @SerialName("created_at") val createdAt: String,
+)
+
 /** One item the planner may substitute in. */
 @Serializable
 data class Candidate(
@@ -743,13 +752,21 @@ data class GuildLoot(
 @Serializable
 data class GuildMember(
     @SerialName("name") val name: String,
-    @SerialName("character_key") val characterKey: String,
+    /** Absent for a name the addon sees in game that no account has claimed (no_account) and for an invited member. */
+    @SerialName("character_key") val characterKey: String? = null,
     @SerialName("state") val state: String,
+    /** leader, officer or member. */
     @SerialName("rank") val rank: String,
     @SerialName("class") val className: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("spec") val spec: String? = null,
     @SerialName("seen_at") val seenAt: String? = null,
+    /** W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word. */
+    @SerialName("role") val role: String? = null,
+    /** W3-C16: the full spec name, catalogue name then class ("Holy Priest", "Feral Bear Druid"); null with role. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** W3-C16: the spec's talent-tab icon stem; null with role. */
+    @SerialName("spec_icon") val specIcon: String? = null,
 )
 
 @Serializable
@@ -837,6 +854,10 @@ data class GuildRosterRow(
     @SerialName("class") val className: String? = null,
     @SerialName("spec") val spec: String? = null,
     @SerialName("role") val role: String? = null,
+    /** W3-C16: the full spec name ("Fury Warrior"), withheld with spec. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** W3-C16: the spec's talent-tab icon stem, withheld with spec. */
+    @SerialName("spec_icon") val specIcon: String? = null,
     /** Withheld without gear consent. */
     @SerialName("item_level") val itemLevel: Int? = null,
     @SerialName("attendance_30") val attendance30: GuildAttendance? = null,
