@@ -49,7 +49,8 @@ struct ItemTooltipContent: View {
                     header(look: request.fallback, meta: ItemQuality(value: request.fallback.quality).name)
                     Text(Copy.itemsLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 case let .loaded(model):
-                    header(look: model.look, meta: model.headerMeta)
+                    // The panel opens with the name, as the game's tooltip does; the header does not repeat it.
+                    header(look: model.look, meta: model.headerMeta, showsName: false)
                     ItemTooltipPanel(model: model)
                     sourceSection(model)
                     nextBest(model)
@@ -70,14 +71,16 @@ struct ItemTooltipContent: View {
         .background(FSColor.raised)
     }
 
-    private func header(look: HomeItemLook, meta: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+    private func header(look: HomeItemLook, meta: String, showsName: Bool = true) -> some View {
+        HStack(alignment: showsName ? .top : .center, spacing: 12) {
             ItemIconView(icon: look.icon, quality: look.quality, build: request.build, size: 56)
             VStack(alignment: .leading, spacing: 2) {
-                Text(look.name ?? Copy.itemsNotInData)
-                    .font(ScaledType.sec)
-                    .foregroundStyle(ItemQuality(value: look.quality).text)
-                    .fixedSize(horizontal: false, vertical: true)
+                if showsName {
+                    Text(look.name ?? Copy.itemsNotInData)
+                        .font(ScaledType.sec)
+                        .foregroundStyle(ItemQuality(value: look.quality).text)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
         }

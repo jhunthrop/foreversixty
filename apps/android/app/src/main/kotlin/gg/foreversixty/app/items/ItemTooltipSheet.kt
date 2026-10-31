@@ -102,7 +102,8 @@ fun ItemTooltipContent(request: ItemTooltipRequest, phase: ItemTooltipPhase, ret
 
 @Composable
 private fun Loaded(model: ItemTooltipModel, build: String) {
-    Header(model.look, model.headerMeta, build)
+    // The panel opens with the name, as the game's tooltip does; the header does not repeat it.
+    Header(model.look, model.headerMeta, build, showsName = false)
     ItemTooltipPanel(model)
     model.source?.let { source ->
         Column(Modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -138,7 +139,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
 }
 
 @Composable
-private fun Header(look: ItemLook, meta: String, build: String) {
+private fun Header(look: ItemLook, meta: String, build: String, showsName: Boolean = true) {
     Row(
         Modifier.semantics(mergeDescendants = true) { heading() },
         verticalAlignment = Alignment.CenterVertically,
@@ -146,7 +147,9 @@ private fun Header(look: ItemLook, meta: String, build: String) {
     ) {
         ItemIcon(look.icon, look.quality, build, 56.dp)
         Column {
-            Text(look.name ?: stringResource(R.string.items_notInData), style = FsType.sec, color = ItemQuality(look.quality).text)
+            if (showsName) {
+                Text(look.name ?: stringResource(R.string.items_notInData), style = FsType.sec, color = ItemQuality(look.quality).text)
+            }
             Text(meta, style = FsType.meta, color = FsColor.muted)
         }
     }
