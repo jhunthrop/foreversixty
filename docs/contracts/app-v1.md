@@ -37,7 +37,7 @@ always present (null when unknown, `[]` when an empty list).
   still refused on session routes). A bearer request needs no CSRF header.
 - **device**: a bearer token only. A cookie is refused.
 
-A missing or dead credential answers `401 unauthorized`. A dead bearer token is `401` with
+A missing or dead credential answers `401 unauthorized` (fixture `error-unauthorized`; a lapsed app token's one-time answer is `error-session-expired`). A dead bearer token is `401` with
 `"that device token is not valid"`. An app token that lapsed (30 days unused or 180 days from
 sign-in) answers `401 session_expired` once, then `401 unauthorized`. **On either 401 the app
 clears its token and signs in again.** Billing writes (checkout, portal, guild upgrade, transfer)
@@ -140,6 +140,25 @@ The home answer: who you are, your characters, your guilds and what you may use.
 
 A new account with no characters answers `characters: []`, `guilds: []` (fixture `me.empty`).
 
+### DELETE /v1/me
+Auth session or app device token. In-app account deletion (App Store guideline 5.1.1(v), lane F1).
+Dark: no handler on main yet (the API lanes merge after Nov 6); the shape is final. Body
+`{ "confirm": "delete my account" }`, sent only after the person has read what is deleted and
+confirmed. Answer **202** `{ requested_at, complete_by }` (`me.delete`): every device token and
+browser session of the account is revoked at once, so the app's next call answers 401, and the
+data goes by `complete_by`, 30 days on, the privacy page's promise. Errors: 400 `invalid` when
+`confirm` is not the phrase (`me.delete.error-invalid`), 401 (`me.delete.error-unauthorized`).
+What is removed is the privacy page's list, the same as today's emailed request: see the
+operation's description in `api/openapi.yaml`. The app shows `account.delete.done` with
+`complete_by`, clears its token and every cache, and returns to signed out.
+
+### GET /v1/devices and DELETE /v1/devices/{id}
+Auth session or app device token. `GET` answers the account's devices, the array itself
+(`devices.list`): `{ id, name, platform, kind, created_at, last_seen_at? }`. The app marks its own
+row by the `device.id` the sign-in exchange returned, which it keeps beside the token. `DELETE`
+revokes one device and answers 204; that device's token answers 401 at once; 404 `not_found`
+for a device that is not yours (`devices.revoke.error-not-found`).
+
 ### PATCH /v1/me
 Auth session. Request JSON, at least one of `anonymize` (bool) and `main_character_key` (one of your
 own character keys). Answer: the same body as `GET /v1/me` (fixtures `me.patch`). Errors: 400
@@ -179,7 +198,10 @@ no_list), spec, band, band_label, preset, unit, unit_word, data_build, upgrade_c
 not_sim_checked_count, not_modelled_count, synced_at, synced_from, upgrades[], already_best[],
 talents { state, points_differ, band_points } }`. Any state but `ok` has `upgrades` and
 `already_best` empty and `total_gain` null. Fixtures `character.home`, `character.home.empty`,
-`character.home.no-gear`. Errors: 404 `not_found`.
+`character.home.no-gear`. Errors: 404 `not_found`. A pick's `source_line` is the site's formatted line (see the BiS
+file below) and `drop_chance` the percent when known; lane A3 fills both. The apps list
+upgrades measured gains largest first, then gains not modelled yet, then empty slots (coordinator
+ruling, 2026-10-31); A3 should return that order too.
 
 ### GET /v1/characters/search
 Typeahead. Auth public. Caching `public, max-age=60, stale-while-revalidate=300`. Query `q` (2 to
@@ -419,7 +441,13 @@ For the lists and the BiS, read the active build. Build ids look like `1.60.1.70
 `{ "build": "1.60.1.70658" }`. Fixture `cdn.active-build`. Fetch on launch; revalidate (an hour).
 
 ### /data/{build}/bis/{spec}.json
-The BiS lists for a spec (`warrior-fury`; one file per spec). Fixture `cdn.bis.warrior-fury`.
+The BiS lists for a spec (`warrior-fury`; one file per spec). Fixtures `cdn.bis.warrior-fury`, `cdn.bis.hunter-beast-mastery` (its level-60 bands).
+**Pending (lane F2 fix round).** Each slot and alternative gains `source_line`, the site's
+formatted source (`describeSourceCell` in `web/src/lib/bis/source-cell.ts`: `Quest: {name} ·
+requires level {n}`, `{n}% from {boss}`, `Crafted: {profession}`, `{instance} · {boss}`), never
+repeating the item's name, and `drop_chance` (percent, or null). The apps render `source_line`
+and fall back to `source`. The hunter fixture carries both, from the site's formatter over
+`loot.json`.
 `{ spec, build, engine_version, generated_at, bands[], presets }`. A **band** is one level band
 (`20|30|40|50|60`) for one `faction` (`alliance|horde`) under one `preset` (`bare`, and `raid` at
 60): `{ spec, band, preset, faction, race, talents, talent_points, weights[], slots[], set_dps,
@@ -445,7 +473,25 @@ icon_source, weapon_type, superseded_by, required_level_source }`. `quality` is 
 legendary; draw the quality colours). `stats` and `percent_stats` are open maps of a stat to a
 number; `set_id` is nullable, with sets in `sets.json`. `slot` is the item slot
 (`head ... ranged`, `main_hand`, `off_hand`, `finger`, `trinket`). `client_unconfirmed` marks stats
-the client has not confirmed. The tooltip is built from these fields. Fixture `cdn.items.warrior`.
+the client has not confirmed. The tooltip is built from these fields. Fixtures `cdn.items.warrior`,
+`cdn.items.hunter`.
+
+**Pending (spec C6).** Three item facts the tooltip draws, which the data lane has not published
+yet: `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`), `armor_type`
+(`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; null for a cloak),
+and `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
+set). Each is nullable and absent until published; draw nothing for a missing one. The
+`cdn.items.hunter` fixture carries them, read from the client's own Item and ItemSparse rows.
+`stats_source` is null on most real rows.
+
+**Pending (lane F2 fix round).** `subclass` (a weapon's type word: `polearm`, `sword`, `gun` ...,
+from Item `SubclassID` when `ClassID` is 2) and `weapon_slot` (`one_hand`, `two_hand`,
+`main_hand`, `off_hand`, `ranged`, `thrown`, from Item `InventoryType`): the client's
+`Two-Hand ... Polearm` line. Nullable, absent until published.
+
+### /data/{build}/sets.json
+`[{ id, name, item_ids[], bonuses[] }]`, a bonus `{ pieces, description }`. An item's `set_id`
+names its set; the tooltip draws the set's name and bonuses. Fixture `cdn.sets`.
 
 ### /data/{build}/talents/{class}.json
 `{ build, class_id, class_slug, trees[] }`; a tree is `{ id, name, position, background, icon,

@@ -46,6 +46,13 @@ public final class AppConfigStore: Sendable {
         current?.features[feature.rawValue] ?? feature.bundledDefault
     }
 
+    /// A feature is on in debug and fixture builds whatever the config says, so every lane's
+    /// screens can be built and captured before the API turns them on; a release build on the
+    /// live API follows `isEnabled(_:)` alone (the Wave 1 brief).
+    public func isAvailable(_ feature: Feature, mode: APIMode, isDebugBuild: Bool) -> Bool {
+        isDebugBuild || mode == .fixture || isEnabled(feature)
+    }
+
     /// True when the API no longer supports `version` (dotted, compared numerically): block with
     /// the update screen. Unknown until the first config, so never blocks offline on first launch.
     public func requiresUpdate(version: String) -> Bool {

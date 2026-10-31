@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.forever.contract.fixtures)
     alias(libs.plugins.forever.app.icon)
     alias(libs.plugins.forever.app.version)
+    alias(libs.plugins.forever.brand.art)
 }
 
 /**
@@ -72,6 +73,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.compose.material.icons)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

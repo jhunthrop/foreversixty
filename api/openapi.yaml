@@ -1255,7 +1255,7 @@ components:
           properties:
             connect: { type: boolean, description: True when the one-click Discord connect is configured. }
             discord: { oneOf: [{ $ref: '#/components/schemas/DiscordBlock' }, { type: "null" }] }
-        seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeat; omitted when none." }
+        seat: { $ref: '#/components/schemas/MeSeat' }
         seat_offer: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeSeatOffer; omitted when none." }
         ended_seat: { $ref: '#/components/schemas/OpenObject', description: "Go auth.MeEndedSeat; omitted when none." }
     AccountCharacter:
@@ -1579,7 +1579,15 @@ components:
                   quality: { type: [integer, "null"] }
                   icon: { type: [string, "null"] }
                   item_level: { type: [integer, "null"] }
-                  source_line: { type: string }
+                  source_line:
+                    type: string
+                    description: >-
+                      The site's formatted source (web/src/lib/bis/source-cell.ts
+                      describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}",
+                      "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name.
+                  drop_chance:
+                    type: [number, "null"]
+                    description: Percent (0 to 100) when the source names one; absent or null otherwise.
               worn:
                 type: [object, "null"]
                 title: HomeWorn
@@ -2223,6 +2231,32 @@ components:
       required: [signed_out]
       properties:
         signed_out: { type: boolean }
+    MeSeat:
+      type: object
+      description: The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none.
+      required: [guild_name, given_by, since, starts_at]
+      properties:
+        guild_name: { type: string }
+        given_by: { type: string }
+        since: { type: string, format: date-time }
+        starts_at: { type: [string, "null"], format: date-time }
+    AccountDeletionRequest:
+      type: object
+      description: >-
+        The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the
+        person has read what is deleted and confirmed it; any other value answers 400 invalid.
+      required: [confirm]
+      properties:
+        confirm: { type: string, enum: ["delete my account"] }
+    AccountDeletion:
+      type: object
+      description: >-
+        An accepted deletion. Every device and session of the account is already signed out;
+        the data goes by complete_by (30 days after the request, the privacy page's promise).
+      required: [requested_at, complete_by]
+      properties:
+        requested_at: { type: string, format: date-time }
+        complete_by: { type: string, format: date-time }
     NotificationSettings:
       type: object
       description: >-
@@ -2391,7 +2425,7 @@ components:
         reference_dps_per_point: { type: number }
         scale_reference_stat: { type: string }
         set_dps: { type: number }
-        new_at_band: { type: array, items: { type: integer } }
+        new_at_band: { type: array, items: { type: string }, description: "\"slot: item name\" for each pick new at this band." }
         weights:
           type: array
           items:
@@ -2420,6 +2454,8 @@ components:
               item_name: { type: string }
               source: { type: string }
               source_kind: { type: string }
+              source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+              drop_chance: { type: [number, "null"], description: Percent when known. }
               alternatives:
                 type: array
                 items:
@@ -2432,14 +2468,33 @@ components:
                     source: { type: string }
                     source_kind: { type: string }
                     dps_delta: { type: number, description: Negative against the pick. }
+                    source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
+                    drop_chance: { type: [number, "null"], description: Percent when known. }
               score: { type: number }
               sim_dps: { type: number }
               dps_delta: { type: number }
               chance: { type: number }
               effect_unmodelled: { type: boolean }
               swap_note: { type: string }
-              ties: { type: array, items: { type: integer } }
-              set_bonus: { type: string }
+              ties:
+                type: array
+                description: Items with the pick's exact score.
+                items:
+                  type: object
+                  title: BisTie
+                  required: [item_id, item_name]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+              set_bonus:
+                type: object
+                title: BisSetBonus
+                description: The set bonus this piece is worn for.
+                required: [set, pieces, bonus]
+                properties:
+                  set: { type: string }
+                  pieces: { type: integer }
+                  bonus: { type: string }
               faction_note: { type: string }
               empty_reason: { type: string }
     ItemsFile:
@@ -2471,13 +2526,62 @@ components:
         dps: { type: number }
         two_hand: { type: boolean }
         effect_text: { type: string }
-        stats_source: { type: string }
+        stats_source: { type: [string, "null"] }
         set_id: { type: [integer, "null"] }
         unique: { type: boolean }
         client_unconfirmed: { type: boolean }
         icon_source: { type: string }
         weapon_type: { type: [string, "null"] }
         superseded_by: { type: [integer, "null"] }
+        bonding:
+          type: [string, "null"]
+          enum: [pickup, equip, use, quest, null]
+          description: >-
+            Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest);
+            null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+        armor_type:
+          type: [string, "null"]
+          enum: [cloth, leather, mail, plate, shield, null]
+          description: >-
+            Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a
+            ring, a trinket, a weapon or unknown. Omitted until published.
+        min_standing:
+          type: [string, "null"]
+          enum: [hated, hostile, unfriendly, neutral, friendly, honored, revered, exalted, null]
+          description: >-
+            Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else
+            null. Omitted until published.
+        subclass:
+          type: [string, "null"]
+          enum: [axe, bow, gun, mace, polearm, sword, staff, fist_weapon, dagger, thrown, crossbow, wand, fishing_pole, null]
+          description: >-
+            Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints
+            on the right of the slot line ("Polearm"); null for anything else. Omitted until the
+            data lane publishes it.
+        weapon_slot:
+          type: [string, "null"]
+          enum: [one_hand, two_hand, main_hand, off_hand, ranged, thrown, null]
+          description: >-
+            Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot
+            line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25
+            thrown); null for anything else. Omitted until published.
+    ItemSet:
+      type: object
+      description: One item set of /data/{build}/sets.json.
+      required: [id, name, item_ids, bonuses]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        item_ids: { type: array, items: { type: integer } }
+        bonuses:
+          type: array
+          items:
+            type: object
+            title: ItemSetBonus
+            required: [pieces, description]
+            properties:
+              pieces: { type: integer }
+              description: { type: string }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -2960,7 +3064,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The account"
-          x-fixtures: [me, me.premium, me.empty]
+          x-fixtures: [me, me.premium, me.empty, me.guild-payer, me.seat]
           content:
             application/json:
               schema:
@@ -2969,7 +3073,7 @@ paths:
                   - { type: object, properties: { data: { $ref: '#/components/schemas/Me' } } }
         '401':
           description: "Not signed in, or the token is dead: clear it and sign in again"
-          x-fixtures: [error-unauthorized]
+          x-fixtures: [error-unauthorized, error-session-expired]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
     patch:
       operationId: updateMe
@@ -3006,6 +3110,46 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '401':
           description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      operationId: deleteAccount
+      tags: [app]
+      summary: Delete the account (in-app deletion, App Store 5.1.1(v); dark until its handler lands)
+      description: >-
+        Session or app device token. The body's confirm must be exactly "delete my account",
+        sent only after the person confirmed in the app. On 202 the account is signed out
+        everywhere at once (every device token and browser session revoked, so the app's token
+        now answers 401) and its data is removed by complete_by, the same removal as the
+        emailed request on the privacy page: the Battle.net sign-in identity and email, the
+        linked characters and their addon exports and sync history, uploaded combat logs and
+        the reports parsed from them, saved sims and builds, the ratings derived from them,
+        notification settings, push tokens, the Discord link and webhooks, and the Stripe
+        customer (any subscription is cancelled at once and does not renew). Repeating the
+        call while a deletion is pending answers 202 with the same dates.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AccountDeletionRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '202':
+          description: "Accepted: signed out everywhere, the data goes by complete_by"
+          x-fixtures: [me.delete]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/AccountDeletion' } } }
+        '400':
+          description: "A broken body, or confirm is not the phrase"
+          x-fixtures: [me.delete.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          x-fixtures: [me.delete.error-unauthorized]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/devices/pair:
     post:
@@ -3091,7 +3235,8 @@ paths:
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
-          description: "The account's devices, the array itself"
+          description: "The account's devices, the array itself. The app marks its own row by the device id the sign-in exchange gave it."
+          x-fixtures: [devices.list]
           content:
             application/json:
               schema:
@@ -3110,11 +3255,23 @@ paths:
         '401': { description: "Not a device token, or the token is already dead", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices/{id}:
     delete:
-      summary: Revoke a device
-      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      operationId: revokeDevice
+      tags: [app]
+      summary: Revoke a device; its token answers 401 at once
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Revoked" }
-        '404': { description: "Not one of yours", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404':
+          description: "Not one of yours"
+          x-fixtures: [devices.revoke.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/reports:
     get:
       operationId: listMyReports
@@ -4737,7 +4894,7 @@ paths:
         '200':
           description: "Every band of the spec"
           x-fixture-route: cdn.bis.{spec}
-          x-fixtures: [cdn.bis.warrior-fury]
+          x-fixtures: [cdn.bis.warrior-fury, cdn.bis.hunter-beast-mastery]
           content: { application/json: { schema: { $ref: '#/components/schemas/BisFile' } } }
   /data/{build}/items/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
@@ -4752,8 +4909,21 @@ paths:
         '200':
           description: "The class's items"
           x-fixture-route: cdn.items.{class}
-          x-fixtures: [cdn.items.warrior]
+          x-fixtures: [cdn.items.warrior, cdn.items.hunter]
           content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
+  /data/{build}/sets.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every item set of a build, for the tooltip's set lines
+      operationId: getSets
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per set"
+          x-fixtures: [cdn.sets]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

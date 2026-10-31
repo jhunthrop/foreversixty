@@ -13,7 +13,7 @@ struct CopyTests {
     @Test("placeholders fill in order")
     func placeholders() {
         #expect(Copy.raidCount(n: 24, size: 40) == "24 of 40 signed up")
-        #expect(Copy.shellHomeLevelClass(n: 42, className: "Warrior") == "Level 42 Warrior")
+        #expect(Copy.homeUpgradesReplaces(item: "Dark Iron Rifle", n: 55) == "Replaces Dark Iron Rifle, ilvl 55")
     }
 
     @Test("plurals pick their form from the count")

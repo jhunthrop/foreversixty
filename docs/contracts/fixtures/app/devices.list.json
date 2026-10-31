@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "data": [
+    {
+      "id": "dvc_8Qk2nXw4",
+      "name": "iPhone",
+      "platform": "ios",
+      "kind": "app",
+      "created_at": "2026-10-30T19:04:12Z",
+      "last_seen_at": "2026-10-30T21:41:00Z"
+    },
+    {
+      "id": "dvc_3Hm7pLa9",
+      "name": "Pixel 9",
+      "platform": "android",
+      "kind": "app",
+      "created_at": "2026-10-21T08:15:40Z",
+      "last_seen_at": "2026-10-30T19:40:00Z"
+    },
+    {
+      "id": "dvc_Zr41cQe2",
+      "name": "Companion on Windows",
+      "platform": "windows",
+      "kind": "companion",
+      "created_at": "2026-09-28T17:02:11Z",
+      "last_seen_at": "2026-10-29T23:12:05Z"
+    }
+  ],
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

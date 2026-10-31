@@ -8,18 +8,6 @@ enum Copy {
     /// Forever Sixty
     static var appName: String { text("app.name") }
 
-    /// Character
-    static var shellTabCharacter: String { text("shell.tab.character") }
-
-    /// Sims
-    static var shellTabSims: String { text("shell.tab.sims") }
-
-    /// Account
-    static var shellTabAccount: String { text("shell.tab.account") }
-
-    /// Forever Sixty
-    static var shellTitle: String { text("shell.title") }
-
     /// Coming soon
     static var shellComingSoon: String { text("shell.comingSoon") }
 
@@ -27,28 +15,6 @@ enum Copy {
     static func shellArrivesNext(tab: String) -> String {
         format("shell.arrivesNext", tab)
     }
-
-    /// Play your class better.
-    static var shellHomeTagline: String { text("shell.home.tagline") }
-
-    /// Link a character with the addon or Battle.net to see it here.
-    static var shellHomeNoCharacter: String { text("shell.home.noCharacter") }
-
-    /// Level {n}
-    static func shellHomeLevel(n: Int) -> String {
-        format("shell.home.level", n)
-    }
-
-    /// Level {n} {class}
-    static func shellHomeLevelClass(n: Int, className: String) -> String {
-        format("shell.home.levelClass", n, className)
-    }
-
-    /// Sign in to see your character.
-    static var shellHomeSignInFirst: String { text("shell.home.signInFirst") }
-
-    /// Could not load your character just now.
-    static var shellHomeFailed: String { text("shell.home.failed") }
 
     /// Home
     static var tabHome: String { text("tab.home") }
@@ -78,6 +44,24 @@ enum Copy {
 
     /// Cancel
     static var commonCancel: String { text("common.cancel") }
+
+    /// just now
+    static var commonAgeNow: String { text("common.age.now") }
+
+    /// {n} min ago
+    static func commonAgeMinutes(n: Int) -> String {
+        format("common.age.minutes", n)
+    }
+
+    /// {n} h ago
+    static func commonAgeHours(n: Int) -> String {
+        format("common.age.hours", n)
+    }
+
+    /// {n} d ago
+    static func commonAgeDays(n: Int) -> String {
+        format("common.age.days", n)
+    }
 
     /// Play your class better.
     static var signinLine: String { text("signin.line") }
@@ -375,6 +359,313 @@ enum Copy {
     static func tooltipA11yTile(item: String, quality: String, slot: String) -> String {
         format("tooltip.a11yTile", item, quality, slot)
     }
+
+    /// {spec} gear for 20 to 29
+    static func homeAnswerUnder20Button(spec: String) -> String {
+        format("home.answer.under20Button", spec)
+    }
+
+    /// Open the planner
+    static var homeAnswerOpenPlanner: String { text("home.answer.openPlanner") }
+
+    /// No guide build for this level range yet.
+    static var homeNextTalentsNoBuild: String { text("home.next.talentsNoBuild") }
+
+    /// Level {n}
+    static func homeHeroLevel(n: Int) -> String {
+        format("home.hero.level", n)
+    }
+
+    /// {band} · raid
+    static func homeUpgradesBandRaid(band: String) -> String {
+        format("home.upgrades.bandRaid", band)
+    }
+
+    /// Poor
+    static var itemsQualityPoor: String { text("items.quality.poor") }
+
+    /// Common
+    static var itemsQualityCommon: String { text("items.quality.common") }
+
+    /// Uncommon
+    static var itemsQualityUncommon: String { text("items.quality.uncommon") }
+
+    /// Rare
+    static var itemsQualityRare: String { text("items.quality.rare") }
+
+    /// Epic
+    static var itemsQualityEpic: String { text("items.quality.epic") }
+
+    /// Legendary
+    static var itemsQualityLegendary: String { text("items.quality.legendary") }
+
+    /// Head
+    static var itemsSlotHead: String { text("items.slot.head") }
+
+    /// Neck
+    static var itemsSlotNeck: String { text("items.slot.neck") }
+
+    /// Shoulder
+    static var itemsSlotShoulder: String { text("items.slot.shoulder") }
+
+    /// Back
+    static var itemsSlotBack: String { text("items.slot.back") }
+
+    /// Chest
+    static var itemsSlotChest: String { text("items.slot.chest") }
+
+    /// Wrist
+    static var itemsSlotWrist: String { text("items.slot.wrist") }
+
+    /// Hands
+    static var itemsSlotHands: String { text("items.slot.hands") }
+
+    /// Waist
+    static var itemsSlotWaist: String { text("items.slot.waist") }
+
+    /// Legs
+    static var itemsSlotLegs: String { text("items.slot.legs") }
+
+    /// Feet
+    static var itemsSlotFeet: String { text("items.slot.feet") }
+
+    /// Ring 1
+    static var itemsSlotFinger1: String { text("items.slot.finger1") }
+
+    /// Ring 2
+    static var itemsSlotFinger2: String { text("items.slot.finger2") }
+
+    /// Trinket 1
+    static var itemsSlotTrinket1: String { text("items.slot.trinket1") }
+
+    /// Trinket 2
+    static var itemsSlotTrinket2: String { text("items.slot.trinket2") }
+
+    /// Main hand
+    static var itemsSlotMainHand: String { text("items.slot.mainHand") }
+
+    /// Off hand
+    static var itemsSlotOffHand: String { text("items.slot.offHand") }
+
+    /// Ranged
+    static var itemsSlotRanged: String { text("items.slot.ranged") }
+
+    /// Finger
+    static var itemsSlotFinger: String { text("items.slot.finger") }
+
+    /// Trinket
+    static var itemsSlotTrinket: String { text("items.slot.trinket") }
+
+    /// Strength
+    static var itemsStatStrength: String { text("items.stat.strength") }
+
+    /// Agility
+    static var itemsStatAgility: String { text("items.stat.agility") }
+
+    /// Stamina
+    static var itemsStatStamina: String { text("items.stat.stamina") }
+
+    /// Intellect
+    static var itemsStatIntellect: String { text("items.stat.intellect") }
+
+    /// Spirit
+    static var itemsStatSpirit: String { text("items.stat.spirit") }
+
+    /// Crit
+    static var itemsStatCrit: String { text("items.stat.crit") }
+
+    /// Hit
+    static var itemsStatHit: String { text("items.stat.hit") }
+
+    /// Spell power
+    static var itemsStatSpellPower: String { text("items.stat.spellPower") }
+
+    /// Healing
+    static var itemsStatHealing: String { text("items.stat.healing") }
+
+    /// Attack power
+    static var itemsStatAttackPower: String { text("items.stat.attackPower") }
+
+    /// Ranged attack power
+    static var itemsStatRangedAttackPower: String { text("items.stat.rangedAttackPower") }
+
+    /// Defense
+    static var itemsStatDefense: String { text("items.stat.defense") }
+
+    /// Dodge
+    static var itemsStatDodge: String { text("items.stat.dodge") }
+
+    /// Parry
+    static var itemsStatParry: String { text("items.stat.parry") }
+
+    /// Block
+    static var itemsStatBlock: String { text("items.stat.block") }
+
+    /// Block value
+    static var itemsStatBlockValue: String { text("items.stat.blockValue") }
+
+    /// Mana per 5
+    static var itemsStatMp5: String { text("items.stat.mp5") }
+
+    /// Spell penetration
+    static var itemsStatSpellPenetration: String { text("items.stat.spellPenetration") }
+
+    /// Fire spell damage
+    static var itemsStatFirePower: String { text("items.stat.firePower") }
+
+    /// Fire resistance
+    static var itemsStatFireRes: String { text("items.stat.fireRes") }
+
+    /// Frost resistance
+    static var itemsStatFrostRes: String { text("items.stat.frostRes") }
+
+    /// Nature resistance
+    static var itemsStatNatureRes: String { text("items.stat.natureRes") }
+
+    /// Shadow resistance
+    static var itemsStatShadowRes: String { text("items.stat.shadowRes") }
+
+    /// Arcane resistance
+    static var itemsStatArcaneRes: String { text("items.stat.arcaneRes") }
+
+    /// Hated
+    static var itemsStandingHated: String { text("items.standing.hated") }
+
+    /// Hostile
+    static var itemsStandingHostile: String { text("items.standing.hostile") }
+
+    /// Unfriendly
+    static var itemsStandingUnfriendly: String { text("items.standing.unfriendly") }
+
+    /// Neutral
+    static var itemsStandingNeutral: String { text("items.standing.neutral") }
+
+    /// Friendly
+    static var itemsStandingFriendly: String { text("items.standing.friendly") }
+
+    /// Honored
+    static var itemsStandingHonored: String { text("items.standing.honored") }
+
+    /// Revered
+    static var itemsStandingRevered: String { text("items.standing.revered") }
+
+    /// Exalted
+    static var itemsStandingExalted: String { text("items.standing.exalted") }
+
+    /// {min} - {max} Damage
+    static func itemsWeaponDamage(min: Int, max: Int) -> String {
+        format("items.weapon.damage", min, max)
+    }
+
+    /// Speed {speed}
+    static func itemsWeaponSpeed(speed: String) -> String {
+        format("items.weapon.speed", speed)
+    }
+
+    /// ({dps} damage per second)
+    static func itemsWeaponDps(dps: String) -> String {
+        format("items.weapon.dps", dps)
+    }
+
+    /// Quest Item
+    static var itemsBindQuest: String { text("items.bind.quest") }
+
+    /// One-Hand
+    static var itemsWeaponSlotOneHand: String { text("items.weaponSlot.oneHand") }
+
+    /// Two-Hand
+    static var itemsWeaponSlotTwoHand: String { text("items.weaponSlot.twoHand") }
+
+    /// Main Hand
+    static var itemsWeaponSlotMainHand: String { text("items.weaponSlot.mainHand") }
+
+    /// Off Hand
+    static var itemsWeaponSlotOffHand: String { text("items.weaponSlot.offHand") }
+
+    /// Ranged
+    static var itemsWeaponSlotRanged: String { text("items.weaponSlot.ranged") }
+
+    /// Thrown
+    static var itemsWeaponSlotThrown: String { text("items.weaponSlot.thrown") }
+
+    /// Axe
+    static var itemsSubclassAxe: String { text("items.subclass.axe") }
+
+    /// Bow
+    static var itemsSubclassBow: String { text("items.subclass.bow") }
+
+    /// Gun
+    static var itemsSubclassGun: String { text("items.subclass.gun") }
+
+    /// Mace
+    static var itemsSubclassMace: String { text("items.subclass.mace") }
+
+    /// Polearm
+    static var itemsSubclassPolearm: String { text("items.subclass.polearm") }
+
+    /// Sword
+    static var itemsSubclassSword: String { text("items.subclass.sword") }
+
+    /// Staff
+    static var itemsSubclassStaff: String { text("items.subclass.staff") }
+
+    /// Fist Weapon
+    static var itemsSubclassFistWeapon: String { text("items.subclass.fistWeapon") }
+
+    /// Dagger
+    static var itemsSubclassDagger: String { text("items.subclass.dagger") }
+
+    /// Thrown
+    static var itemsSubclassThrown: String { text("items.subclass.thrown") }
+
+    /// Crossbow
+    static var itemsSubclassCrossbow: String { text("items.subclass.crossbow") }
+
+    /// Wand
+    static var itemsSubclassWand: String { text("items.subclass.wand") }
+
+    /// Fishing Pole
+    static var itemsSubclassFishingPole: String { text("items.subclass.fishingPole") }
+
+    /// none: {item} is two-handed.
+    static func itemsOffHandTwoHand(item: String) -> String {
+        format("items.offHandTwoHand", item)
+    }
+
+    /// {quality} · {slot}
+    static func itemsHeader(quality: String, slot: String) -> String {
+        format("items.header", quality, slot)
+    }
+
+    /// ilvl {n}
+    static func itemsIlvl(n: Int) -> String {
+        format("items.ilvl", n)
+    }
+
+    /// → {item}
+    static func itemsPickArrow(item: String) -> String {
+        format("items.pickArrow", item)
+    }
+
+    /// ({n}) Set: {text}
+    static func itemsSetBonus(n: Int, text: String) -> String {
+        format("items.setBonus", n, text)
+    }
+
+    /// Same DPS as the pick
+    static var itemsSameDps: String { text("items.sameDps") }
+
+    /// Loading the item…
+    static var itemsLoading: String { text("items.loading") }
+
+    /// This item did not load.
+    static var itemsFailed: String { text("items.failed") }
+
+    /// Not in our item data yet
+    static var itemsNotInData: String { text("items.notInData") }
+
+    /// Shows the item
+    static var itemsA11yHint: String { text("items.a11y.hint") }
 
     /// Best in slot
     static var bisTitle: String { text("bis.title") }
@@ -1238,7 +1529,7 @@ enum Copy {
         format("you.version", version, build, data)
     }
 
-    /// Not affiliated with or endorsed by Blizzard Entertainment.
+    /// Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
     static var aboutNotAffiliated: String { text("about.notAffiliated") }
 
     /// What your plan includes
@@ -1332,6 +1623,125 @@ enum Copy {
 
     /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
     static var devicesFooter: String { text("devices.footer") }
+
+    /// iPhone
+    static var accountDeviceWord: String { text("account.deviceWord") }
+
+    /// {spec} · {n}
+    static func accountSelectorDetail(spec: String, n: Int) -> String {
+        format("account.selector.detail", spec, n)
+    }
+
+    /// {kind} · Level {n}
+    static func accountSwitcherDetail(kind: String, n: Int) -> String {
+        format("account.switcher.detail", kind, n)
+    }
+
+    /// Opens your characters
+    static var accountSwitcherOpen: String { text("account.switcher.open") }
+
+    /// Switch character
+    static var accountSwitcherAction: String { text("account.switcher.action") }
+
+    /// Sign out
+    static var accountSignOutAction: String { text("account.signOut.action") }
+
+    /// Could not load your devices just now.
+    static var accountDevicesLoadFailed: String { text("account.devices.loadFailed") }
+
+    /// Delete account
+    static var accountDeleteRow: String { text("account.delete.row") }
+
+    /// Delete account
+    static var accountDeleteTitle: String { text("account.delete.title") }
+
+    /// Deleting your account removes what Forever Sixty holds about you:
+    static var accountDeleteIntro: String { text("account.delete.intro") }
+
+    /// Your Battle.net sign-in and email address
+    static var accountDeleteItemIdentity: String { text("account.delete.item.identity") }
+
+    /// Your characters, their addon exports and sync history
+    static var accountDeleteItemCharacters: String { text("account.delete.item.characters") }
+
+    /// The combat logs you uploaded
+    static var accountDeleteItemLogs: String { text("account.delete.item.logs") }
+
+    /// Your saved sims and builds, and the ratings derived from them
+    static var accountDeleteItemSims: String { text("account.delete.item.sims") }
+
+    /// Your notification settings, Discord link and devices
+    static var accountDeleteItemLinks: String { text("account.delete.item.links") }
+
+    /// Billing and seats
+    static var accountDeleteLoseTitle: String { text("account.delete.lose.title") }
+
+    /// Your Premium plan is cancelled and does not renew.
+    static var accountDeleteLosePremium: String { text("account.delete.lose.premium") }
+
+    /// Your founder price is gone for good. A plan taken later is billed at the full price.
+    static var accountDeleteLoseFounder: String { text("account.delete.lose.founder") }
+
+    /// The {guild} plan you pay for is cancelled, and its seats end for every member.
+    static func accountDeleteLoseGuildPlan(guild: String) -> String {
+        format("account.delete.lose.guildPlan", guild)
+    }
+
+    /// Your Premium seat from {guild} ends.
+    static func accountDeleteLoseSeat(guild: String) -> String {
+        format("account.delete.lose.seat", guild)
+    }
+
+    /// Guild reports stay for the raiders in them. Your name on them becomes Former raider.
+    static var accountDeleteReports: String { text("account.delete.reports") }
+
+    /// Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner.
+    static var accountDeleteTiming: String { text("account.delete.timing") }
+
+    /// You can also ask by email at help@foreversixty.gg.
+    static var accountDeleteEmail: String { text("account.delete.email") }
+
+    /// Delete account
+    static var accountDeleteButton: String { text("account.delete.button") }
+
+    /// Delete your Forever Sixty account?
+    static var accountDeleteConfirmTitle: String { text("account.delete.confirm.title") }
+
+    /// Your characters, logs and sims are removed within thirty days. Every device is signed out now.
+    static var accountDeleteConfirmBody: String { text("account.delete.confirm.body") }
+
+    /// Could not delete your account just now. Try again.
+    static var accountDeleteFailed: String { text("account.delete.failed") }
+
+    /// Your account is deleted. Everything is removed by {date}.
+    static func accountDeleteDone(date: String) -> String {
+        format("account.delete.done", date)
+    }
+
+    /// Character
+    static var accountYouCharacter: String { text("account.you.character") }
+
+    /// {region} · {ruleset}
+    static func accountCharacterWhere(region: String, ruleset: String) -> String {
+        format("account.character.where", region, ruleset)
+    }
+
+    /// Normal
+    static var accountRulesetNormal: String { text("account.ruleset.normal") }
+
+    /// PvP
+    static var accountRulesetPvp: String { text("account.ruleset.pvp") }
+
+    /// Roleplay
+    static var accountRulesetRp: String { text("account.ruleset.rp") }
+
+    /// Hardcore
+    static var accountRulesetHardcore: String { text("account.ruleset.hardcore") }
+
+    /// Version {version} ({build})
+    static func accountVersionNoData(version: String, build: String) -> String {
+        format("account.version.noData", version, build)
+    }
 
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)

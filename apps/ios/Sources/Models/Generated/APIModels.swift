@@ -85,6 +85,31 @@ public struct AccountCharacter: Codable, Sendable, Equatable {
     }
 }
 
+/// An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise).
+public struct AccountDeletion: Codable, Sendable, Equatable {
+    public let requestedAt: Date
+    public let completeBy: Date
+
+    public init(
+        requestedAt: Date,
+        completeBy: Date
+    ) {
+        self.requestedAt = requestedAt
+        self.completeBy = completeBy
+    }
+}
+
+/// The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid.
+public struct AccountDeletionRequest: Codable, Sendable, Equatable {
+    public let confirm: String
+
+    public init(
+        confirm: String
+    ) {
+        self.confirm = confirm
+    }
+}
+
 /// A guild the account belongs to (Go auth.Guild). can lists what you may do there: draw a control exactly when its word is present, never from the rank.
 public struct AccountGuild: Codable, Sendable, Equatable {
     public let id: Int64
@@ -331,19 +356,27 @@ public struct BisAlternative: Codable, Sendable, Equatable {
     public let sourceKind: String
     /// Negative against the pick.
     public let dpsDelta: Double
+    /// The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2).
+    public let sourceLine: String?
+    /// Percent when known.
+    public let dropChance: Double?
 
     public init(
         itemId: Int,
         itemName: String,
         source: String,
         sourceKind: String,
-        dpsDelta: Double
+        dpsDelta: Double,
+        sourceLine: String? = nil,
+        dropChance: Double? = nil
     ) {
         self.itemId = itemId
         self.itemName = itemName
         self.source = source
         self.sourceKind = sourceKind
         self.dpsDelta = dpsDelta
+        self.sourceLine = sourceLine
+        self.dropChance = dropChance
     }
 }
 
@@ -359,7 +392,8 @@ public struct BisBand: Codable, Sendable, Equatable {
     public let referenceDpsPerPoint: Double
     public let scaleReferenceStat: String?
     public let setDps: Double?
-    public let newAtBand: [Int]?
+    /// "slot: item name" for each pick new at this band.
+    public let newAtBand: [String]?
     public let weights: [BisWeight]
     public let slots: [BisSlot]
 
@@ -375,7 +409,7 @@ public struct BisBand: Codable, Sendable, Equatable {
         referenceDpsPerPoint: Double,
         scaleReferenceStat: String? = nil,
         setDps: Double? = nil,
-        newAtBand: [Int]? = nil,
+        newAtBand: [String]? = nil,
         weights: [BisWeight] = [],
         slots: [BisSlot] = []
     ) {
@@ -408,7 +442,7 @@ public struct BisBand: Codable, Sendable, Equatable {
         referenceDpsPerPoint = try c.decode(Double.self, forKey: .referenceDpsPerPoint)
         scaleReferenceStat = try c.decodeIfPresent(String.self, forKey: .scaleReferenceStat)
         setDps = try c.decodeIfPresent(Double.self, forKey: .setDps)
-        newAtBand = try c.decodeIfPresent([Int].self, forKey: .newAtBand)
+        newAtBand = try c.decodeIfPresent([String].self, forKey: .newAtBand)
         weights = try c.decodeIfPresent([BisWeight].self, forKey: .weights) ?? []
         slots = try c.decodeIfPresent([BisSlot].self, forKey: .slots) ?? []
     }
@@ -460,6 +494,23 @@ public struct BisPreset: Codable, Sendable, Equatable {
     }
 }
 
+/// The set bonus this piece is worn for.
+public struct BisSetBonus: Codable, Sendable, Equatable {
+    public let set: String
+    public let pieces: Int
+    public let bonus: String
+
+    public init(
+        set: String,
+        pieces: Int,
+        bonus: String
+    ) {
+        self.set = set
+        self.pieces = pieces
+        self.bonus = bonus
+    }
+}
+
 public struct BisSlot: Codable, Sendable, Equatable {
     public let slot: String
     public let verified: Bool
@@ -468,6 +519,10 @@ public struct BisSlot: Codable, Sendable, Equatable {
     public let itemName: String?
     public let source: String?
     public let sourceKind: String?
+    /// The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2).
+    public let sourceLine: String?
+    /// Percent when known.
+    public let dropChance: Double?
     public let alternatives: [BisAlternative]?
     public let score: Double?
     public let simDps: Double?
@@ -475,8 +530,10 @@ public struct BisSlot: Codable, Sendable, Equatable {
     public let chance: Double?
     public let effectUnmodelled: Bool?
     public let swapNote: String?
-    public let ties: [Int]?
-    public let setBonus: String?
+    /// Items with the pick's exact score.
+    public let ties: [BisTie]?
+    /// The set bonus this piece is worn for.
+    public let setBonus: BisSetBonus?
     public let factionNote: String?
     public let emptyReason: String?
 
@@ -487,6 +544,8 @@ public struct BisSlot: Codable, Sendable, Equatable {
         itemName: String? = nil,
         source: String? = nil,
         sourceKind: String? = nil,
+        sourceLine: String? = nil,
+        dropChance: Double? = nil,
         alternatives: [BisAlternative]? = nil,
         score: Double? = nil,
         simDps: Double? = nil,
@@ -494,8 +553,8 @@ public struct BisSlot: Codable, Sendable, Equatable {
         chance: Double? = nil,
         effectUnmodelled: Bool? = nil,
         swapNote: String? = nil,
-        ties: [Int]? = nil,
-        setBonus: String? = nil,
+        ties: [BisTie]? = nil,
+        setBonus: BisSetBonus? = nil,
         factionNote: String? = nil,
         emptyReason: String? = nil
     ) {
@@ -505,6 +564,8 @@ public struct BisSlot: Codable, Sendable, Equatable {
         self.itemName = itemName
         self.source = source
         self.sourceKind = sourceKind
+        self.sourceLine = sourceLine
+        self.dropChance = dropChance
         self.alternatives = alternatives
         self.score = score
         self.simDps = simDps
@@ -516,6 +577,19 @@ public struct BisSlot: Codable, Sendable, Equatable {
         self.setBonus = setBonus
         self.factionNote = factionNote
         self.emptyReason = emptyReason
+    }
+}
+
+public struct BisTie: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let itemName: String
+
+    public init(
+        itemId: Int,
+        itemName: String
+    ) {
+        self.itemId = itemId
+        self.itemName = itemName
     }
 }
 
@@ -2292,7 +2366,10 @@ public struct HomePick: Codable, Sendable, Equatable {
     public let quality: Int?
     public let icon: String?
     public let itemLevel: Int?
+    /// The site's formatted source (web/src/lib/bis/source-cell.ts describeSourceCell): "Quest: {name} · requires level {n}", "{n}% from {boss}", "Crafted: {profession}", "{instance} · {boss}". Never repeats the item's name.
     public let sourceLine: String
+    /// Percent (0 to 100) when the source names one; absent or null otherwise.
+    public let dropChance: Double?
 
     public init(
         id: Int,
@@ -2300,7 +2377,8 @@ public struct HomePick: Codable, Sendable, Equatable {
         quality: Int? = nil,
         icon: String? = nil,
         itemLevel: Int? = nil,
-        sourceLine: String
+        sourceLine: String,
+        dropChance: Double? = nil
     ) {
         self.id = id
         self.name = name
@@ -2308,6 +2386,7 @@ public struct HomePick: Codable, Sendable, Equatable {
         self.icon = icon
         self.itemLevel = itemLevel
         self.sourceLine = sourceLine
+        self.dropChance = dropChance
     }
 }
 
@@ -2402,13 +2481,23 @@ public struct Item: Codable, Sendable, Equatable {
     public let dps: Double
     public let twoHand: Bool
     public let effectText: String
-    public let statsSource: String
+    public let statsSource: String?
     public let setId: Int?
     public let unique: Bool
     public let clientUnconfirmed: Bool
     public let iconSource: String
     public let weaponType: String?
     public let supersededBy: Int?
+    /// Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+    public let bonding: String?
+    /// Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published.
+    public let armorType: String?
+    /// Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published.
+    public let minStanding: String?
+    /// Lane F2: a weapon's Item SubclassID (ClassID 2) as a word, the type the client prints on the right of the slot line ("Polearm"); null for anything else. Omitted until the data lane publishes it.
+    public let subclass: String?
+    /// Lane F2: a weapon's Item InventoryType as the client words it on the left of the slot line (13 one_hand, 17 two_hand, 21 main_hand, 22 off_hand, 15 and 26 ranged, 25 thrown); null for anything else. Omitted until published.
+    public let weaponSlot: String?
 
     public init(
         id: Int,
@@ -2428,13 +2517,18 @@ public struct Item: Codable, Sendable, Equatable {
         dps: Double,
         twoHand: Bool,
         effectText: String,
-        statsSource: String,
+        statsSource: String? = nil,
         setId: Int? = nil,
         unique: Bool,
         clientUnconfirmed: Bool,
         iconSource: String,
         weaponType: String? = nil,
-        supersededBy: Int? = nil
+        supersededBy: Int? = nil,
+        bonding: String? = nil,
+        armorType: String? = nil,
+        minStanding: String? = nil,
+        subclass: String? = nil,
+        weaponSlot: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -2460,6 +2554,11 @@ public struct Item: Codable, Sendable, Equatable {
         self.iconSource = iconSource
         self.weaponType = weaponType
         self.supersededBy = supersededBy
+        self.bonding = bonding
+        self.armorType = armorType
+        self.minStanding = minStanding
+        self.subclass = subclass
+        self.weaponSlot = weaponSlot
     }
 
     public init(from decoder: any Decoder) throws {
@@ -2481,13 +2580,59 @@ public struct Item: Codable, Sendable, Equatable {
         dps = try c.decode(Double.self, forKey: .dps)
         twoHand = try c.decode(Bool.self, forKey: .twoHand)
         effectText = try c.decode(String.self, forKey: .effectText)
-        statsSource = try c.decode(String.self, forKey: .statsSource)
+        statsSource = try c.decodeIfPresent(String.self, forKey: .statsSource)
         setId = try c.decodeIfPresent(Int.self, forKey: .setId)
         unique = try c.decode(Bool.self, forKey: .unique)
         clientUnconfirmed = try c.decode(Bool.self, forKey: .clientUnconfirmed)
         iconSource = try c.decode(String.self, forKey: .iconSource)
         weaponType = try c.decodeIfPresent(String.self, forKey: .weaponType)
         supersededBy = try c.decodeIfPresent(Int.self, forKey: .supersededBy)
+        bonding = try c.decodeIfPresent(String.self, forKey: .bonding)
+        armorType = try c.decodeIfPresent(String.self, forKey: .armorType)
+        minStanding = try c.decodeIfPresent(String.self, forKey: .minStanding)
+        subclass = try c.decodeIfPresent(String.self, forKey: .subclass)
+        weaponSlot = try c.decodeIfPresent(String.self, forKey: .weaponSlot)
+    }
+}
+
+/// One item set of /data/{build}/sets.json.
+public struct ItemSet: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let itemIds: [Int]
+    public let bonuses: [ItemSetBonus]
+
+    public init(
+        id: Int,
+        name: String,
+        itemIds: [Int] = [],
+        bonuses: [ItemSetBonus] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.itemIds = itemIds
+        self.bonuses = bonuses
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(Int.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        itemIds = try c.decodeIfPresent([Int].self, forKey: .itemIds) ?? []
+        bonuses = try c.decodeIfPresent([ItemSetBonus].self, forKey: .bonuses) ?? []
+    }
+}
+
+public struct ItemSetBonus: Codable, Sendable, Equatable {
+    public let pieces: Int
+    public let description: String
+
+    public init(
+        pieces: Int,
+        description: String
+    ) {
+        self.pieces = pieces
+        self.description = description
     }
 }
 
@@ -2723,8 +2868,7 @@ public struct Me: Codable, Sendable, Equatable {
     public let serverSims: ServerSimsUsage?
     /// Omitted when the deployment has notifications off.
     public let notifications: MeNotifications?
-    /// Go auth.MeSeat; omitted when none.
-    public let seat: JSONValue?
+    public let seat: MeSeat?
     /// Go auth.MeSeatOffer; omitted when none.
     public let seatOffer: JSONValue?
     /// Go auth.MeEndedSeat; omitted when none.
@@ -2743,7 +2887,7 @@ public struct Me: Codable, Sendable, Equatable {
         bnetImportedAt: Date? = nil,
         serverSims: ServerSimsUsage? = nil,
         notifications: MeNotifications? = nil,
-        seat: JSONValue? = nil,
+        seat: MeSeat? = nil,
         seatOffer: JSONValue? = nil,
         endedSeat: JSONValue? = nil
     ) {
@@ -2778,7 +2922,7 @@ public struct Me: Codable, Sendable, Equatable {
         bnetImportedAt = try c.decodeIfPresent(Date.self, forKey: .bnetImportedAt)
         serverSims = try c.decodeIfPresent(ServerSimsUsage.self, forKey: .serverSims)
         notifications = try c.decodeIfPresent(MeNotifications.self, forKey: .notifications)
-        seat = try c.decodeIfPresent(JSONValue.self, forKey: .seat)
+        seat = try c.decodeIfPresent(MeSeat.self, forKey: .seat)
         seatOffer = try c.decodeIfPresent(JSONValue.self, forKey: .seatOffer)
         endedSeat = try c.decodeIfPresent(JSONValue.self, forKey: .endedSeat)
     }
@@ -2811,6 +2955,26 @@ public struct MePatch: Codable, Sendable, Equatable {
     ) {
         self.anonymize = anonymize
         self.mainCharacterKey = mainCharacterKey
+    }
+}
+
+/// The Premium seat this account holds from a guild (Go auth.MeSeat); omitted when none.
+public struct MeSeat: Codable, Sendable, Equatable {
+    public let guildName: String
+    public let givenBy: String
+    public let since: Date
+    public let startsAt: Date?
+
+    public init(
+        guildName: String,
+        givenBy: String,
+        since: Date,
+        startsAt: Date? = nil
+    ) {
+        self.guildName = guildName
+        self.givenBy = givenBy
+        self.since = since
+        self.startsAt = startsAt
     }
 }
 
