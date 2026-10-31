@@ -7,6 +7,7 @@
 // query string is read before report.json arrives, so the real list of fights is not
 // known there. `?fight=0` therefore parses even though fight_index is 1-based and no
 // report has a fight 0, and so does `?fight=999` and a number that falls in a gap.
+import { type KillCounts, sumKillCounts } from './kill-counts';
 import { formatDuration } from './format';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS, trashScope, trashScopeKey } from './url';
@@ -92,8 +93,9 @@ export interface TrashGroup {
   key: number;
   zone: string;
   fights: FightEntry[];
+  /** The zone's summed kill counts; null when any pull predates them (lib/report/kill-counts). */
+  kills: KillCounts | null;
   duration_ms: number;
-  deaths: number;
 }
 
 export type FightRow = { type: 'fight'; fight: FightEntry } | TrashGroup;
@@ -104,8 +106,8 @@ function trashGroup(zone: string, fights: FightEntry[]): TrashGroup {
     key: fights[0].index,
     zone,
     fights,
+    kills: sumKillCounts(fights),
     duration_ms: fights.reduce((sum, entry) => sum + entry.duration_ms, 0),
-    deaths: fights.reduce((sum, entry) => sum + entry.deaths, 0),
   };
 }
 

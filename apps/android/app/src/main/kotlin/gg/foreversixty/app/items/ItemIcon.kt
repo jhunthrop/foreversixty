@@ -31,10 +31,11 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.network.StaticDataClient
 
 /**
- * Where item icons come from. Live: `/data/{build}/icons/{icon}.webp` on the site through Coil
+ * Where game icons (items and specs) come from. Live: `/data/{build}/icons/{icon}.webp` on the site through Coil
  * with a 200 MB disk cache (spec §11). Screenshot tests provide a painter from the repo's own
  * icon files instead.
  */
@@ -94,26 +95,39 @@ fun ItemIcon(icon: String?, quality: Int?, build: String, size: Dp, modifier: Mo
             .border(1.5.dp, color, shape)
     }
     Box(modifier.size(size).then(frame).clip(shape).background(FsColor.cardTop)) {
-        if (icon != null && !dashed) {
-            val local = LocalItemIconPainter.current
-            if (local != null) {
-                local.painter(icon, build)?.let {
-                    Image(it, null, Modifier.size(size), contentScale = ContentScale.Crop)
-                }
-            } else {
-                val context = LocalContext.current
-                AsyncImage(
-                    model = ImageRequest.Builder(context).data(ItemIconLoader.url(icon, build)).build(),
-                    imageLoader = ItemIconLoader.get(context),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(size),
-                )
-            }
-        }
+        if (icon != null && !dashed) GameIconImage(icon, build, size)
         if (!dashed) {
             Box(Modifier.size(size).padding(1.5.dp).border(1.dp, Color.Black, shape))
         }
+    }
+}
+
+/** A spec's talent-tab icon (spec §4.3): square, the pill radius, a 1 dp line; from the same loader. */
+@Composable
+fun SpecIcon(icon: String, build: String, size: Dp, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(FsRadius.pill)
+    Box(modifier.size(size).clip(shape).background(FsColor.cardTop).border(1.dp, GameColors.iconLine, shape)) {
+        GameIconImage(icon, build, size)
+    }
+}
+
+/** The icon file itself: the test painter when one is provided, else Coil over the CDN. */
+@Composable
+private fun GameIconImage(icon: String, build: String, size: Dp) {
+    val local = LocalItemIconPainter.current
+    if (local != null) {
+        local.painter(icon, build)?.let {
+            Image(it, null, Modifier.size(size), contentScale = ContentScale.Crop)
+        }
+    } else {
+        val context = LocalContext.current
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(ItemIconLoader.url(icon, build)).build(),
+            imageLoader = ItemIconLoader.get(context),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(size),
+        )
     }
 }
 

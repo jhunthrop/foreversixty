@@ -14,7 +14,8 @@ function fight(index: number, name: string, kill: boolean, duration_ms: number):
     duration_ms,
     players: [],
     deaths: 0,
-    npc_kills: 1,
+    mob_deaths: 1,
+    group_kills: 1,
   };
 }
 
