@@ -35,7 +35,7 @@ enum ItemVocabulary {
         }
     }
 
-    /// A slot's label: two fingers read `Finger 1` and `Finger 2`, two trinkets `Trinket 1` and
+    /// A slot's label: two rings read `Finger 1` and `Finger 2`, two trinkets `Trinket 1` and
     /// `Trinket 2`, so the BiS rows can be told apart; an unknown key prints as published.
     static func slotLabel(_ slot: String) -> String { slotName(slot) ?? slot }
 

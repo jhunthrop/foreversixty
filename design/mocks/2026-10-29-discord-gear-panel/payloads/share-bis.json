@@ -11,7 +11,7 @@
       {
         "id": 0,
         "filename": "sheet.png",
-        "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
+        "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Finger 1: Signet Ring of the Bronze Dragonflight; Finger 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
       }
     ],
     "components": [
@@ -30,7 +30,7 @@
                 "media": {
                   "url": "attachment://sheet.png"
                 },
-                "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
+                "description": "Best in slot sheet, Beast Mastery Hunter, level 60 Phase 1 raid, Alliance. Head: Beastmaster's Cap; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Cape of the Black Baron; Chest: Dawn Armor; Wrist: Beastmaster's Bindings; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Sentinel's Chain Leggings; Feet: Beastmaster's Treads; Finger 1: Signet Ring of the Bronze Dragonflight; Finger 2: Cutthroat's Signet; Trinket 1: Frozen Heart of the Mountain; Trinket 2: Molten Heart of the Mountain; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Hyper Deluxe Sniper Rifle Mk XVII."
               }
             ]
           }
