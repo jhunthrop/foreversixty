@@ -1,6 +1,6 @@
 """F14 widgets and live surfaces, F15 system integration, F16 guild extras."""
 from w3kit import *  # noqa: F403
-from w3kit import W3, TAB_CLEAR
+from w3kit import W3, TAB_CLEAR, buy_prices, money
 from kit import SEAL, HORDE as HORDE_SRC
 from model import ROSTER, SPEC, upgrades
 from screens_more import APP_ICON, ios_lock, ios_note, and_shade, and_note
@@ -30,9 +30,9 @@ def seal(n: int = 18) -> str:
 
 
 def small_state(state: str) -> str:
-    cd = "<div class=\"mono gold\" style=\"font-size:13px;margin-top:2px\">in 2 days 2 h</div>"
+    cd = "<div class=\"mono gold\" style=\"font-size:13px;margin-top:2px\">in 53 min</div>"
     head_ = lambda t="Next raid": f"<div style=\"display:flex;align-items:center;gap:6px\">{seal(16)}<span class=\"micro gold\" style=\"font-size:10px\">{t}</span></div>"  # noqa: E731
-    zone = "<div class=\"cond\" style=\"font-size:22px;line-height:24px;margin-top:6px\">Onyxia's Lair</div><div class=\"muted\" style=\"font-size:13px\">Thu 8:00 pm</div>"
+    zone = "<div class=\"cond\" style=\"font-size:22px;line-height:24px;margin-top:6px\">Onyxia's Lair</div><div class=\"muted\" style=\"font-size:13px\">Tonight 8:00 pm</div>"
     foot = lambda t: f"<div style=\"position:absolute;left:14px;bottom:12px\">{t}</div>"  # noqa: E731
     if state == "in":
         return head_() + zone + cd + foot(tag("In · DPS", "green"))
@@ -43,7 +43,7 @@ def small_state(state: str) -> str:
     if state == "noguild":
         return head_("Raids") + "<div style=\"font-size:15px;line-height:20px;margin-top:10px;font-weight:600\">No guild yet</div><div class=\"muted\" style=\"font-size:12px;margin-top:4px\">Your raids show here once you are on a roster.</div>"
     if state == "noraid":
-        return head_() + "<div style=\"font-size:15px;line-height:20px;margin-top:10px;font-weight:600\">No raid planned</div><div class=\"muted\" style=\"font-size:12px;margin-top:4px\">Last: Onyxia's Lair, Thu 10 Dec.</div>"
+        return head_() + "<div style=\"font-size:15px;line-height:20px;margin-top:10px;font-weight:600\">No raid planned</div><div class=\"muted\" style=\"font-size:12px;margin-top:4px\">Last night out: Lower Blackrock Spire, Sun 6 Dec.</div>"
     if state == "locked":
         return head_() + zone + cd + foot(tag("Locked", "muted"))
     if state == "cancelled":
@@ -59,7 +59,7 @@ def nr_medium(plat: str, answered: str | None = "In") -> str:
         return (f"<span style=\"flex:1;height:44px;border-radius:{10 if plat == 'ios' else 22}px;display:grid;place-items:center;font-weight:700;font-size:14px;"
                 f"{'background:rgba(127,212,138,.18);color:var(--strong);box-shadow:inset 0 -2px 0 var(--kill)' if on else 'background:rgba(255,255,255,.07);color:var(--nav)'}\">{t}</span>")
     return (f"<div style=\"display:flex;gap:12px;height:100%\"><div style=\"flex:1;min-width:0;position:relative\">{small_state('open' if not answered else 'in').replace(tag('In · DPS', 'green'), '').replace(tag('Not signed up', 'gold'), '')}</div>"
-            f"<div style=\"width:160px;display:flex;flex-direction:column;justify-content:space-between\"><div><div class=\"mono strong\" style=\"font-size:15px\">24 of 40</div><div class=\"muted\" style=\"font-size:12px\">signed up</div></div>"
+            f"<div style=\"width:160px;display:flex;flex-direction:column;justify-content:space-between\"><div><div class=\"mono strong\" style=\"font-size:15px\">38 of 40</div><div class=\"muted\" style=\"font-size:12px\">signed up</div></div>"
             f"<div style=\"display:flex;gap:6px\">{b('In')}{b('Late')}{b('Out')}</div></div></div>")
 
 
@@ -96,15 +96,15 @@ def widget_states(plat: str) -> str:
 
 
 def lock_widgets() -> str:
-    inline = "<div style=\"text-align:center;color:#fff;font:600 15px -apple-system,Barlow;opacity:.95;margin-top:6px\">Onyxia · Thu 8 pm · In</div>"
-    ring = lambda txt, frac: (f"<span style=\"width:64px;height:64px;border-radius:32px;background:rgba(255,255,255,.15);display:grid;place-items:center;position:relative\"><svg width=\"64\" height=\"64\" style=\"position:absolute;inset:0\"><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"rgba(255,255,255,.25)\" stroke-width=\"5\"/><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"#fff\" stroke-width=\"5\" stroke-dasharray=\"{175.9 * frac:.0f} 176\" transform=\"rotate(-90 32 32)\" stroke-linecap=\"round\"/></svg><b style=\"color:#fff;font:700 18px -apple-system,Barlow;position:relative\">{txt}</b></span>")  # noqa: E731
+    inline = "<div style=\"text-align:center;color:#fff;font:600 15px -apple-system,Barlow;opacity:.95;margin-top:6px\">Onyxia · Tonight 8 pm · In</div>"
+    ring = lambda txt, frac, sub: (f"<span style=\"width:64px;height:64px;border-radius:32px;background:rgba(255,255,255,.15);display:grid;place-items:center;position:relative\"><svg width=\"64\" height=\"64\" style=\"position:absolute;inset:0\"><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"rgba(255,255,255,.25)\" stroke-width=\"5\"/><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"#fff\" stroke-width=\"5\" stroke-dasharray=\"{175.9 * frac:.0f} 176\" transform=\"rotate(-90 32 32)\" stroke-linecap=\"round\"/></svg><b style=\"color:#fff;font:700 18px/16px -apple-system,Barlow;position:relative;text-align:center\">{txt}<br><span style=\"font-size:10px;font-weight:600;opacity:.85\">{sub}</span></b></span>")  # noqa: E731
     rect = (f"<div style=\"width:170px;height:64px;border-radius:16px;background:rgba(255,255,255,.15);color:#fff;font-family:-apple-system,Barlow;padding:8px 12px\"><div style=\"font-weight:700;font-size:14px\">Onyxia's Lair</div>"
-            f"<div style=\"font-size:13px;opacity:.9\">Thu 8:00 pm · in 2 d</div><div style=\"font-size:13px;opacity:.9\">You: In · DPS</div></div>")
+            f"<div style=\"font-size:13px;opacity:.9\">Tonight 8:00 pm</div><div style=\"font-size:13px;opacity:.9\">You: In · DPS</div></div>")
     up = (f"<div style=\"width:170px;height:78px;border-radius:16px;background:rgba(255,255,255,.15);color:#fff;font-family:-apple-system,Barlow;padding:8px 12px\"><div style=\"font-weight:700;font-size:13px\">Next upgrade · Waist</div>"
           f"<div style=\"font-size:13px;opacity:.95\">Knowledge of the Timbermaw</div><div style=\"font-size:13px;opacity:.9\">+5.3 DPS</div></div>")
     clock = ("<div style=\"text-align:center;color:#fff;font-family:-apple-system,Barlow,'SF Pro Display'\"><div style=\"font-size:20px;font-weight:600;opacity:.85\">Thursday 10 December</div>" + inline.replace("margin-top:6px", "margin-top:2px") +
-             "<div style=\"font-size:104px;font-weight:700;line-height:1;letter-spacing:-2px\">6:22</div></div>")
-    widgets = f"<div style=\"display:flex;gap:10px;justify-content:center;margin-top:10px\">{rect}{ring('24', .6)}</div><div style=\"display:flex;gap:10px;justify-content:center;margin-top:10px\">{up}{ring('2d', .3)}</div>"
+             "<div style=\"font-size:104px;font-weight:700;line-height:1;letter-spacing:-2px\">7:07</div></div>")
+    widgets = f"<div style=\"display:flex;gap:10px;justify-content:center;margin-top:10px\">{rect}{ring('38', .95, 'of 40')}</div><div style=\"display:flex;gap:10px;justify-content:center;margin-top:10px\">{up}{ring('53', .15, 'min')}</div>"
     la = live_card()
     body = (f"<div style=\"position:absolute;inset:0;background:{WALL}\"></div><div style=\"position:relative;padding-top:74px\">{clock}{widgets}</div>"
             f"<div style=\"position:absolute;left:10px;right:10px;bottom:120px\">{la}</div>")
@@ -114,7 +114,7 @@ def lock_widgets() -> str:
 def live_card() -> str:
     return (f"<div class=\"glass\" style=\"border-radius:26px;padding:16px;color:#fff;font-family:-apple-system,Barlow,'SF Pro Text'\"><div style=\"display:flex;align-items:center;gap:10px\"><img src=\"{APP_ICON}\" style=\"width:28px;height:28px;border-radius:7px\" alt=\"\">"
             f"<b style=\"font-size:15px;flex:1\">Onyxia's Lair</b><span style=\"font-size:13px;opacity:.8\">Olympus XXVII</span></div>"
-            f"<div style=\"display:flex;align-items:baseline;gap:8px;margin-top:10px\"><span style=\"font:700 36px 'JetBrains Mono'\">38:12</span><span style=\"font-size:15px;opacity:.85\">until invites at 7:45 pm</span></div>"
+            f"<div style=\"display:flex;align-items:baseline;gap:8px;margin-top:10px\"><span style=\"font:700 36px 'JetBrains Mono'\">38:00</span><span style=\"font-size:15px;opacity:.85\">until invites at 7:45 pm</span></div>"
             f"<div style=\"height:6px;border-radius:3px;background:rgba(255,255,255,.2);margin-top:10px\"><i style=\"display:block;height:6px;width:36%;border-radius:3px;background:#e5b955\"></i></div>"
             f"<div style=\"display:flex;justify-content:space-between;margin-top:10px;font-size:14px\"><span>You are In · DPS · Lightningbolltz</span><span style=\"opacity:.85\">38 of 40</span></div></div>")
 
@@ -124,7 +124,7 @@ def island() -> str:
     comp = (f"<div style=\"position:absolute;top:11px;left:50%;transform:translateX(-50%);width:230px;height:37px;border-radius:20px;background:#000;z-index:25;display:flex;align-items:center;justify-content:space-between;padding:0 12px\">"
             f"{seal(18)}<span style=\"font:700 14px 'JetBrains Mono';color:#e5b955\">38m</span></div>")
     exp = (f"<div style=\"position:absolute;top:86px;left:14px;right:14px;height:136px;border-radius:44px;background:#000;z-index:24;padding:20px 22px 0;color:#fff;font-family:-apple-system,Barlow\">"
-           f"<div style=\"display:flex;justify-content:space-between;align-items:center\"><div><div style=\"font-weight:700;font-size:16px\">Onyxia's Lair</div><div style=\"font-size:13px;opacity:.75\">Invites 7:45 pm · You are In · DPS</div></div><span style=\"font:700 30px 'JetBrains Mono';color:#e5b955\">38:12</span></div>"
+           f"<div style=\"display:flex;justify-content:space-between;align-items:center\"><div><div style=\"font-weight:700;font-size:16px\">Onyxia's Lair</div><div style=\"font-size:13px;opacity:.75\">Invites 7:45 pm · You are In · DPS</div></div><span style=\"font:700 30px 'JetBrains Mono';color:#e5b955\">38:00</span></div>"
            f"<div style=\"display:flex;gap:10px;margin-top:14px\"><span style=\"flex:1;height:40px;border-radius:20px;background:#1f2430;display:grid;place-items:center;font-weight:600;font-size:14px\">Late</span><span style=\"flex:1;height:40px;border-radius:20px;background:#1f2430;display:grid;place-items:center;font-weight:600;font-size:14px\">Out</span></div></div>")
     sim = (f"<div class=\"glass\" style=\"position:absolute;left:10px;right:10px;top:290px;border-radius:26px;padding:16px;color:#fff;font-family:-apple-system,Barlow\"><div style=\"display:flex;align-items:center;gap:10px\">{tile('flask', 28)}<b style=\"font-size:15px;flex:1\">Elemental · Top Gear</b><span style=\"font-size:13px;opacity:.8\">Running</span></div>"
            f"<div style=\"display:flex;justify-content:space-between;margin-top:10px;font-size:14px\"><span><span class=\"mono\" style=\"font-weight:700\">40</span> of <span class=\"mono\">64</span> combinations</span><span style=\"opacity:.85\">about 2 min left</span></div>"
@@ -141,7 +141,7 @@ def and_widgets() -> str:
 
 
 def and_ongoing() -> str:
-    cards = (and_note("Invites for Onyxia's Lair in 38 minutes", "You are In as DPS on Lightningbolltz. 38 of 40 signed up.", actions=["Late", "Out"], top=True)
+    cards = (and_note("Invites for Onyxia's Lair in 38 minutes", "Pull at 8:00 pm, in 53 minutes. You are In as DPS on Lightningbolltz. 38 of 40 signed up.", actions=["Late", "Out"], top=True)
              + and_note("Elemental · Top Gear", "40 of 64 combinations · about 2 min left", sub="Server sim", attach="")
              .replace("</div></div></div>", "</div></div></div><div style=\"height:6px;border-radius:3px;background:#2a3040;margin:10px 0 0 44px\"><i style=\"display:block;height:6px;width:62%;border-radius:3px;background:#e5b955\"></i></div>", 1)
              + and_note("Elemental · Top Gear finished", "412 DPS · tap for the result", sub="Server sim", bottom=True))
@@ -163,7 +163,7 @@ def siri(plat: str, kind: str = "signup") -> str:
         ask = "What's my next upgrade"
         it = item(228190)
         body = (f"<div class=\"glass-w\" style=\"border-radius:22px;padding:16px;color:#fff;font-family:-apple-system,Barlow\"><div style=\"display:flex;gap:10px;align-items:center\"><img src=\"{APP_ICON}\" style=\"width:30px;height:30px;border-radius:7px\" alt=\"\"><b style=\"font-size:15px\">Forever Sixty</b></div>"
-                f"<div style=\"display:flex;gap:12px;align-items:center;margin-top:12px\">{item_icon(228190, 52)}<div><div style=\"font-weight:700;font-size:17px;color:{Q_TEXT[it['quality']]}\">{it['name']}</div><div style=\"font-size:14px;opacity:.85\">Waist · item level {it['item_level']} · Vendor: Meilosh</div></div></div>"
+                f"<div style=\"display:flex;gap:12px;align-items:center;margin-top:12px\">{item_icon(228190, 52)}<div><div style=\"font-weight:700;font-size:17px;color:{Q_TEXT[it['quality']]}\">{it['name']}</div><div style=\"font-size:14px;opacity:.85\">Waist · item level {it['item_level']} · Vendor: Meilosh · {money(buy_prices()[228190])}</div></div></div>"
                 f"<div style=\"font-size:15px;margin-top:10px\"><span class=\"mono\" style=\"font-weight:700\">+5.3</span> DPS for Lightningbolltz. Replaces Belt of the Archmage.</div></div>")
     ph = (f"<div style=\"position:absolute;inset:0;background:radial-gradient(420px 360px at 50% 100%,rgba(120,160,255,.45),transparent 70%),radial-gradient(360px 300px at 30% 100%,rgba(190,90,220,.35),transparent 70%),#05060a\"></div>"
           f"<div style=\"position:absolute;left:16px;right:16px;top:90px;color:#fff;font-family:-apple-system,Barlow\"><div style=\"font-size:15px;opacity:.7\">You said</div><div style=\"font-size:24px;font-weight:600;margin:4px 0 22px\">“{ask}”</div>{body}</div>"
@@ -227,7 +227,7 @@ def banner_states(plat: str) -> str:
         return f"<div class=\"t-micro muted pad\" style=\"margin:16px 0 6px\">{note_}</div>{inner}"
     stale = f"<div class=\"offline t-meta\">{glyph('cloud', 16)}<span>Forever Sixty did not answer. Showing what you had at 9:41 pm.</span> <span class=\"gold\" style=\"font-weight:600;margin-left:auto\">Retry</span></div>"
     newdata = (f"<div class=\"offline t-meta\" style=\"background:rgba(229,185,85,.10);border-bottom-color:rgba(229,185,85,.3)\">{glyph('download', 16)}<span>New game data is ready.</span> <span class=\"gold\" style=\"font-weight:600;margin-left:auto\">Update</span></div>")
-    inner = (b(offline_strip(), "No connection (v1 strip, unchanged)") + b(stale, "Connected, but the server did not answer and the cache is older than its limit")
+    inner = (b(offline_strip(), "No connection") + b(stale, "Connected, but the server did not answer and the cache is older than its limit")
              + b(newdata, "The game data changed while you were reading: nothing moves until you tap Update")
              + b(card("<div class=\"t-body\">This guide is not on your phone yet. Connect once to save it.</div>", margin="0 16px", pad="16px"), "Never saved and offline")
              + note("An offline strip never covers an error: a server error says what failed, in the failing region only."))
@@ -240,7 +240,7 @@ def roster_row(name: str, spec: str, lvl: int, rank: str, att: int, supp: bool =
     cls, sname, role, icon = SPEC[spec]
     segs = "".join(f"<i style=\"width:7px;height:12px;border-radius:2px;background:{'var(--kill)' if k < att else 'var(--line)'}\"></i>" for k in range(8))
     return (f"<div class=\"lrow\" style=\"min-height:64px\">{spec_mark(spec, 32)}<div class=\"t\"><div class=\"t-body\" style=\"font-weight:700;color:{CLASS_COLOR[cls]}\">{name}{' <span class=gold>' + glyph('crown', 13) + '</span>' if supp else ''}</div>"
-            f"<div class=\"t-meta muted\">{sname} · {lvl} · {rank}</div></div>"
+            f"<div class=\"t-meta muted\">{sname} {cls.title()} · {lvl} · {rank}</div></div>"
             + (tag("Waiting", "muted") if wait else f"<div style=\"text-align:right\"><div style=\"display:flex;gap:2px;justify-content:flex-end\">{segs}</div><div class=\"mono t-micro strong\" style=\"margin-top:4px;letter-spacing:0\">{att} of 8</div></div>")
             + f"<span class=\"chev\">{glyph('chev-right', 18)}</span></div>")
 
@@ -260,12 +260,12 @@ def roster(plat: str, state: str = "default") -> str:
 
 
 def raid_history(plat: str) -> str:
-    def r(zone: str, when: str, kills: str, you: bool = True, pressed: bool = False) -> str:
+    def r(zone: str, when: str, kills: str, raiders: int, length: str, you: bool = True, pressed: bool = False) -> str:
         return (f"<div class=\"lrow{' pressed' if pressed else ''}\" style=\"min-height:72px;align-items:flex-start;padding:12px 16px\"><div class=\"dateblk\" style=\"width:48px;height:52px\"><span class=\"m\">{when.split()[0]}</span><span class=\"d\" style=\"font-size:20px\">{when.split()[1]}</span><span class=\"m\">{when.split()[2]}</span></div>"
-                f"<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{zone}</div><div class=\"t-meta muted\">{kills}</div><div class=\"t-meta muted\" style=\"white-space:nowrap\"><span class=\"mono\">38</span> raiders · <span class=\"mono\">3 h 12 m</span></div>"
+                f"<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{zone}</div><div class=\"t-meta muted\">{kills}</div><div class=\"t-meta muted\" style=\"white-space:nowrap\"><span class=\"mono\">{raiders}</span> {'raiders' if raiders > 10 else 'players'} · <span class=\"mono\">{length}</span></div>"
                 + (f"<div style=\"margin-top:6px\">{tag('You were there', 'green')}</div>" if you else "") + f"</div><span class=\"chev\">{glyph('chev-right', 18)}</span></div>")
-    rows = (r("Onyxia's Lair", "THU 10 DEC", "1 boss · 1 kill · no wipes", pressed=True) + r("Onyxia's Lair", "THU 3 DEC", "1 boss · 1 kill · 2 wipes") + r("Blackrock Depths", "TUE 1 DEC", "4 bosses · 4 kills · no wipes", False)
-            + r("Lower Blackrock Spire", "SUN 29 NOV", "3 bosses · 3 kills · no wipes"))
+    rows = (r("Onyxia's Lair", "THU 17 DEC", "1 boss · 1 kill · no wipes", 38, "1 h 47 m", pressed=True) + r("Blackrock Depths", "TUE 15 DEC", "4 bosses · 4 kills · no wipes", 5, "1 h 38 m", False)
+            + r("Onyxia's Lair", "THU 10 DEC", "1 boss · 1 kill · 2 wipes", 39, "2 h 26 m") + r("Lower Blackrock Spire", "SUN 6 DEC", "3 bosses · 3 kills · no wipes", 5, "1 h 12 m"))
     inner = (label("Logged raid nights", first=True) + card(rows) + f"<div class=\"lrow\" style=\"min-height:52px;margin:0 16px\"><span class=\"t t-body gold\" style=\"font-weight:600\">Load more</span></div>"
              + note("A night opens your raid night when you were in it, otherwise its report."))
     return pushed(plat, "Raids", "Raid history", inner + TAB_CLEAR, "Raids")

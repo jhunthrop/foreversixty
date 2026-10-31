@@ -2,8 +2,10 @@
 ../2026-10-30-mobile-apps and adds the fifth tab (Guides), a few glyphs, and the small helpers every new screen needs.
 Run gen_wave3.py, not this file."""
 import base64
+import csv
 import json
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -140,8 +142,9 @@ def search_btn(plat: str) -> str:
     return icon_btn(plat, "search", "Search")
 
 
-def root_bar(plat: str) -> str:
-    return top_bar(plat, selector(plat), search_btn(plat))
+def root_bar(plat: str, who: dict | None = None) -> str:
+    """who: another character for the selector (name, cls, desc), for boards whose sample player is not the default Elemental Shaman."""
+    return top_bar(plat, selector(plat, **(who or {})), search_btn(plat))
 
 
 def pushed(plat: str, back: str, title: str, inner: str, tab: str, overlay: str = "", right: str = "", xl: bool = False, height: int | None = None) -> str:
@@ -152,9 +155,9 @@ def pushed(plat: str, back: str, title: str, inner: str, tab: str, overlay: str 
     return device(plat, bar + f"<div style=\"padding-top:{top}px\">{head_}{inner}</div>", tab, overlay=overlay, xl=xl, height=height)
 
 
-def root(plat: str, title: str, inner: str, tab: str, overlay: str = "", strip: str = "") -> str:
+def root(plat: str, title: str, inner: str, tab: str, overlay: str = "", strip: str = "", who: dict | None = None) -> str:
     top = content_top(plat)
-    return device(plat, root_bar(plat) + f"<div style=\"padding-top:{top}px\">{strip}<div class=\"cond t-title pad\" style=\"margin-top:4px\">{title}</div>{inner}</div>", tab, overlay=overlay)
+    return device(plat, root_bar(plat, who) + f"<div style=\"padding-top:{top}px\">{strip}<div class=\"cond t-title pad\" style=\"margin-top:4px\">{title}</div>{inner}</div>", tab, overlay=overlay)
 
 
 def skel(w: str, h: int, m: int = 8) -> str:
@@ -172,3 +175,31 @@ def note(text: str, extra: str = "") -> str:
 
 TAB_CLEAR = "<div style=\"height:130px\"></div>"
 CLASSES = ["warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid"]
+
+
+# ---- vendor price lines: the client's own BuyPrice (ItemSparse hotfix rows of the build) ----
+SPARSE = HERE.parents[2] / "data/builds/1.60.1.70658/raw/hotfixes/ItemSparse.csv"
+
+
+@lru_cache(maxsize=1)
+def buy_prices() -> dict[int, int]:
+    return {int(r["ID"]): int(r["BuyPrice"]) for r in csv.DictReader(open(SPARSE)) if r["BuyPrice"] not in ("", "0")}
+
+
+def money(copper: int) -> str:
+    """The client's price words: gold and silver, copper only under a silver."""
+    g, s_, c = copper // 10000, copper // 100 % 100, copper % 100
+    return " ".join(p for p in (f"{g}g" if g else "", f"{s_}s" if s_ else "", f"{c}c" if c and not g else "") if p)
+
+
+def _vendor_line(slot: dict, base) -> str:
+    """Vendor: name, then the price when the build has one. The standing a vendor asks for is not in the data yet (required_standing_raw is null for every vendor item); the line never guesses it (spec section F12, data dependencies)."""
+    line = base(slot)
+    price = buy_prices().get(slot.get("item_id", 0))
+    return f"{line} · {money(price)}" if slot.get("source_kind") == "vendor" and price else line
+
+
+import model  # noqa: E402
+
+_base_source_line = model.source_line
+model.source_line = lambda slot: _vendor_line(slot, _base_source_line)
