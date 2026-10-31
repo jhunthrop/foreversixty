@@ -8,6 +8,8 @@
 //
 //	go run ./cmd/samplecut -log WoWCombatLog.txt -out ../web/public/sample-report/sample
 //
+// -recount <dir> refreshes an existing cut's kill counts from its own events (recount.go).
+//
 // Fights with no player in them are dropped and the rest renumbered from 1. The log is only
 // read. -names writes the originals to a file (kept outside the repo) for the leak check.
 package main
@@ -50,8 +52,12 @@ func run(args []string, out io.Writer) error {
 	outDir := fs.String("out", "", "the directory to write meta.json, report.json and fights/")
 	seed := fs.String("seed", "forever-sample-2026-09-17", "the pseudonym seed")
 	names := fs.String("names", "", "write the original unit names here, for the leak check")
+	recountDir := fs.String("recount", "", "refresh this cut's kill counts from its events, without the log")
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+	if *recountDir != "" {
+		return recount(*recountDir)
 	}
 	if *logPath == "" || *outDir == "" {
 		return fmt.Errorf("-log and -out are required")
