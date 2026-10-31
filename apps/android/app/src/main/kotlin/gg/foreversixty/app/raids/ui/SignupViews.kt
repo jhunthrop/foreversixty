@@ -328,7 +328,7 @@ fun ReminderAsk(turnOn: () -> Unit, notNow: () -> Unit) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 RaidSecondaryButton(stringResource(R.string.ask_turnOn_raid), turnOn, kind = BrandButtonKind.Accent)
                 Text(
-                    stringResource(R.string.ask_notNow).uppercase(),
+                    stringResource(R.string.ask_notNow),
                     style = FsType.button,
                     color = FsColor.nav,
                     modifier = Modifier.heightIn(min = 48.dp).clickable(onClick = notNow).padding(vertical = 15.dp),

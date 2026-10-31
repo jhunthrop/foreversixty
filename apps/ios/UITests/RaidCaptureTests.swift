@@ -115,6 +115,20 @@ final class RaidCaptureTests: XCTestCase {
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Who is coming'")).firstMatch.waitForExistence(timeout: 15))
         sleep(3)
         try save("selector-raids-ios.png")
+        // The switch: Raids follows the picked character's guild (Yellfury has none).
+        app.navigationBars.buttons.matching(NSPredicate(format: "label CONTAINS 'Obnoxious Yell'")).firstMatch.tap()
+        let alt = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Yellfury'")).firstMatch
+        XCTAssertTrue(alt.waitForExistence(timeout: 5))
+        sleep(1)
+        try save("selector-open-raids-ios.png")
+        alt.tap()
+        sleep(4)
+        try save("selector-raids-switched-ios.png")
+        app.navigationBars.buttons.matching(NSPredicate(format: "label CONTAINS 'Yellfury'")).firstMatch.tap()
+        let main = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Obnoxious Yell'")).firstMatch
+        XCTAssertTrue(main.waitForExistence(timeout: 5))
+        main.tap()
+        sleep(3)
         app.tabBars.buttons["Home"].tap()
         sleep(4)
         try save("selector-home-ios.png")

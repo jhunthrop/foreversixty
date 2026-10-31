@@ -44,6 +44,12 @@ scale 2.0; shot selector-home-2.0
 scale 1.0
 tap_text "Raids"; sleep 5; shot selector-raids-1.0
 tap_text "BiS"; sleep 5; shot selector-bis-1.0
+# The switch: Raids follows the picked character's guild (Yellfury has none).
+tap_text "Raids"; sleep 4
+tap_text "Obnoxious Yell"; sleep 3; shot selector-open-raids
+tap_text "Yellfury"; sleep 5; shot selector-raids-switched
+tap_text "Yellfury"; sleep 3
+tap_text "Obnoxious Yell"; sleep 5
 # The relaunch: the session restores the token and reads /v1/me; the row sits where it did.
 "$ADB" shell am force-stop "$PKG"
 "$ADB" shell am start -n "$PKG/gg.foreversixty.app.MainActivity" >/dev/null

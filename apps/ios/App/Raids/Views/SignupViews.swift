@@ -228,7 +228,7 @@ struct ReminderAskView: View {
                 HStack(spacing: 12) {
                     Button(Copy.askTurnOnRaid) { answer(true) }.buttonStyle(BrandButtonStyle(.accent, height: 48, fullWidth: false))
                     Button(Copy.askNotNow) { answer(false) }
-                        .font(ScaledType.button).textCase(.uppercase).foregroundStyle(FSColor.nav)
+                        .font(ScaledType.button).foregroundStyle(FSColor.nav)
                         .frame(minHeight: 44)
                 }
             }
