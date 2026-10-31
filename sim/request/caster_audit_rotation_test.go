@@ -101,3 +101,19 @@ func TestDemonologySacrificesTheImpUnderDemonicPact(t *testing.T) {
 		t.Errorf("Demonology's filler must be Shadow Bolt (%d), not Searing Pain (%d): %v", shadowBolt, searingPain, ids)
 	}
 }
+
+// P1, P2: Mind Blast sits above Mind Flay, and Devouring Plague is kept up
+// by its own line rather than only behind Inner Focus.
+func TestShadowCastsMindBlastBeforeMindFlayAndKeepsDevouringPlague(t *testing.T) {
+	const (
+		mindBlast       = 10947
+		mindFlay        = 18807
+		devouringPlague = 19280
+		shadowSpecKey   = "priest-shadow"
+	)
+	ids := castOrder(t, shadowSpecKey)
+	requireBefore(t, shadowSpecKey, ids, mindBlast, mindFlay)
+	if !slices.Contains(ids, devouringPlague) {
+		t.Errorf("Shadow has no standalone Devouring Plague line: %v", ids)
+	}
+}
