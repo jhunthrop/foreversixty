@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70658",
-  "engine_version": "1f542def3",
-  "generated_at": "2026-10-31T13:51:31Z",
+  "engine_version": "816ec57c0",
+  "generated_at": "2026-10-31T18:26:22Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -745,8 +745,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.115680056,
-      "verify_run_seconds": 3.731389003,
+      "weights_run_seconds": 1.254744979,
+      "verify_run_seconds": 2.574315288,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1567,8 +1567,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.115680056,
-      "verify_run_seconds": 3.825821926,
+      "weights_run_seconds": 1.254744979,
+      "verify_run_seconds": 2.650443616,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2460,8 +2460,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.1344334480000002,
-      "verify_run_seconds": 4.196757367,
+      "weights_run_seconds": 1.217102729,
+      "verify_run_seconds": 2.816731562,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3358,8 +3358,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.1344334480000002,
-      "verify_run_seconds": 4.222940264,
+      "weights_run_seconds": 1.217102729,
+      "verify_run_seconds": 2.7305625669999998,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4231,8 +4231,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.099961344,
-      "verify_run_seconds": 2.182488937,
+      "weights_run_seconds": 1.294236124,
+      "verify_run_seconds": 1.485701329,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5103,8 +5103,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.099961344,
-      "verify_run_seconds": 2.18853039,
+      "weights_run_seconds": 1.294236124,
+      "verify_run_seconds": 1.411918435,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6026,8 +6026,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.172348679,
-      "verify_run_seconds": 2.660566866,
+      "weights_run_seconds": 1.9171165449999998,
+      "verify_run_seconds": 1.7844708900000001,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6945,8 +6945,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.172348679,
-      "verify_run_seconds": 2.743040161,
+      "weights_run_seconds": 1.9171165449999998,
+      "verify_run_seconds": 1.809201034,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7879,8 +7879,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 2.926977054,
-      "verify_run_seconds": 6.447356161,
+      "weights_run_seconds": 1.789174364,
+      "verify_run_seconds": 4.311647869,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8813,8 +8813,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 2.926977054,
-      "verify_run_seconds": 6.487221534,
+      "weights_run_seconds": 1.789174364,
+      "verify_run_seconds": 4.302932892,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9746,8 +9746,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 3.121330911,
-      "verify_run_seconds": 6.950853072,
+      "weights_run_seconds": 1.929955553,
+      "verify_run_seconds": 4.602286398,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10680,8 +10680,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 3.121330911,
-      "verify_run_seconds": 7.008208045,
+      "weights_run_seconds": 1.929955553,
+      "verify_run_seconds": 4.616309512,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10878,10 +10878,6 @@
           "label": "Improved Scorch"
         },
         {
-          "id": "winters_chill",
-          "label": "Winter's Chill"
-        },
-        {
           "id": "curse_of_recklessness",
           "label": "Curse of Recklessness"
         }
@@ -10916,7 +10912,7 @@
           "label": "Dense Sharpening Stone"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md)."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
     }
   }
 }
