@@ -10,7 +10,7 @@
     "mage-fire": ["Pyroblast", "Combustion", "Improved Scorch", "Burning Soul", "Flame Throwing", "Improved Channeling", "Arcane Resilience"],
     "mage-frost": ["Ice Lance", "Fingers of Frost", "Winter's Chill", "Frost Channeling", "Frost Warding", "Flame Throwing", "Improved Channeling"],
     "paladin-retribution": ["Seal of Command", "Instrument of Law", "Vindication"],
-    "priest-shadow": ["Inner Focus", "Mind Flay", "Shadowform", "Shadow Affinity", "Silent Resolve", "Vampiric Embrace", "Improved Power Word: Shield"],
+    "priest-shadow": ["Inner Focus", "Mind Flay", "Shadowform", "Improved Mind Blast", "Silent Resolve", "Vampiric Embrace", "Improved Power Word: Shield"],
     "rogue-assassination": ["Cold Blood", "Mutilate"],
     "rogue-combat": ["Adrenaline Rush", "Blade Flurry"],
     "rogue-subtlety": ["Ghostly Strike", "Premeditation", "Hemorrhage", "Elusiveness", "Preparation"],
