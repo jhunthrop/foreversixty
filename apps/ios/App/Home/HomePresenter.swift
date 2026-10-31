@@ -16,18 +16,23 @@ struct HomeCharacter: Equatable, Sendable {
     let faction: String?
     /// Worn item ids by slot from the last export, for the gear rows the answer does not name.
     let gear: [String: Int]
+    /// The last export's talent ranks and the build it was made on (lane F6 draws them).
+    let talents: BuildTalents?
+    let dataBuild: String?
 
     init(_ character: AccountCharacter) {
         self.init(
             key: character.key, region: character.region, ruleset: character.ruleset, name: character.name,
             race: character.race, className: character.className, specName: character.spec, level: character.level,
-            guild: character.guild?.name, faction: character.faction, gear: character.build?.gear ?? [:]
+            guild: character.guild?.name, faction: character.faction, gear: character.build?.gear ?? [:],
+            talents: character.build?.talents, dataBuild: character.build?.dataBuild
         )
     }
 
     init(
         key: String, region: String, ruleset: String, name: String, race: String?, className: String?,
-        specName: String?, level: Int?, guild: String?, faction: String?, gear: [String: Int] = [:]
+        specName: String?, level: Int?, guild: String?, faction: String?, gear: [String: Int] = [:],
+        talents: BuildTalents? = nil, dataBuild: String? = nil
     ) {
         self.key = key
         self.region = region
@@ -40,6 +45,8 @@ struct HomeCharacter: Equatable, Sendable {
         self.guild = guild
         self.faction = faction
         self.gear = gear
+        self.talents = talents
+        self.dataBuild = dataBuild
     }
 
     /// The path segment of the character routes (`velaren` in `us/normal/velaren`).

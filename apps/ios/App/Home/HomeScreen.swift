@@ -17,6 +17,8 @@ struct HomeDependencies {
     let catalog: ItemCatalog
     let cache: any HomeCache
     let isEnabled: Bool
+    /// Lane F6: the Talents screen's files; nil while its feature switch is off.
+    var talents: (any TalentsSource)?
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
@@ -28,7 +30,8 @@ struct HomeDependencies {
             client: environment.client,
             catalog: ItemCatalog(client: StaticDataClient(transport: staticTransport)),
             cache: FileHomeCache.standard() ?? MemoryHomeCache(),
-            isEnabled: environment.isAvailable(.characterHome)
+            isEnabled: environment.isAvailable(.characterHome),
+            talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil
         )
     }
 }
@@ -115,6 +118,7 @@ struct HomeCharacterScreen: View {
     @State private var store: HomeStore
     @State private var tooltip: ItemTooltipRequest?
     @State private var showGear = false
+    @State private var showTalents = false
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
@@ -149,6 +153,7 @@ struct HomeCharacterScreen: View {
             .navigationTitle(showsSelector ? "" : character.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showGear) { gear }
+            .navigationDestination(isPresented: $showTalents) { talents }
             .characterSelector(isOn: showsSelector)
         }
         .sheet(item: $tooltip) { request in
@@ -182,6 +187,13 @@ struct HomeCharacterScreen: View {
         }
     }
 
+    @ViewBuilder
+    private var talents: some View {
+        if let source = dependencies.talents {
+            TalentsScreen(character: character, source: source)
+        }
+    }
+
     private func handle(_ intent: HomeIntent) {
         switch intent {
         case let .openItem(look, sourceLine, wornID):
@@ -194,6 +206,8 @@ struct HomeCharacterScreen: View {
             openURL(HomeLinks.planner)
         case .action(.openList):
             openBis()
+        case .openNext(.talents):
+            showTalents = dependencies.talents != nil
         case .openNext:
             break
         case .retry:

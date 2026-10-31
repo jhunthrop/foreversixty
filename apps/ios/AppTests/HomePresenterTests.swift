@@ -111,7 +111,7 @@ struct HomePresenterTests {
     @Test("talents: the differ count and its tag")
     func talents() throws {
         let row = HomeFixtures.presenter().model(try HomeFixtures.home()).next.first
-        #expect(row?.line == "1 of your 51 points differ from the 60 build")
+        #expect(row?.line == "1 of your 51 points differ from the 60 guide build")
         #expect(row?.tag == .differs)
     }
 
