@@ -4,7 +4,8 @@
 # them: tools/tests/test_activation.sh (the activation gate, the move's failure report and
 # resume, the scripts' executable bits), tools/engine/tests/test_scripts.sh (the engine
 # follow hash, pin conditions, review branch, pinned build and ranking wait) and
-# tools/tests/test_release_apps.sh (the apps' release command), then
+# tools/tests/test_release_apps.sh (the apps' release command) and tools/tests/play-upload.test.ts
+# (its Play upload, against a stub of the API), then
 # shellcheck over every script and actionlint over the move's workflows. Plain bash with stubs
 # and scratch git repositories: no network, no database, no secrets.
 name: tools
@@ -34,6 +35,11 @@ jobs:
         run: bash tools/engine/tests/test_scripts.sh
       - name: the apps release command
         run: bash tools/tests/test_release_apps.sh
+      # 24 runs the TypeScript directly, with no packages.
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - name: the Play upload
+        run: node --test tools/tests/*.test.ts
       - name: shellcheck
         run: shellcheck tools/*.sh tools/engine/*.sh tools/tests/*.sh tools/engine/tests/*.sh
       - name: actionlint
@@ -42,4 +48,4 @@ jobs:
           tar -xzf /tmp/actionlint.tgz -C /tmp actionlint
           # The workflows the client move runs through; the others carry older shellcheck
           # findings (api, companion, data, sim) that are their lanes' to clear.
-          /tmp/actionlint .github/workflows/client.yml .github/workflows/bis.yml .github/workflows/engine.yml .github/workflows/tools.yml .github/workflows/apps-release.yml
+          /tmp/actionlint .github/workflows/client.yml .github/workflows/bis.yml .github/workflows/engine.yml .github/workflows/tools.yml .github/workflows/apps-release.yml .github/workflows/android.yml

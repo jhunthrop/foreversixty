@@ -1,5 +1,5 @@
-# fastlane uploads the apps (tools/release-apps.sh): upload_to_play_store and
-# upload_to_testflight, plus the rollout commands in docs/runbooks/mobile-apps.md.
+# fastlane uploads iOS to TestFlight (tools/release-apps.sh: upload_to_testflight). Android
+# goes to Play through tools/play-upload.ts, with a short-lived token and no JSON key.
 # Builds use the platform CLIs (gradlew, xcodebuild) directly.
 source "https://rubygems.org"
 

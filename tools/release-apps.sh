@@ -10,8 +10,9 @@
 #   1. bumps apps/VERSION (APP_BUILD always rises by one; --bump patch|minor|major also moves
 #      APP_VERSION) and turns the changelog's Unreleased section into the version's section,
 #   2. commits that as "chore(apps): release <version> (<build>)" and tags apps-v<version>-<build>,
-#   3. Android: builds the signed release bundle and uploads it to the Play track
-#      (PLAY_TRACK, default internal) with fastlane's upload_to_play_store,
+#   3. Android: builds the signed release bundle and uploads it, with its R8 mapping and the
+#      notes, to the Play track (PLAY_TRACK, default internal) through tools/play-upload.ts
+#      (the Play Developer API with a short-lived token; no service-account key exists),
 #   4. iOS: archives, exports and uploads to TestFlight with fastlane's upload_to_testflight,
 #      once the Apple account exists. Until then iOS is skipped with what is missing named
 #      (or fails, when --platform ios asked for it).
@@ -19,15 +20,18 @@
 # workflow does. A build number spent on a failed upload is simply skipped next time.
 #
 # Environment (secrets come from the environment, never from a file in the repo):
-#   Android signing  FOREVER_UPLOAD_KEYSTORE (path), FOREVER_UPLOAD_KEYSTORE_PASSWORD,
-#                    FOREVER_UPLOAD_KEY_ALIAS, FOREVER_UPLOAD_KEY_PASSWORD
-#   Play upload      PLAY_SERVICE_ACCOUNT_JSON (the key's JSON text)
+#   Android signing  ANDROID_KEYSTORE_PATH (the upload keystore's path), ANDROID_KEYSTORE_PASSWORD,
+#                    ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (docs/runbooks/mobile-apps.md,
+#                    "Android release infrastructure": GSM holds them, GitHub has copies)
+#   Play upload      PLAY_ACCESS_TOKEN (CI: minted by GitHub federation as PLAY_SA), or
+#                    PLAY_SA (a local release: the token is minted with gcloud impersonating it)
 #                    PLAY_TRACK (internal), PLAY_RELEASE_STATUS (draft until the app's first
 #                    review; then completed)
 #   iOS              APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 (the .p8 key's text)
 #   Crash reports    SENTRY_DSN_ANDROID, SENTRY_DSN_IOS (optional: without one that build
 #                    reports nothing)
-#   Tests            RELEASE_ROOT (repo root), GRADLEW, XCODEBUILD, XCODEGEN, FASTLANE
+#   Tests            RELEASE_ROOT (repo root), GRADLEW, XCODEBUILD, XCODEGEN, FASTLANE, NODE,
+#                    GCLOUD
 set -euo pipefail
 
 ROOT=${RELEASE_ROOT:-$(git rev-parse --show-toplevel)}
@@ -40,13 +44,18 @@ readonly PACKAGE=gg.foreversixty.app
 readonly GRADLEW=${GRADLEW:-$ANDROID_DIR/gradlew}
 readonly XCODEBUILD=${XCODEBUILD:-xcodebuild}
 readonly XCODEGEN=${XCODEGEN:-xcodegen}
+readonly NODE=${NODE:-node}
+readonly GCLOUD=${GCLOUD:-gcloud}
+readonly PLAY_UPLOAD=$ROOT/tools/play-upload.ts
+readonly PLAY_SCOPE=https://www.googleapis.com/auth/androidpublisher
+readonly PLAY_TOKEN_HELP="run gcloud auth login; your account needs Service Account Token Creator on PLAY_SA"
 # shellcheck disable=SC2206 # FASTLANE is a command line, split on purpose.
 readonly FASTLANE_CMD=(${FASTLANE:-bundle exec fastlane})
 # fastlane comes from apps/Gemfile (pinned), whatever directory the script runs from.
 export BUNDLE_GEMFILE=${BUNDLE_GEMFILE:-$ROOT/apps/Gemfile}
 readonly PLAY_TRACK=${PLAY_TRACK:-internal}
 readonly PLAY_RELEASE_STATUS=${PLAY_RELEASE_STATUS:-draft}
-readonly ANDROID_SIGNING=(FOREVER_UPLOAD_KEYSTORE FOREVER_UPLOAD_KEYSTORE_PASSWORD FOREVER_UPLOAD_KEY_ALIAS FOREVER_UPLOAD_KEY_PASSWORD PLAY_SERVICE_ACCOUNT_JSON)
+readonly ANDROID_SIGNING=(ANDROID_KEYSTORE_PATH ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD)
 readonly APPLE_ACCOUNT=(APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8)
 
 BUMP=build
@@ -140,6 +149,9 @@ preflight() {
 		die "apps/VERSION or apps/CHANGELOG.md has uncommitted changes"
 	fi
 	ANDROID_MISSING=$(missing "${ANDROID_SIGNING[@]}")
+	if [ -z "${PLAY_ACCESS_TOKEN:-}" ] && [ -z "${PLAY_SA:-}" ]; then
+		ANDROID_MISSING="${ANDROID_MISSING:+$ANDROID_MISSING }PLAY_SA (or PLAY_ACCESS_TOKEN)"
+	fi
 	APPLE_MISSING=$(missing "${APPLE_ACCOUNT[@]}")
 	DO_ANDROID=false
 	DO_IOS=false
@@ -191,17 +203,25 @@ run() {
 release_android() {
 	local work=$1 aab=$ANDROID_DIR/app/build/outputs/bundle/release/app-release.aab
 	local mapping=$ANDROID_DIR/app/build/outputs/mapping/release/mapping.txt
-	local metadata=$work/play-metadata
+	local notes=$work/play-notes.txt
 	echo "Android: signed bundle, then Play track '$PLAY_TRACK' as $PLAY_RELEASE_STATUS"
 	[ -n "${SENTRY_DSN_ANDROID:-}" ] || echo "  note: SENTRY_DSN_ANDROID is empty, so this build reports no crashes"
-	mkdir -p "$metadata/en-US/changelogs"
-	printf '%s\n' "${NOTES:-Bug fixes and improvements.}" >"$metadata/en-US/changelogs/$NEXT_BUILD.txt"
+	printf '%s\n' "${NOTES:-Bug fixes and improvements.}" >"$notes"
 	run "$GRADLEW" -p "$ANDROID_DIR" bundleRelease
-	# supply reads the key from SUPPLY_JSON_KEY_DATA, so it never appears on a command line.
-	SUPPLY_JSON_KEY_DATA=${PLAY_SERVICE_ACCOUNT_JSON:-} run "${FASTLANE_CMD[@]}" run upload_to_play_store \
-		package_name:"$PACKAGE" track:"$PLAY_TRACK" release_status:"$PLAY_RELEASE_STATUS" \
-		aab:"$aab" mapping:"$mapping" metadata_path:"$metadata" skip_upload_metadata:true \
-		skip_upload_images:true skip_upload_screenshots:true
+	local token=''
+	if $EXECUTE; then token=$(play_token) || die "no Play token: $PLAY_TOKEN_HELP"; fi
+	# The token reaches the upload through its environment, never a command line.
+	PLAY_ACCESS_TOKEN=$token run "$NODE" "$PLAY_UPLOAD" --package "$PACKAGE" --track "$PLAY_TRACK" \
+		--status "$PLAY_RELEASE_STATUS" --bundle "$aab" --mapping "$mapping" --notes "$notes"
+}
+
+# play_token: the caller's short-lived token, or one minted by impersonating PLAY_SA.
+play_token() {
+	if [ -n "${PLAY_ACCESS_TOKEN:-}" ]; then
+		printf '%s' "$PLAY_ACCESS_TOKEN"
+	else
+		"$GCLOUD" auth print-access-token --impersonate-service-account="$PLAY_SA" --scopes="$PLAY_SCOPE"
+	fi
 }
 
 release_ios() {
