@@ -38,7 +38,8 @@ struct BisSnapshotTests {
             selection: BisTestData.raid,
             characterSelection: BisTestData.raid,
             characterName: "Obnoxious Yell",
-            classes: try BisTestData.classes()
+            classes: try BisTestData.classes(),
+            raidsOpening: RaidsOpening(try BisTestData.fixture("cdn.dates", as: [KeyDate].self))
         )
         catalog = try BisTestData.catalog()
     }
@@ -103,6 +104,12 @@ struct BisSnapshotTests {
     func tooltip(size: TextSize) throws {
         let row = try #require(list.rows.first)
         let pick = try #require(row.pick)
-        snap(ItemTooltipSheet(content: BisTooltip.content(row: row, pick: pick, list: list)), size: size, named: "tooltip")
+        let request = BisTooltip.request(row: row, pick: pick, list: list, context: context, build: BisTestData.build)
+        let sources = ItemTooltipSources(
+            items: Dictionary(try BisTestData.items().items.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first }),
+            sets: [],
+            bis: try BisTestData.bis()
+        )
+        snap(ItemTooltipContent(request: request, phase: .loaded(.build(request, sources: sources))), size: size, named: "tooltip")
     }
 }

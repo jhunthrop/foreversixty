@@ -17,6 +17,8 @@ protocol BisDataSource: Sendable {
     func cachedClasses(build: String) -> CachedFile<[ClassInfo]>?
     /// The current character, or nil signed out. F1's switcher replaces the main character.
     func currentCharacter() async -> AccountCharacter?
+    /// The key dates: the CDN's (or its saved copy), else the copy bundled with the app.
+    func keyDates() async -> [KeyDate]
 }
 
 /// The live source: the CDN through the offline cache, the build from the app config.
@@ -60,6 +62,11 @@ struct LiveBisDataSource: BisDataSource {
     func currentCharacter() async -> AccountCharacter? {
         try? await client.send(.getMe).mainCharacter
     }
+
+    func keyDates() async -> [KeyDate] {
+        if let dates = try? await files.load(.getKeyDates).value { return dates }
+        return BundledData.keyDates()
+    }
 }
 
 /// The active build bundled with the app (web/src/data/active-build.json, copied in by
@@ -68,9 +75,23 @@ enum BundledBuild {
     static let resourceName = "active-build"
 
     static func read(_ bundle: Bundle = .main) -> String? {
-        guard let url = bundle.url(forResource: resourceName, withExtension: "json"),
+        BundledData.decode(resourceName, as: ActiveBuild.self, bundle: bundle)?.build
+    }
+}
+
+/// The site's files bundled with the app for when the CDN cannot answer: the key dates
+/// (web/src/data/dates.json; `/data/dates.json` is not published yet, app-v1.md's open item).
+enum BundledData {
+    static let datesResource = "dates"
+
+    static func keyDates(_ bundle: Bundle = .main) -> [KeyDate] {
+        decode(datesResource, as: [KeyDate].self, bundle: bundle) ?? []
+    }
+
+    static func decode<T: Decodable>(_ name: String, as _: T.Type, bundle: Bundle = .main) -> T? {
+        guard let url = bundle.url(forResource: name, withExtension: "json"),
               let data = try? Data(contentsOf: url)
         else { return nil }
-        return try? WireFormat.decoder().decode(ActiveBuild.self, from: data).build
+        return try? WireFormat.decoder().decode(T.self, from: data)
     }
 }

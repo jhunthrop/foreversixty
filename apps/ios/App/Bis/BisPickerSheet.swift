@@ -40,8 +40,13 @@ struct BisPickerSheet: View {
     let context: BisContext
     let catalog: SpecCatalog
     let onSelect: (BisSelection) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var selection: BisSelection { context.selection }
+
+    /// Three crests across; two from the accessibility sizes, so a class name never breaks inside
+    /// the word.
+    private var classColumns: Int { typeSize.isAccessibilitySize ? 2 : 3 }
 
     var body: some View {
         ScrollView {
@@ -74,7 +79,7 @@ struct BisPickerSheet: View {
     }
 
     private var classGrid: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.sm), count: 3), spacing: Theme.Spacing.sm) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.sm), count: classColumns), spacing: Theme.Spacing.sm) {
             ForEach(classSlugs, id: \.self) { slug in
                 let isCurrent = slug == selection.classSlug
                 Button { onSelect(selection.withClass(slug, catalog: catalog)) } label: {
@@ -83,6 +88,8 @@ struct BisPickerSheet: View {
                         Text(context.className(slug))
                             .font(Theme.Typography.bodyStrong)
                             .foregroundStyle(GamePalette.classColor(slug))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                     .frame(maxWidth: .infinity, minHeight: 88)
                     .background(isCurrent ? Theme.Palette.pressedWash : .clear, in: .rect(cornerRadius: Theme.Radius.control))
@@ -122,7 +129,7 @@ struct BisPickerSheet: View {
     private var ranges: some View {
         WrapLayout(spacing: Theme.Spacing.sm) {
             ForEach(BisRange.all, id: \.self) { range in
-                pill(BisLabels.range(range), isCurrent: range == selection.range) { onSelect(selection.withRange(range)) }
+                pill(context.rangeLabel(range), isCurrent: range == selection.range) { onSelect(selection.withRange(range)) }
             }
         }
     }

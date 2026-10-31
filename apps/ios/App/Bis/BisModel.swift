@@ -24,6 +24,8 @@ struct BisContext: Equatable, Sendable {
     var characterSelection: BisSelection?
     var characterName: String?
     var classes: [ClassInfo] = []
+    /// When the first raids open; nil when the dates file has no raids entry.
+    var raidsOpening: RaidsOpening?
 
     /// The gold `Yours` tag: the list is the character's spec, range and faction.
     var isYours: Bool { characterSelection == selection }
@@ -36,6 +38,11 @@ struct BisContext: Equatable, Sendable {
 
     func className(_ slug: String) -> String {
         classes.first { $0.slug == slug }?.name ?? slug.capitalized
+    }
+
+    /// A range's chip and pill words, with `opens Dec 9` on the raid list before raids open.
+    func rangeLabel(_ range: BisRange, now: Date = .now) -> String {
+        BisLabels.range(range, opening: raidsOpening, now: now)
     }
 }
 
@@ -104,6 +111,7 @@ final class BisModel {
         }
         let build = await source.activeBuild()
         self.build = build
+        context.raidsOpening = await RaidsOpening(source.keyDates())
         drawSaved(build: build)
         await load()
     }
@@ -201,8 +209,13 @@ final class BisModel {
 
 /// The words of the chips and pills.
 enum BisLabels {
-    static func range(_ range: BisRange) -> String {
-        if range.preset == BisRange.raidPreset { return Copy.bisRangeP1 }
+    /// The range's words; the raid list reads `60 · Phase 1 raid · opens Dec 9` until the first
+    /// raids open, with the date from the data.
+    static func range(_ range: BisRange, opening: RaidsOpening? = nil, now: Date = .now) -> String {
+        if range.preset == BisRange.raidPreset {
+            if let opening, opening.isUpcoming(at: now) { return Copy.bisRangeP1Opens(date: opening.label) }
+            return Copy.bisRangeP1
+        }
         if range.band == BisRange.lastBand { return Copy.bisRangeTop(n: range.band) }
         return Copy.bisRangeSpan(from: range.band, to: range.band + BisRange.bandStep - 1)
     }

@@ -43,6 +43,7 @@ private final class FakeBisSource: BisDataSource, Sendable {
     func cachedItems(build _: String, classSlug _: String) -> CachedFile<ItemsFile>? { nil }
     func cachedClasses(build _: String) -> CachedFile<[ClassInfo]>? { nil }
     func currentCharacter() async -> AccountCharacter? { state.withLock { $0.character } }
+    func keyDates() async -> [KeyDate] { (try? BisTestData.fixture("cdn.dates")) ?? [] }
 }
 
 private final class MemoryPreferences: BisPreferences, @unchecked Sendable {
@@ -75,6 +76,7 @@ struct BisModelTests {
         #expect(model.context.isYours)
         #expect(model.context.selection.range == BisRange(band: 50, preset: "bare"))
         #expect(model.isPickerPresented == false)
+        #expect(model.context.raidsOpening?.label == "Dec 9")
         guard case let .loaded(list, offlineSince) = model.phase else { Issue.record("not loaded"); return }
         #expect(offlineSince == nil)
         #expect(list.rows.count == 17)

@@ -152,3 +152,53 @@ All captures are in `design/reviews/2026-10-31-mobile-bis/`. The scripts that to
    - At Android font scale 2.0 the shell's tab labels break inside the word ("Chara/cter"). That is the shell's NavigationBar, not BiS.
    - The search is iOS's system search, minimised to the bar's trailing button. On Android it is a field that the bar's search button opens.
 10. **Offline on a device** cannot be captured from a fixture build, which never touches the network. The offline captures are the rendered ones.
+
+## Fix round 1 (both reviewers HOLD, 2026-10-31)
+
+The verdicts are `design/reviews/2026-10-31-mobile-bis/ux-verdict.md` and `player-verdict.md`, committed with the fixes.
+
+| # | Coordinator item | What changed |
+|---|---|---|
+| 1 | iOS picker, live | The debug-only `-FSBisPicker open` launch argument opens the real sheet; `capture-ios.sh` shoots it at default and AX5 (`picker-default-ios.png`, `picker-large-ios.png`). See the hairline note below. |
+| 2 | Android picker at 2.0 | The picker and tooltip contents pad by the navigation-bar window insets. `capture-and.sh` captures the picker at 2.0 scrolled to its end, Faction (`picker-large-bottom-and.png`). Back does not show on the character's own list., and the tooltip's footer above the gesture bar (`tooltip-large-bottom-and.png`). The render test draws the sheets alone, not inside the tab shell, plus `bis_picker_bottom_large` scrolled to Back. |
+| 3 | Next best in the band's unit | `tooltip.delta` is now `{delta} {unit} vs the pick` and `items.sameDps` is `Same {unit} as the pick`, from the band's role: DPS, HPS or score. Tested on real holy-priest and protection-warrior files on both platforms. |
+| 4 | No pipeline words | The footer is `Best in slot for {slot} · {spec} {band}`. The band label already carries the phase (`60 · Phase 1 raid`), so no preset is printed and `Bare` is gone. `tooltip.pickOf` lost its `{preset}`. |
+| 5 | Tank score explained | The tank unit word is `score`, as the site's `scoreUnitWord` uses. A tank band's `set_dps` is its own damage, which the site does not headline (`headlineDpsOf`), so the line above the rows reads `Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated {date}`. The wording comes from the site's `tankCopy` doc ("a composite of mitigation, risk and threat"). The deltas read `−36.8 score`. |
+| 6 | Raid chip before raids open | The chip and the pill read `60 · Phase 1 raid · opens Dec 9` while now is before the `raids` entry of `dates.json`. The date is the entry's own `key`, and its `iso` day starts at 00:00 UTC, as the site's dates line reads it. The list stays viewable. Dates come from `/data/dates.json` through the offline cache, else the bundled `web/src/data/dates.json` (the CDN path is still 404). The `cdn.dates` fixture gains the raids entry. |
+| 7 | Tooltip body | F3 does not build a second full sheet. Its call sites use F2's entry point exactly: iOS `ItemTooltipSheet(request: ItemTooltipRequest, catalog: ItemCatalog)`, with the pure body `ItemTooltipContent(request:phase:retry:)`; Android `ItemTooltipSheet(request: ItemTooltipRequest, catalog: ItemCatalog, onDismiss: () -> Unit)`, with `ItemTooltipContent(request, phase, retry)`. `ItemTooltipRequest`, `HomeItemLook`/`ItemLook`, `ItemTooltipSources` and `ItemCatalog(client:)` carry F2's names and fields. F3's minimal versions live in the same file names (`Items/ItemTooltipModel`, `ItemCatalog`, `ItemTooltipSheet`), so at integration F2's three files replace them and BiS's call site compiles unchanged. |
+
+**What F2's model must change at integration.** The renamed keys will refuse to compile until it does:
+- word the next best with the band's unit: `tooltip.delta(delta:unit:)` and `items.sameDps(unit:)`;
+- call `tooltip.pickOf(slot:spec:band:)` without the preset.
+
+**Also from the verdicts:**
+- The two rings read `Ring 1` and `Ring 2`, and the trinkets `Trinket 1` and `Trinket 2` (F2's `items.slot.*`). UX ruled this a fix.
+- Not saved has a way out: `Try again`, muted text and a 24 pt top margin. No list and error use the same block.
+- Secondary buttons are in sentence case (`Back to Obnoxious Yell's list`, `Try again`).
+- The iOS `Yours` tag sits on the title's first baseline at AX5.
+
+**Not done here:**
+- The kind icon before the source line: UX accepted the gap in writing as an option.
+- `60 · dungeons and PvP` for the plain 60 pill: the site has no such copy, so it needs an owner call.
+- Runner-up sources and PvP rank caps: the coordinator routes these to the ranking data.
+- The re-scan of launch gating after tonight's re-rank: the coordinator runs it.
+
+**Captures from this round.** Live on the shared devices, in `design/reviews/2026-10-31-mobile-bis/`:
+- **iOS.**
+  - `list-default-ios`, `list-large-ios`, `picker-default-ios` and `picker-large-ios` (AX5).
+  - The live picker shows **no edge hairlines** on the chips or pills, so they were an artifact of the snapshot renderer. `pillSurface` now draws with `strokeBorder` inside the edge either way.
+  - At AX5 the class grid drops to two columns so names never break inside the word, a defect the live capture showed.
+- **Android.**
+  - `list-default-and`, `list-large-and`, `picker-default-and`, `picker-large-top-and`, `picker-large-bottom-and`, `tooltip-default-and` and `tooltip-large-bottom-and`.
+  - At 2.0 the sheet sits over the whole window, the app's tab bar included, and its end (Faction) clears the gesture bar.
+  - `Back to {name}'s list` shows only when the picks differ from the character's. These captures are on the character's own list, so it is absent. The render `bis_picker_bottom_large` shows it scrolled to, away from the character's list.
+- **Rendered states** (offline, loading, error, not saved, tooltip) live in the test goldens: `apps/ios/AppTests/__Snapshots__/BisSnapshotTests/` and `apps/android/app/src/test/screenshots/bis_*.png`.
+
+**Gates, fix round 1.** Each ran on its own, with its exit code checked.
+
+| Check | Exit | Result |
+|---|---|---|
+| `make -C apps/ios test` (shared simulator) | 0 | TEST SUCCEEDED: 137 tests (app-hosted 43, Models 21, Networking 45, Auth 19, Routing 4, Telemetry 5) |
+| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` (JDK 21) | 0 | 134 JVM tests, 0 failures; goldens verified; lint clean; debug APK built |
+| `go test -count=1 ./internal/contract/`, `go vet` | 0 | ok |
+| `vitest run src/lib/mobile src/styles/mobile-tokens.test.ts` | 0 | 28 passed |

@@ -2,14 +2,14 @@ import Foundation
 import Models
 
 /// The measure a band's figures are in: a healer band's are healing per second, a tank band's
-/// its tank score (the site's `rateUnitForRole`).
+/// its tank score (the site's `scoreUnitWord`: DPS, HPS, score).
 enum BisUnit: Equatable, Sendable {
-    case dps, hps, points
+    case dps, hps, score
 
     init(role: String?) {
         switch role {
         case "healer": self = .hps
-        case "tank": self = .points
+        case "tank": self = .score
         default: self = .dps
         }
     }
@@ -18,7 +18,7 @@ enum BisUnit: Equatable, Sendable {
         switch self {
         case .dps: Copy.bisUnitDps
         case .hps: Copy.bisUnitHps
-        case .points: Copy.bisUnitPoints
+        case .score: Copy.bisUnitScore
         }
     }
 }
@@ -82,10 +82,9 @@ struct BisList: Equatable, Sendable {
     let setDpsLine: String?
     let rows: [BisRow]
     let unit: BisUnit
-    /// `Elemental Shaman`, `60 · Phase 1 raid` and the preset's label, for the tooltip footer.
+    /// `Fury Warrior` and `60 · Phase 1 raid`, for the tooltip footer.
     let specLabel: String
     let rangeLabel: String
-    let presetLabel: String
 
     /// The rows whose pick or runner-up names contain `query` (spec F3.1 search).
     func filtered(by query: String) -> [BisRow] {
@@ -128,22 +127,21 @@ struct BisListBuilder {
         let unit = BisUnit(role: band.role)
         let mainHand = band.slots.first { $0.slot == "main_hand" }?.itemName
         return BisList(
-            setDpsLine: band.setDps.map {
-                Copy.bisSetDps(dps: Self.figure($0), unit: unit.word, date: updated(file.generatedAt))
-            },
+            setDpsLine: headline(file: file, band: band, unit: unit),
             rows: band.slots.map { row($0, unit: unit, mainHand: mainHand) },
             unit: unit,
             specLabel: specLabel,
-            rangeLabel: rangeLabel,
-            presetLabel: Self.presetLabel(file, band)
+            rangeLabel: rangeLabel
         )
     }
 
-    /// The file's own label for the preset; the bare character reads `Bare`, as the site's
-    /// `presetLabelFor` does.
-    static func presetLabel(_ file: BisFile, _ band: BisBand) -> String {
-        if band.preset == BisRange.barePreset { return Copy.bisPresetBare }
-        return file.presets[band.preset]?.label ?? band.preset
+    /// The line above the rows: a DPS or HPS band's `set_dps` with its Updated date; a tank band's
+    /// `set_dps` is its own damage, not what a tank is judged on (the site's `headlineDpsOf`), so
+    /// it says what a score point is instead.
+    func headline(file: BisFile, band: BisBand, unit: BisUnit) -> String? {
+        let date = updated(file.generatedAt)
+        if unit == .score { return Copy.bisTankLine(date: date) }
+        return band.setDps.map { Copy.bisSetDps(dps: Self.figure($0), unit: unit.word, date: date) }
     }
 
     func row(_ slot: BisSlot, unit: BisUnit, mainHand: String?) -> BisRow {

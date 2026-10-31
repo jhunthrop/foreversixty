@@ -9,7 +9,8 @@ struct BisView: View {
     @Binding var searchText: String
     var onOpenPicker: () -> Void = {}
     var onTryAgain: () -> Void = {}
-    var onOpenItem: (ItemTooltipContent) -> Void = { _ in }
+    var onOpenItem: (ItemTooltipRequest) -> Void = { _ in }
+    var build: String?
     var now: Date = .now
 
     var body: some View {
@@ -36,7 +37,7 @@ struct BisView: View {
     }
 
     private var titleRow: some View {
-        HStack(alignment: .center, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
             Text(Copy.bisTitle.uppercased())
                 .font(Theme.Typography.screenTitle)
                 .foregroundStyle(Theme.Palette.strong)
@@ -51,7 +52,7 @@ struct BisView: View {
             BisChip(label: specChipLabel, isOpen: false, action: onOpenPicker) {
                 if let spec = catalog.spec(selection.spec) { SpecIcon(icon: spec.icon, size: 28) }
             }
-            BisChip(label: BisLabels.range(selection.range), action: onOpenPicker) { EmptyView() }
+            BisChip(label: context.rangeLabel(selection.range, now: now), action: onOpenPicker) { EmptyView() }
             BisChip(label: BisLabels.faction(selection.faction), action: onOpenPicker) {
                 FactionMark(faction: selection.faction, size: 24)
             }
@@ -59,7 +60,7 @@ struct BisView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Copy.bisA11yPicker(
             spec: specChipLabel,
-            range: BisLabels.range(selection.range),
+            range: context.rangeLabel(selection.range, now: now),
             faction: BisLabels.faction(selection.faction)
         ))
         .accessibilityAddTraits(.isButton)
@@ -82,21 +83,14 @@ struct BisView: View {
             if rows.isEmpty {
                 Notice(text: Copy.bisSearchEmpty)
             } else {
-                BisRowsCard(rows: rows, list: list, onOpenItem: onOpenItem)
+                BisRowsCard(rows: rows, list: list, context: context, build: build, onOpenItem: onOpenItem)
             }
         case .noList:
-            Notice(text: Copy.homeAnswerNoList)
+            StateNotice(text: Copy.homeAnswerNoList, color: Theme.Palette.muted)
         case .notCached:
-            Notice(text: Copy.bisNotCached)
+            StateNotice(text: Copy.bisNotCached, color: Theme.Palette.muted, onTryAgain: onTryAgain)
         case .failed:
-            VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-                Text(Copy.bisFailed)
-                    .font(Theme.Typography.bodyRole)
-                    .foregroundStyle(Theme.Palette.wipe)
-                    .accessibilityAddTraits(.isStaticText)
-                SecondaryButton(title: Copy.commonTryAgain, action: onTryAgain)
-            }
-            .padding(.top, Theme.Spacing.sm)
+            StateNotice(text: Copy.bisFailed, color: Theme.Palette.wipe, onTryAgain: onTryAgain)
         }
     }
 }
@@ -127,7 +121,9 @@ private struct SetDpsLine: View {
 private struct BisRowsCard: View {
     let rows: [BisRow]
     let list: BisList
-    let onOpenItem: (ItemTooltipContent) -> Void
+    let context: BisContext
+    let build: String?
+    let onOpenItem: (ItemTooltipRequest) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -135,7 +131,9 @@ private struct BisRowsCard: View {
                 if index > 0 { Rectangle().fill(Theme.Palette.lineSoft).frame(height: 1) }
                 switch row.content {
                 case let .pick(pick):
-                    Button { onOpenItem(BisTooltip.content(row: row, pick: pick, list: list)) } label: {
+                    Button {
+                        if let build { onOpenItem(BisTooltip.request(row: row, pick: pick, list: list, context: context, build: build)) }
+                    } label: {
                         BisPickRow(pick: pick, row: row, unit: list.unit)
                     }
                     .buttonStyle(RowPressStyle())
@@ -277,30 +275,44 @@ private struct Notice: View {
     }
 }
 
-/// The tooltip content of a list row.
+/// A state of the list region (not saved, no list, error): its sentence, 24 below the chips, and
+/// `Try again` where a retry can help (spec §5.0).
+private struct StateNotice: View {
+    let text: String
+    let color: Color
+    var onTryAgain: (() -> Void)?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
+            Text(text)
+                .font(Theme.Typography.bodyRole)
+                .foregroundStyle(color)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if let onTryAgain { SecondaryButton(title: Copy.commonTryAgain, action: onTryAgain) }
+        }
+        // 24 below the chips: the stack's 14 plus 10.
+        .padding(.top, 10)
+    }
+}
+
+/// The tooltip request of a list row, in F2's entry point's terms (`ItemTooltipSheet(request:catalog:)`).
 enum BisTooltip {
-    static func content(row: BisRow, pick: BisPick, list: BisList) -> ItemTooltipContent {
-        ItemTooltipContent(
-            id: pick.item.id,
-            name: pick.item.name,
-            item: pick.item.item,
-            slotKey: row.slot,
-            source: pick.source,
-            nextBest: pick.runnersUp.prefix(maxNextBest).map { alternative in
-                let gap = BisListBuilder.signedDelta(alternative.dpsDelta).map { Copy.tooltipDelta(delta: $0) }
-                    ?? Copy.bisNextSameShort(unit: list.unit.word)
-                return ItemTooltipAlternative(
-                    id: alternative.item.id,
-                    name: alternative.item.name,
-                    icon: alternative.item.icon,
-                    quality: alternative.item.quality,
-                    meta: (alternative.isWorn ? Copy.tooltipYouWear : "") + gap
-                )
-            },
-            pickOf: Copy.tooltipPickOf(slot: row.slotLabel, spec: list.specLabel, band: list.rangeLabel, preset: list.presetLabel)
+    static func request(row: BisRow, pick: BisPick, list: BisList, context: BisContext, build: String) -> ItemTooltipRequest {
+        let selection = context.selection
+        let item = pick.item.item
+        return ItemTooltipRequest(
+            itemID: pick.item.id,
+            fallback: HomeItemLook(id: pick.item.id, name: pick.item.name, quality: item?.quality, icon: item?.icon, itemLevel: item?.itemLevel),
+            build: build,
+            classSlug: selection.classSlug,
+            spec: selection.spec,
+            specName: list.specLabel,
+            band: selection.range.band,
+            bandLabel: list.rangeLabel,
+            preset: selection.range.preset,
+            faction: selection.faction,
+            sourceLine: pick.source,
+            wornID: pick.runnersUp.first(where: \.isWorn)?.item.id ?? (pick.isWorn ? pick.item.id : nil)
         )
     }
-
-    /// Spec F2.6: up to two alternatives.
-    static let maxNextBest = 2
 }

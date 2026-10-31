@@ -22,7 +22,7 @@ struct BisListTests {
         #expect(BisRange.forLevel(60) == BisRange(band: 60, preset: "raid"))
         #expect(BisRange.forLevel(12) == BisRange(band: 20, preset: "bare"))
         #expect(BisRange.forLevel(29) == BisRange(band: 20, preset: "bare"))
-        #expect(BisRange.all.map(BisLabels.range) == ["20 to 29", "30 to 39", "40 to 49", "50 to 59", "60", "60 · Phase 1 raid"])
+        #expect(BisRange.all.map { BisLabels.range($0) } == ["20 to 29", "30 to 39", "40 to 49", "50 to 59", "60", "60 · Phase 1 raid"])
     }
 
     @Test("a band is the file's own entry for range, faction and preset, else the bare list")
@@ -62,7 +62,7 @@ struct BisListTests {
     @Test("healer and tank bands name their own measure")
     func units() {
         #expect(BisUnit(role: "healer").word == "HPS")
-        #expect(BisUnit(role: "tank").word == "points")
+        #expect(BisUnit(role: "tank").word == "score")
         #expect(BisUnit(role: nil).word == "DPS")
     }
 
@@ -73,7 +73,9 @@ struct BisListTests {
         #expect(rows[1].pick?.slotSource == "Neck · Quest: Falrin's Vendetta")
         #expect(rows[2].pick?.slotSource == "Shoulder · Vendor: Creeg Bothunk")
         #expect(rows[5].pick?.slotSource == "Wrist · Warsong Outriders")
-        #expect(rows[10].slotLabel == "Ring")
+        #expect(rows[10].slotLabel == "Ring 1")
+        #expect(rows[11].slotLabel == "Ring 2")
+        #expect(rows[12].slotLabel == "Trinket 1")
         #expect(BisListBuilder.sourceLine("PvP rank 14 · Champion · Horde", kind: "vendor") == "PvP rank 14 · Champion · Horde")
     }
 
@@ -100,7 +102,7 @@ struct BisListTests {
             unit: .dps,
             mainHand: nil
         )
-        #expect(trinket.content == .empty("Trinket · no pick for this range."))
+        #expect(trinket.content == .empty("Trinket 1 · no pick for this range."))
     }
 
     @Test("search keeps rows whose pick or runner-up matches")
@@ -175,14 +177,75 @@ struct FixtureBundleTests {
     }
 }
 
-@Suite("BiS preset label")
-struct BisPresetLabelTests {
-    @Test("the raid list reads the file's label; the bare list reads Bare")
-    func presetLabels() throws {
-        let file = try BisTestData.bis()
-        let raid = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde"))
-        let bare = try #require(file.band(for: BisRange(band: 50, preset: "bare"), faction: "horde"))
-        #expect(BisListBuilder.presetLabel(file, raid) == "Raid-ready, Phase 1")
-        #expect(BisListBuilder.presetLabel(file, bare) == "Bare")
+@Suite("BiS tooltip and dates")
+struct BisTooltipTests {
+    private func real(_ spec: String) throws -> BisFile {
+        try WireFormatProbe.decode(BisFile.self, BisTestData.repo.appending(path: "data/builds/\(BisTestData.build)/bis/\(spec).json"))
+    }
+
+    private func request(_ file: BisFile, band: Int, preset: String, slotIndex: Int, wornID: Int? = nil) throws -> ItemTooltipRequest {
+        let entry = try #require(file.band(for: BisRange(band: band, preset: preset), faction: "horde"))
+        let slot = entry.slots[slotIndex]
+        let id = try #require(slot.itemId)
+        return ItemTooltipRequest(
+            itemID: id,
+            fallback: HomeItemLook(id: id, name: slot.itemName, quality: nil, icon: nil, itemLevel: nil),
+            build: BisTestData.build, classSlug: "warrior", spec: file.spec, specName: "Fury Warrior",
+            band: band, bandLabel: BisLabels.range(BisRange(band: band, preset: preset)), preset: preset, faction: "horde",
+            sourceLine: slot.source, wornID: wornID
+        )
+    }
+
+    @Test("the next best reads in the band's unit: DPS, HPS, score")
+    func nextBestUnits() throws {
+        let fury = try BisTestData.bis()
+        let dps = ItemTooltipModel.build(try request(fury, band: 60, preset: "raid", slotIndex: 0), sources: ItemTooltipSources(items: [:], sets: [], bis: fury))
+        #expect(dps.alternatives.first?.meta == "\u{2212}15.0 DPS vs the pick")
+        for (spec, word) in [("priest-holy", "HPS"), ("warrior-protection", "score")] {
+            let file = try real(spec)
+            let index = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde")?.slots
+                .firstIndex { ($0.alternatives ?? []).prefix(2).contains { abs($0.dpsDelta) >= 0.05 } })
+            let model = ItemTooltipModel.build(try request(file, band: 60, preset: "raid", slotIndex: index), sources: ItemTooltipSources(items: [:], sets: [], bis: file))
+            #expect(model.alternatives.contains { $0.meta.hasSuffix(" \(word) vs the pick") })
+        }
+    }
+
+    @Test("the footer names the slot, spec and band, never a preset id")
+    func footer() throws {
+        let fury = try BisTestData.bis()
+        let bare = ItemTooltipModel.build(try request(fury, band: 50, preset: "bare", slotIndex: 0), sources: ItemTooltipSources(items: [:], sets: [], bis: fury))
+        #expect(bare.pickFooter == "Best in slot for Head · Fury Warrior 50 to 59")
+        let raid = ItemTooltipModel.build(try request(fury, band: 60, preset: "raid", slotIndex: 10), sources: ItemTooltipSources(items: [:], sets: [], bis: fury))
+        #expect(raid.pickFooter == "Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid")
+    }
+
+    @Test("the worn runner-up leads with You wear this")
+    func wornRunnerUp() throws {
+        let fury = try BisTestData.bis()
+        let alt = try #require(fury.band(for: BisRange(band: 60, preset: "raid"), faction: "horde")?.slots[0].alternatives?.first)
+        let model = ItemTooltipModel.build(try request(fury, band: 60, preset: "raid", slotIndex: 0, wornID: alt.itemId), sources: ItemTooltipSources(items: [:], sets: [], bis: fury))
+        #expect(model.alternatives.first?.meta.hasPrefix("You wear this · ") == true)
+    }
+
+    @Test("a tank list explains its score instead of a damage headline")
+    func tankHeadline() throws {
+        let file = try real("warrior-protection")
+        let band = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde"))
+        let list = BisListBuilder(items: [], worn: [], timeZone: .gmt).list(file: file, band: band, specLabel: "Protection Warrior", rangeLabel: "60")
+        #expect(list.unit == .score)
+        #expect(list.setDpsLine?.hasPrefix("Tank lists rank by score") == true)
+        #expect(list.rows.compactMap(\.pick).contains { $0.next.hasSuffix(" score") })
+    }
+
+    @Test("the raid chip says when raids open, from the data, until they do")
+    func raidsOpening() throws {
+        let dates: [KeyDate] = try BisTestData.fixture("cdn.dates")
+        let opening = try #require(RaidsOpening(dates))
+        #expect(opening.label == "Dec 9")
+        let raid = BisRange(band: 60, preset: "raid")
+        #expect(BisLabels.range(raid, opening: opening, now: BisTestData.now) == "60 · Phase 1 raid · opens Dec 9")
+        #expect(BisLabels.range(raid, opening: opening, now: opening.starts) == "60 · Phase 1 raid")
+        #expect(BisLabels.range(BisRange(band: 60, preset: "bare"), opening: opening, now: BisTestData.now) == "60")
+        #expect(RaidsOpening([]) == nil)
     }
 }

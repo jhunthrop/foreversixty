@@ -30,7 +30,8 @@ struct Tag: View {
     }
 }
 
-/// The secondary button: a 4.5% white fill and the gold 17% border, 48 tall.
+/// The secondary button: a 4.5% white fill and the gold 17% border, 48 tall, its label in
+/// sentence case (the mock's `Back to {name}'s list`, `Try again`).
 struct SecondaryButton: View {
     let title: String
     let action: () -> Void
@@ -39,9 +40,8 @@ struct SecondaryButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title.uppercased())
-                .font(Theme.Typography.micro.weight(.bold))
-                .tracking(1)
+            Text(title)
+                .font(Theme.Typography.bodyStrong)
                 .foregroundStyle(Theme.Palette.strong)
                 .frame(maxWidth: .infinity, minHeight: Self.height)
         }

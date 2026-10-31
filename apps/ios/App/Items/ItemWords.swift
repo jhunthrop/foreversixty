@@ -3,8 +3,8 @@ import Foundation
 /// The words every item surface shares: slot labels and quality names (spec §4.3). One place,
 /// so the BiS list, the tooltip sheet and Home name an item the same way.
 enum ItemWords {
-    /// The paperdoll label of a BiS or item slot key. Both rings read `Ring` and both trinkets
-    /// `Trinket`, as the site's BiS list does (`slot-display-labels.ts`); the rest are F2's `items.slot.*`.
+    /// The paperdoll label of a BiS or item slot key. Two rings read `Ring 1` and
+    /// `Ring 2`, two trinkets `Trinket 1` and `Trinket 2`, so the rows can be told apart.
     static func slot(_ key: String) -> String {
         switch key {
         case "head": Copy.itemsSlotHead
@@ -17,8 +17,12 @@ enum ItemWords {
         case "waist": Copy.itemsSlotWaist
         case "legs": Copy.itemsSlotLegs
         case "feet": Copy.itemsSlotFeet
-        case "finger", "finger1", "finger2": Copy.bisSlotRing
-        case "trinket", "trinket1", "trinket2": Copy.itemsSlotTrinket
+        case "finger": Copy.itemsSlotFinger
+        case "finger1": Copy.itemsSlotFinger1
+        case "finger2": Copy.itemsSlotFinger2
+        case "trinket": Copy.itemsSlotTrinket
+        case "trinket1": Copy.itemsSlotTrinket1
+        case "trinket2": Copy.itemsSlotTrinket2
         case "main_hand": Copy.itemsSlotMainHand
         case "off_hand": Copy.itemsSlotOffHand
         case "ranged": Copy.itemsSlotRanged

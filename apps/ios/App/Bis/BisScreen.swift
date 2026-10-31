@@ -5,11 +5,13 @@ import SwiftUI
 /// The BiS tab (spec F3): the list, its picker and the item tooltip, over `BisModel`.
 struct BisScreen: View {
     @State private var model: BisModel
-    @State private var tooltip: ItemTooltipContent?
+    @State private var tooltip: ItemTooltipRequest?
     private let iconBase: URL
+    private let catalog: ItemCatalog
 
-    init(model: BisModel, iconBase: URL = StaticDataClient.siteURL) {
+    init(model: BisModel, catalog: ItemCatalog, iconBase: URL = StaticDataClient.siteURL) {
         _model = State(initialValue: model)
+        self.catalog = catalog
         self.iconBase = iconBase
     }
 
@@ -23,7 +25,8 @@ struct BisScreen: View {
                 searchText: $model.searchText,
                 onOpenPicker: { model.isPickerPresented = true },
                 onTryAgain: { Task { await model.refresh() } },
-                onOpenItem: { tooltip = $0 }
+                onOpenItem: { tooltip = $0 },
+                build: model.build
             )
             .refreshable { await model.refresh() }
             // The system search, minimised to the bar's trailing button (spec F3.1). The leading
@@ -36,10 +39,16 @@ struct BisScreen: View {
                     Task { await model.select(selection) }
                 }
             }
-            .sheet(item: $tooltip) { ItemTooltipSheet(content: $0) }
+            .sheet(item: $tooltip) { ItemTooltipSheet(request: $0, catalog: catalog) }
         }
         .environment(\.iconSource, model.build.map { IconSource(baseURL: iconBase, build: $0) })
-        .task { await model.start() }
+        .task {
+            await model.start()
+            #if DEBUG
+                // `-FSBisPicker open` opens the picker, so a capture script shows the real sheet.
+                if UserDefaults.standard.string(forKey: "FSBisPicker") == "open" { model.isPickerPresented = true }
+            #endif
+        }
     }
 }
 
@@ -51,20 +60,15 @@ extension BisScreen {
         case .live: URLSessionTransport()
         case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
         }
+        let staticClient = StaticDataClient(transport: transport)
         let source = LiveBisDataSource(
-            files: CachedStaticDataClient(
-                client: StaticDataClient(transport: transport),
-                cache: DiskStaticFileCache.applicationSupport()
-            ),
+            files: CachedStaticDataClient(client: staticClient, cache: DiskStaticFileCache.applicationSupport()),
             appConfig: environment.appConfig,
             client: environment.client,
             bundledBuild: BundledBuild.read()
         )
-        return BisScreen(model: BisModel(
-            source: source,
-            catalog: .bundled(),
-            preferences: UserDefaultsBisPreferences()
-        ))
+        let model = BisModel(source: source, catalog: .bundled(), preferences: UserDefaultsBisPreferences())
+        return BisScreen(model: model, catalog: ItemCatalog(client: staticClient))
     }
 
     /// The `bis` feature switch; on in debug and fixture builds so the tab can be built and

@@ -58,6 +58,8 @@ targets:
         buildPhase: resources
       - path: ../../web/src/data/active-build.json
         buildPhase: resources
+      - path: ../../web/src/data/dates.json
+        buildPhase: resources
       - path: ../../web/public/icons/hd/crests
         type: folder
         buildPhase: resources

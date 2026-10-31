@@ -133,3 +133,36 @@ extension BisFile {
             ?? candidates.first { $0.preset == BisRange.barePreset }
     }
 }
+
+/// When the first raids open (`dates.json`'s `raids` entry, 9 Dec): until then the Phase 1 raid
+/// list says so on its chip and stays viewable. Read as the site's home dates line reads it: the
+/// entry's `iso` day starts at 00:00 UTC, and its `key` is the display date.
+struct RaidsOpening: Equatable, Sendable {
+    static let role = "raids"
+
+    /// `Dec 9`, the data's own display date.
+    let label: String
+    let starts: Date
+
+    init(label: String, starts: Date) {
+        self.label = label
+        self.starts = starts
+    }
+
+    init?(_ dates: [KeyDate]) {
+        guard let entry = dates.first(where: { $0.role == Self.role }),
+              let starts = Self.day(entry.iso)
+        else { return nil }
+        self.init(label: entry.key, starts: starts)
+    }
+
+    func isUpcoming(at now: Date) -> Bool { now < starts }
+
+    private static func day(_ iso: String) -> Date? {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .gmt
+        let parts = iso.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nil }
+        return calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
+    }
+}
