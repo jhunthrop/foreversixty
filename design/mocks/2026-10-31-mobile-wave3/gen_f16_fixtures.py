@@ -109,7 +109,7 @@ def roster_row(base, p, idx):
         "supporter": supporter, "verified": state == "approved", "may_approve": False,
         "may_remove": False, "attendance": {"present": present, "nights": NIGHTS},
         "attendance_30": {"present": present, "nights": NIGHTS},
-        "logged_at": "2026-12-17T03:10:00Z", "last_report_at": "2026-12-17T05:02:00Z" if present else None,
+        "region": "us", "ruleset": "pvp", "logged_at": "2026-12-17T03:10:00Z", "last_report_at": "2026-12-17T05:02:00Z" if present else None,
         "item_level": 58 + (idx * 7) % 9,
     })
     row["addon"] = {"level": level, "spec": key, "gear_gap": idx % 5, "build": None,
@@ -187,37 +187,39 @@ LBRS = [("Highlord Omokk", 267), ("Shadow Hunter Vosh'gajin", 268), ("War Master
 BRD = [("Lord Roccor", 228), ("Ring of Law", 230), ("General Angerforge", 236),
        ("Golem Lord Argelmach", 237), ("Ambassador Flamelash", 242), ("Emperor Dagran Thaurissan", 245)]
 
-ROSTER_KEYS = [(f"us/pvp/{slug(p[0])}", p[0], p[1].split("-")[0]) for p in PEOPLE if p[5] == "approved"]
+ROSTER_KEYS = [(f"us/pvp/{slug(p[0])}", p[0], p[1].split("-")[0]) for p in PEOPLE]
 ME = "us/pvp/lightningbolltz"
 
-# (local date at the guild's 7:45 pm, zone, bosses, size, raiders, wipes on the last boss, minutes, me)
-# Raids open Wed 9 Dec 2026; every night here is on or after it. Onyxia is a 40; UBRS a 10;
-# LBRS and BRD are five-player dungeons. Lengths differ night to night.
+# (local start, zone, bosses, size, raiders, wipes on the last boss, minutes, me)
+# Raids open Wed 9 Dec 2026; every night is on or after it and before the next planned raid
+# (Sat 19 Dec, guild.raids). Onyxia is a 40 on a five-day lockout: Wed 9 and Mon 14 Dec, the
+# 14th being guild.raids' own raid night (report ewlrx3enxbeb). UBRS is a 10; LBRS and BRD are
+# five-player dungeons. Every name present is on the 38-person roster. Lengths differ.
 NIGHTS_PLAN = [
-    ("2026-12-31", "Onyxia's Lair", ONY, 40, 40, 0, 52, True),
-    ("2026-12-30", "Upper Blackrock Spire", UBRS, 10, 10, 1, 108, True),
-    ("2026-12-29", "Blackrock Depths", BRD, 5, 5, 0, 131, False),
-    ("2026-12-27", "Onyxia's Lair", ONY, 40, 39, 1, 71, True),
-    ("2026-12-26", "Lower Blackrock Spire", LBRS, 5, 5, 0, 76, True),
-    ("2026-12-24", "Onyxia's Lair", ONY, 40, 38, 0, 58, False),
-    ("2026-12-23", "Upper Blackrock Spire", UBRS, 10, 10, 2, 124, False),
-    ("2026-12-22", "Blackrock Depths", BRD, 5, 5, 1, 142, True),
-    ("2026-12-20", "Onyxia's Lair", ONY, 40, 40, 1, 66, True),
-    ("2026-12-19", "Lower Blackrock Spire", LBRS, 5, 5, 0, 83, False),
-    ("2026-12-17", "Onyxia's Lair", ONY, 40, 38, 0, 107, True),
-    ("2026-12-16", "Upper Blackrock Spire", UBRS, 10, 10, 0, 96, True),
-    ("2026-12-15", "Blackrock Depths", BRD, 5, 5, 0, 98, False),
-    ("2026-12-14", "Lower Blackrock Spire", LBRS, 5, 5, 0, 72, True),
-    ("2026-12-13", "Onyxia's Lair", ONY, 40, 40, 3, 112, True),
-    ("2026-12-12", "Upper Blackrock Spire", UBRS, 10, 10, 1, 118, False),
-    ("2026-12-12T14:00", "Blackrock Depths", BRD, 5, 5, 0, 116, True),
-    ("2026-12-11", "Lower Blackrock Spire", LBRS, 5, 5, 1, 88, False),
-    ("2026-12-10", "Onyxia's Lair", ONY, 40, 39, 2, 146, True),
-    ("2026-12-10T13:30", "Lower Blackrock Spire", LBRS, 5, 5, 0, 79, True),
+    ("2026-12-18T19:30", "Upper Blackrock Spire", UBRS, 10, 10, 1, 112, True),
+    ("2026-12-18T14:00", "Blackrock Depths", BRD, 5, 5, 0, 128, False),
+    ("2026-12-17T21:00", "Upper Blackrock Spire", UBRS, 10, 10, 0, 102, False),
+    ("2026-12-17T19:45", "Lower Blackrock Spire", LBRS, 5, 5, 0, 74, True),
+    ("2026-12-17T15:30", "Blackrock Depths", BRD, 5, 5, 1, 141, False),
+    ("2026-12-16T19:45", "Upper Blackrock Spire", UBRS, 10, 10, 0, 97, True),
+    ("2026-12-16T14:00", "Blackrock Depths", BRD, 5, 5, 0, 115, False),
+    ("2026-12-15T20:15", "Lower Blackrock Spire", LBRS, 5, 5, 0, 81, False),
+    ("2026-12-15T13:40", "Blackrock Depths", BRD, 5, 5, 0, 99, False),
+    ("2026-12-14T18:50", "Onyxia's Lair", ONY, 40, 38, 2, 68, True),
+    ("2026-12-14T13:00", "Blackrock Depths", BRD, 5, 5, 0, 119, False),
+    ("2026-12-13T18:00", "Upper Blackrock Spire", UBRS, 10, 10, 2, 131, False),
+    ("2026-12-13T13:30", "Lower Blackrock Spire", LBRS, 5, 5, 0, 77, True),
+    ("2026-12-12T20:30", "Upper Blackrock Spire", UBRS, 10, 10, 1, 118, False),
+    ("2026-12-12T19:00", "Blackrock Depths", BRD, 5, 5, 0, 104, True),
+    ("2026-12-12T14:15", "Lower Blackrock Spire", LBRS, 5, 5, 1, 92, False),
+    ("2026-12-11T19:45", "Upper Blackrock Spire", UBRS, 10, 10, 1, 124, True),
+    ("2026-12-11T14:30", "Blackrock Depths", BRD, 5, 5, 0, 137, False),
+    ("2026-12-10T20:00", "Lower Blackrock Spire", LBRS, 5, 5, 0, 83, True),
+    ("2026-12-10T15:10", "Blackrock Depths", BRD, 5, 5, 1, 149, False),
     # page two
-    ("2026-12-09", "Onyxia's Lair", ONY, 40, 40, 4, 138, False),
-    ("2026-12-09T15:10", "Upper Blackrock Spire", UBRS, 10, 10, 2, 131, True),
-    ("2026-12-09T11:20", "Blackrock Depths", BRD, 5, 5, 1, 152, False),
+    ("2026-12-09T19:45", "Onyxia's Lair", ONY, 40, 37, 3, 151, True),
+    ("2026-12-09T15:10", "Upper Blackrock Spire", UBRS, 10, 10, 2, 131, False),
+    ("2026-12-09T11:20", "Blackrock Depths", BRD, 5, 5, 1, 152, True),
 ]
 
 
@@ -248,9 +250,7 @@ def night_row(i, plan):
     if me:
         present.insert(0, next(r for r in ROSTER_KEYS if r[0] == ME))
     present = [{"character_key": k, "name": n, "class": c} for k, n, c in dict.fromkeys(present)]
-    while len(present) < raiders:  # pugs: a dungeon or a 40 fills from outside the guild
-        n = ["Brakka", "Velith", "Orrin", "Juzzi", "Kelda"][len(present) % 5]
-        present.append({"character_key": f"us/pvp/{n.lower()}", "name": n, "class": "warrior"})
+    assert len(present) == raiders, (date, len(present))
     rid = base64.b32encode(hashlib.sha1(f"{date}{zone}".encode()).digest()).decode().lower()[:12]
     top_class = ["mage", "warlock", "rogue", "warrior"][i % 4]
     return {
@@ -261,7 +261,7 @@ def night_row(i, plan):
         "top_parse": {"name": next(p[0] for p in PEOPLE if p[1].startswith(top_class)), "class": top_class,
                       "metric": "dps", "value": round(480 + (i * 53) % 260 + 0.4, 1)},
         "fights": fights, "present": present,
-        "raid_id": 40 - i if zone == "Onyxia's Lair" else None,
+        "raid_id": None,
     }
 
 
@@ -271,7 +271,23 @@ def write_history():
     for r in rows:
         assert r["created_at"] >= "2026-12-09T06:00:00Z", r
         assert all(f["players"] <= r["raiders"] for f in r["fights"]), r
-        assert r["raiders"] in (5, 10, 38, 39, 40)
+        assert r["raiders"] in (5, 10, 37, 38)
+    # The Mon 14 Dec Onyxia is guild.raids' raid night (planned raid 29) and guild.home's
+    # report; the Wed 9 Dec one is planned raid 28. One night, one set of numbers everywhere.
+    ony14 = next(r for r in rows if r["created_at"].startswith("2026-12-15") and r["zone"] == "Onyxia's Lair")
+    ony14.update(id="ewlrx3enxbeb", raid_id=29, title="Onyxia, Monday")
+    ony9 = next(r for r in rows if r["created_at"].startswith("2026-12-10") and r["zone"] == "Onyxia's Lair")
+    ony9.update(raid_id=28)
+    raids = load("guild.raids")
+    raids["data"]["rows"] = [copy.deepcopy(ony14)]
+    dump("guild.raids", raids)
+    for name in ("guild.home", "guild.home.roster"):
+        home = load(name)
+        for rep_ in home["data"]["reports"]:
+            if rep_["id"] == ony14["id"]:
+                rep_.update(title=ony14["title"], created_at=ony14["created_at"], fight_count=ony14["fight_count"],
+                            kill_count=ony14["kill_count"], duration_ms=ony14["duration_ms"])
+        dump(name, home)
     page1, page2 = copy.deepcopy(base), copy.deepcopy(base)
     page1["data"]["rows"] = rows[:20]
     last = rows[19]
@@ -285,6 +301,16 @@ def write_history():
     dump("guild.raids.history-2", page2)
 
 
+def write_me():
+    me = load("me")
+    for g in me["data"]["guilds"]:
+        if g["id"] == 2:
+            g["roster_count"] = len(PEOPLE)
+            g["verified_count"] = sum(p[5] == "approved" for p in PEOPLE)
+    dump("me", me)
+
+
 write_home()
 write_history()
+write_me()
 print("ok")

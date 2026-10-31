@@ -2354,7 +2354,7 @@ enum Copy {
         format("roster.metaNoLevel", spec, rank)
     }
 
-    /// {present} of {nights}
+    /// {present} of {nights} nights
     static func rosterAttendance(present: Int, nights: Int) -> String {
         format("roster.attendance", present, nights)
     }

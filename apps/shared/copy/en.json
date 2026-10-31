@@ -691,7 +691,7 @@
     "roster.rank.member": "Member",
     "roster.meta": { "text": "{spec} · {level} · {rank}", "notPlural": true, "args": {"level": "int"} },
     "roster.metaNoLevel": "{spec} · {rank}",
-    "roster.attendance": { "text": "{present} of {nights}", "notPlural": true, "args": {"present": "int", "nights": "int"} },
+    "roster.attendance": { "text": "{present} of {nights} nights", "notPlural": true, "args": {"present": "int", "nights": "int"} },
     "roster.waitingTag": "Waiting",
     "roster.noAccountTag": "No account",
     "roster.noNights": "No logged nights yet.",

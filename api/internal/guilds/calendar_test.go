@@ -202,20 +202,20 @@ func TestCalendarRouteIsRedactedInTheLogs(t *testing.T) {
 
 // RenderCalendar is held to the golden feed in the contract fixtures, the one the docs show.
 func TestRenderCalendarGolden(t *testing.T) {
-	size := time.Date(2026, 12, 10, 0, 0, 0, 0, time.UTC)
+	stamp := time.Date(2026, 12, 15, 3, 0, 0, 0, time.UTC)
 	raids := []CalendarRaid{
 		{
-			Raid: Raid{ID: 31, Zone: raidZoneOny, Title: "Onyxia's Lair", StartsAt: time.Date(2026, 12, 11, 1, 45, 0, 0, time.UTC),
-				DurationMinutes: 195, Status: RaidPlanned, UpdatedAt: size},
+			Raid: Raid{ID: 31, Zone: raidZoneOny, Title: "Onyxia's Lair", StartsAt: time.Date(2026, 12, 20, 1, 0, 0, 0, time.UTC),
+				DurationMinutes: 180, Status: RaidPlanned, UpdatedAt: stamp},
 			Guild: Guild{Region: "us", Ruleset: "pvp", Name: "OLYMPUS XXVII"}, Timezone: "America/Chicago", SignedUp: 24, State: "in",
 		},
 		{
-			Raid: Raid{ID: 32, Zone: raidZoneOny, Title: "Onyxia, alts; bring resists", StartsAt: time.Date(2026, 12, 18, 1, 45, 0, 0, time.UTC),
-				DurationMinutes: 120, Status: RaidPlanned, UpdatedAt: size},
+			Raid: Raid{ID: 32, Zone: raidZoneOny, Title: "Onyxia, alts; bring resists", StartsAt: time.Date(2026, 12, 25, 1, 0, 0, 0, time.UTC),
+				DurationMinutes: 150, Status: RaidPlanned, UpdatedAt: stamp},
 			Guild: Guild{Region: "us", Ruleset: "pvp", Name: "OLYMPUS XXVII"}, Timezone: "America/Chicago", SignedUp: 0,
 		},
 	}
-	got := RenderCalendar(raids, "https://foreversixty.gg", size)
+	got := RenderCalendar(raids, "https://foreversixty.gg", stamp)
 	path := filepath.Join(filepath.Dir(contract.FixturePath("x")), "calendar.ics")
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		if err := os.WriteFile(path, []byte(got), 0o644); err != nil {

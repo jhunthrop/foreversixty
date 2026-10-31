@@ -116,10 +116,10 @@
     "reports": [
       {
         "id": "ewlrx3enxbeb",
-        "title": "Onyxia, Tuesday",
+        "title": "Onyxia, Monday",
         "zone": "Onyxia's Lair",
-        "created_at": "2026-12-15T01:58:00Z",
-        "fight_count": 9,
+        "created_at": "2026-12-15T02:04:00Z",
+        "fight_count": 6,
         "kill_count": 1,
         "duration_ms": 4080000
       }
