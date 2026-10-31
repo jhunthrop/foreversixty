@@ -322,8 +322,7 @@
 
 {#if heading}
   <!-- -order-2: on the profile (a flex column) the score card comes right after the header,
-       above the visitor's sign-in band, at every width (Character.svelte, fix round 3 item 4,
-       L8.4 fix round 2 item 7). -->
+       at every width (Character.svelte, fix round 3 item 4, L8.4 fix round 2 item 7). -->
   <section class="-order-2 flex flex-col gap-2" data-testid="forever-score">
     <h2 class="section-title">{scoreCopy.heading}</h2>
     <p class="text-muted text-[13px]" data-testid="forever-score-caption">{scoreCopy.caption(date, owned)}</p>
