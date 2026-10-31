@@ -168,3 +168,77 @@ Screens and states:
    - XcodeGen copies `docs/contracts/fixtures/app` into the app as a folder named `app`, not `Fixtures`; the `name:` key has no effect on a folder reference.
    - So `FixtureTransport.bundled(in:)` finds nothing and falls back to the bundle root, and fixture mode in the running iOS app likely answers `missingFixture`.
    - The crests folder lands as `crests` for the same reason; `CrestView` reads that name.
+
+## Fix round (2026-10-31): the reviewers' HOLD
+
+The verdicts are `design/reviews/2026-10-31-mobile-raids/ux-verdict.md` and `player-verdict.md`, committed with this round. The coordinator accepted player #1 (API fields pending) and #4 (notification answers need lane F7) as sequenced. Everything else is fixed here.
+
+1. **iOS fixture mode works.** Lane F3's bundle-name fix (aedc28eb6: the fixtures land at `app/`) is taken as `defc1c7b9`, with its iOS fixture-mode hunks only.
+2. **Moved to Bench draws its state (F4.12).**
+   - `guild.signup.moved` now answers with the real R3 view: Yellfury signs In and the server benches Obnoxious Yell.
+   - The moved character's block draws Bench checked, with `Obnoxious Yell moved to Bench.` under it, on both platforms.
+   - A test on each platform checks both blocks.
+3. **Large text (iOS AX5, Android 2.0).** Nothing breaks inside a word.
+   - Names stay on one line and shrink rather than split.
+   - Caps labels drop their tracking and shrink.
+   - The status chip never wraps, and the guild name drops to its own line.
+   - The who line stacks the crest, then the name, then Change spec.
+   - The count sits above a full-width bar.
+   - On the next raid card, the date block stacks above the title.
+   - In Also planned rows, the date block stays 56 wide and the chip moves under the title.
+   - The guild head and Your raid night's figures stack.
+   - New large-text captures cover the officer view and Your raid night on both platforms.
+4. **Composition for a raid leader (player #5).** The ruling's composition block sits at the top of the roster:
+   - each class by name with its count, with zeros muted as "0";
+   - role counts, shown against the raid's targets when it sets them (`Tanks 3/4`);
+   - the Classic buff and utility row (Fortitude, Mark of the Wild, Arcane Intellect, Blessings, Shadow Protection, Soulstone, Rebirth) as icons, with missing ones muted and named (`Missing: Blessings`).
+
+   It is a computed `composition` block on the raid view (`RaidComposition` in openapi.yaml, on every raid fixture). The apps only word it. The app-side classes strip is removed, so nothing computes composition in the app.
+5. **Card gap.** The next raid card draws the status line only when it has text, and the link sits just under the segments. The raid page still reserves the line.
+6. **Type.** The count sentence and the countdown are in Barlow; only clock digits stay mono (`6:45` mono, `pm` Barlow). The iOS Raids title is inline.
+7. **Fixture accuracy.**
+   - The raid-night loot is now Sapphiron Drape (17078, epic, back), an Onyxia drop in `loot.json` (`raid:onyxias-lair`). Dragon's Blood Cape is a real item but not an Onyxia drop.
+   - It replaces Cape of the Black Baron (13340, a real rare cape).
+   - The coach notes are reworded in raiders' terms.
+   - The notes drop "Phase 2 prep".
+   - Barrow Deeps stays (a real Forever raid).
+8. **Captures that needed real taps.**
+   - iOS: a debug-only UI test target, `ForeverSixtyUITests`, run with `make -C apps/ios captures` and never by `make test`. It drives the app in fixture mode through debug-only launch arguments (`App/Raids/Debug/RaidDebugLaunch.swift`) and captures the More menu, the calendar sheet, the officer move menu, and the raid notification answered with In from the long-press.
+   - Android: a debug-only hook (`RaidDebugPush`) posts the fixture raid notification with its actions. On the shared emulator, In from the shade sent the sign-up PUT and replaced the notification with `You are In for Onyxia's Lair` (`notification-answer-in-and.png`). The More menu is captured live too.
+
+### Added for the post-launch API work
+
+- **Raid view `composition`** (on every raid view): `classes[]` (all nine, counting In and Late), `roles` (In counts), `targets` (the raid's role targets, or null; this needs a raid field and the web form when wanted), and `buffs[]` (`key, name, icon, present, count`) from the classes signed In or Late.
+- **Icons the CDN export needs:** the icon set must include `spell_nature_regeneration` (Mark of the Wild) and `spell_holy_fistofjustice` (Blessings), which today's export lacks.
+
+### Fix round tests
+
+Each command ran on its own, with its exit code checked.
+
+| Check | Exit | Result |
+|---|---|---|
+| `make -C apps/ios test` | 0 | 87 tests in 14 suites. F4 has 46 logic tests and 33 snapshots, including the new AX5 snapshots of the officer view and Your raid night. |
+| `make -C apps/ios captures` | 0 | 3 UI tests passed: the More menu and calendar sheet, the officer move menu, and In from the notification long-press |
+| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` (JDK 21) | 0 | 46 F4 logic tests, 33 goldens, lint clean, debug APK built |
+| Go `-run 'AppContract\|OpenAPI\|Fixture'` on guilds, auth, contract and server (private DB `forever_gc_f4b`, since dropped) | 0 | ok |
+| `npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts` | 0 | 28 passed |
+
+### Fix round captures (in `design/reviews/2026-10-31-mobile-raids/`)
+
+- **Moved state:** `raid-page-moved-{ios,and}` shows Bench checked on Obnoxious Yell, with the moved line.
+- **Large text:** `*-xl-{ios,and}` covers the Raids tab, the raid page, the officer view, Your raid night and the spec sheet.
+- **Tap-driven, iOS live simulator:**
+  - `raid-page-more-menu-ios`, `raid-page-calendar-sheet-ios` and `officer-move-menu-ios`;
+  - the notification path, `notification-delivered-ios`, `notification-actions-ios` (the long-press) and `notification-answer-in-ios` (the posted `You are In for Onyxia's Lair`).
+- **Android emulator:**
+  - `emulator-raid-page-more-menu-and`;
+  - `notification-delivered-and` and `notification-answer-in-and`.
+
+### Fix round concerns
+
+1. **Icons on the live iOS simulator.** The game icons did not load there (the composition buffs and the roster's spec icons draw as their tiles), while the Android emulator loads them from the CDN. The iOS app reads the active build from the live site, so this needs a look on a device with the live data. The snapshots draw tiles by design.
+2. **Not done this round** (UX shoulds outside the coordinator's list):
+   - JetBrains Mono is still not bundled.
+   - The toast inset is unchanged.
+   - Keyboard focus and VoiceOver/TalkBack recordings still need a hand-driven pass.
+3. **Two buff icons the export lacks.** `spell_nature_regeneration` (Mark of the Wild) and `spell_holy_fistofjustice` (Blessings) are true game icons that today's icon export lacks. The API lane must export them with the composition handler.
