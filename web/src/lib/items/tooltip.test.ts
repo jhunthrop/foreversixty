@@ -452,8 +452,15 @@ describe('statLines sign', () => {
   });
 
   it('prints a cloak as "Back" with "Cloth" on the right, as the Classic client does', () => {
-    const cape = itemTooltipModel(item({ slot: 'back', armor: 37, armor_type: 'cloth', bonding: 'pickup' }), NO_SOURCES);
-    expect([cape.slotLabel, cape.typeLabel, cape.bindLabel]).toEqual(['Back', 'Cloth', 'Binds when picked up']);
+    const cape = itemTooltipModel(
+      item({ slot: 'back', armor: 37, armor_type: 'cloth', bonding: 'pickup' }),
+      NO_SOURCES,
+    );
+    expect([cape.slotLabel, cape.typeLabel, cape.bindLabel]).toEqual([
+      'Back',
+      'Cloth',
+      'Binds when picked up',
+    ]);
   });
 
   it('writes a negative stat as "-15 Parry", never "+-15"', () => {
