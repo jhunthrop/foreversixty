@@ -53,7 +53,7 @@ Fixtures:
 
 ## `GET /v1/app/config`
 
-Public, with no credential. Cached `public, max-age=300` with `Vary: X-App`, so a change reaches every app within five minutes. A 503 `unavailable` means no client build is loaded.
+Public, with no credential. Cached `private, max-age=300` with `Vary: X-App` (the CDN does not key on `X-App`, so no shared cache keeps it), so a change reaches every app within five minutes. A 503 `unavailable` means no client build is loaded.
 
 | Field | Type | Source |
 |---|---|---|
