@@ -32,7 +32,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .talents: false
         case .notifications: false
         case .premiumLink: false
-        case .widgets: true
+        case .widgets: false
         }
     }
 }
