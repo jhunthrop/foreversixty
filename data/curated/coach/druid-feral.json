@@ -3,14 +3,6 @@
   "build": "1.60.1.70658",
   "core": [
     {
-      "family": "Tiger's Fury",
-      "spell_ids": [
-        5217
-      ],
-      "talent": false,
-      "verified": "1.60.1.70658/spellconst/druid.json#5217"
-    },
-    {
       "family": "Shifting Power",
       "spell_ids": [
         1322605

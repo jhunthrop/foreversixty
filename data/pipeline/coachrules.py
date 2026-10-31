@@ -25,7 +25,7 @@ SPECS = {
         core=[], auras=[("Insect Swarm", DOT)], downranks=[], defensives=["Barkskin"]
     ),
     "druid-feral": dict(
-        core=["Tiger's Fury", "Shifting Power"],
+        core=["Shifting Power"],
         auras=[("Rip", DOT)],
         downranks=[],
         defensives=["Barkskin"],
