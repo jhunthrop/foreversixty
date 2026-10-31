@@ -106,9 +106,13 @@ public struct FixtureTransport: HTTPTransport {
         self.variants = variants
     }
 
-    /// The bundled copy (project.yml copies docs/contracts/fixtures/app in as "Fixtures").
+    /// The folder project.yml copies docs/contracts/fixtures/app into. A folder reference keeps
+    /// its name on disk in the bundle (XcodeGen's `name` only labels the group), so it is `app`.
+    public static let bundledFolder = "app"
+
+    /// The bundled copy of the contract fixtures.
     public static func bundled(in bundle: Bundle = .main) -> FixtureTransport? {
-        bundle.url(forResource: "Fixtures", withExtension: nil).map { FixtureTransport(directory: $0) }
+        bundle.url(forResource: bundledFolder, withExtension: nil).map { FixtureTransport(directory: $0) }
     }
 
     public func send(_ request: URLRequest) async throws(APIError) -> (Data, HTTPURLResponse) {

@@ -34,8 +34,9 @@ struct AccountStorage {
 
     private static let exchangeFixture = "app.signin.exchange"
 
-    private static func fixtureDeviceID(_ bundle: Bundle) -> String? {
-        guard let url = bundle.url(forResource: exchangeFixture, withExtension: "json", subdirectory: "Fixtures"),
+    /// The device id fixture sign-in seeds, read from the bundled contract fixtures.
+    static func fixtureDeviceID(_ bundle: Bundle) -> String? {
+        guard let url = bundle.url(forResource: exchangeFixture, withExtension: "json", subdirectory: FixtureTransport.bundledFolder),
               let data = try? Data(contentsOf: url)
         else { return nil }
         return (try? WireFormat.decoder().decode(Envelope<AppSession>.self, from: data))?.data?.device.id
