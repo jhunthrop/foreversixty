@@ -59,3 +59,33 @@ Nothing wrong with a figure I could check against the vectors. For the accuracy 
 5. Re-capture the settings screens with knobs, and fix the "3 Dec" fixture date.
 
 Re-run and send the updated `ios-lock-circular-signed-up`, `and-live-raid`, `ios-raid-medium-not-signed-up`, `ios-raid-medium-locked`, `ios-raid-small-stale` and `and-raid2x2-stale`.
+
+---
+
+# Round 2
+
+Reviewer: wow-player, 2026-10-31. I re-read the re-recorded captures for each MUST and the SHOULDs I could check.
+
+**Verdict: SHIP.** No MUSTs remain.
+
+## MUSTs, checked
+
+| MUST | Capture | Now |
+|---|---|---|
+| Ring with no unit | `ios-lock-circular-signed-up.png` | Fixed. "24" with "of 40" under it. |
+| "Invites" with no invite time | `and-live-raid.png` | Fixed. "Onyxia's Lair starts in 39 minutes", then "until the pull at 8:00 pm", "You are In · DPS · Lightningbolltz", "38 of 40 signed up". The title and the line under it agree. |
+| Medium loses the answer | `ios-raid-medium-not-signed-up.png`, `ios-raid-medium-locked.png` | Fixed. Gold "NOT SIGNED UP" tag beside unchecked buttons. Locked shows "LOCKED" and "You: In · DPS". |
+| Stale hides the answer | `ios-raid-small-stale.png`, `and-raid2x2-stale.png` | Fixed. "IN · DPS" stays, "Updated 14 h ago" sits under it, on both platforms. |
+
+## SHOULDs, checked
+
+- Expanded island (`ios-island-expanded.png`): seal, "until the pull at 8:00 pm", "You are In · DPS · Lightningbolltz", "38 of 40", Late and Out. Good.
+- Settings (`ios-settings-live-surfaces.png`): knobs visible, both on.
+- Android notification now has a one-colour LX seal and "OLYMPUS XXVII" in the header. It is no longer a blank square.
+- "39 minutes" beside the 38:11 clock: I accept the shared-rule reason. One rule on every surface beats a widget and a notification a minute apart. No further action.
+- Compact island "38:12": accepted as a decision.
+
+## Still open (not blocking)
+
+1. **"Last: Onyxia's Lair, 3 Dec." is still before the 9 Dec raid opening.** Both platforms now print it the same way, which is good, but a raider will check that date. Move the fixture to a date after 9 Dec before any store screenshot.
+2. I did not re-open the largest-text captures, the cancelled Live Activity, the Late/Bench/Out tags or the remaining Android states. They are on the agent's word; spot-check them in the final pass.
