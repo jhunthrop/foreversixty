@@ -104,11 +104,15 @@ final class RaidCaptureTests: XCTestCase {
     /// (the same toolbar slot as Home and BiS), then Home's for the side-by-side.
     func testRaidsTabUnderTheSelector() throws {
         let app = launch(["-FSTab", "you"])
-        let signIn = app.buttons["Sign in with Battle.net"].firstMatch
-        XCTAssertTrue(signIn.waitForExistence(timeout: 15))
-        signIn.tap()
+        // A session kept from an earlier run is already signed in (You shows Sign out).
+        let signIn = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Battle.net'")).firstMatch
+        if !app.buttons["Sign out"].waitForExistence(timeout: 5) {
+            XCTAssertTrue(signIn.waitForExistence(timeout: 15))
+            signIn.tap()
+        }
         app.tabBars.buttons["Raids"].tap()
-        XCTAssertTrue(app.staticTexts["OLYMPUS XXVII"].waitForExistence(timeout: 15))
+        // The guild head reads as one element, so wait on the next raid card's link.
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Who is coming'")).firstMatch.waitForExistence(timeout: 15))
         sleep(3)
         try save("selector-raids-ios.png")
         app.tabBars.buttons["Home"].tap()

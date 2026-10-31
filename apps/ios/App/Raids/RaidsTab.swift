@@ -119,6 +119,9 @@ struct RaidsTab: View {
             .navigationTitle(Copy.tabRaids)
             .toolbarTitleDisplayMode(.inline)
             .characterSelector(isOn: session != nil)
+            // Under the selector the bar matches Home and BiS: no title beside it (the title still
+            // names the back button on the pushed raid page).
+            .toolbar(removing: session != nil ? .title : nil)
             .navigationDestination(for: RaidsRoute.self) { destination($0) }
         }
         .environment(\.raidIconBuild, iconBuild)
