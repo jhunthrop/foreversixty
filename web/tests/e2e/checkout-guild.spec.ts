@@ -2,7 +2,8 @@
 // Subscribe-and-join spec (design/specs/2026-10-27-subscribe-and-join.md) section 12, cases 1 to 13
 // and 18: the checkout guild step, the API stubbed from subscribe-fixtures. Every asserted string
 // comes from the copy modules. The premium owned panel (task 12) and the band reserve (task 15) ride along.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import communityLinks from '../../src/data/links.json' with { type: 'json' };
 import type { Me } from '../../src/lib/account/me-types';
 import { checkoutGuildCopy as copy } from '../../src/lib/billing/checkout-guild-copy';

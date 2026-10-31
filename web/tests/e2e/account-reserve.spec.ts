@@ -6,7 +6,7 @@
 // notes; a visitor without the hint sees no skeleton. /v1/me and /v1/devices are held, then
 // released, by hand rather than delayed by a timer, so the loading frame is always on screen.
 // Also: the gold checkbox rule resolves to the gold token on three surfaces (9.2).
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import type { HintState } from '../../src/lib/account/layout';
 import { discordBlock, type DiscordMeStages } from './support/discord-notifications';
 import {

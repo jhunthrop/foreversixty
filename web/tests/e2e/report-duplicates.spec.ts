@@ -2,7 +2,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose } from './support/select';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');

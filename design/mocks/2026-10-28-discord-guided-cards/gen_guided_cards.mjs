@@ -305,7 +305,8 @@ const CLASS_ORDER = [
 const SPECS = JSON.parse(
   readFileSync(path.join(ROOT, "data/curated/specs.json"), "utf8"),
 );
-/** The build whose icon folder is the source (web/public/data/{build}/icons/{icon}.webp). */
+/** The build whose icon folder is the source (data/builds/{build}/icons/{icon}.webp, the committed
+ *  copy, so a fixture sync of web/public/data cannot leave the emoji blank). */
 const ICON_BUILD = "1.60.1.70658";
 const ICON_ROUTE = "/spec-icons/";
 const emojiName = (sp) => "fs_" + sp.spec.replaceAll("-", "_");
@@ -721,12 +722,17 @@ function realSelect(c, open) {
 
 function realMessage(message, openIndex) {
   let seen = 0;
-  const components = (message.components ?? []).map((r) => ({
-    ...r,
-    components: r.components.map((c) =>
-      c.type === 3 ? realSelect(c, seen++ === openIndex) : c,
-    ),
-  }));
+  // A Components V2 layout has no action rows at its top level: it is drawn as it came.
+  const components = (message.components ?? []).map((r) =>
+    r.components === undefined
+      ? r
+      : {
+          ...r,
+          components: r.components.map((c) =>
+            c.type === 3 ? realSelect(c, seen++ === openIndex) : c,
+          ),
+        },
+  );
   return { ...message, components };
 }
 
@@ -805,7 +811,7 @@ const PUBLIC = path.join(WEB, "public");
 const iconFile = (match) => path.join(BUILDS, match[1], match[2]);
 const localFile = (url) =>
   url.pathname.startsWith(ICON_ROUTE)
-    ? path.join(PUBLIC, "data", ICON_BUILD, "icons", url.pathname.slice(ICON_ROUTE.length))
+    ? path.join(BUILDS, ICON_BUILD, "icons", url.pathname.slice(ICON_ROUTE.length))
     : ICON_PATH.test(url.pathname)
     ? iconFile(ICON_PATH.exec(url.pathname))
     : path.join(PUBLIC, url.pathname);
@@ -866,10 +872,14 @@ if (process.env.MOCK_JSON_DIR)
       JSON.stringify({ message: f.message, above: f.above }, null, 2),
     );
 
+// FRAMES=post-,signup-card redraws only the boards whose id starts with one of the prefixes.
+const only = (process.env.FRAMES ?? "").split(",").filter(Boolean);
+const drawn = only.length === 0 ? frames : frames.filter((f) => only.some((p) => f.id.startsWith(p)));
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 2 });
 await page.route(SITE_URL, serve);
 for (const client of CLIENTS)
-  for (const f of frames) await shoot(page, client, f);
+  for (const f of drawn) await shoot(page, client, f);
 await browser.close();
-console.log("wrote", frames.length * CLIENTS.length, "boards to", HERE);
+console.log("wrote", drawn.length * CLIENTS.length, "boards to", HERE);

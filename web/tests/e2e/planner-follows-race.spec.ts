@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { choose } from './support/select';

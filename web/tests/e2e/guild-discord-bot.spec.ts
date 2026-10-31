@@ -4,7 +4,8 @@
 // picker's five list states and its races, the installed state, the remove question, the webhook
 // offer, removed in Discord, officer-read-only and frozen, axe, 44 px targets at 360 and the
 // §3.1 height caps.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildBotCopy } from '../../src/lib/guild/discord-bot-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';

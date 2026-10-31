@@ -3,7 +3,8 @@
 // not seventeen "Empty" rows; the band's best in slot stays below it. And the upload form's two
 // advisory warnings, which never block. Captures at 1280 go to docs/superpowers/reviews/
 // lifecycle/r1 when E2E_CAPTURE is set.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,

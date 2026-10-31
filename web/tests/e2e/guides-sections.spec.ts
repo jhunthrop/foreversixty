@@ -8,7 +8,8 @@
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
 // icon tree and so runs under FOREVER_DATA=real.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const DESKTOP = { width: 1280, height: 900 };
 const PHONE = { width: 390, height: 844 };

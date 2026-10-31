@@ -4,8 +4,12 @@
 // nothing else in the suite measures that.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 test.use({ viewport: { width: 360, height: 780 } });
 

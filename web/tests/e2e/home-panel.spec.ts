@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import type { BrowserContext, Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import {
   OBNOXIOUS,

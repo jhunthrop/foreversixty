@@ -21,6 +21,7 @@ import {
   buildMockReadiness,
   buildMockRaids,
 } from '../src/fixtures/guild/mock-guild.ts';
+import { HERMETIC_LAUNCH_ARGS } from '../tests/hermetic.ts';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((pairs, arg, i, all) => {
@@ -105,7 +106,9 @@ async function capture(browser, { name, width, height, viewerName, rank, hash })
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
-  const browser = await chromium.launch();
+  // The production API's host does not resolve here (tests/hermetic.ts): an endpoint this
+  // script does not stub fails instead of reaching the real API.
+  const browser = await chromium.launch({ args: [...HERMETIC_LAUNCH_ARGS] });
   const shots = [
     // Officer, 1440 -- every board-named tab.
     {

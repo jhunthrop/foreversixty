@@ -8,7 +8,8 @@
 // playwright.journey.config.ts, against a built site served by `astro preview` (the simulator's
 // island and the character and guild shells exist only in a build). W11_CAPTURES=<dir> writes a
 // 1280px capture of each stop.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
 import { nativeSelect } from './support/select';
 

@@ -5,7 +5,7 @@
 // Wrack Soul is dispellable and ran its course; Anima Cascade never went out and Necrotic
 // Wound is unavoidable, so both sit under "also in the table". Fight 4 is encounter 9002,
 // which has no table at all.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 

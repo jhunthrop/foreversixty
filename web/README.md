@@ -119,6 +119,13 @@ there. It asserts on structure and on names it reads back out of `public/data/<b
 particular Forever facts, so regenerating `data/builds/` cannot turn it red on its own. It is not in
 CI's verify job — run it before a deploy.
 
+No browser test ever calls the production API (`tests/hermetic.ts`). The e2e build carries a dead
+API base (`PUBLIC_API_BASE_URL=http://127.0.0.1:9`: Playwright's `webServer` sets it, and so does
+CI's fixture build; a dist you build yourself for e2e needs it too, or the specs that read hrefs
+fail), every test browser launches with the production host unresolvable, and every spec imports
+`test` from `tests/e2e/support/test.ts`, which fails a test on any API request it did not stub
+apart from the short `AMBIENT_READS` list there. `src/e2e-hermetic.test.ts` pins all three.
+
 `npm run build` (and CI's deploy job, which adds `CF_PAGES=1`) uses real data: `FOREVER_DATA` is unset
 there, and `real` is the default. CI's `build` job (`.github/workflows/web.yml`) builds with
 `FOREVER_DATA=fixture` and uploads that `dist/` as the `web-dist` artifact; `build-real` runs the
@@ -189,7 +196,7 @@ content="noindex">`: nobody should arrive at it from a search result.
 
 | Variable              | Where                                          | Default                                                                 |
 | :-------------------- | :--------------------------------------------- | :---------------------------------------------------------------------- |
-| `PUBLIC_API_BASE_URL` | build time (Astro and the island bundle)       | `https://api.foreversixty.gg`                                           |
+| `PUBLIC_API_BASE_URL` | build time (Astro and the island bundle)       | `https://api.foreversixty.gg`; the e2e build uses `http://127.0.0.1:9`  |
 | `API_BASE_URL`        | `vars` in `wrangler.jsonc`, read by the Worker | `https://api.foreversixty.gg`                                           |
 | `CF_PAGES`            | deploy build only                              | unset; when set, placeholder links and fixture data both fail the build |
 | `FOREVER_DATA`        | `scripts/sync-data.mjs`, so every `pre*` hook  | `real`; `fixture` publishes `src/fixtures/planner/` instead             |

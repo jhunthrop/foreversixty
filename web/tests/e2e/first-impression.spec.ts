@@ -4,7 +4,8 @@
 // test-results/w8).
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 

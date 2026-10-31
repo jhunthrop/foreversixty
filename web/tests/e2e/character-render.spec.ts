@@ -3,7 +3,7 @@
 // design/DESIGN-SYSTEM.md tenet 7) and the Battle.net body render sits on the right at lg
 // only when GET /v1/characters/... carries render_url. Reuses the one prerendered character
 // page (support/character-fixture.ts's CHARACTER_PATH) every character-page e2e spec shares.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
 
 function withCharacter(overrides: Record<string, unknown>) {

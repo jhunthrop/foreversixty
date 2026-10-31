@@ -3,7 +3,8 @@
 // "Amendment 2026-10-27: channel can't be used", A.5 items 11 to 17), API stubbed: the deleted and
 // permissions notices, precedence, fixing by picking and by saving the same channel, the read-only
 // and frozen gates, axe, 44 px targets at 360, the height caps and no layout shift.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import type { GuildChannelPermission, GuildChannelUnusable } from '../../src/lib/guild/api';
 import { guildBotCopy, joinPermissions } from '../../src/lib/guild/discord-bot-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';

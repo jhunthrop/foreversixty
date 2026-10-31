@@ -2,7 +2,7 @@
 // Compare's two questions. "What did the player above me do differently" is one player's
 // abilities in two pulls, which is a row expanding. "What did I do differently from them"
 // is two players in this pull, which is the second picker.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose } from './support/select';
 
 const COMPARE = '/reports/fixture2abcd?fight=3&mode=compare';

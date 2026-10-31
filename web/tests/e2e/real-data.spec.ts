@@ -8,7 +8,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';

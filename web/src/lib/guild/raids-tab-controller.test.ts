@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { GuildApiError } from './api';
 import { raidCopy } from './raid-copy';
 import type { RaidInput } from './raids-api';
-import { planRaid, submitRefusal } from './raids-tab-controller';
+import { planRaid, submitRefusal, writeFailedLine } from './raids-tab-controller';
 
 const PAYLOAD: RaidInput = {
   zone: 'onyxias-lair',
@@ -41,6 +41,35 @@ describe('submitRefusal', () => {
       message: raidCopy.form.errors.failed,
     });
     expect(submitRefusal(new Error('network'))).toMatchObject({ message: raidCopy.form.errors.failed });
+  });
+});
+
+describe('a 429 says to wait, not that it did not save', () => {
+  const limited = new GuildApiError('too many requests', 429, 'rate_limited');
+
+  it('the raid form (POST and PATCH) shows the wait line under the actions', () => {
+    expect(submitRefusal(limited)).toEqual({
+      ok: false,
+      code: 'rate_limited',
+      message: raidCopy.rateLimited,
+    });
+    expect(raidCopy.rateLimited).toBe('Too many requests right now. Wait a minute and try again.');
+  });
+
+  it('every other officer write swaps its failed line for the wait line', () => {
+    expect(writeFailedLine(limited, raidCopy.officerRow.failed)).toBe(raidCopy.rateLimited);
+    expect(writeFailedLine(new GuildApiError('x', 500), raidCopy.officerRow.failed)).toBe(
+      raidCopy.officerRow.failed,
+    );
+    expect(writeFailedLine(new Error('network'), raidCopy.officerRow.failed)).toBe(
+      raidCopy.officerRow.failed,
+    );
+  });
+
+  it('planRaid hands the 429 line back to the form', async () => {
+    const create = () => Promise.reject(limited);
+    const result = await planRaid(2, PAYLOAD, { create, reload: vi.fn(), onPlanRefused: vi.fn() });
+    expect(result).toMatchObject({ ok: false, message: raidCopy.rateLimited });
   });
 });
 

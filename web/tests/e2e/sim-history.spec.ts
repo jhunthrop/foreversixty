@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { choose } from './support/select';

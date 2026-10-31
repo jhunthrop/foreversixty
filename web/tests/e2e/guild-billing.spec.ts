@@ -4,7 +4,8 @@
 // 18 (axe, 44 px at 360, the seat picker open). Seats, transfer and case 15 live in guild-billing-seats.spec.ts. Also
 // Manage billing and its Stripe-unavailable retry, which the old #billing section carried. API stubbed.
 import { createRequire } from 'node:module';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   GUILD_TIER_28_READ,
@@ -21,6 +22,9 @@ import { guildSettingsCopy } from '../../src/lib/guild/copy';
 import { uiCopy } from '../../src/lib/ui/copy';
 import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-billing';
 import { fieldBox } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing/upgrade-preview*'));
 
 const PHONE = { width: 360, height: 780 };
 const MIN_TAP_PX = 44;

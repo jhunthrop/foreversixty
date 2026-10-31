@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';

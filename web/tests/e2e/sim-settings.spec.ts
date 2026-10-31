@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose, fieldBox } from './support/select';
 
 const activeBuild = JSON.parse(

@@ -60,7 +60,7 @@ func TestPostMessageRows(t *testing.T) {
 	now := postStart
 	for _, state := range []notify.RaidPostState{notify.PostOpen, notify.PostMoved} {
 		row := PostMessage(testPost(state), testRaidURL, testNightURL, now).Components[0]
-		wantStyles := []ButtonStyle{StyleSuccess, StyleSecondary, StyleSecondary, StyleSecondary, StyleLink}
+		wantStyles := []ButtonStyle{StyleSecondary, StyleSecondary, StyleSecondary, StyleSecondary, StyleLink}
 		wantIDs := []string{"raid:42:in", "raid:42:late", "raid:42:bench", "raid:42:out", ""}
 		if len(row) != 5 {
 			t.Fatalf("%s: %d components", state, len(row))

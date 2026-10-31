@@ -1,5 +1,5 @@
 // web/tests/e2e/auth.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { meBnetFixture } from '../../src/fixtures/me-bnet';
 

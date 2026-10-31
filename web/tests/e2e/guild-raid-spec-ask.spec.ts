@@ -3,7 +3,8 @@
 // and Bench wait for the pick while no raid spec is saved, the pick commits the sign-up with the
 // spec's role, Out never asks, a saved spec reads `Change spec`, and the select holds the 44 px
 // floor at 360. The API is the RaidStub with `askSpec`.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
 import { raidCopy } from '../../src/lib/guild/raid-copy';
 import {

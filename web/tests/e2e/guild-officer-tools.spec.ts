@@ -4,7 +4,8 @@
 // and Nudge in place and disabled, with one sentence per tab that links to guild settings; a
 // 403 `guild_plan_required` mid-session flips both tabs without a reload; guild settings and
 // the account page's guild rows say what the guild has. Members see nothing new.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { guildGateCopy } from '../../src/lib/guild/copy';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {

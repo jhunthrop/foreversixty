@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, shareBuild, showTree } from './support/planner';
 
 import { heldRoute } from './support/held-route';

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 // Read as JSON rather than imported as an ES module: Playwright's own Node runtime (not
 // Vite, which every in-app import goes through) needs an import attribute this repo's

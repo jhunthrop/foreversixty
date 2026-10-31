@@ -8,7 +8,8 @@
 // The API is stubbed with page.route from the shared fixture (support/character-fixture.ts),
 // which carries the identity and the history; the panel's execution-rating read is answered 404
 // so only these parts are in play.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import {

@@ -1,5 +1,8 @@
 // web/tests/e2e/guild-settings.spec.ts
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing'));
 
 function envelope(data: unknown, status = 200) {
   return {

@@ -3,7 +3,8 @@
 // site keeps private answers in localStorage (`fs.q.*`, gated by the `fs_csrf` cookie hint),
 // so these specs plant that cookie and walk across real page loads: the stale answer is
 // persisted by the first page, and the page a mutation lands on must still show the new state.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { guildJoinCopy } from '../../src/lib/guild/copy';
 import {
   GUILD_ID,
@@ -12,6 +13,17 @@ import {
   buildMockGuildPage,
   buildMockHome,
 } from '../../src/fixtures/guild/mock-guild';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) =>
+  apiUnreachable(
+    page,
+    '**/v1/guilds/*/loot*',
+    '**/v1/guilds/*/progression*',
+    '**/v1/guilds/*/raids*',
+    '**/v1/guilds/*/readiness*',
+  ),
+);
 
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 const INVITE_TOKEN = 'fixtureinvitetoken1';

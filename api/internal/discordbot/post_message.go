@@ -71,17 +71,19 @@ func postRows(p notify.RaidPost, raidURL, nightURL string) []ActionRow {
 	}
 	live := p.State == notify.PostOpen || p.State == notify.PostMoved || p.State == notify.PostTomorrow
 	row := make(ActionRow, 0, len(signUpStates)+1)
-	for i, s := range signUpStates {
-		style := StyleSecondary
-		if i == 0 {
-			style = StyleSuccess
-		}
-		row = append(row, Component{
-			Kind: KindButton, Style: style, Label: s.Label,
-			CustomID: raidCustomID(p.RaidID, s.State), Disabled: !live,
-		})
+	for _, s := range signUpStates {
+		answer := answerButton(s.Label, raidCustomID(p.RaidID, s.State))
+		answer.Disabled = !live
+		row = append(row, answer)
 	}
 	return rowOf(append(row, linkButton(postCopy.RaidPage, raidURL))...)
+}
+
+// answerButton is one of the four sign-up answers. All four share the neutral Secondary style:
+// a post or card cannot show each viewer's own answer, and a coloured In read as already
+// chosen (owner, 2026-10-31).
+func answerButton(label, customID string) Component {
+	return Component{Kind: KindButton, Style: StyleSecondary, Label: label, CustomID: customID}
 }
 
 // rowOf is one action row of the components that can be sent: a link button with no url is
