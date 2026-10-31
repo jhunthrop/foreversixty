@@ -93,12 +93,13 @@ func TestNoGuideDepthMeansNoSpine(t *testing.T) {
 	}
 }
 
-const holyShieldTalentID = 105628
+const shieldswornTalentID = 110875
 
-// Protection paladin's ladder: Iron Creed (tier 5) sits above Holy Shield
-// (tier 6, needs 30 points above), and the plain walk spent band 40's 31
-// points on every row before it.
-func TestProtectionPaladinLadderKeepsHolyShieldWhereThePointsAllowIt(t *testing.T) {
+// Protection paladin's ladder: Shieldsworn (tier 6 since 1.60.1.70707, the
+// deepest talent the guide takes) needs 30 points above it, so band 40's 31
+// points must reach it and band 38's 29 cannot; the plain walk used to spend
+// band 40's points on every row before it.
+func TestProtectionPaladinLadderTakesShieldswornWhereThePointsAllowIt(t *testing.T) {
 	const repoRoot = "../.."
 	build, err := ReadActiveBuild(repoRoot)
 	if err != nil {
@@ -118,14 +119,14 @@ func TestProtectionPaladinLadderKeepsHolyShieldWhereThePointsAllowIt(t *testing.
 	}
 	targets := GuideTalentTargets(guideTrees, digits)
 	const protectionTree = 1
-	wantHolyShield := map[int]bool{38: false, 40: true, 50: true, 60: true}
-	for level, want := range wantHolyShield {
+	wantShieldsworn := map[int]bool{38: false, 40: true, 50: true, 60: true}
+	for level, want := range wantShieldsworn {
 		ranks, err := TalentRanksFromString(activeTrees, LadderTalentString(activeTrees, targets, protectionTree, level))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if got := ranks[holyShieldTalentID] > 0; got != want {
-			t.Errorf("level %d: Holy Shield taken = %v, want %v", level, got, want)
+		if got := ranks[shieldswornTalentID] > 0; got != want {
+			t.Errorf("level %d: Shieldsworn taken = %v, want %v", level, got, want)
 		}
 	}
 }

@@ -286,10 +286,11 @@ def test_the_inferior_flag_is_written_only_when_true():
     ]
 
 
-def test_the_active_builds_hawk_rank_6_is_flagged_inferior():
+def test_the_active_builds_hawk_rank_6_is_not_inferior():
+    """1.60.1.70707 made Aspect of the Hawk rank 6 (55) stronger than rank 5 (47) again."""
     active = json.loads((BUILDS.parent.parent / "web/src/data/active-build.json").read_text())
     path = BUILDS / active["build"] / "spellranks.json"
     hawk = json.loads(path.read_text())["classes"]["hunter"]["Aspect of the Hawk"]
     rows = {row["id"]: row for row in hawk}
-    assert rows[14322].get("inferior") is True
+    assert not rows[14322].get("inferior")
     assert not rows[14321].get("inferior")
