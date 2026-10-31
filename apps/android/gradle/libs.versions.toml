@@ -25,6 +25,8 @@ ktor = "3.6.1"
 lifecycle = "2.11.0"
 robolectric = "4.17"
 roborazzi = "1.77.0"
+# Push: the plugin that turns app/google-services.json into resources (applied only when the file exists).
+googleServices = "4.5.0"
 # Crash and hang reporting (lane P2): sentry-android-core, no NDK, replay or performance.
 sentry = "8.61.0"
 serialization = "1.12.0"
@@ -81,6 +83,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 # The repo's own convention plugins, from build-logic.
 forever-android-application = { id = "forever.android.application" }

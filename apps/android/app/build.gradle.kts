@@ -10,10 +10,24 @@ plugins {
 }
 
 /**
- * Release signing comes from the environment (CI writes the upload keystore from secrets).
+ * Firebase's client config (push). Firebase calls the file no secret, but its browser API key trips
+ * secret scanning, so it is never committed: android.yml writes it from the GOOGLE_SERVICES_JSON
+ * repository secret, and it carries clients for gg.foreversixty.app and the debug build's
+ * gg.foreversixty.app.debug (docs/runbooks/mobile-apps.md, "Android release infrastructure").
+ * Without it the build still passes and has no push.
+ */
+if (file("google-services.json").exists()) {
+    apply(plugin = libs.plugins.google.services.get().pluginId)
+} else {
+    logger.lifecycle("app/google-services.json is absent: this build has no push.")
+}
+
+/**
+ * Release signing comes from the environment: the upload keystore's path and its secrets
+ * (tools/release-apps.sh; CI writes the keystore from the ANDROID_KEYSTORE_BASE64 secret).
  * Without it the release build is unsigned, which is fine for `assembleRelease` checks.
  */
-val uploadKeystore: String? = providers.environmentVariable("FOREVER_UPLOAD_KEYSTORE").orNull
+val uploadKeystore: String? = providers.environmentVariable("ANDROID_KEYSTORE_PATH").orNull
 
 /**
  * The Sentry DSN for release builds (apps/shared/privacy.md). Empty, the placeholder, keeps crash
@@ -32,9 +46,9 @@ android {
         if (uploadKeystore != null) {
             create("upload") {
                 storeFile = file(uploadKeystore)
-                storePassword = providers.environmentVariable("FOREVER_UPLOAD_KEYSTORE_PASSWORD").get()
-                keyAlias = providers.environmentVariable("FOREVER_UPLOAD_KEY_ALIAS").get()
-                keyPassword = providers.environmentVariable("FOREVER_UPLOAD_KEY_PASSWORD").get()
+                storePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS").get()
+                keyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD").get()
             }
         }
     }

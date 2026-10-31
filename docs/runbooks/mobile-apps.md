@@ -13,13 +13,15 @@ the API contract is `docs/contracts/app-v1.md`; the privacy answers are
 | Release notes | `apps/CHANGELOG.md`, the `## Unreleased` section |
 | Release command | `tools/release-apps.sh`, or `make -C apps release` |
 | Release workflow | `.github/workflows/apps-release.yml` (manual dispatch) |
-| fastlane (uploads, rollouts) | `apps/Gemfile` (pinned); run as `BUNDLE_GEMFILE=apps/Gemfile bundle exec fastlane ...` |
+| Play upload | `tools/play-upload.ts` (the Play Developer API with a short-lived token; `tools/tests/play-upload.test.ts`) |
+| fastlane (TestFlight) | `apps/Gemfile` (pinned); run as `BUNDLE_GEMFILE=apps/Gemfile bundle exec fastlane ...` |
+| Android signing, Firebase, Play identity | "Android release infrastructure" below |
 | Crash and hang reports | Sentry, projects `forever-ios` and `forever-android` |
 | App traffic per version | Cloud Logging, the `api` service's `request` lines with `app_*` fields |
 | Forced update | API env `APP_CLIENT_HEADERS`, `APP_MIN_VERSION_IOS`, `APP_MIN_VERSION_ANDROID`, `APP_STORE_URL_*` |
 
-Secrets live in the GitHub `play-internal` environment (release) and in Google Secret Manager
-(the API). Never paste one into a file, a commit or a chat.
+Secrets live in Google Secret Manager (project `foreversixty`), with the copies the release
+needs as GitHub repository secrets. Never paste one into a file, a commit or a chat.
 
 ## One-time setup (owner)
 
@@ -28,16 +30,13 @@ These are still open as of 2026-10-30:
 1. **Play.**
    - The app exists in Play Console. Its first bundle must be uploaded by hand: the API cannot
      create a release for an app that has never had one.
-   - Add these to the `play-internal` environment:
-     - `PLAY_SERVICE_ACCOUNT_JSON`. Its service account needs "Release to testing tracks", and
-       "Release to production" for the rollout steps below.
-     - `ANDROID_UPLOAD_KEYSTORE_BASE64`, `ANDROID_UPLOAD_KEYSTORE_PASSWORD`,
-       `ANDROID_UPLOAD_KEY_ALIAS`, `ANDROID_UPLOAD_KEY_PASSWORD`.
+   - The upload key, the Play publishing service account and Firebase are in "Android release
+     infrastructure" below, with what is still open there.
    - Play App Signing holds the app key. We hold only the upload key.
 2. **Apple.** When enrollment clears:
    - Set the repository variable `APPLE_TEAM_ID`.
    - Create an App Store Connect API key with the App Manager role. Add `ASC_KEY_ID`,
-     `ASC_ISSUER_ID` and `ASC_KEY_P8` (the .p8 file's text) to `play-internal`.
+     `ASC_ISSUER_ID` and `ASC_KEY_P8` (the .p8 file's text) as repository secrets.
    - Create the app record (`gg.foreversixty.app`) in App Store Connect.
    - `project.yml` still signs ad hoc for the simulator. The release command overrides that
      with `DEVELOPMENT_TEAM` and automatic signing. Run a first archive by hand to confirm the
@@ -52,6 +51,76 @@ These are still open as of 2026-10-30:
    - Set `APP_CLIENT_HEADERS=true` on the `api` service. This lands after Nov 6, per the plan's
      freeze.
    - Create the two log-based metrics in "Counting app traffic".
+
+## Android release infrastructure
+
+The pattern is the Commish project's (Firebase push and a Play publisher with no key). Code
+side, as of 2026-10-31: the names below are what `tools/release-apps.sh`,
+`apps/android/app/build.gradle.kts`, `android.yml` and `apps-release.yml` read. **Cloud side:
+pending.** The owner's gcloud login (jh@derbee.ai) had lapsed, so none of the resources below
+exists yet; each item says how it is made.
+
+- **Upload key.** One keystore made with `keytool` (RSA 4096, 10,000 days, alias `upload`), a
+  random password, never on disk past setup. The originals are in Secret Manager as
+  `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD` and `ANDROID_KEY_PASSWORD` (the same
+  password; PKCS12 has one), with copies as GitHub repository secrets of the same names and the
+  repository variable `ANDROID_KEY_ALIAS=upload`. Gradle reads `ANDROID_KEYSTORE_PATH`,
+  `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`; `apps-release.yml`
+  writes the keystore to the runner's temp directory and removes it after. A local release
+  reads them back with `gcloud secrets versions access latest --secret <name>`.
+  - Upload certificate SHA-256: *pending* (it is not a secret; `keytool -list -v` prints it).
+  - Play App Signing re-signs what Play serves with its own key. Its SHA-256 exists only after
+    the first upload: Play Console > Test and release > App integrity > App signing. Both
+    fingerprints go into `androidSha256Fingerprints` of `web/app-links.json`, which lane A1
+    (`wt/mobile-auth`, held until after launch) brings with `assetlinks.json` for the
+    `https://foreversixty.gg/app/...` App Links; the site serves no `assetlinks.json` before it.
+- **Firebase (push).** Attach Firebase to project `foreversixty` and enable
+  `firebase.googleapis.com` and `fcm.googleapis.com` (FCM is free). Two Android apps, made with
+  the Firebase Management API (`projects/foreversixty/androidApps`): `gg.foreversixty.app` and
+  the debug build's `gg.foreversixty.app.debug` (the Google Services plugin fails a build whose
+  package has no client in the file). Their two configs
+  (`projects/foreversixty/androidApps/<id>/config`) are merged into one `google-services.json`
+  (both `client` entries), stored as the repository secret `GOOGLE_SERVICES_JSON` and never
+  committed: Firebase calls it no secret, but its browser API key trips secret scanning.
+  `.github/actions/google-services` writes it to `apps/android/app/` (git-ignored) before
+  `android.yml`'s build and `apps-release.yml`'s; without the secret both pass, with no push.
+- **Sending.** `api-runtime@foreversixty.iam.gserviceaccount.com` (the `api` service's
+  identity) holds `roles/firebasecloudmessaging.admin` on the project and sends through the FCM
+  HTTP v1 API with its own identity; no key file. Lane A2 (`wt/mobile-push`, held until after
+  Nov 4) still reads `FCM_SERVICE_ACCOUNT_JSON`: before it ships, its FCM sender takes the
+  runtime's default credentials and project `foreversixty` instead, and that variable goes.
+- **Play publishing, no key.** Service account
+  `play-publisher@foreversixty.iam.gserviceaccount.com`, repository variable `PLAY_SA`. The
+  existing workload identity pool `github`, provider `github`
+  (`GCP_WIF_PROVIDER`), may impersonate it only for `jhunthrop/foreversixty`: the binding is
+  `roles/iam.workloadIdentityUser` on the service account for
+  `principalSet://iam.googleapis.com/projects/375932107051/locations/global/workloadIdentityPools/github/attribute.repository/jhunthrop/foreversixty`.
+  `apps-release.yml` (a real Android release from main only) mints an hour's
+  `androidpublisher` token through `google-github-actions/auth` and hands it to
+  `tools/release-apps.sh` as `PLAY_ACCESS_TOKEN`. A local release sets `PLAY_SA` and the
+  script runs `gcloud auth print-access-token --impersonate-service-account="$PLAY_SA"
+  --scopes=https://www.googleapis.com/auth/androidpublisher`, which needs
+  `roles/iam.serviceAccountTokenCreator` on that one service account for the owner's login.
+  The project creates no service-account JSON keys.
+- **Play Console access.** The service account is invited as a user of the app: Play Console
+  (Commish LLC's developer account) > Users and permissions > Invite new users > email
+  `play-publisher@foreversixty.iam.gserviceaccount.com` > App permissions > Add app >
+  Forever Sixty (`gg.foreversixty.app`) > tick "Release apps to testing tracks" and "Release to
+  production, exclude devices, and use Play App Signing" > Apply > Invite user. Until then
+  `tools/play-upload.ts` stops at its first call with a 403 on "insert edit".
+- **The app record.** Play has no API to create an app; it is made once in Play Console
+  (Create app), and its first bundle is uploaded by hand there.
+
+Apple, still open (no Apple Developer account yet):
+
+- The Team ID: repository variable `APPLE_TEAM_ID`, and `appleTeamId` in `web/app-links.json`.
+- An APNs auth key (.p8): Apple Developer > Certificates, Identifiers & Profiles > Keys >
+  create, with Apple Push Notifications service. Its text goes into Secret Manager as
+  `APNS_KEY_P8` with `APNS_KEY_ID` and `APNS_TEAM_ID` ("The push keys" below).
+- The same .p8 uploaded to Firebase, if iOS ever registers FCM tokens: Firebase console >
+  Project settings > Cloud Messaging > Apple app configuration > APNs authentication key >
+  Upload. That upload has no API. An iOS app registering its APNs token directly needs only
+  the Secret Manager copy.
 
 ## Cutting a release
 
@@ -68,7 +137,9 @@ These are still open as of 2026-10-30:
    - **GitHub (preferred):** Actions > apps-release > Run workflow on `main`. Choose the
      bump and platform, set execute, and leave play_status at draft until the app has passed
      its first review.
-   - **Locally,** with the same environment variables exported:
+   - **Locally,** with the signing values exported (`ANDROID_KEYSTORE_PATH` and the rest,
+     from Secret Manager, below) and `PLAY_SA` set: the command mints its Play token with
+     `gcloud auth print-access-token --impersonate-service-account`:
      ```bash
      make -C apps release ARGS="--bump minor --execute"
      git push --follow-tags
@@ -107,25 +178,13 @@ these hold:
 
 ### Play: 1% > 5% > 20% > 50% > 100%
 
-Promote the internal build to production at 1%. Use the version code, which is `APP_BUILD`:
+Promote the internal build to production at 1% in Play Console: Test and release >
+Production > Create new release > Add from library (the version code is `APP_BUILD`), set the
+rollout percentage to 1%, then Save and Review > Start rollout. Widen it (5%, 20%, 50%) with
+Release > Production > Manage rollout > Update rollout, and finish with Complete rollout.
 
-```bash
-export BUNDLE_GEMFILE=apps/Gemfile SUPPLY_JSON_KEY_DATA="$(cat play-key.json)"
-bundle exec fastlane run upload_to_play_store package_name:gg.foreversixty.app \
-  track:internal track_promote_to:production version_code:43 rollout:0.01 \
-  skip_upload_aab:true skip_upload_metadata:true skip_upload_images:true \
-  skip_upload_screenshots:true skip_upload_changelogs:true
-```
-
-Widen it (`rollout:0.05`, `0.2`, `0.5`), and finish with `release_status:completed`:
-
-```bash
-bundle exec fastlane run upload_to_play_store package_name:gg.foreversixty.app \
-  track:production version_code:43 rollout:0.2 skip_upload_aab:true \
-  skip_upload_metadata:true skip_upload_images:true skip_upload_screenshots:true
-```
-
-Play Console does the same: Release > Production > Manage rollout.
+fastlane's `upload_to_play_store` signs in only with a service-account JSON key, which this
+project never creates, so rollouts are console steps.
 
 ### App Store: phased release over 7 days
 
@@ -141,9 +200,9 @@ Hold the same gates as Play before letting it run.
 ## Halting a bad release
 
 1. **Stop the spread.**
-   - **Play:** halt the rollout with Release > Production > Halt rollout, or with fastlane:
-     `track:production version_code:<n> release_status:halted`. Players who have not updated
-     stay on the last good version. Resume later with `release_status:inProgress`.
+   - **Play:** halt the rollout with Release > Production > Manage rollout > Halt rollout.
+     Players who have not updated stay on the last good version. Resume later from the same
+     menu.
    - **App Store:** Pause Phased Release. Apple cannot pull one version back. The fix is a new
      build.
 2. **Fix forward.** Cut a `patch` release with the fix and roll it out from 1% again. For a
@@ -253,13 +312,14 @@ Never join it to an account.
 - **TestFlight feedback:** testers' screenshots and crash reports, in App Store Connect >
   TestFlight > Feedback.
 
-## Rotating the push keys
+## The push keys
 
 Lane A2's senders read these. The API service, the raid-posts job and the parse-report job all
 need the same values, so update all three:
 
 - `APNS_KEY_P8`, `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_TOPIC`
-- `FCM_SERVICE_ACCOUNT_JSON`
+
+FCM has no key: the API sends with its Cloud Run identity (below).
 
 **APNs** (yearly, or at once if a key leaks). An Apple team can hold two APNs keys at once,
 so rotation has no gap.
@@ -277,20 +337,10 @@ so rotation has no gap.
 5. Revoke the old key in Apple Developer.
 6. Delete the downloaded .p8 from your machine.
 
-**FCM:**
-
-1. In Google Cloud > IAM > Service accounts, open the FCM sender account, then
-   Keys > Add key > JSON.
-2. Add it as a new version:
-   ```bash
-   gcloud secrets versions add FCM_SERVICE_ACCOUNT_JSON --data-file=key.json
-   ```
-   Then redeploy the service and update both jobs.
-3. Send a test push to an Android device. Then delete the old key in IAM, and delete
-   `key.json` locally.
-
-`google-services.json` in the Android build identifies the Firebase project. It is not a
-secret and does not rotate.
+**FCM:** nothing to replace. `api-runtime@foreversixty.iam.gserviceaccount.com` holds
+`roles/firebasecloudmessaging.admin` on the project and sends through the FCM HTTP v1 API with
+its own identity; no key file exists or may exist. `google-services.json` in the Android
+build only identifies the Firebase project and the app.
 
 ## When push fails
 
@@ -323,7 +373,8 @@ Work from the server out to the device:
    - FCM:
      - `UNREGISTERED` means the app was uninstalled.
      - `SENDER_ID_MISMATCH` means the token belongs to another Firebase project.
-     - A `401` or `403` means a bad service account key.
+     - A `401` or `403` means the sender is not running as `api-runtime`, or that account
+       lost `roles/firebasecloudmessaging.admin`.
 5. **On the device:**
    - iOS: notifications allowed, no Focus mode silencing the app, and Background App
      Refresh on.
@@ -343,7 +394,8 @@ the `https://foreversixty.gg/app/auth` landing, then `POST /v1/auth/app/exchange
      curl -s https://foreversixty.gg/.well-known/apple-app-site-association
      curl -s https://foreversixty.gg/.well-known/assetlinks.json
      ```
-     They must carry the real Team ID and the Play App Signing SHA-256, never `TODO`.
+     They must carry the real Team ID and the Play App Signing SHA-256, never `TODO`. The
+     upload key's SHA-256 (below) belongs there too, for builds installed outside Play.
    - If they are wrong, the landing opens in the browser instead of the app. The source is
      `web/app-links.json`.
    - iOS caches the association file through Apple's CDN. A fix can take a day to reach
