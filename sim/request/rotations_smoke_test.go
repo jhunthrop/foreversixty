@@ -149,9 +149,8 @@ var smokeBuildWarnings = map[string]map[string]string{
 			"loop: a real artifact of this bare build, not a defect in the gate.",
 	},
 	"druid-restoration": {
-		"{SpellID: 1238215}": "Wild Growth is a talent (sim/druid/wild_growth.go); this build takes none.",
-		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
-		"{SpellID: 18562}":   "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 17116}": "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
+		"{SpellID: 18562}": "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
 	},
 	"paladin-holy": {
 		"{SpellID: 20216}":   "Divine Favor is a talent (sim/paladin/divine_favor.go); this build takes none.",
