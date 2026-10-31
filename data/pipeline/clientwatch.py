@@ -35,6 +35,7 @@ import json
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -94,6 +95,9 @@ class Check:
     blizzard: Build | None = None
     #: Forever builds wago ingested after the active build whose version is not above it.
     out_of_order: tuple[Build, ...] = ()
+    #: When wago first listed a Forever build newer than the active one ("" when none is):
+    #: the moment the site fell behind, however many builds have shipped since.
+    behind_since: str = ""
 
     @property
     def newer(self) -> bool:
@@ -276,7 +280,31 @@ def check(
         unmatched_newer=unmatched,
         blizzard=blizzard,
         out_of_order=out_of_order,
+        behind_since=_behind_since(builds, active, config),
     )
+
+
+def _behind_since(builds: list[Build], active: str, config: ClientConfig) -> str:
+    stamps = [
+        b.created_at
+        for b in builds
+        if b.created_at and is_forever(b, config) and newer_than(b.version, active)
+    ]
+    return min(stamps) if stamps else ""
+
+
+def days_behind(since: str, now: datetime) -> int | None:
+    """Whole days from `since` (wago's UTC "YYYY-MM-DD HH:MM:SS") to `now`; None when the
+    site is not behind or the stamp does not parse."""
+    if not since:
+        return None
+    try:
+        start = datetime.fromisoformat(since)
+    except ValueError:
+        return None
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=UTC)
+    return max((now - start).days, 0)
 
 
 def _newest_first(builds: Iterable[Build]) -> tuple[Build, ...]:
@@ -297,9 +325,10 @@ def fetch_builds(client: httpx.Client | None = None) -> dict[str, Any]:
             client.close()
 
 
-def report(result: Check) -> dict[str, Any]:
+def report(result: Check, now: datetime | None = None) -> dict[str, Any]:
     """The JSON the CLI prints and the workflow reads as step outputs."""
     newest = result.newest
+    behind = days_behind(result.behind_since, now or datetime.now(UTC))
     return {
         "active": result.active,
         "active_interface": interface_number(result.active),
@@ -313,6 +342,8 @@ def report(result: Check) -> dict[str, Any]:
         "wago_behind": result.wago_behind,
         "unmatched_newer": [_row(b) for b in result.unmatched_newer],
         "out_of_order": [_row(b) for b in result.out_of_order],
+        "behind_since": result.behind_since,
+        "behind_days": "" if behind is None else behind,
     }
 
 

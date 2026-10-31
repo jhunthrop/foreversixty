@@ -4,11 +4,15 @@
 // shows is exactly the kind of breakout that can push a page wider than its own viewport at a
 // laptop width. Asserts the one invariant that matters: /logs never scrolls sideways, at every
 // width this pass was asked to check, signed out and signed in.
-import { expect, test } from './support/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const WIDTHS = [1024, 1100, 1280, 1440, 1920];
+
+// The signed-in header asks for the character's history (logsAnswerSpec); its timing against
+// the report row is a race, so it goes unanswered every time, as the API out of reach.
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*'));
 
 function fulfil(body: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {

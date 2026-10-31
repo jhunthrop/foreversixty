@@ -91,7 +91,8 @@
    on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
    naive swap reflows that text once Barlow loads -- different fallback vs. Barlow glyph
    metrics change the line's width and height -- which fails the CLS budget in
-   lighthouserc.json. `Barlow Fallback` is Helvetica Neue/Arial with `size-adjust` and the
+   lighthouserc.json. `Barlow Fallback` is Helvetica Neue/Arial (or Liberation Sans, Linux's
+   metric-compatible Arial) with `size-adjust` and the
    three `*-override` descriptors tuned so its em-box matches Barlow's, computed with
    @capsizecss/unpack against the actual Barlow woff2 and the system Helvetica Neue/Arial.
    Barlow's ascent/descent/lineGap are identical across its 400/600/700 weights, so one
@@ -101,7 +102,7 @@
    in place once Barlow arrives. tokens.css names it in --font-body, right after 'Barlow'. */
 @font-face {
   font-family: 'Barlow Fallback';
-  src: local('Helvetica Neue'), local('Arial');
+  src: local('Helvetica Neue'), local('Arial'), local('Liberation Sans'), local('LiberationSans');
   size-adjust: 95.78%;
   ascent-override: 104.41%;
   descent-override: 20.88%;
@@ -140,7 +141,8 @@
 @font-face {
   font-family: 'Barlow Condensed Fallback Arial';
   font-weight: 700;
-  src: local('Arial Bold'), local('Arial-BoldMT');
+  src:
+    local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold');
   size-adjust: 76.04%;
   ascent-override: 131.5%;
   descent-override: 26.3%;
@@ -149,7 +151,8 @@
 @font-face {
   font-family: 'Barlow Condensed Fallback Arial';
   font-weight: 800;
-  src: local('Arial Bold'), local('Arial-BoldMT');
+  src:
+    local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold');
   size-adjust: 77.71%;
   ascent-override: 128.68%;
   descent-override: 25.74%;

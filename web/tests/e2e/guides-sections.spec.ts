@@ -92,13 +92,21 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid="guide-key-talents"] img');
     });
 
-    test('numbers a priority with spell icons and lists real cooldowns, with no opener', async ({ page }) => {
+    test('numbers a priority with spell icons, lists real cooldowns, and opens on the pre-pull Ice Barrier', async ({
+      page,
+    }) => {
       await page.goto(PAGE);
       const priority = page.getByTestId('guide-rotation-priority');
       await expect(priority.locator('h3')).toHaveText('Priority');
-      await expect(priority.locator('li').first()).toContainText('Ice Lance');
+      // The order is the nightly APL's (Ice Barrier upkeep leads it today), so the walk pins
+      // that Ice Lance is on the list with its icon, never which line comes first.
+      const iceLance = priority.locator('li').filter({ hasText: 'Ice Lance' });
+      await expect(iceLance).toHaveCount(1);
+      await expect(iceLance.locator('img')).toHaveCount(1);
       await expect(priority.locator('li').first().locator('img')).toHaveCount(1);
-      await expect(page.getByTestId('guide-rotation-opener')).toHaveCount(0);
+      await expect(page.getByTestId('guide-rotation-opener').locator('li').first()).toContainText(
+        'Ice Barrier',
+      );
       const cooldowns = page.getByTestId('guide-rotation-cooldowns');
       await expect(cooldowns.locator('h3')).toHaveText('Cooldowns');
       for (const name of ['Evocation', 'Cold Snap', 'Ice Block']) await expect(cooldowns).toContainText(name);

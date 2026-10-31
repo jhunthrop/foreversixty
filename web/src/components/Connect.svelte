@@ -12,7 +12,7 @@
     connectDeviceDeny,
     connectDeviceLookup,
     fetchMeOnce,
-    forgetSession,
+    forgetSignedInState,
     requestEmailLink,
     signOut,
     type ConnectDevice,
@@ -90,7 +90,7 @@
     } catch {
       // Signing out of a session that is already gone is the same outcome.
     }
-    forgetSession();
+    forgetSignedInState();
     clearAccountReserve();
     me = null;
     state = 'signedOut';
