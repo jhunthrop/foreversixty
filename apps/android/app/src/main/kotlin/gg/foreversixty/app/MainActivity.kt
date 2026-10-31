@@ -90,6 +90,8 @@ class MainActivity : ComponentActivity() {
         when (val parsed = DeepLink.parse(link)) {
             is DeepLink.SignIn -> graph.session.handleRedirect(link)
             null -> Unit
+            // Lane F5: a sim link opens Home, Sims and the result.
+            is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

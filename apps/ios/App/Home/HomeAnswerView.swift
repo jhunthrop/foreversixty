@@ -261,7 +261,13 @@ struct NextRows: View {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                    NextRowView(row: row)
+                    if row.kind == .sims {
+                        // Lane F5: the Sims row pushes Sims (spec F2.1 item 4).
+                        Button { send(.openNext(row.kind)) } label: { NextRowView(row: row) }
+                            .buttonStyle(RowPress())
+                    } else {
+                        NextRowView(row: row)
+                    }
                 }
             }
             .quietCard()

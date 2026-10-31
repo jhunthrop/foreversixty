@@ -44,6 +44,8 @@ struct RootView: View {
     @State private var selection: AppTab = .launchTab
     /// Lane F4: the Raids tab's stack, which raid links and notifications push onto.
     @State private var raidsRouter = RaidsRouter()
+    /// Lane F5: Home's Sims stack, which sim links push onto.
+    @State private var simsRouter = SimsRouter()
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -63,10 +65,11 @@ struct RootView: View {
         }
         .tint(Theme.Palette.accent)
         .environment(environment.session)
+        .environment(simsRouter)
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
-        .onOpenURL { url in DeepLink(url: url).map(openRaids) }
+        .onOpenURL { url in DeepLink(url: url).map(openLink) }
         .task {
             RaidNotificationCenter.shared.onOpen = openRaids
             #if DEBUG
@@ -108,6 +111,17 @@ struct RootView: View {
 }
 
 extension RootView {
+    /// A link selects its tab: sim links Home (lane F5), raid links Raids (lane F4).
+    private func openLink(_ link: DeepLink) {
+        if SimsRouter.handles(link) {
+            guard environment.isAvailable(.sims) else { return }
+            selection = .home
+            simsRouter.open(link)
+        } else {
+            openRaids(link)
+        }
+    }
+
     /// Lane F4: a raid, raid-night or guild link selects the Raids tab and pushes its screen.
     private func openRaids(_ link: DeepLink) {
         guard environment.isAvailable(.raids), RaidsRouter.handles(link) else { return }

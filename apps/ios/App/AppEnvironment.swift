@@ -55,6 +55,7 @@ struct AppEnvironment {
                 URLCache.shared.removeAllCachedResponses()
                 FileHomeCache.standard()?.removeAll()
                 DiskRaidCache.standard().removeAll()
+                DiskRaidCache.sims().removeAll()
             }
         )
     }

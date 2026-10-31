@@ -59,12 +59,32 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F4.15 No raid planned.</b>", R.raids_tab(p, "empty")),
             cell("<b>F4.16 Error.</b>", R.raids_tab(p, "error")),
             cell("<b>F4.17 Offline.</b> Segments disabled.", R.raids_tab(p, "offline"))]),
-        f"f5-sims-{p}": ("F5 sims", [
-            cell("<b>F5.1 Sims, Premium.</b> Server runs with progress, then your sims.", M.sims(p)),
-            cell("<b>F5.2 Sims, free.</b> No server section, no prompt.", M.sims(p, premium=False)),
-            cell("<b>F5.3 Result, Premium.</b>", M.sim_result(p)),
-            cell("<b>F5.4 Result, free, link region.</b> One muted See plans.", M.sim_result(p, premium=False)),
-            cell("<b>F5.5 Result, free, other regions.</b> Nothing about Premium.", M.sim_result(p, premium=False, link_region=False))]),
+        f"f5-sims-{p}": ("F5 sims, today's API", [
+            cell("<b>F5.1 Sims, Premium.</b> Running bulk with bar, running plain without, finished unseen, failed with Run again; footer pinned.", M.sims(p)),
+            cell("<b>F5.2 Sims, free.</b> No server section, no prompt.", M.sims(p, "free")),
+            cell("<b>F5.2b Lapsed, after a 402.</b> Old server rows stay; the line and a gold underlined See plans (link region only).", M.sims(p, "lapsed")),
+            cell("<b>F5.3 Result, plain run.</b> No rerun, no Premium line.", M.sim_result(p)),
+            cell("<b>F5.3b Result, Top Gear.</b> The row headline is the answer; a gold corner marks the changed slot.", M.sim_result(p, "gear"))]),
+        f"f5-states-{p}": ("F5 sims states", [
+            cell("<b>F5.6 Loading.</b> Skeletons at real row heights.", M.sims(p, "loading")),
+            cell("<b>F5.7 Empty.</b> Premium, nothing yet; no footer.", M.sims(p, "empty")),
+            cell("<b>F5.8 Error.</b> Server runs failed alone; Your sims keeps its rows.", M.sims(p, "error")),
+            cell("<b>F5.8b Offline.</b> Cached rows, no polling, Run again disabled.", M.sims(p, "offline")),
+            cell("<b>F5.9 Next page loading.</b> Spinner row under the last row.", M.sims(p, "paging")),
+            cell("<b>F5.9b Next page failed.</b> sims.failedLoad with Try again as the last row.", M.sims(p, "pagefail"))]),
+        f"f5-rerun-{p}": ("F5 Run again states (failed Server runs row)", [
+            cell("<b>R1 Starting.</b> Disabled, busy.", M.rerun(p, "starting")),
+            cell("<b>R2 Started.</b> Disabled until the list re-reads.", M.rerun(p, "started")),
+            cell("<b>R3 Could not start.</b> Network or 5xx.", M.rerun(p, "failed")),
+            cell("<b>R4 Lapsed, link region.</b> Gold underlined See plans.", M.rerun(p, "lapsed")),
+            cell("<b>R5 Lapsed, other regions.</b> The sentence alone.", M.rerun(p, "lapsed-plain")),
+            cell("<b>R6 Offline.</b> Disabled with its sentence.", M.rerun(p, "offline"))]),
+        f"f5-result-states-{p}": ("F5.3 result states", [
+            cell("<b>F5.3.1 Loading.</b>", M.sim_result(p, state="loading")),
+            cell("<b>F5.3.2 Did not load.</b> sims.resultFailed with Try again.", M.sim_result(p, state="failed")),
+            cell("<b>F5.3.3 Offline.</b> Strip over a cached result.", M.sim_result(p, state="offline")),
+            cell("<b>F5.3.4 No gear.</b> The section is left out.", M.sim_result(p, state="nogear")),
+            cell("<b>F5.3.5 Unknown item.</b> Question mark, not tappable.", M.sim_result(p, "gear", state="unknown"))]),
         f"f6-talents-{p}": ("F6 talents, read-only", [
             cell("<b>F6.1 Matches.</b> Tab totals are summed from the drawn build: 30 + 3 + 18 = 51.", M.talents(p)),
             cell("<b>F6.2 Differs.</b> 2 points in Reverberation the guide leaves empty; Call of Flame 1/3.", M.talents(p, "differs"))]),
@@ -109,7 +129,9 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>XL.1 Home.</b> Gains move under the name; three rows.", H.home(p, xl=True)),
             cell("<b>XL.2 Raid page.</b> Segments become a 2 x 2 grid.", R.raid_detail(p, xl=True)),
             cell("<b>XL.3 Switcher.</b> Full names wrap, never cut.", H.switcher(p, xl=True)),
-            cell("<b>XL.4 Notification settings.</b>", M.notif_settings(p, xl=True, sections=2))]),
+            cell("<b>XL.4 Notification settings.</b>", M.notif_settings(p, xl=True, sections=2)),
+            cell("<b>XL.5 Sims.</b> Titles wrap whole; state and age stack; Run again grows.", M.sims(p, xl=True)),
+            cell("<b>XL.6 Sim result.</b> Figure grows; the 6-up grid holds.", M.sim_result(p, xl=True))]),
     }
 
 

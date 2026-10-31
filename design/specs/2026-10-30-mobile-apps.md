@@ -67,7 +67,7 @@ Every board is drawn on iPhone 17 (402 x 874 pt) and Pixel 9 (412 x 915 dp). `-i
 | `f4-night-{ios,and}` | F4.22 Your raid night (Premium), F4.23 the same for a free player |
 | `f7-moved-{ios,and}` | F7.7 `raid.roster_moved`: moved In, moved to Bench, removed, added |
 | `f4-pair` | Raids tab and raid page, iOS and Android side by side |
-| `f5-sims-{ios,and}` | F5.1 sims (Premium), F5.2 sims (free), F5.3 to F5.5 the result for Premium, free in a link region, free elsewhere |
+| `f5-sims-{ios,and}` | F5.1 Premium, F5.2 free, F5.2b lapsed after a 402, F5.3 a plain result, F5.3b a gear result, F5.6 loading, F5.7 empty, F5.8 error and offline, F5.9 paging, R1 to R6 the Run again states, F5.3.1 to F5.3.5 the result states |
 | `f6-talents-{ios,and}` | F6.1 matches the guide (totals 30, 3, 18), F6.2 differs by 2 points |
 | `f7-push-ios` | F7.1 lock screen, F7.2 long-press with In, Late, Out, F7.3 the replaced answer and loot |
 | `f7-push-and` | F7.1 the shade with actions, F7.3 the answer and the unknown-spec case |
@@ -496,7 +496,7 @@ After the first successful In or Late on this device, when permission is not det
 
 `Turn on reminders` calls the system prompt (`UNUserNotificationCenter.requestAuthorization([.alert, .sound, .badge])`; Android `ActivityResultContracts.RequestPermission`). On grant it registers the token (lane A2). Either answer, or `Not now`, removes the card with a 200 ms collapse. The same ask comes back at most once more, after the next In at least 30 days later. Then it is never shown again; the player can still turn notifications on in F7.4.
 
-The other in-context moment is the first `Run again` on a server sim (F5.3), with the title `Get told when this sim finishes?` and the body `One notification when the run ends. Change it any time in You, Notifications.`
+The other in-context moment is the first `Run again` on a failed server run (F5.1), with the title `Get told when this sim finishes?` and the body `One notification when the run ends. Change it any time in You, Notifications.`
 
 The app never asks at first launch, at sign-in or on a timer. Android 9 to 12 need no permission, so no card shows there; preferences default as the catalogue says.
 
@@ -557,33 +557,152 @@ Opened from `raid.summary`, or from a done raid's page (`Your raid night` row, f
 
 ## 5.5 F5. Sims
 
+Revision for today's API, 2026-10-31. Built on `GET /v1/sims`, `GET /v1/sims/{id}`, `GET /v1/sims/{id}/progress`, `POST /v1/sims/{id}/seen` and `POST /v1/sims/{id}/rerun` as they are. Reference: the site's `Server runs` panel (`ServerRuns.svelte`, `ServerRunRow.svelte`, `server-runs*.ts`) and the sim history list. The app carries the web's entitlements and behaviour (decision G); where the web shows nothing, the app shows nothing.
+
 ### F5.1 Sims (pushed from Home)
-Two sections:
-- **`Server runs`** shows only when `entitlements.server_sims` is true or the account has server rows. Rows: spec icon 36; title (the sim's title, else headline); then a state line, one of:
-  - `Starting`;
-  - `Running · takes about 4 minutes` (`· taking longer than usual` when overdue), with an 8 pt progress bar (combinations done of total, or iterations);
-  - `Finished {age}`, plus the DPS right in mono and an unseen gold dot (`Not opened yet`);
-  - `Failed: {reason}` in wipe with `Run again`.
+Home's Sims row pushes it, so it is never shown signed out. Title `Sims`. The answer is the newest run, visible without scrolling on a 360 pt phone: the first row starts 12 pt under the title.
 
-  Progress polls `GET /v1/sims/{id}/progress` every 5 s while the screen is visible.
-- **`Your sims`** lists the newest 20 of `GET /v1/sims` (headline, `Saved from the browser · {date}` or `Ran on the server · {date}`, DPS right), with infinite scroll by page.
-- Footer meta, Premium: `Start a sim on foreversixty.gg/sim. Server runs keep going after you close the app.` Free: `Start a sim on foreversixty.gg/sim and it shows here.`
-- Empty: `No sims yet. Start one on foreversixty.gg/sim and it shows here.`
+**Requests.** On open, in parallel: `GET /v1/sims?lane=server` (Server runs) and `GET /v1/sims?page=1` (Your sims); entitlements from the cached `/v1/me` (`entitlements.server_sims`).
 
-### F5.3 A result
-- Title: the sim title, else `{Spec} sim`.
-- Meta: `{Spec} {Class} · level {n} · {preset words} · Finished {age}`.
-- The DPS in Barlow Condensed 52, `DPS` muted.
-- Mono meta: `± {error} · {iterations} iterations · engine {version}`.
-- Meta: `{set_dps} DPS at best in slot for your level range`.
-- `micro` `The gear it ran`, then a 6-column grid of 40 icons (each opens F2.6).
-- Then the action:
-  - Premium: secondary `Run again on the server`. It shows `Starting…`, then `Started` and pushes the new run into Server runs; on failure, `Could not start it again. Try again.`
-  - Free, link region (F5.4): meta `Server sims are part of Premium.` and a gold underlined `See plans` that opens the browser. One link, below the answer (premium-entry spec §2.3, §2.4).
-  - Free elsewhere (F5.5): nothing.
-- Ghost `Full breakdown on foreversixty.gg` with the external glyph.
+**Three variants.**
+| Variant | Server runs | Your sims | Footer |
+|---|---|---|---|
+| Premium (`server_sims` true) | Always shown. No rows: `sims.serverEmpty` | Shown | `sims.footer.premium` |
+| Free, no server rows | Left out | Shown | `sims.footer.free` |
+| Free, old server rows (lapsed plan) | Shown, newest 5, read-only except `Run again` | Shown | `sims.footer.free` |
 
-Opening a result posts `POST /v1/sims/{id}/seen`.
+**Server runs.** Section head `Server runs` (micro). One card (`card quiet`, 16 pt side margin) of the newest 5 `lane=server` rows by `created_at`. When more than 5 came back, the card ends with the meta line `sims.overflow`.
+
+Server row (min height 88 pt; padding 12 16; 36 pt spec icon at left, top-aligned, 12 pt gap; icons never carry class colour or a letter square):
+1. Title: `body` 600, strong. The row `title`, else the spec's display name. One line, truncated (full wrap at the largest text sizes).
+2. Meta: `meta` muted. `{Spec} · {Kind}` when the row has a title; `{Kind}` alone when it has none (web parity). Kind words are `sims.kind.*`.
+3. State line, state left and age right (flex-wrap, `justify-between`; the state never wraps first: the age drops under it when the two do not fit, and always at the largest text sizes):
+   | Row state | Left | Right |
+   |---|---|---|
+   | `queued` | `Starting` (strong) with a gold 8 pt dot | `sims.started` |
+   | `running`, estimate on time | `Running` (gold) + ` · takes about 4 minutes` (muted) | `sims.started` |
+   | `running`, overdue (elapsed over 1.5 x estimate) | `Running` + ` · taking longer than usual` | `sims.started` |
+   | `running`, no estimate | `Running` | `sims.started` |
+   | `done` | the row `headline` (strong; mono for a DPS figure), e.g. `1,043 DPS` or `+2 DPS from Spritecaster Cape`; an unseen gold dot sits before the title | `Finished {age}` |
+   | `error` | `Failed: {reason}` in `--color-wipe`; `Failed` with no reason | `sims.ended` |
+4. Bulk progress (only when `combos_total > 0` in the progress read): an 8 pt bar, gold on `--line-soft`, 16 pt side inset to the text column, 8 pt under the state line, then mono micro `40 of 64 combinations` (`sims.combos`) 4 pt under it. A plain run has no total, so it gets no bar: the state line carries it.
+5. Failed rows only: `Run again`, secondary button, full text-column width, 44 pt tall on iOS and 48 dp on Android, 8 pt above.
+
+Estimate words: `sims.estimate.minute` at one minute or less, `sims.estimate.minutes` under 90 minutes, `sims.estimate.hours` from 90 minutes. Age words: relative inside 14 days, else a short date (`2 Nov`). Both are the web's `server-runs.ts` rules.
+
+**Row targets.** Done rows are whole-row buttons to F5.3 with a 16 pt chevron right (touch target the full row, min 56). Queued, running and failed rows are not links; `Run again` is the only control on a failed row.
+
+**Your sims.** Section head `Your sims`. One card of all rows from `GET /v1/sims`, newest first, whatever the lane, paged by 100 (the server's fixed page size). Row (min 72 pt; spec icon 32):
+1. Title as above.
+2. The row `headline` in strong (`body` 600; mono for a DPS figure). A row still in flight shows its state line instead. A failed row shows `Failed: {reason}` in wipe.
+3. Meta: `sims.savedBrowser` for `lane=browser`, `sims.ranServer` for `lane=server`, with the row date.
+Only finished rows open F5.3, with the same chevron. The unseen dot shows here too and clears with the Server runs row (the same row). Next page loads when the last 5 rows scroll into view and `page x 100 < total`; a 56 pt spinner row shows under the list while it loads; a failed page shows `sims.failedLoad` with `Try again` as the last row and keeps the rows above.
+
+**Footer.** Meta text per the table, verbatim below, 16 pt margin, 12 pt above, drawn on every loaded F5.1 with rows in Your sims (so on Premium F5.1 too). Left out while loading and when both sections are empty (`sims.empty` and `sims.serverEmpty` already say it). Content ends 120 pt above the screen bottom so the last row and the footer clear the tab bar.
+
+### Poll rule
+- A row is in flight when its state is `queued` or `running`, in either section. A row in both sections is polled once.
+- While F5.1 is on screen and the app is foreground, call `GET /v1/sims/{id}/progress` for every in-flight row every 5 s, staggered by 250 ms so the calls do not land together. Stop when the screen leaves, the app backgrounds or the device is offline; read once on return.
+- The answer's `state` updates the row's state line. `combos_done` and `combos_total` draw the bar when `combos_total > 0`. The overdue test and the age re-evaluate on each tick.
+- When a progress read returns `done` or `error`, re-read both lists (page 1). A newly finished row slides in with the standard list animation and its gold unseen dot. VoiceOver and TalkBack announce `{title}. Finished just now` (`sims.finished` with `common.age.now`).
+- A failed progress read keeps the last state, shows nothing, and tries again on the next tick. After 3 in a row it stops until the screen returns, a pull-to-refresh, or the app foregrounds.
+- Pull-to-refresh re-reads both lists. Foreground with a cache older than 5 minutes does the same (§5.0).
+
+### Run again (failed Server runs rows only)
+`POST /v1/sims/{id}/rerun` reruns a failed server run of the caller. It is on failed Server runs rows only, as on the web. A finished run has no rerun (see Gaps); F5.3 has no rerun button.
+| State | Button | Row |
+|---|---|---|
+| Idle | `Run again` | the failed state line |
+| Starting | `Starting…`, disabled, busy | unchanged |
+| Started (200, new `sim_id`) | `Started`, disabled | 2 s later both lists re-read and the new row shows at the top as `Starting`; the failed row keeps `Started` until the screen is left |
+| Failed (network or 5xx) | `Run again` | under the button, wipe, role alert: `Could not start it again. Try again.` |
+| Lapsed (402 `premium_required`) | `Run again` | under the button, wipe, role alert: `Server sims are part of Premium.` and, only in a link region (AppConfig `web_checkout_regions`; F8's fail-closed rule), a gold (`--color-gold`) underlined `See plans` (44 pt iOS, 48 dp Android hit height), 4 pt after the sentence that opens the browser; elsewhere the sentence alone |
+| Offline | disabled | under the button, meta: `sims.offline` |
+The first `Run again` that reaches Started asks for notifications in context (§5.7, after F4.4) when permission is undecided.
+
+### F5.3 A result (pushed from F5.1, or `sim.finished`, or `/app/sim/{id}`)
+Pushed on the Home stack with back to `Sims` (a deep link or push has back to Home). Reads `GET /v1/sims/{id}` and then posts `POST /v1/sims/{id}/seen` once (see Seen). The row for this `sim_id` comes from the cached list; when it is not cached, one `GET /v1/sims?page=1` supplies it; when it is in neither, the screen draws the plain figure.
+
+Order, top to bottom:
+1. Title: `title`, else the spec's display name. `title` token (34, collapsing).
+2. Kind: micro uppercase, `sims.kind.*`.
+3. Meta: `{Spec} {Class} · level {n}` from `request.character` (class in its class colour).
+4. The answer, by kind:
+   | Kind | Shown |
+   |---|---|
+   | `run` | `dps.mean` to one decimal in Barlow Condensed 52, then `DPS` muted body at baseline |
+   | `gear`, `talents`, `drops`, `weights`, or a result carrying `healing` or `tank` | the row `headline` sentence in `stat` (28), strong, wrapping; e.g. `+2 DPS from Spritecaster Cape`. No figure under it |
+   | any kind with no row available | the `run` figure |
+5. Mono meta: `sims.error` filled with `dps.error` (one decimal), `iterations_run`, `engine_version`. The engine version is shown as returned (`1f542def3`), never as a client build.
+6. `micro` `The gear it ran`, 8 pt, then a 6-column grid of 40 pt icons, 8 pt gaps (6 x 40 + 5 x 8 = 280 pt), from `request.character.gear` in the character frame's slot order. Icons come from the app's `ItemCatalog`; each opens the existing item tooltip sheet (F2.6). An id missing from the catalog draws a 40 pt `?` tile (`--color-line` border, `#11151f` fill), not tappable. No gear: the section is left out.
+   For a `gear` result the slot the best set changes carries a 12 pt gold (`--color-gold`) triangle in its top-right corner, accessibility label `Changed by this result`, with the meta line `sims.changed` 8 pt under the grid. The grid shows the gear the run wore; the changed slot is the one the headline names (mock: Spritecaster Cape replaces Deep Woodlands Cloak, back). Other kinds show no corner and no legend.
+7. Ghost `Full breakdown on foreversixty.gg` with the external glyph, 8 pt above, opening `/sim/{id}` in the browser. The ranked combinations, weights and healing or tank figures live there.
+
+There is no preset or band line, no best-in-slot figure, no rerun, and nothing about Premium on this screen. It reads the same for a free player and a Premium player.
+
+States (boards F5.3.1 to F5.3.5): loading (title, kind and figure as skeleton blocks at 20, 12 and 52 pt, then 12 skeleton squares of 40 pt in 6 columns); error `sims.resultFailed` in wipe with `Try again`; offline strip over a cached result, or the error when nothing is cached; no gear (section and legend left out); unknown item (the `?` tile).
+
+### Seen
+`seen` is false on a finished row the player has not opened. It draws the gold 8 pt dot and the accessibility words `Not opened yet`. Opening F5.3 posts `POST /v1/sims/{id}/seen` once per open; the dot clears at once (optimistic) and stays clear. A failed post is silent and retried on the next open. The Home Sims row's unseen count reads the same field.
+
+### States
+- **Loading,** first open with nothing cached: Server runs shows 3 skeleton rows of 88 pt, Your sims 3 of 72 pt (a 36 pt rounded square, a 180 x 15 and a 120 x 12 bar, a 140 x 14 bar at right). Footer and overflow line wait for data. A refresh never replaces rows with skeletons.
+- **Empty.** Premium with no server rows: `sims.serverEmpty` in the card. No sims at all: `sims.empty` in Your sims. Free with no server rows: no Server section.
+- **Error.** Each section on its own, in wipe, role alert, with `Try again` secondary: `sims.serverFailed`, `sims.failedLoad`. The other section keeps its rows.
+- **Offline.** The §5.0 strip under the large title on iOS, under the bar on Android, over cached lists. No polling. `Run again` disabled with `sims.offline`.
+- **Signed out.** Not reachable (pushed from Home).
+
+### Deep link
+`/app/sim/{id}` (§6.4) pushes F5.3 over Home. A Home Sims push opens F5.1. Both need a session; signed out, they go to F1.1 first and resume.
+
+### Accessibility
+- Done row: `{title}, {spec}, {headline}, finished {age}, not opened yet. Opens the result.` (the last words only when unseen).
+- Running row: `{title}, running, takes about 4 minutes`; with a bar, a progress element with value `40 of 64 combinations` (determinate); without a bar, no progress element.
+- Failed row: `{title}, failed: {reason}, ended {age}`; the button reads `Run again, {title}`.
+- Unseen dot and icons are decorative; their words live in the row label.
+- Gear icons read `{item name}, {slot}`; the result figure reads `{mean} DPS plus or minus {error}`.
+- Every control is at least 44 pt (iOS) or 48 dp (Android) by hit area.
+
+### Largest text (iOS AX5, Android font scale 2.0)
+Titles wrap whole (never cut). The state line and age stack: state, then age. Icons (36, 32, 40) and the 8 pt bar do not scale. Meta wraps to as many lines as it needs. `Run again` stays full width and grows with its label. The result figure grows from 52 to 64 (iOS) and 60 (Android); `DPS` wraps under it. The gear grid stays 6 columns. `Run again` and `Full breakdown on foreversixty.gg` take the `meta` size for the platform (44 iOS, 26 Android), wrap, and keep their hit heights (44 pt, 48 dp).
+
+### Copy keys used
+Pinned verbatim: `sims.footer.premium` = `Start a sim on foreversixty.gg/sim. Server runs keep going after you close the app.`; `sims.footer.free` = `Start a sim on foreversixty.gg/sim and it shows here.`
+
+Existing, unchanged: `sims.title`, `sims.server`, `sims.mine`, `sims.queued` (`Starting`), `sims.running`, `sims.takes`, `sims.takesLong`, `sims.failed`, `sims.failedPlain`, `sims.finished`, `sims.unread`, `sims.savedBrowser`, `sims.ranServer`, `sims.footer.premium`, `sims.footer.free`, `sims.empty`, `sims.runAgainRow` (`Run again`), `sims.runAgainPending`, `sims.runAgainDone`, `sims.runAgainFailed`, `sims.premiumLine`, `sims.gear`, `sims.breakdown`, `sims.error`, `common.tryAgain`, `common.age.*`, `offline.strip`, `you.seePlans`.
+
+New:
+| Key | Text |
+|---|---|
+| `sims.kind.run` | `Sim` |
+| `sims.kind.gear` | `Top Gear` |
+| `sims.kind.talents` | `Talent compare` |
+| `sims.kind.drops` | `Droptimizer` |
+| `sims.kind.weights` | `Stat weights` |
+| `sims.started` | `Started {age}` |
+| `sims.ended` | `Ended {age}` |
+| `sims.combos` | `{done} of {total} combinations` |
+| `sims.serverEmpty` | `No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close the app.` |
+| `sims.changed` | `Gold corner: the slot this result changes` |
+| `sims.estimate.minute` | `about a minute` |
+| `sims.estimate.minutes` | `about {n} minutes` |
+| `sims.estimate.hours` | `about {n} hours` |
+| `sims.overflow` | `Older finished runs are in Your sims below.` |
+| `sims.serverFailed` | `Your server runs did not load.` |
+| `sims.failedLoad` | `Your sims did not load.` |
+| `sims.resultFailed` | `That sim did not load.` |
+| `sims.offline` | `You are offline. Run again needs a connection.` |
+
+Removed: `sims.runAgain` (`Run again on the server`); F5.3 has no rerun. `sims.premiumLine` now appears only as the lapsed line under a failed Server runs row.
+
+### Gaps for the post-launch API lanes
+1. Rerun of a finished run (today only a failed server run reruns), so F5.3 could offer `Run again on the server`.
+2. A best-in-slot reference figure (`{set_dps} DPS at best in slot for your level range`) and a preset or band label on the result.
+3. A total for a plain run's iterations (`iterations_total`), so a plain run gets a determinate bar.
+4. `finished_at`, `created_at`, `kind` and `headline` on `SimResult`, so a deep link needs no list read.
+5. A list filter for `seen=false`, and a count, for the Home row.
+6. A healer or tank figure (HPS, score) on the list row, so their headline is not a DPS sentence.
+7. `POST /v1/sims/{id}/seen` for a batch, so a list can clear dots in one call.
 
 ## 5.6 F6. Talents (read-only)
 Pushed from Home.
@@ -665,7 +784,7 @@ Pushed from Home.
 Everything in premium-entry spec §2 holds, plus:
 - No Premium push, ever.
 - No Premium mention outside a link region.
-- `See plans` appears in at most two places: the Plan row and the free F5.4 result line.
+- `See plans` appears in at most two places: the Plan row and the lapsed line under a failed Server runs row (F5.2b).
 
 ## 5.8.1 F8 build notes (2026-10-31)
 
@@ -1312,7 +1431,7 @@ Each Wave 1 lane attaches captures from the iPhone 17 simulator (iOS 26) and a P
 | F2 | F2.1, F2.2, F2.3, F2.4, under 20, no spec, no list, all match, F2.5, F2.6 at medium and large detents, F2.7 | F2.1, F2.6 |
 | F3 | F3.1 signed in and signed out, F3.2, F3.3, not cached, error, the search field with a query | F3.1 |
 | F4 | F4.1, F4.2, F4.3 pending and picked, F4.4, F4.5 menu, calendar sheet, F4.6 full scroll, F4.7 to F4.17, the rate-limited and race lines, keyboard focus on a segment, F4.18 to F4.21 as an officer and the same raid as a member (no officer controls), F4.22 and F4.23, a raid with no invite time | F4.1, F4.2 (2 x 2 segments), F4.3, F4.20 |
-| F5 | F5.1 with a running, finished-unseen and failed run, F5.2, F5.3, F5.4, F5.5, empty, Run again pending and failed | F5.3 |
+| F5 | F5.1 with a running bulk, a running plain, a finished-unseen and a failed run, F5.2, F5.2b, F5.3, F5.3b, loading, empty, error, offline, Run again pending and failed | F5.3 |
 | F6 | F6.1, F6.2, a talent rank sheet, no export, no build | F6.2 |
 | F7 | every §6.2 notification as delivered (lock screen or shade), each action's posted answer including askSpec and failure, `raid.roster_moved` in all four forms delivered inside quiet hours, F7.4 for a member and for an officer with Premium, F7.5, F7.6, quiet hours on with the time pickers | F7.4 |
 | F8 | F8.1 (storefront US), F8.2 (storefront GB), F8.3, F8.4 in both regions, a seat, About | F8.1 |

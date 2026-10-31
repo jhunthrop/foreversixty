@@ -59,6 +59,9 @@ sealed interface HomeIntent {
     data object OpenGear : HomeIntent
     data class Action(val kind: HomeAction.Kind) : HomeIntent
     data object Retry : HomeIntent
+
+    /** A "Next for {name}" row (lane F5: Sims). */
+    data class OpenNext(val kind: HomeNextRow.Kind) : HomeIntent
 }
 
 /** From font scale 1.5 the gain moves under the name (spec §10, XL.1). */
@@ -100,7 +103,7 @@ private fun Answer(model: HomeAnswerModel, build: String, send: (HomeIntent) -> 
             Text(it, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 12.dp))
         }
         Spacer(Modifier.height(22.dp))
-        NextRows(model.nextTitle, model.next)
+        NextRows(model.nextTitle, model.next, send)
     }
 }
 
@@ -122,6 +125,7 @@ private fun Failed(presenter: HomePresenter, cached: HomeAnswerModel?, send: (Ho
         NextRows(
             cached?.nextTitle ?: stringResource(R.string.home_next_title, presenter.character.name),
             cached?.next ?: presenter.nextRowsWithoutAnswer(),
+            send,
         )
     }
 }
@@ -269,21 +273,23 @@ fun UpgradeRow(row: HomeUpgradeRow, build: String, modifier: Modifier = Modifier
 
 /** "Next for {name}": Talents and Sims (spec F2.1 item 4). */
 @Composable
-private fun NextRows(title: String, rows: List<HomeNextRow>) {
+private fun NextRows(title: String, rows: List<HomeNextRow>, send: (HomeIntent) -> Unit) {
     MicroLabel(title)
     Spacer(Modifier.height(8.dp))
     Column(Modifier.fillMaxWidth().quietCard()) {
         rows.forEachIndexed { index, row ->
             if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
-            NextRow(row)
+            NextRow(row, send)
         }
     }
 }
 
 @Composable
-private fun NextRow(row: HomeNextRow) {
+private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
+    // Lane F5: the Sims row pushes Sims (spec F2.1 item 4).
+    val tap = if (row.kind == HomeNextRow.Kind.Sims) Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) } else Modifier
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
+        Modifier.fillMaxWidth().then(tap).heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
