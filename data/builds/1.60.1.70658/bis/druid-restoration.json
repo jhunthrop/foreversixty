@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70658",
-  "engine_version": "1f542def3",
-  "generated_at": "2026-10-31T13:02:11Z",
+  "engine_version": "816ec57c0",
+  "generated_at": "2026-10-31T17:55:40Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -717,8 +717,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 5.70366372,
-      "verify_run_seconds": 17.980265111,
+      "weights_run_seconds": 3.7898621710000002,
+      "verify_run_seconds": 12.690168246,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1525,8 +1525,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 5.70366372,
-      "verify_run_seconds": 16.776550913,
+      "weights_run_seconds": 3.7898621710000002,
+      "verify_run_seconds": 11.950950955,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2393,8 +2393,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.990007688,
-      "verify_run_seconds": 27.507687727,
+      "weights_run_seconds": 4.906433955,
+      "verify_run_seconds": 16.675528535,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3251,8 +3251,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.990007688,
-      "verify_run_seconds": 27.841428876,
+      "weights_run_seconds": 4.906433955,
+      "verify_run_seconds": 17.183102506,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4117,8 +4117,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.879412449,
-      "verify_run_seconds": 26.919504126,
+      "weights_run_seconds": 5.430005566,
+      "verify_run_seconds": 18.830083013,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4984,8 +4984,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.879412449,
-      "verify_run_seconds": 26.880147716,
+      "weights_run_seconds": 5.430005566,
+      "verify_run_seconds": 18.343285152,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5882,8 +5882,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.005008183,
-      "verify_run_seconds": 29.030782087,
+      "weights_run_seconds": 5.461959353,
+      "verify_run_seconds": 19.71815688,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6764,8 +6764,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.005008183,
-      "verify_run_seconds": 29.078548501,
+      "weights_run_seconds": 5.461959353,
+      "verify_run_seconds": 19.620433279,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7686,8 +7686,8 @@
         "finger1: Band of the Hierophant",
         "finger2: Eye of Adaegus"
       ],
-      "weights_run_seconds": 9.277016226,
-      "verify_run_seconds": 81.579433764,
+      "weights_run_seconds": 5.679360852,
+      "verify_run_seconds": 52.597715778,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8603,8 +8603,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 9.277016226,
-      "verify_run_seconds": 81.95859411,
+      "weights_run_seconds": 5.679360852,
+      "verify_run_seconds": 52.118445439,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9526,8 +9526,8 @@
         "finger1: Band of the Hierophant",
         "finger2: Eye of Adaegus"
       ],
-      "weights_run_seconds": 6.711534982,
-      "verify_run_seconds": 54.053837413,
+      "weights_run_seconds": 4.061759802,
+      "verify_run_seconds": 33.61318581,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10450,8 +10450,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 6.711534982,
-      "verify_run_seconds": 54.474261503,
+      "weights_run_seconds": 4.061759802,
+      "verify_run_seconds": 34.246419965,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -10647,10 +10647,6 @@
           "label": "Improved Scorch"
         },
         {
-          "id": "winters_chill",
-          "label": "Winter's Chill"
-        },
-        {
           "id": "curse_of_recklessness",
           "label": "Curse of Recklessness"
         }
@@ -10689,7 +10685,7 @@
           "label": "Demonic Rune"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md)."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
     }
   },
   "heal_profile": {

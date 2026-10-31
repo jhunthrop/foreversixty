@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70658",
-  "engine_version": "1f542def3",
-  "generated_at": "2026-10-31T13:58:08Z",
+  "engine_version": "816ec57c0",
+  "generated_at": "2026-10-31T18:30:36Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -650,8 +650,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.943181405,
-      "verify_run_seconds": 1.7294411699999999,
+      "weights_run_seconds": 1.19026478,
+      "verify_run_seconds": 1.126598758,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1405,8 +1405,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.943181405,
-      "verify_run_seconds": 2.004703772,
+      "weights_run_seconds": 1.19026478,
+      "verify_run_seconds": 1.366305101,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2223,8 +2223,8 @@
         "finger2: Tiger Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.956299611,
-      "verify_run_seconds": 1.904554563,
+      "weights_run_seconds": 1.219569987,
+      "verify_run_seconds": 1.268551438,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3035,8 +3035,8 @@
         "finger2: Band of the Fist",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.956299611,
-      "verify_run_seconds": 1.848589176,
+      "weights_run_seconds": 1.219569987,
+      "verify_run_seconds": 1.217488681,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3847,8 +3847,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.334945913,
-      "verify_run_seconds": 2.149159101,
+      "weights_run_seconds": 1.423327634,
+      "verify_run_seconds": 1.413703034,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4661,8 +4661,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.334945913,
-      "verify_run_seconds": 2.158185481,
+      "weights_run_seconds": 1.423327634,
+      "verify_run_seconds": 1.408524684,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5523,8 +5523,8 @@
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Molten Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.419616612,
-      "verify_run_seconds": 4.385773492,
+      "weights_run_seconds": 1.449130896,
+      "verify_run_seconds": 2.907507968,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6393,8 +6393,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.419616612,
-      "verify_run_seconds": 2.445974473,
+      "weights_run_seconds": 1.449130896,
+      "verify_run_seconds": 1.680042225,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7250,8 +7250,8 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.441843642,
-      "verify_run_seconds": 7.444067524,
+      "weights_run_seconds": 1.513561508,
+      "verify_run_seconds": 4.88005173,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8102,8 +8102,8 @@
         "finger2: Masons Fraternity Ring",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.441843642,
-      "verify_run_seconds": 7.391503,
+      "weights_run_seconds": 1.513561508,
+      "verify_run_seconds": 4.720116614,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8955,8 +8955,8 @@
         "finger2: Ring of the Underwood",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.484767803,
-      "verify_run_seconds": 7.715605012,
+      "weights_run_seconds": 1.4992573550000001,
+      "verify_run_seconds": 4.896874946,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9794,8 +9794,8 @@
         "finger2: Ring of the Underwood",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.484767803,
-      "verify_run_seconds": 6.044638196,
+      "weights_run_seconds": 1.4992573550000001,
+      "verify_run_seconds": 3.829441578,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9990,10 +9990,6 @@
           "label": "Improved Scorch"
         },
         {
-          "id": "winters_chill",
-          "label": "Winter's Chill"
-        },
-        {
           "id": "curse_of_recklessness",
           "label": "Curse of Recklessness"
         }
@@ -10028,7 +10024,7 @@
           "label": "Major Mana Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md)."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
     }
   }
 }
