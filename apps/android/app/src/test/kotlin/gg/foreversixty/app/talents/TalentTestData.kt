@@ -25,6 +25,8 @@ object TalentTestData {
     const val BAND_60 = "34320003002000000-05153105022011501-200000000000000000"
     /** Obnoxious Yell's build in `me.json`: the level-60 path less Improved Bloodrage, 49 points. */
     val yoursTrees: List<List<Int>> = listOf("34320003002", "05153105022011501", "0").map(TalentRules::ranksOfTree)
+    /** `BAND_60` without Fury's 5-point second talent: 46 points, 5 of `BAND_50`'s missing, 10 stray. */
+    const val STRAY_AND_SHORT = "34320003002000000-00153105022011501-200000000000000000"
 
     /** The spec's §4.4 vector: Elemental Shaman, level 60, Horde, band 60 raid. */
     const val SHAMAN_GUIDE = "5510331300001350-030000000000000000-0533520000000000"

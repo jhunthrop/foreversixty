@@ -143,6 +143,12 @@ jobs:
       # supplement (allow_shrink accepts it and still carries the rest); normalize,
       # icons and simdb read the merged file.
       - run: uv run python -m pipeline fetch-wowhead --build "$BUILD" $SHRINK
+      # The classic-db extracts are re-read from the pinned dump (one ~13 MB download),
+      # so a column the reader gained since the seed was written reaches this build:
+      # Wave 3 F12, 2026-10-31, item_template.bonding is the Binds line of every item
+      # the client's ItemSparse lacks. Same pinned commit, so every other field is
+      # unchanged (checked against 70658's committed extracts).
+      - run: uv run python -m pipeline fetch-classic-sources --build "$BUILD"
       # Blizzard ships most Forever talent-tree changes as hotfixes, which the DB2 tables
       # above never carry. Wowhead's talent payload is read off the live game: normalize
       # takes the talent trees from it when raw/wowhead-talents.json exists, and falls

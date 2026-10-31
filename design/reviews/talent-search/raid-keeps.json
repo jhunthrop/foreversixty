@@ -1,7 +1,7 @@
 {
   "notes": "Talents the raid-build search (sim/cmd/talent-search -preset raid -keep) never takes a point from, per DPS spec: what the curated rotation casts or gates on, the raid-wide auras and debuffs data/curated/presets.json assumes from the spec's own tree, threat reduction, survivability cooldowns and passive mitigation, and the unmodeled talents that are not movement, stealth, crowd control, PvP, out-of-combat or solo-leveling utility. A name the guide build does not take protects nothing. Everything else may move: modeled talents because the sim measures every candidate whole, and the classified utility talents because the engine cannot see them and a raid DPS does not use them (listed per spec in design/reviews/2026-10-07-raid-builds.md).",
   "keep": {
-    "druid-balance": ["Moonkin Form", "Insect Swarm", "Nature's Focus", "Subtlety"],
+    "druid-balance": ["Moonkin Form", "Insect Swarm", "Eclipse", "Nature's Focus", "Subtlety"],
     "druid-feral": ["Shifting Power", "Leader of the Pack", "Nature's Focus", "Subtlety"],
     "hunter-beast-mastery": ["Bestial Wrath", "Trueshot Aura"],
     "hunter-marksmanship": ["Trueshot Aura"],
@@ -14,7 +14,7 @@
     "rogue-assassination": ["Cold Blood", "Mutilate"],
     "rogue-combat": ["Adrenaline Rush", "Blade Flurry"],
     "rogue-subtlety": ["Ghostly Strike", "Premeditation", "Hemorrhage", "Elusiveness", "Preparation"],
-    "shaman-elemental": ["Lava Burst", "Elemental Warding", "Natural Grace", "Mindfulness", "Improved Reincarnation"],
+    "shaman-elemental": ["Lava Burst", "Elemental Mastery", "Elemental Warding", "Natural Grace", "Mindfulness", "Improved Reincarnation"],
     "shaman-enhancement": ["Stormstrike", "Elemental Warding", "Mindfulness", "Spirit Weapons"],
     "warlock-affliction": ["Amplify Curse", "Wrack", "Suppression", "Demonic Aegis"],
     "warlock-demonology": ["Soul Link", "Demonic Aegis", "Suppression"],

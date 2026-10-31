@@ -6476,13 +6476,13 @@
       }
     },
     "talents.beyond": {
-      "comment": "Arguments: 1 l (int), 2 band (string), 3 g (int)",
+      "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Level %1$lld is past the %2$@ guide build's %3$lld points, so points past it show as differing."
+            "value": "+%1$lld beyond the guide"
           }
         }
       }
@@ -6596,6 +6596,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your build is the %1$@ %2$@ guide build."
+          }
+        }
+      }
+    },
+    "talents.matchBeyond": {
+      "comment": "Arguments: 1 spec (string), 2 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your build has every point of the %1$@ %2$@ guide build."
           }
         }
       }

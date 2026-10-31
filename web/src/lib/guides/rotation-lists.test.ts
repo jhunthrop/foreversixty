@@ -193,9 +193,15 @@ describe('the Frost Mage lists, from the real data', () => {
     if (entry === undefined) throw new Error('mage-frost has no level 60 rotation');
     const lines = rotationLinesFor(entry, BUILD, 'mage', 'mage-frost');
     const lists = rotationListsFrom(lines, loadApl('mage-frost'), spellLookupFor(BUILD, 'mage'));
-    expect(lists.priority.map((item) => item.name)).toEqual(['Ice Lance', 'Frostbolt']);
+    // A floor, not the exact list: the published lines are the nightly's, and they gain the
+    // rotation's newer lines (Ice Barrier, Cone of Cold) when it next republishes.
+    const names = lists.priority.map((item) => item.name);
+    expect(names).toEqual(expect.arrayContaining(['Ice Lance', 'Frostbolt']));
+    expect(names.indexOf('Ice Lance')).toBeLessThan(names.indexOf('Frostbolt'));
     expect(lists.priority.every((item) => item.icon !== undefined && item.clause !== '')).toBe(true);
-    expect(lists.opener).toEqual([]);
+    // The opener comes straight off the APL's pre-pull casts.
+    expect(lists.opener.map((item) => item.name)).toEqual(['Ice Barrier']);
+    expect(lists.opener[0]?.clause).toBe('1.5 s before the pull');
   });
 
   it('names the pre-pull casts of a spec that has them, with their icons', () => {

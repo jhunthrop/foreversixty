@@ -187,7 +187,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"shaman-elemental": {
-		"{SpellID: 1238300}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
+		"{SpellID: 1326047}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
 	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
@@ -212,7 +212,8 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
 	},
 	"druid-balance": {
-		"{SpellID: 24977}": "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
+		"{SpellID: 24977}":  "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
+		"{SpellID: 408248}": "Eclipse's charge aura, which the Wrath weave reads, only exists with its Balance talent (sim/druid/talents.go's applyEclipse returns before registering it when Talents.Eclipse == 0); this build takes none.",
 	},
 	"druid-feral": {
 		"{SpellID: 1322605}": "Shifting Power is a Feral talent (hotfix-only spell 1322605, sim/druid/shifting_power.go, gated on Talents.ShiftingPower); this build takes none.",

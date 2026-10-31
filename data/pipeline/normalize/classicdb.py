@@ -28,6 +28,7 @@ from pipeline.classicdb_items import (
 )
 from pipeline.models import ClassItems, Item, ItemSetRecord
 from pipeline.normalize.classes import slugify
+from pipeline.normalize.gear import bonding_for
 from pipeline.spelltext import SpellText
 
 logger = logging.getLogger(__name__)
@@ -175,3 +176,39 @@ def merge_sets(sets: list[ItemSetRecord], picked: list[ClassicDbItem]) -> list[I
             skipped,
         )
     return merged
+
+
+def classicdb_bonding(build_dir: Path) -> dict[int, int]:
+    """Item id -> classic-db's `item_template.bonding`, for every extract row
+    that states a binding (non-zero) -- empty when the build has no extract,
+    or an extract written before the column was read."""
+    extract = load_extract(build_dir)
+    if extract is None:
+        return {}
+    records, _spells = extract
+    return {record.id: record.bonding for record in records if record.bonding}
+
+
+def fill_bonding(records: list[ClassItems], bonding_by_id: dict[int, int]) -> list[ClassItems]:
+    """Each class's items with a wowhead row's missing `bonding` taken from the
+    same id's classic-db row (Wave 3 spec F12.4: the tooltip's Binds line).
+
+    Wowhead's gear-planner scrape states no binding at all, while classic-db's
+    1.12 `item_template` does, in the client's own ItemSparse.Bonding enum. A
+    client row is never touched: its own Bonding column (0 publishes as None)
+    is the truth. Returns new records; the input is not mutated.
+    """
+    filled = 0
+    out: list[ClassItems] = []
+    for record in records:
+        items = []
+        for item in record.items:
+            word = bonding_for(bonding_by_id.get(item.id))
+            if item.stats_source == "wowhead" and item.bonding is None and word is not None:
+                items.append(item.model_copy(update={"bonding": word}))
+                filled += 1
+            else:
+                items.append(item)
+        out.append(record.model_copy(update={"items": items}))
+    logger.info("classic-db items: filled the bonding of %d wowhead item placements", filled)
+    return out
