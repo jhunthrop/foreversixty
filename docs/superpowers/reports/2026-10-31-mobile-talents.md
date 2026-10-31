@@ -19,6 +19,6 @@ Branch `wt/mobile-f6-talents`. Spec `design/specs/2026-10-31-mobile-talents.md` 
 
 ## Open, for the owner
 
-1. **Band strings hold `band - 9` points**, so a level 58 against the 41-point 50 to 59 build always reads Differs. This matches the site planner. The screen explains it with `talents.beyond`. A fairer rule would change `diffAgainstBand` on the site and in both apps.
+1. **Band strings hold `band - 9` points**, so a level 58 against the 41-point 50 to 59 build always reads Differs. This matches the site planner. The screen explains it with `talents.beyond`. A fairer rule would change `diffAgainstBand` on the site and in both apps. **Resolved 2026-10-31:** points beyond the guide's total no longer count as differences (site and both apps); a level 58 holding the whole 41-point build reads Matches, `+8 beyond the guide`. Bands stay sized to their starting level by design: the BiS generator sims character, gear and talents at the band's first level (`sim/leveling/talents.go` `level - 9`).
 2. **At 360 dp the three tree tabs stack**, because the labels do not fit one line. This is the spec's fallback, and it costs about two tiers of the first screen.
 3. **When lane A3 ships the home endpoint**, a test should assert its `talents` equal `TalentCompare` on the fixtures, and the endpoint should count the same way.

@@ -99,9 +99,12 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
   await expect(page.getByTestId('tree-points-302')).toHaveText('5');
 
-  // Differs-marked against the build's own band, Load hidden (nothing to overwrite into on a
-  // read-only build), Fork offered in its place.
-  await expect(page.getByTestId('band-compare-differs')).toHaveText(`5 ${bandCompareCopy.differsSuffix}`);
+  // Against the build's own band (the fixture's is empty, 0 points): all 5 points are past the
+  // band's total, so none of them differ -- Matches, "+5 beyond the guide" -- while the cell still
+  // carries its rank-differs marker. Load hidden (nothing to overwrite into on a read-only build),
+  // Fork offered in its place.
+  await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
+  await expect(page.getByTestId('band-compare-beyond')).toHaveText(bandCompareCopy.beyondGuide(5));
   await expect(page.getByTestId('talent-differs-4001')).toBeVisible();
   await expect(page.getByTestId('band-compare-load')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();

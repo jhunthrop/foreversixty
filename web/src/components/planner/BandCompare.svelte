@@ -19,6 +19,7 @@
   import { bandForLevel, bandEntryFor, bisPageHref, fetchBisFile } from '../../lib/bis/hover';
   import type { BisFile, Faction } from '../../lib/bis/types';
   import {
+    bandDiffStatus,
     bandForPanel,
     bandTitleForDraft,
     diffAgainstBand,
@@ -128,6 +129,10 @@
     return { ...result, bandLabel } as BandDiffView;
   });
 
+  /** Every band point taken reads as a match; points past the band's total are a quiet note. */
+  const status = $derived(diff === null ? null : bandDiffStatus(diff));
+  const beyond = $derived(status === null || status.kind === 'toTake' ? 0 : status.beyond);
+
   $effect(() => {
     onbanddiff?.(diff);
   });
@@ -225,17 +230,24 @@
       <span class="text-muted text-[12px]">{bandCompareCopy.setDpsCaption(bandLabel)}</span>
     </div>
 
-    <p class="text-[13px]" data-testid="band-compare-differs">
-      {#if diff.diffTalentIds.size === 0}
-        <span class="font-semibold" style="color: var(--color-kill)">{bandCompareCopy.matches}</span>
-      {:else if diff.diffCount > 0}
-        <span class="text-gold numeric">{diff.diffCount}</span>
-        {bandCompareCopy.differsSuffix}
-      {:else}
-        <span class="text-gold numeric">{diff.missingCount}</span>
-        {bandCompareCopy.toTakeSuffix}
+    <div class="flex flex-col gap-0.5">
+      <p class="text-[13px]" data-testid="band-compare-differs">
+        {#if status?.kind === 'matches'}
+          <span class="font-semibold" style="color: var(--color-kill)">{bandCompareCopy.matches}</span>
+        {:else if status?.kind === 'differs'}
+          <span class="text-gold numeric">{status.count}</span>
+          {bandCompareCopy.differsSuffix}
+        {:else if status?.kind === 'toTake'}
+          <span class="text-gold numeric">{status.count}</span>
+          {bandCompareCopy.toTakeSuffix}
+        {/if}
+      </p>
+      {#if beyond > 0}
+        <p class="text-muted tabular text-[12px]" data-testid="band-compare-beyond">
+          {bandCompareCopy.beyondGuide(beyond)}
+        </p>
       {/if}
-    </p>
+    </div>
 
     {#if confirming}
       <div class="flex flex-col gap-3" data-testid="band-compare-load-confirm">
@@ -271,7 +283,7 @@
             {bandCompareCopy.loadButton(bandLabel)}
           </button>
         {/if}
-        {#if diff.diffTalentIds.size > 0}
+        {#if status?.kind !== 'matches'}
           <button
             type="button"
             class="{SECONDARY_BUTTON} border-line-warm text-text px-4"

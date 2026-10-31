@@ -498,6 +498,7 @@
     <string name="talents_matches">Matches</string>
     <string name="talents_differs">Differs</string>
     <string name="talents_match">Your build is the %1$s %2$s guide build.</string>
+    <string name="talents_matchBeyond">Your build has every point of the %1$s %2$s guide build.</string>
     <string name="talents_differ" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s guide build.</string>
     <plurals name="talents_unspent">
         <item quantity="one">1 point unspent.</item>
@@ -516,7 +517,7 @@
         <item quantity="one">The guide build takes 1 point you have not.</item>
         <item quantity="other">The guide build takes %1$d points you have not.</item>
     </plurals>
-    <string name="talents_beyond" tools:ignore="PluralsCandidate">Level %1$d is past the %2$s guide build\'s %3$d points, so points past it show as differing.</string>
+    <string name="talents_beyond" tools:ignore="PluralsCandidate">+%1$d beyond the guide</string>
     <string name="talents_requiresTree" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s Talents</string>
     <string name="talents_requiresTalent" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s</string>
     <string name="talents_requiresTalentOne">Requires 1 point in %1$s</string>
