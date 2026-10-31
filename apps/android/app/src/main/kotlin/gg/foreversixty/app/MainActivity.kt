@@ -80,6 +80,8 @@ class MainActivity : ComponentActivity() {
      * shows F1.3 and then signed in or F1.4; the feature lanes open their screens from the others.
      */
     private fun handleAppLink(intent: Intent?) {
+        // Lane F8 review captures, debug builds only: the storefront country to show (`GB`, `none`).
+        if (BuildConfig.DEBUG) intent?.getStringExtra(gg.foreversixty.app.premium.DebugStorefront.EXTRA)?.let { gg.foreversixty.app.premium.DebugStorefront.code = it }
         // Lane F4 review captures, debug builds only: post the fixture raid notification.
         if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
             gg.foreversixty.app.raids.push.RaidDebugPush.post(this)

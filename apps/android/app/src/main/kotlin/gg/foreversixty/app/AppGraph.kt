@@ -12,6 +12,9 @@ import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionTokens
 import gg.foreversixty.app.home.HomeDependencies
+import gg.foreversixty.app.premium.DebugStorefront
+import gg.foreversixty.app.premium.PlansLink
+import gg.foreversixty.app.premium.PlayStorefront
 import gg.foreversixty.app.network.ApiMode
 import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.bis.BisModel
@@ -108,6 +111,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         versionName = identity.version,
         versionCode = identity.build,
         dataBuild = { appConfig.current?.activeBuild },
+        plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) },
     )
 
     /**

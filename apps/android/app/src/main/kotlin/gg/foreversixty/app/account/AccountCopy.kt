@@ -10,7 +10,6 @@ import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.auth.session.SignInFailure
 import gg.foreversixty.app.auth.session.SignedOutNotice
 import gg.foreversixty.app.model.AccountCharacter
-import gg.foreversixty.app.model.Billing
 import gg.foreversixty.app.phrase
 import java.time.Instant
 import java.time.ZoneId
@@ -109,17 +108,6 @@ object AccountCopy {
         character.className?.let(::words).orEmpty(),
         character.level ?: 0,
     )
-
-    /** The site's `accountPlanCopy` lines: `Premium · renews 27 Oct 2027`, or `ends` once cancelled. */
-    @Composable
-    fun planLine(billing: Billing?): String {
-        val end = billing?.currentPeriodEnd?.let { runCatching { Instant.parse(it) }.getOrNull() }
-        return when {
-            billing == null || end == null -> stringResource(R.string.you_plan_free)
-            billing.cancelAtPeriodEnd -> stringResource(R.string.plan_ends, longDate(end))
-            else -> stringResource(R.string.plan_renews, longDate(end))
-        }
-    }
 
     /** The API's lower-case words (`night elf`, `warrior`) as display words. */
     fun words(raw: String): String = raw.split(' ').joinToString(" ") { it.replaceFirstChar(Char::uppercaseChar) }

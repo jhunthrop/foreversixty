@@ -20,7 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -57,6 +56,8 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.quietCard
+import gg.foreversixty.app.premium.PlanRow
+import gg.foreversixty.app.premium.PlanSummary
 
 /** The current character and where it plays (`Obnoxious Yell`, `US · PvP`). */
 data class CharacterLine(val name: String, val className: String?, val place: String)
@@ -67,8 +68,8 @@ data class CharacterLine(val name: String, val className: String?, val place: St
  */
 data class YouSummary(
     val battletag: String,
-    val plan: String,
-    val founder: Boolean,
+    /** Lane F8: the plan in the site's words. */
+    val plan: PlanSummary,
     val character: CharacterLine?,
     /** `This phone and 2 more`, null until the device list answers. */
     val devices: String?,
@@ -78,6 +79,9 @@ data class YouSummary(
 
 /** What the You tab's rows open. */
 class YouActions(
+    /** Lane F8: `See plans` opens foreversixty.gg/premium; a Premium row opens the Plan screen. */
+    val onSeePlans: () -> Unit,
+    val onPlan: () -> Unit,
     val onDevices: () -> Unit,
     val onPrivacy: () -> Unit,
     val onTerms: () -> Unit,
@@ -91,18 +95,19 @@ class YouActions(
  * from the sign-out confirmation.
  */
 @Composable
-fun YouScreen(summary: YouSummary, actions: YouActions, confirmingSignOut: Boolean = false) {
+fun YouScreen(summary: YouSummary, actions: YouActions, mayLink: Boolean = false, confirmingSignOut: Boolean = false) {
     var confirming by rememberSaveable { mutableStateOf(confirmingSignOut) }
     AccountPage(stringResource(R.string.you_title)) {
         Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3), verticalAlignment = Alignment.CenterVertically) {
             Tile(rememberVectorPainter(Icons.Filled.Person), 44.dp)
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(summary.battletag, style = FsType.name, color = FsColor.strong)
                 Text(stringResource(R.string.you_signedInWith), style = FsType.meta, color = FsColor.muted)
             }
+            if (summary.plan.isPremium) Tag(stringResource(R.string.plan_premium), FsColor.gold)
         }
         AccountCard {
-            AccountRow(rememberVectorPainter(Icons.Filled.Star), stringResource(R.string.you_plan), subtitle = summary.plan, tag = stringResource(R.string.plan_founder).takeIf { summary.founder })
+            PlanRow(summary.plan, mayLink, actions.onSeePlans, actions.onPlan)
             summary.character?.let {
                 HorizontalDivider(color = FsColor.lineSoft)
                 CharacterRow(it)
