@@ -241,7 +241,6 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   // Wait for the poll's first tick to actually reach fetchLive for fight 3 before moving.
   await livePolled;
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
@@ -335,7 +334,6 @@ test('an expired signed base is re-signed and the same request retried', async (
   // Ten minutes pass. The page is still open and the base it holds no longer signs.
   live.delete(1);
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
 
@@ -393,7 +391,6 @@ test('a stale fight error is cleared by the live poll', async ({ page }) => {
   await page.goto('/reports/fixture2live?fight=3');
   await expect(page.getByTestId('report-live')).toBeVisible();
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await expect(page.getByTestId('report-fight-error')).toBeVisible();

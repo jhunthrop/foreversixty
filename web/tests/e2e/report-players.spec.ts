@@ -176,7 +176,6 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
-    await page.getByTestId('toggle-trash').click();
     await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
     // No kill count: the engine's npc_kills counts a party's kill twice and every mob in range.
     await expect(page.getByTestId('fight-1-outcome')).toHaveCount(0);
@@ -187,13 +186,12 @@ test.describe('a beta-log report', () => {
   test('trash in a zone folds into one row per zone and opens to its pulls', async ({ page }) => {
     await serveBetaReport(page, { zone: 'Sanguine Depths' });
     await page.goto(`/reports/${ID}?fight=3`);
-    await page.getByTestId('toggle-trash').click();
-    const group = page.getByTestId('fight-group-1');
-    await expect(group).toContainText('Trash · Sanguine Depths');
-    await expect(group).not.toContainText('kill');
-    await expect(group).toContainText('2 pulls');
+    const entry = page.getByTestId('fight-trash-1');
+    await expect(entry).toContainText('Trash · Sanguine Depths');
+    await expect(entry).not.toContainText('kill');
+    await expect(entry).toContainText('2 pulls');
     await expect(page.getByTestId('fight-1')).toHaveCount(0);
-    await group.click();
+    await page.getByTestId('fight-group-1').click();
     await expect(page.getByTestId('fight-2')).toContainText('Trash · ');
     await page.getByTestId('fight-2').click();
     await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');

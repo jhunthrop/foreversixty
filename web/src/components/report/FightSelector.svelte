@@ -1,16 +1,23 @@
 <!-- web/src/components/report/FightSelector.svelte -->
-<!-- The first control on the page. Encounters first-class, trash labelled and foldable,
+<!-- The first control on the page. Encounters first-class, each zone's trash one entry that
+     opens its combined view (its pulls behind the entry's own expand control),
      kills and wipes marked, a live fight marked as such. On phone it is a scrollable
      column of 44px rows rather than a dropdown: picking the right pull out of forty is the
      single most common thing anyone does here. -->
 <script lang="ts">
-  import { fightRows, fightTitle, pullNumbers } from '../../lib/report/fights';
+  import {
+    bossPullsLabel,
+    combinedLabel,
+    fightRows,
+    fightTitle,
+    pullNumbers,
+    trashGroupSelection,
+  } from '../../lib/report/fights';
   import { formatClock, formatDuration, outcomeLabel } from '../../lib/report/format';
   import type { FightEntry } from '../../lib/report/types';
-  import { ALL_FIGHTS } from '../../lib/report/url';
+  import { ALL_FIGHTS, trashScopeKey } from '../../lib/report/url';
   import Card from '../ui/Card.svelte';
   import Glyph from '../ui/Glyph.svelte';
-  import { ROW_INTERACTIVE } from '../../lib/ui/row';
 
   let {
     fights,
@@ -35,14 +42,13 @@
   const deathsTitle = (count: number): string =>
     `${count} ${count === 1 ? 'death' : 'deaths'}${deathsInRange ? ' among everyone in range' : ''}`;
 
-  let showTrash = $state(false);
   /** On a phone the list is folded to the one row that names the fight on show, so the report's
    *  table starts above the second screen (W.9); a pick closes it again. From md it is always open. */
   let phoneOpen = $state(false);
   const current = $derived(fights.find((fight) => fight.index === selected) ?? null);
   const currentLabel = $derived(
-    selected === ALL_FIGHTS || current === null
-      ? 'All boss pulls'
+    selected === ALL_FIGHTS || trashScopeKey(selected) !== null || current === null
+      ? combinedLabel(fights, selected)
       : [
           fightTitle(current),
           outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? '')),
@@ -53,13 +59,11 @@
   );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
-  const shown = $derived(showTrash ? fights : encounters.length > 0 ? encounters : fights);
-  const trashCount = $derived(fights.length - encounters.length);
   /** Roughly how many two-line rows the phone's 320px box shows before it scrolls. */
   const PHONE_ROWS_SHOWN = 5;
   let listAtEnd = $state(false);
   const pulls = $derived(pullNumbers(fights));
-  const rows = $derived(fightRows(shown));
+  const rows = $derived(fightRows(fights));
   /** Trash groups the reader opened, by the index of their first pull. */
   let openGroups = $state<number[]>([]);
 
@@ -82,7 +86,7 @@
     <button
       type="button"
       class="flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {isSelected
-        ? 'border-l-gold bg-card-top'
+        ? 'border-line-soft border-l-gold bg-card-top'
         : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
       aria-current={isSelected ? 'true' : undefined}
       data-testid={`fight-${fight.index}`}
@@ -140,7 +144,7 @@
   <Card
     glyph="list"
     title="Fights"
-    meta={`${encounters.length} ${encounters.length === 1 ? 'pull' : 'pulls'}`}
+    meta={bossPullsLabel(encounters.length)}
     body="none"
     compact
     headClass={foldOnPhone ? 'max-md:hidden' : ''}
@@ -181,7 +185,7 @@
                 type="button"
                 class="flex min-h-11 w-full items-center gap-3 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {selected ===
                 ALL_FIGHTS
-                  ? 'border-l-gold bg-card-top'
+                  ? 'border-line-soft border-l-gold bg-card-top'
                   : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
                 aria-current={selected === ALL_FIGHTS ? 'true' : undefined}
                 data-testid="fight-all"
@@ -197,35 +201,61 @@
               {@render fightRow(row.fight, false)}
             {:else}
               {@const holdsSelected = row.fights.some((entry) => entry.index === selected)}
-              {@const isOpen = holdsSelected || openGroups.includes(row.key)}
-              <!-- Consecutive trash in one zone: one row, opened to reach each pull. -->
-              <li>
+              {@const isOpen = row.fights.length > 1 && (holdsSelected || openGroups.includes(row.key))}
+              {@const opens = trashGroupSelection(row)}
+              {@const isSelected = selected === opens}
+              <!-- A zone's trash: one entry that opens its pulls folded together (a lone pull opens
+                   itself), with its pulls behind the expand control beside it. -->
+              <li
+                class="flex border-b border-l-[3px] {isSelected
+                  ? 'border-line-soft border-l-gold bg-card-top'
+                  : 'border-line-soft border-l-transparent'}"
+              >
                 <button
                   type="button"
-                  class="border-line-soft hover:bg-card-top/60 flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] border-l-transparent px-3 py-2 text-left text-[14px]"
-                  aria-expanded={isOpen}
-                  data-testid={`fight-group-${row.key}`}
-                  onclick={() =>
-                    (openGroups = openGroups.includes(row.key)
-                      ? openGroups.filter((key) => key !== row.key)
-                      : [...openGroups, row.key])}
+                  class="flex min-h-11 min-w-0 flex-1 flex-col gap-0.5 px-3 py-2 text-left text-[14px] {isSelected
+                    ? ''
+                    : 'hover:bg-card-top/60'}"
+                  aria-current={isSelected ? 'true' : undefined}
+                  data-testid={`fight-trash-${row.key}`}
+                  onclick={() => pick(opens)}
                 >
                   <span class="flex w-full items-baseline gap-2">
                     <span
-                      class="text-muted min-w-0 flex-1 truncate leading-tight"
+                      class="min-w-0 flex-1 truncate leading-tight {isSelected
+                        ? 'text-strong'
+                        : 'text-muted'}"
                       title={`Trash · ${row.zone}`}>Trash · {row.zone}</span
                     >
                   </span>
                   <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
+                    <span data-testid={`fight-trash-${row.key}-pulls`}
+                      >{row.fights.length} {row.fights.length === 1 ? 'pull' : 'pulls'}</span
+                    >
                     <span>{formatDuration(row.duration_ms)}</span>
                     {#if row.deaths > 0}
                       <span class="text-death" title={deathsTitle(row.deaths)}
                         >{row.deaths}<span aria-hidden="true">†</span></span
                       >
                     {/if}
-                    <span class="ml-auto">{row.fights.length} pulls {isOpen ? '‹' : '›'}</span>
                   </span>
                 </button>
+                {#if row.fights.length > 1}
+                  <button
+                    type="button"
+                    class="text-muted hover:bg-card-top/60 hover:text-strong flex min-h-11 w-11 shrink-0 items-center justify-center"
+                    aria-expanded={isOpen}
+                    aria-label={`${isOpen ? 'Hide' : 'Show'} the ${row.fights.length} trash pulls in ${row.zone}`}
+                    disabled={holdsSelected}
+                    data-testid={`fight-group-${row.key}`}
+                    onclick={() =>
+                      (openGroups = openGroups.includes(row.key)
+                        ? openGroups.filter((key) => key !== row.key)
+                        : [...openGroups, row.key])}
+                  >
+                    <Glyph name="chevron" size={16} class={isOpen ? '-rotate-90' : 'rotate-90'} />
+                  </button>
+                {/if}
               </li>
               {#if isOpen}
                 {#each row.fights as fight (fight.index)}
@@ -242,22 +272,6 @@
             class="text-muted border-line-soft border-t px-3 py-1 text-[12px] md:hidden"
             data-testid="fights-more">Scroll the list for all {encounters.length} pulls</span
           >
-        {/if}
-        {#if trashCount > 0 && encounters.length > 0}
-          <button
-            type="button"
-            class="{ROW_INTERACTIVE} border-line-soft text-strong flex min-h-11 w-full items-center gap-2 border-t px-3 text-left text-[13px] font-semibold"
-            onclick={() => (showTrash = !showTrash)}
-            aria-expanded={showTrash}
-            data-testid="toggle-trash"
-          >
-            <span class="flex-1">{showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}</span>
-            <Glyph
-              name="chevron"
-              size={16}
-              class="text-muted shrink-0 {showTrash ? '-rotate-90' : 'rotate-90'}"
-            />
-          </button>
         {/if}
       </div>
     </div>
