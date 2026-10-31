@@ -3697,7 +3697,7 @@
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3726,7 +3726,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3767,7 +3767,7 @@
           {
             "spell_id": 5180,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3808,7 +3808,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3849,7 +3849,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3890,7 +3890,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3931,7 +3931,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -4522,7 +4522,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4587,7 +4587,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4658,7 +4658,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4735,7 +4735,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4812,7 +4812,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4838,12 +4838,6 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
-          },
-          {
-            "spell_id": 408120,
-            "name": "Wild Growth",
-            "condition": "Wild Growth on a party member when two are hurt, at the same pace.",
-            "icon": "ability_druid_flourish"
           },
           {
             "spell_id": 417063,
@@ -4895,7 +4889,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4921,12 +4915,6 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
-          },
-          {
-            "spell_id": 1238214,
-            "name": "Wild Growth",
-            "condition": "Wild Growth on a party member when two are hurt, at the same pace.",
-            "icon": "ability_druid_flourish"
           },
           {
             "spell_id": 417064,
@@ -4978,7 +4966,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under 30%, paced like Healing Touch.",
+            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -5004,12 +4992,6 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
-          },
-          {
-            "spell_id": 1238215,
-            "name": "Wild Growth",
-            "condition": "Wild Growth on a party member when two are hurt, at the same pace.",
-            "icon": "ability_druid_flourish"
           },
           {
             "spell_id": 417068,
@@ -5690,7 +5672,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5719,13 +5701,13 @@
           {
             "spell_id": 400574,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5754,13 +5736,13 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5789,13 +5771,13 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5824,13 +5806,13 @@
           {
             "spell_id": 1239697,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5859,13 +5841,13 @@
           {
             "spell_id": 1239699,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5894,13 +5876,13 @@
           {
             "spell_id": 1239700,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana left than fight left) and above 20%.",
+            "condition": "Arcane Blast to 3 stacks, then on while mana is ahead of the fight and above 20%.",
             "icon": "spell_arcane_blast"
           },
           {
             "spell_id": 25304,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a 20% chance to proc Missile Barrage.",
+            "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -6148,7 +6130,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
@@ -6165,13 +6147,13 @@
           {
             "spell_id": 1312002,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
@@ -6188,19 +6170,19 @@
           {
             "spell_id": 400640,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 120,
             "name": "Cone of Cold",
-            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 100% more damage and 35% more of your spell damage (20% a stack since client 1.60.1.70707).",
+            "condition": "Cone of Cold within 10 yards on five Winter's Chill stacks, which every rank reaches.",
             "icon": "spell_frost_glacier"
           },
           {
@@ -6217,19 +6199,19 @@
           {
             "spell_id": 1240044,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 8492,
             "name": "Cone of Cold",
-            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 100% more damage and 35% more of your spell damage (20% a stack since client 1.60.1.70707).",
+            "condition": "Cone of Cold within 10 yards on five Winter's Chill stacks, which every rank reaches.",
             "icon": "spell_frost_glacier"
           },
           {
@@ -6252,19 +6234,19 @@
           {
             "spell_id": 1240044,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 8492,
             "name": "Cone of Cold",
-            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 100% more damage and 35% more of your spell damage (20% a stack since client 1.60.1.70707).",
+            "condition": "Cone of Cold within 10 yards on five Winter's Chill stacks, which every rank reaches.",
             "icon": "spell_frost_glacier"
           },
           {
@@ -6287,19 +6269,19 @@
           {
             "spell_id": 1240046,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 10160,
             "name": "Cone of Cold",
-            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 100% more damage and 35% more of your spell damage (20% a stack since client 1.60.1.70707).",
+            "condition": "Cone of Cold within 10 yards on five Winter's Chill stacks, which every rank reaches.",
             "icon": "spell_frost_glacier"
           },
           {
@@ -6322,19 +6304,19 @@
           {
             "spell_id": 1240047,
             "name": "Ice Lance",
-            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
           },
           {
             "spell_id": 25345,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second.",
+            "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 10161,
             "name": "Cone of Cold",
-            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 100% more damage and 35% more of your spell damage (20% a stack since client 1.60.1.70707).",
+            "condition": "Cone of Cold within 10 yards on five Winter's Chill stacks, which every rank reaches.",
             "icon": "spell_frost_glacier"
           },
           {
@@ -7442,14 +7424,20 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 17,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425268,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           }
         ]
       },
@@ -7459,20 +7447,26 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277324,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425270,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 2061,
@@ -7507,7 +7501,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal"
           },
           {
@@ -7572,13 +7566,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277325,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -7614,8 +7608,14 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425271,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 9472,
@@ -7650,13 +7650,13 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -7721,13 +7721,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277325,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -7763,8 +7763,14 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425273,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 9474,
@@ -7799,13 +7805,13 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -7870,13 +7876,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277326,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -7912,8 +7918,14 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425273,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 9474,
@@ -7948,13 +7960,13 @@
           {
             "spell_id": 996,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8019,13 +8031,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277327,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8061,8 +8073,14 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425275,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 10916,
@@ -8097,13 +8115,13 @@
           {
             "spell_id": 10960,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8168,13 +8186,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277328,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8210,8 +8228,14 @@
           {
             "spell_id": 27607,
             "name": "Power Word: Shield",
-            "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
+            "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
+          },
+          {
+            "spell_id": 425277,
+            "name": "Renew",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "icon": "spell_holy_renew"
           },
           {
             "spell_id": 27608,
@@ -8246,13 +8270,13 @@
           {
             "spell_id": 25316,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8319,7 +8343,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8336,13 +8360,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277324,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8384,7 +8408,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal"
           },
           {
@@ -8449,13 +8473,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277325,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8497,13 +8521,13 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8568,13 +8592,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277325,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8616,13 +8640,13 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8687,13 +8711,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277326,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8741,13 +8765,13 @@
           {
             "spell_id": 996,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8812,13 +8836,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277327,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8866,13 +8890,13 @@
           {
             "spell_id": 10960,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8937,13 +8961,13 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend below half mana, or in the last 30% of the fight.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
             "spell_id": 1277328,
             "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "condition": "Dark Sacrifice when the mana bar has room and you are not hurt.",
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
@@ -8991,13 +9015,13 @@
           {
             "spell_id": 25316,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
+            "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -109066,7 +109090,6 @@
     "402174": 30,
     "407632": 1,
     "407995": 25,
-    "408120": 40,
     "408490": 30,
     "408511": 1,
     "408521": 40,
@@ -109132,8 +109155,6 @@
     "1238069": 25,
     "1238070": 25,
     "1238073": 25,
-    "1238214": 40,
-    "1238215": 40,
     "1238299": 30,
     "1238300": 30,
     "1239242": 40,
