@@ -58,6 +58,8 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.talents.TalentsFeature
+import gg.foreversixty.app.talents.TalentsRoute
 import java.io.File
 import java.time.Instant
 import kotlinx.coroutines.launch
@@ -74,6 +76,8 @@ class HomeDependencies(
     val client: ApiClient,
     val catalog: ItemCatalog,
     val cache: HomeCache,
+    /** Lane F6: the Talents screen's files; null while its feature switch is off. */
+    val talents: TalentsFeature? = null,
     private val isOn: () -> Boolean,
 ) {
     val isEnabled: Boolean get() = isOn()
@@ -84,6 +88,7 @@ class HomeDependencies(
             config: ApiConfig,
             accountApi: AccountApi,
             client: ApiClient,
+            talents: TalentsFeature?,
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
@@ -92,6 +97,7 @@ class HomeDependencies(
                 client = client,
                 catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data")),
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
+                talents = talents,
                 isOn = isOn,
             )
         }
@@ -174,6 +180,7 @@ fun HomeCharacterScreen(
     val phase by store.phase.collectAsStateWithLifecycle()
     var refreshing by remember { mutableStateOf(false) }
     var showGear by rememberSaveable { mutableStateOf(false) }
+    var showTalents by rememberSaveable { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(character.key) { store.load(character) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { scope.launch { store.refreshIfStale(character) } }
@@ -188,7 +195,11 @@ fun HomeCharacterScreen(
         home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, res, sourceLine, wornId) }
     }
 
-    if (showGear && home != null) {
+    val talents = dependencies.talents
+    if (showTalents && talents != null) {
+        BackHandler { showTalents = false }
+        TalentsRoute(character, talents.source, talents.catalog) { showTalents = false }
+    } else if (showGear && home != null) {
         BackHandler { showGear = false }
         GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
     } else {
@@ -206,6 +217,7 @@ fun HomeCharacterScreen(
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
                         HomeIntent.OpenGear -> showGear = true
                         HomeIntent.Retry -> scope.launch { store.refresh(character) }
+                        is HomeIntent.OpenNext -> showTalents = intent.kind == HomeNextRow.Kind.Talents && talents != null
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
                             HomeAction.Kind.OpenPlanner -> context.openInBrowser(HomeLinks.PLANNER)

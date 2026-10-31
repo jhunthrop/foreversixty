@@ -8,6 +8,7 @@ import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemNumbers
 import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.model.AccountCharacter
+import gg.foreversixty.app.model.BuildTalents
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.FinishedSim
 import gg.foreversixty.app.model.HomeUpgrade
@@ -29,6 +30,9 @@ data class HomeCharacter(
     val faction: String?,
     /** Worn item ids by slot from the last export, for the gear rows the answer does not name. */
     val gear: Map<String, Int> = emptyMap(),
+    /** The last export's talent ranks and the build it was made on (lane F6 draws them). */
+    val talents: BuildTalents? = null,
+    val dataBuild: String? = null,
 ) {
     /** The path segment of the character routes (`velaren` in `us/normal/velaren`). */
     val slug: String get() = key.substringAfterLast('/')
@@ -38,6 +42,7 @@ data class HomeCharacter(
             key = character.key, region = character.region, ruleset = character.ruleset, name = character.name,
             race = character.race, className = character.className, specName = character.spec, level = character.level,
             guild = character.guild?.name, faction = character.faction, gear = character.build?.gear.orEmpty(),
+            talents = character.build?.talents, dataBuild = character.build?.dataBuild,
         )
     }
 }

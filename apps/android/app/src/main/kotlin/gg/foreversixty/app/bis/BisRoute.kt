@@ -155,24 +155,35 @@ fun createBisModel(
     engine: HttpClientEngine,
     appConfig: AppConfigRepository,
     character: suspend () -> AccountCharacter?,
-): BisModel {
-    val files = CachedStaticDataClient(StaticDataClient(engine), FileStaticFileCache(File(context.noBackupFilesDir, "static-data")))
-    val source = LiveBisDataSource(
-        files = files,
-        configuredBuild = {
-            appConfig.current?.activeBuild ?: appConfig.refresh().dataOrNull()?.activeBuild
-        },
-        character = character,
-        bundledBuild = readAsset(context, BUNDLED_BUILD)?.let { decode(it, ActiveBuild.serializer())?.build },
-        bundledDates = readAsset(context, BUNDLED_DATES)?.let { decode(it, ListSerializer(KeyDate.serializer())) }.orEmpty(),
-    )
-    return BisModel(
-        source = source,
-        catalog = SpecCatalog.decode(readAsset(context, SpecCatalog.ASSET).orEmpty()),
-        preferences = SharedBisPreferences(context.getSharedPreferences(SharedBisPreferences.FILE, Context.MODE_PRIVATE)),
-        res = context.resources,
-    )
-}
+): BisModel = BisModel(
+    source = createBisDataSource(context, engine, appConfig, character),
+    catalog = bundledSpecCatalog(context),
+    preferences = SharedBisPreferences(context.getSharedPreferences(SharedBisPreferences.FILE, Context.MODE_PRIVATE)),
+    res = context.resources,
+)
+
+/** The live BiS files: the CDN (or the fixtures) through the offline cache, the build from the app config. */
+fun createBisDataSource(
+    context: Context,
+    engine: HttpClientEngine,
+    appConfig: AppConfigRepository,
+    character: suspend () -> AccountCharacter? = { null },
+): LiveBisDataSource = LiveBisDataSource(
+    files = staticFiles(context, engine),
+    configuredBuild = {
+        appConfig.current?.activeBuild ?: appConfig.refresh().dataOrNull()?.activeBuild
+    },
+    character = character,
+    bundledBuild = readAsset(context, BUNDLED_BUILD)?.let { decode(it, ActiveBuild.serializer())?.build },
+    bundledDates = readAsset(context, BUNDLED_DATES)?.let { decode(it, ListSerializer(KeyDate.serializer())) }.orEmpty(),
+)
+
+/** The static files with their offline copies, one cache folder for every screen that reads them. */
+fun staticFiles(context: Context, engine: HttpClientEngine): CachedStaticDataClient =
+    CachedStaticDataClient(StaticDataClient(engine), FileStaticFileCache(File(context.noBackupFilesDir, "static-data")))
+
+/** The spec catalogue bundled with the app (data/curated/specs.json). */
+fun bundledSpecCatalog(context: Context): SpecCatalog = SpecCatalog.decode(readAsset(context, SpecCatalog.ASSET).orEmpty())
 
 /** The active build bundled with the app, for a first launch with no connection. */
 const val BUNDLED_BUILD = "bundled/active-build.json"

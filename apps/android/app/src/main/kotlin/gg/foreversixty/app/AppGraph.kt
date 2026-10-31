@@ -25,6 +25,7 @@ import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
+import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
@@ -66,8 +67,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     /** Whether a feature's screens show: on in debug and fixture builds, else as the config says. */
     fun isAvailable(feature: Feature): Boolean = appConfig.isAvailable(feature, config.mode, BuildConfig.DEBUG)
 
+    /** Lane F6: the Talents screen pushed from Home; null while its switch is off. */
+    private val talents: TalentsFeature? = if (isAvailable(Feature.Talents)) {
+        TalentsFeature.create(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)
+    } else {
+        null
+    }
+
     /** Lane F2: the home answer, its static item data and its cache. */
-    val home = HomeDependencies.create(context, config, accountApi, apiClient) { isAvailable(Feature.CharacterHome) }
+    val home = HomeDependencies.create(context, config, accountApi, apiClient, talents) { isAvailable(Feature.CharacterHome) }
 
     /** Lane F4: guild raids and sign-up; their own static client reads the active build for icons. */
     val raids = RaidsFeature(

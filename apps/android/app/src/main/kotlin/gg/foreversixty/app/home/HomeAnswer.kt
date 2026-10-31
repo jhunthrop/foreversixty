@@ -59,6 +59,8 @@ sealed interface HomeIntent {
     data object OpenGear : HomeIntent
     data class Action(val kind: HomeAction.Kind) : HomeIntent
     data object Retry : HomeIntent
+    /** Lane F6: a Next row that opens its screen (Talents). */
+    data class OpenNext(val kind: HomeNextRow.Kind) : HomeIntent
 }
 
 /** From font scale 1.5 the gain moves under the name (spec §10, XL.1). */
@@ -100,7 +102,7 @@ private fun Answer(model: HomeAnswerModel, build: String, send: (HomeIntent) -> 
             Text(it, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 12.dp))
         }
         Spacer(Modifier.height(22.dp))
-        NextRows(model.nextTitle, model.next)
+        NextRows(model.nextTitle, model.next, send)
     }
 }
 
@@ -122,6 +124,7 @@ private fun Failed(presenter: HomePresenter, cached: HomeAnswerModel?, send: (Ho
         NextRows(
             cached?.nextTitle ?: stringResource(R.string.home_next_title, presenter.character.name),
             cached?.next ?: presenter.nextRowsWithoutAnswer(),
+            send,
         )
     }
 }
@@ -269,21 +272,26 @@ fun UpgradeRow(row: HomeUpgradeRow, build: String, modifier: Modifier = Modifier
 
 /** "Next for {name}": Talents and Sims (spec F2.1 item 4). */
 @Composable
-private fun NextRows(title: String, rows: List<HomeNextRow>) {
+private fun NextRows(title: String, rows: List<HomeNextRow>, send: (HomeIntent) -> Unit) {
     MicroLabel(title)
     Spacer(Modifier.height(8.dp))
     Column(Modifier.fillMaxWidth().quietCard()) {
         rows.forEachIndexed { index, row ->
             if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
-            NextRow(row)
+            // Lane F6: the Talents row pushes the Talents screen.
+            if (row.kind == HomeNextRow.Kind.Talents) {
+                NextRow(row, Modifier.clickable(role = Role.Button) { send(HomeIntent.OpenNext(row.kind)) }, chevron = true)
+            } else {
+                NextRow(row)
+            }
         }
     }
 }
 
 @Composable
-private fun NextRow(row: HomeNextRow) {
+private fun NextRow(row: HomeNextRow, modifier: Modifier = Modifier, chevron: Boolean = false) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
+        modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -307,6 +315,9 @@ private fun NextRow(row: HomeNextRow) {
             HomeNextRow.Tag.Matches -> Tag(stringResource(R.string.home_next_matches), FsColor.kill)
             HomeNextRow.Tag.Differs -> Tag(stringResource(R.string.home_next_differs), FsColor.gold)
             null -> Unit
+        }
+        if (chevron) {
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(20.dp))
         }
     }
 }
