@@ -11,6 +11,7 @@ from kit import DEVICES, board, cell  # noqa: E402
 import screens_home as H  # noqa: E402
 import screens_more as M  # noqa: E402
 import screens_raids as R  # noqa: E402
+import screens_talents as T  # noqa: E402
 
 RENDERS = HERE / "renders"
 NAMES = {"ios": "iPhone 17", "and": "Pixel 9"}
@@ -66,8 +67,28 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F5.4 Result, free, link region.</b> One muted See plans.", M.sim_result(p, premium=False)),
             cell("<b>F5.5 Result, free, other regions.</b> Nothing about Premium.", M.sim_result(p, premium=False, link_region=False))]),
         f"f6-talents-{p}": ("F6 talents, read-only", [
-            cell("<b>F6.1 Matches.</b> Tab totals are summed from the drawn build: 30 + 3 + 18 = 51.", M.talents(p)),
-            cell("<b>F6.2 Differs.</b> 2 points in Reverberation the guide leaves empty; Call of Flame 1/3.", M.talents(p, "differs"))]),
+            cell("<b>F6.1 Matches.</b> Tab totals are summed from the drawn build: 30 + 3 + 18 = 51. No dashes, no unspent line.", T.screen_content(p, "matches")),
+            cell("<b>F6.2 Differs.</b> 2 of 48 points differ; 4 cells are dashed (+2 over the guide, −2 under); the Restoration tab carries a dot; 3 unspent.", T.screen_content(p, "differs")),
+            cell("<b>F6.3 Guide build.</b> The same screen on the Guide segment: totals 30, 3, 18; no dashes; the tap hint.", T.screen_content(p, "differs", on=0))]),
+        f"f6-rank-{p}": ("F6 the rank sheet", [
+            cell("<b>F6.4 Bottom row.</b> Elemental Mastery (tier 7). The tree scrolls so the tapped cell stays above the sheet, ringed.",
+                 T.with_sheet(p, "differs", 0, 1, T.named("Elemental Mastery"), 0, 0)),
+            cell("<b>F6.5 Right column, differs.</b> Call of Flame: your rank 1, the guide's 3, so the guide line shows.",
+                 T.with_sheet(p, "differs", 0, 1, T.named("Call of Flame"), 1, 3)),
+            cell("<b>F6.6 Guide build, maxed.</b> Elemental Fury 5/5: current text only, no Next rank.",
+                 T.with_sheet(p, "differs", 0, 0, T.named("Elemental Fury"), 5, None))]),
+        f"f6-states-{p}": ("F6 talents states", [
+            cell("<b>F6.7 Loading.</b> Skeletons at the real sizes; the tree region is reserved at 7 tiers.", T.screen_content(p, "loading")),
+            cell("<b>F6.8 No export.</b> Guide build only; no segments; the export line.", T.screen_content(p, "noexport")),
+            cell("<b>F6.9 No build.</b> Your build alone (level under 20, or no list for the spec).", T.screen_content(p, "nobuild")),
+            cell("<b>F6.10 No spec.</b> Your build alone; the planner opens in the browser.", T.screen_content(p, "nospec")),
+            cell("<b>F6.11 Offline.</b> The strip, then the cached screen.", T.screen_content(p, "differs", offline=True)),
+            cell("<b>F6.12 Error.</b> The talent file did not load and nothing is cached.", T.screen_content(p, "error"))]),
+        f"f6-xl-{p}": ("F6 largest text: " + ("iOS AX5" if p == "ios" else "Android font scale 2.0"), [
+            cell("<b>XL.1 Top.</b> Status wraps, tabs stack, segments stack; nothing pinned.", T.screen_content(p, "differs", xl=True)),
+            cell("<b>XL.2 The tree.</b> Scrolled: icons stay 48, badges cap at 14.", T.screen_content(p, "differs", xl=True, scroll=T.XL_TREE_SCROLL[p])),
+            cell("<b>XL.3 Rank sheet, large detent.</b> Opens full height; the body scrolls.", T.with_sheet(p, "differs", 0, 1, T.named("Call of Flame"), 1, 3, xl=True)),
+            cell("<b>XL.4 The same sheet, scrolled to the end.</b> The last line and the inset are reachable.", T.with_sheet(p, "differs", 0, 1, T.named("Call of Flame"), 1, 3, xl=True, end=True))]),
         f"f7-push-{p}": ("F7 notifications as delivered", (
             [cell("<b>F7.1 Lock screen.</b> raid.starting at invites minus the lead, raid.posted, sim.finished.", x) if i == 0 else
              cell("<b>F7.2 Long-press raid.posted.</b> In, Late, Out run in the background.", x) if i == 1 else
