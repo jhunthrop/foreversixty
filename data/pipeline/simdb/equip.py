@@ -349,15 +349,35 @@ def _add(target: dict[str, float], key: str, amount: float) -> None:
     target[key] = target.get(key, 0.0) + amount
 
 
+#: The spell-school key of each stat Forever unifies -> the unified key. One
+#: spell stating both (client 1.60.1.70707's "Increased Hit Chance 01", 15464:
+#: aura 54 hit 1 and aura 55 spell hit 1) grants the unified stat once;
+#: `pipeline.simdb.statmap` folds both keys into one engine `Stat`, so summing
+#: them would double it.
+UNIFIED_SCHOOL_KEYS: dict[str, str] = {"spell_hit": "hit", "spell_crit": "crit"}
+
+
+def _unify_school_keys(spell_stats: dict[str, float]) -> dict[str, float]:
+    """One spell's stats with each unified pair collapsed to its larger amount."""
+    out = dict(spell_stats)
+    for school_key, unified_key in UNIFIED_SCHOOL_KEYS.items():
+        if school_key in out and unified_key in out:
+            out[unified_key] = max(out[unified_key], out.pop(school_key))
+    return out
+
+
 def spell_bonus(
     spell_ids: Iterable[int],
     effects_by_spell: dict[int, list[dict[str, str]]],
 ) -> SpellBonus:
-    """Everything the given spells grant, summed."""
+    """Everything the given spells grant, summed across spells; within one
+    spell, a melee/spell pair of a unified stat counts once
+    (`UNIFIED_SCHOOL_KEYS`)."""
     stats: dict[str, float] = {}
     skills: dict[str, float] = {}
     physical = 0.0
     for spell_id in spell_ids:
+        spell_stats: dict[str, float] = {}
         for row in effects_by_spell.get(spell_id, []):
             if row["Effect"] != APPLY_AURA:
                 continue
@@ -371,28 +391,28 @@ def spell_bonus(
             misc = int(row["EffectMiscValue_0"])
             if aura == AURA_DAMAGE_DONE:
                 if misc == SCHOOL_ALL_MAGIC:
-                    _add(stats, "spell_power", amount)
+                    _add(spell_stats, "spell_power", amount)
                     continue
                 for bit in _bits(misc):
                     if bit == SCHOOL_PHYSICAL:
                         physical += amount
                     elif bit in SCHOOL_POWER:
-                        _add(stats, SCHOOL_POWER[bit], amount)
+                        _add(spell_stats, SCHOOL_POWER[bit], amount)
             elif aura in (AURA_RESISTANCE, AURA_ARMOR):
                 for bit in _bits(misc):
                     if bit == SCHOOL_PHYSICAL:
-                        _add(stats, "armor", amount)
+                        _add(spell_stats, "armor", amount)
                     elif bit in SCHOOL_RESISTANCE:
-                        _add(stats, SCHOOL_RESISTANCE[bit], amount)
+                        _add(spell_stats, SCHOOL_RESISTANCE[bit], amount)
             elif aura == AURA_MOD_STAT:
                 if misc == MOD_STAT_ALL:
                     for key in MOD_STAT_BY_INDEX.values():
-                        _add(stats, key, amount)
+                        _add(spell_stats, key, amount)
                 elif misc in MOD_STAT_BY_INDEX:
-                    _add(stats, MOD_STAT_BY_INDEX[misc], amount)
+                    _add(spell_stats, MOD_STAT_BY_INDEX[misc], amount)
             elif aura == AURA_MOD_SKILL:
                 if misc == DEFENSE_SKILL_LINE:
-                    _add(stats, "defense", amount)
+                    _add(spell_stats, "defense", amount)
                 elif misc in WEAPON_SKILL_BY_SKILL_LINE:
                     name = WEAPON_SKILL_BY_SKILL_LINE[misc]
                     if name is not None:
@@ -407,7 +427,9 @@ def spell_bonus(
                     # Per-school spell crit has no Stat; the engine models it as
                     # an item effect.
                     continue
-                _add(stats, STAT_AURAS[aura], amount)
+                _add(spell_stats, STAT_AURAS[aura], amount)
+        for key, amount in _unify_school_keys(spell_stats).items():
+            _add(stats, key, amount)
     return SpellBonus(
         stats={key: value for key, value in stats.items() if value},
         weapon_skills={key: value for key, value in skills.items() if value},

@@ -3,8 +3,8 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70658:priest:gnome:52401003113/0/54342001201300051:'
-raidBuild: 'FS1:1.60.1.70658:priest:gnome:32500003113/0/52352101201300251:'
+build: 'FS1:1.60.1.70707:priest:gnome:52401003113/0/54342001201300051:'
+raidBuild: 'FS1:1.60.1.70707:priest:gnome:32500003113/0/52352101201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
 description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

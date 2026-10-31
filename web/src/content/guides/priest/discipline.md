@@ -3,7 +3,7 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70658:priest:human:02500503133001152/035050030301/0:'
+build: 'FS1:1.60.1.70707:priest:human:02500503133001153/0350500303/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Discipline Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -52,8 +52,8 @@ The build spends its deep points in Discipline and fills Holy with the points th
 
 - **Twin Disciplines, Improved Power Word: Shield and Mental Agility** are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
 - **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Inner Focus** is a free, extra-critical heal on demand.
-- **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals.
-- In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration**, **Improved Renew** and **Binding Heal** fill the remaining points.
+- **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals. Divine Aegis takes all three ranks: the client removed Binding Heal, and its point measured about +1.7% healing as Divine Aegis's third rank in our run.
+- In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration** and **Improved Renew** fill the remaining points.
 
 Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
