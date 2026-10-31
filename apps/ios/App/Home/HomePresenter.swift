@@ -90,7 +90,7 @@ struct HomeAction: Equatable {
 
 /// One "Next for {name}" row.
 struct HomeNextRow: Equatable, Identifiable {
-    enum Kind: Equatable { case talents, sims }
+    enum Kind: Equatable { case talents, sims, logs }
     enum Tag: Equatable { case matches, differs }
     let kind: Kind
     let title: String
@@ -131,6 +131,8 @@ struct HomePresenter {
     /// Lane F6: the Talents screen's own status line. While the home endpoint's talents are a
     /// fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
     var talentStatus: TalentStatusLine?
+    /// Lane F10: the Logs row's sub (empty while unread); nil drops the row (the switch is off).
+    var logsLine: String?
 
     func model(_ home: CharacterHome) -> HomeAnswerModel {
         let isAnswer = home.state == "ok" && home.upgradeCount > 0
@@ -150,7 +152,7 @@ struct HomePresenter {
 
     /// The Next rows alone, for the error state with nothing cached.
     func nextRowsWithoutAnswer() -> [HomeNextRow] {
-        [talentStatus.map(Self.talentsRow), simsRow(spec: nil)].compactMap(\.self)
+        [talentStatus.map(Self.talentsRow), simsRow(spec: nil), logsRow].compactMap(\.self)
     }
 
     /// The Talents row from F6's status: its tag (Matches or Differs) and its sentence.
@@ -279,7 +281,12 @@ struct HomePresenter {
     }
 
     private func next(_ home: CharacterHome) -> [HomeNextRow] {
-        [talentsRow(home), simsRow(spec: home.spec)]
+        [talentsRow(home), simsRow(spec: home.spec), logsRow].compactMap(\.self)
+    }
+
+    /// Lane F10: Logs, under Talents and Sims, while the reports switch is on.
+    private var logsRow: HomeNextRow? {
+        logsLine.map { HomeNextRow(kind: .logs, title: Copy.homeLogs, line: $0, tag: nil) }
     }
 
     private func talentsRow(_ home: CharacterHome) -> HomeNextRow {

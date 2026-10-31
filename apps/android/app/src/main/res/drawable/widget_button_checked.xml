@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lane F14: the checked answer: kill ground and a 2 dp kill underline (spec §5.6). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2E7FD48A" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+    <item android:gravity="bottom" android:height="2dp" android:left="12dp" android:right="12dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF7FD48A" />
+            <corners android:radius="1dp" />
+        </shape>
+    </item>
+</layer-list>

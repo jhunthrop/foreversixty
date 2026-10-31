@@ -56,12 +56,15 @@ struct RaidNightView: View {
     @State private var model: RaidNightModel
     let clock: RaidClock
     let now: () -> Date
+    /// Lane F10: pushes the report in the app; nil while the reports switch is off.
+    let openReport: ((String) -> Void)?
     @Environment(\.openURL) private var openURL
 
-    init(model: @autoclosure () -> RaidNightModel, clock: RaidClock, now: @escaping () -> Date) {
+    init(model: @autoclosure () -> RaidNightModel, clock: RaidClock, now: @escaping () -> Date, openReport: ((String) -> Void)? = nil) {
         _model = State(wrappedValue: model())
         self.clock = clock
         self.now = now
+        self.openReport = openReport
     }
 
     var body: some View {
@@ -137,6 +140,20 @@ struct RaidNightView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+        }
+        if let openReport {
+            Button { openReport(night.reportId) } label: {
+                HStack {
+                    Text(Copy.nightOpenReport).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                    Spacer()
+                    SimChevron()
+                }
+                .padding(.horizontal, 14)
+                .frame(minHeight: 52)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(RowPressStyle())
+            .raidCardBox(0).quietCard()
         }
         Button(Copy.nightReport) { openURL(RaidLinks.report(night.reportId)) }.buttonStyle(GoldLinkStyle())
     }

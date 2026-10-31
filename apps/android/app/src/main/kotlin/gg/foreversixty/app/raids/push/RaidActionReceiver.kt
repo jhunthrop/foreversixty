@@ -15,6 +15,7 @@ import gg.foreversixty.app.ForeverApplication
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
 import gg.foreversixty.app.raids.logic.LiveRaidService
+import gg.foreversixty.app.widgets.WidgetRefreshWork
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -47,7 +48,11 @@ class RaidActionReceiver : BroadcastReceiver() {
                 val outcome = withTimeoutOrNull(BUDGET_MILLIS) { answerer.answer(payload, state) }
                     ?: RaidPushOutcome.Answered(payload.answer(RaidPushPayload.FAILED, context.resources))
                 when (outcome) {
-                    is RaidPushOutcome.Answered -> post(context, outcome.answer, tag, id)
+                    is RaidPushOutcome.Answered -> {
+                        post(context, outcome.answer, tag, id)
+                        // Lane F14: the widgets, tile and countdown redraw from the server's answer.
+                        WidgetRefreshWork.now(context)
+                    }
                     is RaidPushOutcome.Open -> open(context, outcome.link.url())
                 }
             } finally {
@@ -110,6 +115,10 @@ object RaidNotificationActions {
                 RaidPushCategory.ACTION_OUT to R.string.push_action_out,
             )
             RaidPushCategory.CHOOSE -> listOf(RaidPushCategory.ACTION_CHOOSE to R.string.push_action_choose)
+            RaidPushCategory.LIVE -> listOf(
+                RaidPushCategory.ACTION_LATE to R.string.push_action_late,
+                RaidPushCategory.ACTION_OUT to R.string.push_action_out,
+            )
             else -> emptyList()
         }
         val bundle = Bundle().apply { data.forEach { (key, value) -> putString(key, value) } }

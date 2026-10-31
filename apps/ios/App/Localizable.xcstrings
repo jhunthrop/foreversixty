@@ -961,6 +961,129 @@
         }
       }
     },
+    "coach.couldntCheck": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't check"
+          }
+        }
+      }
+    },
+    "coach.doingWell": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doing well"
+          }
+        }
+      }
+    },
+    "coach.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach couldn't read this pull just now."
+          }
+        }
+      }
+    },
+    "coach.fixFirst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fix first"
+          }
+        }
+      }
+    },
+    "coach.footer": {
+      "comment": "Arguments: 1 date (string), 2 labels (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviewed %1$@ · Based on: %2$@."
+          }
+        }
+      }
+    },
+    "coach.practice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practice"
+          }
+        }
+      }
+    },
+    "coach.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium"
+          }
+        }
+      }
+    },
+    "coach.preparing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still writing. Check back in a few minutes."
+          }
+        }
+      }
+    },
+    "coach.then": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Then"
+          }
+        }
+      }
+    },
+    "coach.title": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %1$@ coach"
+          }
+        }
+      }
+    },
+    "coach.writing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your coach is writing…"
+          }
+        }
+      }
+    },
     "common.age.days": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -1426,6 +1549,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Level %1$lld"
+          }
+        }
+      }
+    },
+    "home.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        }
+      }
+    },
+    "home.logs.last": {
+      "comment": "Arguments: 1 zone (string), 2 kills (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your last raid: %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "home.logs.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reports yet."
           }
         }
       }
@@ -2669,6 +2826,468 @@
         }
       }
     },
+    "live.a11y.raid": {
+      "comment": "Arguments: 1 zone (string), 2 span (string), 3 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in %2$@. You are %3$@."
+          }
+        }
+      }
+    },
+    "live.a11y.raidPull": {
+      "comment": "Arguments: 1 zone (string), 2 span (string), 3 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$@. You are %3$@."
+          }
+        }
+      }
+    },
+    "live.channel.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid starting"
+          }
+        }
+      }
+    },
+    "live.channel.sims": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server sims"
+          }
+        }
+      }
+    },
+    "live.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed"
+          }
+        }
+      }
+    },
+    "live.finished": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
+          }
+        }
+      }
+    },
+    "live.finishedSub": {
+      "comment": "Arguments: 1 dps (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ DPS · tap for the result"
+          }
+        }
+      }
+    },
+    "live.invites": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "until invites at %1$@"
+          }
+        }
+      }
+    },
+    "live.notifTitle": {
+      "comment": "Arguments: 1 zone (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in %2$lld minutes"
+          }
+        }
+      }
+    },
+    "live.notifTitleNow": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ now"
+          }
+        }
+      }
+    },
+    "live.notifTitleOne": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in 1 minute"
+          }
+        }
+      }
+    },
+    "live.openRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the run"
+          }
+        }
+      }
+    },
+    "live.pullTitle": {
+      "comment": "Arguments: 1 zone (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$lld minutes"
+          }
+        }
+      }
+    },
+    "live.pullTitleNow": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts now"
+          }
+        }
+      }
+    },
+    "live.pullTitleOne": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in 1 minute"
+          }
+        }
+      }
+    },
+    "live.raidSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid starting countdown"
+          }
+        }
+      }
+    },
+    "live.settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live surfaces"
+          }
+        }
+      }
+    },
+    "live.sim": {
+      "comment": "Arguments: 1 n (int), 2 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld combinations"
+          }
+        }
+      }
+    },
+    "live.simLeft": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "about 1 min left"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "about %1$lld min left"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "live.simSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server sim progress"
+          }
+        }
+      }
+    },
+    "live.starts": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "until the pull at %1$@"
+          }
+        }
+      }
+    },
+    "live.tile.sub": {
+      "comment": "Arguments: 1 time (string), 2 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "live.tile.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "live.you": {
+      "comment": "Arguments: 1 state (string), 2 role (string), 3 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "meters.a11y.mine": {
+      "comment": "Arguments: 1 row (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, your character"
+          }
+        }
+      }
+    },
+    "meters.a11y.row": {
+      "comment": "Arguments: 1 n (int), 2 name (string), 3 spec (string), 4 value (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %1$lld, %2$@, %3$@, %4$@"
+          }
+        }
+      }
+    },
+    "meters.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage"
+          }
+        }
+      }
+    },
+    "meters.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody did any of this in this fight."
+          }
+        }
+      }
+    },
+    "meters.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The meters did not load."
+          }
+        }
+      }
+    },
+    "meters.flagged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This report cannot be shown."
+          }
+        }
+      }
+    },
+    "meters.healing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healing"
+          }
+        }
+      }
+    },
+    "meters.killHead": {
+      "comment": "Arguments: 1 time (string), 2 players (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kill · %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "meters.showAll": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all %1$lld"
+          }
+        }
+      }
+    },
+    "meters.taken": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage taken"
+          }
+        }
+      }
+    },
+    "meters.title.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage done"
+          }
+        }
+      }
+    },
+    "meters.title.healing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healing done"
+          }
+        }
+      }
+    },
+    "meters.title.taken": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage taken"
+          }
+        }
+      }
+    },
+    "meters.trashHead": {
+      "comment": "Arguments: 1 pulls (string), 2 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "meters.wipeHead": {
+      "comment": "Arguments: 1 time (string), 2 players (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe · %1$@ · %2$@"
+          }
+        }
+      }
+    },
     "night.best": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -2793,6 +3412,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@ %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "night.openReport": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the full report"
           }
         }
       }
@@ -5574,6 +6204,885 @@
         }
       }
     },
+    "report.a11y.kill": {
+      "comment": "Arguments: 1 boss (string), 2 time (string), 3 players (string), 4 deaths (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, kill, %2$@, %3$@, %4$@"
+          }
+        }
+      }
+    },
+    "report.a11y.parse": {
+      "comment": "Arguments: 1 boss (string), 2 time (string), 3 value (string), 4 unit (string), 5 ordinal (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, kill, %2$@, %3$@ %4$@, %5$@ percentile"
+          }
+        }
+      }
+    },
+    "report.a11y.parseNoRank": {
+      "comment": "Arguments: 1 boss (string), 2 time (string), 3 value (string), 4 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, kill, %2$@, %3$@ %4$@"
+          }
+        }
+      }
+    },
+    "report.a11y.perSecond.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damage per second"
+          }
+        }
+      }
+    },
+    "report.a11y.perSecond.dtps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damage taken per second"
+          }
+        }
+      }
+    },
+    "report.a11y.perSecond.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "healing per second"
+          }
+        }
+      }
+    },
+    "report.a11y.showsMeters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the meters"
+          }
+        }
+      }
+    },
+    "report.a11y.trash": {
+      "comment": "Arguments: 1 zone (string), 2 pulls (string), 3 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trash in %1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "report.a11y.wipe": {
+      "comment": "Arguments: 1 boss (string), 2 time (string), 3 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, wipe, %2$@, boss at %3$lld percent"
+          }
+        }
+      }
+    },
+    "report.a11y.wipePlain": {
+      "comment": "Arguments: 1 boss (string), 2 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, wipe, %2$@"
+          }
+        }
+      }
+    },
+    "report.bossPulls": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 boss pull"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld boss pulls"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "report.coach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        }
+      }
+    },
+    "report.deaths": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 death"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld deaths"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "report.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This report did not load."
+          }
+        }
+      }
+    },
+    "report.fights": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fights"
+          }
+        }
+      }
+    },
+    "report.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg."
+          }
+        }
+      }
+    },
+    "report.inProgress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In progress"
+          }
+        }
+      }
+    },
+    "report.killMeta": {
+      "comment": "Arguments: 1 time (string), 2 players (string), 3 deaths (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kill · %1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "report.live.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The fight in progress shows when it ends."
+          }
+        }
+      }
+    },
+    "report.live.title": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live. Updated %1$lld s ago."
+          }
+        }
+      }
+    },
+    "report.meta": {
+      "comment": "Arguments: 1 weekday (string), 2 date (string), 3 character (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · logged by %3$@"
+          }
+        }
+      }
+    },
+    "report.newBest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New best"
+          }
+        }
+      }
+    },
+    "report.noBossPulls": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No boss pulls"
+          }
+        }
+      }
+    },
+    "report.noKills": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No kills of yours in this report."
+          }
+        }
+      }
+    },
+    "report.notYours.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It is private, or it was removed."
+          }
+        }
+      }
+    },
+    "report.notYours.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This report is not available to you."
+          }
+        }
+      }
+    },
+    "report.openWeb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open on foreversixty.gg"
+          }
+        }
+      }
+    },
+    "report.parseMeta": {
+      "comment": "Arguments: 1 time (string), 2 name (string), 3 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kill %1$@ · %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "report.parsesFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your parses did not load."
+          }
+        }
+      }
+    },
+    "report.percentile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "percentile"
+          }
+        }
+      }
+    },
+    "report.players": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 player"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld players"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "report.processing.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It opens here when it is ready. You do not need to stay."
+          }
+        }
+      }
+    },
+    "report.processing.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This report is still being read."
+          }
+        }
+      }
+    },
+    "report.pullOf": {
+      "comment": "Arguments: 1 boss (string), 2 n (int), 3 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · pull %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "report.pulls": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 pull"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld pulls"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "report.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "report.trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trash"
+          }
+        }
+      }
+    },
+    "report.trashMeta": {
+      "comment": "Arguments: 1 pulls (string), 2 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "report.trashTitle": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trash · %1$@"
+          }
+        }
+      }
+    },
+    "report.unit.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "report.unit.dtps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DTPS"
+          }
+        }
+      }
+    },
+    "report.unit.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HPS"
+          }
+        }
+      }
+    },
+    "report.unreadable.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload the log again from the companion."
+          }
+        }
+      }
+    },
+    "report.unreadable.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This report could not be read."
+          }
+        }
+      }
+    },
+    "report.wipeMeta": {
+      "comment": "Arguments: 1 time (string), 2 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe · %1$@ · boss at %2$@"
+          }
+        }
+      }
+    },
+    "report.wipeMetaPlain": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe · %1$@"
+          }
+        }
+      }
+    },
+    "report.yourParses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your parses"
+          }
+        }
+      }
+    },
+    "reports.a11y.live": {
+      "comment": "Arguments: 1 n (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "live, updated %1$@ seconds ago"
+          }
+        }
+      }
+    },
+    "reports.a11y.row": {
+      "comment": "Arguments: 1 zone (string), 2 date (string), 3 bosses (string), 4 kills (string), 5 visibility (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@, %4$@, %5$@"
+          }
+        }
+      }
+    },
+    "reports.back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reports"
+          }
+        }
+      }
+    },
+    "reports.bosses": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 boss"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld bosses"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "reports.earlier": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier"
+          }
+        }
+      }
+    },
+    "reports.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reports yet. Upload a log, or let the companion send your next raid."
+          }
+        }
+      }
+    },
+    "reports.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your reports did not load."
+          }
+        }
+      }
+    },
+    "reports.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newest first. Logs come from the companion on your PC; the app reads them, it does not upload."
+          }
+        }
+      }
+    },
+    "reports.getCompanion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get the companion"
+          }
+        }
+      }
+    },
+    "reports.kills": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 kill"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld kills"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "reports.refresh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh"
+          }
+        }
+      }
+    },
+    "reports.rowMeta": {
+      "comment": "Arguments: 1 date (string), 2 bosses (string), 3 kills (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "reports.signedOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to see your reports."
+          }
+        }
+      }
+    },
+    "reports.state.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed"
+          }
+        }
+      }
+    },
+    "reports.state.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live"
+          }
+        }
+      }
+    },
+    "reports.state.processing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Processing"
+          }
+        }
+      }
+    },
+    "reports.thisWeek": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This week"
+          }
+        }
+      }
+    },
+    "reports.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your reports"
+          }
+        }
+      }
+    },
+    "reports.unreadable": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · could not be read"
+          }
+        }
+      }
+    },
+    "reports.updated": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$lld s ago"
+          }
+        }
+      }
+    },
+    "reports.visibility.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild"
+          }
+        }
+      }
+    },
+    "reports.visibility.private": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Private"
+          }
+        }
+      }
+    },
+    "reports.visibility.public": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Public"
+          }
+        }
+      }
+    },
+    "reports.visibility.unlisted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlisted"
+          }
+        }
+      }
+    },
     "selector.a11y": {
       "comment": "Arguments: 1 name (string), 2 spec (string), 3 class (string), 4 n (int)",
       "extractionState": "manual",
@@ -7135,6 +8644,609 @@
           "stringUnit": {
             "state": "translated",
             "value": "Update Forever Sixty"
+          }
+        }
+      }
+    },
+    "widget.a11y.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 hour"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.in": {
+      "comment": "Arguments: 1 span (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$@"
+          }
+        }
+      }
+    },
+    "widget.a11y.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 minute"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.raid": {
+      "comment": "Arguments: 1 zone (string), 2 when (string), 3 countdown (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid, %1$@, %2$@, %3$@."
+          }
+        }
+      }
+    },
+    "widget.a11y.signedUp": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld signed up."
+          }
+        }
+      }
+    },
+    "widget.a11y.upgrade": {
+      "comment": "Arguments: 1 slot (string), 2 item (string), 3 gain (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next upgrade, %1$@, %2$@, %3$@."
+          }
+        }
+      }
+    },
+    "widget.a11y.you": {
+      "comment": "Arguments: 1 state (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@ as %2$@."
+          }
+        }
+      }
+    },
+    "widget.answer": {
+      "comment": "Arguments: 1 state (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "widget.cancelled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        }
+      }
+    },
+    "widget.characterSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character"
+          }
+        }
+      }
+    },
+    "widget.chooseSpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a spec"
+          }
+        }
+      }
+    },
+    "widget.currentCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current character"
+          }
+        }
+      }
+    },
+    "widget.gain": {
+      "comment": "Arguments: 1 gain (string), 2 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "widget.gallery.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild's next raid and your answer. Answer In, Late or Out from here."
+          }
+        }
+      }
+    },
+    "widget.gallery.upgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your next upgrades, measured for your character."
+          }
+        }
+      }
+    },
+    "widget.in.dayHours": {
+      "comment": "Arguments: 1 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in 1 day %1$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.days": {
+      "comment": "Arguments: 1 days (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "in 1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "in %1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.in.daysHours": {
+      "comment": "Arguments: 1 days (int), 2 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld days %2$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.hours": {
+      "comment": "Arguments: 1 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.hoursMinutes": {
+      "comment": "Arguments: 1 hours (int), 2 minutes (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "widget.in.minutes": {
+      "comment": "Arguments: 1 minutes (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld min"
+          }
+        }
+      }
+    },
+    "widget.inline": {
+      "comment": "Arguments: 1 zone (string), 2 time (string), 3 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "widget.lastRaid": {
+      "comment": "Arguments: 1 zone (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last: %1$@, %2$@."
+          }
+        }
+      }
+    },
+    "widget.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
+        }
+      }
+    },
+    "widget.nextRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "widget.nextUpgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next upgrade"
+          }
+        }
+      }
+    },
+    "widget.noCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in on the app and pick a character."
+          }
+        }
+      }
+    },
+    "widget.noGain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "—"
+          }
+        }
+      }
+    },
+    "widget.noGear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add the addon to see your upgrades."
+          }
+        }
+      }
+    },
+    "widget.noGuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No guild yet"
+          }
+        }
+      }
+    },
+    "widget.noGuildSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your raids show here once you are on a roster."
+          }
+        }
+      }
+    },
+    "widget.noRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned"
+          }
+        }
+      }
+    },
+    "widget.notSaved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not saved"
+          }
+        }
+      }
+    },
+    "widget.notSignedUp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed up"
+          }
+        }
+      }
+    },
+    "widget.now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting now"
+          }
+        }
+      }
+    },
+    "widget.ofSize": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "widget.openApp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app"
+          }
+        }
+      }
+    },
+    "widget.short.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldd"
+          }
+        }
+      }
+    },
+    "widget.short.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldh"
+          }
+        }
+      }
+    },
+    "widget.short.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldm"
+          }
+        }
+      }
+    },
+    "widget.signedOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to see your next raid."
+          }
+        }
+      }
+    },
+    "widget.signedUp": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld signed up"
+          }
+        }
+      }
+    },
+    "widget.signedUpLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "signed up"
+          }
+        }
+      }
+    },
+    "widget.updated": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$lld h ago"
+          }
+        }
+      }
+    },
+    "widget.upgrades": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrades · %1$@"
+          }
+        }
+      }
+    },
+    "widget.upgradesFooter": {
+      "comment": "Arguments: 1 upgrades (string), 2 total (string), 3 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · +%2$@ %3$@"
+          }
+        }
+      }
+    },
+    "widget.you": {
+      "comment": "Arguments: 1 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You: %1$@"
           }
         }
       }

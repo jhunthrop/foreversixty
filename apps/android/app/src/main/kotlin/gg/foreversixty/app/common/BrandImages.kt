@@ -24,8 +24,9 @@ import gg.foreversixty.app.designsystem.classColor
 // The bundled brand images, copied from web/public by the forever.bundled-data plugin as
 // `crest_<class>`, `faction_<faction>` and `brand_seal`, so none of them ever waits on the network.
 
+/** The bundled crest of a class; null for an unknown one. The widgets draw it too. */
 @DrawableRes
-private fun crestOf(className: String?): Int? = when (className?.lowercase()) {
+internal fun crestOf(className: String?): Int? = when (className?.lowercase()) {
     "warrior" -> R.drawable.crest_warrior
     "paladin" -> R.drawable.crest_paladin
     "hunter" -> R.drawable.crest_hunter

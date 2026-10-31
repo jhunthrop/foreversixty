@@ -143,4 +143,7 @@ type View struct {
 	// LoggingCharacter is the character whose client wrote the log; null when the report names
 	// none.
 	LoggingCharacter *LoggingCharacter `json:"logging_character"`
+	// TrashGroups is each zone's trash as one entry, only when the caller asks (?fold=trash):
+	// the apps draw these rows; the web folds report.json itself.
+	TrashGroups []TrashGroup `json:"trash_groups,omitempty"`
 }

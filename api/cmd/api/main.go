@@ -227,8 +227,8 @@ func objects(cfg config.Config, log *slog.Logger) *r2.Client {
 func newReportsService(reportStore *reports.Store, authStore *auth.Store, guildStore *guilds.Store,
 	rankStore *rankings.Store, hooks reports.GuildHooks, cfg config.Config, log *slog.Logger) *reports.Service {
 	return &reports.Service{
-		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Completed: hooks, Moved: hooks,
-		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
+		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Places: rankStore,
+		Completed: hooks, Moved: hooks, PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 }
 
@@ -680,6 +680,8 @@ func serve(log *slog.Logger) error {
 		log.Info("app", "state", "APP_API is on", "effect", "the app home and config routes are mounted")
 	}
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
+	deps.LiveSurface = newLiveSurface(ctx, liveSurfaceWiring{cfg: cfg, pool: pool, auth: authStore,
+		guilds: guildService, sims: simStore, entitle: entStore, homes: deps.App, log: log})
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
@@ -692,6 +694,7 @@ func serve(log *slog.Logger) error {
 	var rater *rating.Rater
 	if client != nil {
 		deps.Reports.Signer = client
+		deps.Reports.Objects = client
 		deps.Guilds.R2 = client
 		sampler = parse.NewWorker(parse.Deps{
 			Reports: reportStore, Objects: client, Rank: rankStore, Log: log,

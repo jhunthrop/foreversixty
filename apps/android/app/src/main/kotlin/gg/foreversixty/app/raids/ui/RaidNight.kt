@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 /** F4.22 Your raid night: kills, wipes and bests, loot awarded to you, personal bests, coach notes. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant, back: () -> Unit) {
+fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant, openReport: ((String) -> Unit)? = null, back: () -> Unit) {
     val scope = rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
@@ -82,7 +82,7 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
                         Box(Modifier.fillMaxWidth().height(160.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.panel)))
                     }
                     RaidNightModel.State.Failed -> ErrorRegion(stringResource(R.string.night_failed)) { scope.launch { model.load() } }
-                    is RaidNightModel.State.Loaded -> NightContent(state.night, clock)
+                    is RaidNightModel.State.Loaded -> NightContent(state.night, clock, openReport)
                 }
             }
         }
@@ -90,7 +90,7 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
 }
 
 @Composable
-private fun NightContent(night: RaidNightSummary, clock: RaidClock) {
+private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: ((String) -> Unit)?) {
     val uri = LocalUriHandler.current
     val startsAt = Instant.parse(night.startsAt)
     Text(
@@ -138,7 +138,12 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock) {
             }
         }
     }
-    GoldLink(stringResource(R.string.night_report), { uri.openUri(RaidLinks.report(night.reportId)) })
+    // Lane F10: with `reports` on, the report opens in the app; otherwise on the site.
+    if (openReport != null) {
+        GoldLink(stringResource(R.string.night_openReport), { openReport(night.reportId) })
+    } else {
+        GoldLink(stringResource(R.string.night_report), { uri.openUri(RaidLinks.report(night.reportId)) })
+    }
 }
 
 @Composable

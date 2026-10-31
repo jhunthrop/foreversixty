@@ -1,0 +1,23 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "kind": "live.raid.start",
+      "raid_id": "7",
+      "guild_id": "2",
+      "guild_name": "OLYMPUS XXVII",
+      "zone_name": "Onyxia's Lair",
+      "character_name": "Lightningbolltz",
+      "starts_at": "1796954400",
+      "status": "open",
+      "my_state": "in",
+      "role": "dps",
+      "signed_up": "38",
+      "size": "40"
+    },
+    "android": {
+      "priority": "HIGH",
+      "collapse_key": "live-raid-7"
+    }
+  }
+}

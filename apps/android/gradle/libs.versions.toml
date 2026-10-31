@@ -20,6 +20,9 @@ coil = "3.0.4"
 composeBom = "2026.09.00"
 coroutines = "1.11.0"
 datastore = "1.3.0"
+# Lane F14: home-screen and lock-screen widgets (Glance) and their 30-minute refresh (WorkManager).
+glance = "1.2.0"
+work = "2.11.2"
 junit = "4.13.2"
 ktor = "3.6.1"
 lifecycle = "2.11.0"
@@ -37,6 +40,10 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestJunit" }

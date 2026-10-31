@@ -19,4 +19,8 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Notifications("notifications", false),
     /** F8: See plans, where the storefront allows a web checkout link */
     PremiumLink("premium_link", false),
+    /** F14: Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications */
+    Widgets("widgets", false),
+    /** F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach */
+    Reports("reports", false),
 }

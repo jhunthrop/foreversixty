@@ -41,6 +41,9 @@ object GameColors {
     /** The offline strip's ground (spec §5.0). */
     val offlineGround = Color(0xFF11151F)
 
+    /** The parse ladder's pink as text (spec W3 §4 Parse number); the other text steps are tokens. */
+    val parsePinkText = Color(0xFFF08CC0)
+
     /** A parse percentile's colour (`--color-parse-*`). */
     fun parse(percentile: Int): Color = when {
         percentile >= 100 -> FsColor.parseGold

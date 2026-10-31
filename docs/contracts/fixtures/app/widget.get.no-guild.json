@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "data": {
+    "generated_at": "2026-12-08T17:39:00Z",
+    "character": {
+      "key": "us/pvp/yellfury",
+      "name": "Yellfury",
+      "class": "hunter",
+      "spec_name": null
+    },
+    "guild": null,
+    "next_raid": null,
+    "last_raid": null,
+    "upgrades": {
+      "state": "no_gear",
+      "sentence": "Add the addon to see your upgrades.",
+      "count": 0,
+      "total_gain": null,
+      "unit": "dps",
+      "rows": []
+    },
+    "live": {
+      "sim_runs_running": 0
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

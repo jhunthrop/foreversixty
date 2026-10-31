@@ -59,6 +59,13 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/sim/${enc(id)}")
     }
 
+    /** Home, Your reports, the report (read only when it is not yours). /app/report/{id} */
+    data class Report(val id: String) : DeepLink {
+        override val screen: String get() = "report"
+
+        override fun url(): String = link("/app/report/${enc(id)}")
+    }
+
     /** You, Notifications. /app/you/notifications */
     data object Notifications : DeepLink {
         override val screen: String get() = "notifications"
@@ -95,6 +102,7 @@ sealed interface DeepLink {
                 ?: matchGuild(s)
                 ?: matchBis(s)
                 ?: matchSim(s)
+                ?: matchReport(s)
                 ?: matchNotifications(s)
                 ?: matchPlan(s)
                 ?: matchSignIn(s, q)
@@ -133,6 +141,11 @@ sealed interface DeepLink {
         private fun matchSim(s: List<String>): DeepLink? {
             if (s.size != 3 || s[0] != "app" || s[1] != "sim") return null
             return Sim(s[2])
+        }
+
+        private fun matchReport(s: List<String>): DeepLink? {
+            if (s.size != 3 || s[0] != "app" || s[1] != "report") return null
+            return Report(s[2])
         }
 
         private fun matchNotifications(s: List<String>): DeepLink? {

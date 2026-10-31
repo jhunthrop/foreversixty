@@ -58,6 +58,9 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.reports.ReportsFeature
+import gg.foreversixty.app.reports.ReportsRoute
+import gg.foreversixty.app.reports.logic.ReportsViewer
 import gg.foreversixty.app.sims.SimsFeature
 import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.talents.TalentsFeature
@@ -86,8 +89,12 @@ class HomeDependencies(
     private val isOn: () -> Boolean,
     /** Lane F5: Sims, pushed from the Sims row; null while its feature switch is off. */
     private val simsFeature: SimsFeature? = null,
+    /** Lane F10: Your reports, pushed from the Logs row; null while its feature switch is off. */
+    private val reportsFeature: ReportsFeature? = null,
 ) {
     val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
+
+    val reports: ReportsFeature? get() = reportsFeature?.takeIf { it.enabled }
 
     val isEnabled: Boolean get() = isOn()
 
@@ -99,11 +106,13 @@ class HomeDependencies(
             client: ApiClient,
             talents: TalentsFeature?,
             isSimsOn: () -> Boolean = { false },
+            isReportsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
             val catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data"))
+            val sims = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans)
             return HomeDependencies(
                 accountApi = accountApi,
                 client = client,
@@ -111,7 +120,8 @@ class HomeDependencies(
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
                 talents = talents,
                 isOn = isOn,
-                simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans),
+                simsFeature = sims,
+                reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn),
             )
         }
     }
@@ -127,6 +137,8 @@ fun HomeRoute(
     dependencies: HomeDependencies,
     session: SessionManager? = null,
     openBis: () -> Unit = {},
+    /** Lane F10: Your reports' signed-out state signs in here. */
+    signIn: () -> Unit = {},
     placeholder: @Composable () -> Unit,
 ) {
     if (!dependencies.isEnabled) {
@@ -139,13 +151,14 @@ fun HomeRoute(
     if (session != null && sessionMe != null) {
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
-            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims) {
+            val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn)
+            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims, reports) {
                 CharacterSelectorBar(session)
             }
             return
         }
     }
-    HomeFromMe(dependencies, openBis) { if (session != null) CharacterSelectorBar(session) }
+    HomeFromMe(dependencies, openBis, signIn) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /**
@@ -153,13 +166,14 @@ fun HomeRoute(
  * is the selector row, which reserves its height while the session's characters arrive.
  */
 @Composable
-private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, topBar: @Composable () -> Unit) {
+private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, signIn: () -> Unit, topBar: @Composable () -> Unit) {
     var attempt by remember { mutableStateOf(0) }
     val me by produceState<ApiResult<Me>?>(initialValue = null, attempt) { value = dependencies.accountApi.me() }
     val answer = me
     val character = (answer as? ApiResult.Success)?.data?.mainCharacter
     if (answer is ApiResult.Success && character != null) {
-        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, answer.data.entitlements.serverSims, topBar)
+        val reports = HomeReports(ReportsViewer.of(answer.data, character.key), signIn)
+        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, answer.data.entitlements.serverSims, reports, topBar)
         return
     }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
@@ -186,6 +200,7 @@ fun HomeCharacterScreen(
     dependencies: HomeDependencies,
     openBis: () -> Unit,
     serverSims: Boolean = false,
+    reports: HomeReports = HomeReports(),
     topBar: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -208,7 +223,12 @@ fun HomeCharacterScreen(
     LaunchedEffect(talentsModel) { talentsModel?.load() }
     val talentsPhase = talentsModel?.phase?.collectAsStateWithLifecycle()?.value
     val talentStatus = (talentsPhase as? TalentsPhase.Loaded)?.presenter?.status(res)
-    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus)
+    val reportsFeature = dependencies.reports
+    // Lane F10: the Logs row reads the last raid with a boss pull (the list's own cache when offline).
+    val newestReport by produceState<HomeLogs?>(null, reportsFeature, character.key) {
+        value = reportsFeature?.let { HomeLogs(it.lastRaid()) }
+    }
+    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus, newestReport)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
         stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
     }
@@ -220,6 +240,8 @@ fun HomeCharacterScreen(
     val talents = dependencies.talents
     if (sims != null && sims.navigator.showsList) {
         SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
+    } else if (reportsFeature != null && reportsFeature.navigator.showsList) {
+        ReportsRoute(reportsFeature, reports.viewer, reports.signIn, onBack = { reportsFeature.navigator.showsList = false })
     } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
         TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
@@ -246,6 +268,7 @@ fun HomeCharacterScreen(
                         is HomeIntent.OpenNext -> when (intent.kind) {
                             HomeNextRow.Kind.Sims -> sims?.navigator?.showsList = true
                             HomeNextRow.Kind.Talents -> showTalents = talents != null
+                            HomeNextRow.Kind.Logs -> reportsFeature?.navigator?.showsList = true
                         }
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
@@ -261,6 +284,9 @@ fun HomeCharacterScreen(
         ItemTooltipSheet(request, dependencies.catalog, onDismiss = { tooltip = null })
     }
 }
+
+/** Lane F10: who reads Your reports from Home, and how its signed-out state signs in. */
+data class HomeReports(val viewer: ReportsViewer = ReportsViewer.SignedOut, val signIn: () -> Unit = {})
 
 /** The answer under pull to refresh, scrolling on its own below the selector. */
 @OptIn(ExperimentalMaterial3Api::class)

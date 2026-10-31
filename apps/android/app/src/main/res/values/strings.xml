@@ -688,4 +688,210 @@
     <string name="account_ruleset_rp">Roleplay</string>
     <string name="account_ruleset_hardcore">Hardcore</string>
     <string name="account_version_noData">Version %1$s (%2$s)</string>
+    <string name="home_logs">Logs</string>
+    <string name="home_logs_last">Your last raid: %1$s, %2$s</string>
+    <string name="home_logs_none">No reports yet.</string>
+    <string name="night_openReport">Open the full report</string>
+    <string name="reports_title">Your reports</string>
+    <string name="reports_back">Reports</string>
+    <string name="reports_thisWeek">This week</string>
+    <string name="reports_earlier">Earlier</string>
+    <string name="reports_rowMeta">%1$s · %2$s · %3$s</string>
+    <plurals name="reports_bosses">
+        <item quantity="one">1 boss</item>
+        <item quantity="other">%1$d bosses</item>
+    </plurals>
+    <plurals name="reports_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <string name="reports_updated" tools:ignore="PluralsCandidate">Updated %1$d s ago</string>
+    <string name="reports_unreadable">%1$s · could not be read</string>
+    <string name="reports_state_live">Live</string>
+    <string name="reports_state_processing">Processing</string>
+    <string name="reports_state_failed">Failed</string>
+    <string name="reports_visibility_public">Public</string>
+    <string name="reports_visibility_unlisted">Unlisted</string>
+    <string name="reports_visibility_guild">Guild</string>
+    <string name="reports_visibility_private">Private</string>
+    <string name="reports_refresh">Refresh</string>
+    <string name="reports_footer">Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.</string>
+    <string name="reports_empty">No reports yet. Upload a log, or let the companion send your next raid.</string>
+    <string name="reports_getCompanion">Get the companion</string>
+    <string name="reports_failed">Your reports did not load.</string>
+    <string name="reports_signedOut">Sign in to see your reports.</string>
+    <string name="reports_a11y_row">%1$s, %2$s, %3$s, %4$s, %5$s</string>
+    <string name="reports_a11y_live">live, updated %1$s seconds ago</string>
+    <string name="report_openWeb">Open on foreversixty.gg</string>
+    <string name="report_meta">%1$s %2$s · logged by %3$s</string>
+    <string name="report_tag">Report</string>
+    <string name="report_coach">Coach</string>
+    <string name="report_yourParses">Your parses</string>
+    <string name="report_parseMeta">Kill %1$s · %2$s, %3$s</string>
+    <string name="report_unit_dps">DPS</string>
+    <string name="report_unit_hps">HPS</string>
+    <string name="report_unit_dtps">DTPS</string>
+    <string name="report_percentile">percentile</string>
+    <string name="report_newBest">New best</string>
+    <string name="report_noKills">No kills of yours in this report.</string>
+    <string name="report_fights">Fights</string>
+    <plurals name="report_bossPulls">
+        <item quantity="one">1 boss pull</item>
+        <item quantity="other">%1$d boss pulls</item>
+    </plurals>
+    <string name="report_noBossPulls">No boss pulls</string>
+    <string name="report_killMeta">Kill · %1$s · %2$s · %3$s</string>
+    <string name="report_wipeMeta">Wipe · %1$s · boss at %2$s</string>
+    <string name="report_wipeMetaPlain">Wipe · %1$s</string>
+    <plurals name="report_players">
+        <item quantity="one">1 player</item>
+        <item quantity="other">%1$d players</item>
+    </plurals>
+    <plurals name="report_deaths">
+        <item quantity="one">1 death</item>
+        <item quantity="other">%1$d deaths</item>
+    </plurals>
+    <string name="report_pullOf" tools:ignore="PluralsCandidate">%1$s · pull %2$d of %3$d</string>
+    <string name="report_trashTitle">Trash · %1$s</string>
+    <string name="report_trash">Trash</string>
+    <string name="report_trashMeta">%1$s · %2$s</string>
+    <plurals name="report_pulls">
+        <item quantity="one">1 pull</item>
+        <item quantity="other">%1$d pulls</item>
+    </plurals>
+    <string name="report_inProgress">In progress</string>
+    <string name="report_footer">Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.</string>
+    <string name="report_failed">This report did not load.</string>
+    <string name="report_parsesFailed">Your parses did not load.</string>
+    <string name="report_live_title" tools:ignore="PluralsCandidate">Live. Updated %1$d s ago.</string>
+    <string name="report_live_body">The fight in progress shows when it ends.</string>
+    <string name="report_processing_title">This report is still being read.</string>
+    <string name="report_processing_body">It opens here when it is ready. You do not need to stay.</string>
+    <string name="report_unreadable_title">This report could not be read.</string>
+    <string name="report_unreadable_body">Upload the log again from the companion.</string>
+    <string name="report_notYours_title">This report is not available to you.</string>
+    <string name="report_notYours_body">It is private, or it was removed.</string>
+    <string name="report_a11y_parse">%1$s, kill, %2$s, %3$s %4$s, %5$s percentile</string>
+    <string name="report_a11y_parseNoRank">%1$s, kill, %2$s, %3$s %4$s</string>
+    <string name="report_a11y_kill">%1$s, kill, %2$s, %3$s, %4$s</string>
+    <string name="report_a11y_wipe" tools:ignore="PluralsCandidate">%1$s, wipe, %2$s, boss at %3$d percent</string>
+    <string name="report_a11y_wipePlain">%1$s, wipe, %2$s</string>
+    <string name="report_a11y_trash">Trash in %1$s, %2$s, %3$s</string>
+    <string name="report_a11y_showsMeters">Shows the meters</string>
+    <string name="report_a11y_perSecond_dps">damage per second</string>
+    <string name="report_a11y_perSecond_hps">healing per second</string>
+    <string name="report_a11y_perSecond_dtps">damage taken per second</string>
+    <string name="meters_damage">Damage</string>
+    <string name="meters_healing">Healing</string>
+    <string name="meters_taken">Damage taken</string>
+    <string name="meters_title_damage">Damage done</string>
+    <string name="meters_title_healing">Healing done</string>
+    <string name="meters_title_taken">Damage taken</string>
+    <string name="meters_killHead">Kill · %1$s · %2$s</string>
+    <string name="meters_wipeHead">Wipe · %1$s · %2$s</string>
+    <string name="meters_trashHead">%1$s · %2$s</string>
+    <string name="meters_showAll" tools:ignore="PluralsCandidate">Show all %1$d</string>
+    <string name="meters_failed">The meters did not load.</string>
+    <string name="meters_flagged">This report cannot be shown.</string>
+    <string name="meters_empty">Nobody did any of this in this fight.</string>
+    <string name="meters_a11y_row" tools:ignore="PluralsCandidate">Rank %1$d, %2$s, %3$s, %4$s</string>
+    <string name="meters_a11y_mine">%1$s, your character</string>
+    <string name="coach_title">Your %1$s coach</string>
+    <string name="coach_premium">Premium</string>
+    <string name="coach_fixFirst">Fix first</string>
+    <string name="coach_practice">Practice</string>
+    <string name="coach_then">Then</string>
+    <string name="coach_doingWell">Doing well</string>
+    <string name="coach_couldntCheck">Couldn\'t check</string>
+    <string name="coach_footer">Reviewed %1$s · Based on: %2$s.</string>
+    <string name="coach_writing">Your coach is writing…</string>
+    <string name="coach_preparing">Still writing. Check back in a few minutes.</string>
+    <string name="coach_failed">The coach couldn\'t read this pull just now.</string>
+    <string name="widget_nextRaid">Next raid</string>
+    <string name="widget_nextUpgrade">Next upgrade</string>
+    <string name="widget_upgrades">Upgrades · %1$s</string>
+    <string name="widget_signedOut">Sign in to see your next raid.</string>
+    <string name="widget_openApp">Open the app</string>
+    <string name="widget_noGuild">No guild yet</string>
+    <string name="widget_noGuildSub">Your raids show here once you are on a roster.</string>
+    <string name="widget_noRaid">No raid planned</string>
+    <string name="widget_lastRaid">Last: %1$s, %2$s.</string>
+    <string name="widget_locked">Locked</string>
+    <string name="widget_cancelled">Cancelled</string>
+    <string name="widget_updated" tools:ignore="PluralsCandidate">Updated %1$d h ago</string>
+    <string name="widget_chooseSpec">Choose a spec</string>
+    <string name="widget_notSaved">Not saved</string>
+    <string name="widget_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up</string>
+    <string name="widget_ofSize" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="widget_signedUpLabel">signed up</string>
+    <string name="widget_noGear">Add the addon to see your upgrades.</string>
+    <string name="widget_noCharacter">Sign in on the app and pick a character.</string>
+    <string name="widget_notSignedUp">Not signed up</string>
+    <string name="widget_answer">%1$s · %2$s</string>
+    <string name="widget_you">You: %1$s</string>
+    <string name="widget_inline">%1$s · %2$s · %3$s</string>
+    <string name="widget_in_dayHours" tools:ignore="PluralsCandidate">in 1 day %1$d h</string>
+    <string name="widget_in_daysHours" tools:ignore="PluralsCandidate">in %1$d days %2$d h</string>
+    <plurals name="widget_in_days">
+        <item quantity="one">in 1 day</item>
+        <item quantity="other">in %1$d days</item>
+    </plurals>
+    <string name="widget_in_hoursMinutes" tools:ignore="PluralsCandidate">in %1$d h %2$d min</string>
+    <string name="widget_in_hours" tools:ignore="PluralsCandidate">in %1$d h</string>
+    <string name="widget_in_minutes" tools:ignore="PluralsCandidate">in %1$d min</string>
+    <string name="widget_now">Starting now</string>
+    <string name="widget_short_days" tools:ignore="PluralsCandidate">%1$dd</string>
+    <string name="widget_short_hours" tools:ignore="PluralsCandidate">%1$dh</string>
+    <string name="widget_short_minutes" tools:ignore="PluralsCandidate">%1$dm</string>
+    <string name="widget_upgradesFooter">%1$s · +%2$s %3$s</string>
+    <string name="widget_gain">+%1$s %2$s</string>
+    <string name="widget_noGain">—</string>
+    <string name="widget_characterSetting">Character</string>
+    <string name="widget_currentCharacter">Current character</string>
+    <string name="widget_gallery_raid">Your guild\'s next raid and your answer. Answer In, Late or Out from here.</string>
+    <string name="widget_gallery_upgrade">Your next upgrades, measured for your character.</string>
+    <string name="widget_a11y_raid">Next raid, %1$s, %2$s, %3$s.</string>
+    <string name="widget_a11y_you">You are %1$s as %2$s.</string>
+    <string name="widget_a11y_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up.</string>
+    <plurals name="widget_a11y_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="widget_a11y_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="widget_a11y_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="widget_a11y_in">in %1$s</string>
+    <string name="widget_a11y_upgrade">Next upgrade, %1$s, %2$s, %3$s.</string>
+    <string name="live_invites">until invites at %1$s</string>
+    <string name="live_starts">until the pull at %1$s</string>
+    <string name="live_you">You are %1$s · %2$s · %3$s</string>
+    <string name="live_notifTitleOne">Invites for %1$s in 1 minute</string>
+    <string name="live_notifTitle" tools:ignore="PluralsCandidate">Invites for %1$s in %2$d minutes</string>
+    <string name="live_notifTitleNow">Invites for %1$s now</string>
+    <string name="live_pullTitleOne">%1$s starts in 1 minute</string>
+    <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
+    <string name="live_pullTitleNow">%1$s starts now</string>
+    <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
+    <plurals name="live_simLeft">
+        <item quantity="one">about 1 min left</item>
+        <item quantity="other">about %1$d min left</item>
+    </plurals>
+    <string name="live_finished">Finished</string>
+    <string name="live_finishedSub">%1$s DPS · tap for the result</string>
+    <string name="live_failed">Failed</string>
+    <string name="live_openRun">Open the run</string>
+    <string name="live_settings">Live surfaces</string>
+    <string name="live_raidSetting">Raid starting countdown</string>
+    <string name="live_simSetting">Server sim progress</string>
+    <string name="live_channel_raid">Raid starting</string>
+    <string name="live_channel_sims">Server sims</string>
+    <string name="live_a11y_raid">Invites for %1$s in %2$s. You are %3$s.</string>
+    <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
+    <string name="live_tile_title">Next raid</string>
+    <string name="live_tile_sub">%1$s · %2$s</string>
 </resources>

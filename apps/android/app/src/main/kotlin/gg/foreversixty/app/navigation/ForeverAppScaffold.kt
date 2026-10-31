@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
@@ -34,7 +35,10 @@ import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.RaidsReports
 import gg.foreversixty.app.raids.RaidsRoute
+import gg.foreversixty.app.reports.ReportsFeature
+import gg.foreversixty.app.reports.logic.ReportsViewer
 
 /**
  * The app shell: a Material 3 navigation bar over one screen per tab. [account] is lane F1's
@@ -57,14 +61,16 @@ fun ForeverAppScaffold(
             raids.navigator.wantsTab = false
         }
     }
-    // Lane F5: a sim link selects Home, where Sims and the result are pushed.
-    val wantsHome = home.sims?.navigator?.wantsHome == true
+    // Lanes F5 and F10: a sim or report link selects Home, where its screens are pushed.
+    val wantsHome = home.sims?.navigator?.wantsHome == true || home.reports?.navigator?.wantsHome == true
     LaunchedEffect(wantsHome) {
         if (wantsHome) {
             selected = ForeverTab.Home
             home.sims?.navigator?.wantsHome = false
+            home.reports?.navigator?.wantsHome = false
         }
     }
+    val context = LocalContext.current
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {
@@ -73,10 +79,10 @@ fun ForeverAppScaffold(
                     HomeRoute(home, openBis = openBis) { ComingSoon(selected) }
                 } else {
                     HomeAccountGate(account, openBis) {
-                        HomeRoute(home, account.session, openBis) { ComingSoon(selected) }
+                        HomeRoute(home, account.session, openBis, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
                     }
                 }
-            ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account)
+            ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports)
             ForeverTab.Bis ->
                 if (bis == null) {
                     ComingSoon(selected)
@@ -107,12 +113,15 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?)
  * and BiS; signed out or with sign-in off, it follows `/v1/me`'s main character.
  */
 @Composable
-private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?) {
+private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: ReportsFeature?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
-    RaidsRoute(raids, characterKey) { if (session != null) CharacterSelectorBar(session) }
+    // Lane F10: Your raid night's `Open the full report` pushes the report on this stack.
+    val me = (phase as? SessionPhase.SignedIn)?.me
+    val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
+    RaidsRoute(raids, characterKey, reportsLink) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /** The scaffold with a navigation bar, stateless so screenshot tests can drive it. */

@@ -46,6 +46,8 @@ struct RootView: View {
     @State private var raidsRouter = RaidsRouter()
     /// Lane F5: Home's Sims stack, which sim links push onto.
     @State private var simsRouter = SimsRouter()
+    /// Lane F10: Home's Your reports stack, which report links push onto.
+    @State private var reportsRouter = ReportsRouter()
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -66,9 +68,11 @@ struct RootView: View {
         .tint(Theme.Palette.accent)
         .environment(environment.session)
         .environment(simsRouter)
+        .environment(reportsRouter)
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
+        .widgetRefreshTriggers(environment)
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
         .task {
             RaidNotificationCenter.shared.onOpen = openRaids
@@ -103,7 +107,9 @@ struct RootView: View {
                 session: environment.session,
                 version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
                 onPickClass: { selection = .bis },
-                plansLink: environment.plansLink
+                plansLink: environment.plansLink,
+                liveSurfaces: environment.isAvailable(.widgets),
+                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } }
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
@@ -111,12 +117,16 @@ struct RootView: View {
 }
 
 extension RootView {
-    /// A link selects its tab: sim links Home (lane F5), raid links Raids (lane F4).
+    /// A link selects its tab: sim and report links Home (lanes F5, F10), raid links Raids (lane F4).
     private func openLink(_ link: DeepLink) {
         if SimsRouter.handles(link) {
             guard environment.isAvailable(.sims) else { return }
             selection = .home
             simsRouter.open(link)
+        } else if ReportsRouter.handles(link) {
+            guard environment.isAvailable(.reports) else { return }
+            selection = .home
+            reportsRouter.open(link)
         } else {
             openRaids(link)
         }

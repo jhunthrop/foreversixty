@@ -69,13 +69,17 @@ struct YouScreen: View {
     let onPickClass: () -> Void
     /// Lane F8: See plans and Manage billing, where the store allows them.
     let plansLink: PlansLink
+    /// Lane F14: whether the widgets switch is on, so You lists Live surfaces.
+    var liveSurfaces = false
+    /// Lane F14: the Live Activities redraw when a switch changes.
+    var onLiveSettingsChange: () -> Void = {}
     @State private var deviceCount: Int?
 
     var body: some View {
         NavigationStack {
             if let me = session.phase.me {
                 let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
-                YouView(summary: summary, mayLink: plansLink.mayLink) {
+                YouView(summary: summary, mayLink: plansLink.mayLink, showsLiveSurfaces: liveSurfaces) {
                     Task { await session.signOut() }
                 }
                 .navigationDestination(for: YouRoute.self) { route in
@@ -84,6 +88,8 @@ struct YouScreen: View {
                     case .devices: DevicesScreen(session: session) { deviceCount = $0 }
                     case .deleteAccount: DeleteAccountScreen(session: session)
                     case .about: AboutView(version: version)
+                    case .liveSurfaces:
+                        LiveSurfacesScreen(showsSim: me.entitlements.serverSims, onChange: onLiveSettingsChange)
                     }
                 }
                 .task { deviceCount = (try? await session.devices())?.count }

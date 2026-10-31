@@ -21,6 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
+import gg.foreversixty.app.model.SimProgress
+import gg.foreversixty.app.model.SimRow
+import gg.foreversixty.app.sims.logic.SimsCopy
+import gg.foreversixty.app.sims.ui.SimRowFace
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import gg.foreversixty.app.bis.SpecCatalog
@@ -88,6 +92,9 @@ class SimsFeature(
     val navigator = SimsNavigator()
     val now: () -> Instant = Instant::now
 
+    /** Lane F14: a server run's poll answer and its `{Spec} · {kind}` title, for the ongoing notification. */
+    var liveProgress: (suspend (SimRow, SimProgress, String) -> Unit)? = null
+
     /** Sims ships dark behind `sims` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
 
@@ -105,7 +112,13 @@ class SimsFeature(
 fun SimsRoute(feature: SimsFeature, entitled: Boolean, onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val store = remember(feature) { SimsStore(feature.service, feature.cache, feature.now) }
+    val res = LocalResources.current
+    val store = remember(feature) {
+        SimsStore(feature.service, feature.cache, feature.now) { row, progress ->
+            val face = SimRowFace(row, feature.specs, feature.now(), SimsCopy(res))
+            feature.liveProgress?.invoke(row, progress, "${face.specName} · ${face.kind}")
+        }
+    }
     val build by produceState<String?>(null, feature) { value = feature.iconBuild() }
     val plans by produceState(false, feature) { value = feature.mayLinkToPlans() }
     var refreshing by remember { mutableStateOf(false) }
