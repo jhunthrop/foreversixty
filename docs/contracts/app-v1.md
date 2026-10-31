@@ -201,7 +201,10 @@ talents { state, points_differ, band_points } }`. Any state but `ok` has `upgrad
 `character.home.no-gear`. Errors: 404 `not_found`. A pick's `source_line` is the site's formatted line (see the BiS
 file below) and `drop_chance` the percent when known; lane A3 fills both. The apps list
 upgrades measured gains largest first, then gains not modelled yet, then empty slots (coordinator
-ruling, 2026-10-31); A3 should return that order too.
+ruling, 2026-10-31); A3 should return that order too. The band is the site's `bandForLevel` over the character's level (20 to 60 in steps of 10, rounded
+down; 60 reads the `raid` preset, every other band `bare`): the apps label Home's band by that rule,
+the rule BiS opens the character's list with, so A3's `band` and `preset` must follow it too (a level-58
+character is band 50, `bare`).
 
 ### GET /v1/characters/search
 Typeahead. Auth public. Caching `public, max-age=60, stale-while-revalidate=300`. Query `q` (2 to
