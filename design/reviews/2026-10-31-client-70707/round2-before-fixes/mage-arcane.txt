@@ -1,0 +1,573 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Arcane Power adds 30% spell damage for 15 seconds
+Presence of Mind makes the next cast instant
+Arcane Concentration gives free Clearcasting casts
+Missile Barrage halves Arcane Missiles’ channel and makes it free
+WEAKNESSES
+Less sustained damage than Fire once the target’s debuffs are stacked
+Arcane Power costs 30% more mana per cast
+Each Arcane Blast stack raises the next Blast’s mana cost by 100%
+IN A RAID
+Role: Single-target caster DPS with burst on cooldown
+Brings: Arcane Intellect for the group; no raid-wide debuff
+TALENTS AND BUILDS
+Level 60 build
+ARCANE
+1/2
+4/5
+1/3
+0/2
+0/2
+5/5
+2/2
+1/2
+3/3
+1/1
+0/2
+0/2
+3/3
+0/1
+1/1
+5/5
+3/3
+1/1
+FIRE
+3/5
+2/5
+0/5
+2/2
+3/3
+0/3
+0/3
+0/1
+0/2
+0/3
+0/2
+0/1
+0/3
+0/3
+0/1
+0/3
+0/1
+FROST
+0/2
+5/5
+3/3
+2/5
+0/3
+0/2
+0/3
+0/3
+0/3
+0/1
+0/2
+0/1
+0/3
+0/3
+0/1
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Raid build
+
+The raid build moves 8 points from Improved Channeling (1), Accelerant (2), Flame Throwing (2) and Impact (3) to Arcane Subtlety (2), Ice Shards (3) and Frost Channeling (3).
+
+ARCANE
+1/2
+3/5
+1/3
+2/2
+0/2
+5/5
+2/2
+1/2
+3/3
+1/1
+0/2
+0/2
+3/3
+0/1
+1/1
+5/5
+3/3
+1/1
+FIRE
+3/5
+0/5
+0/5
+0/2
+0/3
+0/3
+0/3
+0/1
+0/2
+0/3
+0/2
+0/1
+0/3
+0/3
+0/1
+0/3
+0/1
+FROST
+0/2
+5/5
+3/3
+5/5
+0/3
+0/2
+0/3
+3/3
+0/3
+0/1
+0/2
+0/1
+0/3
+0/3
+0/1
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Precision
+3/3
+Up to 6% more hit chance with all your spells at rank 3. The client removed Arcane Focus and widened Elemental Precision, now named Precision, from Frost and Fire to every school, so the three Frost points this build already spent carry the Arcane hit Arcane Focus used to
+Arcane Concentration
+5/5
+Up to a 10% chance for a damage spell to grant Clearcasting, making your next cast free; a large mana saver over a long fight
+Arcane Blast
+1/1
+A required pick: every cast gives you 12% of your Intellect as spell damage, stacking four times for 18 seconds from the first Blast, and it opens every cycle of the Blast loop described below in Rotation and priority
+Missile Barrage
+2/2
+A proc off Arcane Blast, Arcane Wrath, Fireball, Frostbolt, or Frostfire Bolt that halves Arcane Missiles' channel time and drops its mana cost to zero. It now sits one row lower in the tree, and both builds take both ranks
+Presence of Mind
+1/1
+Turns your next sub-10-second cast instant, with no cast time of its own
+Arcane Mind
+5/5
+Up to 10% Intellect and a 100% bonus to Arcane critical strike damage at rank 5
+Arcane Power
+1/1
+The capstone: 30% more spell damage for 15 seconds at the cost of 30% more mana per cast
+
+This build spends 31 points in Arcane, exactly the path to Arcane Power, and keeps every Arcane pick the sim measures as damage: Arcane Impact (3/3, 6% more Arcane critical strike chance) and Arcane Instability (3/3, 3% more spell damage and 3% more critical strike chance) stay maxed. The points that earlier carried the Arcane tree past 31 (both ranks of Magic Absorption and the second rank of Wand Specialization) came out because the sim measures none of them as damage for this rotation; Missile Barrage takes both its ranks, since a 40% proc on Arcane Blast is the engine of the spec (about +10% over one rank in our audit run).
+
+Arcane Focus’s five points had to stay in the top four rows of the tree, or Presence of Mind, Arcane Mind and Arcane Power fall out of reach. The leveling build puts them into the second rank of Missile Barrage, all three ranks of Arcane Meditation (half your mana regeneration keeps running while you cast, which the Blast loop’s mana cost leans on) and a fourth rank of Improved Channeling, so damage taken while leveling interrupts Arcane Blast less often. The raid build makes the same Missile Barrage and Arcane Meditation picks and spends the rest on both ranks of Arcane Subtlety (15 less resistance to all your spells on the target) instead, since a boss pushes back fewer of your casts than a pack of mobs does.
+
+The other 20 points split 10 and 10. Fire keeps Incineration (3/5), Accelerant (the renamed Improved Fireball) at 2/5, Flame Throwing (2/2) and Impact (3/3); Improved Fire Blast (the talent in Wake of Fire’s old slot) and Ignite stay at 0, as before. Those picks are held on purpose: the sim does not model Flame Throwing or Impact, so it cannot show what they grant, and the guide keeps them rather than trade away a talent nobody has measured. Frost now takes 10 points instead of 5: Improved Frostbolt (5/5) and Ice Shards (2/5) are new, and Precision stays in at its 3 ranks (the client trimmed it from 5). Improved Frostbolt lifts Frostbolt’s damage in the two-Blast loop and is the single largest gain in this spend; Ice Shards adds to Frostbolt’s critical strike damage, and the two points Precision no longer holds went there. This build measures about +1.9% over the previous spend in our level-60 search run, and every talent the engine cannot model (Improved Channeling, Arcane Resilience, Arcane Geometry, Flame Throwing, Impact) is still in it. Open the planner at /planner?class=mage to build this out.
+
+ROTATION AND PRIORITY
+Priority
+1
+Arcane Power
+On cooldown
+2
+Presence of Mind
+On cooldown
+3
+Arcane MissilesRANK 8
+Missile Barrage is the talent proc that empowers your next Arcane Missiles cast
+4
+Arcane BlastRANK 5
+To 3 stacks always, and on past them while the mana bar is ahead of the fight (more mana…
+5
+FrostboltRANK 11
+The filler once two Blasts are up
+Cooldowns
+Arcane Power
+3 min cooldown
+Presence of Mind
+3 min cooldown
+Evocation
+8 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+Use Arcane Power the instant it’s off cooldown — it has no cast time, so there’s never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it’s up and spend the instant cast on whichever spell benefits most in the moment. This site’s simulator has Arcane Blast, its stacking buff and Missile Barrage wired up, including the part of Arcane Blast’s tooltip that matters most: it costs 15% of your base mana, and every stack of its buff raises the next Blast’s cost by 100%. Whenever Missile Barrage’s proc is active, fire an empowered Arcane Missiles at top rank (half the channel time, no mana cost) to cash in the proc. Otherwise cast Arcane Blast until its buff carries three stacks. Past three, keep blasting while your mana is ahead of the fight (a larger share of your mana bar left than of the fight) and above 20%; once you fall behind, cast Frostbolt instead. The buff lasts 18 seconds from the first Blast and does not refresh, so Frostbolt fills until it runs out and the next Blast starts a fresh, cheap set. The mana-paced fourth stack gained about 10% at the raid band in our run and was even at the bare band, where mana runs out first. Frostfire Bolt can fill the Frostbolt slot (it also rolls Missile Barrage’s chance) but measured lower, so Frostbolt stays. If the build hasn’t taken Arcane Blast yet, plain Arcane Missiles fills instead, the same way pre-Arcane-Blast Era Arcane played.
+
+STAT PRIORITY
+1
+Hit
+2
+Spell power
+3
+Intellect
+4
+Arcane power
+5
+Critical strike
+6
+Spell haste
+7
+Spell penetration
+
+Hit cap: 16% · 6% from Precision, 10% from gear
+
+Stat	Weight (Hit = 1.00)	DPS per point
+Hit	
+1.00
+	0.43
+Spell power	
+0.98
+	0.42
+Intellect	
+0.89
+	0.38
+Arcane power	
+0.59
+	0.25
+Critical strike	
+0.53
+	0.23
+Spell haste	
+4.7 per 1% haste
+	1.78
+Spell penetration	Not significant	
+
+1 point of hit = 0.43 DPS at level 60
+
+Spell penetration shows as "Not significant": the simulator cannot tell it from zero.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Gnome (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Magister's Crown
+	
+Scholomance · Darkmaster Gandling
+Neck	
+Archlight Talisman
+	
+Quest: Hidden Treasures · requires level 50
+Shoulder	
+Mantle of the Timbermaw
+	
+Crafted: Tailoring
+Back	
+Spritecaster Cape
+	
+Blackrock Depths · High Interrogator Gerstahn
+Chest	
+Robe of the Archmage
+	
+Crafted: Tailoring
+Wrist	
+Runecloth Cuffs
+	
+Crafted: Tailoring
+Hands	
+Gloves of Spell Mastery
+	
+Crafted: Tailoring
+Waist	
+Magister's Belt
+	
+2% from Smolderthorn Mystic
+Legs	
+Magister's Leggings
+	
+Stratholme · Baron Rivendare
+Feet	
+Omnicast Boots
+	
+Blackrock Depths · Golem Lord Argelmach
+Ring	
+Maiden's Circle
+	
+World drop (BoE) · levels 57-62
+Ring	
+Philanthropist's Ring
+	
+Quest: Greater Friend of the Library · requires level 20
+Trinket	
+Frozen Heart of the Mountain
+	
+Crafted: Enchanting
+Trinket	
+Mark of the Chosen
+	
+Quest: The Pariah's Instructions · requires level 39
+Main hand	
+Glowing Brightwood Staff
+	
+World drop (BoE) · levels 50-57
+Off hand	Glowing Brightwood Staff is a two-hander; the off hand is taken.
+Ranged	
+Torch of Light
+	
+Crafted: Enchanting
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Greater Intellect
+	+7 intellect
+Weapon	
+Enchant Weapon - Spell Power
+	+30 spell power
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of Supreme Power
+— replaces both elixirs
+	Spell power
+WITHOUT A FLASK
+
+Greater Arcane Elixir
+	Spell power
+FOOD, OIL AND POTIONS
+
+Runn Tum Tuber Surprise
+	Intellect (well fed)
+
+Brilliant Wizard Oil
+	Spell power, on the main hand
+
+Major Mana Potion
+	Mana, used on cooldown
+
+Demonic Rune
+	Mana, used on cooldown
+RACES
+Human
+Orc
+(Recommended)
+Undead
+Gnome
+(Recommended)
+Troll
+High Order Skyborne
+Race	Faction	Racials
+
+Human
+	Alliance	
+Perception: Gives 20 seconds of stealth detection
+The Human Spirit: Grants 5% Spirit
+
+
+Orc
+RECOMMENDED
+	Horde	
+Blood Fury: Grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown
+
+
+Undead
+	Horde	
+Will of the Forsaken: Removes Charm, Fear, and Sleep
+
+
+Gnome
+RECOMMENDED
+	Alliance	
+Escape Artist: Breaks and grants brief immunity to movement impairment on a 2 minute cooldown
+Expansive Mind: Grants 5% Mana, Rage and Energy
+
+
+Troll
+	Horde	
+Berserking: Grants 10% casting and attack speed on a 3 minute cooldown
+
+
+High Order Skyborne
+	Alliance	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+Orc is the Horde pick: Blood Fury. Gnome is the Alliance pick: Escape Artist and Expansive Mind.
+
+PROFESSIONS
+
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring’s crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Wand Specialization
+1/2
+Improved Channeling
+5/5
+Arcane Resilience
+3/3
+Arcane Subtlety
+1/2
+Missile Barrage
+1/2
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Wand Specialization
+1/2
+Improved Channeling
+5/5
+Arcane Resilience
+3/3
+Arcane Subtlety
+1/2
+Missile Barrage
+5/2
+Arcane Geometry
+1/2
+Arcane Impact
+1/3
+Arcane Blast
+3/1
+Arcane Shielding
+1/2
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Wand Specialization
+1/2
+Improved Channeling
+5/5
+Arcane Resilience
+3/3
+Arcane Subtlety
+1/2
+Missile Barrage
+5/2
+Arcane Geometry
+1/2
+Arcane Impact
+1/3
+Arcane Blast
+3/1
+Arcane Shielding
+1/2
+Arcane Mind
+1/5
+Arcane Instability
+5/3
+Arcane Power
+3/1
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Wand Specialization
+1/2
+Improved Channeling
+5/5
+Arcane Resilience
+3/3
+Arcane Subtlety
+1/2
+Missile Barrage
+5/2
+Arcane Geometry
+1/2
+Arcane Impact
+1/3
+Arcane Blast
+3/1
+Arcane Shielding
+1/2
+Arcane Mind
+1/5
+Arcane Instability
+5/3
+Arcane Power
+3/1
+Accelerant
+3/5
+Ignite
+2/5
+Impact
+2/3
+Burning Soul
+3/3
+Level 60
+51 points
+LOAD IN PLANNER
+Wand Specialization
+1/2
+Improved Channeling
+5/5
+Arcane Resilience
+3/3
+Arcane Subtlety
+1/2
+Missile Barrage
+5/2
+Arcane Geometry
+1/2
+Arcane Impact
+1/3
+Arcane Blast
+3/1
+Arcane Shielding
+1/2
+Arcane Mind
+1/5
+Arcane Instability
+5/3
+Arcane Power
+3/1
+Accelerant
+3/5
+Ignite
+2/5
+Impact
+2/3
+Burning Soul
+3/3
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+2/5
+
+Frost is the spec most players lean on for leveling, since Frostbolt’s slow and Frost Nova’s root make it safer to solo than Arcane’s burst-focused kit. Arcane can still level fine, especially once Arcane Blast and Missile Barrage are actually castable.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

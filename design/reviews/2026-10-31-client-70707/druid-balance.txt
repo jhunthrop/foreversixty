@@ -1,0 +1,577 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Moonkin Form raises party critical strike chance by 3% within 45 yards
+Vengeance doubles critical damage on Arcane and Nature spells
+Starfire and Wrath cover both long and short windows
+Instant Moonfire finishes fights when no other cast will land
+WEAKNESSES
+Starfire’s long cast (3.5 seconds untalented, 3 with Improved Starfire) leaves little room to move
+Two DoTs to keep up alongside a long Starfire cast
+Damage is confined to the Nature and Arcane schools
+IN A RAID
+Role: Ranged caster damage
+Brings: Moonkin Form, a 3% critical strike chance aura for party members within 45 yards
+TALENTS AND BUILDS
+Level 60 build
+BALANCE
+5/5
+2/5
+3/3
+2/2
+2/2
+2/2
+1/3
+1/1
+1/1
+5/5
+1/5
+0/2
+0/1
+1/3
+5/5
+1/1
+FERAL COMBAT
+0/5
+0/5
+0/2
+0/3
+0/2
+0/3
+0/3
+0/2
+0/1
+0/2
+0/3
+0/1
+0/1
+0/2
+0/1
+0/2
+0/5
+0/5
+0/1
+0/1
+RESTORATION
+5/5
+5/5
+3/5
+3/3
+0/3
+3/3
+0/5
+0/1
+0/5
+0/3
+0/1
+0/1
+0/3
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Raid build
+
+The raid build moves 9 points from Improved Entangling Roots (1), Heart of the Wild (5) and Reflection (3) to Improved Starfire (4), Nature's Grace (1), Eclipse (2) and Naturalist (2).
+
+BALANCE
+5/5
+2/5
+3/3
+2/2
+2/2
+2/2
+0/3
+1/1
+1/1
+5/5
+5/5
+0/2
+1/1
+3/3
+5/5
+1/1
+FERAL COMBAT
+0/5
+0/5
+0/2
+0/3
+0/2
+0/3
+0/3
+0/2
+0/1
+0/2
+0/3
+0/1
+0/1
+0/2
+0/1
+0/2
+0/5
+0/5
+0/1
+0/1
+RESTORATION
+5/5
+0/5
+5/5
+0/3
+0/3
+3/3
+0/5
+0/1
+0/5
+0/3
+0/1
+0/1
+0/3
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Improved Wrath
+5/5
+Up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke
+Genesis
+2/5
+2% more periodic damage a rank on Moonfire and Insect Swarm (doubled in the 1.60.1.70707 hotfix)
+Vengeance
+5/5
+Up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier
+Improved Starfire
+1/5
+Up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5. The raid build takes all five; the leveling build keeps one rank and moves the rest into Eclipse and Reflection, which our level-60 search measured at about +15% for the leveling build on the 1.60.1.70707 trees, mostly from the mana Reflection saves
+Insect Swarm
+1/1
+A second cheap DoT the rotation keeps running alongside Moonfire
+Nature's Splendor
+1/1
+The one-point talent that the simulator credits with the largest single gain in this tree
+Moonfury
+5/5
+Up to 10% more Arcane and Nature damage at rank 5
+Eclipse
+1/3
+Reworked in Forever: each Wrath banks two charges, up to four, that take 0.17 seconds a rank off your next two Starfires for 15 seconds. The raid build takes all three ranks (0.5 seconds) and the fifth rank of Improved Wrath; the leveling build takes one
+Moonkin Form
+1/1
+The capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party and raid members within 45 yards, on spells and attacks alike
+
+The Restoration points reach Naturalist, 2% more damage of every kind a rank (10% at 5/5 in the raid build, 6% in the leveling build). Nature’s Focus opens the tree and Subtlety cuts the threat of your Nature and Arcane spells. The leveling build also takes Heart of the Wild (10% more Intellect; it moved from Feral to Restoration’s top row in 1.60.1.70707) and Reflection (half your mana regeneration keeps running while you cast).
+
+ROTATION AND PRIORITY
+Priority
+1
+MoonfireRANK 10
+When less time is left than a Wrath takes to cast, only an instant lands in time
+2
+WrathRANK 8
+When the next Starfire would not finish before the fight ends
+3
+MoonfireRANK 10
+Keep Moonfire ticking
+4
+Insect SwarmRANK 5
+Keep Insect Swarm ticking
+5
+WrathRANK 8
+Eclipse (the talent)
+6
+StarfireRANK 7
+The rest of the rotation once Moonfire and Insect Swarm are ticking
+Cooldowns
+Frenzied Regeneration
+3 min cooldown
+Dash
+5 min cooldown
+TranquilityRANK 4
+5 min cooldown
+Innervate
+6 min cooldown
+Challenging Roar
+10 min cooldown
+RebirthRANK 5
+30 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Moonfire and then Insect Swarm ticking on the target: with Improved Moonfire and Nature’s Splendor, a Moonfire does more damage per second of casting than Starfire, and a raid-buffed Balance druid has the mana to keep both up. Starfire is everything else: cast it on repeat for the rest of the fight. Near the end of a fight, adjust for what will actually land: once less time is left than your next Starfire takes, switch to Wrath, which still finishes; once less is left than a Wrath takes, only the instant Moonfire lands in time. With the raid build’s Improved Starfire and Improved Wrath, that is Starfire at 3 seconds (2.5 on an Eclipse charge) and Wrath at 1.5. With Eclipse, cast Wrath whenever you have no Eclipse charge banked: with Improved Wrath it is a 1.5-second cast, and the two charges turn the next two Starfires from 3-second into 2.5-second casts, so a Wrath and two quick Starfires do more than three plain Starfires in the same time. Without the talent, skip that Wrath.
+
+STAT PRIORITY
+1
+Spell power
+2
+Arcane power
+3
+Hit
+4
+Nature power
+5
+Critical strike
+6
+Intellect
+7
+Spell haste
+8
+Spell penetration
+
+Hit cap: 16% · 4% from Nature's Reach, 12% from gear
+
+Stat	Weight (Spell power = 1.00)	DPS per point
+Spell power	
+1.00
+	0.55
+Arcane power	
+0.67
+	0.37
+Hit	
+0.59
+	0.33
+Nature power	
+0.33
+	0.18
+Critical strike	
+0.28
+	0.15
+Intellect	
+0.11
+	0.06
+Spell haste	
+33.0 per 1% haste
+	1.98
+Spell penetration	Not significant	
+
+1 point of spell power = 0.55 DPS at level 60
+
+Spell penetration shows as "Not significant": the simulator cannot tell it from zero.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Night Elf (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Living Crown
+	
+Crafted: Leatherworking
+Neck	
+Archlight Talisman
+	
+Quest: Hidden Treasures · requires level 50
+Shoulder	
+Argent Shoulders
+	
+Crafted: Tailoring
+Back	
+Spritecaster Cape
+	
+Blackrock Depths · High Interrogator Gerstahn
+Chest	
+Fernpulse Jerkin
+	
+Quest: High Chief Winterfall · requires level 52
+Wrist	
+Runecloth Cuffs
+	
+Crafted: Tailoring
+Hands	
+Gloves of the Greatfather
+	
+Crafted: Leatherworking
+Waist	
+Skycaller's Leather Waistguard
+	
+Crafted: Leatherworking
+Legs	
+Ironfeather Leggings
+	
+Crafted: Leatherworking
+Feet	
+Earthen Silk Slippers
+	
+Crafted: Tailoring
+Ring	
+Maiden's Circle
+	
+World drop (BoE) · levels 57-62
+Ring	
+Band of the Unicorn
+	
+World drop (BoE) · levels 44-50
+Trinket	
+Frozen Heart of the Mountain
+	
+Crafted: Enchanting
+Trinket	
+Uther's Strength
+	
+World drop (BoE) · levels 48-55
+Main hand	
+Hand of Edward the Odd
+	
+World drop (BoE) · levels 58-62
+Off hand	
+Spirit of Aquementas
+	
+Quest: It's Dangerous to Go Alone · requires level 47
+Ranged	
+Idol of the Moon
+	
+World drop (BoE) · levels 56-62
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Greater Intellect
+	+7 intellect
+Weapon	
+Enchant Weapon - Spell Power
+	+30 spell power
+Off hand	
+Enchant Weapon - Spell Power
+	+30 spell power
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of Supreme Power
+— replaces both elixirs
+	Spell power
+WITHOUT A FLASK
+
+Greater Arcane Elixir
+	Spell power
+FOOD, OIL AND POTIONS
+
+Runn Tum Tuber Surprise
+	Intellect (well fed)
+
+Brilliant Wizard Oil
+	Spell power, on the main hand
+
+Major Mana Potion
+	Mana, used on cooldown
+
+Demonic Rune
+	Mana, used on cooldown
+RACES
+Night Elf
+(Recommended)
+Tauren
+(Recommended)
+High Order Skyborne
+Windshaper Skyborne
+Race	Faction	Racials
+
+Night Elf
+RECOMMENDED
+	Alliance	
+Elune's Light: Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown
+
+
+Tauren
+RECOMMENDED
+	Horde	
+Endurance: Grants 5% Health and 1% Hit chance
+
+
+High Order Skyborne
+	Alliance	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+
+Windshaper Skyborne
+	Horde	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+Night Elf is the Alliance pick: Elune's Light. Tauren is the Horde pick: Endurance.
+
+PROFESSIONS
+
+Balance benefits from the same caster-support professions as any spellcaster: Tailoring for crafted spellcaster gear and Enchanting to self-apply spell power enchants are the general Classic-era convention.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Improved Wrath
+5/5
+Genesis
+2/5
+Moonglow
+3/3
+Improved Moonfire
+1/2
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Improved Wrath
+5/5
+Genesis
+2/5
+Moonglow
+3/3
+Improved Moonfire
+2/2
+Nature's Majesty
+2/2
+Nature's Reach
+2/2
+Improved Entangling Roots
+1/3
+Nature's Splendor
+1/1
+Insect Swarm
+1/1
+Vengeance
+2/5
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Improved Wrath
+5/5
+Genesis
+2/5
+Moonglow
+3/3
+Improved Moonfire
+2/2
+Nature's Majesty
+2/2
+Nature's Reach
+2/2
+Improved Entangling Roots
+1/3
+Nature's Splendor
+1/1
+Insect Swarm
+1/1
+Vengeance
+5/5
+Improved Starfire
+4/5
+Moonfury
+2/5
+Moonkin Form
+1/1
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Improved Wrath
+5/5
+Genesis
+2/5
+Moonglow
+3/3
+Improved Moonfire
+2/2
+Nature's Majesty
+2/2
+Nature's Reach
+2/2
+Improved Entangling Roots
+1/3
+Nature's Splendor
+1/1
+Insect Swarm
+1/1
+Vengeance
+5/5
+Improved Starfire
+4/5
+Moonfury
+5/5
+Moonkin Form
+1/1
+Furor
+5/5
+Nature's Focus
+2/5
+Level 60
+51 points
+LOAD IN PLANNER
+Improved Wrath
+5/5
+Genesis
+2/5
+Moonglow
+3/3
+Improved Moonfire
+2/2
+Nature's Majesty
+2/2
+Nature's Reach
+2/2
+Improved Entangling Roots
+1/3
+Nature's Splendor
+1/1
+Insect Swarm
+1/1
+Vengeance
+5/5
+Improved Starfire
+4/5
+Moonfury
+5/5
+Moonkin Form
+1/1
+Furor
+5/5
+Nature's Focus
+5/5
+Naturalist
+3/5
+Reflection
+3/3
+Subtlety
+1/3
+
+Balance is a reasonable leveling spec on its own, with Moonfire and Starfire providing ranged damage, but Feral is generally considered the stronger overall leveling choice for Druid thanks to Cat Form’s mobility and Bear Form’s durability.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling
