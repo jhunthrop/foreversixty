@@ -3,11 +3,11 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70658:paladin:human:05320003225111051/55325/0:'
+build: 'FS1:1.60.1.70707:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Talents, rotation, stats, gear, races, and professions for Holy Paladin healing in Forever.'
-updated: 2026-10-07
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -51,14 +51,17 @@ Holy is the Paladin healing tree: reactive single-target healing built on Flash 
 
 ## Talents and builds
 
-The build is nearly all Holy, with the remaining points in Protection where they cost nothing a healer uses. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is 31 points in Holy, 12 in Protection and 8 in Retribution. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-- **Divine Intellect** lifts your mana pool, and **Reverence** keeps part of your regeneration running while you cast.
-- **Healing Light** strengthens Holy Light, Flash of Light and Holy Shock; **Spiritual Focus** protects those casts from damage pushback.
+- **Spiritual Focus** opens the tree and protects your casts from damage pushback; **Reverence** keeps part of your regeneration running while you cast.
+- **Healing Light** strengthens Holy Light, Flash of Light and Holy Shock.
 - **Illumination** returns mana on a critical heal, **Infusion of Light** makes the next Holy Light faster after a Flash of Light or Holy Shock crit, and **Divine Favor** guarantees a critical heal on demand.
-- **Holy Shock** and **Holy Power** give the instant heal and the extra critical chance; **Light's Vigil** is the capstone.
+- **Holy Shock** is the instant heal, and **Boundless Light** makes it crit far more often on anyone you have not sworn **Oath of Light** to.
+- **Holy Power** now makes your heals' critical strikes heal for more, rather than crit more often; **Light's Vigil** is the capstone.
+- **Divine Intellect** moved to Protection's first row and still lifts your mana pool.
+- In Retribution, **Benediction** makes Holy Shock and your other instants cheaper, and **Conviction** now adds critical strike to every spell, heals included, which feeds Illumination and Holy Power. Taking those eight points instead of twenty in Protection measured about +5% healing in our simulator.
 
-The sim found any build that keeps that core scores the same, because the other Holy talents change nothing a healer casts. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
+Oath of Light is taken, but the client does not yet say how much it adds, so the simulator counts it as nothing. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
 
 ## Rotation and priority
 
