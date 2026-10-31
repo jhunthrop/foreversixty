@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "nothing to change",
+    "fields": {
+      "anonymize": "true or false",
+      "main_character_key": "one of your characters"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

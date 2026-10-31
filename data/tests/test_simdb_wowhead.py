@@ -61,7 +61,7 @@ def make_build_dir(tmp_path: Path, *, with_wowhead_payload: bool) -> Path:
     for source, name in RAW_FIXTURES:
         shutil.copyfile(source, build / "raw" / name)
     if with_wowhead_payload:
-        shutil.copyfile(FIXTURE, build / "raw" / wh.RAW_FILE)
+        wh.merge_live_feed(build, wh.payload_records(FIXTURE.read_text(encoding="utf-8")))
     shutil.copyfile(SIM / "sets.json", build / "sets.json")
     write_json(
         normalize_items(

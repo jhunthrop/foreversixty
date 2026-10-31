@@ -15,8 +15,6 @@ export interface FollowOptions {
   /** True while the page holds work a session-default heal must not replace (a run in progress, a
    *  `?code=` build on screen). A player's own selection still follows. */
   holdsWork?: () => boolean;
-  /** Called with the `restored` flag after each load. */
-  onSettled?: (restored: boolean) => void;
   /** Called with true while a load runs and false once the queue is empty. */
   onBusy?: (busy: boolean) => void;
 }
@@ -48,10 +46,9 @@ export function followCurrentCharacter(options: FollowOptions): () => void {
   let queue: Promise<void> = Promise.resolve();
   let pending = 0;
   const load = async (pointer: CurrentCharacter): Promise<void> => {
-    const restored = await runBootstrapRestore(options.loaders, NO_URL, pointer, options.characterLoaded, {
+    await runBootstrapRestore(options.loaders, NO_URL, pointer, options.characterLoaded, {
       storeHandlesUrl: false,
     });
-    options.onSettled?.(restored);
   };
   const stop = onCurrentCharacterChange(({ fromPageLoad, fromSessionHeal }) => {
     const pointer = readCurrent();

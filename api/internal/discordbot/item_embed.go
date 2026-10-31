@@ -112,7 +112,7 @@ func closeEmbeds(embeds []notify.Embed, footer string, at time.Time) {
 	last.Footer, last.Timestamp = footer, at
 }
 
-// slotLabel is the slot as the /bis slot choice names it ("finger1" is "Ring 1").
+// slotLabel is the slot as the /bis slot choice names it ("finger1" is "Finger 1").
 func slotLabel(key string) string {
 	for _, c := range slotChoices {
 		if c.Value == key {

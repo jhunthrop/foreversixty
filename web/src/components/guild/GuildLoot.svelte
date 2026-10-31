@@ -141,7 +141,7 @@
         <div class="w-56 text-left" data-testid="guild-loot-boss-picker">
           <Select
             id="guild-loot-boss"
-            compact
+            size="compact"
             label="Boss"
             options={bossOptions}
             value={String(loot.selected ?? '')}

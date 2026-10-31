@@ -14,10 +14,9 @@
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
   } from '../../../lib/guild/billing-styles';
-  import { focusOnMount } from '../../../lib/guild/focus-now';
   import { button } from '../../../lib/ui/button';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
-  import SelectChevron from '../../ui/SelectChevron.svelte';
+  import Select from '../../ui/Select.svelte';
   import SettingsRow from '../../ui/SettingsRow.svelte';
 
   const copy = seatsCopy.whoPays;
@@ -158,24 +157,22 @@
       onkeydown={onKeydown}
       data-testid="guild-transfer-confirm"
     >
-      <label class="flex flex-col gap-1" for="guild-transfer-select">
-        <span id="guild-transfer-label" class="quiet-label">{copy.transferTo}</span>
-        <span class="relative block">
-          <select
-            id="guild-transfer-select"
-            class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover h-11 w-full min-w-0 cursor-pointer appearance-none truncate border pr-8 pl-3 text-[13px]"
-            use:focusOnMount
-            value={chosen?.user_id}
-            onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
-            data-testid="guild-transfer-select"
-          >
-            {#each candidates as candidate (candidate.user_id)}
-              <option value={candidate.user_id}>{candidate.name}</option>
-            {/each}
-          </select>
-          <SelectChevron />
-        </span>
-      </label>
+      <div class="flex flex-col gap-1">
+        <label id="guild-transfer-label" class="quiet-label" for="guild-transfer-select"
+          >{copy.transferTo}</label
+        >
+        <Select
+          id="guild-transfer-select"
+          value={chosen === null ? '' : String(chosen.user_id)}
+          options={candidates.map((candidate) => ({
+            value: String(candidate.user_id),
+            label: candidate.name,
+          }))}
+          focusOnMount
+          testid="guild-transfer-select"
+          onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
+        />
+      </div>
       {#if consequence !== '' && chosen !== null}
         <p class="text-[14px]" data-testid="guild-transfer-consequence">{consequence}</p>
         <p class="text-muted text-[13px]" data-testid="guild-transfer-stays">

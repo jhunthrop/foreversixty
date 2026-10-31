@@ -112,6 +112,13 @@ data/builds/*/raw/hotfixes/*
 # pipeline.hotfix_merge merges add-only while it is present, so it must
 # travel with the dump it marks.
 !data/builds/*/raw/hotfixes/SEEDED_FROM
+# 2026-10-30: wowhead's gear-planner item records, the live feed merged over
+# the previous build's (pipeline.wowhead_items.carry_forward). The feed lost
+# 292 of the ~700 items only it carries between two builds; this file is
+# what carries them. The 6.8 MB downloaded payload beside it stays ignored.
+!data/builds/*/raw/wowhead/
+data/builds/*/raw/wowhead/*
+!data/builds/*/raw/wowhead/items.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

@@ -2,8 +2,11 @@
 // A signed-in account with no characters reads as signed in (header, at desktop and phone
 // widths), and the first-run copy leads with the addon and the companion (/account, /setup,
 // /logs). Runs in both the desktop and the mobile project.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { signInWith } from './support/selector';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/devices'));
 
 const envelope = (data: unknown) => ({
   status: 200,

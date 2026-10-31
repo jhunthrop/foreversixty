@@ -1,0 +1,206 @@
+{
+  "data": {
+    "character": "us/normal/velaren",
+    "state": "ok",
+    "spec": "hunter-beast-mastery",
+    "band": 60,
+    "band_label": "60",
+    "preset": "raid",
+    "unit": "dps",
+    "unit_word": "DPS",
+    "data_build": "1.60.1.70658",
+    "upgrade_count": 0,
+    "total_gain": null,
+    "not_sim_checked_count": 0,
+    "not_modelled_count": 0,
+    "synced_at": "2026-10-29T21:15:00Z",
+    "synced_from": "addon",
+    "upgrades": [],
+    "already_best": [
+      {
+        "slot": "head",
+        "slot_label": "Head",
+        "item": {
+          "id": 252605,
+          "name": "Black Dragonscale Helm",
+          "quality": 4,
+          "icon": "inv_helmet_09",
+          "item_level": 61
+        }
+      },
+      {
+        "slot": "neck",
+        "slot_label": "Neck",
+        "item": {
+          "id": 13089,
+          "name": "Skibi's Pendant",
+          "quality": 3,
+          "icon": "inv_jewelry_amulet_07",
+          "item_level": 49
+        }
+      },
+      {
+        "slot": "shoulder",
+        "slot_label": "Shoulder",
+        "item": {
+          "id": 16708,
+          "name": "Shadowcraft Spaulders",
+          "quality": 3,
+          "icon": "inv_shoulder_07",
+          "item_level": 60
+        }
+      },
+      {
+        "slot": "back",
+        "slot_label": "Back",
+        "item": {
+          "id": 13340,
+          "name": "Cape of the Black Baron",
+          "quality": 3,
+          "icon": "inv_misc_cape_20",
+          "item_level": 63
+        }
+      },
+      {
+        "slot": "chest",
+        "slot_label": "Chest",
+        "item": {
+          "id": 252483,
+          "name": "Dawn Armor",
+          "quality": 4,
+          "icon": "inv_chest_leather_08",
+          "item_level": 61
+        }
+      },
+      {
+        "slot": "wrist",
+        "slot_label": "Wrist",
+        "item": {
+          "id": 16681,
+          "name": "Beaststalker's Bindings",
+          "quality": 3,
+          "icon": "inv_bracer_17",
+          "item_level": 57
+        }
+      },
+      {
+        "slot": "hands",
+        "slot_label": "Hands",
+        "item": {
+          "id": 16676,
+          "name": "Beaststalker's Gloves",
+          "quality": 3,
+          "icon": "inv_gauntlets_10",
+          "item_level": 59
+        }
+      },
+      {
+        "slot": "waist",
+        "slot_label": "Waist",
+        "item": {
+          "id": 16680,
+          "name": "Beaststalker's Belt",
+          "quality": 3,
+          "icon": "inv_belt_28",
+          "item_level": 58
+        }
+      },
+      {
+        "slot": "legs",
+        "slot_label": "Legs",
+        "item": {
+          "id": 16678,
+          "name": "Beaststalker's Pants",
+          "quality": 3,
+          "icon": "inv_pants_03",
+          "item_level": 61
+        }
+      },
+      {
+        "slot": "feet",
+        "slot_label": "Feet",
+        "item": {
+          "id": 16675,
+          "name": "Beaststalker's Boots",
+          "quality": 3,
+          "icon": "inv_boots_plate_07",
+          "item_level": 59
+        }
+      },
+      {
+        "slot": "finger1",
+        "slot_label": "Ring 1",
+        "item": {
+          "id": 9533,
+          "name": "Masons Fraternity Ring",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_03",
+          "item_level": 49
+        }
+      },
+      {
+        "slot": "finger2",
+        "slot_label": "Ring 2",
+        "item": {
+          "id": 2951,
+          "name": "Ring of the Underwood",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_12",
+          "item_level": 36
+        }
+      },
+      {
+        "slot": "trinket1",
+        "slot_label": "Trinket 1",
+        "item": {
+          "id": 19120,
+          "name": "Rune of the Guard Captain",
+          "quality": 2,
+          "icon": "inv_misc_rune_07",
+          "item_level": 51
+        }
+      },
+      {
+        "slot": "trinket2",
+        "slot_label": "Trinket 2",
+        "item": {
+          "id": 249469,
+          "name": "Frozen Heart of the Mountain",
+          "quality": 3,
+          "icon": "inv_misc_gem_sapphire_01",
+          "item_level": 55
+        }
+      },
+      {
+        "slot": "main_hand",
+        "slot_label": "Main hand",
+        "item": {
+          "id": 250619,
+          "name": "Legionite Glaive",
+          "quality": 3,
+          "icon": "inv_spear_05",
+          "item_level": 63
+        }
+      },
+      {
+        "slot": "ranged",
+        "slot_label": "Ranged",
+        "item": {
+          "id": 279273,
+          "name": "Hyper Deluxe Sniper Rifle Mk XVII",
+          "quality": 4,
+          "icon": "inv_weapon_rifle_05",
+          "item_level": 65
+        }
+      }
+    ],
+    "talents": {
+      "state": "differs",
+      "points_differ": 1,
+      "band_points": 51
+    }
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "req_fixture"
+}

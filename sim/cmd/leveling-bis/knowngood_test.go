@@ -33,6 +33,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -124,7 +125,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 			itemFactionRestriction[c.ID] = c.FactionRestriction
 		}
 	}
-	lootIdx, questFloors, err := loadLootIndex(buildDir, itemFactionRestriction)
+	lootIdx, questFloors, err := loadGatedLootIndex(publishedRepoRoot, buildDir, itemFactionRestriction, io.Discard)
 	if err != nil {
 		t.Fatalf("loadLootIndex: %v", err)
 	}

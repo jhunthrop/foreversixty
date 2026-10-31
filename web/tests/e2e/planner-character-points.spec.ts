@@ -1,7 +1,8 @@
 // Talents start at level 10: a character below it has no point to spend, so the header's tiles
 // say "0 points left" and "0/0 spent" instead of the 51 a finished build holds. A level-21
 // character has earned 12 of them.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 

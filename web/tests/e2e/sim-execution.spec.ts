@@ -1,7 +1,11 @@
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { openFilters } from './support/rankings-filters';
 import { simCopy } from '../../src/lib/sim/copy';
+import { choose } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
 
 /** The rankings page reads GET /v1/rankings; the suite stubs it, the way rankings.spec.ts does. */
 function page1(rows: unknown[]) {
@@ -67,7 +71,7 @@ test.describe('the execution column', () => {
     );
     await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
     await openFilters(page);
-    await page.getByTestId('filter-metric').selectOption('execution');
+    await choose(page.getByTestId('filter-metric'), 'execution');
     await expect(page).toHaveURL(/metric=execution/);
   });
 });

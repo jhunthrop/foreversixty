@@ -1,0 +1,15 @@
+{
+  "notes": "The Classic raid essentials the raid view's composition block covers (docs/contracts/app-v1.md, RaidComposition.buffs): which class provides each, its client spell name, a short label the apps draw inside the tile while the icon is missing, and its icon. The data pipeline exports every icon named here (pipeline/icons.py raid_buff_icon_names), so the apps' /data/<build>/icons/<icon>.webp resolves. The API computes present and count from the classes signed In or Late. Blessings is Blessing of Might's icon: the live paladin trees do not grant Kings (curated/presets.json). The totems are the shaman's party buffs the class data and presets carry; Forever gives the Alliance shamans too (Dwarf Shaman).",
+  "buffs": [
+    { "key": "fortitude", "name": "Power Word: Fortitude", "label": "Fort", "icon": "spell_holy_wordfortitude", "class": "priest" },
+    { "key": "mark_of_the_wild", "name": "Mark of the Wild", "label": "MotW", "icon": "spell_nature_regeneration", "class": "druid" },
+    { "key": "arcane_intellect", "name": "Arcane Intellect", "label": "Int", "icon": "spell_holy_magicalsentry", "class": "mage" },
+    { "key": "blessings", "name": "Blessings", "label": "Bless", "icon": "spell_holy_fistofjustice", "class": "paladin" },
+    { "key": "shadow_protection", "name": "Shadow Protection", "label": "SPro", "icon": "spell_shadow_antishadow", "class": "priest" },
+    { "key": "soulstone", "name": "Soulstone", "label": "SS", "icon": "inv_misc_orb_04", "class": "warlock" },
+    { "key": "battle_rez", "name": "Rebirth", "label": "Rez", "icon": "spell_nature_reincarnation", "class": "druid" },
+    { "key": "windfury_totem", "name": "Windfury Totem", "label": "WF", "icon": "spell_nature_windfury", "class": "shaman" },
+    { "key": "strength_of_earth", "name": "Strength of Earth Totem", "label": "SoE", "icon": "spell_nature_earthbindtotem", "class": "shaman" },
+    { "key": "mana_spring", "name": "Mana Spring Totem", "label": "MS", "icon": "spell_nature_manaregentotem", "class": "shaman" }
+  ]
+}

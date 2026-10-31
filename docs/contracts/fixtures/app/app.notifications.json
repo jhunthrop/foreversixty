@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "data": {
+    "time_zone": "America/Chicago",
+    "quiet_hours": {
+      "enabled": true,
+      "start": "22:00",
+      "end": "08:00"
+    },
+    "events": [
+      {
+        "kind": "raid.posted",
+        "who": "guild_members",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      },
+      {
+        "kind": "raid.starting",
+        "who": "in_and_late",
+        "officer": false,
+        "quiet_exempt": true,
+        "time_sensitive": true,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      },
+      {
+        "kind": "bis.changed",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": false,
+          "discord": false
+        }
+      },
+      {
+        "kind": "roster.pending",
+        "who": "officers",
+        "officer": true,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": true,
+          "discord": true
+        }
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

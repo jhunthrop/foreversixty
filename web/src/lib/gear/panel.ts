@@ -4,6 +4,7 @@
 // the line under it that sets that total beside the score card's. Pure:
 // CharacterGearPanel.svelte draws what this returns.
 import { wearsListedBest } from '../bis/best-in-slot';
+import { SLOT_LABELS } from '../planner/types';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot, GearSlotName } from './types';
 
@@ -23,7 +24,7 @@ export type GearRowState = 'upgrade' | 'best' | 'empty' | 'worn-only' | 'none';
 export interface GearItemView {
   id: number;
   /** The item's name; for a worn item the export's data build does not have (no name), the muted
-   *  "Worn item not in our list" (gearCopy.unknownItem, fix round 4 item 5). */
+   *  "Not in our item data yet" (gearCopy.unknownItem, fix round 4 item 5). */
   name: string;
   /** False for an item the data build does not have: no tooltip, no icon, muted. */
   known: boolean;
@@ -31,7 +32,7 @@ export interface GearItemView {
 
 export interface GearRow {
   slot: GearSlotName;
-  /** "Head", "Ring 1", "Trinket 2", "Main hand". */
+  /** "Head", "Finger 1", "Trinket 2", "Main hand" (SLOT_LABELS). */
   label: string;
   state: GearRowState;
   /** Null when the slot is empty. */
@@ -94,7 +95,7 @@ export function gearRows(
   for (const slot of gear) wornBySlot[slot.slot] = slot.worn?.id;
   const mainHand = gear.find((slot) => slot.slot === 'main_hand')?.worn ?? null;
   return gear.map((slot): GearRow => {
-    const label = gearCopy.slotLabels[slot.slot] ?? slot.slot;
+    const label = SLOT_LABELS[slot.slot];
     const worn = wornView(slot.worn);
     const bare = {
       slot: slot.slot,
@@ -207,14 +208,6 @@ export function gearTitleSummary(gear: readonly CharacterGearSlot[], total: numb
 export function gearTitle(gear: readonly CharacterGearSlot[], total: number | null): string {
   const summary = gearTitleSummary(gear, total);
   return summary === null ? gearCopy.heading : `${gearCopy.heading}${gearCopy.titleSeparator}${summary}`;
-}
-
-/** The line under the title: the card's gear gap and gear_gap_total, what each counts ("The
- *  picks you can wear add 0." at 0). Null when the card has no gear gap (no score, or Gear at its
- *  top) or the API scored no slot. */
-export function gearTotalsLine(cardGap: number | null, total: number | null): string | null {
-  if (cardGap === null || cardGap <= 0 || total === null) return null;
-  return total <= 0 ? gearCopy.totalsZero(cardGap) : gearCopy.totals(cardGap, total);
 }
 
 /** The Gear section's id: the score card's "Most to gain: Gear" opens `#gear` (L8.6 ruling 2). */

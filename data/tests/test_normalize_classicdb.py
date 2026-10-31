@@ -9,7 +9,6 @@ classicdb.py for the defect this closes).
 
 import json
 import logging
-import shutil
 from pathlib import Path
 
 from test_normalize_build import HERE, prepare
@@ -185,7 +184,8 @@ def test_normalize_build_merges_the_classicdb_supplement_after_wowhead(
 ) -> None:
     caplog.set_level(logging.INFO)
     root = prepare(tmp_path)
-    shutil.copy(WOWHEAD_FIXTURE, root / "1.0.0.1" / "raw" / wh.RAW_FILE)
+    payload = WOWHEAD_FIXTURE.read_text(encoding="utf-8")
+    wh.merge_live_feed(root / "1.0.0.1", wh.payload_records(payload))
     _write_item_template_extract(root)
 
     result = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")

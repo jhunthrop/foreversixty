@@ -5,27 +5,20 @@
 // so this exists to make the real item -- stats, level, source -- a plain data structure a
 // component can render without reaching back into three different files itself).
 //
-// Deliberately NOT client-tooltip-exact on two points, both decided rather than guessed:
+// Client-exact where the published row says enough, and silent where it does not:
 //
-//   * `typeLabel` names a weapon's handedness ("Two-Handed Weapon") and a shield, because
-//     those are exact from fields the published row already carries (`two_hand`, `armor` on
-//     an off-hand). It does not name a weapon's subclass (sword, axe, mace) or an armor
-//     piece's material (cloth, leather, mail, plate): items/<class>.json carries no
-//     class_id/subclass_id (normalize/items.py's own Item model has them; build_class_items
-//     never publishes them), and guessing either from a name or an icon string would be
-//     exactly the fabrication tenet 5 rules out. `typeLabel` is `undefined` rather than a
-//     invented "Armor" for anything else -- a follow-up for the data lane to publish those
-//     two ids, not a job for this lane's pure function.
-//   * every stat prints as "+<value> <label>", the same convention GearPanel's own totals
-//     and the addon's stat weights already use, rather than the client's percent-converted
-//     "Equip: Improves your chance to get a critical strike by 1%." wording for crit/hit/
-//     dodge/parry/block. The published `stats.crit` etc. are the engine's own Stat values,
-//     with no documented, verified per-point-to-percent table in this repo -- inventing one
-//     here would put an unverified number on screen, which tenet 5 puts ahead of matching
-//     the client's exact prose.
+//   * `typeLabel` names a weapon's handedness ("Two-Handed Weapon") and a shield from
+//     `two_hand` and `armor`, and an armour piece's material ("Plate") from the row's
+//     `armor_type` when the build publishes it. Nothing is guessed from a name or an icon.
+//   * `bindLabel` is the client's binding line ("Binds when picked up") from `bonding`, only
+//     when the row states it.
+//   * a flat stat prints "+<value> <label>"; a rating-family stat an on-equip spell states as a
+//     literal percent (`percent_stats`) prints the client's own sentence ("Equip: Improves
+//     your chance to hit by 2%."), after the flat stats, as the client orders them.
+import { dropPercentLabel } from './drop-chance';
 import { craftedSourceLabel, pvpSourceLabel } from './source-labels';
 import type { Item, ItemSet } from '../planner/types';
-import { SLOT_LABELS, STAT_KEYS, STAT_LABELS } from '../planner/types';
+import { SLOT_LABELS, STAT_KEYS, STAT_LABELS, type StatKey } from '../planner/types';
 import {
   bossName,
   itemsOfBoss,
@@ -51,6 +44,8 @@ export interface ItemTooltipModel {
   slotLabel: string;
   /** See the module note above: present only where it can be exact, absent otherwise. */
   typeLabel: string | undefined;
+  /** "Binds when picked up", …; null when the row states no binding. */
+  bindLabel: string | null;
   itemLevel: number;
   requiredLevel: number;
   /** `null` rather than 0 -- an accessory with no armor value shows no armor row at all,
@@ -110,7 +105,28 @@ function typeLabelFor(item: Item): string | undefined {
     return 'One-Handed Weapon';
   }
   if (item.slot === 'off_hand' && item.armor > 0) return 'Shield';
-  return undefined;
+  return item.armor_type == null ? undefined : ARMOR_LABELS[item.armor_type];
+}
+
+/** `armor_type` -> the client's word on the slot line's right. */
+const ARMOR_LABELS: Readonly<Record<NonNullable<Item['armor_type']>, string>> = {
+  cloth: 'Cloth',
+  leather: 'Leather',
+  mail: 'Mail',
+  plate: 'Plate',
+  shield: 'Shield',
+};
+
+/** `bonding` -> the client's binding line. */
+const BIND_LABELS: Readonly<Record<NonNullable<Item['bonding']>, string>> = {
+  pickup: 'Binds when picked up',
+  equip: 'Binds when equipped',
+  use: 'Binds when used',
+  quest: 'Quest Item',
+};
+
+function bindLabelFor(item: Item): string | null {
+  return item.bonding == null ? null : BIND_LABELS[item.bonding];
 }
 
 function weaponLineFor(item: Item): WeaponLine | null {
@@ -125,13 +141,36 @@ function weaponLineFor(item: Item): WeaponLine | null {
   };
 }
 
-/** "+10 Strength" / "-15 Parry": the client's own sign convention -- a negative stat
- *  (Fletcher's Gloves' parry) reads "-15", never "+-15". */
+/** The client's own sentence for a rating-family stat stated as a percent. */
+const PERCENT_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
+  crit: (value) => `Equip: Improves your chance to get a critical strike by ${value}%.`,
+  hit: (value) => `Equip: Improves your chance to hit by ${value}%.`,
+  defense: (value) => `Equip: Increased Defense +${value}.`,
+  dodge: (value) => `Equip: Increases your chance to dodge an attack by ${value}%.`,
+  parry: (value) => `Equip: Increases your chance to parry an attack by ${value}%.`,
+  block: (value) => `Equip: Increases your chance to block attacks with a shield by ${value}%.`,
+};
+
+function percentLineFor(item: Item, key: StatKey): string | null {
+  const percent = item.percent_stats?.[key];
+  const line = PERCENT_STAT_LINES[key];
+  return percent && line && percent === item.stats[key] ? line(percent) : null;
+}
+
+/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15"), then each percent stat in
+ *  the client's "Equip:" words, in STAT_KEYS order within each group. */
 function statLines(item: Item): string[] {
-  return STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]).map((key) => {
-    const value = item.stats[key] as number;
-    return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`;
-  });
+  const keys = STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]);
+  const flat = keys
+    .filter((key) => percentLineFor(item, key) === null)
+    .map((key) => {
+      const value = item.stats[key] as number;
+      return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`;
+    });
+  const percent = keys
+    .map((key) => percentLineFor(item, key))
+    .filter((line): line is string => line !== null);
+  return [...flat, ...percent];
 }
 
 function effectTextFor(item: Item): string | null {
@@ -154,10 +193,6 @@ interface RankedSourceLine {
   priority: 0 | 1;
   chance: number | undefined;
   order: number;
-}
-
-function percentLabel(chance: number): string {
-  return `${Math.round(chance)}%`;
 }
 
 /**
@@ -282,7 +317,7 @@ function finalizeSourceLines(lines: RankedSourceLine[]): string[] {
     return a.order - b.order;
   });
   const texts = ranked.map((line) =>
-    line.chance === undefined ? line.text : `${line.text} (${percentLabel(line.chance)})`,
+    line.chance === undefined ? line.text : `${line.text} (${dropPercentLabel(line.chance)})`,
   );
 
   // A quest that rewards the item to both factions separately (an Alliance-side and a
@@ -312,6 +347,7 @@ export function itemTooltipModel(row: Item, sources: ItemTooltipSources): ItemTo
     icon: row.icon,
     slotLabel: slotLabelFor(row.slot),
     typeLabel: typeLabelFor(row),
+    bindLabel: bindLabelFor(row),
     itemLevel: row.item_level,
     requiredLevel: row.required_level,
     armor: row.armor > 0 ? row.armor : null,

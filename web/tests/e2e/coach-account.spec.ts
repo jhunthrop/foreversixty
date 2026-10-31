@@ -2,7 +2,8 @@
 // The account page's "last raid" coach line (design/specs/2026-10-28-log-coach.md section 3.3):
 // its five states plus the error, the shared reserve (no shift), and the privacy page's Log coach
 // section, shown once the plans page stops holding the coach line and absent while it holds it.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { coachCopy } from '../../src/lib/coach/copy';
 import { coachPrivacySection } from '../../src/lib/coach/privacy-section';
 import { lastRaidLine } from '../../src/lib/coach/last-raid';

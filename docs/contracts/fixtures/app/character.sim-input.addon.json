@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "data": {
+    "spec": "warrior-fury",
+    "spec_source": "fight",
+    "gear": "FS1:1.60.1.70658:warrior:orc:31/20/0:head=12640,neck=18404,shoulder=14551,main_hand=13246",
+    "talents": "31/20/0",
+    "buffs": [
+      "battle_shout",
+      "blessing_of_kings"
+    ],
+    "captured_at": "2026-12-15T05:10:00Z",
+    "source": "addon"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

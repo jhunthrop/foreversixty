@@ -7,6 +7,7 @@
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
 import { plannerSimCopy } from './planner-copy';
+import { itemNotInDataLine } from '../items/unknown-item-copy';
 
 /**
  * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
@@ -248,7 +249,7 @@ export const simCopy = {
    *  score): named, and said plainly not to count. */
   itemNotSimmed: (name: string): string => `${name} · not simmed`,
   /** An id no data of ours knows: numbered, and honest that it is our gap. */
-  unknownItem: (id: number): string => `Unknown item ${id} · not in our data yet`,
+  unknownItem: itemNotInDataLine,
 
   sourceAddonTitle: 'From the addon',
   sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',
@@ -595,6 +596,9 @@ export const simCopy = {
   // --- Task 15: the request drawer (design 8). The exact JSON a run sends, editable, with
   // simValidate's own errors beside the fields they name. ---
   requestDrawer: 'Request',
+  /** The closed drawer's own line: what it is and what it is for, since "Request" alone says neither. */
+  requestDrawerSummary: 'Edit the raw request',
+  requestDrawerHint: 'The JSON this run sends to the engine',
   requestNote:
     'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
   requestApply: 'Apply to the page',

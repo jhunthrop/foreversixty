@@ -725,7 +725,10 @@ func TestRunsThisMonthCountsServerRunsOnly(t *testing.T) {
 	h.serverRun("month0000002", "warrior-fury")
 	h.finishedRun("month0000003", "warrior-fury", 1000)
 	h.finishedRun("month0000004", "warrior-fury", 1000)
-	h.setColumn("month0000004", "created_at", time.Now().AddDate(0, -1, 0))
+	// A day before this month began: AddDate(0, -1, 0) on the 31st normalizes back into this month.
+	now := time.Now().UTC()
+	monthStart := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+	h.setColumn("month0000004", "created_at", monthStart.AddDate(0, 0, -1))
 	n, err := h.store.RunsThisMonth(t.Context(), h.owner)
 	if err != nil {
 		t.Fatal(err)

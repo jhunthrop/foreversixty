@@ -4,7 +4,8 @@
 // Bare control switching the figures. /bis/warrior/protection is a published tank file, so
 // the expected figures are read from the file the page was built from (support/bis-file.ts)
 // rather than pinned: the nightly re-rank moves every number.
-import { test, expect, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { test, expect } from './support/test';
 import { bisBand, tankFigureTexts, tankMetrics } from './support/bis-file';
 
 const TANK_PAGE = '/bis/warrior/protection#band-alliance-60';

@@ -1,5 +1,5 @@
 // web/tests/e2e/handoffs-report.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 test('each combatant in a report has its own Sim link beside the planner link', async ({ page }) => {
   // Reuses the same fixture report every other report-*.spec.ts file runs against.

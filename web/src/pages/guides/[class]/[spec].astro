@@ -357,3 +357,14 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
     }
   }
 </style>
+
+<style is:global>
+  /* The body shares the page head's left edge (leftovers lane A): the layout centres a
+     `measure-aside` main at its own max width, which put the prose 112 px right of the head at
+     1440. The 720 px prose column and the 220 px contents rail keep their widths; the grid just
+     fills the page column, so the prose starts where the head starts and the rail sits at the
+     column's right edge. */
+  main.measure-aside {
+    max-width: none;
+  }
+</style>

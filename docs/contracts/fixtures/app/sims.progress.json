@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "data": {
+    "state": "running",
+    "iterations_done": 1200,
+    "dps": 981.4,
+    "stage": 0,
+    "combos_done": 0,
+    "combos_total": 0
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

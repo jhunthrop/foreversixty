@@ -1,5 +1,5 @@
 // web/tests/e2e/checkout-launcher.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { accountPlanCopy } from '../../src/lib/billing/account-plan-copy';
 import { billingBlockCopy } from '../../src/lib/billing/copy';
 import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';

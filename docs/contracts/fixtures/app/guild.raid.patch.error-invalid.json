@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "check the highlighted fields",
+    "fields": {
+      "zone": "Pick a raid.",
+      "starts_at": "Pick a date and time.",
+      "duration_minutes": "Pick a length between 1 and 4 hours.",
+      "timezone": "Pick a timezone."
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

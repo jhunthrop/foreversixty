@@ -24,6 +24,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -124,7 +125,7 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 			itemFactionRestriction[c.ID] = c.FactionRestriction
 		}
 	}
-	lootIdx, questFloors, err := loadLootIndex(buildDir, itemFactionRestriction)
+	lootIdx, questFloors, err := loadGatedLootIndex(publishedRepoRoot, buildDir, itemFactionRestriction, io.Discard)
 	if err != nil {
 		t.Fatalf("%s: loadLootIndex: %v", path, err)
 	}

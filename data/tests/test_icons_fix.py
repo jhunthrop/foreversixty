@@ -6,6 +6,7 @@ placeholder `icon` fields, without needing a fresh raw ItemSparse export.
 import json
 from pathlib import Path
 
+from pipeline import wowhead_items as wh
 from pipeline.icons import PLACEHOLDER_ICON
 from pipeline.icons_fix import (
     fix_icons_for_build,
@@ -53,9 +54,7 @@ def test_load_fork_icons_reads_the_engine_checkout():
 def test_load_wowhead_icons_reads_every_payload_id(tmp_path: Path):
     build_dir = tmp_path / "1.0.0.1"
     (build_dir / "raw").mkdir(parents=True)
-    (build_dir / "raw" / "wowhead-gear-planner.js").write_text(
-        WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
-    )
+    wh.merge_live_feed(build_dir, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     icons = load_wowhead_icons(build_dir)
     assert icons[11726] == "inv_belt_03"
     assert icons[279865] == "inv_misc_cape_10"
@@ -120,9 +119,7 @@ def test_fix_icons_for_build_orchestrates_fork_and_wowhead_sources(tmp_path: Pat
         [_gear_item(100, PLACEHOLDER_ICON), _gear_item(11726, PLACEHOLDER_ICON)],
     )
     (build_dir / "raw").mkdir(parents=True)
-    (build_dir / "raw" / "wowhead-gear-planner.js").write_text(
-        WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
-    )
+    wh.merge_live_feed(build_dir, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     results = fix_icons_for_build("1.0.0.1", root=tmp_path, engine=ENGINE)
     result = results[0]
     # 100 comes from the fork db (`assets/database/db.json`), 11726 only from wowhead.
@@ -134,9 +131,7 @@ def test_fix_icons_for_build_without_an_engine_only_tries_wowhead(tmp_path: Path
     build_dir = tmp_path / "1.0.0.1"
     write_class_items(build_dir, "warrior", [_gear_item(11726, PLACEHOLDER_ICON)])
     (build_dir / "raw").mkdir(parents=True)
-    (build_dir / "raw" / "wowhead-gear-planner.js").write_text(
-        WOWHEAD_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
-    )
+    wh.merge_live_feed(build_dir, wh.payload_records(WOWHEAD_FIXTURE.read_text(encoding="utf-8")))
     results = fix_icons_for_build("1.0.0.1", root=tmp_path, engine=None)
     assert (results[0].fixed_by_fork, results[0].fixed_by_wowhead) == (0, 1)
 

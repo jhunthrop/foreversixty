@@ -7,7 +7,7 @@
 // this file is the only coverage that a real ?next= value actually survives into the link's
 // href, and that safeNextPath's protection against an unsafe value holds end-to-end through
 // the real component, not just in safe-next.ts's own unit tests.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,

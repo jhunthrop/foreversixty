@@ -1353,3 +1353,48 @@ def test_a_shields_block_value_is_block_value_and_not_block_chance():
 def test_a_block_rating_stays_block():
     _, stats = resolve_item_values(_shield_row(15, 10), {"ClassID": "4", "SubclassID": "6"}, None)
     assert stats == {"block": 10}
+
+
+# --- armor_type and bonding: the item tooltip's armour word and bind line ----
+# (paperdoll lane, 2026-10-31: the client prints "Plate" beside the slot and
+# "Binds when picked up" on every armour tooltip.)
+
+
+def test_armor_type_for_maps_the_contract_words():
+    from pipeline.normalize.gear import armor_type_for
+
+    chest = 5  # INVTYPE_CHEST
+    assert armor_type_for(4, 1, chest) == "cloth"
+    assert armor_type_for(4, 2, chest) == "leather"
+    assert armor_type_for(4, 3, chest) == "mail"
+    assert armor_type_for(4, 4, chest) == "plate"
+    assert armor_type_for(4, 6, 14) == "shield"
+    assert armor_type_for(4, 1, 16) is None  # a cloak: spec C6 names none
+    assert armor_type_for(4, 0, 2) is None  # miscellaneous: a neck
+    assert armor_type_for(WEAPON, 4, 13) is None  # a mace, not mail
+
+
+def test_bonding_for_maps_the_contract_words():
+    from pipeline.normalize.gear import bonding_for
+
+    assert [bonding_for(v) for v in (1, 2, 3, 4)] == ["pickup", "equip", "use", "quest"]
+    assert bonding_for(0) is None
+    assert bonding_for(None) is None
+    assert bonding_for(9) is None
+
+
+def test_client_rows_carry_armor_type_and_bonding_when_the_build_states_it():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    for row in rows:
+        row["Bonding"] = "1" if row["ID"] == "16866" else "2"
+    items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
+    helm = items[16866]  # Item.csv: class 4 subclass 4
+    assert (helm.armor_type, helm.bonding) == ("plate", "pickup")
+    assert items[19325].armor_type is None  # class 4 subclass 0: a ring
+    assert items[19325].bonding == "equip"
+
+
+def test_bonding_is_none_when_the_build_has_no_bonding_column():
+    items = {i.id: i for r in build_all() for i in r.items}
+    assert items[16866].bonding is None
+    assert items[16866].armor_type == "plate"

@@ -100,7 +100,7 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		texts := textsOf(two.Message)
 		if !strings.HasSuffix(texts[0], "-# Feet to Ranged, 8 of 17 slots. Each gain is over the next best item.") ||
 			texts[1] != "**Pick feet**\nFeet · +1.0 DPS\n-# Epic · item level 61 · Source feet" ||
-			texts[2] != "**Pick finger1**\nRing 1 · +20.0 DPS\n-# Epic · item level 61 · Source finger1" ||
+			texts[2] != "**Pick finger1**\nFinger 1 · +20.0 DPS\n-# Epic · item level 61 · Source finger1" ||
 			texts[len(texts)-1] != "**Ranged** · no pick for this range." || len(texts) != 9 {
 			t.Fatalf("page 2 = %q", texts)
 		}

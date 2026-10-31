@@ -3,7 +3,8 @@
 // 10.3): twenty 56 px rows from the history route, each a link to that pull's Coach tab, then
 // `Show older` (aria-busy while it reads), the error text, the empty and free states, and the
 // Coach tab's `#coach` landing. Every row is the coach's own output (src/fixtures/coach/history-*).
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { coachCopy } from '../../src/lib/coach/copy';
 import { historyRow } from '../../src/lib/coach/history-list';
 import { normalizeHistory } from '../../src/lib/coach/normalize';

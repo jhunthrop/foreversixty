@@ -180,8 +180,9 @@ type placement struct {
 }
 
 // placements are the frame's cells (spec §B.3): the left and right columns, then the weapons
-// rows; the off hand is left out when the main hand is two-handed.
-func placements(twoHand bool) []placement {
+// rows. The off hand is always placed: under a two-handed main hand it is drawn empty with the
+// words "Two-hand in main hand", as the client leaves that slot empty (paperdoll spec §2).
+func placements() []placement {
 	out := make([]placement, 0, len(slotLabels))
 	for i, k := range leftColumn {
 		out = append(out, placement{k, pad, row0 + pitch*i, false})
@@ -190,16 +191,14 @@ func placements(twoHand bool) []placement {
 		out = append(out, placement{k, rightX, row0 + pitch*i, true})
 	}
 	out = append(out, placement{"main_hand", pad, weaponsRow, false})
-	if !twoHand {
-		out = append(out, placement{SlotOff, rightX, weaponsRow, true})
-	}
+	out = append(out, placement{SlotOff, rightX, weaponsRow, true})
 	return append(out, placement{"ranged", rangedX, rangedRow, false})
 }
 
 // cells draws every placed slot.
 func (r *renderer) cells(s Sheet) error {
-	for _, p := range placements(s.TwoHand) {
-		c, err := r.layoutCell(s.Kind, s.slot(p.key))
+	for _, p := range placements() {
+		c, err := r.layoutCell(s.Kind, s.cellFor(p.key))
 		if err != nil {
 			return err
 		}
@@ -210,26 +209,36 @@ func (r *renderer) cells(s Sheet) error {
 	return nil
 }
 
+// centreLine is one text line of the centre column, between the crest and the faction.
+type centreLine struct {
+	st    style
+	col   color.RGBA
+	text  string
+	above float64 // margin-top, logical
+}
+
+// centreLines are the centre column's text lines: /bis the level and the range; /char the item
+// level, drawn only when every worn item is known (paperdoll spec §3.5) -- the caller leaves
+// Subtitle empty otherwise, and the crest and faction centre without it.
+func centreLines(s Sheet) []centreLine {
+	var lines []centreLine
+	if s.Kind == KindBis {
+		if s.Level > 0 {
+			lines = append(lines, centreLine{styleLevel, colorStrong, "Level " + strconv.Itoa(s.Level), 16})
+		}
+		if s.Subtitle != "" {
+			lines = append(lines, centreLine{styleRange, colorMuted, s.Subtitle, 0})
+		}
+	} else if s.Subtitle != "" {
+		lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyItemLevel, 18}, centreLine{styleILvl, colorGold, s.Subtitle, 0})
+	}
+	return lines
+}
+
 // centreColumn is the crest, the band or the item level, and the faction, centred in the
 // column between the slots (x 264, y 92 to 660).
 func (r *renderer) centreColumn(s Sheet) error {
-	type line struct {
-		st    style
-		col   color.RGBA
-		text  string
-		above float64 // margin-top, logical
-	}
-	var lines []line
-	if s.Kind == KindBis {
-		if s.Level > 0 {
-			lines = append(lines, line{styleLevel, colorStrong, "Level " + strconv.Itoa(s.Level), 16})
-		}
-		if s.Subtitle != "" {
-			lines = append(lines, line{styleRange, colorMuted, s.Subtitle, 0})
-		}
-	} else {
-		lines = append(lines, line{styleILvlLab, colorMuted, CopyItemLevel, 18}, line{styleILvl, colorGold, s.Subtitle, 0})
-	}
+	lines := centreLines(s)
 	const crestW, factionW, factionAbove, wordAbove = 64, 32, 20, 2
 	total := float64(crestW + factionAbove + factionW + wordAbove + styleFaction.lineHeight)
 	for _, l := range lines {

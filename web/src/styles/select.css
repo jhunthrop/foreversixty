@@ -1,0 +1,595 @@
+/* web/src/styles/select.css
+   The shared dropdown (design/specs/2026-10-30-controls-charts.md §A4, §A5): the closed field
+   (`.sel`, the face over the native control or the listbox trigger, identical in both modes so
+   the swap moves nothing) and the open list (`.sel-pop`, shown in the top layer by listbox.ts).
+   The field takes the /account trigger's hover, open and pressed states (nav.css .csel-btn) on
+   an 8 px input radius; the list takes the account panel's surface. Tokens only. */
+
+@layer components {
+  /* ------------------------------------------------------------------ the field */
+  /* The face is absolutely placed, so the box has no content width of its own: a call site
+     sets the width (a class on Select), and this floor keeps a bare one usable. */
+  .sel-root {
+    min-width: 120px;
+  }
+  .sel {
+    --sel-h: 52px;
+    --sel-text: 15px;
+    --sel-pad: 12px;
+    --sel-chev-right: 12px;
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: var(--sel-h);
+  }
+  .sel[data-size='compact'] {
+    --sel-h: 44px;
+  }
+  .sel[data-size='dense'] {
+    --sel-h: 44px;
+    --sel-text: 13px;
+    --sel-pad: 10px;
+    --sel-chev-right: 10px;
+  }
+  @media (min-width: 768px) and (pointer: fine) and (hover: hover) {
+    .sel[data-size='dense'] {
+      --sel-h: 36px;
+    }
+  }
+
+  /* The native control (a select, or the multi-select's sheet button) covers the face,
+     transparent: on a coarse pointer it is what a tap opens. 16 px keeps iOS from zooming. */
+  .sel-native {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    font-size: 16px;
+    cursor: pointer;
+    appearance: none;
+  }
+  .sel-native:disabled {
+    cursor: not-allowed;
+  }
+  /* The listbox trigger sits over the face the same way; its text is for screen readers. */
+  .sel-trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: transparent;
+  }
+  .sel-trigger:disabled {
+    cursor: not-allowed;
+  }
+  .sel-trigger:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  .sel-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 40px 0 var(--sel-pad);
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-control);
+    background: rgb(255 255 255 / 0.045);
+    color: var(--color-strong);
+    font-size: var(--sel-text);
+    font-weight: 600;
+    line-height: 1.2;
+    pointer-events: none;
+    transition:
+      border-color 120ms,
+      background-color 120ms;
+  }
+  /* A fitted field takes its width from its longest label, so its picked value never
+     truncates; the row around it wraps instead. The face joins the flow to give the width. */
+  .sel-root:has(> .sel[data-fit='true']) {
+    min-width: max-content;
+  }
+  .sel[data-fit='true'] > .sel-face {
+    position: relative;
+    height: 100%;
+  }
+  .sel-fit {
+    display: grid;
+  }
+  .sel-fit > * {
+    grid-area: 1 / 1;
+  }
+  .sel-sizer {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+  /* The longest label may be an option with an icon while the picked one has none. */
+  .sel-fit.has-icon > .sel-sizer {
+    padding-left: 28px;
+  }
+  .sel-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .sel-label.is-placeholder,
+  .sel[data-loading='true'] .sel-label,
+  .sel[data-empty='true'] .sel-label {
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+  .sel-chev {
+    position: absolute;
+    top: 50%;
+    right: var(--sel-chev-right);
+    color: var(--color-muted);
+    translate: 0 -50%;
+    transition: rotate 120ms;
+  }
+  .sel[data-size='dense'] .sel-chev {
+    width: 14px;
+    height: 14px;
+  }
+  .sel-spin {
+    position: absolute;
+    top: 50%;
+    right: var(--sel-chev-right);
+    display: flex;
+    color: var(--color-gold);
+    translate: 0 -50%;
+  }
+
+  /* Hover, focus, pressed, open: the /account trigger's states (§A5). */
+  .sel:not([data-blocked='true']):hover > .sel-face {
+    border-color: rgb(229 185 85 / 0.45);
+    background: rgb(255 255 255 / 0.06);
+  }
+  .sel:not([data-blocked='true']):hover > .sel-face .sel-chev {
+    color: var(--color-strong);
+  }
+  .sel:has(> .sel-native:focus-visible) > .sel-face {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  .sel:has(> .sel-native:active:not(:disabled), > .sel-trigger:active:not(:disabled)) > .sel-face {
+    border-color: var(--color-gold);
+    background: #101624;
+  }
+  .sel[data-open='true'] > .sel-face {
+    border-color: var(--color-gold);
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: var(--glow-gold);
+  }
+  .sel[data-open='true'] > .sel-face .sel-chev {
+    rotate: 180deg;
+    color: var(--color-strong);
+  }
+  .sel[data-disabled='true'] > .sel-face {
+    opacity: 0.45;
+  }
+  .sel[data-error='true'] > .sel-face,
+  .sel[data-invalid='true'] > .sel-face {
+    border-color: var(--color-wipe);
+  }
+
+  /* The 20 px icon slot, in the field and in a row (§A4.1). */
+  .sel-icon {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    border: 1px solid var(--sel-quality, var(--color-line));
+    border-radius: 4px;
+    background: var(--color-raised);
+  }
+  .sel-icon[data-kind='crest'] {
+    border: 0;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1.5px var(--sel-ring, var(--color-line));
+  }
+  .sel-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ------------------------------------------------------------------ the list */
+  .sel-pop {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    display: none;
+    flex-direction: column;
+    max-width: 420px;
+    max-height: var(--popover-room, none);
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-panel);
+    background: var(--surface-card);
+    box-shadow:
+      inset 0 1px 0 var(--card-highlight),
+      var(--shadow-card);
+    color: var(--color-strong);
+    font-family: var(--font-body);
+    text-align: left;
+  }
+  .sel-pop:popover-open {
+    display: flex;
+    animation: sel-rise 100ms ease-out;
+  }
+  .sel-pop[data-side='top']:popover-open {
+    animation-name: sel-drop;
+  }
+  @keyframes sel-rise {
+    from {
+      opacity: 0;
+      translate: 0 2px;
+    }
+  }
+  @keyframes sel-drop {
+    from {
+      opacity: 0;
+      translate: 0 -2px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sel-pop:popover-open {
+      animation: none;
+    }
+    .sel-chev,
+    .sel-face {
+      transition: none;
+    }
+  }
+
+  .sel-body {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .sel-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 360px;
+    padding: 4px 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .sel-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms;
+  }
+  .sel-fade-top {
+    top: 0;
+    background: linear-gradient(0deg, rgb(13 15 21 / 0), #0d0f15);
+  }
+  .sel-fade-bottom {
+    bottom: 0;
+    background: linear-gradient(180deg, rgb(13 15 21 / 0), #0d0f15);
+  }
+  .sel-pop[data-fade-top='true'] .sel-fade-top,
+  .sel-pop[data-fade-bottom='true'] .sel-fade-bottom {
+    opacity: 1;
+  }
+
+  /* Rows (§A4.3). */
+  .sel-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    padding: 6px 40px 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .sel-row:has(.sel-icon) {
+    min-height: 40px;
+  }
+  .sel-pop[data-dense='true'] .sel-row {
+    min-height: 32px;
+    font-size: 13px;
+  }
+  .sel-pop[data-dense='true'] .sel-row:has(.sel-icon) {
+    min-height: 36px;
+  }
+  .sel-pop[data-touch='true'] .sel-row {
+    min-height: 44px;
+  }
+  .sel-row.is-active,
+  .sel-row:not([aria-disabled='true']):hover {
+    background: rgb(229 185 85 / 0.1);
+    box-shadow: inset 2px 0 0 var(--color-gold);
+  }
+  .sel-row[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .sel-row-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .sel-row-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .sel-row-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .sel-row-desc {
+    max-width: 330px;
+    margin-top: 2px;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+  .sel-row-meta {
+    flex-shrink: 0;
+    margin-left: 16px;
+    color: var(--color-muted);
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .sel-match {
+    background: none;
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+  .sel-you {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 18px;
+    padding: 0 5px;
+    border: 1px solid rgb(229 185 85 / 0.38);
+    border-radius: var(--radius-pill);
+    color: var(--color-gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .sel-check {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    color: var(--color-gold);
+    translate: 0 -50%;
+  }
+
+  /* The multi-select box (§A4.5). */
+  .sel-box {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--color-line-warm-strong);
+    border-radius: 4px;
+    color: transparent;
+  }
+  .sel-row[aria-selected='true'] .sel-box {
+    border-color: var(--color-gold);
+    background: var(--color-gold);
+    color: var(--color-bg);
+  }
+
+  /* Group heads stick while their rows scroll (§A4.3). */
+  .sel-grp + .sel-grp,
+  .sel-row + .sel-grp {
+    margin-top: 4px;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .sel-grp-head {
+    position: sticky;
+    top: -4px;
+    z-index: 1;
+    padding: 10px 12px 4px;
+    background: #0e1016;
+    color: var(--color-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* The filter row (§A4.4). */
+  .sel-filter {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px 8px;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .sel-filter-box {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+  }
+  .sel-filter-glyph {
+    position: absolute;
+    left: 10px;
+    color: var(--color-muted);
+    pointer-events: none;
+  }
+  .sel-filter-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 32px 0 34px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-strong);
+    font: inherit;
+    font-size: 14px;
+  }
+  .sel-filter-input:focus {
+    border-color: var(--color-gold);
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(229 185 85 / 0.35);
+  }
+  .sel-filter-clear {
+    position: absolute;
+    right: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-muted);
+  }
+  .sel-filter-clear:hover {
+    color: var(--color-strong);
+  }
+  .sel-count {
+    flex-shrink: 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sel-count:empty {
+    display: none;
+  }
+  .sel-empty {
+    padding: 14px 12px;
+    color: var(--color-muted);
+    font-size: 14px;
+  }
+
+  /* The multi-select foot (§A4.5). */
+  .sel-foot {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .sel-foot-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* A preset chip: the Players presets in the list's foot and in the chart's legend sheet. */
+  .chip-preset {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--color-line-card);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  button.chip-preset:hover {
+    border-color: rgb(229 185 85 / 0.45);
+  }
+  button.chip-preset[aria-pressed='true'],
+  .chip-preset.is-inert[data-lit='true'] {
+    border-color: var(--color-gold);
+    background: rgb(229 185 85 / 0.1);
+    color: var(--color-gold);
+  }
+  button.chip-preset:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  .chip-preset.is-inert:not([data-lit='true']) {
+    border-style: dashed;
+    color: var(--color-muted);
+  }
+  @media (pointer: coarse), (hover: none) {
+    .chip-preset {
+      min-height: 44px;
+    }
+  }
+  .sel-foot-count {
+    margin-left: auto;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A menu on the same surface and rows (the report's More menu, §A10 row 3). */
+  .sel-menu {
+    min-width: 180px;
+  }
+  .sel-menu[data-fallback='true'] {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    display: flex;
+  }
+  .sel-menu-item {
+    width: 100%;
+    border: 0;
+    background: none;
+    color: var(--color-strong);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .sel-menu-item:focus-visible {
+    outline: none;
+    background: rgb(229 185 85 / 0.1);
+    box-shadow: inset 2px 0 0 var(--color-gold);
+  }
+
+  /* The field's error line, under the field (§A5 Error). */
+  .sel-error {
+    margin-top: 4px;
+    color: var(--color-wipe);
+    font-size: 13px;
+  }
+}

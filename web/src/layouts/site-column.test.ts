@@ -39,6 +39,9 @@ const ALLOWED: Readonly<Record<string, readonly RegExp[]>> = {
   'components/planner/TreeGrid.svelte': [/mx-auto w-fit/],
   // The item tooltip sizes itself to the viewport, minus a margin.
   'components/ItemTooltip.svelte': [/calc\(100vw_-_32px\)/],
+  // The paperdoll's stage and note: one centred 960 px object inside its card, as the client
+  // frames its model (design/specs/2026-10-31-paperdoll.md §3.3), not a page container.
+  'styles/paperdoll.css': [/max-width: 960px/, /margin-inline: auto/],
   // The header bar's phone name clamp reads the viewport, not a page container.
   'styles/nav.css': [/calc\(100vw - 460px\)/],
   // The breakout itself, and the clip that keeps it from adding a scrollbar.

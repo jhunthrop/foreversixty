@@ -12,7 +12,6 @@
     DISABLED_LOOK,
     FIELD_CHROME,
     INLINE_LINK,
-    SELECT_CHROME,
     SWITCH_CHROME,
     SWITCH_ON,
     TEXTAREA_CHROME,
@@ -45,7 +44,8 @@
   import type { RaidInput } from '../../lib/guild/raids-api';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import RaidFormDiscord from './RaidFormDiscord.svelte';
-  import SelectChevron from '../ui/SelectChevron.svelte';
+  import { selectCopy } from '../../lib/ui/copy';
+  import Select from '../ui/Select.svelte';
 
   /** The block is only drawn with a channel; this stands in while there is none. */
   const CLOSED_DISCORD: GuildRaidDiscord = {
@@ -107,7 +107,6 @@
   let busy = $state(false);
   /** The API said the guild's officer tools ended: the form stays to show why, but cannot resend. */
   let planEnded = $state(false);
-  let zoneSelect = $state<HTMLSelectElement | null>(null);
 
   const id = (field: string): string => `raid-form-${mode}-${field}`;
   const errorId = (field: RaidFormField | 'form'): string => `${id(field)}-error`;
@@ -136,7 +135,7 @@
   const discordLine = splitAtLink(raidCopy.form.connectDiscord, raidCopy.form.connectDiscordLink);
   const keepStartsAt = $derived(mode === 'edit' ? raid?.starts_at : undefined);
 
-  onMount(() => zoneSelect?.focus());
+  onMount(() => document.getElementById(id('zone'))?.focus());
 
   function set<K extends keyof RaidFormValues>(key: K, value: RaidFormValues[K]): void {
     values = { ...values, [key]: value };
@@ -202,23 +201,18 @@
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <div class="flex flex-col gap-2">
       {@render label('zone', raidCopy.form.raid)}
-      <span class="relative block">
-        <select
-          id={id('zone')}
-          bind:this={zoneSelect}
-          class={SELECT_CHROME}
-          value={values.zone}
-          disabled={busy}
-          aria-invalid={errors.zone !== undefined}
-          aria-describedby={errors.zone !== undefined ? errorId('zone') : undefined}
-          onchange={(event) => set('zone', event.currentTarget.value)}
-          data-testid="raid-form-zone"
-        >
-          {#if values.zone === ''}<option value="" disabled>{raidCopy.placeholders.chooseRaid}</option>{/if}
-          {#each zones as zone (zone.key)}<option value={zone.key}>{zone.name}</option>{/each}
-        </select>
-        <SelectChevron />
-      </span>
+      <Select
+        id={id('zone')}
+        size="compact"
+        value={values.zone}
+        placeholder={values.zone === '' ? raidCopy.placeholders.chooseRaid : undefined}
+        options={zones.map((zone) => ({ value: zone.key, label: zone.name }))}
+        disabled={busy}
+        invalid={errors.zone !== undefined}
+        describedBy={errors.zone !== undefined ? errorId('zone') : undefined}
+        testid="raid-form-zone"
+        onchange={(event) => set('zone', (event.currentTarget as HTMLSelectElement).value)}
+      />
       {@render fieldError('zone')}
     </div>
     <div class="flex flex-col gap-2">
@@ -271,45 +265,34 @@
     </div>
     <div class="flex flex-col gap-2">
       {@render label('duration', raidCopy.form.duration)}
-      <span class="relative block">
-        <select
-          id={id('duration')}
-          class={SELECT_CHROME}
-          value={String(values.duration)}
-          disabled={busy}
-          onchange={(event) => set('duration', Number(event.currentTarget.value))}
-          data-testid="raid-form-duration"
-        >
-          {#each durationOptions() as option (option.value)}<option value={option.value}
-              >{option.label}</option
-            >{/each}
-        </select>
-        <SelectChevron />
-      </span>
+      <Select
+        id={id('duration')}
+        size="compact"
+        value={String(values.duration)}
+        options={durationOptions()}
+        disabled={busy}
+        testid="raid-form-duration"
+        onchange={(event) => set('duration', Number((event.currentTarget as HTMLSelectElement).value))}
+      />
     </div>
   </div>
 
   <div class="flex flex-col gap-2">
     {@render label('timezone', raidCopy.form.guildZone)}
-    <span class="relative block">
-      <select
-        id={id('timezone')}
-        class={SELECT_CHROME}
-        value={values.timezone}
-        disabled={busy}
-        aria-describedby={id('for-you')}
-        onchange={(event) => set('timezone', event.currentTarget.value)}
-        data-testid="raid-form-timezone"
-      >
-        {#each zoneGroups as group (group.region)}
-          <optgroup label={group.region}>
-            {#each group.options as option (option.value)}<option value={option.value}>{option.label}</option
-              >{/each}
-          </optgroup>
-        {/each}
-      </select>
-      <SelectChevron />
-    </span>
+    <Select
+      id={id('timezone')}
+      size="compact"
+      value={values.timezone}
+      options={zoneGroups.flatMap((group) =>
+        group.options.map((option) => ({ ...option, group: group.region })),
+      )}
+      disabled={busy}
+      describedBy={id('for-you')}
+      searchable
+      searchPlaceholder={selectCopy.filterTimeZones}
+      testid="raid-form-timezone"
+      onchange={(event) => set('timezone', (event.currentTarget as HTMLSelectElement).value)}
+    />
     <p id={id('for-you')} class="text-muted text-[13px]" data-testid="raid-form-for-you">{forYouText}</p>
   </div>
 

@@ -2,7 +2,8 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
+import { choose } from './support/select';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 
@@ -71,10 +72,10 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   // The whole night keeps the tables and drops the chart: nothing draws a chart over a night.
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
   else await page.getByTestId('tab-damage-done').click();
   await expect(page.getByTestId('actor-table')).toBeVisible();
-  if (phone) await page.getByTestId('tab-select').selectOption('summary');
+  if (phone) await choose(page.getByTestId('tab-select'), 'summary');
   else await page.getByTestId('tab-summary').click();
   await page.getByTestId('night-bosses').getByRole('button', { name: 'pull 1' }).first().click();
   await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');

@@ -26,7 +26,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": "bow",
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": null
     },
     {
       "id": 13315,
@@ -54,7 +56,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": null,
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": null
     },
     {
       "id": 12798,
@@ -80,7 +84,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": "axe",
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": null
     },
     {
       "id": 19325,
@@ -108,7 +114,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": null,
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": null
     },
     {
       "id": 17066,
@@ -136,7 +144,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": null,
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": "shield"
     },
     {
       "id": 16866,
@@ -166,7 +176,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": null,
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": "plate"
     },
     {
       "id": 19019,
@@ -194,7 +206,9 @@
       "percent_stats": {},
       "icon_source": "client",
       "weapon_type": "sword",
-      "superseded_by": null
+      "superseded_by": null,
+      "bonding": null,
+      "armor_type": null
     }
   ]
 }

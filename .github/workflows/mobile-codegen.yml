@@ -1,0 +1,49 @@
+# The native apps' generated code must match its sources: the design tokens (tokens.css), the API
+# models and endpoints (api/openapi.yaml), the copy catalog and the deep-link table
+# (apps/shared). Each generator lives in web/scripts and has a vitest drift check in web; this
+# runs only those checks, on any change to a source, an output or a generator, so a hand edit to
+# a generated file or a source change without a regeneration fails here. The web workflow runs
+# the same tests with the rest of the unit suite.
+name: mobile-codegen
+on:
+  push:
+    branches: [main]
+    paths:
+      - api/openapi.yaml
+      - apps/**
+      - web/scripts/gen-mobile-*.mjs
+      - web/scripts/mobile-codegen/**
+      - web/src/lib/mobile/**
+      - web/src/styles/tokens.css
+      - web/src/styles/mobile-tokens.test.ts
+      - .github/workflows/mobile-codegen.yml
+  pull_request:
+    paths:
+      - api/openapi.yaml
+      - apps/**
+      - web/scripts/gen-mobile-*.mjs
+      - web/scripts/mobile-codegen/**
+      - web/src/lib/mobile/**
+      - web/src/styles/tokens.css
+      - web/src/styles/mobile-tokens.test.ts
+      - .github/workflows/mobile-codegen.yml
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: mobile-codegen-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.node-version
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Generated mobile code matches its sources
+        run: npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts

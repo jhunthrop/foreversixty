@@ -5,7 +5,8 @@
 // the strip never moves it, and the header selector moves it, the "you" pill and the "Yours" row in
 // place; signed out, the header's one shared line stands where it would; on a phone the pills are
 // 44 px tall with no wrapped label.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { bisBand, readBisFile, readSpecCatalog } from './support/bis-file';
 import {
   OBNOXIOUS,

@@ -23,6 +23,9 @@ export const CARD_HEAD = {
   root: 'flex min-h-[68px] flex-wrap items-center gap-x-3 gap-y-2 px-5 py-4',
   compact: 'flex min-h-12 flex-wrap items-center gap-x-[10px] gap-y-1 px-4 py-[10px]',
   titleBlock: 'flex min-w-0 flex-[1_1_11rem] flex-col gap-1',
+  /** The compact head's title is one short word: it never pushes the right slot to a line of its
+   *  own on a phone (paperdoll spec §3.2, the mocks' 360 boards). */
+  titleBlockCompact: 'flex min-w-0 flex-1 flex-col gap-1',
   label: 'text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase',
   titleRow: 'flex flex-wrap items-center gap-x-2 gap-y-1',
   aside: 'ml-auto min-w-0 text-right text-[13px]',

@@ -19,7 +19,7 @@ func TestSlotsAreTheFrameOrder(t *testing.T) {
 	if strings.Join(keys, ",") != want {
 		t.Fatalf("slots = %v", keys)
 	}
-	if SlotLabel("finger1") != "Ring 1" || SlotLabel("main_hand") != "Main hand" || SlotLabel("nope") != "nope" {
+	if SlotLabel("finger1") != "Finger 1" || SlotLabel("main_hand") != "Main hand" || SlotLabel("nope") != "nope" {
 		t.Fatalf("labels %q %q", SlotLabel("finger1"), SlotLabel("main_hand"))
 	}
 }

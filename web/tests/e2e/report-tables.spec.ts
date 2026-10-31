@@ -1,7 +1,9 @@
 // web/tests/e2e/report-tables.spec.ts
-import { expect, test, type Locator } from '@playwright/test';
+import type { Locator } from '@playwright/test';
+import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose } from './support/select';
 
 /**
  * Clicks an ability's chart control until its label flips. The forced click (see the note
@@ -21,7 +23,7 @@ const FIGHT = '/reports/fixture2abcd?fight=3';
 test('the summary tab lists the roster with specs and deaths', async ({ page }) => {
   await page.goto(FIGHT);
   await expect(page.getByTestId('summary-tab')).toContainText('5 players');
-  await expect(page.getByTestId('summary-tab')).toContainText('1 deaths');
+  await expect(page.getByTestId('summary-tab')).toContainText('1 death ·');
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
   await expect(page.getByTestId('combatants')).toContainText('item level 183');
 });
@@ -46,7 +48,7 @@ test('damage done ranks rows, colours names by class and expands to abilities', 
 
 test('the ability filter narrows every row to that ability', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
-  await page.getByTestId('filter-ability').selectOption({ label: 'Slam' });
+  await choose(page.getByTestId('filter-ability'), { label: 'Slam' });
   const rows = page.getByTestId('actor-table').locator('li');
   await expect(rows).toHaveCount(1);
   await expect(rows.first()).toContainText('Baelgrim');
@@ -92,7 +94,7 @@ test('a window change keeps the ability on the chart', async ({ page }) => {
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
   // A window is a stretch to read the line against, not a different question: the pick
   // and its measured whole-fight series survive it, and the brush only slices the line.
-  await page.getByTestId('window-select').selectOption({ label: 'First 30s' });
+  await choose(page.getByTestId('window-select'), { label: 'First 30s' });
   await expect(page).toHaveURL(/start=0&end=30000/);
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam');
   await expect(control).toHaveText('Off the chart');
@@ -246,7 +248,8 @@ test('interrupts, dispels, resources and threat each render or say they are empt
 
   await page.goto(`${FIGHT}&tab=threat`);
   await expect(page.getByTestId('threat-table')).toContainText('Baelgrim');
-  await expect(page.getByTestId('threat-incomplete')).toContainText('does not yet carry every class');
+  // The base model's gaps are said once, in the chart's caveat line (spec §B12).
+  await expect(page.getByTestId('threat-caveat')).toContainText(/An estimate|Damage and healing only/);
 });
 
 test('the trash fight’s interrupts and dispels do have rows', async ({ page }) => {

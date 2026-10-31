@@ -79,7 +79,7 @@
         "components": [
           {
             "type": 2,
-            "style": 3,
+            "style": 2,
             "label": "In",
             "custom_id": "gsgn:1:in:1822:us/normal/duskstrider"
           },

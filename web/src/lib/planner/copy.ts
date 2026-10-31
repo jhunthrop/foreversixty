@@ -2,11 +2,13 @@
 // Planner-specific copy. The planner's other components read addonCopy/simCopy for their
 // strings; this is the first module that is genuinely the planner's own -- the confirm step
 // Share opens into before it writes a build to a public link (one-product spec section 1).
+import { itemNotInDataLine } from '../items/unknown-item-copy';
+
 export const plannerCopy = {
   /** A slot an import names with an item this build's data does not carry; see
    *  simCopy.unknownItem, the same line on the simulator's strip. */
   itemNotSimmed: (name: string): string => `${name} · not simmed`,
-  unknownItem: (id: number): string => `Unknown item ${id} · not in our data yet`,
+  unknownItem: itemNotInDataLine,
   shareTitle: 'Share this build',
   pointOrderTitle: 'Point order',
   /** The point-order card's meta: "0 spent". */

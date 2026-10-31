@@ -14,7 +14,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
-	"sort"
 	"strconv"
 	"time"
 
@@ -170,8 +169,9 @@ type Header struct {
 // ENCOUNTER_START payloads and trash boundaries from combat gaps, and
 // neither survives the Parquet round trip, so a segmenter fed these
 // events would split one honest fight into several. Everything it would
-// derive from the events - start, end, the players present, deaths, NPC
-// kills - is derived the same way here.
+// derive from the events - start, end, the players present, the group,
+// player and mob deaths, the group's kills - is derived the same way here,
+// through the segmenter's own fight.Counter.
 func Rebuild(index int, h Header, events []event.Event) (fight.Fight, summary.Summary, error) {
 	if len(events) == 0 {
 		return fight.Fight{}, summary.Summary{}, ErrNoEvents
@@ -188,37 +188,16 @@ func Rebuild(index int, h Header, events []event.Event) (fight.Fight, summary.Su
 	reg := units.NewRegistry(UnitOptions())
 	acc := summary.New(SummaryOptions(reg))
 	acc.Start(f.Start)
-	seen := map[string]bool{}
+	counts := fight.NewCounter(fight.DefaultOptions())
 	for _, e := range events {
 		if e.Time.After(f.End) {
 			f.End = e.Time
 		}
 		reg.Observe(e)
 		acc.Add(e)
-		for _, u := range []event.Unit{e.Source, e.Dest} {
-			if u.GUID == "" || u.GUID == units.NoGUID {
-				continue
-			}
-			if units.Parse(u.GUID).Kind == units.KindPlayer {
-				seen[u.GUID] = true
-			}
-		}
-		switch e.Kind {
-		case event.Death:
-			if units.Parse(e.Dest.GUID).Kind == units.KindPlayer {
-				f.Deaths++
-			} else if units.Hostile(e.Dest.Flags) {
-				f.NPCKills++
-			}
-		case event.PartyKill:
-			f.NPCKills++
-		}
+		counts.Observe(e)
 	}
-	f.Players = make([]string, 0, len(seen))
-	for guid := range seen {
-		f.Players = append(f.Players, guid)
-	}
-	sort.Strings(f.Players)
+	counts.Apply(&f)
 	f.StartOffset, f.EndOffset = events[0].Offset, events[len(events)-1].Offset
 	f.StartLine, f.EndLine = events[0].Line, events[len(events)-1].Line
 	return f, acc.Snapshot(f, Version), nil

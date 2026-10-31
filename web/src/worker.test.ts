@@ -602,10 +602,10 @@ const SHELL_HTML = `<!doctype html><html><head><title>Report · Forever Sixty</t
 <meta property="og:image" content="https://foreversixty.gg/og/reports.png" data-og="og-image" />
 </head><body><div id="report" data-report-mount><h1 data-testid="report-shell-title"><span class="skeleton-block"></span></h1></div></body></html>`;
 
-/** Assets a shell request may resolve to: reports.html for the report shell, guild.html
+/** Assets a shell request may resolve to: report-shell.html for the report shell, guild.html
  *  for the claim/settings/invite shells this task adds (the plain guild shell arrives
  *  with a later task and is still unhandled here). */
-const SHELL_ASSET_PATHS = new Set(['/reports.html', '/guild.html']);
+const SHELL_ASSET_PATHS = new Set(['/report-shell.html', '/guild.html']);
 
 function shellEnv() {
   return {
@@ -621,7 +621,7 @@ function shellEnv() {
 }
 
 describe('shell routes with rewritten unfurl tags', () => {
-  it('serves dist/reports.html for any id, rewritten from the API’s JSON', async () => {
+  it('serves dist/report-shell.html for any id, rewritten from the API’s JSON', async () => {
     vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
     vi.stubGlobal(
       'fetch',
@@ -648,7 +648,20 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(html).toContain(`content="${API_BASE_URL}/reports/fixture2abcd/card.png"`);
     expect(html).toContain('href="https://foreversixty.gg/reports/fixture2abcd"');
     expect(html).toContain('content="https://foreversixty.gg/reports/fixture2abcd"');
-    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe('https://foreversixty.gg/reports.html');
+    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe(
+      'https://foreversixty.gg/report-shell.html',
+    );
+  });
+
+  it('leaves /reports itself, the "Your reports" list, to the static assets with no API call', async () => {
+    const upstream = vi.fn<GlobalFetch>();
+    vi.stubGlobal('fetch', upstream);
+    const env = shellEnv();
+
+    await worker.fetch(new Request('https://foreversixty.gg/reports'), env);
+
+    expect(upstream).not.toHaveBeenCalled();
+    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe('https://foreversixty.gg/reports');
   });
 
   it('never sends the visitor’s cookies to the API for a cacheable shell', async () => {

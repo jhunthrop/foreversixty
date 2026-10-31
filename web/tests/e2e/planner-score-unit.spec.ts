@@ -2,7 +2,7 @@
 // The planner names its score by the build's role: HPS for a healer, tank score for a tank,
 // DPS for everyone else. The fixture planner data is a warrior only, so this runs against the
 // real pipeline output (FOREVER_DATA=real), opening each spec on its own level-20 band build.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { bisBand } from './support/bis-file';
 
 test.skip(

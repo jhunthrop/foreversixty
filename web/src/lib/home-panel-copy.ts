@@ -4,6 +4,7 @@
 // pitch -- one sentence, one button, signed out; signed in, the shared character header's
 // answer words (design/specs/2026-10-11-character-header.md) and the two next-action cards
 // under it (no switcher: the header selector is the one way to change character).
+import { itemIdLabel, itemNotInDataPhrase } from './items/unknown-item-copy';
 
 /** The signed-out block's `id` in `index.astro`: `HomeAccountPanel.svelte` reaches outside
  *  its own root to find it (same cross-island DOM-reach pattern as `SIM_TAB_ATTR` /
@@ -105,7 +106,8 @@ export const homeUpgradesCopy = {
   bestInSlotHeader: 'Best in slot',
   gainHeader: 'Gain',
   noItemEquipped: 'No item equipped',
-  unknownItem: 'Unknown item',
+  unknownItem: itemNotInDataPhrase,
+  unknownItemId: itemIdLabel,
   /** `Full list for Marksmanship 20 to 29` -- the panel's own header aside link. */
   fullListLink: (specName: string, bandLabel: string): string => `Full list for ${specName} ${bandLabel}`,
   alreadyBestInSlotPrefix: 'Already best in slot:',

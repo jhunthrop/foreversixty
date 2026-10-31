@@ -32,6 +32,7 @@
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
+  import type { ItemsStatus } from '../../lib/sim/store.svelte';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
   import CopyForGame from '../CopyForGame.svelte';
@@ -153,6 +154,7 @@
   const talentPoints = $derived(talentPointsFromString(result.request.character.talents));
 
   let items = $state<Map<number, Item>>(new Map());
+  let itemsStatus = $state<ItemsStatus>('loading');
 
   // One load, for this component's one (unchanging) character -- not an `$effect`, the
   // same reason `enterCompare` in `SimView.svelte` is a plain call rather than one: this
@@ -161,7 +163,9 @@
     try {
       const file = await loadItems(character.tree_version, character.class_slug);
       items = new Map(file.items.map((item) => [item.id, item]));
+      itemsStatus = 'ready';
     } catch {
+      itemsStatus = 'failed';
       // The strip renders slot names and "Empty" without the item file; a failed fetch
       // must not stop the rest of the page from rendering.
       items = new Map();
@@ -303,6 +307,7 @@
 <CharacterStrip
   {character}
   {items}
+  {itemsStatus}
   gearKnown={kind !== 'weights' && gearKnown}
   readonly
   {plannerHref}

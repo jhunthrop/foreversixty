@@ -1,8 +1,11 @@
 // web/tests/e2e/logs-recent-reports.spec.ts
 // Logs spec 2026-10-11 sections 2.5 and 9: the "Recent public reports" panel under "Your reports"
 // on /logs, an honest empty state, and the one sample report as a plain labelled row, shown once.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { routeSampleReportMeta, SAMPLE_REPORT_ID, SAMPLE_REPORT_META } from './support/logs-sample-fixture';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/devices'));
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 

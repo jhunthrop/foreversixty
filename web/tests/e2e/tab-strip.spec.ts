@@ -2,9 +2,12 @@
 // The shared TabStrip in a real browser (site alignment spec 2026-10-29 D3), on its first two
 // homes: the guild page's in-page tabs (keyboard, roving tabindex, aria-selected) and the
 // simulator's link tabs (aria-current). Phone scroll and fades: guild-phone and sim-tabs specs.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { stubGuildAttendance } from './support/guild-attendance';
 import { GUILD_URL } from './support/guild-raids';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/settings'));
 
 test.describe('guild tabs, keyboard', () => {
   test.beforeEach(async ({ page }) => {

@@ -1,14 +1,25 @@
 <!-- web/src/components/report/FightSelector.svelte -->
-<!-- The first control on the page. Encounters first-class, trash labelled and foldable,
+<!-- The first control on the page. Encounters first-class, each zone's trash one entry that
+     opens its combined view (its pulls behind the entry's own expand control),
      kills and wipes marked, a live fight marked as such. On phone it is a scrollable
      column of 44px rows rather than a dropdown: picking the right pull out of forty is the
      single most common thing anyone does here. -->
 <script lang="ts">
-  import { fightRows, fightTitle, pullNumbers } from '../../lib/report/fights';
-  import { formatClock, formatDuration, outcomeLabel } from '../../lib/report/format';
+  import {
+    bossPullsLabel,
+    combinedLabel,
+    fightRows,
+    fightTitle,
+    pullNumbers,
+    trashGroupSelection,
+  } from '../../lib/report/fights';
+  import { formatClock, formatDuration, joinFacts, outcomeLabel } from '../../lib/report/format';
+  import { fightDeathMark } from '../../lib/report/group';
+  import { killCountsLabel } from '../../lib/report/kill-counts';
   import type { FightEntry } from '../../lib/report/types';
-  import { ALL_FIGHTS } from '../../lib/report/url';
+  import { ALL_FIGHTS, trashScopeKey } from '../../lib/report/url';
   import Card from '../ui/Card.svelte';
+  import Glyph from '../ui/Glyph.svelte';
 
   let {
     fights,
@@ -16,6 +27,7 @@
     onSelect,
     phaseOf = new Map<number, string>(),
     foldOnPhone = false,
+    deathsInRange = false,
   }: {
     /** On a phone, fold the list to the one row that names the fight on show (the sample report,
      *  whose table would otherwise start two screens down). */
@@ -25,27 +37,31 @@
     onSelect: (index: number) => void;
     /** Per fight index, the phase that pull reached; a wipe's row says which. */
     phaseOf?: ReadonlyMap<number, string>;
+    /** The report's default scope is the logger's group, but a fight from before engine 0.6.0
+     *  counts every player the log saw: its marks say so (lib/report/group fightDeathMark). */
+    deathsInRange?: boolean;
   } = $props();
 
-  let showTrash = $state(false);
   /** On a phone the list is folded to the one row that names the fight on show, so the report's
    *  table starts above the second screen (W.9); a pick closes it again. From md it is always open. */
   let phoneOpen = $state(false);
   const current = $derived(fights.find((fight) => fight.index === selected) ?? null);
   const currentLabel = $derived(
-    selected === ALL_FIGHTS || current === null
-      ? 'All boss pulls'
-      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))}${current.kind === 'encounter' ? ` · ${formatDuration(current.duration_ms)}` : ''}`,
+    selected === ALL_FIGHTS || trashScopeKey(selected) !== null || current === null
+      ? combinedLabel(fights, selected)
+      : joinFacts(
+          fightTitle(current),
+          outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? '')),
+          current.kind === 'encounter' ? formatDuration(current.duration_ms) : '',
+        ),
   );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
-  const shown = $derived(showTrash ? fights : encounters.length > 0 ? encounters : fights);
-  const trashCount = $derived(fights.length - encounters.length);
   /** Roughly how many two-line rows the phone's 320px box shows before it scrolls. */
   const PHONE_ROWS_SHOWN = 5;
   let listAtEnd = $state(false);
   const pulls = $derived(pullNumbers(fights));
-  const rows = $derived(fightRows(shown));
+  const rows = $derived(fightRows(fights));
   /** Trash groups the reader opened, by the index of their first pull. */
   let openGroups = $state<number[]>([]);
 
@@ -60,6 +76,7 @@
 {#snippet fightRow(fight: FightEntry, nested: boolean)}
   {@const pull = pulls.get(fight.index)}
   {@const isSelected = fight.index === selected}
+  {@const deathMark = fightDeathMark([fight], deathsInRange)}
   <!-- Two lines: the name on its own line so it is never cut to "Gener Kaal", and the
            clock, length, deaths and pull number under it. The selected row carries a gold
            edge and the raised card colour; a background shade alone was too close to the
@@ -68,7 +85,7 @@
     <button
       type="button"
       class="flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {isSelected
-        ? 'border-l-gold bg-card-top'
+        ? 'border-line-soft border-l-gold bg-card-top'
         : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
       aria-current={isSelected ? 'true' : undefined}
       data-testid={`fight-${fight.index}`}
@@ -83,35 +100,39 @@
         >
           {fightTitle(fight)}
         </span>
-        <span
-          class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
-            ? 'text-gold'
-            : fight.kind !== 'encounter'
-              ? 'text-muted'
+        {#if fight.in_progress || fight.kind === 'encounter'}
+          <span
+            class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
+              ? 'text-gold'
               : fight.kill
                 ? 'text-kill'
                 : 'text-wipe'}"
-          title={fight.kind !== 'encounter'
-            ? 'Trash: how many enemies died'
-            : fight.kill
-              ? 'The boss died'
-              : 'The percentage is the boss’s health when the pull ended'}
-          data-testid={`fight-${fight.index}-outcome`}
-        >
-          {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
-        </span>
+            title={fight.in_progress
+              ? 'The fight is still being logged'
+              : fight.kill
+                ? 'The boss died'
+                : 'The percentage is the boss’s health when the pull ended'}
+            data-testid={`fight-${fight.index}-outcome`}
+          >
+            {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
+          </span>
+        {/if}
       </span>
-      <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
+      <span class="text-muted numeric flex w-full flex-wrap items-baseline gap-x-2 text-[11px]">
         <span>{formatClock(fight.start)}</span>
+        {#if !fight.in_progress && fight.kind !== 'encounter' && outcome(fight) !== ''}
+          <!-- Every mob that died in range, and the ones the group killed. A pull from before
+               engine 0.6 has no true count, so it shows none. -->
+          <span
+            title="Mobs that died in range, each counted once, and how many of them your group killed"
+            data-testid={`fight-${fight.index}-kills`}>{outcome(fight)}</span
+          >
+        {/if}
         <!-- A trash row's name already says its length ("Trash · 3:26"): once is enough. -->
         {#if fight.kind === 'encounter'}<span>{formatDuration(fight.duration_ms)}</span>{/if}
-        {#if fight.deaths > 0}
-          <span
-            class="text-death"
-            title={`${fight.deaths} ${fight.deaths === 1 ? 'death' : 'deaths'}`}
-            data-testid={`fight-${fight.index}-deaths`}
-          >
-            {fight.deaths}<span aria-hidden="true">†</span>
+        {#if deathMark !== null}
+          <span class="text-death" title={deathMark.title} data-testid={`fight-${fight.index}-deaths`}>
+            {deathMark.count}<span aria-hidden="true">†</span>
           </span>
         {/if}
         {#if pull !== undefined && pull.of > 1}
@@ -126,7 +147,7 @@
   <Card
     glyph="list"
     title="Fights"
-    meta={`${encounters.length} ${encounters.length === 1 ? 'pull' : 'pulls'}`}
+    meta={bossPullsLabel(encounters.length)}
     body="none"
     compact
     headClass={foldOnPhone ? 'max-md:hidden' : ''}
@@ -167,7 +188,7 @@
                 type="button"
                 class="flex min-h-11 w-full items-center gap-3 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {selected ===
                 ALL_FIGHTS
-                  ? 'border-l-gold bg-card-top'
+                  ? 'border-line-soft border-l-gold bg-card-top'
                   : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
                 aria-current={selected === ALL_FIGHTS ? 'true' : undefined}
                 data-testid="fight-all"
@@ -183,40 +204,69 @@
               {@render fightRow(row.fight, false)}
             {:else}
               {@const holdsSelected = row.fights.some((entry) => entry.index === selected)}
-              {@const isOpen = holdsSelected || openGroups.includes(row.key)}
-              <!-- Consecutive trash in one zone: one row, opened to reach each pull. -->
-              <li>
+              {@const isOpen = row.fights.length > 1 && (holdsSelected || openGroups.includes(row.key))}
+              {@const opens = trashGroupSelection(row)}
+              {@const isSelected = selected === opens}
+              {@const groupMark = fightDeathMark(row.fights, deathsInRange)}
+              <!-- A zone's trash: one entry that opens its pulls folded together (a lone pull opens
+                   itself), with its pulls behind the expand control beside it. -->
+              <li
+                class="flex border-b border-l-[3px] {isSelected
+                  ? 'border-line-soft border-l-gold bg-card-top'
+                  : 'border-line-soft border-l-transparent'}"
+              >
                 <button
                   type="button"
-                  class="border-line-soft hover:bg-card-top/60 flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] border-l-transparent px-3 py-2 text-left text-[14px]"
-                  aria-expanded={isOpen}
-                  data-testid={`fight-group-${row.key}`}
-                  onclick={() =>
-                    (openGroups = openGroups.includes(row.key)
-                      ? openGroups.filter((key) => key !== row.key)
-                      : [...openGroups, row.key])}
+                  class="flex min-h-11 min-w-0 flex-1 flex-col gap-0.5 px-3 py-2 text-left text-[14px] {isSelected
+                    ? ''
+                    : 'hover:bg-card-top/60'}"
+                  aria-current={isSelected ? 'true' : undefined}
+                  data-testid={`fight-trash-${row.key}`}
+                  onclick={() => pick(opens)}
                 >
                   <span class="flex w-full items-baseline gap-2">
                     <span
-                      class="text-muted min-w-0 flex-1 truncate leading-tight"
+                      class="text-strong min-w-0 flex-1 truncate leading-tight"
                       title={`Trash · ${row.zone}`}>Trash · {row.zone}</span
                     >
-                    <span class="text-muted numeric shrink-0 text-[12px]" title="Trash: how many enemies died"
-                      >{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
-                    >
                   </span>
-                  <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
+                  <span class="text-muted numeric flex w-full flex-wrap items-baseline gap-x-2 text-[11px]">
+                    <span data-testid={`fight-trash-${row.key}-pulls`}
+                      >{row.fights.length} {row.fights.length === 1 ? 'pull' : 'pulls'}</span
+                    >
                     <span>{formatDuration(row.duration_ms)}</span>
-                    {#if row.deaths > 0}
+                    {#if row.kills !== null}
                       <span
-                        class="text-death"
-                        title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}
-                        >{row.deaths}<span aria-hidden="true">†</span></span
+                        title="Mobs that died in range over these pulls, each counted once, and how many of them your group killed"
+                        data-testid={`fight-group-${row.key}-kills`}>{killCountsLabel(row.kills)}</span
                       >
                     {/if}
-                    <span class="ml-auto">{row.fights.length} pulls {isOpen ? '‹' : '›'}</span>
+                    {#if groupMark !== null}
+                      <span
+                        class="text-death"
+                        title={groupMark.title}
+                        data-testid={`fight-group-${row.key}-deaths`}
+                        >{groupMark.count}<span aria-hidden="true">†</span></span
+                      >
+                    {/if}
                   </span>
                 </button>
+                {#if row.fights.length > 1}
+                  <button
+                    type="button"
+                    class="text-muted hover:bg-card-top/60 hover:text-strong flex min-h-11 w-11 shrink-0 items-center justify-center"
+                    aria-expanded={isOpen}
+                    aria-label={`${isOpen ? 'Hide' : 'Show'} the ${row.fights.length} trash pulls in ${row.zone}`}
+                    disabled={holdsSelected}
+                    data-testid={`fight-group-${row.key}`}
+                    onclick={() =>
+                      (openGroups = openGroups.includes(row.key)
+                        ? openGroups.filter((key) => key !== row.key)
+                        : [...openGroups, row.key])}
+                  >
+                    <Glyph name="chevron" size={16} class={isOpen ? '-rotate-90' : 'rotate-90'} />
+                  </button>
+                {/if}
               </li>
               {#if isOpen}
                 {#each row.fights as fight (fight.index)}
@@ -233,16 +283,6 @@
             class="text-muted border-line-soft border-t px-3 py-1 text-[12px] md:hidden"
             data-testid="fights-more">Scroll the list for all {encounters.length} pulls</span
           >
-        {/if}
-        {#if trashCount > 0 && encounters.length > 0}
-          <button
-            type="button"
-            class="text-muted inline-flex min-h-11 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase"
-            onclick={() => (showTrash = !showTrash)}
-            data-testid="toggle-trash"
-          >
-            {showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}
-          </button>
         {/if}
       </div>
     </div>

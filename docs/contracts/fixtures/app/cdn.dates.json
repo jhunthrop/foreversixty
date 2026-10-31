@@ -1,0 +1,33 @@
+[
+  {
+    "key": "Sept 13",
+    "value": "Deep Dive panel",
+    "note": "10:00 PDT · Hardcore panel 16:15 PDT",
+    "iso": "2026-09-13"
+  },
+  {
+    "key": "Sept 17",
+    "value": "Beta opens",
+    "note": "level cap 30 · through Oct 21",
+    "endIso": "2026-10-21",
+    "iso": "2026-09-17",
+    "role": "beta",
+    "highlight": true,
+    "running": "Beta live through Oct 21"
+  },
+  {
+    "key": "Oct 27",
+    "value": "Name reservation",
+    "note": "through Nov 3",
+    "iso": "2026-10-27",
+    "endIso": "2026-11-03",
+    "running": "Name reservation open through Nov 3"
+  },
+  {
+    "key": "Dec 9",
+    "value": "First raids",
+    "note": "Barrow Deeps · Hyjal Summit · Onyxia",
+    "iso": "2026-12-09",
+    "role": "raids"
+  }
+]

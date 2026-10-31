@@ -304,6 +304,17 @@ class GearItem(BaseModel):
     #: row with this set as never a pick candidate -- not yet wired there,
     #: see the lane report.
     superseded_by: int | None = None
+    #: Spec C6 (api/openapi.yaml `Item.bonding`, docs/contracts/app-v1.md),
+    #: published by the paperdoll lane 2026-10-31: the client's
+    #: `ItemSparse.Bonding` as a word (`pipeline.normalize.gear.bonding_for`),
+    #: for the tooltip's bind line. Set only on a client row of a build whose
+    #: ItemSparse has the column; `None` for no binding, and for a classic-db
+    #: or wowhead row, whose sources state none -- never guessed.
+    bonding: Literal["pickup", "equip", "use", "quest"] | None = None
+    #: Spec C6 (`Item.armor_type`): the armour word from Item.ClassID 4's
+    #: SubclassID (`pipeline.normalize.gear.armor_type_for`); `None` for a
+    #: cloak, a neck, a ring, a trinket, a weapon or a relic.
+    armor_type: Literal["cloth", "leather", "mail", "plate", "shield"] | None = None
 
 
 class ClassItems(BaseModel):

@@ -329,6 +329,41 @@ def weapon_type_for(item_class_id: int, subclass_id: int, inventory_type: int) -
     return WEAPON_TYPE_BY_SUBCLASS.get(subclass_id)
 
 
+#: Item.ClassID 4 (ARMOR) SubclassID -> the armour word of spec C6
+#: (api/openapi.yaml `Item.armor_type`, docs/contracts/app-v1.md). Miscellaneous
+#: (0) and relics name none, so they are absent.
+ARMOR_TYPE_BY_SUBCLASS: dict[int, str] = {
+    1: "cloth",
+    2: "leather",
+    3: "mail",
+    4: "plate",
+    6: "shield",
+}
+
+#: InventoryType 16, INVTYPE_CLOAK: a cloak is cloth by subclass, but the
+#: contract names no armour word for it (spec C6: "null for a cloak").
+CLOAK_INVENTORY_TYPE = 16
+
+#: ItemSparse.Bonding -> the bind word of spec C6 (`Item.bonding`); 0 (no
+#: binding) and anything unlisted are absent, so they publish as null.
+BONDING_WORDS: dict[int, str] = {1: "pickup", 2: "equip", 3: "use", 4: "quest"}
+
+
+def armor_type_for(item_class_id: int, subclass_id: int, inventory_type: int) -> str | None:
+    """The row's `armor_type`, or None for a cloak and anything that is not
+    cloth, leather, mail, plate or a shield -- never guessed, same policy as
+    `weapon_type_for`."""
+    if item_class_id != ARMOR or inventory_type == CLOAK_INVENTORY_TYPE:
+        return None
+    return ARMOR_TYPE_BY_SUBCLASS.get(subclass_id)
+
+
+def bonding_for(value: int | None) -> str | None:
+    """ItemSparse's `Bonding` as the contract's word, or None for no column,
+    no binding, or a value the client table does not define."""
+    return None if value is None else BONDING_WORDS.get(value)
+
+
 def is_weapon_row(item_class_id: int, inventory_type: int) -> bool:
     """True when a row is a real weapon: Item.ClassID 2 in a weapon-only
     InventoryType slot. `weapon_fields` is only meaningful for such a row --
@@ -919,6 +954,8 @@ def build_class_items(
             unique=int_column(row, "MaxCount") == 1,
             icon_source=icon_source,
             weapon_type=weapon_type_for(item_class_id, subclass_id, inventory_type),
+            bonding=bonding_for(_optional_int(row, "Bonding")),
+            armor_type=armor_type_for(item_class_id, subclass_id, inventory_type),
         )
         candidates.append(
             (

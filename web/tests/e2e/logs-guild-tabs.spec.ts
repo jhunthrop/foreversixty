@@ -2,9 +2,12 @@
 // Logs landing spec (2026-10-04) §4.C.1: the guild tab strip on "Your reports", backed by
 // GET /v1/guilds/{id}/reports (the API lane's new endpoint, merged on main -- same
 // MinePage/MyReportPage shape and page-number pagination as GET /v1/reports?mine=1).
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/devices'));
 
 function fulfil(body: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {

@@ -15,7 +15,6 @@ lands only where its mask allows and the cloak lands wherever cloth is worn.
 
 import json
 import logging
-import shutil
 from pathlib import Path
 
 from test_normalize_build import HERE, prepare
@@ -68,7 +67,7 @@ def test_load_supplement_wraps_the_planner_gates(tmp_path: Path) -> None:
     build_dir = tmp_path / "1.60.1.70009"
     raw = build_dir / "raw"
     raw.mkdir(parents=True)
-    shutil.copy(FIXTURE, raw / wh.RAW_FILE)
+    wh.merge_live_feed(build_dir, wh.payload_records(FIXTURE.read_text(encoding="utf-8")))
     picked = load_supplement(build_dir, client_ids=CLIENT_IDS)
     assert [item.id for item in picked] == [271218, 279865]
 
@@ -172,7 +171,7 @@ def test_normalize_build_merges_the_wowhead_supplement(tmp_path: Path, caplog) -
     caplog.set_level(logging.INFO)
     root = prepare(tmp_path)
     _add_client_belt(root)
-    shutil.copy(FIXTURE, root / "1.0.0.1" / "raw" / wh.RAW_FILE)
+    wh.merge_live_feed(root / "1.0.0.1", wh.payload_records(FIXTURE.read_text(encoding="utf-8")))
 
     result = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
     assert result.skipped == ()
@@ -218,7 +217,7 @@ def test_normalize_build_joins_a_supplement_item_into_a_set_the_client_has(
     root = prepare(tmp_path)
     raw = root / "1.0.0.1" / "raw"
     payload = FIXTURE.read_text(encoding="utf-8").replace('"itemset":9001', '"itemset":209')
-    (raw / wh.RAW_FILE).write_text(payload, encoding="utf-8")
+    wh.merge_live_feed(raw.parent, wh.payload_records(payload))
 
     result = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
     sets = json.loads((result.build_dir / "sets.json").read_text())

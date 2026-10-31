@@ -10,7 +10,7 @@ import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import { readFileSync, existsSync } from 'node:fs';
 import {
   GEAR_FIXTURE_ITEMS,
-  GEAR_FIXTURE_LONG_NAME,
+  GEAR_FIXTURE_LONGEST,
   GEAR_PANEL_FIXTURE,
 } from '../../../src/fixtures/character-gear';
 
@@ -19,9 +19,8 @@ import {
  *  predates it does; character-gear.spec.ts adds it. */
 export const GEAR = GEAR_PANEL_FIXTURE;
 
-/** The same with Shoulder worn as "Mantle of the Unforgiving Majesty", a long name whose note
- *  cannot share its line on a phone (fix round 5 item 1). */
-export const GEAR_LONG_NAME = { ...GEAR_PANEL_FIXTURE, gear: GEAR_FIXTURE_LONG_NAME };
+/** The paperdoll's worst case: the longest names in every slot. */
+export const GEAR_LONGEST = { gear: GEAR_FIXTURE_LONGEST, gear_gap_total: null };
 
 /** The build's items/priest.json for the fixture's ids: the real rows (quality, icon,
  *  two-handed, stats), so the names take their colours and icons and the tooltip has a row. */

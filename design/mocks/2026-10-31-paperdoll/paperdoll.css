@@ -1,0 +1,169 @@
+/* The paperdoll's CSS as the spec states it. Values are tokens from web/src/styles/tokens.css. */
+@font-face { font-family: Barlow; font-weight: 400; src: url({FONTS}/Barlow-Regular.ttf); }
+@font-face { font-family: Barlow; font-weight: 600; src: url({FONTS}/Barlow-SemiBold.ttf); }
+@font-face { font-family: Barlow; font-weight: 700; src: url({FONTS}/Barlow-Bold.ttf); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url({FONTS}/BarlowCondensed-Bold.ttf); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 800; src: url({FONTS}/BarlowCondensed-ExtraBold.ttf); }
+:root {
+  --bg: #07090d; --line: #262e40; --line-soft: #1c2230; --text: #e9e4d8; --strong: #f2eee4; --muted: #9a9484;
+  --gold: #e5b955; --row-hover: rgba(229,185,85,.06); --tile: rgba(229,185,85,.12); --tile-ink: #f5d27a;
+  --q-poor: #9d9d9d; --q-common: #ffffff; --q-uncommon: #1eff00; --q-rare: #0070dd; --q-epic: #a335ee; --q-legendary: #ff8000;
+  --class-warrior: #c69b6d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Barlow, sans-serif; font-size: 15px; }
+.board-label { font: 600 12px/16px Barlow; color: #5d5849; padding: 10px 16px 0; letter-spacing: .04em; }
+.col { max-width: 1344px; margin: 0 auto; padding: 16px 48px 48px; }
+@media (max-width: 767px) { .col { padding: 12px 16px 32px; } }
+
+/* Card (site alignment §3.2) with the compact head (§3.3.1). */
+.card { background: linear-gradient(180deg, rgba(229,185,85,.075), rgba(229,185,85,.012) 45%), #0d0f15;
+  border: 1px solid rgba(229,185,85,.17); border-radius: 12px; overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(245,210,122,.45), 0 16px 38px rgba(0,0,0,.55); }
+.chead { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 16px; flex-wrap: wrap; }
+.tile { width: 28px; height: 28px; border-radius: 8px; background: var(--tile); color: var(--tile-ink); display: grid; place-items: center; }
+.ctitle { margin: 0; font: 800 18px/24px 'Barlow Condensed'; text-transform: uppercase; letter-spacing: .01em; color: var(--strong); }
+.aside { margin-left: auto; font-size: 13px; }
+.meta { color: var(--muted); }
+.meta-gold { color: var(--gold); font-weight: 600; }
+.btn-sec { font: 700 12px/1 Barlow; letter-spacing: .07em; text-transform: uppercase; color: var(--strong); background: transparent;
+  border: 1px solid var(--line); border-radius: 8px; height: 32px; padding: 0 12px; }
+.cbody { border-top: 1px solid var(--line-soft); padding: 20px; }
+@media (max-width: 767px) { .cbody { padding: 16px; } }
+
+/* ---- The paperdoll ---- */
+.pd { container-type: inline-size; }
+/* The stage: one inset object, the way the client frames its model. */
+.stage { max-width: 960px; margin: 0 auto; background: #0b0e14; border: 1px solid var(--line-soft); border-radius: 12px; padding: 16px 12px; }
+.pd-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); column-gap: 8px; row-gap: 4px; }
+.pd-grid.solo { display: block; max-width: 340px; }
+
+.slot { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 4px;
+  border-radius: 8px; cursor: pointer; min-width: 0; position: relative; }
+.slot.is-static { cursor: default; }
+.slot.r { flex-direction: row-reverse; text-align: right; }
+.slot:not(.is-static):hover, .slot.is-hover, .up:hover, .up.is-hover { background: var(--row-hover); }
+.slot:not(.is-static):hover .sock img, .slot.is-hover .sock img { filter: brightness(1.12); }
+.slot:focus-visible, .slot.is-focus, .up:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.slot:active, .slot.is-active, .up:active { background: rgba(229,185,85,.10); }
+
+.sock { flex: none; width: 40px; height: 40px; border: 2px solid var(--q); border-radius: 6px; background: #14171f; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.65), 0 1px 2px rgba(0,0,0,.5); }
+.sock img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sock.empty { border: 1px dashed var(--line); background: #090b10; padding: 2px; }
+.sock.empty img.sil { opacity: .45; border-radius: 3px; }
+.sock.unknown { border: 1px solid var(--line); padding: 1px; }
+.sock.unknown img { opacity: .4; filter: saturate(.5); border-radius: 4px; }
+.sock.bare { border: 1px solid var(--line); }
+.sock.loading, .bar, .skel { background: linear-gradient(90deg, #141925 0%, #1c2230 50%, #141925 100%); background-size: 200% 100%; border-color: transparent; border-radius: 6px; }
+.bar { display: block; width: 60%; height: 12px; border-radius: 4px; }
+.slot.r .bar { margin-left: auto; }
+
+.txt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+/* Names: 3 lines with an ellipsis on a phone, 2 on desktop. */
+.name { font: 600 13px/16px Barlow; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-overflow: ellipsis; hyphens: auto; overflow-wrap: break-word; }
+.name.muted { color: var(--muted); }
+.name.id { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+.name.plain { color: var(--text); }
+.det { display: none; align-items: center; gap: 6px; font: 400 13px/18px Barlow; color: var(--muted); min-width: 0; }
+.slot.r .det { justify-content: flex-end; }
+.pick-ico { width: 16px; height: 16px; border-radius: 3px; border: 1px solid var(--q); flex: none; }
+.pick { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.gain { color: var(--gold); font-weight: 600; flex: none; font-variant-numeric: tabular-nums; }
+.best, .unscored { color: var(--muted); flex: none; }
+.q-poor { color: var(--q-poor); } .q-common { color: var(--q-common); } .q-uncommon { color: var(--q-uncommon); }
+.q-rare { color: #3d94f0; } .q-epic { color: #b866f5; } .q-legendary { color: var(--q-legendary); }
+
+/* Phone upgrade row: the pick on its own full-width, 44 px, tappable row under its slot's pair. */
+.up { all: unset; box-sizing: border-box; grid-column: 1 / 3; grid-row: var(--rp); display: flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 8px; border-radius: 8px; background: rgba(229,185,85,.035); cursor: pointer; min-width: 0; }
+.up-slot { flex: none; width: 64px; font: 600 12px/16px Barlow; color: var(--muted); }
+.up-sock { flex: none; width: 24px; height: 24px; border: 1px solid var(--q); border-radius: 4px; overflow: hidden; }
+.up-sock img { width: 100%; height: 100%; display: block; }
+.up-name { flex: 1; min-width: 0; font: 600 13px/16px Barlow; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: ellipsis; padding: 6px 0; }
+.up .gain, .up .unscored { font-size: 13px; }
+
+/* Phone (container < 640): identity on top, two mirrored columns, the sheet's weapon rows. */
+.centre { grid-column: 1 / 3; grid-row: 1; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 0 12px; }
+.crest { width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent); background: #0d111a; flex: none; }
+.who { display: flex; flex-wrap: wrap; column-gap: 10px; align-items: baseline; min-width: 0; max-width: 240px; }
+.cname { flex-basis: 100%; font: 800 22px/24px 'Barlow Condensed'; text-transform: uppercase; letter-spacing: .01em; }
+.desc { flex-basis: 100%; display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--text); }
+.fac { width: 16px; height: 16px; }
+.lvl { font-size: 13px; line-height: 18px; color: var(--muted); }
+.ilvl { display: inline-flex; align-items: baseline; gap: 4px; font-size: 13px; line-height: 18px; color: var(--muted); }
+.ilvl .figure { color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ilvl .figure.skel { width: 32px; display: inline-block; height: 12px; }
+.pill { margin-top: 6px; display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+  border-radius: 6px; font: 700 11px/1 Barlow; letter-spacing: .08em; text-transform: uppercase; color: var(--gold);
+  background: rgba(229,185,85,.14); border: 1px solid rgba(229,185,85,.35); }
+.slot.l { grid-column: 1; grid-row: var(--rp); }
+.slot.r { grid-column: 2; grid-row: var(--rp); }
+.slot.mh, .slot.oh { margin-top: 8px; }
+.slot.rg { grid-column: 1 / 3; justify-self: center; width: calc(50% - 4px); }
+.pd-note { margin: 12px auto 0; max-width: 960px; font-size: 13px; line-height: 18px; color: var(--muted);
+  border-top: 1px solid var(--line-soft); padding-top: 12px; }
+
+/* Very narrow (container < 340, a 360 px phone): socket 36, names 12/15, still 3 lines. */
+@container (max-width: 339px) {
+  .sock { width: 36px; height: 36px; }
+  .name { font-size: 12px; line-height: 15px; }
+  .slot { min-height: 53px; }
+  .up-slot { width: 56px; }
+}
+
+/* Desktop (container >= 640): the character frame. Centre 168, from 880 240. */
+@container (min-width: 640px) {
+  .stage { padding: 20px 24px; }
+  .pd-grid { grid-template-columns: minmax(0,1fr) 168px minmax(0,1fr); column-gap: 24px; row-gap: 8px; }
+  .slot { min-height: 52px; gap: 12px; }
+  .has-detail .slot { min-height: 64px; }
+  .sock { width: 44px; height: 44px; }
+  .name { font-size: 14px; line-height: 18px; -webkit-line-clamp: 2; }
+  .det { display: flex; }
+  .up { display: none; }
+  .slot.l { grid-column: 1; grid-row: var(--r); }
+  .slot.r { grid-column: 3; grid-row: var(--r); }
+  .slot.rg { grid-column: 2; grid-row: 10; width: auto; justify-self: stretch; }
+  .centre { grid-column: 2; grid-row: 1 / 9; flex-direction: column; gap: 14px; padding: 0; }
+  .crest { width: 72px; height: 72px; }
+  .who { flex-direction: column; flex-wrap: nowrap; align-items: center; text-align: center; gap: 2px; max-width: none; }
+  .cname { flex-basis: auto; font-size: 22px; line-height: 24px; overflow-wrap: anywhere; }
+  .desc { flex-basis: auto; justify-content: center; flex-wrap: wrap; }
+  .ilvl { flex-direction: column; align-items: center; gap: 0; margin-top: 12px; }
+  .ilvl .micro { font: 700 11px/14px Barlow; letter-spacing: .14em; text-transform: uppercase; }
+  .ilvl .figure { font: 800 28px/32px 'Barlow Condensed'; }
+  .ilvl .figure.skel { width: 64px; height: 28px; margin-top: 2px; }
+  .pill { margin-top: 10px; }
+}
+@container (min-width: 880px) {
+  .pd-grid { grid-template-columns: minmax(0,1fr) 240px minmax(0,1fr); }
+  .crest { width: 96px; height: 96px; }
+  .cname { font-size: 26px; line-height: 28px; }
+  .desc { font-size: 14px; }
+}
+
+/* The shared ItemTooltip (ItemTooltip.svelte): 280 to 360 px, viewport minus 32 px on a phone. */
+.tt { position: absolute; z-index: 30; width: clamp(280px, calc(100vw - 32px), 360px); display: flex; flex-direction: column; gap: 8px;
+  background: #0d111a; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 13px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
+.tt-head { display: flex; align-items: flex-start; gap: 8px; }
+.tt-head img { width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--line); flex: none; }
+.tt-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.tt-name { font-size: 15px; font-weight: 600; line-height: 20px; }
+.tt-small { font-size: 11px; color: var(--muted); }
+.tt-12 { font-size: 12px; margin: 0; line-height: 16px; }
+.tt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.tt-col { display: flex; flex-direction: column; }
+.tt-muted { color: var(--muted); }
+.tt-green { color: #1eff00; }
+.tt-src { display: flex; flex-direction: column; gap: 2px; border-top: 1px solid var(--line-soft); padding-top: 8px; font-size: 11px; color: var(--muted); }
+
+/* States board */
+.states { display: grid; grid-template-columns: 1fr; }
+.st { display: grid; grid-template-columns: 170px 360px 1fr; gap: 16px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line-soft); }
+.st-h { font: 600 13px Barlow; color: var(--strong); }
+.st-n { font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: var(--muted); }
+.pd.one .slot { min-height: 52px; gap: 12px; }
+.pd.one .sock { width: 44px; height: 44px; }
+.pd.one .name { font-size: 14px; line-height: 18px; -webkit-line-clamp: 2; }
+.pd.one .det { display: flex; }

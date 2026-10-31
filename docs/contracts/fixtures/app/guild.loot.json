@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "data": {
+    "encounters": [
+      {
+        "encounter_id": 1084,
+        "name": "Onyxia",
+        "zone": "Onyxia's Lair",
+        "killed": true
+      }
+    ],
+    "selected": 1084,
+    "items": [
+      {
+        "item_id": 16900,
+        "name": "Stormrage Cover",
+        "icon": "inv_helmet_09",
+        "quality": 4,
+        "slot": "head",
+        "copies": 1,
+        "awarded_to": {
+          "award_id": 77,
+          "character_key": "us/pvp/kraggor",
+          "name": "Kraggor",
+          "at": "2026-12-15T04:12:00Z",
+          "by_name": "Obnoxious Yell"
+        },
+        "candidates": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "spec": "Fury",
+            "gain_dps": 18.6,
+            "not_sim_checked": false,
+            "ilvl_delta": null,
+            "attendance": {
+              "present": 6,
+              "nights": 8
+            },
+            "already_equivalent": false,
+            "replaces": "Lionheart Helm",
+            "items_won": 1
+          }
+        ]
+      },
+      {
+        "item_id": 15410,
+        "name": "Scale of Onyxia",
+        "icon": "inv_misc_monsterscales_07",
+        "quality": 3,
+        "slot": "",
+        "copies": 1,
+        "awarded_to": null,
+        "candidates": []
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

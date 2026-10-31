@@ -213,7 +213,9 @@
           x2={guideX}
           y1={plot.top}
           y2={plot.top + plot.height}
-          stroke={hover === null ? 'var(--color-line)' : 'var(--color-line-warm-strong)'}
+          stroke={hover === null ? 'var(--color-line)' : 'var(--color-text)'}
+          stroke-opacity={hover === null ? 1 : 0.7}
+          stroke-dasharray={hover === null ? undefined : '3 3'}
           data-testid="history-guide"
         />
       {/if}

@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
+import { choose } from './support/select';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -110,8 +111,8 @@ test('a shared request link reproduces the whole page state', async ({ page }) =
   await expect(page.getByTestId('sim-character')).toBeVisible();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
-  await page.getByTestId('sim-style').selectOption('cleave-5');
-  await page.getByTestId('sim-duration').selectOption('600');
+  await choose(page.getByTestId('sim-style'), 'cleave-5');
+  await choose(page.getByTestId('sim-duration'), '600');
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   // The drawer tracks the page's own current request until the player edits the textarea
   // (RequestDrawer.svelte's own comment, finding 2 of the final whole-branch review), so
@@ -145,7 +146,7 @@ test('the drawer tracks page settings until the player edits, then keeps the edi
 
   // Change a setting before the drawer is ever opened -- the arrival-request case the
   // fix targets -- then open it and see the change already there.
-  await page.getByTestId('sim-duration').selectOption('600');
+  await choose(page.getByTestId('sim-duration'), '600');
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   const editor = page.getByTestId('sim-request-json');
   await expect.poll(async () => JSON.parse(await editor.inputValue()).encounter.duration_sec).toBe(600);
@@ -154,7 +155,7 @@ test('the drawer tracks page settings until the player edits, then keeps the edi
   // overwrite what they typed.
   const edited = JSON.stringify({ ...JSON.parse(await editor.inputValue()), iterations: 500 }, null, 2);
   await editor.fill(edited);
-  await page.getByTestId('sim-duration').selectOption('300');
+  await choose(page.getByTestId('sim-duration'), '300');
   await expect(editor).toHaveValue(edited);
 
   // Reset returns the textarea to tracking the page again.

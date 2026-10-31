@@ -10,7 +10,8 @@
   import { button } from '../../lib/ui/button';
   import communityLinks from '../../data/links.json';
   import SettingsRow from '../ui/SettingsRow.svelte';
-  import Select, { type SelectOption } from '../ui/Select.svelte';
+  import type { SelectOption } from '../../lib/ui/listbox-model';
+  import Select from '../ui/Select.svelte';
   import AccountGuildPlanLine from './AccountGuildPlanLine.svelte';
   import AccountGuildRowStep from './AccountGuildRowStep.svelte';
 
@@ -70,6 +71,7 @@
     {#snippet control()}
       <Select
         id={shareId}
+        size="compact"
         label={guildConsentCopy.shareLabel}
         value={guild.consent ?? 'gear'}
         options={SHARE_OPTIONS}

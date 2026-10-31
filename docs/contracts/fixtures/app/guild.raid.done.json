@@ -1,0 +1,346 @@
+{
+  "data": {
+    "id": 29,
+    "zone": "raid:onyxias-lair",
+    "zone_name": "Onyxia's Lair",
+    "title": "Onyxia's Lair",
+    "starts_at": "2026-12-15T01:00:00Z",
+    "invite_at": null,
+    "duration_minutes": 180,
+    "status": "done",
+    "size": 40,
+    "guild_timezone": "America/Chicago",
+    "notes_html": "<p>Bring <strong>flasks</strong></p>\n",
+    "notes": "Bring **flasks**",
+    "counts": {
+      "in": 18,
+      "late": 2,
+      "bench": 1,
+      "out": 3,
+      "tanks": 2,
+      "healers": 5,
+      "dps": 11
+    },
+    "composition": {
+      "classes": [
+        {
+          "class": "warrior",
+          "count": 2
+        },
+        {
+          "class": "paladin",
+          "count": 0
+        },
+        {
+          "class": "hunter",
+          "count": 0
+        },
+        {
+          "class": "rogue",
+          "count": 0
+        },
+        {
+          "class": "priest",
+          "count": 0
+        },
+        {
+          "class": "shaman",
+          "count": 0
+        },
+        {
+          "class": "mage",
+          "count": 0
+        },
+        {
+          "class": "warlock",
+          "count": 0
+        },
+        {
+          "class": "druid",
+          "count": 0
+        }
+      ],
+      "roles": {
+        "tanks": 2,
+        "healers": 5,
+        "dps": 11
+      },
+      "targets": null,
+      "buffs": [
+        {
+          "key": "fortitude",
+          "name": "Power Word: Fortitude",
+          "label": "Fort",
+          "icon": "spell_holy_wordfortitude",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "mark_of_the_wild",
+          "name": "Mark of the Wild",
+          "label": "MotW",
+          "icon": "spell_nature_regeneration",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "arcane_intellect",
+          "name": "Arcane Intellect",
+          "label": "Int",
+          "icon": "spell_holy_magicalsentry",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "blessings",
+          "name": "Blessings",
+          "label": "Bless",
+          "icon": "spell_holy_fistofjustice",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "shadow_protection",
+          "name": "Shadow Protection",
+          "label": "SPro",
+          "icon": "spell_shadow_antishadow",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "soulstone",
+          "name": "Soulstone",
+          "label": "SS",
+          "icon": "inv_misc_orb_04",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "battle_rez",
+          "name": "Rebirth",
+          "label": "Rez",
+          "icon": "spell_nature_reincarnation",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "windfury_totem",
+          "name": "Windfury Totem",
+          "label": "WF",
+          "icon": "spell_nature_windfury",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "strength_of_earth",
+          "name": "Strength of Earth Totem",
+          "label": "SoE",
+          "icon": "spell_nature_earthbindtotem",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "mana_spring",
+          "name": "Mana Spring Totem",
+          "label": "MS",
+          "icon": "spell_nature_manaregentotem",
+          "present": false,
+          "count": 0
+        }
+      ]
+    },
+    "signups": [
+      {
+        "character_key": "us/pvp/obnoxious-yell",
+        "name": "Obnoxious Yell",
+        "class": "warrior",
+        "spec": "warrior-fury",
+        "role": "dps",
+        "state": "in",
+        "note": "",
+        "own": true,
+        "spec_name": "Fury",
+        "spec_icon": "ability_warrior_innerrage"
+      },
+      {
+        "character_key": "us/pvp/kraggor",
+        "name": "Kraggor",
+        "class": "warrior",
+        "spec": "warrior-protection",
+        "role": "tank",
+        "state": "in",
+        "note": "",
+        "own": false,
+        "spec_name": "Protection",
+        "spec_icon": "inv_shield_06"
+      }
+    ],
+    "not_signed": [
+      {
+        "character_key": "us/pvp/zulmara",
+        "name": "Zulmara",
+        "class": "hunter",
+        "spec": "hunter-marksmanship",
+        "role": "dps",
+        "spec_name": "Marksmanship",
+        "spec_icon": "ability_marksmanship"
+      }
+    ],
+    "viewer": {
+      "characters": [
+        {
+          "character_key": "us/pvp/obnoxious-yell",
+          "name": "Obnoxious Yell",
+          "class": "warrior",
+          "spec": "warrior-fury",
+          "verified": true,
+          "state": "in",
+          "role": "dps",
+          "raid_spec": "warrior-fury",
+          "spec_name": "Fury",
+          "spec_icon": "ability_warrior_innerrage",
+          "spec_options": [
+            {
+              "spec": "warrior-arms",
+              "name": "Arms",
+              "role": "dps",
+              "icon": "ability_rogue_eviscerate"
+            },
+            {
+              "spec": "warrior-fury",
+              "name": "Fury",
+              "role": "dps",
+              "icon": "ability_warrior_innerrage"
+            },
+            {
+              "spec": "warrior-protection",
+              "name": "Protection",
+              "role": "tank",
+              "icon": "inv_shield_06"
+            }
+          ]
+        }
+      ],
+      "can": [],
+      "tools_ended": false,
+      "raid_night": true
+    },
+    "discord": {
+      "available": true,
+      "connected": true,
+      "post_default": true,
+      "remind_default": true,
+      "channel_name": "raid-signups"
+    },
+    "discord_post": {
+      "posted_at": "2026-12-13T18:00:00Z",
+      "post_at": "2026-12-13T18:00:00Z",
+      "reminded_at": null,
+      "remind": true
+    },
+    "pre_done_status": "planned",
+    "match": {
+      "report_id": "ewlrx3enxbeb",
+      "zone_name": "Onyxia's Lair",
+      "uploaded_at": "2026-12-15T03:12:44Z",
+      "uploaded_by_name": "Yell#1604",
+      "pulls": 9,
+      "kills": 1,
+      "duration_ms": 4080000,
+      "how": "auto"
+    },
+    "night": {
+      "signed": 22,
+      "came": 20,
+      "late": 2,
+      "not_in_log": 1,
+      "joined": 1,
+      "excused": 0,
+      "kills": 1,
+      "wipes": 8,
+      "deaths": 41,
+      "duration_ms": 4080000
+    },
+    "attendance": [
+      {
+        "character_key": "us/pvp/obnoxious-yell",
+        "name": "Obnoxious Yell",
+        "class": "warrior",
+        "spec": "warrior-fury",
+        "signed": "in",
+        "role": "dps",
+        "outcome": "present",
+        "came_as": null,
+        "first_seen_offset_s": 0,
+        "pulls_present": 9,
+        "pulls_total": 9,
+        "excused": false,
+        "own": true
+      }
+    ],
+    "report": {
+      "kill_order": [
+        {
+          "encounter_id": 1084,
+          "name": "Onyxia",
+          "killed": true,
+          "kill_ms": 268000,
+          "wipes_before": 4,
+          "deaths": 3,
+          "fight_index": 3
+        }
+      ],
+      "unnamed": {
+        "pulls": 1,
+        "kills": 0,
+        "wipes": 1
+      },
+      "deaths": [
+        {
+          "character_key": "us/pvp/obnoxious-yell",
+          "name": "Obnoxious Yell",
+          "class": "warrior",
+          "on_kills": 1,
+          "on_wipes": 2
+        }
+      ],
+      "consumables": {
+        "log_has_buffs": true,
+        "rows": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "before": "ready",
+            "flask": "Flask of the Titans",
+            "food": "Smoked Desert Dumplings",
+            "potions": 2
+          }
+        ]
+      },
+      "loot": [],
+      "moves": {
+        "previous": {
+          "id": 24,
+          "starts_at": "2026-12-08T01:00:00Z",
+          "title": "Onyxia's Lair"
+        },
+        "rows": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior",
+            "encounter": "Onyxia",
+            "metric": "dps",
+            "before": 588.0,
+            "after": 612.4
+          }
+        ]
+      },
+      "posted_at": "2026-12-15T04:00:00Z"
+    }
+  },
+  "error": null,
+  "ok": true,
+  "request_id": "9f2c41d07ab3e655"
+}

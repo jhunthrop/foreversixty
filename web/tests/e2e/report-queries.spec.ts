@@ -3,10 +3,13 @@
 // web-worker shim), so src/lib/report/query.test.ts drives a fake engine and everything
 // that needs an actual WebAssembly instance is asserted here, against the checked-in
 // fixture Parquet (src/fixtures/report/fights/3/events.parquet).
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
+import { DEAD_API_BASE } from '../hermetic';
 import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { readFileSync } from 'node:fs';
+import { choose } from './support/select';
 
 /** The lines of fight 3 (Warden Kelthas, encounter 9001) in the fixture log, boundaries included. */
 function fightThreeLines(): number {
@@ -27,7 +30,7 @@ const ORIGIN = `http://localhost:${process.env.E2E_PORT ?? '4321'}`;
 // The report island calls the rankings API for its percentiles (Task 12), which is a
 // first-party origin the contract names. Everything else -- a CDN, a font host, DuckDB's
 // own extension repository -- is what "no third-party bytes, on any page, ever" forbids.
-const OWN_ORIGINS = new Set([ORIGIN, 'https://api.foreversixty.gg']);
+const OWN_ORIGINS = new Set([ORIGIN, DEAD_API_BASE]);
 
 /** Every request the page made, newest last, so a test can assert on what was not asked for. */
 function recordRequests(page: Page): string[] {
@@ -51,10 +54,10 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
   await page.goto(REPORT);
   await expect(page.getByTestId('summary-tab')).toBeVisible();
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
   else await page.getByTestId('tab-damage-done').click();
   if (phone) {
-    await page.getByTestId('tab-select').selectOption('casts');
+    await choose(page.getByTestId('tab-select'), 'casts');
   } else {
     // Casts lives under the category row's "More" menu now (design review 2026-09-26
     // finding 3): a native `<details>`, opened by clicking its own summary.
@@ -195,7 +198,6 @@ test('an answer for the fight that was left behind is dropped, not painted', asy
   await page.getByTestId('query-run').click();
   await started;
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-1').click();
   await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');

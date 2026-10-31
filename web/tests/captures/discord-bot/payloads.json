@@ -160,7 +160,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -279,7 +279,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -401,7 +401,7 @@
         },
         {
           "title": "Signet Ring of the Bronze Dragonflight",
-          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "description": "Finger 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
           "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-finger1",
           "footer": {
             "text": "Forever Sixty"
@@ -513,15 +513,15 @@
   {
     "id": "bis-slot",
     "row": "D6",
-    "title": "/bis slot:Ring 1 (defaults from the main)",
+    "title": "/bis slot:Finger 1 (defaults from the main)",
     "surface": "ephemeral",
     "clock": "2026-12-10T22:00:00Z",
     "message": {
-      "content": "Ring 1 for a Beast Mastery Hunter, level 60 Phase 1 raid:",
+      "content": "Finger 1 for a Beast Mastery Hunter, level 60 Phase 1 raid:",
       "embeds": [
         {
           "title": "Signet Ring of the Bronze Dragonflight",
-          "description": "Ring 1 · Epic · item level 80\nVendor: Anachronos",
+          "description": "Finger 1 · Epic · item level 80\nVendor: Anachronos",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "author": {
             "name": "Best in slot"
@@ -533,7 +533,7 @@
         },
         {
           "title": "Don Julio's Band",
-          "description": "Ring 1 · Epic · item level 60\n−5.0 DPS · Frostwolf Clan (exalted)",
+          "description": "Finger 1 · Epic · item level 60\n−5.0 DPS · Frostwolf Clan (exalted)",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "thumbnail": {
             "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_35.webp"
@@ -542,7 +542,7 @@
         },
         {
           "title": "Masons Fraternity Ring",
-          "description": "Ring 1 · Rare · item level 49\n−8.2 DPS · Quest: Divino-matic Rod · Level 47",
+          "description": "Finger 1 · Rare · item level 49\n−8.2 DPS · Quest: Divino-matic Rod · Level 47",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "footer": {
             "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -608,7 +608,7 @@
         },
         {
           "title": "Signet Ring of the Bronze Dragonflight",
-          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "description": "Finger 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "thumbnail": {
             "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -626,7 +626,7 @@
         },
         {
           "title": "Cutthroat's Signet",
-          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "description": "Finger 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "footer": {
             "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -692,7 +692,7 @@
         },
         {
           "title": "Signet Ring of the Bronze Dragonflight",
-          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "description": "Finger 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "thumbnail": {
             "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -710,7 +710,7 @@
         },
         {
           "title": "Cutthroat's Signet",
-          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "description": "Finger 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "footer": {
             "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -769,7 +769,7 @@
         },
         {
           "title": "Signet Ring of the Bronze Dragonflight",
-          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "description": "Finger 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "thumbnail": {
             "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -787,7 +787,7 @@
         },
         {
           "title": "Cutthroat's Signet",
-          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "description": "Finger 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
           "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
           "footer": {
             "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -1082,7 +1082,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in",
               "disabled": true
@@ -1184,7 +1184,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -1327,7 +1327,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in",
               "disabled": true

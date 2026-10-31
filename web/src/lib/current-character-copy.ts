@@ -1,10 +1,9 @@
 // web/src/lib/current-character-copy.ts
-// Strings for the current-character pointer, the chip, and the bare-load restore banner.
-// Shared across every page that mounts CurrentCharacterChip.svelte -- sim, planner, and
-// (Lane A) /account, /character/<key>, /addon -- so the wording can never drift between
-// pages that describe the same pointer.
+// Strings for the current-character pointer and the chip (/setup's step card), plus the two the
+// simulator's own surfaces reuse, so the wording can never drift between pages that describe
+// the same pointer. The header selector's restored line and Forget live in
+// character-selector/copy.ts with the rest of the selector's words.
 export const currentCharacterCopy = {
-  restoredNote: 'Restored your last character.',
   forget: 'Forget',
   openInPlanner: 'Open in planner',
   openInSimulator: 'Open in simulator',
@@ -12,10 +11,4 @@ export const currentCharacterCopy = {
   getTheAddon: "Don't have an export? Get the addon.",
   /** The sim landing list's current-row marker. */
   switchCurrentMarker: 'Current',
-  /** The spine bar's signed-out, no-pointer line -- spec 2026-09-25 section 4.1, distinct
-   *  from `noCharacterLine` above (that one names the planner/simulator paste boxes
-   *  specifically; this one names both entry points the bar itself offers). */
-  barSignedOutLine: 'Sign in with Battle.net or paste an export to point the site at your character.',
-  barSignIn: 'Sign in with Battle.net',
-  barPasteExport: 'Paste an export',
 } as const;

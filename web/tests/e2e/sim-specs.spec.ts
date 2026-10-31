@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 // Not `dpsSpecs` from spec-label.ts: that module also imports classRows from
 // planner/reference.ts, which does a raw `import combosJson from

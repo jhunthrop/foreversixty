@@ -19,13 +19,7 @@
      row has no room for its failure field, so a failed copy leaves the label unchanged.
      `copied` has no timer, same idiom as SharePanel.svelte's `copiedFrom`:
      it stands until the character changes underneath it, which a fresh `current` prop
-     already does by remounting this component's state from scratch.
-
-     `restored` (fix round 1, Task 4's review): true when the mounting page's own load came
-     from the stored pointer rather than a fresh paste or a URL. The tools island reserves
-     a slot for this chip before hydration (`bulk-skeleton.ts`'s own `chipSlot`) rather than
-     rendering its own ad-hoc restored line, so the "Restored your last character" wording
-     lives here, in the one place every /sim* page's chip already renders. -->
+     already does by remounting this component's state from scratch. -->
 <script lang="ts">
   import { plannerHrefFor, simHrefFor, type CurrentCharacter } from '../lib/current-character';
   import { addonCopy } from '../lib/addon/copy';
@@ -38,7 +32,6 @@
     onforget,
     hasOwnPasteBox = false,
     addonCode = '',
-    restored = false,
     guildLine = '',
   }: {
     current: CurrentCharacter | null;
@@ -48,10 +41,6 @@
      *  planner has no build to copy -- the chip then renders no copy-addon link at all,
      *  rather than a link that would fail to copy anything. */
     addonCode?: string;
-    /** True once the mounting page's own load came from the stored pointer rather than
-     *  the URL. Only shown alongside a loaded `current` -- a page that passes this true
-     *  with no character loaded (a dead pointer, say) sees the ordinary empty state. */
-    restored?: boolean;
     /** "Iron Vanguard · Officer", already formatted -- spec 2026-09-22 §7.5. Built by
      *  CurrentCharacterBar.svelte, which is the one place with `/v1/me` in hand; this stays
      *  a pure render of the string it is given, same as `addonCode`. Empty when the current
@@ -89,11 +78,6 @@
         class="flex h-11 shrink-0 items-center gap-1.5 truncate font-semibold md:h-auto"
         data-testid="current-character-label"
       >
-        {#if restored}
-          <span class="text-muted font-normal" data-testid="current-character-restored">
-            {currentCharacterCopy.restoredNote}
-          </span>
-        {/if}
         <span style:color={classColorVar(current.classSlug)}>{current.label}</span>
         {#if guildLine !== ''}
           <span class="text-muted truncate font-normal" data-testid="current-character-guild">

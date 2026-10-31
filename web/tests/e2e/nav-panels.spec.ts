@@ -3,7 +3,8 @@
 // hover panel that lists its pages, with hover delays, the chevron toggle, the keyboard walk,
 // the touch first tap, the Guides crest grid, the guild rows following the session, and the
 // same four groups in the phone Menu. Every width keeps the no-sideways-scroll rule.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { guildHref } from '../../src/lib/characters';
 import { headerWired } from './support/header';
 import { OBNOXIOUS, armoryPointer, signInWith, storePointer } from './support/selector';

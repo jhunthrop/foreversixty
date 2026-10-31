@@ -2,7 +2,8 @@
 // The coach on the report page (design/specs/2026-10-28-log-coach.md sections 3.1, 3.2, 4.2, 9),
 // API stubbed with the coach's own output (src/fixtures/coach, through support/coach-stubs.ts) on the
 // worked Onyxia pull. Every asserted sentence is read from lib/coach/copy.ts or the fixtures.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { coachCopy, fill } from '../../src/lib/coach/copy';
 import type { CoachAnchorKind, CoachFull } from '../../src/lib/coach/types';
 import {
@@ -240,7 +241,13 @@ test.describe('Premium owner', () => {
     await expect(page.getByTestId('coach-then-item').first()).toContainText(answer.review.thenFix[0]!.title);
   });
 
-  test('at 1280 x 800 Fix first ends above the fold, with no chart on the tab', async ({ page }) => {
+  test('at 1280 x 800 Fix first ends above the fold, with no chart on the tab', async ({
+    page,
+    isMobile,
+  }) => {
+    // The fold is the fine-pointer desktop's: a touch device at this width draws the report's
+    // dense tool-bar fields at 44 px, not 36 (controls-charts spec §A4.1), and is not this budget.
+    test.skip(isMobile, 'the fine-pointer desktop layout');
     await page.setViewportSize(DESKTOP);
     await routeCoach(page, STATES['ready-model']);
     await openPanel(page);

@@ -54,7 +54,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Signet Ring of the Bronze Dragonflight**\nRing 1 · Gain not modelled yet\n-# Epic · item level 80 · Vendor: Anachronos"
+                "content": "<:fs_q_epic:1302600000000000004> **Signet Ring of the Bronze Dragonflight**\nFinger 1 · Gain not modelled yet\n-# Epic · item level 80 · Vendor: Anachronos"
               }
             ],
             "accessory": {
@@ -62,7 +62,7 @@
               "media": {
                 "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/234202.png"
               },
-              "description": "Signet Ring of the Bronze Dragonflight, Epic ring 1 item"
+              "description": "Signet Ring of the Bronze Dragonflight, Epic finger 1 item"
             }
           },
           {
@@ -70,7 +70,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_rare:1302600000000000003> **Cutthroat's Signet**\nRing 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
+                "content": "<:fs_q_rare:1302600000000000003> **Cutthroat's Signet**\nFinger 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
               }
             ],
             "accessory": {
@@ -78,7 +78,7 @@
               "media": {
                 "url": "https://api.foreversixty.gg/v1/discord/tiles/1.60.1.70658/272408.png"
               },
-              "description": "Cutthroat's Signet, Rare ring 2 item"
+              "description": "Cutthroat's Signet, Rare finger 2 item"
             }
           },
           {

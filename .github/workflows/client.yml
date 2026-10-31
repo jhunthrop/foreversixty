@@ -10,7 +10,9 @@
 #               which commits data/builds/<build>/ to main; skipped when the build's
 #               directory is already there;
 #   activate -- runs tools/activate-build.sh, which moves the site, the addon and the
-#               guides to the build, commits and pushes, tags the addon patch release
+#               guides to the build, runs the test gate (tools/activation-gate.sh: the web
+#               vitest suite and the API's active-build tests; red stops the move before
+#               anything is committed), commits and pushes, tags the addon patch release
 #               (addon-release.yml publishes it) and dispatches the ranking (bis.yml,
 #               force) so the carried-forward picks are replaced the same day, and the
 #               engine follow (engine.yml, force) so the wowsims fork regenerates from
@@ -48,6 +50,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       newer: ${{ steps.decide.outputs.newer }}
+      resume: ${{ steps.decide.outputs.resume }}
       build: ${{ steps.decide.outputs.build }}
       product: ${{ steps.decide.outputs.product }}
       needs_fetch: ${{ steps.decide.outputs.needs_fetch }}
@@ -67,6 +70,7 @@ jobs:
           FOUND_PRODUCT: ${{ steps.check.outputs.newest_product }}
           ACTIVE: ${{ steps.check.outputs.active }}
           UNMATCHED: ${{ steps.check.outputs.unmatched_newer }}
+          OUT_OF_ORDER: ${{ steps.check.outputs.out_of_order }}
           BLIZZARD_BUILD: ${{ steps.check.outputs.blizzard_build }}
           BLIZZARD_PRODUCT: ${{ steps.check.outputs.blizzard_product }}
           WAGO_BEHIND: ${{ steps.check.outputs.wago_behind }}
@@ -76,18 +80,35 @@ jobs:
           if [ "$UNMATCHED" != "[]" ] && [ -n "$UNMATCHED" ]; then
             echo "::warning title=unclaimed newer client builds::wago.tools lists builds newer than $ACTIVE that curated/client.json neither claims nor ignores: $UNMATCHED -- if one is Forever, add its product to client.json"
           fi
+          if [ "$OUT_OF_ORDER" != "[]" ] && [ -n "$OUT_OF_ORDER" ]; then
+            echo "::warning title=Forever build numbered below the active one::wago.tools ingested Forever builds after $ACTIVE whose version is not above it: $OUT_OF_ORDER -- a renumbering down is never activated by the watcher; dispatch client with build=<version> to move to it by hand"
+          fi
           if [ "$WAGO_BEHIND" = true ]; then
             echo "::warning title=Blizzard shipped a client wago.tools has not exported::Blizzard serves $BLIZZARD_BUILD on $BLIZZARD_PRODUCT; wago.tools' newest Forever export is ${FOUND_BUILD:-none}. The move waits for the export (the fetch reads wago's tables); nothing to do but check again tomorrow."
           fi
-          build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"
+          build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"; resume=false
           if [ -n "$ASK_BUILD" ]; then
             build="$ASK_BUILD"; product="${ASK_PRODUCT:-$FOUND_PRODUCT}"
             [ "$build" != "$ACTIVE" ] && newer=true || newer=false
           fi
+          # A move that stopped after its push (the tag or a dispatch) is finished by
+          # running the script again for the active build: by hand (build= the active
+          # one), or here when the addon version on main has no tag on origin.
+          # activate-build.sh decides whether anything is left (it resumes only a
+          # version its own move commit set) and otherwise says "nothing to do".
+          if [ "$newer" != true ]; then
+            version=$(sed -n 's/^## Version: *//p' ../addon/ForeverSixty/ForeverSixty.toc)
+            if [ "$build" = "$ACTIVE" ] && [ -n "$ASK_BUILD" ]; then
+              resume=true
+            elif ! git ls-remote --exit-code --tags origin "refs/tags/addon-v$version" >/dev/null; then
+              resume=true; build="$ACTIVE"
+              echo "::notice title=resuming a move::addon-v$version is not on origin; the activate job finishes the move to $ACTIVE if it stopped after its push"
+            fi
+          fi
           needs_fetch=true
           [ -f "builds/$build/items.json" ] && needs_fetch=false
           {
-            echo "newer=$newer"; echo "build=$build"; echo "product=$product"; echo "needs_fetch=$needs_fetch"
+            echo "newer=$newer"; echo "resume=$resume"; echo "build=$build"; echo "product=$product"; echo "needs_fetch=$needs_fetch"
           } >> "$GITHUB_OUTPUT"
           if [ "$newer" = true ]; then
             echo "::notice title=new Forever client::$build ($product) is newer than the active $ACTIVE; fetch needed: $needs_fetch"
@@ -107,12 +128,22 @@ jobs:
 
   activate:
     needs: [watch, fetch]
-    if: ${{ !cancelled() && needs.watch.outputs.newer == 'true' && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
+    if: ${{ !cancelled() && (needs.watch.outputs.newer == 'true' || needs.watch.outputs.resume == 'true') && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: { contents: write, actions: write }
+    # The activation's test gate (tools/activation-gate.sh) runs the API packages that
+    # read the active build; the database-backed ones need api.yml's Postgres.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U forever" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       GH_TOKEN: ${{ github.token }}
+      TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
     steps:
       # main as it is AFTER the fetch job's commit, with history and tags so the
       # script's rebase and the addon tag work.
@@ -120,14 +151,34 @@ jobs:
         with: { ref: main, fetch-depth: 0 }
       - uses: astral-sh/setup-uv@v3
       - uses: actions/setup-go@v5
-        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+        with:
+          go-version-file: sim/go.mod
+          cache-dependency-path: |
+            sim/go.sum
+            api/go.sum
+      # The gate's go test resolves the workspace, whose sim/go.mod replace points at a
+      # laptop path until this rewrites it to the pinned fork (as api.yml does). The
+      # activation's push rebases with --autostash over the dirty sim/go.mod.
+      - uses: ./.github/actions/pin-engine
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+        with:
+          { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+      # The gate's vitest run, the same install web.yml's build job makes.
+      - run: npm ci
+        working-directory: web
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
+      # On a failure the script writes the step, the reason and the hand command that
+      # finishes the move to this run's summary (and an error annotation).
+      # The step's own timeout is under the job's, so a hung move still leaves time for
+      # the report step below; MOVE_BREADCRUMB tells it where the move stood.
       - name: activate ${{ needs.watch.outputs.build }}
+        id: move
+        timeout-minutes: 50
         env:
           BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
           INSPECT: ${{ inputs.inspect }}
+          MOVE_BREADCRUMB: ${{ runner.temp }}/client-move-step
         run: |
           if [ "$INSPECT" = "true" ]; then
             tools/activate-build.sh "$BUILD" --no-commit
@@ -135,3 +186,72 @@ jobs:
           else
             tools/activate-build.sh "$BUILD"
           fi
+      # Whenever the move did not succeed and the script wrote no report of its own: a
+      # setup step failed before it ran (no breadcrumb), or it timed out or was cancelled
+      # mid-step (a breadcrumb with no "reported" line). A rerun finishes a move that got
+      # past its push (activate-build.sh resumes it), so the hand command is the rerun.
+      - name: say where the move stopped
+        if: always() && steps.move.outcome != 'success'
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
+          CRUMB: ${{ runner.temp }}/client-move-step
+        run: |
+          if grep -qx reported "$CRUMB" 2>/dev/null; then exit 0; fi
+          hand="gh workflow run client.yml -f build=$BUILD${PRODUCT:+ -f product=$PRODUCT}"
+          if [ -s "$CRUMB" ]; then
+            step="$(head -n 1 "$CRUMB") (the move timed out or was cancelled here)"
+            reason="no report from the script: check main and the addon tags for how far it got; a rerun resumes a move that is already on main"
+          else
+            step="setting up the activation runner (checkout, toolchains, pin-engine, npm ci)"
+            reason="the failed step above; nothing was moved, committed or tagged"
+          fi
+          {
+            echo "## Client move to $BUILD stopped"
+            echo
+            echo "**Step:** $step"
+            echo
+            echo "**Reason:** $reason"
+            echo
+            echo "**To finish or redo the move:** $hand"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"
+
+  # The watch and the fetch fail outside activate-build.sh, which writes its own report;
+  # this names their step, the reason and the hand command the same way.
+  report:
+    needs: [watch, fetch, activate]
+    if: ${{ failure() && needs.activate.result != 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: say where the move stopped
+        env:
+          WATCH: ${{ needs.watch.result }}
+          FETCH: ${{ needs.fetch.result }}
+          BUILD: ${{ needs.watch.outputs.build }}
+          PRODUCT: ${{ needs.watch.outputs.product }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          redo="gh workflow run client.yml -f build=${BUILD:-<build>}${PRODUCT:+ -f product=$PRODUCT}"
+          if [ "$WATCH" = failure ]; then
+            step="watch: the newest Forever build on wago.tools (pipeline client-check)"
+            reason="client-check failed: wago.tools or Blizzard's version service did not answer, or curated/client.json did not load (its log names which)"
+            hand="nothing has moved; the next 03:41 UTC run retries, or once the cause is fixed: gh workflow run client.yml"
+          else
+            step="fetch: data.yml's fetch of ${BUILD} (${PRODUCT})"
+            reason="data.yml's fetch job failed, so ${BUILD}'s tables were not committed and nothing moved; its log and summary name the gate (a shrunken catalogue, a truncated ItemSparse export, a wago.tools error)"
+            hand="gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=${BUILD} (add -f allow_shrink=true only for a deliberate re-baseline), then ${redo}"
+          fi
+          {
+            echo "## Client move to ${BUILD:-a new build} stopped"
+            echo
+            echo "**Step:** $step"
+            echo
+            echo "**Reason:** $reason"
+            echo
+            echo "**To finish or redo the move:** $hand"
+            echo
+            echo "Run: $RUN_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"

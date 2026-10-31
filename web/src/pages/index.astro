@@ -27,6 +27,12 @@ import RecentReports from '../components/RecentReports.svelte';
 import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
 import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import {
+  HOME_UPGRADES_FALLBACK_PX,
+  HOME_UPGRADES_MAX_RESERVE_PX,
+  HOME_UPGRADES_RESERVE_KEY,
+  HOME_UPGRADES_RESERVE_VAR,
+} from '../lib/home/upgrades-layout';
+import {
   homeAroundTheSiteCopy,
   homeClassPickerCopy,
   homeCompanionRow,
@@ -213,9 +219,9 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint
-           (Base.astro's inline script), the same synchronous, before-first-paint timing
-           `html:not([data-session='1']) .chip-slot` already relies on elsewhere in
-           global.css -- so a `display:none` swap here costs no layout shift either way. -->
+           (Base.astro's inline script), synchronous and before first paint (global.css's
+           data-signed-out-only rule) -- so a `display:none` swap here costs no layout shift
+           either way. -->
       <div data-signed-out-only>
         <Card
           glyph="sword"
@@ -256,8 +262,33 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
              (`HomeUpgradesPanel.svelte`, mounted by `HomeAccountPanel.svelte` the same
              dynamic-import-once-signed-in way as the hero cards), not
              split between static Astro markup and a slot. `min-h` approximates the ready
-             panel's own height so the mount does not visibly shift the rows beneath it. -->
-        <div class="min-h-[220px]" data-testid="home-upgrades-slot"></div>
+             panel's own height so the mount does not visibly shift the rows beneath it. The
+             height is the one the island settled at on the last visit (the script below sets it
+             before first paint); a first visit holds the smallest real state, so an empty list
+             leaves no void. -->
+        <div
+          id="home-upgrades-slot"
+          style={`min-height: var(${HOME_UPGRADES_RESERVE_VAR}, ${HOME_UPGRADES_FALLBACK_PX}px)`}
+          data-testid="home-upgrades-slot"
+        ></div>
+        <script
+          is:inline
+          define:vars={{
+            key: HOME_UPGRADES_RESERVE_KEY,
+            prop: HOME_UPGRADES_RESERVE_VAR,
+            max: HOME_UPGRADES_MAX_RESERVE_PX,
+          }}
+        >
+          (function () {
+            try {
+              const slot = document.getElementById('home-upgrades-slot');
+              const reserve = Math.round(Number(localStorage.getItem(key)));
+              if (slot && reserve > 0 && reserve <= max) slot.style.setProperty(prop, reserve + 'px');
+            } catch {
+              // Storage is a convenience; the fallback height stands.
+            }
+          })();
+        </script>
       </section>
 
       <!-- Signed in, the lookup follows "Your upgrades" (owner 2026-10-29). The cell is moved here

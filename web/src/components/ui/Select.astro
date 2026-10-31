@@ -1,0 +1,20 @@
+---
+// web/src/components/ui/Select.astro
+// Select.svelte's twin for static pages (design/specs/2026-10-30-controls-charts.md §A3.2):
+// the same markup, server-rendered with no Svelte runtime, and booted by the shared script
+// below (the face follows the value; the listbox loads after first paint on a fine pointer).
+import type { ComponentProps } from 'svelte';
+import Select from './Select.svelte';
+
+type Props = Omit<ComponentProps<typeof Select>, 'staticField' | 'onchange' | 'onfoot' | 'oncoarseopen'>;
+
+const props = Astro.props as Props;
+---
+
+<Select {...props} staticField />
+
+<script>
+  import { bootStaticFields } from '../../lib/ui/select-boot';
+
+  bootStaticFields();
+</script>

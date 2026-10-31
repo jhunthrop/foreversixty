@@ -5,7 +5,10 @@
      at 48s, tank dead at 1:04" is one picture. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
+  import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
+  import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
   import { formatDuration } from '../../lib/report/format';
+  import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import { isRaidCooldown } from '../../lib/report/raid-cooldowns';
   import type { AuraTrack, CastRow, Death, PullMark } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
@@ -17,6 +20,7 @@
     window: timeWindow,
     deaths = [],
     names,
+    syncKey = '',
   }: {
     tracks: AuraTrack[];
     /** The fight's casts, for a cooldown that leaves no aura behind: Revival heals and is gone. */
@@ -26,7 +30,10 @@
     window: TimeWindow;
     deaths?: Death[];
     names: Map<string, string>;
+    /** The page's chart cursor key (the fight): the lanes share the charts' crosshair. Empty over a night. */
+    syncKey?: string;
   } = $props();
+  const owner = 'raid-cooldowns';
 
   interface Use {
     at: number;
@@ -82,6 +89,7 @@
     if (event.pointerType !== 'mouse') return;
     hovered = '';
     hoveredLane = '';
+    clearChartCursor(owner);
   }
   function readAt(event: PointerEvent): void {
     const lane = (event.target as HTMLElement).closest<HTMLElement>('[data-lane]');
@@ -89,6 +97,7 @@
     const bounds = lane.getBoundingClientRect();
     const at = timeWindow.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
     const pull = pulls.find((entry) => entry.start_ms <= at && at < entry.end_ms);
+    if (syncKey !== '') setChartCursor({ syncKey, ms: Math.round(at / 1000) * 1000, owner });
     // The nearest use on this lane, within a fortieth of the window: a tap names it.
     const row = rows.find((entry) => entry.name === lane.dataset.lane);
     const near = row?.uses
@@ -114,16 +123,11 @@
   /** Where an instant sits across the lane, 0..100, from the window's start. */
   const pct = (ms: number): number => ((ms - timeWindow.startMs) / span) * 100;
 
-  /** Axis ticks at the coarsest of these steps that keeps them under about eight. */
-  const axis = $derived.by(() => {
-    const steps = [10_000, 30_000, 60_000, 120_000, 300_000, 600_000, 1_800_000];
-    // Five at most: a phone lane is 250px wide and six labels there ran into one another.
-    const step = steps.find((candidate) => span / candidate <= 5) ?? steps[steps.length - 1];
-    const first = Math.ceil(timeWindow.startMs / step) * step;
-    const ticks: number[] = [];
-    for (let at = first; at <= timeWindow.endMs; at += step) ticks.push(at);
-    return ticks;
-  });
+  /** The time axis's ticks (lib/chart/time-axis: the step that keeps labels 64 px apart). */
+  let axisWidth = $state(600);
+  const axis = $derived(
+    timeTicks(timeWindow.startMs / 1000, timeWindow.endMs / 1000, axisWidth).map((seconds) => seconds * 1000),
+  );
 
   const shownPulls = $derived(
     pulls.filter((pull) => pull.end_ms > timeWindow.startMs && pull.start_ms < timeWindow.endMs),
@@ -225,6 +229,7 @@
                 aria-hidden="true"
               ></span>
             {/each}
+            {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={timeWindow} />{/if}
           </span>
           {#if hovered !== '' && hoveredLane === row.name}
             <!-- The panel's readout line sits above eight lanes on a phone, out of sight of
@@ -240,11 +245,9 @@
         class="text-muted numeric grid grid-cols-[minmax(0,1fr)] gap-3 py-1 text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
         data-testid="raid-cooldowns-axis"
       >
-        <span class="relative block h-7 md:col-start-3">
+        <span class="relative block h-7 md:col-start-3" bind:clientWidth={axisWidth}>
           {#each axis as at (at)}
-            <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}
-              >{formatDuration(at)}</span
-            >
+            <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{clockLabel(at)}</span>
           {/each}
           <!-- Over a whole night the daggers would smear; the lines through the lanes remain. -->
           {#each shownDeaths.length <= 12 ? shownDeaths : [] as death (`${death.guid}-${death.at_ms}`)}

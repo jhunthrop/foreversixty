@@ -4,7 +4,8 @@
 // the file the page was built from (support/bis-file.ts) rather than pinned: the nightly
 // re-rank moves them. Below level 60 a real file (hunter/marksmanship band 20) proves the
 // control is absent.
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from './support/test';
 import {
   bisBand,
   bisPreset,

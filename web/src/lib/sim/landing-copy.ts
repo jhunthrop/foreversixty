@@ -44,9 +44,9 @@ export const landingCopy = {
   // longer names one. Damage-specs-only is the caveat still true regardless of level.
   scopeCaveat: 'Damage specs are simulated; healing and tanking specs are not simulated yet.',
 
-  /** 2026-09-26 layout pass, Finding 1: the Run block under the spine bar, for whichever
-   *  character the bar itself calls current -- the same one the character list below
-   *  offers Sim/Paste export for, so the two can never disagree. */
+  /** 2026-09-26 layout pass, Finding 1: the Run block, for whichever character the header
+   *  selector calls current -- the same one the character list below offers Sim/Paste
+   *  export for, so the two can never disagree. */
   runSim: 'Run sim',
   /** A healing or tanking spec: no button, one quiet line where it would be. */
   notSimulatedYet: 'Not simulated yet',

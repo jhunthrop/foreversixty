@@ -20,6 +20,9 @@
     type RankingsPage,
   } from '../../lib/rankings/api';
   import type { FightEntry } from '../../lib/report/types';
+  import { reportCopy } from '../../lib/report/copy';
+  import { iconOption, specIconByName } from '../../lib/ui/select-options';
+  import Select from '../ui/Select.svelte';
 
   let {
     fight,
@@ -60,9 +63,22 @@
   const specs = $derived(
     [...new Set([...seenSpecs, ...(page?.rows ?? []).map((row) => row.player.spec)])].sort(),
   );
+  /** Each spec's class, from every board seen, so its icon can be found (§A10 row 13). */
+  let seenClasses = $state<ReadonlyMap<string, string>>(new Map());
+  const classOfSpec = $derived(
+    new Map([
+      ...seenClasses,
+      ...(page?.rows ?? []).map((row) => [row.player.spec, row.player.class] as const),
+    ]),
+  );
+  const specChoices = $derived([
+    { value: '', label: reportCopy.everySpec },
+    ...specs.map((name) => iconOption(name, name, specIconByName(classOfSpec.get(name), name))),
+  ]);
   $effect(() => {
     if (page === null || spec !== '') return;
     seenSpecs = [...new Set(page.rows.map((row) => row.player.spec))];
+    seenClasses = new Map(page.rows.map((row) => [row.player.spec, row.player.class]));
   });
 
   /**
@@ -136,35 +152,30 @@
     <p class="text-muted text-[14px]">Trash is not ranked. Pick an encounter to see its rankings.</p>
   {:else}
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <label class="quiet-label flex items-center gap-2" for="rankings-metric">
-        Metric
-        <select
+      <div class="flex items-center gap-2">
+        <label class="quiet-label" for="rankings-metric">{reportCopy.metric}</label>
+        <Select
           id="rankings-metric"
-          class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+          class="w-[160px]"
+          size="dense"
           value={metric}
+          options={METRICS.map((option) => ({ value: option.id, label: option.label }))}
+          testid="rankings-metric"
           onchange={(event) => onPatch({ rankingsMetric: (event.currentTarget as HTMLSelectElement).value })}
-          data-testid="rankings-metric"
-        >
-          {#each METRICS as option (option.id)}
-            <option value={option.id}>{option.label}</option>
-          {/each}
-        </select>
-      </label>
-      <label class="quiet-label flex items-center gap-2" for="rankings-spec">
-        Spec
-        <select
+        />
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="quiet-label" for="rankings-spec">{reportCopy.spec}</label>
+        <Select
           id="rankings-spec"
-          class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+          class="w-[180px]"
+          size="dense"
           value={spec}
+          options={specChoices}
+          testid="rankings-spec"
           onchange={(event) => onPatch({ rankingsSpec: (event.currentTarget as HTMLSelectElement).value })}
-          data-testid="rankings-spec"
-        >
-          <option value="">Every spec</option>
-          {#each specs as option (option)}
-            <option value={option}>{option}</option>
-          {/each}
-        </select>
-      </label>
+        />
+      </div>
       <!-- A target beside the metric picker, not a word in a sentence, so it carries the
            44px the design system asks of a phone. SummaryTab.svelte's build link is the
            same shape. -->

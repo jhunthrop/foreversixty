@@ -86,10 +86,15 @@ jobs:
       # fixture, right before the e2e suite ran, and lhci then audited whatever that left
       # behind. Building it once here, explicitly, with the same command and env, means e2e
       # and lhci can download it and skip rebuilding -- see E2E_SKIP_BUILD below.
+      # PUBLIC_API_BASE_URL overrides the workflow's production URL with a dead port
+      # (web/tests/hermetic.ts's DEAD_API_BASE; src/e2e-hermetic.test.ts pins the
+      # two equal): e2e and lhci serve this dist, and no test may ever call the production API.
+      # Only deploy's real-data build carries the production URL to a served site.
       - name: build the fixture dist e2e and lhci audit
         run: npm run build
         env:
           FOREVER_DATA: fixture
+          PUBLIC_API_BASE_URL: http://127.0.0.1:9
       - uses: actions/upload-artifact@v4
         with:
           name: web-dist

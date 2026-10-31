@@ -26,7 +26,7 @@ func TestItemRowGrammar(t *testing.T) {
 	ctx := context.Background()
 	epic := ItemFacts{ID: 1, Name: "Cap [of] (the) *Bold*", Quality: 4, ItemLevel: 60, Source: "Vendor: Mokvar"}
 	got := w.svc.itemRowText(ctx, itemRow{item: epic, slot: "finger1", gain: "+1.2 DPS", replaces: replacesLine("Old [Ring]", 0)})
-	want := "<:fs_q_epic:1302600000000000004> **Cap \\[of\\] (the) \\*Bold\\***\nRing 1 · +1.2 DPS\n-# Epic · item level 60 · Vendor: Mokvar\n-# Replaces Old \\[Ring\\]"
+	want := "<:fs_q_epic:1302600000000000004> **Cap \\[of\\] (the) \\*Bold\\***\nFinger 1 · +1.2 DPS\n-# Epic · item level 60 · Vendor: Mokvar\n-# Replaces Old \\[Ring\\]"
 	if got != want {
 		t.Fatalf("row =\n%s\nwant\n%s", got, want)
 	}

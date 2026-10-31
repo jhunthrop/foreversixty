@@ -175,7 +175,7 @@ def test_class_allowed_reads_the_mask_and_the_proficiency_table() -> None:
     assert wh.class_allowed(hauberk, 8) is False  # a mage cannot wear mail
 
 
-def test_fetch_writes_the_payload_and_its_meta(tmp_path: Path) -> None:
+def test_fetch_writes_the_payload_its_meta_and_the_carry_file(tmp_path: Path) -> None:
     text = FIXTURE.read_text()
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -184,9 +184,11 @@ def test_fetch_writes_the_payload_and_its_meta(tmp_path: Path) -> None:
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     path = wh.fetch_wowhead("1.60.1.70009", root=tmp_path, client=client)
-    assert path == tmp_path / "1.60.1.70009" / "raw" / wh.RAW_FILE
-    assert path.read_text() == text
-    meta = (path.parent / wh.META_FILE).read_text()
+    build_dir = tmp_path / "1.60.1.70009"
+    assert path == wh.raw_path(build_dir)
+    assert wh.payload_path(build_dir).read_text() == text
+    assert wh.load_items(path) == wh.load_items(FIXTURE)
+    meta = (wh.payload_path(build_dir).parent / wh.META_FILE).read_text()
     assert '"items": 6' in meta and '"sha256"' in meta
 
 
@@ -196,3 +198,9 @@ def test_fetch_refuses_to_overwrite_with_era_data(tmp_path: Path) -> None:
     with pytest.raises(wh.WowheadPayloadError, match="11300"):
         wh.fetch_wowhead("1.60.1.70009", root=tmp_path, client=client)
     assert not (tmp_path / "1.60.1.70009").exists()
+
+
+def test_to_gear_item_carries_armor_type_and_no_bonding() -> None:
+    item = _wowhead_item(class_id=4, subclass_id=3, inventory_type=10)
+    gear = wh.to_gear_item(item)
+    assert (gear.armor_type, gear.bonding) == ("mail", None)

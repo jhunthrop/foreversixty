@@ -4,6 +4,11 @@
 // markup, so a glyph is drawn by ui/Glyph.svelte and nowhere else. The Discord mark is a solid
 // shape, listed in FILLED_GLYPHS.
 
+/** The three the dropdown's lazy chunk draws, exported alone so it carries only these. */
+export const CHECK_GLYPH = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
+export const CLOSE_GLYPH = '<path d="M6 6l12 12M18 6L6 18"/>';
+export const SEARCH_GLYPH = '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>';
+
 export const GLYPHS = {
   crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8z"/>',
   server:
@@ -43,8 +48,13 @@ export const GLYPHS = {
   target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12h.01"/>',
   trophy:
     '<path d="M8 4h8v5a4 4 0 01-8 0V4z"/><path d="M8 6H4v1a4 4 0 004 4M16 6h4v1a4 4 0 01-4 4M12 13v4M8 21h8"/>',
-  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  check: CHECK_GLYPH,
+  close: CLOSE_GLYPH,
+  search: SEARCH_GLYPH,
   news: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',
+  // Controls and charts spec 2026-10-30 §B5.6: the death marker.
+  skull:
+    '<path d="M12 3a7 7 0 00-7 7c0 2.4 1.2 4 2.5 5v3h9v-3c1.3-1 2.5-2.6 2.5-5a7 7 0 00-7-7z"/><circle cx="9.5" cy="10.5" r="1.3"/><circle cx="14.5" cy="10.5" r="1.3"/><path d="M10 18v3M14 18v3"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;
