@@ -3,7 +3,8 @@
 // path): the API's raid views report its Discord destination as connected, so the raid form
 // offers `Post to Discord` (ticked from the remembered default) instead of the Settings line, and
 // a done raid's report offers its Post button (raids spec §3.5 item 8; attendance spec §3.5).
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { AFTER_END, DONE, stubGuildAttendance } from './support/guild-attendance';
 import { CHICAGO, GUILD_URL, NOW, ONYXIA_ID, raidUrl, stubGuildRaids, writesTo } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';

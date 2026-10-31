@@ -2,7 +2,7 @@
 // A bare /rankings opens on an encounter (the character's most recent kill, else the first the API
 // lists) with the rest one filter away; the picker is for when nothing is ranked at all, where it
 // says so plainly and offers the Guilds board instead.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const envelope = (data: unknown) => ({
   status: 200,

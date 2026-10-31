@@ -2,7 +2,8 @@
 // The shared component set on /design-sheet (polish spec 4.2): axe on every state, the switch
 // operated with Space and Enter and announcing its state, a disabled switch out of the tab order,
 // 44 px hit areas, and the settings row's phone layout (the value under the label below 480 px).
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 

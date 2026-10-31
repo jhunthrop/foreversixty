@@ -2,7 +2,7 @@
 // The Threat tab's two additions: the target picker, which turns one table of totals into
 // "who has the most threat on this enemy", and the taunt list under it, which answers
 // "who took the boss off me, and when" in one click.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose, fieldBox } from './support/select';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';

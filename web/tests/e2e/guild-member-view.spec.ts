@@ -3,7 +3,8 @@
 // to it (and to Find a guild / Claim your guild when the session has none), the guild page
 // shows the roster to a verified member and one honest sentence to everyone else, and the
 // band names who holds the claim to a member, and offers the claim only to an officer rank.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -13,6 +14,17 @@ import {
 } from '../../src/fixtures/guild/mock-guild';
 import { guildHomeCopy } from '../../src/lib/guild/copy';
 import { expectNoAxeViolations } from './support/officer-tools';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) =>
+  apiUnreachable(
+    page,
+    '**/v1/guilds/*/loot*',
+    '**/v1/guilds/*/progression*',
+    '**/v1/guilds/*/raids*',
+    '**/v1/guilds/*/readiness*',
+  ),
+);
 
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 

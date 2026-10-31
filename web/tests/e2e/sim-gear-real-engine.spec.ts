@@ -28,7 +28,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type Browser } from '@playwright/test';
+import type { Browser } from '@playwright/test';
+import { expect, test } from './support/test';
 import { engineAssetUrl, ENGINE_VERSION } from '../../src/lib/sim/version';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');

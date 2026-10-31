@@ -2,7 +2,8 @@
 // The tier list (design/specs/2026-10-09-tier-list.md): the three role lists against the
 // published BiS files, the faction toggle, ties on both rows of a pair, the signed-in callout
 // and pointer, keyboard focus on a row, and the phone layout.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   expectedRows,
   expectedTieCount,

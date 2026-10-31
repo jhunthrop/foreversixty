@@ -1,6 +1,7 @@
 // The band's "your server sim finished" line (experience spec 2026-10-24 section 3.4) on the
 // signed-in home page, with /v1/me stubbed.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
 import { readLayoutShift, trackLayoutShift } from './support/cls';
 import { ownerMeAnswer } from './support/character-fixture';

@@ -1,5 +1,5 @@
 // web/tests/e2e/handoffs-reference.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 // The class landing page lost its generic "Open the planner for this class" link when the
 // guides were rebuilt around an action rail (a bare class link opened an empty planner). The

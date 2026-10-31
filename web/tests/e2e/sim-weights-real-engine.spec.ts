@@ -27,7 +27,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { ENGINE_VERSION } from '../../src/lib/sim/version';
 import { artifactPublished, hasWasmExports, realEngineSkipReason } from './support/real-engine';
 

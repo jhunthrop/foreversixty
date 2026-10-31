@@ -1,7 +1,8 @@
 // web/tests/e2e/guild-landing.spec.ts
 // The bare /guild landing: the header's Guild door lands here. A lookup by name, the top
 // guilds, and a redirect to the member's own guild when the session has a verified one.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose, nativeSelect } from './support/select';
 
 function envelope(data: unknown) {

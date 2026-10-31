@@ -3,7 +3,7 @@
 // a character loaded on one tool is offered back on the next, every paste box points at
 // the addon, a Droptimizer upgrade opens straight into the planner, the simulator is
 // honest about the level it models, and sharing a build asks before it writes.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';

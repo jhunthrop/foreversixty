@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
 import { plannerCharacterCardCopy } from '../../src/lib/planner/copy';

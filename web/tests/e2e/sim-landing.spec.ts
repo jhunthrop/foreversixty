@@ -7,7 +7,7 @@
 // holds no build for at all (`build` omitted, unlike Thrallgar and Roland below), whose
 // sim-input read 404s -- Finding 1's "Paste export" link and Finding 2's build-missing
 // alert both need one.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { landingCopy } from '../../src/lib/sim/landing-copy';
 import { simCopy } from '../../src/lib/sim/copy';
 

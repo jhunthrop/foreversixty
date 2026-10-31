@@ -4,6 +4,7 @@
 import type { Page, Route } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
 import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
+import { DEAD_API_BASE } from '../../hermetic';
 
 /** The channel the saved webhook posts to; deliberately not the webhook id a pasted URL carries. */
 export const CHANNEL_ID = '1198765432101234568';
@@ -11,8 +12,8 @@ export const CHANNEL_ID = '1198765432101234568';
 /** The Discord server of a connected webhook; distinct from the channel id and any webhook id. */
 export const GUILD_ID = '1087654321098765432';
 
-/** The API origin the fixture build links to (`lib/planner/config.ts` default). */
-export const E2E_API_BASE = 'https://api.foreversixty.gg';
+/** The API origin the e2e build links to (playwright.config.ts's webServer env). */
+export const E2E_API_BASE = DEAD_API_BASE;
 export const CONNECT_URL_GLOB = `${E2E_API_BASE}/v1/notifications/discord/connect`;
 export const DISCORD_URL_GLOB = '**/v1/notifications/discord';
 export const DISCORD_TEST_URL_GLOB = '**/v1/notifications/discord/test';

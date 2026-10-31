@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Route } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
+import { expect, test } from './support/test';
 import { serverRunsCopy } from '../../src/lib/sim/server-runs-copy';
 import { readLayoutShift, trackLayoutShift } from './support/cls';
 

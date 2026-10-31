@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 
 test('homepage states the one fixed sentence (tenet 14) and stops, not a marketing slogan', async ({

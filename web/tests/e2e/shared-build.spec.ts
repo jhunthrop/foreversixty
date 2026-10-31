@@ -1,5 +1,5 @@
 // web/tests/e2e/shared-build.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { bandCompareCopy } from '../../src/lib/planner/copy';
 import { ACTIVE_BUILD } from './support/active-build';

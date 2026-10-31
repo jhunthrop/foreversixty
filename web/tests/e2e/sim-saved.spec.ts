@@ -7,7 +7,7 @@
 // same reason sim-sources.spec.ts and sim-specs.spec.ts read their own fixtures this way.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { plannerHrefForSpec } from '../../src/lib/sim/character';
 import { simCopy } from '../../src/lib/sim/copy';
 import type { CharacterSpec } from '../../src/lib/sim/types';

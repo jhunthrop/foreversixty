@@ -8,10 +8,13 @@
 // covers, and it is the width layout.spec.ts, gear.spec.ts, planner-phone.spec.ts and
 // report-brush.spec.ts all measure at. The project skip keeps the run to one device rather
 // than one per project, the same pairing report-brush.spec.ts uses.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings?*'));
 
 test.use({ viewport: { width: 360, height: 800 } });
 

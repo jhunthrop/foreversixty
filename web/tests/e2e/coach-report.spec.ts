@@ -2,7 +2,8 @@
 // The coach on the report page (design/specs/2026-10-28-log-coach.md sections 3.1, 3.2, 4.2, 9),
 // API stubbed with the coach's own output (src/fixtures/coach, through support/coach-stubs.ts) on the
 // worked Onyxia pull. Every asserted sentence is read from lib/coach/copy.ts or the fixtures.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { coachCopy, fill } from '../../src/lib/coach/copy';
 import type { CoachAnchorKind, CoachFull } from '../../src/lib/coach/types';
 import {

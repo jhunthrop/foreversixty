@@ -4,9 +4,12 @@
 // sim-landing.spec.ts and planner.spec.ts each already prove one door's own bootstrap
 // (restore-from-pointer) in depth; this file proves the *bar itself* -- that each door's
 // href actually carries the pointer, on every page it is supposed to mount on.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
 import { nativeSelect } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
 
 // An export that names its character: the only kind that becomes the current one.
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:|who=Simfury:Realm`;

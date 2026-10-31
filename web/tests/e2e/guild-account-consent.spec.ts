@@ -1,5 +1,5 @@
 // web/tests/e2e/guild-account-consent.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { choose } from './support/select';
 
 function envelope(data: unknown, status = 200) {

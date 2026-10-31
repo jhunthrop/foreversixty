@@ -28,7 +28,7 @@
 // hand and for alternatives (including a tie), `hunter/marksmanship` band 60 for the weight
 // rail's DPS-per-point line, and `druid/balance` (which never equips a ranged weapon) for
 // the ordinary empty-slot case. No fixture is committed for this page any more.
-import { test, expect } from '@playwright/test';
+import { test, expect } from './support/test';
 import { unrankedBisRoute } from './support/bis-file';
 
 const TWO_HANDER_EMPTY_COPY = /is a two-hander; the off hand is taken\./;

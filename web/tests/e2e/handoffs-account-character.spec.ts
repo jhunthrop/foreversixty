@@ -5,7 +5,7 @@
 // CharacterHandoffLinks and its own real fetch. A row therefore offers "Open in simulator"
 // (via the fetch-free armory-ref href) exactly when the character carries a `build`, and
 // "No export yet" otherwise; there is no per-row "Open in planner" link.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { NEEDS_EXPORT_TEXT } from '../../src/lib/handoff-copy';
 
 function envelope(data: unknown, status = 200) {

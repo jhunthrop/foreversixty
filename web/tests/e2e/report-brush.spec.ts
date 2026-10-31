@@ -2,7 +2,7 @@
 // The time window is the report's primary interaction, so the three ways into it -- the
 // drag, the two range inputs a keyboard uses, and the presets -- all have to write the
 // same URL and move the same label.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
 

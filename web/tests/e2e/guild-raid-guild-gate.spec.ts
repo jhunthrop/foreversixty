@@ -2,7 +2,8 @@
 // Launch pricing spec §9 case 16: on a Guild-tier guild (officer tools on, no Raid guild) an
 // officer's Loot and Readiness tabs say the Raid guild sentence, its link goes to `#billing`, and
 // Award, Undo and Nudge are in place and disabled. A guild with Raid guild shows no sentence.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { guildGateCopy } from '../../src/lib/guild/copy';
 import { gotoHydrated } from './support/hydrated';
 import {

@@ -3,7 +3,8 @@
 // 2026-10-24-character-history 3.7, 3.8, 3.11): selection against the fights list, the keyboard,
 // the boss picker's roving focus and the reserve the next visit holds. The lane's acceptance
 // e2e is character-history.spec.ts; this file keeps the panel's interaction rules.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,

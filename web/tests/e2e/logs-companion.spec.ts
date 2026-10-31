@@ -1,9 +1,13 @@
 // web/tests/e2e/logs-companion.spec.ts
 // Logs landing spec (2026-10-04) §4.D.1 (the per-device status line) and §4.D.2 (the
 // pairing poll's success state).
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*'));
 
 function fulfil(body: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {

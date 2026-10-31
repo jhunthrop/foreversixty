@@ -4,7 +4,8 @@
 // raid page and from the band line and R3 moves the other character to Bench; an officer posts a
 // raid; the 10 s poll; the race lines; officer-read-only; R1 for visitors; the guild clock (R4);
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { copyList, raidCopy } from '../../src/lib/guild/raid-copy';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';

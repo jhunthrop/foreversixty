@@ -5,7 +5,8 @@
 // and the absence of a rating the way a player reads them.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const ID = 'fixture2live';

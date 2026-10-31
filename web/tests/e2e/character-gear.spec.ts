@@ -11,7 +11,8 @@
 //   fix 4.  Phones (390, 320): label and gap on line 1, worn → pick on line 2, the source on 3.
 //   fix 5.  Desktop: the source is a column, the gaps one right edge, a row tint on hover.
 //   fix 11. The landing focuses the heading, with gear and without.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,

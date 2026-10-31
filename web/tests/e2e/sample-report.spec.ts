@@ -1,7 +1,8 @@
 // web/tests/e2e/sample-report.spec.ts
 // The sample report is bundled with the site (lib/report/sample.ts): /logs offers it, the
 // click lands on fights, and no API is involved at any step.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { SAMPLE_REPORT_META } from './support/logs-sample-fixture';
 import { fieldBox } from './support/select';
 

@@ -7,7 +7,8 @@
 // Planner rebuild spec §11 (owner ruling): GearPanel left the planner page entirely, so
 // this file's own planner-gear tooltip coverage went with it; the BiS page's delegated
 // tooltip host below is untouched by that ruling and remains this file's full coverage.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 // Lane bis-tooltip-host (2026-09-29): /bis/<class>/<spec> no longer wraps each row in its
 // own ItemHover island -- one shared BisTooltipHost island now delegates hover/focus/tap

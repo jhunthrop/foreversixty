@@ -1,5 +1,5 @@
 // web/tests/e2e/handoffs-setup.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
 
 test('the /setup paste box offers the planner and the simulator once an export decodes', async ({ page }) => {

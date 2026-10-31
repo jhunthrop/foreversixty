@@ -1,5 +1,6 @@
 // web/tests/e2e/report-tables.spec.ts
-import { expect, test, type Locator } from '@playwright/test';
+import type { Locator } from '@playwright/test';
+import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';

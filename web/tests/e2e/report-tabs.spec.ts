@@ -1,5 +1,5 @@
 // web/tests/e2e/report-tabs.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { heldRoute } from './support/held-route';
 import { openChartIfCollapsed } from './support/report-chart';

@@ -4,7 +4,8 @@
 // number would be, never a zero; a scored one leads the panel with the badge. The API is
 // stubbed with page.route, the same fixture pattern character-rating.spec.ts uses, and the
 // panel's own execution-rating read is answered 404 so only the score block is in play.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';

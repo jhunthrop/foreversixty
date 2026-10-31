@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, showLastTalent } from './support/planner';
 
 // Task 20: a talent or slot change runs a 500-iteration sim in the browser pool and updates

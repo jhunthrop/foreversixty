@@ -3,7 +3,7 @@
 // publish every fact spec section 6.3 requires -- the weight table, the percentile-vs
 // -absolute rule, the cap in the coordinator's exact words, and that a rating comes only
 // from a public report.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 test("ships only the layout's character selector island", async ({ page }) => {
   await page.goto('/ratings');
