@@ -61,6 +61,36 @@
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
   }
+  /* Themed scrollbars, site-wide: macOS with a mouse plugged in (or "Show scroll bars: Always")
+     drew a classic grey bar on the fight list and every other scroll box. A thin warm thumb on a
+     clear track; the ::-webkit-scrollbar rules are Safari's, which ignores the standard pair. A
+     strip that hides its bar (scrollbar-width: none) does so outside the layers and still wins. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-warm-strong) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-warm-strong);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
+  }
+}
+/* A sideways tab row that scrolls on a phone: no bar at all (its own fade says there is more),
+   where the themed bar above would otherwise draw under, or beside, the tabs. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 /* A disabled checkbox's label reads muted. Outside the layers so a row's own text-* class
    does not out-rank it. */

@@ -45,19 +45,48 @@ test('the report opens on its first fight with the chrome the spec sets', async 
   }
 });
 
-test('trash is folded away behind a count, and unfolds', async ({ page }) => {
+test('a zone’s trash is one entry, its pulls folded behind its expand control', async ({ page }) => {
   await page.goto(REPORT);
+  const fights = page.getByTestId('fight-selector');
+  // The head counts boss pulls, never trash.
+  await expect(fights).toContainText('2 boss pulls');
+  await expect(page.getByTestId('toggle-trash')).toHaveCount(0);
+  await expect(page.getByTestId('fight-trash-1')).toContainText('Trash · Sanguine Depths');
+  await expect(page.getByTestId('fight-trash-1-pulls')).toHaveText('2 pulls');
   await expect(page.getByTestId('fight-1')).toHaveCount(0);
-  await page.getByTestId('toggle-trash').click();
-  await page.getByTestId('fight-group-1').click();
+  const expand = page.getByTestId('fight-group-1');
+  await expect(expand).toHaveAttribute('aria-expanded', 'false');
+  await expand.click();
+  await expect(expand).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByTestId('fight-1')).toBeVisible();
+  await expect(page.getByTestId('fight-2')).toBeVisible();
+});
+
+test('the trash entry opens its pulls folded together, the way All boss pulls does', async ({ page }) => {
+  await page.goto(REPORT);
+  await page.getByTestId('fight-trash-1').click();
+  await expect(page).toHaveURL(/[?&]fight=trash-1(&|$)/);
+  await expect(page.getByTestId('fight-trash-1')).toHaveAttribute('aria-current', 'true');
+  await expect(page.getByTestId('report-subtitle')).toContainText('Trash · Sanguine Depths');
+  const night = page.getByTestId('night-view');
+  await expect(night).toBeVisible();
+  await expect(page.getByTestId('night-summary')).toContainText('2 trash pulls');
+  await expect(page.getByTestId('night-bosses')).toHaveCount(0);
+  await expect(night).toContainText('Players, across every trash pull');
+  // The tables read the folded trash too.
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
+  else await page.getByTestId('tab-damage-done').click();
+  await expect(page.getByTestId('actor-table').first()).toBeVisible();
+  // A pasted link lands on the same view.
+  await page.reload();
+  await expect(page.getByTestId('fight-trash-1')).toHaveAttribute('aria-current', 'true');
 });
 
 test('every control the spec names writes itself into the URL and reads back', async ({ page }) => {
   await page.goto(REPORT);
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   if (phone) await choose(page.getByTestId('tab-select'), 'healing');
@@ -119,7 +148,6 @@ test('a fight whose summary does not load says so instead of passing off the las
   await page.goto(REPORT);
   await page.route('**/fights/2/summary.json*', (route) => route.abort());
 
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
 
@@ -154,8 +182,7 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldFightRoute(page, 2, 'abort');
-  await page.getByTestId('toggle-trash').click();
-  await page.getByTestId('fight-group-1').click();
+  // Fight 1 is on screen, so its trash entry is already open (and cannot be folded away).
   await page.getByTestId('fight-2').click();
   await slow.started;
 
@@ -182,8 +209,6 @@ test('a stale fight success neither clears the current error nor paints its rost
   const slow = await heldFightRoute(page, 2, 'continue');
   await page.route('**/fights/3/summary.json*', (route) => route.abort());
 
-  await page.getByTestId('toggle-trash').click();
-  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await slow.started;
 

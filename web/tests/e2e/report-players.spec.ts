@@ -188,7 +188,6 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
-    await page.getByTestId('toggle-trash').click();
     await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
     await expect(page.getByTestId('fight-1-kills')).toHaveText('115 mobs died · your group killed 26');
     await expect(page.getByTestId('fight-1-outcome')).toHaveCount(0);
@@ -200,7 +199,6 @@ test.describe('a beta-log report', () => {
   }) => {
     await serveBetaReport(page, { zone: '', oldCounts: true });
     await page.goto(`/reports/${ID}?fight=3`);
-    await page.getByTestId('toggle-trash').click();
     await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
     await expect(page.getByTestId('fight-1-kills')).toHaveCount(0);
     await expect(page.getByTestId('fight-selector')).not.toContainText(/230|kills|mobs died/);
@@ -209,13 +207,12 @@ test.describe('a beta-log report', () => {
   test('trash in a zone folds into one row per zone and opens to its pulls', async ({ page }) => {
     await serveBetaReport(page, { zone: 'Sanguine Depths' });
     await page.goto(`/reports/${ID}?fight=3`);
-    await page.getByTestId('toggle-trash').click();
-    const group = page.getByTestId('fight-group-1');
-    await expect(group).toContainText('Trash · Sanguine Depths');
+    const entry = page.getByTestId('fight-trash-1');
+    await expect(entry).toContainText('Trash · Sanguine Depths');
     await expect(page.getByTestId('fight-group-1-kills')).toHaveText('230 mobs died · your group killed 52');
-    await expect(group).toContainText('2 pulls');
+    await expect(entry).toContainText('2 pulls');
     await expect(page.getByTestId('fight-1')).toHaveCount(0);
-    await group.click();
+    await page.getByTestId('fight-group-1').click();
     await expect(page.getByTestId('fight-2')).toContainText('Trash · ');
     await page.getByTestId('fight-2').click();
     await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');

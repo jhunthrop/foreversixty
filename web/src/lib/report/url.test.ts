@@ -10,6 +10,8 @@ import {
   reportSearch,
   withState,
   MISSING_FIGHT,
+  trashScope,
+  trashScopeKey,
 } from './url';
 
 describe('the report URL state', () => {
@@ -203,6 +205,15 @@ describe('the report URL state', () => {
     expect(state.tab).toBe('summary');
     expect(next.tab).toBe('threat');
     expect(next).not.toBe(state);
+  });
+
+  it('spells a zone’s trash as fight=trash-<first pull> and reads it back', () => {
+    expect(trashScopeKey(parseReportState('?fight=trash-4', 1).fight)).toBe(4);
+    expect(reportSearch(withState(defaultState(1), { fight: trashScope(4) }), 1)).toBe('?fight=trash-4');
+    expect(parseReportState('?fight=trash-0', 1).fight).toBe(MISSING_FIGHT);
+    expect(trashScopeKey(3)).toBeNull();
+    expect(trashScopeKey(ALL_FIGHTS)).toBeNull();
+    expect(trashScopeKey(MISSING_FIGHT)).toBeNull();
   });
 
   it('spells the whole night as fight=all and reads it back as ALL_FIGHTS', () => {

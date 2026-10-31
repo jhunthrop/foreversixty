@@ -104,7 +104,6 @@ test('a death preset sets the window to the seconds before it, and Whole fight c
 
 test('switching fight drops the window, because milliseconds do not carry across', async ({ page }) => {
   await page.goto(`${FIGHT}&start=1000&end=5000`);
-  await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await expect(page).not.toHaveURL(/start=/);

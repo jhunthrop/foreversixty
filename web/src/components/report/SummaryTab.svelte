@@ -111,7 +111,7 @@
   const rosterMeta = $derived(
     [
       `${roster.length} ${roster.length === 1 ? 'player' : 'players'}${seen ? ' seen' : ''}`,
-      `${summary.deaths.length} deaths`,
+      `${summary.deaths.length} ${summary.deaths.length === 1 ? 'death' : 'deaths'}`,
       formatDuration(durationMs),
       ...(missingBuffs > 0 ? [`${missingBuffs} missing a raid buff at pull`] : []),
     ].join(' · '),

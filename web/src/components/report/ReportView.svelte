@@ -25,7 +25,13 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { defaultFightIndex, resolveFightIndex, sampleFightIndex } from '../../lib/report/fights';
+  import {
+    combinedFights,
+    combinedLabel,
+    defaultFightIndex,
+    resolveFightIndex,
+    sampleFightIndex,
+  } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
   import {
     formatDuration,
@@ -35,13 +41,13 @@
     TRASH_PARSE,
   } from '../../lib/report/format';
   import {
-    ALL_FIGHTS,
     FLAG_LETTERS,
     MISSING_FIGHT,
     SOURCE_ENEMIES,
     SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
     TABS,
+    trashScopeKey,
     type FlagKey,
     defaultState,
     parseReportState,
@@ -193,8 +199,12 @@
   const summaryFirst = $derived(isSampleReport(reportId));
   /** The subtitle's words, the same ones the /logs sample row reads (lib/report/heading.ts). */
   const facts = $derived(reportFacts({ zone: meta?.zone ?? '', created_at: meta?.created_at ?? '', fights }));
-  /** The whole night rather than one fight: every boss pull folded together. */
-  const nightMode = $derived(state.fight === ALL_FIGHTS);
+  /** The pulls a combined view folds together (every boss pull, or one zone's trash); null for one fight. */
+  const combined = $derived(combinedFights(fights, state.fight));
+  /** A combined view rather than one fight: the whole night's boss pulls, or a zone's trash. */
+  const nightMode = $derived(combined !== null);
+  /** The combined view is a zone's trash, not the night's bosses. */
+  const trashMode = $derived(trashScopeKey(state.fight) !== null);
   let night = $state<Night | null>(null);
   /** The night as one Summary-shaped object, for the fight tabs to show. */
   let nightFold = $state<Summary | null>(null);
@@ -894,11 +904,11 @@
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
-    // The whole night's bosses are every encounter's; one pull's is its own.
+    // The whole night's bosses are every encounter's; one pull's is its own; trash has none.
     bosses: nightMode
       ? bossGuidsOf(
           file?.units ?? [],
-          fights.filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
+          (combined ?? []).filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
         )
       : bossGuids(file?.units ?? [], fight?.name ?? ''),
     players: playerSet,
@@ -911,7 +921,7 @@
    * ranked on yet.
    */
   const parseFallback = $derived(
-    !nightMode && fight !== undefined && fight.kind !== 'encounter' && !fight.in_progress
+    trashMode || (!nightMode && fight !== null && fight.kind !== 'encounter' && !fight.in_progress)
       ? TRASH_PARSE
       : fight?.encounter_id === undefined || fight.in_progress
         ? ''
@@ -929,7 +939,7 @@
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(
-    nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
+    trashMode ? TRASH_PARSE : nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
   );
 
   /** GUID to class, for the tables whose rows are not Actors. Off the whole fight rather
@@ -1425,20 +1435,20 @@
   $effect(() => {
     const onPop = (): void => {
       readUrl();
-      if (state.fight !== ALL_FIGHTS) void loadFight(state.fight).catch(() => {});
+      if (combinedFights(fights, state.fight) === null) void loadFight(state.fight).catch(() => {});
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   });
 
-  // The whole night: every boss pull's summary, a few at a time, folded into `night` as
-  // they land so the table fills in rather than waiting for the slowest fetch. Pulls the
-  // cache already holds cost nothing; the ones this fetches are cached for the fight
-  // views. Re-run when the selection returns here after a pull was opened, which is free
-  // once everything is cached.
+  // A combined view (the whole night's boss pulls, or one zone's trash): every pull's summary,
+  // a few at a time, folded into `night` as they land so the table fills in rather than waiting
+  // for the slowest fetch. Pulls the cache already holds cost nothing; the ones this fetches are
+  // cached for the fight views. Re-run when the selection returns here after a pull was opened,
+  // which is free once everything is cached.
   $effect(() => {
-    if (status !== 'ready' || !nightMode) return;
-    const encounters = fights.filter((entry) => entry.kind === 'encounter' && !entry.in_progress);
+    if (status !== 'ready' || combined === null) return;
+    const encounters = combined.filter((entry) => !entry.in_progress);
     let cancelled = false;
     night = aggregateNight(encounters, summaries);
     nightFold = nightSummary(encounters, summaries);
@@ -1684,7 +1694,7 @@
     {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
     <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
       {SUBTITLE_SEPARATOR}{meta.status}{/if}
-    {#if nightMode}· All boss pulls{/if}
+    {#if nightMode}· {combinedLabel(fights, state.fight)}{/if}
     {#if fight}· {fight.name}
       {#if fight.kind === 'encounter' && !fight.in_progress}
         <span
@@ -1837,7 +1847,7 @@
 {:else}
   <!-- The ready state's own wrapper, which is the only place `.reveal` may sit (design
        2026-09-22 spec section 1.4). A plain block div: the island's mount point
-       (`<div id="report">` in reports.astro and reports/[id].astro) is a block container
+       (`<div id="report">` in report-shell.astro and reports/[id].astro) is a block container
        with no gap of its own, so gathering these siblings under one div changes no
        spacing -- unlike the flex islands, where a wrapper would have to repeat the gap. -->
   <div class="reveal">
@@ -1871,6 +1881,9 @@
       <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
         {#if missingFight === MISSING_FIGHT}
           This link names a fight the page cannot read, so the first fight is showing.
+        {:else if trashScopeKey(missingFight) !== null}
+          This report has no trash group starting at fight
+          <span class="numeric">{trashScopeKey(missingFight)}</span>, so the first fight is showing.
         {:else}
           This report has no fight <span class="numeric">{missingFight}</span>, so the first fight is showing.
         {/if}
@@ -1991,6 +2004,7 @@
             {#if night !== null}
               <NightView
                 {night}
+                trash={trashMode}
                 loading={nightLoading}
                 {unitClasses}
                 onSelect={(index) => patch({ fight: index })}
@@ -2270,7 +2284,7 @@
             />
           {:else if state.tab === 'rating' && nightMode}
             <p class="text-muted text-[14px]" data-testid="rating-tab-night">
-              Ratings are one pull's. Pick a boss pull from the list to see one.
+              Ratings are one pull's. Pick a {trashMode ? 'pull' : 'boss pull'} from the list to see one.
             </p>
           {:else if state.tab === 'rating'}
             {#if ratingTabLazy.current}
@@ -2293,7 +2307,8 @@
             <button
               type="button"
               class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-              onclick={() => patch({ mode: 'analyze', view: 'tables' })}>go back to the night's tables</button
+              onclick={() => patch({ mode: 'analyze', view: 'tables' })}
+              >go back to the {trashMode ? 'trash' : 'night'}'s tables</button
             >.
           </p>
         {/if}

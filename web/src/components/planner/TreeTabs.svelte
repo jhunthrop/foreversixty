@@ -112,7 +112,7 @@
     role="tablist"
     tabindex={-1}
     aria-label="Talent trees"
-    class="border-line-soft flex gap-2 overflow-x-auto overscroll-x-contain border-b pb-2"
+    class="border-line-soft flex scrollbar-none gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b pb-2"
     data-testid="tree-tablist"
     bind:this={tablist}
     use:scrollFade

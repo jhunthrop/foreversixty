@@ -10,15 +10,17 @@
 import { type KillCounts, sumKillCounts } from './kill-counts';
 import { formatDuration } from './format';
 import type { FightEntry } from './types';
-import { ALL_FIGHTS } from './url';
+import { ALL_FIGHTS, trashScope, trashScopeKey } from './url';
 
 /**
  * `wanted` when the report has that fight, otherwise `fallback` (the default fight).
- * ALL_FIGHTS (the whole night) is a fight the report has whenever it has a boss pull.
+ * ALL_FIGHTS (the whole night) is a fight the report has whenever it has a boss pull, and a
+ * trash scope whenever the report has that zone's trash group.
  */
 export function resolveFightIndex(fights: readonly FightEntry[], wanted: number, fallback: number): number {
   if (wanted === ALL_FIGHTS)
     return fights.some((fight) => fight.kind === 'encounter') ? ALL_FIGHTS : fallback;
+  if (trashScopeKey(wanted) !== null) return combinedFights(fights, wanted) === null ? fallback : wanted;
   return fights.some((fight) => fight.index === wanted) ? wanted : fallback;
 }
 
@@ -85,51 +87,81 @@ export function fightTitle(fight: Pick<FightEntry, 'kind' | 'name' | 'duration_m
   return fight.kind === 'encounter' ? fight.name : `Trash · ${formatDuration(fight.duration_ms)}`;
 }
 
-export type FightRow =
-  | { type: 'fight'; fight: FightEntry }
-  | {
-      type: 'trash-group';
-      /** The first pull's index: the group's key and its test id. */
-      key: number;
-      zone: string;
-      fights: FightEntry[];
-      /** The run's summed kill counts; null when any pull predates them (lib/report/kill-counts). */
-      kills: KillCounts | null;
-      duration_ms: number;
-    };
+export interface TrashGroup {
+  type: 'trash-group';
+  /** The first pull's index: the group's key, its url (`trash-<key>`) and its test id. */
+  key: number;
+  zone: string;
+  fights: FightEntry[];
+  /** The zone's summed kill counts; null when any pull predates them (lib/report/kill-counts). */
+  kills: KillCounts | null;
+  duration_ms: number;
+}
+
+export type FightRow = { type: 'fight'; fight: FightEntry } | TrashGroup;
+
+function trashGroup(zone: string, fights: FightEntry[]): TrashGroup {
+  return {
+    type: 'trash-group',
+    key: fights[0].index,
+    zone,
+    fights,
+    kills: sumKillCounts(fights),
+    duration_ms: fights.reduce((sum, entry) => sum + entry.duration_ms, 0),
+  };
+}
 
 /**
- * The strip's rows: consecutive trash pulls in the same zone fold into one row, so forty-two
- * pulls of "Trash" read as a few zones. Trash the engine gave no zone, a lone pull and every
- * boss stay their own row.
+ * The fight list's rows, zone by zone in the order the night reached them: each boss pull its
+ * own row, then that zone's trash folded into one entry, the way Warcraft Logs collapses it, so
+ * forty-two pulls of "Trash" read as one line per zone. Trash the engine gave no zone keeps its
+ * own rows, in the night's order.
  */
 export function fightRows(fights: readonly FightEntry[]): FightRow[] {
-  const rows: FightRow[] = [];
-  let run: FightEntry[] = [];
-  const flush = (): void => {
-    if (run.length === 1) rows.push({ type: 'fight', fight: run[0] });
-    else if (run.length > 1) {
-      rows.push({
-        type: 'trash-group',
-        key: run[0].index,
-        zone: run[0].zone ?? '',
-        fights: run,
-        kills: sumKillCounts(run),
-        duration_ms: run.reduce((sum, entry) => sum + entry.duration_ms, 0),
-      });
-    }
-    run = [];
-  };
+  const byZone = new Map<string, FightEntry[]>();
   for (const fight of fights) {
     const zone = fight.zone ?? '';
-    if (fight.kind !== 'encounter' && zone !== '') {
-      if (run.length > 0 && (run[0].zone ?? '') !== zone) flush();
-      run.push(fight);
-      continue;
-    }
-    flush();
-    rows.push({ type: 'fight', fight });
+    byZone.set(zone, [...(byZone.get(zone) ?? []), fight]);
   }
-  flush();
-  return rows;
+  return [...byZone].flatMap(([zone, zoneFights]): FightRow[] => {
+    const own = (fight: FightEntry): FightRow => ({ type: 'fight', fight });
+    if (zone === '') return zoneFights.map(own);
+    const trash = zoneFights.filter((fight) => fight.kind !== 'encounter');
+    const bosses = zoneFights.filter((fight) => fight.kind === 'encounter').map(own);
+    return trash.length === 0 ? bosses : [...bosses, trashGroup(zone, trash)];
+  });
+}
+
+/** Every zone's trash entry, as fightRows draws it. */
+export function trashGroups(fights: readonly FightEntry[]): TrashGroup[] {
+  return fightRows(fights).filter((row): row is TrashGroup => row.type === 'trash-group');
+}
+
+/** The selection that opens a trash entry: the combined view, or a lone pull's own view. */
+export function trashGroupSelection(group: TrashGroup): number {
+  return group.fights.length === 1 ? group.fights[0].index : trashScope(group.key);
+}
+
+/**
+ * The pulls a combined view folds together: every boss pull for ALL_FIGHTS, one zone's trash for
+ * its trash scope; null for a single fight (or a scope the report does not have).
+ */
+export function combinedFights(fights: readonly FightEntry[], selected: number): FightEntry[] | null {
+  if (selected === ALL_FIGHTS) return fights.filter((fight) => fight.kind === 'encounter');
+  const key = trashScopeKey(selected);
+  if (key === null) return null;
+  return trashGroups(fights).find((group) => group.key === key)?.fights ?? null;
+}
+
+/** "6 boss pulls", "1 boss pull", "No boss pulls": the fight list's count, which never counts trash. */
+export function bossPullsLabel(count: number): string {
+  if (count === 0) return 'No boss pulls';
+  return `${count} ${count === 1 ? 'boss pull' : 'boss pulls'}`;
+}
+
+/** What a combined view is called: "All boss pulls", or "Trash · Zephras Isle". */
+export function combinedLabel(fights: readonly FightEntry[], selected: number): string {
+  if (selected === ALL_FIGHTS) return 'All boss pulls';
+  const zone = combinedFights(fights, selected)?.[0]?.zone ?? '';
+  return zone === '' ? 'Trash' : `Trash · ${zone}`;
 }

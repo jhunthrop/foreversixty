@@ -1,31 +1,27 @@
 ---
-import { REPORT_SKELETON_HTML } from '../lib/report/skeleton';
 // web/src/pages/reports.astro
-// The report shell. src/worker.ts serves this file's output for /reports/<any id>, with
-// the head values rewritten from GET /v1/reports/{id}. It carries no report data: the
-// island reads the id out of the path and fetches the rest.
+// "Your reports", the Logs menu's second row: every report the visitor owns, newest first. The
+// head is static; the card under it is one island, because all three of its states (signed out,
+// no logs yet, the list) follow one session read. /reports/<id> is a different page: the Worker
+// serves report-shell.astro for it.
 import Base from '../layouts/Base.astro';
-import IslandScript from '../components/IslandScript.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import YourReports from '../components/logs/YourReports.svelte';
+import { yourReportsPageCopy as copy } from '../lib/reports/my-reports-copy';
 ---
 
 <Base
-  title="Report"
-  description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
+  title="Your reports"
+  description="Every World of Warcraft: Forever combat log you uploaded or streamed, newest first."
   path="/reports"
 >
-  <link rel="stylesheet" href="/report-island.css" slot="head" />
-  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
-    <!-- The Worker serves this page as the shell for every /reports/<id>, so before the
-         island boots it shows the report's skeleton; only a browser with no JavaScript
-         reads the line about nothing being open. -->
-    <div id="report" data-report-mount>
-      <Fragment set:html={REPORT_SKELETON_HTML} />
-      <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
-          No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
-        </p>
-      </noscript>
-    </div>
-    <IslandScript src="/report-island.js" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="flex flex-col gap-[22px] px-[var(--page-inset)] pt-4 pb-10 md:gap-8 md:pt-7"
+    data-testid="reports-page"
+  >
+    <PageHead eyebrow={copy.eyebrow} title={copy.title} job={copy.job} />
+    <YourReports client:load />
   </main>
 </Base>
