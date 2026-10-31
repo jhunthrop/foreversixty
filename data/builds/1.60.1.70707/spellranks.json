@@ -3214,7 +3214,6 @@
         },
         {
           "id": 14322,
-          "inferior": true,
           "level": 58,
           "rank": 6
         },
@@ -5844,7 +5843,6 @@
         },
         {
           "id": 20906,
-          "inferior": true,
           "level": 60,
           "rank": 5
         }
