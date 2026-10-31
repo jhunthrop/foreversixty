@@ -1186,6 +1186,15 @@
   .csel-note.is-ember {
     color: var(--color-ember);
   }
+  /* "Restored your last character" and its Forget (restored.ts): the note's muted line with the
+     Manage link's quiet action at its end; the action's 44px row sets the height. */
+  .csel-restored {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 0;
+  }
   .csel-message {
     padding: 16px 14px;
   }

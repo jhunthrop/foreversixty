@@ -118,9 +118,7 @@ test('an export pasted on /setup becomes the current character on the simulator 
   await page.goto('/sim');
   await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
   await page.goto('/sim/gear');
-  await expect(page.getByTestId('current-character-bar-identity')).toContainText('Simfury', {
-    timeout: 15_000,
-  });
+  await expect(page.getByTestId('selector-name')).toHaveText('Simfury', { timeout: 15_000 });
 
   // Forget means forgotten everywhere.
   await page.goto('/setup');

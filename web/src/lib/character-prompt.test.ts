@@ -15,7 +15,6 @@ describe('characterPrompt (W.10: one prompt on an empty character page)', () => 
     expect(characterPrompt({ hasScore: true, hasGear: true, owned: false })).toEqual({
       primary: null,
       secondary: null,
-      quietBar: false,
     });
   });
 
@@ -25,11 +24,6 @@ describe('characterPrompt (W.10: one prompt on an empty character page)', () => 
       'sync-or-claim',
     );
     expect(characterPrompt({ hasScore: false, hasGear: true, owned: false }).secondary).toBeNull();
-  });
-
-  it('drops the sign-in bar sentence while there is no score', () => {
-    expect(characterPrompt({ hasScore: false, hasGear: true, owned: false }).quietBar).toBe(true);
-    expect(characterPrompt({ hasScore: true, hasGear: false, owned: false }).quietBar).toBe(false);
   });
 });
 

@@ -54,12 +54,10 @@ describe('followCurrentCharacter', () => {
 
   it('loads a newly chosen armory character in place, through the stored-character loader', async () => {
     const loaders = fakeLoaders();
-    const onSettled = vi.fn();
-    stop = followCurrentCharacter({ loaders, characterLoaded: () => true, onSettled });
+    stop = followCurrentCharacter({ loaders, characterLoaded: () => true });
     choose(pointer({}));
     await flush();
     expect(loaders.loadStored).toHaveBeenCalledWith({ region: 'us', ruleset: 'normal', slug: 'bow-jackzon' });
-    expect(onSettled).toHaveBeenCalledWith(true);
   });
 
   it('loads a chosen pasted export through the addon loader', async () => {

@@ -128,7 +128,7 @@ test.describe('a signed-in member with characters', () => {
     );
   });
 
-  // 2026-09-26 layout pass, Finding 1: the Run block sits directly under the spine bar, for
+  // 2026-09-26 layout pass, Finding 1: the Run block opens the landing, for
   // whichever character is current (here, the site's own main-character guess, since this
   // fixture stores no pointer) -- pressing its button does the exact same pick the list's
   // own Sim link does for that same character.
@@ -314,30 +314,20 @@ test('a returning signed-in visitor sees their characters from the session snaps
   await expect(page.getByTestId('sim-landing-skeleton')).toHaveCount(0);
 });
 
-// The spine bar is the one current-character band on every /sim* page (the old chip that
-// repeated it 44px below is gone, 2026-09-26 design loop). The chip-slot pre-paint rule
-// (global.css) hides the band before hydration unless `fs_csrf`/`data-pointer` is present,
-// so this test sets the cookie to see the bar, and checks nothing repeats it.
-test('the spine bar is the only current-character band on /sim, the first row of the Your characters card', async ({
+// 2026-10-31: the "Jump to" spine bar is gone from /sim; the header selector is the one
+// current-character control, and nothing on the page repeats it.
+test('/sim carries no current-character band: the Your characters card opens on its caption', async ({
   page,
 }) => {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.goto('/sim');
-  // The shell carries a bar of the same test id until the island mounts (after the first
-  // paint, IslandScript.astro); measure the island's, so wait for the list it renders.
   await expect(page.getByTestId('sim-landing')).toBeVisible();
-  const bar = page.getByTestId('current-character-bar');
-  await expect(bar).toBeVisible();
-  await expect(page.getByTestId('sim-landing').getByTestId('current-character-bar')).toHaveCount(1);
-  await expect(page.getByTestId('sim-chip-slot')).toHaveCount(0);
+  await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
-  const barBox = await bar.boundingBox();
-  const listBox = await page.getByTestId('sim-landing').boundingBox();
-  expect(barBox).not.toBeNull();
-  expect(listBox).not.toBeNull();
-  // Inside the card, under its head and above the first character row.
-  expect((barBox as { y: number }).y).toBeGreaterThan((listBox as { y: number }).y);
+  const caption = await page.getByTestId('sim-scope-note').boundingBox();
   const firstRow = await page.getByTestId('sim-character-us/normal/thrallgar').boundingBox();
-  expect((barBox as { y: number }).y).toBeLessThan((firstRow as { y: number }).y);
+  expect(caption).not.toBeNull();
+  expect(firstRow).not.toBeNull();
+  expect((caption as { y: number }).y).toBeLessThan((firstRow as { y: number }).y);
 });

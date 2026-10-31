@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.forever.contract.fixtures)
     alias(libs.plugins.forever.app.icon)
     alias(libs.plugins.forever.app.version)
-    alias(libs.plugins.forever.brand.art)
+    alias(libs.plugins.forever.bundled.data)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 /**

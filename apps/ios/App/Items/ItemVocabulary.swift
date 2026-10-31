@@ -35,6 +35,10 @@ enum ItemVocabulary {
         }
     }
 
+    /// A slot's label: two rings read `Ring 1` and `Ring 2`, two trinkets `Trinket 1` and
+    /// `Trinket 2`, so the BiS rows can be told apart; an unknown key prints as published.
+    static func slotLabel(_ slot: String) -> String { slotName(slot) ?? slot }
+
     /// The stats a tooltip lists, in the site's order (`STAT_KEYS`, armor excluded: it has its own line).
     static let statOrder: [(key: String, name: String)] = [
         ("strength", Copy.itemsStatStrength), ("agility", Copy.itemsStatAgility),
@@ -166,9 +170,4 @@ enum ItemNumbers {
         return value < 0 ? "\u{2212}\(magnitude)" : "+\(magnitude)"
     }
 
-    /// A DPS delta against the pick: `−5.3`, never a plus for a runner-up.
-    static func delta(_ value: Double) -> String {
-        let magnitude = String(format: "%.1f", abs(value))
-        return value < 0 ? "\u{2212}\(magnitude)" : magnitude
-    }
 }

@@ -23,7 +23,8 @@ public struct BrandButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(ScaledType.button)
-            .textCase(.uppercase)
+            // Spec §4.5: the primary button is uppercase; a secondary reads in sentence case.
+            .textCase(kind == .secondary ? nil : .uppercase)
             .tracking(0.9)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: height)
             .padding(.horizontal, Self.horizontalPadding)
@@ -48,7 +49,7 @@ public struct BrandButtonStyle: ButtonStyle {
         case .primary:
             AnyShapeStyle(LinearGradient(colors: [FSColor.goldHover, FSColor.gold], startPoint: .top, endPoint: .bottom))
         case .secondary, .destructive, .quiet:
-            AnyShapeStyle(Color.white.opacity(0.045))
+            AnyShapeStyle(GameColors.controlFill)
         }
     }
 
@@ -76,15 +77,18 @@ public struct PrimaryButton: View {
     }
 }
 
-/// The secondary button at its label's width, 48 pt, with an optional leading glyph.
+/// The secondary button, 48 pt, at its label's width or the full width, with an optional
+/// leading glyph.
 public struct SecondaryButton: View {
     private let title: String
     private let systemImage: String?
+    private let fullWidth: Bool
     private let action: () -> Void
 
-    public init(title: String, systemImage: String? = nil, action: @escaping () -> Void) {
+    public init(title: String, systemImage: String? = nil, fullWidth: Bool = false, action: @escaping () -> Void) {
         self.title = title
         self.systemImage = systemImage
+        self.fullWidth = fullWidth
         self.action = action
     }
 
@@ -95,6 +99,6 @@ public struct SecondaryButton: View {
                 Text(title)
             }
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: fullWidth))
     }
 }

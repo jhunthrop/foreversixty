@@ -287,21 +287,6 @@ test('the owner’s header carries the sync line, never "Last seen in game" or "
   await expect(page.getByTestId('forever-score-caption')).toHaveText('Your whole record, as of 4 Nov.');
 });
 
-test('on a phone the visitor’s sign-in row sits below the score card, on one line', async ({ page }) => {
-  test.skip(test.info().project.name !== 'mobile', 'phone layout only');
-  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
-  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
-  await page.goto(CHARACTER_PATH);
-
-  const card = await page.getByTestId('forever-score-card').boundingBox();
-  const bar = page.getByTestId('current-character-bar');
-  const row = await bar.boundingBox();
-  expect(card).not.toBeNull();
-  expect(row).not.toBeNull();
-  expect((row?.y ?? 0) > (card?.y ?? 0) + (card?.height ?? 0)).toBe(true);
-  expect(row?.height).toBe(44);
-});
-
 test('an owner whose sync time cannot be read gets "Addon", never a dangling dot or "No export yet"', async ({
   page,
 }) => {

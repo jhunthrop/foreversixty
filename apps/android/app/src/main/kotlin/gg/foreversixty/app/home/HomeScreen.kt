@@ -174,12 +174,13 @@ fun HomeCharacterScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { scope.launch { store.refreshIfStale(character) } }
 
     val home = phase.homeOrNull()
-    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), LocalResources.current)
+    val res = LocalResources.current
+    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
         stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
     }
     val openItem = { look: ItemLook, sourceLine: String?, wornId: Int? ->
-        home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, sourceLine, wornId) }
+        home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, res, sourceLine, wornId) }
     }
 
     if (showGear && home != null) {
@@ -232,7 +233,7 @@ private fun HomeAnswerPane(refreshing: Boolean, onRefresh: () -> Unit, content: 
 @Composable
 private fun GearPage(home: CharacterHome, character: HomeCharacter, catalog: ItemCatalog, open: (ItemLook, Int?) -> Unit) {
     val res = LocalResources.current
-    val probe = HomePresenter.tooltipRequest(ItemLook(0), home, character)
+    val probe = HomePresenter.tooltipRequest(ItemLook(0), home, character, res)
     val sources by produceState<ItemTooltipSources?>(null, home) { value = catalog.sources(probe) }
     val items = sources?.items.orEmpty()
     val blocker = GearModel.offHandBlocker(home, character.gear, items, ItemTooltipModel.band(probe, sources?.bis))

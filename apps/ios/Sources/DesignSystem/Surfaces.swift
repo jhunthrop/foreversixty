@@ -19,24 +19,31 @@ public struct MicroLabel: View {
     }
 }
 
-/// A tag (`.pill`): 22 pt, 11 pt 700 uppercase, tinted ground and border.
+/// A tag (`.pill`): 22 pt, 11 pt 700 uppercase, tinted ground and border, an optional glyph first.
 public struct TagView: View {
     private let text: String
     private let color: Color
+    private let systemImage: String?
 
-    public init(text: String, color: Color) {
+    public init(text: String, color: Color, systemImage: String? = nil) {
         self.text = text
         self.color = color
+        self.systemImage = systemImage
     }
 
     public var body: some View {
-        Text(text.uppercased())
-            .font(ScaledType.micro).tracking(1)
-            .foregroundStyle(color)
-            .padding(.horizontal, FSSpacing.space2)
-            .frame(minHeight: 22)
-            .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color.opacity(0.35)))
+        HStack(spacing: 4) {
+            if let systemImage {
+                Image(systemName: systemImage).font(.system(size: 9, weight: .bold)).accessibilityHidden(true)
+            }
+            Text(text.uppercased()).font(ScaledType.micro).tracking(1)
+        }
+        .foregroundStyle(color)
+        .padding(.horizontal, FSSpacing.space2)
+        .frame(minHeight: 22)
+        .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color.opacity(0.35)))
+        .fixedSize()
     }
 }
 
@@ -58,9 +65,10 @@ public struct OfflineStrip: View {
         .foregroundStyle(FSColor.nav)
         .padding(.horizontal, FSSpacing.space4)
         .frame(minHeight: 36)
-        .background(Color(tokenHex: 0x11151F))
+        .background(GameColors.offlineGround)
         .overlay(alignment: .bottom) { FSColor.line.frame(height: 1) }
         .accessibilityElement(children: .combine)
+        .onAppear { AccessibilityNotification.Announcement(text).post() }
     }
 }
 
@@ -103,4 +111,23 @@ public extension View {
     func primaryCard() -> some View { modifier(PrimaryCard()) }
     func quietCard() -> some View { modifier(QuietCard()) }
     func heroBand() -> some View { modifier(HeroBand()) }
+}
+
+/// A list row's press: the 10% gold wash while held (spec §8).
+public struct RowPressStyle: ButtonStyle {
+    public init() {}
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(configuration.isPressed ? GameColors.pressedWash : .clear)
+    }
+}
+
+public extension View {
+    /// A chip or pill's ground: the capsule filled with `fill` and its 1 pt border inside the edge.
+    func pillSurface(fill: Color, line: Color) -> some View {
+        background { Capsule().fill(fill) }
+            .overlay { Capsule().strokeBorder(line, lineWidth: 1) }
+            .contentShape(.capsule)
+    }
 }

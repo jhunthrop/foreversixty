@@ -65,9 +65,9 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   const toggle = score.getByTestId('history-score-fights-toggle');
   await expect(plot).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  // The owner's bar above the profile lands after /v1/me; once it is in, nothing above the plot
-  // changes height, so scroll anchoring cannot move scrollY under the hover check below.
-  await expect(page.getByTestId('current-character-bar').first()).toBeVisible();
+  // The owner's sync line in the profile header lands after /v1/me; once it is in, nothing above
+  // the plot changes height, so scroll anchoring cannot move scrollY under the hover check below.
+  await expect(page.getByTestId('character-sync')).toBeVisible();
 
   await plot.focus();
   await page.keyboard.press('Home');

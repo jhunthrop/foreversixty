@@ -30,7 +30,6 @@
   import Tag from '../ui/Tag.svelte';
   import { characterIsSimulated } from '../../lib/character-spec';
   import CharacterRow from '../character/CharacterRow.svelte';
-  import type { Snippet } from 'svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
 
   let {
@@ -38,7 +37,6 @@
     busyKey,
     failedKey = null,
     currentKey = null,
-    lead,
     onpick,
     onother,
   }: {
@@ -51,8 +49,6 @@
      *  set only for that one failure, never for the race refusal, which keeps its own hint
      *  where it already was (SimView.svelte's `sim-landing-message` paragraph). */
     failedKey?: string | null;
-    /** The first row of the card: the current-character strip (its doors and Forget). */
-    lead?: Snippet;
     onpick: (path: CharacterPath) => void;
     onother: () => void;
   } = $props();
@@ -122,7 +118,6 @@
        and the source switcher's hero card (SourceSwitcher.svelte) carries the identical
        line under its own "Your characters" heading for a signed-out visitor, so the two
        states are never both on screen at once. -->
-  {@render lead?.()}
   <p class="text-muted border-line-soft border-t px-5 py-3 text-[13px]" data-testid="sim-scope-note">
     {landingCopy.scopeCaveat}
   </p>

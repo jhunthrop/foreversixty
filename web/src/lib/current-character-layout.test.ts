@@ -1,14 +1,12 @@
 // web/src/lib/current-character-layout.test.ts
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CHIP_HEIGHT, STRIP_HEIGHT, VIEW_GAP } from './current-character-layout';
+import { CHIP_HEIGHT, VIEW_GAP } from './current-character-layout';
 
-describe('chip-slot pre-paint rule', () => {
-  it('reserves the slot while a pointer is stored or a session hint is set', () => {
+describe('the retired spine bar', () => {
+  it('leaves no pre-paint slot rule behind', () => {
     const css = readFileSync(new URL('../styles/global.css', import.meta.url), 'utf-8');
-    expect(css).toContain(
-      "html:not([data-pointer='1']):not([data-session='1']) .chip-slot {\n  display: none;\n}",
-    );
+    expect(css).not.toContain('.chip-slot');
   });
 });
 
@@ -18,14 +16,8 @@ describe('CHIP_HEIGHT', () => {
   });
 });
 
-describe('STRIP_HEIGHT', () => {
-  it('is the card-row strip height: a 56 px row in a 2 px border, identity line plus two door lines on a phone', () => {
-    expect(STRIP_HEIGHT).toBe('h-[150px] md:h-[58px]');
-  });
-});
-
 describe('VIEW_GAP', () => {
-  it('is the flex gap SimView.svelte and ToolsView.svelte both use after the chip', () => {
+  it('is the flex gap SimView.svelte and ToolsView.svelte both use between their blocks', () => {
     expect(VIEW_GAP).toBe('gap-[22px] md:gap-8');
   });
 });

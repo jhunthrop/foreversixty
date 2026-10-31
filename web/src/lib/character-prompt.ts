@@ -6,7 +6,6 @@
 //   - A score but no gear on file: the primary is the planner.
 //   - No gear on file: the one quiet line under Gear says how to get gear on the page (sync the
 //     addon; a visitor may also sign in to claim the character). With gear it says nothing.
-//   - The signed-out sign-in bar goes while there is no score: that line is the quiet one.
 
 export interface CharacterPromptInput {
   /** The character has a Forever Score. */
@@ -21,15 +20,12 @@ export interface CharacterPrompt {
   primary: 'companion' | 'planner' | null;
   /** The quiet line under Gear: sync, or sync and claim for a visitor; none with gear on file. */
   secondary: 'sync' | 'sync-or-claim' | null;
-  /** The sign-in bar's signed-out sentence is left out (the page already asks one thing). */
-  quietBar: boolean;
 }
 
 export function characterPrompt({ hasScore, hasGear, owned }: CharacterPromptInput): CharacterPrompt {
   return {
     primary: !hasScore ? 'companion' : !hasGear ? 'planner' : null,
     secondary: hasGear ? null : owned ? 'sync' : 'sync-or-claim',
-    quietBar: !hasScore,
   };
 }
 
