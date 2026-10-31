@@ -1,3 +1,4 @@
+import DesignSystem
 import DesignTokens
 import Models
 import SwiftUI
@@ -22,7 +23,7 @@ struct HomeAnswerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let offlineStamp { OfflineStrip(stamp: offlineStamp) }
+            if let offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: offlineStamp)) }
             switch phase {
             case .loading:
                 HomeSkeleton()
@@ -46,7 +47,7 @@ struct HomeAnswerView: View {
                 EmptyView()
             }
             if let already = model.already {
-                Text(already).font(HomeType.meta).foregroundStyle(FSColor.muted).padding(.top, 12)
+                Text(already).font(ScaledType.meta).foregroundStyle(FSColor.muted).padding(.top, 12)
             }
             NextRows(title: model.nextTitle, rows: model.next, send: send).padding(.top, 22)
         }
@@ -57,9 +58,9 @@ struct HomeAnswerView: View {
     @ViewBuilder
     private func failed(_ cached: HomeAnswerModel?) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(presenter.heroMeta).font(HomeType.meta).foregroundStyle(FSColor.muted)
+            Text(presenter.heroMeta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             MicroLabel(Copy.homeAnswerLabel, color: FSColor.nav)
-            Text(Copy.homeAnswerFailed).font(HomeType.lead).foregroundStyle(FSColor.wipe)
+            Text(Copy.homeAnswerFailed).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
                 .accessibilityAddTraits(.isStaticText)
             SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise") { send(.retry) }
         }
@@ -81,15 +82,15 @@ struct HomeHero: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(model.heroMeta).font(HomeType.meta).foregroundStyle(FSColor.muted)
+            Text(model.heroMeta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             MicroLabel(Copy.homeAnswerLabel, color: FSColor.nav).padding(.top, 14)
             answer.padding(.top, 8)
             if let note = model.note {
-                Text(note).font(HomeType.meta).foregroundStyle(FSColor.muted).padding(.top, 6)
+                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted).padding(.top, 6)
             }
             if let synced = model.synced {
                 Label { Text(synced) } icon: { Image(systemName: "arrow.triangle.2.circlepath").font(.system(size: 12)) }
-                    .font(HomeType.meta).foregroundStyle(FSColor.nav).padding(.top, 10)
+                    .font(ScaledType.meta).foregroundStyle(FSColor.nav).padding(.top, 10)
             }
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 18, trailing: 16))
@@ -103,17 +104,17 @@ struct HomeHero: View {
         case .upgrades:
             figures.accessibilityElement(children: .combine)
         case let .allMatch(text):
-            Text(text).font(HomeType.lead).foregroundStyle(FSColor.strong)
+            Text(text).font(ScaledType.lead).foregroundStyle(FSColor.strong)
         case let .message(text, buttons, note):
             VStack(alignment: .leading, spacing: 14) {
-                Text(text).font(HomeType.lead).foregroundStyle(FSColor.strong)
+                Text(text).font(ScaledType.lead).foregroundStyle(FSColor.strong)
                 if !buttons.isEmpty {
                     ViewThatFits(in: .horizontal) {
                         HStack(spacing: 10) { actionButtons(buttons) }
                         VStack(alignment: .leading, spacing: 10) { actionButtons(buttons) }
                     }
                 }
-                if let note { Text(note).font(HomeType.meta).foregroundStyle(FSColor.muted) }
+                if let note { Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
             }
         }
     }
@@ -140,8 +141,8 @@ struct HomeHero: View {
         if let count = model.count { figure(count) }
         if let gain = model.gain {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(gain.figure).font(HomeType.stat).foregroundStyle(FSColor.strong)
-                Text(gain.unit).font(HomeType.body).foregroundStyle(FSColor.muted)
+                Text(gain.figure).font(ScaledType.stat).foregroundStyle(FSColor.strong)
+                Text(gain.unit).font(ScaledType.body).foregroundStyle(FSColor.muted)
             }
         }
     }
@@ -150,8 +151,8 @@ struct HomeHero: View {
     private func figure(_ text: String) -> some View {
         let parts = text.split(separator: " ", maxSplits: 1).map(String.init)
         return HStack(alignment: .firstTextBaseline, spacing: 6) {
-            Text(parts.first ?? text).font(HomeType.stat).foregroundStyle(FSColor.strong)
-            if parts.count > 1 { Text(parts[1]).font(HomeType.body).foregroundStyle(FSColor.muted) }
+            Text(parts.first ?? text).font(ScaledType.stat).foregroundStyle(FSColor.strong)
+            if parts.count > 1 { Text(parts[1]).font(ScaledType.body).foregroundStyle(FSColor.muted) }
         }
     }
 }
@@ -171,7 +172,7 @@ struct UpgradesCard: View {
             HStack {
                 MicroLabel(Copy.homeUpgradesTitle)
                 Spacer()
-                if let bandHead { Text(bandHead).font(HomeType.meta).foregroundStyle(FSColor.muted) }
+                if let bandHead { Text(bandHead).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -186,7 +187,7 @@ struct UpgradesCard: View {
             Divider().overlay(FSColor.lineSoft)
             Button { send(.openGear) } label: {
                 HStack {
-                    Text(footer).font(HomeType.bodyStrong).foregroundStyle(FSColor.gold)
+                    Text(footer).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundStyle(FSColor.gold).accessibilityHidden(true)
                 }
@@ -211,15 +212,15 @@ struct UpgradeRowView: View {
         HStack(alignment: .top, spacing: 12) {
             ItemIconView(icon: row.pick.icon, quality: row.pick.quality, build: build, size: 44)
             VStack(alignment: .leading, spacing: 2) {
-                Text(row.pick.name ?? Copy.itemsNotInData).font(HomeType.body)
+                Text(row.pick.name ?? Copy.itemsNotInData).font(ScaledType.body)
                     .foregroundStyle(ItemQuality(value: row.pick.quality).text)
-                Text(row.meta).font(HomeType.meta).foregroundStyle(FSColor.muted)
-                Text(row.replaces).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                Text(row.meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(row.replaces).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 switch row.gain {
                 case let .words(words):
-                    Text(words).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                    Text(words).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 case let .measured(figure, unit) where gainBelow:
-                    Text("\(figure) \(unit)").font(HomeType.mono).foregroundStyle(FSColor.strong)
+                    Text("\(figure) \(unit)").font(ScaledType.mono).foregroundStyle(FSColor.strong)
                 case .measured:
                     EmptyView()
                 }
@@ -227,8 +228,8 @@ struct UpgradeRowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             if case let .measured(figure, unit) = row.gain, !gainBelow {
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text(figure).font(HomeType.mono).foregroundStyle(FSColor.strong)
-                    Text(unit.uppercased()).font(HomeType.micro).foregroundStyle(FSColor.muted)
+                    Text(figure).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                    Text(unit.uppercased()).font(ScaledType.micro).foregroundStyle(FSColor.muted)
                 }
             }
         }
@@ -280,8 +281,8 @@ struct NextRowView: View {
                 .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(row.title).font(HomeType.bodyStrong).foregroundStyle(FSColor.strong)
-                Text(row.line).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                Text(row.line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             switch row.tag {
@@ -330,7 +331,7 @@ struct HomeSkeleton: View {
             .quietCard()
             .padding(.horizontal, 16)
             .padding(.top, 16)
-            Text(Copy.homeAnswerLoading).font(HomeType.meta).foregroundStyle(FSColor.muted)
+            Text(Copy.homeAnswerLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 .padding(16)
         }
         .accessibilityElement(children: .ignore)

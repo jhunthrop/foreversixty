@@ -18,9 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -37,8 +37,17 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.MicroLabel
+import gg.foreversixty.app.designsystem.OfflineStrip
+import gg.foreversixty.app.designsystem.Tag
+import gg.foreversixty.app.designsystem.heroBand
+import gg.foreversixty.app.designsystem.primaryCard
+import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemQuality
@@ -88,7 +97,7 @@ private fun Answer(model: HomeAnswerModel, build: String, send: (HomeIntent) -> 
             UpgradesCard(body, model.bandHead, build, send)
         }
         model.already?.let {
-            Text(it, style = HomeType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 12.dp))
+            Text(it, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 12.dp))
         }
         Spacer(Modifier.height(22.dp))
         NextRows(model.nextTitle, model.next)
@@ -98,16 +107,16 @@ private fun Answer(model: HomeAnswerModel, build: String, send: (HomeIntent) -> 
 @Composable
 private fun Failed(presenter: HomePresenter, cached: HomeAnswerModel?, send: (HomeIntent) -> Unit) {
     HeroColumn {
-        Text(presenter.heroMeta, style = HomeType.meta, color = FsColor.muted)
+        Text(presenter.heroMeta, style = FsType.meta, color = FsColor.muted)
         Spacer(Modifier.height(14.dp))
         MicroLabel(stringResource(R.string.home_answer_label), color = FsColor.nav)
         Text(
             stringResource(R.string.home_answer_failed),
-            style = HomeType.lead,
+            style = FsType.lead,
             color = FsColor.wipe,
             modifier = Modifier.padding(vertical = 10.dp).semantics { liveRegion = LiveRegionMode.Assertive },
         )
-        SecondaryButton(stringResource(R.string.common_tryAgain), onClick = { send(HomeIntent.Retry) }, withRetryGlyph = true)
+        BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, { send(HomeIntent.Retry) }, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
     }
     Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 22.dp, bottom = 24.dp)) {
         NextRows(
@@ -129,21 +138,21 @@ private fun HeroColumn(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun Hero(model: HomeAnswerModel, send: (HomeIntent) -> Unit) {
     HeroColumn {
-        Text(model.heroMeta, style = HomeType.meta, color = FsColor.muted)
+        Text(model.heroMeta, style = FsType.meta, color = FsColor.muted)
         Spacer(Modifier.height(14.dp))
         MicroLabel(stringResource(R.string.home_answer_label), color = FsColor.nav)
         Spacer(Modifier.height(8.dp))
         when (val body = model.body) {
             is HomeAnswerBody.Upgrades -> Figures(model)
-            is HomeAnswerBody.AllMatch -> Text(body.text, style = HomeType.lead, color = FsColor.strong)
+            is HomeAnswerBody.AllMatch -> Text(body.text, style = FsType.lead, color = FsColor.strong)
             is HomeAnswerBody.Message -> Message(body, send)
         }
-        model.note?.let { Text(it, style = HomeType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 6.dp)) }
+        model.note?.let { Text(it, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 6.dp)) }
         model.synced?.let {
             Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Refresh, contentDescription = null, tint = FsColor.nav, modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(it, style = HomeType.meta, color = FsColor.nav)
+                Text(it, style = FsType.meta, color = FsColor.nav)
             }
         }
     }
@@ -160,16 +169,16 @@ private fun Figures(model: HomeAnswerModel) {
         model.count?.let { count ->
             val number = count.substringBefore(' ')
             Row(verticalAlignment = Alignment.Bottom) {
-                Text(number, style = HomeType.stat, color = FsColor.strong)
+                Text(number, style = FsType.stat, color = FsColor.strong)
                 Spacer(Modifier.width(6.dp))
-                Text(count.substringAfter(' '), style = HomeType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+                Text(count.substringAfter(' '), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
             }
         }
         model.gainFigure?.let { figure ->
             Row(verticalAlignment = Alignment.Bottom) {
-                Text(figure, style = HomeType.stat, color = FsColor.strong)
+                Text(figure, style = FsType.stat, color = FsColor.strong)
                 Spacer(Modifier.width(6.dp))
-                Text(model.gainUnit.orEmpty(), style = HomeType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+                Text(model.gainUnit.orEmpty(), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
             }
         }
     }
@@ -177,7 +186,7 @@ private fun Figures(model: HomeAnswerModel) {
 
 @Composable
 private fun Message(body: HomeAnswerBody.Message, send: (HomeIntent) -> Unit) {
-    Text(body.text, style = HomeType.lead, color = FsColor.strong)
+    Text(body.text, style = FsType.lead, color = FsColor.strong)
     if (body.buttons.isNotEmpty()) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -186,14 +195,14 @@ private fun Message(body: HomeAnswerBody.Message, send: (HomeIntent) -> Unit) {
         ) {
             body.buttons.forEach { button ->
                 if (button.primary) {
-                    PrimaryButton(button.title) { send(HomeIntent.Action(button.kind)) }
+                    BrandButton(button.title, BrandButtonKind.Primary, { send(HomeIntent.Action(button.kind)) }, height = 48.dp, fill = false)
                 } else {
-                    SecondaryButton(button.title, onClick = { send(HomeIntent.Action(button.kind)) })
+                    BrandButton(button.title, BrandButtonKind.Secondary, { send(HomeIntent.Action(button.kind)) }, height = 48.dp, fill = false)
                 }
             }
         }
     }
-    body.note?.let { Text(it, style = HomeType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 14.dp)) }
+    body.note?.let { Text(it, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 14.dp)) }
 }
 
 /** The Your upgrades card: head row, five rows in the server's order, the footer to Your gear. */
@@ -204,7 +213,7 @@ private fun UpgradesCard(body: HomeAnswerBody.Upgrades, bandHead: String?, build
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             MicroLabel(stringResource(R.string.home_upgrades_title))
             Spacer(Modifier.weight(1f))
-            bandHead?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }
+            bandHead?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
         }
         body.rows.forEach { row ->
             HorizontalDivider(color = FsColor.lineSoft)
@@ -221,7 +230,7 @@ private fun UpgradesCard(body: HomeAnswerBody.Upgrades, bandHead: String?, build
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(body.footer, style = HomeType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+            Text(body.footer, style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.gold)
         }
     }
@@ -238,21 +247,21 @@ fun UpgradeRow(row: HomeUpgradeRow, build: String, modifier: Modifier = Modifier
     ) {
         ItemIcon(row.pick.icon, row.pick.quality, build, 44.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(row.pick.name ?: stringResource(R.string.items_notInData), style = HomeType.body, color = ItemQuality(row.pick.quality).text)
-            Text(row.meta, style = HomeType.meta, color = FsColor.muted)
-            Text(row.replaces, style = HomeType.meta, color = FsColor.muted)
+            Text(row.pick.name ?: stringResource(R.string.items_notInData), style = FsType.body, color = ItemQuality(row.pick.quality).text)
+            Text(row.meta, style = FsType.meta, color = FsColor.muted)
+            Text(row.replaces, style = FsType.meta, color = FsColor.muted)
             when (val gain = row.gain) {
-                is HomeUpgradeRow.Gain.Words -> Text(gain.text, style = HomeType.meta, color = FsColor.muted)
+                is HomeUpgradeRow.Gain.Words -> Text(gain.text, style = FsType.meta, color = FsColor.muted)
                 is HomeUpgradeRow.Gain.Measured -> if (gainBelow) {
-                    Text("${gain.figure} ${gain.unit}", style = HomeType.mono, color = FsColor.strong)
+                    Text("${gain.figure} ${gain.unit}", style = FsType.mono, color = FsColor.strong)
                 }
             }
         }
         val gain = row.gain
         if (gain is HomeUpgradeRow.Gain.Measured && !gainBelow) {
             Column(horizontalAlignment = Alignment.End) {
-                Text(gain.figure, style = HomeType.mono, color = FsColor.strong)
-                Text(gain.unit.uppercase(Locale.ROOT), style = HomeType.micro, color = FsColor.muted)
+                Text(gain.figure, style = FsType.mono, color = FsColor.strong)
+                Text(gain.unit.uppercase(Locale.ROOT), style = FsType.micro, color = FsColor.muted)
             }
         }
     }
@@ -291,8 +300,8 @@ private fun NextRow(row: HomeNextRow) {
             )
         }
         Column(Modifier.weight(1f)) {
-            Text(row.title, style = HomeType.bodyStrong, color = FsColor.strong)
-            Text(row.line, style = HomeType.meta, color = FsColor.muted)
+            Text(row.title, style = FsType.bodyStrong, color = FsColor.strong)
+            Text(row.line, style = FsType.meta, color = FsColor.muted)
         }
         when (row.tag) {
             HomeNextRow.Tag.Matches -> Tag(stringResource(R.string.home_next_matches), FsColor.kill)
@@ -330,7 +339,7 @@ fun HomeSkeleton() {
                 }
             }
         }
-        Text(loading, style = HomeType.meta, color = FsColor.muted, modifier = Modifier.padding(16.dp))
+        Text(loading, style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(16.dp))
     }
 }
 

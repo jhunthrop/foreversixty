@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.MicroLabel
+import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemQuality
@@ -46,11 +49,11 @@ fun GearList(rows: List<GearRow>, intro: String, build: String, open: (ItemLook,
     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
             stringResource(R.string.gear_title).uppercase(Locale.ROOT),
-            style = HomeType.pageTitle,
+            style = FsType.title,
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },
         )
-        Text(intro, style = HomeType.body, color = FsColor.muted)
+        Text(intro, style = FsType.body, color = FsColor.muted)
         Column(Modifier.fillMaxWidth().quietCard()) {
             rows.forEachIndexed { index, row ->
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
@@ -100,9 +103,9 @@ private fun Worn(row: GearRow, build: String, open: (ItemLook, Int?) -> Unit, mo
     ) {
         ItemIcon(worn?.icon, worn?.quality, build, 36.dp, dashed = worn?.icon == null)
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(row.wornName, style = HomeType.meta, color = if (worn == null) FsColor.muted else ItemQuality(worn.quality).text)
-            row.wornLevel?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }
-            pickArrow?.let { Text(it, style = HomeType.meta, color = ItemQuality(row.pick.quality).text) }
+            Text(row.wornName, style = FsType.meta, color = if (worn == null) FsColor.muted else ItemQuality(worn.quality).text)
+            row.wornLevel?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+            pickArrow?.let { Text(it, style = FsType.meta, color = ItemQuality(row.pick.quality).text) }
         }
     }
 }
@@ -119,7 +122,7 @@ private fun Trailing(row: GearRow, build: String, open: (ItemLook, Int?) -> Unit
         ) {
             Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.kill, modifier = Modifier.size(12.dp))
             Spacer(Modifier.width(4.dp))
-            Text(stringResource(R.string.gear_bis).uppercase(Locale.ROOT), style = HomeType.micro, color = FsColor.kill)
+            Text(stringResource(R.string.gear_bis).uppercase(Locale.ROOT), style = FsType.micro, color = FsColor.kill)
         }
         pick != null -> {
             val quality = ItemQuality(pick.quality).name?.let { stringResource(it) }.orEmpty()

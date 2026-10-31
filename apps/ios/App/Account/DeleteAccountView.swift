@@ -32,11 +32,7 @@ struct DeleteAccountView: View {
                 Text(Copy.accountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
                 bulletCard(items, glyph: "minus")
                 if !consequenceLines.isEmpty {
-                    Text(Copy.accountDeleteLoseTitle)
-                        .font(ScaledType.micro)
-                        .textCase(.uppercase)
-                        .tracking(1.5)
-                        .foregroundStyle(FSColor.muted)
+                    MicroLabel(Copy.accountDeleteLoseTitle)
                         .padding(.top, FSSpacing.space2)
                     bulletCard(consequenceLines, glyph: "exclamationmark.circle")
                 }
@@ -84,7 +80,7 @@ struct DeleteAccountView: View {
         }
         .padding(FSSpacing.space4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .accountCard()
+        .quietCard()
     }
 }
 

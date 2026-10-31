@@ -81,7 +81,7 @@ struct YouView: View {
                         AccountRow(icon: "iphone", title: Copy.youDevices, subtitle: summary.devices, chevron: true)
                     }
                 }
-                .accountCard()
+                .quietCard()
                 VStack(spacing: 0) {
                     Button { openURL(AccountLinks.privacy) } label: { AccountRow(icon: "hand.raised", title: Copy.youPrivacy, external: true) }
                     Divider().overlay(FSColor.lineSoft)
@@ -91,7 +91,7 @@ struct YouView: View {
                         AccountRow(icon: "info.circle", title: Copy.youAbout, chevron: true)
                     }
                 }
-                .accountCard()
+                .quietCard()
                 Button(Copy.youSignOut) { confirmingSignOut = true }
                     .buttonStyle(BrandButtonStyle(.quiet, height: 48))
                 NavigationLink(value: YouRoute.deleteAccount) {
@@ -200,15 +200,7 @@ struct AccountRow: View {
                 }
             }
             Spacer(minLength: FSSpacing.space2)
-            if let tag {
-                Text(tag)
-                    .font(ScaledType.micro)
-                    .textCase(.uppercase)
-                    .foregroundStyle(FSColor.gold)
-                    .padding(.horizontal, FSSpacing.space2)
-                    .frame(minHeight: 22)
-                    .overlay(Capsule().strokeBorder(FSColor.gold.opacity(0.4)))
-            }
+            if let tag { TagView(text: tag, color: FSColor.gold) }
             if let trailing {
                 Text(trailing).font(ScaledType.meta).foregroundStyle(FSColor.muted).multilineTextAlignment(.trailing)
             }
@@ -225,13 +217,5 @@ struct AccountRow: View {
         .frame(minHeight: 56)
         .contentShape(.rect)
         .accessibilityElement(children: .combine)
-    }
-}
-
-extension View {
-    /// The quiet list card: raised, hairline border, panel radius.
-    func accountCard() -> some View {
-        background(FSColor.raised, in: .rect(cornerRadius: FSRadius.panel))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.panel).stroke(FSColor.lineSoft))
     }
 }

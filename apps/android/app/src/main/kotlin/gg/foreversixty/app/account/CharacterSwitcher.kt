@@ -44,8 +44,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.Hyphens
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
@@ -53,6 +53,8 @@ import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpacing
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.Me
 
@@ -87,9 +89,9 @@ fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () ->
     ) {
         ClassCrest(character.className, 34.dp)
         Column {
-            Text(character.name, style = AccountType.cappedName(), color = classColor(character.className), softWrap = false)
+            Text(character.name, style = FsType.cappedName(), color = classColor(character.className), softWrap = false)
             val detail = AccountCopy.selectorDetail(character)
-            if (!compact && detail != null) Text(detail, style = AccountType.meta, color = FsColor.muted, maxLines = 1)
+            if (!compact && detail != null) Text(detail, style = FsType.meta, color = FsColor.muted, maxLines = 1)
         }
         Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
     }
@@ -102,12 +104,12 @@ fun SwitcherSheetContent(me: Me, currentKey: String?, onPick: (AccountCharacter)
         Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space1)) {
             Text(
                 stringResource(R.string.switcher_title).uppercase(),
-                style = AccountType.sec,
+                style = FsType.sec,
                 color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
             me.user.battletag?.let {
-                Text(stringResource(R.string.switcher_who, it), style = AccountType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.switcher_who, it), style = FsType.meta, color = FsColor.muted)
             }
         }
         me.characters.forEach { character ->
@@ -116,7 +118,7 @@ fun SwitcherSheetContent(me: Me, currentKey: String?, onPick: (AccountCharacter)
         }
         Text(
             stringResource(R.string.switcher_footer),
-            style = AccountType.meta,
+            style = FsType.meta,
             color = FsColor.muted,
             modifier = Modifier.padding(FsSpacing.space4),
         )
@@ -142,12 +144,12 @@ private fun SwitcherRow(character: AccountCharacter, current: Boolean, onClick: 
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = classColor(character.className))) { append(character.name) }
-                    withStyle(AccountType.meta.toSpanStyle().copy(color = FsColor.muted)) { append(" · $place") }
+                    withStyle(FsType.meta.toSpanStyle().copy(color = FsColor.muted)) { append(" · $place") }
                 },
-                style = AccountType.name.copy(lineBreak = LineBreak.Simple, hyphens = Hyphens.None),
+                style = FsType.name.copy(lineBreak = LineBreak.Simple, hyphens = Hyphens.None),
             )
-            Text(AccountCopy.switcherDetail(character), style = AccountType.meta, color = FsColor.text)
-            Text(character.guild?.name ?: stringResource(R.string.switcher_noGuild), style = AccountType.meta, color = FsColor.muted)
+            Text(AccountCopy.switcherDetail(character), style = FsType.meta, color = FsColor.text)
+            Text(character.guild?.name ?: stringResource(R.string.switcher_noGuild), style = FsType.meta, color = FsColor.muted)
         }
         if (current) Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold)
     }

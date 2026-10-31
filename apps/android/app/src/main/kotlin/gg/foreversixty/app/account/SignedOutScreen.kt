@@ -23,8 +23,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpacing
+import gg.foreversixty.app.designsystem.FsType
 
 /** Which tab draws the signed-out panel: Home's words, or Raids' (spec F1.1). */
 enum class SignedOutVariant { Home, Raids }
@@ -52,22 +55,22 @@ fun SignedOutScreen(
             verticalArrangement = Arrangement.spacedBy(FsSpacing.space4),
         ) {
             Seal(64.dp)
-            Text(stringResource(R.string.app_name).uppercase(), style = AccountType.wordmark, color = FsColor.strong)
+            Text(stringResource(R.string.app_name).uppercase(), style = FsType.wordmark, color = FsColor.strong)
             val (heading, line) = when (variant) {
                 SignedOutVariant.Home -> R.string.signin_line to R.string.signin_body
                 SignedOutVariant.Raids -> R.string.raids_signedOut_title to R.string.raids_signedOut_body
             }
             Text(
                 stringResource(heading).uppercase(),
-                style = AccountType.title,
+                style = FsType.title,
                 color = FsColor.strong,
                 modifier = Modifier.semantics { this.heading() },
             )
-            Text(stringResource(line), style = AccountType.body, color = FsColor.text)
+            Text(stringResource(line), style = FsType.body, color = FsColor.text)
             Spacer(Modifier.height(FsSpacing.space1))
             BrandButton(stringResource(R.string.signin_button), BrandButtonKind.Primary, onSignIn, busy = signingIn)
             BrandButton(stringResource(R.string.signin_pickClass), BrandButtonKind.Secondary, onPickClass)
-            Text(stringResource(R.string.signin_pickClassNote), style = AccountType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.signin_pickClassNote), style = FsType.meta, color = FsColor.muted)
         }
         if (notice != null) {
             NoticeToast(notice, Modifier.padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space3), isFailure = noticeIsFailure)
@@ -84,8 +87,8 @@ fun ImportScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Seal(64.dp)
-        Text(stringResource(R.string.signin_importTitle).uppercase(), style = AccountType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
-        Text(stringResource(R.string.signin_importBody), style = AccountType.body, color = FsColor.text, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.signin_importTitle).uppercase(), style = FsType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.signin_importBody), style = FsType.body, color = FsColor.text, textAlign = TextAlign.Center)
         LinearProgressIndicator(Modifier.width(160.dp).height(8.dp), color = FsColor.gold, trackColor = FsColor.lineSoft)
     }
 }
@@ -99,11 +102,11 @@ fun NoCharactersScreen(onGetAddon: () -> Unit) {
     ) {
         Text(
             stringResource(R.string.signin_noChars_title).uppercase(),
-            style = AccountType.h2,
+            style = FsType.h2,
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },
         )
-        Text(stringResource(R.string.signin_noChars_body), style = AccountType.body, color = FsColor.text)
+        Text(stringResource(R.string.signin_noChars_body), style = FsType.body, color = FsColor.text)
         BrandButton(stringResource(R.string.signin_getAddon), BrandButtonKind.Secondary, onGetAddon, Modifier.fillMaxWidth())
     }
 }

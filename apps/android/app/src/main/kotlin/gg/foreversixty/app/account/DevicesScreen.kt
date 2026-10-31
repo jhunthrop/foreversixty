@@ -18,8 +18,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.DeviceRow
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpacing
+import gg.foreversixty.app.designsystem.FsType
 
 /** What F1.6 shows: the rows, or the load failure. */
 sealed interface DevicesState {
@@ -52,14 +55,14 @@ fun DevicesScreen(
             DevicesState.Failed -> Column {
                 Text(
                     stringResource(R.string.account_devices_loadFailed),
-                    style = AccountType.body,
+                    style = FsType.body,
                     color = FsColor.wipe,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
                 BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, onRetry, height = 44.dp)
             }
         }
-        Text(stringResource(R.string.devices_footer), style = AccountType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.devices_footer), style = FsType.meta, color = FsColor.muted)
     }
     confirming?.let { row ->
         ConfirmDialog(
@@ -87,7 +90,7 @@ private fun DeviceItem(row: DeviceRow, revokeFailed: Boolean, onRevoke: () -> Un
         if (revokeFailed) {
             Text(
                 stringResource(R.string.devices_revoke_failed),
-                style = AccountType.meta,
+                style = FsType.meta,
                 color = FsColor.wipe,
                 modifier = Modifier.padding(start = FsSpacing.space4, end = FsSpacing.space4, bottom = FsSpacing.space3),
             )

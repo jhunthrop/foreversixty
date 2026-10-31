@@ -1,4 +1,5 @@
 import Auth
+import DesignSystem
 import DesignTokens
 import Models
 import Networking
@@ -70,10 +71,10 @@ struct HomeTab: View {
             NavigationStack {
                 VStack(alignment: .leading, spacing: 12) {
                     if me != nil {
-                        Text(Copy.signinNoCharsTitle).font(HomeType.sectionTitle).foregroundStyle(FSColor.strong)
-                        Text(Copy.signinNoCharsBody).font(HomeType.body).foregroundStyle(FSColor.muted)
+                        Text(Copy.signinNoCharsTitle).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+                        Text(Copy.signinNoCharsBody).font(ScaledType.body).foregroundStyle(FSColor.muted)
                     } else if meFailed {
-                        Text(Copy.homeAnswerFailed).font(HomeType.lead).foregroundStyle(FSColor.wipe)
+                        Text(Copy.homeAnswerFailed).font(ScaledType.lead).foregroundStyle(FSColor.wipe)
                         SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise") { Task { await loadMe() } }
                     } else {
                         HomeSkeleton()

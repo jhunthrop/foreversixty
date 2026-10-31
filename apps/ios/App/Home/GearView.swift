@@ -1,3 +1,4 @@
+import DesignSystem
 import DesignTokens
 import Models
 import SwiftUI
@@ -13,9 +14,9 @@ struct GearView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text(Copy.gearTitle.uppercased()).font(HomeType.pageTitle).foregroundStyle(FSColor.strong)
+                Text(Copy.gearTitle.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
-                Text(intro).font(HomeType.body).foregroundStyle(FSColor.muted)
+                Text(intro).font(ScaledType.body).foregroundStyle(FSColor.muted)
                 VStack(spacing: 0) {
                     ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                         if index > 0 { Divider().overlay(FSColor.lineSoft) }
@@ -62,11 +63,11 @@ struct GearRowView: View {
             HStack(alignment: .center, spacing: 12) {
                 ItemIconView(icon: row.worn?.icon, quality: row.worn?.quality, build: build, size: 36, dashed: row.worn?.icon == nil)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(row.wornName).font(HomeType.meta)
+                    Text(row.wornName).font(ScaledType.meta)
                         .foregroundStyle(row.worn == nil ? FSColor.muted : ItemQuality(value: row.worn?.quality).text)
-                    if let level = row.wornLevel { Text(level).font(HomeType.meta).foregroundStyle(FSColor.muted) }
+                    if let level = row.wornLevel { Text(level).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
                     if let pick = row.pick {
-                        Text(Copy.itemsPickArrow(item: pick.name ?? Copy.itemsNotInData)).font(HomeType.meta)
+                        Text(Copy.itemsPickArrow(item: pick.name ?? Copy.itemsNotInData)).font(ScaledType.meta)
                             .foregroundStyle(ItemQuality(value: pick.quality).text)
                     }
                 }
@@ -87,7 +88,7 @@ struct GearRowView: View {
         if row.isBestInSlot {
             HStack(spacing: 4) {
                 Image(systemName: "checkmark").font(.system(size: 10, weight: .bold)).accessibilityHidden(true)
-                Text(Copy.gearBis.uppercased()).font(HomeType.micro)
+                Text(Copy.gearBis.uppercased()).font(ScaledType.micro)
             }
             .foregroundStyle(FSColor.kill)
             .padding(.horizontal, 8)

@@ -51,7 +51,7 @@ struct DevicesView: View {
                 }
             }
             .redacted(reason: .placeholder)
-            .accountCard()
+            .quietCard()
         case let .loaded(rows):
             VStack(spacing: 0) {
                 ForEach(rows) { row in
@@ -59,7 +59,7 @@ struct DevicesView: View {
                     if row.id != rows.last?.id { Divider().overlay(FSColor.lineSoft) }
                 }
             }
-            .accountCard()
+            .quietCard()
         case .failed:
             VStack(alignment: .leading, spacing: FSSpacing.space3) {
                 Text(Copy.accountDevicesLoadFailed)

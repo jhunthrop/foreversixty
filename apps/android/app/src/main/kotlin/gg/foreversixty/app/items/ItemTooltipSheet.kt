@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
@@ -36,11 +38,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.home.HomeType
-import gg.foreversixty.app.home.MicroLabel
-import gg.foreversixty.app.home.SecondaryButton
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.MicroLabel
 
 /** The sheet's phases: the fallback header while the static files load, then the model. */
 sealed interface ItemTooltipPhase {
@@ -85,12 +88,12 @@ fun ItemTooltipContent(request: ItemTooltipRequest, phase: ItemTooltipPhase, ret
         when (phase) {
             ItemTooltipPhase.Loading -> {
                 Header(request.fallback, fallbackMeta, request.build)
-                Text(stringResource(R.string.items_loading), style = HomeType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.items_loading), style = FsType.meta, color = FsColor.muted)
             }
             ItemTooltipPhase.Failed -> {
                 Header(request.fallback, fallbackMeta, request.build)
-                Text(stringResource(R.string.items_failed), style = HomeType.body, color = FsColor.wipe)
-                SecondaryButton(stringResource(R.string.common_tryAgain), onClick = retry, withRetryGlyph = true)
+                Text(stringResource(R.string.items_failed), style = FsType.body, color = FsColor.wipe)
+                BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
             }
             is ItemTooltipPhase.Loaded -> Loaded(phase.model, request.build)
         }
@@ -104,7 +107,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
     model.source?.let { source ->
         Column(Modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             MicroLabel(stringResource(R.string.tooltip_source))
-            Text(source, style = HomeType.body, color = FsColor.strong)
+            Text(source, style = FsType.body, color = FsColor.strong)
         }
     }
     if (model.pickFooter != null || model.alternatives.isNotEmpty()) {
@@ -112,7 +115,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
             MicroLabel(stringResource(R.string.tooltip_nextBest))
             Spacer(Modifier.height(8.dp))
             if (model.alternatives.isEmpty()) {
-                Text(stringResource(R.string.tooltip_nothingElse), style = HomeType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.tooltip_nothingElse), style = FsType.meta, color = FsColor.muted)
             }
             model.alternatives.forEach { alt ->
                 Row(
@@ -122,16 +125,16 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
                 ) {
                     ItemIcon(alt.look.icon, alt.look.quality, build, 36.dp)
                     Column {
-                        Text(alt.look.name ?: stringResource(R.string.items_notInData), style = HomeType.body, color = ItemQuality(alt.look.quality).text)
-                        Text(alt.meta, style = HomeType.meta, color = FsColor.muted)
-                        alt.source?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }
+                        Text(alt.look.name ?: stringResource(R.string.items_notInData), style = FsType.body, color = ItemQuality(alt.look.quality).text)
+                        Text(alt.meta, style = FsType.meta, color = FsColor.muted)
+                        alt.source?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
                     }
                 }
                 HorizontalDivider(color = FsColor.lineSoft)
             }
         }
     }
-    model.pickFooter?.let { Text(it, style = HomeType.meta, color = FsColor.muted) }
+    model.pickFooter?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
 }
 
 @Composable
@@ -143,8 +146,8 @@ private fun Header(look: ItemLook, meta: String, build: String) {
     ) {
         ItemIcon(look.icon, look.quality, build, 56.dp)
         Column {
-            Text(look.name ?: stringResource(R.string.items_notInData), style = HomeType.sectionTitle, color = ItemQuality(look.quality).text)
-            Text(meta, style = HomeType.meta, color = FsColor.muted)
+            Text(look.name ?: stringResource(R.string.items_notInData), style = FsType.sec, color = ItemQuality(look.quality).text)
+            Text(meta, style = FsType.meta, color = FsColor.muted)
         }
     }
 }
@@ -160,7 +163,7 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
     ) {
         Text(
             model.look.name ?: stringResource(R.string.items_notInData),
-            style = HomeType.tooltip.copy(fontWeight = FontWeight.Bold, fontSize = 17.sp),
+            style = FsType.tooltip.copy(fontWeight = FontWeight.Bold, fontSize = 17.sp),
             color = ItemQuality(model.look.quality).text,
         )
         if (!model.known) Line(stringResource(R.string.items_notInData), FsColor.muted)
@@ -191,14 +194,14 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
 @Composable
 private fun Split(left: String, right: String) {
     FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(left, style = HomeType.tooltip, color = FsColor.strong)
-        Text(right, style = HomeType.tooltip, color = FsColor.strong)
+        Text(left, style = FsType.tooltip, color = FsColor.strong)
+        Text(right, style = FsType.tooltip, color = FsColor.strong)
     }
 }
 
 @Composable
 private fun Line(text: String, color: Color = FsColor.strong) {
-    Text(text, style = HomeType.tooltip, color = color)
+    Text(text, style = FsType.tooltip, color = color)
 }
 
 private val PANEL = Color(0xFF0A0D14)

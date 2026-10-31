@@ -21,6 +21,15 @@ class AppConfigRepositoryTest {
     )
 
     @Test
+    fun `debug and fixture builds turn every feature on, a live release follows the config`() {
+        val repo = AppConfigRepository(offline(), InMemoryAppConfigCache())
+
+        assertTrue(repo.isAvailable(Feature.SignIn, ApiMode.Fixture, isDebugBuild = false))
+        assertTrue(repo.isAvailable(Feature.SignIn, ApiMode.Live, isDebugBuild = true))
+        assertFalse(repo.isAvailable(Feature.SignIn, ApiMode.Live, isDebugBuild = false))
+    }
+
+    @Test
     fun `before any answer every feature takes its bundled default`() {
         val repo = AppConfigRepository(offline(), InMemoryAppConfigCache())
 

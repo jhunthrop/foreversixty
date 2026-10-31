@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -35,7 +37,10 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.account.CharacterSelectorBar
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
@@ -132,15 +137,15 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit) {
     when (val answer = me) {
         null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) { HomeSkeleton() }
         is ApiResult.Failure -> Column(Modifier.fillMaxSize().background(FsColor.bg).padding(16.dp)) {
-            Text(stringResource(R.string.home_answer_failed), style = HomeType.lead, color = FsColor.wipe)
-            SecondaryButton(stringResource(R.string.common_tryAgain), onClick = { attempt++ }, withRetryGlyph = true)
+            Text(stringResource(R.string.home_answer_failed), style = FsType.lead, color = FsColor.wipe)
+            BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, { attempt++ }, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
         }
         is ApiResult.Success -> {
             val character = answer.data.mainCharacter
             if (character == null) {
                 Column(Modifier.fillMaxSize().background(FsColor.bg).padding(16.dp)) {
-                    Text(stringResource(R.string.signin_noChars_title), style = HomeType.sectionTitle, color = FsColor.strong)
-                    Text(stringResource(R.string.signin_noChars_body), style = HomeType.body, color = FsColor.muted)
+                    Text(stringResource(R.string.signin_noChars_title), style = FsType.sec, color = FsColor.strong)
+                    Text(stringResource(R.string.signin_noChars_body), style = FsType.body, color = FsColor.muted)
                 }
             } else {
                 HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis)

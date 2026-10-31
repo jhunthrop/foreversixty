@@ -21,8 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.DeletionConsequence
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpacing
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.MicroLabel
 
 private val DELETED_ITEMS = listOf(
     R.string.account_delete_item_identity,
@@ -49,18 +53,18 @@ fun DeleteAccountScreen(
     var confirming by rememberSaveable { mutableStateOf(initiallyConfirming) }
     val lines = consequences.map { AccountCopy.consequence(it) }
     AccountPage(stringResource(R.string.account_delete_title)) {
-        Text(stringResource(R.string.account_delete_intro), style = AccountType.body, color = FsColor.text)
+        Text(stringResource(R.string.account_delete_intro), style = FsType.body, color = FsColor.text)
         BulletCard(DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
         if (lines.isNotEmpty()) {
-            Text(stringResource(R.string.account_delete_lose_title).uppercase(), style = AccountType.micro, color = FsColor.muted)
+            MicroLabel(stringResource(R.string.account_delete_lose_title))
             BulletCard(lines, Icons.Outlined.Info)
         }
         // Pending the owner's decision on guild reports: one key, account.delete.reports.
-        Text(stringResource(R.string.account_delete_reports), style = AccountType.body, color = FsColor.text)
-        Text(stringResource(R.string.account_delete_timing), style = AccountType.body, color = FsColor.text)
-        if (failed) Text(stringResource(R.string.account_delete_failed), style = AccountType.body, color = FsColor.wipe)
+        Text(stringResource(R.string.account_delete_reports), style = FsType.body, color = FsColor.text)
+        Text(stringResource(R.string.account_delete_timing), style = FsType.body, color = FsColor.text)
+        if (failed) Text(stringResource(R.string.account_delete_failed), style = FsType.body, color = FsColor.wipe)
         BrandButton(stringResource(R.string.account_delete_button), BrandButtonKind.Destructive, { confirming = true }, busy = deleting)
-        Text(stringResource(R.string.account_delete_email), style = AccountType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.account_delete_email), style = FsType.meta, color = FsColor.muted)
     }
     if (confirming) {
         ConfirmDialog(
@@ -83,7 +87,7 @@ private fun BulletCard(lines: List<String>, glyph: ImageVector) {
             lines.forEach { line ->
                 Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
                     Icon(glyph, contentDescription = null, tint = FsColor.wipe, modifier = Modifier.size(16.dp))
-                    Text(line, style = AccountType.body, color = FsColor.strong)
+                    Text(line, style = FsType.body, color = FsColor.strong)
                 }
             }
         }

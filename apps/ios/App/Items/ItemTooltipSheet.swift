@@ -47,18 +47,18 @@ struct ItemTooltipContent: View {
                 switch phase {
                 case .loading:
                     header(look: request.fallback, meta: ItemQuality(value: request.fallback.quality).name)
-                    Text(Copy.itemsLoading).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                    Text(Copy.itemsLoading).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 case let .loaded(model):
                     header(look: model.look, meta: model.headerMeta)
                     ItemTooltipPanel(model: model)
                     sourceSection(model)
                     nextBest(model)
                     if let footer = model.pickFooter {
-                        Text(footer).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                        Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     }
                 case .failed:
                     header(look: request.fallback, meta: ItemQuality(value: request.fallback.quality).name)
-                    Text(Copy.itemsFailed).font(HomeType.body).foregroundStyle(FSColor.wipe)
+                    Text(Copy.itemsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
                         .accessibilityAddTraits(.isStaticText)
                     SecondaryButton(title: Copy.commonTryAgain, action: retry)
                 }
@@ -75,10 +75,10 @@ struct ItemTooltipContent: View {
             ItemIconView(icon: look.icon, quality: look.quality, build: request.build, size: 56)
             VStack(alignment: .leading, spacing: 2) {
                 Text(look.name ?? Copy.itemsNotInData)
-                    .font(HomeType.sectionTitle)
+                    .font(ScaledType.sec)
                     .foregroundStyle(ItemQuality(value: look.quality).text)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(meta).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
         }
         .accessibilityElement(children: .combine)
@@ -90,7 +90,7 @@ struct ItemTooltipContent: View {
         if let source = model.source {
             VStack(alignment: .leading, spacing: 6) {
                 MicroLabel(Copy.tooltipSource)
-                Text(source).font(HomeType.body).foregroundStyle(FSColor.strong)
+                Text(source).font(ScaledType.body).foregroundStyle(FSColor.strong)
             }
             .accessibilityElement(children: .combine)
         }
@@ -102,17 +102,17 @@ struct ItemTooltipContent: View {
             VStack(alignment: .leading, spacing: 0) {
                 MicroLabel(Copy.tooltipNextBest).padding(.bottom, 8)
                 if model.alternatives.isEmpty {
-                    Text(Copy.tooltipNothingElse).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                    Text(Copy.tooltipNothingElse).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }
                 ForEach(model.alternatives) { alt in
                     HStack(spacing: 12) {
                         ItemIconView(icon: alt.look.icon, quality: alt.look.quality, build: request.build, size: 36)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(alt.look.name ?? Copy.itemsNotInData).font(HomeType.body)
+                            Text(alt.look.name ?? Copy.itemsNotInData).font(ScaledType.body)
                                 .foregroundStyle(ItemQuality(value: alt.look.quality).text)
-                            Text(alt.meta).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                            Text(alt.meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                             if let source = alt.source {
-                                Text(source).font(HomeType.meta).foregroundStyle(FSColor.muted)
+                                Text(source).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                             }
                         }
                     }
@@ -150,7 +150,7 @@ struct ItemTooltipPanel: View {
                         if let type = model.typeName { Text(type) }
                     }
                 }
-                .font(HomeType.tooltip)
+                .font(ScaledType.tooltip)
                 .foregroundStyle(FSColor.strong)
             }
             if let armor = model.armor { line(armor) }
@@ -159,7 +159,7 @@ struct ItemTooltipPanel: View {
                     HStack { Text(damage); Spacer(minLength: 12); Text(speed) }
                     VStack(alignment: .leading, spacing: 4) { Text(damage); Text(speed) }
                 }
-                .font(HomeType.tooltip).foregroundStyle(FSColor.strong)
+                .font(ScaledType.tooltip).foregroundStyle(FSColor.strong)
             }
             if let dps = model.weaponDPS { line(dps) }
             ForEach(model.stats, id: \.self) { line($0) }
@@ -180,6 +180,6 @@ struct ItemTooltipPanel: View {
     }
 
     private func line(_ text: String, color: Color = FSColor.strong) -> some View {
-        Text(text).font(HomeType.tooltip).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        Text(text).font(ScaledType.tooltip).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
     }
 }
