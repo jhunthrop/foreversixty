@@ -12,6 +12,13 @@ on the 6,527 items both sources have (spec
 
 This module owns that source. The client stays the truth for every id it has; the
 ``supplement`` is exactly the ids it lacks, passed through the planner's own gates.
+
+The live feed is not a stable source: between 28 and 30 Oct 2026 it lost 292 of the 688
+items only it carried, and they fell back to 1.12 stats
+(design/reviews/2026-10-30-70707-dps-drop.md). So ``fetch_wowhead`` merges the live
+feed into a committed record set, ``raw/wowhead/items.json``, seeded from the build's
+own file or the previous build's, and every consumer reads that merged file
+(``raw_path``). ``carry_forward`` has the rules.
 """
 
 from __future__ import annotations
@@ -21,18 +28,22 @@ import json
 import logging
 import re
 from collections import Counter
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 from pydantic import BaseModel
 
+from pipeline.build_floors import MIN_LIVE_COVERAGE, previous_build_dir
+from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.models import GearItem, Item
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
     SLOT_BY_INVENTORY_TYPE,
+    armor_type_for,
     is_junk_name,
     is_weapon_row,
     resolve_required_level,
@@ -45,8 +56,12 @@ logger = logging.getLogger(__name__)
 
 WOWHEAD_URL = "https://nether.wowhead.com/forever/data/gear-planner"
 WOWHEAD_PARAMS = {"dv": "100"}
-RAW_FILE = "wowhead-gear-planner.js"
+#: The live payload as downloaded (6.8 MB, gitignored). ``levels`` reads its base
+#: stats; nothing reads its items but ``fetch_wowhead``.
+PAYLOAD_FILE = "wowhead-gear-planner.js"
 META_FILE = "wowhead-gear-planner.meta.json"
+#: The merged, committed item records every consumer reads (``raw_path``).
+CARRY_FILE = Path("wowhead") / "items.json"
 ITEM_PAGE_DATA = "wow.gearPlanner.classicplus.item"
 ITEM_SET_PAGE_DATA = "wow.gearPlanner.classicplus.itemSet"
 
@@ -134,8 +149,45 @@ class WowheadItem(BaseModel):
     dps: float
 
 
+#: The record fields ``_item_from_record`` reads. Everything else is wowhead's
+#: bookkeeping and stays out of the committed file.
+RECORD_KEYS = frozenset(
+    {
+        "id",
+        "class",
+        "subclass",
+        "name",
+        "quality",
+        "icon",
+        "versionNum",
+        "inventoryType",
+        "itemLevel",
+        "requiredLevel",
+        "classMask",
+    }
+)
+#: Numeric ``stats`` keys that are wowhead's own bookkeeping (prices, display ids,
+#: durability, its sort slot), not item stats.
+BOOKKEEPING_STATS = frozenset(
+    {
+        "avgbuyout",
+        "buyprice",
+        "displayid",
+        "dura",
+        "itemSquishEraId",
+        "sellprice",
+        "sheathtype",
+        "slotbak",
+    }
+)
+
+
 class WowheadPayloadError(ValueError):
     """The payload is not the Forever item list this module expects."""
+
+
+class WowheadCoverageError(ValueError):
+    """The live feed lists too little of the seeded supplement to be trusted."""
 
 
 _TRAILING_COMMA = re.compile(r",(\s*[}\]])")
@@ -188,14 +240,75 @@ def _item_from_record(record: dict) -> WowheadItem:
     )
 
 
-def load_items(path: Path) -> list[WowheadItem]:
-    """Every item in a saved payload, refusing a payload that is not Forever's."""
-    records = parse_page_data(path.read_text(encoding="utf-8"), ITEM_PAGE_DATA)
-    versions = Counter(int(r.get("versionNum") or 0) for r in records.values())
+def _check_versions(records: Iterable[dict]) -> None:
+    versions = Counter(int(r.get("versionNum") or 0) for r in records)
     if versions and set(versions) != {FOREVER_VERSION}:
         raise WowheadPayloadError(
             f"payload versionNum {dict(versions)} is not Forever's {FOREVER_VERSION}"
         )
+
+
+def trim_record(record: dict) -> dict:
+    """One item record with only what the pipeline reads: ``RECORD_KEYS`` and the
+    numeric stats that are not ``BOOKKEEPING_STATS``."""
+    stats = {
+        key: value
+        for key, value in (record.get("stats") or {}).items()
+        if isinstance(value, int | float) and key not in BOOKKEEPING_STATS
+    }
+    return {**{k: v for k, v in record.items() if k in RECORD_KEYS}, "stats": stats}
+
+
+def payload_records(text: str) -> dict[int, dict]:
+    """A downloaded payload's item records, trimmed and keyed by id, refusing a
+    payload that is not Forever's."""
+    records = parse_page_data(text, ITEM_PAGE_DATA)
+    _check_versions(records.values())
+    return {int(r["id"]): trim_record(r) for r in records.values()}
+
+
+def read_records(path: Path) -> dict[int, dict]:
+    """The records of a committed carry file, keyed by id."""
+    document = json.loads(path.read_text(encoding="utf-8"))
+    records = {int(item_id): record for item_id, record in document["items"].items()}
+    _check_versions(records.values())
+    return records
+
+
+def write_records(
+    path: Path,
+    records: Mapping[int, dict],
+    *,
+    build: str,
+    seeded_from: str | None,
+    live: int | None = None,
+    carried: Iterable[int] = (),
+) -> None:
+    """The carry file: a small header, then one record per line, by id, so a fetch
+    diffs only on the records that changed."""
+    header = {
+        "build": build,
+        "seeded_from": seeded_from,
+        "live": live if live is not None else len(records),
+        "carried": sorted(carried),
+    }
+    lines = [
+        f"  {json.dumps(str(item_id))}: "
+        f"{json.dumps(records[item_id], sort_keys=True, ensure_ascii=False)}"
+        for item_id in sorted(records)
+    ]
+    head = json.dumps(header, indent=2, ensure_ascii=False)[:-2]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(f'{head},\n  "items": {{\n' + ",\n".join(lines) + "\n  }\n}\n")
+
+
+def load_items(path: Path) -> list[WowheadItem]:
+    """Every item in a carry file (``.json``) or a downloaded payload (``.js``),
+    refusing records that are not Forever's."""
+    if path.suffix == ".json":
+        records = read_records(path)
+    else:
+        records = payload_records(path.read_text(encoding="utf-8"))
     return sorted((_item_from_record(r) for r in records.values()), key=lambda i: i.id)
 
 
@@ -279,6 +392,7 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
         unique=item.unique,
         icon_source="wowhead",
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
+        armor_type=armor_type_for(item.class_id, item.subclass_id, item.inventory_type),
     )
 
 
@@ -305,15 +419,147 @@ def to_item(item: WowheadItem) -> Item:
 
 
 def raw_path(build_dir: Path) -> Path:
-    return build_dir / "raw" / RAW_FILE
+    """The merged item records every consumer reads."""
+    return build_dir / "raw" / CARRY_FILE
+
+
+def payload_path(build_dir: Path) -> Path:
+    """The live payload as downloaded."""
+    return build_dir / "raw" / PAYLOAD_FILE
+
+
+@dataclass(frozen=True)
+class CarryResult:
+    records: dict[int, dict]
+    #: Seeded ids the live feed no longer lists, kept from the seed.
+    carried: tuple[int, ...]
+    #: The share of the seeded supplement the live feed still lists; None when the
+    #: seed has no supplement to measure.
+    coverage: float | None
+    #: The seeded supplement's size and how much of it the live feed lists.
+    seeded: int
+    listed: int
+
+
+def carry_forward(
+    live: Mapping[int, dict],
+    seed: Mapping[int, dict],
+    *,
+    item_ids: set[int],
+    sparse_ids: set[int],
+) -> CarryResult:
+    """The live feed merged over the seed.
+
+    The live feed wins wherever it has the item. A seeded record the feed lacks is
+    kept, unless the client no longer has the item (no ``Item.csv`` row) or now has
+    its own ``ItemSparse`` row for it, in which case the client is the truth.
+
+    Coverage is measured on the seeded supplement, the planner gear the client still
+    lacks: those are the items whose stats depend on this feed alone."""
+    carried = tuple(
+        sorted(
+            item_id
+            for item_id in seed
+            if item_id not in live and item_id in item_ids and item_id not in sparse_ids
+        )
+    )
+    seeded = {
+        item.id
+        for item in supplement((_item_from_record(r) for r in seed.values()), sparse_ids)
+        if item.id in item_ids
+    }
+    listed = len(seeded & live.keys())
+    return CarryResult(
+        records={**{item_id: seed[item_id] for item_id in carried}, **live},
+        carried=carried,
+        coverage=listed / len(seeded) if seeded else None,
+        seeded=len(seeded),
+        listed=listed,
+    )
+
+
+def _seed_for(build_dir: Path) -> tuple[dict[int, dict], str | None]:
+    """The records a fetch merges over: the build's own carry file, else the newest
+    other build's, else none."""
+    own = raw_path(build_dir)
+    if own.exists():
+        return read_records(own), build_dir.name
+    previous = previous_build_dir(build_dir, str(Path("raw") / CARRY_FILE))
+    if previous is None:
+        return {}, None
+    return read_records(raw_path(previous)), previous.name
+
+
+def _client_ids(build_dir: Path) -> tuple[set[int], set[int]]:
+    """The ids of the client's ``Item`` and ``ItemSparse`` tables, merged with the
+    build's hotfix dump the way ``normalize`` and ``simdb`` read them: a hotfix row
+    is the client's own row, and it outranks wowhead."""
+    raw = build_dir / "raw"
+    for table in (raw / "Item.csv", raw / "ItemSparse.csv"):
+        if not table.exists():
+            raise SystemExit(
+                f"no {table}: carrying the wowhead records forward needs the client's "
+                "item tables; run `python -m pipeline fetch` for this build first"
+            )
+    item_ids, sparse_ids = (
+        {int(row["ID"]) for row in merge_hotfix_table(raw, table)}
+        for table in ("Item", "ItemSparse")
+    )
+    return item_ids, sparse_ids
+
+
+def merge_live_feed(
+    build_dir: Path, live: Mapping[int, dict], *, allow_shrink: bool = False
+) -> Path:
+    """Merge a live feed into the build's carry file and write it, refusing a feed
+    below ``MIN_LIVE_COVERAGE`` of the seeded supplement unless ``allow_shrink``.
+    Nothing is written when it refuses."""
+    seed, seeded_from = _seed_for(build_dir)
+    if seed:
+        item_ids, sparse_ids = _client_ids(build_dir)
+        result = carry_forward(live, seed, item_ids=item_ids, sparse_ids=sparse_ids)
+    else:
+        result = CarryResult(dict(live), (), None, 0, 0)
+    if result.coverage is not None and result.coverage < MIN_LIVE_COVERAGE:
+        message = (
+            f"wowhead's live feed lists {result.listed} of {result.seeded} seeded supplement "
+            f"items ({result.coverage:.0%}, need {MIN_LIVE_COVERAGE:.0%}) from {seeded_from}"
+        )
+        if not allow_shrink:
+            raise WowheadCoverageError(
+                f"{message}; the feed has lost items, and the seeded records would carry "
+                "them -- pass --allow-shrink to accept the feed and carry them"
+            )
+        logger.warning("%s; --allow-shrink: carrying %d records", message, len(result.carried))
+    path = raw_path(build_dir)
+    write_records(
+        path,
+        result.records,
+        build=build_dir.name,
+        seeded_from=seeded_from,
+        live=len(live),
+        carried=result.carried,
+    )
+    logger.info(
+        "wowhead: %d live records, %d carried from %s, %d written to %s",
+        len(live),
+        len(result.carried),
+        seeded_from,
+        len(result.records),
+        path,
+    )
+    return path
 
 
 def fetch_wowhead(
     build: str,
     root: Path = Path("builds"),
     client: httpx.Client | None = None,
+    *,
+    allow_shrink: bool = False,
 ) -> Path:
-    """Download the payload for a build's raw directory and record when it was taken."""
+    """Download the live payload, merge it into the build's carry file and record when
+    it was taken. Returns the carry file."""
     own = client is None
     client = client or httpx.Client(headers={"User-Agent": USER_AGENT})
     try:
@@ -327,8 +573,9 @@ def fetch_wowhead(
             raise WowheadPayloadError(
                 f"wowhead served versionNum {sorted(versions)}, not Forever's {FOREVER_VERSION}"
             )
-        path = raw_path(root / build)
-        path.parent.mkdir(parents=True, exist_ok=True)
+        build_dir = root / build
+        carry = merge_live_feed(build_dir, payload_records(text), allow_shrink=allow_shrink)
+        path = payload_path(build_dir)
         path.write_text(text, encoding="utf-8")
         meta = {
             "url": str(response.url),
@@ -338,7 +585,7 @@ def fetch_wowhead(
         }
         (path.parent / META_FILE).write_text(json.dumps(meta, indent=1) + "\n")
         logger.info("wowhead: %d Forever items saved to %s", len(records), path)
-        return path
+        return carry
     finally:
         if own:
             client.close()

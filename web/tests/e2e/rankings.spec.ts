@@ -5,13 +5,18 @@
 // band stands where the header would and the board has its Class and Spec choices; on a phone the
 // filters collapse to one line. The older checks (rows, filters in the URL, guild board, empty,
 // failed, stale responses) run signed out against a plain two-row board.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
 import { openFilters } from './support/rankings-filters';
 import { FROST_KEY, OWN_KEY, stubRankingsApi, type BoardOptions } from './support/rankings-fixture';
 import { OBNOXIOUS, armoryPointer, keyOf, signInWith, signedOut, storePointer } from './support/selector';
 import type { FixtureCharacter } from './support/selector';
+import { choose, fieldBox } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
@@ -168,10 +173,10 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('filter-class')).toHaveCount(0);
 
     await page.getByTestId('rankings-another').click();
-    await expect(page.getByTestId('filter-class')).toBeVisible();
-    await expect(page.getByTestId('filter-spec')).toBeVisible();
+    await expect(fieldBox(page, 'filter-class')).toBeVisible();
+    await expect(fieldBox(page, 'filter-spec')).toBeVisible();
 
-    await page.getByTestId('filter-class').selectOption('mage');
+    await choose(page.getByTestId('filter-class'), 'mage');
     await expect(page.getByTestId('rankings-scope')).toHaveText('Mages');
     await expect(page.getByTestId('rankings-showing-note')).toContainText(
       'Showing Mages. Your rank is on the Fury Warrior board.',
@@ -252,8 +257,8 @@ test.describe('phone', () => {
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(page.getByTestId('rankings-filter-panel')).toBeVisible();
-    await expect(page.getByTestId('filter-encounter')).toBeVisible();
-    await page.getByTestId('filter-region').selectOption('eu');
+    await expect(fieldBox(page, 'filter-encounter')).toBeVisible();
+    await choose(page.getByTestId('filter-region'), 'eu');
     await expect(summary).toContainText('EU');
 
     // A row is a name over a muted line, the figure and Report; the own row is still marked.
@@ -373,15 +378,15 @@ test('every filter lands in the URL and in the request', async ({ page }) => {
 
   await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
   await openFilters(page);
-  await page.getByTestId('filter-metric').selectOption('hps');
-  await page.getByTestId('filter-ruleset').selectOption('hardcore');
+  await choose(page.getByTestId('filter-metric'), 'hps');
+  await choose(page.getByTestId('filter-ruleset'), 'hardcore');
 
   await expect(page).toHaveURL(/\?metric=hps&ruleset=hardcore$/);
   expect(asked[asked.length - 1]).toContain('metric=hps');
   expect(asked[asked.length - 1]).toContain('ruleset=hardcore');
 
   // "All phases" is a choice, so it survives in the link rather than reverting to the current phase.
-  await page.getByTestId('filter-phase').selectOption('');
+  await choose(page.getByTestId('filter-phase'), '');
   await expect(page).toHaveURL(/phase=all/);
   expect(asked[asked.length - 1]).not.toContain('phase=');
 });
@@ -392,7 +397,7 @@ test('the encounter is a filter: choosing another one moves the board and the pa
   await openFilters(page);
   await expect(page.getByTestId('filter-encounter')).toHaveValue('warden-kelthas');
 
-  await page.getByTestId('filter-encounter').selectOption('onyxia');
+  await choose(page.getByTestId('filter-encounter'), 'onyxia');
   await expect(page).toHaveURL(/\/rankings\/onyxia$/);
 });
 
@@ -529,7 +534,7 @@ test('a stale filtered response is discarded once a newer filter has already ans
   await slow.started;
 
   await openFilters(page);
-  await page.getByTestId('filter-metric').selectOption('hps');
+  await choose(page.getByTestId('filter-metric'), 'hps');
   await expect(page.getByTestId('ranking-1')).toContainText('Brightwell Solace');
 
   const staleAnswered = page.waitForResponse((response) => response.url().includes('metric=dps'));

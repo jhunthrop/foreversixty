@@ -8,7 +8,8 @@
 // The API is stubbed with page.route from the shared fixture (support/character-fixture.ts),
 // which carries the identity and the history; the panel's execution-rating read is answered 404
 // so only these parts are in play.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import {
@@ -304,18 +305,6 @@ test('a stale addon sync puts only "Log out in the game to sync" in ember', asyn
   await expect(stale).toHaveText('Log out in the game to sync');
   await expect(stale).toHaveCSS('color', 'rgb(214, 110, 40)');
   await expect(page.getByTestId('character-sync')).toHaveCSS('color', 'rgb(154, 148, 132)');
-});
-
-test('a visitor’s sign-in band sits below the Forever Score card at every width', async ({ page }) => {
-  await stub(page, { ...CHARACTER.data, ...SCORE });
-  await page.goto(CHARACTER_PATH);
-
-  const header = await page.getByTestId('character-name').boundingBox();
-  const card = await page.getByTestId('forever-score-card').boundingBox();
-  const band = await page.getByTestId('current-character-bar').boundingBox();
-  if (header === null || card === null || band === null) throw new Error('a profile part is missing');
-  expect(band.y).toBeGreaterThan(card.y + card.height);
-  expect(header.y).toBeLessThan(card.y);
 });
 
 test('a 404 is still the no-logs page, and its owner still gets "Upload logs" (ruling 4)', async ({
@@ -663,20 +652,6 @@ test('the chip is centred on its text line (item 14)', async ({ page }) => {
   expect(Math.abs(chip - level)).toBeLessThan(0.5);
 });
 
-test('a visitor’s band links are 44px tap boxes on a phone (item 14)', async ({ page }) => {
-  test.skip(test.info().project.name !== 'mobile', 'a phone width');
-  await stub(page, { ...CHARACTER.data, ...SCORE });
-  await page.goto(CHARACTER_PATH);
-  const links = page.getByTestId('current-character-bar').getByRole('link');
-  await expect(links).toHaveCount(2);
-  for (const link of await links.all()) {
-    const box = await link.boundingBox();
-    if (box === null) throw new Error('a band link is missing');
-    expect(box.height, await link.innerText()).toBeGreaterThanOrEqual(44);
-    expect(box.width, await link.innerText()).toBeGreaterThanOrEqual(44);
-  }
-});
-
 test('the owner’s sync age ticks each minute while the tab lives (item 14)', async ({ page }) => {
   const now = new Date('2026-10-12T01:34:53Z');
   await page.clock.install({ time: now });
@@ -912,7 +887,7 @@ test('the crest tops the name block, in the same place for a visitor and the own
 
   await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
   // An owner whose session already settled its pointer (the first answer of a session writes the
-  // main, which adds the spine bar above the header): this measures the header, not the bar.
+  // main): this measures the header alone.
   await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
   await page.reload();
   await expect(page.getByTestId('character-sync')).toBeVisible();

@@ -14,7 +14,8 @@ function fight(index: number, name: string, kill: boolean, duration_ms: number):
     duration_ms,
     players: [],
     deaths: 0,
-    npc_kills: 1,
+    mob_deaths: 1,
+    group_kills: 1,
   };
 }
 
@@ -148,8 +149,11 @@ describe('aggregateNight', () => {
     [3, summary(3, 20_000, [roster('A', 4000), roster('B', 1000)])],
   ]);
 
+  /** The night's caller folds its boss pulls; the trash pull is the combined trash view's. */
+  const bossPulls = fights.filter((entry) => entry.kind === 'encounter');
+
   it('folds every loaded boss pull into one row per player, per second over their own time', () => {
-    const night = aggregateNight(fights, summaries);
+    const night = aggregateNight(bossPulls, summaries);
     expect(night.fights).toBe(2);
     expect(night.expected).toBe(3);
     expect(night.time_ms).toBe(30_000);
@@ -165,6 +169,7 @@ describe('aggregateNight', () => {
 
   it('counts pulls, kills, wipes and the quickest kill per boss, including pulls not yet loaded', () => {
     const night = aggregateNight(fights, summaries);
+    // Trash folded in with the bosses still makes no boss row.
     expect(night.bosses.map((boss) => boss.name)).toEqual(['Kaal', 'Kryxis']);
     expect(night.bosses[0]).toMatchObject({
       pulls: 2,
@@ -179,6 +184,23 @@ describe('aggregateNight', () => {
       wipes: 0,
       best: { index: 4, duration_ms: 30_000 },
     });
+  });
+
+  it('folds one zone’s trash the same way, numbering its pulls and making no boss row', () => {
+    const trash = [2, 5, 6].map((index) => ({ ...fight(index, 'Trash', false, 5000), kind: 'trash' }));
+    const night = aggregateNight(
+      trash,
+      new Map([
+        [2, summary(2, 5000, [roster('A', 500)])],
+        [5, summary(5, 5000, [roster('A', 700, 1)])],
+      ]),
+    );
+    expect(night).toMatchObject({ fights: 2, expected: 3, time_ms: 10_000, deaths: 1, bosses: [] });
+    expect(night.players[0]).toMatchObject({ damage_done: 1200, fights: 2 });
+    expect(night.players[0].by_fight.map((entry) => entry.pull)).toEqual(['pull 1 of 3', 'pull 2 of 3']);
+    const folded = nightSummary(trash, new Map([[5, summary(5, 5000, [roster('A', 700, 1)])]]));
+    expect(folded.pulls?.map((mark) => mark.label)).toEqual(['Trash · pull 2']);
+    expect(folded.mechanics).toBeUndefined();
   });
 
   it('folds the phase each pull reached into the night, by fight index', () => {

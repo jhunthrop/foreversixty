@@ -374,6 +374,19 @@ def spec_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
     return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))}
 
 
+def raid_buff_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
+    """Every icon `curated/raid-buffs.json` names: the raid view's composition
+    buff row (docs/contracts/app-v1.md). Nothing in the emitted talents or
+    items refers to a raid buff's icon (Mark of the Wild and Blessing of
+    Might are not talents and no item carries them), so without this the
+    apps' tiles would 404.
+    """
+    path = curated_dir / "raid-buffs.json"
+    if not path.exists():
+        return set()
+    return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))["buffs"]}
+
+
 def wanted_icons(
     build_dir: Path, names: dict[int, str], extra: frozenset[str] = frozenset()
 ) -> dict[int, str]:
@@ -409,7 +422,7 @@ def supplement_icon_names(raw: Path) -> set[str]:
     from pipeline.csvio import read_csv
     from pipeline.normalize.gear import int_column
 
-    path = raw / wh.RAW_FILE
+    path = raw / wh.CARRY_FILE
     if not path.exists():
         return set()
     client_ids = {int_column(row, "ID") for row in read_csv(raw / "ItemSparse.csv")}
@@ -432,7 +445,11 @@ def icons_for_build(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     manifest_rows = read_csv(raw / "ManifestInterfaceData.csv")
     names = icon_names(manifest_rows)
-    extra = rotation_icon_names(build_dir, curated_dir) | spec_icon_names(curated_dir)
+    extra = (
+        rotation_icon_names(build_dir, curated_dir)
+        | spec_icon_names(curated_dir)
+        | raid_buff_icon_names(curated_dir)
+    )
     wanted = wanted_icons(build_dir, names, frozenset(extra))
 
     # A supplement icon the client happens to carry (under whatever item it

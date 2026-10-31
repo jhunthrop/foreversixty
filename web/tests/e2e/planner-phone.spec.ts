@@ -1,4 +1,6 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
+import { fieldBox } from './support/select';
 
 /**
  * Holds the talent request open so the planner's loading state can be measured, and returns
@@ -196,8 +198,8 @@ test.describe('planner on a phone', () => {
     for (const locator of [
       page.getByTestId('talent-1001'),
       page.getByRole('button', { name: 'Reset' }),
-      page.getByLabel('Class'),
-      page.getByTestId('planner-race-select'),
+      page.locator('.sel:has(> #planner-class-select)'),
+      fieldBox(page, 'planner-race-select'),
     ]) {
       await clears44(locator);
     }

@@ -8,8 +8,10 @@
 // playwright.journey.config.ts, against a built site served by `astro preview` (the simulator's
 // island and the character and guild shells exist only in a build). W11_CAPTURES=<dir> writes a
 // 1280px capture of each stop.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
+import { nativeSelect } from './support/select';
 
 const WEB = process.env.W11_WEB ?? 'http://localhost:4331';
 const CAPTURES = process.env.W11_CAPTURES;
@@ -90,8 +92,8 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 2. The planner opens on that character: its race, level, talents and gear, not the first legal race.
   await page.goto('/planner');
-  await expect(page.getByLabel('Class')).toHaveValue('hunter');
-  await expect(page.getByLabel('Race')).toHaveValue(bow.raceSlug);
+  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
+  await expect(nativeSelect(page, 'Race')).toHaveValue(bow.raceSlug);
   await expect(page.getByTestId('planner-code-note')).toContainText('Talents loaded from a character');
   const main = page.getByRole('main');
   await expect(main).toContainText(`Hunter talents · ${bow.race} · Level 60 · ${bow.spec} Hunter`);
@@ -120,11 +122,9 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 3. "Sim this build": the simulator shows the character, not a bare code.
   await simLink.click();
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
-  await expect(page.getByTestId('sim-character-descriptor')).toContainText(
-    `${bow.race} ${bow.spec} Hunter · 60`,
-  );
-  await expect(page.getByTestId('sim-source-pill')).toHaveText('Build from planner · Bow Jackzon’s gear');
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('paperdoll-descriptor')).toContainText(`${bow.race} ${bow.spec} Hunter · 60`);
+  await expect(page.getByTestId('paperdoll-source')).toHaveText('Build from planner · Bow Jackzon’s gear');
   await expect(page.getByTestId('sim-gear')).toBeVisible();
   await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
@@ -133,25 +133,16 @@ test('the chosen character follows the player through every page', async ({ page
     ref: BOW,
     label: `Bow Jackzon · ${bow.spec} Hunter`,
   });
-  // The spine bar's Plan door opens the planner on the account character, not a class.
-  await expect(page.getByTestId('current-character-bar-plan')).toHaveAttribute(
-    'href',
-    `/planner?character=${encodeURIComponent(BOW)}`,
-  );
-  await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Hunter');
   await shot(page, '03-sim');
   // A bare /sim still restores the same character, and still leaves the pointer alone.
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
   await expect(page.getByText('Sign in with Battle.net to find your characters')).toHaveCount(0);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
 
   // 4. The character's own page reads as owned.
   await page.goto('/character/us/pvp/bow-jackzon');
-  // Owned: the spine bar speaks for this character, and the page reads its gear against the player's levels.
-  // The page's card carries the identity, so the strip shows only its doors.
-  await expect(page.getByTestId('current-character-bar-identity')).toHaveCount(0);
-  await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Hunter');
+  // Owned: the page reads its gear against the player's levels.
   await expect(page.getByRole('main')).toContainText('from your talents');
   // One spec: the owner's talents decide it, spelt as a player says it, with the split beside it.
   await expect(page.getByRole('main')).toContainText(`${bow.spec} Hunter · ${bow.split}`);
@@ -191,7 +182,7 @@ test('the chosen character follows the player through every page', async ({ page
     const named = exported.includes('who=') ? exported : `${exported}|who=Ashenveil:Realm`;
     await page.goto(`/planner?code=${encodeURIComponent(named)}`);
   }
-  await expect(page.getByLabel('Class')).toHaveValue('paladin');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   // Whose build it is, and never a Paladin build sent to a Hunter.
@@ -203,10 +194,14 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByTestId('character-header-action')).toBeDisabled();
   await shot(page, '08-guild-gear-in-planner');
 
-  // 7. Forget clears the pointer and the header falls back to the account's main.
+  // 7. On a later visit (a fresh tab session) the header says the character was restored, and
+  // its Forget clears the pointer so the header falls back to the account's main.
+  await page.evaluate(() => window.sessionStorage.clear());
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
-  await page.getByTestId('current-character-forget').click();
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+  await page.getByTestId('character-selector').click();
+  await expect(page.getByTestId('selector-restored')).toContainText('Restored your last character');
+  await page.getByTestId('selector-forget').click();
   expect(await pointerOf(page)).toBeNull();
   await page.goto('/tiers');
   await expect(page.getByTestId('selector-name')).toHaveText('Pipsqueak');
@@ -226,8 +221,6 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByTestId('sim-run-block-not-simulated')).toHaveText('Not simulated yet');
   await expect(page.getByTestId(`sim-pick-${PIPSQUEAK}`)).toHaveCount(0);
   await expect(page.getByTestId(`sim-pick-${BOW}`)).toBeVisible();
-  // The card carries the identity once: the strip above it shows only its doors.
-  await expect(page.getByTestId('current-character-bar-identity')).toHaveCount(0);
   await shot(page, '13-sim-landing');
 });
 
@@ -236,7 +229,7 @@ test('a class tile opens a class and leaves the character alone', async ({ page 
   await choose(page, BOW);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await page.goto('/planner?class=mage');
-  await expect(page.getByLabel('Class')).toHaveValue('mage');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('mage');
   await expect(page.getByTestId('planner-sim-link')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
@@ -255,11 +248,11 @@ test('a linked code never replaces the character, and a nameless one is never th
   const nameless = 'FS1:1.60.1.70450:hunter:human:0/0/0:';
   await page.goto(`/sim?code=${encodeURIComponent(nameless)}`);
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-character-name')).toHaveCount(0);
-  await expect(page.getByTestId('sim-source-pill')).toHaveText('Entered by hand');
+  await expect(page.getByTestId('paperdoll-name')).toHaveCount(0);
+  await expect(page.getByTestId('paperdoll-source')).toHaveText('Entered by hand');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await page.goto(`/planner?code=${encodeURIComponent(nameless)}`);
-  await expect(page.getByLabel('Class')).toHaveValue('hunter');
+  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await shot(page, '11-linked-code');
@@ -337,7 +330,7 @@ test.describe('at 360 px', () => {
     if (CAPTURES !== undefined) await card.screenshot({ path: `${CAPTURES}/w12-16-planner-card-360.png` });
 
     await page.getByTestId('planner-sim-link').click();
-    await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
+    await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
     if (CAPTURES !== undefined)
       await page.getByTestId('sim-character').screenshot({ path: `${CAPTURES}/w12-17-sim-card-360.png` });

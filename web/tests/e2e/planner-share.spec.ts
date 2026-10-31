@@ -1,5 +1,5 @@
 import { crc32, deflateSync } from 'node:zlib';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';

@@ -46,6 +46,7 @@ import { storageKey } from '../lib/data/query';
 import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/history-layout';
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
+import { SESSION_START_POINTER_KEY } from '../lib/character-selector/restored';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
   LIVE_TTL_MS as SERVER_RUNS_LIVE_TTL_MS,
@@ -105,6 +106,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-history-max-reserve={HISTORY_MAX_RESERVE_PX}
       data-account-reserve-key={ACCOUNT_RESERVE_KEY}
       data-account-max-reserve={ACCOUNT_RESERVE_MAX_PX}
+      data-session-start-pointer-key={SESSION_START_POINTER_KEY}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -112,8 +114,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       // state, and the character selector shows a skeleton instead of "Sign in"
       // (lib/data/query.ts's sessionHinted). A stored pointer (lib/current-character.ts's
       // STORAGE_KEY, repeated here because an inline script cannot import) sets data-pointer,
-      // which keeps the current-character band's reserved slot (.chip-slot, global.css), and
-      // data-pointer-class, which nav.css maps to the selector's crest. The class list is the
+      // which /setup's step hints key off (global.css), and data-pointer-class, which nav.css
+      // maps to the selector's crest. The class list is the
       // crest files under public/icons/hd/crests (lib/class-crest.test.ts checks it).
       if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
       try {
@@ -135,7 +137,28 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           if (CLASSES.indexOf(slug) !== -1) document.documentElement.dataset.pointerClass = slug;
         }
       } catch {
-        /* storage unavailable or malformed: no pointer, no band, no crest */
+        /* storage unavailable or malformed: no pointer, no crest */
+      }
+      // The character this tab session started with (lib/character-selector/restored.ts),
+      // recorded once per tab and before any island can write a pointer, as `source:ref` (its
+      // pointerIdentity), or '' for none: the selector says "Restored your last character"
+      // while the pointer still names it.
+      try {
+        const sessionKey = document.currentScript.dataset.sessionStartPointerKey;
+        if (sessionStorage.getItem(sessionKey) === null) {
+          let identity = '';
+          try {
+            const stored = JSON.parse(localStorage.getItem('fs.currentCharacter'));
+            if (stored && typeof stored.source === 'string' && typeof stored.ref === 'string') {
+              identity = stored.source + ':' + stored.ref;
+            }
+          } catch {
+            /* a malformed pointer: the session started with none */
+          }
+          sessionStorage.setItem(sessionKey, identity);
+        }
+      } catch {
+        /* storage unavailable: the selector never claims a restore */
       }
       // "Your server runs" on /sim (experience spec 2026-10-24 section 3.7): data-server-sims
       // when the cached /v1/me says the account has server sims (the entitlement, else the

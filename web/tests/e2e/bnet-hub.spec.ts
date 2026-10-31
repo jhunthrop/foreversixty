@@ -5,7 +5,7 @@
 // carrying a `build` field so mainCharacter picks it deterministically over the unguilded,
 // level-less Elyra -- that field lands in a later, fixture-touching task, so this spec is
 // created now but left failing until then (that task runs it as its own verification step).
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meBnetFixture } from '../../src/fixtures/me-bnet';
 
 const fulfil = (body: unknown, status = 200) => ({

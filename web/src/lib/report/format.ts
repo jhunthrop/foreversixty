@@ -3,7 +3,8 @@
 // fight selector, the chart axis and a death's timestamp. Numbers render in the body face
 // with tabular numerals (the `numeric` utility), per design/DESIGN-SYSTEM.md.
 
-import type { Phase, Taunt } from './types';
+import { killCounts, killCountsLabel } from './kill-counts';
+import type { FightEntry, Phase, Taunt } from './types';
 
 /**
  * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
@@ -153,19 +154,24 @@ export function phaseReached(phases: readonly Phase[] | undefined): string {
   return phases === undefined || phases.length === 0 ? '' : phases[phases.length - 1].name;
 }
 
-/** A fight's outcome word for a list: Kill, Wipe, Live, or how much trash died. */
+/** Facts joined by " · ", leaving out the empty ones (a trash pull with no kill count). */
+export function joinFacts(...parts: readonly string[]): string {
+  return parts.filter((part) => part !== '').join(' · ');
+}
+
+/**
+ * A fight's outcome for a list: Kill, Wipe, Live, or for trash how many mobs died and how many
+ * the group killed. '' for trash indexed before engine 0.6.0, which has no true count.
+ */
 export function outcomeLabel(
-  fight: {
-    kind: string;
-    kill: boolean;
-    in_progress: boolean;
-    npc_kills: number;
-    boss_health_pct?: number;
-  },
+  fight: Pick<FightEntry, 'kind' | 'kill' | 'in_progress' | 'mob_deaths' | 'group_kills' | 'boss_health_pct'>,
   phase = '',
 ): string {
   if (fight.in_progress) return 'Live';
-  if (fight.kind !== 'encounter') return `${fight.npc_kills} ${fight.npc_kills === 1 ? 'kill' : 'kills'}`;
+  if (fight.kind !== 'encounter') {
+    const counts = killCounts(fight);
+    return counts === null ? '' : killCountsLabel(counts);
+  }
   if (fight.kill) return 'Kill';
   // "Wipe 23%": how far the pull got, which is what separates one wipe from the next.
   // With phases curated for the boss, how far is also which phase it died in.
@@ -202,9 +208,21 @@ const CLASS_TOKENS = new Set([
   'monk',
 ]);
 
-export function classColorVar(className: string | undefined): string {
+/** A known class's slug (`death-knight`), else undefined. */
+export function classSlug(className: string | undefined): string | undefined {
   const slug = (className ?? '').toLowerCase().replace(/\s+/g, '-');
-  return CLASS_TOKENS.has(slug) ? `var(--color-class-${slug})` : 'var(--color-text)';
+  return CLASS_TOKENS.has(slug) ? slug : undefined;
+}
+
+/** A known class's colour token name (`--color-class-mage`), for a dropdown option's colour. */
+export function classColorToken(className: string | undefined): string | undefined {
+  const slug = classSlug(className);
+  return slug === undefined ? undefined : `--color-class-${slug}`;
+}
+
+export function classColorVar(className: string | undefined): string {
+  const token = classColorToken(className);
+  return token === undefined ? 'var(--color-text)' : `var(${token})`;
 }
 
 /**

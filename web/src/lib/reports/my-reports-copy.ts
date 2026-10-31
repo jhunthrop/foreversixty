@@ -9,3 +9,15 @@ export const myReportsCopy = {
   signInAction: 'Sign in with Battle.net',
   uploadAction: 'Upload a log',
 } as const;
+
+/** The /reports page ("Your reports"): its head, its card, and the words its three states add. */
+export const yourReportsPageCopy = {
+  eyebrow: 'Logs',
+  title: 'Your reports',
+  job: 'Every fight you logged, newest first.',
+  cardTitle: 'Reports',
+  empty: 'No logs yet.',
+  signedOut: 'Sign in to see every report you logged.',
+  sessionFailed: 'Your account did not load.',
+  sampleAction: 'Open the sample report',
+} as const;

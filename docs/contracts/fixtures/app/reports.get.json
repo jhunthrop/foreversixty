@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "data": {
+    "id": "ewlrx3enxbeb",
+    "title": "Onyxia, Tuesday",
+    "visibility": "public",
+    "owner": {
+      "id": 1812,
+      "battletag": "Yell#1604"
+    },
+    "guild": {
+      "id": 2,
+      "name": "OLYMPUS XXVII",
+      "region": "us",
+      "ruleset": "pvp"
+    },
+    "zone": "Onyxia's Lair",
+    "status": "complete",
+    "engine_version": "1f542def3",
+    "fights": [
+      {
+        "index": 3,
+        "kind": "encounter",
+        "name": "Onyxia",
+        "encounter_id": 1084,
+        "difficulty": 8,
+        "size": 40,
+        "kill": true,
+        "in_progress": false,
+        "zone": "Onyxia's Lair",
+        "start": "2026-12-15T02:36:40Z",
+        "end": "2026-12-15T02:41:08Z",
+        "duration_ms": 268000,
+        "players": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2"
+        ],
+        "deaths": 3,
+        "mob_deaths": 1,
+        "group_kills": 1,
+        "group_deaths": 3,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2"
+        ],
+        "verified": true
+      }
+    ],
+    "players": [
+      "Player-4184-000000A1",
+      "Player-4184-000000A2"
+    ],
+    "created_at": "2026-12-15T01:58:00Z",
+    "last_upload_at": "2026-12-15T03:12:44Z",
+    "heartbeat_at": "2026-12-15T03:12:30Z",
+    "data_base_url": "https://foreversixty.gg/logs-data/reports/ewlrx3enxbeb",
+    "logging_character": {
+      "key": "us/pvp/obnoxious-yell",
+      "name": "Obnoxious Yell"
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

@@ -61,6 +61,7 @@
       <span class="upgrade-row-icon upgrade-row-icon-empty rounded-control border" aria-hidden="true"></span>
       <span class="upgrade-row-text">
         <span class="text-muted text-[13px]">{homeUpgradesCopy.unknownItem}</span>
+        <span class="text-muted text-[12px]">{homeUpgradesCopy.unknownItemId(upgrade.wornItemId)}</span>
       </span>
     {:else}
       <ItemHover itemId={upgrade.wornItemId} {classSlug} {build} class="upgrade-row-item-hover">

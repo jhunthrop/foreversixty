@@ -4,6 +4,7 @@
      (handled by TreeGrid, which owns the roving tabindex). Hover or focus opens the tooltip
      with the current rank's text and the next rank's. -->
 <script lang="ts">
+  import { tooltipLeftPx, tooltipVerticalPlacementFor } from '../../lib/items/tooltip-position';
   import { dataUrl } from '../../lib/planner/load';
   import { canAddPoint } from '../../lib/planner/rules';
   import { CELL_BORDER, CELL_PILL, cellState, CELL_FACE } from '../../lib/planner/styles';
@@ -43,22 +44,38 @@
 
   let open = $state(false);
   let tip: HTMLDivElement | undefined = $state();
-  // The tooltip hangs from the cell's left edge. Near the right of a tree that would push it
-  // past a phone's viewport and scroll the page sideways, and hanging it from the right edge
-  // instead can push it off the left on a narrow phone. So each opening measures the cell
-  // and slides the box just far enough to keep it inside the viewport with a small margin.
-  let shift = $state(0);
-  const VIEWPORT_MARGIN_PX = 8;
+  // The tooltip hangs below the cell from its left edge. Near the right of a tree that would
+  // push it past the viewport (and scroll a phone sideways), and under a tree's last rows it
+  // would run off the bottom. Each opening measures the cell and the box and places it with
+  // the same edge-aware math every item tooltip uses (lib/items/tooltip-position.ts), so the
+  // site keeps one tooltip placement rule (tenet 10).
+  interface TipPlacement {
+    left: number;
+    below: boolean;
+    maxHeightPx: number | null;
+  }
+  // Unshifted, below and unclamped: reset on every close so the next opening measures the
+  // box at its natural size, never at a height clamped for some other cell.
+  const NATURAL_PLACEMENT: TipPlacement = { left: 0, below: true, maxHeightPx: null };
+  let placement = $state<TipPlacement>(NATURAL_PLACEMENT);
   $effect(() => {
     if (!open || !tip) {
-      shift = 0;
+      placement = NATURAL_PLACEMENT;
       return;
     }
     const cell = tip.parentElement!.getBoundingClientRect();
-    const viewport = document.documentElement.clientWidth;
-    const maxLeft = viewport - VIEWPORT_MARGIN_PX - tip.offsetWidth;
-    const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(cell.left, maxLeft));
-    shift = left - cell.left;
+    const root = document.documentElement;
+    const { side, maxHeightPx } = tooltipVerticalPlacementFor(
+      cell.top,
+      cell.bottom,
+      tip.offsetHeight,
+      root.clientHeight,
+    );
+    placement = {
+      left: tooltipLeftPx('start', cell.left, cell.width, root.clientWidth, tip.offsetWidth),
+      below: side === 'below',
+      maxHeightPx,
+    };
   });
   let iconBroken = $state(false);
   let pressTimer: ReturnType<typeof setTimeout> | undefined;
@@ -237,8 +254,13 @@
         id={tooltipId}
         role="tooltip"
         bind:this={tip}
-        style:left={`${shift}px`}
-        class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+        style:left={`${placement.left}px`}
+        style:max-height={placement.maxHeightPx === null ? undefined : `${placement.maxHeightPx}px`}
+        class="border-line bg-raised rounded-panel absolute z-30 flex {placement.below
+          ? 'top-full mt-2'
+          : 'bottom-full mb-2'} {placement.maxHeightPx === null
+          ? ''
+          : 'overflow-y-auto'} w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
       >
         <span class="text-strong heading-name text-[14px]">{talent.name}</span>
         <span class="text-muted numeric text-[12px]">

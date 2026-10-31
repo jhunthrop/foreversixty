@@ -8,7 +8,8 @@
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
 // icon tree and so runs under FOREVER_DATA=real.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const DESKTOP = { width: 1280, height: 900 };
 const PHONE = { width: 390, height: 844 };
@@ -108,8 +109,10 @@ for (const [label, viewport] of [
       await page.goto(PAGE);
       await expect(page.getByTestId('stat-priority-pills')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
+      // The talent is named from the active build's trees (the unit test in
+      // src/pages/guides/_spec.test.ts pins which one), so a rename never fails this walk.
       await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear$/,
+        /^Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from [^,]+, \d+(\.\d)?% from gear$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();

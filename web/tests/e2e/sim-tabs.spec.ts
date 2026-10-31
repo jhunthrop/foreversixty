@@ -6,9 +6,12 @@
 // a click to another tool, and fits a phone.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { SIM_TABS } from '../../src/lib/sim/tabs';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 // Not imported from lib/report/shell-paths.ts: that module reaches lib/rankings/api.ts,
 // which reads `import.meta.env.PUBLIC_API_BASE_URL` (lib/planner/config.ts) -- fine for
@@ -144,13 +147,13 @@ test.describe('the simulator tab strip', () => {
     // merely that it carries a code= parameter.
     await page.goto(quickSimHref ?? '/sim');
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('paperdoll-descriptor')).toContainText('Fury Warrior');
 
     // Same proof for the tools island's own `?code=` bootstrap (ToolsView.svelte's
     // `bootstrapCharacter`, `runBootstrapRestore` with `storeHandlesUrl: false`).
     await page.goto(gearHref ?? '/sim/gear');
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('paperdoll-descriptor')).toContainText('Fury Warrior');
   });
 
   // The tools island's own `characterCode` fallback (bulk-store.svelte.ts): every tab on

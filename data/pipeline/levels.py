@@ -30,7 +30,7 @@ from pathlib import Path
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ClassLevels, LevelsFile, LevelsSource, LevelStats, RaceStatOffsets
 from pipeline.normalize import _write
-from pipeline.wowhead_items import META_FILE, parse_page_data, raw_path
+from pipeline.wowhead_items import META_FILE, parse_page_data, payload_path
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +144,7 @@ def load_levels(build: str, root: Path = Path("builds")) -> LevelsFile | None:
     """`build_levels_file` fed from a build directory, or None -- logged --
     when the build has no wowhead payload at all."""
     build_dir = root / build
-    path = raw_path(build_dir)
+    path = payload_path(build_dir)
     if not path.exists():
         logger.info("levels: no wowhead payload at %s; levels.json not written", path)
         return None

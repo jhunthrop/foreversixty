@@ -1,0 +1,45 @@
+name: android
+on:
+  push:
+    branches: [main]
+    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+  pull_request:
+    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+  # Releases go through apps-release.yml (tools/release-apps.sh), the one release path.
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    working-directory: apps/android
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - uses: gradle/actions/setup-gradle@v4
+      # Push: Firebase's client config from the GOOGLE_SERVICES_JSON secret; without it the
+      # build passes and has no push. This workflow never signs or uploads (apps-release.yml does).
+      - uses: ./.github/actions/google-services
+        with:
+          config: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      # The Android SDK on the runner is the image's; AGP downloads the platform it is missing.
+      - name: Unit, contract-fixture and screenshot tests
+        run: ./gradlew test :app:verifyRoborazziDebug
+      - name: Lint
+        run: ./gradlew lint
+      - name: Debug APK
+        run: ./gradlew assembleDebug
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-reports
+          path: |
+            apps/android/**/build/reports/
+            apps/android/**/build/outputs/roborazzi/
+          retention-days: 7

@@ -96,6 +96,8 @@ export const raidCopy = {
     officerToolsEnded: "Not saved. This guild's officer tools have ended.",
   },
   poll: 'Live updates paused. Reload to see the latest.',
+  /** Any officer write the API refused with 429: the wait, not "did not save". */
+  rateLimited: 'Too many requests right now. Wait a minute and try again.',
   officerRow: {
     edit: 'Edit',
     lock: 'Lock sign-ups',

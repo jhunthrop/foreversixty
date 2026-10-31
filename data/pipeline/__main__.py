@@ -18,6 +18,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="download wowhead's Forever gear planner, the items the client's ItemSparse lacks",
     )
     fw.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
+    fw.add_argument(
+        "--allow-shrink",
+        action="store_true",
+        help="accept a live feed below the coverage floor of the seeded supplement "
+        "(pipeline.build_floors.MIN_LIVE_COVERAGE); the seeded records are still carried",
+    )
 
     fwt = sub.add_parser(
         "fetch-wowhead-talents",
@@ -114,6 +120,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     hf.add_argument("--build", required=True)
     hf.add_argument("--cache", required=True, help="path to the copied DBCache.bin")
+
+    bf = sub.add_parser(
+        "build-floors",
+        help="refuse a build whose committed items fall below another build's floors "
+        "(item count, wowhead-sourced count; pipeline.build_floors); "
+        "tools/activate-build.sh runs it against the active build before a move",
+    )
+    bf.add_argument("--build", required=True, help="the build to check")
+    bf.add_argument("--against", required=True, help="the build it must not fall below")
 
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
@@ -270,6 +285,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
 
+    cb = sub.add_parser(
+        "carry-bis",
+        help="carry builds/<from>/bis/ onto a new client build until the ranking reruns "
+        "(tools/activate-build.sh): restamps each file and drops every pick or alternative "
+        "the new build's items.json lacks, one report line each",
+    )
+    cb.add_argument("--from", dest="from_build", required=True)
+    cb.add_argument("--to", dest="to_build", required=True)
+
     cr = sub.add_parser(
         "coach-rules",
         help="restamp the log coach's 28 spec rule files (curated/coach) for a build",
@@ -345,7 +369,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "fetch-wowhead":
         from pipeline.wowhead_items import fetch_wowhead
 
-        fetch_wowhead(args.build)
+        print(fetch_wowhead(args.build, allow_shrink=args.allow_shrink))
     elif args.command == "fetch-wowhead-talents":
         from pipeline.wowhead_talents import fetch_wowhead_talents
 
@@ -622,6 +646,18 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build, data=data))
         print(write_lua(args.build, data=data))
+    elif args.command == "carry-bis":
+        from pathlib import Path
+
+        from pipeline.bis_carry import carry_bis
+
+        lines = carry_bis(Path("builds"), args.from_build, args.to_build)
+        for line in lines:
+            print(f"carry-bis: {line}")
+        print(
+            f"carry-bis: {len(lines)} candidate(s) dropped carrying "
+            f"{args.from_build} -> {args.to_build}"
+        )
     elif args.command == "coach-rules":
         from pipeline.coachrules import drifted_rule_files, write_rule_files
 
@@ -672,7 +708,7 @@ def main(argv: list[str] | None = None) -> int:
         if github_output:
             with open(github_output, "a", encoding="utf-8") as fh:
                 for key, value in out.items():
-                    if key == "unmatched_newer":
+                    if isinstance(value, list):
                         value = json.dumps(value)
                     fh.write(f"{key}={str(value).lower() if isinstance(value, bool) else value}\n")
     elif args.command == "recorder":
@@ -685,6 +721,17 @@ def main(argv: list[str] | None = None) -> int:
         except (OSError, RecorderError) as error:
             logging.getLogger("pipeline").error("recorder: %s", error)
             return 1
+    elif args.command == "build-floors":
+        from pathlib import Path
+
+        from pipeline.build_floors import floor_problems
+
+        problems = floor_problems(Path("builds") / args.build, Path("builds") / args.against)
+        for problem in problems:
+            logging.getLogger("pipeline").error("build-floors: %s", problem)
+        if problems:
+            return 1
+        print(f"build-floors: {args.build} holds {args.against}'s floors")
     elif args.command == "audit":
         import tempfile
         from pathlib import Path

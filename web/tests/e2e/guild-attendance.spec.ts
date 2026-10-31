@@ -5,7 +5,8 @@
 // Excused and the summary; Show all; Your night and R-A1 for members; R-A3 (no "no-show"); Copy and
 // Post to Discord; officer-read-only; the roster chip; the readiness next-raid filter; axe; the 44 px
 // floor at 360. The API is stubbed by support/guild-attendance.ts.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { attendanceCopy } from '../../src/lib/guild/attendance-copy';
 import {
   AFTER_END,

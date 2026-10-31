@@ -27,6 +27,7 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import HelpNote from './HelpNote.svelte';
+  import Select from '../ui/Select.svelte';
 
   let {
     settings,
@@ -95,40 +96,37 @@
 
   <div class="grid grid-cols-2 gap-3 p-3 pt-0 md:grid-cols-4">
     <div class="flex min-w-0 flex-col gap-1">
-      <label class="flex min-w-0 flex-col gap-1">
-        <span class="quiet-label">{simCopy.variation}</span>
-        <select
-          class={control}
-          {disabled}
-          value={String(settings.encounter.variation)}
-          onchange={(event) => onchange(withVariation(settings, Number(event.currentTarget.value)))}
-          data-testid="sim-variation"
-        >
-          {#each VARIATIONS as value (value)}
-            <option value={String(value)}>{percent(value)}</option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-variation-field">{simCopy.variation}</label>
+      <Select
+        id="sim-variation-field"
+        size="compact"
+        {disabled}
+        value={String(settings.encounter.variation)}
+        options={VARIATIONS.map((value) => ({ value: String(value), label: percent(value) }))}
+        testid="sim-variation"
+        onchange={(event) =>
+          onchange(withVariation(settings, Number((event.currentTarget as HTMLSelectElement).value)))}
+      />
       <HelpNote label={simCopy.variation} id="sim-variation" {disabled}>
         <p>{simCopy.variationNote}</p>
       </HelpNote>
     </div>
 
     <div class="flex min-w-0 flex-col gap-1">
-      <label class="flex min-w-0 flex-col gap-1">
-        <span class="quiet-label">{simCopy.targetLevel}</span>
-        <select
-          class={control}
-          {disabled}
-          value={String(settings.encounter.target_level ?? 63)}
-          onchange={(event) => onchange(withTargetLevel(settings, Number(event.currentTarget.value)))}
-          data-testid="sim-target-level"
-        >
-          {#each TARGET_LEVELS as level (level)}
-            <option value={String(level)}>{characterLevel + (level - MAX_LEVEL)}</option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-target-level-field">{simCopy.targetLevel}</label>
+      <Select
+        id="sim-target-level-field"
+        size="compact"
+        {disabled}
+        value={String(settings.encounter.target_level ?? 63)}
+        options={TARGET_LEVELS.map((level) => ({
+          value: String(level),
+          label: String(characterLevel + (level - MAX_LEVEL)),
+        }))}
+        testid="sim-target-level"
+        onchange={(event) =>
+          onchange(withTargetLevel(settings, Number((event.currentTarget as HTMLSelectElement).value)))}
+      />
       <HelpNote label={simCopy.targetLevel} id="sim-target-level" {disabled}>
         <p>{simCopy.targetLevelHelp}</p>
       </HelpNote>
@@ -162,21 +160,20 @@
     </div>
 
     <div class="flex min-w-0 flex-col gap-1">
-      <label class="flex min-w-0 flex-col gap-1">
-        <span class="quiet-label">{simCopy.targetType}</span>
-        <select
-          class={control}
-          {disabled}
-          value={settings.encounter.target_type ?? ''}
-          onchange={(event) => onchange(withTargetType(settings, event.currentTarget.value))}
-          data-testid="sim-target-type"
-        >
-          <option value="">{simCopy.targetTypeAny}</option>
-          {#each TARGET_TYPES as id (id)}
-            <option value={id}>{simCopy.targetTypeLabel[id] ?? id}</option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-target-type-field">{simCopy.targetType}</label>
+      <Select
+        id="sim-target-type-field"
+        size="compact"
+        {disabled}
+        value={settings.encounter.target_type ?? ''}
+        options={[
+          { value: '', label: simCopy.targetTypeAny },
+          ...TARGET_TYPES.map((id) => ({ value: id, label: simCopy.targetTypeLabel[id] ?? id })),
+        ]}
+        testid="sim-target-type"
+        onchange={(event) =>
+          onchange(withTargetType(settings, (event.currentTarget as HTMLSelectElement).value))}
+      />
       <HelpNote label={simCopy.targetType} id="sim-target-type" {disabled}>
         <p>{simCopy.targetTypeHelp}</p>
       </HelpNote>

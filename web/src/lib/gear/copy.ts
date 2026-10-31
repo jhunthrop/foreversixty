@@ -4,6 +4,8 @@
 // words stay apart from the score card's: the card's "88 below its top" measures the Gear part
 // against the band's best set; the section's total counts the slot gaps against the picks the
 // character can wear. The line under the title says so with both numbers (fix round 1 ruling 3).
+import { dropPercentLabel } from '../items/drop-chance';
+import { itemNotInDataPhrase } from '../items/unknown-item-copy';
 
 /** "+18.4 pts", one decimal as the API serves it, a whole number without its ".0". */
 export function points(value: number): string {
@@ -37,25 +39,32 @@ export const gearCopy = {
   heading: 'Gear',
   /** The list's accessible name (fix round 2 ruling 9). */
   listLabel: 'Gear by slot',
-  /** The client's paperdoll words, the pairs numbered in export order (fix round 1 ruling 7). */
-  slotLabels: {
-    head: 'Head',
-    neck: 'Neck',
-    shoulder: 'Shoulder',
-    back: 'Back',
-    chest: 'Chest',
-    wrist: 'Wrist',
-    hands: 'Hands',
-    waist: 'Waist',
-    legs: 'Legs',
-    feet: 'Feet',
-    finger1: 'Ring 1',
-    finger2: 'Ring 2',
-    trinket1: 'Trinket 1',
-    trinket2: 'Trinket 2',
-    main_hand: 'Main hand',
-    off_hand: 'Off hand',
-    ranged: 'Ranged',
+  /** The paperdoll's words (design/specs/2026-10-31-paperdoll.md §6). Slot words are
+   *  SLOT_LABELS (lib/planner/types.ts), the one label source, plus these three. */
+  paperdoll: {
+    shirt: 'Shirt',
+    tabard: 'Tabard',
+    relic: 'Relic',
+    empty: 'empty',
+    twoHand: 'Two-hand in main hand',
+    best: 'Best in slot',
+    /** A slot's gain, always one decimal as the API serves it: "+60.0", "+4.4" (§6). */
+    gain: (value: number): string => `+${value.toFixed(1)}`,
+    notScored: 'Not scored',
+    notScoredLabel: 'not scored',
+    upgradeLabel: ' upgrade: ',
+    level: (level: number): string => `Level ${level}`,
+    itemLevel: 'Item level',
+    simHead: 'Character',
+    noteOne:
+      '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
+    noteMany: (count: number): string =>
+      `${count} items are not in our item data yet. They are new in the beta, and they get names and icons when the client lists them. Item level shows once every item is known.`,
+    noteFailed: 'Item icons and colours did not load. Reload the page to try again.',
+    /** The report's slot detail: "Item level 66 · Enchanted". */
+    reportDetail: (itemLevel: number, enchanted: boolean): string =>
+      `Item level ${itemLevel}${enchanted ? ' · Enchanted' : ''}`,
+    atPull: 'At pull',
   },
   /** The title line is "Gear" then its summary: "+70 pts across 7 slots", from gear_gap_total
    *  and the count of slots whose gap is above 0. The dot between them is drawn after "Gear"
@@ -75,12 +84,6 @@ export const gearCopy = {
   unscored: (count: number): string => `${count} not scored`,
   /** Between "Gear" and the summary, as read and as tested; drawn as "Gear"'s ::after. */
   titleSeparator: ' · ',
-  /** Under the title (fix round 1 ruling 3): both numbers, what each counts. */
-  totals: (cardGap: number, total: number): string =>
-    `The card’s ${points(cardGap)} counts the level range’s best set. These ${points(total)} count the picks you can wear.`,
-  /** The same at a total of 0 (fix round 2 ruling 5). */
-  totalsZero: (cardGap: number): string =>
-    `The card’s ${points(cardGap)} counts the level range’s best set. Nothing you can wear adds to it.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
   gap: (gap: number): string => `+${points(gap)} points`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
@@ -88,16 +91,13 @@ export const gearCopy = {
   gapUnscored: 'Not scored',
   /** The drop chance in the addon's words, rounded the way the client and Wowhead show it
    *  (bisCopy's dropChanceLabel): "17% drop", "<1% drop" (fix round 1 ruling 8). */
-  chance: (fraction: number): string => {
-    const percent = fraction * 100;
-    return `${percent < 1 ? '<1' : Math.round(percent)}% drop`;
-  },
+  chance: (fraction: number): string => `${dropPercentLabel(fraction * 100)} drop`,
   /** Between a source and its drop chance, in the text: "Skum · 50% drop". */
   sourceSeparator: '\u00a0·\u00a0',
   /** An empty slot, and a row with neither a worn item nor a pick. */
   empty: 'Empty',
   /** A worn item the export's data build does not have. */
-  unknownItem: 'Worn item not in our list',
+  unknownItem: itemNotInDataPhrase,
   /** In the footer, under the BiS link, when the build's items file did not load (fix round 4,
    *  nice-to-have; fix round 6 item 2). */
   failed: 'Item details didn’t load.',

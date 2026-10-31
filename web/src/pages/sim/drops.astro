@@ -12,11 +12,11 @@
 // and 1280px, sim-tools's own rendered height rounded up -- so the mount swap moves nothing
 // and the page holds its CLS budget, exactly as sim/[id].astro's own comment describes.
 //
-// Raised by the current-character chip's own reserved band (fix round 1, Task 4's review):
-// CHIP_HEIGHT (`h-[88px] md:h-11`) plus the view's own gap before the next block
-// (`gap-[22px]` on phone, `md:gap-8` desktop) -- +110px phone, +76px desktop, on top of
-// the Task 21 figures above. `bulk-skeleton.ts`'s own `chipSlot` reserves the identical
-// band, first, in the skeleton this div also renders.
+// 2026-10-31 re-measure (the "Jump to" spine bar removed, and its reserved band with it from
+// the skeleton and this budget): the same method and state, the fixture character loaded by
+// ?code= with no session, measured 2832px at 360 and 1797.5px at 1280 and 1440 (the previous
+// figures had drifted under the hydrated height). Reserved 24px over each, the CI-fonts
+// buffer the /sim shell uses.
 import Base from '../../layouts/Base.astro';
 import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
@@ -30,7 +30,7 @@ import IslandScript from '../../components/IslandScript.astro';
   <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <SimPageHead title={bulkCopy.dropsTitle} job={bulkCopy.dropsIntro} currentPath="/sim/drops" />
     <ScopeNote />
-    <div id="sim-tools" data-sim-tool="drops" class="min-h-[2226px] md:min-h-[1535px]">
+    <div id="sim-tools" data-sim-tool="drops" class="min-h-[2856px] md:min-h-[1822px]">
       <Fragment set:html={TOOL_SKELETONS.drops} />
       <noscript>
         <p

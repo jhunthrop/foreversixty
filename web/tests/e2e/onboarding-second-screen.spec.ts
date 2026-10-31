@@ -5,7 +5,8 @@
 // is captured at 1280 and 390 for the review (W9_SHOTS names the folder).
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,

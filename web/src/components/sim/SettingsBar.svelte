@@ -29,6 +29,7 @@
   import HelpNote from './HelpNote.svelte';
   import RotationDisclosure from './RotationDisclosure.svelte';
   import SettingsSheet from './SettingsSheet.svelte';
+  import Select from '../ui/Select.svelte';
 
   let {
     settings,
@@ -63,6 +64,15 @@
   // the same size regardless of its shortest option's own text.
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
+  /** Each fight style with its description, which the list now carries (§A10 row 15). */
+  const styleOptions = $derived([
+    ...(styleId === '' ? [{ value: '', label: simCopy.styleCustom }] : []),
+    ...FIGHT_STYLES.map((style) => ({
+      value: style.id,
+      label: simCopy.styleLabel[style.id] ?? style.id,
+      description: simCopy.fightStyleOptions[style.id],
+    })),
+  ]);
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
   const specName = $derived(specDisplayName(spec));
   const simulatedSpec = $derived(isSimulatedSpec(spec));
@@ -82,7 +92,7 @@
     targetsInfo.timeline ? toolFixCopy.targetsTimelineNoteFor(targetsInfo.attached) : '',
   );
 
-  // The <select>'s value is a plain string; FightStyleId is a literal union, so a raw cast
+  // The select's value is a plain string; FightStyleId is a literal union, so a raw cast
   // would let an id outside the contract's nine reach withStyle/applyFightStyle, which
   // (styles.ts) returns the encounter unchanged for an id it does not recognise -- the one
   // branch of that function that is not a fresh object. `fightStyle` is styles.ts's own
@@ -101,54 +111,39 @@
 >
   <div class="flex flex-wrap items-end gap-4 md:gap-5">
     <div class="flex flex-col gap-1">
-      <label class="flex flex-col gap-1">
-        <span class="quiet-label">{simCopy.fightStyle}</span>
-        <select
-          class={control}
-          {disabled}
-          value={styleId}
-          onchange={(event) => selectStyle(event.currentTarget.value)}
-          data-testid="sim-style"
-        >
-          <!-- The empty option exists only while the encounter has been detached from a
-               style by hand (settings.ts's `detached`); it is never a thing to choose, so
-               it is hidden the rest of the time rather than offered as a tenth style. -->
-          {#if styleId === ''}
-            <option value="">{simCopy.styleCustom}</option>
-          {/if}
-          {#each FIGHT_STYLES as style (style.id)}
-            <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-style-field">{simCopy.fightStyle}</label>
+      <!-- The empty option exists only while the encounter has been detached from a style by
+           hand (settings.ts's `detached`); it is never a thing to choose, so it is hidden the
+           rest of the time rather than offered as a tenth style. Each style carries its own
+           description in the list (§A10 row 15). -->
+      <Select
+        id="sim-style-field"
+        class="w-[200px]"
+        size="compact"
+        {disabled}
+        value={styleId}
+        options={styleOptions}
+        testid="sim-style"
+        onchange={(event) => selectStyle((event.currentTarget as HTMLSelectElement).value)}
+      />
       <HelpNote label={simCopy.fightStyle} id="sim-style" {disabled}>
         <p>{simCopy.fightStyleHelp}</p>
-        <dl class="flex flex-col gap-1" data-testid="sim-style-help-options">
-          {#each FIGHT_STYLES as style (style.id)}
-            <div>
-              <dt class="text-text font-semibold">{simCopy.styleLabel[style.id] ?? style.id}</dt>
-              <dd>{simCopy.fightStyleOptions[style.id] ?? ''}</dd>
-            </div>
-          {/each}
-        </dl>
       </HelpNote>
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="flex flex-col gap-1">
-        <span class="quiet-label">{simCopy.fightLength}</span>
-        <select
-          class={control}
-          {disabled}
-          value={String(settings.encounter.duration_sec)}
-          onchange={(event) => onchange(withDuration(settings, Number(event.currentTarget.value)))}
-          data-testid="sim-duration"
-        >
-          {#each DURATIONS as seconds (seconds)}
-            <option value={String(seconds)}>{durationLabel(seconds)}</option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-duration-field">{simCopy.fightLength}</label>
+      <Select
+        id="sim-duration-field"
+        class="w-[140px]"
+        size="compact"
+        {disabled}
+        value={String(settings.encounter.duration_sec)}
+        options={DURATIONS.map((seconds) => ({ value: String(seconds), label: durationLabel(seconds) }))}
+        testid="sim-duration"
+        onchange={(event) =>
+          onchange(withDuration(settings, Number((event.currentTarget as HTMLSelectElement).value)))}
+      />
       <HelpNote label={simCopy.fightLength} id="sim-duration" {disabled}>
         <p>{simCopy.fightLengthHelp}</p>
       </HelpNote>
@@ -161,7 +156,7 @@
              either way. A <div>, not a <label> (fix round 1 Minor 2): a <label> forms no
              accessible-name association with a non-form element, and the rotation block just
              below has the right pattern for exactly this -- a visible label span stacked over
-             a value span, no form control involved. Carries the same data-testid the <select>
+             a value span, no form control involved. Carries the same data-testid the select
              below carries so existing tests and e2e still find the control regardless of
              which branch renders. -->
         <div class="flex flex-col gap-1">
@@ -171,20 +166,20 @@
           </span>
         </div>
       {:else}
-        <label class="flex flex-col gap-1">
-          <span class="quiet-label">{simCopy.targets}</span>
-          <select
-            class={control}
+        <div class="flex flex-col gap-1">
+          <label class="quiet-label" for="sim-targets-field">{simCopy.targets}</label>
+          <Select
+            id="sim-targets-field"
+            class="w-[112px]"
+            size="compact"
             {disabled}
             value={String(settings.encounter.targets)}
-            onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
-            data-testid="sim-targets"
-          >
-            {#each targets as count (count)}
-              <option value={String(count)}>{count}</option>
-            {/each}
-          </select>
-        </label>
+            options={targets.map((count) => ({ value: String(count), label: String(count) }))}
+            testid="sim-targets"
+            onchange={(event) =>
+              onchange(withTargets(settings, Number((event.currentTarget as HTMLSelectElement).value)))}
+          />
+        </div>
       {/if}
       <HelpNote label={simCopy.targets} id="sim-targets" {disabled}>
         <p>{simCopy.targetsHelp}</p>
@@ -192,23 +187,24 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="flex flex-col gap-1">
-        <span class="quiet-label">{simCopy.buffs}</span>
-        <select
-          class={control}
-          {disabled}
-          value={settings.preset}
-          onchange={(event) =>
-            onchange(withPreset(settings, event.currentTarget.value as BuffPresetId, referenceStat))}
-          data-testid="sim-preset"
-        >
-          {#each BUFF_PRESETS as preset (preset.id)}
-            <option value={preset.id}>
-              {preset.label}
-            </option>
-          {/each}
-        </select>
-      </label>
+      <label class="quiet-label" for="sim-preset-field">{simCopy.buffs}</label>
+      <Select
+        id="sim-preset-field"
+        class="w-[180px]"
+        size="compact"
+        {disabled}
+        value={settings.preset}
+        options={BUFF_PRESETS.map((preset) => ({ value: preset.id, label: preset.label }))}
+        testid="sim-preset"
+        onchange={(event) =>
+          onchange(
+            withPreset(
+              settings,
+              (event.currentTarget as HTMLSelectElement).value as BuffPresetId,
+              referenceStat,
+            ),
+          )}
+      />
       <div class="flex flex-wrap items-center gap-3">
         <HelpNote label={simCopy.buffs} id="sim-preset" {disabled}>
           <p>{simCopy.buffsHelp}</p>

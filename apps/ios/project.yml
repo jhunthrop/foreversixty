@@ -1,0 +1,182 @@
+# XcodeGen spec for the Forever Sixty iOS app. The .xcodeproj is generated
+# from this file and never committed: `xcodegen generate` in apps/ios.
+name: ForeverSixty
+options:
+  bundleIdPrefix: gg.foreversixty
+  deploymentTarget:
+    iOS: "26.0"
+  # Off: XcodeGen 2.46 mis-paths intermediate groups for sources outside apps/ios
+  # (apps/shared), and actool then cannot find the icon catalog.
+  createIntermediateGroups: false
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    # Simulator-only until the Apple Team ID exists (lane O): ad-hoc
+    # "Sign to Run Locally", which needs no account. A fully unsigned app has
+    # no entitlements and the simulator Keychain refuses it (-34018).
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+packages:
+  ForeverKit:
+    path: .
+  SnapshotTesting:
+    url: https://github.com/pointfreeco/swift-snapshot-testing
+    exactVersion: 1.19.7
+  # Crash and hang reporting (lane P2; apps/shared/privacy.md). Off unless the build has a DSN.
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa
+    exactVersion: 9.30.2
+targets:
+  ForeverSixty:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      # The contract fixtures for fixture mode. A folder reference keeps its on-disk name, so they
+      # land in the bundle as `app/` (FixtureTransport.bundledFolder); `name` labels the group only.
+      - path: ../../docs/contracts/fixtures/app
+        name: Fixtures
+        type: folder
+        buildPhase: resources
+      # The brand faces from apps/shared/fonts (lane T), copied flat into the bundle and
+      # registered under UIAppFonts; FSFont names them by PostScript name.
+      - path: ../shared/fonts
+        name: Fonts
+        buildPhase: resources
+        excludes: ["*.txt"]
+      - path: ../shared/brand/ios/Brand.xcassets
+        buildPhase: resources
+      # The bundled repo files, each the repo's one copy: the HD class crests, the faction marks and
+      # the LX seal (spec §4.3: crests are bundled), and for BiS the spec catalogue the CDN does not
+      # publish plus the active build and key dates a first offline launch reads.
+      - path: ../../web/public/icons/hd/crests
+        type: folder
+        buildPhase: resources
+      - path: ../../web/public/icons/hd/faction
+        type: folder
+        buildPhase: resources
+      - path: ../../web/public/seal-400.png
+        buildPhase: resources
+      - path: ../../data/curated/specs.json
+        buildPhase: resources
+      - path: ../../web/src/data/active-build.json
+        buildPhase: resources
+      - path: ../../web/src/data/dates.json
+        buildPhase: resources
+    dependencies:
+      - package: ForeverKit
+        products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]
+      - package: Sentry
+        product: Sentry
+    # TODO(universal links): add when the Team ID exists (lane O), with signing:
+    # entitlements:
+    #   path: App/ForeverSixty.entitlements
+    #   properties:
+    #     com.apple.developer.associated-domains: ["applinks:foreversixty.gg"]
+    # TODO(lane A2, F7): the aps-environment entitlement and the Push
+    # Notifications capability join the same entitlements file.
+    # MARKETING_VERSION and CURRENT_PROJECT_VERSION come from apps/VERSION, through this file.
+    configFiles:
+      Debug: Version.xcconfig
+      Release: Version.xcconfig
+    info:
+      path: Generated/Info.plist
+      properties:
+        CFBundleDisplayName: Forever Sixty
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIAppFonts:
+          - Barlow-Regular.ttf
+          - Barlow-SemiBold.ttf
+          - Barlow-Bold.ttf
+          - BarlowCondensed-Bold.ttf
+          - BarlowCondensed-ExtraBold.ttf
+          - Cinzel-Bold.ttf
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+        # Lane F4: Add to calendar writes the raid with write-only access (iOS 17+).
+        NSCalendarsWriteOnlyAccessUsageDescription: Add to calendar puts the raid in your calendar.
+        FSAPIBaseURL: $(API_BASE_URL)
+        FSAPIMode: $(API_MODE)
+        FSSentryDSN: $(SENTRY_DSN)
+    settings:
+      base:
+        PRODUCT_NAME: ForeverSixty
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        API_BASE_URL: https://api.foreversixty.gg
+        # Placeholder: empty keeps crash reporting off. The release command passes the real
+        # DSN (SENTRY_DSN_IOS) on the xcodebuild line; it is never committed.
+        SENTRY_DSN: ""
+        # AppIcon lives in apps/shared/brand/ios/Brand.xcassets (lane T), compiled in place.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        # Debug runs on contract fixtures until lane A1's sign-in is live;
+        # override with `xcodebuild ... API_MODE=live`.
+        Debug:
+          API_MODE: fixture
+        Release:
+          API_MODE: live
+  ForeverSixtyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [AppTests]
+    dependencies:
+      - target: ForeverSixty
+      - package: ForeverKit
+        products: [Auth]
+      - package: SnapshotTesting
+        product: SnapshotTesting
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/ForeverSixty.app/ForeverSixty
+        BUNDLE_LOADER: $(TEST_HOST)
+  # Lane F4 review captures that need real taps (menus, the calendar sheet, the notification
+  # long-press); run only by `make captures`, never by `make test`.
+  ForeverSixtyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: ForeverSixty
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ForeverSixty
+schemes:
+  ForeverSixtyCaptures:
+    build:
+      targets:
+        ForeverSixty: all
+        ForeverSixtyUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - ForeverSixtyUITests
+  ForeverSixty:
+    build:
+      targets:
+        ForeverSixty: all
+        ForeverSixtyTests: [test]
+    test:
+      config: Debug
+      gatherCoverageData: true
+      coverageTargets: [ForeverSixty]
+      targets:
+        - ForeverSixtyTests
+        - package: ForeverKit/ModelsTests
+        - package: ForeverKit/NetworkingTests
+        - package: ForeverKit/AuthTests
+        - package: ForeverKit/RoutingTests
+        - package: ForeverKit/TelemetryTests

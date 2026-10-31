@@ -3,7 +3,8 @@
 // selector.md, doors as amended by 2026-10-15-grouped-header.md): the four doors in order, the selector's closed states and widths, the list
 // (order, stale, failed, filter), choosing a character, the paste flow, the signed-out and
 // expired states, the keyboard path, and the phone Menu and sheet.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
 import { headerWired } from './support/header';
 import {
@@ -15,6 +16,9 @@ import {
   storePointer,
   type FixtureCharacter,
 } from './support/selector';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
 
 const GROUPS = ['Tools', 'Logs', 'Guild', 'Guides'];
 /** The bar's doors: the four groups, then Get set up as a plain fifth door. */

@@ -120,13 +120,28 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     align-items: center;
     column-gap: 14px;
     min-height: 64px;
-    padding: 14px 16px 14px 14px;
-    border-left: 2px solid transparent;
+    padding: 14px 16px;
     border-bottom: 1px solid var(--color-line-soft);
     list-style: none;
-    transition:
-      background-color 120ms ease-out,
-      border-color 120ms ease-out;
+    transition: background-color 120ms ease-out;
+  }
+  /* The row's state edge is its slice of the list's one left rail (spec 2026-10-31-tier-column.md):
+     at the row's own x=0, or on the DPS desktop list over the tier chip's rail. */
+  .tier-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1px; /* over the row separator, so a slice never leaves a sliver of rail */
+    left: 0;
+    width: 3px;
+    background: transparent;
+    transition: background-color 120ms ease-out;
+    pointer-events: none;
+  }
+  @media (min-width: 1100px) {
+    :global(.tier-list[data-role='dps']) .tier-row::before {
+      left: calc(-1 * var(--tier-chip-width));
+    }
   }
   :global([data-role='tank']) .tier-row {
     grid-template-columns:
@@ -138,16 +153,26 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   .tier-row:last-child {
     border-bottom: 0;
   }
+  .tier-row:last-child::before {
+    bottom: 0;
+  }
   .tier-row:hover {
-    background: #101624;
-    border-left-color: var(--c);
+    background: var(--color-card-top);
+  }
+  .tier-row:hover::before {
+    background: var(--c);
   }
   .tier-row:hover .tier-fill {
     filter: brightness(1.18);
   }
   .tier-row.is-you {
     background: color-mix(in srgb, var(--color-gold) 6%, transparent);
-    border-left-color: var(--color-gold);
+  }
+  .tier-row.is-you::before {
+    background: var(--color-gold);
+  }
+  .tier-row.is-you:hover {
+    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
   }
   .tier-rank {
     grid-area: rank;
@@ -331,7 +356,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
         'links links links links';
       column-gap: 10px;
       row-gap: 8px;
-      padding: 12px 14px 0 12px;
+      padding: 12px 14px 0;
     }
     :global([data-role='tank']) .tier-row {
       grid-template-areas:
@@ -372,7 +397,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     .tier-links {
       justify-content: stretch;
       gap: 0;
-      margin: 0 -14px 0 -12px;
+      margin: 0 -14px;
       border-top: 1px solid var(--color-line-soft);
     }
     .tier-link {

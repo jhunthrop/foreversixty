@@ -13,6 +13,7 @@ from pipeline.icons import (
     download_icons,
     icon_names,
     icons_for_build,
+    raid_buff_icon_names,
     resolve_icon_name,
     rotation_icon_names,
     spec_icon_names,
@@ -441,6 +442,35 @@ def test_spec_icon_names_reads_every_curated_specs_own_icon(tmp_path: Path):
         encoding="utf-8",
     )
     assert spec_icon_names(curated_dir) == {"ability_warrior_rampage", "ability_rogue_eviscerate"}
+
+
+def test_raid_buff_icon_names_reads_every_curated_raid_buff_icon(tmp_path: Path):
+    curated_dir = tmp_path / "curated"
+    curated_dir.mkdir()
+    (curated_dir / "raid-buffs.json").write_text(
+        json.dumps(
+            {
+                "buffs": [
+                    {"key": "mark_of_the_wild", "icon": "spell_nature_regeneration"},
+                    {"key": "windfury_totem", "icon": "spell_nature_windfury"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert raid_buff_icon_names(curated_dir) == {
+        "spell_nature_regeneration",
+        "spell_nature_windfury",
+    }
+
+
+def test_raid_buff_icon_names_is_empty_without_the_curated_file(tmp_path: Path):
+    assert raid_buff_icon_names(tmp_path / "curated") == set()
+
+
+def test_the_real_raid_buff_list_names_the_two_icons_the_export_lacked():
+    names = raid_buff_icon_names(Path(__file__).resolve().parents[1] / "curated")
+    assert {"spell_nature_regeneration", "spell_holy_fistofjustice"} <= names
 
 
 def test_spec_icon_names_is_empty_without_a_curated_specs_file(tmp_path: Path):

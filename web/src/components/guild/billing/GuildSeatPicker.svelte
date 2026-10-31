@@ -15,7 +15,7 @@
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
   import Skeleton from '../../ui/Skeleton.svelte';
-  import SelectChevron from '../../ui/SelectChevron.svelte';
+  import Select from '../../ui/Select.svelte';
 
   let {
     slot,
@@ -65,26 +65,20 @@
       {copy.picker.cancel}
     </button>
   {:else}
-    <label class="flex flex-col gap-1" for={selectId}>
-      <span id={`${selectId}-label`} class="quiet-label">{title}</span>
-      <span class="relative block">
-        <select
-          id={selectId}
-          class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover h-11 w-full min-w-0 cursor-pointer appearance-none truncate border pr-8 pl-3 text-[13px]"
-          use:focusOnMount
-          value={chosen?.user_id}
-          onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
-          data-testid={`guild-seat-${slot}-select`}
-        >
-          {#each options as option (option.user_id)}
-            <option value={option.user_id}>
-              {copy.picker.option(option.name, option.class, option.pays_premium)}
-            </option>
-          {/each}
-        </select>
-        <SelectChevron />
-      </span>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label id={`${selectId}-label`} class="quiet-label" for={selectId}>{title}</label>
+      <Select
+        id={selectId}
+        value={chosen === null ? '' : String(chosen.user_id)}
+        options={options.map((option) => ({
+          value: String(option.user_id),
+          label: copy.picker.option(option.name, option.class, option.pays_premium),
+        }))}
+        focusOnMount
+        testid={`guild-seat-${slot}-select`}
+        onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
+      />
+    </div>
     {#if chosen?.pays_premium}
       <p class="text-muted text-[13px]" data-testid={`guild-seat-${slot}-pays-note`}>
         {copy.picker.paysNote}

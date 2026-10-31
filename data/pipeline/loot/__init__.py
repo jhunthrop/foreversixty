@@ -40,7 +40,7 @@ from pathlib import Path
 
 from pipeline.classic_sources import load_classic_sources, load_npc_ranks, load_rare_spawns
 from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
-from pipeline.classicdb_items import classic_honor_ranks, honor_ranks_by_title_for_untitled_items
+from pipeline.classicdb_items import classic_unranked_ids, honor_ranks
 from pipeline.classicdb_items import load_extract as load_classic_item_template
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
@@ -57,6 +57,7 @@ from pipeline.loot.buffs import (
     load_simbuffs,
     merge_simbuffs,
 )
+from pipeline.loot.content_phases import apply_content_phases, load_content_phases
 from pipeline.loot.gear import (
     apply_fork_columns,
     build_enchants,
@@ -66,7 +67,7 @@ from pipeline.loot.gear import (
 )
 from pipeline.loot.npc_rank import apply_npc_ranks, rare_spawn_names
 from pipeline.loot.overlay import apply_overlays, load_overlays
-from pipeline.loot.pvp_faction import split_pvp_sources_by_faction
+from pipeline.loot.pvp_faction import ranks_with_item_evidence, split_pvp_sources_by_faction
 from pipeline.loot.quest_class_gate import apply_quest_class_gate_to_class_items
 from pipeline.loot.reitemise import apply_reitemisation
 from pipeline.loot.sources import (
@@ -99,38 +100,22 @@ def _require(path: Path, command: str) -> None:
 def _pvp_ranks_with_classic_db(
     build_dir: Path, client_ranks: dict[int, int], item_rows: list[dict] | None = None
 ) -> dict[int, int]:
-    """`client_ranks` (either `pvp_ranks(sparse_rows)` or
-    `pvp_ranks_from_committed_loot`) with `pipeline.classicdb_items.
-    classic_honor_ranks`' own dict merged in for every id `client_ranks`
-    does not already name -- data-followups-10 lane, 2026-09-30: the
-    original Classic honor-rank sets (Lady Palanseer's, Captain
-    Dirgehammer's, ...) carry no `ItemSparse.RequiredPVPRank` at all in
-    this build (that hotfix table only ever covers Forever-new PvP
-    items), so `client_ranks` alone left them with no `pvp:rank-N`
-    source and no gate. Read from the committed `raw/classicdb/
-    item_template.json` extract, so this runs the same in
-    `write_loot_files` and the raw-CSV-free `merge_loot_files` alike.
-    Client wins on an id both name -- none measured on this build, the
-    two tables cover disjoint item sets, but the client is the more
-    authoritative one when they ever do disagree.
-
-    bis-ranker-integrity-16 lane, 2026-09-30: `item_rows` (items.json,
-    this build's own flat catalogue) additionally fills in
-    `pipeline.classicdb_items.honor_ranks_by_title_for_untitled_items`
-    for a Forever re-itemised honor reward under a BRAND NEW id whose
-    slot word was also renamed (`HONOR_RANK_BY_TITLE`'s own doc: "Field
-    Marshal's Chain Greathelm" 231562, neither id nor exact name
-    matching classic-db's "Field Marshal's Chain Helm" 16465, rank 17)
-    -- these never reach either table above at all. Pass `None` (the
-    default) for a caller with no item_rows on hand and this step is
-    skipped, exactly as before it existed.
-    """
+    """`pipeline.classicdb_items.honor_ranks` over this build's committed
+    classic-db extract (`raw/classicdb/item_template.json`), so this runs
+    the same in `write_loot_files` and the raw-CSV-free
+    `merge_loot_files`. The original Classic honor sets carry no
+    `ItemSparse.RequiredPVPRank` in a hotfix-only table, classic-db does;
+    the title fallback covers a Forever re-itemised honor reward under a
+    new id. With no extract the client's ranks stand alone."""
     extract = load_classic_item_template(build_dir)
-    merged = {} if extract is None else classic_honor_ranks(extract[0])
-    merged.update(client_ranks)
-    if item_rows is not None:
-        merged.update(honor_ranks_by_title_for_untitled_items(item_rows, set(merged)))
-    return merged
+    return honor_ranks(client_ranks, [] if extract is None else extract[0], item_rows)
+
+
+def _classic_unranked(build_dir: Path) -> frozenset[int]:
+    """Classic ids classic-db names with no honor rank: never backfilled
+    into a pvp source (`split_pvp_sources_by_faction`)."""
+    extract = load_classic_item_template(build_dir)
+    return frozenset() if extract is None else frozenset(classic_unranked_ids(extract[0]))
 
 
 def write_loot_files(
@@ -232,7 +217,11 @@ def write_loot_files(
     # source must land in the twin's ALREADY-split bucket, not a still-
     # mixed one.
     document, pvp_faction_stats = split_pvp_sources_by_faction(
-        document, {int(row["id"]): row["name"] for row in item_rows}, classic_sources, zone_rows
+        document,
+        {int(row["id"]): row["name"] for row in item_rows},
+        classic_sources,
+        zone_rows,
+        not_rank_rewards=_classic_unranked(build_dir),
     )
     # src-classicdb lane item 3: a Forever-new item sharing its name and
     # slot with a Classic item, still unsourced after fork+classic-db+
@@ -250,6 +239,10 @@ def write_loot_files(
     superseded = superseded_pairs(document, item_rows)
     document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    # bis-phase-gate lane, 2026-10-30: every content phase keyed by game id
+    # (curated/content-phases.json), AFTER the overlay and BEFORE the quest
+    # turn-in gate, so a quest whose turn-in item is now gated is gated too.
+    document, _ = apply_content_phases(document, load_content_phases(curated_dir))
     # Quest-gates lane, 2026-09-29: AFTER the overlay, which is what
     # actually sets a raid's own LootSource.opens
     # (curated/loot/forever-raid-phases.json) -- see apply_quest_opens_
@@ -464,6 +457,7 @@ def merge_loot_files(
     engine_dir: Path,
     root: Path = Path("builds"),
     overlay_dir: Path = Path("curated/loot"),
+    curated_dir: Path = Path("curated"),
 ) -> list[Path]:
     """`python -m pipeline loot-merge`: re-derives `loot.json` ALONE from
     inputs already committed -- the engine fork checkout, and the
@@ -522,7 +516,11 @@ def merge_loot_files(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
         types_from_committed_loot(build_dir, zone_rows),
-        _pvp_ranks_with_classic_db(build_dir, pvp_ranks_from_committed_loot(build_dir), item_rows),
+        _pvp_ranks_with_classic_db(
+            build_dir,
+            ranks_with_item_evidence(pvp_ranks_from_committed_loot(build_dir), item_rows),
+            item_rows,
+        ),
         build_items,
         item_inventory_types,
         quest_levels,
@@ -532,12 +530,17 @@ def merge_loot_files(
         item_required_levels,
     )
     document, pvp_faction_stats = split_pvp_sources_by_faction(
-        document, {int(row["id"]): row["name"] for row in item_rows}, classic_sources, zone_rows
+        document,
+        {int(row["id"]): row["name"] for row in item_rows},
+        classic_sources,
+        zone_rows,
+        not_rank_rewards=_classic_unranked(build_dir),
     )
     document, reitemised = apply_reitemisation(document, item_rows)
     superseded = superseded_pairs(document, item_rows)
     document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    document, _ = apply_content_phases(document, load_content_phases(curated_dir))
     document = apply_quest_opens_gate(document, classic_sources)
     document = apply_crafted_opens_gate(document, classic_crafted)
     # vendor-11036 lane, 2026-09-30: same placement/reasoning as

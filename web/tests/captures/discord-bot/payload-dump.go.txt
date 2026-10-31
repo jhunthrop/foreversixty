@@ -449,7 +449,7 @@ func commandFrames(w *capWorld, officer int64) {
 
 	w.row = "D6"
 	rep, err = w.command(dZul, "bis", map[string]string{"slot": "finger1"})
-	w.reply("bis-slot", "/bis slot:Ring 1 (defaults from the main)", rep, err)
+	w.reply("bis-slot", "/bis slot:Finger 1 (defaults from the main)", rep, err)
 	rep, err = w.command(dZul, "bis", nil)
 	top := w.reply("bis-top", "/bis without a slot", rep, err)
 	shareFrames(w, top, "bis", dZul)

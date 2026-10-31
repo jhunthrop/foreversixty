@@ -177,17 +177,16 @@
 
   <div class="flex flex-wrap items-end gap-3">
     <div class="flex flex-col gap-1">
-      <label class="flex flex-col gap-1">
-        <span class="quiet-label">{simCopy.precision}</span>
-        <PrecisionSelect
-          class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
-          value={precisionId}
-          options={PRECISIONS}
-          labelFor={(id) => simCopy.precisionLabel[id] ?? id}
-          disabled={running || serverRunning}
-          onchange={(value) => onprecision(value as PrecisionId)}
-        />
-      </label>
+      <label class="quiet-label" for="sim-precision-field">{simCopy.precision}</label>
+      <PrecisionSelect
+        id="sim-precision-field"
+        class="w-[200px]"
+        value={precisionId}
+        options={PRECISIONS}
+        labelFor={(id) => simCopy.precisionLabel[id] ?? id}
+        disabled={running || serverRunning}
+        onchange={(value) => onprecision(value as PrecisionId)}
+      />
       <HelpNote label={simCopy.precision} id="sim-precision" disabled={running || serverRunning}>
         <p>{simCopy.precisionHelp}</p>
       </HelpNote>

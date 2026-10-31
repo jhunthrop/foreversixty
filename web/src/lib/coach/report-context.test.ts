@@ -13,7 +13,6 @@ const fight = (overrides: Partial<FightEntry>): FightEntry => ({
   duration_ms: 232_000,
   players: [],
   deaths: 0,
-  npc_kills: 0,
   ...overrides,
 });
 

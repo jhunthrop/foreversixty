@@ -3,7 +3,7 @@
 // links into it, a scoped one-player link opens directly onto that player, and the
 // truthful empty state shows when the API has nothing yet -- API stubbed with page.route
 // per docs/superpowers/plans/2026-09-21-rating-web.md (the API lane has not landed).
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const REPORT = '/reports/fixture2abcd';
 

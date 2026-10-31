@@ -50,15 +50,23 @@ type Fight struct {
 	StartOffset int64     `json:"start_offset"`
 	EndOffset   int64     `json:"end_offset"`
 	Players     []string  `json:"players"`
-	Markers     []Marker  `json:"markers,omitempty"`
-	NPCKills    int       `json:"npc_kills"`
-	Deaths      int       `json:"deaths"`
+	// Group is the players flagged MINE, PARTY or RAID while this fight
+	// ran: the logger's group as it stood for this pull. See Counter.
+	Group   []string `json:"group"`
+	Markers []Marker `json:"markers,omitempty"`
+	// MobDeaths is how many hostile NPCs died in range, each counted once.
+	MobDeaths int `json:"mob_deaths"`
+	// GroupKills is how many of those the group killed.
+	GroupKills int `json:"group_kills"`
+	// Deaths is every player death in range; GroupDeaths only the group's.
+	Deaths      int `json:"deaths"`
+	GroupDeaths int `json:"group_deaths"`
 	// BossHealthPct is the boss's health, as a percentage, the last time
 	// the log showed it: what a wipe got the boss down to. Zero on a kill
 	// and on trash; -1 when no advanced block ever named the boss.
 	BossHealthPct float64 `json:"boss_health_pct,omitempty"`
 
-	players map[string]bool
+	counts *Counter
 	// The boss's last seen health, from the advanced block of any event
 	// that described a creature carrying the encounter's name.
 	bossHP, bossMaxHP int64
@@ -84,13 +92,30 @@ type Options struct {
 	// Trailing keeps an encounter open after ENCOUNTER_END so that the
 	// damage-over-time ticks that land afterwards are counted.
 	Trailing time.Duration
+	// CritterMaxHP is the most maximum health a neutral unit can have and
+	// still be a critter, never a mob death (see Counter). The game data in
+	// this repository has no creature types, so the line is drawn by health:
+	// a critter has a handful of points, the weakest level-one neutral beast
+	// on Forever has 42. Zero takes the default.
+	CritterMaxHP int64
+	// FeignDeathSpells are the spell ids of a hunter's Feign Death. A player
+	// UNIT_DIED within FeignDeathWindow after that player's own cast of one
+	// is held as a possible feign, and taken back if the player then acts
+	// (see Counter). The Forever build's spell data has one, 5384; the other
+	// "Feign Death" names in it are talents and creature spells. Nil takes
+	// the default.
+	FeignDeathSpells []int64
+	// FeignDeathWindow is how soon after the cast the death must come. Zero
+	// takes the default, one second.
+	FeignDeathWindow time.Duration
 }
 
 // DefaultOptions are the values the CLI and the session use. A zero Gap
 // takes the default; a zero MinTrash or Trailing disables that behaviour on
 // purpose, so pass a negative value to ask for the default instead.
 func DefaultOptions() Options {
-	return Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second, Trailing: 2 * time.Second}
+	return Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second, Trailing: 2 * time.Second,
+		CritterMaxHP: 10, FeignDeathSpells: []int64{5384}, FeignDeathWindow: time.Second}
 }
 
 func (o Options) withDefaults() Options {
@@ -103,6 +128,15 @@ func (o Options) withDefaults() Options {
 	}
 	if o.Trailing < 0 {
 		o.Trailing = d.Trailing
+	}
+	if o.CritterMaxHP <= 0 {
+		o.CritterMaxHP = d.CritterMaxHP
+	}
+	if o.FeignDeathSpells == nil {
+		o.FeignDeathSpells = d.FeignDeathSpells
+	}
+	if o.FeignDeathWindow <= 0 {
+		o.FeignDeathWindow = d.FeignDeathWindow
 	}
 	return o
 }
@@ -160,10 +194,7 @@ func RestoreSegmenter(o Options, s State) *Segmenter {
 	sg.lastFight, sg.ending, sg.endAt = s.LastFight, s.Ending, s.EndAt
 	if s.Open != nil {
 		f := *s.Open
-		f.players = map[string]bool{}
-		for _, g := range f.Players {
-			f.players[g] = true
-		}
+		f.counts = restoreCounter(sg.opt, f)
 		f.markers = map[string]Marker{}
 		for _, m := range f.Markers {
 			f.markers[m.GUID] = m
@@ -182,7 +213,8 @@ func (s *Segmenter) State() State {
 		LastFight: s.lastFight, Ending: s.ending, EndAt: s.endAt}
 	if s.open != nil {
 		f := *s.open
-		f.Players, f.Markers = s.open.snapshotPlayers(), s.open.snapshotMarkers()
+		s.open.counts.Apply(&f)
+		f.Markers = s.open.snapshotMarkers()
 		st.Open = &f
 	}
 	return st
@@ -194,7 +226,8 @@ func (s *Segmenter) Open() *Fight {
 		return nil
 	}
 	f := *s.open
-	f.Players, f.Markers = s.open.snapshotPlayers(), s.open.snapshotMarkers()
+	s.open.counts.Apply(&f)
+	f.Markers = s.open.snapshotMarkers()
 	f.InProgress = true
 	return &f
 }
@@ -290,7 +323,7 @@ func (s *Segmenter) newFight(k Kind, e event.Event) *Fight {
 		StartLine: e.Line, EndLine: e.Line,
 		StartOffset: e.Offset, EndOffset: e.Offset,
 		InProgress: true,
-		players:    map[string]bool{},
+		counts:     NewCounter(s.opt),
 		markers:    map[string]Marker{},
 	}
 }
@@ -305,28 +338,14 @@ func (s *Segmenter) assign(e event.Event) {
 		f.End = e.Time
 	}
 	f.EndLine, f.EndOffset = e.Line, e.Offset
+	f.counts.Observe(e)
 	for _, u := range [...]event.Unit{e.Source, e.Dest} {
-		if u.GUID == "" || u.GUID == units.NoGUID {
+		if u.GUID == "" || u.GUID == units.NoGUID || u.Raid == 0 {
 			continue
 		}
-		if units.Parse(u.GUID).Kind == units.KindPlayer {
-			f.players[u.GUID] = true
+		if _, seen := f.markers[u.GUID]; !seen {
+			f.markers[u.GUID] = Marker{GUID: u.GUID, Name: u.Name, Flag: u.Raid, Time: e.Time}
 		}
-		if u.Raid != 0 {
-			if _, seen := f.markers[u.GUID]; !seen {
-				f.markers[u.GUID] = Marker{GUID: u.GUID, Name: u.Name, Flag: u.Raid, Time: e.Time}
-			}
-		}
-	}
-	switch e.Kind {
-	case event.Death:
-		if units.Parse(e.Dest.GUID).Kind == units.KindPlayer {
-			f.Deaths++
-		} else if units.Hostile(e.Dest.Flags) {
-			f.NPCKills++
-		}
-	case event.PartyKill:
-		f.NPCKills++
 	}
 }
 
@@ -343,22 +362,14 @@ func (s *Segmenter) close(end time.Time, line, offset int64) *Fight {
 		f.EndLine, f.EndOffset = line, offset
 	}
 	f.InProgress = false
-	f.Players, f.Markers = f.snapshotPlayers(), f.snapshotMarkers()
+	f.counts.Apply(f)
+	f.Markers = f.snapshotMarkers()
 	if f.Kind == Trash && f.Duration() < s.opt.MinTrash {
 		return nil // too short to be a fight; the index is not consumed
 	}
 	f.Index = s.next
 	s.next++
 	return f
-}
-
-func (f *Fight) snapshotPlayers() []string {
-	out := make([]string, 0, len(f.players))
-	for g := range f.players {
-		out = append(out, g)
-	}
-	sort.Strings(out)
-	return out
 }
 
 func (f *Fight) snapshotMarkers() []Marker {
@@ -375,7 +386,9 @@ func (f *Fight) snapshotMarkers() []Marker {
 
 // hostileCombat reports whether an event is combat between opposed sides,
 // which is what starts and sustains a trash fight. Buffs cast in a city and
-// a player eating do not.
+// a player eating do not. A neutral (yellow) beast the group fights is the
+// other side as much as a hostile one is: it keeps its neutral flags for the
+// whole fight, and the summary already counts it as an enemy (units.Enemy).
 func hostileCombat(e event.Event) bool {
 	switch e.Kind {
 	case event.Damage, event.DamageLanded, event.Missed, event.Absorbed, event.PartyKill:
@@ -386,7 +399,7 @@ func hostileCombat(e event.Event) bool {
 	if src == 0 && dst == 0 {
 		return false
 	}
-	return units.Hostile(src) != units.Hostile(dst)
+	return units.Enemy(src) != units.Enemy(dst)
 }
 
 // watchBoss remembers the boss's health from any advanced block that

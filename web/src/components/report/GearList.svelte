@@ -1,19 +1,35 @@
 <!-- web/src/components/report/GearList.svelte -->
-<!-- What a player wore at pull, named. The combatant row carries item ids in the log's
-     slot order; the planner already publishes each class's item file, so the names and
-     rarities come from there, fetched once per class when the list is first opened. An
-     id the build does not know (a retail log, an item the data lacks) is shown by number
-     rather than dropped: the row still says which slot it was and what level it had. -->
+<!-- What a player wore at pull, as the shared Paperdoll (design/specs/2026-10-31-paperdoll.md,
+     call site 3). The combatant row carries item ids in the log's slot order; the class's items
+     file (the planner's) names them, fetched once when the row is opened. Each slot's detail line
+     is the log's own item level and whether it was enchanted; an id the build does not know is
+     drawn as an unknown item with its slot word, never dropped. The centre's source reads
+     "At pull". -->
 <script lang="ts">
-  import ItemHover from '../ItemHover.svelte';
-  import { loadItems, dataUrl } from '../../lib/planner/load';
-  import { rarityClassFor } from '../../lib/planner/items';
+  import Paperdoll from '../character/Paperdoll.svelte';
+  import { gearCopy } from '../../lib/gear/copy';
+  import type { PaperdollIdentity } from '../../lib/gear/paperdoll';
+  import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
+  import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
-  import { LOG_GEAR_SLOTS, classSlugOf } from '../../lib/report/planner-link';
+  import { classSlugOf, wornAtPull } from '../../lib/report/planner-link';
   import type { GearItem } from '../../lib/report/types';
 
-  let { gear, className, dataBuild }: { gear: GearItem[]; className: string | undefined; dataBuild: string } =
-    $props();
+  let {
+    gear,
+    className,
+    dataBuild,
+    name = '',
+    spec = '',
+  }: {
+    gear: GearItem[];
+    className: string | undefined;
+    dataBuild: string;
+    /** The combatant, for the frame's centre. */
+    name?: string;
+    /** "Protection", when the report names it. */
+    spec?: string;
+  } = $props();
 
   let items = $state<Map<number, Item> | null>(null);
   let failed = $state(false);
@@ -34,41 +50,37 @@
       });
   });
 
-  const worn = $derived(
-    gear
-      .map((piece, index) => ({ piece, slot: LOG_GEAR_SLOTS[index] ?? `slot ${index + 1}` }))
-      .filter(({ piece }) => piece.ID > 0),
+  const pieces = $derived(wornAtPull(gear));
+  const slots = $derived(
+    slotsFromWorn(Object.fromEntries(Object.entries(pieces).map(([slot, piece]) => [slot, piece.ID])), {
+      lookup: (id) => items?.get(id),
+      failed,
+      itemLevel: (slot) => pieces[slot]?.ItemLevel,
+      detail: (slot) => {
+        const piece = pieces[slot];
+        if (piece === undefined) return undefined;
+        const enchanted = (piece.Enchants ?? []).some((id) => id > 0);
+        return gearCopy.paperdoll.reportDetail(piece.ItemLevel, enchanted);
+      },
+    }),
   );
+  const identity = $derived<PaperdollIdentity>({
+    name,
+    classSlug,
+    race: '',
+    spec,
+    level: null,
+    faction: null,
+    source: gearCopy.paperdoll.atPull,
+  });
 </script>
 
-<ul class="grid grid-cols-1 gap-x-4 text-[13px] md:grid-cols-2" data-testid="gear-list">
-  {#each worn as { piece, slot } (`${slot}-${piece.ID}`)}
-    {@const item = items?.get(piece.ID)}
-    <li class="border-line-soft flex min-h-8 items-center gap-2 border-b py-1">
-      <span class="quiet-label w-[72px] shrink-0">{slot}</span>
-      {#if item}
-        <ItemHover itemId={item.id} {classSlug} build={dataBuild} class="min-w-0 flex-1">
-          <img
-            src={dataUrl(dataBuild, `icons/${item.icon}.webp`)}
-            alt=""
-            width="18"
-            height="18"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border-line h-[18px] w-[18px] shrink-0 border object-cover"
-          />
-          <span class="truncate font-semibold {rarityClassFor(item.quality)}">{item.name}</span>
-        </ItemHover>
-      {:else}
-        <span
-          class="text-muted truncate"
-          title={failed || items !== null ? 'Not in this build’s item data' : 'Loading'}>Item {piece.ID}</span
-        >
-      {/if}
-      <span class="text-muted numeric ml-auto shrink-0 text-[12px]">{piece.ItemLevel}</span>
-      {#if piece.Enchants && piece.Enchants.some((id) => id > 0)}
-        <span class="text-muted shrink-0 text-[11px]" title="Enchanted">ench</span>
-      {/if}
-    </li>
-  {/each}
-</ul>
+<Paperdoll
+  {identity}
+  {slots}
+  build={dataBuild}
+  {classSlug}
+  loading={items === null && !failed}
+  {failed}
+  testid="gear-list"
+/>

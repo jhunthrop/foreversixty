@@ -79,6 +79,10 @@ export function companionLine(
   };
 }
 
+/** Which <html> hint each step's chip and tag follow until the reads answer: the session cookie,
+ *  the stored character, or none (the companion has no hint). */
+export const STEP_HINTS = ['session', 'pointer', 'none'] as const;
+
 /** The three chips: signed in, an addon character arrived, a companion signed in; null until it is known. */
 export function chipsDone(state: SetupState): [boolean, boolean, boolean] {
   return [

@@ -2,7 +2,7 @@
 // The Play it list is one row per ability, not one per curated step: the healer lists have a
 // step per target and threshold (Heal alone is ten), and a row that repeats the spell above it
 // is the same ability again with its reason cut off.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const SPEC_PAGES = ['/bis/priest/holy', '/bis/mage/fire', '/bis/warrior/arms'];
 

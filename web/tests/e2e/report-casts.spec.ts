@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 
 // Fight 3 brushed to its middle: Morrowlyn's one Frostbolt goes off at 5.0s, and the

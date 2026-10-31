@@ -224,17 +224,24 @@ func cardLineWith(card rankings.Character, spec specs.Spec, class string, text f
 	return line
 }
 
-// averageItemLevel is the mean item level of the worn items the data knows, one decimal. It
-// is the card's own figure, not the guild roster's item_level: the card answers for any
-// public character (one outside the guild has no roster row) and reads the same worn items
-// the character page's gear panel draws, so the two agree.
+// averageItemLevel is the mean item level of every worn item, one decimal (paperdoll spec §3.5).
+// An empty slot is not equipped, so it is not counted, nor is the empty off hand under a
+// two-hander; the gear list carries no shirt or tabard. When any worn item is unknown to the
+// data (no item level) there is no figure at all: the unknown items are the newest, so a mean
+// of the rest would be wrong in exactly the case that matters. It is the card's own figure, not
+// the guild roster's item_level: the card answers for any public character and reads the same
+// worn items the character page's paperdoll draws, so the two agree.
 func averageItemLevel(gear []rankings.GearSlot) (string, bool) {
 	total, count := 0, 0
 	for _, g := range gear {
-		if g.Worn != nil && g.Worn.ItemLevel != nil {
-			total += *g.Worn.ItemLevel
-			count++
+		if g.Worn == nil {
+			continue
 		}
+		if g.Worn.ItemLevel == nil {
+			return "", false
+		}
+		total += *g.Worn.ItemLevel
+		count++
 	}
 	if count == 0 {
 		return "", false

@@ -34,7 +34,7 @@ const (
 //     band has no pick).
 //   - Empty is a slot with no item: "{Slot} · {Gain}" with Gain in gold, else "{Slot} · Empty"
 //     on /char and "{Slot} · No pick" on /bis.
-//   - Every meta line starts with the slot's label ("Ring 1 · Vendor: Anachronos"), falling back
+//   - Every meta line starts with the slot's label ("Finger 1 · Vendor: Anachronos"), falling back
 //     to the label alone, so every cell names its slot.
 type Slot struct {
 	Slot      string
@@ -46,6 +46,8 @@ type Slot struct {
 	Meta      string
 	Gain      string
 	Empty     bool
+	// TwoHandOff marks the empty off hand under a two-handed main hand (set by Sheet.cellFor).
+	TwoHandOff bool `json:"-"`
 }
 
 // Sheet is the whole model of one sheet (spec §B.3).
@@ -60,7 +62,8 @@ type Slot struct {
 //     /char sheet carries no sync date.
 //   - Band is the band label ("level 60 Phase 1 raid"), for the /bis alt text; Name is the
 //     character (the /char title) and Guild its guild, for the /char alt text.
-//   - TwoHand leaves the off-hand cell out: the main hand fills both hands.
+//   - TwoHand draws the off-hand cell as an empty socket reading "Off hand · Two-hand in main
+//     hand", muted, whatever the model holds for it: the client leaves the slot empty.
 type Sheet struct {
 	Kind                 string
 	Class, Spec, Faction string
@@ -124,6 +127,15 @@ func (s Sheet) slot(key string) Slot {
 		}
 	}
 	return Slot{Slot: key, Empty: true}
+}
+
+// cellFor is the cell drawn for key: the off hand under a two-hander is the empty two-hand
+// cell, every other slot is the model's.
+func (s Sheet) cellFor(key string) Slot {
+	if s.TwoHand && key == SlotOff {
+		return Slot{Slot: SlotOff, Empty: true, TwoHandOff: true}
+	}
+	return s.slot(key)
 }
 
 // known reports whether the cell's item is one the build knows (spec §B.3, "item unknown").

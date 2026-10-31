@@ -18,7 +18,7 @@
   import type { FilterOption } from '../../lib/rankings/options';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import FilterSelect from '../rankings/FilterSelect.svelte';
+  import Select from '../ui/Select.svelte';
   import RaidDisclosure from './RaidDisclosure.svelte';
 
   let {
@@ -150,18 +150,18 @@
     </div>
     {#if officer}
       <div class="w-24 shrink-0">
-        <FilterSelect
+        <Select
           id={rosterSelectId(entry.character_key)}
+          size="dense"
+          align="end"
           label={raidCopy.page.signupFor(entry.name)}
-          labelHidden
-          compact
           value={shownValue(entry)}
           options={entry.state === null ? [NOT_SIGNED_OPTION, ...STATE_OPTIONS] : STATE_OPTIONS}
           disabled={!officerTools || closed}
           describedBy={officerTools ? undefined : gateId}
           {busy}
-          onchange={(value) => void change(entry, value)}
           testid={`raid-roster-select-${entry.name}`}
+          onchange={(event) => void change(entry, (event.currentTarget as HTMLSelectElement).value)}
         />
       </div>
     {/if}

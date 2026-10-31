@@ -1,5 +1,6 @@
 // web/tests/e2e/account-billing.spec.ts
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
 import { ownerMeAnswer } from './support/character-fixture';
 import type { Me } from '../../src/lib/account/me-types';

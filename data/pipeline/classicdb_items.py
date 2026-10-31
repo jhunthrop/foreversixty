@@ -58,6 +58,7 @@ from pipeline.normalize.gear import (
     SLOT_BY_INVENTORY_TYPE,
     STAT_BY_MODIFIER_ID,
     TWO_HAND_INVENTORY_TYPES,
+    armor_type_for,
     is_junk_name,
     is_weapon_row,
     percent_stats_of,
@@ -536,16 +537,33 @@ def classic_honor_ranks(items: list[ClassicDbItem]) -> dict[int, int]:
 #: a safe, general match: nothing in this catalogue names an item
 #: starting with "Field Marshal's " that is not that same honor-rank
 #: reward, whatever Forever renamed the rest of the string to.
+#:
+#: bis-phase-gate lane, 2026-10-30: the table named Horde's rank 11 and 12
+#: titles (Blood Guard's, Legionnaire's) but not Alliance's (Knight-
+#: Lieutenant's, Knight-Captain's), so Captain Dirgehammer's re-itemised
+#: Knight-Lieutenant's sets reached Alliance lists with no rank and no cap
+#: while their Horde twins were capped. Every title from rank 10 up is now
+#: listed for both sides, except Alliance's rank-10 "Knight's", which also
+#: begins ordinary item names (Knight's Seal of the Dawn, Knight's Lance);
+#: the ranks 5 and 6 titles (Private's, Scout's, Corporal's, Grunt's) are
+#: left out for the same reason.
 HONOR_RANK_BY_TITLE: dict[str, int] = {
     "Sergeant's": 7,
     "Senior Sergeant's": 8,
     "Master Sergeant's": 8,
     "First Sergeant's": 9,
     "Sergeant Major's": 9,
+    "Stone Guard's": 10,
     "Blood Guard's": 11,
+    "Knight-Lieutenant's": 11,
     "Legionnaire's": 12,
+    "Knight-Captain's": 12,
+    "Centurion's": 13,
+    "Knight-Champion's": 13,
     "Champion's": 14,
     "Lieutenant Commander's": 14,
+    "Lieutenant General's": 15,
+    "Commander's": 15,
     "Marshal's": 16,
     "General's": 16,
     "Field Marshal's": 17,
@@ -587,6 +605,42 @@ def honor_ranks_by_title_for_untitled_items(
         if rank is not None:
             out[item_id] = rank
     return out
+
+
+def classic_unranked_ids(items: list[ClassicDbItem]) -> set[int]:
+    """Every classic item id the extract names with no honor rank: not a
+    rank reward, whatever its title or its vendor's other stock says
+    (`honor_ranks`' own doc)."""
+    return {item.id for item in items if not item.required_honor_rank}
+
+
+def honor_ranks(
+    client_ranks: dict[int, int],
+    classic_items: list[ClassicDbItem],
+    item_rows: Iterable[dict[str, object]] | None = None,
+) -> dict[int, int]:
+    """Item id -> required honor rank: classic-db's own ranks, then
+    `client_ranks` (`pipeline.loot.sources.pvp_ranks`, or the ranks
+    recovered from the committed loot.json in merge-only mode), then the
+    title fallback for a Forever re-itemised id
+    (`honor_ranks_by_title_for_untitled_items`).
+
+    classic-db is authoritative for every classic id it names, zero
+    included: on 1.60.1.70658 it agrees with the client's
+    RequiredPVPRank on all 441 ids both rank and names no rank the
+    client does not. Trusting a title or a recovered rank over it is
+    what filed Legionnaire's Band (a Warsong Outriders reward), ordinary
+    vendor greens and, through the vendor backfill, Dryad's Wrist
+    Bindings under pvp:rank-12:horde (bis-phase-gate lane, 2026-10-30).
+    """
+    unranked = classic_unranked_ids(classic_items)
+    merged = classic_honor_ranks(classic_items)
+    merged.update(
+        {item_id: rank for item_id, rank in client_ranks.items() if item_id not in unranked}
+    )
+    if item_rows is not None:
+        merged.update(honor_ranks_by_title_for_untitled_items(item_rows, set(merged) | unranked))
+    return merged
 
 
 def is_planner_gear(item: ClassicDbItem) -> bool:
@@ -1004,6 +1058,7 @@ def to_gear_item(
         unique=item.unique,
         icon_source=icon_source,
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
+        armor_type=armor_type_for(item.class_id, item.subclass_id, item.inventory_type),
     )
 
 

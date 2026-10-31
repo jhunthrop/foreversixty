@@ -18,6 +18,7 @@
 import type { HTMLAttributes } from 'astro/types';
 import ClassCrest from './ClassCrest.astro';
 import FactionMark from './FactionMark.astro';
+import Select from './ui/Select.astro';
 import { bisCopy } from '../lib/bis/copy';
 import { classColorVar } from '../lib/report/format';
 import type { Faction, RateUnit } from '../lib/bis/types';
@@ -243,13 +244,15 @@ const bandTextVariants = bands.map((band) => ({
         </label>
       </span>
       <span class="class-header-divider" aria-hidden="true"></span>
-      <select class="class-header-race-select" aria-label="Race" data-testid="bis-race-select">
-        {raceOptions.map((option) => (
-          <option value={option.slug} selected={option.slug === race}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+      <Select
+        id={`bis-race-${faction ?? 'any'}`}
+        class="class-header-race-select w-[150px]"
+        size="compact"
+        label="Race"
+        value={race ?? ''}
+        options={raceOptions.map((option) => ({ value: option.slug, label: option.name }))}
+        testid="bis-race-select"
+      />
     </div>
   )}
 </div>
@@ -438,17 +441,6 @@ const bandTextVariants = bands.map((band) => ({
     background: color-mix(in srgb, var(--color-alliance-bar) 15%, transparent);
     color: var(--color-alliance);
   }
-  .class-header-race-select {
-    height: 44px;
-    box-sizing: border-box;
-    padding: 0 12px;
-    border-radius: var(--radius-control);
-    border: 1px solid var(--color-line);
-    background: transparent;
-    color: var(--color-text);
-    font-size: 13px;
-    font-family: var(--font-body);
-  }
   /* This page's own race select defaults to the active faction's first race (a real,
      documented choice, never the mock's own "Troll" example) until `BisSpecCharacterHeader`'s island
      syncs it to the signed-in visitor's own character race (ux-designer review round 2).
@@ -460,7 +452,7 @@ const bandTextVariants = bands.map((band) => ({
      nothing to sync (signed out after all, or a race this class cannot be) and marks
      `<html data-race-select-synced>` either way. A visitor with no session hint at all never
      hides: there is nothing to wait for. */
-  :global(html[data-session='1']:not([data-race-select-synced])) .class-header-race-select {
+  :global(html[data-session='1']:not([data-race-select-synced]) .class-header-race-select) {
     visibility: hidden;
   }
 

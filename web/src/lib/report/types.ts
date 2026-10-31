@@ -317,6 +317,20 @@ export interface Taunt {
   label?: string;
 }
 
+/**
+ * summary.TargetChange — an enemy's melee swing landing on a different unit from its previous
+ * swing (controls and charts spec §B12). The combat log has no "target changed" event, so this
+ * is inferred. Absent until the engine emits it; a summary without it draws no markers.
+ */
+export interface TargetChange {
+  at_ms: number;
+  enemy_guid: string;
+  enemy_name: string;
+  to_guid: string;
+  to_name: string;
+  basis: 'melee';
+}
+
 /** event.Item, which has no json tags: these are the Go field names verbatim. */
 export interface GearItem {
   ID: number;
@@ -396,6 +410,8 @@ export interface Summary {
   taunts?: Taunt[];
   /** The stretches this fight was fought in. Absent from summaries written before engine 0.5.1. */
   phases?: Phase[];
+  /** Absent until the engine infers boss target changes (controls and charts spec §B12). */
+  target_changes?: TargetChange[];
 }
 
 /** units.Unit */
@@ -447,8 +463,18 @@ export interface FightEntry {
   end: string;
   duration_ms: number;
   players: string[];
+  /** Every player death in range. */
   deaths: number;
-  npc_kills: number;
+  /** Hostile NPCs that died in range, each once (engine 0.6.0). Absent on a fight indexed
+   *  earlier, whose retired npc_kills double counted: read it through lib/report/kill-counts. */
+  mob_deaths?: number;
+  /** How many of mob_deaths the logger's group killed. Absent before engine 0.6.0. */
+  group_kills?: number;
+  /** Player deaths among the group. Absent before engine 0.6.0. */
+  group_deaths?: number;
+  /** The players flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0,
+   *  and when nobody was; fall back to the report-wide unit flags then. */
+  group?: string[];
   /** On a wipe, the boss's health the last time the log showed it; -1 when it never did. Absent from reports written before engine 0.2.0. */
   boss_health_pct?: number;
 }
@@ -479,6 +505,12 @@ export interface ReportMeta {
   engine_version: string;
   fights: FightEntry[];
   players: string[];
+  /**
+   * The players in the logger's group (their unit flags carry MINE, PARTY or RAID). Only the
+   * bundled sample's meta carries it (api/cmd/samplecut), so its first table can scope to the
+   * group before report.json arrives; otherwise the island reads the units' flags.
+   */
+  group?: string[];
   created_at: string;
   /** Where report.json and the fight files are served from, with no trailing slash. */
   data_base_url: string;

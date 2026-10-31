@@ -463,7 +463,7 @@ const stampTitle =
     color: var(--color-strong);
   }
   .tier-list {
-    --tier-chip-width: 132px;
+    --tier-chip-width: 148px;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -532,9 +532,8 @@ const stampTitle =
     column-gap: 8px;
     row-gap: 2px;
     padding: 14px 12px 14px 16px;
-    background: #0a0d15;
+    background: color-mix(in srgb, var(--tier) 3%, var(--color-raised));
     border-left: 3px solid var(--tier);
-    border-right: 1px solid var(--color-line-soft);
   }
   .tier-letter {
     grid-area: letter;
@@ -619,7 +618,6 @@ const stampTitle =
       align-items: center;
       column-gap: 12px;
       padding: 8px 14px 8px 12px;
-      border-right: 0;
       border-bottom: 1px solid var(--color-line-soft);
     }
     .tier-letter {

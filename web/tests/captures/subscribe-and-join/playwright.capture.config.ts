@@ -7,6 +7,7 @@
 //   CAPTURE_VARIANT=before   # writes the "before" PNGs; the default run writes "after" and diffs them
 // PNGs go to design/reviews/2026-10-27-subscribe-and-join/ (see capture.spec.ts).
 import { defineConfig } from '@playwright/test';
+import { HERMETIC_LAUNCH_ARGS } from '../../hermetic';
 
 const PORT = process.env.CAPTURE_PORT ?? '4483';
 const TEST_TIMEOUT_MS = 90_000;
@@ -18,6 +19,8 @@ export default defineConfig({
   workers: 4,
   reporter: 'list',
   use: {
+    // The production API's host does not resolve in this browser (tests/hermetic.ts).
+    launchOptions: { args: [...HERMETIC_LAUNCH_ARGS] },
     baseURL: `http://localhost:${PORT}`,
     browserName: 'chromium',
     deviceScaleFactor: 1,

@@ -4,7 +4,7 @@
 // specific -- the scope sentence must be visible without scrolling at 390x844 on every
 // simulator page -- so this proves that directly, on all seven pages, rather than only
 // asserting the copy key is present somewhere in the DOM.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { landingCopy } from '../../src/lib/sim/landing-copy';
 

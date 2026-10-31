@@ -41,7 +41,13 @@
   const toggleId = $derived(`${id}-toggle`);
   const panelId = $derived(`${id}-panel`);
   const leadId = $derived(`${id}-lead`);
-  const options = $derived(specsForClass(classSlug).map((spec) => ({ value: spec.spec, label: spec.name })));
+  const options = $derived(
+    specsForClass(classSlug).map((spec) => ({
+      value: spec.spec,
+      label: spec.name,
+      icon: { kind: 'spec' as const, src: specIconSrc(spec) },
+    })),
+  );
   const chosenSpec = $derived(specOfClass(classSlug, chosen));
   const collapsed = $derived(saved && !expanded && !busy);
 
@@ -102,11 +108,10 @@
   {/if}
   <div id={panelId} hidden={collapsed}>
     <div class="mt-1 flex items-center gap-2">
-      {#if !saved}{@render icon()}{/if}
       <div class="min-w-0 flex-1">
         <Select
           {id}
-          compact
+          size="compact"
           disabled={disabled || busy}
           {options}
           label={saved ? raidCopy.spec.change : undefined}

@@ -7,8 +7,10 @@
      Tasks 10 to 17 add panels inside the content column. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import Card from '../ui/Card.svelte';
   import PageHead from '../ui/PageHead.svelte';
+  import Tag from '../ui/Tag.svelte';
   import {
     POLL_INTERVAL_MS,
     REPORT_LOAD_FAILED,
@@ -23,7 +25,13 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { biggestFightIndex, defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
+  import {
+    combinedFights,
+    combinedLabel,
+    defaultFightIndex,
+    resolveFightIndex,
+    sampleFightIndex,
+  } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
   import {
     formatDuration,
@@ -33,12 +41,13 @@
     TRASH_PARSE,
   } from '../../lib/report/format';
   import {
-    ALL_FIGHTS,
     FLAG_LETTERS,
     MISSING_FIGHT,
     SOURCE_ENEMIES,
+    SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
     TABS,
+    trashScopeKey,
     type FlagKey,
     defaultState,
     parseReportState,
@@ -61,7 +70,6 @@
     combinedSeries,
     isFullWindow,
     scopeSummary,
-    sliceSeries,
     windowMs,
     windowOf,
     windowPresets,
@@ -91,6 +99,12 @@
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
+  import { loadChartChunk } from '../../lib/chart/uplot-loader';
+  import { deathKey, rateMarkers, threatMarkers } from '../../lib/chart/report-markers';
+  import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
+  import type { ThreatPlayer } from '../../lib/chart/threat';
+  import { readCurrent } from '../../lib/current-character';
+  import { dataUrl } from '../../lib/planner/load';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
@@ -123,6 +137,7 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
+  import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
@@ -169,9 +184,9 @@
   const inflight = new Map<number, Promise<void>>();
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
-  /** The fight a bare url opens on: the first boss pull, not the first trash. */
+  /** The fight a bare url opens on: the first boss pull, not the first trash; the sample's own rule for the sample. */
   const firstFight = $derived(
-    isSampleReport(reportId) ? biggestFightIndex(fights) : defaultFightIndex(fights),
+    isSampleReport(reportId) ? sampleFightIndex(fights) : defaultFightIndex(fights),
   );
   /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
   const showParse = $derived(hasRankedKill(fights));
@@ -184,8 +199,12 @@
   const summaryFirst = $derived(isSampleReport(reportId));
   /** The subtitle's words, the same ones the /logs sample row reads (lib/report/heading.ts). */
   const facts = $derived(reportFacts({ zone: meta?.zone ?? '', created_at: meta?.created_at ?? '', fights }));
-  /** The whole night rather than one fight: every boss pull folded together. */
-  const nightMode = $derived(state.fight === ALL_FIGHTS);
+  /** The pulls a combined view folds together (every boss pull, or one zone's trash); null for one fight. */
+  const combined = $derived(combinedFights(fights, state.fight));
+  /** A combined view rather than one fight: the whole night's boss pulls, or a zone's trash. */
+  const nightMode = $derived(combined !== null);
+  /** The combined view is a zone's trash, not the night's bosses. */
+  const trashMode = $derived(trashScopeKey(state.fight) !== null);
   let night = $state<Night | null>(null);
   /** The night as one Summary-shaped object, for the fight tabs to show. */
   let nightFold = $state<Summary | null>(null);
@@ -207,6 +226,7 @@
       name: row.name,
       class: row.class,
       spec: row.spec,
+      role: row.role,
     })),
   );
 
@@ -234,7 +254,8 @@
       verb === 'dispelled'
         ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
         : '';
-    if (state.source === SOURCE_FRIENDLIES) return `Nothing was ${verb} in the whole fight.${tail}`;
+    if (state.source === SOURCE_FRIENDLIES || state.source === SOURCE_EVERYONE)
+      return `Nothing was ${verb} in the whole fight.${tail}`;
     if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
     return `${name} ${verb} nothing in this fight.${tail}`;
@@ -243,6 +264,51 @@
   const playerSet = $derived(
     file === null && summaryFirst ? new Set(meta?.players ?? []) : playerGuids(file?.units ?? []),
   );
+  /**
+   * The pulls the scope is read from: the one on show, or the night's boss pulls. report.json's
+   * own lines once it has arrived (the units the fallback reads come from the same file), the
+   * meta's before.
+   */
+  const scopeFights = $derived.by(() => {
+    const lines = file?.fights ?? fights;
+    return nightMode
+      ? lines.filter((entry) => entry.kind === 'encounter')
+      : lines.filter((entry) => entry.index === state.fight);
+  });
+  /**
+   * Who the default scope is (lib/report/group.ts). From engine 0.6.0 each pull says who was in
+   * the group while it ran, so it is read from there. An older report falls back to the
+   * report-wide flags: the logger's group when outsiders outnumber it (an open-world log), else
+   * every player; before report.json the sample reads its meta's group.
+   */
+  const groupScopeNow = $derived(
+    fightGroupScope(scopeFights, raidFlaggedPlayers(file?.units ?? [])) ??
+      (file === null && summaryFirst
+        ? groupScope(
+            (meta?.players ?? []).map((guid) => ({ guid, kind: 'player', flags: 0 })),
+            meta?.group ?? [],
+            fight?.players,
+          )
+        : groupScope(file?.units ?? [], undefined, nightMode ? undefined : fight?.players)),
+  );
+  /** Everyone in range is the friendlies over every player seen; the scope rules read it so. */
+  const scopeKey = $derived(state.source === SOURCE_EVERYONE ? SOURCE_FRIENDLIES : state.source);
+  /** The players the friendlies scope keeps: the group when the default narrows to it. */
+  const scopePlayers = $derived(
+    state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped ? groupScopeNow.group : playerSet,
+  );
+  /**
+   * The subtitle's deaths: the fight's own count, or under the group scope the group's deaths in
+   * the fight's summary, the same list the Deaths tab shows below it (the fight list's mark reads
+   * the engine's group_deaths, which also takes back a hunter's Feign Death).
+   */
+  const subtitleDeaths = $derived(
+    !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES
+      ? (fight?.deaths ?? 0)
+      : (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length,
+  );
+  /** What the scope's players are called on the chart and the tables. */
+  const noun = $derived(scopeNoun(groupScopeNow, state.source));
   /** The players and their pets and totems: what the enemies scope leaves out. */
   const friendlySet = $derived(
     file === null && summaryFirst ? new Set(meta?.players ?? []) : friendlyGuids(file?.units ?? []),
@@ -480,7 +546,14 @@
     const tab = state.tab;
     if (tab === shownTab) return;
     shownTab = tab;
-    bringIntoView(tabAnchor);
+    // The Threat tab's chart is the tab's answer (spec §B1.6): on a phone the Source row goes to
+    // the top, 8 px down, so the whole chart fits the first screen; every other tab scrolls to its table.
+    const sourceRow =
+      tab === 'threat' ? (document.getElementById('report-source')?.closest('label') ?? null) : null;
+    if (sourceRow instanceof HTMLElement) {
+      sourceRow.style.scrollMarginTop = '8px';
+      bringIntoView(sourceRow);
+    } else bringIntoView(tabAnchor);
   });
   $effect(() => {
     const mode = state.mode;
@@ -526,7 +599,7 @@
   /** The fight in the window, before the source scope: what the events view reads whole. */
   const windowed = $derived(base === null ? null : scopeSummary(base, cutWindow));
   const scoped = $derived(
-    windowed === null ? null : scopeSource(windowed, state.source, playerSet, friendlySet),
+    windowed === null ? null : scopeSource(windowed, scopeKey, scopePlayers, friendlySet),
   );
   // The death presets follow the source pick: with one player chosen, "20 s before X
   // died" offers that player's deaths, not everyone's.
@@ -545,66 +618,112 @@
     if (own !== '' && fight !== null) out.set(fight.index, own);
     return out;
   });
-  /** What the chart draws: the table the tab shows, under the source scope. */
-  const chartActors = $derived.by(() => {
-    if (scoped === null) return [];
-    const table =
-      state.tab === 'damage-taken'
-        ? scoped.damage_taken
-        : state.tab === 'healing'
-          ? scoped.healing
-          : scoped.damage_done;
-    return table.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet));
-  });
-  const chartSeries = $derived(combinedSeries(chartActors));
-  /** On the summary, damage taken and healing ride behind the damage line. */
-  const chartExtra = $derived([
-    ...(scoped === null || state.tab !== 'summary'
-      ? []
-      : [
-          {
-            label: 'Damage taken',
-            series: combinedSeries(
-              scoped.damage_taken.filter((actor) =>
-                inSource(actor.guid, state.source, playerSet, friendlySet),
-              ),
-            ),
-            token: 'var(--color-death)',
-          },
-          {
-            label: 'Healing',
-            series: combinedSeries(
-              scoped.healing.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet)),
-            ),
-            token: 'var(--color-kill)',
-          },
-        ]),
-    // The measure ran once, over the whole fight (see toggleAbilityOnChart); the brush
-    // still has to cut it down every time it moves, the same way scopeSummary cuts down
-    // every actor's own series for the main line -- TimeChart stretches whatever length
-    // of series it is handed across the whole canvas, so an unsliced line here would be
-    // drawn at the whole fight's scale behind a main line drawn at the window's.
-    ...(chartedAbility === null
-      ? []
-      : [
-          {
-            label: chartedAbility.label,
-            series: sliceSeries(chartedAbility.series, cutWindow),
-            token: chartedAbility.token,
-          },
-        ]),
-  ]);
-  // The chart is the fight's damage on every tab but the two that have their own series;
-  // its caption says so, or nine tabs read as a damage table with a stranger's heading.
-  const chartLabel = $derived(
-    state.tab === 'damage-taken'
-      ? 'Damage taken'
-      : state.tab === 'healing'
-        ? 'Healing'
-        : state.tab === 'damage-done'
-          ? 'Damage'
-          : 'Damage, the fight’s pace',
+  /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
+  const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
+    state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
   );
+  /** The source scope over the whole fight: the chart's lines run across the fight and the window zooms them. */
+  const wholeScoped = $derived(
+    base === null || nightMode ? null : scopeSource(base, scopeKey, scopePlayers, friendlySet),
+  );
+  const wholeChartActors = $derived.by(() => {
+    if (wholeScoped === null) return [];
+    const table =
+      chartMetric === 'damage-taken'
+        ? wholeScoped.damage_taken
+        : chartMetric === 'healing'
+          ? wholeScoped.healing
+          : wholeScoped.damage_done;
+    return table.filter((actor) => inSource(actor.guid, scopeKey, scopePlayers, friendlySet));
+  });
+  /** The brush's shape on every chart: the raid's damage per second over the whole fight. */
+  const brushShape = $derived(
+    base === null
+      ? []
+      : combinedSeries(
+          base.damage_done.filter((actor) => scopePlayers.size === 0 || scopePlayers.has(actor.guid)),
+        ),
+  );
+  const chartPhases = $derived<ChartPhase[]>(
+    (base?.phases ?? []).map((phase) => ({ name: phase.name, startMs: phase.start_ms, endMs: phase.end_ms })),
+  );
+  /** One player as the Source, by GUID. */
+  const sourcePlayer = $derived(playerSet.has(state.source) ? state.source : undefined);
+  /** The viewer's own character in this fight, matched by name and class from the current character. */
+  let youGuid = $state<string | undefined>(undefined);
+  $effect(() => {
+    const rows = base?.roster ?? [];
+    const current = readCurrent();
+    if (current === null) {
+      youGuid = undefined;
+      return;
+    }
+    const name = current.label.split(' · ')[0]?.trim().toLowerCase() ?? '';
+    youGuid = rows.find(
+      (row) =>
+        splitUnitName(row.name).name.toLowerCase() === name &&
+        (row.class ?? '').toLowerCase().replace(/\s+/g, '-') === current.classSlug,
+    )?.guid;
+  });
+  /** A death's link on the Deaths tab, keeping the fight and the window (spec §B6.6). */
+  function deathHref(death: { guid: string; at_ms: number }): string {
+    return `${window.location.pathname}${reportSearch(
+      withState(state, { mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: [deathKey(death)] }),
+      firstFight,
+    )}`;
+  }
+  function openDeaths(deaths: readonly ChartEvent[]): void {
+    const keys = deaths.map((event) => event.key.replace(/^death-/, ''));
+    const span =
+      deaths.length > 1 ? { start: deaths[0].atMs, end: deaths[deaths.length - 1].atMs + 1000 } : {};
+    patch({ mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: keys, ...span });
+  }
+  const iconOf = (_spellId: number, stem?: string): string | null =>
+    stem === undefined ? null : dataUrl(activeBuild.build, `icons/${stem}.webp`);
+  /**
+   * The chart marks the scope's own deaths and cooldowns: under the group scope an outsider's death
+   * is not drawn over the group's lines. Every other source marks as before (rateMarkers narrows a
+   * single player itself).
+   */
+  function inMarkedScope(guid: string): boolean {
+    return state.source !== SOURCE_FRIENDLIES || !groupScopeNow.scoped || groupScopeNow.group.has(guid);
+  }
+  const mainMarkers = $derived(
+    base === null || nightMode
+      ? []
+      : rateMarkers({
+          deaths: base.deaths.filter((death) => inMarkedScope(death.guid)),
+          casts: base.casts.filter((row) => inMarkedScope(row.owner_guid ?? row.guid)),
+          sourcePlayer,
+          deathHref,
+          iconOf,
+        }),
+  );
+  const threatPlayers = $derived(
+    new Map<string, ThreatPlayer>(
+      (base?.roster ?? []).map((row) => [
+        row.guid,
+        {
+          name: row.name,
+          className: classOf.get(row.guid),
+          role: row.role === 'tank' || row.role === 'healer' || row.role === 'dps' ? row.role : 'other',
+        },
+      ]),
+    ),
+  );
+  const chartSyncKey = $derived(`${reportId}:${state.fight}`);
+  /** The tabs whose table is itself a time chart: the shared damage chart is not drawn above them. */
+  const tabDrawsOwnChart = $derived(
+    state.mode === 'analyze' &&
+      state.view === 'tables' &&
+      (state.tab === 'threat' || state.tab === 'resources'),
+  );
+  // The chart chunk loads in parallel with the summary, so a chart never waits on it (spec §B11).
+  $effect(() => {
+    loadChartChunk().catch(() => {
+      /* the chart shows its own error state and Try again */
+    });
+  });
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
   const windowIsWhole = $derived(base !== null && isFullWindow(cutWindow, base.duration_ms));
@@ -627,6 +746,13 @@
     }
   }
   let chartOpen = $state(prefersOpenChart());
+  /**
+   * The sample report draws the 74 px strip only on a phone, where its first screen promises the
+   * damage rows (onboarding-second-screen.spec.ts). From md up it draws the full chart, head,
+   * legend, presets and brush, as a real report does (owner, 2026-10-30: "still too small").
+   */
+  const wideViewport = new MediaQuery('min-width: 768px', true);
+  const compactChart = $derived(isSampleReport(reportId) && !wideViewport.current);
   $effect(() => {
     // The visitor's remembered choice, read once after mount -- never at the component's
     // own evaluation, so there is nothing here for a server render to disagree with.
@@ -717,7 +843,13 @@
   // scope falls back to everyone, instead of every tab answering "nothing" as a fact.
   $effect(() => {
     const source = state.source;
-    if (file === null || source === SOURCE_FRIENDLIES || source === SOURCE_ENEMIES) return;
+    if (
+      file === null ||
+      source === SOURCE_FRIENDLIES ||
+      source === SOURCE_EVERYONE ||
+      source === SOURCE_ENEMIES
+    )
+      return;
     if (unitNames.has(source)) return;
     const wanted = source.toLowerCase();
     // Players first: a boss's mirror images borrow players' names, and a typed name means
@@ -772,11 +904,11 @@
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
-    // The whole night's bosses are every encounter's; one pull's is its own.
+    // The whole night's bosses are every encounter's; one pull's is its own; trash has none.
     bosses: nightMode
       ? bossGuidsOf(
           file?.units ?? [],
-          fights.filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
+          (combined ?? []).filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
         )
       : bossGuids(file?.units ?? [], fight?.name ?? ''),
     players: playerSet,
@@ -789,7 +921,7 @@
    * ranked on yet.
    */
   const parseFallback = $derived(
-    !nightMode && fight !== undefined && fight.kind !== 'encounter' && !fight.in_progress
+    trashMode || (!nightMode && fight !== null && fight.kind !== 'encounter' && !fight.in_progress)
       ? TRASH_PARSE
       : fight?.encounter_id === undefined || fight.in_progress
         ? ''
@@ -807,7 +939,7 @@
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(
-    nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
+    trashMode ? TRASH_PARSE : nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
   );
 
   /** GUID to class, for the tables whose rows are not Actors. Off the whole fight rather
@@ -890,7 +1022,7 @@
             ? scoped.healing
             : [];
     const bySource =
-      state.source === 'friendlies'
+      scopeKey === SOURCE_FRIENDLIES
         ? source.filter((actor) => filterContext.players.has(actor.guid))
         : state.source === 'enemies'
           ? source.filter((actor) => !friendlySet.has(actor.guid))
@@ -942,7 +1074,7 @@
     const shown = new Set(tabActors.map((actor) => actor.guid));
     return scoped.roster
       .filter((row) => playerSet.has(row.guid) && !shown.has(row.guid))
-      .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
+      .filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet))
       .map((row) => ({
         name: splitUnitName(row.name).name,
         deadSince: deadSince(row.guid, cutWindow.endMs),
@@ -1303,20 +1435,20 @@
   $effect(() => {
     const onPop = (): void => {
       readUrl();
-      if (state.fight !== ALL_FIGHTS) void loadFight(state.fight).catch(() => {});
+      if (combinedFights(fights, state.fight) === null) void loadFight(state.fight).catch(() => {});
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   });
 
-  // The whole night: every boss pull's summary, a few at a time, folded into `night` as
-  // they land so the table fills in rather than waiting for the slowest fetch. Pulls the
-  // cache already holds cost nothing; the ones this fetches are cached for the fight
-  // views. Re-run when the selection returns here after a pull was opened, which is free
-  // once everything is cached.
+  // A combined view (the whole night's boss pulls, or one zone's trash): every pull's summary,
+  // a few at a time, folded into `night` as they land so the table fills in rather than waiting
+  // for the slowest fetch. Pulls the cache already holds cost nothing; the ones this fetches are
+  // cached for the fight views. Re-run when the selection returns here after a pull was opened,
+  // which is free once everything is cached.
   $effect(() => {
-    if (status !== 'ready' || !nightMode) return;
-    const encounters = fights.filter((entry) => entry.kind === 'encounter' && !entry.in_progress);
+    if (status !== 'ready' || combined === null) return;
+    const encounters = combined.filter((entry) => !entry.in_progress);
     let cancelled = false;
     night = aggregateNight(encounters, summaries);
     nightFold = nightSummary(encounters, summaries);
@@ -1515,10 +1647,15 @@
 {/snippet}
 
 {#snippet creditLine()}
-  <span class="block" data-testid="report-credit"
-    >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}>{credit.name}</a
-      >{:else}{credit.name}{/if}</span
-  >
+  <span class="flex flex-wrap items-center gap-x-2 gap-y-1">
+    {#if !credit.credited}<Tag tone="muted" testid="report-not-credited">{reportCopy.notCreditedTag}</Tag
+      >{/if}
+    <span data-testid="report-credit"
+      >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
+          >{credit.name}</a
+        >{:else}{credit.name}{/if}</span
+    >
+  </span>
 {/snippet}
 
 <!-- The processing and waiting head's meta line: the live badge, who owns it, its state, and the credit. -->
@@ -1557,7 +1694,7 @@
     {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
     <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
       {SUBTITLE_SEPARATOR}{meta.status}{/if}
-    {#if nightMode}· All boss pulls{/if}
+    {#if nightMode}· {combinedLabel(fights, state.fight)}{/if}
     {#if fight}· {fight.name}
       {#if fight.kind === 'encounter' && !fight.in_progress}
         <span
@@ -1568,9 +1705,9 @@
         >
       {/if}
       <span class="numeric">{formatDuration(fight.duration_ms)}</span>
-      {#if fight.deaths > 0}
-        · <span class="text-death numeric">{fight.deaths}</span>
-        {fight.deaths === 1 ? 'death' : 'deaths'}
+      {#if subtitleDeaths > 0}
+        · <span class="text-death numeric">{subtitleDeaths}</span>
+        {subtitleDeaths === 1 ? 'death' : 'deaths'}
       {/if}{/if}
   </span>
   <!-- The bundled sample was logged by no one the site knows: no credit line. -->
@@ -1710,7 +1847,7 @@
 {:else}
   <!-- The ready state's own wrapper, which is the only place `.reveal` may sit (design
        2026-09-22 spec section 1.4). A plain block div: the island's mount point
-       (`<div id="report">` in reports.astro and reports/[id].astro) is a block container
+       (`<div id="report">` in report-shell.astro and reports/[id].astro) is a block container
        with no gap of its own, so gathering these siblings under one div changes no
        spacing -- unlike the flex islands, where a wrapper would have to repeat the gap. -->
   <div class="reveal">
@@ -1744,6 +1881,9 @@
       <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
         {#if missingFight === MISSING_FIGHT}
           This link names a fight the page cannot read, so the first fight is showing.
+        {:else if trashScopeKey(missingFight) !== null}
+          This report has no trash group starting at fight
+          <span class="numeric">{trashScopeKey(missingFight)}</span>, so the first fight is showing.
         {:else}
           This report has no fight <span class="numeric">{missingFight}</span>, so the first fight is showing.
         {/if}
@@ -1772,6 +1912,7 @@
         onSelect={(index) => patch({ fight: index })}
         {phaseOf}
         foldOnPhone={isSampleReport(reportId)}
+        deathsInRange={groupScopeNow.scoped}
       />
 
       <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
@@ -1791,29 +1932,50 @@
              at 1280 x 800 that pushed Fix first's last line past the 640 px fold (coach-report). -->
         <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px] md:-mb-4" aria-hidden="true"></div>
         <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
-          <ModeBar {state} {roster} onPatch={patch} {nightMode} />
+          <ModeBar {state} {roster} onPatch={patch} {nightMode} scope={groupScopeNow} />
         </div>
         <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
            Mechanics ignores the window, so it does not show a strip it would then disown.
            Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
            opens is a canvas nobody should pay the scroll distance for. -->
         <!-- The Coach tab reads a review, not a window: no chart, so Fix first opens in view. -->
-        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach'}
+        <!-- One chart per tab (spec §B1.7): Threat draws its own chart below, and Resources is its
+             own set of lines (fix round 2), so neither repeats the damage chart above it. -->
+        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach' && !tabDrawsOwnChart}
           {#if chartOpen}
             <TimeChart
-              series={chartSeries}
-              extra={chartExtra}
-              phases={summary.phases ?? []}
+              metric={chartMetric}
+              actors={wholeChartActors}
+              roster={summary.roster}
               durationMs={summary.duration_ms}
               window={timeWindow}
-              deaths={summary.deaths
-                .filter((death) => !playerSet.has(state.source) || death.guid === state.source)
-                .map((death) => ({ at_ms: death.at_ms, name: death.name }))}
-              label={chartLabel}
+              phases={chartPhases}
+              events={mainMarkers}
+              {deadSpans}
+              {brushShape}
               {presets}
               onSelectPreset={(index) => setWindow(presets[index]?.window ?? null)}
               onWindow={setWindow}
-              compact={isSampleReport(reportId)}
+              {sourcePlayer}
+              enemies={state.source === SOURCE_ENEMIES}
+              {youGuid}
+              chosen={state.players}
+              preset={state.playersPreset === null ? 'split' : state.playersPreset}
+              onChoose={(players) => patch({ players })}
+              onPreset={(preset) =>
+                patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
+              logScale={state.logScale}
+              onLogScale={(logScale) => patch({ logScale })}
+              targetName={state.target === ''
+                ? undefined
+                : splitUnitName(unitNames.get(state.target) ?? state.target).name}
+              extra={chartedAbility === null
+                ? null
+                : { label: chartedAbility.label, series: chartedAbility.series }}
+              syncKey={chartSyncKey}
+              onOpenDeath={openDeaths}
+              compact={compactChart}
+              {noun}
             />
           {:else}
             <div
@@ -1842,6 +2004,7 @@
             {#if night !== null}
               <NightView
                 {night}
+                trash={trashMode}
                 loading={nightLoading}
                 {unitClasses}
                 onSelect={(index) => patch({ fight: index })}
@@ -1864,6 +2027,7 @@
               {treeSizesFor}
               onSelectPlayer={(guid) => patch({ source: guid })}
               players={playerSet}
+              seen={noun === 'everyone'}
               onTab={(tab) => patch({ tab })}
               {reportId}
               fightIndex={state.fight}
@@ -1970,6 +2134,7 @@
               window={cutWindow}
               deaths={scoped.deaths}
               names={unitNames}
+              syncKey={nightMode ? '' : chartSyncKey}
             />
             <AuraTable
               tracks={scoped.auras}
@@ -1979,7 +2144,7 @@
               names={unitNames}
             />
           {:else if state.tab === 'debuffs'}
-            {#if state.source === 'friendlies'}
+            {#if scopeKey === SOURCE_FRIENDLIES}
               <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
                 These are the debuffs on the raid. The ones on the enemies, a boss’s Flame Shock among them,
                 are under
@@ -2008,9 +2173,7 @@
               approximate={!windowIsWhole}
               measured={castExact ?? undefined}
               measureError={castMeasureError}
-              whole={base === null
-                ? undefined
-                : scopeSource(base, state.source, playerSet, friendlySet).casts}
+              whole={base === null ? undefined : scopeSource(base, scopeKey, scopePlayers, friendlySet).casts}
               names={unitNames}
             />
           {:else if state.tab === 'interrupts'}
@@ -2038,6 +2201,8 @@
                 guid: death.guid,
                 at_ms: death.at_ms - timeWindow.startMs,
               }))}
+              syncKey={nightMode ? '' : chartSyncKey}
+              windowStartMs={timeWindow.startMs}
             />
           {:else if state.tab === 'threat'}
             <ThreatTable
@@ -2064,6 +2229,31 @@
               totalThreat={windowed?.threat
                 .filter((row) => playerSet.has(row.guid))
                 .reduce((sum, row) => sum + row.threat, 0)}
+              chart={base === null || nightMode
+                ? undefined
+                : {
+                    pairs: base.threat_by_target ?? [],
+                    players: threatPlayers,
+                    taunts: base.taunts ?? [],
+                    targetChanges: base.target_changes,
+                    damageTaken: base.damage_taken,
+                    events: (enemyGuids) =>
+                      threatMarkers({
+                        deaths: base?.deaths ?? [],
+                        taunts: base?.taunts ?? [],
+                        targetChanges: base?.target_changes,
+                        enemyGuids,
+                        deathHref,
+                      }),
+                    phases: chartPhases,
+                    sourcePlayer,
+                    youGuid,
+                    chosen: state.players,
+                    onChoose: (players) => patch({ players }),
+                    brushShape,
+                    syncKey: chartSyncKey,
+                    onOpenDeath: openDeaths,
+                  }}
             />
           {:else if state.tab === 'deaths'}
             <DeathsTab
@@ -2088,13 +2278,13 @@
               {fight}
               {firstFight}
               {roster}
-              source={state.source}
+              source={scopeKey}
               {nightMode}
               onSelectPlayer={(guid) => patch({ source: guid })}
             />
           {:else if state.tab === 'rating' && nightMode}
             <p class="text-muted text-[14px]" data-testid="rating-tab-night">
-              Ratings are one pull's. Pick a boss pull from the list to see one.
+              Ratings are one pull's. Pick a {trashMode ? 'pull' : 'boss pull'} from the list to see one.
             </p>
           {:else if state.tab === 'rating'}
             {#if ratingTabLazy.current}
@@ -2102,7 +2292,7 @@
                 {reportId}
                 fightIndex={state.fight}
                 {roster}
-                source={state.source}
+                source={scopeKey}
                 onSelectPlayer={(guid) => patch({ source: guid })}
               />
             {:else}
@@ -2117,7 +2307,8 @@
             <button
               type="button"
               class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-              onclick={() => patch({ mode: 'analyze', view: 'tables' })}>go back to the night's tables</button
+              onclick={() => patch({ mode: 'analyze', view: 'tables' })}
+              >go back to the {trashMode ? 'trash' : 'night'}'s tables</button
             >.
           </p>
         {/if}
@@ -2131,10 +2322,11 @@
               players={playerSet}
               allCasts={summary?.casts ?? []}
               taunts={scoped.taunts ?? []}
+              syncKey={chartSyncKey}
               auraOrder={[
                 ...new Set(
                   (summary?.auras ?? [])
-                    .filter((track) => inSource(track.target_guid, state.source, playerSet, friendlySet))
+                    .filter((track) => inSource(track.target_guid, scopeKey, scopePlayers, friendlySet))
                     .map((track) => track.name),
                 ),
               ].sort((a, b) => a.localeCompare(b))}
@@ -2149,7 +2341,7 @@
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
-              inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
+              inScope={(guid) => inSource(guid, scopeKey, scopePlayers, friendlySet)}
               off={state.eventsOff}
               search={state.find}
               onPatch={patch}
@@ -2190,7 +2382,7 @@
               rightIndex={state.compareWith}
               metric={state.compareMetric}
               vs={state.compareVs}
-              source={state.source}
+              source={scopeKey}
               onPatch={patch}
             />
           {:else}

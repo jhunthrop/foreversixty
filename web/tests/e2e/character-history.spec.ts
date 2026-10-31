@@ -3,7 +3,8 @@
 // the premium owner's two charts and their lists, the free owner's sentence, the visitor's bare
 // card, and the layout-shift check for the hinted owner. /v1/me, the character and the history
 // route are stubbed with page.route; the strings asserted are the spec's section 6.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { characterHistoryFixture } from '../../src/fixtures/character-history';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
 import {

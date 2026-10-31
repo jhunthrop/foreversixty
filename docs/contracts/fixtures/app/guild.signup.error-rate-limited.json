@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "rate_limited",
+    "message": "Too many requests. Wait a minute, then try again."
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

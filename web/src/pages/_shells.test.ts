@@ -4,12 +4,12 @@
 // other test would notice.
 //
 // The Svelte renderer has to be handed to the container explicitly, exactly as
-// _planner.test.ts and _logs.test.ts do: reports.astro wraps Base.astro, which now mounts
+// _planner.test.ts and _logs.test.ts do: report-shell.astro wraps Base.astro, which now mounts
 // SessionNav client:load on every page, and Astro's integrations are not loaded in a unit
 // test, so without this the container throws NoMatchingRenderer rather than rendering an
 // empty shell.
 import { describe, expect, it } from 'vitest';
-import Reports from './reports.astro';
+import Reports from './report-shell.astro';
 import { createPageContainer } from '../test-support/page-container';
 
 describe('the report shell', () => {

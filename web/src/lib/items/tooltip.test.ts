@@ -391,6 +391,66 @@ describe('itemTooltipModel', () => {
 });
 
 describe('statLines sign', () => {
+  it('prints a drop chance under 1% as "(<1%)", never "(0%)"', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'raid:molten-core',
+          kind: 'raid',
+          name: 'Molten Core',
+          bosses: [{ id: 'raid:molten-core:a', name: 'Lucifron', items: [1], item_chances: { '1': 0.3 } }],
+        },
+      ],
+    };
+    expect(itemTooltipModel(item({ id: 1 }), { loot, sets: [] }).sourceLines).toEqual([
+      'Molten Core — Lucifron (<1%)',
+    ]);
+  });
+
+  it('words a percent stat as the client does, after the flat stats', () => {
+    const shoulders = item({
+      stats: { hit: 2, attack_power: 24 },
+      percent_stats: { hit: 2 },
+    });
+    expect(itemTooltipModel(shoulders, NO_SOURCES).stats).toEqual([
+      '+24 Attack power',
+      'Equip: Improves your chance to hit by 2%.',
+    ]);
+    const all = item({
+      stats: { crit: 1, dodge: 1, parry: 2, block: 3, defense: 7 },
+      percent_stats: { crit: 1, dodge: 1, parry: 2, block: 3, defense: 7 },
+    });
+    expect(itemTooltipModel(all, NO_SOURCES).stats).toEqual([
+      'Equip: Improves your chance to get a critical strike by 1%.',
+      'Equip: Increased Defense +7.',
+      'Equip: Increases your chance to dodge an attack by 1%.',
+      'Equip: Increases your chance to parry an attack by 2%.',
+      'Equip: Increases your chance to block attacks with a shield by 3%.',
+    ]);
+  });
+
+  it('keeps a rating stat flat when the row marks no percent', () => {
+    expect(itemTooltipModel(item({ stats: { hit: 20 }, percent_stats: {} }), NO_SOURCES).stats).toEqual([
+      '+20 Hit',
+    ]);
+  });
+
+  it('says how the item binds when the row states it', () => {
+    expect(itemTooltipModel(item({ bonding: 'pickup' }), NO_SOURCES).bindLabel).toBe('Binds when picked up');
+    expect(itemTooltipModel(item({ bonding: 'equip' }), NO_SOURCES).bindLabel).toBe('Binds when equipped');
+    expect(itemTooltipModel(item({ bonding: 'use' }), NO_SOURCES).bindLabel).toBe('Binds when used');
+    expect(itemTooltipModel(item({ bonding: 'quest' }), NO_SOURCES).bindLabel).toBe('Quest Item');
+    expect(itemTooltipModel(item({ bonding: null }), NO_SOURCES).bindLabel).toBeNull();
+    expect(itemTooltipModel(item(), NO_SOURCES).bindLabel).toBeNull();
+  });
+
+  it('names the armour type beside the slot when the row states it', () => {
+    expect(itemTooltipModel(item({ armor_type: 'leather' }), NO_SOURCES).typeLabel).toBe('Leather');
+    expect(itemTooltipModel(item({ armor_type: 'plate' }), NO_SOURCES).typeLabel).toBe('Plate');
+    const shield = item({ slot: 'off_hand', armor: 300, armor_type: null });
+    expect(itemTooltipModel(shield, NO_SOURCES).typeLabel).toBe('Shield');
+  });
+
   it('writes a negative stat as "-15 Parry", never "+-15"', () => {
     const model = itemTooltipModel(item({ id: 9, stats: { crit: 14, parry: -15 } }), {
       loot: { sources: [], quests: {} },

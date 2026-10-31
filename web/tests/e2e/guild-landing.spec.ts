@@ -1,7 +1,12 @@
 // web/tests/e2e/guild-landing.spec.ts
 // The bare /guild landing: the header's Guild door lands here. A lookup by name, the top
 // guilds, and a redirect to the member's own guild when the session has a verified one.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
+import { choose, nativeSelect } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/*/*', '**/v1/guilds/*/home'));
 
 function envelope(data: unknown) {
   return {
@@ -65,8 +70,8 @@ test.describe('guild landing', () => {
     await stubSignedOut(page);
     await page.goto('/guild');
     await page.getByLabel('Guild name').fill('  The Last Watch ');
-    await page.getByLabel('Region').selectOption('eu');
-    await page.getByLabel('Ruleset').selectOption('normal');
+    await choose(nativeSelect(page, 'Region'), 'eu');
+    await choose(nativeSelect(page, 'Ruleset'), 'normal');
     await page.getByRole('button', { name: 'Open guild' }).click();
     await expect(page).toHaveURL(/\/guild\/eu\/normal\/the-last-watch$/);
   });
@@ -101,7 +106,7 @@ test.describe('guild landing', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/guild');
     await expect(page.getByTestId('guild-lookup')).toBeVisible();
-    const controls = page.getByTestId('guild-lookup').locator('input, select, button');
+    const controls = page.getByTestId('guild-lookup').locator('input, select:not([hidden]), button');
     for (const control of await controls.all()) {
       const box = await control.boundingBox();
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);

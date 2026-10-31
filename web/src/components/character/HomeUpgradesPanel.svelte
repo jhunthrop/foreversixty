@@ -21,12 +21,16 @@
   import { specDisplayName } from '../../lib/sim/spec-label';
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
+  import { storeUpgradesReserve } from '../../lib/home/upgrades-layout';
   import UpgradeRow from './UpgradeRow.svelte';
   import Card from '../ui/Card.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import ItemHover from '../ItemHover.svelte';
 
   let { hero }: { hero: MeCharacter } = $props();
+
+  /** The card's own box (not the slot, whose min-height is the reserve being set). */
+  let box = $state<HTMLElement | null>(null);
 
   type Status = 'loading' | 'no-spec' | 'no-gear' | 'no-list-yet' | 'ready';
 
@@ -62,6 +66,18 @@
     });
   });
 
+  /** Publishes the settled height for the next visit; the skeleton's height is not a state. */
+  $effect(() => {
+    if (box === null || status === 'loading') return;
+    const target = box;
+    const publish = () => storeUpgradesReserve(target.getBoundingClientRect().height);
+    publish();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(publish);
+    observer.observe(target);
+    return () => observer.disconnect();
+  });
+
   const classSlug = $derived(classSlugFromName(hero.class ?? ''));
   const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band));
   const fullListHref = $derived(
@@ -74,89 +90,94 @@
   const extraAlreadyBisCount = $derived(result === null ? 0 : Math.max(0, result.alreadyBis.length - 3));
 </script>
 
-<Card
-  glyph="list"
-  title={homeUpgradesCopy.heading}
-  action={fullListHref === undefined ? undefined : { label: fullListLabel, href: fullListHref }}
-  testid="home-upgrades-body"
->
-  {#if status === 'loading'}
-    <Skeleton lines={4} rowHeight="h-5" testid="home-upgrades-skeleton" />
-  {:else if status === 'no-spec'}
-    <p class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]" data-testid="home-upgrades-no-spec">
-      <span class="label text-gold">{homeHeroCardsCopy.pickASpec}</span>
-      <a href="/planner" class="text-nav text-[13px] font-semibold">{homeHeroCardsCopy.pickASpecLine}</a>
-    </p>
-  {:else if status === 'no-gear'}
-    <p
-      class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
-      data-testid="home-upgrades-not-yet-available"
-    >
-      <span class="text-muted">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
-    </p>
-  {:else if status === 'no-list-yet'}
-    <p class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]" data-testid="home-upgrades-no-list-yet">
-      <span class="text-muted">{homeHeroCardsCopy.bestInSlotNoListYet}</span>
-    </p>
-  {:else if result !== null}
-    {#if result.upgrades.length === 0}
-      <p class="text-muted mb-3 text-[14px]" data-testid="home-upgrades-all-match">
-        {homeUpgradesCopy.everySlotMatches(bandLabel)}
+<div bind:this={box}>
+  <Card
+    glyph="list"
+    title={homeUpgradesCopy.heading}
+    action={fullListHref === undefined ? undefined : { label: fullListLabel, href: fullListHref }}
+    testid="home-upgrades-body"
+  >
+    {#if status === 'loading'}
+      <Skeleton lines={4} rowHeight="h-5" testid="home-upgrades-skeleton" />
+    {:else if status === 'no-spec'}
+      <p class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]" data-testid="home-upgrades-no-spec">
+        <span class="label text-gold">{homeHeroCardsCopy.pickASpec}</span>
+        <a href="/planner" class="text-nav text-[13px] font-semibold">{homeHeroCardsCopy.pickASpecLine}</a>
       </p>
-    {:else}
-      <div class="upgrades-table-header quiet-label" data-testid="home-upgrades-table">
-        <span class="upgrades-table-header-slot">{homeUpgradesCopy.slotHeader}</span>
-        <span>{homeUpgradesCopy.youWearHeader}</span>
-        <span></span>
-        <span>{homeUpgradesCopy.bestInSlotHeader}</span>
-        <span class="upgrades-table-header-gain">{homeUpgradesCopy.gainHeader}</span>
-      </div>
-      <ul class="flex flex-col" data-testid="home-upgrades-list">
-        {#each result.upgrades as upgrade (upgrade.slot)}
-          <UpgradeRow
-            {upgrade}
-            wornItem={upgrade.wornItemId === undefined ? undefined : itemMap.get(upgrade.wornItemId)}
-            pickItem={itemMap.get(upgrade.pick.item_id)}
-            build={activeBuild.build}
-            {classSlug}
-            scoreUnit={result.scoreUnit}
-          />
-        {/each}
-      </ul>
-    {/if}
-    {#if result.alreadyBis.length > 0}
+    {:else if status === 'no-gear'}
       <p
-        class="border-line-soft mt-3 flex flex-wrap items-center gap-2 border-t pt-3 text-[13px]"
-        data-testid="home-upgrades-already-bis"
+        class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
+        data-testid="home-upgrades-not-yet-available"
       >
-        <span class="text-muted font-semibold">{homeUpgradesCopy.alreadyBestInSlotPrefix}</span>
-        {#each shownAlreadyBis as entry, index (entry.slot)}
-          {#if index > 0}<span class="text-muted">·</span>{/if}
-          {@const item = itemMap.get(entry.itemId)}
-          <!-- Fix round 1 item A.2: the same rarity colour + shared hover-tooltip host every
+        <span class="text-muted">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
+      </p>
+    {:else if status === 'no-list-yet'}
+      <p
+        class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
+        data-testid="home-upgrades-no-list-yet"
+      >
+        <span class="text-muted">{homeHeroCardsCopy.bestInSlotNoListYet}</span>
+      </p>
+    {:else if result !== null}
+      {#if result.upgrades.length === 0}
+        <p class="text-muted mb-3 text-[14px]" data-testid="home-upgrades-all-match">
+          {homeUpgradesCopy.everySlotMatches(bandLabel)}
+        </p>
+      {:else}
+        <div class="upgrades-table-header quiet-label" data-testid="home-upgrades-table">
+          <span class="upgrades-table-header-slot">{homeUpgradesCopy.slotHeader}</span>
+          <span>{homeUpgradesCopy.youWearHeader}</span>
+          <span></span>
+          <span>{homeUpgradesCopy.bestInSlotHeader}</span>
+          <span class="upgrades-table-header-gain">{homeUpgradesCopy.gainHeader}</span>
+        </div>
+        <ul class="flex flex-col" data-testid="home-upgrades-list">
+          {#each result.upgrades as upgrade (upgrade.slot)}
+            <UpgradeRow
+              {upgrade}
+              wornItem={upgrade.wornItemId === undefined ? undefined : itemMap.get(upgrade.wornItemId)}
+              pickItem={itemMap.get(upgrade.pick.item_id)}
+              build={activeBuild.build}
+              {classSlug}
+              scoreUnit={result.scoreUnit}
+            />
+          {/each}
+        </ul>
+      {/if}
+      {#if result.alreadyBis.length > 0}
+        <p
+          class="border-line-soft mt-3 flex flex-wrap items-center gap-2 border-t pt-3 text-[13px]"
+          data-testid="home-upgrades-already-bis"
+        >
+          <span class="text-muted font-semibold">{homeUpgradesCopy.alreadyBestInSlotPrefix}</span>
+          {#each shownAlreadyBis as entry, index (entry.slot)}
+            {#if index > 0}<span class="text-muted">·</span>{/if}
+            {@const item = itemMap.get(entry.itemId)}
+            <!-- Fix round 1 item A.2: the same rarity colour + shared hover-tooltip host every
                other item name on this page already uses (`UpgradeRow.svelte`) -- a plain
                `text-strong` name here was the one piece of chrome that didn't meet that bar. -->
-          <ItemHover itemId={entry.itemId} {classSlug} build={activeBuild.build} class="cursor-pointer">
-            <img
-              src={dataUrl(activeBuild.build, `icons/${item?.icon ?? ''}.webp`)}
-              alt=""
-              width="18"
-              height="18"
-              loading="lazy"
-              decoding="async"
-              class="rounded-control border object-cover"
-              style={`border-color:${rarityBorderColorFor(item?.quality ?? 1)}`}
-            />
-            <span class={rarityClassFor(item?.quality ?? 1)}>{entry.itemName}</span>
-          </ItemHover>
-        {/each}
-        {#if extraAlreadyBisCount > 0}
-          <span class="text-muted">· {homeUpgradesCopy.moreSlots(extraAlreadyBisCount)}</span>
-        {/if}
-      </p>
+            <ItemHover itemId={entry.itemId} {classSlug} build={activeBuild.build} class="cursor-pointer">
+              <img
+                src={dataUrl(activeBuild.build, `icons/${item?.icon ?? ''}.webp`)}
+                alt=""
+                width="18"
+                height="18"
+                loading="lazy"
+                decoding="async"
+                class="rounded-control border object-cover"
+                style={`border-color:${rarityBorderColorFor(item?.quality ?? 1)}`}
+              />
+              <span class={rarityClassFor(item?.quality ?? 1)}>{entry.itemName}</span>
+            </ItemHover>
+          {/each}
+          {#if extraAlreadyBisCount > 0}
+            <span class="text-muted">· {homeUpgradesCopy.moreSlots(extraAlreadyBisCount)}</span>
+          {/if}
+        </p>
+      {/if}
     {/if}
-  {/if}
-</Card>
+  </Card>
+</div>
 
 <style>
   .upgrades-table-header {

@@ -33,7 +33,7 @@ import type {
 import { POLL_FAILURES_TO_PAUSE, RAID_POLL_MS, pollOpen, rememberDone, rememberStripRows } from './raid-page';
 import type { RosterRow } from './raid-roster';
 import type { RaidInput, RaidStatusAction } from './raids-api';
-import { submitRefusal } from './raids-tab-controller';
+import { submitRefusal, writeFailedLine } from './raids-tab-controller';
 import type { SignupHandler, SignupOutcome } from './signup-strip';
 
 const RACE_STATUS: Readonly<Record<string, GuildRaidView['status']>> = {
@@ -241,9 +241,10 @@ export class RaidPageController {
     }
   }
 
-  /** The line for a refused officer write: the plan sentence when the tools ended, else `failed`. */
+  /** The line for a refused officer write: the plan sentence when the tools ended, the wait line
+   *  on a 429, else `failed`. */
   private refusalLine(thrown: unknown, ended: string, failed: string): string {
-    return this.planRefused(thrown) ? ended : failed;
+    return this.planRefused(thrown) ? ended : writeFailedLine(thrown, failed);
   }
 
   private planRefused(thrown: unknown): boolean {
@@ -295,11 +296,9 @@ export class RaidPageController {
       this.applyRaid(result.raid);
       return true;
     } catch (thrown) {
-      const ended = this.planRefused(thrown);
-      this.line = {
-        control: ended ? `roster:${row.character_key}` : 'roster',
-        message: ended ? raidCopy.races.officerToolsEnded : raidCopy.officerRow.failed,
-      };
+      const message = this.refusalLine(thrown, raidCopy.races.officerToolsEnded, raidCopy.officerRow.failed);
+      const ended = codeOf(thrown) === PLAN_REQUIRED;
+      this.line = { control: ended ? `roster:${row.character_key}` : 'roster', message };
       return false;
     } finally {
       this.rosterBusy = null;

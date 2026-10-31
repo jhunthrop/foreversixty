@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Route } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
+import { expect, test } from './support/test';
 
 // Tenet 9: loading must end in a ready, empty or error state. Recent reports and Top guilds
 // are below-the-fold islands (client:visible); a read that answers with no rows or fails must

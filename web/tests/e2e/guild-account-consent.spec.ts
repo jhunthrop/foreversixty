@@ -1,5 +1,6 @@
 // web/tests/e2e/guild-account-consent.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
+import { choose } from './support/select';
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -63,7 +64,7 @@ test('changing consent calls the API and leaving removes the row and the cards g
   await page.goto('/account');
   await expect(page.getByTestId('account-guilds')).toContainText('The Last Watch');
   await expect(page.getByTestId('character-guild-line').first()).toContainText('The Last Watch');
-  await page.getByTestId('account-guild-consent').selectOption('roster');
+  await choose(page.getByTestId('account-guild-consent'), 'roster');
   await expect(page.getByTestId('account-guild-consent')).toHaveValue('roster');
   await expect(page.getByTestId('account-guild-consent-saved')).toHaveText(
     'Saved. Applies to all 3 of your characters.',
@@ -126,7 +127,7 @@ test('the guild master is warned that leaving releases the claim and what the of
   await expect(leave).toHaveText('Leave guild');
   expect(await leave.evaluate((node) => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
   await expect(page.getByTestId('account-guild-leave-cancel')).toBeFocused();
-  await expect(page.getByLabel('Share with this guild')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Share with this guild' })).toBeVisible();
   // P.1: nothing under the open confirm -- no hairline on the row, no empty line after the card.
   const row = page.getByTestId('account-guild-row');
   await expect(row).toHaveCSS('border-bottom-width', '0px');

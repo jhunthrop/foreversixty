@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "data": {
+    "web_checkout_regions": [
+      "US"
+    ],
+    "min_app_version": {
+      "ios": "1.0.0",
+      "android": "1.0.0"
+    },
+    "active_build": "1.60.1.70658",
+    "features": {
+      "raids": true,
+      "sign_in": false
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

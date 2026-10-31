@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "key": "us/pvp/obnoxious-yell",
+        "region": "us",
+        "ruleset": "pvp",
+        "name": "Obnoxious Yell",
+        "class": "warrior",
+        "level": 58,
+        "spec": null
+      },
+      {
+        "key": "us/normal/obnoxious",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Obnoxious",
+        "class": null,
+        "level": null,
+        "spec": null
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

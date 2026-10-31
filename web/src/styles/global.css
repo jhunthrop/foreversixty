@@ -3,6 +3,7 @@
 @import './tokens.css';
 @import './nav.css';
 @import './typeahead.css';
+@import './select.css';
 
 @layer base {
   body {
@@ -59,6 +60,36 @@
   input[type='checkbox']:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
+  }
+  /* Themed scrollbars, site-wide: macOS with a mouse plugged in (or "Show scroll bars: Always")
+     drew a classic grey bar on the fight list and every other scroll box. A thin warm thumb on a
+     clear track; the ::-webkit-scrollbar rules are Safari's, which ignores the standard pair. A
+     strip that hides its bar (scrollbar-width: none) does so outside the layers and still wins. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-warm-strong) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-warm-strong);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
+  }
+}
+/* A sideways tab row that scrolls on a phone: no bar at all (its own fade says there is more),
+   where the themed bar above would otherwise draw under, or beside, the tabs. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 /* A disabled checkbox's label reads muted. Outside the layers so a row's own text-* class
@@ -459,18 +490,6 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
-/* The current-character band's slot (planner, simulator, logs, rankings and character
-   shells and islands) exists while a pointer is stored OR a signed-in session is hinted:
-   Base.astro sets data-pointer before first paint from localStorage and data-session from
-   the session cookie's readable half, and lib/current-character.ts keeps data-pointer in
-   step, so a page with neither never shows the band's reserved height as dead space. The
-   spine bar's signed-out, no-pointer line (CurrentCharacterBar.svelte's `spine` mode) is the
-   one state that renders with no pre-paint reservation at all -- the rarest visitor shape,
-   and the one CLS trade-off this rule accepts (spec 2026-09-25 section 4.1). */
-html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
-  display: none;
-}
-
 /* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
    section 3.7): the card head (48px) and its rule (1px), then the rows at the height they last
    rendered. Base.astro sets --server-runs-reserve from fs.serverRuns.reserve (px) and
@@ -789,7 +808,7 @@ html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-
 
 /* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
    in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
-   session hint `.chip-slot` above already uses for a `display:none` swap -- the hint
+   session hint, as a `display:none` swap -- the hint
    lands before layout settles, so this never causes a visible shift either direction, and
    (unlike `data-session-hide`'s visibility toggle for the hero's own same-shaped overlay)
    `display:none` costs no reserved height for the common case that never shows it. */
@@ -814,17 +833,21 @@ html[data-pointer='1'] .setup-when-no-pointer {
    reading: from `data-done` once the session and device reads have answered, and until then from
    the same pre-paint hints the steps use -- the session cookie for step 1, the stored character
    for step 2 -- so a signed-in visitor never sees step 1 flip. */
-.setup-chip[data-done='true'] :is(.chip-todo, .chip-label-todo),
-.setup-chip[data-done='false'] :is(.chip-done, .chip-label-done),
+:is(.setup-chip, .setup-step-tag)[data-done='true'] :is(.chip-todo, .chip-label-todo),
+:is(.setup-chip, .setup-step-tag)[data-done='false'] :is(.chip-done, .chip-label-done),
 html:not([data-session='1'])
-  .setup-chip[data-hint='session']:not([data-done])
+  :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-session='1'] .setup-chip[data-hint='session']:not([data-done]) :is(.chip-todo, .chip-label-todo),
+html[data-session='1']
+  :is(.setup-chip, .setup-step-tag)[data-hint='session']:not([data-done])
+  :is(.chip-todo, .chip-label-todo),
 html:not([data-pointer='1'])
-  .setup-chip[data-hint='pointer']:not([data-done])
+  :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done])
   :is(.chip-done, .chip-label-done),
-html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) :is(.chip-todo, .chip-label-todo),
-.setup-chip[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
+html[data-pointer='1']
+  :is(.setup-chip, .setup-step-tag)[data-hint='pointer']:not([data-done])
+  :is(.chip-todo, .chip-label-todo),
+:is(.setup-chip, .setup-step-tag)[data-hint='none']:not([data-done]) :is(.chip-done, .chip-label-done) {
   display: none;
 }
 .setup-chip[data-done='true'] .setup-chip-link,

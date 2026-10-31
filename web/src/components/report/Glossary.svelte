@@ -4,7 +4,7 @@
      version, a native disclosure so it costs no script and reads to a screen reader as
      what it is. -->
 <script lang="ts">
-  const TERMS: { term: string; meaning: string }[] = [
+  const TERMS: { term: string; meaning: string; id?: string }[] = [
     {
       term: 'Parse',
       meaning:
@@ -167,8 +167,9 @@
     { term: 'Split', meaning: 'Talent points per tree, in tree order.' },
     {
       term: 'Threat',
+      id: 'glossary-threat',
       meaning:
-        'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in, so a tank without their stance and taunt multipliers can read below the damage dealers. Under a brushed window it is the fight’s total scaled by the window’s share.',
+        'Estimated threat: the engine’s base model, which counts one threat per point of damage to an enemy and half a point per point of healing, spread across the enemies the healer is in combat with. It leaves out stance, form and Righteous Fury multipliers; talent multipliers; an ability’s bonus threat (Sunder Armor, Heroic Strike, Revenge, Maul); taunts; threat drops and wipes (Feint, Fade, a knockback); and the 110% and 130% rules for pulling aggro. So a tank reads below the damage dealers they were holding threat over. The chart always draws the tanks and marks every taunt; a boss target change is marked where the report has it, inferred from the enemy’s melee swings, since the combat log has no target-change event. Under a brushed window on an older report it is the fight’s total scaled by the window’s share.',
     },
     {
       term: 'Threat share and bar',
@@ -243,6 +244,19 @@
   ];
 
   let open = $state(false);
+  // A link to an entry (the threat chart's `What it leaves out`) opens the glossary and scrolls
+  // to it: on arrival and on every hash change after.
+  $effect(() => {
+    const follow = (): void => {
+      const id = window.location.hash.slice(1);
+      if (!TERMS.some((entry) => entry.id === id)) return;
+      open = true;
+      requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'center' }));
+    };
+    follow();
+    window.addEventListener('hashchange', follow);
+    return () => window.removeEventListener('hashchange', follow);
+  });
 </script>
 
 <details class="border-line-soft rounded-panel border" bind:open data-testid="glossary">
@@ -253,7 +267,7 @@
   </summary>
   <dl class="grid grid-cols-1 gap-x-6 gap-y-2 px-3 pb-3 text-[13px] md:grid-cols-2">
     {#each TERMS as entry (entry.term)}
-      <div class="flex flex-col gap-0.5">
+      <div class="flex scroll-mt-4 flex-col gap-0.5" id={entry.id}>
         <dt class="text-strong font-semibold">{entry.term}</dt>
         <dd class="text-muted m-0">{entry.meaning}</dd>
       </div>

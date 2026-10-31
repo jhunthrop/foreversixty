@@ -73,7 +73,9 @@ func TestFitRuleMeta(t *testing.T) {
 		t.Fatalf("back meta %q", back.meta)
 	}
 	signet := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "finger1"))
-	if !slices.Equal(signet.meta, []string{"Ring 1 · Vendor: Anachronos"}) {
+	// "Finger 1 · Vendor: Anachronos" is wider than the 196 px line under a two-line name, so
+	// the fit rule keeps the slot word alone (the client's word, paperdoll spec §3.1).
+	if !slices.Equal(signet.meta, []string{"Finger 1"}) {
 		t.Fatalf("signet meta %q", signet.meta)
 	}
 	// A source that fits no candidate leaves the label alone: the slot is always named.
@@ -174,7 +176,7 @@ func TestEveryEmptyState(t *testing.T) {
 		{"char empty, not modelled", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyNotModelled},
 			"Trinket 2 · Gain not modelled yet", "Gain not modelled yet"},
 		{"char empty, measured gain", KindChar, Slot{Slot: "finger1", Empty: true, Gain: "+6.2 DPS"},
-			"Ring 1 · +6.2 DPS", "+6.2 DPS"},
+			"Finger 1 · +6.2 DPS", "+6.2 DPS"},
 		{"char empty, no pick", KindChar, Slot{Slot: "trinket2", Empty: true},
 			"Trinket 2 · Empty", ""},
 		{"bis no pick", KindBis, Slot{Slot: "trinket2", Empty: true},
@@ -198,14 +200,13 @@ func TestEveryEmptyState(t *testing.T) {
 	}
 }
 
-func TestTwoHandLeavesTheOffHandOut(t *testing.T) {
-	for _, p := range placements(true) {
-		if p.key == SlotOff {
-			t.Fatal("the off hand is placed under a two-handed main hand")
-		}
+func TestTwoHandDrawsAnEmptyOffHand(t *testing.T) {
+	placed := map[string]bool{}
+	for _, p := range placements() {
+		placed[p.key] = true
 	}
-	if len(placements(true)) != 16 || len(placements(false)) != 17 {
-		t.Fatalf("placements %d and %d", len(placements(true)), len(placements(false)))
+	if len(placements()) != 17 || !placed[SlotOff] {
+		t.Fatalf("placements %d, off hand placed %v", len(placements()), placed[SlotOff])
 	}
 	s := loadFixture(t, "sheet-bis")
 	s.Slots = append(s.Slots, Slot{Slot: SlotOff, Name: "Bulwark", Quality: 4, Icon: "inv_spear_05", Meta: "Vendor: Mokvar"})
@@ -219,24 +220,50 @@ func TestTwoHandLeavesTheOffHandOut(t *testing.T) {
 			t.Fatal(err)
 		}
 		got := decodePNG(t, png).At(ringAt.X, ringAt.Y)
-		ring := closeColor(got, qualityRing[4])
-		if ring == twoHand {
-			t.Fatalf("twoHand %v: off-hand ring drawn %v (pixel %v)", twoHand, ring, got)
+		if ring := closeColor(got, qualityRing[4]); ring == twoHand {
+			t.Fatalf("twoHand %v: off-hand quality ring drawn %v (pixel %v)", twoHand, ring, got)
 		}
+		if empty := closeColor(got, colorEmptyRing); empty != twoHand {
+			t.Fatalf("twoHand %v: empty off-hand socket drawn %v (pixel %v)", twoHand, empty, got)
+		}
+	}
+	for _, kind := range []string{KindBis, KindChar} {
+		s.Kind, s.TwoHand = kind, true
+		ct, err := testRenderer(t).fitCell(kind, s.cellFor(SlotOff))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if all, gold := labelText(ct); all != "Off hand · Two-hand in main hand" || gold != "" {
+			t.Fatalf("%s: off hand reads %q, gold %q", kind, all, gold)
+		}
+	}
+}
+
+func TestCharCentreOmitsAnUnknownItemLevel(t *testing.T) {
+	s := loadFixture(t, "sheet-char")
+	if lines := centreLines(s); len(lines) != 2 || lines[0].text != CopyItemLevel || lines[1].text != "63.5" {
+		t.Fatalf("known item level: %+v", lines)
+	}
+	s.Subtitle = ""
+	if lines := centreLines(s); len(lines) != 0 {
+		t.Fatalf("an unknown item level still draws %d centre lines", len(lines))
+	}
+	if _, err := Render(s, testIcons()); err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestEveryIconTopSitsOnThePitch(t *testing.T) {
 	at := map[string]int{}
-	for _, p := range placements(false) {
+	for _, p := range placements() {
 		if (p.y-row0)%pitch != 0 {
 			t.Errorf("%s at y %d is off the %d px pitch", p.key, p.y, pitch)
 		}
 		at[p.key] = p.y
 	}
-	// Both columns are top-aligned, as in the game's frame: Head beside Hands, Wrist beside Ring 2.
+	// Both columns are top-aligned, as in the game's frame: Head beside Hands, Wrist beside Finger 2.
 	if at["head"] != row0 || at["head"] != at["hands"] || at["wrist"] != at["finger2"] {
-		t.Fatalf("columns not top-aligned: head %d hands %d wrist %d ring 2 %d", at["head"], at["hands"], at["wrist"], at["finger2"])
+		t.Fatalf("columns not top-aligned: head %d hands %d wrist %d finger 2 %d", at["head"], at["hands"], at["wrist"], at["finger2"])
 	}
 }
 
@@ -436,7 +463,7 @@ func (c *countingIcons) Icon(name string) (image.Image, error) {
 }
 
 func TestSlotWords(t *testing.T) {
-	if SlotLabel("finger1") != "Ring 1" || SlotLabel("trinket2") != "Trinket 2" || SlotLabel("shirt") != "" {
+	if SlotLabel("finger1") != "Finger 1" || SlotLabel("trinket2") != "Trinket 2" || SlotLabel("shirt") != "" {
 		t.Fatal("slot labels")
 	}
 	if len(SlotKeys()) != 17 || SlotKeys()[0] != "head" || SlotKeys()[16] != "ranged" {

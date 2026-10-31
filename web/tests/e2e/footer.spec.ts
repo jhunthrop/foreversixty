@@ -1,4 +1,5 @@
-import { expect, test, type Locator } from '@playwright/test';
+import type { Locator } from '@playwright/test';
+import { expect, test } from './support/test';
 
 // design/specs/2026-10-28-polish.md section 2.3: below 768 the four link columns are a 2 x 2
 // grid (never one long column) and every link is a 44px row; the Discord button is reachable.

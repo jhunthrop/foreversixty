@@ -14,7 +14,7 @@
 // active-build.json already names the same build the guides were written against
 // (1.60.1.69893), so no extra sync step beyond the normal `prebuild` hook is needed -- just
 // the env var that picks which source `sync-data.mjs` publishes.
-import { test, expect } from '@playwright/test';
+import { test, expect } from './support/test';
 
 test.skip(
   process.env.FOREVER_DATA !== 'real',

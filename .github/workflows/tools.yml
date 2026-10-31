@@ -1,0 +1,51 @@
+# .github/workflows/tools.yml
+#
+# The shell scripts the client move and the engine follow run, and the workflows that run
+# them: tools/tests/test_activation.sh (the activation gate, the move's failure report and
+# resume, the scripts' executable bits), tools/engine/tests/test_scripts.sh (the engine
+# follow hash, pin conditions, review branch, pinned build and ranking wait) and
+# tools/tests/test_release_apps.sh (the apps' release command) and tools/tests/play-upload.test.ts
+# (its Play upload, against a stub of the API), then
+# shellcheck over every script and actionlint over the move's workflows. Plain bash with stubs
+# and scratch git repositories: no network, no database, no secrets.
+name: tools
+on:
+  push:
+    branches: [main]
+    paths: ['tools/**', '.github/workflows/**', '.github/actions/**']
+  pull_request:
+    paths: ['tools/**', '.github/workflows/**', '.github/actions/**']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: tools-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  ACTIONLINT_VERSION: 1.7.12
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: git config --global user.name tools-ci && git config --global user.email ci@foreversixty.gg
+      - name: the activation scripts
+        run: bash tools/tests/test_activation.sh
+      - name: the engine follow scripts
+        run: bash tools/engine/tests/test_scripts.sh
+      - name: the apps release command
+        run: bash tools/tests/test_release_apps.sh
+      # 24 runs the TypeScript directly, with no packages.
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - name: the Play upload
+        run: node --test tools/tests/*.test.ts
+      - name: shellcheck
+        run: shellcheck tools/*.sh tools/engine/*.sh tools/tests/*.sh tools/engine/tests/*.sh
+      - name: actionlint
+        run: |
+          curl -sSL -o /tmp/actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          tar -xzf /tmp/actionlint.tgz -C /tmp actionlint
+          # The workflows the client move runs through; the others carry older shellcheck
+          # findings (api, companion, data, sim) that are their lanes' to clear.
+          /tmp/actionlint .github/workflows/client.yml .github/workflows/bis.yml .github/workflows/engine.yml .github/workflows/tools.yml .github/workflows/apps-release.yml .github/workflows/android.yml

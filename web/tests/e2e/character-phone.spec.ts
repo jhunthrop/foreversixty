@@ -4,7 +4,7 @@
 // their best per encounter are exactly the kind of wide, row-heavy content that breaks a
 // phone layout, so this page gets its own sweep in the same idiom: nothing scrolls
 // sideways, and every control clears 44px in both the max-dimension and the height sense.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER_PATH, stubCharacter } from './support/character-fixture';
 
 test.use({ viewport: { width: 360, height: 800 } });

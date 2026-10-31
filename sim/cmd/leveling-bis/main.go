@@ -376,7 +376,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			itemFactionRestriction[c.ID] = c.FactionRestriction
 		}
 	}
-	lootIdx, questFloors, err := loadLootIndex(buildDir, itemFactionRestriction)
+	lootIdx, questFloors, err := loadGatedLootIndex(repoRoot, buildDir, itemFactionRestriction, os.Stderr)
 	if err != nil {
 		return err
 	}

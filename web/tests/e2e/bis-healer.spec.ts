@@ -3,7 +3,8 @@
 // data/builds/<build>/bis/priest-holy.json (the committed fixture only when none exists).
 // Assertions are on shape, and the profile caption on the file's own heal_profile label, so
 // a re-rank or a retuned profile keeps the spec green.
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from './support/test';
 import { readBisFile } from './support/bis-file';
 
 const HEALER_PAGE = '/bis/priest/holy#band-alliance-60';

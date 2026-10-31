@@ -165,6 +165,9 @@ export const addonCopy = {
   /** The three chips, each an anchor to its step. Addon and Companion keep one label whatever
    *  their state (the tick says done, W.10); step 1 asks `Sign in` until the session is signed in,
    *  then reads `labelDone` -- a signed-out visitor is never told `Signed in`. */
+  /** The state tag in each step card's head. */
+  setupTagDone: 'Done',
+  setupTagTodo: 'To do',
   setupChips: [
     { step: 1, href: '#signin', label: 'Sign in', labelDone: 'Signed in' },
     { step: 2, href: '#addon', label: 'Addon' },

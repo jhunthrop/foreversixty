@@ -3,7 +3,8 @@
 // and Bench wait for the pick while no raid spec is saved, the pick commits the sign-up with the
 // spec's role, Out never asks, a saved spec reads `Change spec`, and the select holds the 44 px
 // floor at 360. The API is the RaidStub with `askSpec`.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
 import { raidCopy } from '../../src/lib/guild/raid-copy';
 import {
@@ -18,6 +19,7 @@ import {
 } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { shortControls } from './support/short-controls';
+import { choose } from './support/select';
 
 test.use({ timezoneId: CHICAGO });
 
@@ -56,7 +58,7 @@ test('In waits for the pick; the pick signs up with that spec and says it is kep
   expect(bodies(stub)).toEqual([]);
   await segment(page, 'in').click();
 
-  await specSelect(page).selectOption('hunter-survival');
+  await choose(specSelect(page), 'hunter-survival');
 
   await expect(status(page)).toContainText(raidCopy.spec.kept('Survival', VIEWER_MEMBER));
   expect(bodies(stub)).toEqual([{ state: 'in', role: 'dps', note: '', spec: 'hunter-survival' }]);
@@ -101,7 +103,7 @@ test('pressing a state shifts nothing below the row', async ({ page }) => {
 test('the next press asks nothing: the saved spec stands', async ({ page }) => {
   const stub = await openAsking(page);
   await segment(page, 'in').click();
-  await specSelect(page).selectOption('hunter-marksmanship');
+  await choose(specSelect(page), 'hunter-marksmanship');
   await expect(status(page)).toContainText(raidCopy.stripStatus.saved);
 
   await segment(page, 'late').click();
@@ -115,12 +117,12 @@ test('the next press asks nothing: the saved spec stands', async ({ page }) => {
 test('Change spec saves another spec and keeps the state', async ({ page }) => {
   const stub = await openAsking(page);
   await segment(page, 'bench').click();
-  await specSelect(page).selectOption('hunter-beast-mastery');
+  await choose(specSelect(page), 'hunter-beast-mastery');
   await expect(toggle(page)).toBeVisible();
   await toggle(page).click();
 
   await specSelect(page).focus();
-  await specSelect(page).selectOption('hunter-survival');
+  await choose(specSelect(page), 'hunter-survival');
 
   await expect(toggle(page)).toHaveText(`Survival · ${raidCopy.spec.change}`);
   await expect(toggle(page)).toBeFocused();
@@ -141,7 +143,7 @@ test('a refused pick says so and makes no sign-up', async ({ page }) => {
   const stub = await openAsking(page);
   stub.refuseNext = { signup: { code: 'server_error', status: 500 } };
   await segment(page, 'in').click();
-  await specSelect(page).selectOption('hunter-survival');
+  await choose(specSelect(page), 'hunter-survival');
   await expect(status(page)).toHaveText(raidCopy.stripStatus.failed);
   await expect(segment(page, 'in')).toHaveAttribute('aria-checked', 'false');
 });

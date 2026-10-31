@@ -1,6 +1,6 @@
 // web/src/lib/items/tooltip-position.test.ts
 import { describe, expect, it } from 'vitest';
-import { tooltipShiftPx, tooltipVerticalPlacementFor } from './tooltip-position';
+import { tooltipLeftPx, tooltipShiftPx, tooltipVerticalPlacementFor } from './tooltip-position';
 
 describe('tooltipShiftPx', () => {
   it('is 0 when the panel already fits between the anchor and the right edge', () => {
@@ -53,5 +53,25 @@ describe('tooltipVerticalPlacementFor', () => {
     const result = tooltipVerticalPlacementFor(0, 0, 500, 4);
     expect(result.maxHeightPx).not.toBeNull();
     expect(result.maxHeightPx!).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe('tooltipLeftPx', () => {
+  it('hangs a start-aligned panel from the anchor’s left edge, shifted inside the viewport', () => {
+    expect(tooltipLeftPx('start', 100, 200, 1280, 360)).toBe(0);
+    expect(tooltipLeftPx('start', 1000, 200, 1280, 360)).toBe(1280 - 8 - 360 - 1000);
+  });
+
+  it('meets an end-aligned panel’s right edge with the anchor’s right edge (the right column)', () => {
+    expect(tooltipLeftPx('end', 900, 300, 1280, 360)).toBe(300 - 360);
+  });
+
+  it('keeps an end-aligned panel 8 px inside the left edge when the anchor is narrow and near it', () => {
+    expect(tooltipLeftPx('end', 20, 100, 1000, 360)).toBe(8 - 20);
+  });
+
+  it('spans the 16 px phone gutters with a viewport-wide panel, whichever column was tapped', () => {
+    expect(tooltipLeftPx('start', 28, 334, 390, 358)).toBe(16 - 28);
+    expect(tooltipLeftPx('end', 200, 170, 390, 358)).toBe(16 - 200);
   });
 });

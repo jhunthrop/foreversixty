@@ -7,7 +7,7 @@
      chips follow them. -->
 <script lang="ts">
   import { addonCopy } from '../lib/addon/copy';
-  import { chipsDone, type SetupState } from '../lib/setup/progress';
+  import { chipsDone, STEP_HINTS, type SetupState } from '../lib/setup/progress';
   import { loadSetupState } from '../lib/setup/state';
 
   let state = $state<SetupState | null>(null);
@@ -34,8 +34,6 @@
       delete document.documentElement.dataset.setupFirst;
     };
   });
-  /** Which <html> hint a chip follows until the reads answer: the session cookie, the stored character, or none. */
-  const HINTS = ['session', 'pointer', 'none'] as const;
 </script>
 
 <ol
@@ -47,7 +45,7 @@
     <li
       class="setup-chip"
       data-step={chip.step}
-      data-hint={HINTS[index]}
+      data-hint={STEP_HINTS[index]}
       data-done={done === null ? undefined : String(done[index])}
     >
       <a
