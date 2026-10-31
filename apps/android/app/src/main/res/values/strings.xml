@@ -773,4 +773,6 @@
     <string name="itemPage_moreAbout">More about this item</string>
     <string name="itemPage_a11y_source">%1$s, %2$s</string>
     <string name="itemPage_a11y_spec">%1$s, %2$s, %3$s. Opens that list</string>
+    <string name="itemPage_preset_raid">Phase 1 raid</string>
+    <string name="itemPage_pickMetaBare">%1$s · %2$s · %3$s</string>
 </resources>

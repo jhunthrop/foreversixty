@@ -174,10 +174,22 @@ class BisModel(
     private var worn: Set<Int> = emptySet()
     private var generation = 0
 
+    /** A list Search asked for (F12): the next [start] opens it instead of the character's own. */
+    private var requested: BisSelection? = null
+
+    /** Search's `Best in slot for` rows and For card (F12): the tab opens on [selection] next time it starts. */
+    fun request(selection: BisSelection) {
+        requested = selection
+    }
+
+    /** The faction the tab shows now, for a Search row whose list is the same for both sides. */
+    val currentFaction: String get() = state.value.context.selection.faction
+
     /** The first load: the character, then the saved list at once, then the network. */
     suspend fun start() {
         val character = source.currentCharacter()
         val own = character?.let { BisSelection.forCharacter(it, catalog) }
+        val asked = requested.also { requested = null }
         worn = character?.build?.gear?.values?.toSet().orEmpty()
         var openPicker = false
         if (own == null && character == null && !preferences.hasOpenedPicker) {
@@ -189,7 +201,7 @@ class BisModel(
         mutable.update {
             it.copy(
                 context = it.context.copy(
-                    selection = own ?: it.context.selection,
+                    selection = asked ?: own ?: it.context.selection,
                     characterSelection = own,
                     characterName = character?.name?.takeIf { own != null },
                     raidsOpening = opening,

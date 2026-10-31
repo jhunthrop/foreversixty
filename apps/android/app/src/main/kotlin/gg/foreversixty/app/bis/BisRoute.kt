@@ -48,6 +48,7 @@ import gg.foreversixty.app.network.CachedStaticDataClient
 import gg.foreversixty.app.network.FileStaticFileCache
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.dataOrNull
+import gg.foreversixty.app.search.ui.RootSearchBar
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
@@ -67,7 +68,14 @@ data class BisOwner(val characterKey: String? = null, val waiting: Boolean = fal
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BisRoute(model: BisModel, catalog: ItemCatalog, owner: BisOwner = BisOwner(), selector: @Composable () -> Unit = {}) {
+fun BisRoute(
+    model: BisModel,
+    catalog: ItemCatalog,
+    owner: BisOwner = BisOwner(),
+    /** Lane F12: the universal search replaces this tab's own filter; null while `search` is off. */
+    onSearch: (() -> Unit)? = null,
+    selector: @Composable () -> Unit = {},
+) {
     val state by model.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var query by rememberSaveable { mutableStateOf("") }
@@ -77,10 +85,14 @@ fun BisRoute(model: BisModel, catalog: ItemCatalog, owner: BisOwner = BisOwner()
     LaunchedEffect(model, owner) { if (!owner.waiting) model.start() }
 
     Column(Modifier.fillMaxSize()) {
-        SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
-            searching = !searching
-            if (!searching) query = ""
-        })
+        if (onSearch != null) {
+            RootSearchBar(onSearch, selector)
+        } else {
+            SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
+                searching = !searching
+                if (!searching) query = ""
+            })
+        }
         PullToRefreshBox(
             isRefreshing = refreshing,
             onRefresh = {

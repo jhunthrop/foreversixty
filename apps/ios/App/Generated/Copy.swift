@@ -2567,6 +2567,14 @@ enum Copy {
         format("itemPage.a11y.spec", spec, meta, tag)
     }
 
+    /// Phase 1 raid
+    static var itemPagePresetRaid: String { text("itemPage.preset.raid") }
+
+    /// {spec} · {band} · {faction}
+    static func itemPagePickMetaBare(spec: String, band: String, faction: String) -> String {
+        format("itemPage.pickMetaBare", spec, band, faction)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }
