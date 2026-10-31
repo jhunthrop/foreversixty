@@ -150,6 +150,7 @@ data class BisAlternative(
     @SerialName("source_line") val sourceLine: String? = null,
     /** Percent when known. */
     @SerialName("drop_chance") val dropChance: Double? = null,
+    @SerialName("verified") val verified: Boolean? = null,
 )
 
 @Serializable
@@ -165,6 +166,8 @@ data class BisBand(
     @SerialName("reference_dps_per_point") val referenceDpsPerPoint: Double,
     @SerialName("scale_reference_stat") val scaleReferenceStat: String? = null,
     @SerialName("set_dps") val setDps: Double? = null,
+    /** The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score. */
+    @SerialName("role") val role: String? = null,
     /** "slot: item name" for each pick new at this band. */
     @SerialName("new_at_band") val newAtBand: List<String>? = null,
     @SerialName("weights") val weights: List<BisWeight> = emptyList(),
@@ -219,6 +222,7 @@ data class BisSlot(
     @SerialName("ties") val ties: List<BisTie>? = null,
     /** The set bonus this piece is worn for. */
     @SerialName("set_bonus") val setBonus: BisSetBonus? = null,
+    @SerialName("low_value") val lowValue: Boolean? = null,
     @SerialName("faction_note") val factionNote: String? = null,
     @SerialName("empty_reason") val emptyReason: String? = null,
 )

@@ -135,7 +135,7 @@ class HomeScreenshotTest {
         val res = LocalResources.current
         val home = HomeFixtures.home()
         val sources = HomeFixtures.tooltipSources()
-        val probe = HomePresenter.tooltipRequest(ItemLook(0), home, HomeFixtures.velaren)
+        val probe = HomePresenter.tooltipRequest(ItemLook(0), home, HomeFixtures.velaren, res)
         val blocker = GearModel.offHandBlocker(home, emptyMap(), sources.items, ItemTooltipModel.band(probe, sources.bis))
         Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
             GearList(
@@ -154,7 +154,7 @@ class HomeScreenshotTest {
         val sources = HomeFixtures.tooltipSources()
         val item = sources.items[id]
         val request = HomePresenter.tooltipRequest(
-            ItemLook(id, item?.name, item?.quality, item?.icon, item?.itemLevel), home, HomeFixtures.velaren,
+            ItemLook(id, item?.name, item?.quality, item?.icon, item?.itemLevel), home, HomeFixtures.velaren, res,
             wornId = 279253,
         )
         val model = ItemTooltipModel.build(request, sources, res)

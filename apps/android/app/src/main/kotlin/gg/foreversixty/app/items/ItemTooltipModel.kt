@@ -2,6 +2,8 @@ package gg.foreversixty.app.items
 
 import android.content.res.Resources
 import gg.foreversixty.app.R
+import gg.foreversixty.app.bis.BisListBuilder
+import gg.foreversixty.app.bis.BisUnit
 import gg.foreversixty.app.model.BisBand
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.BisSlot
@@ -81,6 +83,9 @@ data class ItemTooltipModel(
     companion object {
         private val weaponSlots = setOf("main_hand", "off_hand", "ranged")
 
+        /** Spec F2.6: up to two runners-up. */
+        private const val MAX_ALTERNATIVES = 2
+
         fun build(request: ItemTooltipRequest, sources: ItemTooltipSources, res: Resources): ItemTooltipModel {
             val item = sources.items[request.itemId] ?: return unknown(request, res)
             val quality = ItemQuality(item.quality)
@@ -113,8 +118,8 @@ data class ItemTooltipModel(
                 requiresLevel = item.requiredLevel.takeIf { it > 0 }?.let { res.getString(R.string.tooltip_requires, it) },
                 itemLevel = res.getString(R.string.tooltip_itemLevel, item.itemLevel),
                 source = source(item, request, band, res),
-                alternatives = alternatives(pickSlot, request, sources.items, res),
-                pickFooter = pickSlot?.let { footer(slotName, request, sources.bis, res) },
+                alternatives = alternatives(pickSlot, request, sources.items, res, BisUnit.forRole(band?.role)),
+                pickFooter = pickSlot?.let { footer(ItemVocabulary.slotLabel(res, it.slot), request, res) },
             )
         }
 
@@ -175,28 +180,35 @@ data class ItemTooltipModel(
             return null
         }
 
-        /** Up to two runners-up from the BiS row; the worn one leads with "You wear this · ". */
+        /**
+         * Up to two runners-up from the BiS row, each in the band's unit (DPS, HPS or score); the
+         * worn one leads with "You wear this · ".
+         */
         private fun alternatives(
             slot: BisSlot?,
             request: ItemTooltipRequest,
             items: Map<Int, Item>,
             res: Resources,
-        ): List<ItemTooltipAlternative> = slot?.alternatives.orEmpty().take(2).map { alt ->
-            val row = items[alt.itemId]
-            val look = ItemLook(alt.itemId, row?.name ?: alt.itemName, row?.quality, row?.icon, row?.itemLevel)
-            val delta = if (alt.dpsDelta == 0.0) {
-                res.getString(R.string.items_sameDps)
-            } else {
-                res.getString(R.string.tooltip_delta, ItemNumbers.delta(alt.dpsDelta))
+            unit: BisUnit,
+        ): List<ItemTooltipAlternative> {
+            val unitWord = res.getString(unit.word)
+            return slot?.alternatives.orEmpty().take(MAX_ALTERNATIVES).map { alt ->
+                val row = items[alt.itemId]
+                val look = ItemLook(alt.itemId, row?.name ?: alt.itemName, row?.quality, row?.icon, row?.itemLevel)
+                val delta = BisListBuilder.signedDelta(alt.dpsDelta)?.let { res.getString(R.string.tooltip_delta, it, unitWord) }
+                    ?: res.getString(R.string.items_sameDps, unitWord)
+                val worn = if (alt.itemId == request.wornId) res.getString(R.string.tooltip_youWear) else ""
+                ItemTooltipAlternative(look, worn + delta, alt.sourceLine ?: alt.source)
             }
-            val worn = if (alt.itemId == request.wornId) res.getString(R.string.tooltip_youWear) else ""
-            ItemTooltipAlternative(look, worn + delta, alt.sourceLine ?: alt.source)
         }
 
-        private fun footer(slotName: String?, request: ItemTooltipRequest, bis: BisFile?, res: Resources): String? {
-            val label = request.preset?.let { bis?.presets?.get(it)?.label } ?: return null
-            if (slotName == null || request.specName == null || request.bandLabel == null) return null
-            return res.getString(R.string.tooltip_pickOf, slotName, request.specName, request.bandLabel, label)
+        /**
+         * `Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid`, named by the BiS row's slot; the
+         * band label carries the phase, never a preset id.
+         */
+        private fun footer(slotName: String, request: ItemTooltipRequest, res: Resources): String? {
+            if (request.specName == null || request.bandLabel == null) return null
+            return res.getString(R.string.tooltip_pickOf, slotName, request.specName, request.bandLabel)
         }
     }
 }

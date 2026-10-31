@@ -28,12 +28,28 @@ public struct StaticDataClient: Sendable {
     }
 
     public func get<Response>(_ resource: StaticResource<Response>) async throws(APIError) -> Response {
+        try await fetch(resource).value
+    }
+
+    /// The decoded file and the body it came from, for a caller that keeps the body
+    /// (`CachedStaticDataClient`).
+    public func fetch<Response>(
+        _ resource: StaticResource<Response>
+    ) async throws(APIError) -> (value: Response, body: Data) {
         var request = URLRequest(url: baseURL.appending(path: resource.path))
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         let (data, response) = try await transport.send(request)
         guard (200..<300).contains(response.statusCode) else {
             throw .unexpectedStatus(response.statusCode)
         }
+        return try (Self.decode(resource, from: data), data)
+    }
+
+    /// Decodes a body of `resource`, fetched now or saved earlier.
+    public static func decode<Response>(
+        _ resource: StaticResource<Response>,
+        from data: Data
+    ) throws(APIError) -> Response {
         do {
             return try WireFormat.decoder().decode(Response.self, from: data)
         } catch {

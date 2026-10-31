@@ -1,5 +1,6 @@
 package gg.foreversixty.app.items
 
+import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import gg.foreversixty.app.R
@@ -33,6 +34,12 @@ object ItemVocabulary {
 
     @StringRes
     fun slotName(slot: String): Int? = slotNames[slot]
+
+    /**
+     * A slot's label: two rings read `Ring 1` and `Ring 2`, two trinkets `Trinket 1` and
+     * `Trinket 2`, so the BiS rows can be told apart; an unknown key prints as published.
+     */
+    fun slotLabel(res: Resources, slot: String): String = slotName(slot)?.let(res::getString) ?: slot
 
     /** The stats a tooltip lists, in the site's order (`STAT_KEYS`, armor excluded: it has its own line). */
     val statOrder: List<Pair<String, Int>> = listOf(
@@ -146,12 +153,6 @@ object ItemNumbers {
     fun signedTenths(value: Double): String {
         val magnitude = tenths(abs(value))
         return if (value < 0) "$MINUS$magnitude" else "+$magnitude"
-    }
-
-    /** A DPS delta against the pick: `−5.3`, never a plus for a runner-up. */
-    fun delta(value: Double): String {
-        val magnitude = tenths(abs(value))
-        return if (value < 0) "$MINUS$magnitude" else magnitude
     }
 
     fun tenths(value: Double): String = String.format(Locale.US, "%.1f", value)

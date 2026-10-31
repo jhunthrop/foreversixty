@@ -14,6 +14,8 @@ import gg.foreversixty.app.auth.session.SessionTokens
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.network.ApiMode
 import kotlinx.coroutines.MainScope
+import gg.foreversixty.app.bis.BisModel
+import gg.foreversixty.app.bis.createBisModel
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -95,4 +97,19 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         versionCode = identity.build,
         dataBuild = { appConfig.current?.activeBuild },
     )
+
+    /**
+     * BiS (lane F3): the static files through their offline cache; null while the switch is off.
+     * Its character is the session's current one (lane F1), so the list follows the selector.
+     */
+    val bisModel: BisModel? = if (isAvailable(Feature.Bis)) {
+        createBisModel(
+            context = context,
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            appConfig = appConfig,
+            character = { session.currentCharacter() },
+        )
+    } else {
+        null
+    }
 }
