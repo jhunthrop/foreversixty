@@ -18,7 +18,7 @@
       "reason": "Cone of Cold waits for five Winter's Chill stacks; the ladder's level-30 character has not spent a Winter's Chill point, so the target never carries the aura and the line stays idle on that rung. From 38 on it casts."
     }
   ],
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all. 2026-10-07: Fingers of Frost is implemented (15 percent per Chill application, 1 or 2 charges for 15 sec, the next damaging cast counts as Frozen), so Ice Lance is cast on a charge; with the Fingers of Frost build the rotation search measured it as a missing line beyond the combined error, see design/reviews/2026-10-07-frost-fingers-of-frost.md. 2026-10-21 (ladder rotations lane): the Ice Lance line asks whether the Fingers of Frost aura exists before it asks whether it is up. The engine only registers the aura once the talent has a point, and a condition on an aura that does not exist is dropped, which left the line unconditional: a level-30 mage with the Ice Lance point and no Fingers of Frost point cast Ice Lance every global and never Frostbolt. Caster tier lane (2026-10-31): two Forever Frost mechanics the rotation never used. Ice Barrier (talent taken in the guide build) was never cast, so its 3% + 3% Frost damage was missing; it is now cast before the pull and kept up. Winter's Chill (Forever rework: Frostbolt and empowered Ice Lance stack it to 5, the mage's next Cone of Cold spends it) was stacked and never spent; Cone of Cold now fires on five stacks, after Ice Lance (the order measured best). About +3% and +3% at the level-60 raid band, beyond the combined error. Caster tier lane 2 (2026-10-31): the engine now refuses Cone of Cold when the mage stands beyond the cone's 10 yards (12 with Arctic Reach). The ranker stands casters at 30 yards, so the tier list no longer counts a Cone of Cold a ranged raid frost mage would not cast; the line stays for a character placed within reach.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all. 2026-10-07: Fingers of Frost is implemented (15 percent per Chill application, 1 or 2 charges for 15 sec, the next damaging cast counts as Frozen), so Ice Lance is cast on a charge; with the Fingers of Frost build the rotation search measured it as a missing line beyond the combined error, see design/reviews/2026-10-07-frost-fingers-of-frost.md. 2026-10-21 (ladder rotations lane): the Ice Lance line asks whether the Fingers of Frost aura exists before it asks whether it is up. The engine only registers the aura once the talent has a point, and a condition on an aura that does not exist is dropped, which left the line unconditional: a level-30 mage with the Ice Lance point and no Fingers of Frost point cast Ice Lance every global and never Frostbolt. Caster tier lane (2026-10-31): two Forever Frost mechanics the rotation never used. Ice Barrier (talent taken in the guide build) was never cast, so its 3% + 3% Frost damage was missing; it is now cast before the pull and kept up. Winter's Chill (Forever rework: Frostbolt and empowered Ice Lance stack it to 5, the mage's next Cone of Cold spends it) was stacked and never spent; Cone of Cold now fires on five stacks, after Ice Lance (the order measured best). About +3% and +3% at the level-60 raid band, beyond the combined error. Caster tier lane 2 (2026-10-31): the engine now refuses Cone of Cold when the mage stands beyond the cone's 10 yards (12 with Arctic Reach). The ranker stands casters at 30 yards, so the tier list no longer counts a Cone of Cold a ranged raid frost mage would not cast; the line stays for a character placed within reach. Theorycraft audit fix (casters.md R1, R2): the raid build takes Missile Barrage 2/2 and Arcane Focus 3/5 (Arcane Missiles is an Arcane spell) with the points from Wand Specialization and three of Winter's Chill, which at range only feeds the mage's own Cone of Cold; Winter's Chill keeps 2 points so Ice Barrier still has its 30 tree points. Arcane Missiles is cast on every Missile Barrage proc. About +7 percent in that run.",
   "sources": [
     {
       "label": "wowsims/classic default Mage priority list",
@@ -99,6 +99,37 @@
         }
       },
       {
+        "notes": "Arcane Missiles whenever Missile Barrage is up: the proc makes it free, halves its channel and fires the missiles every half second. Frostbolt procs it 20% of the time with Missile Barrage 2/2. Guarded by auraIsKnown so a build without the talent never reads the line as live.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 25345,
+              "rank": 8
+            }
+          }
+        }
+      },
+      {
         "notes": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage. You need to stand within 10 yards of the target. The line asks whether the target can carry Winter's Chill before it counts stacks: without the talent the aura does not exist, a condition on a missing aura is dropped, and the line would cast Cone of Cold on cooldown. Above 50% mana only: below that the mana is worth more as Frostbolts. At the raid band 20% to 60% gates all measured at least as well as no gate; 50% is the lowest that keeps the bare ladder character's level-40 rung from spending its pool on Cone of Cold. A raid frost mage stands at range, where the cone cannot reach the boss, so the engine refuses the cast beyond 10 yards (12 with Arctic Reach) and the tier list, which stands every caster at 30 yards, never fires this line. It fires for a character set to stand within reach, such as on a boss with no cleave or tail.",
         "action": {
           "condition": {
@@ -170,21 +201,8 @@
         }
       },
       {
-        "notes": "Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.",
+        "notes": "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentManaPercent": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "20%"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
               "spellId": 5019

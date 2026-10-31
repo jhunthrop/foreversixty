@@ -1,23 +1,23 @@
 # Theorycraft audit: physical group (2026-10-31)
 
-Warrior (Arms, Fury, Protection), Rogue (Assassination, Combat, Subtlety), and Hunter (Beast Mastery, Marksmanship, Survival). Survival is melee in Forever. Public theorycraft is compared with the site's level-60 raid preset: client 1.60.1.70658 bis bands, `data/curated/apl/*.json`, guide builds and the engine fork HEAD. Each difference is classified as CONFIRMED-BUG (our sim is wrong), FOREVER-CHANGE (the web source is Era-only and the client shows Forever differs) or OPEN. Some impacts were measured with `sim/cmd/spec-breakdown` and are marked as measured. The rest are hand estimates. This review changes no code, data or APLs.
+Warrior (Arms, Fury, Protection), Rogue (Assassination, Combat, Subtlety), and Hunter (Beast Mastery, Marksmanship, Survival). Survival is melee in Forever. Public theorycraft is compared with the site's level-60 raid preset: client 1.60.1.70658 bis bands, `data/curated/apl/*.json`, guide builds and the engine fork HEAD. Each difference is classified as CONFIRMED-BUG (our sim is wrong), FOREVER-CHANGE (the web source is Era-only and the client shows Forever differs) or OPEN. Some impacts were measured with `sim/cmd/spec-breakdown` and are marked as measured. The rest are hand estimates. The review itself changed no code, data or APLs; the fixes that followed are in the Fix status section at the end, and the Fixed column names their commits (S = site, E = engine fork).
 
 ## Top confirmed bugs across the group, by DPS impact
 
-| Rank | Spec(s) | Bug | Est. impact |
-|---|---|---|---|
-| 1 | BM, MM, SV | Pets receive every raid buff and inherit nothing from the hunter. In Forever a pet inherits 10% of the hunter's AP and 100% of their crit, and gets no raid buffs. | BM -8 to -15%, MM -6 to -10%, SV -5 to -9% (unrun) |
-| 2 | Assassination | Mutilate does not require daggers, so the BiS pairs a mace with a sword. | -8.5% (measured) |
-| 3 | MM, BM | Multi-Shot and Aimed Shot run separate cooldowns, but the client shares one category cooldown. | MM -7 to -9%, BM -3 to -4% |
-| 4 | Arms | Never casts Slam, and the build lacks Improved Slam. | +5 to +8% |
-| 5 | Protection | The raid build is the engine's test input, with Bastion 1/5. | +7 to +8% DPS, +5 to +7% threat |
-| 6 | Assassination | Seal Fate never procs off Mutilate. | +4 to +8% for a Seal Fate build |
-| 7 | MM | Careful Aim adds melee AP only. | +4 to +6% |
-| 8 | Arms | No Recklessness in the execute phase, because the stance gate blocks it. | +2 to +4% |
-| 9 | SV | The rotation casts no aspect. | +2.5% (measured, Aspect of the Falcon) |
-| 10 | All rogues | No Thistle Tea in the rogue preset. | +1.9 to +2.7% |
-| 11 | Rogues | Deadly Poison ticks for 27, not Forever's 18. Mutilate's flat bonus is 67, not 50. | -1.8 to -2.7%, -2.1% |
-| 12 | SV | Mortal Shots applies to melee strikes. Trueshot Aura adds melee AP, also for every melee spec. Rapid Fire grants no melee haste. | -2.4% (measured), -1.5%, +1.5% |
+| Rank | Spec(s) | Bug | Est. impact | Fixed |
+|---|---|---|---|---|
+| 1 | BM, MM, SV | Pets receive every raid buff and inherit nothing from the hunter. In Forever a pet inherits 10% of the hunter's AP and 100% of their crit, and gets no raid buffs. | BM -8 to -15%, MM -6 to -10%, SV -5 to -9% (unrun) | E dde2af473, S 1172bc8d8 |
+| 2 | Assassination | Mutilate does not require daggers, so the BiS pairs a mace with a sword. | -8.5% (measured) | E 56f97823e, S e5e196893 |
+| 3 | MM, BM | Multi-Shot and Aimed Shot run separate cooldowns, but the client shares one category cooldown. | MM -7 to -9%, BM -3 to -4% | E 678d2dd3b, S 1172bc8d8 |
+| 4 | Arms | Never casts Slam, and the build lacks Improved Slam. | +5 to +8% | E cc836fe80, S 99afd1a6b |
+| 5 | Protection | The raid build is the engine's test input, with Bastion 1/5. | +7 to +8% DPS, +5 to +7% threat | S 99afd1a6b |
+| 6 | Assassination | Seal Fate never procs off Mutilate. | +4 to +8% for a Seal Fate build | E 56f97823e, S e5e196893 |
+| 7 | MM | Careful Aim adds melee AP only. | +4 to +6% | E 678d2dd3b, S 1172bc8d8 |
+| 8 | Arms | No Recklessness in the execute phase, because the stance gate blocks it. | +2 to +4% | E cc836fe80, S 99afd1a6b |
+| 9 | SV | The rotation casts no aspect. | +2.5% (measured, Aspect of the Falcon) | S 1172bc8d8 |
+| 10 | All rogues | No Thistle Tea in the rogue preset. | +1.9 to +2.7% | S e5e196893 |
+| 11 | Rogues | Deadly Poison ticks for 27, not Forever's 18. Mutilate's flat bonus is 67, not 50. | -1.8 to -2.7%, -2.1% | E 56f97823e, S e5e196893 |
+| 12 | SV | Mortal Shots applies to melee strikes. Trueshot Aura adds melee AP, also for every melee spec. Rapid Fire grants no melee haste. | -2.4% (measured), -1.5%, +1.5% | E 678d2dd3b, S 1172bc8d8 |
 
 Read the group's tier order with this in mind. Assassination's lead over Combat comes from rank 2. Fixed, it lands about level with Combat. The hunter specs, BM above all, sit too high until rank 1 lands. Arms at about 91% of Fury is plausible: public sims put it near 95% with Slam in.
 
@@ -398,3 +398,49 @@ On this projection BM's lead over MM holds or narrows. SV may end up the top hun
 - warcraft.wiki.gg, Hunter abilities (Forever), edited 2026-10-19, https://warcraft.wiki.gg/wiki/Hunter_abilities_(Forever). Ability list; nothing on Hydra Shot.
 - Warcraft Tavern Classic BM/MM rotation guides (Era), as cited in the APL sources. Used only for Serpent Sting practice; Forever changed the shot cooldown sharing.
 - Client data: `data/builds/1.60.1.70658/spellconst/hunter.json` (Trueshot Aura ranks, Careful Aim 580/598, Rapid Fire 3045, Heart of the Lion 409583, Mortal Shots 19485), `talents/hunter.json`, `trainables/hunter.json` (also checked in 1.60.1.70707).
+
+## Fix status (2026-10-31)
+
+Fixes landed in the site (S) and the engine fork (E). Every bug was re-checked against the client 1.60.1.70658 tables before it changed. Measured at the level-60 raid preset with `sim/cmd/spec-breakdown`, 10000 iterations at seeds 1 and 50001; every error is under ±0.1%. Figures are relative to the step before. The tank figures come from the tank harness.
+
+| Bug | Fixed | What changed | Measured |
+|---|---|---|---|
+| H-PET pets inherit nothing, get every raid buff | E dde2af473, S 1172bc8d8 | Pets inherit 10% of the higher attack power and all crit, and refuse player buffs. Client Hunter Pet Scaling 415429 carries the channels (aura 99, aura 52) with server-computed amounts | BM -13.3%, MM -8.8%, SV -7.0% |
+| H-SHOT Multi-Shot and Aimed Shot cooldowns | E 678d2dd3b, S 1172bc8d8 | One timer for category 2 (6 s). On it, instant Multi-Shot beats Aimed Shot's cast, so Aimed Shot is the pre-pull opener only | BM -4.0%, MM -9.3% (with the new APL) |
+| MM #2 Careful Aim melee AP only | E 678d2dd3b | Aura 580 (ranged AP) added beside aura 598 | MM +6.8% |
+| SV #1 Mortal Shots on melee strikes | E 678d2dd3b | The class mask holds no melee strike | SV -3.3% for #1, #3, #4 and #10 together |
+| H-TSA Trueshot Aura melee AP | E 678d2dd3b | Aura 124 only. Every melee spec in the raid preset loses it | Fury -2.7%, Combat -2.4% |
+| SV #4 Rapid Fire melee haste | E 678d2dd3b | Aura 319 added | in the SV line above |
+| SV #10 Efficiency on melee | E 678d2dd3b | Raptor Strike, Mongoose Bite, Wing Clip, Counterattack (its class mask) | in the SV line above |
+| SV #2 no aspect | S 1172bc8d8 | Aspect of the Falcon before the pull; level-gated in the ladder | SV +2.8% |
+| SV #5 talent build | S 1172bc8d8 | Mortal Shots 5 out; Lone Wolf (no pet), Clever Traps, Resourcefulness, Survivalist's Discipline in | SV +6.9% |
+| BM build (follows H-PET) | S 1172bc8d8 | Improved Tracking 4 into Careful Aim 4 | BM +5.1% |
+| BM/MM #7-8 hit cap display, haste label | S 1172bc8d8 | Ranged hunters publish no white cap or expertise; guides say "Attack speed", the label the weights rail matches | 0 DPS |
+| Rogue #1 Mutilate without daggers | E 56f97823e, S e5e196893 | SpellEquippedItems dagger mask on both hands | Assassination on daggers -4.5% for #1-4 together |
+| Rogue #3 Mutilate flat | E 56f97823e | (weapon + 67) x 75% | in the line above |
+| Rogue #2 Seal Fate from Mutilate | E 56f97823e | Hand spells carry the builder flag; the 500 ms cooldown keeps it to one point per cast | in the line above |
+| Rogue #4 Deadly Poison 27 a tick | E 56f97823e | Forever's enchants trigger 2818/2819/11353/11354/25349 (6/9/14/18/23) | Combat -1.9%, Subtlety -2.8% |
+| Assassination #7 build | S e5e196893 | Raid build takes Seal Fate 5 for Remorseless Attacks, Lethality 1, Lightning Reflexes 1, Dual Wield Specialization 3 | +3.5% on daggers |
+| Rogue #5 Thistle Tea | S e5e196893 | In the rogue raid consumables | Assassination +2.4%, Combat +2.0%, Subtlety +2.3% |
+| Subtlety #1 pre-pull Ambush | S e5e196893 | Ambush on the pull, still stealthed | +0.8% |
+| Combat #2 second Blade Flurry | E 56f97823e | The last Blade Flurry fires once only its duration is left, Slice and Dice or not | 2 casts; within error |
+| A1 Arms Slam and Improved Slam | E cc836fe80, S 99afd1a6b | Slam below Execute, gated on Improved Slam; raid build takes Improved Slam 2 for Booming Voice and Improved Execute | Arms +2.3% |
+| A2 Improved Slam cooldown | E cc836fe80 | Flat 3 s at either rank (both rank texts, 12862 at -3000 ms) | inside A1 |
+| A3 Arms Recklessness in execute | S 99afd1a6b | Berserker Stance swap while Recklessness is ready below 20% | Arms +0.7% |
+| A4 baseline Tactical Mastery | E cc836fe80 | 10 rage kept from level 14, plus 3 a point of Improved Tactical Mastery | inside the Arms engine line below |
+| F2/P7 Human and Dwarf racials | E cc836fe80 | Ruthless +1% crit and Artisan's Precision +1% hit, any weapon (current client text; the 70658 tables still say 2% and Earth Fury) | Arms +1.3% with A4 |
+| F1 Heroic Strike queue off-hand hit | E cc836fe80 | The queue no longer disables the dual wield miss penalty | Fury about -1%, offset by Ruthless; net within error |
+| P1 Protection build | S 99afd1a6b | Improved Tactical Mastery 5 and Anger Management 1 into Bastion 5 and Improved Bloodrage 2 | threat +4.6%, damage +7.7%, TMI unchanged |
+
+Net at the raid preset against the audit's baselines: BM -12.5%, MM -11.6%, SV -1.1%, Arms +1.9%, Fury -2.6% (mostly Trueshot Aura), Protection damage +7.7% and threat +4.6%, Assassination -10% (on daggers, against the published mace-and-sword figure), Combat -2.4%, Subtlety -2.7%. Assassination's published set still pairs a mace with a sword; the BiS run dispatched after S e5e196893 moves it to daggers.
+
+### Still open
+
+- **Rogue #6 stones beside poisons.** The client tables cannot show it: it is a server enchant-slot rule from the Deep Dive. The engine has one imbue enum per hand, so a fix needs a new proto field.
+- **Subtlety #2 Quietus.** The audit's string is illegal: Quietus needs Dirty Deeds 2. The legal swap (Cutthroat 3 and Dirty Tricks 2 into Dirty Deeds 2 and Quietus 3) measured +0.75%, under the 1% adoption bar. The +1.2% version takes two points from Camouflage, an unmodeled guide talent. The build holds.
+- **Subtlety #3 Ghostly Strike pooling.** Measured neutral; the rotation holds.
+- **F3 Fury Raging Blows.** The best clean variant was +0.7%, under the bar. The build holds.
+- **MM build.** The search winner was +0.5%. The build holds.
+- **P2 Sunder Armor AP threat.** Confirmed by the change log, but client 11597 still carries an AP coefficient of 0 and the 5% figure is single-source.
+- **Pre-pull damage.** The engine records no damage before the pull (`sim/core/spell_result.go`, `dealDamageInternal`). That is why the Ambush moved. BM and MM still open with a pre-pull Aimed Shot that counts for nothing and starts the shared cooldown (dropping it measures +0.3%). It is a cross-class engine choice, left for its own change.
+- The audit's OPEN items (F4, F6, F11, F13, A8, P3, P6, rogue #7-11, Combat #1, Hydra Shot, pet family, ranged weaving) were not settled by client tables and are unchanged.

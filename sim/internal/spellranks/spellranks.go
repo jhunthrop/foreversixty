@@ -222,6 +222,9 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 		407632: 40, // Hammer of the Righteous; sim/paladin/hammer_of_the_righteous.go: hammerOfTheRighteousLevel = 40, registration returns below it
 		25890:  60, // Greater Blessing of Light; sim/paladin/blessing_of_light.go: greaterBlessingOfLight.level = 60
 	},
+	"warrior": {
+		1719: 50, // Recklessness; sim/warrior/recklessness.go returns below level 50
+	},
 	"warlock": {
 		603: 60, // Bane of Doom; sim/warlock/curses.go registers it with RequiredLevel: 60
 	},

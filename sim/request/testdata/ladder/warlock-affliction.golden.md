@@ -98,27 +98,25 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 9.2 | 4 | spell:695=34.9, other:mana_gain=32.2, spell:1454=32.2, spell:172=14.3, spell:707=13.7 | {OtherID: 13}, {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 17.7 | 5 | other:mana_gain=27.7, spell:1455=27.7, spell:1088=26.8, spell:6222=12.5, spell:1094=12.1 | {OtherID: 13}, {SpellID: 18288} |
-| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:273040 ranged:5213 | 38.3 | 6 | spell:1106=25.1, other:mana_gain=24.7, spell:1456=24.7, spell:5019=20.9, spell:2941=12.8 | {OtherID: 13} |
-| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:7714 ranged:13064 | 49.5 | 6 | spell:7641=30.1, other:mana_gain=24.2, spell:11687=24.2, spell:2941=13.3, spell:7648=10.9 | {OtherID: 13} |
-| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:7714 ranged:5216 | 110.6 | 7 | other:mana_gain=30.6, spell:11687=30.6, spell:1316697=28.3, spell:7641=13.8, spell:7648=11.1 | {OtherID: 13} |
-| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 157.7 | 6 | spell:1316697=30.6, other:mana_gain=29.1, spell:11688=29.1, spell:11659=18.7, spell:11671=11.1 | {OtherID: 13} |
-| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 313.3 | 8 | spell:1316697=28.6, other:mana_gain=28.6, spell:11689=28.6, spell:11661=19.9, spell:11668=11.0 | {OtherID: 13} |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 11.0 | 5 | other:mana_gain=31.9, spell:1454=31.9, spell:695=29.3, spell:172=14.5, spell:707=13.5 | {OtherID: 13}, {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 21.1 | 6 | other:mana_gain=27.8, spell:1455=27.8, spell:1088=22.6, spell:6222=12.7, spell:1094=12.4 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:273040 ranged:5213 | 45.4 | 7 | other:mana_gain=25.0, spell:1456=25.0, spell:1106=21.7, spell:5019=20.4, spell:2941=11.7 | {OtherID: 13}, {SpellID: 18265} |
+| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:7714 ranged:13064 | 64.6 | 8 | other:mana_gain=27.1, spell:11687=27.1, spell:7641=24.3, spell:2941=12.0, spell:7648=10.9 | {OtherID: 13} |
+| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:7714 ranged:5216 | 133.6 | 9 | other:mana_gain=32.4, spell:11687=32.4, spell:1316697=26.3, spell:7648=11.2, spell:11665=9.5 | {OtherID: 13} |
+| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 194.5 | 8 | other:mana_gain=30.7, spell:11688=30.7, spell:1316697=28.0, spell:11659=12.3, spell:11671=11.1 | {OtherID: 13} |
+| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 333.3 | 9 | other:mana_gain=29.4, spell:11689=29.4, spell:1316697=27.3, spell:11661=14.4, spell:11672=11.3 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Bane of Agony (spell 980)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
 
-- Bane of Agony (spell 1014)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
 - Health Funnel (spell 3698)
@@ -130,7 +128,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Bane of Agony (spell 6217)
 - Conflagrate (spell 1293817)
 - Drain Soul (spell 8288)
 - Firebolt (spell 7801)
@@ -145,7 +142,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Bane of Agony (spell 11711)
 - Conflagrate (spell 1293818)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -160,7 +156,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Bane of Agony (spell 11711)
 - Conflagrate (spell 17962)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -178,7 +173,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Bane of Agony (spell 11712)
 - Conflagrate (spell 18930)
 - Drain Soul (spell 8289)
 - Firebolt (spell 11762)
@@ -197,7 +191,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Bane of Agony (spell 11713)
 - Conflagrate (spell 18932)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
@@ -218,16 +211,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - warlock-affliction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
-- warlock-affliction level=10 kind=zero_casts spell="Bane of Agony" id=980 authored=11713
-- warlock-affliction level=20 kind=zero_casts spell="Bane of Agony" id=1014 authored=11713
-- warlock-affliction level=30 kind=zero_casts spell="Bane of Agony" id=6217 authored=11713
-- warlock-affliction level=30 kind=zero_casts spell="Siphon Life" id=18265 authored=18881
-- warlock-affliction level=38 kind=zero_casts spell="Bane of Agony" id=11711 authored=11713
-- warlock-affliction level=38 kind=zero_casts spell="Siphon Life" id=18879 authored=18881
-- warlock-affliction level=40 kind=zero_casts spell="Bane of Agony" id=11711 authored=11713
-- warlock-affliction level=40 kind=zero_casts spell="Siphon Life" id=18879 authored=18881
 - warlock-affliction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
-- warlock-affliction level=50 kind=zero_casts spell="Bane of Agony" id=11712 authored=11713
-- warlock-affliction level=50 kind=zero_casts spell="Siphon Life" id=18880 authored=18881
-- warlock-affliction level=60 kind=zero_casts spell="Bane of Agony" id=11713 authored=11713
-- warlock-affliction level=60 kind=zero_casts spell="Siphon Life" id=18881 authored=18881

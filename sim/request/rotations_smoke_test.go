@@ -197,10 +197,12 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go, Forever's tree); this build takes none.",
 		"{OtherID: 13}":      noPotionWarning,
 		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{SpellID: 18881}":   "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
 	},
 	"warlock-demonology": {
 		"{OtherID: 13}":    noPotionWarning,
 		"{SpellID: 19028}": "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
+		"{SpellID: 18788}": "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
 	},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
