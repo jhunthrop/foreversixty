@@ -223,7 +223,7 @@ struct GearScreen: View {
         let blocker = GearModel.offHandBlocker(home: home, gear: character.gear, items: items, band: band)
         GearView(
             rows: GearModel.rows(home: home, gear: character.gear, items: items, offHandBlockedBy: blocker),
-            intro: Copy.gearIntro(band: HomePresenter.bandHeadText(home) ?? ""),
+            intro: Copy.gearIntro(band: HomePresenter.bandHead(home, character: character) ?? ""),
             build: home.dataBuild,
             open: open
         )

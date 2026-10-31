@@ -108,6 +108,22 @@ struct SpecIcon: View {
     }
 }
 
+/// A game icon's short label (`MotW`, `Bless`): strong, or muted for a dimmed (missing) tile,
+/// both AA on the card. A fixed 11 pt, so it never outgrows the 36 pt tile it names.
+struct GameIconLabel: View {
+    let text: String
+    var dimmed = false
+
+    private static let size: CGFloat = 11
+
+    var body: some View {
+        Text(text)
+            .font(.system(size: Self.size, weight: .bold))
+            .foregroundStyle(dimmed ? FSColor.muted : FSColor.strong)
+            .lineLimit(1)
+    }
+}
+
 /// The icon file on the `#131824` tile: the cached copy at once, else loaded and faded in. With a
 /// [fallback], the tile shows that short label until the icon loads, or for good when it cannot;
 /// [dimmed] greys and fades only the art, so a fallback label stays readable (WCAG AA).
@@ -120,7 +136,6 @@ struct GameIconImage: View {
     @Environment(\.itemIconSource) private var source
     @State private var image: UIImage?
 
-    private static let labelSize: CGFloat = 11
     private static let dimmedOpacity = 0.35
 
     var body: some View {
@@ -131,10 +146,7 @@ struct GameIconImage: View {
                     .saturation(dimmed ? 0 : 1)
                     .opacity(dimmed ? Self.dimmedOpacity : 1)
             } else if let fallback {
-                Text(fallback)
-                    .font(.system(size: Self.labelSize, weight: .bold))
-                    .foregroundStyle(dimmed ? FSColor.muted : FSColor.strong)
-                    .lineLimit(1)
+                GameIconLabel(text: fallback, dimmed: dimmed)
                     .minimumScaleFactor(0.5)
                     .padding(2)
             }

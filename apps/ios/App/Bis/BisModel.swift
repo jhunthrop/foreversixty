@@ -216,8 +216,18 @@ enum BisLabels {
             if let opening, opening.isUpcoming(at: now) { return Copy.bisRangeP1Opens(date: opening.label) }
             return Copy.bisRangeP1
         }
+        return band(range)
+    }
+
+    /// The band's own words, whatever the preset: `50 to 59`, or `60` for the last band.
+    static func band(_ range: BisRange) -> String {
         if range.band == BisRange.lastBand { return Copy.bisRangeTop(n: range.band) }
         return Copy.bisRangeSpan(from: range.band, to: range.band + BisRange.bandStep - 1)
+    }
+
+    /// Home's band head: `60 · raid` for the raid list, the band's words otherwise.
+    static func head(_ range: BisRange) -> String {
+        range.preset == BisRange.raidPreset ? Copy.homeUpgradesBandRaid(band: band(range)) : band(range)
     }
 
     static func faction(_ slug: String) -> String {

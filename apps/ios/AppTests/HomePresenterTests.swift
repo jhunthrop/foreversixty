@@ -32,6 +32,28 @@ struct HomePresenterTests {
         #expect(model.bandHead == "60 · raid")
     }
 
+    @Test(
+        "Home's band is the site rule over the character's level, the list BiS opens on",
+        arguments: [(49, 40, "40 to 49"), (50, 50, "50 to 59"), (59, 50, "50 to 59"), (60, 60, "60 · raid")]
+    )
+    func bandFollowsTheLevel(level: Int, band: Int, head: String) throws {
+        let home = try HomeFixtures.home()
+        let character = HomeFixtures.velaren(level: level)
+        let range = try #require(HomePresenter.range(home, character: character))
+        #expect(range == BisRange.forLevel(level))
+        #expect(range.band == band)
+        #expect(HomeFixtures.presenter(character: character).model(home).bandHead == head)
+        let tooltip = ItemTooltipRequest.forHome(HomeItemLook(id: 1, name: nil, quality: nil, icon: nil, itemLevel: nil),
+                                                 home: home, character: character)
+        #expect(tooltip.band == range.band && tooltip.preset == range.preset && tooltip.bandLabel == head)
+    }
+
+    @Test("with no level known, the server's band goes through the same rule")
+    func bandWithoutALevel() throws {
+        let home = try HomeFixtures.home()
+        #expect(HomePresenter.range(home, character: HomeFixtures.velaren(level: nil)) == BisRange.forLevel(60))
+    }
+
     @Test("a measured gain is the server's figure, the source the server's formatted line")
     func gains() throws {
         let home = try HomeFixtures.home()

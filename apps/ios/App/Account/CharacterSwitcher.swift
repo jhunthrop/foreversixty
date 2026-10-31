@@ -5,13 +5,12 @@ import SwiftUI
 
 /// The selector (spec §3.4): crest 34, the full name in the class colour, the short line and a
 /// chevron. The one way to switch; Home, Raids and BiS put it in their toolbar with
-/// `.characterSelector()`. The name never truncates: from AX1 it stops growing and the short
-/// line drops, and a long press shows the Large Content Viewer.
+/// `.characterSelector()`. Neither line truncates ("full name at every width"): both take their
+/// full width, both stop growing at AX1, and a long press shows the Large Content Viewer.
 struct CharacterSelector: View {
     let character: AccountCharacter
     let isOpen: Bool
     let action: () -> Void
-    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         Button(action: action) {
@@ -23,8 +22,12 @@ struct CharacterSelector: View {
                         .foregroundStyle(ClassColor.of(character.className))
                         .lineLimit(1)
                         .fixedSize()
-                    if !typeSize.isAccessibilitySize, let detail = AccountCopy.selectorDetail(character) {
-                        Text(detail).font(ScaledType.meta).foregroundStyle(FSColor.muted).lineLimit(1)
+                    if let detail = AccountCopy.selectorDetail(character) {
+                        Text(detail)
+                            .font(ScaledType.meta)
+                            .foregroundStyle(FSColor.muted)
+                            .lineLimit(1)
+                            .fixedSize()
                     }
                 }
                 Image(systemName: "chevron.down").font(.footnote.weight(.semibold)).foregroundStyle(FSColor.muted)

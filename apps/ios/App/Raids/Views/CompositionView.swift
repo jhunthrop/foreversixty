@@ -52,18 +52,30 @@ struct CompositionView: View {
         VStack(alignment: .leading, spacing: 8) {
             SectionLabel(text: Copy.raidsCompBuffs)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 40), spacing: 8)], alignment: .leading, spacing: 8) {
-                ForEach(read.buffs) { buff in
-                    GameIcon(
-                        stem: buff.icon, size: 36, border: buff.present ? FSColor.kill.opacity(0.6) : FSColor.line,
-                        fallback: buff.label, dimmed: !buff.present
-                    )
-                    .accessibilityHidden(false)
-                    .accessibilityElement()
-                    .accessibilityLabel(buff.accessibilityLabel)
-                }
+                ForEach(read.buffs) { BuffTile(buff: $0) }
             }
             Text(read.buffSummary).font(ScaledType.meta)
                 .foregroundStyle(read.buffs.allSatisfy(\.present) ? FSColor.kill : FSColor.muted)
         }
+    }
+}
+
+/// One raid buff: its icon with the short name under it, live art or not (`Fort`, `SPro`), so
+/// two buffs never differ by their art alone. VoiceOver reads one element with the full name
+/// and the count; a long press shows the full name in the Large Content Viewer.
+struct BuffTile: View {
+    let buff: CompositionRead.BuffLine
+
+    var body: some View {
+        VStack(spacing: 3) {
+            GameIcon(
+                stem: buff.icon, size: 36, border: buff.present ? FSColor.kill.opacity(0.6) : FSColor.line,
+                dimmed: !buff.present
+            )
+            GameIconLabel(text: buff.label, dimmed: !buff.present).fixedSize()
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(buff.accessibilityLabel)
+        .accessibilityShowsLargeContentViewer { Text(buff.name) }
     }
 }

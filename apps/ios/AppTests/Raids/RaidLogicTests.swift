@@ -138,6 +138,14 @@ struct RosterTests {
         #expect(roster.groups.first { $0.kind == .bench }?.rows.map(\.name).contains("Kraggor") == true)
     }
 
+    @Test("every buff tile is named, live art or not: the short label under it, the full name for VoiceOver")
+    func buffNames() throws {
+        let read = try #require(CompositionRead(try RaidFixture.raid().composition))
+        #expect(read.buffs.map(\.label) == ["Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"])
+        #expect(read.buffs.allSatisfy { $0.accessibilityLabel.hasPrefix($0.name) })
+        #expect(read.buffs.first { $0.key == "fortitude" }?.name == "Power Word: Fortitude")
+    }
+
     @Test("the composition block words the API's counts, targets and buff coverage")
     func composition() throws {
         let read = try #require(CompositionRead(try RaidFixture.raid().composition))

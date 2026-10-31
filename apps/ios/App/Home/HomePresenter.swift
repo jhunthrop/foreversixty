@@ -151,16 +151,27 @@ struct HomePresenter {
             .joined(separator: " · ")
     }
 
-    /// `60 · raid` for the raid preset, the band label alone otherwise.
-    func bandHead(_ home: CharacterHome) -> String? { Self.bandHeadText(home) }
+    /// `60 · raid` for the raid list, the band's words (`50 to 59`) otherwise.
+    func bandHead(_ home: CharacterHome) -> String? { Self.bandHead(home, character: character) }
 
-    static func bandHeadText(_ home: CharacterHome) -> String? {
-        guard let label = home.bandLabel else { return nil }
-        return home.preset == "raid" ? Copy.homeUpgradesBandRaid(band: label) : label
+    static func bandHead(_ home: CharacterHome, character: HomeCharacter) -> String? {
+        range(home, character: character).map(BisLabels.head)
+    }
+
+    /// The list Home answers from: the character's level through the site's band rule
+    /// (`BisRange.forLevel`), the rule BiS opens the character's list with. The server's band
+    /// stands in only when the level is unknown, and goes through the same rule.
+    static func range(_ home: CharacterHome, character: HomeCharacter) -> BisRange? {
+        (character.level ?? home.band).map(BisRange.forLevel)
+    }
+
+    /// The band's words for the sentences (`50 to 59`, `60`), empty when no band is known.
+    private func bandWords(_ home: CharacterHome) -> String? {
+        Self.range(home, character: character).map(BisLabels.band)
     }
 
     private func note(_ home: CharacterHome) -> String? {
-        guard let label = home.bandLabel else { return nil }
+        guard let label = bandWords(home) else { return nil }
         let base = Copy.homeAnswerNote(band: label)
         return home.notModelledCount > 0 ? base + Copy.homeAnswerNotModelled(n: home.notModelledCount) : base
     }
@@ -173,7 +184,7 @@ struct HomePresenter {
 
     private func body(_ home: CharacterHome) -> HomeAnswerBody {
         let spec = character.specName ?? ""
-        let band = home.bandLabel ?? ""
+        let band = bandWords(home) ?? ""
         switch home.state {
         case "no_gear":
             return .message(Copy.homeAnswerNoGear, buttons: [
@@ -250,7 +261,7 @@ struct HomePresenter {
     }
 
     private func talentsRow(_ home: CharacterHome) -> HomeNextRow {
-        let band = home.bandLabel ?? ""
+        let band = bandWords(home) ?? ""
         let talents = home.talents
         switch talents.state {
         case "optimized":
@@ -283,15 +294,16 @@ struct HomePresenter {
 }
 
 extension ItemTooltipRequest {
-    /// A tooltip for an item on Home or Your gear, in the answer's build, spec and band. The band
-    /// label is the band head (`60 · raid`), so the pick footer names the raid list without a preset id.
+    /// A tooltip for an item on Home or Your gear, in the answer's build and spec and Home's band.
+    /// The band label is the band head (`60 · raid`), so the pick footer names the raid list without a preset id.
     static func forHome(
         _ look: HomeItemLook, home: CharacterHome, character: HomeCharacter, sourceLine: String? = nil, wornID: Int? = nil
     ) -> ItemTooltipRequest {
-        ItemTooltipRequest(
+        let range = HomePresenter.range(home, character: character)
+        return ItemTooltipRequest(
             itemID: look.id, fallback: look, build: home.dataBuild, classSlug: classSlug(home: home, character: character),
-            spec: home.spec, specName: character.specName, band: home.band, bandLabel: HomePresenter.bandHeadText(home),
-            preset: home.preset, faction: character.faction, sourceLine: sourceLine, wornID: wornID
+            spec: home.spec, specName: character.specName, band: range?.band, bandLabel: HomePresenter.bandHead(home, character: character),
+            preset: range?.preset, faction: character.faction, sourceLine: sourceLine, wornID: wornID
         )
     }
 

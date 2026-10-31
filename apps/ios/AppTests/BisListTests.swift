@@ -22,6 +22,10 @@ struct BisListTests {
         #expect(BisRange.forLevel(60) == BisRange(band: 60, preset: "raid"))
         #expect(BisRange.forLevel(12) == BisRange(band: 20, preset: "bare"))
         #expect(BisRange.forLevel(29) == BisRange(band: 20, preset: "bare"))
+        #expect(BisRange.forLevel(49) == BisRange(band: 40, preset: "bare"))
+        #expect(BisRange.forLevel(50) == BisRange(band: 50, preset: "bare"))
+        #expect(BisRange.forLevel(59) == BisRange(band: 50, preset: "bare"))
+        #expect(BisRange.forLevel(61) == BisRange(band: 60, preset: "raid"))
         #expect(BisRange.all.map { BisLabels.range($0) } == ["20 to 29", "30 to 39", "40 to 49", "50 to 59", "60", "60 · Phase 1 raid"])
     }
 
@@ -73,8 +77,8 @@ struct BisListTests {
         #expect(rows[1].pick?.slotSource == "Neck · Quest: Falrin's Vendetta")
         #expect(rows[2].pick?.slotSource == "Shoulder · Vendor: Creeg Bothunk")
         #expect(rows[5].pick?.slotSource == "Wrist · Warsong Outriders")
-        #expect(rows[10].slotLabel == "Ring 1")
-        #expect(rows[11].slotLabel == "Ring 2")
+        #expect(rows[10].slotLabel == "Finger 1")
+        #expect(rows[11].slotLabel == "Finger 2")
         #expect(rows[12].slotLabel == "Trinket 1")
         #expect(BisListBuilder.sourceLine("PvP rank 14 · Champion · Horde", kind: "vendor") == "PvP rank 14 · Champion · Horde")
     }
@@ -215,7 +219,7 @@ struct BisTooltipTests {
         let bare = ItemTooltipModel.build(try request(fury, band: 50, preset: "bare", slotIndex: 0), sources: ItemTooltipSources(items: try furyItems(), sets: [], bis: fury))
         #expect(bare.pickFooter == "Best in slot for Head · Fury Warrior 50 to 59")
         let raid = ItemTooltipModel.build(try request(fury, band: 60, preset: "raid", slotIndex: 10), sources: ItemTooltipSources(items: try furyItems(), sets: [], bis: fury))
-        #expect(raid.pickFooter == "Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid")
+        #expect(raid.pickFooter == "Best in slot for Finger 1 · Fury Warrior 60 · Phase 1 raid")
     }
 
     @Test("the worn runner-up leads with You wear this")
