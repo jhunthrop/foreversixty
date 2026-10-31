@@ -163,6 +163,7 @@ struct RosterTests {
     }
 
     @Test("the move menu offers the spec's items per place")
+    @MainActor
     func moveMenu() {
         #expect(PlaceMenu.items(for: .signedIn).map(\.1) == [.bench, .out])
         #expect(PlaceMenu.items(for: nil).map(\.1) == [.signedIn, .bench])
