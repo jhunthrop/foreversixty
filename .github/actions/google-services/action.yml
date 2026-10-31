@@ -1,0 +1,24 @@
+name: Firebase client config
+description: >
+  Writes apps/android/app/google-services.json from the GOOGLE_SERVICES_JSON repository secret,
+  passed in as config. Firebase calls the file no secret, but its browser API key trips secret
+  scanning, so it is never committed. Without the secret nothing is written and the build passes
+  with no push (apps/android/app/build.gradle.kts). android.yml and apps-release.yml both use it.
+inputs:
+  config:
+    description: The google-services.json text (secrets.GOOGLE_SERVICES_JSON); empty writes nothing.
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        GOOGLE_SERVICES_JSON: ${{ inputs.config }}
+      run: |
+        if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+          printf '%s' "$GOOGLE_SERVICES_JSON" > apps/android/app/google-services.json
+          echo "apps/android/app/google-services.json written from the secret."
+        else
+          echo "GOOGLE_SERVICES_JSON is not a repository secret: this build has no push."
+        fi

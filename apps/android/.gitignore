@@ -9,3 +9,5 @@ captures/
 *.jks
 *.keystore
 play-service-account.json
+# Firebase client config: written by android.yml from the GOOGLE_SERVICES_JSON secret.
+app/google-services.json
