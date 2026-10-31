@@ -140,3 +140,104 @@ Fix: once M1 is settled, read both from one source.
   and group, as `snapshotPlayers` already did.
 - **Session restore.** `session.State` nils the open fight and replays it, so the
   `restoreCounter` double-count described in its comment cannot happen through the session.
+
+## Re-review: fix round 1c26af802 (2026-10-30)
+
+This is a scoped re-review of commit 1c26af802. It is read only. The only change is this
+appended section.
+
+### Verdict: FIX FIRST
+
+H1 and M2 are fixed. The M1 Feign Death undo adds a new HIGH: on a real log it takes back
+real deaths.
+
+### Checks run
+
+- `go test -race -count=1 ./...` in `logs/`: every package passes.
+- I ran the `fights -json` output of the parent commit (4e221dcc6) and of 1c26af802 on all
+  four fixtures (`v16`, `v22`, `v22-shapes`, `forever-1.60`). The fight lists are identical, so
+  the "goldens unchanged" claim holds. The fixtures are too small to exercise the change,
+  though: none has a neutral pull and none has a wipe.
+- I ran the same comparison on the cached real retail log
+  `logs/testdata/cache/wowp-retail-v16.txt` (Sanguine Depths, Necrotic Wake). It goes from 63
+  fights to 64, and the counts differ in 17 fights. The details are below.
+
+### HIGH
+
+#### R1. The Feign Death undo erases real deaths: wipes with a corpse run, Reincarnation, and probably Soulstone
+`logs/engine/fight/counts.go`: `signOfLife`, `undoDeath`, and the `Resurrect` case in `Observe`.
+
+The undo assumes every way back from a real death logs `SPELL_RESURRECT`. Several common ones
+log nothing of the kind:
+
+- **Releasing and running back from the graveyard logs no resurrect event.** On the retail log,
+  the General Kaal wipe (02:30:12 to 02:42:16, one encounter) has 9 player `UNIT_DIED` lines and
+  0 `SPELL_RESURRECT`. Each player runs back and casts again before `ENCOUNTER_END`, so the
+  fight goes from **deaths 9 to 0, and group_deaths 9 to 0**. Trash fights with a corpse run
+  inside them lose deaths the same way: 5 to 2, 2 to 0, 1 to 0, 3 to 0, and 5 to 4.
+- **Reincarnation logs as a `SPELL_CAST_SUCCESS` by the dead shaman** (spell 21169, line
+  110445). It comes 3.5 s after the shaman's `UNIT_DIED` at 02:58:06.772, and no
+  `SPELL_RESURRECT` follows. That trash fight drops from 1 death to 0. This is the "known gap"
+  in the round-3 notes, and the log confirms it. Classic's Reincarnation (20608) is very likely
+  logged the same way.
+- **Soulstone** has no case in the fixtures. Treat it as at risk too.
+
+Feigns are still unconfirmed, but these are confirmed real deaths. The effect is that a wipe
+shows "0 deaths" on the fight row, and on the unscoped subtitle, which reads `fight.deaths`.
+That is the kind of wrong number this lane exists to remove. Before this commit, `deaths`
+counted these deaths correctly.
+
+Fix, in order of preference:
+1. Undo a held death only when the same player cast Feign Death (`SPELL_CAST_SUCCESS` or an
+   aura, spell 5384 by name or id) at or just before the `UNIT_DIED`. Until then, keep every
+   other player death.
+2. Or drop the undo until a Forever hunter log shows whether feigns log `UNIT_DIED` at all.
+
+Either way, add a regression test built from the Kaal sequence (death, no resurrect, cast:
+the death stays) and one built from the Reincarnation sequence.
+
+### MEDIUM
+
+#### R2. Fight boundaries move on real logs, though the fixture goldens do not show it
+`fight.go` `hostileCombat` now uses `units.Enemy`. On the retail log:
+- An old 132 s "fight" from 01:54:34 to 01:56:46 disappears. It was ambient NPCs fighting each
+  other: neutral `Grubby Dirtcruncher` against hostile `Gluttonous Tick`, which the old
+  hostile-vs-non-hostile test counted as combat. With that event gone, the next trash fight
+  splits into three pulls. **Both changes are improvements.**
+- In the other direction, ambient fights between a friendly NPC and a neutral one now keep a
+  fight open. In Necrotic Wake, `Xandria` (0xa18) against `Patchwerk Soldier` (0xa28) stretches
+  the trash fight that starts at 03:24:02 from 03:24:33 to 03:26:37 (+2 min). This is the same
+  class of problem the old rule had with friendly NPCs against hostile ones, so it is not new,
+  but it now applies to neutral units too.
+- Boss encounters are not split or merged, because encounter boundaries still win.
+- Critters and a single aggro'd neutral: a one-hit critter kill makes a trash segment shorter
+  than `MinTrash` (3 s), which is dropped. A real neutral pull in a levelling zone now becomes a
+  fight, which is intended. A bystander killing yellow beasts within log range also opens fights
+  now, as bystanders already did with red mobs, because `hostileCombat` does not require a
+  group member on either side.
+
+Suggestion: not a blocker. A follow-up could require a group-affiliated unit on one side,
+which would remove both kinds of ambient sustain. The levelling-log fixture case is still
+missing: add a small neutral-pull fixture so that a future change to the rule shows up in a
+golden.
+
+### H1: fixed
+- A neutral NPC counts when the group damaged it or PARTY_KILLed it. A neutral NPC nobody in
+  the group touched does not count.
+- Critters are excluded by known max HP of 10 or less.
+- Health that was never shown: in the Forever dialect, `SPELL_DAMAGE` and
+  `SWING_DAMAGE_LANDED` carry the **dest's** advanced block (checked in `forever-1.60.log`), and
+  `observeUnits` reads advanced blocks on every event kind. So a critter the group damages
+  normally reveals its health and is excluded. A unit counts with unknown health only when
+  advanced logging is off, which the upload check already warns about, or on a PARTY_KILL with
+  no damage line. **This is acceptable.**
+- The 10 HP cutoff is not checked against Forever critter data. Noted, not a finding.
+
+### M2: fixed
+`hostileSeen` accepts an NPC seen hostile on any earlier line of the fight. The test covers both
+a charmed mob that was seen hostile (counts) and one never seen hostile (does not count).
+
+### M1: see R1
+A death that is never taken back simply stays counted at fight end, which is correct. Restoring
+a session drops `pendingDeaths`, which only means a feign cannot be undone after a restore.
+That is harmless.

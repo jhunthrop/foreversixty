@@ -98,6 +98,16 @@ type Options struct {
 	// a critter has a handful of points, the weakest level-one neutral beast
 	// on Forever has 42. Zero takes the default.
 	CritterMaxHP int64
+	// FeignDeathSpells are the spell ids of a hunter's Feign Death. A player
+	// UNIT_DIED within FeignDeathWindow after that player's own cast of one
+	// is held as a possible feign, and taken back if the player then acts
+	// (see Counter). The Forever build's spell data has one, 5384; the other
+	// "Feign Death" names in it are talents and creature spells. Nil takes
+	// the default.
+	FeignDeathSpells []int64
+	// FeignDeathWindow is how soon after the cast the death must come. Zero
+	// takes the default, one second.
+	FeignDeathWindow time.Duration
 }
 
 // DefaultOptions are the values the CLI and the session use. A zero Gap
@@ -105,7 +115,7 @@ type Options struct {
 // purpose, so pass a negative value to ask for the default instead.
 func DefaultOptions() Options {
 	return Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second, Trailing: 2 * time.Second,
-		CritterMaxHP: 10}
+		CritterMaxHP: 10, FeignDeathSpells: []int64{5384}, FeignDeathWindow: time.Second}
 }
 
 func (o Options) withDefaults() Options {
@@ -121,6 +131,12 @@ func (o Options) withDefaults() Options {
 	}
 	if o.CritterMaxHP <= 0 {
 		o.CritterMaxHP = d.CritterMaxHP
+	}
+	if o.FeignDeathSpells == nil {
+		o.FeignDeathSpells = d.FeignDeathSpells
+	}
+	if o.FeignDeathWindow <= 0 {
+		o.FeignDeathWindow = d.FeignDeathWindow
 	}
 	return o
 }

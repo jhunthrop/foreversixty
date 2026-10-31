@@ -4,6 +4,7 @@ package fight
 import (
 	"slices"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 )
@@ -41,8 +42,10 @@ func partyKill(sec float64, src string, srcFlags uint32, dst string, dstFlags ui
 
 func closeOne(t *testing.T, evs []event.Event, end float64) *Fight {
 	t.Helper()
-	s := NewSegmenter(Options{MinTrash: 0})
-	run(s, evs)
+	s := NewSegmenter(Options{MinTrash: 0, Gap: time.Hour})
+	if closed := run(s, evs); len(closed) != 0 {
+		t.Fatalf("%d fights closed early, want one fight", len(closed))
+	}
 	f := s.Flush(at(end))
 	if f == nil {
 		t.Fatal("no fight")
@@ -180,30 +183,79 @@ func TestAMobThatDiesCharmedStillCounts(t *testing.T) {
 	}
 }
 
-// If the client logs a hunter's Feign Death as UNIT_DIED, the hunter acting again in the same
-// fight undoes it. A real death, followed by a resurrection and the player acting, stays.
+func castOf(sec float64, src string, flags uint32, spell int64, name string) event.Event {
+	return event.Event{Time: at(sec), Kind: event.CastSuccess, Name: "SPELL_CAST_SUCCESS",
+		Source: event.Unit{GUID: src, Flags: flags}, Spell: event.Spell{ID: spell, Name: name}}
+}
+
+// If the client logs a hunter's Feign Death as UNIT_DIED, the hunter getting up undoes it: a
+// death that follows the hunter's own Feign Death cast within a second, then a cast or a swing.
 func TestAFeignDeathIsUndoneWhenTheHunterActsAgain(t *testing.T) {
-	cast := func(sec float64, src string, flags uint32, name string) event.Event {
-		return event.Event{Time: at(sec), Kind: event.CastSuccess, Name: name,
-			Source: event.Unit{GUID: src, Flags: flags}}
-	}
 	swing := hit(5, mage, mob, flagParty, flagHostile)
 	swing.Name = "SWING_DAMAGE"
-	dot := hit(4, logger, mob, flagMine, flagHostile)
-	dot.Name = "SPELL_PERIODIC_DAMAGE" // a DoT ticking after its caster died is no sign of life
 	f := closeOne(t, []event.Event{
 		hit(0, logger, mob, flagMine, flagHostile),
-		cast(1, mage, flagParty, "SPELL_CAST_SUCCESS"), // Feign Death
+		castOf(1, mage, flagParty, 5384, "Feign Death"),
+		died(1.3, mage, flagParty),
+		swing,
+	}, 6)
+	if f.Deaths != 0 || f.GroupDeaths != 0 {
+		t.Errorf("deaths = %d, group deaths = %d; want 0 and 0 (a feign)", f.Deaths, f.GroupDeaths)
+	}
+}
+
+// The General Kaal wipe on the retail log: nine players die, nobody is resurrected, and each
+// runs back from the graveyard and casts again before the encounter ends. Every death stands.
+func TestACorpseRunKeepsEveryDeath(t *testing.T) {
+	raid := []string{logger, mage, "Player-4184-000000A4", "Player-4184-000000A5"}
+	evs := []event.Event{hit(0, logger, mob, flagMine, flagHostile)}
+	for i, p := range raid {
+		evs = append(evs, died(float64(10+i), p, flagParty))
+	}
+	for i, p := range raid {
+		// Back from the graveyard two minutes on: a cast and a swing, no SPELL_RESURRECT.
+		evs = append(evs, castOf(float64(130+i), p, flagParty, 116, "Frostbolt"))
+		swing := hit(float64(131+i), p, mob, flagParty, flagHostile)
+		swing.Name = "SWING_DAMAGE"
+		evs = append(evs, swing)
+	}
+	s := NewSegmenter(Options{MinTrash: 0, Trailing: 0})
+	run(s, append([]event.Event{{Time: at(0), Kind: event.EncounterStart,
+		Encounter: &event.Encounter{ID: 2422, Name: "General Kaal"}}}, evs...))
+	f := s.Flush(at(140))
+	if f == nil {
+		t.Fatal("no fight")
+	}
+	if f.Deaths != len(raid) || f.GroupDeaths != len(raid) {
+		t.Errorf("deaths = %d, group deaths = %d; want %d each: a corpse run is no feign", f.Deaths, f.GroupDeaths, len(raid))
+	}
+}
+
+// The retail log's Reincarnation: the dead shaman's own cast of it, 3.5 s after UNIT_DIED, and
+// no SPELL_RESURRECT. The death stands.
+func TestReincarnationKeepsTheDeath(t *testing.T) {
+	f := closeOne(t, []event.Event{
+		hit(0, logger, mob, flagMine, flagHostile),
 		died(1, mage, flagParty),
-		died(2, logger, flagMine),
-		dot,
-		swing, // the hunter is up: the feign was no death
-		{Time: at(6), Kind: event.Resurrect, Name: "SPELL_RESURRECT",
-			Source: event.Unit{GUID: stranger, Flags: flagOutsider}, Dest: event.Unit{GUID: logger, Flags: flagMine}},
-		cast(7, logger, flagMine, "SPELL_CAST_SUCCESS"), // the raised logger acting
-	}, 8)
+		castOf(4.5, mage, flagParty, 21169, "Reincarnation"),
+		castOf(6, mage, flagParty, 403, "Lightning Bolt"),
+	}, 7)
 	if f.Deaths != 1 || f.GroupDeaths != 1 {
-		t.Errorf("deaths = %d, group deaths = %d; want 1 and 1 (the logger's, not the feign)", f.Deaths, f.GroupDeaths)
+		t.Errorf("deaths = %d, group deaths = %d; want 1 and 1", f.Deaths, f.GroupDeaths)
+	}
+}
+
+// A Feign Death cast long before a death says nothing about it: only one within the window
+// marks a death as a possible feign.
+func TestAFeignDeathCastLongBeforeADeathDoesNotUndoIt(t *testing.T) {
+	f := closeOne(t, []event.Event{
+		hit(0, logger, mob, flagMine, flagHostile),
+		castOf(1, mage, flagParty, 5384, "Feign Death"),
+		died(4, mage, flagParty),
+		castOf(60, mage, flagParty, 116, "Frostbolt"),
+	}, 61)
+	if f.Deaths != 1 {
+		t.Errorf("deaths = %d, want 1", f.Deaths)
 	}
 }
 

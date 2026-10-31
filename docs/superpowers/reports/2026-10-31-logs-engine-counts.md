@@ -391,3 +391,83 @@ All checks were exit-code checked.
 | Playwright on 4705, desktop and mobile: every `report-*.spec.ts`, plus sample-report, coach-report, onboarding-second-screen and launch-polish | 442 passed, 56 skipped, 0 failed |
 
 The engine version stays 0.6.0, because 0.6.0 has not shipped.
+
+## Round 4: the re-review's R1 and R2
+
+### R1. The Feign Death undo now needs a Feign Death (fixed)
+
+A player death is taken back only when **that same player cast Feign Death within
+`Options.FeignDeathWindow` (default 1 s) before the UNIT_DIED**, and then casts or swings again.
+Every other death stands, whatever follows it: a corpse run, Reincarnation and a Soulstone all
+log the dead player acting again with no SPELL_RESURRECT.
+
+- **Spell ids.** `Options.FeignDeathSpells` defaults to `[5384]`. The active build's spell data
+  (`data/builds/1.60.1.70630/spells.json`) has 18 names containing "Feign Death". Only 5384 is
+  the hunter's spell. The rest are Improved Feign Death talents (19286, 19287, 24432) and
+  creature "Permanent Feign Death" auras.
+- **Removed:** the `Resurrect` case, which only the old undo needed.
+- **Tests:**
+  - The synthetic feign (a cast of 5384, the death 0.3 s later, a swing) is still undone.
+  - Kaal sequence: four players die, nobody is resurrected, each casts and swings two minutes
+    later. Every death stays, and so does every group death.
+  - Reincarnation sequence: the death, the dead shaman's cast of 21169 3.5 s later, then a
+    Lightning Bolt. The death stays.
+  - A Feign Death cast 3 s before a death doesn't make it a feign.
+- **General Kaal wipe on the cached retail log** (`logs/testdata/cache/wowp-retail-v16.txt`,
+  gitignored; `forever-logs fights -json`):
+
+  | Commit | Kaal wipe deaths / group deaths | All fights' deaths |
+  | --- | --- | --- |
+  | Before round 3 (`4e221dcc6`) | 9 / 9 | 65 |
+  | Round 3 (`1c26af802`) | 0 / 0 | 44 |
+  | Now | 9 / 9 | 65 |
+
+- No real Forever hunter log was available to confirm whether the client logs Feign Death as
+  UNIT_DIED at all.
+
+### R2. Boundary fixture (added)
+
+`logs/engine/event/testdata/v16-levelling.log` is hand-made from the v16 fixture's own line
+shapes. It contains:
+- a pull of two neutral Plainstriders, which the group kills (one with a PARTY_KILL, one by last
+  hit);
+- an ambient fight between a neutral Plainstrider and a hostile Gluttonous Tick, far from the
+  group (the retail log's ambient case);
+- a General Kaal wipe: the hunter feigns, two players die, nobody is resurrected, and both run
+  back and cast again before ENCOUNTER_END.
+
+`TestALevellingNightSplitsAndCountsByTheRules` pins structure only, never counts:
+- there are no parse errors;
+- the neutral pull is a fight of its own, with group kills of at least 1 and no more than its mob
+  deaths;
+- no fight opens on the ambient NPCs;
+- the wipe is one encounter and not a kill;
+- its deaths and group deaths equal a text oracle: every player UNIT_DIED except one within 1 s
+  of that player's own Feign Death cast.
+
+The fixture is also in the mob-death oracle test. Under the old hostile-only rule, the neutral
+pull makes no fight and the ambient tick fight does, so both checks fail. Under round 3's undo,
+the wipe reads 0 deaths.
+
+R2's other point (ambient friendly-against-neutral NPCs keeping a fight open) is not a blocker. It
+is noted as a follow-up: require a group-affiliated unit on one side of `hostileCombat`.
+
+### Sample
+
+`samplecut -recount` was rerun and produced no change. Fight 6 is still 177 mob deaths, 26 group
+kills and 0 group deaths. The sample has no Feign Death cast.
+
+### Gates (round 4)
+
+All checks were exit-code checked.
+
+| Gate | Result |
+| --- | --- |
+| `go vet ./...` on logs and api | clean |
+| `go test -race ./...` on logs | pass |
+| `go test -race -p 1` on api reports, parse, engine, coach, db and cmd/... (private db, dropped afterwards) | pass |
+| sim adapter (`-race`); companion build | pass |
+| vitest: lib/report, components/report, lib/coach, fixtures, lib/mobile | 79 files, 809 tests, pass |
+| `astro check` | 0 errors |
+| lint, format | pass |
+| Playwright on 4705, desktop and mobile: every `report-*.spec.ts`, plus sample-report, coach-report, onboarding-second-screen and launch-polish | 442 passed, 56 skipped, 0 failed |

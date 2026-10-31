@@ -4,6 +4,7 @@ package fight
 import (
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/units"
@@ -27,18 +28,24 @@ var notMobDeaths = map[string]bool{"UNIT_DESTROYED": true, "UNIT_DISSIPATES": tr
 //   - A death is the group's when a PARTY_KILL names it, or when the last
 //     damage the unit took came from a unit flagged MINE, PARTY or RAID
 //     (which covers the group's pets).
-//   - Every player UNIT_DIED counts, but a player who acts again (a cast or
-//     a swing) before any resurrection takes that death back: if the client
-//     logs a Feign Death as UNIT_DIED, the hunter getting up undoes it.
+//   - Every player UNIT_DIED counts. The one exception is a possible Feign
+//     Death: a death within Options.FeignDeathWindow of that player's own
+//     Feign Death cast is taken back if the player then casts or swings. Any
+//     other death stands, whatever follows it: a corpse run, Reincarnation and
+//     a Soulstone all log the dead player acting again with no SPELL_RESURRECT.
 //   - The group is the players flagged MINE, PARTY or RAID on any line of
 //     this fight, so someone who leaves the party mid-night is in the group
 //     for the pulls before and out of it for the pulls after.
 type Counter struct {
 	critterMaxHP int64
-	players      map[string]bool
-	group        map[string]bool
-	died         map[string]bool
-	groupKilled  map[string]bool
+	feignSpells  map[int64]bool
+	feignWindow  time.Duration
+	// lastFeign is when each player last cast Feign Death.
+	lastFeign   map[string]time.Time
+	players     map[string]bool
+	group       map[string]bool
+	died        map[string]bool
+	groupKilled map[string]bool
 	// lastHitByGroup is, for each NPC hit so far, whether the last damage it
 	// took came from the group; groupHit whether the group hit it at all.
 	lastHitByGroup map[string]bool
@@ -47,8 +54,8 @@ type Counter struct {
 	hostileSeen map[string]bool
 	// maxHP is each NPC's maximum health, from advanced blocks describing it.
 	maxHP map[string]int64
-	// pendingDeaths is each player whose latest death could still be a
-	// feign, and whether it was counted as the group's.
+	// pendingDeaths is each player whose latest death followed their own
+	// Feign Death cast, and whether it was counted as the group's.
 	pendingDeaths map[string]bool
 	deaths        int
 	groupDeaths   int
@@ -59,9 +66,15 @@ type Counter struct {
 
 // NewCounter returns an empty counter. Zero fields in o take their defaults.
 func NewCounter(o Options) *Counter {
+	o = o.withDefaults()
+	feign := make(map[int64]bool, len(o.FeignDeathSpells))
+	for _, id := range o.FeignDeathSpells {
+		feign[id] = true
+	}
 	return &Counter{
-		critterMaxHP: o.withDefaults().CritterMaxHP,
-		players:      map[string]bool{}, group: map[string]bool{},
+		critterMaxHP: o.CritterMaxHP, feignSpells: feign, feignWindow: o.FeignDeathWindow,
+		lastFeign: map[string]time.Time{},
+		players:   map[string]bool{}, group: map[string]bool{},
 		died: map[string]bool{}, groupKilled: map[string]bool{},
 		lastHitByGroup: map[string]bool{}, groupHit: map[string]bool{},
 		hostileSeen: map[string]bool{}, maxHP: map[string]int64{},
@@ -104,8 +117,10 @@ func (c *Counter) Observe(e event.Event) {
 				c.groupKilled[e.Dest.GUID] = true
 			}
 		}
-	case event.Resurrect:
-		delete(c.pendingDeaths, e.Dest.GUID)
+	case event.CastSuccess:
+		if c.feignSpells[e.Spell.ID] {
+			c.lastFeign[e.Source.GUID] = e.Time
+		}
 	case event.Death:
 		c.observeDeath(e)
 	}
@@ -143,7 +158,9 @@ func (c *Counter) observeDeath(e event.Event) {
 		if ours {
 			c.groupDeaths++
 		}
-		c.pendingDeaths[e.Dest.GUID] = ours
+		if c.justFeigned(e.Dest.GUID, e.Time) {
+			c.pendingDeaths[e.Dest.GUID] = ours
+		}
 		return
 	}
 	if notMobDeaths[e.Name] || !isNPC(e.Dest) || !c.isMob(e.Dest) {
@@ -153,6 +170,13 @@ func (c *Counter) observeDeath(e event.Event) {
 	if c.lastHitByGroup[e.Dest.GUID] {
 		c.groupKilled[e.Dest.GUID] = true
 	}
+}
+
+// justFeigned is whether a death at this time follows the player's own
+// Feign Death cast closely enough to be that feign.
+func (c *Counter) justFeigned(guid string, at time.Time) bool {
+	cast, ok := c.lastFeign[guid]
+	return ok && !at.Before(cast) && at.Sub(cast) <= c.feignWindow
 }
 
 // undoDeath takes back a player's death that a sign of life has shown was

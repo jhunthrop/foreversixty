@@ -8,7 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
@@ -64,7 +66,10 @@ func flagsOf(s string) uint32 {
 }
 
 // Every fixture dialect, so the oracle sees v16, v22 and a real Forever log.
-var countFixtures = []string{"../event/testdata/v16.log", "../event/testdata/v22.log", "../event/testdata/forever-1.60.log"}
+var countFixtures = []string{
+	"../event/testdata/v16.log", "../event/testdata/v22.log", "../event/testdata/forever-1.60.log",
+	levellingFixture,
+}
 
 func TestEveryFixturesMobDeathsMatchTheText(t *testing.T) {
 	for _, path := range countFixtures {
@@ -134,5 +139,94 @@ func TestTheFixturesGroupIsInsideItsPlayers(t *testing.T) {
 		if f.GroupDeaths > f.Deaths {
 			t.Errorf("fight %d: group deaths %d exceed deaths %d", f.Index, f.GroupDeaths, f.Deaths)
 		}
+	}
+}
+
+// levellingFixture is a hand-made levelling night: a pull of two neutral Plainstriders, two
+// ambient NPCs (one neutral, one hostile) fighting each other far from the group, and a boss wipe
+// where the hunter feigns and two players die, are never resurrected, and run back from the
+// graveyard to cast again before the encounter ends.
+const levellingFixture = "../event/testdata/v16-levelling.log"
+
+// playerDeathsInText is the oracle for a fight's player deaths: the UNIT_DIED lines naming a
+// player between two offsets, less any within a second of that player's own Feign Death cast.
+func playerDeathsInText(t *testing.T, src []byte, start, end int64) int {
+	t.Helper()
+	feigned := map[string]time.Time{}
+	deaths := 0
+	for _, line := range strings.Split(string(src[start:min(end+1, int64(len(src)))]), "\n") {
+		stamp, body, ok := strings.Cut(line, "  ")
+		if !ok {
+			continue
+		}
+		at, err := time.Parse("1/2 15:04:05.000", stamp)
+		if err != nil {
+			continue
+		}
+		r := csv.NewReader(strings.NewReader(body))
+		r.LazyQuotes = true
+		f, err := r.Read()
+		if err != nil || len(f) < 8 {
+			continue
+		}
+		if f[0] == "SPELL_CAST_SUCCESS" && len(f) > 9 && f[9] == "5384" {
+			feigned[f[1]] = at
+		}
+		if f[0] == "UNIT_DIED" && units.Parse(f[5]).Kind == units.KindPlayer {
+			if cast, ok := feigned[f[5]]; !ok || at.Sub(cast) > time.Second {
+				deaths++
+			}
+		}
+	}
+	return deaths
+}
+
+// The levelling fixture pins structure, never counts: the neutral pull is a fight of its own,
+// the ambient NPCs open none, and the wipe is one encounter whose deaths are every death but the
+// feign, corpse runs included.
+func TestALevellingNightSplitsAndCountsByTheRules(t *testing.T) {
+	src, err := os.ReadFile(levellingFixture)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, health := feed(t, opts(), src, 512)
+	if health.ParseErrors != 0 {
+		t.Fatalf("the fixture has %d parse errors", health.ParseErrors)
+	}
+	ambientFrom := time.Date(2026, 9, 27, 10, 0, 30, 0, time.UTC)
+	ambientTo := time.Date(2026, 9, 27, 10, 1, 30, 0, time.UTC)
+	var neutral, wipe *fight.Fight
+	for i := range got.Closed {
+		f := &got.Closed[i].Fight
+		start := f.Start.UTC()
+		switch {
+		case f.Kind == fight.Encounter:
+			if wipe != nil {
+				t.Fatalf("the wipe split into fights %d and %d", wipe.Index, f.Index)
+			}
+			wipe = f
+		case start.After(ambientFrom) && start.Before(ambientTo):
+			t.Errorf("fight %d opened on the ambient NPCs' fight at %s", f.Index, start)
+		case neutral == nil:
+			neutral = f
+		}
+	}
+	if neutral == nil {
+		t.Fatal("the neutral pull made no fight")
+	}
+	if neutral.MobDeaths < 1 || neutral.GroupKills < 1 || neutral.GroupKills > neutral.MobDeaths {
+		t.Errorf("neutral pull: mob deaths %d, group kills %d; want the group's kills counted",
+			neutral.MobDeaths, neutral.GroupKills)
+	}
+	if wipe == nil {
+		t.Fatal("no encounter")
+	}
+	if wipe.Kill {
+		t.Error("the wipe reads as a kill")
+	}
+	want := playerDeathsInText(t, src, wipe.StartOffset, wipe.EndOffset)
+	if want < 1 || wipe.Deaths != want || wipe.GroupDeaths != want {
+		t.Errorf("wipe: deaths %d, group deaths %d; the text has %d deaths that are no feign",
+			wipe.Deaths, wipe.GroupDeaths, want)
 	}
 }
