@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70658",
-  "engine_version": "c99fb94b4",
-  "generated_at": "2026-10-31T20:32:04Z",
+  "engine_version": "09ca529f3",
+  "generated_at": "2026-10-31T21:47:17Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -693,8 +693,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.799794906,
-      "verify_run_seconds": 0.543102038,
+      "weights_run_seconds": 1.055722441,
+      "verify_run_seconds": 0.694102265,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1487,8 +1487,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.799794906,
-      "verify_run_seconds": 0.551290826,
+      "weights_run_seconds": 1.055722441,
+      "verify_run_seconds": 0.718923113,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2356,8 +2356,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 0.814007087,
-      "verify_run_seconds": 0.613026479,
+      "weights_run_seconds": 1.17443224,
+      "verify_run_seconds": 0.798256866,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3224,8 +3224,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 0.814007087,
-      "verify_run_seconds": 0.616677647,
+      "weights_run_seconds": 1.17443224,
+      "verify_run_seconds": 0.833447226,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4140,8 +4140,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.908473222,
-      "verify_run_seconds": 0.776416548,
+      "weights_run_seconds": 1.25663968,
+      "verify_run_seconds": 0.954042589,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5051,8 +5051,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.908473222,
-      "verify_run_seconds": 0.734595389,
+      "weights_run_seconds": 1.25663968,
+      "verify_run_seconds": 0.973904327,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5937,8 +5937,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.819413241,
-      "verify_run_seconds": 1.026551201,
+      "weights_run_seconds": 1.189109438,
+      "verify_run_seconds": 1.180200368,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6826,8 +6826,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.819413241,
-      "verify_run_seconds": 0.892289869,
+      "weights_run_seconds": 1.189109438,
+      "verify_run_seconds": 1.2010337070000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7730,8 +7730,8 @@
         "finger2: Philanthropist's Ring",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.893964473,
-      "verify_run_seconds": 2.419135605,
+      "weights_run_seconds": 1.313730759,
+      "verify_run_seconds": 3.048107703,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8667,8 +8667,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.893964473,
-      "verify_run_seconds": 2.49636025,
+      "weights_run_seconds": 1.313730759,
+      "verify_run_seconds": 3.141782398,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9575,8 +9575,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.154300361,
-      "verify_run_seconds": 1.6292566929999999,
+      "weights_run_seconds": 1.5969840739999999,
+      "verify_run_seconds": 2.068726509,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10484,8 +10484,8 @@
         "finger2: Philanthropist's Ring",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.154300361,
-      "verify_run_seconds": 1.855860104,
+      "weights_run_seconds": 1.5969840739999999,
+      "verify_run_seconds": 2.433489509,
       "coverage": {
         "back": {
           "eligible": 390,
