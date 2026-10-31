@@ -64,6 +64,8 @@ place the group is stored.
 - The parse job, the ingest and `Store.Fights` all write and read them.
 - For a fight row from before 0.6.0, all four are null, and `GET /v1/reports/{id}` leaves the
   fields out.
+- **Migration number:** 0059 stays. The coordinator renumbers the held sign-in lane's own 0059
+  when that lane merges after launch.
 - `npc_kills` is no longer written or read. The column stays, default 0, so that a revision still
   running the old code during the rollout can still insert. **Follow-up:** a later migration drops
   it.
@@ -209,3 +211,87 @@ All checks were exit-code checked, with no pipes into pushes.
 - **Visual review.** The trash row is now a two-line row with the count on the meta line. On the
   folded zone row, "79 pulls ‹" wraps to its own line. I checked this on screenshots at 1440 and
   390, but the ux-designer and wow-player reviewers have not reviewed it.
+
+## Round 2: merged with main (sample-chart lane), per-fight scope, captures
+
+### Merge
+
+- `origin/main` was merged into this branch (a merge, not a rebase). The commit is `e7fcd7154`.
+- Conflicts were in `format.ts`, `FightSelector.svelte`, `fights.ts`, `CompareMode.svelte`, their
+  tests and `report-players.spec.ts`. Each was resolved on this branch's side:
+  - the true kill line stays;
+  - `joinFacts` stays the one way to join a row's facts;
+  - the folded row keeps its summed counts.
+- From main's side I kept the "still being logged" live title and an extra `Live` test.
+- The sample's `meta.json` and `report.json` are main's files, recounted with `samplecut -recount`.
+  Main's top-level `group` key is kept.
+
+### The client reads each pull's group
+
+**`lib/report/group.ts` `fightGroupScope(fights, raidFlagged)`** builds the scope from the
+fight's own `group` and `players`. For the night view it uses the union over the boss pulls. It
+returns null when any of those pulls predates engine 0.6.0, and the old report-wide `groupScope`
+then runs exactly as before.
+
+| Pull | Scope |
+| --- | --- |
+| Anyone outside the group in it | Scoped to the group, in an instance pull too. The "outsiders outnumber" rule is only needed by the fallback. |
+| Only the group in it | Every player, named Group or Raid. |
+| No group in it | Everyone in range. |
+
+- **Noun:** Raid when the group is larger than 5, or when any member's report units carry the
+  RAID flag.
+- **Source:** `ReportView` reads report.json's own fight lines once they arrive, and the meta's
+  before that.
+- **`fightDeathMark`:**
+  - A fight row's dagger (and a folded row's) is the group's deaths. Its title reads "1 death in
+    your group · 3 among everyone in range". That makes the dagger match the row's "your group
+    killed" line.
+  - A pull the group was not in marks everyone in range's deaths.
+  - An old fight keeps its in-range count, worded as before.
+- **Subtitle:** reads `group_deaths` under the group scope.
+- Main's honest wording is unchanged: "players seen", "Your group / Everyone in range", and
+  "Raid / Group / Total" on the chart.
+
+**What this changes on the sample's fight 6:**
+- The default group is **five** players: the fight's own flags put a party member in it that the
+  last-seen flags called an outsider. The roster reads "5 players · 0 deaths".
+- The row reads "177 mobs died · your group killed 26" with no dagger. The 2 deaths were
+  outsiders', and they show under Everyone in range.
+- Main's e2e test asserted the in-range dagger on fight 6. It now asserts the kill line and no
+  dagger.
+
+**Test changes:**
+- `group.test.ts` adds 14 tests for `fightGroupScope` and `fightDeathMark`.
+- The `raid40.ts` mock now carries the pull's own group, all forty players. They were all
+  MINE-flagged already.
+- FightRow's `deaths` field was only feeding the old dagger, so it is gone.
+
+**For reviewers:** trash rows with outsider-only deaths no longer show a dagger. Whether that is
+right is a design call.
+
+### Captures
+
+In `design/reviews/2026-10-31-logs-counts/`:
+
+| File | Shows |
+| --- | --- |
+| `sample-fights-1440.png`, `sample-fights-390.png` | The sample's fight list, trash rows reading "N mobs died · your group killed M" |
+| `sample-page-1440.png`, `sample-page-390.png` | The whole sample page on fight 6, under the group scope |
+| `folded-zone-row-1440.png` | The fixture report's folded "Trash · Sanguine Depths" row, with its summed count |
+| `no-mobs-died-1440.png` | The same group opened: "No mobs died" on the 6.4 s pull |
+| `old-format-no-count-1440.png` | The sample served with its counts stripped (an engine 0.5 report): no kill line on any row, the in-range daggers as before |
+
+### Gates (round 2)
+
+All checks were exit-code checked.
+
+| Gate | Result |
+| --- | --- |
+| `go vet ./...` on logs and api | clean |
+| `go test -race ./...` on logs | pass |
+| `go test -race -p 1` on api reports, parse, engine, coach, db and cmd/... (private db `forever_gc_logs`, dropped afterwards) | pass |
+| vitest: lib/report, components/report, lib/coach, fixtures, lib/mobile | 79 files, 809 tests, pass |
+| `astro check` | 0 errors |
+| lint, format | pass |
+| Playwright on 4705, desktop and mobile: every `report-*.spec.ts`, plus sample-report, coach-report, onboarding-second-screen and launch-polish | 442 passed, 56 skipped (project-specific), 0 failed |
