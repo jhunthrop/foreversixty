@@ -1,7 +1,7 @@
 {
   "spec": "druid-balance",
   "state": "written",
-  "notes": "Balance at 60 is Insect Swarm kept ticking and Starfire spammed the rest of the time; the rotation search dropped the fork preset's Moonfire upkeep because it costs more mana than it returns. The fork's own balance.apl.json supplies two fight-end clips (Wrath, then the instant-cast Moonfire) so the last globals of an encounter are not wasted on a nuke that would not finish. Kept the preset's ranks and structure unchanged; the Forever build's spellconst just confirms Moonfire tops out at rank 10 (9835), Wrath at rank 8 (9912), and Starfire at rank 7 (25298) -- one rank higher on Wrath and Starfire than the classic 1.12 cap, so this is a Forever-only rank, not a vanilla one. The community guide also recommends weaving in Faerie Fire uptime and a second DoT (Insect Swarm) mana permitting; left both out for now, matching the mage-frost precedent of shipping the simpler, measured default and letting the validation job (design section 6) decide whether the extra globals are worth it here. Fix round 1: re-verified the only condition here, Moonfire's dotIsActive check, against sim/druid/moonfire.go -- Moonfire's Dot is registered directly on its own spell with ActionID{SpellID: spellId}, the same self-id pattern as every other simple DoT in this engine, so dotIsActive(9835) correctly finds it. No change needed. Fix round 2 (druid.md audit finding 3): Insect Swarm is added back after all -- it is a real, fully engine-implemented level-20 DoT (sim/druid/insect_swarm.go, ranks 5570/24974/24975/24976/24977 at levels 20/30/40/50/60, all real Forever-granted ids, not SoD leftovers) that costs no extra GCD contention beyond its own application/refresh, the same shape as Moonfire's own upkeep line; dotIsActive(24977) resolves the same self-id way Moonfire's does. Faerie Fire is still left out, unrelated to this fix. Rotation-accuracy program fix round (2026-09-28): sim/druid/insect_swarm.go registered Insect Swarm for every balance druid by level alone, never checking Talents.InsectSwarm even though it is a real, single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930) -- a zero-talent level-60 smoke character could already cast it. Fixed by gating registerInsectSwarmSpell on the talent, matching every other real talent in sim/druid/talents.go, and added a smokeBuildWarnings entry (sim/request/rotations_smoke_test.go) for the zero-talent smoke build's now-correct unresolved warning. Finding for the guide/content lane, not fixed here: this build's own level-60 talent code (web/src/content/guides/druid/balance.md frontmatter, 5222211005501051/0/55333) does not actually spend the one point on Insect Swarm at all, even though the guide's own rotation prose two paragraphs below (\"Keep Insect Swarm ticking alongside it\") and this file's rotation both treat it as core -- the ladder's own talent-zero-points exemption (design doc's Unresolved rule 3) is why this does not fail the ladder's strict check, but the guide is telling a leveler to spend a point this build string never spends. Reallocating the Balance tree by one point to actually take it is a real theorycrafting call (which existing point to give up) this rotation-accuracy pass does not make; flagged for whoever owns guide content next. Caster tier lane (2026-10-31): Moonfire upkeep is back. The rotation search that dropped it for costing 'more mana than it returns' ran on a character that ran dry; the raid band spends under 1 s of 180 s out of mana, and keeping Moonfire up (ahead of Insect Swarm) measured about +5% at the level-60 raid band. A 30% mana gate kept most of that and was not taken, matching the Elemental lane's finding that the raid character can afford its DoTs. Eclipse (Wrath shortens the next two Starfires) is not woven in because the guide's raid build takes no Eclipse points; Wrath alone does less damage per second of casting than Starfire for this character. Whether the build should take Eclipse is a talent-build question for the talent-search adoption rule, flagged by the 2026-10-31 wow-player review.",
+  "notes": "Balance at 60 is Insect Swarm kept ticking and Starfire spammed the rest of the time; the rotation search dropped the fork preset's Moonfire upkeep because it costs more mana than it returns. The fork's own balance.apl.json supplies two fight-end clips (Wrath, then the instant-cast Moonfire) so the last globals of an encounter are not wasted on a nuke that would not finish. Kept the preset's ranks and structure unchanged; the Forever build's spellconst just confirms Moonfire tops out at rank 10 (9835), Wrath at rank 8 (9912), and Starfire at rank 7 (25298) -- one rank higher on Wrath and Starfire than the classic 1.12 cap, so this is a Forever-only rank, not a vanilla one. The community guide also recommends weaving in Faerie Fire uptime and a second DoT (Insect Swarm) mana permitting; left both out for now, matching the mage-frost precedent of shipping the simpler, measured default and letting the validation job (design section 6) decide whether the extra globals are worth it here. Fix round 1: re-verified the only condition here, Moonfire's dotIsActive check, against sim/druid/moonfire.go -- Moonfire's Dot is registered directly on its own spell with ActionID{SpellID: spellId}, the same self-id pattern as every other simple DoT in this engine, so dotIsActive(9835) correctly finds it. No change needed. Fix round 2 (druid.md audit finding 3): Insect Swarm is added back after all -- it is a real, fully engine-implemented level-20 DoT (sim/druid/insect_swarm.go, ranks 5570/24974/24975/24976/24977 at levels 20/30/40/50/60, all real Forever-granted ids, not SoD leftovers) that costs no extra GCD contention beyond its own application/refresh, the same shape as Moonfire's own upkeep line; dotIsActive(24977) resolves the same self-id way Moonfire's does. Faerie Fire is still left out, unrelated to this fix. Rotation-accuracy program fix round (2026-09-28): sim/druid/insect_swarm.go registered Insect Swarm for every balance druid by level alone, never checking Talents.InsectSwarm even though it is a real, single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930) -- a zero-talent level-60 smoke character could already cast it. Fixed by gating registerInsectSwarmSpell on the talent, matching every other real talent in sim/druid/talents.go, and added a smokeBuildWarnings entry (sim/request/rotations_smoke_test.go) for the zero-talent smoke build's now-correct unresolved warning. Finding for the guide/content lane, not fixed here: this build's own level-60 talent code (web/src/content/guides/druid/balance.md frontmatter, 5222211005501051/0/55333) does not actually spend the one point on Insect Swarm at all, even though the guide's own rotation prose two paragraphs below (\"Keep Insect Swarm ticking alongside it\") and this file's rotation both treat it as core -- the ladder's own talent-zero-points exemption (design doc's Unresolved rule 3) is why this does not fail the ladder's strict check, but the guide is telling a leveler to spend a point this build string never spends. Reallocating the Balance tree by one point to actually take it is a real theorycrafting call (which existing point to give up) this rotation-accuracy pass does not make; flagged for whoever owns guide content next. Caster tier lane (2026-10-31): Moonfire upkeep is back. The rotation search that dropped it for costing 'more mana than it returns' ran on a character that ran dry; the raid band spends under 1 s of 180 s out of mana, and keeping Moonfire up (ahead of Insect Swarm) measured about +5% at the level-60 raid band. A 30% mana gate kept most of that and was not taken, matching the Elemental lane's finding that the raid character can afford its DoTs. Eclipse (Wrath shortens the next two Starfires) is not woven in because the guide's raid build takes no Eclipse points; Wrath alone does less damage per second of casting than Starfire for this character. Whether the build should take Eclipse is a talent-build question for the talent-search adoption rule, flagged by the 2026-10-31 wow-player review. Caster tier lane 2 (2026-10-31): Eclipse (the engine already modeled it) was neither in the guide build nor cast for. Wrath now fires whenever no Eclipse charge is banked, so Starfire runs on the 0.5 sec discount; the guide build takes Eclipse 3/3.",
   "sources": [
     {
       "label": "wowsims-forever balance_druid default priority list",
@@ -23,17 +23,20 @@
         }
       },
       {
-        "notes": "Under 1.5 seconds left only an instant lands in time; Moonfire's direct damage is the best instant.",
+        "notes": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
         "action": {
           "condition": {
             "cmp": {
-              "op": "OpLe",
+              "op": "OpLt",
               "lhs": {
                 "remainingTime": {}
               },
               "rhs": {
-                "const": {
-                  "val": "1.5"
+                "spellCastTime": {
+                  "spellId": {
+                    "spellId": 9912,
+                    "rank": 8
+                  }
                 }
               }
             }
@@ -47,19 +50,73 @@
         }
       },
       {
-        "notes": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+        "notes": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not. Before Starfire is learned (level 20) the window is the last 3.5 seconds, as before.",
         "action": {
           "condition": {
-            "cmp": {
-              "op": "OpLe",
-              "lhs": {
-                "remainingTime": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "3.5"
+            "or": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "spellIsKnown": {
+                          "spellId": {
+                            "spellId": 9876,
+                            "rank": 6
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "remainingTime": {}
+                          },
+                          "rhs": {
+                            "spellCastTime": {
+                              "spellId": {
+                                "spellId": 9876,
+                                "rank": 6
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "not": {
+                          "val": {
+                            "spellIsKnown": {
+                              "spellId": {
+                                "spellId": 9876,
+                                "rank": 6
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLe",
+                          "lhs": {
+                            "remainingTime": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "3.5"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
                 }
-              }
+              ]
             }
           },
           "castSpell": {
@@ -117,7 +174,42 @@
         }
       },
       {
-        "notes": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking.",
+        "notes": "Eclipse (the talent): with no Eclipse charge banked, Wrath. Each Wrath banks two charges that take 0.5 sec off the next two Starfires (3.0 to 2.5 sec with Improved Starfire), and Improved Wrath makes the Wrath itself a 1.5 sec cast, so one Wrath plus two quick Starfires beats three plain Starfires in the same time. Without the talent there is no charge to bank and the line never fires.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 408248
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "auraId": {
+                          "spellId": 408248
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9912,
+              "rank": 8
+            }
+          }
+        }
+      },
+      {
+        "notes": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
         "action": {
           "castSpell": {
             "spellId": {

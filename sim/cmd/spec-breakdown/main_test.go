@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"math"
 	"os"
 	"path/filepath"
@@ -288,6 +289,33 @@ func TestBuildRequestLayersEntryAndOverrides(t *testing.T) {
 	}
 	if got := over.Character.Buffs; got[len(got)-1] != "extra" || len(got) != len(c.Buffs)+1 {
 		t.Errorf("buffs = %v, want kit buffs plus extra", got)
+	}
+}
+
+// The ranker stands a caster out of melee range (leveling-bis's
+// bandCharacter), so the breakdown of its entry must too, or a range-gated
+// spell such as Cone of Cold would fire here and not in the ranker.
+func TestBuildRequestStandsCastersWhereTheRankerDoes(t *testing.T) {
+	root := activeRoot(t)
+	const caster = "mage-frost"
+	writeFile(t, filepath.Join(root, testBuildDir, "bis", caster+".json"), `{"bands":[
+	  {"band":60,"preset":"bare","faction":"alliance","race":"gnome","talents":"0","slots":[]}]}`)
+	o := baseOptions(root)
+	o.spec = caster
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := req.Character.DistanceFromTarget; got != leveling.CasterDistanceFromTarget {
+		t.Errorf("%s stands at %v yd, want the ranker's %v", caster, got, float64(leveling.CasterDistanceFromTarget))
+	}
+
+	melee, err := buildRequest(baseOptions(bisFixture(t)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := melee.Character.DistanceFromTarget; got != 0 {
+		t.Errorf("%s stands at %v yd, want melee range (0)", testSpec, got)
 	}
 }
 

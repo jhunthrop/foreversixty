@@ -4,7 +4,7 @@ classSlug: druid
 spec: balance
 role: dps
 build: 'FS1:1.60.1.70658:druid:night-elf:5232221115400051/05/503301:'
-raidBuild: 'FS1:1.60.1.70658:druid:night-elf:4132220115501051/05/5053:'
+raidBuild: 'FS1:1.60.1.70658:druid:night-elf:5232220115501351/0/5053:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
@@ -42,7 +42,7 @@ Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm dam
 
 ### Weaknesses
 
-- Starfire's 3.5 second cast leaves little room to move
+- Starfire's long cast (3.5 seconds untalented, 3 with Improved Starfire) leaves little room to move
 - Two DoTs to keep up alongside a long Starfire cast
 - Damage is confined to the Nature and Arcane schools
 
@@ -55,15 +55,16 @@ Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm dam
 
 - **Improved Wrath** — up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke.
 - **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
-- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5; this build takes rank 4 (0.4 seconds, 12% stun chance) to free a point for Insect Swarm below, since a stun rarely lands on a raid boss anyway.
+- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5; the leveling build takes rank 4 (0.4 seconds, 12% stun chance) to free a point for Insect Swarm below, and the raid build takes all five.
 - **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire; skipping it was an earlier error in this build, fixed by moving a point off Improved Starfire's last rank.
 - **Nature's Splendor** (1 point) — the one-point talent that the simulator credits with the largest single gain in this tree, taken with the point Nature's Grace used to hold.
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
+- **Eclipse** (raid build, 3 points) — reworked in Forever: each Wrath banks two charges, up to four, that take 0.5 seconds off your next two Starfires for 15 seconds. The raid build takes all three ranks and the fifth rank of Improved Wrath with the points Heart of the Wild held, which gained about 8% in our level-60 raid run with the Wrath-weaving loop below.
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
 
 ## Rotation and priority
 
-Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Moonfire and then Insect Swarm ticking on the target: with Improved Moonfire and Nature's Splendor, a Moonfire does more damage per second of casting than Starfire, and a raid-buffed Balance druid has the mana to keep both up. Starfire is everything else: cast it on repeat for the rest of the fight. An earlier search dropped Moonfire upkeep to save mana, but that run's character was running dry; with raid buffs and consumables, keeping Moonfire up gained about 5% in our level-60 raid run. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
+Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Moonfire and then Insect Swarm ticking on the target: with Improved Moonfire and Nature's Splendor, a Moonfire does more damage per second of casting than Starfire, and a raid-buffed Balance druid has the mana to keep both up. Starfire is everything else: cast it on repeat for the rest of the fight. An earlier search dropped Moonfire upkeep to save mana, but that run's character was running dry; with raid buffs and consumables, keeping Moonfire up gained about 5% in our level-60 raid run. Near the end of a fight, adjust for what will actually land: once less time is left than your next Starfire takes, switch to Wrath, which still finishes; once less is left than a Wrath takes, only the instant Moonfire lands in time. With the raid build's Improved Starfire and Improved Wrath, that is Starfire at 3 seconds (2.5 on an Eclipse charge) and Wrath at 1.5. With Eclipse, cast Wrath whenever you have no Eclipse charge banked: with Improved Wrath it is a 1.5-second cast, and the two charges turn the next two Starfires from 3-second into 2.5-second casts, so a Wrath and two quick Starfires do more than three plain Starfires in the same time. Without the talent, skip that Wrath.
 
 ## Stat priority
 

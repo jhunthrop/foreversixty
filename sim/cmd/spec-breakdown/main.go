@@ -251,17 +251,23 @@ func buildRequest(o options) (api.SimRequest, error) {
 	}
 	encounter := api.DefaultEncounter()
 	encounter.TargetType = api.TargetTypeUnknown
+	character := api.CharacterSpec{
+		Name: "breakdown", Race: entry.Race, Class: info.ClassSlug, Level: o.band,
+		Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
+	}
+	// Where the ranker stands the spec (leveling-bis's bandCharacter), so
+	// a range-gated spell behaves the same in both.
+	if leveling.NoMeleeAutoAttackSpecs[o.spec] {
+		character.DistanceFromTarget = leveling.CasterDistanceFromTarget
+	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          o.spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
-		Character: api.CharacterSpec{
-			Name: "breakdown", Race: entry.Race, Class: info.ClassSlug, Level: o.band,
-			Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
-		},
-		Encounter:  encounter,
-		Iterations: o.iterations,
-		RandomSeed: o.seed,
+		Character:     character,
+		Encounter:     encounter,
+		Iterations:    o.iterations,
+		RandomSeed:    o.seed,
 	}, nil
 }
 
