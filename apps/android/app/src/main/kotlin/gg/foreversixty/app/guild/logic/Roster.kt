@@ -101,7 +101,7 @@ object RosterEntries {
     }
 }
 
-/** The chips, the search and the sort applied to the entries. */
+/** The chips, the search and the sort applied; rows with the same sort key keep name order. */
 data class RosterQuery(val role: RosterRole = RosterRole.All, val sort: RosterSort = RosterSort.Rank, val search: String = "")
 
 object RosterList {
@@ -123,7 +123,7 @@ object RosterList {
         (entry.standing as? RosterStanding.Attended)?.let { it.present.toDouble() / it.nights } ?: -1.0
 
     private fun comparator(sort: RosterSort): Comparator<RosterEntry> = when (sort) {
-        RosterSort.Rank -> compareBy<RosterEntry> { it.rank.ordinal }.then(byAttendance).then(byName)
+        RosterSort.Rank -> compareBy<RosterEntry> { it.rank.ordinal }.then(byName)
         RosterSort.ClassName -> compareBy<RosterEntry> { GameClass.rank(it.className.orEmpty()) }.then(byName)
         RosterSort.Name -> byName
         RosterSort.Attendance -> byAttendance.then(byName)
@@ -137,11 +137,15 @@ class RosterCopy(private val res: Resources) {
     fun spec(entry: RosterEntry): String =
         entry.specName ?: GameClass.of(entry.className.orEmpty())?.let { res.getString(it.label) }.orEmpty()
 
-    /** `Protection Warrior · 60 · Guild Master`. */
+    /**
+     * `Protection Warrior · 60 · Guild Master`. A line may break only after a ` · ` (the space
+     * before the dot is non-breaking) and never inside the rank word.
+     */
     fun meta(entry: RosterEntry): String {
-        val rank = res.getString(entry.rank.word)
-        return entry.level?.let { res.getString(R.string.roster_meta, spec(entry), it, rank) }
+        val rank = res.getString(entry.rank.word).replace(' ', NBSP)
+        val line = entry.level?.let { res.getString(R.string.roster_meta, spec(entry), it, rank) }
             ?: res.getString(R.string.roster_metaNoLevel, spec(entry), rank)
+        return line.replace(" $DOT ", "$NBSP$DOT ")
     }
 
     /** `8 of 8`. */
@@ -161,6 +165,11 @@ class RosterCopy(private val res: Resources) {
             RosterStanding.NoAccount -> res.getString(R.string.roster_noAccountTag)
         },
     ).joinToString(", ")
+
+    private companion object {
+        const val NBSP = '\u00A0'
+        const val DOT = '·'
+    }
 }
 
 /** `GET /v1/guilds/{id}/home` for the roster and the Raids tab's `Roster` row, cache first. */

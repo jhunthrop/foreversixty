@@ -154,18 +154,18 @@ private fun Chevron() {
     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.clearAndSetSemantics {})
 }
 
-/** `38 raiders · 1 h 47 m` with mono figures; one line at the default sizes. */
+/** `38 raiders · 1 h 47 m` in the body face with tabular figures; one line at the default sizes. */
 @Composable
 private fun SizeLine(facts: NightFacts, copy: HistoryCopy, large: Boolean) {
     val size = copy.size(facts)
     val count = "${facts.size}"
     val line = buildAnnotatedString {
-        withStyle(SpanStyle(fontFamily = FsType.monoMeta.fontFamily, color = FsColor.text)) { append(count) }
+        withStyle(SpanStyle(color = FsColor.text)) { append(count) }
         append(size.removePrefix(count))
         append(HistoryCopy.SEPARATOR)
-        withStyle(SpanStyle(fontFamily = FsType.monoMeta.fontFamily, color = FsColor.text)) { append(copy.length(facts)) }
+        withStyle(SpanStyle(color = FsColor.text)) { append(copy.length(facts)) }
     }
-    Text(line, style = FsType.meta, color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
+    Text(line, style = FsType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
 }
 
 @Composable
@@ -229,3 +229,6 @@ private fun LazyListScope.skeleton() {
 }
 
 private const val SKELETON_ROWS = 6
+
+/** Monospaced digits in the body face (spec 4: figures line up, letters stay proportional). */
+const val TABULAR = "tnum"

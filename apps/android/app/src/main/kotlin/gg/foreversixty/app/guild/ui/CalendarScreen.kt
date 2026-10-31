@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -23,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +41,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
-import gg.foreversixty.app.account.ConfirmDialog
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
@@ -104,17 +105,26 @@ fun CalendarContent(state: CalendarScreenState, actions: CalendarActions, back: 
         }
     }
     if (confirming) {
-        ConfirmDialog(
-            title = stringResource(R.string.calendar_resetAsk),
-            body = null,
-            action = stringResource(R.string.calendar_resetConfirm),
-            onConfirm = {
+        ResetDialog(
+            onReset = {
                 confirming = false
                 actions.reset()
             },
             onDismiss = { confirming = false },
         )
     }
+}
+
+/** The standard Material 3 alert: the question in the body face, Cancel and the destructive Reset. */
+@Composable
+private fun ResetDialog(onReset: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = FsColor.raised,
+        text = { Text(stringResource(R.string.calendar_resetAsk), style = FsType.lead, color = FsColor.strong) },
+        confirmButton = { TextButton(onReset) { Text(stringResource(R.string.calendar_resetConfirm), style = FsType.bodyStrong, color = FsColor.wipe) } },
+        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav) } },
+    )
 }
 
 @Composable

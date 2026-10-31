@@ -74,7 +74,7 @@ class GuildLogicTest {
 
     @Test
     fun `role chips read members role, never a spec word`() {
-        assertEquals(listOf("Kraggor", "Thokgar", "Ursoka", "Brokkar"), names(RosterQuery(RosterRole.Tanks)))
+        assertEquals(listOf("Kraggor", "Thokgar", "Brokkar", "Ursoka"), names(RosterQuery(RosterRole.Tanks)))
         assertTrue(names(RosterQuery(RosterRole.Healers)).all { entry(it).role == "healer" })
         assertEquals(entries.count { it.role == "dps" }, names(RosterQuery(RosterRole.Dps)).size)
         assertEquals(entries.size, names(RosterQuery(RosterRole.All)).size)
@@ -87,12 +87,21 @@ class GuildLogicTest {
     }
 
     @Test
-    fun `rank sort is leader, officers, members, then attendance, then name`() {
+    fun `rank sort is leader, officers, members, each by name`() {
         val sorted = names(RosterQuery(sort = RosterSort.Rank))
-        assertEquals(listOf("Kraggor", "Mendara", "Thokgar", "Draknar"), sorted.take(4))
-        assertEquals(GuildRank.Member, entry(sorted[4]).rank)
-        // Members without attendance sit at the foot of their rank.
-        assertEquals(setOf("Voidsong", "Moonveil", "Gruzz", "Shadeleaf", "Tazzlo", "Brokkar"), sorted.takeLast(6).toSet())
+        assertEquals(listOf("Kraggor", "Draknar", "Mendara", "Thokgar"), sorted.take(4))
+        val members = sorted.drop(4)
+        assertTrue(members.all { entry(it).rank == GuildRank.Member })
+        assertEquals(members.sortedWith(String.CASE_INSENSITIVE_ORDER), members)
+    }
+
+    @Test
+    fun `rows with the same sort key keep name order`() {
+        val tanks = names(RosterQuery(RosterRole.Tanks, sort = RosterSort.Level))
+        val sixty = tanks.filter { entry(it).level == 60 }
+        assertEquals(sixty.sortedWith(String.CASE_INSENSITIVE_ORDER), sixty)
+        val classes = RosterList.apply(entries, RosterQuery(sort = RosterSort.ClassName)).filter { it.className == "warrior" }.map { it.name }
+        assertEquals(classes.sortedWith(String.CASE_INSENSITIVE_ORDER), classes)
     }
 
     @Test
@@ -116,11 +125,13 @@ class GuildLogicTest {
     @Test
     fun `rank words and the meta line`() {
         val copy = RosterCopy(resources())
-        assertEquals("Protection Warrior · 60 · Guild Master", copy.meta(entry("Kraggor")))
-        assertEquals("Holy Priest · 60 · Officer", copy.meta(entry("Mendara")))
-        assertEquals("Elemental Shaman · 60 · Member", copy.meta(entry("Lightningbolltz")))
-        assertEquals("Warrior · Member", copy.meta(entry("Gruzz").copy(specName = null, level = null)))
-        assertEquals("8 of 8", copy.attendance(RosterStanding.Attended(8, 8)))
+        // A line breaks only after a separator (non-breaking space before the dot), never in the rank.
+        assertEquals("Protection Warrior\u00A0· 60\u00A0· Guild\u00A0Master", copy.meta(entry("Kraggor")))
+        assertEquals("Holy Priest\u00A0· 60\u00A0· Officer", copy.meta(entry("Mendara")))
+        assertEquals("Elemental Shaman\u00A0· 60\u00A0· Member", copy.meta(entry("Lightningbolltz")))
+        assertEquals("Warrior\u00A0· Member", copy.meta(entry("Gruzz").copy(specName = null, level = null)))
+        assertFalse(copy.meta(entry("Kraggor")).contains(" ·"))
+        assertEquals("8 of 8 nights", copy.attendance(RosterStanding.Attended(8, 8)))
     }
 
     @Test
@@ -169,27 +180,31 @@ class GuildLogicTest {
     private val page1 = GuildFixture.history(1).rows
     private fun night(id: String): RaidNightRow = (page1 + GuildFixture.history(2).rows).first { it.id == id }
 
+    private val ony = "ewlrx3enxbeb"
+    private val brd = "k6opku5uoucu"
+    private val ubrs = "5owictw7n3jw"
+
     @Test
     fun `a night starts at its log's creation minus its length`() {
-        val facts = NightFacts(night("qjyl6idgghfl"), GuildFixture.mine)
-        assertEquals(Triple("THU", "17", "DEC"), clock().dateBlock(facts.startedAt))
+        val facts = NightFacts(night(ony), GuildFixture.mine)
+        assertEquals(Triple("MON", "14", "DEC"), clock().dateBlock(facts.startedAt))
         assertEquals(1, facts.hours)
-        assertEquals(47, facts.minutes)
+        assertEquals(8, facts.minutes)
     }
 
     @Test
     fun `bosses are distinct fight names`() {
-        assertEquals(1, NightFacts(night("qjyl6idgghfl"), emptySet()).bosses)
-        assertEquals(6, NightFacts(night("mkrpcwlrhk4a"), emptySet()).bosses)
+        assertEquals(1, NightFacts(night(ony), emptySet()).bosses)
+        assertEquals(6, NightFacts(night(brd), emptySet()).bosses)
     }
 
     @Test
     fun `ten or fewer are players, more are raiders, and the size is never below a kill's`() {
         val copy = HistoryCopy(resources(), clock())
-        assertEquals("5 players", copy.size(NightFacts(night("mkrpcwlrhk4a"), emptySet())))
-        assertEquals("10 players", copy.size(NightFacts(night("g2k4der64mlv"), emptySet())))
-        assertEquals("38 raiders", copy.size(NightFacts(night("qjyl6idgghfl"), emptySet())))
-        val row = night("qjyl6idgghfl")
+        assertEquals("5 players", copy.size(NightFacts(night(brd), emptySet())))
+        assertEquals("10 players", copy.size(NightFacts(night(ubrs), emptySet())))
+        assertEquals("38 raiders", copy.size(NightFacts(night(ony), emptySet())))
+        val row = night(ony)
         val bigKill = row.copy(raiders = 30, fights = row.fights.map { it.copy(players = 39) })
         assertEquals("39 raiders", copy.size(NightFacts(bigKill, emptySet())))
     }
@@ -197,43 +212,40 @@ class GuildLogicTest {
     @Test
     fun `the meta lines and length words`() {
         val copy = HistoryCopy(resources(), clock())
-        assertEquals("1 boss · 1 kill · no wipes", copy.fights(NightFacts(night("qjyl6idgghfl"), emptySet())))
-        assertEquals("5 bosses · 5 kills · 1 wipe", copy.fights(NightFacts(night("g2k4der64mlv"), emptySet())))
-        assertEquals("1 h 47 m", copy.length(NightFacts(night("qjyl6idgghfl"), emptySet())))
-        val short = night("qjyl6idgghfl").copy(durationMs = 52 * 60_000L)
+        assertEquals("1 boss · 1 kill · 2 wipes", copy.fights(NightFacts(night(ony), emptySet())))
+        assertEquals("6 bosses · 6 kills · no wipes", copy.fights(NightFacts(night(brd), emptySet())))
+        assertEquals("5 bosses · 5 kills · 1 wipe", copy.fights(NightFacts(night(ubrs), emptySet())))
+        assertEquals("1 h 8 m", copy.length(NightFacts(night(ony), emptySet())))
+        val short = night(ony).copy(durationMs = 52 * 60_000L)
         assertEquals("52 m", copy.length(NightFacts(short, emptySet())))
     }
 
     @Test
     fun `you were there when one of your characters is present`() {
-        assertTrue(NightFacts(night("qjyl6idgghfl"), GuildFixture.mine).wasThere)
-        assertFalse(NightFacts(night("jz2vv7qhmvgk"), GuildFixture.mine).wasThere)
-        assertFalse(NightFacts(night("qjyl6idgghfl"), emptySet()).wasThere)
+        assertTrue(NightFacts(night(ony), GuildFixture.mine).wasThere)
+        assertFalse(NightFacts(night(brd), GuildFixture.mine).wasThere)
+        assertFalse(NightFacts(night(ony), emptySet()).wasThere)
     }
 
     @Test
     fun `a tap opens your raid night when you were there and it was planned, else the report`() {
-        assertEquals(HistoryTarget.Night(30), NightFacts(night("qjyl6idgghfl"), GuildFixture.mine).target)
-        assertEquals(
-            HistoryTarget.Report("https://foreversixty.gg/reports/jz2vv7qhmvgk"),
-            NightFacts(night("jz2vv7qhmvgk"), GuildFixture.mine).target,
-        )
-        assertEquals(
-            HistoryTarget.Report("https://foreversixty.gg/reports/g2k4der64mlv"),
-            NightFacts(night("g2k4der64mlv"), GuildFixture.mine).target,
-        )
+        assertEquals(HistoryTarget.Night(29), NightFacts(night(ony), GuildFixture.mine).target)
+        assertEquals(HistoryTarget.Report("https://foreversixty.gg/reports/$ony"), NightFacts(night(ony), emptySet()).target)
+        assertEquals(HistoryTarget.Report("https://foreversixty.gg/reports/$brd"), NightFacts(night(brd), GuildFixture.mine).target)
+        // There, but no planned raid: the report.
+        assertEquals(HistoryTarget.Report("https://foreversixty.gg/reports/$ubrs"), NightFacts(night(ubrs), GuildFixture.mine).target)
     }
 
     @Test
     fun `the history row reads as one sentence`() {
         val copy = HistoryCopy(resources(), clock())
         assertEquals(
-            "Onyxia's Lair, Thursday 17 December, 1 boss, 1 kill, no wipes, 38 raiders, 1 hour 47 minutes. You were there.",
-            copy.a11y(NightFacts(night("qjyl6idgghfl"), GuildFixture.mine)),
+            "Onyxia's Lair, Monday 14 December, 1 boss, 1 kill, 2 wipes, 38 raiders, 1 hour 8 minutes. You were there.",
+            copy.a11y(NightFacts(night(ony), GuildFixture.mine)),
         )
         assertEquals(
-            "Blackrock Depths, Tuesday 29 December, 6 bosses, 6 kills, no wipes, 5 players, 2 hours 11 minutes",
-            copy.a11y(NightFacts(night("mkrpcwlrhk4a"), GuildFixture.mine)),
+            "Blackrock Depths, Friday 18 December, 6 bosses, 6 kills, no wipes, 5 players, 2 hours 8 minutes",
+            copy.a11y(NightFacts(night(brd), GuildFixture.mine)),
         )
     }
 
@@ -247,7 +259,7 @@ class GuildLogicTest {
         pager.loadMore()
         assertEquals(23, (pager.state as Loadable.Loaded).value.size)
         assertEquals(MoreState.End, pager.more)
-        assertEquals(listOf("history:-", "history:MjAyNi0xMi0xMFQyMDo1NTowMFp8bjNhcDVrdzd0aml5"), service.calls)
+        assertEquals(listOf("history:-", "history:MjAyNi0xMi0xMFQyMzo0NTowMFp8bHQ0d3R4bG02ZGxq"), service.calls)
     }
 
     @Test

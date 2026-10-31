@@ -3,10 +3,10 @@ package gg.foreversixty.app.guild.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -202,10 +201,12 @@ private fun CountsCard(counts: GuildMemberCounts) {
 
 @Composable
 private fun Chips(controls: RosterControls) {
-    Row(
+    // The chips wrap, so the Sort chip stays whole at the largest text.
+    FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         RosterRole.entries.forEach { role ->
             Chip(stringResource(role.label), selected = controls.query.role == role) { controls.query = controls.query.copy(role = role) }
@@ -311,7 +312,7 @@ private fun Standing(standing: RosterStanding, copy: RosterCopy, showsBar: Boole
     when (standing) {
         is RosterStanding.Attended -> Column(horizontalAlignment = alignment, verticalArrangement = Arrangement.spacedBy(4.dp)) {
             if (showsBar) AttendanceBar(standing)
-            Text(copy.attendance(standing), style = FsType.monoMeta, color = FsColor.strong)
+            Text(copy.attendance(standing), style = FsType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.strong)
         }
         RosterStanding.NoNights -> Text(
             stringResource(R.string.roster_noNights),

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -42,6 +41,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
@@ -188,15 +188,13 @@ private fun Loaded(
 @Composable
 fun GuildHeadView(head: GuildHead) {
     val crest = @Composable {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(40.dp).clip(CircleShape).background(FsColor.raised).border(1.dp, FsColor.line, CircleShape),
-        ) {
-            if (head.crestUrl != null) {
+        // The guild crest; with none, the faction mark (v1 spec 4.3, as the site's GuildCrest falls back).
+        if (head.crestUrl != null) {
+            Box(Modifier.size(40.dp).clip(CircleShape).background(FsColor.raised).border(1.dp, FsColor.line, CircleShape)) {
                 AsyncImage(model = head.crestUrl, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.size(40.dp))
-            } else {
-                Icon(Icons.Filled.Star, contentDescription = null, tint = if (head.faction == "alliance") FsColor.alliance else FsColor.horde)
             }
+        } else {
+            FactionMark(head.faction.orEmpty(), 40.dp)
         }
     }
     val text = @Composable {

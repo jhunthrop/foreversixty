@@ -435,7 +435,7 @@ class RaidLogicTest {
         val content = (model.state as RaidsTabState.Loaded).content
         assertEquals(3, content.planned.size)
         assertEquals(2, content.waiting)
-        assertEquals("Horde · US PvP · 24 on the roster", content.head.line)
+        assertEquals("Horde · US PvP · 38 on the roster", content.head.line)
     }
 
     @Test
