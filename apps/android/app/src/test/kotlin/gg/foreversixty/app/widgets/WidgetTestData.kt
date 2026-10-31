@@ -36,6 +36,9 @@ object WidgetTestData {
     /** A next_raid patch with that many signed up (the Live Activity's 38 of 40). */
     fun signedUp(n: Int) = JsonObject(mapOf("signed_up" to kotlinx.serialization.json.JsonPrimitive(n)))
 
+    /** A next_raid patch for a cancelled raid. */
+    val cancelled = JsonObject(mapOf("status" to kotlinx.serialization.json.JsonPrimitive("cancelled"), "can_sign_up" to kotlinx.serialization.json.JsonPrimitive(false)))
+
     /** The board's moment: Tuesday 8 December, 5:39 pm in Chicago, 2 days 2 h before the pull. */
     val boardNow: Instant = Instant.parse("2026-12-08T23:39:00Z")
 }

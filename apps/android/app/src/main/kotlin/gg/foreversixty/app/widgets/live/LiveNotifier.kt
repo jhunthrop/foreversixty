@@ -9,12 +9,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
+import androidx.compose.ui.graphics.toArgb
+import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 import gg.foreversixty.app.raids.push.RaidPushCategory
@@ -65,34 +68,39 @@ class LiveNotifier(private val context: Context) {
         const val RAID_TAG = "live-raid"
         private const val RAID_ID = 1401
         private const val SIM_ID = 1402
+        private const val CANCELLED_FOR_MILLIS = 5L * 60 * 1000
 
         fun simTag(simId: String) = "live-sim-$simId"
 
         /** The raid countdown: Late and Out answer in place through the raids lane's receiver. */
         fun raidNotification(context: Context, content: RaidLiveContent): Notification {
-            val data = mapOf("guild_id" to content.guildId.toString(), "raid_id" to content.raidId.toString())
             val builder = NotificationCompat.Builder(context, CHANNEL_RAID)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification_seal)
+                .setColor(FsColor.gold.toArgb())
                 .setContentTitle(content.title)
                 .setContentText(content.text)
-                .setSubText(content.subText)
+                .setSubText(content.guild)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content.bigText))
-                .setWhen(content.countdownTo.toEpochMilli())
-                .setShowWhen(true)
-                .setUsesChronometer(true)
-                .setChronometerCountDown(true)
-                .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setTicker(content.description)
                 .setContentIntent(open(context, DeepLink.Raid(content.guildId, content.raidId).url()))
+            val target = content.countdownTo
+            if (content.cancelled || target == null) {
+                // Cancelled: no countdown, no buttons, gone after 5 minutes.
+                return builder.setShowWhen(false).setOngoing(false).setAutoCancel(true).setTimeoutAfter(CANCELLED_FOR_MILLIS).build()
+            }
+            builder.setWhen(target.toEpochMilli()).setShowWhen(true).setUsesChronometer(true).setChronometerCountDown(true).setOngoing(true)
+            val data = mapOf("guild_id" to content.guildId.toString(), "raid_id" to content.raidId.toString())
             RaidNotificationActions.actions(context, RaidPushCategory.LIVE, data, RAID_TAG, RAID_ID).forEach(builder::addAction)
             return builder.build()
         }
 
         fun simNotification(context: Context, sim: SimLive, content: SimLiveContent): Notification {
             val builder = NotificationCompat.Builder(context, CHANNEL_SIMS)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification_seal)
+                // Gold tints the icon and the progress bar (the board's bar), not the system blue.
+                .setColor(FsColor.gold.toArgb())
                 .setContentTitle(content.title)
                 .setContentText(content.text)
                 .setSubText(content.subText)
@@ -102,7 +110,14 @@ class LiveNotifier(private val context: Context) {
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setContentIntent(open(context, DeepLink.Sim(sim.simId).url()))
-            content.progress?.let { (done, max) -> builder.setProgress(max, done, content.indeterminate) }
+            content.progress?.let { (done, max) ->
+                val body = RemoteViews(context.packageName, R.layout.notification_sim_progress).apply {
+                    setTextViewText(R.id.sim_title, content.title)
+                    setTextViewText(R.id.sim_text, content.text)
+                    setProgressBar(R.id.sim_progress, max, done, content.indeterminate)
+                }
+                builder.setStyle(NotificationCompat.DecoratedCustomViewStyle()).setCustomContentView(body).setCustomBigContentView(body)
+            }
             return builder.build()
         }
 

@@ -71,7 +71,10 @@ class WidgetScreenshotTest {
     private val medium = DpSize(360.dp, 170.dp)
     private var shown by mutableStateOf<Pair<RemoteViews, DpSize>?>(null)
 
-    private fun capture(name: String, size: DpSize, large: Boolean = false, content: @Composable () -> Unit) {
+    private var ground by mutableStateOf(WALLPAPER)
+
+    private fun capture(name: String, size: DpSize, large: Boolean = false, wallpaper: Brush = WALLPAPER, content: @Composable () -> Unit) {
+        ground = wallpaper
         if (large) RuntimeEnvironment.setFontScale(2f)
         val context = ApplicationProvider.getApplicationContext<Context>()
         val views = runBlocking { GlanceRemoteViews().compose(context, size) { content() }.remoteViews }
@@ -79,7 +82,7 @@ class WidgetScreenshotTest {
         if (shown == null) {
             compose.setContent {
                 shown?.let { (remote, dp) ->
-                    Box(Modifier.wrapContentSize(Alignment.TopStart).testTag(CAPTURE).background(WALLPAPER).padding(16.dp)) {
+                    Box(Modifier.wrapContentSize(Alignment.TopStart).testTag(CAPTURE).background(ground).padding(16.dp)) {
                         key(remote) { AndroidView(factory = { remote.apply(it, null) }, modifier = Modifier.size(dp)) }
                     }
                 }
@@ -149,6 +152,17 @@ class WidgetScreenshotTest {
     }
 
     @Test
+    fun onLightAndDarkWallpaper() {
+        val raid = figures().raid(WidgetTestData.snapshot(), now)
+        val upgrades = figures().upgrades(WidgetTestData.snapshot())
+        val icons = upgrades.rows.associate { it.itemId to repoIcon(it.icon, it.quality) }
+        capture("and-raid4x2-in-light", medium, wallpaper = WALLPAPER_LIGHT) { RaidWidgetContent(raid, true, "us/pvp/lightningbolltz") }
+        capture("and-raid4x2-in-dark", medium, wallpaper = WALLPAPER_DARK) { RaidWidgetContent(raid, true, "us/pvp/lightningbolltz") }
+        capture("and-upgrade4x2-light", medium, wallpaper = WALLPAPER_LIGHT) { UpgradeWidgetContent(upgrades, true, icons) }
+        capture("and-upgrade4x2-dark", medium, wallpaper = WALLPAPER_DARK) { UpgradeWidgetContent(upgrades, true, icons) }
+    }
+
+    @Test
     fun nextRaidMediumLargeText() {
         raid("and-raid4x2-in-fs2", WidgetTestData.snapshot(), medium = true, large = true)
     }
@@ -164,18 +178,19 @@ class WidgetScreenshotTest {
     private fun upgrades(name: String, snapshot: WidgetSnapshot, medium: Boolean, large: Boolean = false) {
         val figures = figures().upgrades(snapshot)
         // The repo's own icon files stand in for the cached CDN files.
-        val icons = figures.rows.associate { row ->
-            val file = File(repoRoot, "data/builds/${HomeFixtures.BUILD}/icons/${row.icon}.webp")
-            row.itemId to WidgetIcons.framed(BitmapFactory.decodeFile(file.path), row.quality)
-        }
+        val icons = figures.rows.associate { row -> row.itemId to repoIcon(row.icon, row.quality) }
         capture(name, if (medium) this.medium else small, large) { UpgradeWidgetContent(figures, medium, icons) }
     }
+
+    private fun repoIcon(icon: String, quality: Int) =
+        WidgetIcons.framed(BitmapFactory.decodeFile(File(repoRoot, "data/builds/${HomeFixtures.BUILD}/icons/$icon.webp").path), quality)
 
     @Test
     fun nextUpgrade() {
         upgrades("and-upgrade2x2", WidgetTestData.snapshot(), medium = false)
         upgrades("and-upgrade4x2", WidgetTestData.snapshot(), medium = true)
         upgrades("and-upgrade2x2-no-gear", WidgetTestData.snapshot("widget.get.no-guild"), medium = false)
+        upgrades("and-upgrade4x2-no-gear", WidgetTestData.snapshot("widget.get.no-guild"), medium = true)
         upgrades("and-upgrade2x2-no-home", WidgetTestData.snapshot().let { it.copy(widget = it.widget.copy(upgrades = null)) }, medium = false)
     }
 
@@ -187,6 +202,8 @@ class WidgetScreenshotTest {
 
 /** A dark wallpaper behind the widgets, like the board's home screen. */
 private val WALLPAPER = Brush.verticalGradient(listOf(Color(0xFF3A2414), Color(0xFF0B1220)))
+private val WALLPAPER_LIGHT = Brush.verticalGradient(listOf(Color(0xFFE9EEF5), Color(0xFFC9D6E6)))
+private val WALLPAPER_DARK = Brush.verticalGradient(listOf(Color(0xFF05070A), Color(0xFF111622)))
 
 private const val CAPTURE = "widget"
 private val repoRoot: File = generateSequence(File("").absoluteFile) { it.parentFile }.first { File(it, "data/builds").isDirectory }

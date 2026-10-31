@@ -33,6 +33,7 @@ import gg.foreversixty.app.widgets.logic.RaidLiveContent
 import gg.foreversixty.app.widgets.logic.SimLive
 import gg.foreversixty.app.widgets.logic.SimLiveContent
 import gg.foreversixty.app.widgets.logic.WidgetFigures
+import gg.foreversixty.app.widgets.tile.TileFigures
 import java.time.Instant
 import java.time.ZoneId
 import org.junit.Rule
@@ -76,13 +77,41 @@ class LiveScreenshotTest {
         compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = TOLERANT)
     }
 
+    /** The raid card at [at]; the chronometer counts against the device clock, so it is re-based on the capture's own now. */
+    private fun raid(name: String, at: Instant, patch: kotlinx.serialization.json.JsonObject = WidgetTestData.signedUp(38)) {
+        val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago")).raid(WidgetTestData.snapshot(patch = patch), at)
+        val content = requireNotNull(RaidLiveContent.of(figures, resources()))
+        val left = content.countdownTo?.let { java.time.Duration.between(at, it).seconds }
+        val rebased = left?.let { content.copy(countdownTo = Instant.ofEpochMilli(org.robolectric.shadows.ShadowSystem.currentTimeMillis()).plusSeconds(it)) } ?: content
+        notification(name, LiveNotifier.raidNotification(context, rebased))
+    }
+
     @Test
-    fun raidCountdown() {
-        val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago"))
-            .raid(WidgetTestData.snapshot(patch = WidgetTestData.signedUp(38)), Instant.parse("2026-12-11T01:21:48Z"))
-        // The chronometer counts against the device clock: 38:12 to go from the capture's own now.
-        val content = requireNotNull(RaidLiveContent.of(figures)).copy(countdownTo = Instant.ofEpochMilli(org.robolectric.shadows.ShadowSystem.currentTimeMillis()).plusSeconds(2292))
-        notification("and-live-raid", LiveNotifier.raidNotification(context, content))
+    fun raidCountdown() = raid("and-live-raid", Instant.parse("2026-12-11T01:21:48Z"))
+
+    @Test
+    fun raidCountdownFiveMinutes() = raid("and-live-raid-5-min", Instant.parse("2026-12-11T01:55:00Z"))
+
+    @Test
+    fun raidCancelled() = raid("and-live-raid-cancelled", Instant.parse("2026-12-11T01:21:48Z"), WidgetTestData.cancelled)
+
+    @Test
+    fun simFailed() {
+        val failed = SimLive("k3v9q2m8x1ab", "Elemental · Top Gear", SimLive.State.Failed, 12, 64, null, null)
+        notification("and-live-sim-failed", LiveNotifier.simNotification(context, failed, SimLiveContent.of(failed, resources())))
+    }
+
+    @Test
+    fun tileActive() = settings("and-tile-active", large = false) {
+        val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago")).raid(WidgetTestData.snapshot(), WidgetTestData.boardNow)
+        TileRender(TileFigures.of(figures, resources()))
+    }
+
+    @Test
+    fun tileNoRaid() = settings("and-tile-no-raid", large = false) {
+        val base = WidgetTestData.snapshot()
+        val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago")).raid(base.copy(widget = base.widget.copy(nextRaid = null)), WidgetTestData.boardNow)
+        TileRender(TileFigures.of(figures, resources()))
     }
 
     @Test
@@ -109,7 +138,7 @@ class LiveScreenshotTest {
 
     @Test
     fun liveSurfacesSettings() = settings("and-live-settings", large = false) {
-        LiveSurfacesSection(raidOn = true, simOn = false, showsSim = true, onRaid = {}, onSim = {})
+        LiveSurfacesSection(raidOn = true, simOn = true, showsSim = true, onRaid = {}, onSim = {})
     }
 
     @Test
@@ -117,6 +146,32 @@ class LiveScreenshotTest {
         LiveSurfacesSection(raidOn = true, simOn = true, showsSim = true, onRaid = {}, onSim = {})
     }
 }
+
+/**
+ * The quick-settings tile's state as Android 13's shade draws a tile (the board's F14.3 pill): the
+ * system UI cannot be rendered on the JVM, so this pictures what [TileFigures] hands the tile, the
+ * glyph, the label and the subtitle, active in the accent, inactive in the tile grey.
+ */
+@Composable
+private fun TileRender(tile: TileFigures) {
+    androidx.compose.foundation.layout.Row(
+        Modifier.width(196.dp).tileGround(tile.active).padding(horizontal = 18.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        androidx.compose.material3.Icon(
+            androidx.compose.ui.res.painterResource(gg.foreversixty.app.R.drawable.ic_tile_raid), contentDescription = null,
+            tint = if (tile.active) FsColor.bg else FsColor.text,
+        )
+        androidx.compose.foundation.layout.Spacer(Modifier.width(12.dp))
+        androidx.compose.foundation.layout.Column {
+            androidx.compose.material3.Text(tile.label, color = if (tile.active) FsColor.bg else FsColor.strong)
+            androidx.compose.material3.Text(tile.subtitle, color = if (tile.active) FsColor.bg else FsColor.muted)
+        }
+    }
+}
+
+private fun Modifier.tileGround(active: Boolean) =
+    background(if (active) FsColor.gold else Color(0xFF283041), androidx.compose.foundation.shape.RoundedCornerShape(40.dp))
 
 private const val TAG = "live"
 private val SHADE = Color(0xFFDADDE3)

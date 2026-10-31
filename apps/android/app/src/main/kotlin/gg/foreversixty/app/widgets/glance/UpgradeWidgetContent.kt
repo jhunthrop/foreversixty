@@ -24,6 +24,7 @@ import androidx.glance.semantics.contentDescription
 import androidx.glance.semantics.semantics
 import androidx.glance.text.Text
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.crestOf
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.widgets.logic.UpgradeFigures
 import gg.foreversixty.app.widgets.logic.UpgradeLine
@@ -36,23 +37,31 @@ import gg.foreversixty.app.widgets.logic.UpgradeLine
 @Composable
 fun UpgradeWidgetContent(figures: UpgradeFigures, medium: Boolean, icons: Map<Int, Bitmap>) {
     val context = LocalContext.current
+    // Above the default size the rows tighten so the footer stays whole at the type cap (spec §9).
+    val scaled = context.resources.configuration.fontScale > 1f
     Box(
         GlanceModifier.fillMaxSize().background(ImageProvider(R.drawable.widget_card)).padding(WidgetDesign.padding)
             .clickable(openApp(context)),
     ) {
         Column(GlanceModifier.fillMaxSize().semantics { contentDescription = figures.description }) {
-            Text(
-                (if (medium && figures.sentence == null) figures.header else context.getString(R.string.widget_nextUpgrade)).uppercase(),
-                style = widgetStyles().micro, maxLines = 1,
-            )
-            Spacer(GlanceModifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                crestOf(figures.className)?.let {
+                    Image(ImageProvider(it), contentDescription = null, modifier = GlanceModifier.size(WidgetDesign.sealSize))
+                    Spacer(GlanceModifier.width(6.dp))
+                }
+                Text(
+                    WidgetDesign.tracked(if (medium && figures.sentence == null) figures.header else context.getString(R.string.widget_nextUpgrade)),
+                    style = widgetStyles().micro, maxLines = 1,
+                )
+            }
+            Spacer(GlanceModifier.height(if (scaled) 4.dp else 8.dp))
             val sentence = figures.sentence
             when {
                 sentence != null -> {
                     Text(sentence, style = if (figures.opensApp) widgetStyles().link else widgetStyles().body, maxLines = 3)
                 }
                 medium -> {
-                    figures.rows.forEach { Row(it, icons[it.itemId]) }
+                    figures.rows.forEach { UpgradeRow(it, icons[it.itemId], scaled) }
                     Spacer(GlanceModifier.defaultWeight())
                     figures.footer?.let { Text(it, style = widgetStyles().muted, maxLines = 1) }
                 }
@@ -69,9 +78,10 @@ fun UpgradeWidgetContent(figures: UpgradeFigures, medium: Boolean, icons: Map<In
 }
 
 @Composable
-private fun Row(line: UpgradeLine, icon: Bitmap?) {
-    Row(GlanceModifier.fillMaxWidth().padding(vertical = 3.dp), verticalAlignment = Alignment.CenterVertically) {
-        Image(ImageProvider(icon ?: WidgetIcons.framed(null, line.quality)), contentDescription = null, modifier = GlanceModifier.size(28.dp))
+private fun UpgradeRow(line: UpgradeLine, icon: Bitmap?, scaled: Boolean) {
+    Row(GlanceModifier.fillMaxWidth().padding(vertical = if (scaled) 1.dp else 3.dp), verticalAlignment = Alignment.CenterVertically) {
+        Image(ImageProvider(icon ?: WidgetIcons.framed(null, line.quality)), contentDescription = null,
+            modifier = GlanceModifier.size(if (scaled) 24.dp else 28.dp))
         Spacer(GlanceModifier.width(8.dp))
         // The one place a name may cut: a widget's item name on one line (spec §9).
         Text(line.name, style = widgetStyles().quality(ItemQuality(line.quality).text, 13f), maxLines = 1, modifier = GlanceModifier.defaultWeight())

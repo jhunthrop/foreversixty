@@ -102,7 +102,7 @@ class WidgetFiguresTest {
         val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago")).raid(snapshot, WidgetTestData.boardNow)
         assertEquals(RaidSurfaceState.NoRaid, figures.state)
         assertEquals("No raid planned", figures.title)
-        assertEquals("Last: Onyxia's Lair, Thu 3 Dec.", figures.subtitle)
+        assertEquals("Last: Onyxia's Lair, 3\u00A0Dec.", figures.subtitle)
     }
 
     @Test
@@ -110,7 +110,7 @@ class WidgetFiguresTest {
         val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago"))
         val pending = figures.raid(WidgetTestData.snapshot(), WidgetTestData.boardNow, SignupOverlay(7, "late"))
         assertEquals(SignupState.Late, pending.checked)
-        assertEquals("Late · DPS", pending.tag)
+        assertEquals("Late", pending.tag)
         val failed = figures.raid(
             WidgetTestData.snapshot(), WidgetTestData.boardNow,
             SignupOverlay(7, "out", failedUntil = WidgetTestData.boardNow.plusSeconds(10).toString()),

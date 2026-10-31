@@ -56,6 +56,9 @@ data class RaidFigures(
     /** The instant the countdown runs to: invites, else the pull. */
     val liveTarget: Instant? = null,
     val liveYou: String? = null,
+    /** Cancelled inside the countdown's window: the notification says `Cancelled` for 5 minutes. */
+    val liveCancelled: Boolean = false,
+    val guildName: String? = null,
     val description: String,
 )
 
@@ -72,6 +75,8 @@ data class UpgradeFigures(
     /** No Home answer behind the snapshot yet: the widget says `Open the app`. */
     val opensApp: Boolean,
     val description: String,
+    /** The character's class, for the crest beside the label (one crest language). */
+    val className: String? = null,
 )
 
 /**
@@ -94,7 +99,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         val raid = widget.nextRaid ?: return wordy(
             RaidSurfaceState.NoRaid,
             res.getString(R.string.widget_noRaid),
-            widget.lastRaid?.let { res.getString(R.string.widget_lastRaid, it.zoneName, clock.shortDate(Instant.parse(it.startsAt))) },
+            widget.lastRaid?.let { res.getString(R.string.widget_lastRaid, it.zoneName, dayMonth(Instant.parse(it.startsAt))) },
             stale,
         )
         return raidFigures(raid, widget.character?.name.orEmpty(), now, stale, overlay?.takeIf { it.raidId == raid.raidId })
@@ -122,13 +127,16 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             raid.status == STATUS_LOCKED -> res.getString(R.string.widget_locked) to TagKind.Locked
             asksSpec -> answer to TagKind.ChooseSpec
             state == null -> answer to TagKind.NotSignedUp
-            else -> answer to answerKind(state)
+            // `In · DPS` names the role you come as; Late, Bench and Out stand alone (spec §5.6).
+            state == SignupState.In -> answer to TagKind.In
+            else -> answerShort to answerKind(state)
         }
         val inlineAnswer = if (kind == TagKind.Cancelled || kind == TagKind.Locked) tag else answerShort
         val cancelled = raid.status == STATUS_CANCELLED
         val span = if (cancelled) null else Countdown.of(start, end, now)
         val signedUp = raid.size?.let { res.getString(R.string.widget_ofSize, raid.signedUp, it) } ?: raid.signedUp.toString()
         val live = liveFigures(raid, start, now, state, cancelled)
+        val inWindow = state?.isComing == true && inLiveWindow(raid, start, now)
         val time = weekday(start) + " " + clock.clock(start)
         val timeShort = weekday(start) + " " + shortClock(start)
         return RaidFigures(
@@ -141,6 +149,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             stale = stale, buttons = raid.canSignUp && raid.status == STATUS_OPEN, checked = state,
             notSaved = overlay?.takeIf { it.isFailed(now) }?.signupState, asksSpec = asksSpec,
             liveActive = live != null, liveTitle = live?.first, liveUntil = live?.second,
+            liveCancelled = cancelled && inWindow, guildName = raid.guildName,
             liveTarget = Instant.parse(raid.inviteAt ?: raid.startsAt),
             liveYou = state?.let { res.getString(R.string.live_you, res.getString(it.label), role, name) },
             description = description(raid, start, span, state, role, signedUp),
@@ -150,18 +159,23 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
     /** The countdown's title and `until` line while the Live window is open, else null. */
     private fun liveFigures(raid: WidgetNextRaid, start: Instant, now: Instant, state: SignupState?, cancelled: Boolean): Pair<String, String>? {
         val target = Instant.parse(raid.inviteAt ?: raid.startsAt)
-        val open = !cancelled && state?.isComing == true &&
-            now >= target.minus(LIVE_LEAD) && now < start.plus(LIVE_TAIL)
-        if (!open) return null
+        if (cancelled || state?.isComing != true || !inLiveWindow(raid, start, now)) return null
         val minutes = ceilMinutes(Duration.between(now, target))
+        // The title names invites only when the raid has an invite time; else the pull.
+        val invites = raid.inviteAt != null
         val title = when {
-            minutes <= 0 -> res.getString(R.string.live_notifTitleNow, raid.zoneName)
-            minutes == 1L -> res.getString(R.string.live_notifTitleOne, raid.zoneName)
-            else -> res.getString(R.string.live_notifTitle, raid.zoneName, minutes.toInt())
+            minutes <= 0 -> res.getString(if (invites) R.string.live_notifTitleNow else R.string.live_pullTitleNow, raid.zoneName)
+            minutes == 1L -> res.getString(if (invites) R.string.live_notifTitleOne else R.string.live_pullTitleOne, raid.zoneName)
+            else -> res.getString(if (invites) R.string.live_notifTitle else R.string.live_pullTitle, raid.zoneName, minutes.toInt())
         }
         val until = raid.inviteAt?.let { res.getString(R.string.live_invites, clock.clock(Instant.parse(it))) }
             ?: res.getString(R.string.live_starts, clock.clock(start))
         return title to until
+    }
+
+    private fun inLiveWindow(raid: WidgetNextRaid, start: Instant, now: Instant): Boolean {
+        val target = Instant.parse(raid.inviteAt ?: raid.startsAt)
+        return now >= target.minus(LIVE_LEAD) && now < start.plus(LIVE_TAIL)
     }
 
     private fun description(raid: WidgetNextRaid, start: Instant, span: Countdown?, state: SignupState?, role: String, signedUp: String): String {
@@ -175,14 +189,15 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
 
     fun upgrades(snapshot: WidgetSnapshot?): UpgradeFigures {
         val name = snapshot?.widget?.character?.name.orEmpty()
+        val className = snapshot?.widget?.character?.className
         val header = res.getString(R.string.widget_upgrades, name)
         val upgrades = snapshot?.widget?.upgrades
             ?: return UpgradeFigures(header, emptyList(), null, null, res.getString(R.string.widget_openApp), opensApp = true,
-                description = res.getString(R.string.widget_nextUpgrade))
+                description = res.getString(R.string.widget_nextUpgrade), className = className)
         if (upgrades.state != STATE_OK) {
             val sentence = upgrades.sentence ?: res.getString(R.string.widget_noGear)
             return UpgradeFigures(header, emptyList(), null, null, sentence, opensApp = false,
-                description = res.getString(R.string.widget_nextUpgrade) + ". " + sentence)
+                description = res.getString(R.string.widget_nextUpgrade) + ". " + sentence, className = className)
         }
         val unit = unitWord(upgrades.unit)
         val rows = upgrades.rows.map { row ->
@@ -196,6 +211,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             sentence = null, opensApp = false,
             description = rows.firstOrNull()?.let { res.getString(R.string.widget_a11y_upgrade, it.slot, it.name, it.gain) }
                 ?: res.getString(R.string.widget_nextUpgrade),
+            className = className,
         )
     }
 
@@ -257,6 +273,9 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             if (span.days == 0 && span.minutes > 0) add(res.getQuantityString(R.plurals.widget_a11y_minutes, span.minutes, span.minutes))
         }.joinToString(" ")
     }
+
+    /** `3 Dec`, the day and month held together by a no-break space so the month never wraps alone. */
+    private fun dayMonth(at: Instant): String = DateTimeFormatter.ofPattern("d MMM", LOCALE).format(at.atZone(zone)).replace(' ', '\u00A0')
 
     private fun weekday(at: Instant): String = DateTimeFormatter.ofPattern("EEE", LOCALE).format(at.atZone(zone))
 

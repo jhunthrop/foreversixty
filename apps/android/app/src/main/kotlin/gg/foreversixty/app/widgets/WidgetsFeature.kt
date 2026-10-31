@@ -66,13 +66,13 @@ class WidgetsFeature(
     suspend fun syncRaidLive() {
         val at = now()
         val figures = figures().raid(store.snapshot(), at, store.overlay())
-        val content = RaidLiveContent.of(figures)?.takeIf { store.liveSetting(LiveKind.Raid) }
+        val content = RaidLiveContent.of(figures, context.resources)?.takeIf { store.liveSetting(LiveKind.Raid) }
         if (content == null) {
             notifier.cancelRaid()
             registrations.end(LiveKind.Raid)
         } else {
             notifier.showRaid(content)
-            registrations.start(LiveKind.Raid, content.raidId.toString())
+            if (content.cancelled) registrations.end(LiveKind.Raid) else registrations.start(LiveKind.Raid, content.raidId.toString())
         }
         figures.liveTarget?.minus(WidgetFigures.LIVE_LEAD)?.takeIf { it > at }?.let {
             WidgetRefreshWork.atWindow(context, Duration.between(at, it))

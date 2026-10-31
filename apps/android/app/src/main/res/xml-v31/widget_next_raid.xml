@@ -4,6 +4,7 @@
     android:configure="gg.foreversixty.app.widgets.WidgetConfigActivity"
     android:description="@string/widget_gallery_raid"
     android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewImage="@drawable/widget_preview_raid"
     android:minWidth="110dp"
     android:minHeight="110dp"
     android:minResizeWidth="110dp"

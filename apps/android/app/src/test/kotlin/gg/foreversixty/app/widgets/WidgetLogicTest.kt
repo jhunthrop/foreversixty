@@ -149,14 +149,21 @@ class WidgetLogicTest {
     fun `the raid countdown reads the snapshot's figures`() {
         val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago"))
         val snapshot = WidgetTestData.snapshot()
-        assertNull(RaidLiveContent.of(figures.raid(snapshot, now)))
+        assertNull(RaidLiveContent.of(figures.raid(snapshot, now), resources()))
         val inWindow = figures.raid(snapshot, Instant.parse("2026-12-11T01:21:48Z"))
-        val content = requireNotNull(RaidLiveContent.of(inWindow))
-        assertEquals("Invites for Onyxia's Lair in 39 minutes", content.title)
+        val content = requireNotNull(RaidLiveContent.of(inWindow, resources()))
+        assertEquals(inWindow.liveTitle, content.title)
+        assertEquals("Onyxia's Lair starts in 39 minutes", content.title)
         assertEquals("You are In · DPS · Lightningbolltz", content.text)
-        assertEquals("until the pull at 8:00 pm", content.subText)
-        assertEquals(inWindow.signedUp, content.bigText.lines().last())
+        assertEquals("OLYMPUS XXVII", content.guild)
+        assertEquals(listOf("until the pull at 8:00 pm", "You are In · DPS · Lightningbolltz", "24 of 40 signed up"), content.bigText.lines())
         assertEquals(Instant.parse("2026-12-11T02:00:00Z"), content.countdownTo)
+        val cancelled = WidgetTestData.snapshot(patch = WidgetTestData.cancelled)
+        val gone = requireNotNull(RaidLiveContent.of(figures.raid(cancelled, Instant.parse("2026-12-11T01:21:48Z")), resources()))
+        assertTrue(gone.cancelled)
+        assertEquals("Cancelled", gone.text)
+        assertNull(gone.countdownTo)
+        assertNull("a cancelled raid days away shows nothing", RaidLiveContent.of(figures.raid(cancelled, now), resources()))
     }
 
     @Test

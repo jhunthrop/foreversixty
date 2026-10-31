@@ -39,17 +39,25 @@ internal object WidgetDesign {
     fun styles(fontScale: Float): WidgetStyles = WidgetStyles(if (fontScale > MAX_SCALE) MAX_SCALE / fontScale else 1f)
 
     fun tagColor(kind: TagKind): Color = when (kind) {
-        TagKind.In, TagKind.Late -> FsColor.kill
+        // Kill is for `In · DPS` alone; Late, Bench and Out are muted words (spec §5.6).
+        TagKind.In -> FsColor.kill
         TagKind.NotSignedUp, TagKind.ChooseSpec -> FsColor.gold
         TagKind.Cancelled -> FsColor.wipe
-        TagKind.Bench, TagKind.Out, TagKind.Locked -> FsColor.muted
+        TagKind.Late, TagKind.Bench, TagKind.Out, TagKind.Locked -> FsColor.muted
     }
 
+    /**
+     * Tracked caps for the micro labels (`N E X T  R A I D` on the board): Glance's TextStyle has
+     * no letter-spacing, so a hair space sits between the letters. The widget's description carries
+     * the plain words for TalkBack.
+     */
+    fun tracked(text: String): String = text.uppercase().toList().joinToString("\u200A")
+
     fun tagBackground(kind: TagKind): Int = when (kind) {
-        TagKind.In, TagKind.Late -> R.drawable.widget_tag_kill
+        TagKind.In -> R.drawable.widget_tag_kill
         TagKind.NotSignedUp, TagKind.ChooseSpec -> R.drawable.widget_tag_gold
         TagKind.Cancelled -> R.drawable.widget_tag_wipe
-        TagKind.Bench, TagKind.Out, TagKind.Locked -> R.drawable.widget_tag_muted
+        TagKind.Late, TagKind.Bench, TagKind.Out, TagKind.Locked -> R.drawable.widget_tag_muted
     }
 }
 

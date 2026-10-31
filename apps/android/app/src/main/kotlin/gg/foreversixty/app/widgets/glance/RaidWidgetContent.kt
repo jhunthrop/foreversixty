@@ -35,6 +35,7 @@ import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.widgets.logic.RaidFigures
 import gg.foreversixty.app.widgets.logic.RaidSurfaceState
+import gg.foreversixty.app.widgets.logic.TagKind
 
 /** A widget tap opens the app on the right screen (spec §5.6); null opens the app where it was. */
 internal fun openApp(context: Context, url: String? = null): Action {
@@ -97,9 +98,9 @@ private fun MediumRaid(figures: RaidFigures, characterKey: String?) {
         }
         Spacer(GlanceModifier.defaultWeight())
         Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Box(GlanceModifier.defaultWeight()) {
-                if (!figures.buttons || figures.stale != null) Foot(figures)
-            }
+            // The answer in words whenever no button says it: locked, cancelled, not signed up, choose a spec.
+            val unanswered = figures.tagKind == TagKind.NotSignedUp || figures.tagKind == TagKind.ChooseSpec
+            Box(GlanceModifier.defaultWeight()) { Foot(figures, showsTag = !figures.buttons || unanswered) }
             if (figures.buttons) Answers(figures, characterKey)
         }
     }
@@ -110,7 +111,7 @@ private fun Label(text: String, modifier: GlanceModifier = GlanceModifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Image(ImageProvider(R.drawable.brand_seal), contentDescription = null, modifier = GlanceModifier.size(WidgetDesign.sealSize))
         Spacer(GlanceModifier.width(6.dp))
-        Text(text.uppercase(), style = widgetStyles().micro, maxLines = 1)
+        Text(WidgetDesign.tracked(text), style = widgetStyles().micro, maxLines = 1)
     }
 }
 
@@ -125,18 +126,21 @@ private fun RaidHead(figures: RaidFigures) {
     figures.countdown?.let { Text(it, style = widgetStyles().countdown, maxLines = 1) }
 }
 
-/** The foot: `Updated 14 h ago` on old data, else the answer tag. */
+/** The foot: the answer tag, and on old data `Updated 14 h ago` under it (the widget stays whole). */
 @Composable
-private fun Foot(figures: RaidFigures) {
-    val stale = figures.stale
-    if (stale != null) {
-        Text(stale, style = widgetStyles().muted, maxLines = 1)
-        return
-    }
-    val tag = figures.tag ?: return
-    val kind = figures.tagKind ?: return
-    Box(GlanceModifier.background(ImageProvider(WidgetDesign.tagBackground(kind))).padding(horizontal = 8.dp, vertical = 3.dp)) {
-        Text(tag.uppercase(), style = widgetStyles().tag(kind), maxLines = 1)
+private fun Foot(figures: RaidFigures, showsTag: Boolean = true) {
+    Column {
+        val tag = figures.tag
+        val kind = figures.tagKind
+        if (showsTag && tag != null && kind != null) {
+            Box(GlanceModifier.background(ImageProvider(WidgetDesign.tagBackground(kind))).padding(horizontal = 8.dp, vertical = 3.dp)) {
+                Text(WidgetDesign.tracked(tag), style = widgetStyles().tag(kind), maxLines = 1)
+            }
+        }
+        figures.stale?.let {
+            if (showsTag && tag != null) Spacer(GlanceModifier.height(4.dp))
+            Text(it, style = widgetStyles().muted, maxLines = 1)
+        }
     }
 }
 

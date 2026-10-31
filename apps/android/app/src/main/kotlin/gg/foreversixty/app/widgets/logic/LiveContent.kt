@@ -6,30 +6,43 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 
-/** The ongoing raid notification's words (spec §5.6), all from [RaidFigures]: never a second source. */
+/**
+ * The ongoing raid notification's words (spec §5.6, board F14.3), all from [RaidFigures]: never a
+ * second source. The guild names the card's header; [cancelled] replaces the countdown with
+ * `Cancelled` for 5 minutes.
+ */
 data class RaidLiveContent(
     val title: String,
     val text: String,
-    val subText: String,
+    val guild: String,
     val bigText: String,
-    val countdownTo: Instant,
+    val countdownTo: Instant?,
     val guildId: Long,
     val raidId: Long,
     val description: String,
+    val cancelled: Boolean = false,
 ) {
     companion object {
         /** Null outside the countdown's window: nothing to show, so the notification goes. */
-        fun of(figures: RaidFigures): RaidLiveContent? {
+        fun of(figures: RaidFigures, res: Resources): RaidLiveContent? {
+            val guildId = figures.guildId ?: return null
+            val raidId = figures.raidId ?: return null
+            val guild = figures.guildName.orEmpty()
+            if (figures.liveCancelled) {
+                val cancelled = res.getString(R.string.widget_cancelled)
+                return RaidLiveContent(
+                    title = figures.title, text = cancelled, guild = guild, bigText = cancelled, countdownTo = null,
+                    guildId = guildId, raidId = raidId, description = "${figures.title}. $cancelled", cancelled = true,
+                )
+            }
             if (!figures.liveActive) return null
             val title = figures.liveTitle ?: return null
-            val target = figures.liveTarget ?: return null
-            val guild = figures.guildId ?: return null
-            val raid = figures.raidId ?: return null
             val you = figures.liveYou.orEmpty()
+            val signedUp = figures.size?.let { res.getString(R.string.widget_signedUp, figures.signedUpCount, it) } ?: figures.signedUp
             return RaidLiveContent(
-                title = title, text = you, subText = figures.liveUntil.orEmpty(),
-                bigText = listOfNotNull(you, figures.signedUp).joinToString("\n"),
-                countdownTo = target, guildId = guild, raidId = raid,
+                title = title, text = you, guild = guild,
+                bigText = listOfNotNull(figures.liveUntil, you, signedUp).joinToString("\n"),
+                countdownTo = figures.liveTarget, guildId = guildId, raidId = raidId,
                 description = listOf(title, you).joinToString(". "),
             )
         }
