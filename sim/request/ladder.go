@@ -1598,6 +1598,7 @@ var idLearnLevelOverrides = map[string]map[int]int{
 	"hunter":  {2643: 18, 3045: 26, 469145: 60},
 	"paladin": {407632: 40, 25890: 60},
 	"warlock": {603: 60},
+	"warrior": {1719: 50},
 }
 
 // warnedSpellID pulls the bare spell id out of an engine warning

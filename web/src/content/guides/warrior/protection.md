@@ -3,7 +3,7 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70658:warrior:dwarf:35305013/0/050533120330001311:'
+build: 'FS1:1.60.1.70658:warrior:dwarf:35300003/0/250533120330001351:'
 recommendedRaces: [dwarf, tauren]
 statPriority:
   [
@@ -21,7 +21,7 @@ statPriority:
     Expertise,
   ]
 description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'
-updated: 2026-10-07
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -71,7 +71,7 @@ Protection is Forever's tanking spec, using a one-handed weapon and shield to ho
 
 ## Talents and builds
 
-This build spends 20 points in Arms and 31 in Protection, the shortest road to Shield Slam. It is the build this site's tank simulator is run on, so everything below is what the simulator models, taken from the client's own talent text.
+This build spends 14 points in Arms and 37 in Protection: Shield Slam, with Bastion at its full five ranks. It is the build this site's tank simulator is run on, so everything below is what the simulator models, taken from the client's own talent text.
 
 - **Shield Specialization** — more Block chance, and every Block pays Rage. A block is no longer only mitigation: it feeds the Rage that Shield Slam, Revenge and Heroic Strike spend.
 - **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
@@ -80,13 +80,14 @@ This build spends 20 points in Arms and 31 in Protection, the shortest road to S
 - **Master of Defense** — Rage whenever you Dodge or Parry with a shield equipped, the avoidance counterpart of Shield Specialization.
 - **Defiance** — more threat in Defensive Stance while a shield is equipped, added on top of the stance's own threat bonus.
 - **Focused Rage** — cheaper offensive abilities, so the Rage the talents above produce goes further.
-- **Bastion** — more damage from everything you do while a shield is equipped; one point is enough to keep the budget for the rest.
+- **Bastion** (5/5) — 10% more damage from everything you do while a shield is equipped, and so 10% more threat from your damage (the flat threat on Shield Slam, Sunder Armor and Heroic Strike does not scale with it).
+- **Improved Bloodrage** (2/2) — half again as much Rage from Bloodrage.
 - **Concussion Blow** — one point, because Shield Slam requires it.
 - **Shield Slam** — the capstone: a shield hit that adds your Block Value, with very high threat.
 
-**Arms**, the cheapest useful twenty: Deflection for Parry, Improved Heroic Strike for cheaper Heroic Strikes, Improved Rend, Improved Tactical Mastery and Anger Management as the tier gates they are, and Deep Wounds with the points that are left.
+**Arms**, fourteen points: Deflection for Parry, Improved Heroic Strike for cheaper Heroic Strikes, and Improved Rend into Deep Wounds. Improved Tactical Mastery and Anger Management are gone: six points for one Rage every three seconds bought less than four more ranks of Bastion and Improved Bloodrage. The change measured about +5% threat and +8% damage in our level-60 tank run, with damage taken unchanged.
 
-What is left out, and why. Improved Bloodrage, Iron Will, Improved Disarm, Vanguard and Improved Shield Bash change nothing against a boss that stays in front of you and neither stuns, fears, silences nor disarms, which is the fight this site simulates. Improved Shield Wall shortens a cooldown the simulated fight never needs to use. Devastate exists in the client's spell list but is not a learnable ability in this build, so no rotation and no talent here depends on it.
+What is left out, and why. Iron Will, Improved Disarm, Vanguard and Improved Shield Bash change nothing against a boss that stays in front of you and neither stuns, fears, silences nor disarms, which is the fight this site simulates. Improved Shield Wall shortens a cooldown the simulated fight never needs to use. Devastate exists in the client's spell list but is not a learnable ability in this build, so no rotation and no talent here depends on it.
 
 Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
