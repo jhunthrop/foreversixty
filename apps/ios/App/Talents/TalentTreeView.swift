@@ -98,13 +98,28 @@ struct TalentTreeView: View {
                 ForEach(cells) { cell in
                     let origin = TalentGeometry.origin(TalentCell(tier: cell.talent.tier, column: cell.talent.column), width: width)
                     TalentCellView(cell: cell, build: build, isSelected: selectedID == cell.id) { open(cell.id) }
-                        .id(cell.id)
                         .offset(x: origin.x, y: origin.y)
                 }
             }
         }
         .frame(height: TalentGeometry.height)
+        .background(alignment: .top) { tierAnchors }
     }
+
+    /// One laid-out anchor per tier, so the screen can scroll a tapped cell clear of the sheet.
+    private var tierAnchors: some View {
+        ZStack(alignment: .top) {
+            ForEach(0..<TalentGeometry.reservedTiers, id: \.self) { tier in
+                VStack(spacing: 0) {
+                    Color.clear.frame(height: CGFloat(tier) * TalentGeometry.tierPitch)
+                    Color.clear.frame(height: TalentGeometry.cell).id(Self.anchor(tier: tier))
+                }
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
+    static func anchor(tier: Int) -> String { "talent-tier-\(tier)" }
 
     private func lines(width: CGFloat) -> some View {
         Canvas { context, _ in

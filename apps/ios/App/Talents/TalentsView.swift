@@ -19,6 +19,18 @@ struct TalentsView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private var isLarge: Bool { typeSize >= .accessibility1 }
+    /// Where a tapped cell lands: under the pinned bar and clear of a medium sheet.
+    private static let sheetClearAnchor = UnitPoint(x: 0.5, y: 0.3)
+    /// Room under the footer, so the tab bar never covers it and a bottom-row cell can scroll up
+    /// above an open sheet (spec F6 §5.1 item 9).
+    private static let bottomSpace: CGFloat = 130
+    /// While the sheet is open, room enough for the last tier to scroll above a medium sheet.
+    private static let sheetRoom: CGFloat = 480
+
+    private func tier(of id: Int) -> Int? {
+        guard case let .loaded(presenter, _) = phase else { return nil }
+        return presenter.trees.flatMap(\.talents).first { $0.id == id }?.tier
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -27,11 +39,12 @@ struct TalentsView: View {
                     if let offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: offlineStamp)) }
                     content
                 }
-                .padding(.bottom, 32)
+                .padding(.bottom, selectedID == nil ? Self.bottomSpace : Self.sheetRoom)
             }
             .onChange(of: selectedID) { _, id in
-                guard let id else { return }
-                withAnimation { proxy.scrollTo(id, anchor: UnitPoint(x: 0.5, y: 0.3)) }
+                // The tapped cell stays above the sheet (spec F6 §7, point 4).
+                guard let id, let tier = tier(of: id) else { return }
+                withAnimation { proxy.scrollTo(TalentTreeView.anchor(tier: tier), anchor: Self.sheetClearAnchor) }
             }
         }
         .background(FSColor.bg)
