@@ -117,3 +117,31 @@ func TestShadowCastsMindBlastBeforeMindFlayAndKeepsDevouringPlague(t *testing.T)
 		t.Errorf("Shadow has no standalone Devouring Plague line: %v", ids)
 	}
 }
+
+// R1: Frost casts Arcane Missiles on Missile Barrage procs; A4: Arcane
+// stacks Arcane Blast to 3 before its Frostbolt filler.
+func TestMageMissileBarrageAndArcaneBlastStacks(t *testing.T) {
+	const arcaneMissiles = 25345
+	if ids := castOrder(t, "mage-frost"); !slices.Contains(ids, arcaneMissiles) {
+		t.Errorf("Frost never casts Arcane Missiles on Missile Barrage: %v", ids)
+	}
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range rot.PriorityList {
+		cmp := item.GetAction().GetCondition().GetCmp()
+		if cmp.GetLhs().GetAuraNumStacks() == nil {
+			continue
+		}
+		if got := cmp.GetRhs().GetConst().GetVal(); got != "3" {
+			t.Errorf("Arcane Blast stacks to %s before Frostbolt, want 3", got)
+		}
+		return
+	}
+	t.Error("the Arcane rotation has no Arcane Blast stack condition")
+}
