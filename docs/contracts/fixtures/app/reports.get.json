@@ -36,7 +36,13 @@
           "Player-4184-000000A2"
         ],
         "deaths": 3,
-        "npc_kills": 1,
+        "mob_deaths": 1,
+        "group_kills": 1,
+        "group_deaths": 3,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2"
+        ],
         "verified": true
       }
     ],
