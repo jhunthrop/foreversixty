@@ -965,9 +965,9 @@ data class Item(
     @SerialName("icon_source") val iconSource: String,
     @SerialName("weapon_type") val weaponType: String? = null,
     @SerialName("superseded_by") val supersededBy: Int? = null,
-    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
+    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest), or classic-db's item_template.bonding for an item the client's ItemSparse lacks; null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
     @SerialName("bonding") val bonding: String? = null,
-    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published. */
+    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word (a cloak is cloth, as the client prints "Back ... Cloth"); null for a neck, a ring, a trinket, a weapon or unknown. Omitted until published; draw no armour word then. */
     @SerialName("armor_type") val armorType: String? = null,
     /** Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published. */
     @SerialName("min_standing") val minStanding: String? = null,

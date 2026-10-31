@@ -205,8 +205,8 @@ export interface Item {
   /** ItemSparse `Bonding` as a word (api/openapi.yaml `Item.bonding`, spec C6). Absent or null
    *  when the data states none (a classic-db or wowhead row, or a build not yet regenerated). */
   bonding?: 'pickup' | 'equip' | 'use' | 'quest' | null;
-  /** The armour word from the item's class and subclass (`Item.armor_type`); null for a cloak,
-   *  jewellery, a weapon or unknown; absent on a build not yet regenerated. */
+  /** The armour word from the item's class and subclass (`Item.armor_type`; a cloak is
+   *  `cloth`); null for jewellery, a weapon or unknown; absent on a build not yet regenerated. */
   armor_type?: 'cloth' | 'leather' | 'mail' | 'plate' | 'shield' | null;
 }
 

@@ -97,6 +97,7 @@ ITEM_TEMPLATE_COLUMNS = [
     "spelltrigger_5",
     "itemset",
     "requiredhonorrank",
+    "bonding",
 ]
 
 _SCHEMA = (
@@ -790,9 +791,41 @@ def test_to_gear_item_records_equip_hit_and_crit_as_percent_stats_not_ratings():
     assert gear.percent_stats == {"crit": 2}
 
 
-def test_to_gear_item_carries_armor_type_and_no_bonding():
-    """classic-db's extract states no bonding, so none is invented; the
-    armour word comes from the row's own class and subclass."""
+def test_to_gear_item_carries_armor_type_and_classic_db_bonding():
+    """classic-db's `item_template.bonding` is the same enum as the client's
+    ItemSparse.Bonding (1 pickup, 2 equip, 3 use, 4 quest); the armour word
+    comes from the row's own class and subclass."""
+    chest = _item(id=2, class_id=4, subclass_id=2, inventory_type=5, bonding=1)
+    gear = to_gear_item(chest, _FakeSpellText({}), {}, fork_icons={}, wowhead_icons={})
+    assert (gear.armor_type, gear.bonding) == ("leather", "pickup")
+
+
+def test_to_gear_item_states_no_bonding_when_the_extract_has_none():
+    """An extract written before the column was read carries no bonding: none
+    is invented."""
     chest = _item(id=2, class_id=4, subclass_id=2, inventory_type=5)
     gear = to_gear_item(chest, _FakeSpellText({}), {}, fork_icons={}, wowhead_icons={})
-    assert (gear.armor_type, gear.bonding) == ("leather", None)
+    assert gear.bonding is None
+
+
+def test_a_classic_db_cloak_reads_cloth_and_binds_when_equipped():
+    """Spritecaster Cape (11623) is in no ItemSparse row of build 70658; its
+    Binds line and Cloth come from classic-db."""
+    cape = _item(id=11623, class_id=4, subclass_id=1, inventory_type=16, bonding=2)
+    gear = to_gear_item(cape, _FakeSpellText({}), {}, fork_icons={}, wowhead_icons={})
+    assert (gear.slot, gear.armor_type, gear.bonding) == ("back", "cloth", "equip")
+
+
+def test_extract_records_reads_the_bonding_column():
+    row = _row_sql(
+        entry=11623,
+        name="Spritecaster Cape",
+        **{"class": 4, "subclass": 1},
+        Quality=3,
+        InventoryType=16,
+        AllowableClass=-1,
+        AllowableRace=-1,
+        bonding=2,
+    )
+    records, _ = extract_records(_sql([row]))
+    assert records[0].bonding == 2
