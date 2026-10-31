@@ -75,7 +75,7 @@
     <string name="home_next_matches">Matches</string>
     <string name="home_next_differs">Differs</string>
     <string name="home_next_talentsMatch">Your build is the %1$s %2$s guide build</string>
-    <string name="home_next_talentsDiffer" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s build</string>
+    <string name="home_next_talentsDiffer" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s guide build</string>
     <string name="home_next_talentsNone">Not available yet: no talent export for this character. Open the addon once to send it.</string>
     <string name="home_next_sims">Sims</string>
     <string name="home_next_simFinished">Your %1$s sim finished: %2$s DPS</string>
@@ -478,18 +478,43 @@
     <string name="talents_matches">Matches</string>
     <string name="talents_differs">Differs</string>
     <string name="talents_match">Your build is the %1$s %2$s guide build.</string>
-    <string name="talents_differ" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s build.</string>
+    <string name="talents_differ" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s guide build.</string>
     <plurals name="talents_unspent">
         <item quantity="one">1 point unspent.</item>
         <item quantity="other">%1$d points unspent.</item>
     </plurals>
     <string name="talents_guide">Guide build</string>
     <string name="talents_yours">Your build</string>
-    <string name="talents_legend">Dashed: your rank differs from the guide. Tap a talent for both ranks and its text.</string>
+    <string name="talents_legend">Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text.</string>
     <string name="talents_rank">Rank %1$d/%2$d</string>
     <string name="talents_nextRank">Next rank</string>
     <string name="talents_footer">Change talents in the game; the addon sends them on your next logout.</string>
     <string name="talents_noList">No talent build published yet for this spec and level range.</string>
+    <string name="talents_tapHint">Tap a talent for its rank text.</string>
+    <string name="talents_toTake" tools:ignore="PluralsCandidate">%1$d of the %2$s guide build\'s points still to take.</string>
+    <plurals name="talents_missing">
+        <item quantity="one">The guide build takes 1 point you have not.</item>
+        <item quantity="other">The guide build takes %1$d points you have not.</item>
+    </plurals>
+    <string name="talents_beyond" tools:ignore="PluralsCandidate">Level %1$d is past the %2$s guide build\'s %3$d points, so points past it show as differing.</string>
+    <string name="talents_requiresTree" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s Talents</string>
+    <string name="talents_requiresTalent" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s</string>
+    <string name="talents_requiresTalentOne">Requires 1 point in %1$s</string>
+    <string name="talents_a11yTabDiffers" tools:ignore="PluralsCandidate">%1$d points. Talents that differ from the guide: %2$d.</string>
+    <string name="talents_guideRank" tools:ignore="PluralsCandidate">Guide build: rank %1$d/%2$d</string>
+    <string name="talents_planLink">Plan a build on foreversixty.gg/planner</string>
+    <string name="talents_staleExport">Your talent export is from an older game build. Open the addon once to send it again.</string>
+    <string name="talents_pickSpec">We do not know this character\'s spec yet, so there is no guide build to compare. Open the addon once to send it.</string>
+    <string name="talents_loading">Loading talents…</string>
+    <string name="talents_failed">Your talents did not load.</string>
+    <string name="talents_guideFailed">The guide build did not load.</string>
+    <plurals name="talents_points">
+        <item quantity="one">1 point</item>
+        <item quantity="other">%1$d points</item>
+    </plurals>
+    <string name="talents_a11yCell" tools:ignore="PluralsCandidate">%1$s, rank %2$d of %3$d</string>
+    <string name="talents_a11yCellGuide" tools:ignore="PluralsCandidate">%1$s, rank %2$d of %3$d, guide rank %4$d</string>
+    <string name="talents_a11yHint">Shows the talent</string>
     <string name="notif_title">Notifications</string>
     <string name="notif_section_raids">Raids</string>
     <string name="notif_section_after">After the raid</string>
