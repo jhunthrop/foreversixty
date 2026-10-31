@@ -16,7 +16,7 @@ concurrency:
   group: ios-${{ github.ref }}
   cancel-in-progress: true
 env:
-  # The snapshot goldens (AppTests/__Snapshots__) are rendered by THIS runtime: iOS 26.5 changes
+  # The snapshot goldens (AppTests/**/__Snapshots__) are rendered by THIS runtime: iOS 26.5 changes
   # navigation bar heights and line metrics against the iOS 27 simulator used locally, so a golden
   # recorded on 27 fails here by whole rows. Xcode and the simulator OS are pinned so the reference
   # never drifts with the runner image; moving them means re-recording every golden here
@@ -70,7 +70,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ios-snapshots
-          path: apps/ios/AppTests/__Snapshots__
+          # Every suite's goldens (AppTests/__Snapshots__ and feature folders such as
+          # AppTests/Raids/__Snapshots__); the hierarchy under AppTests/ is kept for the Makefile.
+          path: apps/ios/AppTests/**/__Snapshots__/**
           retention-days: 7
       - name: Upload results on failure
         if: failure()
@@ -79,5 +81,5 @@ jobs:
           name: ios-test-results
           path: |
             apps/ios/build/ForeverSixty.xcresult
-            apps/ios/AppTests/__Snapshots__
+            apps/ios/AppTests/**/__Snapshots__/**
           retention-days: 7

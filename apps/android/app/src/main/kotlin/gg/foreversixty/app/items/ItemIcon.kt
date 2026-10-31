@@ -2,6 +2,17 @@ package gg.foreversixty.app.items
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import gg.foreversixty.app.designsystem.FsType
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.material3.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -21,6 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
@@ -111,24 +123,54 @@ fun SpecIcon(icon: String, build: String, size: Dp, modifier: Modifier = Modifie
     }
 }
 
-/** The icon file itself: the test painter when one is provided, else Coil over the CDN. */
+/**
+ * The icon file itself: the test painter when one is provided, else Coil over the CDN. With a
+ * [fallback], the tile shows that short label until the icon loads, or for good when it cannot;
+ * [dimmed] greys and fades only the art, so a fallback label stays readable (WCAG AA).
+ */
 @Composable
-private fun GameIconImage(icon: String, build: String, size: Dp) {
+fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = null, dimmed: Boolean = false) {
+    var failed by remember(icon, build) { mutableStateOf(false) }
+    val art = if (dimmed) Modifier.size(size).alpha(DIMMED_ALPHA) else Modifier.size(size)
+    val filter = if (dimmed) ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) }) else null
     val local = LocalItemIconPainter.current
-    if (local != null) {
-        local.painter(icon, build)?.let {
-            Image(it, null, Modifier.size(size), contentScale = ContentScale.Crop)
+    val painter = if (local != null && icon != null && build != null) local.painter(icon, build) else null
+    val url = if (icon != null && build != null) ItemIconLoader.url(icon, build) else null
+    val loads = url != null && !failed && (local == null || painter != null)
+    Box(Modifier.size(size), contentAlignment = Alignment.Center) {
+        if (fallback != null && !loads) FallbackLabel(fallback, dimmed)
+        if (loads && painter != null) {
+            Image(painter, null, art, contentScale = ContentScale.Crop, colorFilter = filter)
+        } else if (loads) {
+            val context = LocalContext.current
+            AsyncImage(
+                model = ImageRequest.Builder(context).data(url).build(),
+                imageLoader = ItemIconLoader.get(context),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                colorFilter = filter,
+                modifier = art,
+                onError = { failed = true },
+            )
         }
-    } else {
-        val context = LocalContext.current
-        AsyncImage(
-            model = ImageRequest.Builder(context).data(ItemIconLoader.url(icon, build)).build(),
-            imageLoader = ItemIconLoader.get(context),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.size(size),
-        )
     }
 }
+
+/** A tile's short label (`MotW`, `Bless`): strong, or muted on a dimmed tile, both AA on the tile. */
+@Composable
+private fun FallbackLabel(text: String, dimmed: Boolean) {
+    // In dp, not sp: the tile is a fixed size, so its label does not grow with the font scale.
+    val size = with(LocalDensity.current) { FALLBACK_SIZE.toSp() }
+    Text(
+        text,
+        style = FsType.micro.copy(letterSpacing = 0.sp, fontSize = size),
+        color = if (dimmed) FsColor.muted else FsColor.strong,
+        maxLines = 1,
+        softWrap = false,
+    )
+}
+
+private const val DIMMED_ALPHA = 0.35f
+private val FALLBACK_SIZE = 11.dp
 
 private const val GLOW = 0.22f

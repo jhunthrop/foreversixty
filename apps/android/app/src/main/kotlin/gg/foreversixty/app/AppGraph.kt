@@ -25,7 +25,9 @@ import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
+import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.UpdateGate
+import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.update.InstallId
 
 /**
@@ -67,6 +69,13 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     /** Lane F2: the home answer, its static item data and its cache. */
     val home = HomeDependencies.create(context, config, accountApi, apiClient) { isAvailable(Feature.CharacterHome) }
 
+    /** Lane F4: guild raids and sign-up; their own static client reads the active build for icons. */
+    val raids = RaidsFeature(
+        context = context,
+        apiClient = apiClient,
+        statics = StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+    ) { isAvailable(Feature.Raids) }
+
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,
         client = apiClient,
@@ -81,7 +90,10 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         signInFlow = signIn,
         picked = PrefsValue(context, PrefsValue.PICKED_CHARACTER),
         scope = MainScope(),
-        clearCaches = { home.cache.removeAll() },
+        clearCaches = {
+            home.cache.removeAll()
+            raids.cache.removeAll()
+        },
     )
 
     /** Fixture builds sign in against the contract fixtures; live builds open a Custom Tab. */

@@ -126,29 +126,34 @@ fun HomeRoute(
             return
         }
     }
-    HomeFromMe(dependencies, openBis)
+    HomeFromMe(dependencies, openBis) { if (session != null) CharacterSelectorBar(session) }
 }
 
-/** Home on its own `GET /v1/me`: the main character, before or without the session's copy. */
+/**
+ * Home on its own `GET /v1/me`: the main character, before or without the session's copy. [topBar]
+ * is the selector row, which reserves its height while the session's characters arrive.
+ */
 @Composable
-private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit) {
+private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, topBar: @Composable () -> Unit) {
     var attempt by remember { mutableStateOf(0) }
     val me by produceState<ApiResult<Me>?>(initialValue = null, attempt) { value = dependencies.accountApi.me() }
-    when (val answer = me) {
-        null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) { HomeSkeleton() }
-        is ApiResult.Failure -> Column(Modifier.fillMaxSize().background(FsColor.bg).padding(16.dp)) {
-            Text(stringResource(R.string.home_answer_failed), style = FsType.lead, color = FsColor.wipe)
-            BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, { attempt++ }, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
-        }
-        is ApiResult.Success -> {
-            val character = answer.data.mainCharacter
-            if (character == null) {
-                Column(Modifier.fillMaxSize().background(FsColor.bg).padding(16.dp)) {
-                    Text(stringResource(R.string.signin_noChars_title), style = FsType.sec, color = FsColor.strong)
-                    Text(stringResource(R.string.signin_noChars_body), style = FsType.body, color = FsColor.muted)
-                }
-            } else {
-                HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis)
+    val answer = me
+    val character = (answer as? ApiResult.Success)?.data?.mainCharacter
+    if (answer is ApiResult.Success && character != null) {
+        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, topBar)
+        return
+    }
+    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        topBar()
+        when (answer) {
+            null -> HomeSkeleton()
+            is ApiResult.Failure -> Column(Modifier.padding(16.dp)) {
+                Text(stringResource(R.string.home_answer_failed), style = FsType.lead, color = FsColor.wipe)
+                BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, { attempt++ }, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
+            }
+            is ApiResult.Success -> Column(Modifier.padding(16.dp)) {
+                Text(stringResource(R.string.signin_noChars_title), style = FsType.sec, color = FsColor.strong)
+                Text(stringResource(R.string.signin_noChars_body), style = FsType.body, color = FsColor.muted)
             }
         }
     }

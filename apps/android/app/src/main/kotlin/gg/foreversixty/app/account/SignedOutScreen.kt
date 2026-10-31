@@ -27,6 +27,7 @@ import gg.foreversixty.app.common.Seal
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.FsSpacing
 import gg.foreversixty.app.designsystem.FsType
 
@@ -46,7 +47,7 @@ fun SignedOutScreen(
     variant: SignedOutVariant = SignedOutVariant.Home,
     noticeIsFailure: Boolean = true,
 ) {
-    Box(Modifier.fillMaxSize().bandBackground()) {
+    Box(Modifier.fillMaxSize().surfaceBand(bottomLine = false)) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -83,7 +84,7 @@ fun SignedOutScreen(
 @Composable
 fun ImportScreen() {
     Column(
-        Modifier.fillMaxSize().bandBackground().padding(horizontal = FsSpacing.space4),
+        Modifier.fillMaxSize().surfaceBand(bottomLine = false).padding(horizontal = FsSpacing.space4),
         verticalArrangement = Arrangement.spacedBy(FsSpacing.space4, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

@@ -93,24 +93,37 @@ struct QuietCard: ViewModifier {
     }
 }
 
-/// The hero band (`--surface-band`): the ember radial over `#14100b`, a soft bottom line.
-struct HeroBand: ViewModifier {
+/// The band ground (`--surface-band`, spec §4.1): the ember radial from the top centre over
+/// `#14100b`, with the soft bottom line when `bottomLine`. Every band uses it: Home's hero bands
+/// (with the line) and the signed-out screens' full-bleed ground (without).
+struct SurfaceBand: ViewModifier {
+    static let ground = Color(tokenHex: 0x14100B)
+    static let glowOpacity = 0.22
+    static let glowRadius: CGFloat = 320
+
+    let bottomLine: Bool
+
     func body(content: Content) -> some View {
         content
             .background(
                 ZStack {
-                    Color(tokenHex: 0x14100B)
-                    RadialGradient(colors: [FSColor.ember.opacity(0.22), .clear], center: .top, startRadius: 0, endRadius: 320)
+                    Self.ground
+                    RadialGradient(
+                        colors: [FSColor.ember.opacity(Self.glowOpacity), .clear],
+                        center: .top, startRadius: 0, endRadius: Self.glowRadius
+                    )
                 }
             )
-            .overlay(alignment: .bottom) { FSColor.lineSoft.frame(height: 1) }
+            .overlay(alignment: .bottom) {
+                if bottomLine { FSColor.lineSoft.frame(height: 1) }
+            }
     }
 }
 
 public extension View {
     func primaryCard() -> some View { modifier(PrimaryCard()) }
     func quietCard() -> some View { modifier(QuietCard()) }
-    func heroBand() -> some View { modifier(HeroBand()) }
+    func surfaceBand(bottomLine: Bool = true) -> some View { modifier(SurfaceBand(bottomLine: bottomLine)) }
 }
 
 /// A list row's press: the 10% gold wash while held (spec §8).

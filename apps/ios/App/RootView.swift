@@ -1,4 +1,5 @@
 import DesignSystem
+import Routing
 import SwiftUI
 
 /// The app's four tabs, in the spec's order (§3.1): Home, Raids, BiS, You. Feature lanes plug
@@ -41,6 +42,8 @@ extension AppTab {
 struct RootView: View {
     let environment: AppEnvironment
     @State private var selection: AppTab = .launchTab
+    /// Lane F4: the Raids tab's stack, which raid links and notifications push onto.
+    @State private var raidsRouter = RaidsRouter()
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -63,6 +66,15 @@ struct RootView: View {
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
+        .onOpenURL { url in DeepLink(url: url).map(openRaids) }
+        .task {
+            RaidNotificationCenter.shared.onOpen = openRaids
+            #if DEBUG
+                // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
+                if let link = RaidDebugLaunch.link { openRaids(link) }
+                await RaidDebugLaunch.postRaidPushIfAsked()
+            #endif
+        }
     }
 
     /// Lane F1: the account states and the character selector.
@@ -77,6 +89,8 @@ struct RootView: View {
                 HomeTab(dependencies: .live(environment), session: environment.session, openBis: { selection = .bis })
             }
         case .home: HomeTab(dependencies: .live(environment), openBis: { selection = .bis })
+        case .raids where environment.isAvailable(.raids):
+            RaidsTab(dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil)
         case .raids: PlaceholderScreen(title: tab.title)
         case .bis where environment.isAvailable(.bis):
             BisScreen.live(environment, session: signInAvailable ? environment.session : nil)
@@ -89,6 +103,15 @@ struct RootView: View {
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
+    }
+}
+
+extension RootView {
+    /// Lane F4: a raid, raid-night or guild link selects the Raids tab and pushes its screen.
+    private func openRaids(_ link: DeepLink) {
+        guard environment.isAvailable(.raids), RaidsRouter.handles(link) else { return }
+        selection = .raids
+        raidsRouter.open(link)
     }
 }
 

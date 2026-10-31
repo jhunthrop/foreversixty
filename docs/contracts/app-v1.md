@@ -293,11 +293,15 @@ the end) }`: `rows[]` are logged raid nights (`{ id (a report id), title, zone, 
 duration_ms, fight_count, kill_count, wipe_count, raiders, deaths, fights[], present[], raid_id
 (nullable) }` plus omitted `top_parse`). **A verified member also gets `planned[]` (the open raids,
 raid views), `zones[]`, `guild_timezone` and `discord`; anyone else gets none of those four keys**
-(fixtures `guild.raids`, `guild.raids.public`). Errors: 400 `invalid` for a bad cursor, 404.
+(fixtures `guild.raids`, `guild.raids.public`, `guild.raids.empty`). An officer whose guild `can`
+lists `approve` also gets `waiting_for_approval`, the count of characters waiting (lane F4,
+handler pending). Errors: 400 `invalid` for a bad cursor, 404.
 
 ### GET /v1/guilds/{id}/raids/{raid}
 One raid. Auth session, verified members only: anyone else gets 404, never 403. Caching private.
-Fixtures `guild.raid`, `guild.raid.done`. Errors: 404 (`guild.raid.error-not-found`).
+Fixtures `guild.raid`, `guild.raid.done`, and the app's states `guild.raid.officer`,
+`guild.raid.locked`, `guild.raid.cancelled`, `guild.raid.no-invite`, `guild.raid.ask-spec` and
+`guild.raid.two-characters`. Errors: 404 (`guild.raid.error-not-found`).
 
 The raid view: `{ id, zone, zone_name, title, starts_at, duration_minutes, status, size,
 guild_timezone, notes, notes_html, counts, signups[], not_signed[], viewer, discord, discord_post,
@@ -313,6 +317,24 @@ pre_done_status, match, night, attendance, report }`.
   character is listed but cannot sign up. When `raid_spec` is null, ask "Which spec tonight?" and
   send the answer as `spec`.
 - `notes_html` is sanitised HTML of `notes`; render the HTML.
+- **Lane F4 additions** (the app's raid page, spec 2026-10-30-mobile-apps C2; the handler adds
+  them after launch, and the apps read each as absent until then):
+  - `invite_at`: when invites go out, before `starts_at` (the pull); null when the guild sets none.
+  - `composition`: the raid leader's read, computed by the API and rendered as is: `classes[]`
+    (`{ class, count }`, all nine in the game's order, counting In and Late), `roles` (`{ tanks,
+    healers, dps }`, In only), `targets` (the same shape, or null when the raid sets none) and
+    `buffs[]` (`{ key, name, label, icon, present, count }`: fortitude, mark_of_the_wild,
+    arcane_intellect, blessings, shadow_protection, soulstone, battle_rez and the shaman totems
+    windfury_totem, strength_of_earth and mana_spring, from the classes signed In or Late; the
+    list is `data/curated/raid-buffs.json`, and the apps draw `label` inside a tile whose icon is
+    missing).
+  - `signups[]` and `not_signed[]` gain `spec_name` and `spec_icon` (the talent-tab icon stem);
+    `not_signed[]` gains `role`, the spec's role, for an officer's Add.
+  - `viewer.characters[]` gains `spec_name`, `spec_icon` and `spec_options[]` (`{ spec, name,
+    role, icon }`, the class's specs in catalogue order, for "Which spec tonight?").
+  - `viewer.can`: `lock` (lock and unlock) and `move` (an officer's PUT for anyone). Draw officer
+    tools exactly when the word is there. `viewer.tools_ended`: an officer of a guild whose plan
+    ended; the tools draw disabled. `viewer.raid_night`: a Your raid night summary exists.
 - After the night: `match`, `night`, `attendance[]` (each row has an `outcome`: `present|late|no_show|...`) and `report` are filled (null before a log is
   matched); `attendance` carries every row for an officer and only your own characters for a
   member (fixture `guild.raid.done`).
@@ -331,13 +353,25 @@ stands, and `moved`, the name of **your other character that the server moved to
 brings one character; signing a second in benches the first) or null. Tell the player when `moved`
 is set. A sign-up refreshes the guild's Discord raid post.
 
-Fixtures `guild.signup`, `guild.signup.moved`. Errors: 422 `invalid` with `fields`
+Fixtures `guild.signup`, `guild.signup.moved`, and the refusals `...error-raid-cancelled`,
+`...error-rate-limited` and `...error-plan-required`. Errors: 422 `invalid` with `fields`
 (`state`, `role`, `note`, `spec`; `guild.signup.error-invalid`); 403 `forbidden` for someone else's
 character (`...error-forbidden`, the message is the sentence to show), an unverified one, or a
 character not verified in the guild; 403 `guild_plan_required` for an officer signing others
 without the plan; 404 `not_found` for a raid you cannot see or a character not in the guild
 (`...error-character-not-found`); 409 `raid_locked` (`...error-raid-locked`), `raid_cancelled`,
 `claim_contested`; 429 `rate_limited`.
+
+### GET /v1/me/raid-nights/{raid}
+Your raid night (lane F4 contract; dark, handler pending): the after-raid summary behind the app's
+Your raid night screen and the `raid.summary` push. Auth session or device token. Answer
+`{ raid_id, guild_id, guild_name, zone_name, starts_at, report_id, character { character_key, name,
+class, spec, spec_name, role }, kills, wipes, new_bests, loot[] { item_id, name, quality, icon,
+slot, boss, awarded_by, replaces ({ item_id, name, quality, item_level } or null) }, bests[]
+{ boss, dps, percentile, kill_ms }, coach_notes }`; `coach_notes` (at most three) is null without
+`log_coach`. Fixtures `me.raid-night`, `me.raid-night.free`. Errors: 404 `not_found` when the raid
+has no matched log, the viewer has no character in it, or it is not theirs to see
+(`me.raid-night.error-not-found`).
 
 ### PATCH /v1/guilds/{id}/raids/{raid}
 Officers edit a raid. Auth session, verified officer or leader of a guild with the plan, claim not
@@ -431,11 +465,10 @@ data generator's real output for the active build.
 character's own export names the build it was made on (`/v1/me` `characters[].build.data_build`).
 For the lists and the BiS, read the active build. Build ids look like `1.60.1.70658`.
 
-> **Open item (publication).** `active-build.json` and `dates.json` are checked into
-> `web/src/data/` today but not copied into `public/data/` by `web/scripts/sync-data.mjs`, so they
-> are not on the CDN yet. Until a follow-up publishes them at `/data/active-build.json` and
-> `/data/dates.json`, an app that needs them has no fetchable source. Everything else below is
-> published.
+> **Publication.** `web/scripts/sync-data.mjs` copies `web/src/data/active-build.json` and
+> `dates.json` to `public/data/` on every build (lane F4, 2026-10-31), so they are served at
+> `/data/active-build.json` and `/data/dates.json` from the next site deploy. Before that the CDN
+> answered 404 and an app had no build to hang icon, list and BiS URLs off.
 
 ### /data/active-build.json
 `{ "build": "1.60.1.70658" }`. Fixture `cdn.active-build`. Fetch on launch; revalidate (an hour).
@@ -615,7 +648,15 @@ What APNs and FCM hand the app (lane A2, `api/internal/push`). Fixtures `push.ra
 - **Ids.** The thread id is `raid-<raid id>`, so one raid's notifications group together. The
   collapse id is `<kind>-<raid id>` (at most 64 bytes), so a later notification of the same kind
   for the same raid replaces the earlier one.
-- **`data`** on a raid event is `{ guild_id, raid_id }` (decimal strings). `link` is a
+- **`data`** on a raid event is `{ guild_id, raid_id }` (decimal strings). A raid event with
+  actions also carries (lane F4 contract, A2 pending) `character_key`, the character the actions
+  answer for (the one signed for this raid, else the main when it is a verified member, else the
+  only verified one); `ask_spec` (`"true"` when that character has no raid spec and its class has
+  two or more); and `answers`, a JSON string of `{ in, late, out, moved, locked, cancelled, failed }`
+  each `{ title, body }` in the player's locale, which the app posts in place of the notification
+  after an action (`moved.body` holds `{name}` and is appended to the In or Late body). Without
+  `character_key` the app picks by the same rule from the raid view, and opens the raid page when
+  it cannot. `link` is a
   `https://foreversixty.gg/...` page (guild, raid, character, sim, report, account): open it as a
   deep link, or in the browser when the app has no screen for it.
 - **The RAID_SIGNUP category** has three buttons, In, Late and Out, on `raid.posted` and

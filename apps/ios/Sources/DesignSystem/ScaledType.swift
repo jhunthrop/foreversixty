@@ -21,12 +21,16 @@ public enum ScaledType {
         static let tooltip: CGFloat = 16
         static let wordmark: CGFloat = 22
         static let button: CGFloat = 13
+        static let cardHead: CGFloat = 22
+        static let segment: CGFloat = 14
     }
 
     public static let title = Font.custom(Face.heading, size: FSTextSize.h1Phone, relativeTo: .largeTitle)
     public static let h2 = Font.custom(Face.heading, size: FSTextSize.h2, relativeTo: .title)
     public static let stat = Font.custom(Face.heading, size: FSTextSize.stat, relativeTo: .title)
     public static let sec = Font.custom(Face.heading, size: FSTextSize.cardTitle, relativeTo: .headline)
+    /// A raid card's title (spec F4.1).
+    public static let cardHead = Font.custom(Face.heading, size: Size.cardHead, relativeTo: .title2)
     public static let name = Font.custom(Face.bodyBold, size: Size.name, relativeTo: .headline)
     public static let lead = Font.custom(Face.bodySemibold, size: Size.lead, relativeTo: .body)
     public static let body = Font.custom(Face.body, size: FSTextSize.body, relativeTo: .subheadline)
@@ -35,8 +39,14 @@ public enum ScaledType {
     public static let meta = Font.custom(Face.body, size: FSTextSize.meta, relativeTo: .footnote)
     public static let micro = Font.custom(Face.bodyBold, size: FSTextSize.micro, relativeTo: .caption2)
     public static let button = Font.custom(Face.bodyBold, size: Size.button, relativeTo: .subheadline)
+    /// A segmented control's label (the sign-up segments, spec F4.3).
+    public static let segment = Font.custom(Face.bodySemibold, size: Size.segment, relativeTo: .subheadline)
     public static let wordmark = Font.custom(Face.wordmark, size: Size.wordmark, relativeTo: .title2)
     /// Figures, counts and times: the system monospaced face at body size (15 pt, `.subheadline`),
     /// scaling with the text size like every other role.
     public static let mono = Font.system(.subheadline, design: .monospaced, weight: .semibold)
+    /// Clock digits beside meta text (13 pt, `.footnote`).
+    public static let monoMeta = Font.system(.footnote, design: .monospaced)
+    /// A date block's day number (`.title3`).
+    public static let monoDay = Font.system(.title3, design: .monospaced, weight: .semibold)
 }

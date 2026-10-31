@@ -18,7 +18,7 @@ struct SignedOutView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            BandBackground()
+            Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
             ScrollView {
                 content
                     .padding(.horizontal, FSSpacing.space4)
@@ -97,7 +97,7 @@ struct SignedOutView: View {
 struct ImportView: View {
     var body: some View {
         ZStack {
-            BandBackground()
+            Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
             VStack(spacing: FSSpacing.space4) {
                 Seal(size: 64)
                 Text(Copy.signinImportTitle)

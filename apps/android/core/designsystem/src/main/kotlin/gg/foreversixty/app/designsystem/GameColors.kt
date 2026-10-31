@@ -34,4 +34,21 @@ object GameColors {
     /** A chip or secondary control's 4.5% white fill, and the pressed 10% gold wash. */
     val controlFill = Color.White.copy(alpha = 0.045f)
     val pressedWash = FsColor.gold.copy(alpha = 0.10f)
+
+    /** The viewer's own row (a roster's own line): gold at 5%. */
+    val rowWash = FsColor.gold.copy(alpha = 0.05f)
+
+    /** The offline strip's ground (spec §5.0). */
+    val offlineGround = Color(0xFF11151F)
+
+    /** A parse percentile's colour (`--color-parse-*`). */
+    fun parse(percentile: Int): Color = when {
+        percentile >= 100 -> FsColor.parseGold
+        percentile == 99 -> FsColor.parsePink
+        percentile >= 95 -> FsColor.parseOrange
+        percentile >= 75 -> FsColor.parsePurple
+        percentile >= 50 -> FsColor.parseBlue
+        percentile >= 25 -> FsColor.parseGreen
+        else -> FsColor.parseGreyText
+    }
 }

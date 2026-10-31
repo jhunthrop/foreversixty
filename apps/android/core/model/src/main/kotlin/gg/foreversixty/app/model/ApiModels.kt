@@ -783,6 +783,8 @@ data class GuildRaids(
     @SerialName("zones") val zones: List<RaidZone>? = null,
     @SerialName("guild_timezone") val guildTimezone: String? = null,
     @SerialName("discord") val discord: RaidDiscord? = null,
+    /** Characters waiting for approval; present only when the viewer's guild can lists approve (lane F4 contract, handler pending). The Raids tab's officer row. */
+    @SerialName("waiting_for_approval") val waitingForApproval: Int? = null,
 )
 
 @Serializable
@@ -1209,6 +1211,20 @@ data class RaidAttendanceRow(
 )
 
 @Serializable
+data class RaidBuff(
+    @SerialName("key") val key: String,
+    /** A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load. */
+    @SerialName("label") val label: String,
+    /** The spell's name in the client, e.g. Power Word: Fortitude. */
+    @SerialName("name") val name: String,
+    /** The icon stem, /data/{build}/icons/{stem}.webp. */
+    @SerialName("icon") val icon: String,
+    @SerialName("present") val present: Boolean,
+    /** How many signed In or Late can provide it. */
+    @SerialName("count") val count: Int,
+)
+
+@Serializable
 data class RaidCancel(
     @SerialName("post_to_discord") val postToDiscord: Boolean? = null,
 )
@@ -1218,6 +1234,21 @@ data class RaidCharacter(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
     @SerialName("class") val className: String,
+)
+
+@Serializable
+data class RaidClassCount(
+    @SerialName("class") val className: String,
+    @SerialName("count") val count: Int,
+)
+
+/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon. */
+@Serializable
+data class RaidComposition(
+    @SerialName("classes") val classes: List<RaidClassCount> = emptyList(),
+    @SerialName("roles") val roles: RaidRoleCounts,
+    @SerialName("targets") val targets: RaidRoleCounts? = null,
+    @SerialName("buffs") val buffs: List<RaidBuff> = emptyList(),
 )
 
 /** Sign-up counts; the role counts count in only. */
@@ -1291,6 +1322,25 @@ data class RaidNight(
 )
 
 @Serializable
+data class RaidNightBest(
+    @SerialName("boss") val boss: String,
+    @SerialName("dps") val dps: Double,
+    /** 0 to 100 */
+    @SerialName("percentile") val percentile: Int,
+    @SerialName("kill_ms") val killMs: Long,
+)
+
+@Serializable
+data class RaidNightCharacter(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+)
+
+@Serializable
 data class RaidNightFight(
     @SerialName("index") val index: Int,
     @SerialName("name") val name: String,
@@ -1299,6 +1349,30 @@ data class RaidNightFight(
     @SerialName("duration_ms") val durationMs: Long,
     @SerialName("deaths") val deaths: Int,
     @SerialName("players") val players: Int,
+)
+
+@Serializable
+data class RaidNightLoot(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("name") val name: String,
+    /** 0 (poor) to 5 (legendary). */
+    @SerialName("quality") val quality: Int,
+    /** The icon stem. */
+    @SerialName("icon") val icon: String,
+    /** The slot label */
+    @SerialName("slot") val slot: String,
+    @SerialName("boss") val boss: String,
+    /** The awarding officer's main character name. */
+    @SerialName("awarded_by") val awardedBy: String,
+    @SerialName("replaces") val replaces: RaidNightReplaces? = null,
+)
+
+@Serializable
+data class RaidNightReplaces(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("item_level") val itemLevel: Int,
 )
 
 /** A logged raid night. id is a report id; raid_id is the planned raid, or null. */
@@ -1320,12 +1394,38 @@ data class RaidNightRow(
     @SerialName("top_parse") val topParse: RaidTopParse? = null,
 )
 
+/** GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach. */
+@Serializable
+data class RaidNightSummary(
+    @SerialName("raid_id") val raidId: Long,
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("starts_at") val startsAt: String,
+    /** The matched report; the full report opens at /reports/{report_id} on the web. */
+    @SerialName("report_id") val reportId: String,
+    @SerialName("character") val character: RaidNightCharacter,
+    @SerialName("kills") val kills: Int,
+    @SerialName("wipes") val wipes: Int,
+    @SerialName("new_bests") val newBests: Int,
+    @SerialName("loot") val loot: List<RaidNightLoot> = emptyList(),
+    @SerialName("bests") val bests: List<RaidNightBest> = emptyList(),
+    /** Up to three; null without log_coach. */
+    @SerialName("coach_notes") val coachNotes: List<String>? = null,
+)
+
 @Serializable
 data class RaidNotSigned(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
     @SerialName("class") val className: String,
     @SerialName("spec") val spec: String,
+    /** The spec's role, for an officer's Add. Lane F4 contract, handler pending. */
+    @SerialName("role") val role: String? = null,
+    /** The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
+    @SerialName("spec_icon") val specIcon: String? = null,
 )
 
 @Serializable
@@ -1351,6 +1451,13 @@ data class RaidPatch(
 )
 
 @Serializable
+data class RaidRoleCounts(
+    @SerialName("tanks") val tanks: Int,
+    @SerialName("healers") val healers: Int,
+    @SerialName("dps") val dps: Int,
+)
+
+@Serializable
 data class RaidSignup(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1360,6 +1467,20 @@ data class RaidSignup(
     @SerialName("state") val state: String,
     @SerialName("note") val note: String,
     @SerialName("own") val own: Boolean,
+    /** The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
+    @SerialName("spec_icon") val specIcon: String? = null,
+)
+
+@Serializable
+data class RaidSpecOption(
+    /** The specs.json key the PUT takes, e.g. "shaman-elemental". */
+    @SerialName("spec") val spec: String,
+    @SerialName("name") val name: String,
+    @SerialName("role") val role: String,
+    /** The talent-tab icon stem. */
+    @SerialName("icon") val icon: String,
 )
 
 @Serializable
@@ -1378,6 +1499,8 @@ data class RaidView(
     @SerialName("zone_name") val zoneName: String,
     @SerialName("title") val title: String,
     @SerialName("starts_at") val startsAt: String,
+    /** When invites go out, before starts_at (the pull); null when the guild sets none. The web form sets it and raid.starting fires at it minus the lead (lane F4 contract, handler pending: omitted until the column exists, which reads as null). */
+    @SerialName("invite_at") val inviteAt: String? = null,
     @SerialName("duration_minutes") val durationMinutes: Int,
     @SerialName("status") val status: String,
     @SerialName("size") val size: Int? = null,
@@ -1386,6 +1509,7 @@ data class RaidView(
     /** Sanitised HTML of notes; render it. */
     @SerialName("notes_html") val notesHtml: String,
     @SerialName("counts") val counts: RaidCounts,
+    @SerialName("composition") val composition: RaidComposition? = null,
     @SerialName("signups") val signups: List<RaidSignup> = emptyList(),
     @SerialName("not_signed") val notSigned: List<RaidNotSigned> = emptyList(),
     @SerialName("viewer") val viewer: RaidViewer,
@@ -1403,6 +1527,12 @@ data class RaidView(
 @Serializable
 data class RaidViewer(
     @SerialName("characters") val characters: List<RaidViewerCharacter> = emptyList(),
+    /** What the viewer may do on this raid, from the guild's capability rule: lock (lock and unlock sign-ups) and move (an officer's PUT for any roster character). Draw officer tools exactly when the word is present, never from a rank. Lane F4 contract, handler pending; missing reads as []. */
+    @SerialName("can") val can: List<String>? = null,
+    /** True for an officer of a guild whose plan ended (officer read-only): the officer tools draw disabled with the plan sentence. Lane F4 contract, handler pending. */
+    @SerialName("tools_ended") val toolsEnded: Boolean? = null,
+    /** True when GET /v1/me/raid-nights/{raid} has a summary for the viewer (a done raid whose log has one of the viewer's characters). Lane F4 contract, handler pending. */
+    @SerialName("raid_night") val raidNight: Boolean? = null,
 )
 
 /** One of your characters in the guild. When raid_spec is null, ask "Which spec tonight?". */
@@ -1416,6 +1546,12 @@ data class RaidViewerCharacter(
     @SerialName("state") val state: String? = null,
     @SerialName("role") val role: String,
     @SerialName("raid_spec") val raidSpec: String? = null,
+    /** The display name of raid_spec, else of spec. Lane F4 contract, handler pending. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** The icon stem of raid_spec, else of spec. Lane F4 contract, handler pending. */
+    @SerialName("spec_icon") val specIcon: String? = null,
+    /** The class's specs in catalogue order, for "Which spec tonight?" (specs.json filtered by class). Lane F4 contract, handler pending. */
+    @SerialName("spec_options") val specOptions: List<RaidSpecOption>? = null,
 )
 
 @Serializable

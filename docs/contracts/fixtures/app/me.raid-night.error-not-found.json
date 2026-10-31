@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "not_found",
+    "message": "No raid night for this raid."
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

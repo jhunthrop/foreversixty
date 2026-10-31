@@ -153,6 +153,8 @@ The full name shows at every width and every text size. Names are one word, so t
 
 The current character persists per device: the last one picked, else `main_character_key`, else the most recently synced character. Picking writes nothing to the server.
 
+**Deviation (integration C, 2026-10-31).** On Android the selector is a full-width row at the top of each root screen (Home, Raids, BiS), not the TopAppBar title slot: 16 dp side padding, 8 dp above and below, a 48 dp minimum height at every font scale. While a signed-in session's characters are still arriving the row is reserved at that height, so the screen never shifts when the selector appears. On BiS the search button shares the row. iOS keeps the toolbar's leading slot.
+
 # 4. Brand on mobile
 
 ## 4.1 Tokens

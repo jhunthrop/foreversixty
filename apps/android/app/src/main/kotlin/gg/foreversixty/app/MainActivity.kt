@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
                         home = graph.home,
                         bis = graph.bisModel,
                         account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
+                        raids = graph.raids.takeIf { it.enabled },
                     )
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -79,7 +80,16 @@ class MainActivity : ComponentActivity() {
      * shows F1.3 and then signed in or F1.4; the feature lanes open their screens from the others.
      */
     private fun handleAppLink(intent: Intent?) {
+        // Lane F4 review captures, debug builds only: post the fixture raid notification.
+        if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
+            gg.foreversixty.app.raids.push.RaidDebugPush.post(this)
+        }
         val link = intent?.dataString ?: return
-        if (DeepLink.parse(link) is DeepLink.SignIn) graph.session.handleRedirect(link)
+        when (val parsed = DeepLink.parse(link)) {
+            is DeepLink.SignIn -> graph.session.handleRedirect(link)
+            null -> Unit
+            // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
+            else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
+        }
     }
 }

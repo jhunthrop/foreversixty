@@ -31,6 +31,7 @@ import gg.foreversixty.app.model.NotificationsPatch
 import gg.foreversixty.app.model.PushTokenRegistered
 import gg.foreversixty.app.model.PushTokenRequest
 import gg.foreversixty.app.model.RaidCancel
+import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.Report
@@ -160,6 +161,10 @@ object ApiEndpoints {
     fun putRaidSignup(id: Long, raid: Long, region: String, ruleset: String, name: String, body: SignupRequest): Endpoint<SignupAnswer> =
         Endpoint(HttpMethod.Put, "/v1/guilds/$id/raids/$raid/signups/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}", SignupAnswer.serializer(), body = ApiJson.encodeToString(SignupRequest.serializer(), body))
 
+    /** GET /v1/me/raid-nights/{raid}: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending) */
+    fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
+        Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
+
     /** GET /v1/guilds/{id}/loot: The loot picker (verified members only) */
     fun getGuildLoot(id: Long): Endpoint<GuildLoot> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/loot", GuildLoot.serializer())
@@ -253,6 +258,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/raids/{raid}/unlock", "guild.raid.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/raids/{raid}/cancel", "guild.raid.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", "guild.signup", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/raid-nights/{raid}", "me.raid-night", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/loot", "guild.loot", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/exchange", "app.signin.exchange", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/logout", "app.logout", HttpStatusCode.fromValue(200)),
