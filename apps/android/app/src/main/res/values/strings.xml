@@ -754,6 +754,9 @@
     <string name="live_notifTitleOne">Invites for %1$s in 1 minute</string>
     <string name="live_notifTitle" tools:ignore="PluralsCandidate">Invites for %1$s in %2$d minutes</string>
     <string name="live_notifTitleNow">Invites for %1$s now</string>
+    <string name="live_pullTitleOne">%1$s starts in 1 minute</string>
+    <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
+    <string name="live_pullTitleNow">%1$s starts now</string>
     <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
     <plurals name="live_simLeft">
         <item quantity="one">about 1 min left</item>
@@ -769,6 +772,7 @@
     <string name="live_channel_raid">Raid starting</string>
     <string name="live_channel_sims">Server sims</string>
     <string name="live_a11y_raid">Invites for %1$s in %2$s. You are %3$s.</string>
+    <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
     <string name="live_tile_title">Next raid</string>
     <string name="live_tile_sub">%1$s · %2$s</string>
 </resources>

@@ -2681,6 +2681,18 @@
         }
       }
     },
+    "live.a11y.raidPull": {
+      "comment": "Arguments: 1 zone (string), 2 span (string), 3 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$@. You are %3$@."
+          }
+        }
+      }
+    },
     "live.channel.raid": {
       "extractionState": "manual",
       "localizations": {
@@ -2792,6 +2804,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open the run"
+          }
+        }
+      }
+    },
+    "live.pullTitle": {
+      "comment": "Arguments: 1 zone (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$lld minutes"
+          }
+        }
+      }
+    },
+    "live.pullTitleNow": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts now"
+          }
+        }
+      }
+    },
+    "live.pullTitleOne": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in 1 minute"
           }
         }
       }

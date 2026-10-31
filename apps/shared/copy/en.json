@@ -723,6 +723,9 @@
     "live.notifTitleOne": "Invites for {zone} in 1 minute",
     "live.notifTitle": {"text": "Invites for {zone} in {n} minutes", "notPlural": true, "args": {"n": "int"}},
     "live.notifTitleNow": "Invites for {zone} now",
+    "live.pullTitleOne": "{zone} starts in 1 minute",
+    "live.pullTitle": {"text": "{zone} starts in {n} minutes", "notPlural": true, "args": {"n": "int"}},
+    "live.pullTitleNow": "{zone} starts now",
     "live.sim": {"text": "{n} of {m} combinations", "notPlural": true, "args": {"n": "int", "m": "int"}},
     "live.simLeft": {"count": "n", "one": "about 1 min left", "other": "about {n} min left"},
     "live.finished": "Finished",
@@ -735,6 +738,7 @@
     "live.channel.raid": "Raid starting",
     "live.channel.sims": "Server sims",
     "live.a11y.raid": "Invites for {zone} in {span}. You are {state}.",
+    "live.a11y.raidPull": "{zone} starts in {span}. You are {state}.",
     "live.tile.title": "Next raid",
     "live.tile.sub": "{time} · {answer}"
   }

@@ -2510,6 +2510,21 @@ enum Copy {
         format("live.notifTitleNow", zone)
     }
 
+    /// {zone} starts in 1 minute
+    static func livePullTitleOne(zone: String) -> String {
+        format("live.pullTitleOne", zone)
+    }
+
+    /// {zone} starts in {n} minutes
+    static func livePullTitle(zone: String, n: Int) -> String {
+        format("live.pullTitle", zone, n)
+    }
+
+    /// {zone} starts now
+    static func livePullTitleNow(zone: String) -> String {
+        format("live.pullTitleNow", zone)
+    }
+
     /// {n} of {m} combinations
     static func liveSim(n: Int, m: Int) -> String {
         format("live.sim", n, m)
@@ -2552,6 +2567,11 @@ enum Copy {
     /// Invites for {zone} in {span}. You are {state}.
     static func liveA11yRaid(zone: String, span: String, state: String) -> String {
         format("live.a11y.raid", zone, span, state)
+    }
+
+    /// {zone} starts in {span}. You are {state}.
+    static func liveA11yRaidPull(zone: String, span: String, state: String) -> String {
+        format("live.a11y.raidPull", zone, span, state)
     }
 
     /// Next raid
