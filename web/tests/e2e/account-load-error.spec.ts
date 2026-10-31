@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 function fulfil(body: unknown, status = 200) {
   return { status, contentType: 'application/json', body: JSON.stringify(body) };

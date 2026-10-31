@@ -1,7 +1,7 @@
 // W.12 ruling 9: the planner and tier-list headers start on the body's left edge (48 px from 768 px,
 // 18 px on a phone), not at the viewport's. A scoped `padding` that named the phone inset alone had
 // zeroed the site column's gutter under both headers.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const WIDTHS = [1280, 1024, 768] as const;
 

@@ -1,7 +1,8 @@
 // web/tests/e2e/sample-report.spec.ts
 // The sample report is bundled with the site (lib/report/sample.ts): /logs offers it, the
 // click lands on fights, and no API is involved at any step.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { SAMPLE_REPORT_META } from './support/logs-sample-fixture';
 import { fieldBox } from './support/select';
 
@@ -174,13 +175,14 @@ test.describe('the brush on a fight that does not end on a whole second', () => 
 
 test.describe('the sample’s counts say what they count', () => {
   // An open-world log sees every player in range: fight 6 has 265 of them and the logger's
-  // party is four of them. The default scope is the group; Everyone in range is one pick away.
+  // party is five of them (the pull's own flags, engine 0.6.0). The default scope is the group; Everyone in range is one pick away.
   test('the default is the logger’s group, and nothing claims a raid', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample');
     const source = page.getByTestId('source-scope');
     await expect(source.locator('option:checked')).toHaveText('Your group');
-    await expect(page.getByTestId('summary-roster-card')).toContainText(/\b4 players · 0 deaths\b/);
+    // Fight 6's own flags put five players in the group; the report-wide last-seen flags said four.
+    await expect(page.getByTestId('summary-roster-card')).toContainText(/\b5 players · 0 deaths\b/);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group \d+ DPS over the whole fight$/);
@@ -188,14 +190,13 @@ test.describe('the sample’s counts say what they count', () => {
     await expect(chart).not.toContainText('Raid');
     // The two deaths in fight 6 are outsiders': the group's chart does not mark them.
     await expect(chart.getByTestId('death-marker')).toHaveCount(0);
-    // No trash pull names a kill count: the engine's counts a party's kill twice.
-    await expect(page.getByTestId('fight-6')).not.toContainText('kill');
-    // The subtitle's deaths are the group's (none); the fight list's 2 are everyone's, and say so.
+    // The trash row's counts are true and say whose they are: every mob that died in range, and
+    // the group's own kills.
+    await expect(page.getByTestId('fight-6-kills')).toHaveText('177 mobs died · your group killed 26');
+    // Deaths read the group's, like the kill line: the subtitle and the row both show none (the
+    // two in fight 6 were outsiders', counted under Everyone in range).
     await expect(page.getByTestId('report-subtitle')).not.toContainText('death');
-    await expect(page.getByTestId('fight-6-deaths')).toHaveAttribute(
-      'title',
-      '2 deaths among everyone in range',
-    );
+    await expect(page.getByTestId('fight-6-deaths')).toHaveCount(0);
   });
 
   test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {

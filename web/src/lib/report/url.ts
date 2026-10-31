@@ -98,6 +98,25 @@ export const MISSING_FIGHT = -1;
 export const ALL_FIGHTS = 0;
 export const ALL_FIGHTS_PARAM = 'all';
 
+/**
+ * One zone's trash folded into one entry (lib/report/fights.ts trashGroups), keyed by its first
+ * pull's index. The url spells it `trash-<key>`; the state holds it below MISSING_FIGHT, where
+ * no fight index and no other scope lives, so `fight` stays one number.
+ */
+const TRASH_PARAM = /^trash-(\d+)$/;
+export function trashScope(key: number): number {
+  return MISSING_FIGHT - key;
+}
+/** The trash group's key when `fight` is a trash scope, else null. */
+export function trashScopeKey(fight: number): number | null {
+  return fight < MISSING_FIGHT ? MISSING_FIGHT - fight : null;
+}
+function fightParam(fight: number): string {
+  if (fight === ALL_FIGHTS) return ALL_FIGHTS_PARAM;
+  const key = trashScopeKey(fight);
+  return key === null ? String(fight) : `trash-${key}`;
+}
+
 /** The filter bar's four switches, as one letter each in the `flags` parameter. */
 export const FLAG_LETTERS = {
   bossOnly: 'b',
@@ -108,7 +127,7 @@ export const FLAG_LETTERS = {
 export type FlagKey = keyof typeof FLAG_LETTERS;
 
 export interface ReportState {
-  /** A fight index from report.json, or ALL_FIGHTS for the whole night. */
+  /** A fight index from report.json, ALL_FIGHTS for the whole night, or a trashScope. */
   fight: number;
   mode: Mode;
   view: View;
@@ -204,7 +223,10 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   const state = defaultState(firstFight);
 
   const fight = params.get('fight');
+  const trash = TRASH_PARAM.exec(fight ?? '');
   if (fight === ALL_FIGHTS_PARAM) state.fight = ALL_FIGHTS;
+  else if (trash !== null && Number.parseInt(trash[1], 10) > 0)
+    state.fight = trashScope(Number.parseInt(trash[1], 10));
   else if (fight !== null && /^\d+$/.test(fight)) state.fight = Number.parseInt(fight, 10);
   // A fight the url cannot read ("abc", "-1", "1e9") is a missing fight, not the first
   // one: the page says so instead of handing a stale link someone else's numbers.
@@ -278,8 +300,7 @@ export function parseReportState(search: string, firstFight: number): ReportStat
 export function reportSearch(state: ReportState, firstFight: number): string {
   const base = defaultState(firstFight);
   const params = new URLSearchParams();
-  if (state.fight !== base.fight)
-    params.set('fight', state.fight === ALL_FIGHTS ? ALL_FIGHTS_PARAM : String(state.fight));
+  if (state.fight !== base.fight) params.set('fight', fightParam(state.fight));
   if (state.mode !== base.mode) params.set('mode', state.mode);
   if (state.view !== base.view) params.set('view', state.view);
   if (state.tab !== base.tab) params.set('tab', state.tab);

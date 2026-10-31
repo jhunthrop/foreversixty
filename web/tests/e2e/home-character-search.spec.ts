@@ -3,7 +3,7 @@
 // /character/<region>/<ruleset>/<name>. The fixture build prerenders one character page,
 // us/hardcore/elyra-duskvale, so the search lands on a real profile; its API read is the
 // shared character fixture.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER_PATH, stubCharacter } from './support/character-fixture';
 import { nativeSelect } from './support/select';
 

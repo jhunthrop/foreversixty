@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { signedOut } from './support/selector';
 
 // design/DESIGN-SYSTEM.md: "Second screen first ... 44px minimum hit targets",

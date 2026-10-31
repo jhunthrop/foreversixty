@@ -104,9 +104,9 @@
     <string name="tooltip_source">Where it comes from</string>
     <string name="tooltip_nextBest">The next best</string>
     <string name="tooltip_youWear">"You wear this · "</string>
-    <string name="tooltip_delta">%1$s DPS vs the pick</string>
+    <string name="tooltip_delta">%1$s %2$s vs the pick</string>
     <string name="tooltip_nothingElse">Nothing else ranked</string>
-    <string name="tooltip_pickOf">Best in slot for %1$s · %2$s %3$s · %4$s</string>
+    <string name="tooltip_pickOf">Best in slot for %1$s · %2$s %3$s</string>
     <string name="tooltip_a11yTile">%1$s, %2$s %3$s item</string>
     <string name="home_answer_under20Button">%1$s gear for 20 to 29</string>
     <string name="home_answer_openPlanner">Open the planner</string>
@@ -198,16 +198,16 @@
     <string name="items_ilvl">ilvl %1$d</string>
     <string name="items_pickArrow">→ %1$s</string>
     <string name="items_setBonus" tools:ignore="PluralsCandidate">(%1$d) Set: %2$s</string>
-    <string name="items_sameDps">Same DPS as the pick</string>
+    <string name="items_sameDps">Same %1$s as the pick</string>
     <string name="items_loading">Loading the item…</string>
     <string name="items_failed">This item did not load.</string>
     <string name="items_notInData">Not in our item data yet</string>
     <string name="items_a11y_hint">Shows the item</string>
     <string name="bis_title">Best in slot</string>
     <string name="bis_yours">Yours</string>
-    <string name="bis_setDps">%1$s DPS at best in slot for your level range · Updated %2$s</string>
-    <string name="bis_next">Next: %1$s, %2$s DPS</string>
-    <string name="bis_nextSame">Next: %1$s, same DPS</string>
+    <string name="bis_setDps">%1$s %2$s at best in slot for your level range · Updated %3$s</string>
+    <string name="bis_next">Next: %1$s, %2$s %3$s</string>
+    <string name="bis_nextSame">Next: %1$s, same %2$s</string>
     <string name="bis_youWear">You wear it</string>
     <string name="bis_offHandTwoHand">Off hand · none: %1$s is two-handed.</string>
     <string name="bis_noPick">%1$s · no pick for this range.</string>
@@ -219,8 +219,31 @@
     <string name="bis_picker_faction">Faction</string>
     <string name="bis_picker_back">Back to %1$s\'s list</string>
     <string name="bis_range_p1">60 · Phase 1 raid</string>
+    <string name="bis_range_p1Opens">60 · Phase 1 raid · opens %1$s</string>
+    <string name="bis_tankLine">Tank lists rank by score, the tank sim\'s blend of mitigation, risk and threat. Higher is better · Updated %1$s</string>
     <string name="bis_notCached">This list is not on your phone yet. Connect once to save it.</string>
     <string name="bis_failed">This list did not load.</string>
+    <string name="bis_loading">Loading this list…</string>
+    <string name="bis_searchEmpty">No item on this list matches.</string>
+    <string name="bis_unit_dps">DPS</string>
+    <string name="bis_unit_hps">HPS</string>
+    <string name="bis_unit_score">score</string>
+    <string name="bis_specChip">%1$s %2$s</string>
+    <string name="bis_range_span" tools:ignore="PluralsCandidate">%1$d to %2$d</string>
+    <string name="bis_range_top" tools:ignore="PluralsCandidate">%1$d</string>
+    <string name="bis_role_dps">DPS</string>
+    <string name="bis_role_healer">Healer</string>
+    <string name="bis_role_tank">Tank</string>
+    <string name="bis_faction_alliance">Alliance</string>
+    <string name="bis_faction_horde">Horde</string>
+    <string name="bis_slotSource">%1$s · %2$s</string>
+    <string name="bis_source_quest">Quest: %1$s</string>
+    <string name="bis_source_crafted">Crafted: %1$s</string>
+    <string name="bis_source_vendor">Vendor: %1$s</string>
+    <string name="bis_a11y_item">%1$s, %2$s, item level %3$d.</string>
+    <string name="bis_a11y_picker">Choose a list: %1$s, %2$s, %3$s</string>
+    <string name="bis_a11y_showsItem">Shows the item</string>
+    <string name="bis_qualitySlot">%1$s · %2$s</string>
     <string name="raids_guildLine">%1$s · %2$s %3$s · %4$d on the roster</string>
     <string name="raids_next">Next raid</string>
     <string name="raids_whoIsComing">Who is coming</string>

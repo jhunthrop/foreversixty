@@ -15,37 +15,15 @@ describe('CurrentCharacterBar', () => {
     expect(body).toContain(currentCharacterCopy.noCharacterLine);
   });
 
-  it('renders nothing when compact and there is no current character', () => {
-    const { body } = render(CurrentCharacterBar, { props: { compact: true } });
+  it('renders nothing on a page with its own paste box and no current character', () => {
+    const { body } = render(CurrentCharacterBar, { props: { hasOwnPasteBox: true } });
     expect(body).not.toContain(currentCharacterCopy.noCharacterLine);
     expect(body).not.toContain('data-testid="current-character-chip"');
   });
-});
 
-describe('CurrentCharacterBar spine mode', () => {
-  it('renders the signed-out, no-session line with no pointer (SSR: session/pointer both null)', () => {
-    const { body } = render(CurrentCharacterBar, { props: { spine: true } });
-    expect(body).toContain(currentCharacterCopy.barSignedOutLine);
-    expect(body).toContain('/login');
-    expect(body).toContain('/setup#paste');
-  });
-
-  it('reserves the same CHIP_HEIGHT classes as the plain chip', () => {
-    const { body } = render(CurrentCharacterBar, { props: { spine: true } });
-    expect(body).toContain('h-[88px]');
-    expect(body).toContain('md:h-11');
-  });
-});
-
-// L8.4 fix round 2 item 7: on a profile the character is the page's subject, so the visitor's
-// sign-in band sits below the Forever Score card at every width, not above the identity. The
-// profile orders its flex column: a signed-in chip -4, the header -3, the score card -2, this
-// band -1, the rest in page order.
-describe('CurrentCharacterBar on a profile', () => {
-  it('orders the signed-out band after the score card at every width, not on phones alone', () => {
-    const { body } = render(CurrentCharacterBar, { props: { spine: true, profile: true } });
-    const bar = /<div class="([^"]*)"[^>]*data-testid="current-character-bar"/.exec(body)?.[1] ?? '';
-    expect(bar.split(' ')).toContain('-order-1');
-    expect(bar).not.toContain('max-md:-order-1');
+  it('never renders the retired Jump to bar', () => {
+    const { body } = render(CurrentCharacterBar, { props: {} });
+    expect(body).not.toContain('data-testid="current-character-bar"');
+    expect(body).not.toContain('Jump to');
   });
 });

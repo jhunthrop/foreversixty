@@ -6,7 +6,8 @@
 //   DROPDOWN_CAPTURES=1 npx playwright test select-captures.spec.ts --project=desktop
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { beLightningbolltz, RAID40_URL, serveRaid40 } from './support/raid40';
 import { enhanced, listOf } from './support/select';
 

@@ -10,7 +10,8 @@
 // supersedes guild-home.spec.ts and guild-phone.spec.ts, both of which exercised exactly
 // the flat single-page body (the duplicated unverified note, the old flat roster list) this
 // rebuild replaces -- see the build report for the full reasoning.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -23,6 +24,18 @@ import {
   buildMockRaids,
 } from '../../src/fixtures/guild/mock-guild';
 import { guildBillingRead } from '../../src/test-support/billing-fixtures';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) =>
+  apiUnreachable(
+    page,
+    '**/v1/guilds/*/loot*',
+    '**/v1/guilds/*/progression*',
+    '**/v1/guilds/*/raids*',
+    '**/v1/guilds/*/readiness*',
+    '**/v1/guilds/*/settings',
+  ),
+);
 
 // Not imported from lib/report/shell-paths.ts: that module reaches lib/rankings/api.ts,
 // which reads `import.meta.env.PUBLIC_API_BASE_URL` (lib/planner/config.ts) -- fine for

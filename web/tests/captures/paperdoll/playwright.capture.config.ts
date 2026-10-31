@@ -7,6 +7,7 @@
 //   npx playwright test -c tests/captures/paperdoll/playwright.capture.config.ts
 // PNGs go to design/reviews/2026-10-31-paperdoll/build/ (see capture.spec.ts).
 import { defineConfig } from '@playwright/test';
+import { HERMETIC_LAUNCH_ARGS } from '../../hermetic';
 
 const PORT = process.env.CAPTURE_PORT ?? '4482';
 
@@ -22,5 +23,6 @@ export default defineConfig({
     deviceScaleFactor: 2,
     timezoneId: 'America/Chicago',
     reducedMotion: 'reduce',
+    launchOptions: { args: [...HERMETIC_LAUNCH_ARGS] },
   },
 });

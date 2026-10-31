@@ -492,6 +492,63 @@
         }
       }
     },
+    "bis.a11y.item": {
+      "comment": "Arguments: 1 item (string), 2 quality (string), 3 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, item level %3$lld."
+          }
+        }
+      }
+    },
+    "bis.a11y.picker": {
+      "comment": "Arguments: 1 spec (string), 2 range (string), 3 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a list: %1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "bis.a11y.showsItem": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the item"
+          }
+        }
+      }
+    },
+    "bis.faction.alliance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alliance"
+          }
+        }
+      }
+    },
+    "bis.faction.horde": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horde"
+          }
+        }
+      }
+    },
     "bis.failed": {
       "extractionState": "manual",
       "localizations": {
@@ -503,26 +560,37 @@
         }
       }
     },
-    "bis.next": {
-      "comment": "Arguments: 1 item (string), 2 delta (string)",
+    "bis.loading": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next: %1$@, %2$@ DPS"
+            "value": "Loading this list…"
+          }
+        }
+      }
+    },
+    "bis.next": {
+      "comment": "Arguments: 1 item (string), 2 delta (string), 3 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: %1$@, %2$@ %3$@"
           }
         }
       }
     },
     "bis.nextSame": {
-      "comment": "Arguments: 1 item (string)",
+      "comment": "Arguments: 1 item (string), 2 unit (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next: %1$@, same DPS"
+            "value": "Next: %1$@, same %2$@"
           }
         }
       }
@@ -629,6 +697,18 @@
         }
       }
     },
+    "bis.qualitySlot": {
+      "comment": "Arguments: 1 quality (string), 2 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "bis.range.p1": {
       "extractionState": "manual",
       "localizations": {
@@ -636,6 +716,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "60 · Phase 1 raid"
+          }
+        }
+      }
+    },
+    "bis.range.p1Opens": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 · Phase 1 raid · opens %1$@"
+          }
+        }
+      }
+    },
+    "bis.range.span": {
+      "comment": "Arguments: 1 from (int), 2 to (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld to %2$lld"
+          }
+        }
+      }
+    },
+    "bis.range.top": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld"
+          }
+        }
+      }
+    },
+    "bis.role.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "bis.role.healer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healer"
+          }
+        }
+      }
+    },
+    "bis.role.tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tank"
           }
         }
       }
@@ -651,14 +800,97 @@
         }
       }
     },
-    "bis.setDps": {
-      "comment": "Arguments: 1 dps (string), 2 date (string)",
+    "bis.searchEmpty": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ DPS at best in slot for your level range · Updated %2$@"
+            "value": "No item on this list matches."
+          }
+        }
+      }
+    },
+    "bis.setDps": {
+      "comment": "Arguments: 1 dps (string), 2 unit (string), 3 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ at best in slot for your level range · Updated %3$@"
+          }
+        }
+      }
+    },
+    "bis.slotSource": {
+      "comment": "Arguments: 1 slot (string), 2 source (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "bis.source.crafted": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crafted: %1$@"
+          }
+        }
+      }
+    },
+    "bis.source.quest": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quest: %1$@"
+          }
+        }
+      }
+    },
+    "bis.source.vendor": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vendor: %1$@"
+          }
+        }
+      }
+    },
+    "bis.specChip": {
+      "comment": "Arguments: 1 spec (string), 2 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "bis.tankLine": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tank lists rank by score, the tank sim's blend of mitigation, risk and threat. Higher is better · Updated %1$@"
           }
         }
       }
@@ -670,6 +902,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Best in slot"
+          }
+        }
+      }
+    },
+    "bis.unit.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "bis.unit.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HPS"
+          }
+        }
+      }
+    },
+    "bis.unit.score": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "score"
           }
         }
       }
@@ -1575,12 +1840,13 @@
       }
     },
     "items.sameDps": {
+      "comment": "Arguments: 1 unit (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Same DPS as the pick"
+            "value": "Same %1$@ as the pick"
           }
         }
       }
@@ -5346,13 +5612,13 @@
       }
     },
     "tooltip.delta": {
-      "comment": "Arguments: 1 delta (string)",
+      "comment": "Arguments: 1 delta (string), 2 unit (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ DPS vs the pick"
+            "value": "%1$@ %2$@ vs the pick"
           }
         }
       }
@@ -5404,13 +5670,13 @@
       }
     },
     "tooltip.pickOf": {
-      "comment": "Arguments: 1 slot (string), 2 spec (string), 3 band (string), 4 preset (string)",
+      "comment": "Arguments: 1 slot (string), 2 spec (string), 3 band (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Best in slot for %1$@ · %2$@ %3$@ · %4$@"
+            "value": "Best in slot for %1$@ · %2$@ %3$@"
           }
         }
       }

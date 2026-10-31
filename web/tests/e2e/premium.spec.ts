@@ -3,7 +3,8 @@
 // with the R-P8 ruling: founder prices until 6 January 2027, no "before" state). Prices come
 // from lib/billing/plans, never typed here.
 import { createRequire } from 'node:module';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { priceFor } from '../../src/lib/billing/plan-costs';
 import { FOUNDER_WINDOW_CLOSES, PLAN_ORDER, formatPrice } from '../../src/lib/billing/plans';
 import { PREMIUM_SOURCE_KEY } from '../../src/lib/account/premium-hint';

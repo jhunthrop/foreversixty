@@ -3,7 +3,7 @@
 // by a signed-in visitor whose main is another class loaded the planner but not the talents.
 // The signed-in main-class default switched class while the talent file was still loading,
 // so the code no longer matched and was dropped. A link that names a build owns the planner.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { nativeSelect } from './support/select';
 

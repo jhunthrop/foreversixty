@@ -1,5 +1,6 @@
 // web/tests/e2e/guild-claim.spec.ts
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { priceFor } from '../../src/lib/billing/plan-costs';
 import { checkoutGuildCopy } from '../../src/lib/billing/checkout-guild-copy';
 import { PLANS, formatPrice, founderOpen } from '../../src/lib/billing/plans';
@@ -11,6 +12,9 @@ import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscr
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/devices', '**/v1/guilds/*/home'));
 
 // The claim page is an island: wait for it to hydrate before asserting on it, or a slow CI shard
 // asserts against the server shell (the mobile shard did, once).

@@ -3,7 +3,7 @@
 // a character loaded on one tool is offered back on the next, every paste box points at
 // the addon, a Droptimizer upgrade opens straight into the planner, the simulator is
 // honest about the level it models, and sharing a build asks before it writes.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';
@@ -30,9 +30,8 @@ test.describe('current character', () => {
     await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
-    // Planner rebuild spec §3: the spine chip (and its Forget control) that used to prove
-    // a restore on this page is replaced by the shared character header -- the pointer
-    // bridge itself is unchanged (`decidePlannerLoad` still restores a bare /planner from
+    // Planner rebuild spec §3: the proof of a restore on this page is the planner itself --
+    // the pointer bridge (`decidePlannerLoad` still restores a bare /planner from
     // the stored 'code'/'addon' pointer), so the proof here is the restored build itself:
     // the fixture's Fury Warrior string reconstructs to 24 points in Fury with nothing
     // dropped (sim-saved.spec.ts's own fixture result carries the identical final string,
@@ -41,7 +40,6 @@ test.describe('current character', () => {
     await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
     await expect(nativeSelect(page, 'Race')).toHaveValue('orc');
     await expect(page.getByTestId('tree-points-164')).toHaveText('24');
-    await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   });
 
   test('a code that names nobody is looked at and never becomes the current character', async ({ page }) => {
@@ -53,7 +51,7 @@ test.describe('current character', () => {
     await expect(page.getByTestId('sim-character')).toHaveCount(0);
   });
 
-  test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {
+  test('Forget in the header clears a restored pointer for the next bare load', async ({ page, context }) => {
     await page.goto('/sim');
     await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
     await page.getByTestId('sim-cold-paste-run').click();
@@ -61,13 +59,22 @@ test.describe('current character', () => {
     // is written a beat after `load`: wait for the character to show before leaving.
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
-    await page.goto('/sim');
-    await expect(page.getByTestId('current-character-restored')).toBeAttached();
+    // Chosen in this visit: the selector says nothing about a restore.
+    await page.getByTestId('character-selector').click();
+    await expect(page.getByTestId('selector-panel')).toBeVisible();
+    await expect(page.getByTestId('selector-restored')).toHaveCount(0);
 
-    await page.getByTestId('current-character-forget').click();
+    // A later visit (a new tab: a new session, the same stored pointer) restores it.
+    const later = await context.newPage();
+    await later.goto('/sim');
+    await expect(later.getByTestId('sim-character')).toBeVisible();
+    await later.getByTestId('character-selector').click();
+    await expect(later.getByTestId('selector-restored')).toContainText('Restored your last character');
+    await later.getByTestId('selector-forget').click();
 
-    await page.goto('/sim');
-    await expect(page.getByTestId('current-character-restored')).toHaveCount(0);
+    await later.goto('/sim');
+    await expect(later.getByTestId('sim-character')).toHaveCount(0);
+    expect(await later.evaluate(() => window.localStorage.getItem('fs.currentCharacter'))).toBeNull();
   });
 
   test('every paste box links to /setup', async ({ page }) => {

@@ -2,7 +2,7 @@
 // The character page's rating panel: overall + six-segment bar + trend once there are
 // enough fights, the too-few-samples copy below that, and the anonymized-character case
 // rendering nothing. API stubbed with page.route (the API lane has not landed).
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const CHARACTER = {
   ok: true,

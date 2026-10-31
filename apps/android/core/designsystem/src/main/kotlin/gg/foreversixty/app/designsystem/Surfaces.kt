@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +20,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
@@ -34,21 +36,25 @@ fun MicroLabel(text: String, modifier: Modifier = Modifier, color: Color = FsCol
     Text(text.uppercase(Locale.ROOT), modifier.semantics { heading() }, style = FsType.micro, color = color)
 }
 
-/** A tag (`.pill`): 22 dp, 11 sp 700 uppercase, tinted ground and border. */
+/** A tag (`.pill`): 22 dp, 11 sp 700 uppercase, tinted ground and border; [checked] leads with a tick. */
 @Composable
-fun Tag(text: String, color: Color) {
-    Text(
-        text.uppercase(Locale.ROOT),
-        style = FsType.micro.copy(letterSpacing = 0.08.em),
-        color = color,
-        modifier = Modifier
-            .background(color.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.pill))
-            .border(1.dp, color.copy(alpha = 0.35f), RoundedCornerShape(FsRadius.pill))
+fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Boolean = false) {
+    val shape = RoundedCornerShape(FsRadius.pill)
+    Row(
+        modifier
+            .heightIn(min = 22.dp)
+            .background(color.copy(alpha = 0.12f), shape)
+            .border(1.dp, color.copy(alpha = 0.35f), shape)
             .padding(horizontal = FsSpacing.space2, vertical = 4.dp),
-    )
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = color, modifier = Modifier.size(11.dp))
+        Text(text.uppercase(Locale.ROOT), style = FsType.micro.copy(letterSpacing = 0.08.em), color = color)
+    }
 }
 
-/** The offline strip (§5.0): 36 dp, `#11151f`, the glyph, then [text]; announced politely. */
+/** The offline strip (§5.0): 36 dp, `#11151f`, the wifi-off glyph, then [text]; announced politely. */
 @Composable
 fun OfflineStrip(text: String) {
     Row(
@@ -62,7 +68,7 @@ fun OfflineStrip(text: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
     ) {
-        Icon(Icons.Filled.Warning, contentDescription = null, tint = FsColor.nav, modifier = Modifier.size(16.dp))
+        Icon(painterResource(R.drawable.ic_wifi_off), contentDescription = null, tint = FsColor.nav, modifier = Modifier.size(16.dp))
         Text(text, style = FsType.meta, color = FsColor.nav)
     }
 }
@@ -84,3 +90,7 @@ fun Modifier.heroBand(): Modifier = this
     .drawBehind {
         drawLine(FsColor.lineSoft, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
     }
+
+/** A chip or pill's ground: [fill] and a 1 dp [line] border in [shape]. */
+fun Modifier.pillSurface(fill: Color, line: Color, shape: Shape = RoundedCornerShape(percent = 50)): Modifier =
+    background(fill, shape).border(1.dp, line, shape)

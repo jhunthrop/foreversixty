@@ -360,6 +360,7 @@ public struct BisAlternative: Codable, Sendable, Equatable {
     public let sourceLine: String?
     /// Percent when known.
     public let dropChance: Double?
+    public let verified: Bool?
 
     public init(
         itemId: Int,
@@ -368,7 +369,8 @@ public struct BisAlternative: Codable, Sendable, Equatable {
         sourceKind: String,
         dpsDelta: Double,
         sourceLine: String? = nil,
-        dropChance: Double? = nil
+        dropChance: Double? = nil,
+        verified: Bool? = nil
     ) {
         self.itemId = itemId
         self.itemName = itemName
@@ -377,6 +379,7 @@ public struct BisAlternative: Codable, Sendable, Equatable {
         self.dpsDelta = dpsDelta
         self.sourceLine = sourceLine
         self.dropChance = dropChance
+        self.verified = verified
     }
 }
 
@@ -392,6 +395,8 @@ public struct BisBand: Codable, Sendable, Equatable {
     public let referenceDpsPerPoint: Double
     public let scaleReferenceStat: String?
     public let setDps: Double?
+    /// The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score.
+    public let role: String?
     /// "slot: item name" for each pick new at this band.
     public let newAtBand: [String]?
     public let weights: [BisWeight]
@@ -409,6 +414,7 @@ public struct BisBand: Codable, Sendable, Equatable {
         referenceDpsPerPoint: Double,
         scaleReferenceStat: String? = nil,
         setDps: Double? = nil,
+        role: String? = nil,
         newAtBand: [String]? = nil,
         weights: [BisWeight] = [],
         slots: [BisSlot] = []
@@ -424,6 +430,7 @@ public struct BisBand: Codable, Sendable, Equatable {
         self.referenceDpsPerPoint = referenceDpsPerPoint
         self.scaleReferenceStat = scaleReferenceStat
         self.setDps = setDps
+        self.role = role
         self.newAtBand = newAtBand
         self.weights = weights
         self.slots = slots
@@ -442,6 +449,7 @@ public struct BisBand: Codable, Sendable, Equatable {
         referenceDpsPerPoint = try c.decode(Double.self, forKey: .referenceDpsPerPoint)
         scaleReferenceStat = try c.decodeIfPresent(String.self, forKey: .scaleReferenceStat)
         setDps = try c.decodeIfPresent(Double.self, forKey: .setDps)
+        role = try c.decodeIfPresent(String.self, forKey: .role)
         newAtBand = try c.decodeIfPresent([String].self, forKey: .newAtBand)
         weights = try c.decodeIfPresent([BisWeight].self, forKey: .weights) ?? []
         slots = try c.decodeIfPresent([BisSlot].self, forKey: .slots) ?? []
@@ -534,6 +542,7 @@ public struct BisSlot: Codable, Sendable, Equatable {
     public let ties: [BisTie]?
     /// The set bonus this piece is worn for.
     public let setBonus: BisSetBonus?
+    public let lowValue: Bool?
     public let factionNote: String?
     public let emptyReason: String?
 
@@ -555,6 +564,7 @@ public struct BisSlot: Codable, Sendable, Equatable {
         swapNote: String? = nil,
         ties: [BisTie]? = nil,
         setBonus: BisSetBonus? = nil,
+        lowValue: Bool? = nil,
         factionNote: String? = nil,
         emptyReason: String? = nil
     ) {
@@ -575,6 +585,7 @@ public struct BisSlot: Codable, Sendable, Equatable {
         self.swapNote = swapNote
         self.ties = ties
         self.setBonus = setBonus
+        self.lowValue = lowValue
         self.factionNote = factionNote
         self.emptyReason = emptyReason
     }
@@ -1561,8 +1572,16 @@ public struct FightEntry: Codable, Sendable, Equatable {
     public let end: Date?
     public let durationMs: Int64
     public let players: [String]
+    /// Every player death in range
     public let deaths: Int?
-    public let npcKills: Int?
+    /// Hostile NPCs that died in range, each once. Absent on a fight indexed before engine 0.6.0: show no kill count then
+    public let mobDeaths: Int?
+    /// How many of mob_deaths the logger's group killed. Absent before engine 0.6.0
+    public let groupKills: Int?
+    /// Player deaths among the group. Absent before engine 0.6.0
+    public let groupDeaths: Int?
+    /// Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was
+    public let group: [String]?
     public let verified: Bool
 
     public init(
@@ -1580,7 +1599,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         durationMs: Int64,
         players: [String] = [],
         deaths: Int? = nil,
-        npcKills: Int? = nil,
+        mobDeaths: Int? = nil,
+        groupKills: Int? = nil,
+        groupDeaths: Int? = nil,
+        group: [String]? = nil,
         verified: Bool
     ) {
         self.index = index
@@ -1597,7 +1619,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         self.durationMs = durationMs
         self.players = players
         self.deaths = deaths
-        self.npcKills = npcKills
+        self.mobDeaths = mobDeaths
+        self.groupKills = groupKills
+        self.groupDeaths = groupDeaths
+        self.group = group
         self.verified = verified
     }
 
@@ -1617,7 +1642,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         durationMs = try c.decode(Int64.self, forKey: .durationMs)
         players = try c.decodeIfPresent([String].self, forKey: .players) ?? []
         deaths = try c.decodeIfPresent(Int.self, forKey: .deaths)
-        npcKills = try c.decodeIfPresent(Int.self, forKey: .npcKills)
+        mobDeaths = try c.decodeIfPresent(Int.self, forKey: .mobDeaths)
+        groupKills = try c.decodeIfPresent(Int.self, forKey: .groupKills)
+        groupDeaths = try c.decodeIfPresent(Int.self, forKey: .groupDeaths)
+        group = try c.decodeIfPresent([String].self, forKey: .group)
         verified = try c.decode(Bool.self, forKey: .verified)
     }
 }

@@ -46,6 +46,33 @@ describe('officer actions', () => {
     stop();
   });
 
+  it('a 429 on the edit, a status button or the roster select says to wait', async () => {
+    const limited = new GuildApiError('too many requests', 429, 'rate_limited');
+    const reject = (): Promise<never> => Promise.reject(limited);
+    const { c, stop } = await started(
+      deps({
+        loadMe: officerMe,
+        loadHome: officerHome,
+        setStatus: reject,
+        updateRaid: reject,
+        putSignup: reject,
+      }),
+    );
+    await expect(c.saveEdit({} as Parameters<typeof c.saveEdit>[0])).resolves.toMatchObject({
+      ok: false,
+      message: raidCopy.rateLimited,
+    });
+    await c.runStatus('lock');
+    expect(c.line).toEqual({ control: 'lock', message: raidCopy.rateLimited });
+    const row = { character_key: 'us-pvp-elyra', role: 'dps', note: '' } as Parameters<
+      typeof c.setRosterState
+    >[0];
+    await c.setRosterState(row, 'bench');
+    expect(c.line).toEqual({ control: 'roster', message: raidCopy.rateLimited });
+    expect(c.officerTools).toBe(true);
+    stop();
+  });
+
   it('re-reads the raid after a conflict and says it did not save', async () => {
     const refetchRaid = vi.fn(() => Promise.resolve(plannedRaid({ status: 'cancelled' })));
     const refusal = new GuildApiError('conflict', 409, 'conflict');

@@ -4,7 +4,7 @@
 // shows is exactly the kind of breakout that can push a page wider than its own viewport at a
 // laptop width. Asserts the one invariant that matters: /logs never scrolls sideways, at every
 // width this pass was asked to check, signed out and signed in.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 

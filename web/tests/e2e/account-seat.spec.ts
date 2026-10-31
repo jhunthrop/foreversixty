@@ -1,7 +1,8 @@
 // web/tests/e2e/account-seat.spec.ts
 // Launch pricing spec section 9 cases 17 and 18: the account Plan panel for a seat offer, a seat
 // holder, a founder and an ended seat. The viewer's zone is UTC so stored instants read as written.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   FOUNDER_PREMIUM_FACTS,
   ME_ENDED_SEAT,

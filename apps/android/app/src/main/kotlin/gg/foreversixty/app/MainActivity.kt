@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import androidx.compose.runtime.getValue
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,7 +37,11 @@ class MainActivity : ComponentActivity() {
                 val gate by graph.updateGate.state.collectAsStateWithLifecycle()
                 val answer = gate
                 if (answer == null) {
-                    ForeverAppScaffold(home = graph.home, account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) })
+                    ForeverAppScaffold(
+                        home = graph.home,
+                        bis = graph.bisModel,
+                        account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
+                    )
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })

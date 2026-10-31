@@ -14,6 +14,7 @@
   import { browserChooseDeps, chooseCharacter, choosePointer } from '../../lib/character-selector/choose';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { OPEN_SELECTOR_EVENT } from '../../lib/character-selector/config';
+  import { forgetPointer } from '../../lib/character-selector/restored';
   import { publishSessionGuild } from '../../lib/character-selector/session-guild-dom';
   import { applySessionPremium } from '../../lib/premium-nav';
   import {
@@ -153,6 +154,13 @@
     announcement = selectorCopy.nowUsing(result.account?.name ?? result.pointer.label.split(' · ')[0]);
     close(true);
     return true;
+  }
+
+  function onForget(): void {
+    const name = current?.name ?? '';
+    forgetPointer({ dispatch: (event) => window.dispatchEvent(event) });
+    announcement = selectorCopy.forgotten(name);
+    close(true);
   }
 
   async function onSignOut(): Promise<void> {
@@ -425,7 +433,9 @@
       account={selector.accountPanel}
       {signingOut}
       {signOutFailed}
+      restored={selector.restored}
       onsignout={onSignOut}
+      onforget={onForget}
       onchoose={onChoose}
       onpaste={onPaste}
       onretry={onRetry}

@@ -4,7 +4,7 @@
 // render test in src/components/Character.test.ts can only prove LoadError's markup shape,
 // because no $effect runs server-side, so the wiring itself is proved here: the route
 // fails, the reader presses the button, and the second answer paints the real page.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
 
 test('a failed character page retries the same fetch in place', async ({ page }) => {

@@ -304,7 +304,7 @@
 
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
-  // The chip this used to feed (CurrentCharacterBar's spine mode) is gone with it (rebuild
+  // The chip this used to feed is gone with it (rebuild
   // spec §3: replaced by the shared character header) -- the write itself still matters
   // (the site-wide current-character bridge every other tool page reads), so this keeps
   // calling it and simply has nothing of its own left to do with the fresh pointer back.

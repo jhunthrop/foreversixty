@@ -160,7 +160,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -279,7 +279,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -1082,7 +1082,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in",
               "disabled": true
@@ -1184,7 +1184,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in"
             },
@@ -1327,7 +1327,7 @@
           "components": [
             {
               "type": 2,
-              "style": 3,
+              "style": 2,
               "label": "In",
               "custom_id": "raid:1:in",
               "disabled": true

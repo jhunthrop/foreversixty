@@ -4,7 +4,8 @@
 // the remove question, officer-read-only (Remove stays live, `#billing` scrolls to Billing), the
 // 403 that ends the officer tools, the switched-off fill, a non-officer's nothing, the raid form's
 // line after a remove, axe in every state, 44 px controls at 360 and the §3.8 height caps.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
 import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
@@ -24,6 +25,9 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import { envelope, expectNoAxeViolations } from './support/officer-tools';
 import { fieldBox } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing'));
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };

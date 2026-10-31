@@ -7,7 +7,8 @@
 // trusting that no later change quietly reopened one.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { fieldBox } from './support/select';
 

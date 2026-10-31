@@ -4,7 +4,8 @@
 // CHART_CAPTURES=1: they are pictures for the reviewers, not assertions.
 //   CHART_CAPTURES=1 npx playwright test report-charts-captures.spec.ts --project=desktop
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { beLightningbolltz, RAID40_URL, serveRaid40 } from './support/raid40';
 
 const OUT = join(import.meta.dirname, '../../../design/reviews/2026-10-30-controls-charts');

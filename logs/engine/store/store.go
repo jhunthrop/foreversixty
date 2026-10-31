@@ -127,7 +127,16 @@ type FightEntry struct {
 	DurationMS  int64     `json:"duration_ms"`
 	Players     []string  `json:"players"`
 	Deaths      int       `json:"deaths"`
-	NPCKills    int       `json:"npc_kills"`
+	// The counts engine 0.6.0 added (see fight.Counter). Each is a pointer
+	// because a fight indexed before then has none of them: absent means
+	// not counted, never zero. A reader shows no kill count for such a
+	// fight rather than the old double-counted npc_kills.
+	MobDeaths   *int `json:"mob_deaths,omitempty"`
+	GroupKills  *int `json:"group_kills,omitempty"`
+	GroupDeaths *int `json:"group_deaths,omitempty"`
+	// Group is the players flagged MINE, PARTY or RAID during this fight;
+	// absent before engine 0.6.0.
+	Group []string `json:"group,omitempty"`
 	// BossHealthPct is what a wipe got the boss down to; -1 when the log
 	// never showed the boss's health, absent on a kill and on trash.
 	BossHealthPct float64 `json:"boss_health_pct,omitempty"`
@@ -140,10 +149,14 @@ func EntryOf(f fight.Fight) FightEntry {
 		EncounterID: f.EncounterID, Difficulty: f.Difficulty, Size: f.Size,
 		Kill: f.Kill, InProgress: f.InProgress, Zone: f.Zone,
 		Start: f.Start, End: f.End, DurationMS: f.Duration().Milliseconds(),
-		Players: f.Players, Deaths: f.Deaths, NPCKills: f.NPCKills,
+		Players: f.Players, Deaths: f.Deaths,
+		MobDeaths: ptr(f.MobDeaths), GroupKills: ptr(f.GroupKills), GroupDeaths: ptr(f.GroupDeaths),
+		Group:         f.Group,
 		BossHealthPct: f.BossHealthPct,
 	}
 }
+
+func ptr[T any](v T) *T { return &v }
 
 // Report is reports/<id>/report.json.
 type Report struct {

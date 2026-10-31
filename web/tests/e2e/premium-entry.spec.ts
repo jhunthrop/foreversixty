@@ -3,7 +3,8 @@
 // each account state with no layout shift (the pre-paint hide and the after-paint hold), its
 // widths, the phone Menu row, the account panel's Plan row, and every contextual link landing on
 // its own /premium anchor with the line highlighted.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
 import { headerWired } from './support/header';
 import { OBNOXIOUS, armoryPointer, signInWith, signedOut, storePointer } from './support/selector';

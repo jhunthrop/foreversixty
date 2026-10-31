@@ -177,8 +177,8 @@ struct ItemTooltipPanel: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 12)
         .padding(.horizontal, 14)
-        .background(Color(tokenHex: 0x0A0D14), in: .rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(Color(tokenHex: 0x3A4256)))
+        .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.control))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(GameColors.iconLine))
         .accessibilityElement(children: .combine)
     }
 

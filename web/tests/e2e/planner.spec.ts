@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
@@ -465,8 +465,7 @@ test('each tree draws its own art and counts its own points', async ({ page }) =
 test('opening /planner bare with a stored, non-restorable (armory) pointer still loads cleanly', async ({
   page,
 }) => {
-  // Rebuild spec §3: the current-character spine band (which used to show a "restored"
-  // chip) is replaced by the shared character header -- this pointer is not one of the
+  // Rebuild spec §3: the shared character header leads this page -- this pointer is not one of the
   // two sources ('code'/'addon') the planner ever restores from, so the only real
   // assertion left is that the page still loads cleanly rather than erroring on it.
   await page.addInitScript(() => {

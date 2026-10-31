@@ -82,7 +82,12 @@ type FightRecord struct {
 	Verified    bool
 	Players     []string
 	Deaths      int
-	NPCKills    int
+	// The engine 0.6.0 counts (fight.Counter): hostile NPCs that died, the
+	// ones the group killed, the group's own deaths, and the group.
+	MobDeaths   int
+	GroupKills  int
+	GroupDeaths int
+	Group       []string
 	// BossHealthPct is what a wipe got the boss down to; nil on a kill
 	// and on trash, -1 when the log never showed the boss.
 	BossHealthPct *float64

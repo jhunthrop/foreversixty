@@ -54,7 +54,7 @@ fun BrandButton(
                 Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(FsSpacing.space2))
             }
-            Text(label.uppercase(Locale.ROOT), style = FsType.button, textAlign = TextAlign.Center)
+            Text(caseOf(kind, label), style = FsType.button, textAlign = TextAlign.Center)
         }
     }
     if (kind == BrandButtonKind.Primary) {
@@ -80,7 +80,7 @@ fun BrandButton(
             modifier = size,
             border = BorderStroke(1.dp, borderColor(kind)),
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White.copy(alpha = 0.045f),
+                containerColor = GameColors.controlFill,
                 contentColor = contentColor(kind),
                 disabledContentColor = contentColor(kind),
             ),
@@ -89,6 +89,10 @@ fun BrandButton(
 }
 
 private val HORIZONTAL_PADDING = 18.dp
+
+/** Spec §4.5: the primary button is uppercase; a secondary reads in sentence case (BiS UX verdict). */
+private fun caseOf(kind: BrandButtonKind, label: String): String =
+    if (kind == BrandButtonKind.Secondary) label else label.uppercase(Locale.ROOT)
 
 private fun contentColor(kind: BrandButtonKind): Color = when (kind) {
     BrandButtonKind.Primary -> FsColor.bg

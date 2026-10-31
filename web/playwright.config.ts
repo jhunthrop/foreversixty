@@ -1,5 +1,6 @@
 // web/playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
+import { DEAD_API_BASE, HERMETIC_LAUNCH_ARGS } from './tests/hermetic';
 
 // E2E_PORT lets a second checkout run its own preview beside another one (the persona
 // review harness keeps the main build on 4321), so the suite is not pinned to one port.
@@ -12,7 +13,13 @@ export default defineConfig({
   // test.slow(), which triples whatever this is, so 45 s gives them 135 s on a cold CI
   // runner without slowing anything else down.
   timeout: 45_000,
-  use: { baseURL: `http://localhost:${port}`, trace: 'retain-on-failure' },
+  // The test browser cannot resolve the production API's host (tests/hermetic.ts): no spec,
+  // stubbed or not, reaches the real API, whatever API base the served dist was built with.
+  use: {
+    baseURL: `http://localhost:${port}`,
+    trace: 'retain-on-failure',
+    launchOptions: { args: [...HERMETIC_LAUNCH_ARGS] },
+  },
   // ASTRO_PREVIEW_BACKGROUND disables Astro's auto-detected-AI-agent daemon mode for `astro preview`
   // (see astro/dist/cli/preview/index.js `isRunByAgent()`), which otherwise forks preview into the
   // background and exits the foreground process immediately -- Playwright then reports
@@ -31,7 +38,14 @@ export default defineConfig({
     port: Number(port),
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
-    env: { ASTRO_PREVIEW_BACKGROUND: '1', FOREVER_DATA: process.env.FOREVER_DATA ?? 'fixture' },
+    // PUBLIC_API_BASE_URL is a dead port (tests/hermetic.ts): an unstubbed API call from the
+    // built site is refused locally instead of spending a real server's rate limit. CI's
+    // `build` job builds the e2e dist with the same value.
+    env: {
+      ASTRO_PREVIEW_BACKGROUND: '1',
+      FOREVER_DATA: process.env.FOREVER_DATA ?? 'fixture',
+      PUBLIC_API_BASE_URL: DEAD_API_BASE,
+    },
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },

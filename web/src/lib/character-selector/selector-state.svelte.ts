@@ -7,9 +7,11 @@ import { ME_QUERY_VERSION, ME_TTL_MS, fetchMeOnce, meKey, type Me } from '../acc
 import { createQueryState } from '../data/query.svelte';
 import { sessionHinted } from '../data/query';
 import { settlePointerForSession } from '../account/session-pointer';
+import { mainCharacter } from '../account/main-character';
 import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../current-character';
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
+import { isRestoredPointer, readSessionStartPointer } from './restored';
 import { accountPanelOf, type AccountPanel } from './account-panel';
 import { accountNameOf, buildSelectorModel, closedKindOf, type ClosedKind, type SelectorModel } from './rows';
 import { currentGuildOf, type SessionGuild } from './session-guild';
@@ -33,6 +35,8 @@ export interface SelectorState {
   readonly accountPanel: AccountPanel | null;
   /** The session's first verified guild once `/v1/me` answered; null signed out or without one. */
   readonly sessionGuild: SessionGuild | null;
+  /** The current character came back from an earlier visit (restored.ts): the panel offers Forget. */
+  readonly restored: boolean;
   /** Re-reads the pointer, the chosen keys and the clock (the list is about to be shown). */
   refresh(): void;
   /** Asks `/v1/me` again (the list's "Try again"). */
@@ -56,9 +60,11 @@ export function createSelectorState(): SelectorState {
   let chosenKeys = $state<string[]>([]);
   let nowMs = $state(Date.now());
   let sessionHint = $state(false);
+  let sessionStartPointer = $state<string | null>(null);
 
   function refresh(): void {
     pointer = readCurrent();
+    sessionStartPointer = readSessionStartPointer();
     chosenKeys = readChosenKeys();
     nowMs = Date.now();
   }
@@ -108,6 +114,16 @@ export function createSelectorState(): SelectorState {
 
   const sessionGuild = $derived(loadStatus === 'ready' ? currentGuildOf(session.data, pointer) : null);
 
+  const restored = $derived(
+    isRestoredPointer(
+      pointer,
+      sessionStartPointer,
+      loadStatus === 'ready' && session.data
+        ? (mainCharacter(session.data.characters, session.data.main_character_key)?.key ?? null)
+        : null,
+    ),
+  );
+
   // Until the browser has been read, and while a signed-in visitor's character is still
   // unknown, the closed control stays the pre-paint link (its skeleton variant); a visitor
   // with nothing to show gets the sign-in slot at once.
@@ -137,6 +153,9 @@ export function createSelectorState(): SelectorState {
     },
     get sessionGuild() {
       return sessionGuild;
+    },
+    get restored() {
+      return restored;
     },
     refresh,
     reload: () => session.refresh(),

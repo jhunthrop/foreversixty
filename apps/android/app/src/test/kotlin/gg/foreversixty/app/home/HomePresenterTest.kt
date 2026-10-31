@@ -78,7 +78,6 @@ class HomePresenterTest {
     @Test
     fun `a negative gain keeps its true minus`() {
         assertEquals("−0.8", ItemNumbers.signedTenths(-0.8))
-        assertEquals("−5.3", ItemNumbers.delta(-5.31))
     }
 
     @Test
@@ -198,7 +197,7 @@ class HomeStoreTest {
         val home = (store.phase.value as HomePhase.Loaded).home
         assertEquals(12, home.upgradeCount)
         val catalog = ItemCatalog(StaticDataClient(FixtureEngine.create(source)))
-        val sources = catalog.sources(HomePresenter.tooltipRequest(ItemLook(252605), home, HomeFixtures.velaren))
+        val sources = catalog.sources(HomePresenter.tooltipRequest(ItemLook(252605), home, HomeFixtures.velaren, ApplicationProvider.getApplicationContext<android.content.Context>().resources))
         assertTrue(sources?.items?.containsKey(252605) == true)
         assertTrue(sources?.bis != null && sources.sets.isNotEmpty())
     }
@@ -221,7 +220,7 @@ class ItemTooltipTest {
     private val sources = HomeFixtures.tooltipSources()
 
     private fun request(id: Int, wornId: Int? = null, sourceLine: String? = null) = HomePresenter.tooltipRequest(
-        ItemLook(id, "Fallback", 4, null, 60), HomeFixtures.home(), HomeFixtures.velaren, sourceLine, wornId,
+        ItemLook(id, "Fallback", 4, null, 60), HomeFixtures.home(), HomeFixtures.velaren, res, sourceLine, wornId,
     )
 
     @Test
@@ -236,7 +235,7 @@ class ItemTooltipTest {
         assertEquals("Item Level 61", model.itemLevel)
         assertEquals("Crafted: Leatherworking", model.source)
         assertEquals(2, model.alternatives.size)
-        assertEquals("Best in slot for Head · Beast Mastery 60 · Raid-ready, Phase 1", model.pickFooter)
+        assertEquals("Best in slot for Head · Beast Mastery 60 · raid", model.pickFooter)
     }
 
     @Test

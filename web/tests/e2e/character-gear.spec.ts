@@ -8,7 +8,8 @@
 //   The tooltip on hover, focus and tap, toward the centre from the right column (§4.2).
 //   The worst case: no name clamped at 360, 390 and 1024; a long word breaks with a hyphen.
 //   The landing focuses the heading, with gear and without.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,

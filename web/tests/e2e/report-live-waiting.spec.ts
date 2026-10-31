@@ -4,7 +4,7 @@
 // first fight and fills in by itself, and never says "No report with that id".
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const ID = 'fixture2live'; // the prerendered shell that carries no inlined meta

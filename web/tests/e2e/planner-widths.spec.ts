@@ -8,7 +8,7 @@
 // the page never scrolls sideways, at every width this lane was asked to check, signed out
 // and signed in (the signed-in card is the right column of a two-column grid from 1024px,
 // the one state the designer's own screenshot caught).
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
 const WIDTHS = [1024, 1280, 1440, 1920];

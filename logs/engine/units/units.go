@@ -35,6 +35,16 @@ const (
 // Hostile reports whether the flags mark a hostile unit.
 func Hostile(f uint32) bool { return f&FlagReactionHostile != 0 }
 
+// FlagAffiliationGroup is the logger's group: the logger, the party and the raid.
+const FlagAffiliationGroup = FlagAffiliationMine | FlagAffiliationParty | FlagAffiliationRaid
+
+// InGroup reports whether the flags mark a unit of the logger's group (the
+// logger, a party or raid member, or one of their pets) on this line.
+func InGroup(f uint32) bool { return f&FlagAffiliationGroup != 0 }
+
+// Neutral reports whether the flags mark a neutral (yellow) unit.
+func Neutral(f uint32) bool { return f&FlagReactionNeutral != 0 }
+
 // Friendly reports whether the flags mark a friendly unit.
 func Friendly(f uint32) bool { return f&FlagReactionFriendly != 0 }
 

@@ -1,7 +1,7 @@
 // web/tests/e2e/guild-billing-seats.spec.ts
 // Launch pricing spec section 9, guild settings #billing: case 12 (seats), 13 (transfer) and 15
 // (a read-only officer). API stubbed.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   READ_ONLY_OFFICER_READ,

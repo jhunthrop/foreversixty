@@ -21,7 +21,6 @@
   import { syncTabHrefs } from '../../../lib/sim/tabs';
   import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
-  import CurrentCharacterBar from '../../CurrentCharacterBar.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
   import LoadError from '../../ui/LoadError.svelte';
@@ -65,11 +64,6 @@
   let switcherOpen = $state(false);
   let pinApplied = false;
   let instanceApplied = false;
-  // True once the load this mount kicked off came from the stored current-character
-  // pointer rather than the URL, AND that load actually produced a character (fix round 1,
-  // Task 4's review, Important: a dead pointer must not claim "restored") -- passed to the
-  // chip below, which shows "Restored your last character" beside the label only then.
-  let restored = $state(false);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
@@ -154,7 +148,7 @@
    * start one rather than assume, as it does for SimView, that something else already did.
    */
   async function bootstrapCharacter(): Promise<void> {
-    restored = await runBootstrapRestore(
+    await runBootstrapRestore(
       store,
       { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
       readCurrent(),
@@ -177,7 +171,6 @@
       loaders: store,
       characterLoaded: () => store.character !== null,
       holdsWork: () => simHoldsWork(store, bootstrap.code),
-      onSettled: (loaded) => (restored = loaded),
     });
     return () => {
       stopFollowing();
@@ -223,9 +216,6 @@
 {/snippet}
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
-  <!-- The spine bar is the one current-character band on the tool pages; it reserves
-       CHIP_HEIGHT itself and bulk-skeleton.ts's `chipSlot` reserves the same band before hydration. -->
-  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} />
   {#if store.character !== null && !switcherOpen}
     <CharacterStrip
       character={store.character}

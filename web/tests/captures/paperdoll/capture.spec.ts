@@ -6,7 +6,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test } from '../../e2e/support/test';
+import { DEAD_API_BASE } from '../../hermetic';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from '../../e2e/support/character-fixture';
 import { cropOf, settle, sideBySide, sizeTo, targetIn } from '../support/capture-kit';
 
@@ -23,7 +25,7 @@ const ITEMS = JSON.parse(
   items: { id: number; name: string; item_level: number }[];
 };
 const byId = new Map(ITEMS.items.map((item) => [item.id, item]));
-const API = 'http://127.0.0.1:9';
+const API = DEAD_API_BASE;
 const WIDTHS = [360, 390, 1024, 1280, 1440, 2000] as const;
 
 /** The raid board's launch-legal Fury set (raid-*.png). */

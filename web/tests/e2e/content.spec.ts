@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 for (const path of ['/guides', '/changelog']) {
   test(`${path} carries the updated stamp of its newest entry`, async ({ page }) => {

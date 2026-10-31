@@ -9,6 +9,7 @@ import {
   formatPercent,
   formatPerSecond,
   ordinal,
+  joinFacts,
   outcomeLabel,
   parseTitle,
   TRASH_PARSE,
@@ -81,14 +82,21 @@ describe('report formatting', () => {
   });
 
   it('says how far a wipe got when the log showed the boss', () => {
-    const base = { kind: 'encounter', kill: false, in_progress: false, npc_kills: 0 };
+    const base = { kind: 'encounter', kill: false, in_progress: false };
     expect(outcomeLabel({ ...base, boss_health_pct: 23.4 })).toBe('Wipe 23%');
     expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
-    // A trash pull names no outcome: the engine's npc_kills counts a party's kill twice (its
-    // UNIT_DIED and its PARTY_KILL) and counts mobs anyone in range killed, so it is not shown.
-    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 115 })).toBe('');
-    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: true, npc_kills: 1 })).toBe('Live');
+    const trash = { kind: 'trash', kill: false, in_progress: false };
+    expect(outcomeLabel({ ...trash, mob_deaths: 177, group_kills: 26 })).toBe(
+      '177 mobs died · your group killed 26',
+    );
+    expect(outcomeLabel({ ...trash, mob_deaths: 1, group_kills: 0 })).toBe(
+      '1 mob died · your group killed 0',
+    );
+    // A trash line from before engine 0.6 has only the double-counted npc_kills: no figure.
+    expect(outcomeLabel({ ...trash, npc_kills: 115 } as never)).toBe('');
+    expect(joinFacts('Trash · 3:26', '', '0:09')).toBe('Trash · 3:26 · 0:09');
+    expect(outcomeLabel({ ...trash, in_progress: true, mob_deaths: 1, group_kills: 1 })).toBe('Live');
     expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
     expect(parseTitle(100, 1)).toContain('first of one');
     expect(parseTitle('none')).toContain('no parse');
@@ -117,7 +125,7 @@ describe('the phase a fight reached', () => {
   });
 
   it('a wipe’s outcome says which phase it got to; a kill’s does not need one', () => {
-    const base = { kind: 'encounter', kill: false, in_progress: false, npc_kills: 0 };
+    const base = { kind: 'encounter', kill: false, in_progress: false };
     expect(outcomeLabel({ ...base, boss_health_pct: 59 }, 'Phase 3')).toBe('Wipe 59% · in Phase 3');
     expect(outcomeLabel({ ...base, boss_health_pct: 59 })).toBe('Wipe 59%');
     expect(outcomeLabel({ ...base, kill: true }, 'Phase 3')).toBe('Kill');

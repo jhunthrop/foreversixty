@@ -5,7 +5,8 @@
 // band stands where the header would and the board has its Class and Spec choices; on a phone the
 // filters collapse to one line. The older checks (rows, filters in the URL, guild board, empty,
 // failed, stale responses) run signed out against a plain two-row board.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
 import { openFilters } from './support/rankings-filters';
@@ -13,6 +14,9 @@ import { FROST_KEY, OWN_KEY, stubRankingsApi, type BoardOptions } from './suppor
 import { OBNOXIOUS, armoryPointer, keyOf, signInWith, signedOut, storePointer } from './support/selector';
 import type { FixtureCharacter } from './support/selector';
 import { choose, fieldBox } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };

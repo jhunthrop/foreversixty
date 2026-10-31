@@ -44,6 +44,11 @@ export const selectorCopy = {
   tryAgain: 'Try again',
   sessionEnded: 'Your session ended. Sign in to see your other characters.',
   pastedNotSaved: 'Not saved to an account. Sign in to keep it.',
+  /** The panel's line for a character restored from an earlier visit (restored.ts), and its action. */
+  restoredLine: 'Restored your last character',
+  forget: 'Forget',
+  forgetAria: (name: string): string => `Forget ${name}`,
+  forgotten: (name: string): string => `Forgot ${name}.`,
   retry: 'Retry',
   retrying: 'Trying',
   refreshing: 'Refreshing from Battle.net',

@@ -4,7 +4,8 @@
 // raid page and from the band line and R3 moves the other character to Bench; an officer posts a
 // raid; the 10 s poll; the race lines; officer-read-only; R1 for visitors; the guild clock (R4);
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { copyList, raidCopy } from '../../src/lib/guild/raid-copy';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
@@ -160,6 +161,17 @@ test('an officer posts a raid with Post to Discord, and the planned row opens it
   await row.click();
   await page.waitForURL(`**${raidUrl(FIRST_NEW_ID)}`);
   await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
+});
+
+test('a 429 on Post the raid says to wait, keeps the form and posts nothing', async ({ page }) => {
+  const stub = await openRaidsTab(page, { viewer: 'officer' });
+  await openForm(page);
+  stub.refuseNext = { create: { code: 'rate_limited', status: 429 } };
+  await page.getByTestId('raid-form-submit').click();
+  const form = page.getByTestId('raid-form-create');
+  await expect(form.getByRole('alert')).toHaveText(raidCopy.rateLimited);
+  await expect(form).not.toContainText(raidCopy.form.errors.failed);
+  await expect(page.getByTestId(`planned-raid-${FIRST_NEW_ID}`)).toHaveCount(0);
 });
 
 test('counts change on the 10 s poll without a reload', async ({ page }) => {

@@ -1,6 +1,6 @@
 // web/src/lib/account/hero-character.ts
 // The one question every signed-in page asks of the current-character pointer: which of the
-// account's characters does it name? Account's hero band, the header selector, the spine bar,
+// account's characters does it name? Account's hero band, the header selector,
 // the BiS card, tiers, the guides callout, the planner and the simulator all ask it here, so
 // no page can answer differently from the header.
 import type { CurrentCharacter } from '../current-character';

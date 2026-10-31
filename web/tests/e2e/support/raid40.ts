@@ -275,6 +275,8 @@ function raid40Report(): Record<string, unknown> {
             ...fight,
             duration_ms: DURATION_S * 1000,
             players: NAMES.map((_, index) => guidOf(index)),
+            // All forty carry MINE in the units below: the pull's own group is the raid.
+            group: NAMES.map((_, index) => guidOf(index)),
             deaths: 1,
           }
         : fight,

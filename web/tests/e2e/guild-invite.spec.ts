@@ -4,7 +4,8 @@
 // navigating to any other /guild/invite/<token> path 404s under the static build this
 // suite runs against (`npm run build && npm run preview`), so the token below must match
 // that fixture path exactly rather than an arbitrary placeholder.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { PLANS } from '../../src/lib/billing/plans';
 import { guildJoinCopy } from '../../src/lib/guild/copy';
 import { buildMe, coveredView, stepGuild } from '../../src/test-support/subscribe-fixtures';

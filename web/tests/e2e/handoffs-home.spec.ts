@@ -1,5 +1,5 @@
 // web/tests/e2e/handoffs-home.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 test('the landing carries three outcome rows in the player’s words, no feature cards', async ({ page }) => {
   await page.goto('/');

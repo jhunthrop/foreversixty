@@ -2,7 +2,8 @@
 // The report charts on the shared uPlot base (controls and charts spec Part B, §C, §D captures 9
 // to 17). The 40-player tests serve a synthetic Ragnaros pull over fight 3 by route mocking
 // (support/raid40.ts); nothing here changes the fixture the site serves.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { BROKK, beLightningbolltz, guidOf, raid40DpsSum, RAID40_URL, serveRaid40 } from './support/raid40';
 import { fieldBox, listOf } from './support/select';
 

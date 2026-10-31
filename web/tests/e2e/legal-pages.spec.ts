@@ -1,5 +1,5 @@
 // web/tests/e2e/legal-pages.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 test.describe('legal pages', () => {
   for (const path of ['/terms', '/privacy', '/refunds']) {

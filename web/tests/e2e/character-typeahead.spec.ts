@@ -3,7 +3,8 @@
 // typeahead.md): the home page's full box, the header's compact one on the bar and in the
 // phone Menu. GET /v1/characters/search is routed to a fixture of three rows -- two with a
 // class and level, one with nulls -- and to nothing for "zz".
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { CHARACTER_PATH, stubCharacter } from './support/character-fixture';
 

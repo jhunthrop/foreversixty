@@ -180,6 +180,20 @@ func TestFriendlyOnlyEventsDoNotOpenAFight(t *testing.T) {
 	}
 }
 
+// A pull of neutral beasts is a fight: they keep their neutral flags while they fight.
+func TestANeutralBeastPullIsAFight(t *testing.T) {
+	s := NewSegmenter(Options{MinTrash: 0})
+	beastHit := hit(0, mage, mob, 0x512, 0xa28)
+	if st := s.Feed(beastHit); !st.Opened {
+		t.Fatal("hitting a neutral beast opened no fight")
+	}
+	// Two neutral units, or two friendly ones, are still no fight.
+	quiet := NewSegmenter(Options{MinTrash: 0})
+	if st := quiet.Feed(hit(0, mob, mob, 0xa28, 0xa28)); st.Fight != nil {
+		t.Fatal("two neutral units opened a fight")
+	}
+}
+
 func TestKillsAndDeathsAreCounted(t *testing.T) {
 	s := NewSegmenter(Options{MinTrash: 0})
 	evs := []event.Event{
@@ -193,8 +207,8 @@ func TestKillsAndDeathsAreCounted(t *testing.T) {
 	if f == nil {
 		t.Fatal("no fight")
 	}
-	if f.NPCKills != 1 {
-		t.Errorf("npc kills = %d, want 1", f.NPCKills)
+	if f.MobDeaths != 1 {
+		t.Errorf("mob deaths = %d, want 1", f.MobDeaths)
 	}
 	if f.Deaths != 1 {
 		t.Errorf("player deaths = %d, want 1", f.Deaths)

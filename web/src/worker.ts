@@ -362,7 +362,8 @@ async function serveBuildPage(request: Request, env: Env, url: URL): Promise<Res
  * asset is missing and ASSETS answers 404, which is exactly what should happen.
  */
 const SHELL_ROUTES = [
-  { prefix: '/reports/', asset: '/reports.html' },
+  // Not /reports.html: that is the "Your reports" list, which /reports serves as a plain asset.
+  { prefix: '/reports/', asset: '/report-shell.html' },
   { prefix: '/rankings/', asset: '/rankings.html' },
   { prefix: '/character/', asset: '/character.html' },
   { prefix: '/guild/', asset: '/guild.html' },
