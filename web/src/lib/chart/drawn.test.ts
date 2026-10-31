@@ -9,25 +9,8 @@ import {
   selectDrawn,
   standingAt,
   stopAtDeath,
-  trailingAverage,
   windowRate,
 } from './drawn';
-
-describe('trailingAverage', () => {
-  it('averages the last five seconds, over the seconds there are at the start', () => {
-    expect(trailingAverage([10, 20, 30, 40, 50, 60])).toEqual([10, 15, 20, 25, 30, 40]);
-  });
-
-  it('falls to zero and stays flat through a phase where the boss takes no damage', () => {
-    // Ragnaros submerged: five seconds of nothing brings the average to exactly zero, and it
-    // stays at zero (never null, never interpolated) until damage comes back.
-    const series = [100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 50];
-    const averaged = trailingAverage(series);
-    expect(averaged.slice(10, 13)).toEqual([0, 0, 0]);
-    expect(averaged.every((value) => Number.isFinite(value))).toBe(true);
-    expect(averaged[13]).toBe(10);
-  });
-});
 
 describe('cumulative', () => {
   it('is a running total, so the value at a second is the standing then', () => {
@@ -141,6 +124,11 @@ describe('stopAtDeath', () => {
   it('ends the line at the death and resumes it after a raise', () => {
     const values = [5, 5, 5, 5, 5, 5];
     expect(stopAtDeath(values, [{ startMs: 2000, endMs: 4000 }])).toEqual([5, 5, 5, null, null, 5]);
+  });
+
+  it('ends a line of 5 s points at the last point before the death', () => {
+    // Died at 12 s: the 10 s point (10 s to 15 s) is drawn, the 15 s point is not.
+    expect(stopAtDeath([5, 5, 5, 5], [{ startMs: 12_000, endMs: 20_000 }], 5000)).toEqual([5, 5, 5, null]);
   });
 
   it('leaves a living player untouched', () => {

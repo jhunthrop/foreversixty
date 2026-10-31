@@ -15,12 +15,14 @@
   import MoreMenu from './MoreMenu.svelte';
   import Select from '../ui/Select.svelte';
   import { reportCopy } from '../../lib/report/copy';
+  import type { GroupScope } from '../../lib/report/group';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
   import { coachTabListed, ownedKey } from '../../lib/coach/viewer';
   import {
     FIRST_TIER_TABS,
     MODES,
     SOURCE_ENEMIES,
+    SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
     TABS,
     VIEWS,
@@ -40,12 +42,15 @@
     roster,
     onPatch,
     nightMode = false,
+    scope = null,
   }: {
     state: ReportState;
     roster: { guid: string; name: string; class?: string; role?: string }[];
     onPatch: (patch: Partial<ReportState>) => void;
     /** The whole night: only Analyze's tables and Mechanics have a meaning over it. */
     nightMode?: boolean;
+    /** Who the default scope is (lib/report/group.ts); null keeps "All friendlies". */
+    scope?: GroupScope | null;
   } = $props();
 
   const pill =
@@ -100,11 +105,27 @@
           }),
         ),
     );
-    return [
-      { value: SOURCE_FRIENDLIES, label: reportCopy.allFriendlies },
-      { value: SOURCE_ENEMIES, label: reportCopy.allEnemies },
-      ...players,
-    ];
+    // A crowded open-world log defaults to the logger's group and offers everyone it saw; on a
+    // pull the group was not in, the friendlies are everyone in range and say so.
+    const friendlies =
+      scope?.scoped === true
+        ? [
+            {
+              value: SOURCE_FRIENDLIES,
+              label: scope.noun === 'raid' ? reportCopy.yourRaid : reportCopy.yourGroup,
+            },
+            { value: SOURCE_EVERYONE, label: reportCopy.everyoneInRange },
+          ]
+        : [
+            scope?.crowded === true
+              ? {
+                  // Either value reads the same here; the one the url carries stays selected.
+                  value: reportState.source === SOURCE_EVERYONE ? SOURCE_EVERYONE : SOURCE_FRIENDLIES,
+                  label: reportCopy.everyoneInRange,
+                }
+              : { value: SOURCE_FRIENDLIES, label: reportCopy.allFriendlies },
+          ];
+    return [...friendlies, { value: SOURCE_ENEMIES, label: reportCopy.allEnemies }, ...players];
   });
   const tabOptions = $derived(listedTabs.map((tab) => ({ value: tab.id, label: tab.label })));
 

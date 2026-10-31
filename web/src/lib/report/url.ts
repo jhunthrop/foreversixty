@@ -86,6 +86,11 @@ export const FIRST_TIER_TABS: readonly Tab[] = [
 /** The two scopes that are not a single unit. Anything else is a GUID. */
 export const SOURCE_FRIENDLIES = 'friendlies';
 export const SOURCE_ENEMIES = 'enemies';
+/**
+ * Every player the log saw, in the logger's group or not: offered beside the default when the
+ * default narrows a crowded open-world log to the group (lib/report/group.ts).
+ */
+export const SOURCE_EVERYONE = 'everyone';
 /** The fight index a url names when it names one the page cannot read; never a real fight. */
 export const MISSING_FIGHT = -1;
 

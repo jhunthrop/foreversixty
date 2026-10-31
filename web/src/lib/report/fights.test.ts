@@ -98,7 +98,7 @@ describe('fightTitle and fightRows', () => {
     expect(fightTitle(fight(2))).toBe('Fight 2');
   });
 
-  it('folds consecutive trash of one zone into one row, summing kills and time', () => {
+  it('folds consecutive trash of one zone into one row, summing time and deaths', () => {
     const rows = fightRows([
       trash(1, 'Zone A', 60_000, 5),
       trash(2, 'Zone A', 60_000, 7),
@@ -110,11 +110,11 @@ describe('fightTitle and fightRows', () => {
       type: 'trash-group',
       key: 1,
       zone: 'Zone A',
-      kills: 12,
       duration_ms: 120_000,
     });
     expect(rows[1]).toMatchObject({ type: 'fight' });
     expect(rows[2]).toMatchObject({ type: 'fight' });
+    expect(rows[0]).not.toHaveProperty('kills');
   });
 
   it('starts a new group when the zone changes', () => {

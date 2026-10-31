@@ -105,7 +105,9 @@
     return {
       value: String(fight.index),
       label: `${fight.name}${pull === '' ? '' : ` · ${pull}`}`,
-      description: `${outcomeLabel(fight)} · ${formatDuration(fight.duration_ms)}`,
+      description: [outcomeLabel(fight), formatDuration(fight.duration_ms)]
+        .filter((part) => part !== '')
+        .join(' · '),
       group,
     };
   }
@@ -222,7 +224,7 @@
       own === null
         ? formatDuration(fight.duration_ms)
         : `${formatDuration(own.startMs)} to ${formatDuration(Math.min(own.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
-    return `${fight.name} · ${stretch} · ${outcomeLabel(fight).toLowerCase()}`;
+    return [fight.name, stretch, outcomeLabel(fight).toLowerCase()].filter((part) => part !== '').join(' · ');
   }
 
   interface Line {

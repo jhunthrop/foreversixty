@@ -29,6 +29,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(['Player-20']),
       youGuid: 'Player-20',
       chosen: null,
@@ -53,6 +54,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(['Player-35']),
       youGuid: 'Player-35',
       chosen: null,
@@ -86,6 +88,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: true, className: null },
@@ -100,12 +103,14 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: true, className: null },
     });
     for (const line of model.series) {
-      const submerged = line.values.slice(185, 270);
+      // 5 s points: 180 s to 270 s is points 36 to 53.
+      const submerged = line.values.slice(36, 54);
       expect(
         submerged.every((value) => value === 0),
         line.id,
@@ -118,6 +123,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: true, className: 'Shaman' },
@@ -136,6 +142,7 @@ describe('buildRateModel', () => {
       metric: 'healing',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: true, className: null },
@@ -149,6 +156,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: new Set(['Player-20']),
       compare: { raid: false, className: null },
@@ -166,6 +174,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players,
       window: { startMs: 2000, endMs: 4000 },
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: false, className: null },
@@ -179,6 +188,7 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(['Player-12']),
       chosen: new Set(),
       compare: { raid: true, className: null },
@@ -194,15 +204,50 @@ describe('buildRateModel', () => {
       metric: 'damage-done',
       players: raid(),
       window: WHOLE,
+      durationMs: 340_000,
       pinned: new Set(),
       chosen: null,
       compare: { raid: false, className: null },
       deadSpans: new Map([['Player-0', [{ startMs: 126_000, endMs: 340_000 }]]]),
     });
     const line = model.series.find((entry) => entry.id === 'Player-0')!;
-    expect(line.values[126]).not.toBeNull();
-    expect(line.values[127]).toBeNull();
+    // 5 s points on a 340 s fight: the point at 125 s is the last before the death at 126 s.
+    expect(line.values[25]).not.toBeNull();
+    expect(line.values[26]).toBeNull();
     expect(line.diedAtMs).toBe(126_000);
+  });
+
+  it('draws a long fight as 5 s averages and a 10 s pull every second', () => {
+    const long = buildRateModel({
+      metric: 'damage-done',
+      players: raid(),
+      window: WHOLE,
+      durationMs: 340_000,
+      pinned: new Set(),
+      chosen: null,
+      compare: { raid: true, className: null },
+    });
+    expect(long.bucket.seconds).toBe(5);
+    expect(long.series.every((line) => line.stepMs === 5000 && line.values.length === 68)).toBe(true);
+    const first = raid()[0].series.slice(0, 5);
+    expect(long.series.find((line) => line.id === 'Player-0')!.values[0]).toBe(
+      first.reduce((sum, value) => sum + value, 0) / 5,
+    );
+
+    const pull = raid().map((player) => ({ ...player, series: player.series.slice(0, 10) }));
+    const short = buildRateModel({
+      metric: 'damage-done',
+      players: pull,
+      window: { startMs: 0, endMs: 10_000 },
+      durationMs: 10_000,
+      pinned: new Set(),
+      chosen: null,
+      compare: { raid: true, className: null },
+    });
+    expect(short.bucket).toEqual({ seconds: 1, labelFloorS: 2 });
+    const player0 = short.series.find((line) => line.id === 'Player-0')!;
+    expect(player0.stepMs).toBe(1000);
+    expect(player0.values).toEqual(pull[0].series);
   });
 });
 
@@ -212,5 +257,25 @@ describe('classMedianInfo', () => {
     expect(off.on).toBe(false);
     expect(off.label).toBe('Shaman median');
     expect(off.description).toBe(`Median DPS of the ${off.count} damage-dealing shamans`);
+  });
+});
+
+describe('the median’s name', () => {
+  it('follows the set the chart draws', () => {
+    const base = {
+      metric: 'damage-done' as const,
+      players: raid(),
+      window: WHOLE,
+      durationMs: 340_000,
+      pinned: new Set<string>(),
+      chosen: null,
+      compare: { raid: true, className: null },
+    };
+    expect(buildRateModel(base).medians[0].label).toBe('Raid median');
+    expect(buildRateModel({ ...base, noun: 'everyone' }).medians[0].label).toBe('Median player');
+    const line = buildRateModel({ ...base, noun: 'group' }).series.find(
+      (entry) => entry.id === RAID_MEDIAN_ID,
+    );
+    expect(line?.label).toBe('Group median');
   });
 });

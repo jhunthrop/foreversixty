@@ -15,6 +15,11 @@ export const reportCopy = {
    *  scopes and the role groups its players sit under. */
   source: 'Source',
   allFriendlies: 'All friendlies',
+  /** The default scope when it narrows an open-world log to the logger's group (lib/report/group.ts). */
+  yourGroup: 'Your group',
+  yourRaid: 'Your raid',
+  /** Every player the log saw, the group or not. */
+  everyoneInRange: 'Everyone in range',
   allEnemies: 'All enemies',
   sourceGroups: { tank: 'Tanks', healer: 'Healers', dps: 'Damage' },
   /** The filter bar's two selects (§A10 rows 6, 7). */

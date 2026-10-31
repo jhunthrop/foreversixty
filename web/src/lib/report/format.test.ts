@@ -85,10 +85,10 @@ describe('report formatting', () => {
     expect(outcomeLabel({ ...base, boss_health_pct: 23.4 })).toBe('Wipe 23%');
     expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
-    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 115 })).toBe(
-      '115 kills',
-    );
-    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 1 })).toBe('1 kill');
+    // A trash pull names no outcome: the engine's npc_kills counts a party's kill twice (its
+    // UNIT_DIED and its PARTY_KILL) and counts mobs anyone in range killed, so it is not shown.
+    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 115 })).toBe('');
+    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: true, npc_kills: 1 })).toBe('Live');
     expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
     expect(parseTitle(100, 1)).toContain('first of one');
     expect(parseTitle('none')).toContain('no parse');
