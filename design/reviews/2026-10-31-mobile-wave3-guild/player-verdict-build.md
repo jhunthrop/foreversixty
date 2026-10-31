@@ -53,3 +53,29 @@ Verdict: HOLD. Round-1 MUSTs 1 to 4, 6 and 7 are fixed. Round-1 MUST 5 is fixed 
 6. Android shows no "Raid nights" section on the Raids tab at the first screen. I did not check below the fold.
 
 Barrow Deeps and Hyjal are accepted as Forever's own raids. Boss lists, sizes and spec names are right.
+
+---
+
+# Round 3 (all 48 iOS and 53 Android captures opened as sheets; fixtures re-checked by script)
+
+Verdict: HOLD on one small MUST. Everything else from round 2 is fixed.
+
+Round-2 MUSTs, checked:
+- Attendance now equals each person's presence in the newest 8 logged nights (script check, 0 mismatches).
+- Obnoxious Yell is on the roster (Fury Warrior, Officer, 3 of 8) and is the "YOU WERE THERE" character.
+- calendar.ics matches the Raids tab exactly: Onyxia Sat 19 Dec (In, 24 of 40), Barrow Deeps Tue 22 Dec (Not signed up, 11 signed up), Onyxia Sat 26 Dec 8 pm (In, 19 of 40). The pull times convert correctly to Chicago time.
+- Onyxia dates and sizes are fine (Wed 9 Dec with 37 raiders, Mon 14 Dec with 38, five-day lockout kept).
+- The 26 Dec row now reads "IN · DPS", not Locked.
+- The iOS live captures show "in 2 days 2 h".
+
+## MUST
+1. Your own level disagrees between screens. The roster says "Obnoxious Yell, Fury Warrior · 60 · Officer" (ios/f16.1-roster-all.png, android/f16.1-roster-all.png). The character chip on the Raids tab says "Fury · 58" (ios/f16.7-raids-tab.png). The raid roster fixture's addon block says level 60, while me.json says 58. Pick one level.
+
+## SHOULD
+1. Attendance is honest but reads badly. Everyone shows "2 of 8 nights" or "1 of 8", and the best is "3 of 8" (ios/f16.1-roster-all.png). A raid leader would read that as a guild that never shows up. The cause is that the footer says "raid nights" but the count includes five-player runs. Count only 10 and 40-player raids, and use a history window that holds at least 8 of them.
+2. The feed's start time is the pull (7:00 pm) but the app's own event starts at the invites (6:45 pm, ios/f16.6-event.png). This was disclosed. A raider with both a feed and an app calendar sees two different start times. Fix when the API gets an invite time.
+3. XL on iOS (ios/f16.7-raids-tab-xl.png, ios/you-calendar-row-xl.png): rows stack to one word per line and the icons get large. It is readable, so just tighten it.
+4. The event title "Onyxia's Lair · In" was kept by design. Barrow Deeps reads "11 signed up" with no size, which is accepted.
+5. Raid history is still mostly dungeon runs (23 nights in 10 days). Accepted per the spec.
+
+Passed: spec names are full, class and spec combos are legal for Horde, boss lists and sizes are right, both platforms match, the Android tab count is as known.

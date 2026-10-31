@@ -1,3 +1,16 @@
+# F16 Guild extras, build review (round 3, 2026-10-31)
+
+Verdict: SHIP. No MUSTs.
+
+Closed: iOS Next raid reads `Invites in 2 days 2 h` (`ios/f16.7-raids-tab-app.png`); XL chevrons scale and the Alert value wraps in its own column (`ios/f16.4-calendar-on-xl.png`); Android Raid nights section is visible (`android/f16.7-raids-tab-foot.png`); roster counts match on both platforms (38 everywhere); the viewer, Obnoxious Yell, is the same character across Raids tab, sign-up and roster.
+
+## SHOULD (polish, not blocking)
+1. `ios/f16.1-roster-app.png`, `android/f16.1-roster-all.png`: the newest-8-nights data makes nearly every row `2 of 8 nights`, so the bars no longer show the range the board shows. Seed two or three rows at 0, 5 and 8 for the final store captures.
+2. `ios/f16.4-calendar-on-xl.png`: `Add to Calendar` still wraps to two lines at AX5. Accepted; keep the icon on the first line.
+3. Android F16.6 remains uncaptured (Google account needed); capture it on a device before store submission.
+
+---
+
 # F16 Guild extras, build review (round 2, 2026-10-31)
 
 Verdict: HOLD on one MUST that is a one-image re-capture; every other round-1 MUST is closed. SHIP when MUST 1 is fixed. No further full review is needed.

@@ -64,7 +64,7 @@ PEOPLE = [
     ("Fernhoof", "druid-restoration", 59, "member", 3, "approved", False),
     ("Vashkar", "shaman-restoration", 60, "member", 5, "approved", False),
     ("Grimtusk", "warrior-fury", 60, "member", 8, "approved", False),
-    ("Obnoxious Yell", "warrior-fury", 60, "officer", 8, "approved", False),
+    ("Obnoxious Yell", "warrior-fury", 58, "officer", 8, "approved", False),  # me.json: level 58
     ("Korrakh", "warrior-arms", 60, "member", 2, "approved", False),
     ("Sliverfang", "rogue-combat", 60, "member", 7, "approved", False),
     ("Nightvex", "rogue-combat", 60, "member", 8, "approved", False),
