@@ -185,6 +185,29 @@ test('on a phone the tier chip is a header row above its rows', async ({ page })
   expect(chip!.height).toBeLessThan(60);
 });
 
+for (const viewport of [{ width: 1440, height: 900 }, PHONE]) {
+  test(`at ${viewport.width} the Your spec edge is its slice of the tier rail`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await signIn(page, { class: 'Warrior', spec: 'Fury' });
+    await page.goto('/tiers');
+    const you = activePanel(page).locator('.tier-row.is-you');
+    await expect(you).toHaveCount(1);
+    const chip = activePanel(page)
+      .getByTestId('tier-group')
+      .filter({ has: page.locator('.tier-row.is-you') })
+      .getByTestId('tier-chip');
+    const slice = await you.evaluate((row) => {
+      const edge = getComputedStyle(row, '::before');
+      return { x: row.getBoundingClientRect().left + parseFloat(edge.left), width: edge.width };
+    });
+    const rail = await chip.evaluate((el) => ({
+      x: el.getBoundingClientRect().left,
+      width: getComputedStyle(el).borderLeftWidth,
+    }));
+    expect(slice).toEqual(rail);
+  });
+}
+
 test('the faction pill shows the Horde numbers and races, and the roles keep the faction', async ({
   page,
 }) => {
