@@ -127,6 +127,8 @@ struct HomeCharacterScreen: View {
     @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
     @State private var showTalents = false
+    /// Lane F6: one Talents model per character, shared by Home's row and the pushed screen.
+    @State private var talentsModel: TalentsModel?
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
@@ -145,6 +147,9 @@ struct HomeCharacterScreen: View {
         self.showsSelector = showsSelector
         self.openBis = openBis
         _store = State(initialValue: .live(client: dependencies.client, cache: dependencies.cache))
+        _talentsModel = State(initialValue: dependencies.talents.map {
+            TalentsModel(source: $0, character: TalentCharacter(character), catalog: .bundled())
+        })
     }
 
     var body: some View {
@@ -152,7 +157,10 @@ struct HomeCharacterScreen: View {
             ScrollView {
                 HomeAnswerView(
                     phase: store.phase,
-                    presenter: HomePresenter(character: character, finishedSims: finishedSims, time: HomeTime(now: Date())),
+                    presenter: HomePresenter(
+                        character: character, finishedSims: finishedSims, time: HomeTime(now: Date()),
+                        talentStatus: talentsModel?.phase.presenter?.status
+                    ),
                     build: home?.dataBuild ?? "",
                     offlineStamp: offlineStamp,
                     send: handle
@@ -171,6 +179,7 @@ struct HomeCharacterScreen: View {
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
         }
         .task { await store.load(character) }
+        .task { await talentsModel?.load() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.refreshIfStale(character) } }
         }
@@ -200,8 +209,8 @@ struct HomeCharacterScreen: View {
 
     @ViewBuilder
     private var talents: some View {
-        if let source = dependencies.talents {
-            TalentsScreen(character: character, source: source)
+        if let talentsModel {
+            TalentsScreen(character: character, model: talentsModel)
         }
     }
 
@@ -220,7 +229,7 @@ struct HomeCharacterScreen: View {
         case .openNext(.sims):
             simsRouter?.showsList = dependencies.sims != nil
         case .openNext(.talents):
-            showTalents = dependencies.talents != nil
+            showTalents = talentsModel != nil
         case .openNext:
             break
         case .retry:

@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
-import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
@@ -89,11 +88,10 @@ private const val LARGE_TEXT_SCALE = 1.5f
 
 /**
  * The Talents screen pushed from Home's Talents row (spec F6 §3): the model, the chosen build
- * and tree, and the rank sheet. [back] returns to Home.
+ * and tree, and the rank sheet. [model] is Home's, already loading for the Talents row. [back] returns to Home.
  */
 @Composable
-fun TalentsRoute(character: HomeCharacter, source: TalentsSource, catalog: SpecCatalog, back: () -> Unit) {
-    val model = remember(character.key) { TalentsModel(source, TalentCharacter.from(character), catalog) }
+fun TalentsRoute(character: HomeCharacter, model: TalentsModel, back: () -> Unit) {
     val phase by model.phase.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -103,7 +101,7 @@ fun TalentsRoute(character: HomeCharacter, source: TalentsSource, catalog: SpecC
     var settled by rememberSaveable { mutableStateOf(false) }
     var sheetId by remember { mutableStateOf<Int?>(null) }
     LaunchedEffect(model) {
-        model.load()
+        if (model.phase.value !is TalentsPhase.Loaded) model.load()
         val loaded = model.phase.value as? TalentsPhase.Loaded
         if (!settled && loaded != null) {
             settled = true
@@ -343,7 +341,7 @@ private fun FittingTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
     val density = LocalDensity.current
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val widths = tabs.map { tab ->
-            val name = measurer.measure(tab.name, FsType.bodyStrong).size.width
+            val name = measurer.measure(tab.name, if (tab.index == tree) FsType.bodyStrong else FsType.body).size.width
             val points = measurer.measure(tab.points.toString(), FsType.mono).size.width
             val dot = if (tab.differing > 0) with(density) { (DOT_GAP + DOT_SIZE).roundToPx() } else 0
             name + points + dot + with(density) { (LABEL_GAP + TAB_PADDING * 2).roundToPx() }
@@ -493,4 +491,4 @@ private const val TILE_ALPHA = 0.12f
 private val LABEL_GAP = 6.dp
 private val DOT_GAP = 6.dp
 private val DOT_SIZE = 8.dp
-private val TAB_PADDING = 4.dp
+private val TAB_PADDING = 2.dp

@@ -4,6 +4,12 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.R
+import gg.foreversixty.app.bis.BisTestData
+import gg.foreversixty.app.home.HomeFixtures
+import gg.foreversixty.app.home.HomeNextRow
+import gg.foreversixty.app.home.HomePresenter
+import gg.foreversixty.app.home.HomeTime
+import java.time.Instant
 import gg.foreversixty.app.model.TalentsFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -169,5 +175,19 @@ class TalentsPresenterTest {
         assertEquals(2, sheet.requirements.size)
         val open = tree.talents.first { it.tier == 0 }
         assertTrue(requireNotNull(model.sheet(TalentBuildKind.Yours, open.id, res)).requirements.isEmpty())
+    }
+
+    @Test
+    fun `Home's Talents row says what the Talents screen says`() {
+        val status = presenter().status(res)
+        val home = HomePresenter(HomeFixtures.velaren, emptyList(), HomeTime(Instant.ofEpochMilli(BisTestData.NOW)), res, status)
+        val row = home.model(HomeFixtures.home()).next.first { it.kind == HomeNextRow.Kind.Talents }
+        assertEquals("2 of your 48 points differ from the 60 guide build.", row.line)
+        assertEquals(HomeNextRow.Tag.Differs, row.tag)
+        val muted = HomePresenter(HomeFixtures.velaren, emptyList(), HomeTime(Instant.ofEpochMilli(BisTestData.NOW)), res, presenter(yours = null).status(res))
+        assertEquals(
+            HomeNextRow(HomeNextRow.Kind.Talents, res.getString(R.string.home_next_talents), res.getString(R.string.home_next_talentsNone), null),
+            muted.nextRowsWithoutAnswer().first(),
+        )
     }
 }

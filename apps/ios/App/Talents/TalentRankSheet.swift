@@ -3,16 +3,29 @@ import DesignTokens
 import SwiftUI
 
 /// The rank sheet (spec F6 §7): the game's tooltip content in a system sheet, so it never clips.
-/// Medium then large at default text; a single full-height detent from AX1, scrolling inside.
+/// At default text it opens at its content's height (220 pt to half the screen), then large; from
+/// AX1 a single full-height detent, scrolling inside (spec F6 §7, point 3).
 struct TalentRankSheet: View {
     let model: TalentSheetModel
     let build: String
 
     @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var contentHeight: CGFloat = Self.minHeight
+
+    private static let minHeight: CGFloat = 220
+    private static let maxHeight: CGFloat = 437
+    /// The grabber and the sheet's own top inset above the content.
+    private static let chrome: CGFloat = 24
+
+    private var detents: Set<PresentationDetent> {
+        guard typeSize < .accessibility1 else { return [.large] }
+        let height = min(Self.maxHeight, max(Self.minHeight, contentHeight + Self.chrome))
+        return [.height(height), .large]
+    }
 
     var body: some View {
-        TalentRankContent(model: model, build: build)
-            .presentationDetents(typeSize >= .accessibility1 ? [.large] : [.medium, .large])
+        TalentRankContent(model: model, build: build) { contentHeight = $0 }
+            .presentationDetents(detents)
             .presentationDragIndicator(.visible)
             .presentationBackground(FSColor.raised)
     }
@@ -22,6 +35,7 @@ struct TalentRankSheet: View {
 struct TalentRankContent: View {
     let model: TalentSheetModel
     let build: String
+    var onHeight: (CGFloat) -> Void = { _ in }
 
     var body: some View {
         ScrollView {
@@ -43,6 +57,7 @@ struct TalentRankContent: View {
             .padding(.horizontal, 20)
             .padding(.top, 24)
             .padding(.bottom, 16)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { onHeight($0) }
         }
         .background(FSColor.raised)
     }

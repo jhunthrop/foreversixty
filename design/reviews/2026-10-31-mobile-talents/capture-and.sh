@@ -10,7 +10,7 @@ PKG=gg.foreversixty.app.debug
 
 tap_text() {
   local b="" try
-  for try in 1 2 3 4 5; do
+  for try in 1 2 3 4 5 6 7 8 9 10; do
     "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null
     b=$("$ADB" shell cat /sdcard/ui.xml | python3 -c '
 import re, sys, xml.etree.ElementTree as ET

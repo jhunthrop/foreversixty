@@ -58,7 +58,7 @@ fun TalentRankContent(model: TalentSheetModel, build: String) {
             .fillMaxWidth()
             .background(FsColor.raised)
             .verticalScroll(rememberScrollState())
-            .padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 16.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 16.dp)
             .navigationBarsPadding(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {

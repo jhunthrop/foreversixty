@@ -38,15 +38,20 @@ final class TalentsCaptureTests: XCTestCase {
     }
 
     private func openTalents(_ app: XCUIApplication) {
-        let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Talents'")).firstMatch
+        // From AX1 the row reads its tag first (`Differs, Talents, …`).
+        let row = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Talents'")).firstMatch
+        // Above the floating tab bar, not merely on screen: at AX5 the row sits low.
+        let clear = app.frame.height * 0.6
         var swipes = 0
-        while !row.isHittable, swipes < 6 {
+        while !(row.exists && row.isHittable && row.frame.minY < clear), swipes < 12 {
             app.swipeUp()
             swipes += 1
         }
         XCTAssertTrue(row.waitForExistence(timeout: 5))
-        row.tap()
+        // The row's top edge, clear of the floating tab bar when the row runs under it.
+        row.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.15)).tap()
         sleep(4)
+        XCTAssertTrue(app.navigationBars["Talents"].waitForExistence(timeout: 5), "the Talents screen did not open")
     }
 
     func testTalentsScreen() throws {

@@ -128,6 +128,9 @@ struct HomePresenter {
     let character: HomeCharacter
     let finishedSims: [FinishedSim]
     let time: HomeTime
+    /// Lane F6: the Talents screen's own status line. While the home endpoint's talents are a
+    /// fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
+    var talentStatus: TalentStatusLine?
 
     func model(_ home: CharacterHome) -> HomeAnswerModel {
         let isAnswer = home.state == "ok" && home.upgradeCount > 0
@@ -146,7 +149,19 @@ struct HomePresenter {
     }
 
     /// The Next rows alone, for the error state with nothing cached.
-    func nextRowsWithoutAnswer() -> [HomeNextRow] { [simsRow(spec: nil)] }
+    func nextRowsWithoutAnswer() -> [HomeNextRow] {
+        [talentStatus.map(Self.talentsRow), simsRow(spec: nil)].compactMap(\.self)
+    }
+
+    /// The Talents row from F6's status: its tag (Matches or Differs) and its sentence.
+    static func talentsRow(_ status: TalentStatusLine) -> HomeNextRow {
+        let tag: HomeNextRow.Tag? = switch status.tagKind {
+        case .matches: .matches
+        case .differs: .differs
+        case .muted: nil
+        }
+        return HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: status.sentence, tag: tag)
+    }
 
     /// `Orc Beast Mastery Hunter · Level 60 · Olympus XXVII`.
     var heroMeta: String {
@@ -268,6 +283,7 @@ struct HomePresenter {
     }
 
     private func talentsRow(_ home: CharacterHome) -> HomeNextRow {
+        if let talentStatus { return Self.talentsRow(talentStatus) }
         let band = bandWords(home) ?? ""
         let talents = home.talents
         switch talents.state {

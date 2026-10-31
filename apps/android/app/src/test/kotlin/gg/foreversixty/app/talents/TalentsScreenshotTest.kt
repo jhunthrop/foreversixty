@@ -42,8 +42,8 @@ class TalentsScreenshotTest {
         guide: TalentGuideBuild = TalentGuideBuild.Build(TalentTestData.SHAMAN_GUIDE, 60),
     ) = TalentsPresenter(shaman, guide, yours?.let { TalentExport.Ranks(TalentRules.ranksOfBand(it)) } ?: TalentExport.None, 60, "Elemental")
 
-    private fun page(phase: TalentsPhase, shown: TalentBuildKind = TalentBuildKind.Yours, offline: String? = null) = @Composable {
-        TalentsPage(phase, BisTestData.BUILD, offline, shown, tree = 0)
+    private fun page(phase: TalentsPhase, shown: TalentBuildKind = TalentBuildKind.Yours, offline: String? = null, tree: Int = 0) = @Composable {
+        TalentsPage(phase, BisTestData.BUILD, offline, shown, tree = tree)
     }
 
     private fun sheet(name: String) = @Composable {
@@ -74,6 +74,12 @@ class TalentsScreenshotTest {
 
     @Test fun `rank sheet on the right column with the guide line`() = both("talents_rank_right_column", sheet("Call of Flame"), inShell = false)
 
+    @Test fun `restoration tab`() = capture("talents_restoration_default", 1f, page = page(TalentsPhase.Loaded(presenter(), null), tree = 2))
+
+    /** The smallest supported Android phone (spec F6 §1). */
+    @Config(qualifiers = SMALL_PHONE)
+    @Test fun `first screen at 360 dp`() = capture("talents_differs_360_default", 1f, page = page(TalentsPhase.Loaded(presenter(), null)))
+
     @Test fun `rank sheet maxed`() = capture("talents_rank_maxed_default", 1f, inShell = false, page = sheet("Convection"))
 
     private fun both(name: String, page: @Composable () -> Unit, inShell: Boolean = true) {
@@ -100,6 +106,9 @@ class TalentsScreenshotTest {
 
 /** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
 private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
+
+/** 360 x 640 dp, the smallest supported phone. */
+private const val SMALL_PHONE = "w360dp-h640dp-normal-notlong-notround-any-420dpi-keyshidden-nonav"
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

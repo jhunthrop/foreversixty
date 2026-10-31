@@ -36,6 +36,12 @@ enum TalentsPhase: Equatable, Sendable {
     case failed
 }
 
+extension TalentsPhase {
+    var presenter: TalentsPresenter? {
+        if case let .loaded(presenter, _) = self { presenter } else { nil }
+    }
+}
+
 /// Loads the files behind the Talents screen and turns them into a presenter.
 @MainActor
 @Observable

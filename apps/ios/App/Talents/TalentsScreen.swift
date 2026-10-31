@@ -15,9 +15,10 @@ struct TalentsScreen: View {
     @State private var settled = false
     @Environment(\.openURL) private var openURL
 
-    init(character: HomeCharacter, source: any TalentsSource, catalog: SpecCatalog = .bundled()) {
+    /// [model] is Home's, already loading for the Talents row, so the push draws at once.
+    init(character: HomeCharacter, model: TalentsModel) {
         self.character = character
-        _model = State(initialValue: TalentsModel(source: source, character: TalentCharacter(character), catalog: catalog))
+        _model = State(initialValue: model)
     }
 
     var body: some View {
@@ -38,7 +39,7 @@ struct TalentsScreen: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: model.build ?? "") }
         .task {
-            await model.load()
+            if model.phase.presenter == nil { await model.load() }
             settle()
         }
     }

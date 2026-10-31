@@ -25,6 +25,13 @@ struct TalentsSnapshotTests {
         traits: UITraitCollection(userInterfaceStyle: .dark)
     )
 
+    /// iPhone SE 3, the smallest supported phone (spec F6 §1).
+    private static let iPhoneSE = ViewImageConfig(
+        safeArea: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0),
+        size: CGSize(width: 375, height: 667),
+        traits: UITraitCollection(userInterfaceStyle: .dark)
+    )
+
     private let shaman: TalentsFile
 
     init() throws {
@@ -39,9 +46,9 @@ struct TalentsSnapshotTests {
         return TalentsPresenter(file: shaman, guide: guide, export: export, level: 60, specName: "Elemental")
     }
 
-    private func screen(_ phase: TalentsPhase, shown: TalentBuildKind = .yours, offline: String? = nil) -> some View {
+    private func screen(_ phase: TalentsPhase, shown: TalentBuildKind = .yours, tree: Int = 0, offline: String? = nil) -> some View {
         NavigationStack {
-            TalentsView(phase: phase, build: BisTestData.build, offlineStamp: offline, shown: .constant(shown), tree: .constant(0))
+            TalentsView(phase: phase, build: BisTestData.build, offlineStamp: offline, shown: .constant(shown), tree: .constant(tree))
                 .navigationTitle(Copy.talentsTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(FSColor.bg, for: .navigationBar)
@@ -49,14 +56,14 @@ struct TalentsSnapshotTests {
         }
     }
 
-    private func snap(_ view: some View, size: TextSize = .standard, named name: String) {
+    private func snap(_ view: some View, size: TextSize = .standard, device: ViewImageConfig = iPhone17, named name: String) {
         let traits = UITraitCollection { mutable in
             mutable.userInterfaceStyle = .dark
             mutable.preferredContentSizeCategory = size.category
         }
         assertSnapshot(
             of: view.environment(\.itemIconSource, RepoItemIconSource()).preferredColorScheme(.dark),
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: Self.iPhone17), traits: traits),
+            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: device), traits: traits),
             named: size.rawValue,
             testName: name
         )
@@ -125,5 +132,15 @@ struct TalentsSnapshotTests {
     @Test("rank sheet: maxed, no Next rank")
     func rankMaxed() throws {
         snap(TalentRankContent(model: try sheet("Convection"), build: BisTestData.build), named: "talents-rank-maxed")
+    }
+
+    @Test("the Restoration tab: its dot, its one dashed cell")
+    func restorationTab() {
+        snap(screen(.loaded(presenter(), offlineSince: nil), tree: 2), named: "talents-restoration")
+    }
+
+    @Test("the first screen on an iPhone SE")
+    func smallPhone() {
+        snap(screen(.loaded(presenter(), offlineSince: nil)), device: Self.iPhoneSE, named: "talents-differs-se")
     }
 }

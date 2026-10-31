@@ -61,6 +61,9 @@ import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.sims.SimsFeature
 import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.talents.TalentsFeature
+import gg.foreversixty.app.talents.TalentCharacter
+import gg.foreversixty.app.talents.TalentsModel
+import gg.foreversixty.app.talents.TalentsPhase
 import gg.foreversixty.app.talents.TalentsRoute
 import java.io.File
 import java.time.Instant
@@ -197,7 +200,14 @@ fun HomeCharacterScreen(
 
     val home = phase.homeOrNull()
     val res = LocalResources.current
-    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res)
+    // Lane F6: one Talents model per character, shared by the Talents row and the pushed screen.
+    val talentsModel = remember(character.key) {
+        dependencies.talents?.let { TalentsModel(it.source, TalentCharacter.from(character), it.catalog) }
+    }
+    LaunchedEffect(talentsModel) { talentsModel?.load() }
+    val talentsPhase = talentsModel?.phase?.collectAsStateWithLifecycle()?.value
+    val talentStatus = (talentsPhase as? TalentsPhase.Loaded)?.presenter?.status(res)
+    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
         stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
     }
@@ -211,7 +221,9 @@ fun HomeCharacterScreen(
         SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
     } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
-        TalentsRoute(character, talents.source, talents.catalog) { showTalents = false }
+        TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
+            showTalents = false
+        }
     } else if (showGear && home != null) {
         BackHandler { showGear = false }
         GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
