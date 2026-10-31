@@ -30,7 +30,7 @@ func testPool(t *testing.T) *pgxpool.Pool {
 	}
 	t.Cleanup(pool.Close)
 	if _, err := pool.Exec(context.Background(),
-		`truncate users, login_tokens, pairing_codes, device_connects cascade`); err != nil {
+		`truncate users, login_tokens, pairing_codes, device_connects, app_auth_flows cascade`); err != nil {
 		t.Fatal(err)
 	}
 	return pool

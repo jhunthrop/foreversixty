@@ -108,6 +108,31 @@ Rules for every event:
 
 The time-based events (`raid.signup_nudge`, `raid.starting`, `raid.short`) come from one scheduler. It generalises today's `raid-posts` Cloud Run job, which runs every 10 minutes. The scheduler is idempotent per event, raid and player.
 
+## Wave 3: everything the web does that v1 lacks, and what only a phone does well
+
+Owner, 2026-10-31: "make the mobile app as feature rich as possible", then "build the server features now - stop deferring things". The experience spec is `design/specs/2026-10-31-mobile-wave3.md` (boards in `design/mocks/2026-10-31-mobile-wave3/renders/`, verdicts in `design/reviews/2026-10-31-mobile-wave3/`). It extends the v1 spec and changes the app to five tabs (Home, Raids, BiS, Guides, You) with a search button on every root bar.
+
+Each lane is one feature on both platforms plus its server and static-data changes (the W3-C contract changes of spec section 10: OpenAPI, fixtures, contract test, generated clients, a `features` switch in `GET /v1/app/config`). The freeze no longer splits a lane: the endpoints, migrations and apps ship together, the migration in the same deploy as its handler.
+
+| Lane | Feature | Depends on | Contract changes |
+|---|---|---|---|
+| **L-F14** | Home-screen and lock-screen widgets, controls, raid Live Activity, server-sim Live Activity and ongoing notifications | v1 F2, F4; A2 senders | W3-C12 `GET /v1/me/widget`, W3-C13 live-activity registration (migration), W3-C14 events |
+| **L-F16** | Roster with attendance, raid history, calendar sync and a calendar link | v1 F4 | W3-C16 `role` on the guild home, W3-C17 calendar feed (migration) |
+| **L-F12** | Universal search and the item page; the static data store | v1 F2.6, F3 | W3-C8 static `loot`, `search`, `item-uses` |
+| **L-F10** | Your reports: list, report, your parses, meters, coach when entitled | v1 F4.22; A2 | W3-C2 `reports/{id}/me`, W3-C3 meters, W3-C4 coach routes documented |
+| L-F9 | Guides, tier lists, what changed (the fifth tab) | L-F12's store | W3-C1 static guides, tiers, changelog |
+| L-F11 | Rankings, character pages, watching, the Paperdoll | L-F12 | W3-C5 rankings documented, W3-C6 encounters, W3-C7 watching (migration) |
+| L-F13 | Talent planner: build, share, open a shared link | v1 F6; L-F9 | W3-C9 `DELETE /v1/builds/{id}`, W3-C10 races and combos documented, W3-C11 link rows |
+| L-F15 | App Intents and Siri, Spotlight, Android shortcuts, share, Offline data, stale-data strip | L-F12, L-F14, L-F16, L-F11 | W3-C15 feature switches |
+
+**Order, at most four features at once:** L-F14, L-F16, L-F12 and L-F10 start together (most valuable first: the home-screen answer, the guild around the raid, search with the item page, the after-raid loop). L-F9 and L-F11 start when L-F12's store merges, then L-F13, then L-F15 last.
+
+**Premium:** no mobile-only Premium extra. The coach card (`log_coach`), the sim Live Activity (`server_sims`) and a Parse history row (`history`) follow the web's flags; everything else is free (spec section 1.1).
+
+This overrides the guard rail "API lanes merge after launch" for Wave 3 lanes (owner, 2026-10-31).
+
+Each lane keeps the house rules: tests first for logic, captures on iPhone 17 and Pixel 9 at the default and largest text sizes, ux-designer and wow-player SHIP before merge, direct push to main behind its switch.
+
 ## Guard rails
 
 - **API lanes merge after launch (coordinator ruling, 2026-10-30).** The A1, A2 and A3 branches change auth or add migrations, and the apps build against contract fixtures, so none of them merges to main before Nov 6. The app scaffolds, tokens, contracts and spec merge now.

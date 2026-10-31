@@ -1,0 +1,470 @@
+{
+ "build": "1.60.1.70658",
+ "tiers": [
+  {
+   "slug": "warrior-fury",
+   "class": "warrior",
+   "name": "Fury",
+   "race": "troll",
+   "metric": 796.7774600966349,
+   "rank": 1,
+   "gap": 0.0,
+   "fraction": 1.0,
+   "tier": "S",
+   "tie": false
+  },
+  {
+   "slug": "warlock-destruction",
+   "class": "warlock",
+   "name": "Destruction",
+   "race": "troll",
+   "metric": 774.2381232027941,
+   "rank": 2,
+   "gap": 2.8,
+   "fraction": 0.9717,
+   "tier": "S",
+   "tie": false
+  },
+  {
+   "slug": "warlock-affliction",
+   "class": "warlock",
+   "name": "Affliction",
+   "race": "troll",
+   "metric": 737.25994411692,
+   "rank": 3,
+   "gap": 7.5,
+   "fraction": 0.9253,
+   "tier": "A",
+   "tie": true
+  },
+  {
+   "slug": "hunter-beast-mastery",
+   "class": "hunter",
+   "name": "Beast Mastery",
+   "race": "troll",
+   "metric": 734.0190137886941,
+   "rank": 4,
+   "gap": 7.9,
+   "fraction": 0.9212,
+   "tier": "A",
+   "tie": true
+  },
+  {
+   "slug": "hunter-marksmanship",
+   "class": "hunter",
+   "name": "Marksmanship",
+   "race": "troll",
+   "metric": 724.0809161398699,
+   "rank": 5,
+   "gap": 9.1,
+   "fraction": 0.9088,
+   "tier": "A",
+   "tie": true
+  },
+  {
+   "slug": "mage-fire",
+   "class": "mage",
+   "name": "Fire",
+   "race": "orc",
+   "metric": 724.0757169718804,
+   "rank": 6,
+   "gap": 9.1,
+   "fraction": 0.9088,
+   "tier": "A",
+   "tie": true
+  },
+  {
+   "slug": "warrior-arms",
+   "class": "warrior",
+   "name": "Arms",
+   "race": "orc",
+   "metric": 713.714058012193,
+   "rank": 7,
+   "gap": 10.4,
+   "fraction": 0.8958,
+   "tier": "B",
+   "tie": false
+  },
+  {
+   "slug": "hunter-survival",
+   "class": "hunter",
+   "name": "Survival",
+   "race": "troll",
+   "metric": 702.3413732409144,
+   "rank": 8,
+   "gap": 11.9,
+   "fraction": 0.8815,
+   "tier": "B",
+   "tie": false
+  },
+  {
+   "slug": "warlock-demonology",
+   "class": "warlock",
+   "name": "Demonology",
+   "race": "troll",
+   "metric": 688.0995011273244,
+   "rank": 9,
+   "gap": 13.6,
+   "fraction": 0.8636,
+   "tier": "B",
+   "tie": false
+  },
+  {
+   "slug": "rogue-assassination",
+   "class": "rogue",
+   "name": "Assassination",
+   "race": "troll",
+   "metric": 660.6917524130681,
+   "rank": 10,
+   "gap": 17.1,
+   "fraction": 0.8292,
+   "tier": "B",
+   "tie": false
+  },
+  {
+   "slug": "shaman-enhancement",
+   "class": "shaman",
+   "name": "Enhancement",
+   "race": "orc",
+   "metric": 619.4512418469044,
+   "rank": 11,
+   "gap": 22.3,
+   "fraction": 0.7774,
+   "tier": "C",
+   "tie": true
+  },
+  {
+   "slug": "rogue-combat",
+   "class": "rogue",
+   "name": "Combat",
+   "race": "troll",
+   "metric": 618.4450208176341,
+   "rank": 12,
+   "gap": 22.4,
+   "fraction": 0.7762,
+   "tier": "C",
+   "tie": true
+  },
+  {
+   "slug": "druid-feral",
+   "class": "druid",
+   "name": "Feral",
+   "race": "tauren",
+   "metric": 603.977612239319,
+   "rank": 13,
+   "gap": 24.2,
+   "fraction": 0.758,
+   "tier": "C",
+   "tie": false
+  },
+  {
+   "slug": "paladin-retribution",
+   "class": "paladin",
+   "name": "Retribution",
+   "race": "undead",
+   "metric": 594.5762508932772,
+   "rank": 14,
+   "gap": 25.4,
+   "fraction": 0.7462,
+   "tier": "C",
+   "tie": false
+  },
+  {
+   "slug": "mage-arcane",
+   "class": "mage",
+   "name": "Arcane",
+   "race": "orc",
+   "metric": 565.9213979550724,
+   "rank": 15,
+   "gap": 29.0,
+   "fraction": 0.7103,
+   "tier": "C",
+   "tie": false
+  },
+  {
+   "slug": "rogue-subtlety",
+   "class": "rogue",
+   "name": "Subtlety",
+   "race": "troll",
+   "metric": 532.8975895906289,
+   "rank": 16,
+   "gap": 33.1,
+   "fraction": 0.6688,
+   "tier": "D",
+   "tie": false
+  },
+  {
+   "slug": "priest-shadow",
+   "class": "priest",
+   "name": "Shadow",
+   "race": "undead",
+   "metric": 518.1825370376123,
+   "rank": 17,
+   "gap": 35.0,
+   "fraction": 0.6503,
+   "tier": "D",
+   "tie": false
+  },
+  {
+   "slug": "mage-frost",
+   "class": "mage",
+   "name": "Frost",
+   "race": "troll",
+   "metric": 445.4446338301779,
+   "rank": 18,
+   "gap": 44.1,
+   "fraction": 0.5591,
+   "tier": "D",
+   "tie": false
+  },
+  {
+   "slug": "druid-balance",
+   "class": "druid",
+   "name": "Balance",
+   "race": "tauren",
+   "metric": 416.1003594320999,
+   "rank": 19,
+   "gap": 47.8,
+   "fraction": 0.5222,
+   "tier": "D",
+   "tie": false
+  },
+  {
+   "slug": "shaman-elemental",
+   "class": "shaman",
+   "name": "Elemental",
+   "race": "orc",
+   "metric": 390.31326939866784,
+   "rank": 20,
+   "gap": 51.0,
+   "fraction": 0.4899,
+   "tier": "D",
+   "tie": false
+  }
+ ],
+ "ranks": {
+  "Lightning Bolt": {
+   "max_rank": 10,
+   "level": 56
+  },
+  "Chain Lightning": {
+   "max_rank": 4,
+   "level": 56
+  },
+  "Lava Burst": {
+   "max_rank": 4,
+   "level": 60
+  },
+  "Searing Totem": {
+   "max_rank": 6,
+   "level": 60
+  },
+  "Magma Totem": {
+   "max_rank": 4,
+   "level": 56
+  },
+  "Mana Spring Totem": {
+   "max_rank": 4,
+   "level": 56
+  },
+  "Flame Shock": {
+   "max_rank": 6,
+   "level": 60
+  },
+  "Earth Shock": {
+   "max_rank": 7,
+   "level": 60
+  }
+ },
+ "cape": {
+  "drops": [
+   {
+    "zone": "Blackrock Depths",
+    "boss": "High Interrogator Gerstahn",
+    "chance": null,
+    "kind": "dungeon"
+   },
+   {
+    "zone": "Blackrock Depths",
+    "boss": "Houndmaster Grebmar",
+    "chance": null,
+    "kind": "dungeon"
+   }
+  ],
+  "uses": [
+   {
+    "spec": "druid-balance",
+    "class": "druid",
+    "name": "Balance",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "mage-arcane",
+    "class": "mage",
+    "name": "Arcane",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "mage-frost",
+    "class": "mage",
+    "name": "Frost",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "priest-shadow",
+    "class": "priest",
+    "name": "Shadow",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "shaman-elemental",
+    "class": "shaman",
+    "name": "Elemental",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "warlock-affliction",
+    "class": "warlock",
+    "name": "Affliction",
+    "band": 60,
+    "preset": "raid",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "warlock-demonology",
+    "class": "warlock",
+    "name": "Demonology",
+    "band": 60,
+    "preset": "bare",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "warlock-destruction",
+    "class": "warlock",
+    "name": "Destruction",
+    "band": 60,
+    "preset": "bare",
+    "place": 0,
+    "slot": "back"
+   },
+   {
+    "spec": "mage-fire",
+    "class": "mage",
+    "name": "Fire",
+    "band": 60,
+    "preset": "raid",
+    "place": 1,
+    "slot": "back"
+   },
+   {
+    "spec": "paladin-holy",
+    "class": "paladin",
+    "name": "Holy",
+    "band": 50,
+    "preset": "bare",
+    "place": 3,
+    "slot": "back"
+   },
+   {
+    "spec": "priest-discipline",
+    "class": "priest",
+    "name": "Discipline",
+    "band": 50,
+    "preset": "bare",
+    "place": 3,
+    "slot": "back"
+   }
+  ]
+ },
+ "dates": [
+  {
+   "key": "Sept 13",
+   "value": "Deep Dive panel",
+   "note": "10:00 PDT \u00b7 Hardcore panel 16:15 PDT",
+   "iso": "2026-09-13"
+  },
+  {
+   "key": "Sept 17",
+   "value": "Beta opens",
+   "note": "level cap 30 \u00b7 through Oct 21",
+   "endIso": "2026-10-21",
+   "iso": "2026-09-17",
+   "role": "beta",
+   "highlight": true,
+   "running": "Beta live through Oct 21"
+  },
+  {
+   "key": "Oct 27",
+   "value": "Name reservation",
+   "note": "through Nov 3",
+   "iso": "2026-10-27",
+   "endIso": "2026-11-03",
+   "running": "Name reservation open through Nov 3"
+  },
+  {
+   "key": "Nov 4",
+   "value": "Launch",
+   "note": "15:00 PST",
+   "time": "15:00 PST",
+   "iso": "2026-11-04",
+   "role": "launch",
+   "at": "2026-11-04T23:00:00Z"
+  },
+  {
+   "key": "Dec 9",
+   "value": "First raids",
+   "note": "Barrow Deeps \u00b7 Hyjal Summit \u00b7 Onyxia",
+   "iso": "2026-12-09",
+   "role": "raids"
+  }
+ ],
+ "changelog": [
+  {
+   "date": "2026-10-28",
+   "title": "The log coach is here.",
+   "kind": "site"
+  },
+  {
+   "date": "2026-10-27",
+   "title": "Premium, Guild and Raid guild: the launch plans and founder prices.",
+   "kind": "site"
+  },
+  {
+   "date": "2026-10-27",
+   "title": "Guilds can now plan raids and members sign up in one tap.",
+   "kind": "site"
+  },
+  {
+   "date": "2026-10-27",
+   "title": "Raid pages now show who came and how the night went.",
+   "kind": "site"
+  },
+  {
+   "date": "2026-10-27",
+   "title": "The Forever Sixty Discord bot is here.",
+   "kind": "site"
+  },
+  {
+   "date": "2026-10-26",
+   "title": "Officer tools are now part of the guild plan.",
+   "kind": "site"
+  }
+ ]
+}

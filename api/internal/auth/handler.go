@@ -135,6 +135,9 @@ type Service struct {
 	// DevLogin mounts POST /v1/dev/login (devlogin.go). Only the local walkthrough stack
 	// sets it, and config.Load refuses FS_DEV_LOGIN off a loopback listener.
 	DevLogin bool
+	// AppSignIn mounts the native app sign-in (app_auth.go). Only config.AppSignIn sets it,
+	// and it needs BNet as well.
+	AppSignIn bool
 }
 
 // Mount registers the sign-in, device, and account routes. The Battle.net
@@ -145,6 +148,9 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	if s.BNet != nil {
 		mux.HandleFunc("GET /v1/auth/battlenet/start", s.bnetStart)
 		mux.HandleFunc("GET /v1/auth/battlenet/callback", s.bnetCallback)
+		if s.AppSignIn {
+			mountApp(mux, s, trustedProxyHops)
+		}
 	}
 	emailLimit := httpx.RateLimitPer(emailsPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/auth/email", emailLimit(http.HandlerFunc(s.emailStart)))
@@ -193,44 +199,40 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 
 func (s *Service) bnetStart(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivate(w)
-	state := NewSessionID()
-	next := safeNext(r.URL.Query().Get("next"))
+	s.sendToBattleNet(w, r, NewSessionID(), safeNext(r.URL.Query().Get("next")))
+}
+
+// sendToBattleNet is the start of a web Battle.net sign-in: it binds state to this browser
+// and sends the browser to Battle.net.
+func (s *Service) sendToBattleNet(w http.ResponseWriter, r *http.Request, state, next string) {
+	s.setBnetState(w, state, next)
+	http.Redirect(w, r, s.BNet.AuthURL(state), http.StatusFound)
+}
+
+// setBnetState binds every Battle.net sign-in, the site's and the app's, to this browser in
+// the state cookie, with next riding beside it.
+func (s *Service) setBnetState(w http.ResponseWriter, state, next string) {
 	http.SetCookie(w, &http.Cookie{
 		Name: bnetStateCookie, Value: encodeState(state, next), Path: "/",
 		Domain: s.Auth.CookieDomain, HttpOnly: true, Secure: s.Auth.Secure,
 		SameSite: http.SameSiteLaxMode, MaxAge: int(bnetStateTTL.Seconds()),
 	})
-	http.Redirect(w, r, s.BNet.AuthURL(state), http.StatusFound)
 }
 
+// bnetCallback finishes every Battle.net sign-in. A web sign-in starts a session and goes
+// to next; an app sign-in (next is appFlowNext) hands a one-time code to the app link.
 func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivate(w)
-	c, err := r.Cookie(bnetStateCookie)
-	if err != nil || c.Value == "" {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in has expired; start again", nil)
+	state, next, ok := s.checkBnetState(w, r)
+	if !ok {
 		return
 	}
-	state, next := decodeState(c.Value)
-	http.SetCookie(w, &http.Cookie{Name: bnetStateCookie, Value: "", Path: "/",
-		Domain: s.Auth.CookieDomain, HttpOnly: true, Secure: s.Auth.Secure, MaxAge: -1})
-	if state == "" || !SameToken(state, r.URL.Query().Get("state")) {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in could not be verified; start again", nil)
+	bu, u, ok := s.identifyBnet(w, r)
+	if !ok {
 		return
 	}
-	code := r.URL.Query().Get("code")
-	if code == "" {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "Battle.net sent no authorization code", nil)
-		return
-	}
-	bu, err := s.BNet.Identify(r.Context(), code)
-	if err != nil {
-		s.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "battlenet", "err", err)
-		httpx.WriteError(w, r, http.StatusBadGateway, "upstream", "Battle.net could not confirm that sign-in", nil)
-		return
-	}
-	u, err := s.Store.UpsertBnetUser(r.Context(), bu.Sub, bu.Battletag)
-	if err != nil {
-		s.fail(w, r, "battlenet", err, "could not sign you in just now")
+	if next == appFlowNext {
+		s.finishAppSignIn(w, r, state, u.ID, bu.AccessToken)
 		return
 	}
 	if _, err := s.Auth.StartSession(r.Context(), w, u.ID, "battlenet"); err != nil {
@@ -239,6 +241,46 @@ func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	s.runImport(r, u.ID, bu.AccessToken)
 	http.Redirect(w, r, s.PublicBaseURL+safeNext(next), http.StatusFound)
+}
+
+// checkBnetState reads and clears the state cookie and checks Battle.net echoed its state.
+// It answers the request itself when it reports false.
+func (s *Service) checkBnetState(w http.ResponseWriter, r *http.Request) (state, next string, ok bool) {
+	c, err := r.Cookie(bnetStateCookie)
+	if err != nil || c.Value == "" {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in has expired; start again", nil)
+		return "", "", false
+	}
+	state, next = decodeState(c.Value)
+	http.SetCookie(w, &http.Cookie{Name: bnetStateCookie, Value: "", Path: "/",
+		Domain: s.Auth.CookieDomain, HttpOnly: true, Secure: s.Auth.Secure, MaxAge: -1})
+	if state == "" || !SameToken(state, r.URL.Query().Get("state")) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in could not be verified; start again", nil)
+		return "", "", false
+	}
+	return state, next, true
+}
+
+// identifyBnet spends Battle.net's authorization code and upserts the account behind it.
+// It answers the request itself when it reports false.
+func (s *Service) identifyBnet(w http.ResponseWriter, r *http.Request) (BnetUser, User, bool) {
+	code := r.URL.Query().Get("code")
+	if code == "" {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "Battle.net sent no authorization code", nil)
+		return BnetUser{}, User{}, false
+	}
+	bu, err := s.BNet.Identify(r.Context(), code)
+	if err != nil {
+		s.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "battlenet", "err", err)
+		httpx.WriteError(w, r, http.StatusBadGateway, "upstream", "Battle.net could not confirm that sign-in", nil)
+		return BnetUser{}, User{}, false
+	}
+	u, err := s.Store.UpsertBnetUser(r.Context(), bu.Sub, bu.Battletag)
+	if err != nil {
+		s.fail(w, r, "battlenet", err, "could not sign you in just now")
+		return BnetUser{}, User{}, false
+	}
+	return bu, u, true
 }
 
 // runImport calls the Battle.net importer, bounded by importBudget, and
@@ -343,15 +385,26 @@ func (s *Service) emailCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) logout(w http.ResponseWriter, r *http.Request) {
-	if err := s.Auth.EndSession(r.Context(), w, r); err != nil {
+	if err := s.endSignIn(w, r); err != nil {
 		s.fail(w, r, "logout", err, "could not sign you out just now")
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, map[string]bool{"signed_out": true})
 }
 
+// endSignIn is every generic sign-out: a browser's session ends, and an app calling it
+// revokes its own device rather than hearing success while its token stays live.
+func (s *Service) endSignIn(w http.ResponseWriter, r *http.Request) error {
+	if a := ActorFrom(r.Context()); a.IsApp() {
+		if _, err := s.Store.RevokeDeviceByID(r.Context(), a.DeviceID); err != nil {
+			return err
+		}
+	}
+	return s.Auth.EndSession(r.Context(), w, r)
+}
+
 func (s *Service) deleteSession(w http.ResponseWriter, r *http.Request) {
-	if err := s.Auth.EndSession(r.Context(), w, r); err != nil {
+	if err := s.endSignIn(w, r); err != nil {
 		s.fail(w, r, "logout", err, "could not sign you out just now")
 		return
 	}
@@ -428,66 +481,65 @@ type EntitlementsView struct {
 
 func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 	a := ActorFrom(r.Context())
-	u, err := s.Store.User(r.Context(), a.UserID)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	chars, err := s.Store.Characters(r.Context(), u.ID)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	chars, err = s.attachCharacterAttendance(r.Context(), chars)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	guilds, err := s.Store.Guilds(r.Context(), u.ID)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	facts := s.seatFacts(r.Context(), u.ID)
-	guilds, err = s.attachGuildPlans(r.Context(), guilds, u.ID, facts.HeldGuildIDs)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	guilds, err = s.attachGuildCapabilities(r.Context(), guilds, u)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	guilds = s.attachStanding(r.Context(), u.ID, guilds)
-	ev, err := s.buildEntitlementsView(r.Context(), u.ID)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	finished, serverSims, err := s.buildSimsView(r.Context(), u.ID, ev.ServerSims)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	notifications, err := s.buildNotifications(r.Context(), u.ID, ev.Notifications)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
-	link, err := s.buildDiscordLink(r.Context(), u.ID)
+	me, err := s.loadMe(r.Context(), a.UserID, a.IsModerator())
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
 	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, http.StatusOK, Me{
+	httpx.WriteOK(w, r, http.StatusOK, me)
+}
+
+// loadMe assembles the account read GET /v1/me answers and the app exchange returns.
+// moderator is whether this caller may use the account's moderator powers, which an app
+// token never may, so each guild's Can list only offers what the caller can do.
+func (s *Service) loadMe(ctx context.Context, userID int64, moderator bool) (Me, error) {
+	u, err := s.Store.User(ctx, userID)
+	if err != nil {
+		return Me{}, err
+	}
+	chars, err := s.Store.Characters(ctx, u.ID)
+	if err != nil {
+		return Me{}, err
+	}
+	if chars, err = s.attachCharacterAttendance(ctx, chars); err != nil {
+		return Me{}, err
+	}
+	guilds, err := s.Store.Guilds(ctx, u.ID)
+	if err != nil {
+		return Me{}, err
+	}
+	facts := s.seatFacts(ctx, u.ID)
+	if guilds, err = s.attachGuildPlans(ctx, guilds, u.ID, facts.HeldGuildIDs); err != nil {
+		return Me{}, err
+	}
+	if guilds, err = s.attachGuildCapabilities(ctx, guilds, u.ID, moderator); err != nil {
+		return Me{}, err
+	}
+	guilds = s.attachStanding(ctx, u.ID, guilds)
+	ev, err := s.buildEntitlementsView(ctx, u.ID)
+	if err != nil {
+		return Me{}, err
+	}
+	finished, serverSims, err := s.buildSimsView(ctx, u.ID, ev.ServerSims)
+	if err != nil {
+		return Me{}, err
+	}
+	notifications, err := s.buildNotifications(ctx, u.ID, ev.Notifications)
+	if err != nil {
+		return Me{}, err
+	}
+	link, err := s.buildDiscordLink(ctx, u.ID)
+	if err != nil {
+		return Me{}, err
+	}
+	return Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
 		FinishedSims: finished, ServerSims: serverSims, Notifications: notifications,
 		DiscordLinkAvailable: link.available, DiscordLink: link.block, DiscordLinkSuggested: link.suggested,
 		SeatViews: seatViewsOf(facts, ev.Billing),
-	})
+	}, nil
 }
 
 // buildSimsView resolves the sims half of /v1/me. The finished list is only read for a
@@ -562,7 +614,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 
 // attachGuildCapabilities fills Guild.Can for every guild the account belongs to, from the
 // one rule guilds.Capabilities holds. Every list is non-nil, so the JSON is [] and not null.
-func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u User) ([]Guild, error) {
+func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, userID int64, moderator bool) ([]Guild, error) {
 	out := make([]Guild, len(guilds))
 	copy(out, guilds)
 	var lists map[int64][]string
@@ -572,7 +624,7 @@ func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u
 			ids[i] = g.ID
 		}
 		var err error
-		lists, err = s.GuildCapabilities.CapabilitiesFor(ctx, ids, u.ID, u.Role == "moderator" || u.Role == "admin")
+		lists, err = s.GuildCapabilities.CapabilitiesFor(ctx, ids, userID, moderator)
 		if err != nil {
 			return nil, fmt.Errorf("auth: me: guild capabilities: %w", err)
 		}

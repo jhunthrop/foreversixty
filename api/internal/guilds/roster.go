@@ -233,6 +233,7 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 	default:
 		s.logger().Info("guilds", "op", "character_approve", "guild_id", guildID, "character_key", key,
 			"user_id", actor.UserID)
+		s.publishApproved(r.Context(), guildID, []string{key})
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"character_key": key, "status": "approved"})
 	}
 }
@@ -422,5 +423,6 @@ func (s *Service) approveAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.logger().Info("guilds", "op", "roster_approve_all", "guild_id", guildID, "count", len(keys), "user_id", actor.UserID)
+	s.publishApproved(r.Context(), guildID, keys)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"approved": keys})
 }

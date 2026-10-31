@@ -1,0 +1,21 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAMID_TODO.gg.foreversixty.app"
+        ],
+        "components": [
+          {
+            "/": "/app/*"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAMID_TODO.gg.foreversixty.app"
+    ]
+  }
+}

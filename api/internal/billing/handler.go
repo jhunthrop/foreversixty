@@ -12,6 +12,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
@@ -100,7 +101,9 @@ type Service struct {
 	// API failing to start (coordinator's lane constraint).
 	Gateway Gateway
 	// Mailer sends the billing-daily notices; the routes never use it.
-	Mailer        mail.Mailer
+	Mailer mail.Mailer
+	// Events publishes billing.failed to the payer; nil publishes nothing.
+	Events        events.Publisher
 	PublicBaseURL string
 	WebhookSecret string
 	Log           *slog.Logger
@@ -114,8 +117,8 @@ type Service struct {
 // have once they are set.
 func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	limit := httpx.RateLimitPer(billingRateLimitPerHour, time.Hour, trustedProxyHops)
-	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireSession(s.checkout)))
-	mux.Handle("POST /v1/billing/portal", limit(auth.RequireSession(s.portal)))
+	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireBrowserSession(s.checkout)))
+	mux.Handle("POST /v1/billing/portal", limit(auth.RequireBrowserSession(s.portal)))
 	mux.HandleFunc("POST /v1/billing/webhook", s.webhook)
 	mountGuild(mux, s, trustedProxyHops)
 }

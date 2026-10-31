@@ -13,10 +13,12 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
+	"github.com/jhunthrop/foreversixty/api/internal/push"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
@@ -70,6 +72,10 @@ type Deps struct {
 	Tiles *sheet.Tiles
 	// App serves the mobile apps' routes; nil (APP_API off) leaves them unmounted.
 	App *app.Service
+	// Notifications serves /v1/me/notifications and PushTokens /v1/me/push-tokens; both are
+	// nil, unmounted, until APP_NOTIFICATIONS_ENABLED=1.
+	Notifications *events.Handler
+	PushTokens    *push.Handler
 
 	TrustedProxyHops int
 }
@@ -149,6 +155,12 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Tiles != nil {
 		d.Tiles.Mount(mux)
+	}
+	if d.Notifications != nil {
+		events.Mount(mux, d.Notifications)
+	}
+	if d.PushTokens != nil {
+		push.Mount(mux, d.PushTokens)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

@@ -87,11 +87,13 @@ type Session struct {
 	ExpiresAt time.Time
 }
 
-// Device is one paired companion install.
+// Device is one install holding a device token: a paired companion or a signed-in app.
 type Device struct {
-	ID         string     `json:"id"`
-	Name       string     `json:"name"`
-	Platform   string     `json:"platform"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Platform string `json:"platform"`
+	// Kind is DeviceKindCompanion or DeviceKindApp.
+	Kind       string     `json:"kind"`
 	CreatedAt  time.Time  `json:"created_at"`
 	LastSeenAt *time.Time `json:"last_seen_at,omitempty"`
 	UserID     int64      `json:"-"`
@@ -239,6 +241,11 @@ type Store struct {
 	// export fails to decode at all — never for routine operation. Defaults to
 	// slog.Default() when nil.
 	Log *slog.Logger
+	// AppTokenIdle and AppTokenMaxAge are when an app device's token lapses (config
+	// APP_TOKEN_IDLE_DAYS and APP_TOKEN_MAX_AGE_DAYS). Zero means the defaults in
+	// app_auth_store.go. Companion tokens never lapse.
+	AppTokenIdle   time.Duration
+	AppTokenMaxAge time.Duration
 }
 
 func (s *Store) logger() *slog.Logger {
@@ -422,12 +429,16 @@ func (s *Store) ClaimPairingCode(ctx context.Context, code string) (int64, error
 	return userID, nil
 }
 
-// CreateDevice stores a paired device and returns it.
+// CreateDevice stores a paired companion and returns it.
 func (s *Store) CreateDevice(ctx context.Context, userID int64, name, platform string, hash []byte) (Device, error) {
-	d := Device{ID: NewDeviceID(), UserID: userID, Name: name, Platform: platform}
+	return s.createDevice(ctx, DeviceKindCompanion, userID, name, platform, hash)
+}
+
+func (s *Store) createDevice(ctx context.Context, kind string, userID int64, name, platform string, hash []byte) (Device, error) {
+	d := Device{ID: NewDeviceID(), UserID: userID, Name: name, Platform: platform, Kind: kind}
 	if err := s.Pool.QueryRow(ctx,
-		`insert into devices (id, user_id, name, platform, token_hash) values ($1, $2, $3, $4, $5)
-		 returning created_at`, d.ID, userID, name, platform, hash).Scan(&d.CreatedAt); err != nil {
+		`insert into devices (id, user_id, name, platform, token_hash, kind) values ($1, $2, $3, $4, $5, $6)
+		 returning created_at`, d.ID, userID, name, platform, hash, kind).Scan(&d.CreatedAt); err != nil {
 		return Device{}, fmt.Errorf("auth: create device: %w", err)
 	}
 	return d, nil
@@ -435,16 +446,19 @@ func (s *Store) CreateDevice(ctx context.Context, userID int64, name, platform s
 
 // DeviceByToken resolves a bearer token to its device and stamps
 // last_seen_at, so the account page can show when a companion last
-// uploaded. A revoked device matches nothing.
+// uploaded. A revoked device matches nothing. An app device past its idle
+// limit or its maximum age is revoked here and answers ErrDeviceExpired,
+// so the app knows to sign in again.
 func (s *Store) DeviceByToken(ctx context.Context, hash []byte) (Device, error) {
+	idle, maxAge := s.appTokenLimits()
 	var d Device
 	err := s.Pool.QueryRow(ctx,
 		`update devices set last_seen_at = now()
-		 where token_hash = $1 and revoked_at is null
-		 returning id, user_id, name, platform, created_at, last_seen_at`, hash).
-		Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.CreatedAt, &d.LastSeenAt)
+		 where token_hash = $1 and revoked_at is null and `+liveAppClause+`
+		 returning id, user_id, name, platform, kind, created_at, last_seen_at`, hash, interval(idle), interval(maxAge)).
+		Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.Kind, &d.CreatedAt, &d.LastSeenAt)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return Device{}, ErrNotFound
+		return Device{}, s.lapseAppDevice(ctx, hash)
 	}
 	if err != nil {
 		return Device{}, fmt.Errorf("auth: read device: %w", err)
@@ -454,9 +468,11 @@ func (s *Store) DeviceByToken(ctx context.Context, hash []byte) (Device, error) 
 
 // Devices lists a user's live devices, newest first.
 func (s *Store) Devices(ctx context.Context, userID int64) ([]Device, error) {
+	idle, maxAge := s.appTokenLimits()
 	rows, err := s.Pool.Query(ctx,
-		`select id, user_id, name, platform, created_at, last_seen_at from devices
-		 where user_id = $1 and revoked_at is null order by created_at desc`, userID)
+		`select id, user_id, name, platform, kind, created_at, last_seen_at from devices
+		 where user_id = $1 and revoked_at is null and `+liveAppClause+`
+		 order by created_at desc`, userID, interval(idle), interval(maxAge))
 	if err != nil {
 		return nil, fmt.Errorf("auth: list devices: %w", err)
 	}
@@ -464,7 +480,7 @@ func (s *Store) Devices(ctx context.Context, userID int64) ([]Device, error) {
 	out := []Device{}
 	for rows.Next() {
 		var d Device
-		if err := rows.Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.CreatedAt, &d.LastSeenAt); err != nil {
+		if err := rows.Scan(&d.ID, &d.UserID, &d.Name, &d.Platform, &d.Kind, &d.CreatedAt, &d.LastSeenAt); err != nil {
 			return nil, fmt.Errorf("auth: list devices: %w", err)
 		}
 		out = append(out, d)

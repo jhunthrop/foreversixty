@@ -9,6 +9,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // defaultMailFrom is used when MAIL_FROM is not set.
@@ -123,6 +124,17 @@ type Config struct {
 	// not Forever characters at all. Off, sign-in still works, the nightly
 	// job still probes for the namespace, and nothing is written.
 	BnetImportCharacters bool
+	// AppSignIn (APP_SIGN_IN=true) mounts the native app sign-in: GET /v1/auth/app/start,
+	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
+	// answer 404 until the apps ship. It needs Battle.net configured to do anything.
+	AppSignIn bool
+	// AppTokenIdle (APP_TOKEN_IDLE_DAYS, default 30) and AppTokenMaxAge
+	// (APP_TOKEN_MAX_AGE_DAYS, default 180) are when a native app's device token lapses:
+	// after that long unused, or that long after sign-in, whichever comes first. A lapsed
+	// token answers 401 session_expired and the app signs in again. Companion tokens do
+	// not lapse.
+	AppTokenIdle   time.Duration
+	AppTokenMaxAge time.Duration
 
 	// ParseJobName, ParseJobRegion and ParseJobProject address the Cloud
 	// Run job that parses a whole-file upload.
@@ -176,6 +188,8 @@ type Config struct {
 
 	// App is the mobile apps' API settings (off by default).
 	App AppConfig
+	// Push is the apps' notifications: the dark-launch flag and the APNs and FCM keys.
+	Push PushConfig
 }
 
 // String and GoString redact the whole Config so a stray %v or %+v never prints the
@@ -265,6 +279,10 @@ func Load(getenv func(string) string) (Config, error) {
 		c.BnetProfileGame = defaultBnetProfileGame
 	}
 	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") == "true"
+	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
+	if err := loadAppTokenLifetimes(&c, getenv); err != nil {
+		return Config{}, err
+	}
 	c.BnetRegions = splitCommaList(getenv("BNET_REGIONS"), defaultBnetRegions)
 	c.BnetProbeGames = splitCommaList(getenv("BNET_PROBE_GAMES"), defaultBnetProbeGames)
 	for _, d := range []struct {
@@ -317,6 +335,9 @@ func Load(getenv func(string) string) (Config, error) {
 		return c, err
 	}
 	if c.App, err = loadApp(getenv); err != nil {
+		return c, err
+	}
+	if c.Push, err = loadPush(getenv); err != nil {
 		return c, err
 	}
 
@@ -410,6 +431,42 @@ func decodeNotifyKey(raw string) ([]byte, error) {
 		return nil, fmt.Errorf("config: NOTIFY_ENCRYPTION_KEY must be base64 of %d bytes", NotifyKeyLen)
 	}
 	return key, nil
+}
+
+// The app token lifetimes' defaults, in days.
+const (
+	defaultAppTokenIdleDays   = 30
+	defaultAppTokenMaxAgeDays = 180
+)
+
+func loadAppTokenLifetimes(c *Config, getenv func(string) string) error {
+	idle, err := positiveDays(getenv, "APP_TOKEN_IDLE_DAYS", defaultAppTokenIdleDays)
+	if err != nil {
+		return err
+	}
+	maxAge, err := positiveDays(getenv, "APP_TOKEN_MAX_AGE_DAYS", defaultAppTokenMaxAgeDays)
+	if err != nil {
+		return err
+	}
+	if idle > maxAge {
+		return fmt.Errorf("config: APP_TOKEN_IDLE_DAYS (%d) must not exceed APP_TOKEN_MAX_AGE_DAYS (%d)", idle, maxAge)
+	}
+	const day = 24 * time.Hour
+	c.AppTokenIdle, c.AppTokenMaxAge = time.Duration(idle)*day, time.Duration(maxAge)*day
+	return nil
+}
+
+// positiveDays reads a whole number of days above zero, or def when unset.
+func positiveDays(getenv func(string) string, name string, def int) (int, error) {
+	v := getenv(name)
+	if v == "" {
+		return def, nil
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil || n < 1 {
+		return 0, fmt.Errorf("config: %s must be a whole number of days >= 1, got %q", name, v)
+	}
+	return n, nil
 }
 
 // isLoopbackHost reports whether host is a literal loopback IP. "localhost" and the empty

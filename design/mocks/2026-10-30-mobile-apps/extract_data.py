@@ -69,7 +69,8 @@ def main() -> None:
     out["rep_sources"] = rep
     talents = json.load(open(PUB / "talents/shaman.json"))
     out["trees"] = [{"name": t["name"], "icon": t["icon"],
-                     "talents": [{k: x[k] for k in ("id", "name", "icon", "max_rank", "tier", "column", "prereq_talent_id", "prereq_rank")} for x in t["talents"]]}
+                     "talents": [{**{k: x[k] for k in ("id", "name", "icon", "max_rank", "tier", "column", "prereq_talent_id", "prereq_rank")},
+                                 "ranks": [r["description"] for r in x["ranks"]]} for x in t["talents"]]}
                     for t in talents["trees"]]
     (HERE / "data.json").write_text(json.dumps(out, indent=1, sort_keys=True))
     icons = {v["icon"] for v in out["items"].values()} | set(SPEC_ICONS)

@@ -228,15 +228,7 @@ func simTitle(character string, spec specs.Spec, known bool) string {
 }
 
 func fightsLine(fights, kills int) string {
-	fightsText := fmt.Sprintf("%d", fights)
-	killsText := fmt.Sprintf(embedCopy.LogManyKills, kills)
-	switch kills {
-	case 0:
-		killsText = embedCopy.LogKillsNone
-	case 1:
-		killsText = embedCopy.LogOneKill
-	}
-	return fmt.Sprintf(embedCopy.LogFightsFormat, fightsText, killsText)
+	return fmt.Sprintf(embedCopy.LogFightsFormat, fmt.Sprintf("%d", fights), killsPhrase(kills))
 }
 
 // classLabel capitalises a class slug ("mage" -> "Mage").

@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/billingmail"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
@@ -62,6 +63,8 @@ type Service struct {
 	Log           *slog.Logger
 	// Now is the clock; nil means time.Now.
 	Now func() time.Time
+	// Events publishes premium.seat to the member handed a seat; nil publishes nothing.
+	Events events.Publisher
 }
 
 func (s *Service) now() time.Time {
@@ -190,7 +193,7 @@ func (s *Service) Give(ctx context.Context, guildID int64, slot int, actorID, to
 	if err != nil {
 		return Seat{}, err
 	}
-	return s.inLock(ctx, guildID, slot, now, func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
+	seat, err := s.inLock(ctx, guildID, slot, now, func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
 		if row.pendingID != nil {
 			return nil, ErrOfferPending
 		}
@@ -199,6 +202,10 @@ func (s *Service) Give(ctx context.Context, guildID int64, slot int, actorID, to
 		}
 		return s.assign(ctx, tx, guildID, slot, actorID, toUserID, pays, now)
 	})
+	if err == nil {
+		s.publishSeat(ctx, guildID, toUserID, seat, pays != nil)
+	}
+	return seat, err
 }
 
 // Move gives a held seat to someone else, once per lock period. A
@@ -217,7 +224,7 @@ func (s *Service) Move(ctx context.Context, guildID int64, slot int, actorID, to
 	if err != nil {
 		return Seat{}, err
 	}
-	return s.inLock(ctx, guildID, slot, now, func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
+	seat, err := s.inLock(ctx, guildID, slot, now, func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
 		if row.state != StateHeld && row.state != StateAccepted {
 			return nil, ErrNotHeld
 		}
@@ -243,6 +250,10 @@ func (s *Service) Move(ctx context.Context, guildID int64, slot int, actorID, to
 		}
 		return msgs, err
 	})
+	if err == nil {
+		s.publishSeat(ctx, guildID, toUserID, seat, pays != nil)
+	}
+	return seat, err
 }
 
 // offerMove records toUserID as the seat's offeree, leaving the holder in place.

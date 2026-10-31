@@ -270,6 +270,15 @@ func TestAnAccountWithoutAPairedCompanionGetsNoAck(t *testing.T) {
 	if got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageAck); len(got) != 0 {
 		t.Fatalf("ack with only a revoked device = %+v, want none", got)
 	}
+	// A signed-in phone app holds a device token too, but it carries nothing into the game.
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into devices (id, user_id, name, platform, token_hash, kind) values ('l63-app', $1, 'iPhone', 'ios', 'l63-app', 'app')`,
+		h.owner); err != nil {
+		t.Fatal(err)
+	}
+	if got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageAck); len(got) != 0 {
+		t.Fatalf("ack with only an app device = %+v, want none", got)
+	}
 }
 
 // The ack says what became of the character's newest in-game sim request, refused ones too.

@@ -264,8 +264,8 @@ func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, t
 		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
 		Completed: newJobGuilds(cfg, pool, log),
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(context.Background(), cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return deps
 }
@@ -289,8 +289,8 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return sims.Run(ctx, deps, args[0])
 }
@@ -574,7 +574,8 @@ func serve(log *slog.Logger) error {
 		ResendCooldown: resendCooldown, MaxSendsPerHour: maxSendsPerHour,
 	}
 
-	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log}
+	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log,
+		AppTokenIdle: cfg.AppTokenIdle, AppTokenMaxAge: cfg.AppTokenMaxAge}
 	// The guild control centre's own claimed_by_name (home) and loot award
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.
@@ -596,6 +597,9 @@ func serve(log *slog.Logger) error {
 	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+		// The native app sign-in rides the same Battle.net start and callback; dark until
+		// APP_SIGN_IN=true.
+		accounts.AppSignIn = cfg.AppSignIn
 		bnetSvcClient := bnetClient(cfg, log)
 		bnetTables, ok, err := bnetbuild.LoadTables(cfg.TreeDataDir, treeData)
 		if err != nil {
@@ -680,6 +684,8 @@ func serve(log *slog.Logger) error {
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
+	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
+	wireEvents(ctx, cfg, pool, &deps, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer

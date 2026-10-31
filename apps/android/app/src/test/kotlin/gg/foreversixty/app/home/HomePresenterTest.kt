@@ -146,7 +146,7 @@ class HomePresenterTest {
     @Test
     fun `talents show the differ count and its tag`() {
         val row = presenter.model(HomeFixtures.home()).next.first()
-        assertEquals("1 of your 51 points differ from the 60 build", row.line)
+        assertEquals("1 of your 51 points differ from the 60 guide build", row.line)
         assertEquals(HomeNextRow.Tag.Differs, row.tag)
     }
 
