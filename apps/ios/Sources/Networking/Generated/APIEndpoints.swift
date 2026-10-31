@@ -78,9 +78,51 @@ public extension Endpoint where Response == ReportList {
 
 public extension Endpoint where Response == Report {
     /// GET /v1/reports/{id}: A report and its fights
-    static func getReport(id: String) -> Endpoint {
-        Endpoint(method: .get, path: "/v1/reports/\(id)")
+    static func getReport(id: String, fold: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)", query: [
+            fold.map { URLQueryItem(name: "fold", value: "\($0)") },
+        ].compactMap { $0 })
     }
+}
+
+public extension Endpoint where Response == ReportMe {
+    /// GET /v1/reports/{id}/me: Your results in a report (W3-C2)
+    static func getReportMe(id: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/me")
+    }
+}
+
+public extension Endpoint where Response == FightMeters {
+    /// GET /v1/reports/{id}/fights/{n}/meters: A fight's meters (W3-C3)
+    static func getFightMeters(id: String, n: Int, metric: String? = nil, scope: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/fights/\(n)/meters", query: [
+            metric.map { URLQueryItem(name: "metric", value: "\($0)") },
+            scope.map { URLQueryItem(name: "scope", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachNight {
+    /// GET /v1/reports/{id}/coach/night: The night's coach line for one of your characters (W3-C4)
+    static func getCoachNight(id: String, player: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/coach/night", query: [
+            URLQueryItem(name: "player", value: "\(player)"),
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachReview {
+    /// GET /v1/reports/{id}/fights/{n}/coach: One pull's coach review for one of your characters (W3-C4)
+    static func getFightCoach(id: String, n: Int, player: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/fights/\(n)/coach", query: [
+            URLQueryItem(name: "player", value: "\(player)"),
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachRecent {
+    /// GET /v1/me/coach/recent: The account's recent coach line and reviews (W3-C4)
+    static var getCoachRecent: Endpoint { Endpoint(method: .get, path: "/v1/me/coach/recent") }
 }
 
 public extension Endpoint where Response == SimList {
@@ -307,6 +349,11 @@ public enum ContractRoutes {
         FixtureRoute(.delete, "/v1/devices/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/reports", fixture: "reports.list", status: 200),
         FixtureRoute(.get, "/v1/reports/{id}", fixture: "reports.get", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/me", fixture: "reports.me", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/fights/{n}/meters", fixture: "reports.meters", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/coach/night", fixture: "coach.night", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/fights/{n}/coach", fixture: "coach.fight", status: 200),
+        FixtureRoute(.get, "/v1/me/coach/recent", fixture: "coach.recent", status: 200),
         FixtureRoute(.get, "/v1/sims", fixture: "sims.list", status: 200),
         FixtureRoute(.get, "/v1/sims/{id}", fixture: "sims.result", status: 200),
         FixtureRoute(.post, "/v1/sims/{id}/seen", fixture: nil, status: 204),

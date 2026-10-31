@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "data": {
+    "last_raid": {
+      "zone": "Onyxia's Lair",
+      "fought_at": "2026-12-15T02:36:40Z",
+      "report_id": "ewlrx3enxbeb",
+      "finding_count": 3,
+      "first": {
+        "stem": "Bloodthirst casts lost",
+        "on": 1,
+        "of": 1
+      },
+      "url": "/reports/ewlrx3enxbeb?fight=9&tab=coach"
+    },
+    "pending": false,
+    "reviews": [
+      {
+        "report_id": "ewlrx3enxbeb",
+        "fight_index": 9,
+        "player_key": "us/pvp/obnoxious-yell",
+        "spec": "Fury",
+        "boss": "Onyxia",
+        "kill": true,
+        "source": "model",
+        "generated_at": "2026-12-15T03:20:00Z",
+        "fix_first": {
+          "title": "Bloodthirst: 9 casts lost"
+        }
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

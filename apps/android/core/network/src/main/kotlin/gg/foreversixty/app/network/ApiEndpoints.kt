@@ -17,7 +17,11 @@ import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.CharacterSearch
 import gg.foreversixty.app.model.ClassInfo
+import gg.foreversixty.app.model.CoachNight
+import gg.foreversixty.app.model.CoachRecent
+import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.model.Device
+import gg.foreversixty.app.model.FightMeters
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
@@ -36,6 +40,7 @@ import gg.foreversixty.app.model.RaidPatch
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
+import gg.foreversixty.app.model.ReportMe
 import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.model.SignupRequest
@@ -90,8 +95,28 @@ object ApiEndpoints {
         Endpoint(HttpMethod.Get, "/v1/reports", ReportList.serializer(), query = listOfNotNull("mine" to "1", page?.let { "page" to it.toString() }))
 
     /** GET /v1/reports/{id}: A report and its fights */
-    fun getReport(id: String): Endpoint<Report> =
-        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}", Report.serializer())
+    fun getReport(id: String, fold: String? = null): Endpoint<Report> =
+        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}", Report.serializer(), query = listOfNotNull(fold?.let { "fold" to it }))
+
+    /** GET /v1/reports/{id}/me: Your results in a report (W3-C2) */
+    fun getReportMe(id: String): Endpoint<ReportMe> =
+        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}/me", ReportMe.serializer())
+
+    /** GET /v1/reports/{id}/fights/{n}/meters: A fight's meters (W3-C3) */
+    fun getFightMeters(id: String, n: Int, metric: String? = null, scope: String? = null): Endpoint<FightMeters> =
+        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}/fights/$n/meters", FightMeters.serializer(), query = listOfNotNull(metric?.let { "metric" to it }, scope?.let { "scope" to it }))
+
+    /** GET /v1/reports/{id}/coach/night: The night's coach line for one of your characters (W3-C4) */
+    fun getCoachNight(id: String, player: String): Endpoint<CoachNight> =
+        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}/coach/night", CoachNight.serializer(), query = listOfNotNull("player" to player))
+
+    /** GET /v1/reports/{id}/fights/{n}/coach: One pull's coach review for one of your characters (W3-C4) */
+    fun getFightCoach(id: String, n: Int, player: String): Endpoint<CoachReview> =
+        Endpoint(HttpMethod.Get, "/v1/reports/${id.encodeURLPathPart()}/fights/$n/coach", CoachReview.serializer(), query = listOfNotNull("player" to player))
+
+    /** GET /v1/me/coach/recent: The account's recent coach line and reviews (W3-C4) */
+    fun getCoachRecent(): Endpoint<CoachRecent> =
+        Endpoint(HttpMethod.Get, "/v1/me/coach/recent", CoachRecent.serializer())
 
     /** GET /v1/sims: The caller's own saved sims */
     fun listMySims(page: Int? = null, kind: String? = null, lane: String? = null): Endpoint<SimList> =
@@ -241,6 +266,11 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Delete, "/v1/devices/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/reports", "reports.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/reports/{id}", "reports.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/me", "reports.me", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/fights/{n}/meters", "reports.meters", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/coach/night", "coach.night", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/fights/{n}/coach", "coach.fight", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/coach/recent", "coach.recent", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/sims", "sims.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/sims/{id}", "sims.result", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/sims/{id}/seen", null, HttpStatusCode.fromValue(204)),

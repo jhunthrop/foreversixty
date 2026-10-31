@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/contract"
+	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
 func reportBody(t *testing.T, res *http.Response, want int) []byte {
@@ -36,6 +37,7 @@ var (
 	viewOptional    = []string{
 		"data.guild", "data.flagged", "data.fights[].encounter_id", "data.fights[].difficulty",
 		"data.fights[].size", "data.fights[].zone", "data.fights[].boss_health_pct", "data.owner.battletag",
+		"data.trash_groups",
 	}
 )
 
@@ -87,4 +89,49 @@ func TestAppContractReportSummaryNotFound(t *testing.T) {
 
 	contract.AssertFixture(t, "reports.get.error-not-found",
 		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id, "", nil), http.StatusNotFound), contract.Options{})
+}
+
+func TestAppContractReportFoldedTrash(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	id, _ := h.onyxiaNight(Public)
+	h.appReportJSON(
+		store.FightEntry{Index: 1, Kind: "trash", Name: "Trash", Zone: "Onyxia's Lair", DurationMS: 40_000},
+		store.FightEntry{Index: 3, Kind: "encounter", Name: "Onyxia", Zone: "Onyxia's Lair", DurationMS: 192_000},
+	)
+	opts := contract.Options{Optional: []string{
+		"data.guild", "data.flagged", "data.fights[].encounter_id", "data.fights[].difficulty",
+		"data.fights[].size", "data.fights[].zone", "data.fights[].boss_health_pct", "data.owner.battletag", "data.fights[].group",
+	}}
+	contract.AssertFixture(t, "reports.get",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"?fold=trash", "", nil), http.StatusOK), opts)
+}
+
+func TestAppContractReportMe(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	id, _ := h.onyxiaNight(Public)
+	res := h.do(http.MethodGet, "/v1/reports/"+id+"/me", "", nil)
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q, want private, no-cache", got)
+	}
+	contract.AssertFixture(t, "reports.me", reportBody(t, res, http.StatusOK), contract.Options{})
+
+	if _, err := h.store.Pool.Exec(t.Context(), `update characters set user_id = null`); err != nil {
+		t.Fatal(err)
+	}
+	contract.AssertFixture(t, "reports.me.empty",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/me", "", nil), http.StatusOK), contract.Options{})
+	contract.AssertFixture(t, "reports.me.error-not-found",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/nosuchreport/me", "", nil), http.StatusNotFound), contract.Options{})
+}
+
+func TestAppContractReportMeters(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	id, _ := h.onyxiaNight(Public)
+	contract.AssertFixture(t, "reports.meters",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/fights/3/meters", "", nil), http.StatusOK), contract.Options{})
+	contract.AssertFixture(t, "reports.meters.error-not-found",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/fights/9/meters", "", nil), http.StatusNotFound), contract.Options{})
 }

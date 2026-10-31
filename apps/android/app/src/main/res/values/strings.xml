@@ -687,4 +687,118 @@
     <string name="account_ruleset_rp">Roleplay</string>
     <string name="account_ruleset_hardcore">Hardcore</string>
     <string name="account_version_noData">Version %1$s (%2$s)</string>
+    <string name="home_logs">Logs</string>
+    <string name="home_logs_last">Your last raid: %1$s, %2$s</string>
+    <string name="home_logs_none">No reports yet.</string>
+    <string name="night_openReport">Open the full report</string>
+    <string name="reports_title">Your reports</string>
+    <string name="reports_back">Reports</string>
+    <string name="reports_thisWeek">This week</string>
+    <string name="reports_earlier">Earlier</string>
+    <string name="reports_rowMeta">%1$s · %2$s · %3$s</string>
+    <plurals name="reports_bosses">
+        <item quantity="one">1 boss</item>
+        <item quantity="other">%1$d bosses</item>
+    </plurals>
+    <plurals name="reports_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <string name="reports_updated" tools:ignore="PluralsCandidate">Updated %1$d s ago</string>
+    <string name="reports_unreadable">%1$s · could not be read</string>
+    <string name="reports_state_live">Live</string>
+    <string name="reports_state_processing">Processing</string>
+    <string name="reports_state_failed">Failed</string>
+    <string name="reports_visibility_public">Public</string>
+    <string name="reports_visibility_unlisted">Unlisted</string>
+    <string name="reports_visibility_guild">Guild</string>
+    <string name="reports_visibility_private">Private</string>
+    <string name="reports_footer">Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.</string>
+    <string name="reports_empty">No reports yet. Upload a log, or let the companion send your next raid.</string>
+    <string name="reports_getCompanion">Get the companion</string>
+    <string name="reports_failed">Your reports did not load.</string>
+    <string name="reports_signedOut">Sign in to see your reports.</string>
+    <string name="reports_a11y_row">%1$s, %2$s, %3$s, %4$s, %5$s</string>
+    <string name="reports_a11y_live">live, updated %1$s seconds ago</string>
+    <string name="report_openWeb">Open on foreversixty.gg</string>
+    <string name="report_meta">%1$s %2$s · logged by %3$s</string>
+    <string name="report_yourParses">Your parses</string>
+    <string name="report_parseMeta">Kill %1$s · %2$s, %3$s</string>
+    <string name="report_unit_dps">DPS</string>
+    <string name="report_unit_hps">HPS</string>
+    <string name="report_unit_dtps">DTPS</string>
+    <string name="report_percentile">percentile</string>
+    <string name="report_newBest">New best</string>
+    <string name="report_noKills">No kills of yours in this report.</string>
+    <string name="report_fights">Fights</string>
+    <plurals name="report_bossPulls">
+        <item quantity="one">1 boss pull</item>
+        <item quantity="other">%1$d boss pulls</item>
+    </plurals>
+    <string name="report_noBossPulls">No boss pulls</string>
+    <string name="report_killMeta">Kill · %1$s · %2$s · %3$s</string>
+    <string name="report_wipeMeta">Wipe · %1$s · boss at %2$s</string>
+    <string name="report_wipeMetaPlain">Wipe · %1$s</string>
+    <plurals name="report_players">
+        <item quantity="one">1 player</item>
+        <item quantity="other">%1$d players</item>
+    </plurals>
+    <plurals name="report_deaths">
+        <item quantity="one">1 death</item>
+        <item quantity="other">%1$d deaths</item>
+    </plurals>
+    <string name="report_trashTitle">Trash · %1$s</string>
+    <string name="report_trash">Trash</string>
+    <string name="report_trashMeta">%1$s · %2$s</string>
+    <plurals name="report_pulls">
+        <item quantity="one">1 pull</item>
+        <item quantity="other">%1$d pulls</item>
+    </plurals>
+    <string name="report_inProgress">In progress</string>
+    <string name="report_footer">Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.</string>
+    <string name="report_failed">This report did not load.</string>
+    <string name="report_parsesFailed">Your parses did not load.</string>
+    <string name="report_live_title" tools:ignore="PluralsCandidate">Live. Updated %1$d s ago.</string>
+    <string name="report_live_body">The fight in progress shows when it ends.</string>
+    <string name="report_processing_title">This report is still being read.</string>
+    <string name="report_processing_body">It opens here when it is ready. You do not need to stay.</string>
+    <string name="report_unreadable_title">This report could not be read.</string>
+    <string name="report_unreadable_body">Upload the log again from the companion.</string>
+    <string name="report_notYours_title">This report is not available to you.</string>
+    <string name="report_notYours_body">It is private, or it was removed.</string>
+    <string name="report_a11y_parse">%1$s, kill, %2$s, %3$s %4$s, %5$s percentile</string>
+    <string name="report_a11y_parseNoRank">%1$s, kill, %2$s, %3$s %4$s</string>
+    <string name="report_a11y_kill">%1$s, kill, %2$s, %3$s, %4$s</string>
+    <string name="report_a11y_wipe" tools:ignore="PluralsCandidate">%1$s, wipe, %2$s, boss at %3$d percent</string>
+    <string name="report_a11y_trash">Trash in %1$s, %2$s, %3$s</string>
+    <string name="report_a11y_showsMeters">Shows the meters</string>
+    <string name="report_a11y_perSecond_dps">damage per second</string>
+    <string name="report_a11y_perSecond_hps">healing per second</string>
+    <string name="report_a11y_perSecond_dtps">damage taken per second</string>
+    <string name="meters_damage">Damage</string>
+    <string name="meters_healing">Healing</string>
+    <string name="meters_taken">Damage taken</string>
+    <string name="meters_title_damage">Damage done</string>
+    <string name="meters_title_healing">Healing done</string>
+    <string name="meters_title_taken">Damage taken</string>
+    <string name="meters_killHead">Kill · %1$s · %2$s</string>
+    <string name="meters_wipeHead">Wipe · %1$s · %2$s</string>
+    <string name="meters_trashHead">%1$s · %2$s</string>
+    <string name="meters_showAll" tools:ignore="PluralsCandidate">Show all %1$d</string>
+    <string name="meters_failed">The meters did not load.</string>
+    <string name="meters_flagged">This report cannot be shown.</string>
+    <string name="meters_empty">Nobody did any of this in this fight.</string>
+    <string name="meters_a11y_row" tools:ignore="PluralsCandidate">Rank %1$d, %2$s, %3$s, %4$s</string>
+    <string name="meters_a11y_mine">%1$s, your character</string>
+    <string name="coach_title">Your %1$s coach</string>
+    <string name="coach_premium">Premium</string>
+    <string name="coach_fixFirst">Fix first</string>
+    <string name="coach_practice">Practice</string>
+    <string name="coach_then">Then</string>
+    <string name="coach_doingWell">Doing well</string>
+    <string name="coach_couldntCheck">Couldn\'t check</string>
+    <string name="coach_footer">Reviewed %1$s · Based on: %2$s.</string>
+    <string name="coach_writing">Your coach is writing…</string>
+    <string name="coach_preparing">Still writing. Check back in a few minutes.</string>
+    <string name="coach_failed">The coach couldn\'t read this pull just now.</string>
 </resources>

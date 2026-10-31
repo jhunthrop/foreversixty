@@ -434,6 +434,45 @@ indexed earlier has none of them, and the app shows no kill count for it (the re
 `data_base_url`, which v1 does not read: the app shows the summary and opens the full report on the
 web. Fixtures `reports.get`. Errors: 404 (`reports.get.error-not-found`).
 
+`?fold=trash` (Wave 3, W3-C2 lane) adds `trash_groups[]`, each `{ key, zone, fights[], duration_ms }`:
+each zone's trash as one entry, zone by zone in the order the night reached them, read from the
+report's `report.json` (the database keeps no zone per fight) by the Go port of the web's
+`fights.ts fightRows`. Trash with no zone is never grouped. Empty when `report.json` cannot be read.
+The apps draw the Fights card from it and never group fights themselves.
+
+### GET /v1/reports/{id}/me (W3-C2)
+Your results in one call. Auth session or app. The report's visibility rules exactly: 404, never
+403; a flagged report is 404 `flagged`; no report bucket is 503. Answer `{ report_id, characters[]
+}`, a character `{ key, name, class, spec (slug, nullable), spec_name, role, fights[] }`, a fight
+`{ index, encounter_id, encounter, kill (always true), duration_ms, value, unit ("dps"|"hps"),
+percentile (int|null), ranked (int|null), new_best, deaths }`. Parses count boss kills only.
+`value` is the role figure (hps for a healer, dps for everyone else, the web Summary tab's rule)
+read off the fight's stored summary and rounded to hundredths: it is exactly the `dps` (or `hps`)
+of that character's row in the meters below. `percentile` is the bracket placement the web's report
+page asks for (the fight's phase, the row's spec, the rounded value), rounded; null when the
+bracket has no ranked kill, and the app then prints no parse number. `new_best` is higher than
+every earlier ranked kill of that boss and difficulty by that character; a first kill is not one.
+The spec's `rank` is left out: a rank among kills would contradict the character-board rank F11
+prints. Fixtures `reports.me`, `reports.me.empty`; errors `reports.me.error-not-found`.
+
+### GET /v1/reports/{id}/fights/{n}/meters (W3-C3)
+One fight's players for the Details!-style sheet. `?metric=damage|healing|taken` (default damage),
+`?scope=trash` folds a zone's trash (n is its `trash_groups[].key`). Auth as the report. Answer
+`{ fight_index, scope, metric, kill, duration_ms, players[] }`, a player `{ key (nullable), name,
+class, spec (nullable), spec_name, role, active_ms, damage_done, healing_done, damage_taken, dps,
+hps, dtps, deaths, mine }`, sorted high to low by the metric's per-second figure; a player with none
+of it is left off. Per-second figures are the total over the player's time in the folded pulls,
+rounded to hundredths (the web's `night.ts`). `key` is set only on a public or guild report and
+only for a character with a page. A fight in progress has no meters (404). Fixtures
+`reports.meters`; errors `reports.meters.error-not-found`.
+
+### Coach (W3-C4): GET /v1/reports/{id}/coach/night, GET /v1/reports/{id}/fights/{n}/coach, GET /v1/me/coach/recent
+Existing routes, now app operations; no behaviour change. The app draws the coach card only with
+`entitlements.log_coach`: it asks the night line for the character (`?player=key`; data null means
+no card), then that line's `fight_index` review. Free accounts never call them (the night route
+would answer 403 `no_plan`, `coach.night.error-premium-required`). The app prints the review text
+as given. Fixtures `coach.night`, `coach.fight`, `coach.recent`.
+
 ## Builds
 
 ### GET /v1/builds?mine=1

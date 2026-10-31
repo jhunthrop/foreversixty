@@ -88,7 +88,13 @@ type Service struct {
 	// Moved is told when a patch sets a report's guild, so a match the report held in another
 	// guild is released. Nil tells nobody.
 	Moved GuildMoved
-	Log   *slog.Logger
+	// Objects reads report.json and the fight summaries back out of the bucket, for the app's
+	// reads (appreads.go). Nil answers those reads 503.
+	Objects Objects
+	// Places puts a parse in its bracket for GET /v1/reports/{id}/me. Nil leaves every
+	// percentile null.
+	Places Placer
+	Log    *slog.Logger
 
 	completions completions
 }
@@ -106,6 +112,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/reports/{id}/access", auth.RequireSession(s.access))
 	mux.HandleFunc("GET /v1/reports/{id}/files/{path...}", s.file)
 	mux.HandleFunc("GET /reports/{id}/card.png", s.card)
+	MountApp(mux, s)
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -314,6 +321,9 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "get", err, "could not load that report just now")
 		return
+	}
+	if r.URL.Query().Get("fold") == foldTrash {
+		view.TrashGroups = s.trashGroupsFor(r.Context(), r, rep.ID)
 	}
 	if rep.Visibility == Public || rep.Visibility == Unlisted {
 		httpx.CachePublic(w, reportsObjectMaxAge, reportsObjectStale)

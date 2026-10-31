@@ -2277,6 +2277,360 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Logs
+    static var homeLogs: String { text("home.logs") }
+
+    /// Your last raid: {zone}, {kills}
+    static func homeLogsLast(zone: String, kills: String) -> String {
+        format("home.logs.last", zone, kills)
+    }
+
+    /// No reports yet.
+    static var homeLogsNone: String { text("home.logs.none") }
+
+    /// Open the full report
+    static var nightOpenReport: String { text("night.openReport") }
+
+    /// Your reports
+    static var reportsTitle: String { text("reports.title") }
+
+    /// Reports
+    static var reportsBack: String { text("reports.back") }
+
+    /// This week
+    static var reportsThisWeek: String { text("reports.thisWeek") }
+
+    /// Earlier
+    static var reportsEarlier: String { text("reports.earlier") }
+
+    /// {date} · {bosses} · {kills}
+    static func reportsRowMeta(date: String, bosses: String, kills: String) -> String {
+        format("reports.rowMeta", date, bosses, kills)
+    }
+
+    /// {n} bosses
+    static func reportsBosses(n: Int) -> String {
+        format("reports.bosses", n)
+    }
+
+    /// {n} kills
+    static func reportsKills(n: Int) -> String {
+        format("reports.kills", n)
+    }
+
+    /// Updated {n} s ago
+    static func reportsUpdated(n: Int) -> String {
+        format("reports.updated", n)
+    }
+
+    /// {date} · could not be read
+    static func reportsUnreadable(date: String) -> String {
+        format("reports.unreadable", date)
+    }
+
+    /// Live
+    static var reportsStateLive: String { text("reports.state.live") }
+
+    /// Processing
+    static var reportsStateProcessing: String { text("reports.state.processing") }
+
+    /// Failed
+    static var reportsStateFailed: String { text("reports.state.failed") }
+
+    /// Public
+    static var reportsVisibilityPublic: String { text("reports.visibility.public") }
+
+    /// Unlisted
+    static var reportsVisibilityUnlisted: String { text("reports.visibility.unlisted") }
+
+    /// Guild
+    static var reportsVisibilityGuild: String { text("reports.visibility.guild") }
+
+    /// Private
+    static var reportsVisibilityPrivate: String { text("reports.visibility.private") }
+
+    /// Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.
+    static var reportsFooter: String { text("reports.footer") }
+
+    /// No reports yet. Upload a log, or let the companion send your next raid.
+    static var reportsEmpty: String { text("reports.empty") }
+
+    /// Get the companion
+    static var reportsGetCompanion: String { text("reports.getCompanion") }
+
+    /// Your reports did not load.
+    static var reportsFailed: String { text("reports.failed") }
+
+    /// Sign in to see your reports.
+    static var reportsSignedOut: String { text("reports.signedOut") }
+
+    /// {zone}, {date}, {bosses}, {kills}, {visibility}
+    static func reportsA11yRow(zone: String, date: String, bosses: String, kills: String, visibility: String) -> String {
+        format("reports.a11y.row", zone, date, bosses, kills, visibility)
+    }
+
+    /// live, updated {n} seconds ago
+    static func reportsA11yLive(n: String) -> String {
+        format("reports.a11y.live", n)
+    }
+
+    /// Open on foreversixty.gg
+    static var reportOpenWeb: String { text("report.openWeb") }
+
+    /// {weekday} {date} · logged by {character}
+    static func reportMeta(weekday: String, date: String, character: String) -> String {
+        format("report.meta", weekday, date, character)
+    }
+
+    /// Your parses
+    static var reportYourParses: String { text("report.yourParses") }
+
+    /// Kill {time} · {name}, {spec}
+    static func reportParseMeta(time: String, name: String, spec: String) -> String {
+        format("report.parseMeta", time, name, spec)
+    }
+
+    /// DPS
+    static var reportUnitDps: String { text("report.unit.dps") }
+
+    /// HPS
+    static var reportUnitHps: String { text("report.unit.hps") }
+
+    /// DTPS
+    static var reportUnitDtps: String { text("report.unit.dtps") }
+
+    /// percentile
+    static var reportPercentile: String { text("report.percentile") }
+
+    /// New best
+    static var reportNewBest: String { text("report.newBest") }
+
+    /// No kills of yours in this report.
+    static var reportNoKills: String { text("report.noKills") }
+
+    /// Fights
+    static var reportFights: String { text("report.fights") }
+
+    /// {n} boss pulls
+    static func reportBossPulls(n: Int) -> String {
+        format("report.bossPulls", n)
+    }
+
+    /// No boss pulls
+    static var reportNoBossPulls: String { text("report.noBossPulls") }
+
+    /// Kill · {time} · {players} · {deaths}
+    static func reportKillMeta(time: String, players: String, deaths: String) -> String {
+        format("report.killMeta", time, players, deaths)
+    }
+
+    /// Wipe · {time} · boss at {percent}
+    static func reportWipeMeta(time: String, percent: String) -> String {
+        format("report.wipeMeta", time, percent)
+    }
+
+    /// Wipe · {time}
+    static func reportWipeMetaPlain(time: String) -> String {
+        format("report.wipeMetaPlain", time)
+    }
+
+    /// {n} players
+    static func reportPlayers(n: Int) -> String {
+        format("report.players", n)
+    }
+
+    /// {n} deaths
+    static func reportDeaths(n: Int) -> String {
+        format("report.deaths", n)
+    }
+
+    /// Trash · {zone}
+    static func reportTrashTitle(zone: String) -> String {
+        format("report.trashTitle", zone)
+    }
+
+    /// Trash
+    static var reportTrash: String { text("report.trash") }
+
+    /// {pulls} · {time}
+    static func reportTrashMeta(pulls: String, time: String) -> String {
+        format("report.trashMeta", pulls, time)
+    }
+
+    /// {n} pulls
+    static func reportPulls(n: Int) -> String {
+        format("report.pulls", n)
+    }
+
+    /// In progress
+    static var reportInProgress: String { text("report.inProgress") }
+
+    /// Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.
+    static var reportFooter: String { text("report.footer") }
+
+    /// This report did not load.
+    static var reportFailed: String { text("report.failed") }
+
+    /// Your parses did not load.
+    static var reportParsesFailed: String { text("report.parsesFailed") }
+
+    /// Live. Updated {n} s ago.
+    static func reportLiveTitle(n: Int) -> String {
+        format("report.live.title", n)
+    }
+
+    /// The fight in progress shows when it ends.
+    static var reportLiveBody: String { text("report.live.body") }
+
+    /// This report is still being read.
+    static var reportProcessingTitle: String { text("report.processing.title") }
+
+    /// It opens here when it is ready. You do not need to stay.
+    static var reportProcessingBody: String { text("report.processing.body") }
+
+    /// This report could not be read.
+    static var reportUnreadableTitle: String { text("report.unreadable.title") }
+
+    /// Upload the log again from the companion.
+    static var reportUnreadableBody: String { text("report.unreadable.body") }
+
+    /// This report is not available to you.
+    static var reportNotYoursTitle: String { text("report.notYours.title") }
+
+    /// It is private, or it was removed.
+    static var reportNotYoursBody: String { text("report.notYours.body") }
+
+    /// {boss}, kill, {time}, {value} {unit}, {ordinal} percentile
+    static func reportA11yParse(boss: String, time: String, value: String, unit: String, ordinal: String) -> String {
+        format("report.a11y.parse", boss, time, value, unit, ordinal)
+    }
+
+    /// {boss}, kill, {time}, {value} {unit}
+    static func reportA11yParseNoRank(boss: String, time: String, value: String, unit: String) -> String {
+        format("report.a11y.parseNoRank", boss, time, value, unit)
+    }
+
+    /// {boss}, kill, {time}, {players}, {deaths}
+    static func reportA11yKill(boss: String, time: String, players: String, deaths: String) -> String {
+        format("report.a11y.kill", boss, time, players, deaths)
+    }
+
+    /// {boss}, wipe, {time}, boss at {n} percent
+    static func reportA11yWipe(boss: String, time: String, n: Int) -> String {
+        format("report.a11y.wipe", boss, time, n)
+    }
+
+    /// Trash in {zone}, {pulls}, {time}
+    static func reportA11yTrash(zone: String, pulls: String, time: String) -> String {
+        format("report.a11y.trash", zone, pulls, time)
+    }
+
+    /// Shows the meters
+    static var reportA11yShowsMeters: String { text("report.a11y.showsMeters") }
+
+    /// damage per second
+    static var reportA11yPerSecondDps: String { text("report.a11y.perSecond.dps") }
+
+    /// healing per second
+    static var reportA11yPerSecondHps: String { text("report.a11y.perSecond.hps") }
+
+    /// damage taken per second
+    static var reportA11yPerSecondDtps: String { text("report.a11y.perSecond.dtps") }
+
+    /// Damage
+    static var metersDamage: String { text("meters.damage") }
+
+    /// Healing
+    static var metersHealing: String { text("meters.healing") }
+
+    /// Damage taken
+    static var metersTaken: String { text("meters.taken") }
+
+    /// Damage done
+    static var metersTitleDamage: String { text("meters.title.damage") }
+
+    /// Healing done
+    static var metersTitleHealing: String { text("meters.title.healing") }
+
+    /// Damage taken
+    static var metersTitleTaken: String { text("meters.title.taken") }
+
+    /// Kill · {time} · {players}
+    static func metersKillHead(time: String, players: String) -> String {
+        format("meters.killHead", time, players)
+    }
+
+    /// Wipe · {time} · {players}
+    static func metersWipeHead(time: String, players: String) -> String {
+        format("meters.wipeHead", time, players)
+    }
+
+    /// {pulls} · {time}
+    static func metersTrashHead(pulls: String, time: String) -> String {
+        format("meters.trashHead", pulls, time)
+    }
+
+    /// Show all {n}
+    static func metersShowAll(n: Int) -> String {
+        format("meters.showAll", n)
+    }
+
+    /// The meters did not load.
+    static var metersFailed: String { text("meters.failed") }
+
+    /// This report cannot be shown.
+    static var metersFlagged: String { text("meters.flagged") }
+
+    /// Nobody did any of this in this fight.
+    static var metersEmpty: String { text("meters.empty") }
+
+    /// Rank {n}, {name}, {spec}, {value}
+    static func metersA11yRow(n: Int, name: String, spec: String, value: String) -> String {
+        format("meters.a11y.row", n, name, spec, value)
+    }
+
+    /// {row}, your character
+    static func metersA11yMine(row: String) -> String {
+        format("meters.a11y.mine", row)
+    }
+
+    /// Your {spec} coach
+    static func coachTitle(spec: String) -> String {
+        format("coach.title", spec)
+    }
+
+    /// Premium
+    static var coachPremium: String { text("coach.premium") }
+
+    /// Fix first
+    static var coachFixFirst: String { text("coach.fixFirst") }
+
+    /// Practice
+    static var coachPractice: String { text("coach.practice") }
+
+    /// Then
+    static var coachThen: String { text("coach.then") }
+
+    /// Doing well
+    static var coachDoingWell: String { text("coach.doingWell") }
+
+    /// Couldn't check
+    static var coachCouldntCheck: String { text("coach.couldntCheck") }
+
+    /// Reviewed {date} · Based on: {labels}.
+    static func coachFooter(date: String, labels: String) -> String {
+        format("coach.footer", date, labels)
+    }
+
+    /// Your coach is writing…
+    static var coachWriting: String { text("coach.writing") }
+
+    /// Still writing. Check back in a few minutes.
+    static var coachPreparing: String { text("coach.preparing") }
+
+    /// The coach couldn't read this pull just now.
+    static var coachFailed: String { text("coach.failed") }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

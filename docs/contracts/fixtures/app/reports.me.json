@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "data": {
+    "report_id": "ewlrx3enxbeb",
+    "characters": [
+      {
+        "key": "us/pvp/obnoxious-yell",
+        "name": "Obnoxious Yell",
+        "class": "warrior",
+        "spec": "warrior-fury",
+        "spec_name": "Fury",
+        "role": "dps",
+        "fights": [
+          {
+            "index": 9,
+            "encounter_id": 1084,
+            "encounter": "Onyxia",
+            "kill": true,
+            "duration_ms": 268000,
+            "value": 712.4,
+            "unit": "dps",
+            "percentile": 91,
+            "ranked": 1840,
+            "new_best": true,
+            "deaths": 0
+          }
+        ]
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

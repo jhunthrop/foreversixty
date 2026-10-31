@@ -331,6 +331,211 @@ components:
             Where the island reads report.json and the per-fight files. Public and unlisted reports
             are served off the bucket by the site Worker; everything else points at
             /v1/reports/{id}/files, which redirects each object to a signed URL valid ten minutes.
+        trash_groups:
+          type: array
+          description: >-
+            Only with ?fold=trash. Each zone's trash pulls as one entry, zone by zone in the order
+            the night reached them, the web's fights.ts fightRows rule. Trash with no zone is never
+            grouped and keeps its own rows. Empty when report.json cannot be read.
+          items: { $ref: '#/components/schemas/TrashGroup' }
+    TrashGroup:
+      type: object
+      required: [key, zone, fights, duration_ms]
+      properties:
+        key: { type: integer, description: "The first pull's index; a meters call names the group by it (scope=trash)" }
+        zone: { type: string }
+        fights: { type: array, items: { type: integer }, description: "The pulls, in the night's order" }
+        duration_ms: { type: integer, format: int64, description: "The pulls' lengths summed" }
+    ReportMe:
+      type: object
+      description: >-
+        GET /v1/reports/{id}/me (W3-C2): the caller's characters in the report and each one's boss
+        kills. Every figure is read off the fight's stored summary through the arithmetic the
+        meters use, so a character's value here is the dps (or hps) of its meter row.
+      required: [report_id, characters]
+      properties:
+        report_id: { type: string }
+        characters:
+          type: array
+          items:
+            type: object
+            title: ReportMeCharacter
+            required: [key, name, class, spec, spec_name, role, fights]
+            properties:
+              key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              spec: { type: [string, "null"], description: "The site's spec slug; null when the log named none the data knows" }
+              spec_name: { type: string, description: 'The log''s spec word ("Fury"); may be ""' }
+              role: { type: string, enum: [dps, healer, tank] }
+              fights:
+                type: array
+                items:
+                  type: object
+                  title: ReportMeFight
+                  required: [index, encounter_id, encounter, kill, duration_ms, value, unit, percentile, ranked, new_best, deaths]
+                  properties:
+                    index: { type: integer }
+                    encounter_id: { type: integer, format: int64 }
+                    encounter: { type: string }
+                    kill: { type: boolean, description: "Always true: parses count kills only" }
+                    duration_ms: { type: integer, format: int64 }
+                    value: { type: number, description: "The role figure, rounded to hundredths: hps for a healer, dps for everyone else" }
+                    unit: { type: string, enum: [dps, hps] }
+                    percentile: { type: [integer, "null"], description: "The parse, 0 to 100; null when the bracket has no ranked kill (print no parse number)" }
+                    ranked: { type: [integer, "null"], format: int64, description: "How many ranked kills the bracket holds; null with percentile" }
+                    new_best: { type: boolean, description: "Higher than every earlier ranked kill of this boss by this character; a first kill is not one" }
+                    deaths: { type: integer }
+    FightMeters:
+      type: object
+      description: >-
+        GET /v1/reports/{id}/fights/{n}/meters (W3-C3). Per-second figures are the total over the
+        player's time in the folded pulls, rounded to hundredths (the web's night.ts arithmetic).
+      required: [fight_index, scope, metric, kill, duration_ms, players]
+      properties:
+        fight_index: { type: integer, description: "The fight, or the trash group's key" }
+        scope: { type: string, enum: ["", trash] }
+        metric: { type: string, enum: [damage, healing, taken] }
+        kill: { type: boolean, description: "false for a trash group" }
+        duration_ms: { type: integer, format: int64 }
+        players:
+          type: array
+          description: Sorted high to low by the metric's per-second figure; a player with none of it is left off.
+          items:
+            type: object
+            title: MeterPlayer
+            required: [key, name, class, spec, spec_name, role, active_ms, damage_done, healing_done, damage_taken, dps, hps, dtps, deaths, mine]
+            properties:
+              key: { type: [string, "null"], description: "The character page; null on a private or unlisted report, or for a player with no page" }
+              name: { type: string }
+              class: { type: string, x-name: className, description: 'Lowercase class word; "" when the log named none' }
+              spec: { type: [string, "null"] }
+              spec_name: { type: string }
+              role: { type: string, enum: [dps, healer, tank] }
+              active_ms: { type: integer, format: int64 }
+              damage_done: { type: integer, format: int64 }
+              healing_done: { type: integer, format: int64 }
+              damage_taken: { type: integer, format: int64 }
+              dps: { type: number }
+              hps: { type: number }
+              dtps: { type: number }
+              deaths: { type: integer }
+              mine: { type: boolean, description: "One of the signed-in caller's characters" }
+    CoachNight:
+      type: [object, "null"]
+      description: The night line; null when the night has none.
+      required: [stem, on, of, finding_count, fight_index]
+      properties:
+        stem: { type: string }
+        "on": { type: integer, x-name: onPulls }
+        of: { type: integer }
+        finding_count: { type: integer }
+        fight_index: { type: integer, description: "The pull whose review the coach card shows" }
+    CoachReview:
+      type: object
+      description: >-
+        One pull's coach review (the full answer; a free owner never reaches the app's card). The
+        apps print the text as given and never edit it.
+      required: [report_id, fight_index, player_key, spec, status, source, busy, access, persona, reviewed_at, review, basis_labels]
+      properties:
+        report_id: { type: string }
+        fight_index: { type: integer }
+        player_key: { type: string }
+        spec: { type: string }
+        role: { type: string }
+        size: { type: integer }
+        kill: { type: boolean }
+        status: { type: string, description: "ready, writing, preparing, failed, ..." }
+        source: { type: string, enum: [model, rules] }
+        busy: { type: boolean }
+        access: { type: string, enum: [full, officer, teaser] }
+        persona:
+          type: object
+          title: CoachPersona
+          required: [label, status]
+          properties:
+            label: { type: string }
+            status: { type: string }
+        reviewed_at: { type: string, format: date-time }
+        review:
+          type: object
+          title: CoachReviewDoc
+          required: [opening, fixFirst, thenFix, doingWell, couldntCheck]
+          properties:
+            opening: { type: string }
+            fixFirst:
+              type: [object, "null"]
+              title: CoachFixFirst
+              required: [title, why, drillText]
+              properties:
+                finding: { type: string }
+                title: { type: string }
+                why: { type: string }
+                drill: { type: string }
+                drillText: { type: string }
+            thenFix:
+              type: array
+              items:
+                type: object
+                title: CoachThen
+                required: [title, why]
+                properties:
+                  finding: { type: string }
+                  title: { type: string }
+                  why: { type: string }
+            doingWell:
+              type: array
+              items:
+                type: object
+                title: CoachWell
+                required: [text]
+                properties:
+                  strength: { type: string }
+                  text: { type: string }
+            couldntCheck: { type: array, items: { type: string } }
+        basis_labels: { type: array, items: { type: string } }
+    CoachRecent:
+      type: object
+      description: The account's recent coach line and reviews (premium); free accounts get reviews [].
+      required: [last_raid, pending, reviews]
+      properties:
+        last_raid:
+          type: [object, "null"]
+          title: CoachLastRaid
+          properties:
+            zone: { type: string }
+            fought_at: { type: string, format: date-time }
+            report_id: { type: string }
+            finding_count: { type: integer }
+            first:
+              type: [object, "null"]
+              title: CoachLastRaidFirst
+              properties:
+                stem: { type: string }
+                "on": { type: integer, x-name: onPulls }
+                of: { type: integer }
+            url: { type: string }
+        pending: { type: boolean }
+        reviews:
+          type: array
+          items:
+            type: object
+            title: CoachRecentReview
+            required: [report_id, fight_index, player_key, spec, boss, kill, source, generated_at]
+            properties:
+              report_id: { type: string }
+              fight_index: { type: integer }
+              player_key: { type: string }
+              spec: { type: string }
+              boss: { type: string }
+              kill: { type: boolean }
+              source: { type: string }
+              generated_at: { type: string, format: date-time }
+              fix_first:
+                type: [object, "null"]
+                title: CoachRecentFixFirst
+                properties:
+                  title: { type: string }
     FightEntry:
       type: object
       description: "The engine's store.FightEntry plus whether the ingest verified the fight"
@@ -354,6 +559,7 @@ components:
         group_kills: { type: integer, description: "How many of mob_deaths the logger's group killed. Absent before engine 0.6.0" }
         group_deaths: { type: integer, description: "Player deaths among the group. Absent before engine 0.6.0" }
         group: { type: array, items: { type: string }, description: "Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was" }
+        boss_health_pct: { type: number, description: "What a wipe got the boss down to, in percent; absent on a kill and on trash, -1 when the log never showed the boss" }
         verified: { type: boolean }
     RankingRow:
       type: object
@@ -3512,6 +3718,13 @@ paths:
         - $ref: '#/components/parameters/XApp'
         - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: string } }
+        - name: fold
+          in: query
+          schema: { type: string, enum: [trash] }
+          description: >-
+            trash adds trash_groups, each zone's trash as one entry, read from the report's
+            report.json (the database keeps no zone per fight). The apps draw these rows; the web
+            folds report.json itself.
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
@@ -3555,6 +3768,163 @@ paths:
       responses:
         '200': { description: "The report as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '403': { description: "Not the owner, a guild officer, or a moderator", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/me:
+    get:
+      operationId: getReportMe
+      tags: [app]
+      summary: Your results in a report (W3-C2)
+      description: >-
+        The caller's characters in the report and each one's boss kills: the role figure, the
+        parse and whether it is a new best. Follows the report's visibility exactly: 404, never
+        403. A flagged report answers 404 flagged; with no report bucket, 503.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Your characters and kills; characters is [] when none of yours killed a boss in it"
+          x-fixtures: [reports.me, reports.me.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ReportMe' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Unknown, not visible to you (never 403), or flagged"
+          x-fixtures: [reports.me.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/reports/{id}/fights/{n}/meters:
+    get:
+      operationId: getFightMeters
+      tags: [app]
+      summary: A fight's meters (W3-C3)
+      description: >-
+        One fight's players, or with scope=trash a zone's trash folded together (n is the group's
+        key from trash_groups), sorted by the metric. Visibility as the report: public and
+        unlisted to anyone, guild to members, private to the owner; 404 otherwise, never 403. A
+        fight still in progress has no meters (404).
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: metric, in: query, schema: { type: string, enum: [damage, healing, taken] } }
+        - { name: scope, in: query, schema: { type: string, enum: [trash] } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The meters"
+          x-fixtures: [reports.meters]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/FightMeters' } } }
+        '400':
+          description: "n, metric or scope is not one this route knows"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found (no such report or fight, or not yours to see) or flagged"
+          x-fixtures: [reports.meters.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '503':
+          description: "This deployment has no report bucket"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/reports/{id}/coach/night:
+    get:
+      operationId: getCoachNight
+      tags: [app]
+      summary: The night's coach line for one of your characters (W3-C4)
+      description: >-
+        The report's owner with log_coach only: 403 no_plan without it (the app never calls it
+        then), 404 to anyone else. data is null when the night has no line.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: player, in: query, required: true, schema: { type: string }, description: "The character key" }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The night line, or null"
+          x-fixtures: [coach.night]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CoachNight' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "no_plan: the account has no log_coach"
+          x-fixtures: [coach.night.error-premium-required]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found or flagged"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/reports/{id}/fights/{n}/coach:
+    get:
+      operationId: getFightCoach
+      tags: [app]
+      summary: One pull's coach review for one of your characters (W3-C4)
+      description: >-
+        The full review for an owner with log_coach (a generation may be queued; status says
+        writing). The teaser shape a free owner gets is not an app shape: the app draws no coach
+        card without log_coach.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: player, in: query, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The review"
+          x-fixtures: [coach.fight]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CoachReview' } } }
+        '400':
+          description: "n or player is malformed"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found or flagged"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/coach/recent:
+    get:
+      operationId: getCoachRecent
+      tags: [app]
+      summary: The account's recent coach line and reviews (W3-C4)
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The recent line; reviews is [] without log_coach"
+          x-fixtures: [coach.recent]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CoachRecent' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/reports/{id}/heartbeat:
     post:
       summary: The companion says it is still tailing the report

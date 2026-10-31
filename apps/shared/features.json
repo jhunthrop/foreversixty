@@ -1,13 +1,50 @@
 {
   "note": "The app's feature switches. GET /v1/app/config answers features: {key: bool}; a key the answer leaves out takes its default here, which is bundled into both apps by web/scripts/gen-mobile-features.mjs. A feature lane ships dark (default false) and the API turns it on in both apps at once.",
   "features": {
-    "sign_in": { "default": false, "lane": "F1", "about": "Battle.net sign-in, the account and the character switcher" },
-    "character_home": { "default": false, "lane": "F2", "about": "The home answer: upgrades for your level range" },
-    "bis": { "default": false, "lane": "F3", "about": "Best-in-slot lists" },
-    "raids": { "default": false, "lane": "F4", "about": "Guild raids and sign-up" },
-    "sims": { "default": false, "lane": "F5", "about": "Your sims and server runs" },
-    "talents": { "default": false, "lane": "F6", "about": "Talent builds on the trees" },
-    "notifications": { "default": false, "lane": "F7", "about": "Push notifications and their settings" },
-    "premium_link": { "default": false, "lane": "F8", "about": "See plans, where the storefront allows a web checkout link" }
+    "sign_in": {
+      "default": false,
+      "lane": "F1",
+      "about": "Battle.net sign-in, the account and the character switcher"
+    },
+    "character_home": {
+      "default": false,
+      "lane": "F2",
+      "about": "The home answer: upgrades for your level range"
+    },
+    "bis": {
+      "default": false,
+      "lane": "F3",
+      "about": "Best-in-slot lists"
+    },
+    "raids": {
+      "default": false,
+      "lane": "F4",
+      "about": "Guild raids and sign-up"
+    },
+    "sims": {
+      "default": false,
+      "lane": "F5",
+      "about": "Your sims and server runs"
+    },
+    "talents": {
+      "default": false,
+      "lane": "F6",
+      "about": "Talent builds on the trees"
+    },
+    "notifications": {
+      "default": false,
+      "lane": "F7",
+      "about": "Push notifications and their settings"
+    },
+    "premium_link": {
+      "default": false,
+      "lane": "F8",
+      "about": "See plans, where the storefront allows a web checkout link"
+    },
+    "reports": {
+      "default": false,
+      "lane": "F10",
+      "about": "Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach"
+    }
   }
 }
