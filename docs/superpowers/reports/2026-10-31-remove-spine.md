@@ -92,3 +92,12 @@ All in `design/reviews/2026-10-31-remove-spine/`, signed in with a restored alt 
 - Forget now tells the other islands (`CURRENT_CHARACTER_CHANGED`) where today's did not. Every listener already handles a null pointer, because a Forget in another tab sends exactly that through the `storage` event.
 - `CurrentCharacterChip`'s `addonCode` prop has had no caller since the planner rebuild. I left it alone as out of scope.
 - The tool pages' reserves reflect signed-out fixture heights. A signed-in visitor whose character fails to load (e.g. the API down) sees a tall empty area above the footer. That was already true before this lane.
+
+## Finish (reviews, merge, gates)
+
+- **Verdicts:** ux-designer SHIP, wow-player SHIP, no blockers (`ux-verdict.md`, `player-verdict.md` in the review folder). The shoulds are recorded there and none was taken: the restored line's wording was fixed by the brief, and a "Main" tag and per-tool source notes are outside this lane.
+- **Merged origin/main** twice (the second merge brought only iOS commits). Neither had conflicts. One stale `.chip-slot` reference in an `index.astro` comment was reworded.
+- **Gates after the merge** (dead API base, port 4709):
+  - check, lint, format and full vitest (7775 tests) all exit 0.
+  - lhci shard 3 (/sim, /sim/simfixtureab) passed on the rerun. The first run scored simfixtureab 0.89 while the machine's load average was about 35.
+  - Full Playwright: 3369 passed and 29 failed. After one rerun, 23 still failed. All 23 fail the same way on a clean origin/main built with the same env: the Discord link/connect/bot specs, report-queries and home-panel 390. They are excused as pre-existing failures, so nothing that failed twice is this lane's.
