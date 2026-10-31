@@ -150,12 +150,12 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toMatch(/guide-key-talent-0[\s\S]*?<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
   });
 
-  it('numbers a priority with spell icons, names the real cooldowns, and prints no opener when the APL has no pre-pull', async () => {
+  it('numbers a priority with spell icons, names the real cooldowns, and prints the pre-pull Ice Barrier as the opener', async () => {
     const html = await frostHtml();
     expect(html).toContain('data-testid="guide-rotation-priority"');
     expect(html).toMatch(/guide-rotation-priority-0[\s\S]*?<img[^>]+icons\/spell_frost_frostblast\.webp/);
     expect(html).toContain('Ice Lance');
-    expect(html).not.toContain('data-testid="guide-rotation-opener"');
+    expect(html).toMatch(/data-testid="guide-rotation-opener-0"(?:(?!<\/li>)[\s\S])*?Ice Barrier/);
     expect(html).not.toContain('Then work down it from the top');
     for (const name of ['Evocation', 'Cold Snap', 'Ice Block']) {
       expect(html, name).toMatch(new RegExp(`data-testid="guide-rotation-cooldowns-\\d+"[\\s\\S]*?${name}`));

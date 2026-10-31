@@ -4,7 +4,7 @@ classSlug: mage
 spec: frost
 role: dps
 build: 'FS1:1.60.1.70658:mage:gnome:2030005/113023/25351013010030025:'
-raidBuild: 'FS1:1.60.1.70658:mage:gnome:2030005/13102/253510130101301251:'
+raidBuild: 'FS1:1.60.1.70658:mage:gnome:0332005/13102/253510130101301221:'
 recommendedRaces: [gnome, troll]
 statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -57,11 +57,13 @@ Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed
 - **Frost Channeling** — up to 15% off the mana cost of your Frost spells at rank 3, and 30% less threat from them.
 - **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below.
 - **Fingers of Frost** — each Chill effect (Frostbolt, Frostfire Bolt, Cone of Cold, Improved Blizzard) has a 15% chance to grant a 15 second effect that treats your next 1 spell (2 at rank 2) as if the target were Frozen. That switches on Shatter's crit bonus and Ice Lance's frozen damage bonus against a target that Frost Nova cannot freeze. It needs Ice Lance, so that is a one-point cost.
-- **Winter's Chill** — a chance for Frost hits to stack a debuff that raises Ice Lance's and Frostbolt's crit chance against that target, up to 5 stacks at rank 5.
+- **Winter's Chill** — reworked in Forever: every Frostbolt and every Fingers of Frost Ice Lance stacks Winter's Chill on the target, up to 5, and only your own next Cone of Cold spends them. A raid frost mage stands at range and does not cast Cone of Cold, so the build keeps just the 2 points Ice Barrier needs below it.
+- **Missile Barrage and Arcane Focus** — Missile Barrage 2/2 gives Frostbolt a 20% chance to make your next Arcane Missiles free, halve its channel and fire the missiles every half second; Arcane Focus adds hit to those Arcane missiles. Together with an Arcane Missiles cast on every proc they were worth about +7% in our audit run.
+- **Ice Barrier** — the shield also raises your Frost damage by 3% for a minute, and by another 3% while the shield holds, so it is a damage talent as much as a defensive one.
 
 ## Rotation and priority
 
-Frostbolt is the filler, with the wand coming out once mana runs low. When Fingers of Frost procs, cast **Ice Lance** while the effect is up: the held charge makes the target count as frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies, and each cast spends one charge. In the simulator the Ice Lance line gains roughly 3% over Frostbolt alone, beyond the run's error. Frostbolt's own Chill can roll the next charge, so keep casting while charges are held rather than waiting. Frostfire Bolt, which you can train from level 40, is not a Frost filler: swapping it in for Frostbolt measured roughly a third lower damage, because its direct hit is smaller and the Frost talents above scale Frostbolt, not it. Frost Nova and the other freezes are not part of the boss rotation, since a boss cannot be frozen.
+Put up **Ice Barrier** before the pull and recast it whenever its minute runs out, for its Frost damage bonus. Frostbolt is the filler. Cast Arcane Missiles whenever Missile Barrage procs. Wand only when you are out of mana: a wand shot cannot start during the global cooldown. When Fingers of Frost procs, cast **Ice Lance** while the effect is up: the held charge makes the target count as frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies, and each cast spends one charge. In the simulator the Ice Lance line gains roughly 3% over Frostbolt alone, beyond the run's error. Frostbolt's own Chill can roll the next charge, so keep casting while charges are held rather than waiting. Frostfire Bolt, which you can train from level 40, is not a Frost filler: swapping it in for Frostbolt measured roughly a third lower damage, because its direct hit is smaller and the Frost talents above scale Frostbolt, not it. Frost Nova and the other freezes are not part of the boss rotation, since a boss cannot be frozen. Keeping Ice Barrier up gained about 3% in our level-60 raid run. **Cone of Cold** only reaches 10 yards (12 with Arctic Reach), and raid frost mages stand at range, so skip it on most bosses. If a fight lets you stand that close (no cleave, tail or melee-range mechanic), Cone of Cold is worth a global while you are above half mana, though this build's two Winter's Chill points add little to it; below half, the mana is worth more as Frostbolts.
 
 ## Stat priority
 

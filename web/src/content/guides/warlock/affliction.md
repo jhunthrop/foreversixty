@@ -48,7 +48,7 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 ### In a raid
 
 - **Role:** Ranged shadow damage over time
-- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
+- **Brings:** A curse on the target (Bane of Agony in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
@@ -62,7 +62,7 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 
 ## Rotation and priority
 
-Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Doom goes up right behind it as your one curse: it does all of its damage in a single hit when its minute is up, so recast it the moment it fires. In our simulator it beat Bane of Agony by a small margin and Curse of the Elements by a wide one, since a lone caster's own damage gains less from Elements than Doom or Agony deal themselves; on a fight shorter than a minute Doom never lands, so use Agony there. Wrack is live in this site's simulator: an instant, no-cooldown DoT that also stacks a 10% Shadow-damage-taken vulnerability on the target, so recast it in its last second to keep the vulnerability from ever dropping. Immolate is the fourth DoT: the search found that a running Immolate out-damages the Shadow Bolt global it costs, so it joins the upkeep order ahead of the filler, and that recasting it when under 3 seconds remain, rather than after it lapses, measured a little better. Once all four DoTs are running, spend every remaining global on Shadow Bolt. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs keep ticking, and Life Tap is only the backstop below about 10%. Together these changes were worth about +6% in our level-60 search run.
+Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Agony goes up right behind it as your one curse. In Forever your damage over time can crit, Wrack adds 10% to your other Shadow DoTs, and Agony is an Affliction effect for Soul Siphon, so the ticking curse beats Bane of Doom's single hit. Wrack is an instant, no-cooldown DoT that also stacks a 10% Shadow-damage-taken vulnerability on the target, so recast it in its last second to keep the vulnerability from ever dropping. Siphon Life comes next: the build takes it, its ticks crit and heal you, and every Affliction effect on the target raises Soul Siphon's bonus. Immolate is the fifth DoT: a running Immolate out-damages the Shadow Bolt global it costs, and recasting it when under 3 seconds remain measured a little better than waiting for it to lapse. Once every DoT is running, spend each remaining global on Shadow Bolt. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells. Keeping Siphon Life up and switching to Agony were worth about +4% in our audit run.
 
 ## Stat priority
 

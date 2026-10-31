@@ -38,6 +38,9 @@ targets:
     platform: iOS
     sources:
       - path: App
+      # Lane F14: the snapshot, figures, intents and widget views the app and the widget
+      # extension share (the app snapshot-tests the same views the extension draws).
+      - path: Widgets/Shared
       # The contract fixtures for fixture mode. A folder reference keeps its on-disk name, so they
       # land in the bundle as `app/` (FixtureTransport.bundledFolder); `name` labels the group only.
       - path: ../../docs/contracts/fixtures/app
@@ -74,13 +77,18 @@ targets:
         products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]
       - package: Sentry
         product: Sentry
-    # TODO(universal links): add when the Team ID exists (lane O), with signing:
-    # entitlements:
-    #   path: App/ForeverSixty.entitlements
-    #   properties:
+      - target: ForeverSixtyWidgets
+    # Lane F14: the App Group the widget extension shares (snapshot file, settings, and the
+    # device token's keychain group). Under the ad-hoc "Sign to Run Locally" identity the
+    # simulator honours it with no Team ID; a device build needs the group registered (lane O).
+    # TODO(universal links): add when the Team ID exists (lane O):
     #     com.apple.developer.associated-domains: ["applinks:foreversixty.gg"]
     # TODO(lane A2, F7): the aps-environment entitlement and the Push
     # Notifications capability join the same entitlements file.
+    entitlements:
+      path: App/ForeverSixty.entitlements
+      properties:
+        com.apple.security.application-groups: [group.gg.foreversixty.app]
     # MARKETING_VERSION and CURRENT_PROJECT_VERSION come from apps/VERSION, through this file.
     configFiles:
       Debug: Version.xcconfig
@@ -103,6 +111,11 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         # Lane F4: Add to calendar writes the raid with write-only access (iOS 17+).
         NSCalendarsWriteOnlyAccessUsageDescription: Add to calendar puts the raid in your calendar.
+        # Lane F14: the raid and server-sim Live Activities, the widget refresh task and the
+        # silent widget.refresh push.
+        NSSupportsLiveActivities: true
+        BGTaskSchedulerPermittedIdentifiers: [gg.foreversixty.app.widget-refresh]
+        UIBackgroundModes: [fetch, remote-notification]
         # Lane F16: the app keeps its own raid calendar up to date (asked only when the switch turns on).
         NSCalendarsFullAccessUsageDescription: Forever Sixty keeps a calendar of your guild's raids up to date.
         FSAPIBaseURL: $(API_BASE_URL)
@@ -123,6 +136,71 @@ targets:
       configs:
         # Debug runs on contract fixtures until lane A1's sign-in is live;
         # override with `xcodebuild ... API_MODE=live`.
+        Debug:
+          API_MODE: fixture
+        Release:
+          API_MODE: live
+  # Lane F14: the home-screen and lock-screen widgets and the Live Activities.
+  ForeverSixtyWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      # The app's own copy, item words and brand images, compiled again here so the extension
+      # says exactly what the app says (one catalog, apps/shared/copy/en.json).
+      - path: App/Generated/Copy.swift
+      - path: App/Localizable.xcstrings
+      - path: App/Items/ItemVocabulary.swift
+      - path: App/Common/BrandImages.swift
+      - path: ../../docs/contracts/fixtures/app
+        name: Fixtures
+        type: folder
+        buildPhase: resources
+      - path: ../shared/fonts
+        name: Fonts
+        buildPhase: resources
+        excludes: ["*.txt"]
+      - path: ../../web/public/icons/hd/crests
+        type: folder
+        buildPhase: resources
+      - path: ../../web/public/seal-400.png
+        buildPhase: resources
+    dependencies:
+      - package: ForeverKit
+        products: [Models, Networking, Auth, DesignSystem, Routing]
+    entitlements:
+      path: Widgets/ForeverSixtyWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.gg.foreversixty.app]
+    configFiles:
+      Debug: Version.xcconfig
+      Release: Version.xcconfig
+    info:
+      path: Generated/Widgets-Info.plist
+      properties:
+        CFBundleDisplayName: Forever Sixty
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        UIAppFonts:
+          - Barlow-Regular.ttf
+          - Barlow-SemiBold.ttf
+          - Barlow-Bold.ttf
+          - BarlowCondensed-Bold.ttf
+          - BarlowCondensed-ExtraBold.ttf
+          - Cinzel-Bold.ttf
+        FSAPIBaseURL: $(API_BASE_URL)
+        FSAPIMode: $(API_MODE)
+    settings:
+      base:
+        PRODUCT_NAME: ForeverSixtyWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        API_BASE_URL: https://api.foreversixty.gg
+        SKIP_INSTALL: YES
+      configs:
         Debug:
           API_MODE: fixture
         Release:

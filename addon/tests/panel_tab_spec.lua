@@ -954,16 +954,19 @@ describe("PanelTab", function()
 				local data = require("Data")
 				local build = { classSlug = "hunter", order = {}, gear = {} }
 				local rows = PanelTab.rotationRows(data, build, { [1] = { ["1:1"] = 5 } }, 24)
-				local names = {}
-				for index, row in ipairs(rows) do
-					names[index] = row.name
+				-- The band's own lines are the shipped rotation's (regenerated nightly from the
+				-- curated file), so only their shape is pinned: numbered 1..n, no Rapid Fire.
+				local last = rows[#rows]
+				assert.is_true(#rows >= 2)
+				for index = 1, #rows - 1 do
+					assert.are.equal(index, rows[index].number)
+					assert.are_not.equal("Rapid Fire", rows[index].name)
 				end
-				assert.are.same({ "Aimed Shot", "Multi-Shot", "Serpent Sting", "Arcane Shot", "Rapid Fire" }, names)
-				assert.are.same({ 1, 2, 3, 4 }, { rows[1].number, rows[2].number, rows[3].number, rows[4].number })
-				assert.is_nil(rows[5].number)
-				assert.is_true(rows[5].muted)
-				assert.are.equal(string.format(L.panelRotationAt, 26), rows[5].at)
-				assert.are.equal(3045, rows[5].spellId)
+				assert.are.equal("Rapid Fire", last.name)
+				assert.is_nil(last.number)
+				assert.is_true(last.muted)
+				assert.are.equal(string.format(L.panelRotationAt, 26), last.at)
+				assert.are.equal(3045, last.spellId)
 			end)
 
 			it("adds at most two, none already in the band, none learned", function()
@@ -1712,8 +1715,14 @@ describe("PanelTab", function()
 				end
 				assert.are.equal(280, PanelTab.textRoom())
 				assert.are.equal(2, arcane.conditionLines)
-				assert.are.equal("Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global"
-					.. L.tooltipNamePending, arcane.condition)
+				-- The cut keeps a leading clause of the full condition and ends on the
+				-- pending mark; the shipped wording is the curated note's, so it is not pinned.
+				local pending = L.tooltipNamePending
+				assert.are.equal(pending, arcane.condition:sub(-#pending))
+				local kept = arcane.condition:sub(1, -#pending - 1)
+				assert.is_true(#kept > 0)
+				assert.are.equal(kept, arcane.fullCondition:sub(1, #kept))
+				assert.is_truthy(arcane.fullCondition:sub(#kept + 1):match("^[%s,;:]"))
 				assert.is_nil(arcane.condition:find("25%", 1, true))
 				-- The full plain condition is kept for the hover.
 				local raw

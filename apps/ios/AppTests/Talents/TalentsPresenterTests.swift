@@ -63,14 +63,26 @@ struct TalentsPresenterTests {
         #expect(model.notes == ["10 points unspent."])
     }
 
-    @Test("A level past the band's build says why it differs")
+    @Test("Level 58 holding the whole 41-point guide matches, with the points beyond it noted")
     func beyondTheBand() {
         let model = TalentsPresenter(
             file: warrior, guide: .build(talents: TalentTestData.band50, band: 50),
             export: .ranks(TalentTestData.yoursTrees), level: 58, specName: "Fury"
         )
-        #expect(model.status.sentence == "8 of your 49 points differ from the 50 to 59 guide build.")
-        #expect(model.notes == ["Level 58 is past the 50 to 59 guide build's 41 points, so points past it show as differing."])
+        #expect(model.status == TalentStatusLine(
+            tag: "Matches", tagKind: .matches, sentence: "Your build has every point of the Fury 50 to 59 guide build."
+        ))
+        #expect(model.notes == ["+8 beyond the guide"])
+    }
+
+    @Test("Stray points past the guide's total do not differ; the rest do")
+    func strayPastTheBand() {
+        let model = TalentsPresenter(
+            file: warrior, guide: .build(talents: TalentTestData.band50, band: 50),
+            export: .ranks(TalentRules.ranks(ofBand: TalentTestData.strayAndShort)), level: 58, specName: "Fury"
+        )
+        #expect(model.status.sentence == "5 of your 46 points differ from the 50 to 59 guide build.")
+        #expect(model.notes == ["3 points unspent.", "The guide build takes 5 points you have not.", "+5 beyond the guide"])
     }
 
     @Test("No export: the guide alone, no segments, the addon line")

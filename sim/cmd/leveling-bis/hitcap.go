@@ -137,7 +137,9 @@ func spellHitToCapFromProfile(profile core.HitProfile) *spellHitToCap {
 // (leveling.NoMeleeAutoAttackSpecs) never stands in melee, so its physical
 // miss table is beside the point even when the engine's profile reports one
 // for the weapon it holds, and it publishes its spell hit distance instead;
-// everyone else publishes the melee figure. It returns nil, not a typed nil,
+// a ranged hunter (leveling.RangedWeaponSpecs) publishes its shot's cap,
+// which has no dual wield penalty; everyone else publishes the melee
+// figure. It returns nil, not a typed nil,
 // when there is nothing to publish.
 func hitToCapFor(spec string, profile core.HitProfile) hitToCapFigure {
 	if leveling.NoMeleeAutoAttackSpecs[spec] {
@@ -145,6 +147,10 @@ func hitToCapFor(spec string, profile core.HitProfile) hitToCapFigure {
 			return figure
 		}
 		return nil
+	}
+	if leveling.RangedWeaponSpecs[spec] {
+		profile.DualWielding = false
+		profile.WhiteCap = profile.SpecialCap
 	}
 	if figure := hitToCapFromProfile(profile); figure != nil {
 		return figure

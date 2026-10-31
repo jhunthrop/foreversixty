@@ -19,6 +19,10 @@ struct AppEnvironment {
     let identity: ClientIdentity
     /// Lane F8: whether See plans may link to web checkout here (decision P, fail closed).
     let plansLink: PlansLink
+    /// Lane F14: the App Group snapshot every widget and Live Activity draws from.
+    let widgets: WidgetRefresher
+    /// Lane F14: the raid countdown and server-sim Live Activities.
+    let liveActivities: LiveActivityController
 
     @MainActor
     init(
@@ -45,6 +49,15 @@ struct AppEnvironment {
         self.plansLink = PlansLink(appConfig: appConfig, storefront: storefront) {
             appConfig.isAvailable(.premiumLink, mode: mode, isDebugBuild: Self.isDebugBuild)
         }
+        let widgets = WidgetRefresher(
+            calls: LiveWidgetCalls(client: client),
+            iconBuild: { appConfig.current?.activeBuild ?? BundledBuild.read() },
+            enabled: { appConfig.isAvailable(.widgets, mode: mode, isDebugBuild: Self.isDebugBuild) }
+        )
+        let liveActivities = LiveActivityController(registrations: LiveRegistrationCalls(client: client))
+        widgets.afterRefresh = { snapshot in await liveActivities.syncRaid(snapshot) }
+        self.widgets = widgets
+        self.liveActivities = liveActivities
         self.session = SessionStore(
             client: client,
             tokens: sessionTokens,
@@ -56,6 +69,9 @@ struct AppEnvironment {
                 FileHomeCache.standard()?.removeAll()
                 DiskRaidCache.standard().removeAll()
                 DiskRaidCache.sims().removeAll()
+                DiskRaidCache.reports().removeAll()
+                widgets.clear()
+                Task { await liveActivities.endAll() }
                 // Lane F16: the calendar link is the account's, never the next one's.
                 KeychainCalendarLinkStore().clear()
             }
@@ -83,7 +99,8 @@ struct AppEnvironment {
             preconditionFailure("Build is misconfigured: \(error)")
         }
         let tokens: any TokenStore = switch configuration.mode {
-        case .live: KeychainTokenStore()
+        // Lane F14: written to the App Group's keychain group so the widget's sign-up intent reads it.
+        case .live: KeychainTokenStore(accessGroup: AppGroup.containerURL == nil ? nil : AppGroup.id)
         case .fixture: InMemoryTokenStore(token: "fsd_fixture")
         }
         let account: AccountStorage = switch configuration.mode {

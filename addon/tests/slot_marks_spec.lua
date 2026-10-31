@@ -922,20 +922,30 @@ describe("SlotMarks", function()
 		end)
 	end)
 
-	-- Fix round 4, ruling 1 (hunter-12): the hunter's worn Gloves of the Fang are the band's
-	-- pick, so the hover reads "Best until level 30 / At level 30: Cartilage Shapers ·
-	-- Lyn the Ignored · World / Planned for Beast Mastery at 20" (Pilferer's Gloves, crafted,
-	-- until the 1.60.1.70374 ranker run). Through the real section path with the
-	-- real Data: no Next line, so no corner; the At line's later pick never becomes a target.
+	-- Fix round 4, ruling 1 (hunter-12): the hunter wears the band's own Hands pick, so the
+	-- hover reads "Best until level 30 / At level 30: <the 30 band's pick> / Planned for
+	-- Beast Mastery at 20". The picks are read from the shipped Data, which the nightly
+	-- regenerates (the pick moved from Gloves of the Fang to the Serpent's Gloves when the
+	-- 2026-10-31 pet rework changed the hunter's weights), so only the behaviour is pinned.
+	-- Through the real section path with the real Data: no Next line, so no corner; the At
+	-- line's later pick never becomes a target.
 	describe("fix round 4: the hunter's Best until slot, from the real data", function()
-		local GLOVES = "|cff1eff00|Hitem:10413::::::::24:::::|h[Gloves of the Fang]|h|r"
+		local SHIPPED = require("Data")
+		local function bandPick(band, slot)
+			local entry = SHIPPED.bis["hunter-beast-mastery"][band].alliance[slot]
+			local id = tonumber(entry:match("^(%d+)|"))
+			return id, SHIPPED.bisNames[id]
+		end
+		local GLOVES_ID, GLOVES_NAME = bandPick(20, "hands")
+		local _, NEXT_HANDS_NAME = bandPick(30, "hands")
+		local GLOVES = string.format("|cff1eff00|Hitem:%d::::::::24:::::|h[%s]|h|r", GLOVES_ID, GLOVES_NAME)
 		local BELT = "|cff1eff00|Hitem:4999::::::::24:::::|h[Azora's Will]|h|r"
 		local REAL = {
-			[GLOVES] = { id = 10413, slot = "INVTYPE_HAND", name = "Gloves of the Fang",
+			[GLOVES] = { id = GLOVES_ID, slot = "INVTYPE_HAND", name = GLOVES_NAME,
 				stats = { ITEM_MOD_STRENGTH_SHORT = 4, ITEM_MOD_AGILITY_SHORT = 6 } },
 			[BELT] = { id = 4999, slot = "INVTYPE_WAIST", name = "Azora's Will", stats = { ITEM_MOD_STAMINA_SHORT = 1 } },
 		}
-		local REAL_BY_ID = { [10413] = REAL[GLOVES], [4999] = REAL[BELT], [7358] = { name = "Pilferer's Gloves" },
+		local REAL_BY_ID = { [GLOVES_ID] = REAL[GLOVES], [4999] = REAL[BELT], [7358] = { name = "Pilferer's Gloves" },
 			[10403] = { name = "Blackened Defias Belt", stats = { ITEM_MOD_AGILITY_SHORT = 11 },
 				link = "|cff1eff00|Hitem:10403::::::::24:::::|h[Blackened Defias Belt]|h|r" } }
 
@@ -991,7 +1001,7 @@ describe("SlotMarks", function()
 			end
 			assert.are.equal(string.format(L.tooltipBestUntil, 30), texts[1])
 			assert.are.equal("at", lines[2].kind)
-			assert.is_truthy(texts[2]:find("Cartilage Shapers", 1, true))
+			assert.is_truthy(texts[2]:find(NEXT_HANDS_NAME, 1, true))
 			assert.are.equal(string.format(L.tooltipPlanned, "Beast Mastery", 20), texts[3])
 			assert.is_nil(SlotMarks.nextOf(lines))
 			assert.is_nil(SlotMarks.compute(Data).targets.hands)

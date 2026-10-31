@@ -247,22 +247,19 @@ def test_the_real_committed_data_produces_a_rotation_for_every_spec():
 #: at least 1.12, on both Era and this Forever beta), not a pipeline bug: sweep 15 flagged
 #: it as one, sweep 16 re-verified it against the client tables and Wowhead and found the
 #: join correct. Aimed Shot/Multi-Shot are the "looks right, still checked" control pair.
-#: A change to any of these six values fails this test until a person re-verifies it
+#: A change to any of these values fails this test until a person re-verifies it
 #: against the same two sources and explains why the new answer is right (tenet 8).
 #: Heroic Strike is pinned on Fury only: the 2026-10-06 rotation search removed it from
 #: the Arms list (curated/apl/warrior-arms.json notes), so Arms band 60 no longer has the
 #: line to check; Rend still covers the Arms side of the Ambush/Gouge quirk.
+#: Aimed Shot is pinned nowhere since 2026-10-31: it shares Multi-Shot's cooldown in
+#: Forever and is only the pre-pull opener now (curated/apl/hunter-*.json notes), so no
+#: band 60 priority line carries it; Multi-Shot still covers the control pair's side.
 KNOWN_GOOD_ROTATION_ICONS = {
     "warrior-arms": {"Rend": "ability_gouge"},
     "warrior-fury": {"Heroic Strike": "ability_rogue_ambush"},
-    "hunter-marksmanship": {
-        "Aimed Shot": "inv_spear_07",
-        "Multi-Shot": "ability_upgrademoonglaive",
-    },
-    "hunter-beast-mastery": {
-        "Aimed Shot": "inv_spear_07",
-        "Multi-Shot": "ability_upgrademoonglaive",
-    },
+    "hunter-marksmanship": {"Multi-Shot": "ability_upgrademoonglaive"},
+    "hunter-beast-mastery": {"Multi-Shot": "ability_upgrademoonglaive"},
 }
 
 

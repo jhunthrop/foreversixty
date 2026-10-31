@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // SheetRenderer draws the character sheet a share posts (spec 2026-10-29 Part B);
@@ -210,7 +211,7 @@ func sheetRange(d bisData) string {
 	switch {
 	case d.phase == phaseRaid:
 		return panelCopy.SheetRangeRaid
-	case d.level == levelBands[len(levelBands)-1]:
+	case d.level == upgrades.TopBand:
 		return panelCopy.SheetRangeBare
 	}
 	return fill(panelCopy.SheetRangeLevels, "{n}", strconv.Itoa(d.level), "{n+9}", strconv.Itoa(d.level+9))

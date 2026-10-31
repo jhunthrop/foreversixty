@@ -21,7 +21,7 @@ This is the Feral Druid as the site's guide describes it. Feral Combat is one tr
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shifting Power every time it comes off cooldown, but only at sixty energy or lower. Then the whole forty energy fits under the cap.
-- Open with Tiger's Fury, since it costs nothing and refunds energy on its own thirty-second cooldown, and keep it on cooldown throughout.
+- No Tiger's Fury: Forever druids cannot learn it. Omen of Clarity is a trainer spell, and a Clearcasting proc makes the next ability free, which is usually Shred.
 - At five combo points, cast Rip if it isn't already running. Once Rip is up, spend five combo points on Ferocious Bite instead of letting them cap out uselessly.
 - Shred builds combo points the rest of the time.
 

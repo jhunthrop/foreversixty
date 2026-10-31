@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.billing)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.work.runtime)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -99,5 +102,6 @@ dependencies {
     testImplementation(libs.roborazzi.compose)
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.androidx.work.testing)
     debugImplementation(libs.compose.ui.test.manifest)
 }

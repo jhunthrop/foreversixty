@@ -10,7 +10,8 @@ import (
 // Every response fixture is a well-formed envelope: {ok, data, error, request_id}, where a
 // success carries data and a null error, and a failure carries a null data and a code. The
 // fixtures of endpoints not built yet (app.*) are held to the same rule, so an app can rely on
-// them before the handler lands. The static-file fixtures (cdn.*) and the push payloads (push.*)
+// them before the handler lands. The static-file fixtures (cdn.*) and the push payloads (push.*,
+// and the live-surface pushes surface.*, pinned to their builders in api/internal/livesurface)
 // are not envelopes.
 func TestEveryResponseFixtureIsAnEnvelope(t *testing.T) {
 	files, err := filepath.Glob(filepath.Join(fixtureDir(), "*.json"))
@@ -19,7 +20,7 @@ func TestEveryResponseFixtureIsAnEnvelope(t *testing.T) {
 	}
 	for _, file := range files {
 		name := strings.TrimSuffix(filepath.Base(file), ".json")
-		if strings.HasPrefix(name, "cdn.") || strings.HasPrefix(name, "push.") {
+		if strings.HasPrefix(name, "cdn.") || strings.HasPrefix(name, "push.") || strings.HasPrefix(name, "surface.") {
 			continue
 		}
 		t.Run(name, func(t *testing.T) { assertEnvelope(t, Load(t, name), strings.Contains(name, "error")) })

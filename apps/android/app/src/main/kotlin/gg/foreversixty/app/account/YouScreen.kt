@@ -97,7 +97,14 @@ class YouActions(
  * from the sign-out confirmation.
  */
 @Composable
-fun YouScreen(summary: YouSummary, actions: YouActions, mayLink: Boolean = false, confirmingSignOut: Boolean = false) {
+fun YouScreen(
+    summary: YouSummary,
+    actions: YouActions,
+    mayLink: Boolean = false,
+    confirmingSignOut: Boolean = false,
+    /** Lane F14: the Live surfaces card, drawn while the `widgets` switch is on. */
+    liveSurfaces: (@Composable () -> Unit)? = null,
+) {
     var confirming by rememberSaveable { mutableStateOf(confirmingSignOut) }
     AccountPage(stringResource(R.string.you_title)) {
         Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3), verticalAlignment = Alignment.CenterVertically) {
@@ -127,6 +134,7 @@ fun YouScreen(summary: YouSummary, actions: YouActions, mayLink: Boolean = false
                 )
             }
         }
+        liveSurfaces?.invoke()
         AccountCard {
             AccountRow(rememberVectorPainter(Icons.Filled.Lock), stringResource(R.string.you_privacy), external = true, onClick = actions.onPrivacy)
             HorizontalDivider(color = FsColor.lineSoft)

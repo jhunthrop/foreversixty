@@ -197,6 +197,7 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   greater_stoneshield_potion: 'Armor for two minutes',
   juju_might: 'Attack power',
   juju_power: 'Strength',
+  conjured_rogue_thistle_tea: 'Energy, used when it runs low',
   'main_hand_imbue:brilliant_mana_oil': 'Mana per 5 sec and healing power, on the main hand',
   'main_hand_imbue:brilliant_wizard_oil': 'Spell power, on the main hand',
   'main_hand_imbue:elemental_sharpening_stone': 'Critical strike, on the main hand',

@@ -50,6 +50,10 @@ import gg.foreversixty.app.raids.logic.SystemNotificationPermission
 import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
 import gg.foreversixty.app.raids.ui.RaidNightScreen
+import gg.foreversixty.app.reports.ReportRoute
+import gg.foreversixty.app.reports.ReportRouteScreen
+import gg.foreversixty.app.reports.ReportsFeature
+import gg.foreversixty.app.reports.logic.ReportsViewer
 import gg.foreversixty.app.raids.ui.RaidPageScreen
 import gg.foreversixty.app.raids.ui.RaidsTabContentView
 import java.io.File
@@ -62,10 +66,15 @@ sealed interface RaidsDestination {
     data class Raid(val guild: Long, val raid: Long, val roster: Boolean = false, val open: RaidOpenAction? = null) : RaidsDestination
     data class Night(val raid: Long) : RaidsDestination
 
+    /** Lane F10: a report pushed from Your raid night. */
+    data class Report(val id: String) : RaidsDestination
     /** Lane F16: the guild's roster and its logged raid nights. */
     data class Roster(val guild: Long) : RaidsDestination
     data class History(val guild: Long) : RaidsDestination
 }
+
+/** Lane F10: the reports screens Your raid night pushes, and who reads them; null while `reports` is off. */
+class RaidsReports(val feature: ReportsFeature, val viewer: ReportsViewer)
 
 /** The Raids tab's own back stack; deep links and notifications push here (spec 5.0, 6.4). */
 class RaidsNavigator {
@@ -126,7 +135,7 @@ class RaidsFeature(
  * F1), null to follow `/v1/me`'s main; [selector] is the character selector row over the root.
  */
 @Composable
-fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @Composable () -> Unit = {}) {
+fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: RaidsReports? = null, selector: @Composable () -> Unit = {}) {
     val context = LocalContext.current
     val view = LocalView.current
     val uri = LocalUriHandler.current
@@ -243,7 +252,11 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
             }
             is RaidsDestination.Night -> {
                 val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now) }
-                RaidNightScreen(model, clock, feature.now) { feature.navigator.pop() }
+                val openReport: ((String) -> Unit)? = reports?.let { { id -> feature.navigator.push(RaidsDestination.Report(id)) } }
+                RaidNightScreen(model, clock, feature.now, openReport) { feature.navigator.pop() }
+            }
+            is RaidsDestination.Report -> reports?.let {
+                ReportRouteScreen(it.feature, ReportRoute(top.id), it.viewer) { feature.navigator.pop() }
             }
             is RaidsDestination.Roster -> extras?.let {
                 RosterRoute(it.roster(top.guild), clock, feature.now) { feature.navigator.pop() }

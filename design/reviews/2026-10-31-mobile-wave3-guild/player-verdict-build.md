@@ -79,3 +79,13 @@ Round-2 MUSTs, checked:
 5. Raid history is still mostly dungeon runs (23 nights in 10 days). Accepted per the spec.
 
 Passed: spec names are full, class and spec combos are legal for Horde, boss lists and sizes are right, both platforms match, the Android tab count is as known.
+
+---
+
+# Round 4
+
+Verdict: SHIP.
+
+The round-3 MUST is fixed. "Obnoxious Yell, Fury Warrior · 58 · Officer" now reads the same on the roster as the Raids tab chip "Fury · 58" and me.json. I checked ios/f16.1-roster-all.png, ios/f16.1-roster-app.png and android/f16.1-roster-all.png, and the fixture (level 58 in the members list and the roster block). Both platforms match.
+
+The attendance SHOULD stays open as a product follow-up: bars read "2 of 8 nights" and "3 of 8 nights" because dungeon runs are counted. This is acceptable for ship. Raid attendance should count only 10 and 40-player raids once the API can.

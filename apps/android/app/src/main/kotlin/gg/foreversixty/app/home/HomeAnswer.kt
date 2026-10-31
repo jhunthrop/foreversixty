@@ -27,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -287,7 +289,7 @@ private fun NextRows(title: String, rows: List<HomeNextRow>, send: (HomeIntent) 
 @Composable
 private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
     // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
-    val tap = if (row.kind == HomeNextRow.Kind.Sims || row.kind == HomeNextRow.Kind.Talents) Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) } else Modifier
+    val tap = Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) }
     Row(
         Modifier.fillMaxWidth().then(tap).heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {},
@@ -299,7 +301,11 @@ private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                if (row.kind == HomeNextRow.Kind.Talents) Icons.Filled.Star else Icons.Filled.PlayArrow,
+                when (row.kind) {
+                    HomeNextRow.Kind.Talents -> rememberVectorPainter(Icons.Filled.Star)
+                    HomeNextRow.Kind.Sims -> rememberVectorPainter(Icons.Filled.PlayArrow)
+                    HomeNextRow.Kind.Logs -> painterResource(R.drawable.ic_logs)
+                },
                 contentDescription = null,
                 tint = FsColor.goldHover,
                 modifier = Modifier.size(18.dp),

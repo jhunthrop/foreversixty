@@ -34,6 +34,8 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.premium.PlanScreen
 import gg.foreversixty.app.premium.PlanSummary
 import gg.foreversixty.app.premium.PlansLink
+import gg.foreversixty.app.widgets.LiveSurfaceSettings
+import gg.foreversixty.app.widgets.LiveSurfacesCard
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -74,6 +76,8 @@ class AccountDeps(
     val dataBuild: () -> String?,
     /** Lane F8: See plans and Manage billing, where the store allows them. */
     val plansLink: PlansLink,
+    /** Lane F14: You › Live surfaces; null while the `widgets` switch is off. */
+    val liveSurfaces: LiveSurfaceSettings? = null,
     /** Lane F16: You › Calendar; null while `guild_extras` is off. */
     val guildExtras: GuildExtrasFeature? = null,
 )
@@ -180,6 +184,7 @@ private fun SignedInYou(deps: AccountDeps) {
                 onCalendar = deps.guildExtras?.let { { page = YouPage.Calendar } },
             ),
             mayLink = mayLink,
+            liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
         )
         YouPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }

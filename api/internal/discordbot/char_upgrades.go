@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -16,17 +17,11 @@ const maxUpgrades = 5
 // tankRole is the spec role whose upgrades are ranked by score, not DPS.
 const tankRole = "tank"
 
-// weaponSlots are the slots whose empty gain no stat-weight score measures (the site's own
-// upgrades.ts rule: a weapon's score bakes in its damage).
-var weaponSlots = map[string]bool{"main_hand": true, "off_hand": true, "ranged": true}
-
-// upgradeGroup orders the list: empty slots, then measured gains, then unmodelled picks.
-type upgradeGroup int
-
+// The list's groups (upgrades.Group): empty slots, then measured gains, then unmodelled picks.
 const (
-	groupEmpty upgradeGroup = iota
-	groupMeasured
-	groupUnmodelled
+	groupEmpty      = upgrades.GroupEmpty
+	groupMeasured   = upgrades.GroupMeasured
+	groupUnmodelled = upgrades.GroupUnmodelled
 )
 
 // upgrade is one slot whose pick beats what is worn: the pick, its gain in the list's unit
@@ -38,7 +33,7 @@ type upgrade struct {
 	id                       int
 	gain                     string
 	value                    float64
-	group                    upgradeGroup
+	group                    upgrades.Group
 	worn                     *rankings.GearWorn
 }
 
@@ -96,36 +91,35 @@ func (s *Service) loadBand(spec specs.Spec, band int, faction, preset string) (b
 }
 
 func (s *Service) dpsUpgrades(card rankings.Character, spec specs.Spec, faction string) (upgradeList, bool) {
-	level, ok := levelBand(card.Character.Level)
+	level, ok := upgrades.LevelBand(card.Character.Level)
 	if !ok {
 		return upgradeList{}, false
 	}
-	phase := phaseOfBand(level)
-	bandLevel, preset := phaseBand(phase)
-	band, found := s.loadBand(spec, bandLevel, faction, preset)
+	band, found := s.loadBand(spec, level, faction, upgrades.PresetFor(level))
 	if !found {
 		return upgradeList{}, false
 	}
 	worn := wornBySlot(card.Gear)
 	picks := band.BySlot()
 	var items []upgrade
-	for _, c := range slotChoices {
-		sl, has := picks[c.Value]
+	for _, c := range upgrades.Slots {
+		sl, has := picks[c.Key]
 		if !has || sl.ItemID <= 0 {
 			continue
 		}
-		if u, ok := dpsUpgrade(band, sl, worn[c.Value]); ok {
+		if u, ok := dpsUpgrade(band, sl, worn[c.Key]); ok {
 			items = append(items, u)
 		}
 	}
 	if len(items) == 0 {
 		return upgradeList{}, false
 	}
-	return upgradeList{items: ordered(items), byDPS: true, band: bandLabels[phase]}, true
+	return upgradeList{items: ordered(items), byDPS: true, band: bandLabels[phaseOfBand(level)]}, true
 }
 
 // dpsUpgrade is one slot's upgrade over w (nil: the slot is empty); ok is false when the pick
-// is worn or measures no gain over it.
+// is worn or measures no gain over it. A worn item the pick does not list is unmeasured here:
+// the panel names only the ranker's own measured gaps (upgrades.Judge with no scorer).
 func dpsUpgrade(band bis.Band, sl bis.Slot, w *rankings.GearWorn) (upgrade, bool) {
 	u := upgrade{slot: sl.Slot, id: sl.ItemID, name: sl.ItemName, kind: sl.SourceKind, source: sl.Source, worn: w}
 	if w == nil {
@@ -135,11 +129,11 @@ func dpsUpgrade(band bis.Band, sl bis.Slot, w *rankings.GearWorn) (upgrade, bool
 		}
 		return u, true
 	}
-	v := bis.VerdictFor(sl, w.ID, true)
-	if v.GainDps == nil || *v.GainDps < minShownGain {
+	v := upgrades.Judge(band, sl, w.ID, nil)
+	if v.Gain == nil || *v.Gain < minShownGain {
 		return upgrade{}, false
 	}
-	u.value = *v.GainDps
+	u.value = *v.Gain
 	if sl.EffectUnmodelled {
 		u.group, u.gain = groupUnmodelled, panelCopy.NotModelled
 		return u, true
@@ -148,36 +142,32 @@ func dpsUpgrade(band bis.Band, sl bis.Slot, w *rankings.GearWorn) (upgrade, bool
 	return u, true
 }
 
-// emptyGain is the pick's gain over an empty slot: its whole stat-weight score in DPS (the
-// site's upgrades.ts rule with a worn score of 0). measured is false for a weapon, a
-// sim-decided pick (an on-use trinket carries no score), an unmodelled effect, or a band that
-// states no DPS per point: no trustworthy figure exists then.
+// emptyGain is the pick's gain over an empty slot (upgrades.Judge with nothing worn: its whole
+// stat-weight score in DPS). measured is false for an unmodelled effect, or when the rule has
+// no figure (a weapon, a sim-decided pick, a band with no DPS per point), or one under the
+// smallest shown gain.
 func emptyGain(band bis.Band, sl bis.Slot) (float64, bool) {
-	if weaponSlots[sl.Slot] || sl.Score == nil || sl.EffectUnmodelled || band.ReferenceDpsPerPoint == nil {
+	if sl.EffectUnmodelled {
 		return 0, false
 	}
-	v := *sl.Score * *band.ReferenceDpsPerPoint
-	return v, v >= minShownGain
+	v := upgrades.Judge(band, sl, 0, nil)
+	if v.Gain == nil {
+		return 0, false
+	}
+	return *v.Gain, *v.Gain >= minShownGain
 }
 
-// ordered is the panel's order: empty slots in frame order, then measured gains largest
-// first, then unmodelled picks in frame order. items arrive in frame order.
+// ordered is the panel's order (upgrades.Order): empty slots in frame order, then measured
+// gains largest first, then unmodelled picks in frame order. items arrive in frame order.
 func ordered(items []upgrade) []upgrade {
-	out := append([]upgrade(nil), items...)
-	sort.SliceStable(out, func(i, j int) bool {
-		if out[i].group != out[j].group {
-			return out[i].group < out[j].group
-		}
-		return out[i].group == groupMeasured && out[i].value > out[j].value
-	})
-	return out
+	return upgrades.Order(items, func(u upgrade) (upgrades.Group, float64) { return u.group, u.value })
 }
 
 // scoreUpgrades are the gear panel's gaps, in points, against its bare band: empty slots
 // first in frame order, then the largest gap.
 func (s *Service) scoreUpgrades(card rankings.Character, spec specs.Spec, faction string) upgradeList {
 	list := upgradeList{}
-	level, ok := levelBand(card.Character.Level)
+	level, ok := upgrades.LevelBand(card.Character.Level)
 	kinds := map[int]string{}
 	if ok {
 		list.band = bandLabels[fmt.Sprint(level)]
@@ -226,8 +216,8 @@ func wornBySlot(gear []rankings.GearSlot) map[string]*rankings.GearWorn {
 // upgradeSlots are the gear panel's slots, in frame order, with a pick that gains.
 func upgradeSlots(gear []rankings.GearSlot) []rankings.GearSlot {
 	at := map[string]int{}
-	for i, c := range slotChoices {
-		at[c.Value] = i
+	for i, c := range upgrades.Slots {
+		at[c.Key] = i
 	}
 	var out []rankings.GearSlot
 	for _, g := range gear {

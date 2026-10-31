@@ -146,7 +146,11 @@ def normalize_build(
     from pipeline.icons_fix import load_fork_icons, load_wowhead_icons
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
-    from pipeline.normalize.classicdb import load_classicdb_supplement
+    from pipeline.normalize.classicdb import (
+        classicdb_bonding,
+        fill_bonding,
+        load_classicdb_supplement,
+    )
     from pipeline.normalize.classicdb import merge_class_items as merge_classicdb_class_items
     from pipeline.normalize.classicdb import merge_items as merge_classicdb_items
     from pipeline.normalize.classicdb import merge_sets as merge_classicdb_sets
@@ -423,6 +427,7 @@ def normalize_build(
                 client_icon_file_ids,
                 icons,
             )
+        class_items = fill_bonding(class_items, classicdb_bonding(build_dir))
         # Every class is checked against its own previous count before any of
         # them is written -- one class failing the gate must not leave a
         # directory that is half regenerated and half deleted.

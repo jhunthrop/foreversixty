@@ -247,15 +247,14 @@ def test_named_book_ids_are_flagged_level_sixty_ranks_in_the_active_build():
 
 # --- inferior ranks -------------------------------------------------------------------------
 
-INFERIOR_IDS = {14322, 14325, 20906}  # Aspect of the Hawk 6, Hunter's Mark 4, Trueshot Aura 5
+INFERIOR_IDS = {14325}  # Hunter's Mark 4
+# 1.60.1.70707 made Aspect of the Hawk rank 6 (14322, 55 ranged attack power against rank 5's
+# 47) and Trueshot Aura rank 5 (20906) the strongest ranks again, so neither is inferior.
+NO_LONGER_INFERIOR = {14322, 20906}
 
 
-def test_the_curated_inferior_list_names_the_hawk_rank_with_its_basis():
-    entries = json.loads((CURATED / "inferior-ranks.json").read_text())["inferior"]
-    hawk = next(entry for entry in entries if entry["id"] == 14322)
-    assert hawk["spell"] == "Aspect of the Hawk"
-    assert hawk["rank"] == 6
-    assert "55" in hawk["basis"] and "90" in hawk["basis"]
+def test_the_hawk_and_trueshot_top_ranks_are_not_inferior():
+    assert not NO_LONGER_INFERIOR & spellranks.load_inferior_ids(CURATED)
 
 
 def test_the_curated_inferior_list_names_every_swept_rank():

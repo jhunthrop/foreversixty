@@ -35,6 +35,13 @@ func CachePrivate(w http.ResponseWriter) {
 	w.Header().Set("Vary", "Cookie, Authorization")
 }
 
+// CachePrivateFor marks a read the caller may keep for maxAge but a shared cache never
+// stores: an answer that varies on a request header a CDN does not key on (Cloudflare
+// ignores Vary beyond Accept-Encoding), so a public answer would reach the wrong caller.
+func CachePrivateFor(w http.ResponseWriter, maxAge time.Duration) {
+	w.Header().Set("Cache-Control", fmt.Sprintf("private, max-age=%d", int(maxAge.Seconds())))
+}
+
 // CachePrivateNoStore is CachePrivate for an answer no cache may keep at all, not even the
 // browser's: the owner's history, a premium read of private reports.
 func CachePrivateNoStore(w http.ResponseWriter) {

@@ -261,8 +261,8 @@ struct NextRows: View {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                    // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
-                    if row.kind == .sims || row.kind == .talents {
+                    // Lanes F5, F6 and F10: every Next row pushes its screen (spec F2.1 item 4, W3 F10).
+                    if row.kind == .sims || row.kind == .talents || row.kind == .logs {
                         Button { send(.openNext(row.kind)) } label: { NextRowView(row: row) }
                             .buttonStyle(RowPress())
                     } else {
@@ -282,7 +282,7 @@ struct NextRowView: View {
 
     var body: some View {
         HStack(alignment: typeSize >= .accessibility1 ? .top : .center, spacing: 12) {
-            Image(systemName: row.kind == .talents ? "sparkles" : "flask")
+            Image(systemName: Self.icon(row.kind))
                 .font(.system(size: 16))
                 .foregroundStyle(FSColor.goldHover)
                 .frame(width: 36, height: 36)
@@ -306,11 +306,21 @@ struct NextRowView: View {
         .accessibilityElement(children: .combine)
     }
 
+    private static func icon(_ kind: HomeNextRow.Kind) -> String {
+        switch kind {
+        case .talents: "sparkles"
+        case .sims: "flask"
+        case .logs: "doc.text"
+        }
+    }
+
     private var words: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-            Text(row.line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
+            if !row.line.isEmpty {
+                Text(row.line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 

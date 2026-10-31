@@ -46,6 +46,8 @@ struct RootView: View {
     @State private var raidsRouter = RaidsRouter()
     /// Lane F5: Home's Sims stack, which sim links push onto.
     @State private var simsRouter = SimsRouter()
+    /// Lane F10: Home's Your reports stack, which report links push onto.
+    @State private var reportsRouter = ReportsRouter()
     /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
     /// access until the player flips its switch.
     @State private var calendarSync: CalendarSyncController
@@ -80,9 +82,11 @@ struct RootView: View {
         .tint(Theme.Palette.accent)
         .environment(environment.session)
         .environment(simsRouter)
+        .environment(reportsRouter)
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
+        .widgetRefreshTriggers(environment)
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
         .task {
             RaidNotificationCenter.shared.onOpen = openRaids
@@ -121,6 +125,8 @@ struct RootView: View {
                 version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
                 onPickClass: { selection = .bis },
                 plansLink: environment.plansLink,
+                liveSurfaces: environment.isAvailable(.widgets),
+                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
                 calendar: guildExtras.map { ($0, calendarSync) }
             )
         case .you: PlaceholderScreen(title: tab.title)
@@ -129,6 +135,7 @@ struct RootView: View {
 }
 
 extension RootView {
+    /// A link selects its tab: sim and report links Home (lanes F5, F10), raid links Raids (lane F4).
     /// Lane F16: the guild extras' dependencies, nil while `guild_extras` is off.
     private var guildExtras: GuildExtrasDependencies? {
         environment.isAvailable(.guildExtras) ? .live(environment) : nil
@@ -140,6 +147,10 @@ extension RootView {
             guard environment.isAvailable(.sims) else { return }
             selection = .home
             simsRouter.open(link)
+        } else if ReportsRouter.handles(link) {
+            guard environment.isAvailable(.reports) else { return }
+            selection = .home
+            reportsRouter.open(link)
         } else {
             openRaids(link)
         }

@@ -1,5 +1,7 @@
 package discordbot
 
+import "github.com/jhunthrop/foreversixty/api/internal/upgrades"
+
 // lookupCopy is the words of /char, /bis, the item embed and Share in channel (experience spec
 // §6.2); the tests read each string back out of the spec.
 var lookupCopy = struct {
@@ -64,7 +66,7 @@ var panelCopy = struct {
 	BisSlotNext:       "-# The next best",
 	BisOffHandTwoHand: "**Off hand** · none: {main hand name} is two-handed.",
 	BisSlotNone:       "**{Slot}** · no pick for this range.",
-	NotModelled:       "Gain not modelled yet",
+	NotModelled:       upgrades.NotModelledWords,
 	BisTie:            "Same {unit} as the next best",
 	BisOnly:           "Nothing else ranked",
 	Replaces:          "-# Replaces {worn name}, item level {n}",

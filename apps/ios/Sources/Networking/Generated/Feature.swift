@@ -18,6 +18,10 @@ public enum Feature: String, CaseIterable, Sendable {
     case notifications = "notifications"
     /// F8: See plans, where the storefront allows a web checkout link
     case premiumLink = "premium_link"
+    /// F14: Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications
+    case widgets = "widgets"
+    /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
+    case reports = "reports"
     /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
     case guildExtras = "guild_extras"
 
@@ -32,6 +36,8 @@ public enum Feature: String, CaseIterable, Sendable {
         case .talents: false
         case .notifications: false
         case .premiumLink: false
+        case .widgets: false
+        case .reports: false
         case .guildExtras: false
         }
     }

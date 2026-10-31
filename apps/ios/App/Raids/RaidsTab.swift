@@ -18,6 +18,8 @@ struct RaidsDependencies {
     let clock: RaidClock
     /// The active data build, for the game icons.
     let iconBuild: @Sendable () async -> String?
+    /// Lane F10: the report F4.22's row pushes; nil while the reports switch is off.
+    let reports: ReportsDependencies?
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
         // The active build names every icon URL. In fixture mode it comes from the bundled
@@ -40,7 +42,8 @@ struct RaidsDependencies {
             askStore: UserDefaultsReminderAskStore(),
             now: AppClock.now,
             clock: RaidClock(),
-            iconBuild: { try? await statics.activeBuild().build }
+            iconBuild: { try? await statics.activeBuild().build },
+            reports: environment.isAvailable(.reports) ? .live(environment) : nil
         )
     }
 
@@ -55,6 +58,8 @@ struct RaidsDependencies {
 enum RaidsRoute: Hashable {
     case raid(guild: Int64, raid: Int64, roster: Bool, open: RaidOpenAction?)
     case night(raid: Int64)
+    /// Lane F10: a report from Your raid night.
+    case report(id: String)
     /// Lane F16: the guild's roster and raid history.
     case roster(guild: Int64)
     case history(guild: Int64)
@@ -223,8 +228,16 @@ struct RaidsTab: View {
         case let .night(raid):
             RaidNightView(
                 model: RaidNightModel(raid: raid, service: dependencies.service, cache: dependencies.cache, now: dependencies.now),
-                clock: dependencies.clock, now: dependencies.now
+                clock: dependencies.clock, now: dependencies.now,
+                openReport: dependencies.reports == nil ? nil : { router.path.append(.report(id: $0)) }
             )
+        case let .report(id):
+            if let reports = dependencies.reports {
+                ReportScreen(
+                    route: ReportRoute(id: id), dependencies: reports,
+                    account: ReportsAccount.of(session?.phase.me, current: session?.currentCharacter)
+                )
+            }
         case let .roster(guild):
             if let extras {
                 RosterRoute(extras: extras, guild: guild, shared: rosterStore)

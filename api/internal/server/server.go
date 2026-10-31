@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
@@ -15,6 +16,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/livesurface"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/push"
@@ -69,6 +71,11 @@ type Deps struct {
 	Coach *coach.Service
 	// Tiles serves the Discord panel's item tiles; nil leaves the route unmounted.
 	Tiles *sheet.Tiles
+	// LiveSurface serves the apps' widget snapshot and live registrations; nil (APP_WIDGETS
+	// off) leaves them unmounted.
+	LiveSurface *livesurface.Service
+	// App serves the mobile apps' routes; nil (APP_API off) leaves them unmounted.
+	App *app.Service
 	// Notifications serves /v1/me/notifications and PushTokens /v1/me/push-tokens; both are
 	// nil, unmounted, until APP_NOTIFICATIONS_ENABLED=1.
 	Notifications *events.Handler
@@ -147,8 +154,14 @@ func NewRouter(d Deps) http.Handler {
 		coach.Mount(mux, d.Coach)
 		coach.MountLines(mux, d.Coach)
 	}
+	if d.App != nil {
+		app.Mount(mux, d.App)
+	}
 	if d.Tiles != nil {
 		d.Tiles.Mount(mux)
+	}
+	if d.LiveSurface != nil {
+		livesurface.Mount(mux, d.LiveSurface)
 	}
 	if d.Notifications != nil {
 		events.Mount(mux, d.Notifications)

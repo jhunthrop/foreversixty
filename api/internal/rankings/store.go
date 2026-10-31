@@ -490,3 +490,31 @@ func (s *Store) SetExecutionScore(ctx context.Context, reportID string, fightInd
 	}
 	return nil
 }
+
+// BestBefore is a character's best ranked kill of one boss and difficulty before at, on the
+// metric ("dps" or "hps"), leaving out one report (the one being read, so its own kills are
+// never their own previous best). found is false when there is no earlier kill: a first kill
+// is not a new best.
+func (s *Store) BestBefore(ctx context.Context, key string, encounterID, difficulty int64,
+	metric string, at time.Time, exceptReport string) (float64, bool, error) {
+	column := "metric_dps"
+	if metric == MetricHPS {
+		column = "metric_hps"
+	}
+	var best *float64
+	err := s.Pool.QueryRow(ctx,
+		`select max(`+column+`)::float8 from fight_metrics
+		 where player_key = $1 and encounter_id = $2 and difficulty = $3 and kill
+		   and state = $4 and fought_at < $5 and report_id <> $6`,
+		key, encounterID, difficulty, StateOK, at, exceptReport).Scan(&best)
+	if err != nil {
+		return 0, false, fmt.Errorf("rankings: best before: %w", err)
+	}
+	if best == nil {
+		return 0, false, nil
+	}
+	return *best, true, nil
+}
+
+// Store places the app's parses.
+var _ reports.Placer = (*Store)(nil)

@@ -8,19 +8,15 @@
     "2": "sim/priest/shadow_word_death.go: Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the engine's execute-phase approximation (isExecutePhase E20, the same primitive this line already used).",
     "4": "Rank 6 (19280) is spellconst's top rank and the highest the engine registers at level 60."
   },
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table (data/builds/<active>/items/priest.json filtered to simitems.json's known ids) has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on, once a wand is available, it resolves and fires heavily (the level 20-60 rungs below show it as up to 82 percent of top casts on this bare, no-consumes, no-buffs ladder character). Adapted from the fork's shadow_priest/apls/p1.apl.json. Devouring Plague's off-by-one registration bug (an old 'Fix round 1' that had temporarily moved this file's authored id back to rank 5) and the follow-up 'rank 5 casts instead of rank 6' diagnosis are both stale and superseded (audit-priest, 2026-09-28): sim/priest/devouring_plague.go's registration loop runs the full 1..DevouringPlagueRanks range, this file's strictSequence has authored rank 6 (19280) since before this audit, and a direct 3000-iteration reproduction of the level-60 bare-gear ladder request (forever-sim, engine b5ac36a52) casts 19280 and never 19279. Shadow Word: Death (1309636, sim/priest/shadow_word_death.go) is implemented and does deal damage under isExecutePhase(E20) -- the same reproduction cast it 408 times over 3000 iterations (avg 0.136/iteration) -- it is simply rare on the ladder's bare, no-mana-regen gear: it is priced at 340 mana, sits behind Shadow Word: Pain's upkeep in priority, and only has a window when BOTH the execute phase is open AND mana remains, so a specific 300-iteration seed landing on zero casts (this ladder's golden) is not surprising and is not the engine-primitive bug the previous note attributed it to (see expected_idle below; that comparison to paladin-retribution's Hammer of Wrath and warrior-fury's Execute conflated a real resource-scarcity effect with the shared isExecutePhase primitive, which this reproduction shows working correctly for Shadow Word: Death). Engine numbers (audit-priest, 2026-09-28): Shadow Word: Pain's and Devouring Plague's BonusCoefficient were hardcoded to vanilla-Classic-shaped values (an escalating table topping out at 0.167, and 0.063) that this build's own spellconst carries no support for; spellconst's sp_coefficient is a flat 0.2 for every Shadow Word: Pain rank and a flat 0.1 for every Devouring Plague rank, fixed on fork branch audit-priest (unpushed; needs a real engine-pin bump once merged). Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table (data/builds/<active>/items/priest.json filtered to simitems.json's known ids) has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on, once a wand is available, it resolves and fires heavily (the level 20-60 rungs below show it as up to 82 percent of top casts on this bare, no-consumes, no-buffs ladder character). Adapted from the fork's shadow_priest/apls/p1.apl.json. Devouring Plague's off-by-one registration bug (an old 'Fix round 1' that had temporarily moved this file's authored id back to rank 5) and the follow-up 'rank 5 casts instead of rank 6' diagnosis are both stale and superseded (audit-priest, 2026-09-28): sim/priest/devouring_plague.go's registration loop runs the full 1..DevouringPlagueRanks range, this file's strictSequence has authored rank 6 (19280) since before this audit, and a direct 3000-iteration reproduction of the level-60 bare-gear ladder request (forever-sim, engine b5ac36a52) casts 19280 and never 19279. Shadow Word: Death (1309636, sim/priest/shadow_word_death.go) is implemented and does deal damage under isExecutePhase(E20) -- the same reproduction cast it 408 times over 3000 iterations (avg 0.136/iteration) -- it is simply rare on the ladder's bare, no-mana-regen gear: it is priced at 340 mana, sits behind Shadow Word: Pain's upkeep in priority, and only has a window when BOTH the execute phase is open AND mana remains, so a specific 300-iteration seed landing on zero casts (this ladder's golden) is not surprising and is not the engine-primitive bug the previous note attributed it to (see expected_idle below; that comparison to paladin-retribution's Hammer of Wrath and warrior-fury's Execute conflated a real resource-scarcity effect with the shared isExecutePhase primitive, which this reproduction shows working correctly for Shadow Word: Death). Engine numbers (audit-priest, 2026-09-28): Shadow Word: Pain's and Devouring Plague's BonusCoefficient were hardcoded to vanilla-Classic-shaped values (an escalating table topping out at 0.167, and 0.063) that this build's own spellconst carries no support for; spellconst's sp_coefficient is a flat 0.2 for every Shadow Word: Pain rank and a flat 0.1 for every Devouring Plague rank, fixed on fork branch audit-priest (unpushed; needs a real engine-pin bump once merged). Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Theorycraft audit fix (design/reviews/2026-10-31-theorycraft-audit/casters.md P1, P2, P3): Mind Blast moved above Mind Flay, Devouring Plague is kept up on its 24-second cooldown instead of only behind Inner Focus, Inner Focus now feeds Mind Blast, and the duplicate execute Mind Blast line went away. The engine now applies Shadowform's half cost and crit bonus to Mind Blast. About +12 percent in that run.",
   "expected_idle": [
     {
       "id": 14751,
-      "reason": "Inner Focus shares a strictSequence with Devouring Plague above. Below level 20, Devouring Plague's own rank 1 (2944) has not been learned yet (spellranks.json: level 20), so rewriteRotationRanks's all-or-nothing sequence rule (rotation_ranks.go) drops the WHOLE sequence -- Inner Focus included -- before the request is built (verified directly: rewriting this file at level 10 leaves neither 14751 nor any Devouring Plague id in the output). Inner Focus itself carries no rank chain in spellranks.json (an unranked ability, like Bloodrage/Judgement), so the ladder's own rule 1 treats it as always-learned and expects a cast the sequence-drop rule already correctly prevented at level 10 -- a harness diagnostic gap (rule 1 has no notion of 'this id's containing action was dropped because a sequence-mate's rank was unlearned', the way it already does for the zero-talent-points exemption), not a rotation defect."
+      "reason": "Inner Focus shares a strictSequence with Mind Blast. It is a Discipline talent the guide build only reaches near level 60, so the truncated leveling builds on the lower rungs do not have it and the sequence never starts there; at level 60 it casts whenever it is ready."
     },
     {
       "id": 1309636,
       "reason": "Verified live, not an engine bug (audit-priest, 2026-09-28): a direct 3000-iteration reproduction of this exact level-60 bare-gear request (forever-sim, engine b5ac36a52, seed 1) casts Shadow Word: Death 408 times (avg 0.136/iteration) and deals damage every time, so isExecutePhase(E20) and the spell itself both work. It is rare on this ladder's bare, no-mana-regen gear because it needs the execute window AND 340 spare mana AND its own 15 s cooldown to line up, behind Shadow Word: Pain's upkeep in priority; landing on zero casts in one specific 300-iteration seed (this golden) is ordinary variance for an event that rare, not the shared isExecutePhase primitive defect an earlier note attributed this to (that note's comparison to paladin-retribution's Hammer of Wrath conflated the two)."
-    },
-    {
-      "id": 10947,
-      "reason": "Mind Flay sits ahead of the on-cooldown Mind Blast with no condition, so Mind Blast only fires from the execute-window line above and rarely on the ladder; the rotation search measured this ordering as the best one."
     }
   ],
   "sources": [
@@ -102,7 +98,65 @@
         }
       },
       {
-        "notes": "Shadow Word: Death gets bonus crit chance below 20% target health from the Early Demise talent.",
+        "notes": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 19280,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 19280,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Inner Focus into Mind Blast: a free Mind Blast with extra crit chance whenever Inner Focus is ready.",
+        "action": {
+          "strictSequence": {
+            "actions": [
+              {
+                "castSpell": {
+                  "spellId": {
+                    "spellId": 14751
+                  }
+                }
+              },
+              {
+                "castSpell": {
+                  "spellId": {
+                    "spellId": 10947,
+                    "rank": 9
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "notes": "Mind Blast on cooldown ahead of Mind Flay: it is the bigger hit per cast time, and Shadowform halves its cost and doubles its crit bonus.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10947,
+              "rank": 9
+            }
+          }
+        }
+      },
+      {
+        "notes": "Shadow Word: Death below 20% target health, where Early Demise adds crit chance.",
         "action": {
           "condition": {
             "isExecutePhase": {
@@ -118,47 +172,7 @@
         }
       },
       {
-        "notes": "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay.",
-        "action": {
-          "condition": {
-            "isExecutePhase": {
-              "threshold": "E20"
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 10947,
-              "rank": 9
-            }
-          }
-        }
-      },
-      {
-        "notes": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, using your highest learned rank at level 60.",
-        "action": {
-          "strictSequence": {
-            "actions": [
-              {
-                "castSpell": {
-                  "spellId": {
-                    "spellId": 14751
-                  }
-                }
-              },
-              {
-                "castSpell": {
-                  "spellId": {
-                    "spellId": 19280,
-                    "rank": 6
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      {
-        "notes": "Mind Flay fills every remaining global, including the rest of the execute fallback above.",
+        "notes": "Mind Flay fills every remaining global.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -169,18 +183,7 @@
         }
       },
       {
-        "notes": "Mind Blast only when Mind Flay cannot be cast: in our level-60 search run Mind Flay on every free global beat Mind Blast on cooldown, so outside the execute window this line rarely fires.",
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 10947,
-              "rank": 9
-            }
-          }
-        }
-      },
-      {
-        "notes": "Shoot with your wand whenever nothing else is ready: it costs no mana and always beats standing idle. Mind Flay and Mind Blast still come first whenever they are available, and Wand Specialization adds to it.",
+        "notes": "Shoot only when nothing else can be cast: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.",
         "action": {
           "castSpell": {
             "spellId": {

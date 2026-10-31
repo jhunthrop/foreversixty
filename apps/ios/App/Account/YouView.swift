@@ -47,6 +47,8 @@ enum YouRoute: Hashable {
     case devices
     case deleteAccount
     case about
+    /// Lane F14: You › Live surfaces.
+    case liveSurfaces
     /// Lane F16: You › Calendar.
     case calendar
 }
@@ -56,6 +58,8 @@ struct YouView: View {
     let summary: YouSummary
     /// Lane F8: whether the store allows the link to web checkout (`PlansLink`).
     var mayLink = false
+    /// Lane F14: the Live surfaces row, behind the widgets switch.
+    var showsLiveSurfaces = false
     /// Lane F16: the Calendar row, while `guild_extras` is on.
     var showsCalendar = false
     let onSignOut: () -> Void
@@ -75,6 +79,12 @@ struct YouView: View {
                     Divider().overlay(FSColor.lineSoft)
                     NavigationLink(value: YouRoute.devices) {
                         AccountRow(icon: "iphone", title: Copy.youDevices, subtitle: summary.devices, chevron: true)
+                    }
+                    if showsLiveSurfaces {
+                        Divider().overlay(FSColor.lineSoft)
+                        NavigationLink(value: YouRoute.liveSurfaces) {
+                            AccountRow(icon: "rectangle.stack", title: Copy.liveSettings, chevron: true)
+                        }
                     }
                     if showsCalendar {
                         Divider().overlay(FSColor.lineSoft)

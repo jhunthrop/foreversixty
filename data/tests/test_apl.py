@@ -285,6 +285,11 @@ EXPECTED_ABILITY_NAMES = {
         400669: "Fingers of Frost",
         10181: "Frostbolt",
         5019: "Shoot",
+        13033: "Ice Barrier",
+        10161: "Cone of Cold",
+        12579: "Winter's Chill",
+        25345: "Arcane Missiles",
+        400589: "Missile Barrage",
     },
 }
 
