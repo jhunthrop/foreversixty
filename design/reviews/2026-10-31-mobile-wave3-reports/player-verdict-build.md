@@ -37,3 +37,33 @@ The player's question: "How did I do last raid?" The answer is first on the repo
 ## Verdict: HOLD
 
 Fix the three MUSTs (Home Logs row, live capture on the wrong report, largest-text meter sheet), then re-capture those, and it ships. The report and list answer the question first and the numbers agree everywhere I checked.
+
+---
+
+# Round 2
+
+Reviewer: wow-player, 2026-10-31. Read after the fix round: `report-kill-ios`, `report-kill-large-ios`, `report-premium-ios`, `home-logs-ios`, `report-live-and`, `meters-damage-large-and`, and the fixtures `reports.get`, `reports.get.live`, `reports.list`, `reports.meters.trash`, `coach.fight`, `me.raid-night`. I did not re-read the Android twins of the kill and home captures or the iOS large meter capture.
+
+## Earlier MUSTs
+| MUST | Now |
+|---|---|
+| Home Logs row named a live dungeon as "last raid" | **Fixed.** "Your last raid: Onyxia's Lair, 1 kill". |
+| Live capture drew a finished raid | **Fixed.** `report-live-and` is Blackrock Spire, Tuesday 15 December 2026 (a Tuesday), Private, "No kills of yours in this report.", "No boss pulls", Trash 4 pulls 3:44. 48 + 71 + 39 + 66 s = 224 s = 3:44. |
+| Largest text lost your row | **Fixed on Android.** Rows 1 to 4, then your 6th row with the gold edge, then "Show all 40". The "Damage taken" tab still wraps to two lines inside the bar, but it stays in the bar. |
+
+## Earlier SHOULDs
+- Pull numbers: done ("Onyxia · pull 1 of 3"). Good.
+- Second wipe is now 4:52 at 22%, longer than the 4:28 kill. Reads right.
+- Fixture dates: 2026 throughout, trash starts 02:05Z after the report (01:58Z) and the raid start (01:00Z). The Onyxia list row and `reports.get` agree on upload and heartbeat times (02:55:40Z, 02:55:30Z), and the last fight ends 02:55:12Z.
+- Trash deaths agree (0), the raid-night coach notes now match the fight coach (Bloodthirst, flask, rage). Largest-text crest is bigger and the chevron legible.
+- The kill sheet head at largest text on Android wraps "Onyxia · pull 3 of 3 Kill · 4:28 · 40 players" onto two lines. Readable.
+
+## Still open, none blocking
+1. **Home Logs row is another character's raid.** Home is "Next for Velaren" (hunter); the raid named is the warrior's. Say whose ("Obnoxious Yell: Onyxia's Lair, 1 kill") or scope the row to the shown character. Account-wide is defensible, but unlabelled it reads as Velaren's.
+2. **Coach footer still repeats itself** (`report-premium-ios`): "Measured against Bloodthirst's 6-second cooldown and your own rage bar; From the character sheet...; Measured against your own rage bar." The first and third labels are not the same string, so the join does not remove them. Also a capital letter after each "; ". Dedupe in the coach data or lower-case after the semicolon.
+3. Deferred by you: "was N DPS" on New best, "of 1,840", damage-taken bar scaling. Fine to follow.
+4. Accuracy items from round 1 (Onyxia raid damage total, percentile curve, Sapphiron Drape and Cape of the Black Baron item level) still go to the accuracy reviewer.
+
+## Verdict: SHIP
+
+No MUSTs remain.

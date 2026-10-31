@@ -304,6 +304,7 @@ F9.1 with and without a character; F9.2 at the top and scrolled to Rotation; F9.
   - a boss pull: outcome dot (kill green, wipe red), boss name, meta `Kill · {m:ss} · {n} players · {n} death(s)` or `Wipe · {m:ss} · boss at {n}%`;
   - **trash is one entry per zone**, after that zone's boss pulls, the way the web folds it: dot muted, `Trash · {zone}`, meta `{n} pulls · {m:ss}` (the summed length). A tap opens the combined view. A zone with no zone name keeps its pulls as separate rows;
   - a tap on a pull opens the fight sheet (F10.3).
+  - a boss pulled more than once in the report is numbered per boss in fight order, `{Boss} · pull {n} of {m}` (the web's `pullNumbers`), on its row and in the fight sheet's head; a boss pulled once keeps its plain name. (Added at the build review.)
 - **Coach card** (Premium only, `log_coach`): see F10.4.
 - Footer meta: `Meters, casts and deaths for every fight are on foreversixty.gg. Tap Open on foreversixty.gg.`
 - **Live:** a `Live` report polls `GET /v1/reports/{id}` every 20 s while the screen is open. The fight in progress shows as a row `In progress` and joins the list when it ends. No live meters.
