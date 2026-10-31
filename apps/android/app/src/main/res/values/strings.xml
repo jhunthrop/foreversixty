@@ -465,7 +465,6 @@
     <string name="sims_footer_premium">Start a sim on foreversixty.gg/sim. Server runs keep going after you close the app.</string>
     <string name="sims_footer_free">Start a sim on foreversixty.gg/sim and it shows here.</string>
     <string name="sims_empty">No sims yet. Start one on foreversixty.gg/sim and it shows here.</string>
-    <string name="sims_runAgain">Run again on the server</string>
     <string name="sims_runAgainRow">Run again</string>
     <string name="sims_runAgainPending">Starting…</string>
     <string name="sims_runAgainDone">Started</string>
@@ -473,7 +472,28 @@
     <string name="sims_premiumLine">Server sims are part of Premium.</string>
     <string name="sims_gear">The gear it ran</string>
     <string name="sims_breakdown">Full breakdown on foreversixty.gg</string>
-    <string name="sims_error" tools:ignore="PluralsCandidate">± %1$s · %2$d iterations · engine %3$s</string>
+    <string name="sims_error">± %1$s · %2$s iterations · engine %3$s</string>
+    <string name="sims_kind_run">Sim</string>
+    <string name="sims_kind_gear">Top Gear</string>
+    <string name="sims_kind_talents">Talent compare</string>
+    <string name="sims_kind_drops">Droptimizer</string>
+    <string name="sims_kind_weights">Stat weights</string>
+    <string name="sims_started">Started %1$s</string>
+    <string name="sims_ended">Ended %1$s</string>
+    <string name="sims_combos" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
+    <string name="sims_estimate_minute">about a minute</string>
+    <string name="sims_estimate_minutes" tools:ignore="PluralsCandidate">about %1$d minutes</string>
+    <string name="sims_estimate_hours" tools:ignore="PluralsCandidate">about %1$d hours</string>
+    <string name="sims_serverEmpty">No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close the app.</string>
+    <string name="sims_overflow">Older finished runs are in Your sims below.</string>
+    <string name="sims_serverFailed">Your server runs did not load.</string>
+    <string name="sims_failedLoad">Your sims did not load.</string>
+    <string name="sims_resultFailed">That sim did not load.</string>
+    <string name="sims_offline">You are offline. Run again needs a connection.</string>
+    <string name="sims_openHint">Opens the result</string>
+    <string name="sims_changed">Gold corner: the slot this result changes</string>
+    <string name="sims_changedLabel">Changed by this result</string>
+    <string name="sims_level" tools:ignore="PluralsCandidate">level %1$d</string>
     <string name="talents_title">Talents</string>
     <string name="talents_matches">Matches</string>
     <string name="talents_differs">Differs</string>
