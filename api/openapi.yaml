@@ -3729,7 +3729,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The report summary"
-          x-fixtures: [reports.get]
+          x-fixtures: [reports.get, reports.get.live]
           content:
             application/json:
               schema:

@@ -718,6 +718,7 @@
     "report.wipeMetaPlain": "Wipe · {time}",
     "report.players": { "count": "n", "one": "1 player", "other": "{n} players" },
     "report.deaths": { "count": "n", "one": "1 death", "other": "{n} deaths" },
+    "report.pullOf": { "text": "{boss} · pull {n} of {m}", "notPlural": true, "args": { "n": "int", "m": "int" } },
     "report.trashTitle": "Trash · {zone}",
     "report.trash": "Trash",
     "report.trashMeta": "{pulls} · {time}",

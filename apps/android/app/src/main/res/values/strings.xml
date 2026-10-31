@@ -750,6 +750,7 @@
         <item quantity="one">1 death</item>
         <item quantity="other">%1$d deaths</item>
     </plurals>
+    <string name="report_pullOf" tools:ignore="PluralsCandidate">%1$s · pull %2$d of %3$d</string>
     <string name="report_trashTitle">Trash · %1$s</string>
     <string name="report_trash">Trash</string>
     <string name="report_trashMeta">%1$s · %2$s</string>

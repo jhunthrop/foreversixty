@@ -2453,6 +2453,11 @@ enum Copy {
         format("report.deaths", n)
     }
 
+    /// {boss} · pull {n} of {m}
+    static func reportPullOf(boss: String, n: Int, m: Int) -> String {
+        format("report.pullOf", boss, n, m)
+    }
+
     /// Trash · {zone}
     static func reportTrashTitle(zone: String) -> String {
         format("report.trashTitle", zone)

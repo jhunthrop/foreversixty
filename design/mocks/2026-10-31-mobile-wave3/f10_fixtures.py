@@ -120,14 +120,14 @@ write("reports.me.empty", env({"report_id": REPORT, "characters": []}))
 write("reports.me.error-not-found", err("not_found", "no such report"))
 
 # The night: six trash pulls, two wipes, the kill. 9 fights, 3 boss pulls, 1 kill.
-START = 1_765_766_200  # 2026-12-15T02:36:40Z, the old fixture's kill start, now the night's first pull
+START = 1_797_300_300  # 2026-12-15T02:05:00Z: the first pull, after the 01:00 raid start and the 01:58 report
 FIGHTS = [
     (1, "trash", "Trash", None, 95_000, False, 0, None),
-    (2, "trash", "Trash", None, 120_000, False, 1, None),
+    (2, "trash", "Trash", None, 120_000, False, 0, None),
     (3, "trash", "Trash", None, 64_000, False, 0, None),
     (4, "encounter", "Onyxia", 1084, 72_000, False, 6, 61.0),
     (5, "trash", "Trash", None, 41_000, False, 0, None),
-    (6, "encounter", "Onyxia", 1084, 161_000, False, 11, 22.0),
+    (6, "encounter", "Onyxia", 1084, 292_000, False, 11, 22.0),  # a phase-3 wipe, longer than the kill
     (7, "trash", "Trash", None, 88_000, False, 0, None),
     (8, "trash", "Trash", None, 52_000, False, 0, None),
     (9, "encounter", "Onyxia", 1084, KILL_MS, True, 3, None),
@@ -140,7 +140,7 @@ def iso(t):
     return datetime.datetime.fromtimestamp(t, datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-fights, t = [], START - 900
+fights, t = [], START
 for index, kind, name, enc, ms, kill, deaths, health in FIGHTS:
     f = {"index": index, "kind": kind, "name": name}
     if enc:
@@ -161,7 +161,7 @@ write("reports.get", env({
     "guild": {"id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp"},
     "zone": "Onyxia's Lair", "status": "complete", "engine_version": "1f542def3",
     "fights": fights, "players": GUIDS, "created_at": "2026-12-15T01:58:00Z",
-    "last_upload_at": "2026-12-15T03:12:44Z", "heartbeat_at": "2026-12-15T03:12:30Z",
+    "last_upload_at": "2026-12-15T02:55:40Z", "heartbeat_at": "2026-12-15T02:55:30Z",
     "data_base_url": f"https://api.foreversixty.gg/v1/reports/{REPORT}/files",
     "logging_character": {"key": "us/pvp/obnoxious-yell", "name": "Obnoxious Yell"},
     "trash_groups": [{
@@ -180,7 +180,7 @@ write("reports.list", env({
          "created_at": "2026-12-15T01:58:00Z", "fight_count": len(fights),
          "kill_count": sum(1 for f in fights if f["kill"]),
          "boss_count": len({f["name"] for f in fights if f["kill"]}),
-         "logging_character": YELL_REF, "last_upload_at": "2026-12-15T03:12:44Z", "heartbeat_at": "2026-12-15T03:12:30Z"},
+         "logging_character": YELL_REF, "last_upload_at": "2026-12-15T02:55:40Z", "heartbeat_at": "2026-12-15T02:55:30Z"},
         {"id": "q7c2v9tk4mzh", "title": "", "zone": "Molten Core", "status": "processing", "visibility": "public",
          "created_at": "2026-12-12T01:30:00Z", "fight_count": 0, "kill_count": 0, "boss_count": 0,
          "logging_character": YELL_REF, "last_upload_at": "2026-12-12T04:02:10Z", "heartbeat_at": None},
@@ -214,3 +214,26 @@ write("reports.meters.trash", env({
     "fight_index": trash[0]["index"], "scope": "trash", "metric": "damage", "kill": False,
     "duration_ms": TRASH_MS, "players": [p for p in TRASH_PLAYERS if p["damage_done"] > 0],
 }))
+
+# The live report on the list (m4xk9d2pqz7a): a private Blackrock Spire run still being logged,
+# four trash pulls so far, no boss. Its list row reads 4 fights, 0 bosses, 0 kills.
+BRS_START = START + 22 * 3600 + 420  # 2026-12-16T00:10Z created; pulls from 00:12Z
+brs, t = [], BRS_START
+for index, ms in ((1, 48_000), (2, 71_000), (3, 39_000), (4, 66_000)):
+    brs.append({"index": index, "kind": "trash", "name": "Trash", "kill": False, "in_progress": False,
+                "zone": "Blackrock Spire", "start": iso(t), "end": iso(t + ms // 1000), "duration_ms": ms,
+                "players": GUIDS[:5], "deaths": 0, "mob_deaths": 6, "group_kills": 6, "group_deaths": 0,
+                "group": GUIDS[:5], "verified": True})
+    t += ms // 1000 + 180
+write("reports.get.live", env({
+    "id": "m4xk9d2pqz7a", "title": "", "visibility": "private",
+    "owner": {"id": 1812, "battletag": "Yell#1604"},
+    "zone": "Blackrock Spire", "status": "live", "engine_version": "1f542def3",
+    "fights": brs, "players": GUIDS[:5], "created_at": "2026-12-16T00:10:00Z",
+    "last_upload_at": "2026-12-16T00:31:12Z", "heartbeat_at": "2026-12-16T00:31:40Z",
+    "data_base_url": "https://api.foreversixty.gg/v1/reports/m4xk9d2pqz7a/files",
+    "logging_character": {"key": "us/pvp/obnoxious-yell", "name": "Obnoxious Yell"},
+    "trash_groups": [{"key": 1, "zone": "Blackrock Spire", "fights": [1, 2, 3, 4],
+                      "duration_ms": sum(f["duration_ms"] for f in brs)}],
+}))
+assert len(brs) == 4  # the list row's fight_count

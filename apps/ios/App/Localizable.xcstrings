@@ -6325,6 +6325,18 @@
         }
       }
     },
+    "report.pullOf": {
+      "comment": "Arguments: 1 boss (string), 2 n (int), 3 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · pull %2$lld of %3$lld"
+          }
+        }
+      }
+    },
     "report.pulls": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
