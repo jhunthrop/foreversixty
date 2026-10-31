@@ -22,6 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalView
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.guild.GuildExtrasFeature
+import gg.foreversixty.app.guild.GuildExtrasRows
+import gg.foreversixty.app.guild.HistoryRoute
+import gg.foreversixty.app.guild.RosterRoute
+import gg.foreversixty.app.guild.logic.CalendarInput
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.StaticDataClient
@@ -56,6 +61,10 @@ import kotlinx.coroutines.launch
 sealed interface RaidsDestination {
     data class Raid(val guild: Long, val raid: Long, val roster: Boolean = false, val open: RaidOpenAction? = null) : RaidsDestination
     data class Night(val raid: Long) : RaidsDestination
+
+    /** Lane F16: the guild's roster and its logged raid nights. */
+    data class Roster(val guild: Long) : RaidsDestination
+    data class History(val guild: Long) : RaidsDestination
 }
 
 /** The Raids tab's own back stack; deep links and notifications push here (spec 5.0, 6.4). */
@@ -96,6 +105,8 @@ class RaidsFeature(
     context: Context,
     apiClient: ApiClient,
     private val statics: StaticDataClient,
+    /** Lane F16: roster, raid history and calendar sync; null while `guild_extras` is off. */
+    val extras: GuildExtrasFeature? = null,
     private val isAvailable: () -> Boolean,
 ) {
     val service: RaidService = LiveRaidService(apiClient)
@@ -145,6 +156,20 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
     var next by remember { mutableStateOf<SignupController?>(null) }
     var iconBuild by remember { mutableStateOf<String?>(null) }
 
+    val extras = feature.extras
+
+    /** Lane F16: the calendar follows every refresh and every sign-up answer. */
+    fun syncCalendar() {
+        val loaded = (tab.state as? RaidsTabState.Loaded)?.content ?: return
+        if (loaded.offlineSince != null || extras == null) return
+        scope.launch { extras.syncCalendar(CalendarInput(loaded.head.id, loaded.head.name, loaded.planned)) }
+    }
+
+    val replaced: (gg.foreversixty.app.model.RaidView) -> Unit = { view ->
+        tab.replace(view)
+        syncCalendar()
+    }
+
     fun syncNext() {
         val content = (tab.state as? RaidsTabState.Loaded)?.content
         val raid = content?.let { PlannedRaids(it.planned, feature.now()).next }
@@ -157,7 +182,7 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
             }
             else -> SignupController(content.head.id, raid, deps).also {
                 it.offline = content.offlineSince != null
-                it.onRaidChanged = { view -> tab.replace(view) }
+                it.onRaidChanged = replaced
             }
         }
     }
@@ -165,6 +190,9 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
     suspend fun reload() {
         tab.load()
         syncNext()
+        syncCalendar()
+        val loaded = (tab.state as? RaidsTabState.Loaded)?.content
+        if (extras != null && loaded != null) extras.roster(loaded.head.id).load()
     }
 
     LaunchedEffect(feature) { iconBuild = feature.iconBuild() }
@@ -188,12 +216,19 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
                     openWeb = { uri.openUri(it) },
                     retry = { scope.launch { reload() } },
                     requestPermission = requestPermission,
+                    guildRows = { loaded ->
+                        if (extras != null) {
+                            GuildExtrasRows(
+                                onRoster = extras.roster(loaded.head.id).onRoster,
+                                openRoster = { feature.navigator.push(RaidsDestination.Roster(loaded.head.id)) },
+                                openHistory = { feature.navigator.push(RaidsDestination.History(loaded.head.id)) },
+                            )
+                        }
+                    },
                 )
             }
             is RaidsDestination.Raid -> {
-                val model = remember(top) {
-                    RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open) { view -> tab.replace(view) }
-                }
+                val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, replaced) }
                 RaidPageScreen(
                     model = model,
                     clock = clock,
@@ -209,6 +244,15 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, selector: @C
             is RaidsDestination.Night -> {
                 val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now) }
                 RaidNightScreen(model, clock, feature.now) { feature.navigator.pop() }
+            }
+            is RaidsDestination.Roster -> extras?.let {
+                RosterRoute(it.roster(top.guild), clock, feature.now) { feature.navigator.pop() }
+            }
+            is RaidsDestination.History -> extras?.let {
+                val pager = remember(top) { it.history(top.guild) }
+                HistoryRoute(pager, tab.accountKeys, clock, feature.now, { raid -> feature.navigator.push(RaidsDestination.Night(raid)) }) {
+                    feature.navigator.pop()
+                }
             }
         }
     }

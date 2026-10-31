@@ -56,6 +56,8 @@ struct AppEnvironment {
                 FileHomeCache.standard()?.removeAll()
                 DiskRaidCache.standard().removeAll()
                 DiskRaidCache.sims().removeAll()
+                // Lane F16: the calendar link is the account's, never the next one's.
+                KeychainCalendarLinkStore().clear()
             }
         )
     }

@@ -71,6 +71,7 @@ fun RaidsTabContentView(
     openWeb: (String) -> Unit,
     retry: () -> Unit,
     requestPermission: () -> Unit,
+    guildRows: @Composable (RaidsTabContent) -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
         (state as? RaidsTabState.Loaded)?.content?.offlineSince?.let {
@@ -98,7 +99,12 @@ fun RaidsTabContentView(
                     }
                 }
                 RaidsTabState.Failed -> ErrorRegion(stringResource(R.string.raids_failed), retry)
-                is RaidsTabState.Loaded -> Loaded(state.content, clock, now, nextController, openRaid, openNight, openWeb, requestPermission)
+                is RaidsTabState.Loaded -> {
+                    GuildHeadView(state.content.head)
+                    // Lane F16: Roster and Raid history, for a verified member only.
+                    guildRows(state.content)
+                    Loaded(state.content, clock, now, nextController, openRaid, openNight, openWeb, requestPermission)
+                }
             }
         }
     }
@@ -129,7 +135,6 @@ private fun Loaded(
     requestPermission: () -> Unit,
 ) {
     val planned = PlannedRaids(content.planned, now())
-    GuildHeadView(content.head)
     val next = planned.next
     if (next != null && nextController != null && nextController.raid.id == next.id) {
         NextRaidCard(nextController, clock, now, content.character.key, requestPermission) { roster -> openRaid(nextController.raid, roster) }

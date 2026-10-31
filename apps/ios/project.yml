@@ -103,6 +103,8 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         # Lane F4: Add to calendar writes the raid with write-only access (iOS 17+).
         NSCalendarsWriteOnlyAccessUsageDescription: Add to calendar puts the raid in your calendar.
+        # Lane F16: the app keeps its own raid calendar up to date (asked only when the switch turns on).
+        NSCalendarsFullAccessUsageDescription: Forever Sixty keeps a calendar of your guild's raids up to date.
         FSAPIBaseURL: $(API_BASE_URL)
         FSAPIMode: $(API_MODE)
         FSSentryDSN: $(SENTRY_DSN)

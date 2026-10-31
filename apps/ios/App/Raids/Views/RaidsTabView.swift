@@ -14,6 +14,8 @@ struct RaidsTabContentView: View {
     let openNight: (Int64) -> Void
     let openWeb: (URL) -> Void
     let retry: () -> Void
+    /// Lane F16: the Roster and Raid history rows, nil while `guild_extras` is off.
+    var guildRows: GuildTabRows?
 
     var body: some View {
         ScrollView {
@@ -74,6 +76,7 @@ struct RaidsTabContentView: View {
     private func loaded(_ content: RaidsTabContent) -> some View {
         let planned = PlannedRaids(content.planned, now: now())
         GuildHeadView(head: content.head)
+        if let guildRows { GuildTabRowsCard(rows: guildRows) }
         if let next = planned.next, let controller = nextController, controller.raid.id == next.id {
             NextRaidCard(controller: controller, clock: clock, now: now, currentKey: content.character.key) { roster in
                 openRaid(controller.raid, roster)
