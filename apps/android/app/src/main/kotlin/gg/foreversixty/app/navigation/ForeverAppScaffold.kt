@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -32,15 +33,30 @@ import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.home.HomeRoute
+import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.RaidsRoute
 
 /**
  * The app shell: a Material 3 navigation bar over one screen per tab. [account] is lane F1's
  * session and sign-in, null while its feature switch is off.
  */
 @Composable
-fun ForeverAppScaffold(home: HomeDependencies, bis: BisModel? = null, account: AccountDeps? = null) {
+fun ForeverAppScaffold(
+    home: HomeDependencies,
+    bis: BisModel? = null,
+    account: AccountDeps? = null,
+    raids: RaidsFeature? = null,
+) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     val openBis = { selected = ForeverTab.Bis }
+    // Lane F4: a raid link or notification selects the Raids tab.
+    val wantsRaids = raids?.navigator?.wantsTab == true
+    LaunchedEffect(wantsRaids) {
+        if (wantsRaids) {
+            selected = ForeverTab.Raids
+            raids.navigator.wantsTab = false
+        }
+    }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {
@@ -52,7 +68,7 @@ fun ForeverAppScaffold(home: HomeDependencies, bis: BisModel? = null, account: A
                         HomeRoute(home, account.session, openBis) { ComingSoon(selected) }
                     }
                 }
-            ForeverTab.Raids -> ComingSoon(selected)
+            ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account)
             ForeverTab.Bis ->
                 if (bis == null) {
                     ComingSoon(selected)
@@ -76,6 +92,19 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?)
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
     BisRoute(bis, home.catalog, BisOwner(characterKey, waiting)) { if (session != null) CharacterSelectorBar(session) }
+}
+
+/**
+ * Raids (lane F4) for the session's current character's guild, under the same selector as Home
+ * and BiS; signed out or with sign-in off, it follows `/v1/me`'s main character.
+ */
+@Composable
+private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?) {
+    val session = account?.session
+    val phase = session?.phase?.collectAsStateWithLifecycle()?.value
+    val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
+    val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
+    RaidsRoute(raids, characterKey) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /** The scaffold with a navigation bar, stateless so screenshot tests can drive it. */

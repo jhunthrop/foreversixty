@@ -261,6 +261,77 @@
     <string name="raids_empty">No raid planned yet.</string>
     <string name="raids_emptyNote">When an officer plans one, it shows here and we tell you.</string>
     <string name="raids_failed">Planned raids did not load.</string>
+    <string name="raids_chip_signed">%1$s · %2$s</string>
+    <string name="raids_waitingTag">Waiting</string>
+    <string name="raids_when_tonight">Tonight %1$s</string>
+    <string name="raids_when_tomorrow">Tomorrow %1$s</string>
+    <string name="raids_when_weekday">%1$s %2$s</string>
+    <string name="raids_when_date">%1$s, %2$s</string>
+    <string name="raids_who">%1$s · %2$s</string>
+    <string name="raids_nightMeta">%1$s · %2$s · %3$s</string>
+    <plurals name="raids_part_tanks">
+        <item quantity="one">1 tank</item>
+        <item quantity="other">%1$d tanks</item>
+    </plurals>
+    <plurals name="raids_part_healers">
+        <item quantity="one">1 healer</item>
+        <item quantity="other">%1$d healers</item>
+    </plurals>
+    <string name="raids_part_dps" tools:ignore="PluralsCandidate">%1$d DPS</string>
+    <string name="raids_part_late" tools:ignore="PluralsCandidate">%1$d late</string>
+    <plurals name="raids_span_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="raids_span_hours" tools:ignore="PluralsCandidate">%1$d h</string>
+    <string name="raids_span_minutes" tools:ignore="PluralsCandidate">%1$d min</string>
+    <plurals name="raids_spanWords_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="raids_spanWords_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="raids_spanWords_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="raids_class_warrior">Warrior</string>
+    <string name="raids_class_paladin">Paladin</string>
+    <string name="raids_class_hunter">Hunter</string>
+    <string name="raids_class_rogue">Rogue</string>
+    <string name="raids_class_priest">Priest</string>
+    <string name="raids_class_shaman">Shaman</string>
+    <string name="raids_class_mage">Mage</string>
+    <string name="raids_class_warlock">Warlock</string>
+    <string name="raids_class_druid">Druid</string>
+    <string name="raids_comp_title">Raid composition</string>
+    <string name="raids_comp_role" tools:ignore="PluralsCandidate">%1$s %2$d/%3$d</string>
+    <string name="raids_comp_roleCount" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raids_comp_buffs">Buffs and utility</string>
+    <string name="raids_comp_missing">Missing: %1$s</string>
+    <string name="raids_comp_covered">Every raid buff is covered.</string>
+    <string name="raids_a11y_buffPresent" tools:ignore="PluralsCandidate">%1$s, covered by %2$d</string>
+    <string name="raids_a11y_buffMissing">%1$s, missing</string>
+    <string name="raids_a11y_classCount" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raids_a11y_classes">Classes coming: %1$s</string>
+    <string name="raids_a11y_count">%1$s: %2$s</string>
+    <string name="raids_a11y_segments">%1$s\'s sign-up</string>
+    <string name="raids_a11y_saving">Saving</string>
+    <string name="raids_a11y_more">More</string>
+    <string name="raids_a11y_pending">Pending, choose a spec</string>
+    <string name="raids_a11y_place">%1$s, %2$s. Change the place</string>
+    <string name="raids_a11y_roster">%1$s, %2$s %3$s</string>
+    <string name="raids_note_saving">Saving…</string>
+    <string name="raids_copy_size" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="raids_copy_group">%1$s: %2$s</string>
+    <string name="raids_copy_count">%1$s: %2$s</string>
+    <string name="raids_calendarLocation">%1$s · %2$s</string>
+    <string name="raids_night_dps">%1$s DPS</string>
+    <string name="raids_night_open">Your raid night</string>
+    <string name="raids_zoneSuffix">" · %1$s"</string>
+    <string name="raids_notSignedCount" tools:ignore="PluralsCandidate">Not signed up %1$d</string>
     <string name="raid_eyebrow">Raid</string>
     <string name="raid_status_planned">Planned</string>
     <string name="raid_status_locked">Locked</string>

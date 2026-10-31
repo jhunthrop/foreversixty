@@ -37,4 +37,19 @@ public enum GameColors {
     /// A chip or secondary control's 4.5% white fill, and the pressed 10% gold wash.
     public static let controlFill = Color.white.opacity(0.045)
     public static let pressedWash = FSColor.gold.opacity(0.10)
+    /// The viewer's own row (a roster's own line): gold at 5%.
+    public static let rowWash = FSColor.gold.opacity(0.05)
+
+    /// A parse percentile's colour (`--color-parse-*`).
+    public static func parse(_ percentile: Int) -> Color {
+        switch percentile {
+        case 100...: FSColor.parseGold
+        case 99: FSColor.parsePink
+        case 95...: FSColor.parseOrange
+        case 75...: FSColor.parsePurple
+        case 50...: FSColor.parseBlue
+        case 25...: FSColor.parseGreen
+        default: FSColor.parseGreyText
+        }
+    }
 }

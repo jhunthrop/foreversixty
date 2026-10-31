@@ -66,7 +66,7 @@ struct HomeAnswerView: View {
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 18, trailing: 16))
         .frame(maxWidth: .infinity, alignment: .leading)
-        .heroBand()
+        .surfaceBand()
         NextRows(title: cached?.nextTitle ?? Copy.homeNextTitle(name: presenter.character.name),
                  rows: cached?.next ?? presenter.nextRowsWithoutAnswer(), send: send)
             .padding(.horizontal, 16)
@@ -95,7 +95,7 @@ struct HomeHero: View {
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 18, trailing: 16))
         .frame(maxWidth: .infinity, alignment: .leading)
-        .heroBand()
+        .surfaceBand()
     }
 
     @ViewBuilder
@@ -311,7 +311,7 @@ struct HomeSkeleton: View {
             }
             .padding(EdgeInsets(top: 14, leading: 16, bottom: 18, trailing: 16))
             .frame(maxWidth: .infinity, alignment: .leading)
-            .heroBand()
+            .surfaceBand()
             VStack(spacing: 0) {
                 ForEach(0..<HomePresenter.visibleRows, id: \.self) { _ in
                     HStack(alignment: .top, spacing: 12) {

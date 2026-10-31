@@ -5,6 +5,7 @@
     "zone_name": "Onyxia's Lair",
     "title": "Onyxia's Lair",
     "starts_at": "2026-12-15T01:00:00Z",
+    "invite_at": null,
     "duration_minutes": 180,
     "status": "done",
     "size": 40,
@@ -20,6 +21,134 @@
       "healers": 5,
       "dps": 11
     },
+    "composition": {
+      "classes": [
+        {
+          "class": "warrior",
+          "count": 2
+        },
+        {
+          "class": "paladin",
+          "count": 0
+        },
+        {
+          "class": "hunter",
+          "count": 0
+        },
+        {
+          "class": "rogue",
+          "count": 0
+        },
+        {
+          "class": "priest",
+          "count": 0
+        },
+        {
+          "class": "shaman",
+          "count": 0
+        },
+        {
+          "class": "mage",
+          "count": 0
+        },
+        {
+          "class": "warlock",
+          "count": 0
+        },
+        {
+          "class": "druid",
+          "count": 0
+        }
+      ],
+      "roles": {
+        "tanks": 2,
+        "healers": 5,
+        "dps": 11
+      },
+      "targets": null,
+      "buffs": [
+        {
+          "key": "fortitude",
+          "name": "Power Word: Fortitude",
+          "label": "Fort",
+          "icon": "spell_holy_wordfortitude",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "mark_of_the_wild",
+          "name": "Mark of the Wild",
+          "label": "MotW",
+          "icon": "spell_nature_regeneration",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "arcane_intellect",
+          "name": "Arcane Intellect",
+          "label": "Int",
+          "icon": "spell_holy_magicalsentry",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "blessings",
+          "name": "Blessings",
+          "label": "Bless",
+          "icon": "spell_holy_fistofjustice",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "shadow_protection",
+          "name": "Shadow Protection",
+          "label": "SPro",
+          "icon": "spell_shadow_antishadow",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "soulstone",
+          "name": "Soulstone",
+          "label": "SS",
+          "icon": "inv_misc_orb_04",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "battle_rez",
+          "name": "Rebirth",
+          "label": "Rez",
+          "icon": "spell_nature_reincarnation",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "windfury_totem",
+          "name": "Windfury Totem",
+          "label": "WF",
+          "icon": "spell_nature_windfury",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "strength_of_earth",
+          "name": "Strength of Earth Totem",
+          "label": "SoE",
+          "icon": "spell_nature_earthbindtotem",
+          "present": false,
+          "count": 0
+        },
+        {
+          "key": "mana_spring",
+          "name": "Mana Spring Totem",
+          "label": "MS",
+          "icon": "spell_nature_manaregentotem",
+          "present": false,
+          "count": 0
+        }
+      ]
+    },
     "signups": [
       {
         "character_key": "us/pvp/obnoxious-yell",
@@ -29,7 +158,9 @@
         "role": "dps",
         "state": "in",
         "note": "",
-        "own": true
+        "own": true,
+        "spec_name": "Fury",
+        "spec_icon": "ability_warrior_innerrage"
       },
       {
         "character_key": "us/pvp/kraggor",
@@ -39,7 +170,9 @@
         "role": "tank",
         "state": "in",
         "note": "",
-        "own": false
+        "own": false,
+        "spec_name": "Protection",
+        "spec_icon": "inv_shield_06"
       }
     ],
     "not_signed": [
@@ -47,7 +180,10 @@
         "character_key": "us/pvp/zulmara",
         "name": "Zulmara",
         "class": "hunter",
-        "spec": "hunter-marksmanship"
+        "spec": "hunter-marksmanship",
+        "role": "dps",
+        "spec_name": "Marksmanship",
+        "spec_icon": "ability_marksmanship"
       }
     ],
     "viewer": {
@@ -60,9 +196,34 @@
           "verified": true,
           "state": "in",
           "role": "dps",
-          "raid_spec": "warrior-fury"
+          "raid_spec": "warrior-fury",
+          "spec_name": "Fury",
+          "spec_icon": "ability_warrior_innerrage",
+          "spec_options": [
+            {
+              "spec": "warrior-arms",
+              "name": "Arms",
+              "role": "dps",
+              "icon": "ability_rogue_eviscerate"
+            },
+            {
+              "spec": "warrior-fury",
+              "name": "Fury",
+              "role": "dps",
+              "icon": "ability_warrior_innerrage"
+            },
+            {
+              "spec": "warrior-protection",
+              "name": "Protection",
+              "role": "tank",
+              "icon": "inv_shield_06"
+            }
+          ]
         }
-      ]
+      ],
+      "can": [],
+      "tools_ended": false,
+      "raid_night": true
     },
     "discord": {
       "available": true,

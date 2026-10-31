@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Lane F4: the reminder ask (spec F4.4) asks for it in context, after a first In. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".ForeverApplication"
@@ -42,6 +44,9 @@
                 links (F7) both arrive through it; MainActivity already routes them.
             -->
         </activity>
+
+        <!-- Lane F4: In, Late and Out answered from the notification, in the background. -->
+        <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
 
         <!--
             TODO(lane A2, lane F7, owner): FCM. Needs the owner's Firebase project

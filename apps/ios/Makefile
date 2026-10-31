@@ -14,7 +14,7 @@ endif
 XCODEBUILD = xcodebuild -project ForeverSixty.xcodeproj -scheme ForeverSixty \
 	-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData
 
-.PHONY: project build test clean device
+.PHONY: project build test clean device captures
 
 project:
 	xcodegen generate
@@ -24,6 +24,11 @@ build: project
 
 test: project
 	$(LOCKED) $(XCODEBUILD) test
+
+# Lane F4's tap-driven review captures (UITests/RaidCaptureTests) on the shared simulator.
+captures: project
+	$(LOCKED) xcodebuild -project ForeverSixty.xcodeproj -scheme ForeverSixtyCaptures \
+		-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData test
 
 # Prints the shared simulator's UDID, for screenshots: wrap simctl calls in
 # `../../tools/mobile-device.sh ios-run xcrun simctl ...`.

@@ -108,25 +108,45 @@ struct SpecIcon: View {
     }
 }
 
-/// The icon file on the `#131824` tile: the cached copy at once, else loaded and faded in.
-private struct GameIconImage: View {
+/// The icon file on the `#131824` tile: the cached copy at once, else loaded and faded in. With a
+/// [fallback], the tile shows that short label until the icon loads, or for good when it cannot;
+/// [dimmed] greys and fades only the art, so a fallback label stays readable (WCAG AA).
+struct GameIconImage: View {
     let icon: String?
-    let build: String
+    let build: String?
+    var fallback: String?
+    var dimmed = false
 
     @Environment(\.itemIconSource) private var source
     @State private var image: UIImage?
 
+    private static let labelSize: CGFloat = 11
+    private static let dimmedOpacity = 0.35
+
     var body: some View {
         ZStack {
             FSColor.cardTop
-            if let shown = image ?? icon.flatMap({ source.cached(icon: $0, build: build) }) {
+            if let shown {
                 Image(uiImage: shown).resizable().scaledToFill().transition(.opacity)
+                    .saturation(dimmed ? 0 : 1)
+                    .opacity(dimmed ? Self.dimmedOpacity : 1)
+            } else if let fallback {
+                Text(fallback)
+                    .font(.system(size: Self.labelSize, weight: .bold))
+                    .foregroundStyle(dimmed ? FSColor.muted : FSColor.strong)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .padding(2)
             }
         }
         .task(id: icon) {
-            guard let icon, image == nil else { return }
+            guard let icon, let build, image == nil else { return }
             let loaded = await source.load(icon: icon, build: build)
             withAnimation(.easeIn(duration: 0.12)) { image = loaded }
         }
+    }
+
+    private var shown: UIImage? {
+        image ?? icon.flatMap { icon in build.flatMap { source.cached(icon: icon, build: $0) } }
     }
 }

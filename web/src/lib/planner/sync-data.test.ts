@@ -197,6 +197,16 @@ describe('syncData', () => {
     expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD))).toBe(false);
   });
 
+  it('publishes active-build.json and dates.json at the data root, where the apps fetch them', async () => {
+    writeJson(path.join(webRoot, 'src/data/dates.json'), { dates: [] });
+    const result = await syncData({ repoRoot, webRoot, allowFixture: true, log: silent });
+    expect(result.rootFiles).toEqual(['active-build.json', 'dates.json']);
+    expect(JSON.parse(readFileSync(path.join(webRoot, 'public/data/active-build.json'), 'utf8'))).toEqual({
+      build: BUILD,
+    });
+    expect(existsSync(path.join(webRoot, 'public/data/dates.json'))).toBe(true);
+  });
+
   it('names the published builds on stdout', async () => {
     scaffoldRealBuild();
     scaffoldRealBuild(OTHER_BUILD, 'mage');

@@ -27,9 +27,10 @@ import java.util.Locale
 
 /**
  * The site's buttons (spec §4.5): `PRIMARY_BUTTON_FIXED` (the gold gradient, one per screen at
- * most), `SECONDARY_BUTTON_FIXED` (4.5% white, the gold 17% border), destructive and quiet.
+ * most), `SECONDARY_BUTTON_FIXED` (4.5% white, the gold 17% border), destructive and quiet, and the
+ * accent secondary (gold label and border, the reminder ask's Turn on). Pressed: the Material ripple.
  */
-enum class BrandButtonKind { Primary, Secondary, Destructive, Quiet }
+enum class BrandButtonKind { Primary, Secondary, Accent, Destructive, Quiet }
 
 /** One button for every kind: full width by default; `fill = false` hugs the label. */
 @Composable
@@ -39,6 +40,7 @@ fun BrandButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     busy: Boolean = false,
+    enabled: Boolean = true,
     height: Dp = 52.dp,
     fill: Boolean = true,
     leadingIcon: ImageVector? = null,
@@ -57,10 +59,12 @@ fun BrandButton(
             Text(caseOf(kind, label), style = FsType.button, textAlign = TextAlign.Center)
         }
     }
+    // A busy button keeps its colours; a disabled one dims.
+    val disabled = if (busy) contentColor(kind) else contentColor(kind).copy(alpha = DISABLED_ALPHA)
     if (kind == BrandButtonKind.Primary) {
         Button(
             onClick = onClick,
-            enabled = !busy,
+            enabled = enabled && !busy,
             shape = shape,
             contentPadding = padding,
             modifier = size.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape),
@@ -74,34 +78,38 @@ fun BrandButton(
     } else {
         OutlinedButton(
             onClick = onClick,
-            enabled = !busy,
+            enabled = enabled && !busy,
             shape = shape,
             contentPadding = padding,
             modifier = size,
-            border = BorderStroke(1.dp, borderColor(kind)),
+            border = BorderStroke(1.dp, if (enabled || busy) borderColor(kind) else borderColor(kind).copy(alpha = DISABLED_ALPHA)),
             colors = ButtonDefaults.outlinedButtonColors(
                 containerColor = GameColors.controlFill,
                 contentColor = contentColor(kind),
-                disabledContentColor = contentColor(kind),
+                disabledContainerColor = GameColors.controlFill,
+                disabledContentColor = disabled,
             ),
         ) { content() }
     }
 }
 
 private val HORIZONTAL_PADDING = 18.dp
+private const val DISABLED_ALPHA = 0.38f
 
 /** Spec §4.5: the primary button is uppercase; a secondary reads in sentence case (BiS UX verdict). */
 private fun caseOf(kind: BrandButtonKind, label: String): String =
-    if (kind == BrandButtonKind.Secondary) label else label.uppercase(Locale.ROOT)
+    if (kind == BrandButtonKind.Secondary || kind == BrandButtonKind.Accent) label else label.uppercase(Locale.ROOT)
 
 private fun contentColor(kind: BrandButtonKind): Color = when (kind) {
     BrandButtonKind.Primary -> FsColor.bg
     BrandButtonKind.Secondary -> FsColor.strong
+    BrandButtonKind.Accent -> FsColor.gold
     BrandButtonKind.Destructive -> FsColor.wipe
     BrandButtonKind.Quiet -> FsColor.nav
 }
 
 private fun borderColor(kind: BrandButtonKind): Color = when (kind) {
     BrandButtonKind.Destructive -> FsColor.wipe.copy(alpha = 0.45f)
+    BrandButtonKind.Accent -> FsColor.gold
     else -> FsColor.lineCard
 }

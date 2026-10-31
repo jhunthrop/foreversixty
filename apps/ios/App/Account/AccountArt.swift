@@ -1,22 +1,6 @@
 import DesignSystem
 import SwiftUI
 
-/// The hero band ground (`--surface-band`): the ember radial over the warm dark.
-struct BandBackground: View {
-    var body: some View {
-        ZStack {
-            FSColor.bg
-            RadialGradient(
-                colors: [FSColor.ember.opacity(0.28), .clear],
-                center: .top,
-                startRadius: 0,
-                endRadius: 520
-            )
-        }
-        .ignoresSafeArea()
-    }
-}
-
 /// The toast at the top of F1.1: F1.4 and the 401 line in wipe red, a finished deletion neutral.
 struct NoticeToast: View {
     let text: String

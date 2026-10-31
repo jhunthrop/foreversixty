@@ -662,9 +662,32 @@ export async function syncData({
   }
   const pruned = await pruneUnpublished({ webRoot, published });
   if (pruned.length > 0) log.log(`sync-data: removed stale public/data/${pruned.join(', ')}`);
+  const rootFiles = await publishRootFiles(webRoot);
+  log.log(`sync-data: published ${rootFiles.map((name) => `/data/${name}`).join(', ')}`);
   log.log(`sync-data: published ${published.length} build(s) from ${source} data: ${published.join(', ')}`);
 
-  return { build, source, sourceDir, usedFixture, copied, published, pruned };
+  return { build, source, sourceDir, usedFixture, copied, published, pruned, rootFiles };
+}
+
+/**
+ * The build-independent files the apps fetch at the data root (docs/contracts/app-v1.md "Finding
+ * the build"): /data/active-build.json names the build every icon, list and BiS URL hangs off,
+ * and /data/dates.json carries the game dates. The site imports both at build time, so before
+ * this they existed only in src/data and the CDN answered 404, leaving an app no build to read.
+ */
+export const ROOT_FILES = ['active-build.json', 'dates.json'];
+
+async function publishRootFiles(webRoot) {
+  const publicData = path.join(webRoot, 'public/data');
+  await mkdir(publicData, { recursive: true });
+  const published = [];
+  for (const name of ROOT_FILES) {
+    const source = path.join(webRoot, 'src/data', name);
+    if (!(await exists(source))) continue;
+    await cp(source, path.join(publicData, name));
+    published.push(name);
+  }
+  return published;
 }
 
 const invokedDirectly =

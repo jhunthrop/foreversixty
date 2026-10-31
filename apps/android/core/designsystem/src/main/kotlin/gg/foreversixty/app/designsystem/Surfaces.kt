@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -61,7 +62,7 @@ fun OfflineStrip(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 36.dp)
-            .background(Color(0xFF11151F))
+            .background(GameColors.offlineGround)
             .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
             .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)
             .semantics { liveRegion = LiveRegionMode.Polite },
@@ -75,21 +76,36 @@ fun OfflineStrip(text: String) {
 
 /** The primary card (`--surface-card`): the warm gradient and its gold border. */
 fun Modifier.primaryCard(): Modifier = this
+    .clip(RoundedCornerShape(FsRadius.panel))
     .background(Brush.verticalGradient(listOf(Color(0xFF16130E), FsColor.raised)), RoundedCornerShape(FsRadius.panel))
     .border(1.dp, FsColor.lineCard, RoundedCornerShape(FsRadius.panel))
 
 /** A quiet list card: raised ground, soft line. */
 fun Modifier.quietCard(): Modifier = this
+    .clip(RoundedCornerShape(FsRadius.panel))
     .background(FsColor.raised, RoundedCornerShape(FsRadius.panel))
     .border(1.dp, FsColor.lineSoft, RoundedCornerShape(FsRadius.panel))
 
-/** The hero band (`--surface-band`): the ember radial over `#14100b`, a soft bottom line. */
-fun Modifier.heroBand(): Modifier = this
-    .background(Color(0xFF14100B))
-    .background(Brush.radialGradient(listOf(FsColor.ember.copy(alpha = 0.22f), Color.Transparent), radius = 900f, center = Offset(400f, 0f)))
-    .drawBehind {
-        drawLine(FsColor.lineSoft, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
-    }
+/**
+ * The band ground (`--surface-band`, spec §4.1): the ember radial from the top centre over
+ * `#14100b`, with the soft bottom line when [bottomLine]. Every band uses it: Home's hero bands
+ * (with the line) and the signed-out screens' full-bleed ground (without). iOS: `surfaceBand`.
+ */
+fun Modifier.surfaceBand(bottomLine: Boolean = true): Modifier = drawBehind {
+    drawRect(BAND_GROUND)
+    drawRect(
+        Brush.radialGradient(
+            listOf(FsColor.ember.copy(alpha = BAND_GLOW_ALPHA), Color.Transparent),
+            center = Offset(size.width / 2, 0f),
+            radius = BAND_GLOW_RADIUS.toPx(),
+        ),
+    )
+    if (bottomLine) drawLine(FsColor.lineSoft, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
+}
+
+private val BAND_GROUND = Color(0xFF14100B)
+private const val BAND_GLOW_ALPHA = 0.22f
+private val BAND_GLOW_RADIUS = 320.dp
 
 /** A chip or pill's ground: [fill] and a 1 dp [line] border in [shape]. */
 fun Modifier.pillSurface(fill: Color, line: Color, shape: Shape = RoundedCornerShape(percent = 50)): Modifier =

@@ -125,10 +125,11 @@ private fun SearchBar(
 ) {
     val label = stringResource(R.string.bis_search)
     Row(
-        Modifier.fillMaxWidth().padding(end = 4.dp, top = 4.dp),
+        Modifier.fillMaxWidth().padding(end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // The leading slot is the character selector (lane F1), the same on Home; the open search replaces it.
+        // The leading slot is the character selector row (lane F1), the same as on Home and Raids;
+        // the open search replaces it.
         Box(Modifier.weight(1f)) {
             if (open) {
                 OutlinedTextField(

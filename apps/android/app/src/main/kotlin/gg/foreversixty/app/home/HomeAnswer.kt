@@ -45,7 +45,7 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
-import gg.foreversixty.app.designsystem.heroBand
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.items.ItemIcon
@@ -129,7 +129,7 @@ private fun Failed(presenter: HomePresenter, cached: HomeAnswerModel?, send: (Ho
 @Composable
 private fun HeroColumn(content: @Composable ColumnScope.() -> Unit) {
     Column(
-        Modifier.fillMaxWidth().heroBand().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
+        Modifier.fillMaxWidth().surfaceBand().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
         content = content,
     )
 }

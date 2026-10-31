@@ -49,6 +49,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
+import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
@@ -189,16 +190,31 @@ fun CharacterSelectorWithSheet(
 
 /**
  * The one character switcher bound to the session, for the Home, Raids and BiS root screens
- * (spec §3.4). Draws nothing when signed out or with no characters.
+ * (spec §3.4): the same full-width row at the top of each (a spec deviation: the spec puts it in
+ * the TopAppBar title slot). While a signed-in session's characters are on their way it reserves
+ * its height, so nothing shifts when it loads; it draws nothing when signed out or with no
+ * characters.
  */
 @Composable
 fun CharacterSelectorBar(session: SessionManager, modifier: Modifier = Modifier) {
     val phase by session.phase.collectAsStateWithLifecycle()
     val picked by session.pickedKey.collectAsStateWithLifecycle()
     var open by rememberSaveable { mutableStateOf(false) }
-    val me = phase.me ?: return
-    Row(modifier.fillMaxWidth().padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)) {
-        CharacterSelectorWithSheet(me, session.currentCharacter(phase, picked), open, { open = it }) { session.pick(it.key) }
+    val me = phase.me
+    val loading = me == null && (phase == SessionPhase.Importing || phase is SessionPhase.SignedIn)
+    val current = me?.let { session.currentCharacter(phase, picked) }
+    if (current == null && !loading) return
+    Row(
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)
+            .heightIn(min = SELECTOR_ROW_HEIGHT),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (me != null) CharacterSelectorWithSheet(me, current, open, { open = it }) { session.pick(it.key) }
     }
 }
+
+/** The selector's row height at every font scale (crest 34 plus padding, or the two text lines). */
+private val SELECTOR_ROW_HEIGHT = 48.dp
 

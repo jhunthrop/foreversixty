@@ -14,8 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -24,11 +22,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpacing
 import gg.foreversixty.app.designsystem.FsType
-
-/** The hero band ground (`--surface-band`): the ember radial over the warm dark. */
-fun Modifier.bandBackground(): Modifier = background(FsColor.bg).background(
-    Brush.radialGradient(listOf(FsColor.ember.copy(alpha = 0.28f), Color.Transparent), radius = 1_400f, center = androidx.compose.ui.geometry.Offset(600f, 0f)),
-)
 
 /** The toast at the top of F1.1: failures in wipe red, a finished deletion neutral. */
 @Composable
