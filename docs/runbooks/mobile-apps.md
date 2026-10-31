@@ -57,8 +57,9 @@ These are still open as of 2026-10-30:
 The pattern is the Commish project's (Firebase push and a Play publisher with no key). Code
 side, as of 2026-10-31: the names below are what `tools/release-apps.sh`,
 `apps/android/app/build.gradle.kts`, `android.yml` and `apps-release.yml` read. **Cloud side:
-pending.** The owner's gcloud login (jh@derbee.ai) had lapsed, so none of the resources below
-exists yet; each item says how it is made.
+made 2026-10-31** (upload key, Firebase, FCM grant, Play publisher and its federation). What
+stays open is in Play Console: the app record, the service account's invitation and the
+external content links enrollment, each below with its click path.
 
 - **Upload key.** One keystore made with `keytool` (RSA 4096, 10,000 days, alias `upload`), a
   random password, never on disk past setup. The originals are in Secret Manager as
@@ -68,7 +69,9 @@ exists yet; each item says how it is made.
   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`; `apps-release.yml`
   writes the keystore to the runner's temp directory and removes it after. A local release
   reads them back with `gcloud secrets versions access latest --secret <name>`.
-  - Upload certificate SHA-256: *pending* (it is not a secret; `keytool -list -v` prints it).
+  - Upload certificate SHA-256 (not a secret; `keytool -list -v` prints it):
+    `31:C6:00:0B:09:96:3A:08:4D:71:F3:32:A6:83:7C:ED:4B:74:00:BD:33:56:5A:E0:81:C1:94:86:D4:FF:82:8F`.
+    It is registered on the Firebase app `gg.foreversixty.app`.
   - Play App Signing re-signs what Play serves with its own key. Its SHA-256 exists only after
     the first upload: Play Console > Test and release > App integrity > App signing. Both
     fingerprints go into `androidSha256Fingerprints` of `web/app-links.json`, which lane A1
@@ -78,9 +81,10 @@ exists yet; each item says how it is made.
   `firebase.googleapis.com` and `fcm.googleapis.com` (FCM is free). Two Android apps, made with
   the Firebase Management API (`projects/foreversixty/androidApps`): `gg.foreversixty.app` and
   the debug build's `gg.foreversixty.app.debug` (the Google Services plugin fails a build whose
-  package has no client in the file). Their two configs
-  (`projects/foreversixty/androidApps/<id>/config`) are merged into one `google-services.json`
-  (both `client` entries), stored as the repository secret `GOOGLE_SERVICES_JSON` and never
+  package has no client in the file). App ids: `1:375932107051:android:2557276a3364dba7f9ed6e`
+  (release) and `1:375932107051:android:d893c957a5873545f9ed6e` (debug). Either app's config
+  (`projects/foreversixty/androidApps/<id>/config`) already lists both `client` entries; that
+  one `google-services.json` is stored as the repository secret `GOOGLE_SERVICES_JSON` and never
   committed: Firebase calls it no secret, but its browser API key trips secret scanning.
   `.github/actions/google-services` writes it to `apps/android/app/` (git-ignored) before
   `android.yml`'s build and `apps-release.yml`'s; without the secret both pass, with no push.
@@ -101,7 +105,10 @@ exists yet; each item says how it is made.
   script runs `gcloud auth print-access-token --impersonate-service-account="$PLAY_SA"
   --scopes=https://www.googleapis.com/auth/androidpublisher`, which needs
   `roles/iam.serviceAccountTokenCreator` on that one service account for the owner's login.
-  The project creates no service-account JSON keys.
+  The project creates no service-account JSON keys. The owner's login jh@derbee.ai holds that
+  role on `play-publisher` (granted 2026-10-31). The binding is the whole repository, not
+  main alone as Commish's is: the shared provider maps no `attribute.ref`, and
+  `apps-release.yml` refuses an execute off main.
 - **Play Console access.** The service account is invited as a user of the app: Play Console
   (Commish LLC's developer account) > Users and permissions > Invite new users > email
   `play-publisher@foreversixty.iam.gserviceaccount.com` > App permissions > Add app >
@@ -109,7 +116,17 @@ exists yet; each item says how it is made.
   production, exclude devices, and use Play App Signing" > Apply > Invite user. Until then
   `tools/play-upload.ts` stops at its first call with a 403 on "insert edit".
 - **The app record.** Play has no API to create an app; it is made once in Play Console
-  (Create app), and its first bundle is uploaded by hand there.
+  (Create app), and its first bundle is uploaded by hand there. On 2026-10-31 an edit insert
+  as `play-publisher` answered 404 "Package not found: gg.foreversixty.app": either the app is
+  not made yet or the account is not invited yet (it belongs to no developer account), so
+  Play cannot tell the two apart. Rerun the probe after both clicks.
+- **External content links (US).** Linking US players out to buy Premium on the site needs
+  Google Play's external content links programme: first the declaration form
+  (https://support.google.com/googleplay/android-developer/contact/external_content_links) and
+  any onboarding Google's support team asks for; once approved, Play Console > Manage account >
+  Play apps settings > Monetization settings > External content links > enroll Forever Sixty.
+  The app must integrate the external links APIs before it links out
+  (https://support.google.com/googleplay/android-developer/answer/16470497).
 
 Apple, still open (no Apple Developer account yet):
 
