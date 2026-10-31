@@ -54,9 +54,3 @@ func CachePrivateNoStore(w http.ResponseWriter) {
 func CachePublicImmutable(w http.ResponseWriter) {
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 }
-
-// CachePrivateFor marks a read a browser or calendar app may keep for maxAge but no shared
-// cache may store: the calendar link, whose URL is the secret.
-func CachePrivateFor(w http.ResponseWriter, maxAge time.Duration) {
-	w.Header().Set("Cache-Control", fmt.Sprintf("private, max-age=%d", int(maxAge.Seconds())))
-}
