@@ -33,6 +33,7 @@ ignores them.
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 import shutil
@@ -319,8 +320,40 @@ def _build_trainable(group: list[_Candidate], tables: _SpellTables) -> Trainable
     )
 
 
-def build_trainables(build: str, raw: Path) -> list[ClassTrainables]:
+def _trait_taught_spells(raw: Path) -> set[int]:
+    """Every spell a talent node teaches in the client's own trait tables (pre-hotfix)."""
+    path = raw / "TraitDefinition.csv"
+    if not path.exists():
+        return set()
+    return {int(row["SpellID"]) for row in read_csv(path) if int(row["SpellID"] or 0)}
+
+
+def _live_talent_names(talents_dir: Path | None, class_slug: str) -> set[str] | None:
+    """The talent names of `talents/<class>.json` (the hotfix-aware live tree), or None."""
+    if talents_dir is None or not (talents_dir / f"{class_slug}.json").exists():
+        return None
+    trees = json.loads((talents_dir / f"{class_slug}.json").read_text(encoding="utf-8"))["trees"]
+    return {talent["name"] for tree in trees for talent in tree["talents"]}
+
+
+def _removed_by_hotfix(
+    trainable: Trainable, trait_spells: set[int], live_names: set[str] | None
+) -> bool:
+    """A spell the client's trait tables teach through a talent that the live tree no longer
+    has (1.60.1.70707's Voice of Truth, Binding Heal): the pre-hotfix SkillLineAbility rows
+    still list it, but no player can learn it."""
+    if live_names is None or trainable.name in live_names:
+        return False
+    return any(rank.id in trait_spells for rank in trainable.ranks)
+
+
+def build_trainables(
+    build: str, raw: Path, talents_dir: Path | None = None
+) -> list[ClassTrainables]:
+    """Every class's trainables. With `talents_dir` (the build's committed, hotfix-aware
+    `talents/`), talents the live tree removed are dropped (`_removed_by_hotfix`)."""
     tables = _SpellTables(raw)
+    trait_spells = _trait_taught_spells(raw)
     family_by_spell = _family_by_spell(raw)
     abilities = [
         c
@@ -342,8 +375,13 @@ def build_trainables(build: str, raw: Path) -> list[ClassTrainables]:
     records = []
     for slug in sorted(SPELL_FAMILY_BY_CLASS_SLUG):
         groups = _group_by_ability(by_class[slug], tables.names)
+        live_names = _live_talent_names(talents_dir, slug)
         trainables = sorted(
-            (_build_trainable(group, tables) for group in groups.values()),
+            (
+                trainable
+                for trainable in (_build_trainable(group, tables) for group in groups.values())
+                if not _removed_by_hotfix(trainable, trait_spells, live_names)
+            ),
             key=lambda t: (t.name, t.ranks[0].id),
         )
         records.append(ClassTrainables(build=build, class_slug=slug, trainables=trainables))
@@ -363,7 +401,7 @@ def write_trainables(build: str, root: Path = Path("builds")) -> Path:
     out = build_dir / TRAINABLES
     shutil.rmtree(out, ignore_errors=True)
     total = 0
-    for record in build_trainables(build, raw):
+    for record in build_trainables(build, raw, build_dir / "talents"):
         write_model(record, out / f"{record.class_slug}.json")
         total += len(record.trainables)
     logger.info("wrote %s: %d trainable abilities", out, total)
