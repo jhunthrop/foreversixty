@@ -3691,13 +3691,25 @@
           {
             "spell_id": 8924,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
             "icon": "spell_nature_abolishmagic"
           }
         ]
@@ -3708,25 +3720,37 @@
           {
             "spell_id": 8925,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8925,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 5570,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 5178,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 2912,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -3737,25 +3761,37 @@
           {
             "spell_id": 8927,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 5180,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8927,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 24974,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 5180,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 8949,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -3766,25 +3802,37 @@
           {
             "spell_id": 8928,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8928,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 24974,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 6780,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -3795,25 +3843,37 @@
           {
             "spell_id": 8929,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8929,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 24975,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 6780,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -3824,25 +3884,37 @@
           {
             "spell_id": 9833,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 9833,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 24976,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 8905,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 9875,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -3853,25 +3925,37 @@
           {
             "spell_id": 9835,
             "name": "Moonfire",
-            "condition": "Moonfire only to clip the last seconds; maintaining it costs more mana than it returns in this sim.",
+            "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+            "condition": "When less time is left than the next Starfire takes to cast (3.0 sec with Improved Starfire, 2.5 on an Eclipse charge), Wrath still finishes and Starfire would not.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 9835,
+            "name": "Moonfire",
+            "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
+            "icon": "spell_nature_starfall"
           },
           {
             "spell_id": 24977,
             "name": "Insect Swarm",
-            "condition": "Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.",
+            "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
+          },
+          {
+            "spell_id": 9912,
+            "name": "Wrath",
+            "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
           },
           {
             "spell_id": 25298,
             "name": "Starfire",
-            "condition": "Starfire is the whole rest of the rotation once Insect Swarm is ticking.",
+            "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
           }
         ]
@@ -6252,6 +6336,12 @@
             "icon": "spell_frost_frostblast"
           },
           {
+            "spell_id": 120,
+            "name": "Cone of Cold",
+            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8406,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler between Fingers of Frost charges.",
@@ -6269,6 +6359,12 @@
             "icon": "spell_frost_frostblast"
           },
           {
+            "spell_id": 8492,
+            "name": "Cone of Cold",
+            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8408,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler between Fingers of Frost charges.",
@@ -6280,10 +6376,22 @@
         "level": 40,
         "lines": [
           {
+            "spell_id": 11426,
+            "name": "Ice Barrier",
+            "condition": "Keep Ice Barrier up: the talent adds 3% Frost damage for a minute after a cast and another 3% while the shield holds.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 1240044,
             "name": "Ice Lance",
             "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
+          },
+          {
+            "spell_id": 8492,
+            "name": "Cone of Cold",
+            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 8408,
@@ -6297,10 +6405,22 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 13031,
+            "name": "Ice Barrier",
+            "condition": "Keep Ice Barrier up: the talent adds 3% Frost damage for a minute after a cast and another 3% while the shield holds.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 1240046,
             "name": "Ice Lance",
             "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
+          },
+          {
+            "spell_id": 10160,
+            "name": "Cone of Cold",
+            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10180,
@@ -6314,10 +6434,22 @@
         "level": 60,
         "lines": [
           {
+            "spell_id": 1213278,
+            "name": "Ice Barrier",
+            "condition": "Keep Ice Barrier up: the talent adds 3% Frost damage for a minute after a cast and another 3% while the shield holds.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 1240047,
             "name": "Ice Lance",
             "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
             "icon": "spell_frost_frostblast"
+          },
+          {
+            "spell_id": 10161,
+            "name": "Cone of Cold",
+            "condition": "Cone of Cold on five Winter's Chill stacks: Frostbolt and empowered Ice Lance build the stacks, and Cone of Cold spends them for 25% more damage and 35% more of your spell damage.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 25304,
@@ -9930,6 +10062,12 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 8050,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 3599,
             "name": "Searing Totem",
             "condition": "Single target: Searing Totem is the higher damage fire totem.",
@@ -9940,18 +10078,18 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220746,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
       {
         "level": 20,
         "lines": [
+          {
+            "spell_id": 8052,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 6363,
             "name": "Searing Totem",
@@ -9963,12 +10101,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220747,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -9978,14 +10110,20 @@
           {
             "spell_id": 408490,
             "name": "Lava Burst",
-            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
           },
           {
             "spell_id": 5675,
             "name": "Mana Spring Totem",
-            "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+            "condition": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
             "icon": "spell_nature_manaregentotem"
+          },
+          {
+            "spell_id": 8053,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 6364,
@@ -10004,12 +10142,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220748,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10019,14 +10151,20 @@
           {
             "spell_id": 408490,
             "name": "Lava Burst",
-            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
           },
           {
             "spell_id": 10495,
             "name": "Mana Spring Totem",
-            "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+            "condition": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
             "icon": "spell_nature_manaregentotem"
+          },
+          {
+            "spell_id": 8053,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 6364,
@@ -10051,12 +10189,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220749,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10066,14 +10198,20 @@
           {
             "spell_id": 1238299,
             "name": "Lava Burst",
-            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
           },
           {
             "spell_id": 10495,
             "name": "Mana Spring Totem",
-            "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+            "condition": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
             "icon": "spell_nature_manaregentotem"
+          },
+          {
+            "spell_id": 10447,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 6365,
@@ -10098,12 +10236,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220749,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10113,14 +10245,20 @@
           {
             "spell_id": 1238300,
             "name": "Lava Burst",
-            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
           },
           {
             "spell_id": 10496,
             "name": "Mana Spring Totem",
-            "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+            "condition": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
             "icon": "spell_nature_manaregentotem"
+          },
+          {
+            "spell_id": 10447,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10437,
@@ -10145,12 +10283,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220750,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10160,14 +10292,20 @@
           {
             "spell_id": 1326047,
             "name": "Lava Burst",
-            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
           },
           {
             "spell_id": 10497,
             "name": "Mana Spring Totem",
-            "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+            "condition": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
             "icon": "spell_nature_manaregentotem"
+          },
+          {
+            "spell_id": 29228,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10438,
@@ -10192,12 +10330,6 @@
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 1220751,
-            "name": "Earth Shock",
-            "condition": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-            "icon": "spell_nature_earthshock"
           }
         ]
       }
@@ -12708,32 +12840,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4315,
+                  "item_id": 4314,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 4314,
+                  "item_id": 4315,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
               ]
             },
             "back": {
-              "item_id": 5542,
+              "item_id": 4311,
               "source_kind": "crafted",
               "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4311,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 14376,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 7283,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -12798,14 +12930,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253885,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 2911,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 253885,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -12893,9 +13025,9 @@
                   "source": "Blackrock Shadowcaster"
                 },
                 {
-                  "item_id": 2042,
-                  "source_kind": "quest",
-                  "source": "The Defias Brotherhood"
+                  "item_id": 890,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -12926,12 +13058,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4315,
+                  "item_id": 4314,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 4314,
+                  "item_id": 4315,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -12944,14 +13076,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 4311,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
+                },
+                {
                   "item_id": 14376,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 7283,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -13016,14 +13148,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253885,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 2911,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 253885,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -13100,10 +13232,10 @@
               ]
             },
             "main_hand": {
-              "item_id": 5187,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Rhahk'Zor",
-              "chance": 0.95,
+              "item_id": 251534,
+              "source_kind": "quest",
+              "source": "The Wrath of Rath'mael",
+              "chance": null,
               "alternatives": [
                 {
                   "item_id": 890,
@@ -13111,9 +13243,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 1300,
-                  "source_kind": "world",
-                  "source": "Blackrock Shadowcaster"
+                  "item_id": 5187,
+                  "source_kind": "dungeon",
+                  "source": "The Deadmines: Rhahk'Zor"
                 }
               ]
             }
@@ -13123,7 +13255,7 @@
           "alliance": [
             252448,
             12998,
-            5542,
+            4311,
             252493,
             1974,
             252498,
@@ -13146,17 +13278,16 @@
             4320,
             1156,
             281673,
-            5187
+            251534
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.782,
-          "crit": 0.031,
-          "hit": 0.102,
-          "spell_haste": -0.851,
-          "nature_power": 0.033,
-          "arcane_power": 0.967
+          "intellect": 0.841,
+          "crit": 0.028,
+          "hit": 0.092,
+          "nature_power": 0.029,
+          "arcane_power": 0.971
         }
       },
       {
@@ -13170,14 +13301,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2721,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 4322,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 2721,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -13188,12 +13319,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5003,
+                  "item_id": 13084,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13084,
+                  "item_id": 5003,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -13236,20 +13367,20 @@
               ]
             },
             "chest": {
-              "item_id": 7728,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery",
+              "item_id": 7065,
+              "source_kind": "crafted",
+              "source": "Tailoring",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 7728,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery"
+                },
                 {
                   "item_id": 9508,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan"
-                },
-                {
-                  "item_id": 4256,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -13308,20 +13439,20 @@
               ]
             },
             "legs": {
-              "item_id": 270031,
-              "source_kind": "quest",
-              "source": "Blackfathom Villainy",
+              "item_id": 252502,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 252502,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
                 {
                   "item_id": 5962,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 6903,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps: Twilight Lord Kelris"
                 }
               ]
             },
@@ -13400,27 +13531,27 @@
           },
           "horde": {
             "head": {
-              "item_id": 252456,
+              "item_id": 4322,
               "source_kind": "crafted",
-              "source": "Leatherworking",
+              "source": "Tailoring",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 4322,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
                 {
                   "item_id": 2721,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 7050,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
             "neck": {
-              "item_id": 273049,
-              "source_kind": "world",
-              "source": "Shade of the Archmage",
+              "item_id": 5003,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -13429,9 +13560,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 5003,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 273049,
+                  "source_kind": "world",
+                  "source": "Shade of the Archmage"
                 }
               ]
             },
@@ -13472,20 +13603,20 @@
               ]
             },
             "chest": {
-              "item_id": 7065,
-              "source_kind": "crafted",
-              "source": "Tailoring",
+              "item_id": 7728,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 7728,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery"
-                },
                 {
                   "item_id": 9508,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan"
+                },
+                {
+                  "item_id": 4256,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -13532,14 +13663,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 6911,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps: Aku'mai"
+                },
+                {
                   "item_id": 16975,
                   "source_kind": "quest",
                   "source": "Warsong Supplies"
-                },
-                {
-                  "item_id": 6392,
-                  "source_kind": "dungeon",
-                  "source": "Shadowfang Keep: Archmage Arugal"
                 }
               ]
             },
@@ -13586,21 +13717,21 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 279845,
-                  "source_kind": "quest",
-                  "source": "Opportunistic Education"
-                },
-                {
                   "item_id": 1156,
                   "source_kind": "dungeon",
                   "source": "The Deadmines: Gilnid"
+                },
+                {
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
             "finger2": {
-              "item_id": 273030,
-              "source_kind": "dungeon",
-              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "item_id": 279845,
+              "source_kind": "quest",
+              "source": "Opportunistic Education",
               "chance": null,
               "alternatives": [
                 {
@@ -13641,39 +13772,37 @@
             273049,
             7684,
             279835,
-            7728,
+            7065,
             9448,
             252522,
-            270031,
             254001,
             6750,
             273030,
             273040
           ],
           "horde": [
-            252456,
-            273049,
+            4322,
+            5003,
             7684,
             15468,
-            7065,
+            7728,
             9448,
             16741,
             252522,
             252502,
             254001,
             6750,
-            273030,
+            279845,
             273040
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.548,
+          "intellect": 0.561,
           "crit": 0.035,
-          "hit": 0.123,
-          "spell_haste": 0.32,
-          "nature_power": 0.334,
-          "arcane_power": 0.666
+          "hit": 0.128,
+          "nature_power": 0.333,
+          "arcane_power": 0.667
         }
       },
       {
@@ -13681,9 +13810,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 10502,
-              "source_kind": "crafted",
-              "source": "Engineering",
+              "item_id": 9431,
+              "source_kind": "dungeon",
+              "source": "Uldaman",
               "chance": null,
               "alternatives": [
                 {
@@ -13692,9 +13821,9 @@
                   "source": "Nether Sorceress"
                 },
                 {
-                  "item_id": 9431,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
+                  "item_id": 8201,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -13710,9 +13839,9 @@
                   "source": "Zul'Farrak: Witch Doctor's Chest"
                 },
                 {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
+                  "item_id": 273049,
+                  "source_kind": "world",
+                  "source": "Shade of the Archmage"
                 }
               ]
             },
@@ -13795,7 +13924,7 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10019,
+                  "item_id": 10018,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
@@ -13807,20 +13936,20 @@
               ]
             },
             "waist": {
-              "item_id": 4329,
-              "source_kind": "crafted",
-              "source": "Tailoring",
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 10771,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
-                },
                 {
                   "item_id": 252522,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 6911,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps: Aku'mai"
                 }
               ]
             },
@@ -13867,9 +13996,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6750,
+                  "item_id": 2043,
                   "source_kind": "quest",
-                  "source": "Willix the Importer"
+                  "source": "The Legend of Stalvan"
                 },
                 {
                   "item_id": 9622,
@@ -13879,15 +14008,15 @@
               ]
             },
             "finger2": {
-              "item_id": 2043,
+              "item_id": 6750,
               "source_kind": "quest",
-              "source": "The Legend of Stalvan",
+              "source": "Willix the Importer",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6750,
+                  "item_id": 2043,
                   "source_kind": "quest",
-                  "source": "Willix the Importer"
+                  "source": "The Legend of Stalvan"
                 },
                 {
                   "item_id": 9622,
@@ -13915,29 +14044,29 @@
               ]
             },
             "off_hand": {
-              "item_id": 11262,
-              "source_kind": "quest",
-              "source": "In the Name of the Light",
+              "item_id": 7685,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Bloodmage Thalnos",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 11262,
+                  "source_kind": "quest",
+                  "source": "In the Name of the Light"
+                },
                 {
                   "item_id": 249394,
                   "source_kind": "crafted",
                   "source": "Enchanting"
-                },
-                {
-                  "item_id": 9393,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
                 }
               ]
             }
           },
           "horde": {
             "head": {
-              "item_id": 10502,
-              "source_kind": "crafted",
-              "source": "Engineering",
+              "item_id": 9431,
+              "source_kind": "dungeon",
+              "source": "Uldaman",
               "chance": null,
               "alternatives": [
                 {
@@ -13946,9 +14075,9 @@
                   "source": "Nether Sorceress"
                 },
                 {
-                  "item_id": 9431,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
+                  "item_id": 8201,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -13959,14 +14088,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
-                },
-                {
                   "item_id": 1714,
                   "source_kind": "dungeon",
                   "source": "Zul'Farrak: Witch Doctor's Chest"
+                },
+                {
+                  "item_id": 273049,
+                  "source_kind": "world",
+                  "source": "Shade of the Archmage"
                 }
               ]
             },
@@ -14031,14 +14160,14 @@
               "chance": 0.4,
               "alternatives": [
                 {
+                  "item_id": 4260,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 4545,
                   "source_kind": "quest",
                   "source": "Foul Magics"
-                },
-                {
-                  "item_id": 15864,
-                  "source_kind": "quest",
-                  "source": "Ghost-o-plasm Round Up"
                 }
               ]
             },
@@ -14054,7 +14183,7 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 10003,
+                  "item_id": 10018,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -14139,14 +14268,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9622,
-                  "source_kind": "quest",
-                  "source": "Jarl Needs a Blade"
-                },
-                {
                   "item_id": 273030,
                   "source_kind": "dungeon",
                   "source": "Excavation Site: Wetlands: Relic Guardian"
+                },
+                {
+                  "item_id": 279845,
+                  "source_kind": "quest",
+                  "source": "Opportunistic Education"
                 }
               ]
             },
@@ -14190,21 +14319,21 @@
         },
         "new_at_band": {
           "alliance": [
-            10502,
+            9431,
             10769,
             4326,
             10021,
             17721,
-            4329,
+            10771,
             10009,
             254013,
             281635,
-            2043,
+            6750,
             7714,
-            11262
+            7685
           ],
           "horde": [
-            10502,
+            9431,
             10769,
             4326,
             10021,
@@ -14220,9 +14349,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.398,
-          "crit": 0.072,
-          "hit": 0.17,
+          "intellect": 0.437,
+          "crit": 0.065,
+          "hit": 0.167,
+          "spell_haste": 0.279,
           "nature_power": 0.334,
           "arcane_power": 0.666
         }
@@ -14238,14 +14368,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 10033,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
+                },
+                {
                   "item_id": 15999,
                   "source_kind": "crafted",
                   "source": "Engineering"
-                },
-                {
-                  "item_id": 10041,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
                 }
               ]
             },
@@ -14261,9 +14391,9 @@
                   "source": "Tremors of the Earth"
                 },
                 {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
+                  "item_id": 13085,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -14315,9 +14445,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10021,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 1716,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -14351,9 +14481,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10019,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 220866,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 9 · Sergeant Major · Alliance"
                 }
               ]
             },
@@ -14369,9 +14499,9 @@
                   "source": "Maraudon: Lord Vyletongue"
                 },
                 {
-                  "item_id": 252477,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 12466,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Morphaz"
                 }
               ]
             },
@@ -14382,9 +14512,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10009,
+                  "item_id": 8202,
                   "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 14132,
@@ -14400,14 +14530,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220862,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 9 · Sergeant Major · Alliance"
-                },
-                {
                   "item_id": 252471,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 220862,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 9 · Sergeant Major · Alliance"
                 }
               ]
             },
@@ -14468,20 +14598,20 @@
               ]
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain",
-              "chance": 0.2,
+              "item_id": 9527,
+              "source_kind": "quest",
+              "source": "Tiara of the Deep",
+              "chance": null,
               "alternatives": [
-                {
-                  "item_id": 9527,
-                  "source_kind": "quest",
-                  "source": "Tiara of the Deep"
-                },
                 {
                   "item_id": 812,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 11750,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Pyromancer Loregrain"
                 }
               ]
             }
@@ -14517,9 +14647,9 @@
                   "source": "Broken Alliances"
                 },
                 {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
+                  "item_id": 13085,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -14566,14 +14696,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1716,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 8349,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
-                },
-                {
-                  "item_id": 10021,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
                 }
               ]
             },
@@ -14607,9 +14737,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10019,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 220867,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 9 · First Sergeant · Horde"
                 }
               ]
             },
@@ -14625,9 +14755,9 @@
                   "source": "Maraudon: Lord Vyletongue"
                 },
                 {
-                  "item_id": 252477,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 12466,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Morphaz"
                 }
               ]
             },
@@ -14638,9 +14768,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10009,
+                  "item_id": 8202,
                   "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 14132,
@@ -14704,19 +14834,6 @@
               ]
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 11302,
               "source_kind": "world_drop",
               "source": "World drop",
@@ -14729,21 +14846,34 @@
                 }
               ]
             },
-            "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain",
-              "chance": 0.2,
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9527,
+                  "item_id": 19120,
                   "source_kind": "quest",
-                  "source": "Tiara of the Deep"
-                },
+                  "source": "Job Opening: Guard Captain of Revantusk Village"
+                }
+              ]
+            },
+            "main_hand": {
+              "item_id": 9527,
+              "source_kind": "quest",
+              "source": "Tiara of the Deep",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 812,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 11750,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Pyromancer Loregrain"
                 }
               ]
             }
@@ -14762,7 +14892,7 @@
             281635,
             11302,
             249469,
-            11750
+            9527
           ],
           "horde": [
             17740,
@@ -14774,18 +14904,19 @@
             220865,
             7553,
             281635,
-            249469,
             11302,
-            11750
+            249469,
+            9527
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.468,
-          "crit": 0.116,
-          "hit": 0.277,
-          "nature_power": 0.377,
-          "arcane_power": 0.623
+          "intellect": 0.589,
+          "crit": 0.096,
+          "hit": 0.288,
+          "spell_haste": 0.566,
+          "nature_power": 0.392,
+          "arcane_power": 0.608
         }
       },
       {
@@ -14966,9 +15097,9 @@
                   "source": "PvP rank 16 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 227194,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 11 · Knight-Lieutenant · Alliance"
+                  "item_id": 254013,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -15009,16 +15140,16 @@
               ]
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": []
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
@@ -15222,9 +15353,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 227185,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 12 · Legionnaire · Horde"
+                  "item_id": 11823,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Golem Lord Argelmach"
                 }
               ]
             },
@@ -15358,8 +15489,6 @@
             252486,
             11822,
             13001,
-            249469,
-            11302,
             2243,
             11904
           ],
@@ -15374,19 +15503,17 @@
             252486,
             11822,
             13001,
-            11302,
-            249469,
             2243,
             11904
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.666,
-          "crit": 0.145,
-          "hit": 0.35,
-          "nature_power": 0.375,
-          "arcane_power": 0.625
+          "intellect": 0.65,
+          "crit": 0.127,
+          "hit": 0.374,
+          "nature_power": 0.39,
+          "arcane_power": 0.61
         }
       }
     ],
@@ -39694,10 +39821,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.601,
-          "crit": 0.167,
-          "hit": 0.404,
-          "spell_haste": 1.98,
+          "intellect": 0.602,
+          "crit": 0.168,
+          "hit": 0.403,
+          "spell_haste": 1.942,
           "frost_power": 1.0
         }
       },
@@ -39861,7 +39988,7 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 14132,
+                  "item_id": 7062,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -40135,7 +40262,7 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 14132,
+                  "item_id": 7062,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -40291,10 +40418,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.818,
-          "crit": 0.268,
-          "hit": 0.751,
-          "spell_haste": 7.477,
+          "intellect": 0.869,
+          "crit": 0.264,
+          "hit": 0.772,
+          "spell_haste": 5.396,
           "frost_power": 1.0
         }
       },
@@ -40893,10 +41020,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.668,
-          "crit": 0.367,
-          "hit": 1.015,
-          "spell_haste": 7.435,
+          "intellect": 0.7,
+          "crit": 0.373,
+          "hit": 1.085,
+          "spell_haste": 6.601,
           "frost_power": 1.0
         }
       }
@@ -67124,38 +67251,38 @@
               ]
             },
             "shoulder": {
-              "item_id": 12998,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 4315,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
-                  "item_id": 4314,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                }
-              ]
-            },
-            "back": {
-              "item_id": 4311,
+              "item_id": 4315,
               "source_kind": "crafted",
               "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5542,
+                  "item_id": 4314,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
+                  "item_id": 12998,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "back": {
+              "item_id": 5542,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "chance": null,
+              "alternatives": [
+                {
                   "item_id": 7283,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 14376,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -67232,7 +67359,7 @@
               ]
             },
             "legs": {
-              "item_id": 252502,
+              "item_id": 252503,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
@@ -67243,25 +67370,25 @@
                   "source": "Underground Assault"
                 },
                 {
-                  "item_id": 252503,
+                  "item_id": 253937,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 }
               ]
             },
             "feet": {
-              "item_id": 252443,
+              "item_id": 4320,
               "source_kind": "crafted",
-              "source": "Leatherworking",
+              "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252444,
+                  "item_id": 252443,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252442,
+                  "item_id": 252444,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -67274,32 +67401,32 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 12053,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 8350,
                   "source_kind": "world",
                   "source": "Fishing"
-                },
-                {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
                 }
               ]
             },
             "finger2": {
-              "item_id": 12053,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
+              "item_id": 1156,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid",
+              "chance": 0.45,
               "alternatives": [
+                {
+                  "item_id": 12053,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
                 {
                   "item_id": 8350,
                   "source_kind": "world",
                   "source": "Fishing"
-                },
-                {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
                 }
               ]
             },
@@ -67348,12 +67475,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4315,
+                  "item_id": 4314,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 4314,
+                  "item_id": 4315,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -67396,9 +67523,9 @@
               ]
             },
             "wrist": {
-              "item_id": 4796,
-              "source_kind": "vendor",
-              "source": "Bernard Brubaker",
+              "item_id": 251486,
+              "source_kind": "quest",
+              "source": "A Frightened Request",
               "chance": null,
               "alternatives": [
                 {
@@ -67420,14 +67547,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5970,
-                  "source_kind": "dungeon",
-                  "source": "Wailing Caverns: Lord Serpentis"
-                },
-                {
                   "item_id": 892,
                   "source_kind": "world",
                   "source": "Mosshide Mistweaver"
+                },
+                {
+                  "item_id": 253913,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -67468,9 +67595,9 @@
               ]
             },
             "feet": {
-              "item_id": 252443,
+              "item_id": 4320,
               "source_kind": "crafted",
-              "source": "Leatherworking",
+              "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
@@ -67510,14 +67637,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12053,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 8350,
                   "source_kind": "world",
                   "source": "Fishing"
+                },
+                {
+                  "item_id": 12053,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -67533,9 +67660,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 251534,
-                  "source_kind": "quest",
-                  "source": "The Wrath of Rath'mael"
+                  "item_id": 1300,
+                  "source_kind": "world",
+                  "source": "Blackrock Shadowcaster"
                 }
               ]
             }
@@ -67544,16 +67671,16 @@
         "new_at_band": {
           "alliance": [
             252507,
-            12998,
-            4311,
+            4315,
+            5542,
             252493,
             1974,
             252498,
             253925,
-            252502,
-            252443,
+            252503,
+            4320,
             1449,
-            12053,
+            1156,
             5187
           ],
           "horde": [
@@ -67561,11 +67688,11 @@
             12998,
             4311,
             252493,
-            4796,
+            251486,
             252498,
             253925,
             252503,
-            252443,
+            4320,
             1156,
             281673,
             5187
@@ -67573,11 +67700,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.655,
+          "intellect": 0.575,
           "crit": 0.073,
-          "hit": 0.204,
-          "spell_haste": -1.772,
-          "nature_power": 0.935
+          "hit": 0.191,
+          "spell_haste": -1.82,
+          "nature_power": 0.873
         }
       },
       {
@@ -67627,14 +67754,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6685,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul: Death Speaker Jargba"
-                },
-                {
                   "item_id": 9536,
                   "source_kind": "quest",
                   "source": "A Fine Mess"
+                },
+                {
+                  "item_id": 6685,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul: Death Speaker Jargba"
                 }
               ]
             },
@@ -67776,9 +67903,9 @@
                   "source": "The Deadmines: Gilnid"
                 },
                 {
-                  "item_id": 4999,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -67794,9 +67921,9 @@
                   "source": "The Deadmines: Gilnid"
                 },
                 {
-                  "item_id": 4999,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -68030,9 +68157,9 @@
                   "source": "The Deadmines: Gilnid"
                 },
                 {
-                  "item_id": 4999,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -68065,6 +68192,7 @@
             7065,
             9448,
             252522,
+            252502,
             254001,
             6750,
             273030,
@@ -68088,11 +68216,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.639,
-          "crit": 0.089,
-          "hit": 0.254,
-          "spell_haste": -2.308,
-          "nature_power": 0.945
+          "intellect": 0.579,
+          "crit": 0.085,
+          "hit": 0.262,
+          "spell_haste": -2.211,
+          "nature_power": 0.821
         }
       },
       {
@@ -68196,14 +68324,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 8198,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 4744,
                   "source_kind": "quest",
                   "source": "Wanted! Marez Cowl"
-                },
-                {
-                  "item_id": 9448,
-                  "source_kind": "dungeon",
-                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -68268,12 +68396,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252532,
+                  "item_id": 252563,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252563,
+                  "item_id": 252532,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -68486,14 +68614,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 252522,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 254037,
                   "source_kind": "crafted",
                   "source": "Tailoring"
-                },
-                {
-                  "item_id": 250559,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -68504,12 +68632,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252502,
+                  "item_id": 7062,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 },
                 {
-                  "item_id": 5962,
+                  "item_id": 252502,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -68643,10 +68771,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.978,
-          "crit": 0.256,
-          "hit": 0.425,
-          "nature_power": 0.689
+          "intellect": 0.907,
+          "crit": 0.238,
+          "hit": 0.397,
+          "spell_haste": -2.256,
+          "nature_power": 0.699
         }
       },
       {
@@ -68660,14 +68789,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10041,
+                  "item_id": 10033,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 15999,
+                  "item_id": 10041,
                   "source_kind": "crafted",
-                  "source": "Engineering"
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -68678,14 +68807,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13085,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11196,
                   "source_kind": "quest",
                   "source": "Tremors of the Earth"
-                },
-                {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 }
               ]
             },
@@ -68726,20 +68855,20 @@
               ]
             },
             "chest": {
-              "item_id": 17775,
-              "source_kind": "quest",
-              "source": "Twisted Evils",
+              "item_id": 8349,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 8349,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
                 {
                   "item_id": 1716,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 13857,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -68768,14 +68897,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252585,
+                  "item_id": 252550,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10019,
+                  "item_id": 252585,
                   "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -68822,14 +68951,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252577,
+                  "item_id": 252471,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 22240,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
+                  "item_id": 252577,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -68916,14 +69045,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10041,
+                  "item_id": 10033,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 220848,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 11 · Blood Guard · Horde"
+                  "item_id": 10041,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -68934,14 +69063,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13085,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11196,
                   "source_kind": "quest",
                   "source": "Broken Alliances"
-                },
-                {
-                  "item_id": 7722,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 }
               ]
             },
@@ -68964,20 +69093,20 @@
               ]
             },
             "back": {
-              "item_id": 19121,
-              "source_kind": "quest",
-              "source": "Wanted: Vile Priestess Hexx and Her Minions",
+              "item_id": 11623,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 11623,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
-                },
                 {
                   "item_id": 13860,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 8216,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -68988,14 +69117,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 220844,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 10 · Stone Guard · Horde"
+                },
+                {
                   "item_id": 8349,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
-                },
-                {
-                  "item_id": 1716,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -69078,14 +69207,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252577,
+                  "item_id": 252471,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 22240,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
+                  "item_id": 252577,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -69132,11 +69261,6 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                },
-                {
                   "item_id": 19120,
                   "source_kind": "quest",
                   "source": "Job Opening: Guard Captain of Revantusk Village"
@@ -69144,16 +69268,11 @@
               ]
             },
             "trinket2": {
-              "item_id": 17774,
-              "source_kind": "quest",
-              "source": "The Pariah's Instructions",
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 11811,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                },
                 {
                   "item_id": 19120,
                   "source_kind": "quest",
@@ -69186,7 +69305,7 @@
             17740,
             15067,
             11623,
-            17775,
+            8349,
             15092,
             252476,
             7553,
@@ -69197,23 +69316,23 @@
           "horde": [
             17740,
             15067,
-            19121,
+            11623,
             17775,
             15092,
             252476,
             220847,
             7553,
             11302,
-            17774,
+            249469,
             812
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.796,
-          "crit": 0.305,
-          "hit": 0.596,
-          "nature_power": 0.761
+          "intellect": 0.755,
+          "crit": 0.289,
+          "hit": 0.47,
+          "nature_power": 0.703
         }
       },
       {
@@ -69281,14 +69400,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13860,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
+                },
+                {
                   "item_id": 8216,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
-                },
-                {
-                  "item_id": 4326,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
                 }
               ]
             },
@@ -69304,9 +69423,9 @@
                   "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
-                  "item_id": 16688,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
+                  "item_id": 17775,
+                  "source_kind": "quest",
+                  "source": "Twisted Evils"
                 }
               ]
             },
@@ -69340,7 +69459,7 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 252585,
+                  "item_id": 252550,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -69389,14 +69508,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252471,
+                  "item_id": 252577,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252577,
+                  "item_id": 254013,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -69412,9 +69531,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 18402,
+                  "item_id": 6750,
                   "source_kind": "quest",
-                  "source": "Uncovering Past Secrets"
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -69430,9 +69549,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 18402,
+                  "item_id": 6750,
                   "source_kind": "quest",
-                  "source": "Uncovering Past Secrets"
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -69506,9 +69625,9 @@
                   "source": "PvP rank 17 · Warlord · Horde"
                 },
                 {
-                  "item_id": 252605,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 227162,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 14 · Champion · Horde"
                 }
               ]
             },
@@ -69668,9 +69787,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 231667,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 16 · General · Horde"
+                  "item_id": 252471,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -69686,9 +69805,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 18402,
+                  "item_id": 6750,
                   "source_kind": "quest",
-                  "source": "Uncovering Past Secrets"
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -69704,16 +69823,16 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 18402,
+                  "item_id": 6750,
                   "source_kind": "quest",
-                  "source": "Uncovering Past Secrets"
+                  "source": "Willix the Importer"
                 }
               ]
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
@@ -69724,9 +69843,9 @@
               ]
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -69794,6 +69913,7 @@
             252561,
             15856,
             16695,
+            19121,
             16690,
             16697,
             16692,
@@ -69803,16 +69923,17 @@
             13001,
             281635,
             249469,
+            11302,
             2243,
             11904
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.953,
-          "crit": 0.33,
-          "hit": 0.6,
-          "nature_power": 0.62
+          "intellect": 0.82,
+          "crit": 0.324,
+          "hit": 0.565,
+          "nature_power": 0.714
         }
       }
     ],
@@ -108545,6 +108666,7 @@
   "ability_levels": {
     "17": 6,
     "71": 10,
+    "120": 26,
     "143": 1,
     "172": 4,
     "205": 4,
@@ -108677,6 +108799,9 @@
     "8005": 1,
     "8008": 20,
     "8010": 20,
+    "8050": 10,
+    "8052": 10,
+    "8053": 10,
     "8075": 10,
     "8092": 10,
     "8102": 10,
@@ -108696,6 +108821,7 @@
     "8444": 22,
     "8445": 22,
     "8446": 22,
+    "8492": 26,
     "8512": 32,
     "8621": 1,
     "8623": 1,
@@ -108736,6 +108862,8 @@
     "9908": 16,
     "9912": 1,
     "10149": 1,
+    "10160": 26,
+    "10161": 26,
     "10180": 4,
     "10205": 22,
     "10207": 22,
@@ -108746,6 +108874,7 @@
     "10395": 1,
     "10437": 10,
     "10438": 10,
+    "10447": 10,
     "10462": 20,
     "10463": 20,
     "10466": 20,
@@ -108771,6 +108900,7 @@
     "11294": 1,
     "11299": 1,
     "11366": 20,
+    "11426": 40,
     "11549": 1,
     "11550": 1,
     "11564": 1,
@@ -108799,6 +108929,7 @@
     "12523": 20,
     "12525": 20,
     "12975": 1,
+    "13031": 40,
     "13549": 4,
     "13550": 4,
     "13551": 4,
@@ -108931,6 +109062,7 @@
     "28682": 40,
     "29131": 10,
     "29166": 1,
+    "29228": 10,
     "29274": 1,
     "31016": 1,
     "31018": 32,
@@ -109002,6 +109134,7 @@
     "462714": 4,
     "462717": 4,
     "462891": 36,
+    "1213278": 40,
     "1220746": 4,
     "1220747": 4,
     "1220748": 4,
@@ -109455,6 +109588,7 @@
     "8192": "Nightscape Shoulders",
     "8195": "Nightscape Cloak",
     "8198": "Turtle Scale Bracers",
+    "8201": "Big Voodoo Mask",
     "8202": "Big Voodoo Pants",
     "8203": "Tough Scorpid Breastplate",
     "8204": "Tough Scorpid Gloves",
@@ -110050,7 +110184,6 @@
     "21318": "Earth Warder's Gloves",
     "21524": "Red Winter Hat",
     "22206": "Bouquet of Red Roses",
-    "22240": "Greaves of Withering Despair",
     "22241": "Dark Warder's Pauldrons",
     "22384": "Persuader",
     "23197": "Idol of the Moon",
@@ -110096,8 +110229,8 @@
     "220832": "Knight's Chain Legplates",
     "220833": "Stone Guard's Chain Legplates",
     "220834": "Stone Guard's Mail Legplates",
+    "220844": "Stone Guard's Pulsing Breastplate",
     "220847": "Stone Guard's Pulsing Legplates",
-    "220848": "Blood Guard's Pulsing Helmet",
     "220850": "Knight-Lieutenant's Leather Headband",
     "220851": "Blood Guard's Leather Headband",
     "220852": "Knight-Lieutenant's Leather Shoulders",
@@ -110114,6 +110247,8 @@
     "220863": "First Sergeant's Crackling Leather Boots",
     "220864": "Knight's Crackling Leather Leggings",
     "220865": "Stone Guard's Crackling Leather Leggings",
+    "220866": "Sergeant Major's Crackling Leather Gauntlets",
+    "220867": "First Sergeant's Crackling Leather Gauntlets",
     "220870": "Knight-Lieutenant's Crackling Leather Spaulders",
     "220871": "Blood Guard's Crackling Leather Spaulders",
     "220874": "Knight-Lieutenant's Restored Leather Helm",
@@ -110211,6 +110346,7 @@
     "227157": "Legionnaire's Mail Hauberk",
     "227158": "Blood Guard's Mail Greaves",
     "227159": "Blood Guard's Mail Vices",
+    "227162": "Champion's Mail Helm",
     "227172": "Lieutenant Commander's Dragonhide Shoulders",
     "227177": "Legionnaire's Dragonhide Leggings",
     "227178": "Knight-Captain's Dragonhide Leggings",
@@ -110218,14 +110354,12 @@
     "227181": "Blood Guard's Dragonhide Treads",
     "227182": "Knight-Lieutenant's Dragonhide Treads",
     "227183": "Knight-Lieutenant's Dragonhide Grips",
-    "227185": "Legionnaire's Dragonhide Pants",
     "227186": "Champion's Dragonhide Helm",
     "227187": "Blood Guard's Dragonhide Gloves",
     "227189": "Legionnaire's Dragonhide Armor",
     "227191": "Knight-Captain's Dragonhide Pants",
     "227192": "Lieutenant Commander's Dragonhide Helm",
     "227193": "Knight-Lieutenant's Dragonhide Gloves",
-    "227194": "Knight-Lieutenant's Dragonhide Boots",
     "227195": "Knight-Captain's Dragonhide Armor",
     "227199": "Lieutenant Commander's Dragonhide Headdress",
     "227200": "Knight-Captain's Dragonhide Legguards",
@@ -110345,7 +110479,6 @@
     "231663": "Warlord's Mail Helm",
     "231664": "General's Mail Leggings",
     "231666": "General's Mail Gloves",
-    "231667": "General's Mail Boots",
     "231671": "General's Dragonhide Greaves",
     "231672": "Warlord's Dragonhide Pauldrons",
     "231673": "General's Dragonhide Legguards",

@@ -515,10 +515,11 @@ number; `set_id` is nullable, with sets in `sets.json`. `slot` is the item slot
 the client has not confirmed. The tooltip is built from these fields. Fixtures `cdn.items.warrior`,
 `cdn.items.hunter`.
 
-**Pending (spec C6).** Three item facts the tooltip draws, which the data lane has not published
-yet: `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`), `armor_type`
-(`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; null for a cloak),
-and `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
+**Spec C6 item facts.** `bonding` (`pickup|equip|use|quest`, from ItemSparse `Bonding`; for an
+item the client's ItemSparse lacks, classic-db's `item_template.bonding`, the same enum) and
+`armor_type` (`cloth|leather|mail|plate|shield`, from Item `SubclassID` when `ClassID` is 4; a
+cloak is `cloth`, as the client prints `Back ... Cloth`) are published by the generator from the
+next data run of each build. Still pending: `min_standing` (`hated` ... `exalted`, from ItemSparse `MinReputation` when `MinFactionID` is
 set). Each is nullable and absent until published; draw nothing for a missing one. The
 `cdn.items.hunter` fixture carries them, read from the client's own Item and ItemSparse rows.
 `stats_source` is null on most real rows.
@@ -678,7 +679,7 @@ app's device token once A1 admits app tokens on session routes; the sign-up PUT 
 while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a player.
 
 ### GET /v1/app/config
-Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
+Auth public. Caching `private, max-age=300`, `Vary: X-App` (never the CDN, which does not key on `X-App`). Call on launch. Answer
 `{ web_checkout_regions[], min_app_version { ios, android }, active_build, features { <key>: bool } }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
@@ -694,8 +695,11 @@ at once. The apps read the config once at launch and cache it (iOS `AppConfigSto
 `AppConfigRepository`): a key the answer leaves out takes the bundled default, a key the build
 does not know is ignored, and offline the cached answer, else the defaults, stands. The map is
 always present (`{}` when nothing is switched). Fixture `app.config`. The handler is lane A3's
-(`api/internal/app`, dark behind `APP_API`); it does not send `features` yet (see lane P1's
-report for the addition).
+(`api/internal/app`, behind `APP_API`). It fills `features` from `APP_FEATURES` (a comma list
+of keys, each sent `true`; unset is `{}`), and the checkout lists from
+`APP_WEB_CHECKOUT_REGIONS_IOS` (default `US`) and `APP_WEB_CHECKOUT_REGIONS_ANDROID` (default
+`none`); a missing, malformed or unknown `X-App` platform gets `[]`. All of it is server config:
+a change needs no code and no app release.
 
 ## Live surfaces (Wave 3 lane F14)
 
@@ -722,8 +726,8 @@ DataStore) and compute their figures from it with the same clock, so no two surf
 - `last_raid` `{ zone_name, starts_at }` or null: `Last: {zone}, {d Mon}.`
 - `upgrades` `{ state, sentence, count, total_gain, unit, rows[] }` or null: the Home answer's
   first three rows in its order with the whole list's count and total; any state but `ok` has no
-  rows and a `sentence` the widget shows as is. Null until the Home answer's builder (lane A3)
-  backs it.
+  rows and a `sentence` the widget shows as is (an `ok` answer with no rows says every slot
+  matches). Null while the Home answer (`APP_API`) is off.
 - `live` `{ sim_runs_running }`.
 
 `generated_at` is to the minute. `Updated {n} h ago` (past 12 hours) is measured from when the app
@@ -762,10 +766,11 @@ Built by `api/internal/livesurface/payloads.go` and pinned to their fixtures exa
   `widget.refresh`, `live-raid-<id>` or `live-sim-<id>`. Android draws the ongoing notification
   itself. Fixtures `surface.*.fcm`.
 
-**Pending.** The senders are lane A2's (`api/internal/push`), which is not on main: until it lands
-no live push is sent, so iOS Live Activities and the Android ongoing notification are started and
-updated by the app while it runs, and widgets tick on their timelines. Apple's APNs key does not
-exist yet either; remote Live Activity updates need it.
+**Pending.** No live-surface push is sent yet. Lane A2's senders (`api/internal/push`) send alert
+pushes only; a Live Activity push needs `apns-push-type: liveactivity` and its own topic, and
+Apple's APNs key does not exist yet. So iOS Live Activities and the Android ongoing notification
+are started and updated by the app while it runs, and widgets tick on their timelines; the
+registrations are kept and swept so the senders can use them the day they exist.
 
 ## Not in v1
 

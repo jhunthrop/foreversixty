@@ -2,7 +2,7 @@
 from w3kit import *  # noqa: F403
 from w3kit import W3, TAB_CLEAR
 from screens_home import tooltip_panel
-from screens_more import ranks_of, tree_grid, LEVEL_POINTS, _icon
+from w3_tree import ranks_of, tree_grid, LEVEL_POINTS, _icon
 from model import slots
 from kit import DATA
 
@@ -80,6 +80,8 @@ def search_none(plat: str) -> str:
 
 
 CAPE = 11623
+# The cape's bonding is not in the build's ItemSparse rows (base or hotfix), so this word is the mock's; spec F12 names the data dependency (C6 `bonding`).
+item(CAPE)["bonding"] = "Binds when equipped"
 
 
 def item_head() -> str:
@@ -95,9 +97,9 @@ def item_page(plat: str, part: int = 1) -> str:
     mine = card(f"<div style=\"padding:12px 16px;display:flex;gap:10px;align-items:center\">{crest('shaman', 36)}<div style=\"flex:1\"><div class=\"t-body strong\" style=\"font-weight:700\">Your Back pick</div><div class=\"t-meta muted\">Elemental · 60 · Phase 1 raid · Horde</div></div>{tag('Yours')}</div>", quiet=False, margin="14px 16px 0")
     tip = f"<div style=\"padding:0 16px;margin-top:14px\">{tooltip_panel(CAPE, 'Back')}</div>"
     drops = W3["cape"]["drops"]
-    drow = "".join(f"<div class=\"lrow\" style=\"min-height:60px\">{tile('swords', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{d['boss']}</div><div class=\"t-meta muted\">{d['zone']} · Dungeon</div></div></div>" for d in drops)
+    drow = "".join(f"<div class=\"lrow\" style=\"min-height:60px\">{tile('swords', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{d['boss']}</div><div class=\"t-meta muted\">{d['zone']} · Dungeon · {('Drops ' + format(d['chance'], '.0%')) if d['chance'] else 'Drop chance not known'}</div></div></div>" for d in drops)
     if part == 1:
-        inner = item_head() + mine + tip + label("Where it comes from") + card(drow) + note("Drop chances show where the game's data has them.")
+        inner = item_head() + mine + tip + label("Where it comes from") + card(drow) + note("A drop chance prints when the game's data has one.")
     else:
         uses = W3["cape"]["uses"]
         def urow(u: dict) -> str:

@@ -162,7 +162,14 @@ func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor 
 	if subID == "" {
 		return nil
 	}
-	return s.upsertSubscription(ctx, subID, actor)
+	subject, ok, err := s.upsertSubscriptionOf(ctx, subID, actor)
+	if err != nil || !ok {
+		return err
+	}
+	if event.Type == "invoice.payment_failed" {
+		s.publishPaymentFailed(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"]), event.ID)
+	}
+	return nil
 }
 
 // metadataUserID reads sub.Metadata["user_id"] — always the buying
@@ -221,15 +228,22 @@ func subscriptionPeriodEnd(sub *stripe.Subscription) (time.Time, bool) {
 // second fetch, taken inside the lock, so a slower delivery cannot write
 // a status it read before a faster one committed.
 func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor string) error {
+	_, _, err := s.upsertSubscriptionOf(ctx, subscriptionID, actor)
+	return err
+}
+
+// upsertSubscriptionOf is upsertSubscription answering the subject it upserted; ok is false
+// for a subscription this service did not sell.
+func (s *Service) upsertSubscriptionOf(ctx context.Context, subscriptionID, actor string) (subscriptionSubject, bool, error) {
 	first, err := s.Gateway.GetSubscription(ctx, subscriptionID)
 	if err != nil {
-		return fmt.Errorf("billing: get subscription %s: %w", subscriptionID, err)
+		return subscriptionSubject{}, false, fmt.Errorf("billing: get subscription %s: %w", subscriptionID, err)
 	}
 	subject, ok := s.subjectOf(first)
 	if !ok {
-		return nil
+		return subscriptionSubject{}, false, nil
 	}
-	return subject.withLock(ctx, s.Store, func(ctx context.Context) error {
+	return subject, true, subject.withLock(ctx, s.Store, func(ctx context.Context) error {
 		sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
 		if err != nil {
 			return fmt.Errorf("billing: get subscription %s inside lock: %w", subscriptionID, err)

@@ -2702,14 +2702,16 @@ components:
           type: [string, "null"]
           enum: [pickup, equip, use, quest, null]
           description: >-
-            Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest);
+            Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest),
+            or classic-db's item_template.bonding for an item the client's ItemSparse lacks;
             null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
         armor_type:
           type: [string, "null"]
           enum: [cloth, leather, mail, plate, shield, null]
           description: >-
-            Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a
-            ring, a trinket, a weapon or unknown. Omitted until published.
+            Spec C6: Item SubclassID for ClassID 4 (armor) as a word (a cloak is cloth, as the
+            client prints "Back ... Cloth"); null for a neck, a ring, a trinket, a weapon or
+            unknown. Omitted until published; draw no armour word then.
         min_standing:
           type: [string, "null"]
           enum: [hated, hostile, unfriendly, neutral, friendly, honored, revered, exalted, null]
@@ -2896,7 +2898,7 @@ components:
         guild: { oneOf: [{ $ref: '#/components/schemas/WidgetGuild' }, { type: "null" }], description: "null when the character is on no guild's roster (`No guild yet`)." }
         next_raid: { oneOf: [{ $ref: '#/components/schemas/WidgetNextRaid' }, { type: "null" }], description: "null when the guild has nothing planned (`No raid planned`)." }
         last_raid: { oneOf: [{ $ref: '#/components/schemas/WidgetLastRaid' }, { type: "null" }] }
-        upgrades: { oneOf: [{ $ref: '#/components/schemas/WidgetUpgrades' }, { type: "null" }], description: "null until the Home answer is available to the API." }
+        upgrades: { oneOf: [{ $ref: '#/components/schemas/WidgetUpgrades' }, { type: "null" }], description: "null while the Home answer (APP_API) is off." }
         live:
           type: object
           title: WidgetLive
@@ -5356,8 +5358,11 @@ paths:
         '204': { description: "Gone" }
   /v1/app/config:
     get:
-      summary: What the apps read once at launch (dark, APP_API)
-      description: Public. Cache-Control public, max-age=300. 503 unavailable when no client build is loaded.
+      summary: What the apps read once at launch (APP_API)
+      description: >-
+        Public. Cache-Control private, max-age=300 (never a shared cache: the CDN does not key on X-App); Vary X-App, because web_checkout_regions is
+        the calling platform's (decision L: ios ["US"], android [], a missing or unknown
+        platform []). 503 unavailable when no client build is loaded.
       operationId: getAppConfig
       tags: [app]
       x-authenticated: false

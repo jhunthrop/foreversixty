@@ -175,6 +175,8 @@ export const bandCompareCopy = {
   /** A build inside the band's, only short of it: the count leads, this text follows it. */
   toTakeSuffix: "of this build's points still to take",
   matches: 'Matches',
+  /** The quiet note under the line when the build holds points past the band's own total. */
+  beyondGuide: (n: number): string => `+${n} beyond the guide`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>

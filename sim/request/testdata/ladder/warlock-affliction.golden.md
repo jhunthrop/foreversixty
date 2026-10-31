@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 10.0 | 5 | spell:695=34.4, other:mana_gain=31.5, spell:1454=31.5, spell:5019=31.2, spell:172=14.0 | {OtherID: 13}, {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 21.0 | 5 | spell:5019=44.2, other:mana_gain=26.2, spell:1455=26.2, spell:1088=25.4, spell:6222=11.9 | {OtherID: 13}, {SpellID: 18288} |
-| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:273040 ranged:5213 | 42.9 | 6 | spell:5019=56.5, spell:1106=26.9, other:mana_gain=25.8, spell:1456=25.8, spell:2941=12.3 | {OtherID: 13} |
-| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:7714 ranged:13064 | 54.4 | 6 | spell:5019=42.3, spell:7641=30.2, other:mana_gain=24.0, spell:11687=24.0, spell:2941=13.1 | {OtherID: 13} |
-| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:7714 ranged:5216 | 117.6 | 7 | spell:5019=79.0, other:mana_gain=30.4, spell:11687=30.4, spell:1316697=28.1, spell:7641=13.8 | {OtherID: 13} |
-| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 157.4 | 7 | spell:5019=61.1, spell:1316697=28.5, other:mana_gain=24.3, spell:11688=24.3, spell:11659=12.2 | {OtherID: 13} |
-| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 341.0 | 8 | spell:5019=75.7, other:mana_gain=28.6, spell:11689=28.6, spell:1316697=28.6, spell:11661=19.9 | {OtherID: 13} |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 9.2 | 4 | spell:695=34.9, other:mana_gain=32.2, spell:1454=32.2, spell:172=14.3, spell:707=13.7 | {OtherID: 13}, {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 17.7 | 5 | other:mana_gain=27.7, spell:1455=27.7, spell:1088=26.8, spell:6222=12.5, spell:1094=12.1 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:273040 ranged:5213 | 38.3 | 6 | spell:1106=25.1, other:mana_gain=24.7, spell:1456=24.7, spell:5019=20.9, spell:2941=12.8 | {OtherID: 13} |
+| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:7714 ranged:13064 | 49.5 | 6 | spell:7641=30.1, other:mana_gain=24.2, spell:11687=24.2, spell:2941=13.3, spell:7648=10.9 | {OtherID: 13} |
+| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:7714 ranged:5216 | 110.6 | 7 | other:mana_gain=30.6, spell:11687=30.6, spell:1316697=28.3, spell:7641=13.8, spell:7648=11.1 | {OtherID: 13} |
+| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 157.7 | 6 | spell:1316697=30.6, other:mana_gain=29.1, spell:11688=29.1, spell:11659=18.7, spell:11671=11.1 | {OtherID: 13} |
+| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 313.3 | 8 | spell:1316697=28.6, other:mana_gain=28.6, spell:11689=28.6, spell:11661=19.9, spell:11668=11.0 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -217,4 +217,17 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warlock-affliction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=10 kind=zero_casts spell="Bane of Agony" id=980 authored=11713
+- warlock-affliction level=20 kind=zero_casts spell="Bane of Agony" id=1014 authored=11713
+- warlock-affliction level=30 kind=zero_casts spell="Bane of Agony" id=6217 authored=11713
+- warlock-affliction level=30 kind=zero_casts spell="Siphon Life" id=18265 authored=18881
+- warlock-affliction level=38 kind=zero_casts spell="Bane of Agony" id=11711 authored=11713
+- warlock-affliction level=38 kind=zero_casts spell="Siphon Life" id=18879 authored=18881
+- warlock-affliction level=40 kind=zero_casts spell="Bane of Agony" id=11711 authored=11713
+- warlock-affliction level=40 kind=zero_casts spell="Siphon Life" id=18879 authored=18881
+- warlock-affliction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=50 kind=zero_casts spell="Bane of Agony" id=11712 authored=11713
+- warlock-affliction level=50 kind=zero_casts spell="Siphon Life" id=18880 authored=18881
+- warlock-affliction level=60 kind=zero_casts spell="Bane of Agony" id=11713 authored=11713
+- warlock-affliction level=60 kind=zero_casts spell="Siphon Life" id=18881 authored=18881

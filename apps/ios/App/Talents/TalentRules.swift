@@ -96,21 +96,28 @@ enum TalentRules {
         (tree.talents.map { $0.tier + 1 }.max() ?? 0, tree.talents.map { $0.column + 1 }.max() ?? 0)
     }
 
-    /// The planner's `diffAgainstBand`: `diffCount` is your points spent where the guide spends
-    /// fewer (`Σ max(yours - guide, 0)`), `missingCount` the guide's points you have not taken
-    /// (`Σ max(guide - yours, 0)`), and `differing` every talent whose two ranks differ.
+    /// The planner's `diffAgainstBand`. `stray = Σ max(yours - guide, 0)` is your points spent where
+    /// the guide spends fewer; `missingCount = Σ max(guide - yours, 0)` the guide's points you have not
+    /// taken; `extraCount = max(0, yourTotal - guideTotal)` your points past the guide's own total.
+    /// Points past the guide's total are not differences (owner ruling 2026-10-31), so
+    /// `diffCount = max(0, stray - extraCount)`: stray points differ only up to the guide's total.
+    /// `differing` is every talent whose two ranks differ.
     static func compare(_ file: TalentsFile, yours: [Int: Int], guide: [Int: Int]) -> TalentDiff {
-        var diffCount = 0
+        var stray = 0
         var missingCount = 0
         var differing: Set<Int> = []
         for talent in trees(file).flatMap(\.talents) {
             let mine = yours[talent.id] ?? 0
             let theirs = guide[talent.id] ?? 0
-            diffCount += max(mine - theirs, 0)
+            stray += max(mine - theirs, 0)
             missingCount += max(theirs - mine, 0)
             if mine != theirs { differing.insert(talent.id) }
         }
-        return TalentDiff(diffCount: diffCount, missingCount: missingCount, differing: differing)
+        // stray - missing = yourTotal - guideTotal, so the extra points are that difference floored at 0.
+        let extraCount = max(0, stray - missingCount)
+        return TalentDiff(
+            diffCount: max(0, stray - extraCount), missingCount: missingCount, extraCount: extraCount, differing: differing
+        )
     }
 
     /// The tab that opens: the tree with the most points in the build first shown, ties to the
@@ -154,11 +161,14 @@ struct TalentConnector: Equatable, Sendable {
 struct TalentDiff: Equatable, Sendable {
     let diffCount: Int
     let missingCount: Int
+    /// Your points past the guide's own total: the "+n beyond the guide" note.
+    let extraCount: Int
     let differing: Set<Int>
 
-    /// The status line's state (spec F6 §4.4): `Matches` exactly when no cell differs.
+    /// The status line's state (spec F6 §4.4): `Matches` once you hold every guide point, however
+    /// many points you have beyond its total.
     var status: TalentStatus {
-        if differing.isEmpty { return .matches }
+        if missingCount == 0 { return .matches }
         return diffCount > 0 ? .differs(diffCount) : .toTake(missingCount)
     }
 }

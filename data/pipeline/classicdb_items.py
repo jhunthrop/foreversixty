@@ -59,6 +59,7 @@ from pipeline.normalize.gear import (
     STAT_BY_MODIFIER_ID,
     TWO_HAND_INVENTORY_TYPES,
     armor_type_for,
+    bonding_for,
     is_junk_name,
     is_weapon_row,
     percent_stats_of,
@@ -300,6 +301,11 @@ class ClassicDbItem(BaseModel):
     delay: int
     set_id: int | None
     unique: bool
+    #: `item_template.bonding`, the same enum as the client's
+    #: ItemSparse.Bonding (`pipeline.normalize.gear.bonding_for`). `None` in
+    #: an extract written before this column was read: no Binds line is
+    #: invented for it.
+    bonding: int | None = None
     #: Every non-zero `spellid_<n>` (1-5), classic-db's own `spelltrigger_<n>`
     #: for it (`TRIGGER_ON_USE`/`TRIGGER_ON_EQUIP`/`TRIGGER_CHANCE_ON_HIT`)
     #: and classic-db's own `spell_template.SpellName` -- the last-resort
@@ -366,6 +372,7 @@ def _item_from_row(row: dict[str, str], spell_names: dict[int, str]) -> ClassicD
         delay=int(row["delay"]),
         set_id=int(row["itemset"]) or None,
         unique=int(row["maxcount"]) == 1,
+        bonding=int(row["bonding"]),
         spells=_spells(row, spell_names),
     )
 
@@ -1058,7 +1065,8 @@ def to_gear_item(
         unique=item.unique,
         icon_source=icon_source,
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
-        armor_type=armor_type_for(item.class_id, item.subclass_id, item.inventory_type),
+        armor_type=armor_type_for(item.class_id, item.subclass_id),
+        bonding=bonding_for(item.bonding),
     )
 
 

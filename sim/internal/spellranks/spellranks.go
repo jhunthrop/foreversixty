@@ -214,8 +214,9 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 		22842: 36, // Frenzied Regeneration; sim/druid/frenzied_regeneration.go: registerFrenziedRegenerationCD returns below its learn level
 	},
 	"hunter": {
-		2643: 18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)
-		3045: 26, // Rapid Fire; sim/hunter/rapid_fire.go: registerRapidFire returns immediately if hunter.Level < 26
+		2643:   18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)
+		3045:   26, // Rapid Fire; sim/hunter/rapid_fire.go: registerRapidFire returns immediately if hunter.Level < 26
+		469145: 60, // Aspect of the Falcon; sim/hunter/aspect_of_the_falcon.go: registerAspectOfTheFalconSpell returns below aspectOfTheFalconLevel 60
 	},
 	"paladin": {
 		407632: 40, // Hammer of the Righteous; sim/paladin/hammer_of_the_righteous.go: hammerOfTheRighteousLevel = 40, registration returns below it

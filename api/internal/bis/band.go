@@ -53,9 +53,27 @@ const EmptyTwoHand = "two_hand_equipped"
 // TankScoreUnit is the ScoreUnit of a tank band, whose figures are Forever Score points.
 const TankScoreUnit = "tank_score"
 
+// Weight is one stat's weight in a band's own stat-weight list (bands[].weights[]).
+type Weight struct {
+	Stat   string  `json:"stat"`
+	Weight float64 `json:"weight"`
+}
+
 // Band is one spec's BiS picks for one level band and faction.
 type Band struct {
-	Slots []Slot
+	// Band is the level band (20, 30, ... 60) and Preset what it was ranked under (BarePreset
+	// for an entry that names none).
+	Band   int
+	Preset string
+	// Role is the band's role ("tank", "healer"; "" for a damage band).
+	Role string
+	// Talents is the band's talent build, the three trees' per-talent rank digits joined
+	// with "-", and TalentPoints its point total.
+	Talents      string
+	TalentPoints int
+	// Weights is the band's stat-weight list, the weights its Score is summed under.
+	Weights []Weight
+	Slots   []Slot
 	// ScoreUnit is what the band's scores and deltas count: "reference_stat_points" (DPS) or
 	// TankScoreUnit.
 	ScoreUnit string
@@ -63,6 +81,15 @@ type Band struct {
 	ReferenceDpsPerPoint *float64
 	// GeneratedAt is when the file was ranked (RFC 3339), "" when it does not say.
 	GeneratedAt string
+}
+
+// WeightsByStat is Weights as stat -> weight.
+func (b Band) WeightsByStat() map[string]float64 {
+	out := make(map[string]float64, len(b.Weights))
+	for _, w := range b.Weights {
+		out[w.Stat] = w.Weight
+	}
+	return out
 }
 
 // BySlot indexes Slots by their own slot name, for a caller comparing one character's gear
@@ -86,6 +113,10 @@ type bisBand struct {
 	Band                 int      `json:"band"`
 	Faction              string   `json:"faction"`
 	Preset               string   `json:"preset"`
+	Role                 string   `json:"role"`
+	Talents              string   `json:"talents"`
+	TalentPoints         int      `json:"talent_points"`
+	Weights              []Weight `json:"weights"`
 	Slots                []Slot   `json:"slots"`
 	ScoreUnit            string   `json:"score_unit"`
 	ReferenceDpsPerPoint *float64 `json:"reference_dps_per_point"`
@@ -99,7 +130,8 @@ func (f bisFile) stamped(b Band) Band {
 
 // band is the entry as the loaders return it.
 func (b bisBand) band() Band {
-	return Band{Slots: b.Slots, ScoreUnit: b.ScoreUnit, ReferenceDpsPerPoint: b.ReferenceDpsPerPoint}
+	return Band{Band: b.Band, Preset: b.preset(), Role: b.Role, Talents: b.Talents, TalentPoints: b.TalentPoints,
+		Weights: b.Weights, Slots: b.Slots, ScoreUnit: b.ScoreUnit, ReferenceDpsPerPoint: b.ReferenceDpsPerPoint}
 }
 
 // The presets a band entry is ranked under; an entry with no preset is bare.

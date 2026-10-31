@@ -100,11 +100,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.7 | 3 | other:attack/2=132.1, other:attack/1=84.3, spell:1757=40.6, spell:6760/5=7.0, spell:5171/3=1.0 | {SpellID: 13750} |
 | 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:1482 off_hand:2236 | 26.9 | 3 | other:attack/2=123.3, other:attack/1=68.8, spell:1758=44.9, spell:6761/5=7.8, spell:5171/3=1.0 | {SpellID: 13750} |
-| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:9457 off_hand:7687 | 42.8 | 3 | other:attack/1=80.6, other:attack/2=77.3, spell:1760=45.6, spell:6762/5=8.1, spell:5171/3=1.0 | {SpellID: 13750} |
-| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 68.8 | 4 | other:attack/1=89.8, other:attack/2=85.8, spell:8621=45.0, spell:8623/5=7.9, other:attack/3=3.0 | {SpellID: 13750} |
-| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 80.4 | 6 | other:attack/2=104.8, other:attack/1=89.9, spell:8621=48.1, spell:8624/5=8.4, spell:18107=2.4 | - |
-| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 115.4 | 5 | other:attack/2=135.8, other:attack/1=90.7, spell:11293=48.1, spell:11299/5=8.4, spell:13750=1.0 | - |
-| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 229.5 | 5 | other:attack/2=70.6, other:attack/1=66.9, spell:11294=47.3, spell:11300/5=9.7, other:attack/3=7.2 | - |
+| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:9457 off_hand:7687 | 40.1 | 3 | other:attack/1=80.6, other:attack/2=77.3, spell:1760=45.6, spell:6762/5=8.1, spell:5171/3=1.0 | {SpellID: 13750} |
+| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 65.0 | 4 | other:attack/1=91.3, other:attack/2=87.1, spell:8621=44.3, spell:8623/5=7.8, other:attack/3=3.1 | {SpellID: 13750} |
+| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 76.5 | 6 | other:attack/2=106.4, other:attack/1=91.3, spell:8621=47.5, spell:8624/5=8.4, spell:18107=2.4 | - |
+| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 109.6 | 5 | other:attack/2=137.8, other:attack/1=92.1, spell:11293=47.5, spell:11299/5=8.3, spell:13877=2.0 | - |
+| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 221.3 | 5 | other:attack/2=71.6, other:attack/1=68.0, spell:11294=46.7, spell:11300/5=9.6, other:attack/3=7.3 | - |
 
 ## Learned but unused (informational)
 

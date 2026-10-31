@@ -1660,6 +1660,11 @@ enum Copy {
         format("talents.match", spec, band)
     }
 
+    /// Your build has every point of the {spec} {band} guide build.
+    static func talentsMatchBeyond(spec: String, band: String) -> String {
+        format("talents.matchBeyond", spec, band)
+    }
+
     /// {n} of your {m} points differ from the {band} guide build.
     static func talentsDiffer(n: Int, m: Int, band: String) -> String {
         format("talents.differ", n, m, band)
@@ -1706,9 +1711,9 @@ enum Copy {
         format("talents.missing", n)
     }
 
-    /// Level {l} is past the {band} guide build's {g} points, so points past it show as differing.
-    static func talentsBeyond(l: Int, band: String, g: Int) -> String {
-        format("talents.beyond", l, band, g)
+    /// +{n} beyond the guide
+    static func talentsBeyond(n: Int) -> String {
+        format("talents.beyond", n)
     }
 
     /// Requires {n} points in {tree} Talents

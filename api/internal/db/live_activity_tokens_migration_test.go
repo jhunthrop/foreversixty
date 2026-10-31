@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-const liveActivityTokensVersion = 61
+const liveActivityTokensVersion = 63
 
-// 0061 adds live_activity_tokens; its down drops it, and a revoked device takes its rows.
+// 0063 adds live_activity_tokens; its down drops it, and a revoked device takes its rows.
 func TestMigrationAddsLiveActivityTokens(t *testing.T) {
 	url := testURL(t)
 	if err := Migrate(url); err != nil {

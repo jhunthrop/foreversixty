@@ -267,7 +267,7 @@ public extension Endpoint where Response == LiveActivityRegistered {
 }
 
 public extension Endpoint where Response == AppConfig {
-    /// GET /v1/app/config: What the apps read once at launch (dark, APP_API)
+    /// GET /v1/app/config: What the apps read once at launch (APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
 }
 

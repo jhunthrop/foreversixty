@@ -1595,7 +1595,7 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 // dependency on it.
 var idLearnLevelOverrides = map[string]map[int]int{
 	"druid":   {5217: 24, 5229: 12, 22812: 44, 22842: 36},
-	"hunter":  {2643: 18, 3045: 26},
+	"hunter":  {2643: 18, 3045: 26, 469145: 60},
 	"paladin": {407632: 40, 25890: 60},
 	"warlock": {603: 60},
 }
@@ -1674,6 +1674,10 @@ var talentOwnedAuraIDs = map[string]map[int]int{
 		// RegisterAura(fingersOfFrostBuffSpellId) when
 		// Talents.FingersOfFrost == 0.
 		400669: 400647,
+		// sim/mage/talents.go: applyWintersChill returns before it builds
+		// the Winter's Chill debuff array (core.WintersChillAura, 12579)
+		// when Talents.WintersChill == 0.
+		12579: 11180,
 	},
 }
 

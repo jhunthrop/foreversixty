@@ -472,3 +472,15 @@ func TestLadderLearnLevelOverridesMirrorTheRewrites(t *testing.T) {
 		}
 	}
 }
+
+// TestAddTalentOwnedAurasExemptsWintersChill: the Cone of Cold line's
+// guard names the Winter's Chill debuff (12579), which sim/mage/talents.go's
+// applyWintersChill registers only once the talent (11180) has a point, so
+// the ladder's zero-points exemption has to find it through that talent.
+func TestAddTalentOwnedAurasExemptsWintersChill(t *testing.T) {
+	const wintersChillNode = 105763
+	got := addTalentOwnedAuras("mage", map[int]int{11180: wintersChillNode})
+	if node, ok := got[12579]; !ok || node != wintersChillNode {
+		t.Errorf("Winter's Chill aura 12579 -> node %d (present %v), want %d", node, ok, wintersChillNode)
+	}
+}

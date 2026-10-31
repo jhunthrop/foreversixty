@@ -207,7 +207,10 @@ func TestExpertiseToCapIsAbsentWithoutAMeleeSwing(t *testing.T) {
 	}
 }
 
-func TestRunSpecPublishesExpertiseToCapFromTheEngine(t *testing.T) {
+// runSpec end to end: the engine reports a melee profile for Marksmanship
+// (its rotation moves out to range only after the profile is read), and
+// the published band still carries no expertise figure.
+func TestRunSpecPublishesNoExpertiseForARangedHunter(t *testing.T) {
 	outDir := t.TempDir()
 	fake := &fakeEngine{
 		DefaultDPS: 500,
@@ -237,8 +240,29 @@ func TestRunSpecPublishesExpertiseToCapFromTheEngine(t *testing.T) {
 		t.Fatal("no bands written")
 	}
 	for i, band := range out.Bands {
-		if band.ExpertiseToCap == nil || band.ExpertiseToCap.Baseline != 1 || band.ExpertiseToCap.Dodge != 5.5 || band.ExpertiseToCap.Parry != nil {
-			t.Errorf("band %d expertise_to_cap = %+v, want baseline 1, dodge 5.5", i, band.ExpertiseToCap)
+		if band.ExpertiseToCap != nil {
+			t.Errorf("band %d expertise_to_cap = %+v, want none for a ranged hunter", i, band.ExpertiseToCap)
 		}
+	}
+}
+
+// Beast Mastery and Marksmanship fight at range with a stat-stick pair of
+// melee weapons equipped. The engine profiles the character before the
+// rotation moves it out, so it reports a melee dual wielder; the ranged
+// shot's cap is the special cap (9% against a boss) and has no white
+// penalty, and nothing they shoot is dodged by expertise.
+func TestRangedHunterPublishesNoMeleeFigures(t *testing.T) {
+	dualWieldMelee := core.HitProfile{Physical: true, Melee: true, Hit: 4, Suppression: 1, SpecialCap: 9, WhiteCap: 28, DualWielding: true, DodgeChance: 6.5}
+	for _, spec := range []string{"hunter-beast-mastery", "hunter-marksmanship"} {
+		figure, ok := hitToCapFor(spec, dualWieldMelee).(*hitToCap)
+		if !ok || figure.Specials != 5 || figure.White != nil {
+			t.Errorf("%s hit_to_cap = %+v, want specials 5 and no white figure", spec, figure)
+		}
+		if got := expertiseToCapFor(spec, dualWieldMelee); got != nil {
+			t.Errorf("%s expertise_to_cap = %+v, want none", spec, got)
+		}
+	}
+	if figure := hitToCapFor("hunter-survival", dualWieldMelee).(*hitToCap); figure.White == nil {
+		t.Error("melee Survival lost its white cap")
 	}
 }

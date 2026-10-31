@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -26,23 +27,29 @@ type liveSurfaceWiring struct {
 	guilds  *guilds.Service
 	sims    *sims.Store
 	entitle *entitlements.Store
-	log     *slog.Logger
+	// homes is the Home answer (APP_API); nil leaves the snapshot's upgrades null.
+	homes *app.Service
+	log   *slog.Logger
 }
 
 // newLiveSurface builds the widget snapshot and live-registration routes, or nil while
-// APP_WIDGETS is off. The snapshot's upgrades stay null until the Home answer's builder (lane
-// A3, api/internal/app) is on main to back livesurface.Upgrades. APNs and FCM senders for the
-// live.* and widget.refresh events arrive with lane A2; until then the registrations are kept
-// and swept, and the apps update their surfaces locally.
+// APP_WIDGETS is off. The snapshot's upgrades are the Home answer's (APP_API), null while that
+// is off. No live.* or widget.refresh push is sent yet: lane A2's senders send alert pushes
+// only, and Apple's APNs key does not exist. The registrations are kept and swept, and the
+// apps update their surfaces while they run.
 func newLiveSurface(ctx context.Context, w liveSurfaceWiring) *livesurface.Service {
 	if !w.cfg.AppWidgets {
 		return nil
 	}
 	tokens := &livesurface.Store{Pool: w.pool}
 	go sweepLiveRegistrations(ctx, tokens, w.log)
-	return &livesurface.Service{
+	svc := &livesurface.Service{
 		Accounts: w.auth, Raids: w.guilds, Sims: w.sims, Entitlements: w.entitle, Tokens: tokens, Log: w.log,
 	}
+	if w.homes != nil {
+		svc.Upgrades = livesurface.HomeUpgrades{Homes: w.homes}
+	}
+	return svc
 }
 
 // sweepLiveRegistrations removes registrations whose raid or run has ended, hourly.
