@@ -620,7 +620,7 @@ describe('CharacterRatingPanel empty state copy', () => {
 });
 
 describe('the profile’s order (L8.4 fix round 2 item 7)', () => {
-  it('puts the score card second on the profile at every width (after the header, before the sign-in band)', () => {
+  it('puts the score card second on the profile at every width (right after the header)', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
     const section = /<section class="([^"]*)"[^>]*data-testid="forever-score"/.exec(body)?.[1] ?? '';
     expect(section.split(' ')).toContain('-order-2');

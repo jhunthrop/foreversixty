@@ -167,9 +167,8 @@
   );
 
   // The hero band's own read of the current-character pointer (brief 2026-09-22 §B4/B5) --
-  // the same localStorage read CurrentCharacterBar.svelte makes for the compact chip, kept
-  // separate because that component stays a pure render of its own `current` prop and
-  // never exposes it. Re-read on CURRENT_CHARACTER_CHANGED so Forget clears the band too.
+  // the same localStorage read CurrentCharacterBar.svelte makes for /setup's chip, kept
+  // separate because that component never exposes it. Re-read on CURRENT_CHARACTER_CHANGED so Forget clears the band too.
   let currentCharacter = $state<CurrentCharacter | null>(null);
   $effect(() => {
     if (mode !== 'account') return;

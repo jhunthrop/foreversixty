@@ -62,7 +62,6 @@
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import ColdPasteHero from './ColdPasteHero.svelte';
-  import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
@@ -221,12 +220,10 @@
   const signedIn = $derived(me !== null);
 
   // 2026-09-26 layout pass, Finding 1: the Run block's own character, resolved with the
-  // exact same pointer-then-main precedence CurrentCharacterBar.svelte's spine mode uses
-  // (`heroCharacter`/`mainCharacter`, both pure and already shared with that component) --
-  // so the block under the spine bar and the bar itself can never name a different
-  // character. Tracked the same way that component tracks it: read once, then again on
-  // every pointer write (`CURRENT_CHARACTER_CHANGED`), since a Switch elsewhere on this
-  // page's own spine bar should move this block along with it.
+  // pointer-then-main precedence the header selector uses (`heroCharacter`/`mainCharacter`),
+  // so the block and the header can never name a different character. Read once, then
+  // again on every pointer write (`CURRENT_CHARACTER_CHANGED`), since a choice in the header
+  // selector should move this block along with it.
   let currentPointer = $state<CurrentCharacter | null>(null);
   $effect(() => {
     const read = (): void => {
@@ -246,33 +243,6 @@
   // rather than assumed, the same rule every other source in this lane follows.
   const runBlockPath = $derived(
     runBlockCharacter === null ? null : parseCharacterPath(`/character/${runBlockCharacter.key}`),
-  );
-
-  /** The landing's Your characters card is on screen (a signed-in member with characters and none
-   *  loaded): the current-character strip is its first row, not a card of its own above it. */
-  const landingCardShown = $derived(
-    !hasSavedSimId &&
-      bootstrap.view !== 'specs' &&
-      store.character === null &&
-      !switcherOpen &&
-      !sessionPending &&
-      me !== null &&
-      me.characters.length > 0,
-  );
-
-  /** The name the page's own card shows (the simulator card, or the landing's), so the strip above
-   *  it does not say the same character again. */
-  const stripCardName = $derived(
-    store.character !== null && !switcherOpen
-      ? store.character.name
-      : store.character === null &&
-          !switcherOpen &&
-          !sessionPending &&
-          me !== null &&
-          me.characters.length > 0 &&
-          runBlockCharacter !== null
-        ? runBlockCharacter.name
-        : '',
   );
 
   let historyRows = $state<SimListRow[] | null>(null);
@@ -393,7 +363,6 @@
       characterLoaded: () => store.character !== null,
       pinned: () => hasSavedSimId || bootstrap.request !== null,
       holdsWork: () => simHoldsWork(store, bootstrap.code),
-      onSettled: (loaded) => (restored = loaded),
       onBusy: (busy) => (landingBusyKey = busy ? RESTORE_BUSY_KEY : null),
     });
     return () => {
@@ -448,9 +417,6 @@
   const showColdPasteHero = $derived(
     store.character === null && !sessionPending && (me === null || me.characters.length === 0),
   );
-
-  // `restored` is only ever set by `restoreFromPointer`; the spine bar shows the note.
-  let restored = $state(false);
 
   /**
    * A fresh FS1 v2 code for the loaded character, the same conversion "Run this yourself"
@@ -530,7 +496,7 @@
     if (!decideBootstrap(url, stored).restored) return;
     landingBusyKey = RESTORE_BUSY_KEY;
     try {
-      restored = await runBootstrapRestore(store, url, stored, () => store.character !== null);
+      await runBootstrapRestore(store, url, stored, () => store.character !== null);
     } finally {
       landingBusyKey = null;
     }
@@ -572,16 +538,7 @@
   {/if}
 {/snippet}
 
-{#snippet currentStrip(inCard: boolean)}
-  <CurrentCharacterBar spine quietSignedOut currentDoor="sim" {restored} cardName={stripCardName} {inCard} />
-{/snippet}
-
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
-  <!-- The spine bar is the one current-character band on this page (the old chip said the
-       same character a second time, 44px below it); it reserves CHIP_HEIGHT itself. -->
-  {#if !landingCardShown}
-    {@render currentStrip(false)}
-  {/if}
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->
@@ -671,9 +628,9 @@
              no form until they ask for one -- so this replaces the switcher entirely rather
              than sitting above it. -->
         {#if runBlockCharacter !== null}
-          <!-- 2026-09-26 layout pass, Finding 1: directly under the spine bar -- one action
-               for the same character the bar itself calls current, matching whichever
-               affordance (Sim vs. Paste export) the list below offers that same character. -->
+          <!-- 2026-09-26 layout pass, Finding 1: one action for the character the header calls
+               current, matching whichever affordance (Sim vs. Paste export) the list below
+               offers that same character. -->
           <SimRunBlock
             character={runBlockCharacter}
             path={runBlockPath}
@@ -688,9 +645,7 @@
           failedKey={landingFailedKey}
           onpick={(path) => void pickCharacter(path)}
           onother={() => (switcherOpen = true)}
-        >
-          {#snippet lead()}{@render currentStrip(true)}{/snippet}
-        </LandingState>
+        />
         {#if store.message !== null && landingFailedKey === null}
           <!-- The race refusal (sources.ts's "no race recorded", a combat log carries none
                and the API has not started sending one for a stored character either) is the

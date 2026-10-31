@@ -1,11 +1,11 @@
 <!-- web/src/components/sim/SimRunBlock.svelte -->
-<!-- 2026-09-26 layout pass, review round 1 Finding 1: the one-action row directly under the
-     spine bar, for whichever character the spine bar itself calls current -- a single
-     "Run sim" button when that character has a build, or the identical "Paste export" link
-     the character list below offers when it does not. SimView.svelte resolves `character`
-     with the exact same pointer/main precedence CurrentCharacterBar.svelte's own spine
-     mode uses, and this block calls the same `hasBuild` check LandingState.svelte's row
-     does, so the two can never show a different affordance for the same character. -->
+<!-- 2026-09-26 layout pass, review round 1 Finding 1: the one-action row for whichever
+     character the header selector calls current -- a single "Run sim" button when that
+     character has a build, or the identical "Paste export" link the character list below
+     offers when it does not. SimView.svelte resolves `character` with the header's own
+     pointer/main precedence, and this block calls the same `hasBuild` check
+     LandingState.svelte's row does, so the two can never show a different affordance for
+     the same character. -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
   import { hasBuild } from '../../lib/account/build-pill';

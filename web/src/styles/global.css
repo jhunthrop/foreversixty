@@ -490,18 +490,6 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
-/* The current-character band's slot (planner, simulator, logs, rankings and character
-   shells and islands) exists while a pointer is stored OR a signed-in session is hinted:
-   Base.astro sets data-pointer before first paint from localStorage and data-session from
-   the session cookie's readable half, and lib/current-character.ts keeps data-pointer in
-   step, so a page with neither never shows the band's reserved height as dead space. The
-   spine bar's signed-out, no-pointer line (CurrentCharacterBar.svelte's `spine` mode) is the
-   one state that renders with no pre-paint reservation at all -- the rarest visitor shape,
-   and the one CLS trade-off this rule accepts (spec 2026-09-25 section 4.1). */
-html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
-  display: none;
-}
-
 /* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
    section 3.7): the card head (48px) and its rule (1px), then the rows at the height they last
    rendered. Base.astro sets --server-runs-reserve from fs.serverRuns.reserve (px) and
@@ -820,7 +808,7 @@ html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-
 
 /* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
    in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
-   session hint `.chip-slot` above already uses for a `display:none` swap -- the hint
+   session hint, as a `display:none` swap -- the hint
    lands before layout settles, so this never causes a visible shift either direction, and
    (unlike `data-session-hide`'s visibility toggle for the hero's own same-shaped overlay)
    `display:none` costs no reserved height for the common case that never shows it. */

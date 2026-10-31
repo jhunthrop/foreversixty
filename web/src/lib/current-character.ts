@@ -54,10 +54,8 @@ export {
 /**
  * `<html data-pointer="1">` while a pointer is stored. Base.astro's inline pre-paint script
  * sets it from localStorage before first paint (it repeats STORAGE_KEY, since an inline
- * script cannot import), and global.css hides every `.chip-slot` unless it is set, so a page
- * with nothing to show in the current-character band shows no band at all instead of the
- * band's reserved height as dead space. Kept in step here whenever the pointer is written or
- * cleared, so a paste that creates one reveals the band and Forget collapses it.
+ * script cannot import), and global.css keys /setup's pointer and no-pointer hints off it.
+ * Kept in step here whenever the pointer is written or cleared.
  */
 export const POINTER_ATTRIBUTE = 'pointer';
 

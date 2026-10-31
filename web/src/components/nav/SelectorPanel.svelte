@@ -32,7 +32,9 @@
     account,
     signingOut,
     signOutFailed,
+    restored,
     onsignout,
+    onforget,
     onchoose,
     onpaste,
     onretry,
@@ -47,7 +49,10 @@
     account: AccountPanel | null;
     signingOut: boolean;
     signOutFailed: boolean;
+    /** The current character came back from an earlier visit: a muted line and Forget. */
+    restored: boolean;
     onsignout: () => void;
+    onforget: () => void;
     onchoose: (row: Row) => void;
     onpaste: (input: string) => Promise<boolean>;
     onretry: (row: Row) => void;
@@ -404,6 +409,23 @@
     <div class="csel-note">{selectorCopy.pastedNotSaved}</div>
   {:else if model.session === 'expired'}
     <div class="csel-note is-ember">{selectorCopy.sessionEnded}</div>
+  {/if}
+
+  {#if restored}
+    <div class="csel-note csel-restored" data-testid="selector-restored">
+      <span>{selectorCopy.restoredLine}</span>
+      <button
+        type="button"
+        class="csel-manage"
+        aria-label={model.current === null
+          ? selectorCopy.forget
+          : selectorCopy.forgetAria(model.current.name)}
+        onclick={onforget}
+        data-testid="selector-forget"
+      >
+        {selectorCopy.forget}
+      </button>
+    </div>
   {/if}
 
   {#if pasteOpen}
