@@ -20,7 +20,7 @@ data class CompositionRead(
     val classesAccessibilityLabel: String,
 ) {
     data class ClassLine(val className: String, val name: String, val count: Int)
-    data class BuffLine(val key: String, val name: String, val icon: String, val present: Boolean, val accessibilityLabel: String)
+    data class BuffLine(val key: String, val name: String, val label: String, val icon: String, val present: Boolean, val accessibilityLabel: String)
 
     companion object {
         fun of(composition: RaidComposition?, res: Resources): CompositionRead? {
@@ -37,7 +37,7 @@ data class CompositionRead(
             }
             val buffs = composition.buffs.map { buff ->
                 BuffLine(
-                    buff.key, buff.name, buff.icon, buff.present,
+                    buff.key, buff.name, buff.label, buff.icon, buff.present,
                     if (buff.present) res.getString(R.string.raids_a11y_buffPresent, buff.name, buff.count)
                     else res.getString(R.string.raids_a11y_buffMissing, buff.name),
                 )

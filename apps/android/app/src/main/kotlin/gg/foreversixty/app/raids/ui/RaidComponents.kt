@@ -25,6 +25,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -186,16 +190,43 @@ private fun crestDrawable(className: String): Int? = when (className.lowercase()
 
 /** A square game icon: the spec icon (border `#3a4256`) or an item icon (quality border). */
 @Composable
-fun GameIcon(stem: String?, size: Dp, border: Color = RaidColors.iconBorder, borderWidth: Dp = 1.dp) {
+fun GameIcon(
+    stem: String?,
+    size: Dp,
+    border: Color = RaidColors.iconBorder,
+    borderWidth: Dp = 1.dp,
+    /** A short label drawn inside the tile while the icon is missing or fails to load. */
+    fallback: String? = null,
+) {
     val shape = RoundedCornerShape(FsRadius.pill)
+    var failed by remember(stem) { mutableStateOf(false) }
+    val url = LocalRaidIcons.current.url(stem)
     Box(
-        Modifier.size(size).clip(shape).background(FsColor.cardTop).border(borderWidth, border, shape),
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(size).clip(shape).background(FsColor.cardTop).border(borderWidth, border, shape),
     ) {
-        LocalRaidIcons.current.url(stem)?.let { url ->
-            AsyncImage(model = url, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.size(size))
+        if (fallback != null && (url == null || failed)) {
+            Text(
+                fallback,
+                style = RaidType.micro.copy(letterSpacing = 0.sp, fontSize = (size.value * FALLBACK_SCALE).sp),
+                color = FsColor.nav,
+                maxLines = 1,
+                softWrap = false,
+            )
+        }
+        if (url != null && !failed) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(size),
+                onError = { failed = true },
+            )
         }
     }
 }
+
+private const val FALLBACK_SCALE = 0.28f
 
 /** `micro` uppercase section label, with an optional mono count. */
 @Composable

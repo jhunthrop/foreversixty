@@ -61,10 +61,10 @@ fun CompositionBlock(read: CompositionRead) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 read.buffs.forEach { buff ->
                     Column(
-                        Modifier.width(32.dp).alpha(if (buff.present) 1f else MISSING_ALPHA)
+                        Modifier.width(36.dp).alpha(if (buff.present) 1f else MISSING_ALPHA)
                             .clearAndSetSemantics { contentDescription = buff.accessibilityLabel },
                     ) {
-                        GameIcon(buff.icon, 32.dp, border = if (buff.present) FsColor.kill.copy(alpha = 0.6f) else FsColor.line)
+                        GameIcon(buff.icon, 36.dp, border = if (buff.present) FsColor.kill.copy(alpha = 0.6f) else FsColor.line, fallback = buff.label)
                     }
                 }
             }

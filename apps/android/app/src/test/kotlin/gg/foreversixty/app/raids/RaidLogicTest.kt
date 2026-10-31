@@ -181,6 +181,8 @@ class RaidLogicTest {
         assertEquals(listOf("Tanks 3", "Healers 6", "DPS 14"), read.roles)
         assertEquals("Missing: Blessings", read.buffSummary)
         assertEquals("Blessings, missing", read.buffs.first { it.key == "blessings" }.accessibilityLabel)
+        assertEquals("MotW", read.buffs.first { it.key == "mark_of_the_wild" }.label)
+        assertTrue(read.buffs.any { it.key == "windfury_totem" && it.present })
         assertTrue(read.classesAccessibilityLabel.startsWith("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
         val officer = requireNotNull(CompositionRead.of(RaidFixture.raid("guild.raid.officer").composition, resources()))
         assertEquals(listOf("Tanks 3/4", "Healers 6/8", "DPS 14/28"), officer.roles)
@@ -194,6 +196,19 @@ class RaidLogicTest {
         assertEquals("24 of 40: 3 tanks, 6 healers, 14 DPS, 1 late", lines[1])
         assertEquals("Tanks: Ironhide, Kraggor, Bramblehoof", lines[2])
         assertEquals("Out: Wyrmtalon, Snaggle, Felgrin", lines.last())
+    }
+
+    @Test
+    fun `fixture mode reads the active build from the bundled fixtures, so icon URLs resolve`() = runTest {
+        val engine = gg.foreversixty.app.network.FixtureEngine.create(
+            gg.foreversixty.app.network.ClasspathFixtureSource(requireNotNull(javaClass.classLoader)),
+        )
+        val build = gg.foreversixty.app.network.StaticDataClient(engine).activeBuild().let { (it as gg.foreversixty.app.network.ApiResult.Success).data.build }
+        assertEquals("1.60.1.70658", build)
+        assertEquals(
+            "https://foreversixty.gg/data/1.60.1.70658/icons/spell_nature_windfury.webp",
+            gg.foreversixty.app.raids.ui.RaidIcons(build).url("spell_nature_windfury"),
+        )
     }
 
     @Test
