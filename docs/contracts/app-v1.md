@@ -406,7 +406,7 @@ Depths and Lower Blackrock Spire runs, every night a different length) and `guil
   spends the address budget, so calendar services fetching many real links from one address are
   never refused.
 - **Security.** The token is 256 random bits (base64url, 43 characters), shown once, stored only
-  as its SHA-256 (`calendar_feeds`, migration 0063, one live row per account), revocable, and never
+  as its SHA-256 (`calendar_feeds`, migration 0064, one live row per account), revocable, and never
   logged: the API's request and panic logs write the route as `/v1/calendar/:redacted`
   (`httpx.LogPath`). The feed carries the guild's raid times and your own answers, nothing else:
   no raid notes, no other player's name.

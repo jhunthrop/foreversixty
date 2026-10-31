@@ -1,6 +1,6 @@
 // api/internal/guilds/calendar_store.go
 //
-// The calendar link's data layer (migration 0063, W3-C17): one live feed per account, keyed
+// The calendar link's data layer (migration 0064, W3-C17): one live feed per account, keyed
 // by the SHA-256 of its token, and the raids a feed lists. The raw token never reaches this
 // file: callers hash it first (auth.TokenHash).
 package guilds
