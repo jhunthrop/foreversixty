@@ -9,7 +9,7 @@ import { rotationDrawerContent, rotationNotesFor } from './rotations';
 
 const FROSTBOLT_NOTE = 'Frostbolt is the filler between Fingers of Frost charges.';
 const WAND_NOTE =
-  'Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.';
+  "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.";
 
 describe('rotationNotesFor', () => {
   // Pins the two notes the brief names and their order, not the whole list: the curated
