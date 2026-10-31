@@ -109,10 +109,10 @@ struct ReportsStoreTests {
 
     @Test func homeLine_fallsBackToTheCache() async {
         let cache = MemoryRaidCache()
-        #expect(await ReportsStore.homeLine(service: FakeReportsService(), cache: cache, now: now) == "Your last raid: Blackrock Spire, 0 kills")
+        #expect(await ReportsStore.homeLine(service: FakeReportsService(), cache: cache, now: now) == "Your last raid: Onyxia's Lair, 1 kill")
         let offline = FakeReportsService()
         offline.listAnswer = { _ throws(APIError) in throw .transport("offline") }
-        #expect(await ReportsStore.homeLine(service: offline, cache: cache, now: now) == "Your last raid: Blackrock Spire, 0 kills")
+        #expect(await ReportsStore.homeLine(service: offline, cache: cache, now: now) == "Your last raid: Onyxia's Lair, 1 kill")
         #expect(await ReportsStore.homeLine(service: offline, cache: MemoryRaidCache(), now: now) == nil)
     }
 

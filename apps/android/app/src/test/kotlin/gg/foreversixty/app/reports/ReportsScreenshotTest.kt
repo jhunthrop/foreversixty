@@ -2,6 +2,8 @@ package gg.foreversixty.app.reports
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -32,7 +35,12 @@ import gg.foreversixty.app.model.ReportList
 import gg.foreversixty.app.model.ReportMe
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
+import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.raids.MemoryRaidCache
 import gg.foreversixty.app.reports.logic.CoachPhase
+import gg.foreversixty.app.reports.logic.FightRow
+import gg.foreversixty.app.reports.logic.FightRows
+import gg.foreversixty.app.reports.logic.Reports
 import gg.foreversixty.app.reports.logic.MetersPhase
 import gg.foreversixty.app.reports.logic.MetersTarget
 import gg.foreversixty.app.reports.logic.Metric
@@ -41,6 +49,7 @@ import gg.foreversixty.app.reports.logic.ReportPhase
 import gg.foreversixty.app.reports.logic.ReportsContent
 import gg.foreversixty.app.reports.logic.ReportsPhase
 import gg.foreversixty.app.reports.ui.MetersActions
+import gg.foreversixty.app.reports.ui.MetersDragHandle
 import gg.foreversixty.app.reports.ui.MetersSheetContent
 import gg.foreversixty.app.reports.ui.MetersSheetState
 import gg.foreversixty.app.reports.ui.ReportContent
@@ -49,6 +58,8 @@ import gg.foreversixty.app.reports.ui.ReportsList
 import gg.foreversixty.app.sims.SimsTestData
 import java.time.Instant
 import java.time.ZoneOffset
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,13 +84,15 @@ class ReportsScreenshotTest {
     private val offlineAt: Instant = Instant.parse("2026-12-15T22:10:00Z")
     private val specs = SimsTestData.specs()
 
-    private fun capture(name: String, large: Boolean = false, screen: @Composable () -> Unit) {
+    private fun capture(name: String, large: Boolean = false, scrolls: Boolean = true, screen: @Composable () -> Unit) {
         if (large) RuntimeEnvironment.setFontScale(2f)
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
-                        Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) { screen() }
+                        // A route scrolls itself; the stateless screens are given the scroll the route would.
+                        val ground = Modifier.fillMaxSize().background(FsColor.bg)
+                        Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() }
                     }
                 }
             }
@@ -107,12 +120,15 @@ class ReportsScreenshotTest {
 
     private fun meters(name: String, target: MetersTarget, metric: Metric, phase: MetersPhase, large: Boolean = false) =
         capture(name, large) {
-            Box(Modifier.padding(top = 24.dp).fillMaxSize().background(GameColors.sheet, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)).padding(top = 24.dp)) {
+            // The sheet as Material draws it at its large detent: the rounded top and the drag handle.
+            Column(Modifier.padding(top = 24.dp).fillMaxWidth().background(GameColors.sheet, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))) {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { MetersDragHandle() }
                 MetersSheetContent(MetersSheetState(target, metric, phase, showAll = false), specs, SimsTestData.BUILD, MetersActions(), zone)
             }
         }
 
-    private val kill get() = MetersTarget.Pull(ReportsTestData.report().fights.single { it.index == ReportsTestData.KILL_FIGHT })
+    private val kill get() = FightRows.of(ReportsTestData.report()).filterIsInstance<FightRow.Boss>()
+        .single { it.fight.index == ReportsTestData.KILL_FIGHT }.let { MetersTarget.Pull(it.fight, it.pull) }
     private val trash get() = MetersTarget.Trash(requireNotNull(ReportsTestData.report().trashGroups).first())
 
     // F10.1 Your reports, F10.6, F10.7
@@ -166,7 +182,8 @@ class ReportsScreenshotTest {
 
     // F10.5 Report states
 
-    @Test fun live() = report("report-live-and", ReportsTestData.report().copy(status = "live", heartbeatAt = "2026-12-16T00:31:40Z"), coach = CoachPhase.Hidden)
+    /** The live Blackrock Spire run, never the finished Onyxia night. */
+    @Test fun live() = report("report-live-and", ReportsTestData.live(), ReportsTestData.meEmpty())
 
     @Test fun processing() = report("report-processing-and", ReportsTestData.report().copy(status = "processing", fights = emptyList(), trashGroups = emptyList()), me = null)
 
@@ -192,8 +209,21 @@ class ReportsScreenshotTest {
 
     @Test fun metersFlagged() = meters("meters-flagged-and", kill, Metric.Damage, MetersPhase.Flagged)
 
-    @Test @Config(qualifiers = PIXEL_9_XL)
+    @Test
     fun metersLarge() = meters("meters-damage-large-and", kill, Metric.Damage, MetersPhase.Loaded(ReportsTestData.meters()), large = true)
+
+    // The /app/report/{id} link: Home > Your reports > the report, through the navigator the link uses.
+
+    @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun deepLink() {
+        val feature = ReportsFeature(
+            FakeReportsService(), MemoryRaidCache(), specs, { SimsTestData.BUILD }, { true }, { now }, zone,
+        )
+        assertTrue(feature.navigator.open(requireNotNull(DeepLink.parse(DeepLink.Report(ReportsTestData.ID).url()))))
+        assertTrue(feature.navigator.showsList && feature.navigator.wantsHome)
+        assertEquals(ReportsTestData.ID, feature.navigator.report?.id)
+        capture("report-deeplink-and", scrolls = false) { ReportsRoute(feature, ReportsTestData.viewer(premium = false), signIn = {}, onBack = {}) }
+    }
 
     // F10.8 Home with the Logs row
 
@@ -202,7 +232,7 @@ class ReportsScreenshotTest {
         val res = LocalResources.current
         val presenter = HomePresenter(
             HomeFixtures.velaren, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
-            logs = HomeLogs(ReportsTestData.list().rows.first()),
+            logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)),
         )
         HomeAnswer(HomePhase.Loaded(HomeFixtures.home()), presenter, HomeFixtures.BUILD, null)
     }

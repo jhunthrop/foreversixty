@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
@@ -32,7 +34,10 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.SpecCatalog
@@ -61,6 +66,7 @@ data class MetersActions(val select: (Metric) -> Unit = {}, val showAll: () -> U
 object MeterLayout {
     val rowHeight = 44.dp
     val icon = 28.dp
+    val iconCap = 40.dp
     val goldEdge = 3.dp
     val barGap = 3.dp
     const val BAR_ALPHA = 0.22f
@@ -74,10 +80,20 @@ fun MetersSheet(state: MetersSheetState, specs: SpecCatalog, build: String?, act
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = GameColors.sheet,
+        dragHandle = { MetersDragHandle() },
     ) {
         Box(Modifier.fillMaxHeight()) { MetersSheetContent(state, specs, build, actions) }
     }
 }
+
+/** The sheet's drag handle, shared with the screenshot frame. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MetersDragHandle() {
+    BottomSheetDefaults.DragHandle(color = FsColor.muted.copy(alpha = HANDLE_ALPHA))
+}
+
+private const val HANDLE_ALPHA = 0.6f
 
 /** The sheet's body, apart from the sheet so screenshot tests draw it. */
 @Composable
@@ -89,13 +105,9 @@ fun MetersSheetContent(state: MetersSheetState, specs: SpecCatalog, build: Strin
                 copy.metersTitleFor(state.target, state.metric).uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                val fight = (state.target as? MetersTarget.Pull)?.fight
-                OutcomeDot(if (fight == null) FsColor.muted else if (fight.kill) FsColor.kill else FsColor.wipe)
-                copy.headName(state.target)?.let { Text(it, style = FsType.bodyStrong, color = FsColor.strong) }
-                Text(copy.metersHead(state.target), style = FsType.meta, color = FsColor.muted)
-            }
-            Segments(state.metric, copy, actions.select)
+            Head(state.target, copy)
+            // A flagged report shows only its sentence: the segments would do nothing.
+            if (state.phase != MetersPhase.Flagged) Segments(state.metric, copy, actions.select)
         }
         Box(Modifier.padding(top = 12.dp)) {
             when (val phase = state.phase) {
@@ -112,15 +124,35 @@ fun MetersSheetContent(state: MetersSheetState, specs: SpecCatalog, build: Strin
     }
 }
 
+/** The outcome dot on the first line, then the boss (its pull number when pulled more than once) and the meta. */
+@Composable
+private fun Head(target: MetersTarget, copy: ReportsCopy) {
+    val fight = (target as? MetersTarget.Pull)?.fight
+    val name = copy.headName(target)
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Box(Modifier.height(firstLine(FsType.bodyStrong)), contentAlignment = Alignment.Center) {
+            OutcomeDot(if (fight == null) FsColor.muted else if (fight.kill) FsColor.kill else FsColor.wipe)
+        }
+        Text(
+            buildAnnotatedString {
+                if (name != null) withStyle(SpanStyle(fontWeight = FsType.bodyStrong.fontWeight, color = FsColor.strong)) { append("$name  ") }
+                withStyle(SpanStyle(fontSize = FsType.meta.fontSize, color = FsColor.muted)) { append(copy.metersHead(target)) }
+            },
+            style = FsType.bodyStrong,
+        )
+    }
+}
+
+/** Three equal segments: every one as tall as the tallest when a label wraps at large text. */
 @Composable
 private fun Segments(selected: Metric, copy: ReportsCopy, select: (Metric) -> Unit) {
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
         Metric.entries.forEachIndexed { index, metric ->
             SegmentedButton(
                 selected = metric == selected,
                 onClick = { if (metric != selected) select(metric) },
                 shape = SegmentedButtonDefaults.itemShape(index, Metric.entries.size),
-                modifier = Modifier.heightIn(min = 48.dp),
+                modifier = Modifier.fillMaxHeight().heightIn(min = 48.dp),
                 icon = {},
                 colors = SegmentedButtonDefaults.colors(
                     activeContainerColor = GameColors.pressedWash,
@@ -202,7 +234,8 @@ private fun Figure(row: MeterRow, metric: Metric, copy: ReportsCopy) {
 @Composable
 private fun PlayerMark(spec: String?, className: String, specs: SpecCatalog, build: String?) {
     val icon = spec?.let(specs::spec)?.icon
-    if (icon != null && build != null) SpecIcon(icon, build, MeterLayout.icon) else ClassCrest(className, MeterLayout.icon)
+    val size = scaledSize(MeterLayout.icon, MeterLayout.iconCap)
+    if (icon != null && build != null) SpecIcon(icon, build, size) else ClassCrest(className, size)
 }
 
 @Composable

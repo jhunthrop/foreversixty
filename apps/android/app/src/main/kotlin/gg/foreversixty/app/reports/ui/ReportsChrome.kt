@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -90,6 +92,21 @@ fun ErrorRegion(text: String, retry: () -> Unit, inset: Boolean = true) {
     }
 }
 
+/** [base] grown with the font scale, never past [cap] (spec W3 §9: crests, glyphs and icons scale with text). */
+@Composable
+fun scaledSize(base: Dp, cap: Dp): Dp = (base * LocalDensity.current.fontScale).coerceAtMost(cap)
+
+/** The height of [style]'s first line, so a dot or chevron can centre on it at large text. */
+@Composable
+fun firstLine(style: TextStyle): Dp = with(LocalDensity.current) { style.lineHeight.toDp() }
+
+/** Whether the font scale is at the largest-text layouts (spec W3 §9). */
+@Composable
+fun isLargeText(): Boolean = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE
+
+/** From this font scale rows switch to their largest-text layout. */
+const val LARGE_TEXT_SCALE = 1.3f
+
 @Composable
 fun SkeletonBar(width: Dp, height: Dp, modifier: Modifier = Modifier) {
     Box(modifier.width(width).height(height).background(FsColor.cardTop, RoundedCornerShape(4.dp)))
@@ -108,7 +125,7 @@ fun OutcomeDot(color: Color) {
 
 /** The muted 16 dp visibility glyph, with its word for TalkBack. */
 @Composable
-fun VisibilityGlyph(visibility: Visibility) {
+fun VisibilityGlyph(visibility: Visibility, size: Dp = 16.dp) {
     val word = stringResource(visibility.word)
     val icon = when (visibility) {
         Visibility.Public -> R.drawable.ic_visibility_public
@@ -116,7 +133,7 @@ fun VisibilityGlyph(visibility: Visibility) {
         Visibility.Guild -> R.drawable.ic_visibility_guild
         Visibility.Private -> R.drawable.ic_visibility_private
     }
-    Icon(painterResource(icon), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(16.dp).semantics { contentDescription = word })
+    Icon(painterResource(icon), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size).semantics { contentDescription = word })
 }
 
 /** The parse number's colour: the text steps of `--color-parse-*` (spec W3 §4). */

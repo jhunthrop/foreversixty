@@ -80,7 +80,9 @@ struct ReportScreen: View {
             ReportView(
                 phase: store.phase, parses: store.parses, coach: store.coach, now: dependencies.now(), clock: dependencies.clock,
                 actions: ReportActions(
-                    openFight: { row in meters = MetersTarget.of(row, reportID: route.id) },
+                    openFight: { row in
+                        meters = MetersTarget.of(row, reportID: route.id, pulls: store.report.map(FightRows.pullNumbers) ?? [:])
+                    },
                     retry: { Task { await store.load() } },
                     retryParses: { Task { await store.retryParses() } }
                 )

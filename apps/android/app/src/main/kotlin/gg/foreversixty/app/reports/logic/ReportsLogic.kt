@@ -68,6 +68,12 @@ object Reports {
     fun crestClass(row: ReportRow, viewer: ReportsViewer): String? =
         row.loggingCharacter?.key?.let { viewer.classes[it] } ?: viewer.fallbackClass
 
+    /**
+     * Home's `Your last raid`: the newest finished report with a boss pull (never a live dungeon
+     * run); null when there is none.
+     */
+    fun lastRaid(rows: List<ReportRow>): ReportRow? = rows.firstOrNull { ReportState.of(it.status) == ReportState.Done && it.bossCount > 0 }
+
     /** `title` when the report has one, the zone otherwise. */
     fun name(row: ReportRow): String = row.title.ifEmpty { row.zone }
 
@@ -83,10 +89,13 @@ object Reports {
     fun instantOrNull(text: String): Instant? = runCatching { Instant.parse(text) }.getOrNull()
 }
 
+/** `pull 1 of 3`: a boss pull's place among that boss's pulls in the report (the web's pullNumbers). */
+data class PullNumber(val n: Int, val of: Int)
+
 /** One row of the Fights card (spec F10.2). */
 sealed interface FightRow {
-    /** A boss pull: its own row, in fight order. */
-    data class Boss(val fight: FightEntry) : FightRow {
+    /** A boss pull: its own row, in fight order; [pull] numbers a boss pulled more than once. */
+    data class Boss(val fight: FightEntry, val pull: PullNumber? = null) : FightRow {
         val inProgress: Boolean get() = fight.inProgress == true
 
         /** The boss's health at a wipe, rounded; null on a kill, or when the log never showed the boss. */
@@ -119,9 +128,10 @@ object FightRows {
         val grouped = groups.flatMap { it.fights }.toSet()
         val rows = mutableListOf<FightRow>()
         val anchors = mutableMapOf<Int, Int>()
+        val pulls = pullNumbers(report)
         for (fight in report.fights) {
             when {
-                isBoss(fight) -> rows += FightRow.Boss(fight)
+                isBoss(fight) -> rows += FightRow.Boss(fight, pulls[fight.index])
                 fight.index in grouped -> groups.firstOrNull { it.key == fight.index }?.let { anchors[it.key] = rows.size }
                 else -> rows += FightRow.LoosePull(fight)
             }
@@ -131,6 +141,14 @@ object FightRows {
         placed.sortedWith(compareByDescending<Triple<TrashGroup, Int, Int>> { it.second }.thenByDescending { it.third })
             .forEach { (group, at, _) -> rows.add(at, FightRow.Trash(group)) }
         return rows
+    }
+
+    /** Each boss pull's number among the same boss's pulls, in fight order; only bosses pulled more than once. */
+    fun pullNumbers(report: Report): Map<Int, PullNumber> {
+        val bosses = report.fights.filter(::isBoss).groupBy { it.encounterId ?: it.name.hashCode().toLong() }
+        return bosses.values.filter { it.size > 1 }.flatMap { pulls ->
+            pulls.mapIndexed { i, fight -> fight.index to PullNumber(i + 1, pulls.size) }
+        }.toMap()
     }
 
     private fun position(rows: List<FightRow>, group: TrashGroup, anchor: Int): Int {
@@ -195,7 +213,7 @@ sealed interface MetersTarget {
     val index: Int
     val scope: String?
 
-    data class Pull(val fight: FightEntry) : MetersTarget {
+    data class Pull(val fight: FightEntry, val pull: PullNumber? = null) : MetersTarget {
         override val index: Int get() = fight.index
         override val scope: String? get() = null
     }
@@ -235,9 +253,13 @@ object Meters {
         }
     }
 
-    /** The first [cut] rows until Show all; then every row. */
-    fun visible(rows: List<MeterRow>, cut: Int, showAll: Boolean): List<MeterRow> = if (showAll) rows else rows.take(cut)
+    /** The first [cut] rows, and your rows after them when they fall below the cut; every row after Show all. */
+    fun visible(rows: List<MeterRow>, cut: Int, showAll: Boolean): List<MeterRow> {
+        if (showAll) return rows
+        val top = rows.take(cut)
+        return top + rows.drop(cut).filter { it.player.mine }
+    }
 
     /** `Show all {n}` shows while rows are hidden. */
-    fun hasMore(rows: List<MeterRow>, cut: Int, showAll: Boolean): Boolean = !showAll && rows.size > cut
+    fun hasMore(rows: List<MeterRow>, cut: Int, showAll: Boolean): Boolean = !showAll && visible(rows, cut, false).size < rows.size
 }

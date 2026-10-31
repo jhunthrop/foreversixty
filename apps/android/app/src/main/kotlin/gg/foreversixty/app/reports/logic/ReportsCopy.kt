@@ -7,6 +7,7 @@ import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import androidx.annotation.StringRes
 import gg.foreversixty.app.R
+import gg.foreversixty.app.model.FightEntry
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportRow
 import gg.foreversixty.app.raids.logic.GameClass
@@ -92,6 +93,10 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
 
     fun pulls(n: Int): String = res.getQuantityString(R.plurals.report_pulls, n, n)
 
+    /** `Onyxia · pull 1 of 3` for a boss pulled more than once, else the boss's name. */
+    fun bossTitle(fight: FightEntry, pull: PullNumber?): String =
+        pull?.let { res.getString(R.string.report_pullOf, fight.name, it.n, it.of) } ?: fight.name
+
     fun bossMeta(row: FightRow.Boss): String {
         val fight = row.fight
         val time = FightRows.clock(fight.durationMs)
@@ -136,9 +141,9 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
         val spoken = spokenDuration(fight.durationMs)
         val wipe = row.wipePercent
         return when {
-            fight.kill -> res.getString(R.string.report_a11y_kill, fight.name, spoken, players(fight.players.size), deaths(fight.deaths ?: 0))
-            wipe != null -> res.getString(R.string.report_a11y_wipe, fight.name, spoken, wipe)
-            else -> res.getString(R.string.report_a11y_wipePlain, fight.name, spoken)
+            fight.kill -> res.getString(R.string.report_a11y_kill, bossTitle(fight, row.pull), spoken, players(fight.players.size), deaths(fight.deaths ?: 0))
+            wipe != null -> res.getString(R.string.report_a11y_wipe, bossTitle(fight, row.pull), spoken, wipe)
+            else -> res.getString(R.string.report_a11y_wipePlain, bossTitle(fight, row.pull), spoken)
         }
     }
 
@@ -199,14 +204,14 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
         is MetersTarget.Pull -> metersTitle(metric)
     }
 
-    fun headName(target: MetersTarget): String? = (target as? MetersTarget.Pull)?.fight?.name
+    fun headName(target: MetersTarget): String? = (target as? MetersTarget.Pull)?.let { bossTitle(it.fight, it.pull) }
 
     // Coach (F10.4)
 
-    /** `Reviewed 15 Dec · Based on: …`. */
+    /** `Reviewed 15 Dec · Based on: a; b.`: each label once, its own full stop dropped. */
     fun coachFooter(reviewedAt: String, labels: List<String>): String {
         val date = Reports.instantOrNull(reviewedAt)?.let(::shortDate).orEmpty()
-        return res.getString(R.string.coach_footer, date, labels.joinToString(" ").trimEnd('.'))
+        return res.getString(R.string.coach_footer, date, labels.map { it.trim().trimEnd('.') }.distinct().joinToString("; "))
     }
 
     // Shared

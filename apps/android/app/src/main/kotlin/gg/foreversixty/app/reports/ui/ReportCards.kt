@@ -2,22 +2,19 @@ package gg.foreversixty.app.reports.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -28,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Locale
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
@@ -50,10 +48,8 @@ object ReportCardLayout {
     val parseRowHeight = 72.dp
     val fightRowHeight = 64.dp
     val crest = 36.dp
+    val crestCap = 44.dp
     val figureSize = 20.sp
-
-    /** From this font scale the parse figure drops under the boss name. */
-    const val STACK_SCALE = 1.3f
 }
 
 /** `Your parses`, the report's one primary card (spec F10.2); hidden when nobody is signed in. */
@@ -86,14 +82,14 @@ fun ParsesCard(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
 @Composable
 private fun ParseRowView(row: ParseRow, copy: ReportsCopy) {
     val label = copy.parseLabel(row)
-    val stacked = LocalDensity.current.fontScale >= ReportCardLayout.STACK_SCALE
+    val stacked = isLargeText()
     Row(
         Modifier.fillMaxWidth().heightIn(min = ReportCardLayout.parseRowHeight).padding(horizontal = 16.dp, vertical = 10.dp)
             .clearAndSetSemantics { contentDescription = label },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        ClassCrest(row.className, ReportCardLayout.crest)
+        ClassCrest(row.className, scaledSize(ReportCardLayout.crest, ReportCardLayout.crestCap))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(row.fight.encounter, style = FsType.bodyStrong.copy(fontWeight = FontWeight.Bold), color = FsColor.strong)
             Text(copy.parseMeta(row), style = FsType.meta, color = FsColor.muted)
@@ -135,9 +131,18 @@ private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizo
 fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) {
     val rows = FightRows.of(report)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            MicroLabel(stringResource(R.string.report_fights), Modifier.weight(1f))
-            MicroLabel(copy.bossPulls(FightRows.bossPulls(report)))
+        val count = copy.bossPulls(FightRows.bossPulls(report))
+        // Largest text: the label sits over the count, and the count never splits.
+        if (isLargeText()) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                MicroLabel(stringResource(R.string.report_fights))
+                Text(count.uppercase(Locale.ROOT), style = FsType.micro, color = FsColor.muted, maxLines = 1, softWrap = false)
+            }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MicroLabel(stringResource(R.string.report_fights), Modifier.weight(1f))
+                MicroLabel(count)
+            }
         }
         if (rows.isEmpty()) return@Column
         Column(Modifier.fillMaxWidth().quietCard()) {
@@ -145,8 +150,8 @@ fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) 
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
                 when (row) {
                     is FightRow.Boss -> FightRowView(
-                        row.fight.name, copy.bossMeta(row), if (row.fight.kill) FsColor.kill else FsColor.wipe, copy.bossLabel(row),
-                        if (row.inProgress) null else { { open(MetersTarget.Pull(row.fight)) } },
+                        copy.bossTitle(row.fight, row.pull), copy.bossMeta(row), if (row.fight.kill) FsColor.kill else FsColor.wipe, copy.bossLabel(row),
+                        if (row.inProgress) null else { { open(MetersTarget.Pull(row.fight, row.pull)) } },
                     )
                     is FightRow.Trash -> FightRowView(
                         copy.trashTitle(row.group.zone), copy.trashMeta(row), FsColor.muted, copy.trashLabel(row),
@@ -162,6 +167,7 @@ fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) 
 private fun FightRowView(title: String, meta: String, dot: Color, label: String?, open: (() -> Unit)?) {
     val hint = stringResource(R.string.report_a11y_showsMeters)
     val words = label ?: "$title, $meta"
+    val large = isLargeText()
     val tap = if (open != null) Modifier.clickable(onClickLabel = hint, onClick = open) else Modifier
     Row(
         Modifier.fillMaxWidth().then(tap).heightIn(min = ReportCardLayout.fightRowHeight).padding(horizontal = 16.dp, vertical = 10.dp)
@@ -169,14 +175,16 @@ private fun FightRowView(title: String, meta: String, dot: Color, label: String?
                 contentDescription = words
                 if (open != null) onClick(hint) { open(); true }
             },
-        verticalAlignment = Alignment.CenterVertically,
+        // Largest text: the dot and chevron centre on the first line, not the whole row.
+        verticalAlignment = if (large) Alignment.Top else Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        OutcomeDot(dot)
+        val line = if (large) Modifier.height(firstLine(FsType.bodyStrong)) else Modifier
+        Box(line, contentAlignment = Alignment.Center) { OutcomeDot(dot) }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, style = FsType.bodyStrong, color = FsColor.strong)
             Text(meta, style = FsType.meta, color = FsColor.muted)
         }
-        if (open != null) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(24.dp))
+        if (open != null) Box(line, contentAlignment = Alignment.Center) { Chevron(scaledSize(24.dp, ReportsLayout.glyphCap)) }
     }
 }

@@ -14,6 +14,7 @@ struct MetersView: View {
     var expand: () -> Void = {}
     var retry: () -> Void = {}
     @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .subheadline) private var firstLine = ReportsLayout.firstLine
 
     var body: some View {
         ScrollView {
@@ -23,9 +24,11 @@ struct MetersView: View {
                     .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, 16)
                 head.padding(.horizontal, 16)
-                MeterSegments(metric: metric, select: select).padding(.horizontal, 16)
+                // A flagged report has nothing to switch between: only its sentence (spec F10.3).
+                if phase != .flagged { MeterSegments(metric: metric, select: select).padding(.horizontal, 16) }
                 content
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 24)
             .padding(.bottom, 32)
         }
@@ -46,14 +49,16 @@ struct MetersView: View {
     }
 
     private var head: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(alignment: .top, spacing: 8) {
             Circle().fill(dot).frame(width: ReportsLayout.outcomeDot, height: ReportsLayout.outcomeDot)
-                .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 1 }
-            if !target.isTrash {
-                Text(target.name).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                .frame(height: firstLine)
+            let meta = Text(ReportsCopy.metersHead(target, meters: meters)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            if target.isTrash {
+                meta.fixedSize(horizontal: false, vertical: true)
+            } else {
+                Text("\(Text(target.name).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong))  \(meta)")
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text(ReportsCopy.metersHead(target, meters: meters)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .combine)
     }
@@ -84,11 +89,11 @@ struct MetersView: View {
     private func rows(_ players: [MeterPlayer]) -> some View {
         let top = players.first.map(metric.value) ?? 0
         return VStack(alignment: .leading, spacing: 2) {
-            ForEach(Array(MeterRows.visible(players, limit: limit, showAll: showAll).enumerated()), id: \.offset) { index, player in
+            ForEach(MeterRows.visible(players, limit: limit, showAll: showAll), id: \.rank) { row in
                 MeterRowView(
-                    rank: index + 1, player: player, metric: metric,
-                    fraction: MeterRows.fraction(metric.value(player), top: top),
-                    icon: player.spec.flatMap { specs.spec($0)?.icon }, build: build
+                    rank: row.rank, player: row.player, metric: metric,
+                    fraction: MeterRows.fraction(metric.value(row.player), top: top),
+                    icon: row.player.spec.flatMap { specs.spec($0)?.icon }, build: build
                 )
             }
             if MeterRows.hasMore(players, limit: limit, showAll: showAll) {
@@ -144,9 +149,10 @@ struct MeterRowView: View {
     let icon: String?
     let build: String?
     @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .subheadline) private var iconSize = ReportsLayout.meterIcon
 
     var body: some View {
-        HStack(alignment: typeSize.isAccessibilitySize ? .top : .center, spacing: 10) {
+        HStack(alignment: .center, spacing: 10) {
             Text("\(rank)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
             mark
             if typeSize.isAccessibilitySize {
@@ -179,10 +185,11 @@ struct MeterRowView: View {
 
     @ViewBuilder
     private var mark: some View {
+        let size = min(iconSize, ReportsLayout.meterIconCap)
         if let icon, let build {
-            SpecIcon(icon: icon, build: build, size: ReportsLayout.meterIcon)
+            SpecIcon(icon: icon, build: build, size: size)
         } else {
-            ClassCrest(className: player.className, size: ReportsLayout.meterIcon)
+            ClassCrest(className: player.className, size: size)
         }
     }
 

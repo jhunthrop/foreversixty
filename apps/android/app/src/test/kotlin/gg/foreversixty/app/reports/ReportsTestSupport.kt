@@ -32,6 +32,9 @@ object ReportsTestData {
     fun list(): ReportList = RaidFixture.load(ReportList.serializer(), "reports.list")
     fun emptyList(): ReportList = RaidFixture.load(ReportList.serializer(), "reports.list.empty")
     fun report(): Report = RaidFixture.load(Report.serializer(), "reports.get")
+
+    /** The live Blackrock Spire run (m4xk9d2pqz7a): four trash pulls, no boss. */
+    fun live(): Report = RaidFixture.load(Report.serializer(), "reports.get.live")
     fun me(): ReportMe = RaidFixture.load(ReportMe.serializer(), "reports.me")
     fun meEmpty(): ReportMe = RaidFixture.load(ReportMe.serializer(), "reports.me.empty")
     fun meters(): FightMeters = RaidFixture.load(FightMeters.serializer(), "reports.meters")

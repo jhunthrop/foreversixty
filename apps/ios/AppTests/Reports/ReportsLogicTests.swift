@@ -76,7 +76,7 @@ struct ReportsLogicTests {
     @Test func fightMeta_killWipeAndTrash() throws {
         #expect(ReportsCopy.meta(try ReportsTestData.fightRow(9)) == "Kill · 4:28 · 40 players · 3 deaths")
         #expect(ReportsCopy.meta(try ReportsTestData.fightRow(4)) == "Wipe · 1:12 · boss at 61%")
-        #expect(ReportsCopy.meta(try ReportsTestData.fightRow(6)) == "Wipe · 2:41 · boss at 22%")
+        #expect(ReportsCopy.meta(try ReportsTestData.fightRow(6)) == "Wipe · 4:52 · boss at 22%")
         #expect(ReportsCopy.meta(try ReportsTestData.trashRow()) == "6 pulls · 7:40")
         #expect(ReportsCopy.title(try ReportsTestData.trashRow()) == "Trash · Onyxia's Lair")
     }
@@ -91,6 +91,28 @@ struct ReportsLogicTests {
         let fight = try #require(try ReportsTestData.decode(Report.self, report).fights.first { $0.index == 4 })
         #expect(ReportsCopy.meta(.boss(fight)) == "Wipe · 1:12")
         #expect(ReportsCopy.fightA11y(.boss(fight)) == "Onyxia, wipe, 1 minute 12 seconds")
+    }
+
+    @Test func pullNumbers_numberABossPulledMoreThanOnce() throws {
+        let report = try ReportsTestData.report()
+        let pulls = FightRows.pullNumbers(report)
+        #expect(pulls == [4: PullNumber(n: 1, of: 3), 6: PullNumber(n: 2, of: 3), 9: PullNumber(n: 3, of: 3)])
+        #expect(ReportsCopy.title(try ReportsTestData.fightRow(9), pulls: pulls) == "Onyxia · pull 3 of 3")
+        #expect(ReportsCopy.title(try ReportsTestData.trashRow(), pulls: pulls) == "Trash · Onyxia's Lair")
+        let target = try #require(MetersTarget.of(try ReportsTestData.fightRow(4), reportID: report.id, pulls: pulls))
+        #expect(target.name == "Onyxia · pull 1 of 3")
+    }
+
+    @Test func pullNumbers_aSinglePullKeepsThePlainName() throws {
+        let pulls = FightRows.pullNumbers(try ReportsTestData.onlyWipes())
+        let onlyKill = try ReportsTestData.decode(Report.self, {
+            var data = try ReportsTestData.data("reports.get")
+            data["fights"] = (data["fights"] as? [[String: Any]] ?? []).filter { ($0["index"] as? Int) != 4 && ($0["index"] as? Int) != 6 }
+            return data
+        }())
+        #expect(pulls.count == 2)
+        #expect(FightRows.pullNumbers(onlyKill).isEmpty)
+        #expect(ReportsCopy.title(try ReportsTestData.fightRow(9), pulls: FightRows.pullNumbers(onlyKill)) == "Onyxia")
     }
 
     @Test func bossPulls_countWords() {
@@ -138,11 +160,18 @@ struct ReportsLogicTests {
 
     @Test func meterCut_elevenThenShowAll() throws {
         let players = try ReportsTestData.meters().players
-        #expect(MeterRows.visible(players, limit: MeterRows.defaultVisible, showAll: false).count == 11)
+        #expect(MeterRows.visible(players, limit: MeterRows.defaultVisible, showAll: false).map(\.rank) == Array(1...11))
         #expect(MeterRows.hasMore(players, limit: MeterRows.defaultVisible, showAll: false))
         #expect(MeterRows.visible(players, limit: MeterRows.defaultVisible, showAll: true).count == 40)
         #expect(!MeterRows.hasMore(players, limit: MeterRows.defaultVisible, showAll: true))
-        #expect(MeterRows.visible(players, limit: MeterRows.largeVisible, showAll: false).count == 4)
+    }
+
+    @Test func meterCut_largestText_addsYourRowAfterTheFour() throws {
+        let players = try ReportsTestData.meters().players
+        let rows = MeterRows.visible(players, limit: MeterRows.largeVisible, showAll: false)
+        #expect(rows.map(\.rank) == [1, 2, 3, 4, 6])
+        #expect(rows.last?.player.mine == true)
+        #expect(MeterRows.hasMore(players, limit: MeterRows.largeVisible, showAll: false))
     }
 
     @Test func meterA11y_marksYourRow() throws {
@@ -200,7 +229,17 @@ struct ReportsLogicTests {
     @Test func coach_footer() throws {
         let footer = ReportsCopy.coachFooter(try ReportsTestData.review(), clock: clock)
         #expect(footer.hasPrefix("Reviewed 14 Dec · Based on: Measured against"))
-        #expect(footer.hasSuffix("your own rage bar."))
+        #expect(footer.hasSuffix("damage dealers; Measured against your own rage bar."))
+        #expect(!footer.contains(".;"))
+    }
+
+    @Test func coach_footer_dropsAnExactDuplicateLabel() throws {
+        var data = try ReportsTestData.data("coach.fight")
+        let labels = data["basis_labels"] as? [String] ?? []
+        data["basis_labels"] = labels + [labels[2]]
+        let review = try ReportsTestData.decode(CoachReview.self, data)
+        let footer = ReportsCopy.coachFooter(review, clock: clock)
+        #expect(footer.components(separatedBy: "Measured against your own rage bar").count == 2)
     }
 
     @Test func metersHead_countsThePullsRoster() throws {
@@ -211,13 +250,17 @@ struct ReportsLogicTests {
     // MARK: Live and Home
 
     @Test func live_pollsOnlyALiveReport() throws {
-        #expect(ReportsLive.polls(try ReportsTestData.report(status: ReportStatus.live)))
+        #expect(ReportsLive.polls(try ReportsTestData.liveReport()))
         #expect(!ReportsLive.polls(try ReportsTestData.report()))
         #expect(!ReportsLive.polls(nil))
     }
 
     @Test func homeLine_newestReport() throws {
-        #expect(ReportsCopy.homeLine(try ReportsTestData.list()) == "Your last raid: Blackrock Spire, 0 kills")
+        // The newest finished raid with a boss pull: never the live dungeon run above it.
+        #expect(ReportsCopy.homeLine(try ReportsTestData.list()) == "Your last raid: Onyxia's Lair, 1 kill")
+        let list = try ReportsTestData.list()
+        let noRaid = ReportList(rows: list.rows.filter { !ReportsList.isLastRaid($0) }, total: 3, page: 1, perPage: 100)
+        #expect(ReportsCopy.homeLine(noRaid) == "No reports yet.")
         #expect(ReportsCopy.homeLine(try RaidFixture.load(ReportList.self, "reports.list.empty")) == "No reports yet.")
     }
 

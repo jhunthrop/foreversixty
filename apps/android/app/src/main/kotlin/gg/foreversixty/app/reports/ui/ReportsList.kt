@@ -23,11 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import java.util.Locale
@@ -68,10 +68,10 @@ data class ReportsListActions(
 object ReportsLayout {
     val rowHeight = 68.dp
     val crest = 36.dp
+    val crestCap = 44.dp
+    val glyph = 16.dp
+    val glyphCap = 24.dp
     const val SKELETON_ROWS = 4
-
-    /** From this font scale the tags and glyph drop under the row's words. */
-    const val STACK_SCALE = 1.3f
 }
 
 /** F10.1 as drawn from a phase: stateless, so screenshots drive every state. */
@@ -154,32 +154,61 @@ private fun Footer(content: ReportsContent, pageFailed: Boolean, actions: Report
 /** One report (68 dp min): crest, name, meta, the state tag, the visibility glyph and a chevron. */
 @Composable
 fun ReportRowView(row: ReportRow, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, open: (ReportRow) -> Unit) {
-    val state = ReportState.of(row.status)
     val label = copy.rowLabel(row, now)
-    val stacked = LocalDensity.current.fontScale >= ReportsLayout.STACK_SCALE
-    Row(
-        Modifier.fillMaxWidth().clickable { open(row) }.heightIn(min = ReportsLayout.rowHeight)
-            .padding(horizontal = 16.dp, vertical = 12.dp).clearAndSetSemantics { contentDescription = label },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+    val modifier = Modifier.fillMaxWidth().clickable { open(row) }.heightIn(min = ReportsLayout.rowHeight)
+        .padding(horizontal = 16.dp, vertical = 12.dp).clearAndSetSemantics { contentDescription = label }
+    if (isLargeText()) LargeReportRow(row, viewer, now, copy, modifier) else DefaultReportRow(row, viewer, now, copy, modifier)
+}
+
+@Composable
+private fun DefaultReportRow(row: ReportRow, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, modifier: Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         ClassCrest(Reports.crestClass(row, viewer), ReportsLayout.crest)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(Reports.name(row), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(copy.rowMeta(row, now), style = FsType.meta, color = FsColor.muted)
-            if (stacked) Row(Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                Marks(state, row, copy)
+        Words(row, now, copy, Modifier.weight(1f))
+        copy.stateTag(ReportState.of(row.status))?.let { StateTag(ReportState.of(row.status), it) }
+        VisibilityGlyph(Visibility.of(row.visibility))
+        Chevron(24.dp)
+    }
+}
+
+/**
+ * Largest text: crest and glyph grow to their caps, the tag (with the glyph beside it) drops under
+ * the words, and the chevron centres on the first line. A row with no tag keeps its glyph by the chevron.
+ */
+@Composable
+private fun LargeReportRow(row: ReportRow, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, modifier: Modifier) {
+    val state = ReportState.of(row.status)
+    val tag = copy.stateTag(state)
+    val glyph = scaledSize(ReportsLayout.glyph, ReportsLayout.glyphCap)
+    Row(modifier, verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        ClassCrest(Reports.crestClass(row, viewer), scaledSize(ReportsLayout.crest, ReportsLayout.crestCap))
+        Column(Modifier.weight(1f)) {
+            Words(row, now, copy, Modifier)
+            if (tag != null) {
+                Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    StateTag(state, tag)
+                    VisibilityGlyph(Visibility.of(row.visibility), glyph)
+                }
             }
         }
-        if (!stacked) Marks(state, row, copy)
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(24.dp))
+        Row(Modifier.height(firstLine(FsType.bodyStrong)), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (tag == null) VisibilityGlyph(Visibility.of(row.visibility), glyph)
+            Chevron(glyph)
+        }
     }
 }
 
 @Composable
-private fun Marks(state: ReportState, row: ReportRow, copy: ReportsCopy) {
-    copy.stateTag(state)?.let { StateTag(state, it) }
-    VisibilityGlyph(Visibility.of(row.visibility))
+private fun Words(row: ReportRow, now: Instant, copy: ReportsCopy, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(Reports.name(row), style = FsType.bodyStrong, color = FsColor.strong)
+        Text(copy.rowMeta(row, now), style = FsType.meta, color = FsColor.muted)
+    }
+}
+
+@Composable
+fun Chevron(size: Dp) {
+    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size))
 }
 
 @Composable

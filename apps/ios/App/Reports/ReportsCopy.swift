@@ -132,13 +132,19 @@ enum ReportsCopy {
         n == 0 ? Copy.reportNoBossPulls : Copy.reportBossPulls(n: n)
     }
 
-    /// The fight row's title.
-    static func title(_ row: FightRow) -> String {
+    /// The fight row's title: a boss pulled more than once is numbered (`Onyxia · pull 1 of 3`).
+    static func title(_ row: FightRow, pulls: [Int: PullNumber] = [:]) -> String {
         switch row {
-        case let .boss(fight), let .inProgress(fight): fight.name
+        case let .boss(fight): bossTitle(fight, pulls: pulls)
+        case let .inProgress(fight): fight.name
         case let .trash(group): Copy.reportTrashTitle(zone: group.zone)
         case .loneTrash: Copy.reportTrash
         }
+    }
+
+    static func bossTitle(_ fight: FightEntry, pulls: [Int: PullNumber]) -> String {
+        guard let pull = pulls[fight.index] else { return fight.name }
+        return Copy.reportPullOf(boss: fight.name, n: pull.n, m: pull.of)
     }
 
     /// `Kill · 4:28 · 40 players · 3 deaths`, `Wipe · 1:12 · boss at 61%`, `6 pulls · 7:40`.
@@ -160,15 +166,16 @@ enum ReportsCopy {
         return Copy.reportWipeMeta(time: time, percent: "\(percent)%")
     }
 
-    static func fightA11y(_ row: FightRow) -> String {
+    static func fightA11y(_ row: FightRow, pulls: [Int: PullNumber] = [:]) -> String {
         switch row {
         case let .boss(fight):
             let time = spokenDuration(fight.durationMs)
+            let boss = bossTitle(fight, pulls: pulls)
             if fight.kill {
-                return Copy.reportA11yKill(boss: fight.name, time: time, players: Copy.reportPlayers(n: fight.players.count), deaths: Copy.reportDeaths(n: fight.deaths ?? 0))
+                return Copy.reportA11yKill(boss: boss, time: time, players: Copy.reportPlayers(n: fight.players.count), deaths: Copy.reportDeaths(n: fight.deaths ?? 0))
             }
-            guard let percent = FightRows.bossPercent(fight) else { return Copy.reportA11yWipePlain(boss: fight.name, time: time) }
-            return Copy.reportA11yWipe(boss: fight.name, time: time, n: percent)
+            guard let percent = FightRows.bossPercent(fight) else { return Copy.reportA11yWipePlain(boss: boss, time: time) }
+            return Copy.reportA11yWipe(boss: boss, time: time, n: percent)
         case let .trash(group):
             return Copy.reportA11yTrash(zone: group.zone, pulls: Copy.reportPulls(n: group.fights.count), time: spokenDuration(group.durationMs))
         case let .loneTrash(fight):
@@ -250,19 +257,22 @@ enum ReportsCopy {
         }
     }
 
-    /// `Reviewed 15 Dec · Based on: {labels}.` The labels are sentences; the copy's own full stop
-    /// replaces the last one's, so the footer never ends in two.
+    /// `Reviewed 14 Dec · Based on: {a}; {b}.` Each label loses its own full stop (the copy ends
+    /// the sentence), and a label repeated word for word is printed once.
     static func coachFooter(_ review: CoachReview, clock: ReportsClock) -> String {
-        var labels = review.basisLabels.joined(separator: " ")
-        if labels.hasSuffix(".") { labels.removeLast() }
-        return Copy.coachFooter(date: clock.shortDate(review.reviewedAt), labels: labels)
+        let labels = review.basisLabels.map { $0.hasSuffix(".") ? String($0.dropLast()) : $0 }
+        let unique = labels.enumerated().filter { labels.firstIndex(of: $0.element) == $0.offset }.map(\.element)
+        return Copy.coachFooter(date: clock.shortDate(review.reviewedAt), labels: unique.joined(separator: coachLabelSeparator))
     }
+
+    static let coachLabelSeparator = "; "
 
     // MARK: Home
 
-    /// Home's Logs row sub: the newest report's zone and kills, or `No reports yet.`
+    /// Home's Logs row sub: the newest finished raid with a boss pull (never a live run or a
+    /// dungeon without bosses), or `No reports yet.`
     static func homeLine(_ list: ReportList) -> String {
-        guard let newest = list.rows.first else { return Copy.homeLogsNone }
+        guard let newest = list.rows.first(where: ReportsList.isLastRaid) else { return Copy.homeLogsNone }
         return Copy.homeLogsLast(zone: newest.zone, kills: Copy.reportsKills(n: newest.killCount))
     }
 }

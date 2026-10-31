@@ -9,6 +9,7 @@ struct ReportContent: Equatable, Sendable {
     let offlineSince: Date?
 
     var fightRows: [FightRow] { FightRows.rows(report) }
+    var pullNumbers: [Int: PullNumber] { FightRows.pullNumbers(report) }
 }
 
 enum ReportPhase: Equatable, Sendable {

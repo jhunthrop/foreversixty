@@ -133,13 +133,35 @@ class ReportsLogicTest {
     @Test fun `kill and wipe meta`() {
         val bosses = FightRows.of(ReportsTestData.report()).filterIsInstance<FightRow.Boss>()
         assertEquals("Wipe · 1:12 · boss at 61%", copy().bossMeta(bosses[0]))
-        assertEquals("Wipe · 2:41 · boss at 22%", copy().bossMeta(bosses[1]))
+        assertEquals("Wipe · 4:52 · boss at 22%", copy().bossMeta(bosses[1]))
         assertEquals("Kill · 4:28 · 40 players · 3 deaths", copy().bossMeta(bosses[2]))
         val unseen = FightRow.Boss(bosses[0].fight.copy(bossHealthPct = -1.0))
         assertEquals("Wipe · 1:12", copy().bossMeta(unseen))
         assertEquals("Wipe · 1:12", copy().bossMeta(FightRow.Boss(bosses[0].fight.copy(bossHealthPct = null))))
-        assertEquals("Onyxia, wipe, 1 minute, 12 seconds", copy().bossLabel(unseen))
-        assertEquals("Onyxia, wipe, 1 minute, 12 seconds, boss at 61 percent", copy().bossLabel(bosses[0]))
+        assertEquals("Onyxia, wipe, 1 minute, 12 seconds", copy().bossLabel(FightRow.Boss(unseen.fight)))
+        assertEquals("Onyxia · pull 1 of 3, wipe, 1 minute, 12 seconds, boss at 61 percent", copy().bossLabel(bosses[0]))
+    }
+
+    @Test fun `a boss pulled more than once is numbered in fight order`() {
+        val bosses = FightRows.of(ReportsTestData.report()).filterIsInstance<FightRow.Boss>()
+        assertEquals(listOf("Onyxia · pull 1 of 3", "Onyxia · pull 2 of 3", "Onyxia · pull 3 of 3"), bosses.map { copy().bossTitle(it.fight, it.pull) })
+        val single = FightRows.of(ReportsTestData.onlyWipes().let { r -> r.copy(fights = r.fights.filter { it.index != 6 }) })
+        assertEquals(listOf("Onyxia"), single.filterIsInstance<FightRow.Boss>().map { copy().bossTitle(it.fight, it.pull) })
+        val kill = bosses.last()
+        assertEquals("Onyxia · pull 3 of 3", copy().headName(MetersTarget.Pull(kill.fight, kill.pull)))
+    }
+
+    @Test fun `home's last raid is the newest finished report with a boss pull`() {
+        val rows = ReportsTestData.list().rows
+        assertEquals("ewlrx3enxbeb", Reports.lastRaid(rows)?.id)
+        assertNull(Reports.lastRaid(rows.filter { it.id != "ewlrx3enxbeb" }))
+    }
+
+    @Test fun `home's logs line names the last raid, never the live run`() = runTest {
+        val store = ReportsStore(FakeReportsService(), MemoryRaidCache(), { now })
+        assertEquals("Onyxia's Lair", store.lastRaid()?.zone)
+        val none = FakeReportsService().apply { listAnswer = { ok(ReportsTestData.emptyList()) } }
+        assertNull(ReportsStore(none, MemoryRaidCache(), { now }).lastRaid())
     }
 
     // Parses
@@ -175,11 +197,14 @@ class ReportsLogicTest {
         assertEquals("Rank 6, Obnoxious Yell, Fury Warrior, 712, your character", copy().meterLabel(mine))
     }
 
-    @Test fun `eleven rows then show all, four at the largest text`() {
+    @Test fun `eleven rows then show all, four at the largest text with your row after them`() {
         val rows = Meters.rows(ReportsTestData.meters().players, Metric.Damage)
         assertEquals(11, Meters.visible(rows, Meters.cut(1f), showAll = false).size)
         assertTrue(Meters.hasMore(rows, Meters.cut(1f), showAll = false))
-        assertEquals(4, Meters.visible(rows, Meters.cut(2f), showAll = false).size)
+        val large = Meters.visible(rows, Meters.cut(2f), showAll = false)
+        assertEquals(listOf(1, 2, 3, 4, 6), large.map { it.rank })
+        assertTrue(large.last().player.mine)
+        assertTrue(Meters.hasMore(rows, Meters.cut(2f), showAll = false))
         assertEquals(rows.size, Meters.visible(rows, Meters.cut(1f), showAll = true).size)
         assertFalse(Meters.hasMore(rows, Meters.cut(1f), showAll = true))
     }
@@ -260,10 +285,9 @@ class ReportsLogicTest {
         assertEquals(5, all.size)
         val bare = review.copy(review = review.review.copy(fixFirst = null, thenFix = emptyList(), couldntCheck = emptyList()))
         assertEquals(listOf(CoachSection.DoingWell::class), CoachSection.of(bare).map { it::class })
-        assertEquals(
-            "Reviewed 14 Dec · Based on: ${review.basisLabels.joinToString(" ").trimEnd('.')}.",
-            copy().coachFooter(review.reviewedAt, review.basisLabels),
-        )
+        val labels = review.basisLabels.map { it.trimEnd('.') }.distinct()
+        assertEquals("Reviewed 14 Dec · Based on: ${labels.joinToString("; ")}.", copy().coachFooter(review.reviewedAt, review.basisLabels))
+        assertEquals("Reviewed 14 Dec · Based on: a; b.", copy().coachFooter(review.reviewedAt, listOf("a.", "b.", "a.")))
     }
 
     @Test fun `parses failing stay in their card`() = runTest {

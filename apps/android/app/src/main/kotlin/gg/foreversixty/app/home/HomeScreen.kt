@@ -121,7 +121,7 @@ class HomeDependencies(
                 talents = talents,
                 isOn = isOn,
                 simsFeature = sims,
-                reportsFeature = ReportsFeature(context, client, StaticDataClient(engine), sims.specs, isReportsOn),
+                reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn),
             )
         }
     }
@@ -224,9 +224,9 @@ fun HomeCharacterScreen(
     val talentsPhase = talentsModel?.phase?.collectAsStateWithLifecycle()?.value
     val talentStatus = (talentsPhase as? TalentsPhase.Loaded)?.presenter?.status(res)
     val reportsFeature = dependencies.reports
-    // Lane F10: the Logs row reads the newest report (the list's own cache when offline).
+    // Lane F10: the Logs row reads the last raid with a boss pull (the list's own cache when offline).
     val newestReport by produceState<HomeLogs?>(null, reportsFeature, character.key) {
-        value = reportsFeature?.let { HomeLogs(it.newest()) }
+        value = reportsFeature?.let { HomeLogs(it.lastRaid()) }
     }
     val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus, newestReport)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {

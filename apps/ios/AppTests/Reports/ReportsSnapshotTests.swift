@@ -2,6 +2,7 @@
 import DesignSystem
 import Models
 import Networking
+import Routing
 import SnapshotTesting
 import SwiftUI
 import Testing
@@ -63,7 +64,8 @@ struct ReportsSnapshotTests {
     }
 
     private func meters(_ row: FightRow, metric: MeterMetric = .damage, phase: MetersPhase) throws -> some View {
-        let target = try #require(MetersTarget.of(row, reportID: ReportsTestData.reportID))
+        let pulls = FightRows.pullNumbers(try ReportsTestData.report())
+        let target = try #require(MetersTarget.of(row, reportID: ReportsTestData.reportID, pulls: pulls))
         return MetersView(target: target, metric: metric, phase: phase, showAll: false, specs: specs, build: ReportsTestData.build)
     }
 
@@ -94,6 +96,12 @@ struct ReportsSnapshotTests {
 
     @Test func reports_error() throws {
         snap(try list(.failed), "reports-error-ios")
+    }
+
+    @Test func reports_offline() throws {
+        let rows = try ReportsTestData.list()
+        let since = RaidTime.date("2026-12-15T21:41:00Z")
+        snap(try list(.loaded(ReportsContent(rows: rows.rows, total: rows.total, page: rows.page, offlineSince: since))), "reports-offline-ios")
     }
 
     @Test func reports_signedOut() throws {
@@ -141,7 +149,7 @@ struct ReportsSnapshotTests {
     // MARK: F10.5 States
 
     @Test func report_live() throws {
-        snap(report(loaded(try ReportsTestData.report(status: ReportStatus.live)), parses: .loaded(try ReportsTestData.me())), "report-live-ios")
+        snap(report(loaded(try ReportsTestData.liveReport()), parses: .loaded(try ReportsTestData.meWithoutKill())), "report-live-ios")
     }
 
     @Test func report_processing() throws {
@@ -154,6 +162,50 @@ struct ReportsSnapshotTests {
 
     @Test func report_notYours() {
         snap(report(.notYours), "report-not-yours-ios")
+    }
+
+    @Test func report_error() {
+        snap(report(.failed), "report-error-ios")
+    }
+
+    @Test func report_coachWriting() throws {
+        snap(report(loaded(try ReportsTestData.report()), parses: .loaded(try ReportsTestData.me()), coach: .writing), "report-coachwriting-ios", height: 1200)
+    }
+
+    /// `/app/report/{id}`: the router the link drives (Home, Your reports, the report), drawn as the
+    /// stack it builds.
+    @Test func report_deepLink() throws {
+        let router = ReportsRouter()
+        guard let link = DeepLink(url: DeepLink.report(id: ReportsTestData.reportID).url) else {
+            Issue.record("the report link did not parse")
+            return
+        }
+        router.open(link)
+        let content = try listContent
+        let phase = loaded(try ReportsTestData.report())
+        let me = try ReportsTestData.me()
+        let account = try ReportsTestData.account(premium: false)
+        let path = (router.showsList ? [ReportsDeepLinkStep.list] : []) + (router.report != nil ? [.report] : [])
+        let view = NavigationStack(path: .constant(path)) {
+            Color.clear.navigationTitle(Copy.tabHome).navigationDestination(for: ReportsDeepLinkStep.self) { step in
+                switch step {
+                case .list:
+                    ScrollView { ReportsListView(phase: .loaded(content), account: account, now: now, clock: clock) }
+                        .background(FSColor.bg)
+                        .reportsBar(title: Copy.reportsBack) { Button {} label: { Image(systemName: "arrow.clockwise") } }
+                case .report:
+                    ScrollView { ReportView(phase: phase, parses: .loaded(me), coach: .hidden, now: now, clock: clock) }
+                        .background(FSColor.bg)
+                        .reportsBar(title: Copy.reportsBack) { Button {} label: { Image(systemName: "arrow.up.right.square") } }
+                }
+            }
+        }
+        #expect(router.report?.id == ReportsTestData.reportID)
+        snap(view, "report-deeplink-ios")
+    }
+
+    @Test func meters_flagged_hasNoSegments() throws {
+        snap(try meters(try ReportsTestData.fightRow(9), phase: .flagged), "meters-flagged-ios")
     }
 
     @Test func report_loading() {
@@ -186,10 +238,6 @@ struct ReportsSnapshotTests {
         snap(try meters(try ReportsTestData.fightRow(9), phase: .loading), "meters-loading-ios")
     }
 
-    @Test func meters_flagged() throws {
-        snap(try meters(try ReportsTestData.fightRow(9), phase: .flagged), "meters-flagged-ios")
-    }
-
     @Test func meters_failed() throws {
         snap(try meters(try ReportsTestData.fightRow(9), phase: .failed), "meters-failed-ios")
     }
@@ -205,4 +253,9 @@ struct ReportsSnapshotTests {
         }
         snap(view, "home-logs-ios", height: 2100)
     }
+}
+
+/// The two screens a report link pushes over Home.
+private enum ReportsDeepLinkStep: Hashable {
+    case list, report
 }

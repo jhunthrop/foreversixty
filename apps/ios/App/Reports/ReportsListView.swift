@@ -57,6 +57,7 @@ struct ReportsListView: View {
                 Text(Copy.reportsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .dynamicTypeSize(...ReportsLayout.rowTypeCap)
             .padding(.horizontal, 16)
             .padding(.top, 12)
         }
@@ -130,29 +131,37 @@ struct ReportsListView: View {
     }
 }
 
-/// One report row (spec F10.1): crest, name, meta, state tag, visibility glyph, chevron.
+/// One report row (spec F10.1): crest, name, meta, state tag, visibility glyph, chevron. The
+/// crest and glyph grow with the text up to their caps; the chevron centres on the first line.
+/// At the accessibility sizes the tag drops under the name and the glyph leads the meta line.
 struct ReportRowView: View {
     let row: ReportRow
     let account: ReportsAccount
     let now: Date
     let clock: ReportsClock
     @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .subheadline) private var crest = ReportsLayout.crest
+    @ScaledMetric(relativeTo: .footnote) private var glyphSize = ReportsLayout.glyph
+    @ScaledMetric(relativeTo: .subheadline) private var firstLine = ReportsLayout.firstLine
 
     var body: some View {
-        HStack(alignment: typeSize.isAccessibilitySize ? .top : .center, spacing: 12) {
-            ClassCrest(className: ReportsList.crestClass(row, characters: account.characters, currentClass: account.currentClass), size: ReportsLayout.crest)
+        HStack(alignment: .top, spacing: 12) {
+            let size = min(crest, ReportsLayout.crestCap)
+            ClassCrest(className: ReportsList.crestClass(row, characters: account.characters, currentClass: account.currentClass), size: size)
+                .frame(height: max(size, firstLine))
             if typeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: 6) {
-                    words
-                    HStack(spacing: 10) { tag; glyph }
+                    name
+                    tag
+                    HStack(alignment: .firstTextBaseline, spacing: 6) { glyph; meta }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                words.frame(maxWidth: .infinity, alignment: .leading)
-                tag
-                glyph
+                VStack(alignment: .leading, spacing: 2) { name; meta }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 12) { tag; glyph }.frame(height: max(size, firstLine))
             }
-            SimChevron()
+            ReportsChevron().frame(height: max(size, firstLine))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -163,13 +172,14 @@ struct ReportRowView: View {
         .accessibilityAddTraits(.isButton)
     }
 
-    private var words: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(ReportsList.name(row)).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(ReportsCopy.rowMeta(row, now: now, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
-        }
+    private var name: some View {
+        Text(ReportsList.name(row)).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var meta: some View {
+        Text(ReportsCopy.rowMeta(row, now: now, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
@@ -185,16 +195,24 @@ struct ReportRowView: View {
     private var glyph: some View {
         let visibility = ReportVisibility(row.visibility)
         return Image(systemName: visibility.systemImage)
-            .font(.system(size: ReportsLayout.glyph))
+            .font(.system(size: min(glyphSize, ReportsLayout.glyphCap)))
             .foregroundStyle(FSColor.muted)
             .accessibilityLabel(ReportsCopy.visibility(visibility))
+    }
+}
+
+/// The row chevron, sized with the text so it stays readable at every size.
+struct ReportsChevron: View {
+    var body: some View {
+        Image(systemName: "chevron.right").font(ScaledType.meta.weight(.semibold))
+            .foregroundStyle(FSColor.muted).accessibilityHidden(true)
     }
 }
 
 /// `Live` in kill green with its drawn 7 pt dot, on the tag's ground.
 struct LiveTag: View {
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: ReportsLayout.liveDotGap) {
             Circle().fill(FSColor.kill).frame(width: ReportsLayout.liveDot, height: ReportsLayout.liveDot)
                 .accessibilityHidden(true)
             Text(Copy.reportsStateLive.uppercased()).font(ScaledType.micro).tracking(1)
@@ -268,6 +286,16 @@ enum ReportsLayout {
     static let meterIcon: CGFloat = 28
     static let glyph: CGFloat = 16
     static let liveDot: CGFloat = 7
+    static let liveDotGap: CGFloat = 6
+    /// Crest and glyph grow with the text up to these (spec §9 largest text).
+    static let crestCap: CGFloat = 44
+    static let glyphCap: CGFloat = 24
+    static let meterIconCap: CGFloat = 40
+    /// One `body` line's height at the default size: chevrons and dots centre on it.
+    static let firstLine: CGFloat = 20
+    /// Row text stops growing here, so the large title stays the largest text and nothing fixed
+    /// (a tag) outgrows the row (spec §9, §11).
+    static let rowTypeCap = DynamicTypeSize.accessibility3
     static let outcomeDot: CGFloat = 10
     static let spinnerRow: CGFloat = 56
     static let mineEdge: CGFloat = 3

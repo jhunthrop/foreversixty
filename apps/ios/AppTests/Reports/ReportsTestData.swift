@@ -69,13 +69,22 @@ enum ReportsTestData {
         try RaidFixture.load(ReportMe.self, "reports.me.empty")
     }
 
-    /// reports.get with another status (live, processing, failed).
+    /// The live Blackrock Spire run (reports.get.live): four trash pulls, no boss.
+    static func liveReport() throws -> Report { try RaidFixture.load(Report.self, "reports.get.live") }
+
+    /// A processing or failed report: the list's row of that status (Molten Core, Stratholme) as a
+    /// report with no fights yet.
     static func report(status: String) throws -> Report {
+        guard let row = try list().rows.first(where: { $0.status == status }) else { throw Failure(description: "no \(status) row") }
         var data = try data("reports.get")
+        data["id"] = row.id
+        data["title"] = row.title
+        data["zone"] = row.zone
+        data["visibility"] = row.visibility
         data["status"] = status
-        // A live report's companion spoke twenty seconds ago, as the list's live row.
-        if status == ReportStatus.live { data["heartbeat_at"] = "2026-12-16T00:31:40Z" }
-        if status != ReportStatus.live { data["trash_groups"] = [] as [Any]; data["fights"] = [] as [Any] }
+        data["created_at"] = ISO8601DateFormatter().string(from: row.createdAt)
+        data["trash_groups"] = [] as [Any]
+        data["fights"] = [] as [Any]
         return try decode(Report.self, data)
     }
 

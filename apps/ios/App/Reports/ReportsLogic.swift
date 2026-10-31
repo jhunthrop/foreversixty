@@ -74,6 +74,11 @@ enum ReportsList {
         return logger?.className ?? currentClass
     }
 
+    /// Home's `Your last raid`: a finished report with at least one boss pull.
+    static func isLastRaid(_ row: ReportRow) -> Bool {
+        ReportRowState(status: row.status) == .complete && row.bossCount > 0
+    }
+
     /// The row's name: the report's title when it has one, the zone otherwise.
     static func name(_ row: ReportRow) -> String {
         row.title.isEmpty ? row.zone : row.title
@@ -124,11 +129,29 @@ enum FightRows {
         report.fights.filter { $0.kind == FightKind.encounter }.count
     }
 
+    /// Each boss pull's place among that boss's pulls, in fight order (the web's pullNumbers):
+    /// fight index to (n, of m). A boss pulled once has no entry and keeps its plain name.
+    static func pullNumbers(_ report: Report) -> [Int: PullNumber] {
+        let pulls = report.fights.filter { $0.kind == FightKind.encounter }.sorted { $0.index < $1.index }
+        let byBoss = Dictionary(grouping: pulls) { $0.encounterId.map(String.init) ?? $0.name }
+        return byBoss.values.filter { $0.count > 1 }.reduce(into: [:]) { numbers, fights in
+            for (offset, fight) in fights.enumerated() {
+                numbers[fight.index] = PullNumber(n: offset + 1, of: fights.count)
+            }
+        }
+    }
+
     /// A wipe's boss health as a whole percent, when the log has it.
     static func bossPercent(_ fight: FightEntry) -> Int? {
         guard let pct = fight.bossHealthPct, pct >= 0 else { return nil }
         return Int(pct.rounded())
     }
+}
+
+/// A boss pull's number among that boss's pulls: `pull 2 of 3`.
+struct PullNumber: Equatable, Sendable {
+    let n: Int
+    let of: Int
 }
 
 /// The parse number's colour band (spec §4 Parse number): the rankings page's floors.
@@ -178,8 +201,14 @@ enum MeterRows {
     static let largeVisible = 4
     static let trashScope = "trash"
 
-    static func visible(_ players: [MeterPlayer], limit: Int, showAll: Bool) -> [MeterPlayer] {
-        showAll ? players : Array(players.prefix(limit))
+    /// The rows drawn with their ranks: the first `limit`, plus your row after them when it is
+    /// further down (so you always find yourself), or every row once `Show all` is pressed.
+    static func visible(_ players: [MeterPlayer], limit: Int, showAll: Bool) -> [RankedPlayer] {
+        let ranked = players.enumerated().map { RankedPlayer(rank: $0.offset + 1, player: $0.element) }
+        guard !showAll else { return ranked }
+        let head = Array(ranked.prefix(limit))
+        let mine = ranked.dropFirst(limit).filter(\.player.mine)
+        return head + mine
     }
 
     static func hasMore(_ players: [MeterPlayer], limit: Int, showAll: Bool) -> Bool {
@@ -191,6 +220,12 @@ enum MeterRows {
         guard top > 0 else { return 0 }
         return min(1, max(0, value / top))
     }
+}
+
+/// A meter row and its place in the full list.
+struct RankedPlayer: Equatable, Sendable {
+    let rank: Int
+    let player: MeterPlayer
 }
 
 /// What the Your parses card shows for one row (spec F10.2).

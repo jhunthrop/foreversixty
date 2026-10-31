@@ -51,6 +51,7 @@ import gg.foreversixty.app.reports.ui.ReportsList
 import gg.foreversixty.app.reports.ui.ReportsListActions
 import java.io.File
 import java.time.Instant
+import java.time.ZoneId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -74,28 +75,37 @@ class ReportsNavigator {
     }
 }
 
-/** F10's dependencies, built once in the app graph. */
+/** F10's dependencies, built once in the app graph ([create]); tests pass a fake service and cache. */
 class ReportsFeature(
-    context: Context,
-    apiClient: ApiClient,
-    private val statics: StaticDataClient,
-    val specs: SpecCatalog,
-    private val isAvailable: () -> Boolean,
-) {
-    val service: ReportsService = LiveReportsService(apiClient)
-
+    val service: ReportsService,
     /** Beside the raids cache; cleared with it at sign-out. */
-    val cache: RaidCache = FileRaidCache(File(context.filesDir, "reports"))
+    val cache: RaidCache,
+    val specs: SpecCatalog,
+    private val build: suspend () -> String?,
+    private val isAvailable: () -> Boolean,
+    val now: () -> Instant = Instant::now,
+    /** The zone dates and the offline stamp read in. */
+    val zone: ZoneId = ZoneId.systemDefault(),
+) {
     val navigator = ReportsNavigator()
-    val now: () -> Instant = Instant::now
 
     /** Reports ships dark behind `reports` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
 
-    suspend fun iconBuild(): String? = statics.activeBuild().dataOrNull()?.build
+    suspend fun iconBuild(): String? = build()
 
-    /** Home's Logs row: the newest report, or null with none. */
-    suspend fun newest(): ReportRow? = ReportsStore(service, cache, now).newest()
+    /** Home's Logs row: the last raid with a boss pull, or null with none. */
+    suspend fun lastRaid(): ReportRow? = ReportsStore(service, cache, now).lastRaid()
+
+    companion object {
+        fun create(context: Context, apiClient: ApiClient, statics: StaticDataClient, specs: SpecCatalog, isAvailable: () -> Boolean) = ReportsFeature(
+            service = LiveReportsService(apiClient),
+            cache = FileRaidCache(File(context.filesDir, "reports")),
+            specs = specs,
+            build = { statics.activeBuild().dataOrNull()?.build },
+            isAvailable = isAvailable,
+        )
+    }
 }
 
 /** F10.1 pushed on Home, and F10.2 over it. [signIn] is the Battle.net sign-in for the signed-out state. */
@@ -124,7 +134,7 @@ fun ReportsRoute(feature: ReportsFeature, viewer: ReportsViewer, signIn: () -> U
     )
     PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().background(FsColor.bg)) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            ReportsList(store.phase, store.pageFailed, viewer, feature.now(), actions)
+            ReportsList(store.phase, store.pageFailed, viewer, feature.now(), actions, feature.zone)
         }
     }
 }
@@ -168,7 +178,7 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
         modifier = Modifier.fillMaxSize().background(FsColor.bg),
     ) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            ReportContent(ReportScreenState(store.phase, store.parses, store.coach, route.title), feature.now(), actions)
+            ReportContent(ReportScreenState(store.phase, store.parses, store.coach, route.title), feature.now(), actions, feature.zone)
         }
     }
     meters?.let { sheet -> FightSheet(sheet, feature, build, view) { meters = null } }

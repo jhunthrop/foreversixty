@@ -68,6 +68,7 @@ struct ReportView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .dynamicTypeSize(...ReportsLayout.rowTypeCap)
         .padding(.horizontal, 16)
         .padding(.top, 16)
     }
@@ -81,6 +82,7 @@ struct ReportView: View {
             Text(ReportsCopy.reportMeta(report, clock: clock)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .dynamicTypeSize(...ReportsLayout.rowTypeCap)
         .padding(.horizontal, 16)
     }
 
@@ -219,26 +221,25 @@ enum ParseLadder {
     }
 }
 
-/// Fights: every boss pull in order, each zone's trash as one entry after its boss pulls.
+/// Fights: every boss pull in order (a boss pulled more than once numbered), each zone's trash as
+/// one entry after its boss pulls. At the accessibility sizes the label sits over the count.
 struct FightsCard: View {
     let report: Report
     let rows: [FightRow]
     let open: (FightRow) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
+        let pulls = FightRows.pullNumbers(report)
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                MicroLabel(Copy.reportFights)
-                Spacer()
-                MicroLabel(ReportsCopy.bossPulls(FightRows.bossPulls(report)))
-            }
+            header
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
                     if case .inProgress = row {
-                        FightRowView(row: row, chevron: false)
+                        FightRowView(row: row, pulls: pulls, chevron: false)
                     } else {
-                        Button { open(row) } label: { FightRowView(row: row, chevron: true) }
+                        Button { open(row) } label: { FightRowView(row: row, pulls: pulls, chevron: true) }
                             .buttonStyle(RowPressStyle())
                             .accessibilityHint(Copy.reportA11yShowsMeters)
                     }
@@ -247,30 +248,44 @@ struct FightsCard: View {
             .quietCard()
         }
     }
+
+    @ViewBuilder
+    private var header: some View {
+        let count = MicroLabel(ReportsCopy.bossPulls(FightRows.bossPulls(report))).fixedSize()
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 4) { MicroLabel(Copy.reportFights); count }
+        } else {
+            HStack(alignment: .firstTextBaseline) { MicroLabel(Copy.reportFights); Spacer(); count }
+        }
+    }
 }
 
+/// One Fights row: the outcome dot and the chevron centre on the first text line.
 struct FightRowView: View {
     let row: FightRow
+    let pulls: [Int: PullNumber]
     let chevron: Bool
+    @ScaledMetric(relativeTo: .subheadline) private var firstLine = ReportsLayout.firstLine
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             Circle().fill(dot).frame(width: ReportsLayout.outcomeDot, height: ReportsLayout.outcomeDot)
+                .frame(height: firstLine)
             VStack(alignment: .leading, spacing: 2) {
-                Text(ReportsCopy.title(row)).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                Text(ReportsCopy.title(row, pulls: pulls)).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(ReportsCopy.meta(row)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if chevron { SimChevron() }
+            if chevron { ReportsChevron().frame(height: firstLine) }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .frame(minHeight: ReportsLayout.fightRow)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(ReportsCopy.fightA11y(row))
+        .accessibilityLabel(ReportsCopy.fightA11y(row, pulls: pulls))
         .accessibilityAddTraits(chevron ? .isButton : [])
     }
 

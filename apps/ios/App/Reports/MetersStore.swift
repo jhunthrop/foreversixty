@@ -17,7 +17,7 @@ struct MetersTarget: Hashable, Identifiable, Sendable {
     /// The fight index, or the trash group's key.
     let n: Int
     let kind: Kind
-    /// The boss name, or the trash group's zone.
+    /// The boss pull's title (numbered when the boss has more pulls), or the trash group's zone.
     let name: String
     let kill: Bool
     let durationMs: Int64
@@ -39,13 +39,13 @@ struct MetersTarget: Hashable, Identifiable, Sendable {
     }
 
     /// The sheet a Fights row opens; nil for the fight still in progress.
-    static func of(_ row: FightRow, reportID: String) -> MetersTarget? {
+    static func of(_ row: FightRow, reportID: String, pulls: [Int: PullNumber] = [:]) -> MetersTarget? {
         switch row {
         case let .boss(fight), let .loneTrash(fight):
             let isBoss = fight.kind == FightKind.encounter
             return MetersTarget(
                 reportID: reportID, n: fight.index, kind: isBoss ? .boss : .loneTrash,
-                name: isBoss ? fight.name : fight.zone ?? fight.name, kill: fight.kill,
+                name: isBoss ? ReportsCopy.bossTitle(fight, pulls: pulls) : fight.zone ?? fight.name, kill: fight.kill,
                 durationMs: fight.durationMs, players: fight.players.count
             )
         case let .trash(group):
