@@ -21,7 +21,7 @@ var tokenShapes = map[Platform]*regexp.Regexp{
 	Android: regexp.MustCompile(`^[A-Za-z0-9_:\-]+$`),
 }
 
-// The token length bounds migration 0061 holds (a regexp repeat stops at 1000).
+// The token length bounds migration 0062 holds (a regexp repeat stops at 1000).
 const (
 	minTokenLen = 16
 	maxTokenLen = 4096
@@ -44,11 +44,11 @@ type Handler struct {
 	Log   *slog.Logger
 }
 
-// Mount adds the token routes. Both need a device token: a token belongs to the app install
+// Mount adds the token routes. Both need a signed-in app's token: a push token belongs to the app install
 // that holds it.
 func Mount(mux *http.ServeMux, h *Handler) {
-	mux.HandleFunc("POST /v1/me/push-tokens", auth.RequireDevice(h.register))
-	mux.HandleFunc("DELETE /v1/me/push-tokens/{token}", auth.RequireDevice(h.unregister))
+	mux.HandleFunc("POST /v1/me/push-tokens", auth.RequireApp(h.register))
+	mux.HandleFunc("DELETE /v1/me/push-tokens/{token}", auth.RequireApp(h.unregister))
 }
 
 func (h *Handler) logger() *slog.Logger {

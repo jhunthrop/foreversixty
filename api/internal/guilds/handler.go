@@ -74,8 +74,8 @@ type Service struct {
 	limiterOnce   sync.Once
 	// Events publishes the player notifications (events.Router); nil publishes nothing.
 	Events events.Publisher
-	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a device token answer the sign-up PUT, the
-	// route the apps' In, Late and Out buttons call. Off, the route takes a session only.
+	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a signed-in app's token answer the sign-up
+	// PUT, the route the apps' In, Late and Out buttons call. Off, it takes a browser session.
 	AppSignups bool
 	// raidPostBudget bounds one request's raid posts together; zero means the default.
 	raidPostBudget time.Duration
@@ -228,13 +228,13 @@ func (s *Service) freezeCheck(ctx context.Context, guildID int64, moderatorExemp
 
 // decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400
 // in the envelope on failure. Callers return immediately when it errors.
-// signupAuth is who may call the sign-up PUT: a session, and a device token too when the
-// apps' sign-up is on.
+// signupAuth is who may call the sign-up PUT: a browser session, and a signed-in app's
+// token too when the apps' sign-up is on. A companion's token never signs up.
 func (s *Service) signupAuth() func(http.HandlerFunc) http.HandlerFunc {
 	if s.AppSignups {
-		return auth.Require
+		return auth.RequireSession
 	}
-	return auth.RequireSession
+	return auth.RequireBrowserSession
 }
 
 func decodeJSON(w http.ResponseWriter, r *http.Request, v any) error {

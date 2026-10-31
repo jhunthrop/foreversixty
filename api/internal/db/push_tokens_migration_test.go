@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-const pushTokensVersion = 61
+const pushTokensVersion = 62
 
-// 0061's push tokens go with their device: deleted with it, and dropped on revoke. 0060 and
-// 0061 go down and up again cleanly.
+// 0062's push tokens go with their device: deleted with it, and dropped on revoke. 0061 and
+// 0062 go down and up again cleanly.
 func TestMigrationDropsPushTokensOnRevoke(t *testing.T) {
 	url := testURL(t)
 	if err := Migrate(url); err != nil {

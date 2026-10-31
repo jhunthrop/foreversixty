@@ -54,6 +54,9 @@ func (s *Sink) Deliver(ctx context.Context, userID int64, e events.Event) error 
 	for _, t := range tokens {
 		sender, ok := s.Senders[t.Platform]
 		if !ok {
+			// A platform with no sender (iOS until the APNs key exists) is skipped, not failed.
+			s.logger().Info("push", "op", "skip", "reason", "no sender for platform",
+				"platform", string(t.Platform), "device", t.DeviceID, "kind", string(e.Kind))
 			continue
 		}
 		err := sender.Send(ctx, MessageOf(e, t))

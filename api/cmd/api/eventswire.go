@@ -2,15 +2,18 @@
 //
 // The events router's wiring, shared by serve and the jobs: the account webhook is the
 // Discord channel whenever notifications are on (as before the router), and push joins
-// only with APP_NOTIFICATIONS_ENABLED=1 and a sender whose keys are set. Until then the
+// only with APP_NOTIFICATIONS_ENABLED=1 and at least one sender: FCM as the runtime
+// identity, APNs once its key is set. Until then the
 // new routes stay unmounted and no producer beyond the sim and parse jobs publishes.
 package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/oauth2/google"
 
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -38,8 +41,8 @@ func newEventsRouter(ctx context.Context, cfg config.Config, pool *pgxpool.Pool,
 	return &events.Router{Store: &events.Store{Pool: pool}, Sinks: sinks, Log: log}
 }
 
-// pushSenders is a sender per platform whose keys are set. A key that does not parse is
-// logged by variable name and leaves that platform off.
+// pushSenders is a sender per platform that can send. A key that does not parse, or no
+// runtime credentials for FCM, is logged and leaves that platform off; nothing fails.
 func pushSenders(ctx context.Context, cfg config.PushConfig, log *slog.Logger) map[push.Platform]push.Sender {
 	senders := map[push.Platform]push.Sender{}
 	if cfg.APNsConfigured() {
@@ -55,18 +58,30 @@ func pushSenders(ctx context.Context, cfg config.PushConfig, log *slog.Logger) m
 			senders[push.IOS] = apns
 		}
 	}
-	if cfg.FCMConfigured() {
-		fcm, err := push.NewFCM(ctx, cfg.FCMServiceAccountJSON, push.FCMBaseURL, nil)
-		if err != nil {
-			log.Error("push", "state", "FCM off", "variable", "FCM_SERVICE_ACCOUNT_JSON", "err", err)
-		} else {
-			senders[push.Android] = fcm
-		}
+	if fcm, err := newFCMSender(ctx, cfg.FCMProjectID); err != nil {
+		log.Error("push", "state", "FCM off", "effect", "Android push is skipped", "err", err)
+	} else {
+		senders[push.Android] = fcm
+	}
+	if senders[push.IOS] == nil {
+		log.Warn("push", "state", "APNs off", "effect", "iOS push is skipped until APNS_KEY_P8, APNS_KEY_ID and APNS_TEAM_ID are set")
 	}
 	if len(senders) == 0 {
 		log.Warn("push", "state", "no push sender", "effect", "events reach Discord only")
 	}
 	return senders
+}
+
+// findCredentials is Application Default Credentials; tests replace it.
+var findCredentials = google.FindDefaultCredentials
+
+// newFCMSender is the FCM sender as the runtime identity, through the FCM v1 API.
+func newFCMSender(ctx context.Context, project string) (*push.FCMSender, error) {
+	creds, err := findCredentials(ctx, push.FCMScope)
+	if err != nil {
+		return nil, fmt.Errorf("push: no application default credentials: %w", err)
+	}
+	return push.NewFCM(creds, project, push.FCMBaseURL, nil)
 }
 
 // newJobNotifier is the sim and parse jobs' notify port: their events through the router.

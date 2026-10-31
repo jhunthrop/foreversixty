@@ -42,7 +42,7 @@ func testPool(t *testing.T) *pgxpool.Pool {
 	return pool
 }
 
-// world is one account with two paired app devices, and the device bearer tokens.
+// world is one account with two signed-in app devices and a companion, and their bearer tokens.
 type world struct {
 	pool     *pgxpool.Pool
 	store    *Store
@@ -59,10 +59,10 @@ func newWorld(t *testing.T) world {
 		"push-"+time.Now().Format("150405.000000000")+"@example.com").Scan(&w.uid); err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range []string{"phone", "tablet"} {
+	for id, kind := range map[string]string{"phone": auth.DeviceKindApp, "tablet": auth.DeviceKindApp, "pc": auth.DeviceKindCompanion} {
 		bearer := "fsd_" + id + "-secret-0123456789"
-		if _, err := pool.Exec(context.Background(), `insert into devices (id, user_id, platform, token_hash) values ($1, $2, 'ios', $3)`,
-			id, w.uid, auth.TokenHash(bearer)); err != nil {
+		if _, err := pool.Exec(context.Background(), `insert into devices (id, user_id, platform, token_hash, kind) values ($1, $2, 'ios', $3, $4)`,
+			id, w.uid, auth.TokenHash(bearer), kind); err != nil {
 			t.Fatal(err)
 		}
 		w.devices[id] = bearer
@@ -121,6 +121,9 @@ func TestRegisterTiesTheTokenToTheCallingDevice(t *testing.T) {
 func TestTokenRoutesNeedADeviceToken(t *testing.T) {
 	w := newWorld(t)
 	body := `{"platform":"ios","token":"` + iosToken + `"}`
+	if code := w.serve(t, http.MethodPost, "/v1/me/push-tokens", w.devices["pc"], body); code != http.StatusUnauthorized {
+		t.Fatalf("a companion registered a push token: %d", code)
+	}
 	if code := w.serve(t, http.MethodPost, "/v1/me/push-tokens", "", body); code != http.StatusUnauthorized {
 		t.Fatalf("anonymous %d", code)
 	}

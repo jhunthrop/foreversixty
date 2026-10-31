@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// Store is the events tables (migration 0060) and the audience reads.
+// Store is the events tables (migration 0061) and the audience reads.
 type Store struct {
 	Pool *pgxpool.Pool
 }

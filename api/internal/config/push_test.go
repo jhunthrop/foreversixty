@@ -22,7 +22,7 @@ func TestPushIsOffAndUnconfiguredByDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.Push.Enabled || c.Push.APNsConfigured() || c.Push.FCMConfigured() || c.Push.APNsTopic != "gg.foreversixty.app" {
+	if c.Push.Enabled || c.Push.APNsConfigured() || c.Push.FCMProjectID != "" || c.Push.APNsTopic != "gg.foreversixty.app" {
 		t.Fatalf("%+v", c.Push)
 	}
 }
@@ -30,18 +30,18 @@ func TestPushIsOffAndUnconfiguredByDefault(t *testing.T) {
 func TestPushReadsItsVariables(t *testing.T) {
 	c, err := Load(pushEnv(map[string]string{
 		"APP_NOTIFICATIONS_ENABLED": "1", "APNS_KEY_P8": "pem-secret", "APNS_KEY_ID": "K", "APNS_TEAM_ID": "T",
-		"APNS_SANDBOX": "1", "FCM_SERVICE_ACCOUNT_JSON": `{"project_id":"p"}`,
+		"APNS_SANDBOX": "1", "FCM_PROJECT_ID": "forever-app",
 	}))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !c.Push.Enabled || !c.Push.APNsConfigured() || !c.Push.FCMConfigured() || !c.Push.APNsSandbox {
+	if !c.Push.Enabled || !c.Push.APNsConfigured() || c.Push.FCMProjectID != "forever-app" || !c.Push.APNsSandbox {
 		t.Fatalf("enabled %v", c.Push.Enabled)
 	}
 }
 
 func TestPushConfigNeverPrintsTheKeys(t *testing.T) {
-	p := PushConfig{APNsKeyP8: []byte("pem-secret"), FCMServiceAccountJSON: []byte("sa-secret")}
+	p := PushConfig{APNsKeyP8: []byte("pem-secret"), APNsKeyID: "secret-id"}
 	for _, s := range []string{fmt.Sprintf("%v", p), fmt.Sprintf("%+v", p), fmt.Sprintf("%#v", p)} {
 		if strings.Contains(s, "secret") {
 			t.Fatalf("printed %s", s)

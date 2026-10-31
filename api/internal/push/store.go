@@ -17,7 +17,7 @@ type Token struct {
 	AppVersion string
 }
 
-// Store is the push_tokens table (migration 0061).
+// Store is the push_tokens table (migration 0062).
 type Store struct {
 	Pool *pgxpool.Pool
 }

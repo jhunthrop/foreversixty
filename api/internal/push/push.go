@@ -1,6 +1,6 @@
 // Package push sends the apps' push notifications: the PushSender interface with its APNs
 // (HTTP/2, token-based .p8 key) and FCM HTTP v1 implementations and a fake for tests, the
-// push_tokens table (migration 0061) with its register and unregister routes, and the
+// push_tokens table (migration 0062) with its register and unregister routes, and the
 // events.Sink that turns an event into one message per registered token.
 package push
 

@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
@@ -250,11 +251,22 @@ func TestFCMRefusals(t *testing.T) {
 	}
 }
 
-func TestNewFCMRefusesABadServiceAccount(t *testing.T) {
-	for _, raw := range []string{`nope`, `{"type":"service_account"}`, `{"project_id":"p","private_key":"secret"}`} {
-		_, err := NewFCM(context.Background(), []byte(raw), FCMBaseURL, nil)
-		if err == nil || strings.Contains(err.Error(), "secret") {
-			t.Errorf("%s: %v", raw, err)
+// FCM sends as the runtime identity: the project comes from config, else the credentials,
+// and with neither (or no credentials) there is no sender.
+func TestNewFCMTakesItsProjectFromConfigOrCredentials(t *testing.T) {
+	tokens := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: "x"})
+	if _, err := NewFCM(nil, "p", FCMBaseURL, nil); err == nil {
+		t.Error("no credentials built a sender")
+	}
+	if _, err := NewFCM(&google.Credentials{TokenSource: tokens}, "", FCMBaseURL, nil); err == nil {
+		t.Error("no project built a sender")
+	}
+	for _, c := range []struct{ configured, own, want string }{
+		{"forever-app", "runtime", "forever-app"}, {"", "runtime", "runtime"},
+	} {
+		s, err := NewFCM(&google.Credentials{ProjectID: c.own, TokenSource: tokens}, c.configured, FCMBaseURL, nil)
+		if err != nil || s.project != c.want {
+			t.Errorf("configured %q, own %q: %v %v", c.configured, c.own, s, err)
 		}
 	}
 }

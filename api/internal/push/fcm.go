@@ -17,10 +17,10 @@ import (
 // FCMBaseURL is the FCM HTTP v1 host.
 const FCMBaseURL = "https://fcm.googleapis.com"
 
-// fcmScope is the OAuth scope a send needs.
-const fcmScope = "https://www.googleapis.com/auth/firebase.messaging"
+// FCMScope is the OAuth scope a send needs.
+const FCMScope = "https://www.googleapis.com/auth/firebase.messaging"
 
-// FCMSender sends through FCM HTTP v1 with a service account's OAuth token.
+// FCMSender sends through FCM HTTP v1 with the runtime identity's OAuth token.
 type FCMSender struct {
 	project string
 	baseURL string
@@ -30,23 +30,24 @@ type FCMSender struct {
 
 var _ Sender = (*FCMSender)(nil)
 
-// NewFCM reads the service account JSON (its project_id names the Firebase project) and
-// returns the sender. client nil is a default client with the send timeout.
-func NewFCM(ctx context.Context, serviceAccountJSON []byte, baseURL string, client *http.Client) (*FCMSender, error) {
-	var sa struct {
-		ProjectID string `json:"project_id"`
+// NewFCM sends as creds, the runtime's Application Default Credentials (on Cloud Run the
+// service's identity, which holds roles/firebasecloudmessaging.admin; no key file). project
+// names the Firebase project; "" takes the credentials' own project. client nil is a default
+// client with the send timeout.
+func NewFCM(creds *google.Credentials, project, baseURL string, client *http.Client) (*FCMSender, error) {
+	if creds == nil {
+		return nil, errors.New("push: no credentials for FCM")
 	}
-	if err := json.Unmarshal(serviceAccountJSON, &sa); err != nil || sa.ProjectID == "" {
-		return nil, errors.New("push: the FCM service account is not JSON with a project_id")
+	if project == "" {
+		project = creds.ProjectID
 	}
-	conf, err := google.JWTConfigFromJSON(serviceAccountJSON, fcmScope)
-	if err != nil {
-		return nil, errors.New("push: the FCM service account could not be read")
+	if project == "" {
+		return nil, errors.New("push: no Firebase project: set FCM_PROJECT_ID or run with a project-bound identity")
 	}
 	if client == nil {
 		client = &http.Client{Timeout: sendTimeout}
 	}
-	return newFCM(sa.ProjectID, baseURL, conf.TokenSource(ctx), client), nil
+	return newFCM(project, baseURL, creds.TokenSource, client), nil
 }
 
 func newFCM(project, baseURL string, tokens oauth2.TokenSource, client *http.Client) *FCMSender {

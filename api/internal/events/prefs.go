@@ -38,7 +38,7 @@ func (q QuietHours) contains(m int) bool {
 	return m >= q.Start || m < q.End
 }
 
-// The settings of an account that never saved any; migration 0060 has the same defaults.
+// The settings of an account that never saved any; migration 0061 has the same defaults.
 const (
 	DefaultTimeZone   = "UTC"
 	DefaultQuietStart = 22 * 60

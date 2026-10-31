@@ -13,10 +13,16 @@ import (
 // with the service's AppSignups as it stands.
 func (w raidWorld) appSignup(t *testing.T, raidID int64, key, body string) int {
 	t.Helper()
+	return w.deviceSignup(t, raidID, key, body, auth.DeviceKindApp)
+}
+
+// deviceSignup is appSignup as a device of the given kind.
+func (w raidWorld) deviceSignup(t *testing.T, raidID int64, key, body, kind string) int {
+	t.Helper()
 	mux := http.NewServeMux()
 	Mount(mux, w.h.svc, 0)
 	req := httptest.NewRequest(http.MethodPut, w.path("/raids/%d/signups/%s", raidID, key), strings.NewReader(body))
-	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: w.member, Role: "user", Method: "device", DeviceID: "phone"}))
+	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: w.member, Role: "user", Method: "device", DeviceID: "phone", DeviceKind: kind}))
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 	return rec.Code
@@ -46,14 +52,18 @@ func TestAnAppSignupRefreshesTheDiscordPost(t *testing.T) {
 	}
 }
 
-func TestADeviceTokenSignsUpOnlyWithTheAppFlag(t *testing.T) {
+func TestAnAppTokenSignsUpOnlyWithTheAppFlag(t *testing.T) {
 	w := newRaidWorld(t, true)
 	raid := w.createRaid(t)
-	if code := w.appSignup(t, raid.ID, memberKeyA, `{"state":"in"}`); code != http.StatusUnauthorized {
-		t.Fatalf("flag off: device sign-up = %d", code)
+	if code := w.appSignup(t, raid.ID, memberKeyA, `{"state":"in"}`); code != http.StatusForbidden {
+		t.Fatalf("flag off: app sign-up = %d", code)
 	}
 	w.h.svc.AppSignups = true
 	if code := w.appSignup(t, raid.ID, memberKeyA, `{"state":"in"}`); code != http.StatusOK {
-		t.Fatalf("flag on: device sign-up = %d", code)
+		t.Fatalf("flag on: app sign-up = %d", code)
+	}
+	// A companion's token uploads; it never signs anyone up.
+	if code := w.deviceSignup(t, raid.ID, memberKeyA, `{"state":"in"}`, auth.DeviceKindCompanion); code != http.StatusUnauthorized {
+		t.Fatalf("flag on: companion sign-up = %d", code)
 	}
 }
