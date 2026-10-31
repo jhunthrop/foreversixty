@@ -678,7 +678,7 @@ app's device token once A1 admits app tokens on session routes; the sign-up PUT 
 while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a player.
 
 ### GET /v1/app/config
-Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
+Auth public. Caching `public, max-age=300`, `Vary: X-App`. Call on launch. Answer
 `{ web_checkout_regions[], min_app_version { ios, android }, active_build, features { <key>: bool } }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
@@ -694,8 +694,11 @@ at once. The apps read the config once at launch and cache it (iOS `AppConfigSto
 `AppConfigRepository`): a key the answer leaves out takes the bundled default, a key the build
 does not know is ignored, and offline the cached answer, else the defaults, stands. The map is
 always present (`{}` when nothing is switched). Fixture `app.config`. The handler is lane A3's
-(`api/internal/app`, dark behind `APP_API`); it does not send `features` yet (see lane P1's
-report for the addition).
+(`api/internal/app`, behind `APP_API`). It fills `features` from `APP_FEATURES` (a comma list
+of keys, each sent `true`; unset is `{}`), and the checkout lists from
+`APP_WEB_CHECKOUT_REGIONS_IOS` (default `US`) and `APP_WEB_CHECKOUT_REGIONS_ANDROID` (default
+`none`); a missing, malformed or unknown `X-App` platform gets `[]`. All of it is server config:
+a change needs no code and no app release.
 
 ## Not in v1
 

@@ -132,7 +132,7 @@ func newHomeWorld(t *testing.T) *homeWorld {
 	}
 	w.svc = &Service{
 		Characters: w.chars, Data: &fakeData{dir: dir, items: items, active: homeBuild}, Exports: w.exports,
-		Settings: Settings{WebCheckoutRegions: []string{"US"}, MinVersionIOS: "1.0.0", MinVersionAndroid: "1.0.0"},
+		Settings: Settings{WebCheckoutRegions: map[string][]string{"ios": {"US"}, "android": {}}, MinVersionIOS: "1.0.0", MinVersionAndroid: "1.0.0"},
 		Log:      slog.New(slog.NewTextHandler(io.Discard, nil)),
 	}
 	return w

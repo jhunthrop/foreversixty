@@ -20,7 +20,8 @@ const PARITY_DIR = fileURLToPath(
 interface ParityInput {
   band: BisBand;
   gear: Record<string, number>;
-  items: Item[];
+  /** The fixture's item rows; an item with no stats or armour leaves the key out. */
+  items: (Omit<Item, 'stats' | 'armor'> & Partial<Pick<Item, 'stats' | 'armor'>>)[];
 }
 
 /** The answer both sides pin: every upgrade by slot, the already-best slots, the total and counts. */

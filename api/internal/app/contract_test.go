@@ -1,4 +1,4 @@
-// The API's side of the app contract (docs/contracts/app-v1-home-config.md): each fixture under
+// The API's side of the app contract (docs/contracts/app-v1.md, app-v1-home-config.md): each fixture under
 // docs/contracts/fixtures/app is the body its route answers for the reference world, and the
 // handler's real response must have the fixture's shape: the same keys at every level and the
 // same JSON type for every value both sides state (null matches any type, since a nullable
@@ -36,17 +36,19 @@ func TestContractFixtures(t *testing.T) {
 		path    string
 		edit    func(*homeWorld)
 	}{
-		{"characters-home.json", "/v1/characters/us/normal/velaren/home", nil},
-		{"characters-home-empty.json", "/v1/characters/us/normal/velaren/home", func(w *homeWorld) {
+		{"character.home.json", "/v1/characters/us/normal/velaren/home", nil},
+		{"character.home.empty.json", "/v1/characters/us/normal/velaren/home", func(w *homeWorld) {
 			w.chars.cards["velaren"] = velaren(everyPick)
 		}},
-		{"characters-home-no-gear.json", "/v1/characters/us/normal/velaren/home", func(w *homeWorld) {
+		{"character.home.no-gear.json", "/v1/characters/us/normal/velaren/home", func(w *homeWorld) {
 			card := w.chars.cards["velaren"]
 			card.Gear = []rankings.GearSlot{}
 			w.chars.cards["velaren"] = card
 			delete(w.exports.rows, homeKey)
 		}},
-		{"app-config.json", "/v1/app/config", nil},
+		{"app.config.json", "/v1/app/config", func(w *homeWorld) {
+			w.svc.Settings.Features = []string{"raids", "sign_in"}
+		}},
 	}
 	for _, c := range cases {
 		t.Run(c.fixture, func(t *testing.T) {
@@ -126,6 +128,9 @@ func decodeAny(t *testing.T, raw []byte) any {
 	return v
 }
 
+// optionalKeys are fixture keys the spec lets a response leave out ("absent or null").
+var optionalKeys = map[string]bool{"drop_chance": true}
+
 // shapeDiff lists where got's shape departs from want's, by JSON path.
 func shapeDiff(path string, want, got any) []string {
 	if want == nil || got == nil {
@@ -175,6 +180,7 @@ func objectDiff(path string, want, got map[string]any) []string {
 		w, inWant := want[k]
 		g, inGot := got[k]
 		switch {
+		case !inGot && optionalKeys[k]:
 		case !inGot:
 			out = append(out, fmt.Sprintf("%s.%s: missing", path, k))
 		case !inWant:

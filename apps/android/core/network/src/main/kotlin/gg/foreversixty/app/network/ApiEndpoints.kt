@@ -193,7 +193,7 @@ object ApiEndpoints {
     fun deletePushToken(token: String): Endpoint<Unit> =
         Endpoint(HttpMethod.Delete, "/v1/me/push-tokens/${token.encodeURLPathPart()}", Unit.serializer())
 
-    /** GET /v1/app/config: What the apps read once at launch (dark, APP_API) */
+    /** GET /v1/app/config: What the apps read once at launch (APP_API) */
     fun getAppConfig(): Endpoint<AppConfig> =
         Endpoint(HttpMethod.Get, "/v1/app/config", AppConfig.serializer())
 }

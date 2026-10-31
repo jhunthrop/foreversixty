@@ -5037,8 +5037,11 @@ paths:
         '204': { description: "Gone" }
   /v1/app/config:
     get:
-      summary: What the apps read once at launch (dark, APP_API)
-      description: Public. Cache-Control public, max-age=300. 503 unavailable when no client build is loaded.
+      summary: What the apps read once at launch (APP_API)
+      description: >-
+        Public. Cache-Control public, max-age=300; Vary X-App, because web_checkout_regions is
+        the calling platform's (decision L: ios ["US"], android [], a missing or unknown
+        platform []). 503 unavailable when no client build is loaded.
       operationId: getAppConfig
       tags: [app]
       x-authenticated: false

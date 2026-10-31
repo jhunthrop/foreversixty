@@ -38,7 +38,7 @@ An **item** is `{ id, name, quality, icon, item_level }`, read from the build's 
 
 An **upgrade** is:
 
-- `slot` and `slot_label`, for example `finger1` and `Ring 1`.
+- `slot` and `slot_label`, for example `finger1` and `Finger 1`.
 - `pick`: an item plus `source_line`, which is the source with ` · crafted` added for a crafted pick.
 - `worn`: null for an empty slot. Otherwise an item plus `known` and `label`. When `known` is false, `label` is `Not in our item data yet`, and the name, quality, icon and item level are null.
 - `gain`: the figure to one decimal, or null.
@@ -47,18 +47,19 @@ An **upgrade** is:
 
 Fixtures:
 
-- `characters-home.json`: every branch.
-- `characters-home-empty.json`: every slot matches.
-- `characters-home-no-gear.json`: no gear and no export.
+- `character.home.json`: every branch.
+- `character.home.empty.json`: every slot matches.
+- `character.home.no-gear.json`: no gear and no export.
 
 ## `GET /v1/app/config`
 
-Public, with no credential. Cached `public, max-age=300`, so a change reaches every app within five minutes. A 503 `unavailable` means no client build is loaded.
+Public, with no credential. Cached `public, max-age=300` with `Vary: X-App`, so a change reaches every app within five minutes. A 503 `unavailable` means no client build is loaded.
 
 | Field | Type | Source |
 |---|---|---|
-| `web_checkout_regions` | string[] (ISO 3166 alpha-2) | `APP_WEB_CHECKOUT_REGIONS`, default `US`. `none` gives `[]`. These are the storefront regions where the app may show See plans and link to web checkout. The list is never null. |
+| `web_checkout_regions` | string[] (ISO 3166 alpha-2) | Per platform, from the `X-App` header's platform (decision L): `ios` reads `APP_WEB_CHECKOUT_REGIONS_IOS` (default `US`), `android` reads `APP_WEB_CHECKOUT_REGIONS_ANDROID` (default `none`). `none` gives `[]`, and so does a missing, malformed or unknown platform. These are the storefront regions where the app may show See plans and link to web checkout. The list is never null. |
 | `min_app_version` | `{ ios, android }` | `APP_MIN_VERSION_IOS` and `APP_MIN_VERSION_ANDROID`, default `1.0.0`, in the form `x.y.z`. An older build shows the blocking update screen. |
 | `active_build` | string | The API's active client build (`trees.Data.Active()`), the one the static data serves. |
+| `features` | `{ key: bool }` | `APP_FEATURES`, a comma list of `apps/shared/features.json` keys, each sent as `true`. Unset gives `{}`, and each app keeps its bundled defaults. |
 
-Fixture: `app-config.json`.
+Fixture: `app.config.json`.

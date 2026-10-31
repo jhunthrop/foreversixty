@@ -46,8 +46,12 @@ type Export struct {
 
 // Settings are what GET /v1/app/config answers beside the active build.
 type Settings struct {
-	WebCheckoutRegions               []string
+	// WebCheckoutRegions are the checkout regions by app platform (the X-App header's
+	// "ios" or "android"); a platform with no entry gets none.
+	WebCheckoutRegions               map[string][]string
 	MinVersionIOS, MinVersionAndroid string
+	// Features are the feature switches turned on; the answer sends each as true.
+	Features []string
 }
 
 // Service serves the app routes.

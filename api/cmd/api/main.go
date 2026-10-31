@@ -674,7 +674,7 @@ func serve(log *slog.Logger) error {
 		// Discord /char panel (guildService's build reads), so the two agree.
 		deps.App = &app.Service{
 			Characters: deps.Rankings, Data: guildService, Exports: &app.Store{Pool: pool}, Log: log,
-			Settings: app.Settings{WebCheckoutRegions: cfg.App.WebCheckoutRegions,
+			Settings: app.Settings{WebCheckoutRegions: cfg.App.WebCheckoutRegions, Features: cfg.App.Features,
 				MinVersionIOS: cfg.App.MinVersionIOS, MinVersionAndroid: cfg.App.MinVersionAndroid},
 		}
 		log.Info("app", "state", "APP_API is on", "effect", "the app home and config routes are mounted")
