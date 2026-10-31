@@ -117,6 +117,9 @@ report_failure() {
   } > "$summary"
   echo >&2; cat "$summary" >&2
   if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then cat "$summary" >> "$GITHUB_STEP_SUMMARY"; fi
+  # MOVE_REPORT (client.yml sets it): the same report, for the blocked-build issue
+  # (tools/client-alert.sh).
+  if [ -n "${MOVE_REPORT:-}" ]; then cp "$summary" "$MOVE_REPORT"; fi
   if [ "${GITHUB_ACTIONS:-}" = true ]; then
     echo "::error title=client move to $NEW stopped at: $STEP::$(head -n 1 <<<"${REASON:-exit status $status}") -- to finish: $HAND"
   fi

@@ -191,3 +191,43 @@ def test_a_difficulty_variant_effect_row_is_ignored():
         }
     ]
     assert spell_bonus([700], index_spell_effects(rows)).is_empty()
+
+
+def _aura_row(spell_id: int, index: int, aura: int, points: int, misc: int = 0) -> dict[str, str]:
+    return {
+        "SpellID": str(spell_id),
+        "DifficultyID": "0",
+        "EffectIndex": str(index),
+        "Effect": "6",
+        "EffectAura": str(aura),
+        "EffectBasePointsF": str(points),
+        "EffectMiscValue_0": str(misc),
+        "EffectRealPointsPerLevel": "0",
+        "Variance": "0",
+    }
+
+
+def test_melee_and_spell_hit_on_one_spell_are_one_hit():
+    """Client 1.60.1.70707 gave "Increased Hit Chance 01" (15464) an aura-55
+    spell-hit effect beside its aura-54 hit. Forever's hit is one stat, so the
+    pair is 1% hit, not 1% hit plus 1% spell hit (2% once simdb folds both
+    keys into StatHit)."""
+    rows = [_aura_row(15464, 0, 54, 1), _aura_row(15464, 1, 55, 1)]
+    assert spell_bonus([15464], index_spell_effects(rows)).stats == {"hit": 1.0}
+
+
+def test_hit_from_two_spells_still_adds():
+    """The collapse is per spell: two spells of one item each giving 1% hit
+    are 2%."""
+    rows = [
+        _aura_row(15464, 0, 54, 1),
+        _aura_row(15464, 1, 55, 1),
+        _aura_row(432639, 0, 54, 1),
+        _aura_row(432639, 1, 55, 1),
+    ]
+    assert spell_bonus([15464, 432639], index_spell_effects(rows)).stats == {"hit": 2.0}
+
+
+def test_spell_hit_alone_stays_spell_hit():
+    rows = [_aura_row(900100, 0, 55, 2)]
+    assert spell_bonus([900100], index_spell_effects(rows)).stats == {"spell_hit": 2.0}
