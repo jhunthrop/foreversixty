@@ -288,6 +288,27 @@ public extension StaticResource where Response == [ItemSet] {
     }
 }
 
+public extension StaticResource where Response == LootFile {
+    /// /data/{build}/loot.json: Where every item of a build comes from (W3-C8)
+    static func getLoot(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/loot.json")
+    }
+}
+
+public extension StaticResource where Response == SearchIndex {
+    /// /data/{build}/search.json: The apps' offline search index (W3-C8)
+    static func getSearchIndex(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/search.json")
+    }
+}
+
+public extension StaticResource where Response == ItemUsesShard {
+    /// /data/{build}/item-uses/{shard}.json: Item sources and the best-in-slot lists that use each item, one shard (W3-C8)
+    static func getItemUses(build: String, shard: Int) -> StaticResource {
+        StaticResource(path: "/data/\(build)/item-uses/\(shard).json")
+    }
+}
+
 public extension StaticResource where Response == TalentsFile {
     /// /data/{build}/talents/{class}.json: A class's talent trees
     static func getTalents(build: String, className: String) -> StaticResource {
@@ -342,6 +363,9 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}", status: 200),
         FixtureRoute(.get, "/data/{build}/sets.json", fixture: "cdn.sets", status: 200),
+        FixtureRoute(.get, "/data/{build}/loot.json", fixture: "cdn.loot", status: 200),
+        FixtureRoute(.get, "/data/{build}/search.json", fixture: "cdn.search", status: 200),
+        FixtureRoute(.get, "/data/{build}/item-uses/{shard}.json", fixture: "cdn.item-uses", status: 200),
         FixtureRoute(.get, "/data/{build}/talents/{class}.json", fixture: "cdn.talents.{class}", status: 200),
     ]
 }

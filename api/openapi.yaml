@@ -2749,6 +2749,169 @@ components:
             properties:
               pieces: { type: integer }
               description: { type: string }
+    LootFile:
+      type: object
+      description: /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides.
+      required: [sources]
+      properties:
+        sources: { type: array, items: { $ref: '#/components/schemas/LootSource' } }
+        quests:
+          type: object
+          description: Item id (string key) -> the quests that reward it.
+          additionalProperties: { type: array, items: { $ref: '#/components/schemas/LootQuest' } }
+        factions:
+          type: object
+          description: Reputation faction id (string key) -> alliance, horde or both.
+          additionalProperties: { type: string }
+    LootSource:
+      type: object
+      required: [id, kind, name]
+      properties:
+        id: { type: string, description: "raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …" }
+        kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+        name: { type: string }
+        items: { type: array, items: { type: integer } }
+        trash: { type: array, items: { type: integer } }
+        bosses: { type: array, items: { $ref: '#/components/schemas/LootBoss' } }
+        item_chances: { type: object, additionalProperties: { type: number }, description: "Item id -> percent; absent when unknown." }
+        zone_id: { type: integer }
+        npc_id: { type: integer }
+        opens: { type: string, description: "A phase name, or later; absent means open from launch." }
+        profession: { type: string }
+        faction_id: { type: integer }
+        standing: { type: string }
+        rank: { type: integer }
+        faction: { type: string, enum: [alliance, horde] }
+        faction_source: { type: string }
+        title: { type: string }
+        level_min: { type: integer }
+        level_max: { type: integer }
+        rare_spawn: { type: boolean }
+        source_origin: { type: string }
+        source_note: { type: string }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+    LootBoss:
+      type: object
+      required: [id, name, items]
+      properties:
+        id: { type: string }
+        name: { type: string, description: "Empty for an unnamed pool." }
+        npc_id: { type: integer }
+        items: { type: array, items: { type: integer } }
+        item_chances: { type: object, additionalProperties: { type: number } }
+        item_source_origin: { type: object, additionalProperties: { type: string } }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+        rank: { type: integer }
+        rare_spawn: { type: boolean }
+    LootQuest:
+      type: object
+      required: [quest_id, name, faction, min_level, level]
+      properties:
+        quest_id: { type: integer }
+        name: { type: string }
+        faction: { type: string }
+        faction_source: { type: string }
+        min_level: { type: integer }
+        level: { type: integer }
+        level_source: { type: string }
+        opens: { type: string }
+        classes: { type: array, items: { type: string } }
+        required_rep_faction: { type: integer }
+        required_rep_standing: { type: string }
+        profession: { type: string }
+        skill: { type: integer }
+    SearchIndex:
+      type: object
+      description: /data/{build}/search.json (W3-C8), the apps' offline search.
+      required: [build, item_uses_shards, items, talents, guides]
+      properties:
+        build: { type: string }
+        item_uses_shards: { type: integer, description: "How many item-uses files; an item's shard is id % this." }
+        items:
+          type: array
+          items:
+            type: object
+            title: SearchItem
+            required: [id, name, icon, quality, slot, item_level, required_level, classes]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              quality: { type: integer, minimum: 0, maximum: 5 }
+              slot: { type: string }
+              item_level: { type: integer }
+              required_level: { type: integer }
+              classes: { type: array, items: { type: string }, description: "Class slugs whose items file carries it." }
+        talents:
+          type: array
+          items:
+            type: object
+            title: SearchTalent
+            required: [id, name, icon, class, tree, spec_name, max_rank]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              class: { type: string, x-name: className }
+              tree: { type: string, description: "The talent tree's own name." }
+              spec_name: { type: string, description: "The spec the tree is played as; the tree's name when none is written." }
+              max_rank: { type: integer }
+        guides:
+          type: array
+          items:
+            type: object
+            title: SearchGuide
+            required: [class, spec, spec_name, role, icon]
+            properties:
+              class: { type: string, x-name: className }
+              spec: { type: string, description: "The spec's slug inside its class, the guide's path segment." }
+              spec_name: { type: string }
+              role: { type: string }
+              icon: { type: string }
+    ItemUsesShard:
+      type: object
+      description: /data/{build}/item-uses/{shard}.json (W3-C8).
+      required: [build, shard, shards, items]
+      properties:
+        build: { type: string }
+        shard: { type: integer }
+        shards: { type: integer }
+        items:
+          type: object
+          description: Item id (string key) -> its uses.
+          additionalProperties: { $ref: '#/components/schemas/ItemUses' }
+    ItemUses:
+      type: object
+      required: [sources, specs]
+      properties:
+        sources:
+          type: array
+          description: Ranked; boss kills and quest rewards first, a known chance before an unknown one.
+          items:
+            type: object
+            title: ItemUseSource
+            required: [kind, title]
+            properties:
+              kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+              title: { type: string, description: "The boss, vendor, quest, recipe, faction and standing, or World drop." }
+              place: { type: string, description: "The instance of a boss drop, the side of a quest; absent when none." }
+              chance: { type: number, description: "Percent; absent when the data has none. Print Drop chance not known then." }
+              min_level: { type: integer, description: "A quest's minimum level; absent when unknown." }
+        specs:
+          type: array
+          description: One row per spec; picks before runners-up, then class and spec in the catalog's order.
+          items:
+            type: object
+            title: ItemUseSpec
+            required: [spec, class, spec_name, band, preset, faction, rank]
+            properties:
+              spec: { type: string, description: "The BiS file key, shaman-elemental." }
+              class: { type: string, x-name: className }
+              spec_name: { type: string }
+              band: { type: integer }
+              preset: { type: string }
+              faction: { type: [string, "null"], enum: [alliance, horde, null], description: "Null when both factions place it the same." }
+              rank: { type: integer, description: "0 is the pick; n is runner-up n." }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -5141,6 +5304,62 @@ paths:
           description: "One entry per set"
           x-fixtures: [cdn.sets]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
+  /data/{build}/loot.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Where every item of a build comes from (W3-C8)
+      description: >-
+        Lane F12. The site's loot file, documented for the apps: one entry per source (a raid or
+        dungeon with its bosses, a vendor, a reputation, a recipe, a world-drop pool, a PvP rank),
+        the quests that reward each item, and each reputation faction's side. Drop chances are
+        percents and are absent when unknown, never 0 for unknown. The item page reads the
+        formatted rows of item-uses instead; this file is for anything that needs the raw sources.
+      operationId: getLoot
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The loot file"
+          x-fixtures: [cdn.loot]
+          content: { application/json: { schema: { $ref: '#/components/schemas/LootFile' } } }
+  /data/{build}/search.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The apps' offline search index (W3-C8)
+      description: >-
+        Lane F12. Every item the class files carry (name, icon, quality, slot, item level,
+        required level and the classes that may use it), every talent and every written guide,
+        searched on the phone with no request. Emitted by the site build for the active build;
+        the build fails when it gzips over 300 KB.
+      operationId: getSearchIndex
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The index"
+          x-fixtures: [cdn.search]
+          content: { application/json: { schema: { $ref: '#/components/schemas/SearchIndex' } } }
+  /data/{build}/item-uses/{shard}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Item sources and the best-in-slot lists that use each item, one shard (W3-C8)
+      description: >-
+        Lane F12. An item's shard is its id modulo SearchIndex.item_uses_shards. Each item lists
+        its sources in the site tooltip's words (boss and instance, vendor, quest, recipe,
+        reputation, world drop) and one row per spec whose lists place it, at that spec's best
+        placement. An item with no source and no list is absent from its shard.
+      operationId: getItemUses
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: shard, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: "One shard"
+          x-fixtures: [cdn.item-uses]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ItemUsesShard' } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

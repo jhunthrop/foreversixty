@@ -19,4 +19,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Notifications("notifications", false),
     /** F8: See plans, where the storefront allows a web checkout link */
     PremiumLink("premium_link", false),
+    /** F12: One search for items, characters, guides and talents, and the item page */
+    Search("search", false),
 }

@@ -2277,6 +2277,296 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Search
+    static var searchButton: String { text("search.button") }
+
+    /// Search items, characters, guides, talents
+    static var searchPlaceholder: String { text("search.placeholder") }
+
+    /// Cancel
+    static var searchCancel: String { text("search.cancel") }
+
+    /// Clear the search
+    static var searchClear: String { text("search.clear") }
+
+    /// All
+    static var searchScopeAll: String { text("search.scope.all") }
+
+    /// Items
+    static var searchScopeItems: String { text("search.scope.items") }
+
+    /// Characters
+    static var searchScopeCharacters: String { text("search.scope.characters") }
+
+    /// Guides
+    static var searchScopeGuides: String { text("search.scope.guides") }
+
+    /// Talents
+    static var searchScopeTalents: String { text("search.scope.talents") }
+
+    /// For {name}
+    static func searchGroupForCharacter(name: String) -> String {
+        format("search.group.forCharacter", name)
+    }
+
+    /// Best in slot for {name}
+    static func searchForCharacterBis(name: String) -> String {
+        format("search.forCharacter.bis", name)
+    }
+
+    /// {spec} {className} guide
+    static func searchForCharacterGuide(spec: String, className: String) -> String {
+        format("search.forCharacter.guide", spec, className)
+    }
+
+    /// Rankings
+    static var searchForCharacterRankings: String { text("search.forCharacter.rankings") }
+
+    /// Watching
+    static var searchGroupWatching: String { text("search.group.watching") }
+
+    /// Recent
+    static var searchGroupRecent: String { text("search.group.recent") }
+
+    /// Clear
+    static var searchRecentClear: String { text("search.recent.clear") }
+
+    /// Item
+    static var searchRecentItem: String { text("search.recent.item") }
+
+    /// Character
+    static var searchRecentCharacter: String { text("search.recent.character") }
+
+    /// Guide
+    static var searchRecentGuide: String { text("search.recent.guide") }
+
+    /// Talent
+    static var searchRecentTalent: String { text("search.recent.talent") }
+
+    /// Guides
+    static var searchGroupGuides: String { text("search.group.guides") }
+
+    /// Talents
+    static var searchGroupTalents: String { text("search.group.talents") }
+
+    /// Items
+    static var searchGroupItems: String { text("search.group.items") }
+
+    /// Characters
+    static var searchGroupCharacters: String { text("search.group.characters") }
+
+    /// Show all {n}
+    static func searchShowAll(n: Int) -> String {
+        format("search.showAll", n)
+    }
+
+    /// {slot} · item level {ilvl} · requires level {level}
+    static func searchItemMeta(slot: String, ilvl: Int, level: Int) -> String {
+        format("search.item.meta", slot, ilvl, level)
+    }
+
+    /// {slot} · item level {ilvl}
+    static func searchItemMetaNoLevel(slot: String, ilvl: Int) -> String {
+        format("search.item.metaNoLevel", slot, ilvl)
+    }
+
+    /// {className} · Level {level} · {region} {ruleset}
+    static func searchCharacterMeta(className: String, level: Int, region: String, ruleset: String) -> String {
+        format("search.character.meta", className, level, region, ruleset)
+    }
+
+    /// {className} · {region} {ruleset}
+    static func searchCharacterMetaNoLevel(className: String, region: String, ruleset: String) -> String {
+        format("search.character.metaNoLevel", className, region, ruleset)
+    }
+
+    /// You
+    static var searchCharacterYou: String { text("search.character.you") }
+
+    /// Guide · {role}
+    static func searchGuideMeta(role: String) -> String {
+        format("search.guide.meta", role)
+    }
+
+    /// {n} ranks
+    static func searchTalentRanks(n: Int) -> String {
+        format("search.talent.ranks", n)
+    }
+
+    /// {spec} {className} · {tree} · {ranks}
+    static func searchTalentMeta(spec: String, className: String, tree: String, ranks: String) -> String {
+        format("search.talent.meta", spec, className, tree, ranks)
+    }
+
+    /// Items from the game's own data. Tap one for its tooltip, where it drops and which best in slot lists use it.
+    static var searchItemsFoot: String { text("search.itemsFoot") }
+
+    /// Nothing matches “{query}”.
+    static func searchNoResultsTitle(query: String) -> String {
+        format("search.noResults.title", query)
+    }
+
+    /// Check the spelling. Characters need at least two letters and a connection.
+    static var searchNoResultsBody: String { text("search.noResults.body") }
+
+    /// Offline. Items, guides and talents still search; characters need a connection.
+    static var searchOffline: String { text("search.offline") }
+
+    /// Characters did not load.
+    static var searchCharactersFailed: String { text("search.charactersFailed") }
+
+    /// Loading the search…
+    static var searchIndexLoading: String { text("search.indexLoading") }
+
+    /// Search did not load.
+    static var searchIndexFailed: String { text("search.indexFailed") }
+
+    /// Try again
+    static var searchTryAgain: String { text("search.tryAgain") }
+
+    /// Open in planner
+    static var searchTalentOpenPlanner: String { text("search.talent.openPlanner") }
+
+    /// Rank {rank}/{max}
+    static func searchTalentRank(rank: Int, max: Int) -> String {
+        format("search.talent.rank", rank, max)
+    }
+
+    /// Search
+    static var itemPageBack: String { text("itemPage.back") }
+
+    /// {quality} · {slot} · item level {ilvl}
+    static func itemPageMeta(quality: String, slot: String, ilvl: Int) -> String {
+        format("itemPage.meta", quality, slot, ilvl)
+    }
+
+    /// Your {slot} pick
+    static func itemPagePick(slot: String) -> String {
+        format("itemPage.pick", slot)
+    }
+
+    /// Runner-up {n} for {slot}
+    static func itemPageRunnerUp(n: Int, slot: String) -> String {
+        format("itemPage.runnerUp", n, slot)
+    }
+
+    /// {spec} · {band} · {preset} · {faction}
+    static func itemPagePickMeta(spec: String, band: String, preset: String, faction: String) -> String {
+        format("itemPage.pickMeta", spec, band, preset, faction)
+    }
+
+    /// Yours
+    static var itemPageYours: String { text("itemPage.yours") }
+
+    /// Item
+    static var itemPageChipItem: String { text("itemPage.chip.item") }
+
+    /// Source
+    static var itemPageChipSource: String { text("itemPage.chip.source") }
+
+    /// Best in slot for
+    static var itemPageChipBisFor: String { text("itemPage.chip.bisFor") }
+
+    /// Where it comes from
+    static var itemPageSources: String { text("itemPage.sources") }
+
+    /// A drop chance prints when the game's data has one.
+    static var itemPageSourcesFoot: String { text("itemPage.sourcesFoot") }
+
+    /// No source is in our data for this item yet.
+    static var itemPageNoSources: String { text("itemPage.noSources") }
+
+    /// {chance} from {boss}
+    static func itemPageDropChance(chance: String, boss: String) -> String {
+        format("itemPage.dropChance", chance, boss)
+    }
+
+    /// Drop chance not known
+    static var itemPageChanceUnknown: String { text("itemPage.chanceUnknown") }
+
+    /// Requires level {n}
+    static func itemPageQuestLevel(n: Int) -> String {
+        format("itemPage.questLevel", n)
+    }
+
+    /// Raid
+    static var itemPageKindRaid: String { text("itemPage.kind.raid") }
+
+    /// Dungeon
+    static var itemPageKindDungeon: String { text("itemPage.kind.dungeon") }
+
+    /// World drop
+    static var itemPageKindWorld: String { text("itemPage.kind.world") }
+
+    /// Zone
+    static var itemPageKindZone: String { text("itemPage.kind.zone") }
+
+    /// Vendor
+    static var itemPageKindVendor: String { text("itemPage.kind.vendor") }
+
+    /// Crafted
+    static var itemPageKindCrafted: String { text("itemPage.kind.crafted") }
+
+    /// Reputation
+    static var itemPageKindRep: String { text("itemPage.kind.rep") }
+
+    /// PvP
+    static var itemPageKindPvp: String { text("itemPage.kind.pvp") }
+
+    /// Quest
+    static var itemPageKindQuest: String { text("itemPage.kind.quest") }
+
+    /// Best in slot for
+    static var itemPageBisFor: String { text("itemPage.bisFor") }
+
+    /// Each row opens that list. The best placement of each spec is shown.
+    static var itemPageBisForFoot: String { text("itemPage.bisForFoot") }
+
+    /// No best in slot list uses this item.
+    static var itemPageBisForNone: String { text("itemPage.bisForNone") }
+
+    /// Pick
+    static var itemPageTagPick: String { text("itemPage.tag.pick") }
+
+    /// Runner-up {n}
+    static func itemPageTagRunnerUp(n: Int) -> String {
+        format("itemPage.tag.runnerUp", n)
+    }
+
+    /// {band} · Phase 1 raid
+    static func itemPageSpecMetaRaid(band: Int) -> String {
+        format("itemPage.specMeta.raid", band)
+    }
+
+    /// {band}
+    static func itemPageSpecMetaBare(band: Int) -> String {
+        format("itemPage.specMeta.bare", band)
+    }
+
+    /// {n} more specs
+    static func itemPageMoreSpecs(n: Int) -> String {
+        format("itemPage.moreSpecs", n)
+    }
+
+    /// This item is not in our data.
+    static var itemPageUnknown: String { text("itemPage.unknown") }
+
+    /// Sources did not load.
+    static var itemPageUsesFailed: String { text("itemPage.usesFailed") }
+
+    /// More about this item
+    static var itemPageMoreAbout: String { text("itemPage.moreAbout") }
+
+    /// {title}, {meta}
+    static func itemPageA11ySource(title: String, meta: String) -> String {
+        format("itemPage.a11y.source", title, meta)
+    }
+
+    /// {spec}, {meta}, {tag}. Opens that list
+    static func itemPageA11ySpec(spec: String, meta: String, tag: String) -> String {
+        format("itemPage.a11y.spec", spec, meta, tag)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

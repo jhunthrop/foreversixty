@@ -22,8 +22,10 @@ import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.ItemSet
+import gg.foreversixty.app.model.ItemUsesShard
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
+import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.model.NotificationSettings
@@ -36,6 +38,7 @@ import gg.foreversixty.app.model.RaidPatch
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
+import gg.foreversixty.app.model.SearchIndex
 import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.model.SignupRequest
@@ -224,6 +227,18 @@ object StaticEndpoints {
     fun getSets(build: String): StaticResource<List<ItemSet>> =
         StaticResource("/data/${build.encodeURLPathPart()}/sets.json", ListSerializer(ItemSet.serializer()))
 
+    /** /data/{build}/loot.json: Where every item of a build comes from (W3-C8) */
+    fun getLoot(build: String): StaticResource<LootFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/loot.json", LootFile.serializer())
+
+    /** /data/{build}/search.json: The apps' offline search index (W3-C8) */
+    fun getSearchIndex(build: String): StaticResource<SearchIndex> =
+        StaticResource("/data/${build.encodeURLPathPart()}/search.json", SearchIndex.serializer())
+
+    /** /data/{build}/item-uses/{shard}.json: Item sources and the best-in-slot lists that use each item, one shard (W3-C8) */
+    fun getItemUses(build: String, shard: Int): StaticResource<ItemUsesShard> =
+        StaticResource("/data/${build.encodeURLPathPart()}/item-uses/$shard.json", ItemUsesShard.serializer())
+
     /** /data/{build}/talents/{class}.json: A class's talent trees */
     fun getTalents(build: String, className: String): StaticResource<TalentsFile> =
         StaticResource("/data/${build.encodeURLPathPart()}/talents/${className.encodeURLPathPart()}.json", TalentsFile.serializer())
@@ -276,6 +291,9 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/sets.json", "cdn.sets", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/loot.json", "cdn.loot", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/search.json", "cdn.search", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/item-uses/{shard}.json", "cdn.item-uses", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/talents/{class}.json", "cdn.talents.{class}", HttpStatusCode.fromValue(200)),
     )
 }

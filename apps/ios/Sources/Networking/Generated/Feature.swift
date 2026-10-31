@@ -18,6 +18,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case notifications = "notifications"
     /// F8: See plans, where the storefront allows a web checkout link
     case premiumLink = "premium_link"
+    /// F12: One search for items, characters, guides and talents, and the item page
+    case search = "search"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -30,6 +32,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .talents: false
         case .notifications: false
         case .premiumLink: false
+        case .search: false
         }
     }
 }

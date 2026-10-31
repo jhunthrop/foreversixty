@@ -687,4 +687,90 @@
     <string name="account_ruleset_rp">Roleplay</string>
     <string name="account_ruleset_hardcore">Hardcore</string>
     <string name="account_version_noData">Version %1$s (%2$s)</string>
+    <string name="search_button">Search</string>
+    <string name="search_placeholder">Search items, characters, guides, talents</string>
+    <string name="search_cancel">Cancel</string>
+    <string name="search_clear">Clear the search</string>
+    <string name="search_scope_all">All</string>
+    <string name="search_scope_items">Items</string>
+    <string name="search_scope_characters">Characters</string>
+    <string name="search_scope_guides">Guides</string>
+    <string name="search_scope_talents">Talents</string>
+    <string name="search_group_forCharacter">For %1$s</string>
+    <string name="search_forCharacter_bis">Best in slot for %1$s</string>
+    <string name="search_forCharacter_guide">%1$s %2$s guide</string>
+    <string name="search_forCharacter_rankings">Rankings</string>
+    <string name="search_group_watching">Watching</string>
+    <string name="search_group_recent">Recent</string>
+    <string name="search_recent_clear">Clear</string>
+    <string name="search_recent_item">Item</string>
+    <string name="search_recent_character">Character</string>
+    <string name="search_recent_guide">Guide</string>
+    <string name="search_recent_talent">Talent</string>
+    <string name="search_group_guides">Guides</string>
+    <string name="search_group_talents">Talents</string>
+    <string name="search_group_items">Items</string>
+    <string name="search_group_characters">Characters</string>
+    <string name="search_showAll" tools:ignore="PluralsCandidate">Show all %1$d</string>
+    <string name="search_item_meta" tools:ignore="PluralsCandidate">%1$s · item level %2$d · requires level %3$d</string>
+    <string name="search_item_metaNoLevel" tools:ignore="PluralsCandidate">%1$s · item level %2$d</string>
+    <string name="search_character_meta" tools:ignore="PluralsCandidate">%1$s · Level %2$d · %3$s %4$s</string>
+    <string name="search_character_metaNoLevel">%1$s · %2$s %3$s</string>
+    <string name="search_character_you">You</string>
+    <string name="search_guide_meta">Guide · %1$s</string>
+    <plurals name="search_talent_ranks">
+        <item quantity="one">1 rank</item>
+        <item quantity="other">%1$d ranks</item>
+    </plurals>
+    <string name="search_talent_meta">%1$s %2$s · %3$s · %4$s</string>
+    <string name="search_itemsFoot">Items from the game\'s own data. Tap one for its tooltip, where it drops and which best in slot lists use it.</string>
+    <string name="search_noResults_title">Nothing matches “%1$s”.</string>
+    <string name="search_noResults_body">Check the spelling. Characters need at least two letters and a connection.</string>
+    <string name="search_offline">Offline. Items, guides and talents still search; characters need a connection.</string>
+    <string name="search_charactersFailed">Characters did not load.</string>
+    <string name="search_indexLoading">Loading the search…</string>
+    <string name="search_indexFailed">Search did not load.</string>
+    <string name="search_tryAgain">Try again</string>
+    <string name="search_talent_openPlanner">Open in planner</string>
+    <string name="search_talent_rank" tools:ignore="PluralsCandidate">Rank %1$d/%2$d</string>
+    <string name="itemPage_back">Search</string>
+    <string name="itemPage_meta" tools:ignore="PluralsCandidate">%1$s · %2$s · item level %3$d</string>
+    <string name="itemPage_pick">Your %1$s pick</string>
+    <string name="itemPage_runnerUp" tools:ignore="PluralsCandidate">Runner-up %1$d for %2$s</string>
+    <string name="itemPage_pickMeta">%1$s · %2$s · %3$s · %4$s</string>
+    <string name="itemPage_yours">Yours</string>
+    <string name="itemPage_chip_item">Item</string>
+    <string name="itemPage_chip_source">Source</string>
+    <string name="itemPage_chip_bisFor">Best in slot for</string>
+    <string name="itemPage_sources">Where it comes from</string>
+    <string name="itemPage_sourcesFoot">A drop chance prints when the game\'s data has one.</string>
+    <string name="itemPage_noSources">No source is in our data for this item yet.</string>
+    <string name="itemPage_dropChance">%1$s from %2$s</string>
+    <string name="itemPage_chanceUnknown">Drop chance not known</string>
+    <string name="itemPage_questLevel" tools:ignore="PluralsCandidate">Requires level %1$d</string>
+    <string name="itemPage_kind_raid">Raid</string>
+    <string name="itemPage_kind_dungeon">Dungeon</string>
+    <string name="itemPage_kind_world">World drop</string>
+    <string name="itemPage_kind_zone">Zone</string>
+    <string name="itemPage_kind_vendor">Vendor</string>
+    <string name="itemPage_kind_crafted">Crafted</string>
+    <string name="itemPage_kind_rep">Reputation</string>
+    <string name="itemPage_kind_pvp">PvP</string>
+    <string name="itemPage_kind_quest">Quest</string>
+    <string name="itemPage_bisFor">Best in slot for</string>
+    <string name="itemPage_bisForFoot">Each row opens that list. The best placement of each spec is shown.</string>
+    <string name="itemPage_bisForNone">No best in slot list uses this item.</string>
+    <string name="itemPage_tag_pick">Pick</string>
+    <string name="itemPage_tag_runnerUp" tools:ignore="PluralsCandidate">Runner-up %1$d</string>
+    <string name="itemPage_specMeta_raid" tools:ignore="PluralsCandidate">%1$d · Phase 1 raid</string>
+    <string name="itemPage_specMeta_bare" tools:ignore="PluralsCandidate">%1$d</string>
+    <plurals name="itemPage_moreSpecs">
+        <item quantity="one">1 more spec</item>
+        <item quantity="other">%1$d more specs</item>
+    </plurals>
+    <string name="itemPage_unknown">This item is not in our data.</string>
+    <string name="itemPage_usesFailed">Sources did not load.</string>
+    <string name="itemPage_moreAbout">More about this item</string>
+    <string name="itemPage_a11y_source">%1$s, %2$s</string>
+    <string name="itemPage_a11y_spec">%1$s, %2$s, %3$s. Opens that list</string>
 </resources>

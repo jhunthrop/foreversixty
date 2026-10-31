@@ -999,6 +999,51 @@ data class ItemsFile(
     @SerialName("items") val items: List<Item> = emptyList(),
 )
 
+@Serializable
+data class ItemUses(
+    /** Ranked; boss kills and quest rewards first, a known chance before an unknown one. */
+    @SerialName("sources") val sources: List<ItemUseSource> = emptyList(),
+    /** One row per spec; picks before runners-up, then class and spec in the catalog's order. */
+    @SerialName("specs") val specs: List<ItemUseSpec> = emptyList(),
+)
+
+@Serializable
+data class ItemUseSource(
+    @SerialName("kind") val kind: String,
+    /** The boss, vendor, quest, recipe, faction and standing, or World drop. */
+    @SerialName("title") val title: String,
+    /** The instance of a boss drop, the side of a quest; absent when none. */
+    @SerialName("place") val place: String? = null,
+    /** Percent; absent when the data has none. Print Drop chance not known then. */
+    @SerialName("chance") val chance: Double? = null,
+    /** A quest's minimum level; absent when unknown. */
+    @SerialName("min_level") val minLevel: Int? = null,
+)
+
+@Serializable
+data class ItemUseSpec(
+    /** The BiS file key, shaman-elemental. */
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("band") val band: Int,
+    @SerialName("preset") val preset: String,
+    /** Null when both factions place it the same. */
+    @SerialName("faction") val faction: String? = null,
+    /** 0 is the pick; n is runner-up n. */
+    @SerialName("rank") val rank: Int,
+)
+
+/** /data/{build}/item-uses/{shard}.json (W3-C8). */
+@Serializable
+data class ItemUsesShard(
+    @SerialName("build") val build: String,
+    @SerialName("shard") val shard: Int,
+    @SerialName("shards") val shards: Int,
+    /** Item id (string key) -> its uses. */
+    @SerialName("items") val items: Map<String, ItemUses> = emptyMap(),
+)
+
 /** One key date. Sort and compare by iso and endIso, never by key. */
 @Serializable
 data class KeyDate(
@@ -1032,6 +1077,20 @@ data class LootAward(
 )
 
 @Serializable
+data class LootBoss(
+    @SerialName("id") val id: String,
+    /** Empty for an unnamed pool. */
+    @SerialName("name") val name: String,
+    @SerialName("npc_id") val npcId: Int? = null,
+    @SerialName("items") val items: List<Int> = emptyList(),
+    @SerialName("item_chances") val itemChances: Map<String, Double>? = null,
+    @SerialName("item_source_origin") val itemSourceOrigin: Map<String, String>? = null,
+    @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
+)
+
+@Serializable
 data class LootCandidate(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1054,6 +1113,16 @@ data class LootEncounter(
     @SerialName("killed") val killed: Boolean,
 )
 
+/** /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides. */
+@Serializable
+data class LootFile(
+    @SerialName("sources") val sources: List<LootSource> = emptyList(),
+    /** Item id (string key) -> the quests that reward it. */
+    @SerialName("quests") val quests: Map<String, List<LootQuest>>? = null,
+    /** Reputation faction id (string key) -> alliance, horde or both. */
+    @SerialName("factions") val factions: Map<String, String>? = null,
+)
+
 @Serializable
 data class LootItem(
     @SerialName("item_id") val itemId: Int,
@@ -1065,6 +1134,53 @@ data class LootItem(
     @SerialName("awarded_to") val awardedTo: LootAward? = null,
     /** Ranked best first. */
     @SerialName("candidates") val candidates: List<LootCandidate> = emptyList(),
+)
+
+@Serializable
+data class LootQuest(
+    @SerialName("quest_id") val questId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("faction_source") val factionSource: String? = null,
+    @SerialName("min_level") val minLevel: Int,
+    @SerialName("level") val level: Int,
+    @SerialName("level_source") val levelSource: String? = null,
+    @SerialName("opens") val opens: String? = null,
+    @SerialName("classes") val classes: List<String>? = null,
+    @SerialName("required_rep_faction") val requiredRepFaction: Int? = null,
+    @SerialName("required_rep_standing") val requiredRepStanding: String? = null,
+    @SerialName("profession") val profession: String? = null,
+    @SerialName("skill") val skill: Int? = null,
+)
+
+@Serializable
+data class LootSource(
+    /** raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, … */
+    @SerialName("id") val id: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("name") val name: String,
+    @SerialName("items") val items: List<Int>? = null,
+    @SerialName("trash") val trash: List<Int>? = null,
+    @SerialName("bosses") val bosses: List<LootBoss>? = null,
+    /** Item id -> percent; absent when unknown. */
+    @SerialName("item_chances") val itemChances: Map<String, Double>? = null,
+    @SerialName("zone_id") val zoneId: Int? = null,
+    @SerialName("npc_id") val npcId: Int? = null,
+    /** A phase name, or later; absent means open from launch. */
+    @SerialName("opens") val opens: String? = null,
+    @SerialName("profession") val profession: String? = null,
+    @SerialName("faction_id") val factionId: Int? = null,
+    @SerialName("standing") val standing: String? = null,
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("faction") val faction: String? = null,
+    @SerialName("faction_source") val factionSource: String? = null,
+    @SerialName("title") val title: String? = null,
+    @SerialName("level_min") val levelMin: Int? = null,
+    @SerialName("level_max") val levelMax: Int? = null,
+    @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
+    @SerialName("source_origin") val sourceOrigin: String? = null,
+    @SerialName("source_note") val sourceNote: String? = null,
+    @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
 )
 
 /** GET /v1/me's data (Go auth.Me): who you are, your characters, your guilds and what you may use. The apps gate a feature on entitlements only. */
@@ -1691,6 +1807,53 @@ data class ScorePoint(
     @SerialName("date") val date: String,
     @SerialName("score") val score: Int,
     @SerialName("tier") val tier: String,
+)
+
+@Serializable
+data class SearchGuide(
+    @SerialName("class") val className: String,
+    /** The spec's slug inside its class, the guide's path segment. */
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("icon") val icon: String,
+)
+
+/** /data/{build}/search.json (W3-C8), the apps' offline search. */
+@Serializable
+data class SearchIndex(
+    @SerialName("build") val build: String,
+    /** How many item-uses files; an item's shard is id % this. */
+    @SerialName("item_uses_shards") val itemUsesShards: Int,
+    @SerialName("items") val items: List<SearchItem> = emptyList(),
+    @SerialName("talents") val talents: List<SearchTalent> = emptyList(),
+    @SerialName("guides") val guides: List<SearchGuide> = emptyList(),
+)
+
+@Serializable
+data class SearchItem(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("slot") val slot: String,
+    @SerialName("item_level") val itemLevel: Int,
+    @SerialName("required_level") val requiredLevel: Int,
+    /** Class slugs whose items file carries it. */
+    @SerialName("classes") val classes: List<String> = emptyList(),
+)
+
+@Serializable
+data class SearchTalent(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("class") val className: String,
+    /** The talent tree's own name. */
+    @SerialName("tree") val tree: String,
+    /** The spec the tree is played as; the tree's name when none is written. */
+    @SerialName("spec_name") val specName: String,
+    @SerialName("max_rank") val maxRank: Int,
 )
 
 /** Omitted when the server has no sims store configured. */

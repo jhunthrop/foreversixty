@@ -2675,6 +2675,123 @@ public struct ItemsFile: Codable, Sendable, Equatable {
     }
 }
 
+public struct ItemUses: Codable, Sendable, Equatable {
+    /// Ranked; boss kills and quest rewards first, a known chance before an unknown one.
+    public let sources: [ItemUseSource]
+    /// One row per spec; picks before runners-up, then class and spec in the catalog's order.
+    public let specs: [ItemUseSpec]
+
+    public init(
+        sources: [ItemUseSource] = [],
+        specs: [ItemUseSpec] = []
+    ) {
+        self.sources = sources
+        self.specs = specs
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        sources = try c.decodeIfPresent([ItemUseSource].self, forKey: .sources) ?? []
+        specs = try c.decodeIfPresent([ItemUseSpec].self, forKey: .specs) ?? []
+    }
+}
+
+public struct ItemUseSource: Codable, Sendable, Equatable {
+    public let kind: String
+    /// The boss, vendor, quest, recipe, faction and standing, or World drop.
+    public let title: String
+    /// The instance of a boss drop, the side of a quest; absent when none.
+    public let place: String?
+    /// Percent; absent when the data has none. Print Drop chance not known then.
+    public let chance: Double?
+    /// A quest's minimum level; absent when unknown.
+    public let minLevel: Int?
+
+    public init(
+        kind: String,
+        title: String,
+        place: String? = nil,
+        chance: Double? = nil,
+        minLevel: Int? = nil
+    ) {
+        self.kind = kind
+        self.title = title
+        self.place = place
+        self.chance = chance
+        self.minLevel = minLevel
+    }
+}
+
+public struct ItemUseSpec: Codable, Sendable, Equatable {
+    /// The BiS file key, shaman-elemental.
+    public let spec: String
+    public let className: String
+    public let specName: String
+    public let band: Int
+    public let preset: String
+    /// Null when both factions place it the same.
+    public let faction: String?
+    /// 0 is the pick; n is runner-up n.
+    public let rank: Int
+
+    public init(
+        spec: String,
+        className: String,
+        specName: String,
+        band: Int,
+        preset: String,
+        faction: String? = nil,
+        rank: Int
+    ) {
+        self.spec = spec
+        self.className = className
+        self.specName = specName
+        self.band = band
+        self.preset = preset
+        self.faction = faction
+        self.rank = rank
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case spec
+        case className = "class"
+        case specName
+        case band
+        case preset
+        case faction
+        case rank
+    }
+}
+
+/// /data/{build}/item-uses/{shard}.json (W3-C8).
+public struct ItemUsesShard: Codable, Sendable, Equatable {
+    public let build: String
+    public let shard: Int
+    public let shards: Int
+    /// Item id (string key) -> its uses.
+    public let items: [String: ItemUses]
+
+    public init(
+        build: String,
+        shard: Int,
+        shards: Int,
+        items: [String: ItemUses] = [:]
+    ) {
+        self.build = build
+        self.shard = shard
+        self.shards = shards
+        self.items = items
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        build = try c.decode(String.self, forKey: .build)
+        shard = try c.decode(Int.self, forKey: .shard)
+        shards = try c.decode(Int.self, forKey: .shards)
+        items = try c.decodeIfPresent([String: ItemUses].self, forKey: .items) ?? [:]
+    }
+}
+
 /// One key date. Sort and compare by iso and endIso, never by key.
 public struct KeyDate: Codable, Sendable, Equatable {
     /// A display date, "Nov 4".
@@ -2745,6 +2862,54 @@ public struct LootAward: Codable, Sendable, Equatable {
         self.name = name
         self.at = at
         self.byName = byName
+    }
+}
+
+public struct LootBoss: Codable, Sendable, Equatable {
+    public let id: String
+    /// Empty for an unnamed pool.
+    public let name: String
+    public let npcId: Int?
+    public let items: [Int]
+    public let itemChances: [String: Double]?
+    public let itemSourceOrigin: [String: String]?
+    public let reitemisedFrom: [String: Int]?
+    public let rank: Int?
+    public let rareSpawn: Bool?
+
+    public init(
+        id: String,
+        name: String,
+        npcId: Int? = nil,
+        items: [Int] = [],
+        itemChances: [String: Double]? = nil,
+        itemSourceOrigin: [String: String]? = nil,
+        reitemisedFrom: [String: Int]? = nil,
+        rank: Int? = nil,
+        rareSpawn: Bool? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.npcId = npcId
+        self.items = items
+        self.itemChances = itemChances
+        self.itemSourceOrigin = itemSourceOrigin
+        self.reitemisedFrom = reitemisedFrom
+        self.rank = rank
+        self.rareSpawn = rareSpawn
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        npcId = try c.decodeIfPresent(Int.self, forKey: .npcId)
+        items = try c.decodeIfPresent([Int].self, forKey: .items) ?? []
+        itemChances = try c.decodeIfPresent([String: Double].self, forKey: .itemChances)
+        itemSourceOrigin = try c.decodeIfPresent([String: String].self, forKey: .itemSourceOrigin)
+        reitemisedFrom = try c.decodeIfPresent([String: Int].self, forKey: .reitemisedFrom)
+        rank = try c.decodeIfPresent(Int.self, forKey: .rank)
+        rareSpawn = try c.decodeIfPresent(Bool.self, forKey: .rareSpawn)
     }
 }
 
@@ -2821,6 +2986,32 @@ public struct LootEncounter: Codable, Sendable, Equatable {
     }
 }
 
+/// /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides.
+public struct LootFile: Codable, Sendable, Equatable {
+    public let sources: [LootSource]
+    /// Item id (string key) -> the quests that reward it.
+    public let quests: [String: [LootQuest]]?
+    /// Reputation faction id (string key) -> alliance, horde or both.
+    public let factions: [String: String]?
+
+    public init(
+        sources: [LootSource] = [],
+        quests: [String: [LootQuest]]? = nil,
+        factions: [String: String]? = nil
+    ) {
+        self.sources = sources
+        self.quests = quests
+        self.factions = factions
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        sources = try c.decodeIfPresent([LootSource].self, forKey: .sources) ?? []
+        quests = try c.decodeIfPresent([String: [LootQuest]].self, forKey: .quests)
+        factions = try c.decodeIfPresent([String: String].self, forKey: .factions)
+    }
+}
+
 public struct LootItem: Codable, Sendable, Equatable {
     public let itemId: Int
     public let name: String
@@ -2862,6 +3053,131 @@ public struct LootItem: Codable, Sendable, Equatable {
         copies = try c.decode(Int.self, forKey: .copies)
         awardedTo = try c.decodeIfPresent(LootAward.self, forKey: .awardedTo)
         candidates = try c.decodeIfPresent([LootCandidate].self, forKey: .candidates) ?? []
+    }
+}
+
+public struct LootQuest: Codable, Sendable, Equatable {
+    public let questId: Int
+    public let name: String
+    public let faction: String
+    public let factionSource: String?
+    public let minLevel: Int
+    public let level: Int
+    public let levelSource: String?
+    public let opens: String?
+    public let classes: [String]?
+    public let requiredRepFaction: Int?
+    public let requiredRepStanding: String?
+    public let profession: String?
+    public let skill: Int?
+
+    public init(
+        questId: Int,
+        name: String,
+        faction: String,
+        factionSource: String? = nil,
+        minLevel: Int,
+        level: Int,
+        levelSource: String? = nil,
+        opens: String? = nil,
+        classes: [String]? = nil,
+        requiredRepFaction: Int? = nil,
+        requiredRepStanding: String? = nil,
+        profession: String? = nil,
+        skill: Int? = nil
+    ) {
+        self.questId = questId
+        self.name = name
+        self.faction = faction
+        self.factionSource = factionSource
+        self.minLevel = minLevel
+        self.level = level
+        self.levelSource = levelSource
+        self.opens = opens
+        self.classes = classes
+        self.requiredRepFaction = requiredRepFaction
+        self.requiredRepStanding = requiredRepStanding
+        self.profession = profession
+        self.skill = skill
+    }
+}
+
+public struct LootSource: Codable, Sendable, Equatable {
+    /// raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …
+    public let id: String
+    public let kind: String
+    public let name: String
+    public let items: [Int]?
+    public let trash: [Int]?
+    public let bosses: [LootBoss]?
+    /// Item id -> percent; absent when unknown.
+    public let itemChances: [String: Double]?
+    public let zoneId: Int?
+    public let npcId: Int?
+    /// A phase name, or later; absent means open from launch.
+    public let opens: String?
+    public let profession: String?
+    public let factionId: Int?
+    public let standing: String?
+    public let rank: Int?
+    public let faction: String?
+    public let factionSource: String?
+    public let title: String?
+    public let levelMin: Int?
+    public let levelMax: Int?
+    public let rareSpawn: Bool?
+    public let sourceOrigin: String?
+    public let sourceNote: String?
+    public let reitemisedFrom: [String: Int]?
+
+    public init(
+        id: String,
+        kind: String,
+        name: String,
+        items: [Int]? = nil,
+        trash: [Int]? = nil,
+        bosses: [LootBoss]? = nil,
+        itemChances: [String: Double]? = nil,
+        zoneId: Int? = nil,
+        npcId: Int? = nil,
+        opens: String? = nil,
+        profession: String? = nil,
+        factionId: Int? = nil,
+        standing: String? = nil,
+        rank: Int? = nil,
+        faction: String? = nil,
+        factionSource: String? = nil,
+        title: String? = nil,
+        levelMin: Int? = nil,
+        levelMax: Int? = nil,
+        rareSpawn: Bool? = nil,
+        sourceOrigin: String? = nil,
+        sourceNote: String? = nil,
+        reitemisedFrom: [String: Int]? = nil
+    ) {
+        self.id = id
+        self.kind = kind
+        self.name = name
+        self.items = items
+        self.trash = trash
+        self.bosses = bosses
+        self.itemChances = itemChances
+        self.zoneId = zoneId
+        self.npcId = npcId
+        self.opens = opens
+        self.profession = profession
+        self.factionId = factionId
+        self.standing = standing
+        self.rank = rank
+        self.faction = faction
+        self.factionSource = factionSource
+        self.title = title
+        self.levelMin = levelMin
+        self.levelMax = levelMax
+        self.rareSpawn = rareSpawn
+        self.sourceOrigin = sourceOrigin
+        self.sourceNote = sourceNote
+        self.reitemisedFrom = reitemisedFrom
     }
 }
 
@@ -4534,6 +4850,154 @@ public struct ScorePoint: Codable, Sendable, Equatable {
         self.date = date
         self.score = score
         self.tier = tier
+    }
+}
+
+public struct SearchGuide: Codable, Sendable, Equatable {
+    public let className: String
+    /// The spec's slug inside its class, the guide's path segment.
+    public let spec: String
+    public let specName: String
+    public let role: String
+    public let icon: String
+
+    public init(
+        className: String,
+        spec: String,
+        specName: String,
+        role: String,
+        icon: String
+    ) {
+        self.className = className
+        self.spec = spec
+        self.specName = specName
+        self.role = role
+        self.icon = icon
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case className = "class"
+        case spec
+        case specName
+        case role
+        case icon
+    }
+}
+
+/// /data/{build}/search.json (W3-C8), the apps' offline search.
+public struct SearchIndex: Codable, Sendable, Equatable {
+    public let build: String
+    /// How many item-uses files; an item's shard is id % this.
+    public let itemUsesShards: Int
+    public let items: [SearchItem]
+    public let talents: [SearchTalent]
+    public let guides: [SearchGuide]
+
+    public init(
+        build: String,
+        itemUsesShards: Int,
+        items: [SearchItem] = [],
+        talents: [SearchTalent] = [],
+        guides: [SearchGuide] = []
+    ) {
+        self.build = build
+        self.itemUsesShards = itemUsesShards
+        self.items = items
+        self.talents = talents
+        self.guides = guides
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        build = try c.decode(String.self, forKey: .build)
+        itemUsesShards = try c.decode(Int.self, forKey: .itemUsesShards)
+        items = try c.decodeIfPresent([SearchItem].self, forKey: .items) ?? []
+        talents = try c.decodeIfPresent([SearchTalent].self, forKey: .talents) ?? []
+        guides = try c.decodeIfPresent([SearchGuide].self, forKey: .guides) ?? []
+    }
+}
+
+public struct SearchItem: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let icon: String
+    public let quality: Int
+    public let slot: String
+    public let itemLevel: Int
+    public let requiredLevel: Int
+    /// Class slugs whose items file carries it.
+    public let classes: [String]
+
+    public init(
+        id: Int,
+        name: String,
+        icon: String,
+        quality: Int,
+        slot: String,
+        itemLevel: Int,
+        requiredLevel: Int,
+        classes: [String] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.icon = icon
+        self.quality = quality
+        self.slot = slot
+        self.itemLevel = itemLevel
+        self.requiredLevel = requiredLevel
+        self.classes = classes
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(Int.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        icon = try c.decode(String.self, forKey: .icon)
+        quality = try c.decode(Int.self, forKey: .quality)
+        slot = try c.decode(String.self, forKey: .slot)
+        itemLevel = try c.decode(Int.self, forKey: .itemLevel)
+        requiredLevel = try c.decode(Int.self, forKey: .requiredLevel)
+        classes = try c.decodeIfPresent([String].self, forKey: .classes) ?? []
+    }
+}
+
+public struct SearchTalent: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let icon: String
+    public let className: String
+    /// The talent tree's own name.
+    public let tree: String
+    /// The spec the tree is played as; the tree's name when none is written.
+    public let specName: String
+    public let maxRank: Int
+
+    public init(
+        id: Int,
+        name: String,
+        icon: String,
+        className: String,
+        tree: String,
+        specName: String,
+        maxRank: Int
+    ) {
+        self.id = id
+        self.name = name
+        self.icon = icon
+        self.className = className
+        self.tree = tree
+        self.specName = specName
+        self.maxRank = maxRank
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case icon
+        case className = "class"
+        case tree
+        case specName
+        case maxRank
     }
 }
 

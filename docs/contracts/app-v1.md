@@ -551,6 +551,40 @@ The game icon for any item, talent or spell: `icon` is the stem a JSON file carr
 never reinterpret or re-badge. A build that does not carry an icon answers 404: fall back to the
 neutral placeholder. Tree art is `/data/<build>/trees/<background>.webp`.
 
+### /data/{build}/loot.json (W3-C8, lane F12)
+
+`{ sources[], quests?, factions? }`: the site's loot file, now an app contract. A source is
+`{ id, kind, name, items?, trash?, bosses?[{ id, name, npc_id?, items, item_chances? }],
+item_chances?, … }` with `kind` one of `raid|dungeon|world|world_drop|zone|vendor|crafted|rep|pvp|quest`.
+`quests` maps an item id (string key) to the quests that reward it (`{ quest_id, name, faction,
+min_level, level, … }`). Drop chances are percents, absent when unknown, never 0 for unknown.
+The item page reads `item-uses` instead; this is for anything that needs the raw sources. Fixture
+`cdn.loot`, held to the generator's file by `TestCDNLootFixtureMatchesTheGenerator`.
+
+### /data/{build}/search.json (W3-C8, lane F12)
+
+`{ build, item_uses_shards, items[], talents[], guides[] }`, the apps' offline search. An item is
+`{ id, name, icon, quality, slot, item_level, required_level, classes[] }` (the class slugs whose
+items file carries it); a talent `{ id, name, icon, class, tree, spec_name, max_rank }`; a guide
+`{ class, spec, spec_name, role, icon }` for every spec with a written guide (`/guides/{class}/{spec}`).
+Emitted by the site build (`web/src/pages/data/[build]/search.json.ts`) for the active build, not
+by the data pipeline, so nothing is committed; the build fails when it gzips over 300 KB (215 KB
+on 70658). Fixture `cdn.search`, held to the generator by `web/src/lib/search/contract-fixtures.test.ts`.
+
+### /data/{build}/item-uses/{shard}.json (W3-C8, lane F12)
+
+`{ build, shard, shards, items: { "<id>": { sources[], specs[] } } }`. An item's shard is
+`id % search.item_uses_shards` (64). `sources[]` is `{ kind, title, place?, chance?, min_level? }`,
+ranked as the site tooltip ranks them (boss kills and quest rewards first, a known chance before an
+unknown one) and in its words (`web/src/lib/items/item-sources.ts`, which the tooltip also reads):
+`title` is the boss, vendor, quest, recipe, faction and standing or `World drop`; `place` the
+instance of a boss drop or the side of a quest. Print `Drop chance not known` for a boss drop with
+no `chance`, never `0%`. `specs[]` is `{ spec, class, spec_name, band, preset, faction, rank }`, one
+row per spec at its best placement (lower rank, then higher band, then the raid preset); `rank` 0 is
+the pick and n is runner-up n; `faction` is null when both sides place it the same. Picks come
+before runners-up, then class and spec in `data/curated/specs.json`'s order. An item with no source
+and no list is absent. Fixture `cdn.item-uses`.
+
 ### /data/dates.json
 The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a display date, "Nov 4"),
 `value` (the label), omitted `note`, `iso` (YYYY-MM-DD), `endIso`, `time`, `running` (the sentence
