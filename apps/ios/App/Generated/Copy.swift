@@ -235,7 +235,7 @@ enum Copy {
         format("home.next.talentsMatch", spec, band)
     }
 
-    /// {n} of your {m} points differ from the {band} build
+    /// {n} of your {m} points differ from the {band} guide build
     static func homeNextTalentsDiffer(n: Int, m: Int, band: String) -> String {
         format("home.next.talentsDiffer", n, m, band)
     }
@@ -1660,7 +1660,7 @@ enum Copy {
         format("talents.match", spec, band)
     }
 
-    /// {n} of your {m} points differ from the {band} build.
+    /// {n} of your {m} points differ from the {band} guide build.
     static func talentsDiffer(n: Int, m: Int, band: String) -> String {
         format("talents.differ", n, m, band)
     }
@@ -1676,7 +1676,7 @@ enum Copy {
     /// Your build
     static var talentsYours: String { text("talents.yours") }
 
-    /// Dashed: your rank differs from the guide. Tap a talent for both ranks and its text.
+    /// Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text.
     static var talentsLegend: String { text("talents.legend") }
 
     /// Rank {n}/{max}
@@ -1692,6 +1692,85 @@ enum Copy {
 
     /// No talent build published yet for this spec and level range.
     static var talentsNoList: String { text("talents.noList") }
+
+    /// Tap a talent for its rank text.
+    static var talentsTapHint: String { text("talents.tapHint") }
+
+    /// {n} of the {band} guide build's points still to take.
+    static func talentsToTake(n: Int, band: String) -> String {
+        format("talents.toTake", n, band)
+    }
+
+    /// The guide build takes {n} points you have not.
+    static func talentsMissing(n: Int) -> String {
+        format("talents.missing", n)
+    }
+
+    /// Level {l} is past the {band} guide build's {g} points, so points past it show as differing.
+    static func talentsBeyond(l: Int, band: String, g: Int) -> String {
+        format("talents.beyond", l, band, g)
+    }
+
+    /// Requires {n} points in {tree} Talents
+    static func talentsRequiresTree(n: Int, tree: String) -> String {
+        format("talents.requiresTree", n, tree)
+    }
+
+    /// Requires {n} points in {talent}
+    static func talentsRequiresTalent(n: Int, talent: String) -> String {
+        format("talents.requiresTalent", n, talent)
+    }
+
+    /// Requires 1 point in {talent}
+    static func talentsRequiresTalentOne(talent: String) -> String {
+        format("talents.requiresTalentOne", talent)
+    }
+
+    /// {n} points. Talents that differ from the guide: {k}.
+    static func talentsA11yTabDiffers(n: Int, k: Int) -> String {
+        format("talents.a11yTabDiffers", n, k)
+    }
+
+    /// Guide build: rank {g}/{max}
+    static func talentsGuideRank(g: Int, max: Int) -> String {
+        format("talents.guideRank", g, max)
+    }
+
+    /// Plan a build on foreversixty.gg/planner
+    static var talentsPlanLink: String { text("talents.planLink") }
+
+    /// Your talent export is from an older game build. Open the addon once to send it again.
+    static var talentsStaleExport: String { text("talents.staleExport") }
+
+    /// We do not know this character's spec yet, so there is no guide build to compare. Open the addon once to send it.
+    static var talentsPickSpec: String { text("talents.pickSpec") }
+
+    /// Loading talents…
+    static var talentsLoading: String { text("talents.loading") }
+
+    /// Your talents did not load.
+    static var talentsFailed: String { text("talents.failed") }
+
+    /// The guide build did not load.
+    static var talentsGuideFailed: String { text("talents.guideFailed") }
+
+    /// {n} points
+    static func talentsPoints(n: Int) -> String {
+        format("talents.points", n)
+    }
+
+    /// {name}, rank {n} of {max}
+    static func talentsA11yCell(name: String, n: Int, max: Int) -> String {
+        format("talents.a11yCell", name, n, max)
+    }
+
+    /// {name}, rank {n} of {max}, guide rank {g}
+    static func talentsA11yCellGuide(name: String, n: Int, max: Int, g: Int) -> String {
+        format("talents.a11yCellGuide", name, n, max, g)
+    }
+
+    /// Shows the talent
+    static var talentsA11yHint: String { text("talents.a11yHint") }
 
     /// Notifications
     static var notifTitle: String { text("notif.title") }

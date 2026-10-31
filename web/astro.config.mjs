@@ -156,12 +156,14 @@ export default defineConfig({
     // Both are plumbing rather than destinations, so they stay out of the sitemap; the
     // report pages people actually link to are /reports/<id>, which cannot be enumerated
     // at build time. /reports, the signed-in "Your reports" list, has nothing to index either.
+    // /app/auth is the phone apps' sign-in handoff, plumbing too.
     sitemap({
       filter: (page) =>
         !page.endsWith('/b-unavailable') &&
         !page.endsWith('/report-shell') &&
         !page.endsWith('/reports') &&
-        !page.endsWith('/design-sheet'),
+        !page.endsWith('/design-sheet') &&
+        !page.endsWith('/app/auth'),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

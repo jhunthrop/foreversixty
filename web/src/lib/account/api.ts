@@ -57,10 +57,16 @@ export function effectiveServerSims(me: Me | null): boolean {
   return me.user.premium === true;
 }
 
+/** A desktop companion paired through /setup, or a native app signed in with Battle.net. */
+export type DeviceKind = 'companion' | 'app';
+
 export interface Device {
   id: string;
   name: string;
+  /** The companion's own label (`windows/amd64`), or `ios` / `android` for an app. */
   platform: string;
+  /** Absent from an API older than the app sign-in, which only ever held companions. */
+  kind?: DeviceKind;
   created_at: string;
   last_seen_at: string | null;
 }
@@ -356,6 +362,16 @@ export function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
       ttlMs: DEVICES_TTL_MS,
     },
   );
+}
+
+/** The companions among an account's devices: what uploads logs and carries builds into the
+ *  game. A signed-in phone app is listed on /account but never counts as a companion. */
+export function companionsOf(devices: readonly Device[]): Device[] {
+  return devices.filter((device) => device.kind !== 'app');
+}
+
+export async function listCompanions(apiBase: string = API_BASE_URL): Promise<Device[]> {
+  return companionsOf(await listDevices(apiBase));
 }
 
 /**

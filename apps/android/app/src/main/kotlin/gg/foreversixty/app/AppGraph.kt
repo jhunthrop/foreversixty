@@ -28,6 +28,7 @@ import gg.foreversixty.app.network.ClientIdentity
 import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
+import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
@@ -69,6 +70,13 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     /** Whether a feature's screens show: on in debug and fixture builds, else as the config says. */
     fun isAvailable(feature: Feature): Boolean = appConfig.isAvailable(feature, config.mode, BuildConfig.DEBUG)
 
+    /** Lane F6: the Talents screen pushed from Home; null while its switch is off. */
+    private val talents: TalentsFeature? = if (isAvailable(Feature.Talents)) {
+        TalentsFeature.create(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)
+    } else {
+        null
+    }
+
     /** Lane F8: whether See plans may link to web checkout here (decision P, fail closed). */
     val plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) }
 
@@ -78,6 +86,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         config,
         accountApi,
         apiClient,
+        talents,
         isSimsOn = { isAvailable(Feature.Sims) },
         mayLinkToPlans = {
             plansLink.resolve()

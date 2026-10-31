@@ -261,8 +261,8 @@ struct NextRows: View {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                    if row.kind == .sims {
-                        // Lane F5: the Sims row pushes Sims (spec F2.1 item 4).
+                    // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
+                    if row.kind == .sims || row.kind == .talents {
                         Button { send(.openNext(row.kind)) } label: { NextRowView(row: row) }
                             .buttonStyle(RowPress())
                     } else {
@@ -278,29 +278,49 @@ struct NextRows: View {
 struct NextRowView: View {
     let row: HomeNextRow
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
+        HStack(alignment: typeSize >= .accessibility1 ? .top : .center, spacing: 12) {
             Image(systemName: row.kind == .talents ? "sparkles" : "flask")
                 .font(.system(size: 16))
                 .foregroundStyle(FSColor.goldHover)
                 .frame(width: 36, height: 36)
                 .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                Text(row.line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            switch row.tag {
-            case .matches: TagView(text: Copy.homeNextMatches, color: FSColor.kill)
-            case .differs: TagView(text: Copy.homeNextDiffers, color: FSColor.gold)
-            case nil: EmptyView()
+            // From AX1 the tag sits above the words, so the line keeps the row's width (spec §10).
+            if typeSize >= .accessibility1 {
+                VStack(alignment: .leading, spacing: 6) {
+                    tag
+                    words
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                words.frame(maxWidth: .infinity, alignment: .leading)
+                tag
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .frame(minHeight: 56)
         .accessibilityElement(children: .combine)
+    }
+
+    private var words: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+            Text(row.line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    @ViewBuilder
+    private var tag: some View {
+        switch row.tag {
+        case .matches: TagView(text: Copy.homeNextMatches, color: FSColor.kill)
+        case .differs: TagView(text: Copy.homeNextDiffers, color: FSColor.gold)
+        case nil: EmptyView()
+        }
     }
 }
 

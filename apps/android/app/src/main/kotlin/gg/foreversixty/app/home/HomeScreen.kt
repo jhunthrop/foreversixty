@@ -60,6 +60,11 @@ import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.sims.SimsFeature
 import gg.foreversixty.app.sims.SimsRoute
+import gg.foreversixty.app.talents.TalentsFeature
+import gg.foreversixty.app.talents.TalentCharacter
+import gg.foreversixty.app.talents.TalentsModel
+import gg.foreversixty.app.talents.TalentsPhase
+import gg.foreversixty.app.talents.TalentsRoute
 import java.io.File
 import java.time.Instant
 import kotlinx.coroutines.launch
@@ -76,6 +81,8 @@ class HomeDependencies(
     val client: ApiClient,
     val catalog: ItemCatalog,
     val cache: HomeCache,
+    /** Lane F6: the Talents screen's files; null while its feature switch is off. */
+    val talents: TalentsFeature? = null,
     private val isOn: () -> Boolean,
     /** Lane F5: Sims, pushed from the Sims row; null while its feature switch is off. */
     private val simsFeature: SimsFeature? = null,
@@ -90,6 +97,7 @@ class HomeDependencies(
             config: ApiConfig,
             accountApi: AccountApi,
             client: ApiClient,
+            talents: TalentsFeature?,
             isSimsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
             isOn: () -> Boolean,
@@ -101,6 +109,7 @@ class HomeDependencies(
                 client = client,
                 catalog = catalog,
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
+                talents = talents,
                 isOn = isOn,
                 simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans),
             )
@@ -185,13 +194,21 @@ fun HomeCharacterScreen(
     val phase by store.phase.collectAsStateWithLifecycle()
     var refreshing by remember { mutableStateOf(false) }
     var showGear by rememberSaveable { mutableStateOf(false) }
+    var showTalents by rememberSaveable { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(character.key) { store.load(character) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { scope.launch { store.refreshIfStale(character) } }
 
     val home = phase.homeOrNull()
     val res = LocalResources.current
-    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res)
+    // Lane F6: one Talents model per character, shared by the Talents row and the pushed screen.
+    val talentsModel = remember(character.key) {
+        dependencies.talents?.let { TalentsModel(it.source, TalentCharacter.from(character), it.catalog) }
+    }
+    LaunchedEffect(talentsModel) { talentsModel?.load() }
+    val talentsPhase = talentsModel?.phase?.collectAsStateWithLifecycle()?.value
+    val talentStatus = (talentsPhase as? TalentsPhase.Loaded)?.presenter?.status(res)
+    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
         stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
     }
@@ -200,8 +217,14 @@ fun HomeCharacterScreen(
     }
 
     val sims = dependencies.sims
+    val talents = dependencies.talents
     if (sims != null && sims.navigator.showsList) {
         SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
+    } else if (showTalents && talents != null) {
+        BackHandler { showTalents = false }
+        TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
+            showTalents = false
+        }
     } else if (showGear && home != null) {
         BackHandler { showGear = false }
         GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
@@ -220,7 +243,10 @@ fun HomeCharacterScreen(
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
                         HomeIntent.OpenGear -> showGear = true
                         HomeIntent.Retry -> scope.launch { store.refresh(character) }
-                        is HomeIntent.OpenNext -> if (intent.kind == HomeNextRow.Kind.Sims) sims?.navigator?.showsList = true
+                        is HomeIntent.OpenNext -> when (intent.kind) {
+                            HomeNextRow.Kind.Sims -> sims?.navigator?.showsList = true
+                            HomeNextRow.Kind.Talents -> showTalents = talents != null
+                        }
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
                             HomeAction.Kind.OpenPlanner -> context.openInBrowser(HomeLinks.PLANNER)

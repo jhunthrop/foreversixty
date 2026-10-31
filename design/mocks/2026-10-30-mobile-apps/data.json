@@ -3373,6 +3373,13 @@
      "name": "Convection",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the mana cost of your Shock, Lightning Bolt, Lava Burst, and Chain Lightning spells by 2%.",
+      "Reduces the mana cost of your Shock, Lightning Bolt, Lava Burst, and Chain Lightning spells by 4%.",
+      "Reduces the mana cost of your Shock, Lightning Bolt, Lava Burst, and Chain Lightning spells by 6%.",
+      "Reduces the mana cost of your Shock, Lightning Bolt, Lava Burst, and Chain Lightning spells by 8%.",
+      "Reduces the mana cost of your Shock, Lightning Bolt, Lava Burst, and Chain Lightning spells by 10%."
+     ],
      "tier": 0
     },
     {
@@ -3383,6 +3390,13 @@
      "name": "Concussion",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the damage done by your Lightning Bolt, Chain Lightning, and Earth Shock spells by 1%.",
+      "Increases the damage done by your Lightning Bolt, Chain Lightning, and Earth Shock spells by 2%.",
+      "Increases the damage done by your Lightning Bolt, Chain Lightning, and Earth Shock spells by 3%.",
+      "Increases the damage done by your Lightning Bolt, Chain Lightning, and Earth Shock spells by 4%.",
+      "Increases the damage done by your Lightning Bolt, Chain Lightning, and Earth Shock spells by 5%."
+     ],
      "tier": 0
     },
     {
@@ -3393,6 +3407,11 @@
      "name": "Elemental Devastation",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Your Critical Strikes with direct damage spells increase your chance to get a Critical Strike with melee attacks by 3% for 10 sec.",
+      "Your Critical Strikes with direct damage spells increase your chance to get a Critical Strike with melee attacks by 6% for 10 sec.",
+      "Your Critical Strikes with direct damage spells increase your chance to get a Critical Strike with melee attacks by 9% for 10 sec."
+     ],
      "tier": 1
     },
     {
@@ -3403,6 +3422,13 @@
      "name": "Reverberation",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the cooldown of your Shock spells by 0.2 sec.",
+      "Reduces the cooldown of your Shock spells by 0.4 sec.",
+      "Reduces the cooldown of your Shock spells by 0.6 sec.",
+      "Reduces the cooldown of your Shock spells by 0.8 sec.",
+      "Reduces the cooldown of your Shock spells by 1.0 sec."
+     ],
      "tier": 1
     },
     {
@@ -3413,6 +3439,11 @@
      "name": "Elemental Alacrity",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.17 sec.",
+      "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.33 sec.",
+      "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.50 sec."
+     ],
      "tier": 1
     },
     {
@@ -3423,6 +3454,11 @@
      "name": "Call of Flame",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 5%, as well as increases the duration of your Flame Shock spell by 3 sec.",
+      "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 10%, as well as increases the duration of your Flame Shock spell by 6 sec.",
+      "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 15%, as well as increases the duration of your Flame Shock spell by 9 sec."
+     ],
      "tier": 1
     },
     {
@@ -3433,6 +3469,9 @@
      "name": "Elemental Focus",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Gives you a 10% chance to enter a Clearcasting state after casting any Fire, Frost, or Nature damage spell.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+     ],
      "tier": 2
     },
     {
@@ -3443,6 +3482,11 @@
      "name": "Elemental Warding",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces damage taken from Fire, Frost, and Nature effects by 3%.",
+      "Reduces damage taken from Fire, Frost, and Nature effects by 7%.",
+      "Reduces damage taken from Fire, Frost, and Nature effects by 10%."
+     ],
      "tier": 2
     },
     {
@@ -3453,6 +3497,10 @@
      "name": "Trial by Fire",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the damage done by your Fire Nova spell by 10% and reduces its cooldown by 2 sec, and increases the duration of your Magma Totem by 10 sec.",
+      "Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec, and increases the duration of your Magma Totem by 20 sec."
+     ],
      "tier": 3
     },
     {
@@ -3463,6 +3511,11 @@
      "name": "Eye of the Storm",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Gives your Lightning Bolt, Chain Lightning, and Lava Burst spells a 23% chance to not lose casting time when you take damage.",
+      "Gives your Lightning Bolt, Chain Lightning, and Lava Burst spells a 47% chance to not lose casting time when you take damage.",
+      "Gives your Lightning Bolt, Chain Lightning, and Lava Burst spells a 70% chance to not lose casting time when you take damage."
+     ],
      "tier": 3
     },
     {
@@ -3473,6 +3526,9 @@
      "name": "Earthbound",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Your Earthbind Totem Immobilizes nearby targets for 5 sec when cast."
+     ],
      "tier": 3
     },
     {
@@ -3483,6 +3539,10 @@
      "name": "Elemental Reach",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 3 yards and reduces the cooldown of Totemic Projection by 10 sec.",
+      "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 6 yards and reduces the cooldown of Totemic Projection by 20 sec."
+     ],
      "tier": 4
     },
     {
@@ -3493,6 +3553,9 @@
      "name": "Lava Burst",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "You hurl molten lava at the target, dealing 114 to 145 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage."
+     ],
      "tier": 4
     },
     {
@@ -3503,6 +3566,11 @@
      "name": "Lightning Overload",
      "prereq_rank": 3,
      "prereq_talent_id": 104771,
+     "ranks": [
+      "Gives your Lightning Bolt and Chain Lightning spells a 3% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+      "Gives your Lightning Bolt and Chain Lightning spells a 7% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+      "Gives your Lightning Bolt and Chain Lightning spells a 10% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat."
+     ],
      "tier": 4
     },
     {
@@ -3513,6 +3581,13 @@
      "name": "Elemental Fury",
      "prereq_rank": 3,
      "prereq_talent_id": 104759,
+     "ranks": [
+      "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 20%.",
+      "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 40%.",
+      "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 60%.",
+      "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 80%.",
+      "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 100%."
+     ],
      "tier": 5
     },
     {
@@ -3523,6 +3598,9 @@
      "name": "Elemental Mastery",
      "prereq_rank": 1,
      "prereq_talent_id": 104760,
+     "ranks": [
+      "Gain mastery over Fire and Lightning, reducing the cast time of Lightning Bolt and Lava Burst by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec."
+     ],
      "tier": 6
     }
    ]
@@ -3539,6 +3617,10 @@
      "name": "Earth's Grasp",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the health of your Stoneclaw Totem by 25% and the radius of your Earthbind Totem by 10%.",
+      "Increases the health of your Stoneclaw Totem by 50% and the radius of your Earthbind Totem by 20%."
+     ],
      "tier": 0
     },
     {
@@ -3549,6 +3631,13 @@
      "name": "Thundering Strikes",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Improves your chance to get a critical strike with all spells and attacks by 1%.",
+      "Improves your chance to get a critical strike with all spells and attacks by 2%.",
+      "Improves your chance to get a critical strike with all spells and attacks by 3%.",
+      "Improves your chance to get a critical strike with all spells and attacks by 4%.",
+      "Improves your chance to get a critical strike with all spells and attacks by 5%."
+     ],
      "tier": 0
     },
     {
@@ -3559,6 +3648,13 @@
      "name": "Ancestral Knowledge",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your Intellect by 2%.",
+      "Increases your Intellect by 4%.",
+      "Increases your Intellect by 6%.",
+      "Increases your Intellect by 8%.",
+      "Increases your Intellect by 10%."
+     ],
      "tier": 0
     },
     {
@@ -3569,6 +3665,10 @@
      "name": "Guardian Totems",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 10% and reduces the cooldown of your Grounding Totem by 1 sec.",
+      "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 20% and reduces the cooldown of your Grounding Totem by 2 sec."
+     ],
      "tier": 1
     },
     {
@@ -3579,6 +3679,11 @@
      "name": "Mental Dexterity",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your Attack Power by an amount equal to 33% of your Intellect.",
+      "Increases your Attack Power by an amount equal to 67% of your Intellect.",
+      "Increases your Attack Power by an amount equal to 100% of your Intellect."
+     ],
      "tier": 1
     },
     {
@@ -3589,6 +3694,10 @@
      "name": "Improved Ghost Wolf",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the cast time of your Ghost Wolf spell by 1.0 sec, and Ghost Wolf may be used indoors.",
+      "Reduces the cast time of your Ghost Wolf spell by 3.0 sec, and Ghost Wolf may be used indoors."
+     ],
      "tier": 1
     },
     {
@@ -3599,6 +3708,11 @@
      "name": "Improved Lightning Shield",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the damage done by your Lightning Shield orbs by 5%.",
+      "Increases the damage done by your Lightning Shield orbs by 10%.",
+      "Increases the damage done by your Lightning Shield orbs by 15%."
+     ],
      "tier": 1
     },
     {
@@ -3609,6 +3723,11 @@
      "name": "Elemental Weapons",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the melee attack power bonus of your Rockbiter Weapon by 7%, your Windfury Weapon effect by 13% and increases the damage caused by your Flametongue Weapon and Frostbrand Weapon by 5%.",
+      "Increases the melee attack power bonus of your Rockbiter Weapon by 13%, your Windfury Weapon effect by 27% and increases the damage caused by your Flametongue Weapon and Frostbrand Weapon by 10%.",
+      "Increases the melee attack power bonus of your Rockbiter Weapon by 20%, your Windfury Weapon effect by 40% and increases the damage caused by your Flametongue Weapon and Frostbrand Weapon by 15%."
+     ],
      "tier": 2
     },
     {
@@ -3619,6 +3738,9 @@
      "name": "Shamanistic Focus",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the mana cost of your Shock and Lightning Shield spells by 45%."
+     ],
      "tier": 2
     },
     {
@@ -3629,6 +3751,11 @@
      "name": "Anticipation",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your chance to dodge by an additional 2%.",
+      "Increases your chance to dodge by an additional 4%.",
+      "Increases your chance to dodge by an additional 6%."
+     ],
      "tier": 2
     },
     {
@@ -3639,6 +3766,13 @@
      "name": "Toughness",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your Stamina by 2%.",
+      "Increases your Stamina by 4%.",
+      "Increases your Stamina by 6%.",
+      "Increases your Stamina by 8%.",
+      "Increases your Stamina by 10%."
+     ],
      "tier": 3
     },
     {
@@ -3649,6 +3783,13 @@
      "name": "Flurry",
      "prereq_rank": 3,
      "prereq_talent_id": 104755,
+     "ranks": [
+      "Increases your attack speed by 5% for your next 3 swings after dealing a melee critical strike.",
+      "Increases your attack speed by 10% for your next 3 swings after dealing a melee critical strike.",
+      "Increases your attack speed by 15% for your next 3 swings after dealing a melee critical strike.",
+      "Increases your attack speed by 20% for your next 3 swings after dealing a melee critical strike.",
+      "Increases your attack speed by 25% for your next 3 swings after dealing a melee critical strike."
+     ],
      "tier": 3
     },
     {
@@ -3659,6 +3800,9 @@
      "name": "Stormstrike",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Instantly strike for normal weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec."
+     ],
      "tier": 3
     },
     {
@@ -3669,6 +3813,9 @@
      "name": "Spirit Weapons",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Gives a chance to parry enemy melee attacks, reduces all threat generated by your attacks by 30% while Rockbiter Weapon is not active, and increases all threat generated by 30% while Rockbiter Weapon is active."
+     ],
      "tier": 4
     },
     {
@@ -3679,6 +3826,10 @@
      "name": "Mental Quickness",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your spell damage and healing by up to 15% of your Intellect.",
+      "Increases your spell damage and healing by up to 30% of your Intellect."
+     ],
      "tier": 4
     },
     {
@@ -3689,6 +3840,10 @@
      "name": "Improved Stormstrike",
      "prereq_rank": 1,
      "prereq_talent_id": 104743,
+     "ranks": [
+      "When you Stormstrike, you have a 50% chance to gain 50% mana regeneration while casting spells for 15 sec, and Stormstrike's cooldown has a 50% chance to reset each time you Dodge or Parry.",
+      "When you Stormstrike, you have a 100% chance to gain 50% mana regeneration while casting spells for 15 sec, and Stormstrike's cooldown has a 100% chance to reset each time you Dodge or Parry."
+     ],
      "tier": 4
     },
     {
@@ -3699,6 +3854,13 @@
      "name": "Maelstrom Weapon",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 4%. Stacks up to 5 times. Lasts 30 sec.",
+      "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 8%. Stacks up to 5 times. Lasts 30 sec.",
+      "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 12%. Stacks up to 5 times. Lasts 30 sec.",
+      "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 16%. Stacks up to 5 times. Lasts 30 sec.",
+      "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
+     ],
      "tier": 5
     },
     {
@@ -3709,6 +3871,9 @@
      "name": "Rage of the Farseer",
      "prereq_rank": 2,
      "prereq_talent_id": 104744,
+     "ranks": [
+      "Increases your attack speed by 30% for 25 sec."
+     ],
      "tier": 6
     }
    ]
@@ -3725,6 +3890,13 @@
      "name": "Improved Healing Wave",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the casting time of your Healing Wave spell by 0.1 sec.",
+      "Reduces the casting time of your Healing Wave spell by 0.2 sec.",
+      "Reduces the casting time of your Healing Wave spell by 0.3 sec.",
+      "Reduces the casting time of your Healing Wave spell by 0.4 sec.",
+      "Reduces the casting time of your Healing Wave spell by 0.5 sec."
+     ],
      "tier": 0
     },
     {
@@ -3735,6 +3907,13 @@
      "name": "Tidal Focus",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the Mana cost of your healing spells by 1% and improves your chance to hit by 1%.",
+      "Reduces the Mana cost of your healing spells by 2% and improves your chance to hit by 2%.",
+      "Reduces the Mana cost of your healing spells by 3% and improves your chance to hit by 3%.",
+      "Reduces the Mana cost of your healing spells by 4% and improves your chance to hit by 4%.",
+      "Reduces the Mana cost of your healing spells by 5% and improves your chance to hit by 5%."
+     ],
      "tier": 0
     },
     {
@@ -3745,6 +3924,11 @@
      "name": "Mindfulness",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Allows 17% of your Mana regeneration to continue while casting.",
+      "Allows 33% of your Mana regeneration to continue while casting.",
+      "Allows 50% of your Mana regeneration to continue while casting."
+     ],
      "tier": 1
     },
     {
@@ -3755,6 +3939,11 @@
      "name": "Natural Grace",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the threat generated by your spells by 5%.",
+      "Reduces the threat generated by your spells by 10%.",
+      "Reduces the threat generated by your spells by 15%."
+     ],
      "tier": 1
     },
     {
@@ -3765,6 +3954,13 @@
      "name": "Totemic Focus",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the Mana cost of your totems and any spells that summon or move them by 5%.",
+      "Reduces the Mana cost of your totems and any spells that summon or move them by 10%.",
+      "Reduces the Mana cost of your totems and any spells that summon or move them by 15%.",
+      "Reduces the Mana cost of your totems and any spells that summon or move them by 20%.",
+      "Reduces the Mana cost of your totems and any spells that summon or move them by 25%."
+     ],
      "tier": 1
     },
     {
@@ -3775,6 +3971,10 @@
      "name": "Improved Reincarnation",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Reduces the cooldown of your Reincarnation spell by 10 min, increases your maximum health by 2%, and increases the amount of health and Mana you reincarnate with by an additional 10%.",
+      "Reduces the cooldown of your Reincarnation spell by 20 min, increases your maximum health by 4%, and increases the amount of health and Mana you reincarnate with by an additional 20%."
+     ],
      "tier": 1
     },
     {
@@ -3785,6 +3985,11 @@
      "name": "Ancestral Healing",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases your target's armor value by 8% for 15 sec after getting a critical effect from one of your healing spells.",
+      "Increases your target's armor value by 17% for 15 sec after getting a critical effect from one of your healing spells.",
+      "Increases your target's armor value by 25% for 15 sec after getting a critical effect from one of your healing spells."
+     ],
      "tier": 2
     },
     {
@@ -3795,6 +4000,11 @@
      "name": "Healing Focus",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Gives your healing spells a 23% chance to not lose casting time when you take damage.",
+      "Gives your healing spells a 47% chance to not lose casting time when you take damage.",
+      "Gives your healing spells a 70% chance to not lose casting time when you take damage."
+     ],
      "tier": 2
     },
     {
@@ -3805,6 +4015,9 @@
      "name": "Water Shield",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds.  Lasts 10 min.\n\nOnly one Elemental Shield can be active on the Shaman at any one time."
+     ],
      "tier": 2
     },
     {
@@ -3815,6 +4028,13 @@
      "name": "Tidal Mastery",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the critical effect chance of your healing spells by 1%.",
+      "Increases the critical effect chance of your healing spells by 2%.",
+      "Increases the critical effect chance of your healing spells by 3%.",
+      "Increases the critical effect chance of your healing spells by 4%.",
+      "Increases the critical effect chance of your healing spells by 5%."
+     ],
      "tier": 3
     },
     {
@@ -3825,6 +4045,13 @@
      "name": "Restorative Totems",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the effect of your Mana Spring Totem by 5% and increases the effect of your Healing Stream Totem by 10%.",
+      "Increases the effect of your Mana Spring Totem by 10% and increases the effect of your Healing Stream Totem by 20%.",
+      "Increases the effect of your Mana Spring Totem by 15% and increases the effect of your Healing Stream Totem by 30%.",
+      "Increases the effect of your Mana Spring Totem by 20% and increases the effect of your Healing Stream Totem by 40%.",
+      "Increases the effect of your Mana Spring Totem by 25% and increases the effect of your Healing Stream Totem by 50%."
+     ],
      "tier": 3
     },
     {
@@ -3835,6 +4062,9 @@
      "name": "Mana Tide Totem",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 88 mana every 3 seconds to group members within 30 yards."
+     ],
      "tier": 3
     },
     {
@@ -3845,6 +4075,11 @@
      "name": "Healing Way",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the amount healed by your Healing Wave spell by 8%.",
+      "Increases the amount healed by your Healing Wave spell by 17%.",
+      "Increases the amount healed by your Healing Wave spell by 25%."
+     ],
      "tier": 4
     },
     {
@@ -3855,6 +4090,9 @@
      "name": "Nature's Swiftness",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "When activated, your next Nature spell with a casting time less than 10 sec. becomes an instant cast spell."
+     ],
      "tier": 4
     },
     {
@@ -3865,6 +4103,13 @@
      "name": "Purification",
      "prereq_rank": null,
      "prereq_talent_id": null,
+     "ranks": [
+      "Increases the effectiveness of your healing spells by 2%.",
+      "Increases the effectiveness of your healing spells by 4%.",
+      "Increases the effectiveness of your healing spells by 6%.",
+      "Increases the effectiveness of your healing spells by 8%.",
+      "Increases the effectiveness of your healing spells by 10%."
+     ],
      "tier": 5
     },
     {
@@ -3875,6 +4120,9 @@
      "name": "Riptide",
      "prereq_rank": 3,
      "prereq_talent_id": 104727,
+     "ranks": [
+      "Heals a friendly target for 486 to 534, an additional 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%."
+     ],
      "tier": 6
     }
    ]

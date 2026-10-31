@@ -12,7 +12,13 @@
      panels never visibly swap places. -->
 
 <script lang="ts">
-  import { battlenetStartUrl, fetchMeOnce, listDevices, type Device, type Me } from '../../lib/account/api';
+  import {
+    battlenetStartUrl,
+    fetchMeOnce,
+    listCompanions,
+    type Device,
+    type Me,
+  } from '../../lib/account/api';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import type { HeaderAction } from '../../lib/character-header/types';
   import { logsAnswerSpec, newestOwnReport, type NewestReport } from '../../lib/logs/latest-kill';
@@ -65,7 +71,7 @@
       me = session;
       if (session === null) return;
       const [list, newest, pairingAccount] = await Promise.all([
-        listDevices().catch((): Device[] => []),
+        listCompanions().catch((): Device[] => []),
         newestOwnReport(),
         // A chunk that fails to load leaves the block out rather than the column hidden.
         import('../Account.svelte').then((imported) => imported.default).catch(() => null),

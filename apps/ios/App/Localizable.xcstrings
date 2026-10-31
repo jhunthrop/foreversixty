@@ -1515,7 +1515,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld of your %2$lld points differ from the %3$@ build"
+            "value": "%1$lld of your %2$lld points differ from the %3$@ guide build"
           }
         }
       }
@@ -6428,6 +6428,65 @@
         }
       }
     },
+    "talents.a11yCell": {
+      "comment": "Arguments: 1 name (string), 2 n (int), 3 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "talents.a11yCellGuide": {
+      "comment": "Arguments: 1 name (string), 2 n (int), 3 max (int), 4 g (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank %2$lld of %3$lld, guide rank %4$lld"
+          }
+        }
+      }
+    },
+    "talents.a11yHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the talent"
+          }
+        }
+      }
+    },
+    "talents.a11yTabDiffers": {
+      "comment": "Arguments: 1 n (int), 2 k (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld points. Talents that differ from the guide: %2$lld."
+          }
+        }
+      }
+    },
+    "talents.beyond": {
+      "comment": "Arguments: 1 l (int), 2 band (string), 3 g (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld is past the %2$@ guide build's %3$lld points, so points past it show as differing."
+          }
+        }
+      }
+    },
     "talents.differ": {
       "comment": "Arguments: 1 n (int), 2 m (int), 3 band (string)",
       "extractionState": "manual",
@@ -6435,7 +6494,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld of your %2$lld points differ from the %3$@ build."
+            "value": "%1$lld of your %2$lld points differ from the %3$@ guide build."
           }
         }
       }
@@ -6447,6 +6506,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Differs"
+          }
+        }
+      }
+    },
+    "talents.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your talents did not load."
           }
         }
       }
@@ -6473,13 +6543,47 @@
         }
       }
     },
+    "talents.guideFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The guide build did not load."
+          }
+        }
+      }
+    },
+    "talents.guideRank": {
+      "comment": "Arguments: 1 g (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide build: rank %1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "talents.legend": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dashed: your rank differs from the guide. Tap a talent for both ranks and its text."
+            "value": "Dashed: your rank differs from the guide. +n is points over it, −n points under it. Tap a talent for both ranks and its text."
+          }
+        }
+      }
+    },
+    "talents.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading talents…"
           }
         }
       }
@@ -6507,6 +6611,30 @@
         }
       }
     },
+    "talents.missing": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "The guide build takes 1 point you have not."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "The guide build takes %1$lld points you have not."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "talents.nextRank": {
       "extractionState": "manual",
       "localizations": {
@@ -6529,6 +6657,52 @@
         }
       }
     },
+    "talents.pickSpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We do not know this character's spec yet, so there is no guide build to compare. Open the addon once to send it."
+          }
+        }
+      }
+    },
+    "talents.planLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan a build on foreversixty.gg/planner"
+          }
+        }
+      }
+    },
+    "talents.points": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 point"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "talents.rank": {
       "comment": "Arguments: 1 n (int), 2 max (int)",
       "extractionState": "manual",
@@ -6541,6 +6715,64 @@
         }
       }
     },
+    "talents.requiresTalent": {
+      "comment": "Arguments: 1 n (int), 2 talent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires %1$lld points in %2$@"
+          }
+        }
+      }
+    },
+    "talents.requiresTalentOne": {
+      "comment": "Arguments: 1 talent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires 1 point in %1$@"
+          }
+        }
+      }
+    },
+    "talents.requiresTree": {
+      "comment": "Arguments: 1 n (int), 2 tree (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires %1$lld points in %2$@ Talents"
+          }
+        }
+      }
+    },
+    "talents.staleExport": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your talent export is from an older game build. Open the addon once to send it again."
+          }
+        }
+      }
+    },
+    "talents.tapHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap a talent for its rank text."
+          }
+        }
+      }
+    },
     "talents.title": {
       "extractionState": "manual",
       "localizations": {
@@ -6548,6 +6780,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Talents"
+          }
+        }
+      }
+    },
+    "talents.toTake": {
+      "comment": "Arguments: 1 n (int), 2 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of the %2$@ guide build's points still to take."
           }
         }
       }
