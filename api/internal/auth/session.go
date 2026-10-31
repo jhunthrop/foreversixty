@@ -281,12 +281,26 @@ func RequireBrowserSession(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// RequireDevice wraps a handler so only a companion reaches it.
+// RequireDevice wraps a handler so only a companion reaches it. A signed-in app's token
+// is a device token too, but it never uploads, reads the companion's inbox or forgets a
+// companion: those routes stay with the companion.
 func RequireDevice(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !ActorFrom(r.Context()).IsDevice() {
+		if a := ActorFrom(r.Context()); !a.IsDevice() || a.IsApp() {
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized",
-				"this route needs a device token", nil)
+				"this route needs a companion's device token", nil)
+			return
+		}
+		h(w, r)
+	}
+}
+
+// RequireApp wraps a handler so only a signed-in native app's token reaches it.
+func RequireApp(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !ActorFrom(r.Context()).IsApp() {
+			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized",
+				"this route needs an app's device token", nil)
 			return
 		}
 		h(w, r)

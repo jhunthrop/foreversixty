@@ -66,7 +66,7 @@ func mountApp(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.Handle("GET /v1/auth/app/start", startLimit(http.HandlerFunc(s.appStart)))
 	mux.Handle("GET /v1/auth/app/continue", startLimit(http.HandlerFunc(s.appContinue)))
 	mux.Handle("POST /v1/auth/app/exchange", exchangeLimit(http.HandlerFunc(s.appExchange)))
-	mux.HandleFunc("POST /v1/auth/app/logout", RequireDevice(s.appLogout))
+	mux.HandleFunc("POST /v1/auth/app/logout", RequireApp(s.appLogout))
 }
 
 // parseAppStart validates the start query, naming each field that is wrong.

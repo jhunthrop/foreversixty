@@ -231,3 +231,32 @@ func TestGenericSignOutsRevokeAnAppDevice(t *testing.T) {
 		})
 	}
 }
+
+// An app token is a device token, but the companion's routes (uploads, the addon inbox,
+// Forget) refuse it, and the app's own logout refuses a companion.
+func TestDeviceGatesSeparateCompanionsFromApps(t *testing.T) {
+	ok := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusNoContent) }
+	companion := Actor{UserID: 1, Method: "device", DeviceID: "c", DeviceKind: DeviceKindCompanion}
+	app := Actor{UserID: 1, Method: "device", DeviceID: "a", DeviceKind: DeviceKindApp}
+	session := Actor{UserID: 1, Method: "session"}
+	for name, c := range map[string]struct {
+		gate   func(http.HandlerFunc) http.HandlerFunc
+		actor  Actor
+		status int
+	}{
+		"device gate, companion": {RequireDevice, companion, http.StatusNoContent},
+		"device gate, app":       {RequireDevice, app, http.StatusUnauthorized},
+		"device gate, session":   {RequireDevice, session, http.StatusUnauthorized},
+		"app gate, app":          {RequireApp, app, http.StatusNoContent},
+		"app gate, companion":    {RequireApp, companion, http.StatusUnauthorized},
+		"app gate, session":      {RequireApp, session, http.StatusUnauthorized},
+	} {
+		r := httptest.NewRequest(http.MethodPost, "/x", nil)
+		r = r.WithContext(WithActor(r.Context(), c.actor))
+		w := httptest.NewRecorder()
+		c.gate(ok)(w, r)
+		if w.Code != c.status {
+			t.Errorf("%s: status = %d, want %d", name, w.Code, c.status)
+		}
+	}
+}
