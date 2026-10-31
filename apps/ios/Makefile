@@ -31,8 +31,8 @@ captures: project
 		-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData test
 
 # Snapshot goldens (AppTests/**/__Snapshots__) are rendered on CI's pinned runtime (Xcode 26.6,
-# iOS 26.5; ios.yml), not the local iOS 27 simulator, whose navigation bars and line metrics
-# differ: a golden recorded locally fails on CI, and CI goldens can fail locally. To re-record,
+# iOS 26.5; ios.yml). The shared local simulator runs iOS 26.5 too (tools/mobile-device.sh), so
+# local runs compare the same pixels; iOS 27's navigation bars and line metrics differ. To re-record,
 # push the branch, then run this: it dispatches ios.yml in record mode on BRANCH, waits, and
 # copies the goldens CI rewrote into every AppTests/**/__Snapshots__ for review and commit.
 BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)

@@ -15,7 +15,10 @@
 # CI never uses this script: its runners are single-tenant.
 set -euo pipefail
 
-IOS_NAME="Forever Sixty Test (iPhone 17)"
+IOS_NAME="Forever Sixty Test (iPhone 17, iOS 26.5)"
+# The runtime CI renders snapshot goldens on (ios.yml pins Xcode 26.6 / iOS 26.5), so a
+# local run compares against the same pixels. Falls back to the newest runtime if missing.
+IOS_RUNTIME="com.apple.CoreSimulator.SimRuntime.iOS-26-5"
 IOS_TYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-17"
 AVD_NAME="foreversixty-test"
 AVD_DEVICE="pixel_9"
@@ -49,9 +52,9 @@ for devices in json.load(sys.stdin)["devices"].values():
         if d["name"] == name and d["isAvailable"]:
             print(d["udid"]); sys.exit(0)' "$IOS_NAME")
 	if [ -z "$udid" ]; then
-		# The newest runtime that accepts the device type (iOS 27.1 refuses iPhone 17 on 2026-10-30).
+		# CI's runtime first, then the newest that accepts the device type (iOS 27.1 refuses iPhone 17).
 		local runtime
-		for runtime in $(ios_runtimes); do
+		for runtime in "$IOS_RUNTIME" $(ios_runtimes); do
 			udid=$(xcrun simctl create "$IOS_NAME" "$IOS_TYPE" "$runtime" 2>/dev/null) && break
 		done
 		[ -n "$udid" ] || die "no installed iOS runtime accepts $IOS_TYPE"
