@@ -32,3 +32,20 @@ Desktop matches the mock and reads like a character screen. Quality colours, slo
 ## Fixed since the spec check, confirmed
 - Two-hander: empty off hand reads "Two-hand in main hand" on the site and "Off hand · Two-hand in main hand" on Discord. The item level of 63.5 on the sheet counts it as known. Right.
 - Item level hidden on beta-1280 with the explanatory note. Right.
+
+## Re-check (fix round 1)
+
+Seen: report-1280, tip-bind-1280, tip-right-1280. Not re-looked at: character-beta-390 (answered from the spec), the other re-shot captures.
+
+### Verdict: SHIP (no blockers left)
+
+1. Item level mismatch: closed. Row and tooltip both read 65 for Lionheart Helm (report-1280, tip-bind-1280). I accept that the real item is 61, required 56. The "Requires Level 60" line on tip-bind-1280 is fixture data and does not match that. Check that the real tooltip says 56.
+2. "item level 183": closed as a number. report-1280 now says "item level 66", which matches the injected gear. One thing remains: the header still shows a figure while the same panel says "Item level shows once every item is known" with two unknown items. That reads as a contradiction. It is the log's own figure and outside this lane, so I am not blocking, but do not let it ship unexplained. See should 1.
+3. Phone layout: I withdraw it. It is the approved §3.3 design and not a spec breach. I still find the unlabelled worn row hard to scan, but that is a preference.
+
+### Shoulds, none blocking
+1. Label the header figure as the log's ("log item level") or hide it while any item is unknown.
+2. The tooltip set line has no (0/2) and no bonus text. The agent has noted it as a follow-up. Track it.
+3. Re-check real-data tooltips after the nightly run for "Binds when ..." and the armour type; tip-right-1280 does not show them yet.
+4. Discord "Gain not modelled yet" is still the same gold as the key. Follow-up.
+5. Confirm Lionheart Helm's real stats rows ("+2 Crit / +2 Hit") once the real record shows.

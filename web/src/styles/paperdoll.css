@@ -302,7 +302,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   hyphens: manual;
-  padding: 6px 0;
+  /* Margin, not padding: a clamp clips at its padding box, so padding would show a cut line. */
+  margin: 6px 0;
 }
 
 /* ---- Centre: phone, the crest beside the identity block. ---- */
@@ -420,6 +421,12 @@
 
   .pd-up-slot {
     width: 56px;
+  }
+
+  /* The pick's whole name on the narrowest phones: three lines, as the cells have (§3.3). */
+  .pd-up-name {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 }
 

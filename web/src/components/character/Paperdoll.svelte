@@ -91,6 +91,10 @@
     return `/icons/hd/slots/${key}.webp`;
   }
 
+  /** The game's own question-mark icon, shipped with the site so an unknown item never depends on
+   *  a data build's icon folder. */
+  const UNKNOWN_ICON = '/icons/hd/slots/unknown.webp';
+
   /** A failed image keeps the plain socket (§8), never the broken-image glyph. */
   function hideBroken(event: Event): void {
     (event.currentTarget as HTMLImageElement).style.visibility = 'hidden';
@@ -206,7 +210,7 @@
       <div class="pd-slot" aria-label={cellLabel(data, classSlug)} role="img">
         <span class="pd-sock pd-unknown"
           ><img
-            src={iconSrc('inv_misc_questionmark')}
+            src={UNKNOWN_ICON}
             alt=""
             width="44"
             height="44"

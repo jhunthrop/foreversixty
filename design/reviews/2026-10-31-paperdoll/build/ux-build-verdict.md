@@ -46,3 +46,51 @@ The build matches the mocks closely. Raid 1280/2000, beta 1280, longest 1024/360
 - [ ] All acceptance captures: should 6.
 
 Ship when blockers 1 and 2 are fixed and re-captured (character-beta at 1024, report at 1280 and 360). Shoulds 3 to 6 may follow in the same pass.
+
+## Re-check (2026-10-31, after fix round)
+
+Reviewed: character-beta-1024, side-beta-360, report-1280, focus-1280, tip-phoneclosed-360, sim-saved-1280.
+
+### Verdict: HOLD (one blocker, a regression at 360)
+
+### Blocker
+
+1. **Trinket 2 upgrade row clips at 360** (side-beta-360.png, tip-phoneclosed-360.png; spec 3.3 upgrade row, 2-line clamp, "no two slots collapse", must-fix A).
+   - The pick reads "Counterat-/tack..." and "Lodestone" is lost.
+   - A sliver of a third line (the tops of "Lodestone") shows at the bottom edge of the row. A clamped name must show no stray glyphs.
+   - The cause is the same as before: "Not scored" and the 64 px slot word take the name's width.
+   - Fix: the 56 px slot word under 340, so the name fits the mock's "Counterattack / Lodestone". Check the line clamp clips cleanly with no third-line fragment.
+   - Retake side-beta-360, and also check beta at 390.
+
+### Closed
+
+- Old blocker 1, 1024 overprint: closed. character-beta-1024.png shows "Counterattack Lod..." then "Not scored" on one line. Nothing wraps or overprints.
+- Old blocker 2, report glyph: closed. The report sockets are plain, with no broken-image glyph (report-1280.png).
+- Should 4, report two-hander: closed. The report off hand reads "Two-hand in main hand".
+- Should 5, report item level: closed. The head shows "item level 66" in agreement with the injected gear.
+- Should 6, captures: the added focus-1280 shows a 2 px gold outline, offset 2, with the tooltip open. sim-saved-1280 and tip-phoneclosed-360 are present and correct.
+
+### Should (carried)
+
+- Unknown report sockets are plain dark squares, not the 40% question mark. Attach one report capture from a real-data build that shows the question mark, or make the unknown socket use the static `inv_misc_questionmark` asset on the report as on the character page.
+
+### Polish
+
+- sim-saved-1280.png ends with "Run Top Gear to find your next upgrade. Run Top Gear" flush left, below the card edge, in body type. Confirm this is a crop, not the layout.
+
+Ship when blocker 1 is fixed and side-beta-360 is re-shot. No further review round is needed if the retake shows "Counterattack" whole or cleanly hyphenated, and no clipped fragment.
+
+## Re-check 2 (2026-10-31)
+
+Reviewed: side-beta-360, character-beta-390, report-360.
+
+### Verdict: SHIP
+
+- Blocker 1, the 360 Trinket 2 row: closed. side-beta-360.png reads "Counterat- / tack / Lodestone" on three clean lines beside "Not scored". Nothing is clipped and no third-line fragment shows. The name is whole, with a hyphen mark, and still distinct from every other row. At 390 (character-beta-390.png) it reads "Counterattack / Lodestone" on two lines.
+- Carried should, the report question mark: closed. report-360.png shows the 40% desaturated question mark in the Chest and Ranged unknown sockets. Their names read "Chest · Item 288892" and "Ranged · Item 288893".
+- Polish, the trailing line in sim-saved: accepted as page content in the crop.
+
+### Remaining polish (non-blocking)
+
+- The hyphenation at 360 ("Counterat-/tack") is a legal break but ugly. The mock fit "Counterattack" on one line. Tightening the row (a 52 px slot word, or "Not scored" at 12 px) would restore it. Do this when next in the file. It does not hold the merge.
+- Retake tip-bind at a true 1280 for the file record (polish 7).

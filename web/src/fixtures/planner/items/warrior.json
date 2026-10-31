@@ -72,7 +72,8 @@
       "set_id": null,
       "unique": false,
       "bonding": "equip",
-      "armor_type": null
+      "armor_type": null,
+      "two_hand": true
     },
     {
       "id": 19325,
