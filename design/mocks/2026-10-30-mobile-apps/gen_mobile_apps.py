@@ -138,6 +138,14 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
             cell("<b>F8.3 Premium.</b>", M.you(p, "premium")),
             cell("<b>F8.4 Plan.</b> What your plan includes.", M.plan_detail(p)),
             cell("<b>F1.6 Devices.</b> Revoke confirmation.", M.devices(p, confirm=True))]),
+        f"f8-build-{p}": ("F8 build: Plan row, link region and Plan card (spec 5.8.1)", [
+            cell("<b>F8.1 Free, US.</b> Plan · Free · See plans; the row opens the browser.", M.you_build(p, "free-link")),
+            cell("<b>F8.2 Free, GB.</b> Plan · Free. No chevron, no button.", M.you_build(p, "free-other")),
+            cell("<b>F8.3 Premium, own, founder.</b> Gold Premium tag; row sub without the price.", M.you_build(p, "own", premium_tag=True)),
+            cell("<b>F8.4 Plan, US.</b> Full site line with price; Manage billing.", M.plan_build(p, "own", True)),
+            cell("<b>F8.4 Plan, GB.</b> Billing is managed on the web.", M.plan_build(p, "own", False)),
+            cell("<b>F8.4 A seat.</b> No billing control, no founder.", M.plan_build(p, "seat", True)),
+            cell("<b>F8.1 Free, US, largest text.</b> " + ("AX5" if p == "ios" else "Font scale 2.0") + ": the row stacks, See plans on its own line.", M.you_build(p, "free-link", xl=True))]),
         f"xl-{p}": ("Largest text: " + ("iOS AX5" if p == "ios" else "Android font scale 2.0"), [
             cell("<b>XL.1 Home.</b> Gains move under the name; three rows.", H.home(p, xl=True)),
             cell("<b>XL.2 Raid page.</b> Segments become a 2 x 2 grid.", R.raid_detail(p, xl=True)),

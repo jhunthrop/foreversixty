@@ -99,6 +99,7 @@ class HomeDependencies(
             client: ApiClient,
             talents: TalentsFeature?,
             isSimsOn: () -> Boolean = { false },
+            mayLinkToPlans: suspend () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
@@ -110,7 +111,7 @@ class HomeDependencies(
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
                 talents = talents,
                 isOn = isOn,
-                simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn),
+                simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans),
             )
         }
     }

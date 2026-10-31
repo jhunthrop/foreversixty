@@ -770,15 +770,12 @@ Pushed from Home.
 | Account | Link region (F8.1) | Elsewhere (F8.2) |
 |---|---|---|
 | Free | `Plan` · `Free` · gold `See plans` with the external glyph; the row opens `https://foreversixty.gg/premium` in the default browser (iOS `openURL`, Android `ACTION_VIEW`), not an in-app web view | `Plan` · `Free`. No chevron, not a button, no screen behind it. No other Premium word anywhere in the app |
-| Premium (any source) | `Plan` · `Premium · renews {date}` (or the site's other plan lines) · `Founder` tag when founder; pushes F8.4 | Same row and screen; F8.4's billing button becomes the meta line `Billing is managed on the web.` |
+| Premium (any source) | `Plan` · `Premium · renews {date}` (or the site's other plan lines) · `Founder` tag when founder; pushes F8.4 | Same row and screen; F8.4's billing button becomes the meta line `Billing is managed on foreversixty.gg.` |
 
 ### F8.4 Plan
-- Card: `Premium` (`h2`) with `Founder`; the plan line (`Renews 27 Oct 2027 · $50.00 a year`, the site's `accountPlanCopy`); the founder line.
+- Card: `Premium` (`h2`) with `Founder`; the site's full plan line (`Premium · renews 27 Oct 2027 · $40 a year`, §5.8.1); the founder line.
 - `micro` `What your plan includes`, then kill-checked lines from the entitlements that are true:
-  - `Server sims that keep running after you close the app`;
-  - `Coach notes on your raid logs`;
-  - `Score and parse history charts`;
-  - `Sim results and logs kept for a year`.
+  - /premium's own Premium-column lines for the flags that are true (§5.8.1).
 - Link region only: secondary `Manage billing on foreversixty.gg`, which opens the browser.
 - A seat reads `A seat from {guild}` and `Given by {name}. It lasts while the guild's plan does; nothing is billed to you.`.
 - Footer meta: `Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.`
@@ -788,6 +785,86 @@ Everything in premium-entry spec §2 holds, plus:
 - No Premium push, ever.
 - No Premium mention outside a link region.
 - `See plans` appears in at most two places: the Plan row and the lapsed line under a failed Server runs row (F5.2b).
+
+## 5.8.1 F8 build notes (2026-10-31)
+
+Settles what §5.8 left to the builders. Boards: `design/mocks/2026-10-30-mobile-apps/renders/f8-build-ios.png` and `f8-build-and.png`. Where this section and §5.8 or §14 C3 differ, this section wins.
+
+**The contract as shipped.** `GET /v1/app/config` answers `web_checkout_regions` (ISO alpha-2, upper case, one list per platform by `X-App`, decision L) and `features.premium_link`. §14 C3's `plans_link.ios` (alpha-3) is superseded. iOS reads `Storefront.current?.countryCode` (alpha-3) and converts it to alpha-2 with Foundation's `Locale` region (`Locale(identifier: "und_" + alpha3).region?.identifier`, `und_USA` gives `US`); a code Foundation cannot resolve is not a link region. The plans URL is the constant `https://foreversixty.gg/premium`; the billing URL is `https://foreversixty.gg/account#plan`.
+
+### Link region (one rule, both apps)
+Link region is true only when all three hold: `features.premium_link` is true, the config has loaded (the last good cached config counts; a first launch with no cache and no answer does not), and the storefront country, converted to alpha-2, is in `web_checkout_regions`. Anything else (config unreachable with no cache, storefront unreadable, flag off, unknown country) is not a link region. Fail closed.
+
+### Which plan, and its words
+Port `premiumSource` from `web/src/lib/account/plan-line.ts` exactly: a live billing row (status `active`, `trialing` or `past_due`) that is not a grant is `own`, or `own_then_seat` when `seat.starts_at` is in the future; a grant is `source == "grant"`, or no `source` and no `amount_cents` or no `interval`; then a live billing row alone is `grant`; then `seat`; then `entitlements.server_sims == true` is `fallback`; else `none`. Dates are `D Mon YYYY` in the phone's time zone (`27 Oct 2027`). Prices are the site's `formatCents`: whole dollars carry no cents (`$40 a year`, `$5 a month`), others carry two (`$12.50 a month`). `$50.00` appears nowhere.
+
+**Row sub line versus card.** The Plan row sub line carries the site's plan line without its price segment. The F8.4 card carries the site's full line, price included. The reason: at 360 pt the row also holds the Founder tag and the chevron, and the price is a billing fact that belongs with the billing button.
+
+| premiumSource | Row sub line (You) | F8.4 card body (full site line, then the muted second line) | Founder | Billing control on F8.4 |
+|---|---|---|---|---|
+| `own`, renewing, with price | `Premium · renews 27 Oct 2027` | `Premium · renews 27 Oct 2027 · $40 a year` | tag if `billing.founder` | link region: `Manage billing on foreversixty.gg`; elsewhere: `Billing is managed on foreversixty.gg.` |
+| `own`, renewing, no price | `Premium · renews 27 Oct 2027` | same, no price segment | same | same |
+| `own`, cancelling | `Premium · ends 27 Oct 2027` | `Premium · ends 27 Oct 2027` | same | same |
+| `own_then_seat` | `Premium · ends 27 Oct 2027` | `Premium · ends 27 Oct 2027 · then a seat from OLYMPUS XXVII` | same | same |
+| `grant`, with end | `Premium · granted until 27 Oct 2027` | same, then `Given by Forever Sixty. It ends on its own; nothing is billed to you.` | none | none, and no managed line |
+| `grant`, no end | `Premium · granted, no end date` | same, then `Given by Forever Sixty. Nothing is billed to you.` | none | none |
+| `seat` | `Premium · a seat from OLYMPUS XXVII` | same, then `Given by Hunthrop#1894. It lasts while the guild's plan does; nothing is billed to you.` | none | none |
+| `fallback` | `Premium` | no body line | none | none |
+| `none` | see Free below | | | |
+
+- The card's `h2` is `Premium` for every Premium source. The founder line `Founder price, kept while your plan stays active.` sits under the body, only when the `Founder` tag shows. The tag shows only for `own` and `own_then_seat`.
+- Manage billing is a quiet button: 1 pt `line` outline, `nav` text, sentence case at the `meta` weight 600, 44 high, never the gold fill and never upper case. It is the least loud control on the card; the `Founder` tag and the plan line outrank it.
+- Manage billing is for `own` and `own_then_seat` in a link region and nowhere else. Grant, seat and fallback never get a billing button, and never a `Billing history` button, in the app.
+- The ended-seat `Come back at {price}` line is not in the app (it is a purchase prompt).
+- The site's `Cancel anytime in Manage billing.` is not carried: the app's button has different words.
+- Row and F8.4 exist for every Premium source in every region. Free elsewhere: row `Plan` · `Free`, no chevron, not a button, no screen, no other Premium word anywhere. Free in a link region: `Plan` · `Free` · gold `See plans` with the external glyph; the whole row is the button.
+- The account head's gold `Premium` tag shows for every source except `none`, in every region.
+
+### What your plan includes
+Under the `micro` `What your plan includes`, one kill-checked line per entitlement flag that is true, in /premium's order and in /premium's words (`web/src/lib/billing/plans-page-copy.ts`, the Premium column; wow-player HOLD 2026-10-31): `log_coach` (the Coach line), `server_sims` (`Server sims keep running, and the site tells you when they finish.`), `history` (the Forever Score chart line), `notifications` (the Discord message line), `supporter_mark` (the Supporter mark line). The earlier app-only lines, including `Sim results and logs kept for a year`, are dropped. /premium's server-sim lines that quote the sim caps and iteration counts are left out on purpose: those numbers come from code and change, and the app does not restate them (one line per entitlement). `web/src/lib/mobile/premium-copy.test.ts` fails when a `plan.feature.*` string is not a sentence of a /premium line. A false flag has no line. If none is true, the heading and list are absent; the card still shows. The footer `plan.freeForAll` always shows. Outside a link region the managed line reads `Billing is managed on foreversixty.gg.` (plain text, not a link).
+
+### Largest text (iOS AX5, Android font scale 2.0)
+The Plan row stops being one line. The tile stays 32 and top-aligned; the text column stacks `Plan`, then the sub line (`Free` or the plan line), then the `Founder` tag, then `See plans` with its glyph on its own line, left-aligned with the text. All of it wraps; nothing truncates, no ellipsis, and the price and `See plans` are never cut. The chevron stays trailing, aligned to the first line. Row min height 56, grows with content; the whole row stays one tap target. Frame 7 on the boards.
+
+### Screen-reader labels
+One element per row, the label read as a unit. A `·` in a line reads as a comma.
+
+| State | iOS VoiceOver label (trait Button unless noted) | Android TalkBack contentDescription |
+|---|---|---|
+| Free, link region | `Plan, Free, See plans, opens in browser` | same, Role.Button |
+| Free, elsewhere | `Plan, Free` (static text, no Button trait) | same, no role |
+| Premium, any source | `Plan, {sub line}` plus `, Founder` when tagged, e.g. `Plan, Premium, renews 27 Oct 2027, Founder` | same, Role.Button |
+| Manage billing | `Manage billing on foreversixty.gg, opens in browser` | same, Role.Button |
+
+### New copy keys
+Every string is the site's; none adds a Premium call to action. §13's `plan.*` lines row expands to:
+
+| Key | String |
+|---|---|
+| `plan.line.renews` | `Premium · renews {date}` |
+| `plan.line.renewsPrice` | `Premium · renews {date} · {price}` |
+| `plan.line.ends` | `Premium · ends {date}` |
+| `plan.line.endsThenSeat` | `Premium · ends {date} · then a seat from {guild}` |
+| `plan.line.grantUntil` | `Premium · granted until {date}` |
+| `plan.line.grantNoEnd` | `Premium · granted, no end date` |
+| `plan.line.seat` | `Premium · a seat from {guild}` |
+| `plan.line.fallback` | `Premium` |
+| `plan.given.grantUntil` | `Given by Forever Sixty. It ends on its own; nothing is billed to you.` |
+| `plan.given.grantNoEnd` | `Given by Forever Sixty. Nothing is billed to you.` |
+| `plan.given.seat` | `Given by {name}. It lasts while the guild's plan does; nothing is billed to you.` |
+| `plan.price.yearly` / `.monthly` | `{amount} a year` / `{amount} a month` |
+| `a11y.plan.seePlans` | `Plan, Free, See plans, opens in browser` |
+| `a11y.plan.free` | `Plan, Free` |
+| `a11y.plan.row` | `Plan, {line}` and `Plan, {line}, Founder` |
+| `a11y.plan.manage` | `Manage billing on foreversixty.gg, opens in browser` |
+
+`plan.line.*` with the price segment is the row's source; the row drops ` · {price}`. `Premium · renews {date}` in §13 stays as the row key.
+
+### Built wrong in F1 (fix in F8)
+`YouSummary.planLine` and the Android twin treat every billing row as own (a grant reads `renews`), never read `seat`, `fallback` or `none`, show no `See plans`, no chevron, no F8.4. The account head has no Premium tag. Replace the single `billing.map(planLine)` with the `premiumSource` port above.
+
+### Acceptance screenshots
+Both platforms, 402 x 874 and 412 x 915: F8.1 free US, F8.2 free GB, F8.3 own founder, F8.4 US and GB, F8.4 seat, F8.1 at AX5 / 2.0; plus focus-visible (Android keyboard) and pressed on the See plans row, and a 360 pt-wide capture of F8.3 and F8.4 with the longest guild name.
 
 # 6. Notifications: the catalogue as delivered
 
@@ -1303,9 +1380,9 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `you.version` | `Version {v} ({build}) · data {data}` | |
 | `about.notAffiliated` | `Not affiliated with or endorsed by Blizzard Entertainment.` | site footer |
 | `plan.includes` | `What your plan includes` | |
-| `plan.feature.serverSims` / `.coach` / `.history` / `.retention` | `Server sims that keep running after you close the app` / `Coach notes on your raid logs` / `Score and parse history charts` / `Sim results and logs kept for a year` | |
+| `plan.feature.coach` / `.serverSims` / `.history` / `.discord` / `.supporter` | /premium's Premium column lines (`apps/shared/copy/en.json`; §5.8.1) | site `plans-page-copy` |
 | `plan.manage` | `Manage billing on foreversixty.gg` | |
-| `plan.managedOnWeb` | `Billing is managed on the web.` | |
+| `plan.managedOnWeb` | `Billing is managed on foreversixty.gg.` | |
 | `plan.freeForAll` | `Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.` | |
 | `plan.*` lines | `Premium · renews {date}`, `Premium · ends {date}`, `A seat from {guild}`, `Given by {name}. It lasts while the guild's plan does; nothing is billed to you.`, `Founder`, `Founder price, kept while your plan stays active.` | site `accountPlanCopy` |
 | `devices.title` | `Devices` | |
@@ -1391,6 +1468,8 @@ Each lane also records:
 - [ ] Captures per §15 attached; ux-designer and wow-player SHIP on them.
 
 # 17. Open questions only the owner can answer
+
+**Ruled 2026-10-31** (owner delegated: "make the best decisions that are best for the success of the product"). The rulings are decisions L, W, U and Q in `docs/superpowers/plans/2026-10-30-mobile-apps-lanes.md`: Q1 v1.1; Q2 Android ships with no link region until the Play enrolment, iOS links in the US; Q3 accept the review risk; Q4 after launch, its own lane and security review; Q5 no DMs in v1; Q6 phone layout at launch.
 
 1. **Approving characters in the app.** Locking and moving are in v1 (ruled). Approving waiting characters stays on the web. Do you want it in v1.1?
 2. **Google Play in the US.** The plan reads the US storefront as a link region on both stores. Play's US external-link rules have changed during 2025. Confirm that the Play Console account is enrolled in whatever programme Play now requires for a link to web checkout, and that any fee is accepted. Until then, should `plans_link.android` ship empty?

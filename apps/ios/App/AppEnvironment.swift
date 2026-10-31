@@ -17,6 +17,8 @@ struct AppEnvironment {
     let session: SessionStore
     /// This build's version and build number (apps/VERSION, lane P2); You's version line reads it.
     let identity: ClientIdentity
+    /// Lane F8: whether See plans may link to web checkout here (decision P, fail closed).
+    let plansLink: PlansLink
 
     @MainActor
     init(
@@ -26,7 +28,8 @@ struct AppEnvironment {
         updateGate: UpdateGate = UpdateGate(),
         bundle: Bundle = .main,
         configCache: any AppConfigCache = UserDefaultsAppConfigCache(),
-        account: AccountStorage = .device
+        account: AccountStorage = .device,
+        storefront: any StorefrontReading = StorefrontLaunch.reader
     ) {
         let sessionTokens = SessionTokenSource(tokens)
         self.identity = identity
@@ -36,7 +39,12 @@ struct AppEnvironment {
         self.client = APIClient.make(
             configuration, tokens: sessionTokens, identity: identity, updateGate: updateGate, bundle: bundle
         )
-        self.appConfig = AppConfigStore(client: client, cache: configCache)
+        let appConfig = AppConfigStore(client: client, cache: configCache)
+        self.appConfig = appConfig
+        let mode = configuration.mode
+        self.plansLink = PlansLink(appConfig: appConfig, storefront: storefront) {
+            appConfig.isAvailable(.premiumLink, mode: mode, isDebugBuild: Self.isDebugBuild)
+        }
         self.session = SessionStore(
             client: client,
             tokens: sessionTokens,

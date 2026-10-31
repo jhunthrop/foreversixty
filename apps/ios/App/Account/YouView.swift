@@ -8,8 +8,8 @@ import SwiftUI
 /// the Notifications, Characters and Discord rows.
 struct YouSummary: Equatable {
     let battletag: String
-    let plan: String
-    let founder: Bool
+    /// Lane F8: the plan in the site's words.
+    let plan: PlanSummary
     /// The current character and where it plays (`Obnoxious Yell`, `US · PvP`).
     let character: CharacterLine?
     /// `This iPhone and 2 more`, nil until the device list answers.
@@ -23,37 +23,27 @@ struct YouSummary: Equatable {
         let place: String
     }
 
-    init(battletag: String, plan: String, founder: Bool, character: CharacterLine?, devices: String?, version: String) {
+    init(battletag: String, plan: PlanSummary, character: CharacterLine?, devices: String?, version: String) {
         self.battletag = battletag
         self.plan = plan
-        self.founder = founder
         self.character = character
         self.devices = devices
         self.version = version
     }
 
-    init(me: Me, current: AccountCharacter?, deviceCount: Int?, version: String) {
-        let billing = me.entitlements.billing
+    init(me: Me, current: AccountCharacter?, deviceCount: Int?, version: String, now: Date = .now) {
         self.init(
             battletag: me.user.battletag ?? "",
-            plan: billing.map(Self.planLine) ?? Copy.youPlanFree,
-            founder: billing?.founder == true,
+            plan: PlanSummary(me: me, now: now),
             character: current.map { CharacterLine(name: $0.name, className: $0.className, place: AccountCopy.place($0)) },
             devices: deviceCount.map { Copy.youDevicesSub(device: Copy.accountDeviceWord, n: max(0, $0 - 1)) },
             version: version
         )
     }
-
-    /// The site's `accountPlanCopy` lines: `Premium · renews 27 Oct 2027`, or `ends` once cancelled.
-    static func planLine(_ billing: Billing) -> String {
-        let end = billing.currentPeriodEnd.flatMap { try? Date($0, strategy: .iso8601) }
-        guard let end else { return Copy.youPlanFree }
-        let date = AccountCopy.longDate(end)
-        return billing.cancelAtPeriodEnd ? Copy.planEnds(date: date) : Copy.planRenews(date: date)
-    }
 }
 
 enum YouRoute: Hashable {
+    case plan
     case devices
     case deleteAccount
     case about
@@ -62,6 +52,8 @@ enum YouRoute: Hashable {
 /// The You tab. Pure: the snapshot tests render it with a summary.
 struct YouView: View {
     let summary: YouSummary
+    /// Lane F8: whether the store allows the link to web checkout (`PlansLink`).
+    var mayLink = false
     let onSignOut: () -> Void
     @Environment(\.openURL) private var openURL
     @State private var confirmingSignOut = false
@@ -71,7 +63,7 @@ struct YouView: View {
             VStack(alignment: .leading, spacing: FSSpacing.space5) {
                 accountHead
                 VStack(spacing: 0) {
-                    AccountRow(icon: "crown", title: Copy.youPlan, subtitle: summary.plan, tag: summary.founder ? Copy.planFounder : nil)
+                    PlanRow(plan: summary.plan, mayLink: mayLink)
                     if let character = summary.character {
                         Divider().overlay(FSColor.lineSoft)
                         characterRow(character)
@@ -135,7 +127,28 @@ struct YouView: View {
         .accessibilityElement(children: .combine)
     }
 
+    /// Lane F8: the gold Premium tag sits beside the name, or under it when the name needs the room.
     private var accountHead: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: FSSpacing.space2) {
+                identity
+                Spacer(minLength: FSSpacing.space2)
+                premiumTag
+            }
+            VStack(alignment: .leading, spacing: FSSpacing.space2) {
+                identity
+                premiumTag
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private var premiumTag: some View {
+        if summary.plan.isPremium { TagView(text: Copy.planPremium, color: FSColor.gold) }
+    }
+
+    private var identity: some View {
         HStack(spacing: FSSpacing.space3) {
             Image(systemName: "person")
                 .font(.title3)
@@ -148,7 +161,6 @@ struct YouView: View {
                 Text(Copy.youSignedInWith).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
         }
-        .accessibilityElement(children: .combine)
     }
 }
 

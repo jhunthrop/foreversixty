@@ -85,3 +85,15 @@ Still open, none blocking:
 - The iOS scroll-edge fragments are accepted as the system effect.
 
 VERDICT: SHIP WITH FIXES
+
+## Re-check 2
+
+Re-viewed: talents-differs-se-ios, talents-differs-360-and, talents-rank-large-ios, talents-rank-large-end-ios, home-talents-row-large-ios.
+
+- Tabs: at SE 375 and Android 360 the tabs now stack as compact rows (about 44 tall, name left, mono points and dot right, gold rail on the selected row). No touching labels. Tier 1 and the first dashed cells with their chips sit above the fold on both. Closed.
+- iOS rank sheet at AX5: full-height, name beside the icon, panel wraps with no clipping. The end capture draws the whole sheet to the guide box (`Guide build: rank 3/3` wraps to two lines, nothing cut). Closed.
+- iOS Home Talents row at AX5: tag stacked above `Talents` and the sentence, readable, matching F6's wording. Closed.
+
+Remaining, polish only: the SE and 360 stacked tabs spend about 100 px that the tree could use; acceptable as the spec's fallback.
+
+VERDICT: SHIP

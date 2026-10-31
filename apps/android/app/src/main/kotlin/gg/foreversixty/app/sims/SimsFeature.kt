@@ -77,6 +77,8 @@ class SimsFeature(
     private val statics: StaticDataClient,
     val catalog: ItemCatalog,
     private val isAvailable: () -> Boolean,
+    /** Lane F8's rule: See plans only where the storefront may link to web checkout (fail closed). */
+    val mayLinkToPlans: suspend () -> Boolean = { false },
 ) {
     val service: SimsService = LiveSimsService(apiClient)
 
@@ -86,17 +88,12 @@ class SimsFeature(
     val navigator = SimsNavigator()
     val now: () -> Instant = Instant::now
 
-    /** Lane F8 owns the storefront read; until its plans link is on main, fail closed. */
-    val mayLinkToPlans: suspend () -> Boolean = { false }
-
     /** Sims ships dark behind `sims` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
 
     suspend fun iconBuild(): String? = statics.activeBuild().dataOrNull()?.build
 
     companion object {
-        const val PLANS_URL = "https://foreversixty.gg/premium"
-
         private fun readAsset(context: Context, path: String): String? =
             runCatching { context.assets.open(path).bufferedReader().use { it.readText() } }.getOrNull()
     }
@@ -137,7 +134,7 @@ fun SimsRoute(feature: SimsFeature, entitled: Boolean, onBack: () -> Unit) {
         runAgain = { id -> scope.launch { store.runAgain(id) } },
         retry = { scope.launch { store.load() } },
         loadMore = { scope.launch { store.loadMore() } },
-        openPlans = { context.openInBrowser(SimsFeature.PLANS_URL) },
+        openPlans = { context.openInBrowser(gg.foreversixty.app.account.AccountLinks.PREMIUM) },
     )
     PullToRefreshBox(
         isRefreshing = refreshing,

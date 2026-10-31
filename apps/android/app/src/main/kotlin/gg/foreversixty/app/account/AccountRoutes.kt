@@ -29,7 +29,11 @@ import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.premium.PlanScreen
+import gg.foreversixty.app.premium.PlanSummary
+import gg.foreversixty.app.premium.PlansLink
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 /** The site pages F1 opens in the browser (never an in-app web view). */
 object AccountLinks {
@@ -44,6 +48,12 @@ object AccountLinks {
     /** You's Privacy and Terms rows (App Store 5.1.1(i)). */
     const val PRIVACY = "$SITE/privacy"
     const val TERMS = "$SITE/terms"
+
+    /** F8's `See plans`, link regions only (decision P). */
+    const val PREMIUM = "$SITE/premium"
+
+    /** F8.4's `Manage billing on foreversixty.gg`, link regions only. */
+    const val BILLING = "$SITE/account#plan"
 
     fun open(context: Context, url: String) {
         context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
@@ -60,6 +70,8 @@ class AccountDeps(
     val versionName: String,
     val versionCode: Int,
     val dataBuild: () -> String?,
+    /** Lane F8: See plans and Manage billing, where the store allows them. */
+    val plansLink: PlansLink,
 )
 
 /**
@@ -105,7 +117,7 @@ fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOu
     )
 }
 
-private enum class YouPage { Root, Devices, Delete, About }
+private enum class YouPage { Root, Plan, Devices, Delete, About }
 
 /** The You tab: the account section when signed in, the sign-in panel when not. */
 @Composable
@@ -132,16 +144,18 @@ private fun SignedInYou(deps: AccountDeps) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val version = AccountCopy.version(deps.versionName, deps.versionCode, deps.dataBuild())
+    val mayLink by deps.plansLink.mayLink.collectAsStateWithLifecycle()
+    val plan = PlanSummary.of(me, Instant.now())
     BackHandler(enabled = page != YouPage.Root) { page = YouPage.Root }
     LaunchedEffect(Unit) {
         deviceCount = (session.devices() as? ApiResult.Success)?.data?.size
     }
+    LaunchedEffect(Unit) { deps.plansLink.resolve() }
     when (page) {
         YouPage.Root -> YouScreen(
             summary = YouSummary(
                 battletag = me.user.battletag.orEmpty(),
-                plan = AccountCopy.planLine(me.entitlements.billing),
-                founder = me.entitlements.billing?.founder == true,
+                plan = plan,
                 character = session.currentCharacter(phase, picked)?.let {
                     CharacterLine(it.name, it.className, AccountCopy.place(it))
                 },
@@ -151,6 +165,8 @@ private fun SignedInYou(deps: AccountDeps) {
                 version = version,
             ),
             actions = YouActions(
+                onSeePlans = { AccountLinks.open(context, AccountLinks.PREMIUM) },
+                onPlan = { page = YouPage.Plan },
                 onDevices = { page = YouPage.Devices },
                 onPrivacy = { AccountLinks.open(context, AccountLinks.PRIVACY) },
                 onTerms = { AccountLinks.open(context, AccountLinks.TERMS) },
@@ -158,7 +174,9 @@ private fun SignedInYou(deps: AccountDeps) {
                 onDeleteAccount = { page = YouPage.Delete },
                 onSignOut = { scope.launch { session.signOut() } },
             ),
+            mayLink = mayLink,
         )
+        YouPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
         YouPage.Delete -> DeleteRoute(session, DeletionConsequence.of(me))
         YouPage.About -> AboutScreen(version)

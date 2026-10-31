@@ -12,6 +12,9 @@ import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionTokens
 import gg.foreversixty.app.home.HomeDependencies
+import gg.foreversixty.app.premium.DebugStorefront
+import gg.foreversixty.app.premium.PlansLink
+import gg.foreversixty.app.premium.PlayStorefront
 import gg.foreversixty.app.network.ApiMode
 import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.bis.BisModel
@@ -74,8 +77,22 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         null
     }
 
+    /** Lane F8: whether See plans may link to web checkout here (decision P, fail closed). */
+    val plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) }
+
     /** Lane F2: the home answer, its static item data and its cache. */
-    val home = HomeDependencies.create(context, config, accountApi, apiClient, talents, isSimsOn = { isAvailable(Feature.Sims) }) {
+    val home = HomeDependencies.create(
+        context,
+        config,
+        accountApi,
+        apiClient,
+        talents,
+        isSimsOn = { isAvailable(Feature.Sims) },
+        mayLinkToPlans = {
+            plansLink.resolve()
+            plansLink.mayLink.value
+        },
+    ) {
         isAvailable(Feature.CharacterHome)
     }
 
@@ -119,6 +136,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         versionName = identity.version,
         versionCode = identity.build,
         dataBuild = { appConfig.current?.activeBuild },
+        plansLink = plansLink,
     )
 
     /**

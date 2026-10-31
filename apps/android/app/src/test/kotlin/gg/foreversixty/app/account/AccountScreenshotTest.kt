@@ -28,6 +28,7 @@ import gg.foreversixty.app.model.Device
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
+import gg.foreversixty.app.premium.PlanSummary
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -166,13 +167,12 @@ class AccountScreenshotTest {
         YouScreen(
             summary = YouSummary(
                 battletag = me.user.battletag.orEmpty(),
-                plan = AccountCopy.planLine(me.entitlements.billing),
-                founder = me.entitlements.billing?.founder == true,
+                plan = PlanSummary.of(me, Instant.parse("2025-11-01T00:00:00Z")),
                 character = CharacterLine(current.name, current.className, AccountCopy.place(current)),
                 devices = "This phone and 2 more",
                 version = VERSION,
             ),
-            actions = YouActions({}, {}, {}, {}, {}, {}),
+            actions = YouActions({}, {}, {}, {}, {}, {}, {}, {}),
             confirmingSignOut = confirming,
         )
     }

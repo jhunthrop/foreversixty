@@ -683,7 +683,9 @@ Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
 StoreKit or Play Billing and show the button exactly when it is in the list, and show no purchase
-prompt or call to action anywhere else. `min_app_version` is the lowest version the API supports
+prompt or call to action anywhere else. The list is per platform, read from the `X-App` header
+(decision L: `ios` gets `["US"]`, `android` gets `[]` until the Play programme enrolment), so the
+response carries `Vary: X-App`. `min_app_version` is the lowest version the API supports
 for each platform (dotted, compared numerically): below it, block with an "Update the app" screen.
 `active_build` is the client build the static data serves. `features` holds the feature
 switches by key (`apps/shared/features.json` lists every key, its lane and its bundled default;

@@ -387,12 +387,11 @@ def you(plat: str, plan: str = "free-link") -> str:
 
 
 def plan_detail(plat: str, link_region: bool = True) -> str:
-    feats = ["Server sims that keep running after you close the app", "Coach notes on your raid logs", "Score and parse history charts", "Sim results and logs kept for a year"]
-    rows = "".join(f"<div style=\"display:flex;gap:10px;padding:6px 0\" class=\"t-body\"><span class=\"kill\" style=\"margin-top:3px\">{glyph('check', 16)}</span>{f}</div>" for f in feats)
-    manage = ("<span class=\"btn btn-secondary full\" style=\"margin-top:16px\">Manage billing on foreversixty.gg" + glyph('external', 14) + "</span>" if link_region
-              else "<div class=\"t-meta muted\" style=\"margin-top:16px\">Billing is managed on the web.</div>")
+    rows = "".join(f"<div style=\"display:flex;gap:10px;padding:6px 0\" class=\"t-body\"><span class=\"kill\" style=\"margin-top:3px\">{glyph('check', 16)}</span>{f}</div>" for f in FEATS)
+    manage = ("<span class=\"btn btn-secondary full\" style=\"margin-top:16px;min-height:44px;height:44px;text-transform:none;letter-spacing:0;font:600 14px Barlow,sans-serif;color:var(--nav)\">Manage billing on foreversixty.gg" + glyph('external', 14) + "</span>" if link_region
+              else "<div class=\"t-meta muted\" style=\"margin-top:16px\">Billing is managed on foreversixty.gg.</div>")
     inner = (f"<div class=\"card\" style=\"margin:10px 16px 0;padding:18px\"><div style=\"display:flex;justify-content:space-between;align-items:center\"><span class=\"cond t-h2\">Premium</span><span class=\"tag tag-gold\">Founder</span></div>"
-             f"<div class=\"t-body\" style=\"margin-top:6px\">Renews 27 Oct 2027 · $50.00 a year</div><div class=\"t-meta muted\">Founder price, kept while your plan stays active.</div>"
+             f"<div class=\"t-body\" style=\"margin-top:6px\">Premium · renews 27 Oct 2027 · $40 a year</div><div class=\"t-meta muted\">Founder price, kept while your plan stays active.</div>"
              f"<div style=\"height:1px;background:var(--line-soft);margin:14px 0\"></div><div class=\"t-micro micro\">What your plan includes</div><div style=\"margin-top:6px\">{rows}</div>{manage}</div>"
              f"<div class=\"t-meta muted pad\" style=\"margin-top:12px\">Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.</div>")
     return pushed(plat, "You", "Plan", inner, "You")
@@ -419,3 +418,74 @@ def devices(plat: str, confirm: bool = False) -> str:
                        "<div style=\"display:flex;justify-content:flex-end;gap:8px;margin-top:22px;font:500 14px Roboto\"><span style=\"padding:10px 12px;color:#f5d27a\">Cancel</span><span style=\"padding:10px 12px;color:#f0736b\">Revoke</span></div></div>")
     return pushed(plat, "You", "Devices", inner, "You", overlay=overlay)
 
+
+
+# ---------- F8 build boards (spec 5.8.1) ----------
+
+FEATS = ["Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+         "Server sims keep running, and the site tells you when they finish.",
+         "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+         "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+         "A Supporter mark beside your name on your characters and in your guild's roster."]
+
+
+def _chev(plat: str = "ios") -> str:
+    return f"<span class=\"chev\">{glyph('chev-right', 16)}</span>"
+
+
+def _plan_row(state: str, xl: bool) -> str:
+    """The Plan row. state: free-link, free-other, own."""
+    sub = {"free-link": "Free", "free-other": "Free", "own": "Premium · renews 27 Oct 2027"}[state]
+    founder = "<span class=\"tag tag-gold\">Founder</span>" if state == "own" else ""
+    see = f"<span class=\"t-meta gold\" style=\"font-weight:600;display:inline-flex;gap:4px;align-items:center\">See plans{glyph('external', 14)}</span>"
+    if xl:
+        lines = f"<div class=\"t-body strong\" style=\"font-weight:600\">Plan</div><div class=\"t-meta muted\">{sub}</div>"
+        lines += (f"<div style=\"margin-top:6px\">{founder}</div>" if founder else "")
+        lines += (f"<div style=\"margin-top:6px\">{see}</div>" if state == "free-link" else "")
+        trail = _chev() if state == "own" else (f"<span class=\"chev gold\">{glyph('external', 14)}</span>" if False else "")
+        return f"<div class=\"lrow\" style=\"align-items:flex-start\">{tile('crown', 32)}<div class=\"t\">{lines}</div>{trail}</div>"
+    if state == "own":
+        return (f"<div class=\"lrow\">{tile('crown', 32)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">Plan</div><div class=\"t-meta muted\">{sub}</div></div>{founder}{_chev()}</div>")
+    trail = f"{see}" if state == "free-link" else ""
+    return (f"<div class=\"lrow\">{tile('crown', 32)}<div class=\"t t-body strong\" style=\"font-weight:600\">Plan</div><span class=\"val t-meta\">Free</span>{trail}</div>")
+
+
+def you_build(plat: str, state: str, xl: bool = False, premium_tag: bool = False) -> str:
+    rows = [("bell", "Notifications", "Raids, logs, sims and dates"), ("user", "Characters", "3 on this account"),
+            ("devices", "Devices", "This " + ("iPhone" if plat == "ios" else "phone") + " and 2 more"), ("hash", "Discord", "Linked as hunthrop")]
+    body = _plan_row(state, xl) + "".join(
+        f"<div class=\"lrow\" style=\"{'align-items:flex-start' if xl else ''}\">{tile(g, 32)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{lab}</div><div class=\"t-meta muted\">{sub}</div></div>{_chev()}</div>"
+        for g, lab, sub in rows)
+    more = "".join(f"<div class=\"lrow\"><div class=\"t t-body\" style=\"color:var(--strong)\">{t}</div><span class=\"chev\">{glyph('external' if ext else 'chev-right', 14)}</span></div>"
+                   for t, ext in [("Help on the Discord server", True), ("Privacy", True), ("Terms", True), ("About Forever Sixty", False)])
+    tag = "<span class=\"tag tag-gold\">Premium</span>" if premium_tag else ""
+    stack = "flex-direction:column;align-items:flex-start;" if xl else "align-items:center;"
+    head_ = (f"<div class=\"pad\" style=\"display:flex;gap:12px;{stack}margin-top:8px\">{tile('user', 44)}<div style=\"flex:1;min-width:0;max-width:100%\">"
+             f"<div class=\"t-name strong\" style=\"font-weight:700;overflow-wrap:anywhere\">{ME['battletag']}</div><div class=\"t-meta muted\">Signed in with Battle.net</div></div>{tag}</div>")
+    inner = (head_ + f"<div class=\"card quiet\" style=\"margin:16px 16px 0\">{body}</div><div class=\"card quiet\" style=\"margin:16px 16px 0\">{more}</div>"
+             "<div class=\"pad\" style=\"margin-top:16px\"><span class=\"btn btn-secondary full\" style=\"color:var(--nav)\">Sign out</span></div>")
+    top = content_top(plat)
+    title = "<div class=\"cond t-title pad\" style=\"margin-top:4px\">You</div>" if plat == "ios" else ""
+    bar = top_bar(plat, "<span class=\"cond\" style=\"font-size:22px;padding-left:4px\">You</span>" if plat == "and" else "<span></span>")
+    return device(plat, bar + f"<div style=\"padding-top:{top}px\">{title}{inner}</div>", "You", xl=xl)
+
+
+def plan_build(plat: str, source: str, link: bool) -> str:
+    """F8.4. source: own or seat."""
+    own = source == "own"
+    tag = "<span class=\"tag tag-gold\">Founder</span>" if own else ""
+    line = "Premium · renews 27 Oct 2027 · $40 a year" if own else "Premium · a seat from OLYMPUS XXVII"
+    second = ("Founder price, kept while your plan stays active." if own
+              else "Given by Hunthrop#1894. It lasts while the guild's plan does; nothing is billed to you.")
+    rows = "".join(f"<div style=\"display:flex;gap:10px;padding:6px 0\" class=\"t-body\"><span class=\"kill\" style=\"margin-top:3px\">{glyph('check', 16)}</span>{f}</div>" for f in FEATS)
+    if not own:
+        control = ""
+    elif link:
+        control = "<span class=\"btn btn-secondary full\" style=\"margin-top:16px;min-height:44px;height:44px;text-transform:none;letter-spacing:0;font:600 14px Barlow,sans-serif;color:var(--nav)\">Manage billing on foreversixty.gg" + glyph('external', 14) + "</span>"
+    else:
+        control = "<div class=\"t-meta muted\" style=\"margin-top:16px\">Billing is managed on foreversixty.gg.</div>"
+    inner = (f"<div class=\"card\" style=\"margin:10px 16px 0;padding:18px\"><div style=\"display:flex;justify-content:space-between;align-items:center\"><span class=\"cond t-h2\">Premium</span>{tag}</div>"
+             f"<div class=\"t-body\" style=\"margin-top:6px\">{line}</div><div class=\"t-meta muted\">{second}</div>"
+             f"<div style=\"height:1px;background:var(--line-soft);margin:14px 0\"></div><div class=\"t-micro micro\">What your plan includes</div><div style=\"margin-top:6px\">{rows}</div>{control}</div>"
+             "<div class=\"t-meta muted pad\" style=\"margin-top:12px\">Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.</div>")
+    return pushed(plat, "You", "Plan", inner, "You")

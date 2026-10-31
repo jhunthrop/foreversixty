@@ -14,9 +14,6 @@ struct SimsDependencies {
     /// F8's rule: See plans only where the storefront may link to web checkout (fail closed).
     let mayLinkToPlans: @MainActor () async -> Bool
 
-    /// The site's plan page, opened in the browser from the lapsed line.
-    static let plansURL = StaticSite.url.appending(path: "premium")
-
     @MainActor
     static func live(_ environment: AppEnvironment, catalog: ItemCatalog) -> SimsDependencies {
         let staticTransport: any HTTPTransport = switch environment.configuration.mode {
@@ -31,8 +28,10 @@ struct SimsDependencies {
             catalog: catalog,
             now: { Date() },
             iconBuild: { try? await statics.activeBuild().build },
-            // Lane F8 owns the storefront read; until its PlansLink is on main, fail closed.
-            mayLinkToPlans: { false }
+            mayLinkToPlans: {
+                await environment.plansLink.resolve()
+                return environment.plansLink.mayLink
+            }
         )
     }
 }

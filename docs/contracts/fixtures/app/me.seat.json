@@ -75,16 +75,16 @@
     "discord_link_suggested": null,
     "entitlements": {
       "billing": null,
-      "history": false,
-      "log_coach": false,
-      "multi_compare": false,
-      "notifications": false,
+      "history": true,
+      "log_coach": true,
+      "multi_compare": true,
+      "notifications": true,
       "officer_views": false,
       "personal_portal": false,
-      "retention": false,
-      "roster_check": false,
-      "server_sims": false,
-      "supporter_mark": false
+      "retention": true,
+      "roster_check": true,
+      "server_sims": true,
+      "supporter_mark": true
     },
     "finished_sims": [],
     "guilds": [
