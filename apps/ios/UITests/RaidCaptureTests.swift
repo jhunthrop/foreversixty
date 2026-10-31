@@ -99,4 +99,23 @@ final class RaidCaptureTests: XCTestCase {
         try save("notification-answer-in-ios.png")
         _ = app
     }
+
+    /// Integration C: signed in on the fixtures, the Raids tab under the one character selector
+    /// (the same toolbar slot as Home and BiS), then Home's for the side-by-side.
+    func testRaidsTabUnderTheSelector() throws {
+        let app = launch(["-FSTab", "you"])
+        let signIn = app.buttons["Sign in with Battle.net"].firstMatch
+        XCTAssertTrue(signIn.waitForExistence(timeout: 15))
+        signIn.tap()
+        app.tabBars.buttons["Raids"].tap()
+        XCTAssertTrue(app.staticTexts["OLYMPUS XXVII"].waitForExistence(timeout: 15))
+        sleep(3)
+        try save("selector-raids-ios.png")
+        app.tabBars.buttons["Home"].tap()
+        sleep(4)
+        try save("selector-home-ios.png")
+        app.tabBars.buttons["BiS"].tap()
+        sleep(4)
+        try save("selector-bis-ios.png")
+    }
 }

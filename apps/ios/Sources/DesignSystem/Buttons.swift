@@ -41,7 +41,7 @@ public struct BrandButtonStyle: ButtonStyle {
     }
 
     /// The press scale: 0.98 while held, 1 under Reduce Motion or when the button is disabled.
-    static func scale(pressed: Bool, reduceMotion: Bool, enabled: Bool) -> CGFloat {
+    public static func scale(pressed: Bool, reduceMotion: Bool, enabled: Bool) -> CGFloat {
         pressed && !reduceMotion && enabled ? pressedScale : 1
     }
 
