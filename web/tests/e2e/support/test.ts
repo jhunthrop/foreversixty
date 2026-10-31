@@ -10,7 +10,7 @@
 // other unstubbed request, and any unstubbed write, fails the test. A spec that cares about one
 // of these reads stubs it itself.
 import { test as base, type BrowserContext, type Page, type Route } from '@playwright/test';
-import { DEAD_API_BASE, PRODUCTION_API_HOST, isApiRequest } from '../../hermetic';
+import { API_ORIGIN_GLOBS, DEAD_API_BASE, PRODUCTION_API_HOST } from '../../hermetic';
 
 export { expect } from '@playwright/test';
 
@@ -55,7 +55,7 @@ function ambientAnswer(route: Route): AmbientAnswer | null {
 }
 
 async function guardApi(context: BrowserContext, unstubbed: string[]): Promise<void> {
-  await context.route(isApiRequest, async (route) => {
+  const guard = async (route: Route): Promise<void> => {
     const answer = ambientAnswer(route);
     if (answer !== null) {
       await answer(route);
@@ -63,7 +63,8 @@ async function guardApi(context: BrowserContext, unstubbed: string[]): Promise<v
     }
     unstubbed.push(`${route.request().method()} ${route.request().url()}`);
     await route.abort('blockedbyclient');
-  });
+  };
+  for (const glob of API_ORIGIN_GLOBS) await context.route(glob, guard);
 }
 
 function unstubbedMessage(unstubbed: readonly string[]): string {

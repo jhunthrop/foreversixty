@@ -3,7 +3,7 @@
 // header selector's panel: "Restored your last character" and Forget, shown only while the
 // current character came back from an earlier visit (lib/character-selector/restored.ts).
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
 import {
   OBNOXIOUS,
@@ -14,6 +14,9 @@ import {
   storePointer,
   type FixtureCharacter,
 } from './support/selector';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
 
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 

@@ -1,6 +1,9 @@
 // web/tests/e2e/handoffs-setup.spec.ts
-import { expect, test } from './support/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 test('the /setup paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
   await page.goto('/setup');

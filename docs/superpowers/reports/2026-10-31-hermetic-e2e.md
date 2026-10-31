@@ -135,3 +135,27 @@ no guard, fails the same way when run side by side with `--repeat-each=3`:
 - `go test` on discordbot and notify in parallel against one database deadlocks. Run them with `-p 1`.
 - The design mock PNGs under `design/mocks/2026-10-28-discord-guided-cards/` still draw a green In.
   Only the payload JSON was updated; regenerating the boards needs `gen_guided_cards.mjs`.
+
+## Follow-up (same day): reviews, merge, landing
+
+- The guided-cards boards were redrawn with all four answers neutral (`FRAMES=post-,signup-card node
+  gen_guided_cards.mjs`). The generator now leaves Components V2 rows alone and reads spec icons from
+  `data/builds/`, so a fixture sync no longer blanks them. A fresh payload dump confirmed the real
+  handlers emit Secondary everywhere, differing from the committed frames only in ids and nonces.
+- The raid form's 429 line is captured at 1440 and 390 in `design/reviews/2026-10-31-raid-429/`
+  (`tests/captures/guild-raids/capture-429.spec.ts`) and is covered by a new e2e test in
+  guild-raids.spec.ts.
+- ux-designer: SHIP, no blockers. Nits: the error red is small and low contrast (a site-wide token),
+  and the line sits close to the card edge. wow-player: SHIP on both, no blockers. Nits: Raid page
+  shares the grey (that is Discord's own style), and the line could quote Retry-After.
+- The guard now routes by origin glob, not a function matcher. A function matcher sends every request
+  through Node, which slowed hydration enough to move layouts: home-panel failed 5 of 12 runs with
+  it and 0 of 12 with globs.
+- After merging origin/main: spine-bar.spec.ts stays deleted. selector-restored.spec.ts (new) imports
+  the guarded test and stubs character and encounters. handoffs-setup (builds) and guild-landing
+  (guild page and home) gained stubs.
+- Gates after the merge, all exit 0 unless noted: vitest 691 files / 7,785 tests, astro check, lint,
+  format, actionlint, go vet, go test discordbot and notify. Full Playwright: 3,397 passed, 3 failed
+  (account-discord "turning an event off", header-finished-sim 1440 mobile, home-panel 390 mobile).
+  All 3 passed on `--last-failed`. A clean origin/main built with the dead base and run the same way
+  failed home-panel and guild-raid-spec-ask too, plus the 23 href and unstubbed failures this lane fixes.

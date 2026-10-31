@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { DEAD_API_BASE, HOST_BLOCK_RULE, isApiRequest } from '../tests/hermetic';
+import { API_ORIGIN_GLOBS, DEAD_API_BASE, HOST_BLOCK_RULE } from '../tests/hermetic';
 
 const WEB = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const E2E = path.join(WEB, 'tests/e2e');
@@ -74,10 +74,7 @@ describe('the e2e suite is hermetic', () => {
     expect(base).toBe(DEAD_API_BASE);
   });
 
-  it('treats the dead base and the production API as API origins, and the site as not', () => {
-    expect(isApiRequest(`${DEAD_API_BASE}/v1/me`)).toBe(true);
-    expect(isApiRequest('https://api.foreversixty.gg/v1/rankings/percentile')).toBe(true);
-    expect(isApiRequest('http://localhost:4711/v1/me')).toBe(false);
-    expect(isApiRequest('https://foreversixty.gg/')).toBe(false);
+  it('guards the dead base and the production API by origin glob', () => {
+    expect(API_ORIGIN_GLOBS).toEqual([`${DEAD_API_BASE}/**`, 'https://api.foreversixty.gg/**']);
   });
 });

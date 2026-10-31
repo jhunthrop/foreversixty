@@ -9,7 +9,7 @@
 //      API's host unresolvable, so even a dist built with the production default (a local
 //      `npm run build` without PUBLIC_API_BASE_URL) cannot reach it;
 //   3. tests/e2e/support/test.ts fails any test whose page asks an API origin for something
-//      the test did not stub (isApiRequest below).
+//      the test did not stub (API_ORIGIN_GLOBS below).
 
 /** The API origin the e2e and capture builds carry: the discard port on loopback, refused at once. */
 export const DEAD_API_BASE = 'http://127.0.0.1:9';
@@ -24,10 +24,10 @@ export const HOST_BLOCK_RULE = `MAP ${PRODUCTION_API_HOST} ~NOTFOUND`;
 /** Chromium flags that make the production API's host fail DNS inside the test browser. */
 export const HERMETIC_LAUNCH_ARGS: readonly string[] = [`--host-resolver-rules=${HOST_BLOCK_RULE}`];
 
-const API_HOSTS = new Set([new URL(DEAD_API_BASE).host, PRODUCTION_API_HOST]);
-
-/** True for a request to any origin the site's API calls can go to under test. */
-export function isApiRequest(url: URL | string): boolean {
-  const parsed = typeof url === 'string' ? new URL(url) : url;
-  return API_HOSTS.has(parsed.host);
-}
+/** Every origin the site's API calls can go to under test, as route globs. Globs, not a function
+ *  matcher: Playwright intercepts only the requests a glob names, while a function matcher sends
+ *  every request (scripts, fonts, data) through Node and slows hydration enough to move layouts. */
+export const API_ORIGIN_GLOBS: readonly string[] = [
+  `${DEAD_API_BASE}/**`,
+  `https://${PRODUCTION_API_HOST}/**`,
+];
