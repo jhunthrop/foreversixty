@@ -149,9 +149,11 @@ struct GuildHeadView: View {
             GuildCrest(url: head.crestURL, faction: head.faction)
             VStack(alignment: .leading, spacing: 2) {
                 Text(head.name.uppercased()).font(ScaledType.cardHead).foregroundStyle(FSColor.strong)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                 if let line = head.line {
                     Text(line).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -273,8 +275,8 @@ struct PlannedRow: View {
                             .font(ScaledType.monoMeta).foregroundStyle(FSColor.strong)
                         if let fill = facts.fill, !large { FillBar(fill: fill, width: 64) }
                     }
-                    // Large text: the chip moves under the title.
-                    if large { chip(facts.rowChip(currentKey: currentKey)) }
+                    // Large text: the chip moves under the title and wraps inside the row.
+                    if large { chip(facts.rowChip(currentKey: currentKey), wraps: true) }
                 }
                 if !large {
                     Spacer(minLength: 8)
@@ -290,11 +292,16 @@ struct PlannedRow: View {
     }
 
     @ViewBuilder
-    private func chip(_ chip: RowChip) -> some View {
-        switch chip {
-        case let .status(status): TagView(chip: status)
-        case let .signed(text): TagView(text: text, color: FSColor.kill)
-        case .notSigned: TagView(text: Copy.raidChipNotSigned, color: FSColor.gold)
+    private func chip(_ chip: RowChip, wraps: Bool = false) -> some View {
+        let (text, color): (String, Color) = switch chip {
+        case let .status(status): (status.label, TagView.color(for: status))
+        case let .signed(text): (text, FSColor.kill)
+        case .notSigned: (Copy.raidChipNotSigned, FSColor.gold)
+        }
+        if wraps {
+            WrappingTag(text: text, color: color)
+        } else {
+            TagView(text: text, color: color)
         }
     }
 }

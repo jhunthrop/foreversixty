@@ -57,13 +57,16 @@ struct SectionLabel: View {
 extension TagView {
     /// The raid status tag: `Planned` gold, `Locked` muted, `Cancelled` wipe, `Ended` muted, `Done` kill.
     init(chip: RaidChip) {
-        let color = switch chip {
+        self.init(text: chip.label, color: Self.color(for: chip))
+    }
+
+    static func color(for chip: RaidChip) -> Color {
+        switch chip {
         case .planned: FSColor.gold
         case .cancelled: FSColor.wipe
         case .done: FSColor.kill
         case .locked, .ended: FSColor.muted
         }
-        self.init(text: chip.label, color: color)
     }
 }
 
@@ -181,5 +184,22 @@ struct ErrorRegion: View {
             SecondaryButton(title: Copy.commonTryAgain, action: retry)
         }
         .raidCardBox(16).quietCard()
+    }
+}
+
+/// The tag at the accessibility sizes: the shared `TagView` is one fixed line, which at AX5 grew
+/// wider than the screen and pushed the whole column past the gutter. This one scales with the
+/// text and wraps inside its row.
+struct WrappingTag: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(text.uppercased()).font(ScaledType.micro).tracking(1)
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundStyle(color)
+            .padding(.horizontal, FSSpacing.space2).padding(.vertical, 2)
+            .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color.opacity(0.35)))
     }
 }

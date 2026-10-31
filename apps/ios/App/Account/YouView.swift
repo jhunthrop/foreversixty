@@ -208,19 +208,26 @@ struct AccountRow: View {
     var tint: Color = FSColor.strong
     /// The icon tile grows with the text, so a large glyph never spills over the title.
     @ScaledMetric(relativeTo: .callout) private var tile: CGFloat = 32
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: FSSpacing.space3) {
-            Image(systemName: icon)
-                .font(.callout)
-                .foregroundStyle(tint == FSColor.strong ? FSColor.gold : tint)
-                .frame(width: tile, height: tile)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(ScaledType.bodyStrong).foregroundStyle(tint)
-                if let subtitle {
-                    Text(subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            // Accessibility sizes: the tile sits above the words, so they keep the row's width
+            // and never break inside a word.
+            (typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpacing.space2))
+                : AnyLayout(HStackLayout(spacing: FSSpacing.space3))) {
+                Image(systemName: icon)
+                    .font(.callout)
+                    .foregroundStyle(tint == FSColor.strong ? FSColor.gold : tint)
+                    .frame(width: tile, height: tile)
+                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(ScaledType.bodyStrong).foregroundStyle(tint)
+                    if let subtitle {
+                        Text(subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    }
                 }
             }
             Spacer(minLength: FSSpacing.space2)
