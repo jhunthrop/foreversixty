@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "this list is mine=1 only",
+    "fields": {
+      "mine": "1"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

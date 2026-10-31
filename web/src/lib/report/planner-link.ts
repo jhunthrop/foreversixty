@@ -13,6 +13,7 @@
 //                 turned into per-talent ranks; a Classic-shaped decoder emits one rank
 //                 per talent in tab order, which can. The link carries talents only when
 //                 the array's length matches the class's talent count.
+import type { PaperdollSlotKey } from '../gear/paperdoll';
 import { encodeFS1 } from '../planner/fs1';
 import type { Gear, Slot } from '../planner/types';
 import type { CombatantRow, GearItem } from './types';
@@ -44,8 +45,8 @@ export const GEAR_SLOT_ORDER: (Slot | null)[] = [
   null,
 ];
 
-/** The log's slot order as words, for showing gear; null slots (shirt, tabard) named too. */
-export const LOG_GEAR_SLOTS: readonly string[] = [
+/** The log's slot order as the paperdoll's slot keys, shirt, ranged and tabard included. */
+export const LOG_PAPERDOLL_SLOTS: readonly PaperdollSlotKey[] = [
   'head',
   'neck',
   'shoulder',
@@ -56,16 +57,27 @@ export const LOG_GEAR_SLOTS: readonly string[] = [
   'feet',
   'wrist',
   'hands',
-  'ring',
-  'ring',
-  'trinket',
-  'trinket',
+  'finger1',
+  'finger2',
+  'trinket1',
+  'trinket2',
   'back',
-  'main hand',
-  'off hand',
+  'main_hand',
+  'off_hand',
   'ranged',
   'tabard',
 ];
+
+/** What a combatant wore at pull, by paperdoll slot: each worn piece's id, and the log's own
+ *  item level and enchants for it. Empty entries (ID 0) and positions past the table are left out. */
+export function wornAtPull(gear: readonly GearItem[]): Partial<Record<PaperdollSlotKey, GearItem>> {
+  const out: Partial<Record<PaperdollSlotKey, GearItem>> = {};
+  gear.forEach((piece, index) => {
+    const slot = LOG_PAPERDOLL_SLOTS[index];
+    if (slot !== undefined && piece.ID > 0) out[slot] = piece;
+  });
+  return out;
+}
 
 export function gearFromCombatant(gear: GearItem[]): Gear {
   const equipped: Gear = {};

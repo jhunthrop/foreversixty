@@ -126,17 +126,18 @@
          it happened to reach 44px only because a flex row without an explicit height grows
          to its tallest child. Explicit now, the same floor every other control's own label
          carries, rather than a hit target relying on a coincidence. -->
-    <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
-      {bulkCopy.precisionLabel}
+    <div class="flex min-h-11 items-center gap-2">
+      <label class="quiet-label" for="bulk-precision-field">{bulkCopy.precisionLabel}</label>
       <PrecisionSelect
-        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
+        id="bulk-precision-field"
+        class="w-[180px]"
         value={store.precision}
         options={BULK_PRECISIONS}
         labelFor={precisionLabelFor}
         disabled={running}
         onchange={(value) => store.setPrecision(value as Precision)}
       />
-    </label>
+    </div>
 
     <button
       type="button"

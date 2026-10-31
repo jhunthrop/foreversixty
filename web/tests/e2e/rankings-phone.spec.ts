@@ -4,7 +4,10 @@
 // table is exactly the kind of wide content that breaks a phone layout, so it gets its own
 // sweep in the same idiom: nothing scrolls sideways, and every control -- including a row's
 // own links, which the report's rankings mode does not carry -- clears 44px.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
 
 test.use({ viewport: { width: 360, height: 800 } });
 test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');

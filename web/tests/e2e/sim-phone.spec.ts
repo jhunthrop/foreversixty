@@ -7,8 +7,10 @@
 // trusting that no later change quietly reopened one.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+import { fieldBox } from './support/select';
 
 test.describe.configure({ mode: 'serial' });
 // No test.use({ viewport }): the phone audit runs under --project=mobile (Pixel 7, 412px),
@@ -130,21 +132,20 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
 }
 
 /**
- * SLOTS (planner/types.ts) begins head, neck, shoulder. In CharacterStrip's two-column
- * phone grid (`grid-cols-2`), that means head and neck share row 1 and shoulder starts row
- * 2 -- never head and shoulder sharing a row, which two columns cannot do.
+ * The paperdoll's phone frame (design/specs/2026-10-31-paperdoll.md §3.3): two mirrored columns,
+ * the left slot of each pair beside the right one -- head beside hands, neck under head.
  */
 async function gearGridIsTwoColumns(page: Page): Promise<void> {
-  const head = await page.getByTestId('sim-slot-head').boundingBox();
-  const neck = await page.getByTestId('sim-slot-neck').boundingBox();
-  const shoulder = await page.getByTestId('sim-slot-shoulder').boundingBox();
-  expect(head, 'sim-slot-head missing').not.toBeNull();
-  expect(neck, 'sim-slot-neck missing').not.toBeNull();
-  expect(shoulder, 'sim-slot-shoulder missing').not.toBeNull();
+  const head = await page.getByTestId('paperdoll-slot-head').boundingBox();
+  const hands = await page.getByTestId('paperdoll-slot-hands').boundingBox();
+  const neck = await page.getByTestId('paperdoll-slot-neck').boundingBox();
+  expect(head, 'paperdoll-slot-head missing').not.toBeNull();
+  expect(hands, 'paperdoll-slot-hands missing').not.toBeNull();
+  expect(neck, 'paperdoll-slot-neck missing').not.toBeNull();
 
-  expect(Math.round(head!.y), 'head and neck are not the same row').toBe(Math.round(neck!.y));
-  expect(head!.x, 'head is not left of neck').toBeLessThan(neck!.x);
-  expect(shoulder!.y, 'shoulder is not a new row').toBeGreaterThan(head!.y);
+  expect(Math.round(head!.y), 'head and hands are not the same row').toBe(Math.round(hands!.y));
+  expect(head!.x, 'head is not left of hands').toBeLessThan(hands!.x);
+  expect(neck!.y, 'neck is not a new row').toBeGreaterThan(head!.y);
 }
 
 // sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
@@ -241,7 +242,7 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
   // The secondary encounter controls only exist while the disclosure is open; the audit
   // has to measure them, so it opens it the way a player does.
   await page.getByTestId('sim-settings-more').locator('summary').click();
-  await expect(page.getByTestId('sim-variation')).toBeVisible();
+  await expect(fieldBox(page, 'sim-variation')).toBeVisible();
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);

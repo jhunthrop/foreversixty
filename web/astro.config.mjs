@@ -152,13 +152,15 @@ export default defineConfig({
   integrations: [
     svelte(),
     // /b-unavailable is the 503 fallback src/worker.ts serves when the API cannot answer a
-    // /b/:id request, and /reports is the shell the Worker clones for every report id.
+    // /b/:id request, and /report-shell is the shell the Worker clones for every report id.
     // Both are plumbing rather than destinations, so they stay out of the sitemap; the
     // report pages people actually link to are /reports/<id>, which cannot be enumerated
-    // at build time. /app/auth is the phone apps' sign-in handoff, plumbing too.
+    // at build time. /reports, the signed-in "Your reports" list, has nothing to index either.
+    // /app/auth is the phone apps' sign-in handoff, plumbing too.
     sitemap({
       filter: (page) =>
         !page.endsWith('/b-unavailable') &&
+        !page.endsWith('/report-shell') &&
         !page.endsWith('/reports') &&
         !page.endsWith('/design-sheet') &&
         !page.endsWith('/app/auth'),

@@ -3,7 +3,8 @@
 // 2026-10-24-character-history 3.7, 3.8, 3.11): selection against the fights list, the keyboard,
 // the boss picker's roving focus and the reserve the next visit holds. The lane's acceptance
 // e2e is character-history.spec.ts; this file keeps the panel's interaction rules.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -64,9 +65,9 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   const toggle = score.getByTestId('history-score-fights-toggle');
   await expect(plot).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  // The owner's bar above the profile lands after /v1/me; once it is in, nothing above the plot
-  // changes height, so scroll anchoring cannot move scrollY under the hover check below.
-  await expect(page.getByTestId('current-character-bar').first()).toBeVisible();
+  // The owner's sync line in the profile header lands after /v1/me; once it is in, nothing above
+  // the plot changes height, so scroll anchoring cannot move scrollY under the hover check below.
+  await expect(page.getByTestId('character-sync')).toBeVisible();
 
   await plot.focus();
   await page.keyboard.press('Home');

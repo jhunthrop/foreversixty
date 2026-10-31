@@ -17,7 +17,9 @@
         "hit": 2
       },
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "bonding": "equip",
+      "armor_type": "plate"
     },
     {
       "id": 16963,
@@ -33,7 +35,9 @@
         "stamina": 20
       },
       "set_id": 550,
-      "unique": false
+      "unique": false,
+      "bonding": "pickup",
+      "armor_type": "plate"
     },
     {
       "id": 16966,
@@ -49,7 +53,9 @@
         "stamina": 18
       },
       "set_id": 550,
-      "unique": false
+      "unique": false,
+      "bonding": "pickup",
+      "armor_type": "plate"
     },
     {
       "id": 12784,
@@ -64,7 +70,10 @@
         "attack_power": 62
       },
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "bonding": "equip",
+      "armor_type": null,
+      "two_hand": true
     },
     {
       "id": 19325,
@@ -80,7 +89,9 @@
         "hit": 2
       },
       "set_id": null,
-      "unique": true
+      "unique": true,
+      "bonding": "pickup",
+      "armor_type": null
     },
     {
       "id": 13968,

@@ -72,7 +72,7 @@ Tenet 14: a card leads with the player's own character wherever we know it. A ca
 - Nothing in a custom id identifies another account or carries a credential (bot spec §9 contract). `/signup` card ids carry the presser's own character key, as the `pick:` select values do today; every press re-checks it against the presser's verified characters. Officer select values in `/attendance` name members of the guild and are re-checked against the presser's rank on every pick.
 - A select keeps showing the chosen value only when the re-rendered option carries `default: true`. `SelectOption` gains `Default bool` (`json:"default,omitempty"`); every re-render sets it on the current pick.
 - A disabled select still needs one option (Discord requires 1 to 25). It carries a single option whose label is its placeholder and whose value is `none`.
-- Buttons follow the bot spec's styles (§3.3.0): the card's one forward action is Success (3, the one coloured button, as `In` is on the post); every other action is Secondary (2); links are Link (5). No Primary, no Danger, no emoji.
+- Buttons follow the bot spec's styles (§3.3.0): the card's one forward action is Success (3, the one coloured button; the sign-up answers are never coloured, amended 2026-10-31); every other action is Secondary (2); links are Link (5). No Primary, no Danger, no emoji.
 - A card's embed, where it has one, is the bot spec's embed grammar: footer `Forever Sixty` with the timestamp; gold `15055189` until a class is known, then the class colour (`--color-class-*` as an integer); thumbnail the class's ringed HD crest (`/icons/hd/crests/{class}.webp`, absolute; one crest language) once a class is known, none before.
 - Row budget: Discord allows 5 action rows. The largest card, `/bis`, uses 4. No card uses a fifth.
 
@@ -119,7 +119,7 @@ Without `status`, after the bot spec's member gate (unlinked, not a member, pend
 1. Embed: the `/raid` answer's embed for the chosen raid (the post embed with the description replaced by the chosen character's state, bot spec §3.3.3 `/raid`).
 2. Row 1, only with two or more planned raids: select, placeholder `Choose a raid`, the guild's planned raids soonest first, at most 25, label `{Title} · {Ddd d Mmm}` (`Onyxia's Lair · Thu 10 Dec`), description `{Guild time} · {signed} of {size} signed up`. Default: the typed `raid`, else the next raid.
 3. Row 2, only with two or more verified characters: the bot spec's character select (same order, labels, descriptions, cap), placeholder `Choose a character`. Default: the typed `character`, else the main.
-4. Last row: `In` (Success), `Late`, `Bench`, `Out` (Secondary), `Raid page` (Link). Their custom ids are `gsgn:1:{state}:{raid}:{character key}`, so a press needs no further select.
+4. Last row: `In`, `Late`, `Bench`, `Out` (all Secondary, amended 2026-10-31: a green `In` read as already chosen), `Raid page` (Link). Their custom ids are `gsgn:1:{state}:{raid}:{character key}`, so a press needs no further select.
 
 A raid or character pick re-renders the card (type 7). A status press runs the bot spec's flow with raid and character fixed and replaces the card with the outcome sentence (§3.3.2 outcome table, verbatim). A raid that locked, ended or was cancelled since the card was drawn answers its G1 sentence in place. With one raid and one character the card is the embed and the status row alone.
 

@@ -3,8 +3,9 @@
 // /character/<region>/<ruleset>/<name>. The fixture build prerenders one character page,
 // us/hardcore/elyra-duskvale, so the search lands on a real profile; its API read is the
 // shared character fixture.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER_PATH, stubCharacter } from './support/character-fixture';
+import { nativeSelect } from './support/select';
 
 test('typing a name and submitting lands on the character’s profile', async ({ page }) => {
   await stubCharacter(page);
@@ -41,7 +42,7 @@ test('the lookup link’s region and ruleset fill the selects, and the name box 
   await page.goto('/?character=Elyra%20Duskvale&region=eu&ruleset=hardcore#lookup');
   const search = page.getByTestId('home-character-search');
   await expect(search.getByRole('combobox', { name: 'Character name' })).toHaveValue('Elyra Duskvale');
-  await expect(search.getByLabel('Region')).toHaveValue('eu');
-  await expect(search.getByLabel('Ruleset')).toHaveValue('hardcore');
+  await expect(nativeSelect(search, 'Region')).toHaveValue('eu');
+  await expect(nativeSelect(search, 'Ruleset')).toHaveValue('hardcore');
   await expect(search.getByRole('combobox', { name: 'Character name' })).toBeFocused();
 });

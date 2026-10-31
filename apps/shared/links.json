@@ -1,0 +1,65 @@
+{
+  "note": "Every https://foreversixty.gg/app/* deep link (design/specs/2026-10-30-mobile-apps.md section 6.4). web/scripts/gen-mobile-links.mjs generates both apps' parsers (iOS DeepLink, Android DeepLink) and web/app-link-paths.json, the path list the universal-link and App Link files serve. {param} is a path segment, a string unless params says int; query lists the optional query parameters, each with its allowed words or \"string\". example is a real link the tests parse.",
+  "host": "foreversixty.gg",
+  "routes": [
+    {
+      "path": "/app/character/{region}/{ruleset}/{name}",
+      "screen": "character",
+      "opens": "Home on that character; it becomes the current character.",
+      "example": "/app/character/us/pvp/obnoxious-yell"
+    },
+    {
+      "path": "/app/raid/{guild}/{raid}",
+      "params": { "guild": "int", "raid": "int" },
+      "query": { "spec": ["ask"], "state": ["in", "late", "bench", "out"] },
+      "screen": "raid",
+      "opens": "Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open.",
+      "example": "/app/raid/2/41?spec=ask"
+    },
+    {
+      "path": "/app/raid/{guild}/{raid}/night",
+      "params": { "guild": "int", "raid": "int" },
+      "screen": "raidNight",
+      "opens": "Raids tab, the raid page, Your raid night.",
+      "example": "/app/raid/2/41/night"
+    },
+    {
+      "path": "/app/guild/{guild}",
+      "params": { "guild": "int" },
+      "screen": "guild",
+      "opens": "Raids tab for that guild.",
+      "example": "/app/guild/2"
+    },
+    {
+      "path": "/app/bis/{spec}/{band}",
+      "screen": "bis",
+      "opens": "BiS on that list; band is 20 to 60 or p1.",
+      "example": "/app/bis/warrior-fury/p1"
+    },
+    {
+      "path": "/app/sim/{id}",
+      "screen": "sim",
+      "opens": "Home, Sims, the result.",
+      "example": "/app/sim/t4pm8k2xv9ca"
+    },
+    {
+      "path": "/app/you/notifications",
+      "screen": "notifications",
+      "opens": "You, Notifications.",
+      "example": "/app/you/notifications"
+    },
+    {
+      "path": "/app/you/plan",
+      "screen": "plan",
+      "opens": "You, Plan.",
+      "example": "/app/you/plan"
+    },
+    {
+      "path": "/app/auth",
+      "query": { "code": "string", "state": "string", "error": "string" },
+      "screen": "signIn",
+      "opens": "The sign-in return (lane A1); never opened by a notification.",
+      "example": "/app/auth?code=abc&state=xyz"
+    }
+  ]
+}

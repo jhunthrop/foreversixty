@@ -11,6 +11,34 @@ export const reportCopy = {
   more: 'More',
   /** The phone table-switcher's visible label, so it reads next to "Source" rather than under it. */
   table: 'Table',
+  /** The Source select (spec 2026-10-30-controls-charts §A10 row 1): its label, the two
+   *  scopes and the role groups its players sit under. */
+  source: 'Source',
+  allFriendlies: 'All friendlies',
+  /** The default scope when it narrows an open-world log to the logger's group (lib/report/group.ts). */
+  yourGroup: 'Your group',
+  yourRaid: 'Your raid',
+  /** Every player the log saw, the group or not. */
+  everyoneInRange: 'Everyone in range',
+  allEnemies: 'All enemies',
+  sourceGroups: { tank: 'Tanks', healer: 'Healers', dps: 'Damage' },
+  /** The filter bar's two selects (§A10 rows 6, 7). */
+  target: 'Target',
+  ability: 'Ability',
+  everyTarget: 'Every target',
+  everyAbility: 'Every ability',
+  /** Compare mode's selects (§A10 rows 8 to 11). */
+  compareWith: 'Compare with',
+  pickFight: 'Pick a fight',
+  bossPulls: 'Boss pulls',
+  trash: 'Trash',
+  orAPlayer: 'Or a player',
+  compareFightsInstead: 'Compare fights instead',
+  metric: 'Metric',
+  phase: 'Phase',
+  wholePull: 'The whole pull',
+  spec: 'Spec',
+  everySpec: 'Every spec',
   /** The merged preset/slider row's select, which replaced the old six-button preset row. */
   window: 'Window',
   /** The header of a report whose title is not known yet. */
@@ -30,6 +58,8 @@ export const reportCopy = {
   /** The badge where "Live" goes on the bundled sample report. */
   eyebrow: 'Report',
   sampleBadge: 'Sample report',
+  /** The state tag beside the credit sentence of a report no character is credited for. */
+  notCreditedTag: 'Not credited',
   /** The one muted line under the sample's subtitle: what it is, and that yours look like it. */
   sampleNote:
     'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',

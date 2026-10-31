@@ -174,10 +174,10 @@ describe('RaidForm', () => {
     expect(tag(html({ plannedCount: 8 }), 'raid-form-repeat-label')).not.toMatch(/opacity-50/);
   });
 
-  it('gives every select the FilterSelect chrome: no native arrow, the shared chevron', () => {
+  it('draws every select as the shared Select, with its chevron', () => {
     const markup = html({ last: lastRaid() });
     for (const field of ['zone', 'duration', 'timezone']) {
-      expect(tag(markup, `raid-form-${field}`)).toMatch(/appearance-none/);
+      expect(tag(markup, `raid-form-${field}`)).toMatch(/class="sel-native"/);
     }
     expect(markup.match(/data-testid="select-chevron"/g)?.length).toBe(3);
   });

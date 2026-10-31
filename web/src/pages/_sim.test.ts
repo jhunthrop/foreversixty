@@ -74,24 +74,23 @@ describe('the spec support shell', () => {
   });
 });
 
-// Fix round 1, Important #2: the static shell used to stack the chip slot directly
-// against the next element (0 gap, a plain non-flex #sim), while SimView.svelte's own
-// hydrated root is `flex flex-col gap-[22px] md:gap-8` -- so everything below the chip
-// painted 22px/32px higher before hydration than after. Both shells now wrap the slot and
-// what follows it in that identical gap, ahead of the chip slot in the rendered markup.
-describe('the chip slot’s gap wrapper', () => {
-  it('sim.astro wraps the chip slot and the LCP card in the view’s own flex gap', async () => {
+// Fix round 1, Important #2: SimView.svelte's hydrated root is `flex flex-col gap-[22px]
+// md:gap-8`, so each shell wraps its blocks in that identical gap or everything paints higher
+// before hydration than after. 2026-10-31: the "Jump to" spine bar is gone, so no shell
+// reserves a band for it any more.
+describe('the shells’ gap wrapper', () => {
+  const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
+
+  it('sim.astro wraps its blocks in the view’s own flex gap, with no spine bar slot', async () => {
     const html = await container.renderToString(Sim);
-    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
+    expect(html).not.toContain('current-character-bar');
   });
 
-  it('sim/specs.astro wraps the chip slot and the grids in the identical gap', async () => {
+  it('sim/specs.astro wraps the grids in the identical gap, with no spine bar slot', async () => {
     const html = await container.renderToString(Specs);
-    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
+    expect(html).not.toContain('current-character-bar');
   });
 
   // sim/[id].astro is the page this repo actually measures with Lighthouse (the Round 3
@@ -105,24 +104,24 @@ describe('the chip slot’s gap wrapper', () => {
   // conditional `FOREVER_DATA` check inside `fixtureSimPaths()` -- so it falls back to
   // `never`. `renderToString` never passes a `props` value for this route, so the cast
   // changes nothing about what actually renders.
-  it('sim/[id].astro wraps the chip slot and the saved-sim skeleton in the identical gap', async () => {
+  it('sim/[id].astro wraps the saved-sim skeleton in the identical gap, with no spine bar slot', async () => {
     const html = await container.renderToString(SimById as unknown as AstroComponentFactory, {
       params: { id: FIXTURE_SIM_ID },
     });
-    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
+    expect(html).not.toContain('current-character-bar');
   });
 });
 
 // Experience spec 2026-10-24 section 3.7: a payer's "Your server runs" box is reserved before
 // the island paints, and only for a hinted payer.
 describe('the server runs reserve', () => {
-  it('sim.astro carries a hidden reserve box between the chip slot and the paste hero', async () => {
+  it('sim.astro opens its view with a hidden reserve box, ahead of the paste hero', async () => {
     const html = await container.renderToString(Sim);
+    const wrapper = html.indexOf(`<div class="flex flex-col ${VIEW_GAP}">`);
     const reserve = html.indexOf('server-runs-shell-reserve');
-    expect(reserve).toBeGreaterThan(html.indexOf('data-testid="current-character-bar"'));
-    expect(reserve).toBeLessThan(html.indexOf('data-testid="current-character-bar"') + 600);
+    expect(reserve).toBeGreaterThan(wrapper);
+    expect(reserve).toBeLessThan(wrapper + 400);
   });
 
   it('the stylesheet shows the shell box only under the session and server-sims hints', () => {

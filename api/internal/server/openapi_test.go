@@ -78,7 +78,7 @@ func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
 		t.Fatal(err)
 	}
 	var doc struct {
-		Paths      map[string]map[string]map[string]any `yaml:"paths"`
+		Paths      map[string]map[string]any `yaml:"paths"`
 		Components struct {
 			Schemas map[string]map[string]any `yaml:"schemas"`
 		} `yaml:"components"`
@@ -96,7 +96,7 @@ func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
 		return p
 	}
 
-	path := doc.Paths["/v1/characters/{region}/{ruleset}/{name}"]["get"]
+	path, _ := doc.Paths["/v1/characters/{region}/{ruleset}/{name}"]["get"].(map[string]any)
 	for _, want := range []string{"gear", "gear_gap_total", "CharacterGear", "ExecutionScore"} {
 		if !strings.Contains(desc(path), want) {
 			t.Errorf("the character path's description does not name %q", want)
@@ -124,19 +124,19 @@ func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
 	p := props(slot)
 	for _, field := range []string{"worn", "pick", "gap"} {
 		m, _ := p[field].(map[string]any)
-		if m["nullable"] != true || !strings.Contains(desc(m), "ull") {
+		if !nullable(m) || !strings.Contains(desc(m), "ull") {
 			t.Errorf("%s must be nullable with its null rule: %v", field, m)
 		}
 	}
 	pick, _ := p["pick"].(map[string]any)
 	chance, _ := props(pick)["chance"].(map[string]any)
-	if chance["nullable"] != true || desc(chance) == "" {
+	if !nullable(chance) || desc(chance) == "" {
 		t.Errorf("pick.chance must be nullable with its null rule: %v", chance)
 	}
 	worn, _ := p["worn"].(map[string]any)
 	for _, field := range []string{"name", "item_level"} {
 		m, _ := props(worn)[field].(map[string]any)
-		if m["nullable"] != true {
+		if !nullable(m) {
 			t.Errorf("worn.%s must be nullable: %v", field, m)
 		}
 	}
@@ -183,7 +183,7 @@ func TestOpenAPIDocumentsGuildAttendanceAndRosterBestExecutionScore(t *testing.T
 		t.Fatal(err)
 	}
 	var doc struct {
-		Paths      map[string]map[string]map[string]any `yaml:"paths"`
+		Paths      map[string]map[string]any `yaml:"paths"`
 		Components struct {
 			Schemas map[string]map[string]any `yaml:"schemas"`
 		} `yaml:"components"`
@@ -197,7 +197,7 @@ func TestOpenAPIDocumentsGuildAttendanceAndRosterBestExecutionScore(t *testing.T
 		return strings.ToLower(strings.Join(strings.Fields(s), " "))
 	}
 
-	home, ok := doc.Paths["/v1/guilds/{id}/home"]["get"]
+	home, ok := doc.Paths["/v1/guilds/{id}/home"]["get"].(map[string]any)
 	if !ok || !strings.Contains(words(home), "guildattendance") {
 		t.Errorf("/v1/guilds/{id}/home must be listed and point roster[].attendance at GuildAttendance: %v", home)
 	}
@@ -243,8 +243,23 @@ func TestOpenAPIDocumentsGuildAttendanceAndRosterBestExecutionScore(t *testing.T
 	if !strings.Contains(words(doc.Components.Schemas["ExecutionScore"]), "roster_best") {
 		t.Errorf("ExecutionScore must name the guild page's roster_best rows: %q", words(doc.Components.Schemas["ExecutionScore"]))
 	}
-	guild := doc.Paths["/v1/guilds/{region}/{ruleset}/{name}"]["get"]
+	guild, _ := doc.Paths["/v1/guilds/{region}/{ruleset}/{name}"]["get"].(map[string]any)
 	if !strings.Contains(words(guild), "executionscore") {
 		t.Errorf("the guild path's roster_best description must point execution_score at ExecutionScore: %q", words(guild))
 	}
+}
+
+// nullable reports whether an OpenAPI 3.1 schema admits null: "null" among its types.
+func nullable(schema map[string]any) bool {
+	switch t := schema["type"].(type) {
+	case []any:
+		for _, v := range t {
+			if v == "null" {
+				return true
+			}
+		}
+	case string:
+		return t == "null"
+	}
+	return false
 }

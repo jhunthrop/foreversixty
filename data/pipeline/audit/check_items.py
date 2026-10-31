@@ -65,7 +65,7 @@ def _icons_and_required_level_zero(ctx: AuditContext, result: CategoryResult) ->
                         "Forever gear-planner payload names a real level for it",
                         ours="0",
                         theirs=str(planner[item_id].required_level),
-                        source="raw/wowhead-gear-planner.js",
+                        source="raw/wowhead/items.json",
                     )
     if zero_required_level:
         result.add(

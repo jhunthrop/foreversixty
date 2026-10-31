@@ -6,7 +6,7 @@
 // are actually gone from the built site.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const REDIRECTS_PATH = fileURLToPath(new URL('../../public/_redirects', import.meta.url));
 

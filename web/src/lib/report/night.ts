@@ -1,8 +1,9 @@
 // web/src/lib/report/night.ts
 // The whole night in one table: every boss pull's summary folded into one row per player
 // and one row per boss. A raid leader opens a log to compare the team across the night,
-// not to sum eighteen pulls by hand. Trash is left out, as it is from the rankings: a
-// trash pull's damage is mostly a function of how much trash there was.
+// not to sum eighteen pulls by hand. The caller picks the pulls: every boss pull for the
+// night (trash is left out of it, as it is from the rankings: a trash pull's damage is mostly
+// a function of how much trash there was), or one zone's trash for its combined entry.
 import { phaseReached } from './format';
 import { encounterKey, mechanicRowKey } from './mechanics';
 import { abilityKey } from './types';
@@ -91,25 +92,50 @@ function perSecond(total: number, ms: number): number {
   return ms <= 0 ? 0 : total / (ms / 1000);
 }
 
+/** Adds one boss pull to its boss's row: pulls, kills, wipes, time, deaths, the best kill and wipe. */
+function foldBoss(bosses: Map<string, NightBoss>, fight: FightEntry): void {
+  const boss = bosses.get(fight.name) ?? {
+    name: fight.name,
+    pulls: 0,
+    kills: 0,
+    wipes: 0,
+    time_ms: 0,
+    deaths: 0,
+    fights: [],
+  };
+  boss.pulls += 1;
+  boss.kills += fight.kill ? 1 : 0;
+  boss.wipes += fight.kill ? 0 : 1;
+  boss.time_ms += fight.duration_ms;
+  boss.deaths += fight.deaths;
+  boss.fights.push(fight.index);
+  if (fight.kill && (boss.best === undefined || fight.duration_ms < boss.best.duration_ms))
+    boss.best = { index: fight.index, duration_ms: fight.duration_ms };
+  const health = fight.boss_health_pct;
+  if (!fight.kill && health !== undefined && health >= 0)
+    boss.lowest_wipe_pct = Math.min(boss.lowest_wipe_pct ?? 100, health);
+  bosses.set(fight.name, boss);
+}
+
 /**
- * Folds the loaded boss summaries into the night. `summaries` may be missing fights
- * (one is still loading, one failed); those are counted in `expected` and left out of
- * every total, so a partial night is an honest partial rather than a wrong whole.
+ * Folds the loaded summaries of `fights` (every one but a pull still in progress) into the
+ * night. `summaries` may be missing fights (one is still loading, one failed); those are
+ * counted in `expected` and left out of every total, so a partial night is an honest partial
+ * rather than a wrong whole. Only boss pulls make a row in `bosses`.
  */
 export function aggregateNight(
   fights: readonly FightEntry[],
   summaries: ReadonlyMap<number, Summary>,
 ): Night {
-  // Pull numbers per boss, so a player's row can say "pull 2 of 3" like the fight list.
-  const encounterPulls = fights.filter((fight) => fight.kind === 'encounter');
+  // Pull numbers per boss (or per "Trash"), so a player's row can say "pull 2 of 3" like the fight list.
   const pullTotals = new Map<string, number>();
-  for (const fight of encounterPulls) pullTotals.set(fight.name, (pullTotals.get(fight.name) ?? 0) + 1);
-  const pullNumbers = pullNumbersOf(encounterPulls);
+  for (const fight of fights) pullTotals.set(fight.name, (pullTotals.get(fight.name) ?? 0) + 1);
+  const pullNumbers = pullNumbersOf(fights);
   const pullLabel = (fight: FightEntry): string => {
     const of = pullTotals.get(fight.name) ?? 1;
     return of > 1 ? `pull ${pullNumbers.get(fight.index) ?? 1} of ${of}` : '';
   };
-  const encounters = fights.filter((fight) => fight.kind === 'encounter' && !fight.in_progress);
+  const encounters = fights.filter((fight) => !fight.in_progress);
   const players = new Map<string, NightPlayer>();
   const bosses = new Map<string, NightBoss>();
   const phases = new Map<number, string>();
@@ -118,28 +144,7 @@ export function aggregateNight(
   let loaded = 0;
 
   for (const fight of encounters) {
-    const boss = bosses.get(fight.name) ?? {
-      name: fight.name,
-      pulls: 0,
-      kills: 0,
-      wipes: 0,
-      time_ms: 0,
-      deaths: 0,
-      fights: [],
-    };
-    boss.pulls += 1;
-    boss.kills += fight.kill ? 1 : 0;
-    boss.wipes += fight.kill ? 0 : 1;
-    boss.time_ms += fight.duration_ms;
-    boss.deaths += fight.deaths;
-    boss.fights.push(fight.index);
-    if (fight.kill && (boss.best === undefined || fight.duration_ms < boss.best.duration_ms))
-      boss.best = { index: fight.index, duration_ms: fight.duration_ms };
-    const health = fight.boss_health_pct;
-    if (!fight.kill && health !== undefined && health >= 0)
-      boss.lowest_wipe_pct = Math.min(boss.lowest_wipe_pct ?? 100, health);
-    bosses.set(fight.name, boss);
-
+    if (fight.kind === 'encounter') foldBoss(bosses, fight);
     const summary = summaries.get(fight.index);
     if (summary === undefined) continue;
     loaded += 1;
@@ -214,7 +219,7 @@ export function aggregateNight(
 }
 
 /**
- * Every loaded boss pull folded into one Summary-shaped object, so the fight tabs can
+ * Every loaded pull of `fights` (the night's boss pulls, or one zone's trash) folded into one Summary-shaped object, so the fight tabs can
  * show the night the way they show a pull: damage by ability across every boss, deaths
  * in the order they happened with the pull they happened in, interrupts and the casts
  * that went through, buff uptime over the night's combat time. Timestamps are offset by
@@ -225,7 +230,7 @@ export function nightSummary(
   fights: readonly FightEntry[],
   summaries: ReadonlyMap<number, Summary>,
 ): Summary {
-  const encounters = fights.filter((fight) => fight.kind === 'encounter' && !fight.in_progress);
+  const encounters = fights.filter((fight) => !fight.in_progress);
   const pulls = pullNumbersOf(encounters);
   const actorsBy = {
     damage_done: new Map<string, Actor>(),
@@ -421,11 +426,12 @@ export function nightSummary(
       }
     }
     const bossKey = encounterKey(fight.encounter_id, fight.name);
-    mechanicsBosses.set(bossKey, {
-      encounter_id: fight.encounter_id,
-      name: fight.name,
-      pulls: (mechanicsBosses.get(bossKey)?.pulls ?? 0) + 1,
-    });
+    if (fight.kind === 'encounter')
+      mechanicsBosses.set(bossKey, {
+        encounter_id: fight.encounter_id,
+        name: fight.name,
+        pulls: (mechanicsBosses.get(bossKey)?.pulls ?? 0) + 1,
+      });
     if (summary.mechanics !== undefined) mechanicsSeen = true;
     if (summary.mechanics?.table_found) {
       mechanicsTableFound = true;

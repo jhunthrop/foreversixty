@@ -4,7 +4,8 @@
 // picker's five list states and its races, the installed state, the remove question, the webhook
 // offer, removed in Discord, officer-read-only and frozen, axe, 44 px targets at 360 and the
 // §3.1 height caps.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildBotCopy } from '../../src/lib/guild/discord-bot-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
@@ -24,6 +25,7 @@ import {
 } from './support/guild-discord-bot';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { choose, fieldControl } from './support/select';
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };
@@ -93,7 +95,7 @@ test.describe('the install return', () => {
       RETURN('installed'),
     );
     await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.returns.installed);
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await expect(page).toHaveURL(new RegExp(`${SETTINGS_GUILD_PATH}#discord$`));
     expect(
       await page.evaluate(() => (window as unknown as { __addSeen: { add: boolean } }).__addSeen.add),
@@ -141,11 +143,11 @@ test.describe('the picker', () => {
     await expect(select.locator('optgroup')).toHaveAttribute('label', 'Olympus Raids');
     await expect(select.locator('option').nth(1)).toHaveText('#general');
     await expect(select.locator('optgroup option')).toHaveText(['#raid-signups', '#officers']);
-    await select.selectOption('');
+    await choose(select, '');
     await id(page, 'bot-channel-save').click();
     await expect(id(page, 'bot-channel-empty-press')).toHaveText(guildBotCopy.picker.emptyPress);
     await expect(select).toHaveAttribute('aria-invalid', 'true');
-    await select.selectOption(RAID_CHANNEL_ID);
+    await choose(select, RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.installed.saved);
     await expect(id(page, 'bot-test')).toBeFocused();
@@ -257,7 +259,7 @@ test.describe('installed', () => {
       `${guildBotCopy.picker.serverLead} Olympus Discord`,
     );
     await expect(id(page, 'bot-channel')).toHaveValue(RAID_CHANNEL_ID);
-    await expect(id(page, 'bot-channel')).toBeFocused();
+    await expect(fieldControl(section(page), 'bot-channel')).toBeFocused();
     await id(page, 'bot-channel-cancel').click();
     await expect(id(page, 'bot-change')).toBeFocused();
   });
@@ -394,7 +396,7 @@ test.describe('axe, 44 px targets at 360, and the §3.1 caps', () => {
         expect(height, `${name} @${viewport.width}`).toBeLessThanOrEqual(cap[index] ?? 0);
         if (viewport === PHONE) {
           const heights = await section(page)
-            .locator('button, a[data-testid^="bot-"]:not([data-testid="bot-open"]), select')
+            .locator('button, a[data-testid^="bot-"]:not([data-testid="bot-open"]), select:not([hidden])')
             .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
           for (const h of heights) expect(h).toBeGreaterThanOrEqual(MIN_TARGET);
         }

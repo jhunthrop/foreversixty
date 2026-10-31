@@ -104,29 +104,6 @@ describe('CurrentCharacterChip', () => {
     }
   });
 
-  // Fix round 1 (Critical, Task 4's review): the tools island's own restored line moved
-  // into the chip, so every /sim* page that mounts it can show it, in a slot that was
-  // already reserved rather than one the review found was not.
-  it('shows the restored note beside the label when restored is true and a character is loaded', () => {
-    const { body } = render(CurrentCharacterChip, {
-      props: { current, onforget: () => {}, restored: true },
-    });
-    expect(body).toContain(currentCharacterCopy.restoredNote);
-    expect(body).toContain('data-testid="current-character-restored"');
-  });
-
-  it('does not show the restored note by default', () => {
-    const { body } = render(CurrentCharacterChip, { props: { current, onforget: () => {} } });
-    expect(body).not.toContain(currentCharacterCopy.restoredNote);
-  });
-
-  it('does not show the restored note when restored is true but there is no character', () => {
-    const { body } = render(CurrentCharacterChip, {
-      props: { current: null, onforget: () => {}, restored: true },
-    });
-    expect(body).not.toContain(currentCharacterCopy.restoredNote);
-  });
-
   // The height reservation this component and its mounting page share now lives in
   // current-character-layout.ts, not a local const -- this pins that the chip actually
   // renders the imported value, not a copy that could drift from it.
@@ -143,10 +120,9 @@ describe('CurrentCharacterChip', () => {
     expect(body).not.toContain('data-testid="current-character-guild"');
   });
 
-  it('renders the imported CHIP_HEIGHT classes, in every state, restored or not', () => {
+  it('renders the imported CHIP_HEIGHT classes, in every state', () => {
     for (const props of [
       { current, onforget: () => {} },
-      { current, onforget: () => {}, restored: true },
       { current: null, onforget: () => {} },
     ]) {
       const { body } = render(CurrentCharacterChip, { props });

@@ -1,7 +1,10 @@
 {
-  "engine_version": "0.5.3",
+  "engine_version": "0.6.0",
   "fight_index": 4,
   "duration_ms": 10000,
+  "encounter_id": 9002,
+  "difficulty": 8,
+  "kill": true,
   "damage_done": [
     {
       "guid": "Player-4184-000000A1",

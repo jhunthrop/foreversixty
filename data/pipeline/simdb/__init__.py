@@ -243,7 +243,7 @@ def build_sim_database(
     # `fetch-wowhead` became a workflow step, and any build fetched without
     # it -- is byte-identical to what this function produced before this
     # branch existed.
-    wowhead_path = raw / wh.RAW_FILE
+    wowhead_path = raw / wh.CARRY_FILE
     wowhead_ids: set[int] = set()
     if wowhead_path.exists():
         supplement = wh.supplement(wh.load_items(wowhead_path), client_ids)

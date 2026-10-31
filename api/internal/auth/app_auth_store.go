@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// The device kinds the devices table holds (migration 0059).
+// The device kinds the devices table holds (migration 0060).
 const (
 	DeviceKindCompanion = "companion"
 	DeviceKindApp       = "app"

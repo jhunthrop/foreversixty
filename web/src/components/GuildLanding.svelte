@@ -78,14 +78,20 @@
       </div>
       <div class="flex flex-col gap-2">
         <label class="quiet-label" for="guild-lookup-region">{copy.regionLabel}</label>
-        <Select id="guild-lookup-region" name="region" compact bind:value={region} options={regionOptions} />
+        <Select
+          id="guild-lookup-region"
+          name="region"
+          size="compact"
+          bind:value={region}
+          options={regionOptions}
+        />
       </div>
       <div class="flex flex-col gap-2">
         <label class="quiet-label" for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
         <Select
           id="guild-lookup-ruleset"
           name="ruleset"
-          compact
+          size="compact"
           bind:value={ruleset}
           options={rulesetOptions}
         />

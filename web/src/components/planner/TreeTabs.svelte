@@ -13,7 +13,7 @@
      navigation action; the phone tab strip's `role="tab"` buttons are still the only thing
      that switches the visible panel. -->
 <script lang="ts">
-  import { CARD_HEAD, cardClass } from '../../lib/ui/card';
+  import { CARD_HEAD, CARD_QUIET } from '../../lib/ui/card';
   import type { BandDiffView } from '../../lib/planner/band-compare';
   import { dataUrl } from '../../lib/planner/load';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
@@ -112,7 +112,7 @@
     role="tablist"
     tabindex={-1}
     aria-label="Talent trees"
-    class="border-line-soft flex gap-2 overflow-x-auto overscroll-x-contain border-b pb-2"
+    class="border-line-soft flex scrollbar-none gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b pb-2"
     data-testid="tree-tablist"
     bind:this={tablist}
     use:scrollFade
@@ -159,13 +159,16 @@
   {#each talentIndex.trees as tree, i (tree.id)}
     {@const icon = specIconFor(i)}
     <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
-       attribute would hide them on desktop too, where `md:flex` cannot override it. -->
+       attribute would hide them on desktop too, where `md:flex` cannot override it.
+       The card surface without `cardClass`'s clip: a talent's tooltip hangs out of the
+       panel, and `overflow: hidden` cut it off at the panel's edge (owner report
+       2026-10-31). Nothing in a tree panel needs the clip: the header draws only a rule. -->
     <div
       id={`tree-panel-${tree.id}`}
       role="tabpanel"
       aria-labelledby={`tree-tab-${tree.id}`}
       data-testid={`tree-panel-${tree.id}`}
-      class="{cardClass(true)} flex-col md:flex {activeTree === i ? 'flex' : 'hidden'}"
+      class="{CARD_QUIET} flex-col md:flex {activeTree === i ? 'flex' : 'hidden'}"
     >
       <!-- The game's tree header: spec icon, name, points in the tree, a rule under both --
          the same "icon - name - point count" order the BiS header's own SpecTabs use (spec

@@ -25,6 +25,8 @@
     guilds = [],
     uploadAction = true,
     nightDates = false,
+    emptyMessage: ownEmptyMessage = myReportsCopy.empty,
+    emptySecondary,
   }: {
     heading?: boolean;
     /** The empty state's "Upload a log" link; off on /logs, where the page's own header carries it. */
@@ -32,6 +34,10 @@
     /** The account page's rows print the night's date ("Tue 20 Oct"), the words the guild Overview uses for the
      *  same night, instead of /logs' relative age (P.1). */
     nightDates?: boolean;
+    /** The "Mine" tab's empty sentence, where the page says it in its own words (/reports). */
+    emptyMessage?: string;
+    /** A quieter second link beside the empty state's upload link (/reports' sample report). */
+    emptySecondary?: { label: string; href: string };
     /** §4.C.1's own tab strip source: `Me.guilds`, every guild this account belongs to. */
     guilds?: readonly { id: number; name: string }[];
   } = $props();
@@ -77,7 +83,7 @@
   const hasMore = $derived(rows.length > 0 && page * REPORTS_PER_PAGE < total);
   const activeGuildName = $derived(guilds.find((guild) => guild.id === activeGuild)?.name ?? '');
   const emptyMessage = $derived(
-    activeGuild === null ? myReportsCopy.empty : logsCopy.guildEmpty(activeGuildName),
+    activeGuild === null ? ownEmptyMessage : logsCopy.guildEmpty(activeGuildName),
   );
 </script>
 
@@ -140,6 +146,7 @@
       action={activeGuild === null && uploadAction
         ? { label: myReportsCopy.uploadAction, href: '/logs' }
         : undefined}
+      secondary={activeGuild === null ? emptySecondary : undefined}
       testid="my-reports-empty"
     />
   {:else}

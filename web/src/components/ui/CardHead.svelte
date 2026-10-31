@@ -74,7 +74,7 @@
   {:else if glyph !== undefined}
     <IconTile {glyph} {tone} size={cardHeadTileSize(compact)} />
   {/if}
-  <div class={CARD_HEAD.titleBlock}>
+  <div class={compact ? CARD_HEAD.titleBlockCompact : CARD_HEAD.titleBlock}>
     {#if label !== undefined && !compact}
       <span class={CARD_HEAD.label}>{label}</span>
     {/if}

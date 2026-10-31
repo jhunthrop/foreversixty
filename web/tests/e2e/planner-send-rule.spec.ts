@@ -3,7 +3,8 @@
 // stays off), another player's build of the same class (it says what it replaces and asks once),
 // and the character's own build (it sends as before). "Sim this build" sits in the same card, under
 // the send, in view at 1280 x 900.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 

@@ -1,0 +1,85 @@
+name: ios
+on:
+  push:
+    branches: [main]
+    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+  workflow_dispatch:
+    inputs:
+      record:
+        description: 'Re-record the snapshot goldens that fail here and upload them (make -C apps/ios snapshots)'
+        type: boolean
+        default: false
+permissions: { contents: read }
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  # The snapshot goldens (AppTests/**/__Snapshots__) are rendered by THIS runtime: iOS 26.5 changes
+  # navigation bar heights and line metrics against the iOS 27 simulator used locally, so a golden
+  # recorded on 27 fails here by whole rows. Xcode and the simulator OS are pinned so the reference
+  # never drifts with the runner image; moving them means re-recording every golden here
+  # (`make -C apps/ios snapshots`). The image had no Xcode 27 on 2026-10-30.
+  XCODE_VERSION: '26.6'
+  XCODEGEN_VERSION: '2.46.0'
+  SIMULATOR: 'platform=iOS Simulator,name=iPhone 17,OS=26.5'
+jobs:
+  build-test:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: apps/ios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - name: Install XcodeGen
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" \
+            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+      - name: Generate the project
+        run: xcodegen generate
+      - name: Cache SwiftPM checkouts
+        uses: actions/cache@v4
+        with:
+          path: apps/ios/build/DerivedData/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Package.swift') }}
+      # Simulator only: no Apple Developer account yet, so the build is
+      # ad-hoc signed ("-", project.yml) and needs no certificate or team.
+      # In record mode the failing snapshots are rewritten in place (swift-snapshot-testing's
+      # SNAPSHOT_TESTING_RECORD, passed to the test runner) and uploaded for the Makefile to pull.
+      - name: Build and test
+        continue-on-error: ${{ inputs.record == true }}
+        env:
+          TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record == true && 'failed' || 'missing' }}
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project ForeverSixty.xcodeproj \
+            -scheme ForeverSixty \
+            -destination "$SIMULATOR" \
+            -derivedDataPath build/DerivedData \
+            -resultBundlePath build/ForeverSixty.xcresult
+      - name: Upload the recorded snapshots
+        if: inputs.record == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-snapshots
+          # Every suite's goldens (AppTests/__Snapshots__ and feature folders such as
+          # AppTests/Raids/__Snapshots__); the hierarchy under AppTests/ is kept for the Makefile.
+          path: apps/ios/AppTests/**/__Snapshots__/**
+          retention-days: 7
+      - name: Upload results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-results
+          path: |
+            apps/ios/build/ForeverSixty.xcresult
+            apps/ios/AppTests/**/__Snapshots__/**
+          retention-days: 7

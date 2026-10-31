@@ -10,7 +10,8 @@
 //             the dots either side stay clear of it.
 //   Ruling 4. Below 400px a part's row reads "412/500" with an 80px label column.
 //   Ruling 5. /setup says "type /fs copy, press Ctrl+C".
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';
 
 const NOT_FOUND = {

@@ -1,0 +1,521 @@
+{
+  "sources": [
+    {
+      "label": "Blizzard, Forever goes live globally 4 November",
+      "url": "https://news.blizzard.com/en-gb/article/24315820/world-of-warcraft-forever-goes-live-globally-4-november",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Blizzard, What's Next panel recap",
+      "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Blizzard, How PvP Progression in Forever Works",
+      "url": "https://worldofwarcraft.blizzard.com/en-us/news/24303316",
+      "kind": "blizzard"
+    },
+    {
+      "label": "BiS phase audit, 2026-10-30",
+      "url": "https://github.com/jhunthrop/foreversixty/blob/main/design/reviews/2026-10-30-bis-phase-audit.md",
+      "kind": "site"
+    }
+  ],
+  "notes": "Which content is open when, keyed by stable game ids. House rule, pending owner confirmation: Forever launches 'before Molten Core', the original Classic Phase 1 content set, so any source that opened after Phase 1 in original Classic is gated until a date is announced, and a source whose original phase is unsure is gated and flagged 'uncertain'. Each gate has a phase key from phases.json, or 'later' with date 'unannounced'. A phase at or before 'launch' is open, so a confirmed date flips a gate by editing its phase and date here, with no code change. Keys: npcs (a vendor's or a dungeon boss's npc id; a world source by the npc's name, because loot.json's world sources carry no npc id), quests (quest id), factions (reputation faction id, gating its rep sources and every quest that needs it, from from_standing up when set), zones (an instance or zone source's zone id), kinds (a loot source kind) and, as a last resort, items. An id missing from a night's fetch is warned about and kept, never deleted. data/pipeline/loot/content_phases.py writes the gates into loot.json; sim/cmd/leveling-bis reads this same file and applies the same gates to whatever loot.json it is given.",
+  "gates": [
+    {
+      "key": "world-bosses",
+      "label": "Era world bosses",
+      "original_patch": "1.2 to 1.8",
+      "phase": "raids-1",
+      "date": "2026-12-09",
+      "confidence": "inferred",
+      "why": "Raid-sized open-world bosses. Moved here from overlay.py's WORLD_BOSS_NPC_NAMES and data.go's worldBossSources, which pinned them to the first raid tier; Blizzard has dated no world boss.",
+      "npcs": [
+        {"id": 12397, "name": "Lord Kazzak"},
+        {"id": 6109, "name": "Azuregos"},
+        {"id": 14889, "name": "Emeriss"},
+        {"id": 14888, "name": "Lethon"},
+        {"id": 14890, "name": "Taerar"},
+        {"id": 14887, "name": "Ysondre"}
+      ]
+    },
+    {
+      "key": "aq-war-effort",
+      "label": "Ahn'Qiraj War Effort, Cenarion Circle and Brood of Nozdormu",
+      "original_patch": "1.9",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "Gates of Ahn'Qiraj content. Anachronos sells the war-effort Signet Rings; Cenarion Circle and Brood of Nozdormu reputation is earned through the war effort and the raid. Replaces sources.py's REP_FACTION_RAID_PHASE_OPENS and data.go's raidLockedQuestOpens and repFactionRaidPhaseOpens, and restores the Anachronos gate commit 3592e40a5 deleted.",
+      "npcs": [
+        {"id": 15192, "name": "Anachronos"}
+      ],
+      "factions": [
+        {"id": 609, "name": "Cenarion Circle"},
+        {"id": 910, "name": "Brood of Nozdormu"}
+      ],
+      "quests": [
+        {"id": 8756, "name": "The Qiraji Conqueror"},
+        {"id": 8789, "name": "Imperial Qiraji Armaments"},
+        {"id": 8790, "name": "Imperial Qiraji Regalia"},
+        {"id": 8745, "name": "Treasure of the Timeless One"},
+        {"id": 8620, "name": "The Only Prescription"},
+        {"id": 8736, "name": "The Nightmare Manifests"},
+        {"id": 8548, "name": "Volunteer's Battlegear"},
+        {"id": 8572, "name": "Veteran's Battlegear"},
+        {"id": 8573, "name": "Champion's Battlegear"},
+        {"id": 8574, "name": "Stalwart's Battlegear"}
+      ]
+    },
+    {
+      "key": "silithus-abyssal-council",
+      "label": "Silithus: the Abyssal Council and Cenarion Hold",
+      "original_patch": "1.8",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "The Silithus Twilight's Hammer lead-in to Ahn'Qiraj. The Council is summoned with Twilight set pieces and signets by a raid-sized group; Cenarion Hold's Armaments of War and hive quests came with the same patch. Silithus' own zone drops are gated with it because the Abyssal Lords' rings are also listed there.",
+      "npcs": [
+        {"id": 15203, "name": "Prince Skaldrenox"},
+        {"id": 15305, "name": "Lord Skwol"},
+        {"id": 15205, "name": "Baron Kazum"},
+        {"id": 15204, "name": "High Marshal Whirlaxis"},
+        {"id": 15206, "name": "The Duke of Cynders"},
+        {"id": 15207, "name": "The Duke of Fathoms"},
+        {"id": 15208, "name": "The Duke of Shards"},
+        {"id": 15220, "name": "The Duke of Zephyrs"},
+        {"id": 15209, "name": "Crimson Templar"},
+        {"id": 15211, "name": "Azure Templar"},
+        {"id": 15212, "name": "Hoary Templar"},
+        {"id": 15307, "name": "Earthen Templar"},
+        {"id": 14479, "name": "Twilight Lord Everun"},
+        {"id": 15200, "name": "Twilight Keeper Mayna"},
+        {"id": 15308, "name": "Twilight Prophet"}
+      ],
+      "zones": [
+        {"id": 1377, "name": "Silithus"}
+      ],
+      "quests": [
+        {"id": 8316, "name": "Armaments of War"},
+        {"id": 8376, "name": "Armaments of War"},
+        {"id": 8377, "name": "Armaments of War"},
+        {"id": 8378, "name": "Armaments of War"},
+        {"id": 8379, "name": "Armaments of War"},
+        {"id": 8380, "name": "Armaments of War"},
+        {"id": 8381, "name": "Armaments of War"},
+        {"id": 8382, "name": "Armaments of War"},
+        {"id": 8361, "name": "Abyssal Contacts"},
+        {"id": 8362, "name": "Abyssal Crests"},
+        {"id": 8498, "name": "Twilight Battle Orders"},
+        {"id": 8501, "name": "Target: Hive'Ashi Stingers"},
+        {"id": 8502, "name": "Target: Hive'Ashi Workers"},
+        {"id": 8534, "name": "Hive'Zora Scout Report"},
+        {"id": 8539, "name": "Target: Hive'Zora Hive Sisters"},
+        {"id": 8687, "name": "Target: Hive'Zora Tunnelers"},
+        {"id": 8738, "name": "Hive'Regal Scout Report"},
+        {"id": 8739, "name": "Hive'Ashi Scout Report"},
+        {"id": 8740, "name": "Twilight Marauders"},
+        {"id": 8770, "name": "Target: Hive'Ashi Defenders"},
+        {"id": 8771, "name": "Target: Hive'Ashi Sandstalkers"},
+        {"id": 8772, "name": "Target: Hive'Zora Waywatchers"},
+        {"id": 8773, "name": "Target: Hive'Zora Reavers"},
+        {"id": 8774, "name": "Target: Hive'Regal Ambushers"},
+        {"id": 8775, "name": "Target: Hive'Regal Spitfires"},
+        {"id": 8776, "name": "Target: Hive'Regal Slavemakers"},
+        {"id": 8777, "name": "Target: Hive'Regal Burrowers"}
+      ]
+    },
+    {
+      "key": "emerald-nightmare-lead-in",
+      "label": "Dragons of Nightmare lead-in",
+      "original_patch": "1.8",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Twilight Corrupter, the Duskwood Nightmare boss summoned for the 1.8 dragon questline.",
+      "npcs": [
+        {"id": 15625, "name": "Twilight Corrupter"}
+      ]
+    },
+    {
+      "key": "zul-gurub-zandalar",
+      "label": "Zul'Gurub and the Zandalar Tribe",
+      "original_patch": "1.7",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "Zandalar Tribe reputation and the Yeh'kinya and Zul'Gurub turn-ins exist only to lead into or reward Zul'Gurub, which has no date. The Bloodsoul and Darksoul smithing need Souldarite (19774), a Zul'Gurub-only drop with no source in loot.json, so those crafted items are keyed directly.",
+      "factions": [
+        {"id": 270, "name": "Zandalar Tribe"}
+      ],
+      "items": [
+        {"id": 19690, "name": "Bloodsoul Breastplate"},
+        {"id": 19691, "name": "Bloodsoul Shoulders"},
+        {"id": 19692, "name": "Bloodsoul Gauntlets"},
+        {"id": 19693, "name": "Darksoul Breastplate"},
+        {"id": 19694, "name": "Darksoul Leggings"},
+        {"id": 19695, "name": "Darksoul Shoulders"}
+      ],
+      "quests": [
+        {"id": 8181, "name": "Confront Yeh'kinya"},
+        {"id": 8183, "name": "The Heart of Hakkar"},
+        {"id": 8195, "name": "Zulian, Razzashi, and Hakkari Coins"},
+        {"id": 8201, "name": "A Collection of Heads"},
+        {"id": 8238, "name": "Gurubashi, Vilebranch, and Witherbark Coins"},
+        {"id": 8240, "name": "A Bijou for Zanza"},
+        {"id": 8243, "name": "Zanza's Potent Potables"},
+        {"id": 8246, "name": "Signets of the Zandalar"},
+        {"id": 8422, "name": "Trolls of a Feather"},
+        {"id": 8041, "name": "Strength of Mount Mugamba"},
+        {"id": 8042, "name": "Strength of Mount Mugamba"},
+        {"id": 8043, "name": "Strength of Mount Mugamba"},
+        {"id": 8044, "name": "The Rage of Mugamba"},
+        {"id": 8049, "name": "The Eye of Zuldazar"},
+        {"id": 8050, "name": "The Eye of Zuldazar"},
+        {"id": 8051, "name": "The Eye of Zuldazar"},
+        {"id": 8052, "name": "The All-Seeing Eye of Zuldazar"},
+        {"id": 8101, "name": "The Pebble of Kajaro"},
+        {"id": 8102, "name": "The Pebble of Kajaro"},
+        {"id": 8103, "name": "The Pebble of Kajaro"},
+        {"id": 8104, "name": "The Jewel of Kajaro"},
+        {"id": 8106, "name": "Kezan's Taint"},
+        {"id": 8107, "name": "Kezan's Taint"},
+        {"id": 8108, "name": "Kezan's Taint"},
+        {"id": 8109, "name": "Kezan's Unstoppable Taint"},
+        {"id": 8110, "name": "Enchanted South Seas Kelp"},
+        {"id": 8111, "name": "Enchanted South Seas Kelp"},
+        {"id": 8112, "name": "Enchanted South Seas Kelp"},
+        {"id": 8113, "name": "Pristine Enchanted South Seas Kelp"},
+        {"id": 8116, "name": "Vision of Voodress"},
+        {"id": 8117, "name": "Vision of Voodress"},
+        {"id": 8118, "name": "Vision of Voodress"},
+        {"id": 8119, "name": "The Unmarred Vision of Voodress"},
+        {"id": 8141, "name": "Zandalarian Shadow Talisman"},
+        {"id": 8142, "name": "Zandalarian Shadow Talisman"},
+        {"id": 8143, "name": "Zandalarian Shadow Talisman"},
+        {"id": 8144, "name": "Zandalarian Shadow Mastery Talisman"},
+        {"id": 8145, "name": "The Maelstrom's Tendril"},
+        {"id": 8146, "name": "The Maelstrom's Tendril"},
+        {"id": 8147, "name": "The Maelstrom's Tendril"},
+        {"id": 8148, "name": "The Maelstrom's Wrath"}
+      ]
+    },
+    {
+      "key": "scourge-invasion",
+      "label": "Scourge Invasion",
+      "original_patch": "1.11",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "The Naxxramas lead-in event. Its six summoned dungeon bosses get their own gated source inside each dungeon instead of inheriting the dungeon's open status.",
+      "npcs": [
+        {"id": 14684, "name": "Balzaphon"},
+        {"id": 14695, "name": "Lord Blackwood"},
+        {"id": 14690, "name": "Revanchion"},
+        {"id": 14693, "name": "Scorn"},
+        {"id": 14682, "name": "Sever"},
+        {"id": 14686, "name": "Lady Falther'ess"},
+        {"id": 16143, "name": "Shadow of Doom"}
+      ],
+      "quests": [
+        {"id": 9094, "name": "Argent Dawn Gloves"},
+        {"id": 9333, "name": "Argent Dawn Gloves"},
+        {"id": 9292, "name": "Cracked Necrotic Crystal"},
+        {"id": 9310, "name": "Faint Necrotic Crystal"},
+        {"id": 9341, "name": "Tabard of the Argent Dawn"},
+        {"id": 9343, "name": "Tabard of the Argent Dawn"}
+      ]
+    },
+    {
+      "key": "argent-dawn-armaments",
+      "label": "Argent Dawn epic and superior armaments",
+      "original_patch": "1.11",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "Insignia and Valor turn-ins added for the Naxxramas lead-in. Argent Dawn reputation itself is open at launch and is not gated.",
+      "quests": [
+        {"id": 9221, "name": "Superior Armaments of Battle - Friend of the Dawn"},
+        {"id": 9222, "name": "Epic Armaments of Battle - Friend of the Dawn"},
+        {"id": 9223, "name": "Superior Armaments of Battle - Honored Amongst the Dawn"},
+        {"id": 9224, "name": "Epic Armaments of Battle - Honored Amongst the Dawn"},
+        {"id": 9225, "name": "Epic Armaments of Battle - Revered Amongst the Dawn"},
+        {"id": 9226, "name": "Superior Armaments of Battle - Revered Amongst the Dawn"},
+        {"id": 9227, "name": "Superior Armaments of Battle - Exalted Amongst the Dawn"},
+        {"id": 9228, "name": "Epic Armaments of Battle - Exalted Amongst the Dawn"}
+      ]
+    },
+    {
+      "key": "tier-0-5",
+      "label": "Tier 0.5: the dungeon set 2 quests, vendors and summoned bosses",
+      "original_patch": "1.10",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Forever has said nothing about Tier 0.5. The 226xxx ids are Season of Discovery re-itemisations kept in the client. Gated under the house rule until a date is announced.",
+      "npcs": [
+        {"id": 230317, "name": "Mokvar"},
+        {"id": 230319, "name": "Deliana"},
+        {"id": 230565, "name": "Ironforge Guard"},
+        {"id": 230566, "name": "Kor'kron Elite"},
+        {"id": 16042, "name": "Lord Valthalak"},
+        {"id": 16080, "name": "Mor Grayhoof"},
+        {"id": 16097, "name": "Isalien"},
+        {"id": 16118, "name": "Kormok"},
+        {"id": 16101, "name": "Jarien"},
+        {"id": 16102, "name": "Sothos"},
+        {"id": 181083, "name": "Sothos and Jarien's Heirlooms"},
+        {"id": 16043, "name": "Magma Lord Bokk"}
+      ],
+      "quests": [
+        {"id": 8905, "name": "An Earnest Proposition"},
+        {"id": 8906, "name": "An Earnest Proposition"},
+        {"id": 8907, "name": "An Earnest Proposition"},
+        {"id": 8908, "name": "An Earnest Proposition"},
+        {"id": 8909, "name": "An Earnest Proposition"},
+        {"id": 8910, "name": "An Earnest Proposition"},
+        {"id": 8911, "name": "An Earnest Proposition"},
+        {"id": 8912, "name": "An Earnest Proposition"},
+        {"id": 8913, "name": "An Earnest Proposition"},
+        {"id": 8914, "name": "An Earnest Proposition"},
+        {"id": 8915, "name": "An Earnest Proposition"},
+        {"id": 8916, "name": "An Earnest Proposition"},
+        {"id": 8917, "name": "An Earnest Proposition"},
+        {"id": 8918, "name": "An Earnest Proposition"},
+        {"id": 8919, "name": "An Earnest Proposition"},
+        {"id": 8920, "name": "An Earnest Proposition"},
+        {"id": 8926, "name": "Just Compensation"},
+        {"id": 8927, "name": "Just Compensation"},
+        {"id": 8931, "name": "Just Compensation"},
+        {"id": 8932, "name": "Just Compensation"},
+        {"id": 8933, "name": "Just Compensation"},
+        {"id": 8934, "name": "Just Compensation"},
+        {"id": 8935, "name": "Just Compensation"},
+        {"id": 8936, "name": "Just Compensation"},
+        {"id": 8937, "name": "Just Compensation"},
+        {"id": 8938, "name": "Just Compensation"},
+        {"id": 8939, "name": "Just Compensation"},
+        {"id": 8940, "name": "Just Compensation"},
+        {"id": 8941, "name": "Just Compensation"},
+        {"id": 8942, "name": "Just Compensation"},
+        {"id": 8943, "name": "Just Compensation"},
+        {"id": 8944, "name": "Just Compensation"},
+        {"id": 8949, "name": "Falrin's Vendetta"},
+        {"id": 8951, "name": "Anthion's Parting Words"},
+        {"id": 8952, "name": "Anthion's Parting Words"},
+        {"id": 8953, "name": "Anthion's Parting Words"},
+        {"id": 8954, "name": "Anthion's Parting Words"},
+        {"id": 8955, "name": "Anthion's Parting Words"},
+        {"id": 8956, "name": "Anthion's Parting Words"},
+        {"id": 8957, "name": "Anthion's Parting Words"},
+        {"id": 8958, "name": "Anthion's Parting Words"},
+        {"id": 8959, "name": "Anthion's Parting Words"},
+        {"id": 9016, "name": "Anthion's Parting Words"},
+        {"id": 9017, "name": "Anthion's Parting Words"},
+        {"id": 9018, "name": "Anthion's Parting Words"},
+        {"id": 9019, "name": "Anthion's Parting Words"},
+        {"id": 9020, "name": "Anthion's Parting Words"},
+        {"id": 9021, "name": "Anthion's Parting Words"},
+        {"id": 9022, "name": "Anthion's Parting Words"},
+        {"id": 8999, "name": "Saving the Best for Last"},
+        {"id": 9000, "name": "Saving the Best for Last"},
+        {"id": 9001, "name": "Saving the Best for Last"},
+        {"id": 9002, "name": "Saving the Best for Last"},
+        {"id": 9003, "name": "Saving the Best for Last"},
+        {"id": 9004, "name": "Saving the Best for Last"},
+        {"id": 9005, "name": "Saving the Best for Last"},
+        {"id": 9006, "name": "Saving the Best for Last"},
+        {"id": 9007, "name": "Saving the Best for Last"},
+        {"id": 9008, "name": "Saving the Best for Last"},
+        {"id": 9009, "name": "Saving the Best for Last"},
+        {"id": 9010, "name": "Saving the Best for Last"},
+        {"id": 9011, "name": "Saving the Best for Last"},
+        {"id": 9012, "name": "Saving the Best for Last"},
+        {"id": 9013, "name": "Saving the Best for Last"},
+        {"id": 9014, "name": "Saving the Best for Last"}
+      ]
+    },
+    {
+      "key": "honor-system",
+      "label": "Honor system rank rewards",
+      "original_patch": "1.4",
+      "phase": "launch",
+      "date": "2026-11-04",
+      "confidence": "confirmed",
+      "why": "Blizzard's 'How PvP Progression in Forever Works' says Honor and Rank Points run from launch with rank rewards (coordinator ruling 2026-10-30: an announced date opens a gate). pvpRankCap still limits which ranks count at each band.",
+      "kinds": ["pvp"],
+      "npcs": [
+        {"id": 12777, "name": "Captain Dirgehammer"},
+        {"id": 12782, "name": "Captain O'Neal"},
+        {"id": 12792, "name": "Lady Palanseer"},
+        {"id": 12799, "name": "Sergeant Ba'sha"},
+        {"id": 12805, "name": "Officer Areyn"},
+        {"id": 14581, "name": "Sergeant Thunderhorn"}
+      ]
+    },
+    {
+      "key": "battleground-reputation",
+      "label": "Warsong Gulch, Arathi Basin and Alterac Valley reputation and rewards",
+      "original_patch": "1.5 to 1.7",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Blizzard says the original battlegrounds remain but gives no launch list. Gated under the house rule, with every battleground quartermaster and the Alterac Valley summons and quests.",
+      "factions": [
+        {"id": 889, "name": "Silverwing Sentinels"},
+        {"id": 890, "name": "Warsong Outriders"},
+        {"id": 509, "name": "The League of Arathor"},
+        {"id": 510, "name": "The Defilers"},
+        {"id": 729, "name": "Frostwolf Clan"},
+        {"id": 730, "name": "Stormpike Guard"}
+      ],
+      "npcs": [
+        {"id": 14753, "name": "Illiyana Moonblaze"},
+        {"id": 14754, "name": "Kelm Hargunth"},
+        {"id": 15126, "name": "Rutherford Twing"},
+        {"id": 15127, "name": "Samuel Hawke"},
+        {"id": 13216, "name": "Gaelden Hammersmith"},
+        {"id": 13217, "name": "Thanthaldis Snowgleam"},
+        {"id": 13218, "name": "Grunnda Wolfheart"},
+        {"id": 13219, "name": "Jekyll Flandring"},
+        {"id": 13419, "name": "Ivus the Forest Lord"},
+        {"id": 13256, "name": "Lokholar the Ice Lord"},
+        {"id": 12159, "name": "Korrak the Bloodrager"}
+      ],
+      "zones": [
+        {"id": 2597, "name": "Alterac Valley"}
+      ],
+      "quests": [
+        {"id": 7181, "name": "The Legend of Korrak"},
+        {"id": 7202, "name": "Korrak the Bloodrager"},
+        {"id": 7381, "name": "The Return of Korrak"},
+        {"id": 7382, "name": "Korrak the Everliving"},
+        {"id": 8271, "name": "Hero of the Stormpike"},
+        {"id": 8272, "name": "Hero of the Frostwolf"},
+        {"id": 8565, "name": "Past Victories in Arathi"},
+        {"id": 8566, "name": "Past Victories in Arathi"},
+        {"id": 8567, "name": "Past Victories in Warsong Gulch"},
+        {"id": 8568, "name": "Past Victories in Warsong Gulch"},
+        {"id": 8569, "name": "Past Efforts in Warsong Gulch"},
+        {"id": 8570, "name": "Past Efforts in Warsong Gulch"}
+      ]
+    },
+    {
+      "key": "darkspear-islands",
+      "label": "Darkspear Islands battleground rewards",
+      "original_patch": "Forever",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Forever's new 15v15 battleground has no announced timing.",
+      "npcs": [
+        {"id": 263570, "name": "Creeg Bothunk"}
+      ]
+    },
+    {
+      "key": "darkmoon-faire",
+      "label": "Darkmoon Faire decks, ticket prizes and vendor",
+      "original_patch": "1.6",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "No statement on a Faire schedule in Forever.",
+      "npcs": [
+        {"id": 14846, "name": "Lhara"}
+      ],
+      "quests": [
+        {"id": 7907, "name": "Darkmoon Beast Deck"},
+        {"id": 7927, "name": "Darkmoon Portals Deck"},
+        {"id": 7928, "name": "Darkmoon Warlords Deck"},
+        {"id": 7929, "name": "Darkmoon Elementals Deck"},
+        {"id": 7930, "name": "5 Tickets - Darkmoon Flower"},
+        {"id": 7931, "name": "5 Tickets - Minor Darkmoon Prize"},
+        {"id": 7932, "name": "12 Tickets - Lesser Darkmoon Prize"},
+        {"id": 7933, "name": "40 Tickets - Greater Darkmoon Prize"},
+        {"id": 7934, "name": "50 Tickets - Darkmoon Storage Box"},
+        {"id": 7935, "name": "10 Tickets - Last Month's Mutton"},
+        {"id": 7936, "name": "50 Tickets - Last Year's Mutton"},
+        {"id": 7940, "name": "1200 Tickets - Orb of the Darkmoon"},
+        {"id": 7981, "name": "1200 Tickets - Amulet of the Darkmoon"}
+      ]
+    },
+    {
+      "key": "dire-maul",
+      "label": "Dire Maul",
+      "original_patch": "1.3",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "Opened after Molten Core in original Classic. Forever has not announced it.",
+      "zones": [
+        {"id": 2557, "name": "Dire Maul"}
+      ],
+      "quests": [
+        {"id": 5518, "name": "The Gordok Ogre Suit"},
+        {"id": 5519, "name": "The Gordok Ogre Suit"}
+      ]
+    },
+    {
+      "key": "season-of-discovery-vendor-stock",
+      "label": "Season of Discovery-era reputation vendor stock",
+      "original_patch": "Season of Discovery",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "These vendors' Wowhead Forever rows list only 2278xx Season of Discovery items, with no cost and no standing. Wowhead may have inherited them; the beta was capped at level 30, so nobody has seen them in Forever.",
+      "npcs": [
+        {"id": 11557, "name": "Meilosh"},
+        {"id": 10856, "name": "Argent Quartermaster Hasana"},
+        {"id": 10857, "name": "Argent Quartermaster Lightspark"},
+        {"id": 11536, "name": "Quartermaster Miranda Breechlock"}
+      ]
+    },
+    {
+      "key": "forever-new-vendors",
+      "label": "Forever's new Undermine traders",
+      "original_patch": "Forever",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Wowhead labels this stock 'New in Forever'. Its currency and launch timing are unknown, so it is gated until confirmed.",
+      "npcs": [
+        {"id": 227853, "name": "Pix Xizzix"},
+        {"id": 265574, "name": "Winklespark"},
+        {"id": 265575, "name": "Gezzy Gunkgear"},
+        {"id": 265576, "name": "Rettrick"},
+        {"id": 265577, "name": "Zippie Fizzbolt"}
+      ]
+    },
+    {
+      "key": "ahn-qiraj-crafting",
+      "label": "Obsidian crafted gear",
+      "original_patch": "1.9",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "inferred",
+      "why": "Every Obsidian recipe needs Small or Large Obsidian Shards (22202, 22203), which drop only in Ahn'Qiraj. Neither shard has a source in loot.json, so the recipe-and-reagent gate cannot see it; the crafted items are keyed directly.",
+      "items": [
+        {"id": 22191, "name": "Obsidian Mail Tunic"},
+        {"id": 22194, "name": "Black Grasp of the Destroyer"},
+        {"id": 22195, "name": "Light Obsidian Belt"},
+        {"id": 22196, "name": "Thick Obsidian Breastplate"},
+        {"id": 22197, "name": "Heavy Obsidian Belt"},
+        {"id": 22198, "name": "Jagged Obsidian Shield"}
+      ]
+    },
+    {
+      "key": "late-recipes",
+      "label": "Recipes from the 1.9 to 1.11 range",
+      "original_patch": "1.9 to 1.11",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Flagged by the audit by id range only; their recipes are not verified. Item ids are the last-resort key here because the recipe sources are not in loot.json.",
+      "items": [
+        {"id": 21278, "name": "Stormshroud Gloves"},
+        {"id": 22385, "name": "Titanic Leggings"}
+      ]
+    }
+  ]
+}

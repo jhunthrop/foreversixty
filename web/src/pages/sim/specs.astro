@@ -3,7 +3,7 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
-import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
+import { VIEW_GAP } from '../../lib/current-character-layout';
 import { simCopy } from '../../lib/sim/copy';
 import {
   SPEC_CARD_SKELETON_CLASSES,
@@ -43,21 +43,12 @@ import IslandScript from '../../components/IslandScript.astro';
          heading, at the same skeleton-card technique so its own reservation never drifts
          from SpecGrid.svelte's real render either.
 
-         Task 5: the current-character chip's own reserved slot goes first, above the
-         grids, the same position SimView.svelte's own render puts it in. No extra min-h
-         is added for it here (unlike sim.astro's and [id].astro's own +110px/+76px): this
-         shell reserves no height of its own at all -- both moments render the identical
-         chip slot and the identical grid card counts, so adding the slot to both sides
-         introduces no new *height* mismatch.
-
-         Fix round 1, Important #2: the chip slot and the grids below it are still wrapped
-         in `flex flex-col ${VIEW_GAP}`, the same gap SimView.svelte's own root uses
-         between them once hydrated -- a *vertical-offset* mismatch (0 gap here vs.
-         22px/32px after hydration) is a real shift even though the total reserved height
-         was already right. -->
+         Fix round 1, Important #2: the grids are wrapped in `flex flex-col ${VIEW_GAP}`, the
+         same root SimView.svelte renders once hydrated. 2026-10-31: the "Jump to" spine bar's
+         slot that used to open this wrapper is gone with the bar; the island renders nothing
+         in its place, so both moments still start the grids at the same offset. -->
     <div id="sim" data-sim-mount data-sim-view="specs">
       <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-3">
             <h2 class="section-title px-[18px] md:px-0">{simCopy.specsSimulatedHeading}</h2>

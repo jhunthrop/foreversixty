@@ -10,6 +10,7 @@
   import { homeCharacterSearchCopy as lookup } from '../lib/home-landing-copy';
   import { scoreCopy } from '../lib/score/copy';
   import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import Select from './ui/Select.svelte';
 
   /** `known`: the site holds this character but has nothing on it, and the viewer does not hold it
    *  (P.1): its own sentence, and only a quiet "Get the addon" link under the lookup box. */
@@ -63,23 +64,23 @@
     </div>
     <div class="flex flex-col gap-2">
       <label class="quiet-label" for="character-not-found-region">{lookup.regionLabel}</label>
-      <select id="character-not-found-region" name="region" class="{FIELD} h-11 md:h-14">
-        {#each REGIONS as region (region)}
-          <option value={region} selected={region === path.region}>
-            {region.toUpperCase()}
-          </option>
-        {/each}
-      </select>
+      <Select
+        id="character-not-found-region"
+        name="region"
+        class="max-md:[&_.sel]:[--sel-h:44px]"
+        value={path.region}
+        options={REGIONS.map((region) => ({ value: region, label: region.toUpperCase() }))}
+      />
     </div>
     <div class="flex flex-col gap-2">
       <label class="quiet-label" for="character-not-found-ruleset">{lookup.rulesetLabel}</label>
-      <select id="character-not-found-ruleset" name="ruleset" class="{FIELD} h-11 md:h-14">
-        {#each RULESETS as ruleset (ruleset.id)}
-          <option value={ruleset.id} selected={ruleset.id === path.ruleset}>
-            {ruleset.label}
-          </option>
-        {/each}
-      </select>
+      <Select
+        id="character-not-found-ruleset"
+        name="ruleset"
+        class="max-md:[&_.sel]:[--sel-h:44px]"
+        value={path.ruleset}
+        options={RULESETS.map((ruleset) => ({ value: ruleset.id, label: ruleset.label }))}
+      />
     </div>
     <button
       type="submit"

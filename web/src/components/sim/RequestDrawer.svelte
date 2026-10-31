@@ -118,8 +118,12 @@
   class="border-line bg-raised rounded-panel mx-[18px] border md:mx-0"
   data-testid="sim-request-drawer"
 >
-  <summary class="label text-nav flex min-h-11 cursor-pointer items-center px-4 md:min-h-9">
-    {simCopy.requestDrawer}
+  <summary
+    class="flex min-h-11 cursor-pointer flex-wrap items-center gap-x-3 px-4 md:min-h-9"
+    data-testid="sim-request-summary"
+  >
+    <span class="label text-nav">{simCopy.requestDrawerSummary}</span>
+    <span class="text-muted text-[12px]">{simCopy.requestDrawerHint}</span>
   </summary>
   <div class="flex flex-col gap-3 p-4 pt-0">
     <p class="text-muted text-[12px]">{simCopy.requestNote}</p>

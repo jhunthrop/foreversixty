@@ -443,7 +443,7 @@ jobs:
             if git pull --rebase --autostash origin main && git push origin HEAD:main; then
               exit 0
             fi
-            [ ! -d .git/rebase-merge ] && [ ! -d .git/rebase-apply ] || git rebase --abort
+            if [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then git rebase --abort; fi
             echo "push attempt $attempt failed; retrying"
             sleep 20
           done
@@ -451,7 +451,9 @@ jobs:
       # A push made with GITHUB_TOKEN triggers no workflow, so every consumer
       # of the new engine is dispatched here, as activate-build.sh does: the
       # site, the API image, the sim artifacts, and the ranking against the
-      # new engine.
+      # new engine. This is what ranks a client move: activate-build.sh skips
+      # its forced ranking while the pinned engine is stamped for the old build
+      # ("ranking waits for engine follow"), and this pin follows the new one.
       - name: deploy the new engine
         if: success() && steps.tests.outputs.green == 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
@@ -477,6 +479,13 @@ jobs:
           if [ -n "$number" ] && gh pr checks "$number" --json bucket --jq 'length > 0 and all(.bucket == "pass" or .bucket == "skipping")' | grep -qx true; then
             gh pr merge "$number" --rebase --delete-branch
             echo "merged the green pin pull request #$number"
+            # A merge made with GITHUB_TOKEN triggers nothing either: the same consumers
+            # as a green push, the ranking among them (bis.yml ranks only once the
+            # pinned engine follows the active build, so a stale pin cannot rank).
+            gh workflow run web.yml --ref main
+            gh workflow run api.yml --ref main
+            gh workflow run sim.yml --ref main
+            gh workflow run bis.yml --ref main -f force=true
             exit 0
           fi
           pushed=0

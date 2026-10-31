@@ -26,6 +26,15 @@ Lanes inside a wave run at the same time. A wave's later lanes wait only on the 
 | **I. iOS scaffold** | iOS | `apps/ios` with SwiftUI and iOS 26+. A typed API client from lane C's contracts. Fixture mode (no network) for previews and tests. Keychain storage for the device token. Swift Testing plus snapshot tests. A GitHub Actions macOS job builds and tests on the simulator. Needs no Apple account until signing. | Wave 1 iOS lanes |
 | **N. Android scaffold** | Android | Install JDK 21 and Gradle on this Mac. `apps/android` with Compose, Material 3 and minSdk 28. kotlinx.serialization and a Ktor client from lane C's contracts, with a fixture mode. EncryptedSharedPreferences or DataStore with Tink for the token. Unit and Compose screenshot tests. A CI job builds, tests and uploads to the Play internal track through a Play Developer API service account. | Wave 1 Android lanes |
 
+### Wave 0.5: one source of truth, operable apps (owner 2026-10-30: "do what's necessary to have scalable and operatable software")
+
+Two lanes start once the Wave 0 integration lands.
+
+| Lane | Delivers |
+|---|---|
+| **P1. Generated, not hand-written** | (1) `api/openapi.yaml` covers every app endpoint. A test checks every contract fixture against its OpenAPI schema, so the spec, fixtures and handlers cannot drift. The Swift and Kotlin models and endpoint stubs are generated from it and checked in; CI fails on drift, the same way it does for tokens. (2) One copy catalog (`apps/shared/copy/*.json`) for every on-screen string, generated into a Swift strings catalog and Android string resources, with plural and placeholder rules. (3) One deep-link table (`apps/shared/links.json`) generates `apple-app-site-association`, `assetlinks.json` and both apps' routers. (4) Feature switches in `GET /v1/app/config`, read once at launch and cached, so a feature ships dark in both apps and turns on together. |
+| **P2. Operable** | (1) Each app sends `X-App: ios|android/<version> (<build>)` on every request. The API logs it and counts requests and errors per platform and version. The minimum-version gate uses the same header and returns `426` with an update link. (2) Crash and hang reporting on both platforms, privacy-first: no user ids, no ad SDKs, disclosed in the store privacy forms. Crashlytics or Sentry; pick one for both apps. (3) One version file (`apps/VERSION`) and one changelog. One command bumps both apps, builds, signs and uploads to the Play internal track, and to TestFlight once Apple enrollment clears (fastlane or the platform CLIs). (4) A mobile runbook: release, staged rollout, halt, forced update, rotating push keys, and what to do when push or sign-in fails. |
+
 Gate to Wave 1: lane D at SHIP from both personas, lane C's contracts merged, and I and N building green in CI.
 
 ### Wave 1: features (one iOS lane and one Android lane per feature, at the same time)
@@ -34,7 +43,7 @@ Each feature is independent. Up to four features run at once per platform, so ei
 
 | Feature | Needs | Scope (subject to lane D's spec) |
 |---|---|---|
-| **F1. Sign-in, account, character switcher** | A1 | Battle.net sign-in; the header's character selector as the app's switcher; the plan row; sign out; the device list. |
+| **F1. Sign-in, account, character switcher** | A1 | Battle.net sign-in; the header's character selector as the app's switcher; the plan row; sign out; the device list. **In-app account deletion** (App Store guideline 5.1.1(v): an app that creates accounts must let people delete them in the app). Needs an API endpoint for deletion with a confirmation step and the same data removal as today's emailed request. Today deletion is only by emailed request. |
 | **F2. Your character** | C | The home answer: upgrades for your level range, worn vs BiS with icons, quality colours and item tooltips (tap), talents status, last sync. |
 | **F3. BiS lists** | C, static data | Class, spec, range and faction picker; the list with sources and runners-up. Read-only and cached offline. |
 | **F4. Guild and raids** | C | Guild home, raids list, raid detail with roster and spec icons, sign up In / Late / Bench / Out, reminders. Likely the flagship mobile use. |
@@ -101,6 +110,7 @@ The time-based events (`raid.signup_nudge`, `raid.starting`, `raid.short`) come 
 
 ## Guard rails
 
+- **API lanes merge after launch (coordinator ruling, 2026-10-30).** The A1, A2 and A3 branches change auth or add migrations, and the apps build against contract fixtures, so none of them merges to main before Nov 6. The app scaffolds, tokens, contracts and spec merge now.
 - **Launch week freeze.** Lanes A1 and A2 add endpoints and a migration. No API deploy that carries their migration from Nov 3 to Nov 5 (launch Nov 4). Their code lands dark, behind unmounted routes, before or after that window. Only the deployed API migrates.
 - **One behaviour, one place.** Rules stay in the API and the static data. Neither app re-derives BiS, gains or scores.
 - **No shared UI layer.** Swift and Kotlin each render natively from the same spec and contracts.
@@ -116,3 +126,7 @@ The time-based events (`raid.signup_nudge`, `raid.starting`, `raid.short`) come 
 | R | Repo | A monorepo: `apps/ios` and `apps/android` beside `api` and `web`, so contracts and tokens change in one commit. |
 | B | Identifiers | Bundle id and package `gg.foreversixty.app`; app link `https://foreversixty.gg/app/…` (universal links and App Links) rather than a custom scheme. |
 | M | Minimum OS | iOS 26 and Android 9 (API 28). |
+| L | Where See plans links | **Decided 2026-10-31 (coordinator, owner delegated): iOS links in the US storefront only; Android links nowhere until the Play Console is enrolled in Google's US external content links programme.** `GET /v1/app/config` answers `web_checkout_regions` by the `X-App` platform: `ios` gets `["US"]`, `android` gets `[]`. Enrolling is an owner click in Play Console; after it, the Android list becomes `["US"]` in server config with no app release. The Play Billing library stays: it reads the storefront country the rule needs, and the programme works through it. The Data safety form says no in-app products. |
+| W | Premium outside link regions (spec §17 Q3) | **Decided 2026-10-31: accept the review risk.** Paying players keep every Premium feature in every country; outside link regions the app shows status only and no purchase word. If App Review objects, answer that the app sells nothing and is free; change the behaviour only on a rejection. |
+| U | Supporter mark for seat holders | **Decided 2026-10-31: the apps draw `supporter_mark` exactly as the API resolves it.** The API's rule already counts a held guild seat (`entitlements.standardEntitlementSQL`), the same as the web, so seat holders show the mark in both. |
+| Q | The other spec §17 questions | **Decided 2026-10-31.** Q1 approving characters: v1.1, on the officer tools already in v1. Q4 signed-in checkout handoff: after launch, as its own lane with a security review, because See plans is US-iOS-only at first. Q5 Discord DMs: not in v1; the Discord option is the existing channel events. Q6 tablets: the phone layout at launch. |

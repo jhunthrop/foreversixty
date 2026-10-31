@@ -1,0 +1,595 @@
+/* web/src/styles/paperdoll.css
+   The shared Paperdoll's styles (components/character/Paperdoll.svelte,
+   design/specs/2026-10-31-paperdoll.md §3.3 to §3.6), imported by the component so only the pages
+   that draw it carry it: a plain stylesheet, not the component's scoped <style>, because the
+   character page's island renders the frame only after its client-side fetch, and the build ships scoped CSS only for markup its SSR pass rendered (the constraint
+   FactionCrest.svelte documents). Every class is `pd-` prefixed under `.pd`; breakpoints are
+   container widths. */
+.pd {
+  container-type: inline-size;
+}
+
+.pd-stage {
+  max-width: 960px;
+  margin-inline: auto;
+  padding: 16px 12px;
+  background: #0b0e14;
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-panel);
+}
+
+.pd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 4px;
+}
+
+/* ---- Cells ---- */
+.pd-cell {
+  position: relative;
+  min-width: 0;
+  grid-row: var(--rp);
+}
+
+.pd-left {
+  grid-column: 1;
+}
+
+.pd-right {
+  grid-column: 2;
+}
+
+.pd-cell.pd-mid {
+  grid-column: 1 / 3;
+  justify-self: center;
+  width: calc(50% - 4px);
+}
+
+.pd-weapon {
+  margin-top: 8px;
+}
+
+.pd .pd-host {
+  display: flex;
+  width: 100%;
+}
+
+.pd-slot,
+.pd .pd-slot {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 4px;
+  border-radius: var(--radius-control);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pd-right .pd-slot,
+.pd-right .pd-slot {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.pd .pd-known {
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+
+.pd .pd-known:hover,
+.pd .pd-up:hover {
+  background: var(--row-hover);
+}
+
+.pd .pd-known:hover .pd-sock img {
+  filter: brightness(1.12);
+}
+
+.pd .pd-known:focus-visible,
+.pd .pd-up:focus-visible,
+.pd .pd-pick:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.pd .pd-known:active,
+.pd .pd-up:active {
+  background: rgba(229, 185, 85, 0.1);
+}
+
+/* ---- Sockets ---- */
+.pd-sock {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--q, var(--color-line));
+  border-radius: var(--radius-pill);
+  background: #14171f;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.65),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.pd-sock img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pd-sock.pd-bare {
+  border: 1px solid var(--color-line);
+}
+
+.pd-sock.pd-empty {
+  border: 1px dashed var(--color-line);
+  background: #090b10;
+  padding: 2px;
+}
+
+.pd-sock.pd-empty img {
+  opacity: 0.45;
+  border-radius: 3px;
+}
+
+.pd-sock.pd-unknown {
+  border: 1px solid var(--color-line);
+  padding: 1px;
+}
+
+.pd-sock.pd-unknown img {
+  opacity: 0.4;
+  filter: saturate(0.5);
+  border-radius: 4px;
+}
+
+.pd-shimmer {
+  background: linear-gradient(90deg, #141925 0%, #1c2230 50%, #141925 100%);
+  background-size: 200% 100%;
+  border-color: transparent;
+}
+
+.pd-bar {
+  display: block;
+  width: 60%;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.pd-right .pd-bar {
+  margin-left: auto;
+}
+
+/* ---- Names: 3 lines with an ellipsis on a phone, 2 on desktop; long words carry soft hyphens. ---- */
+.pd-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.pd-name {
+  font: 600 13px/16px var(--font-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+
+.pd-name.pd-id {
+  color: var(--color-muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.pd-name.pd-word,
+.pd-muted {
+  color: var(--color-muted);
+}
+
+.pd .pd-plain {
+  color: var(--color-text);
+}
+
+/* ---- The desktop second line: pick, gain; "Best in slot"; the report's detail. ---- */
+.pd-det {
+  display: none;
+}
+
+.pd .pd-pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pd-pick-sock {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--q, var(--color-line));
+  border-radius: 3px;
+  overflow: hidden;
+  background: #14171f;
+}
+
+.pd-pick-sock img,
+.pd-up-sock img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pd-pick-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The line's fixed words never wrap or shrink: only the pick's name takes the ellipsis (§3.3). */
+.pd-det .pd-muted,
+.pd-up .pd-muted {
+  flex: none;
+  white-space: nowrap;
+}
+
+.pd-gain {
+  flex: none;
+  white-space: nowrap;
+  color: var(--color-gold);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Phone upgrade rows: full width, 44 px, the slot word first. ---- */
+.pd-up-wrap {
+  grid-column: 1 / 3;
+  grid-row: var(--rp);
+  min-width: 0;
+}
+
+.pd .pd-up {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 8px;
+  border-radius: var(--radius-control);
+  background: rgba(229, 185, 85, 0.035);
+  cursor: pointer;
+  min-width: 0;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+.pd-up-slot {
+  flex: none;
+  width: 64px;
+  font: 600 12px/16px var(--font-body);
+  color: var(--color-muted);
+}
+
+.pd-up-sock {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--q, var(--color-line));
+  border-radius: 4px;
+  overflow: hidden;
+  background: #14171f;
+}
+
+.pd-up-name {
+  flex: 1;
+  min-width: 0;
+  font: 600 13px/16px var(--font-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  hyphens: manual;
+  /* Margin, not padding: a clamp clips at its padding box, so padding would show a cut line. */
+  margin: 6px 0;
+}
+
+/* ---- Centre: phone, the crest beside the identity block. ---- */
+.pd-centre {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  min-width: 0;
+}
+
+.pd .pd-crest {
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+
+.pd-who {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  align-items: baseline;
+  min-width: 0;
+  max-width: 240px;
+}
+
+.pd-cname {
+  flex-basis: 100%;
+  font: 800 22px/24px var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.pd-desc {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-text);
+}
+
+.pd-fac {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.pd-meta {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+}
+
+.pd-lvl {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.pd-ilvl {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.pd-figure {
+  color: var(--color-gold);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pd-figure.pd-shimmer {
+  display: inline-block;
+  width: 32px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.pd-pill {
+  margin-top: 6px;
+}
+
+.pd-note {
+  max-width: 960px;
+  margin: 12px auto 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-line-soft);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+/* ---- Under 340 (a 360 px phone): socket 36, names 12/15, still 3 lines. ---- */
+@container (max-width: 339px) {
+  .pd-sock {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pd-name {
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  .pd-up-slot {
+    width: 56px;
+  }
+
+  /* The pick's whole name on the narrowest phones: three lines, as the cells have (§3.3). */
+  .pd-up-name {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+/* ---- Desktop (container at least 640): the character frame. Centre 168, from 880 240. ---- */
+@container (min-width: 640px) {
+  .pd-stage {
+    padding: 20px 24px;
+  }
+
+  .pd-grid {
+    grid-template-columns: minmax(0, 1fr) 168px minmax(0, 1fr);
+    column-gap: 24px;
+    row-gap: 8px;
+  }
+
+  .pd-cell {
+    grid-row: var(--r);
+  }
+
+  .pd-right {
+    grid-column: 3;
+  }
+
+  .pd-cell.pd-mid {
+    grid-column: 2;
+    width: auto;
+    justify-self: stretch;
+  }
+
+  .pd-slot,
+  .pd .pd-slot {
+    min-height: 52px;
+    gap: 12px;
+  }
+
+  .pd-lined .pd-slot,
+  .pd-lined .pd-slot {
+    min-height: 64px;
+  }
+
+  /* The second line sits beside the socket under the name, outside the item's trigger, so the
+     pick's own tooltip trigger is never nested in the item's. */
+  .pd-has-line .pd-txt {
+    padding-bottom: 18px;
+  }
+
+  .pd-det {
+    position: absolute;
+    bottom: 8px;
+    left: 60px;
+    right: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font: 400 13px/18px var(--font-body);
+    color: var(--color-muted);
+    min-width: 0;
+  }
+
+  .pd-right .pd-det {
+    left: 4px;
+    right: 60px;
+    justify-content: flex-end;
+  }
+
+  .pd-sock {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pd-name {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .pd-up-wrap {
+    display: none;
+  }
+
+  .pd-centre {
+    grid-column: 2;
+    grid-row: 1 / 9;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+  }
+
+  .pd .pd-crest {
+    width: 72px;
+    height: 72px;
+  }
+
+  .pd-who {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    max-width: none;
+  }
+
+  .pd-cname {
+    flex-basis: auto;
+  }
+
+  .pd-desc {
+    flex-basis: auto;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pd-meta {
+    flex-basis: auto;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pd-ilvl {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-top: 12px;
+  }
+
+  .pd-micro {
+    font: 700 11px/14px var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .pd-figure {
+    font: 800 28px/32px var(--font-heading);
+  }
+
+  .pd-figure.pd-shimmer {
+    width: 64px;
+    height: 28px;
+    margin-top: 2px;
+  }
+
+  .pd-pill {
+    margin-top: 10px;
+  }
+}
+
+@container (min-width: 880px) {
+  .pd-grid {
+    grid-template-columns: minmax(0, 1fr) 240px minmax(0, 1fr);
+  }
+
+  .pd .pd-crest {
+    width: 96px;
+    height: 96px;
+  }
+
+  .pd-cname {
+    font-size: 26px;
+    line-height: 28px;
+  }
+
+  .pd-desc {
+    font-size: 14px;
+  }
+}

@@ -9,14 +9,20 @@
      of Mechanics. Compare and Rankings are one pull's, so they are disabled there. -->
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
-  import { classColorVar } from '../../lib/report/format';
+  import { selectCopy } from '../../lib/ui/copy';
+  import type { SelectOption } from '../../lib/ui/listbox-model';
+  import { classOption } from '../../lib/ui/select-options';
+  import MoreMenu from './MoreMenu.svelte';
+  import Select from '../ui/Select.svelte';
   import { reportCopy } from '../../lib/report/copy';
+  import type { GroupScope } from '../../lib/report/group';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
-  import { coachTabListed } from '../../lib/coach/viewer';
+  import { coachTabListed, ownedKey } from '../../lib/coach/viewer';
   import {
     FIRST_TIER_TABS,
     MODES,
     SOURCE_ENEMIES,
+    SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
     TABS,
     VIEWS,
@@ -28,7 +34,7 @@
   } from '../../lib/report/url';
 
   // Destructured under a different local name than the prop: this component also needs
-  // Svelte's own `$state` rune (for the "More" menu's open flag below), and a local
+  // Svelte's own `$state` rune (for the tab row's fade below), and a local
   // binding literally named `state` makes every `$state` call after it ambiguous with a
   // store subscription of that binding -- Svelte warns, and the rune stops working.
   let {
@@ -36,12 +42,15 @@
     roster,
     onPatch,
     nightMode = false,
+    scope = null,
   }: {
     state: ReportState;
-    roster: { guid: string; name: string; class?: string }[];
+    roster: { guid: string; name: string; class?: string; role?: string }[];
     onPatch: (patch: Partial<ReportState>) => void;
     /** The whole night: only Analyze's tables and Mechanics have a meaning over it. */
     nightMode?: boolean;
+    /** Who the default scope is (lib/report/group.ts); null keeps "All friendlies". */
+    scope?: GroupScope | null;
   } = $props();
 
   const pill =
@@ -71,8 +80,54 @@
   const activeMoreLabel = $derived(
     moreTabs.find((tab) => tab.id === reportState.tab)?.label ?? reportCopy.more,
   );
-  /** Closed once a tab is picked from it, the way a native select closes on its own. */
-  let moreOpen = $state(false);
+
+  /** A list longer than this gets the filter field (§A10 row 1). */
+  const SEARCHABLE_OVER = 15;
+  /** The roster's roles as the Source list groups them, in this order (§A10 row 1). */
+  const ROLE_GROUPS: readonly { role: string; group: string }[] = [
+    { role: 'tank', group: reportCopy.sourceGroups.tank },
+    { role: 'healer', group: reportCopy.sourceGroups.healer },
+    { role: 'dps', group: reportCopy.sourceGroups.dps },
+  ];
+  const groupOf = (role: string | undefined): string =>
+    ROLE_GROUPS.find((entry) => entry.role === role)?.group ?? reportCopy.sourceGroups.dps;
+  const sourceOptions = $derived.by((): SelectOption[] => {
+    const players = ROLE_GROUPS.flatMap(({ group }) =>
+      roster
+        .filter((unit) => groupOf(unit.role) === group)
+        .map((unit) =>
+          classOption({
+            value: unit.guid,
+            label: unitLabel(unit.name).text,
+            className: unit.class,
+            group,
+            you: coachViewer.viewer.signedIn && ownedKey(coachViewer.viewer, unit.name) !== null,
+          }),
+        ),
+    );
+    // A crowded open-world log defaults to the logger's group and offers everyone it saw; on a
+    // pull the group was not in, the friendlies are everyone in range and say so.
+    const friendlies =
+      scope?.scoped === true
+        ? [
+            {
+              value: SOURCE_FRIENDLIES,
+              label: scope.noun === 'raid' ? reportCopy.yourRaid : reportCopy.yourGroup,
+            },
+            { value: SOURCE_EVERYONE, label: reportCopy.everyoneInRange },
+          ]
+        : [
+            scope?.crowded === true
+              ? {
+                  // Either value reads the same here; the one the url carries stays selected.
+                  value: reportState.source === SOURCE_EVERYONE ? SOURCE_EVERYONE : SOURCE_FRIENDLIES,
+                  label: reportCopy.everyoneInRange,
+                }
+              : { value: SOURCE_FRIENDLIES, label: reportCopy.allFriendlies },
+          ];
+    return [...friendlies, { value: SOURCE_ENEMIES, label: reportCopy.allEnemies }, ...players];
+  });
+  const tabOptions = $derived(listedTabs.map((tab) => ({ value: tab.id, label: tab.label })));
 
   let tabRow = $state<HTMLElement | null>(null);
   let fadeRight = $state(false);
@@ -90,7 +145,6 @@
 
   function selectTab(tab: Tab): void {
     onPatch({ tab });
-    moreOpen = false;
   }
 </script>
 
@@ -103,7 +157,7 @@
       onscroll={measureFade}
       role="tablist"
       aria-label="Mode"
-      class="border-line-soft flex flex-nowrap items-center overflow-x-auto border-b"
+      class="border-line-soft flex scrollbar-none flex-nowrap items-center overflow-x-auto overflow-y-hidden border-b"
     >
       {#each MODES as option (option.id)}
         {#if option.id === 'replay'}
@@ -168,24 +222,20 @@
       {/if}
 
       {#if (reportState.mode === 'analyze' && !nightMode) || (nightMode && reportState.mode !== 'mechanics')}
-        <label class="quiet-label flex items-center gap-2" for="report-source">
-          Source
-          <select
+        <div class="flex items-center gap-2">
+          <label class="quiet-label" for="report-source">{reportCopy.source}</label>
+          <Select
             id="report-source"
-            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+            class="w-[220px]"
+            size="dense"
             value={reportState.source}
-            data-testid="source-scope"
-            onchange={(event) => onPatch({ source: event.currentTarget.value })}
-          >
-            <option value={SOURCE_FRIENDLIES}>All friendlies</option>
-            <option value={SOURCE_ENEMIES}>All enemies</option>
-            {#each roster as unit (unit.guid)}
-              <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
-                {unitLabel(unit.name).text}
-              </option>
-            {/each}
-          </select>
-        </label>
+            options={sourceOptions}
+            searchable={roster.length > SEARCHABLE_OVER}
+            searchPlaceholder={selectCopy.filterPlayers}
+            testid="source-scope"
+            onchange={(event) => onPatch({ source: (event.currentTarget as HTMLSelectElement).value })}
+          />
+        </div>
       {/if}
 
       {#if reportState.mode === 'analyze' && (reportState.view === 'tables' || nightMode)}
@@ -195,25 +245,26 @@
              control fired. -->
         <!-- Visible, like Source's own label above: a bare select next to "Source" read as
              a second copy of it (finding 3) -- naming this one "Table" is the whole fix. -->
-        <label class="quiet-label flex items-center gap-2 lg:hidden" for="report-tab-select">
-          {reportCopy.table}
-          <select
+        <div class="flex items-center gap-2 lg:hidden">
+          <label class="quiet-label" for="report-tab-select">{reportCopy.table}</label>
+          <Select
             id="report-tab-select"
-            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px]"
+            class="w-[180px]"
+            size="dense"
             value={reportState.tab}
-            data-testid="tab-select"
-            onchange={(event) => onPatch({ tab: event.currentTarget.value as Tab })}
-          >
-            {#each listedTabs as tab (tab.id)}<option value={tab.id}>{tab.label}</option>{/each}
-          </select>
-        </label>
+            options={tabOptions}
+            testid="tab-select"
+            onchange={(event) => onPatch({ tab: (event.currentTarget as HTMLSelectElement).value as Tab })}
+          />
+        </div>
         <!-- The six tabs raiders reach for first (finding 3), stuck under the page header
              once scrolled past (finding 1/6) so a table switch never asks for a scroll back
-             up. bg-bg keeps the rows sliding under it from showing through. -->
+             up. bg-bg keeps the rows sliding under it from showing through, and z-20 keeps them
+             under it; the More menu itself is in the top layer and needs no z-index. -->
         <div
           role="tablist"
           aria-label="Table"
-          class="border-line-soft bg-bg hidden flex-wrap border-b md:sticky md:top-0 lg:flex"
+          class="border-line-soft bg-bg relative z-20 hidden flex-wrap border-b md:sticky md:top-0 lg:flex"
         >
           {#each firstTierTabs as tab (tab.id)}
             <button
@@ -231,38 +282,17 @@
               {tab.label}
             </button>
           {/each}
-          <!-- The rest, behind one button (finding 3): a `<details>` needs no keyboard or
-               click-outside plumbing of its own to open, close and be reachable by Tab. -->
-          <details class="relative" bind:open={moreOpen} data-testid="tab-more-menu">
-            <summary
-              class="{pill} {underline} text-nav shrink-0 cursor-pointer list-none border-transparent whitespace-nowrap select-none [&::-webkit-details-marker]:hidden"
-              class:border-gold={moreActive}
-              class:text-strong={moreActive}
-              data-testid="tab-more"
-            >
-              {activeMoreLabel}
-            </summary>
-            <div
-              role="tablist"
-              aria-label={reportCopy.more}
-              class="border-line bg-raised absolute top-full left-0 z-10 flex min-w-[160px] flex-col border shadow-lg"
-            >
-              {#each moreTabs as tab (tab.id)}
-                <button
-                  type="button"
-                  role="tab"
-                  class="{pill} justify-start whitespace-nowrap"
-                  class:text-strong={reportState.tab === tab.id}
-                  class:text-nav={reportState.tab !== tab.id}
-                  aria-selected={reportState.tab === tab.id}
-                  data-testid={`tab-${tab.id}`}
-                  onclick={() => selectTab(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              {/each}
-            </div>
-          </details>
+          <!-- The rest, behind one button (finding 3), on the shared popover core: the menu
+               renders in the top layer, so no chart or sticky row paints over it (§C). -->
+          <MoreMenu
+            tabs={moreTabs}
+            current={reportState.tab}
+            label={activeMoreLabel}
+            menuLabel={reportCopy.more}
+            active={moreActive}
+            buttonClass="{pill} {underline} shrink-0 whitespace-nowrap"
+            onselect={selectTab}
+          />
         </div>
       {/if}
     </div>

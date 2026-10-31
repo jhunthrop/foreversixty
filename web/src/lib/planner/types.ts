@@ -199,6 +199,15 @@ export interface Item {
   two_hand?: boolean;
   /** The weapon's on-hit or on-use effect text, when it has one. */
   effect_text?: string;
+  /** The rating-family stats an on-equip spell states as a literal percent (`hit: 2` is "2%"),
+   *  a subset of `stats`; the tooltip words these as the client does. */
+  percent_stats?: Partial<Record<StatKey, number>>;
+  /** ItemSparse `Bonding` as a word (api/openapi.yaml `Item.bonding`, spec C6). Absent or null
+   *  when the data states none (a classic-db or wowhead row, or a build not yet regenerated). */
+  bonding?: 'pickup' | 'equip' | 'use' | 'quest' | null;
+  /** The armour word from the item's class and subclass (`Item.armor_type`); null for a cloak,
+   *  jewellery, a weapon or unknown; absent on a build not yet regenerated. */
+  armor_type?: 'cloth' | 'leather' | 'mail' | 'plate' | 'shield' | null;
 }
 
 export interface ItemFile {

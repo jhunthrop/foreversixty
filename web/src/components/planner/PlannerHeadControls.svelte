@@ -10,6 +10,7 @@
   import { FACT_FIGURE_CLASS } from '../../lib/planner/styles';
   import PlannerDps from './PlannerDps.svelte';
   import StatTile from '../ui/StatTile.svelte';
+  import { classOption } from '../../lib/ui/select-options';
   import Select from '../ui/Select.svelte';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
 
@@ -43,7 +44,9 @@
   $effect(() => {
     if (raceValue !== '' && raceValue !== store.raceSlug) store.selectRace(raceValue);
   });
-  const classOptions = $derived(store.classes.map((row) => ({ value: row.slug, label: row.name })));
+  const classOptions = $derived(
+    store.classes.map((row) => classOption({ value: row.slug, label: row.name, className: row.slug })),
+  );
   const raceOptions = $derived(store.legalRaces.map((row) => ({ value: row.slug, label: row.name })));
 </script>
 
@@ -54,7 +57,7 @@
 
       <Select
         id="planner-class-select"
-        compact
+        size="compact"
         options={classOptions}
         bind:value={classValue}
         disabled={store.readOnly}
@@ -64,7 +67,7 @@
       <label class="quiet-label" for="planner-race-select">Race</label>
       <Select
         id="planner-race-select"
-        compact
+        size="compact"
         options={raceOptions}
         bind:value={raceValue}
         disabled={store.readOnly}

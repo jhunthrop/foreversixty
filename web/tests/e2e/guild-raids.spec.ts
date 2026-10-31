@@ -4,7 +4,8 @@
 // raid page and from the band line and R3 moves the other character to Bench; an officer posts a
 // raid; the 10 s poll; the race lines; officer-read-only; R1 for visitors; the guild clock (R4);
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { copyList, raidCopy } from '../../src/lib/guild/raid-copy';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
@@ -29,6 +30,7 @@ import {
   type RaidStubOptions,
 } from './support/guild-raids';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
+import { choose } from './support/select';
 
 const NEW_YORK = 'America/New_York';
 const POLL_MS = 10_000;
@@ -161,6 +163,17 @@ test('an officer posts a raid with Post to Discord, and the planned row opens it
   await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
 });
 
+test('a 429 on Post the raid says to wait, keeps the form and posts nothing', async ({ page }) => {
+  const stub = await openRaidsTab(page, { viewer: 'officer' });
+  await openForm(page);
+  stub.refuseNext = { create: { code: 'rate_limited', status: 429 } };
+  await page.getByTestId('raid-form-submit').click();
+  const form = page.getByTestId('raid-form-create');
+  await expect(form.getByRole('alert')).toHaveText(raidCopy.rateLimited);
+  await expect(form).not.toContainText(raidCopy.form.errors.failed);
+  await expect(page.getByTestId(`planned-raid-${FIRST_NEW_ID}`)).toHaveCount(0);
+});
+
 test('counts change on the 10 s poll without a reload', async ({ page }) => {
   const stub = await openRaid(page, { viewer: 'member' });
   const count = page.getByTestId('raid-count');
@@ -290,14 +303,14 @@ test.describe('the guild clock (R4)', () => {
     await expect(page.getByTestId('raid-form-timezone')).toHaveValue(CHICAGO);
     await expect(page.getByTestId('raid-form-time')).toHaveValue('20:00');
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: Thu 17 Dec, 9:00 pm.');
-    await page.getByTestId('raid-form-timezone').selectOption(NEW_YORK);
+    await choose(page.getByTestId('raid-form-timezone'), NEW_YORK);
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: same time.');
   });
 
   test('a repeat across 14 March 2027 keeps 8:00 pm guild time', async ({ page }) => {
     const stub = await openRaidsTab(page, { viewer: 'officer', raids: [] }, new Date('2027-03-01T18:00:00Z'));
     await openForm(page);
-    await page.getByTestId('raid-form-zone').selectOption('raid:onyxias-lair');
+    await choose(page.getByTestId('raid-form-zone'), 'raid:onyxias-lair');
     await page.getByTestId('raid-form-date').fill('2027-03-11');
     await page.getByTestId('raid-form-time').fill('20:00');
     await page.getByTestId('raid-form-repeat').check();

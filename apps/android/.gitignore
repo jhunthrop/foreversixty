@@ -1,0 +1,13 @@
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+# Release signing and Play credentials never live in the tree; CI writes them from secrets.
+*.jks
+*.keystore
+play-service-account.json
+# Firebase client config: written by android.yml from the GOOGLE_SERVICES_JSON secret.
+app/google-services.json

@@ -9,9 +9,6 @@
 export const CHIP_HEIGHT = 'h-[88px] md:h-11';
 
 // The flex gap SimView.svelte's and ToolsView.svelte's own root `<div>` both use between
-// the chip and whatever follows it. Fix round 1, Important #2: a static shell's
-// pre-hydration markup that stacks the chip slot directly against the next element with no
-// gap (a plain, non-flex wrapper) renders everything below the chip 22px/32px higher than
-// the hydrated root does -- pulled out here so a shell's own wrapper can reuse the
-// identical value instead of a literal that can silently drift from the real root's class.
+// their blocks. A static shell's pre-hydration markup reuses the identical value, so its
+// blocks sit where the hydrated root puts them instead of behind a literal that can drift.
 export const VIEW_GAP = 'gap-[22px] md:gap-8';

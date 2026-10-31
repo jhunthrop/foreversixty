@@ -5,7 +5,8 @@
 // only after a file is chosen; the header selector moves the band in place. Signed out, the
 // shared band stands where the header would and the page has no sign-in button. On a phone the
 // reading column comes first and the header's action opens the newest report.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 import {
   OBNOXIOUS,

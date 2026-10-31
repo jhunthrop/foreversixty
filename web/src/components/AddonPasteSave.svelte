@@ -18,6 +18,7 @@
   import type { FS1Build } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { BUSY_CLASS } from '../lib/ui/busy';
+  import Select from './ui/Select.svelte';
 
   let { signedIn, code, character }: { signedIn: boolean; code: string; character?: FS1Build['character'] } =
     $props();
@@ -34,7 +35,12 @@
   let error = $state('');
   // The field the last press found empty, so it can be marked and focused.
   let missing = $state<PasteSaveField | null>(null);
-  let fields: Partial<Record<PasteSaveField, HTMLInputElement | HTMLSelectElement>> = {};
+  /** Each field's id, so the one a press found empty takes focus. */
+  const FIELD_IDS: Record<PasteSaveField, string> = {
+    name: 'addon-paste-name',
+    region: 'addon-paste-region-field',
+    ruleset: 'addon-paste-ruleset-field',
+  };
 
   const NEEDS: Record<PasteSaveField, string> = {
     name: addonCopy.pasteNeedsName,
@@ -46,7 +52,7 @@
     missing = missingPasteSaveField({ name, region, ruleset });
     if (missing !== null) {
       error = NEEDS[missing];
-      fields[missing]?.focus();
+      document.getElementById(FIELD_IDS[missing])?.focus();
       return;
     }
     busy = true;
@@ -66,43 +72,38 @@
   <div class="flex flex-col gap-2" data-testid="addon-paste-save">
     <label class="quiet-label" for="addon-paste-name">{addonCopy.pasteNameLabel}</label>
     <input
-      id="addon-paste-name"
+      id={FIELD_IDS.name}
       class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
       bind:value={name}
-      bind:this={fields.name}
       aria-invalid={missing === 'name' ? 'true' : undefined}
       disabled={saved}
       data-testid="addon-paste-name"
     />
     <div class="flex flex-wrap gap-3">
-      <select
-        aria-label={addonCopy.pasteRegionLabel}
-        class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
+      <Select
+        id={FIELD_IDS.region}
+        class="w-[140px]"
+        size="compact"
+        label={addonCopy.pasteRegionLabel}
         bind:value={region}
-        bind:this={fields.region}
-        aria-invalid={missing === 'region' ? 'true' : undefined}
+        placeholder={addonCopy.pasteRegionLabel}
+        options={REGIONS.map((r) => ({ value: r, label: r.toUpperCase() }))}
+        invalid={missing === 'region'}
         disabled={saved}
-        data-testid="addon-paste-region"
-      >
-        <option value="">{addonCopy.pasteRegionLabel}</option>
-        {#each REGIONS as r (r)}
-          <option value={r}>{r.toUpperCase()}</option>
-        {/each}
-      </select>
-      <select
-        aria-label={addonCopy.pasteRulesetLabel}
-        class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
+        testid="addon-paste-region"
+      />
+      <Select
+        id={FIELD_IDS.ruleset}
+        class="w-[180px]"
+        size="compact"
+        label={addonCopy.pasteRulesetLabel}
         bind:value={ruleset}
-        bind:this={fields.ruleset}
-        aria-invalid={missing === 'ruleset' ? 'true' : undefined}
+        placeholder={addonCopy.pasteRulesetLabel}
+        options={RULESETS.map((r) => ({ value: r.id, label: r.label }))}
+        invalid={missing === 'ruleset'}
         disabled={saved}
-        data-testid="addon-paste-ruleset"
-      >
-        <option value="">{addonCopy.pasteRulesetLabel}</option>
-        {#each RULESETS as r (r.id)}
-          <option value={r.id}>{r.label}</option>
-        {/each}
-      </select>
+        testid="addon-paste-ruleset"
+      />
     </div>
     <button
       type="button"

@@ -2,6 +2,7 @@ package reports
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"testing"
@@ -25,8 +26,9 @@ func TestStoreReadsBackFightsPlayersAndRanges(t *testing.T) {
 	if fights[0].Kind != "encounter" || fights[1].Kind != "trash" {
 		t.Fatalf("kinds = %q, %q", fights[0].Kind, fights[1].Kind)
 	}
-	if fights[0].Deaths != 1 || fights[0].NPCKills != 2 {
-		t.Fatalf("counts = %+v", fights[0])
+	if c := fights[0]; c.Deaths != 1 || deref(c.MobDeaths) != 3 || deref(c.GroupKills) != 2 ||
+		deref(c.GroupDeaths) != 1 || len(c.Group) != 1 || c.Group[0] != "Player-1" {
+		t.Fatalf("counts = %+v", c)
 	}
 	if !fights[0].End.After(fights[0].Start) {
 		t.Fatalf("end should follow start: %+v", fights[0])
@@ -54,6 +56,44 @@ func TestStoreReadsBackFightsPlayersAndRanges(t *testing.T) {
 	if err != nil || len(again) != 2 {
 		t.Fatalf("fights = %d, %v", len(again), err)
 	}
+}
+
+// A fight indexed before engine 0.6.0 has no counts. The store answers
+// them as absent, never as zero, so the page shows no kill count rather
+// than a wrong one.
+func TestStoreLeavesOutTheCountsOfAFightFromBeforeThem(t *testing.T) {
+	h := newHarness(t)
+	h.reportID = h.createReport(Public)
+	h.seedFight(1, 0, 0, 500)
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update fights set mob_deaths = null, group_kills = null, group_deaths = null,
+		   group_players = null, npc_kills = 7 where report_id = $1`, h.reportID); err != nil {
+		t.Fatal(err)
+	}
+	fights, err := h.store.Fights(t.Context(), h.reportID)
+	if err != nil || len(fights) != 1 {
+		t.Fatalf("fights = %v, %v", fights, err)
+	}
+	f := fights[0]
+	if f.MobDeaths != nil || f.GroupKills != nil || f.GroupDeaths != nil || f.Group != nil {
+		t.Fatalf("an old fight's counts = %+v, want all absent", f)
+	}
+	b, err := json.Marshal(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, k := range []string{"mob_deaths", "group_kills", "group_deaths", "group", "npc_kills"} {
+		if bytes.Contains(b, []byte(`"`+k+`"`)) {
+			t.Errorf("an old fight's JSON carries %q: %s", k, b)
+		}
+	}
+}
+
+func deref(p *int) int {
+	if p == nil {
+		return -1
+	}
+	return *p
 }
 
 func TestStoreRecordsRawChunksInOrder(t *testing.T) {

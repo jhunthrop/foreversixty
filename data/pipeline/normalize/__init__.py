@@ -62,6 +62,20 @@ def _check_class_items_not_shrunk(
         )
 
 
+def previous_class_item_counts(build_dir: Path) -> dict[str, int]:
+    """Class slug -> item count `_check_class_items_not_shrunk` compares with:
+    the build's own committed `items/<class>.json`, or, on its first run, the
+    newest other build's (`pipeline.build_floors`). A first run used to have
+    nothing to compare with and always passed (2026-10-30, 70685)."""
+    from pipeline.build_floors import class_item_counts, previous_build_dir
+
+    own = class_item_counts(build_dir)
+    if own:
+        return own
+    previous = previous_build_dir(build_dir, "items")
+    return class_item_counts(previous) if previous is not None else {}
+
+
 def _write(payload: Any, path: Path, sort_keys: bool = False) -> None:
     """Write one JSON payload in the pipeline's only serialization format.
 
@@ -120,7 +134,11 @@ def normalize_build(
     the same as the standalone `python -m pipeline icons` pass without
     `--engine`.
     """
-    from pipeline.csvio import check_item_sparse_completeness, read_csv
+    from pipeline.csvio import (
+        check_item_sparse_completeness,
+        check_wowhead_items_floor,
+        read_csv,
+    )
     from pipeline.curated import merge_curated
     from pipeline.curves import load_rank_points
     from pipeline.hotfix_merge import merge_hotfix_table
@@ -335,10 +353,7 @@ def normalize_build(
     # compare a regenerated file against -- and so a build that trips it
     # never even reaches the rmtree that would otherwise take the good,
     # committed files down with it (checked before writing, not after).
-    previous_item_counts = {
-        path.stem: len(json.loads(path.read_text(encoding="utf-8")).get("items", []))
-        for path in sorted((build_dir / "items").glob("*.json"))
-    }
+    previous_item_counts = previous_class_item_counts(build_dir)
     skipped: list[str] = []
     curves = load_item_curves(
         t("ItemArmorTotal"),
@@ -430,6 +445,11 @@ def normalize_build(
     # this list comes from `normalize_items`/the wowhead supplement, neither
     # of which depends on `build_class_items` succeeding.
     check_item_sparse_completeness(build_dir, len(items), allow_shrink=allow_shrink)
+    check_wowhead_items_floor(
+        build_dir,
+        sum(1 for item in items if item.stats_source == "wowhead"),
+        allow_shrink=allow_shrink,
+    )
     write_json(items, build_dir / "items.json")
 
     # Curated Forever facts.

@@ -1,9 +1,10 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
 import { openImportBox } from './support/planner';
+import { nativeSelect } from './support/select';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
 // import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
@@ -106,7 +107,7 @@ test.describe('the addon flows', () => {
     // The box (and its "switching" line) leaves with the warrior trees the moment the class
     // changes; what persists is the class itself, and here the fixture's own missing-data
     // state for it.
-    await expect(page.getByLabel('Class')).toHaveValue('paladin');
+    await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
     await expect(page.getByTestId('planner-load-error')).toBeVisible();
   });
 

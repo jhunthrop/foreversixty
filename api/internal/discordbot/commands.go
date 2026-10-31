@@ -18,7 +18,7 @@ var (
 	slotChoices  = []Choice{
 		{"Head", "head"}, {"Neck", "neck"}, {"Shoulder", "shoulder"}, {"Back", "back"},
 		{"Chest", "chest"}, {"Wrist", "wrist"}, {"Hands", "hands"}, {"Waist", "waist"},
-		{"Legs", "legs"}, {"Feet", "feet"}, {"Ring 1", "finger1"}, {"Ring 2", "finger2"},
+		{"Legs", "legs"}, {"Feet", "feet"}, {"Finger 1", "finger1"}, {"Finger 2", "finger2"},
 		{"Trinket 1", "trinket1"}, {"Trinket 2", "trinket2"}, {"Main hand", "main_hand"},
 		{"Off hand", "off_hand"}, {"Ranged", "ranged"},
 	}

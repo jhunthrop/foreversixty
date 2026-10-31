@@ -3,7 +3,6 @@
      have been seen in at pull. The page exists for characters who have never signed in:
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
-  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import CharacterFightTable from './character/CharacterFightTable.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import HistoryMount from './character/HistoryMount.svelte';
@@ -38,7 +37,8 @@
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
-  import { componentGaps, foreverOf, hasScore, ownCharacter } from '../lib/score/score';
+  import { sourcePill } from '../lib/sim/sources';
+  import { foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
   import { characterPrompt, showsNoDataPage } from '../lib/character-prompt';
@@ -263,16 +263,9 @@
   <CharacterNotFound path={resolved} name={data.character.name} known />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
-    <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first
-         (-4), then the header (-3) and the score card (-2, ForeverScoreCard) with the Gear
-         section under it (-2, after it in the page: L8.6), then the visitor's sign-in band (-1):
-         the character is the page's subject. Then the rest in page order. -->
-    <CurrentCharacterBar
-      spine
-      profile
-      quietSignedOut={prompt?.quietBar ?? false}
-      cardName={data.character.name}
-    />
+    <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): the header first (-3),
+         then the score card (-2, ForeverScoreCard) with the Gear section under it (-2, after it
+         in the page: L8.6): the character is the page's subject. Then the rest in page order. -->
     <header class="-order-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <CharacterIdentity
@@ -340,7 +333,6 @@
       <CharacterGearPanel
         gear={data.gear}
         total={data.gear_gap_total ?? null}
-        cardGap={componentGaps(foreverOf(data).components).find((part) => part.key === 'gear')?.gap ?? null}
         classSlug={data.character.class === undefined || data.character.class === ''
           ? null
           : classSlugFromName(data.character.class)}
@@ -352,6 +344,18 @@
         first={gearFirst}
         planner={prompt?.primary === 'planner'}
         capturedAt={own?.build?.captured_at ?? null}
+        identity={{
+          name: data.character.name,
+          classSlug:
+            data.character.class === undefined || data.character.class === ''
+              ? ''
+              : classSlugFromName(data.character.class),
+          race: data.character.race ?? '',
+          spec: resolvedProfileSpec(data, own) ?? '',
+          level: typeof data.character.level === 'number' ? data.character.level : null,
+          faction: factionOfRace(data.character.race),
+          source: sourcePill({ kind: 'addon', ref: '', captured_at: own?.build?.captured_at ?? '' }),
+        }}
         {owned}
       />
     {/if}

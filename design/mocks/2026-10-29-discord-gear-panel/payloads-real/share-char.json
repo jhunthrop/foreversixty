@@ -22,7 +22,7 @@
                 "media": {
                   "url": "attachment://sheet.png"
                 },
-                "description": "Character sheet, Zulmara, level 60 Beast Mastery Hunter, Olympus XXVII. Head: Outlaw's Collar; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Shifting Cloak, +2.0 DPS available; Chest: Shadowcraft Tunic, +11.0 DPS available; Wrist: Forest Stalker's Bracers, +4.7 DPS available; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Marshal's Chain Legplates, +9.3 DPS available; Feet: Shadowcraft Boots; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Masons Fraternity Ring, +4.1 DPS available; Trinket 1: Frozen Heart of the Mountain; Trinket 2: empty; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Dark Iron Rifle, +23.1 DPS available."
+                "description": "Character sheet, Zulmara, level 60 Beast Mastery Hunter, Olympus XXVII. Head: Outlaw's Collar; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Shifting Cloak, +2.0 DPS available; Chest: Shadowcraft Tunic, +11.0 DPS available; Wrist: Forest Stalker's Bracers, +4.7 DPS available; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Marshal's Chain Legplates, +9.3 DPS available; Feet: Shadowcraft Boots; Finger 1: Signet Ring of the Bronze Dragonflight; Finger 2: Masons Fraternity Ring, +4.1 DPS available; Trinket 1: Frozen Heart of the Mountain; Trinket 2: empty; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Dark Iron Rifle, +23.1 DPS available."
               }
             ]
           }
@@ -44,7 +44,7 @@
       {
         "id": 0,
         "filename": "sheet.png",
-        "description": "Character sheet, Zulmara, level 60 Beast Mastery Hunter, Olympus XXVII. Head: Outlaw's Collar; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Shifting Cloak, +2.0 DPS available; Chest: Shadowcraft Tunic, +11.0 DPS available; Wrist: Forest Stalker's Bracers, +4.7 DPS available; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Marshal's Chain Legplates, +9.3 DPS available; Feet: Shadowcraft Boots; Ring 1: Signet Ring of the Bronze Dragonflight; Ring 2: Masons Fraternity Ring, +4.1 DPS available; Trinket 1: Frozen Heart of the Mountain; Trinket 2: empty; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Dark Iron Rifle, +23.1 DPS available."
+        "description": "Character sheet, Zulmara, level 60 Beast Mastery Hunter, Olympus XXVII. Head: Outlaw's Collar; Neck: Amulet of the Darkmoon; Shoulder: Darkspear Pauldrons; Back: Shifting Cloak, +2.0 DPS available; Chest: Shadowcraft Tunic, +11.0 DPS available; Wrist: Forest Stalker's Bracers, +4.7 DPS available; Hands: Raider Gloves; Waist: Belt of Preserved Heads; Legs: Marshal's Chain Legplates, +9.3 DPS available; Feet: Shadowcraft Boots; Finger 1: Signet Ring of the Bronze Dragonflight; Finger 2: Masons Fraternity Ring, +4.1 DPS available; Trinket 1: Frozen Heart of the Mountain; Trinket 2: empty; Main hand: Legionite Glaive; Off hand: none, two-handed main hand; Ranged: Dark Iron Rifle, +23.1 DPS available."
       }
     ],
     "allowed_mentions": {

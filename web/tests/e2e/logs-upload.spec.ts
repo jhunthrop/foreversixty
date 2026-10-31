@@ -1,5 +1,6 @@
 // web/tests/e2e/logs-upload.spec.ts
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const fulfil = (body: unknown, status = 200) => ({

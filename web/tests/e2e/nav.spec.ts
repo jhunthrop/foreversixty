@@ -2,7 +2,7 @@
 // The primary nav's behaviours: the four doors of spec 2026-10-15-grouped-header.md, no Reference disclosure, a grid that opens beneath the phone
 // bar instead of a horizontally scrolling row, and "Sign in" on every page. The selector's
 // own behaviours are in nav-selector.spec.ts.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { signedOut } from './support/selector';
 
 test.describe('aria-current', () => {

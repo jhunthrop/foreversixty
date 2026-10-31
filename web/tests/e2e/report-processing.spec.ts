@@ -3,7 +3,7 @@
 // 404 right after an upload is "not visible yet" rather than "No report with that id".
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const ID = 'fixture2live'; // the prerendered shell that carries no inlined meta

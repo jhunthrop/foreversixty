@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "invalid",
+    "message": "check the highlighted fields",
+    "fields": {
+      "state": "Pick In, Late, Bench or Out."
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

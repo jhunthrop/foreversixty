@@ -3,8 +3,9 @@
 // by a signed-in visitor whose main is another class loaded the planner but not the talents.
 // The signed-in main-class default switched class while the talent file was still loading,
 // so the code no longer matched and was dropped. A link that names a build owns the planner.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
+import { nativeSelect } from './support/select';
 
 // The fixture data build ships a trimmed warrior and hunter talent file, so this is the suite's
 // known-good fixture Fury Warrior code (current-character.spec.ts), not a live guide's own
@@ -31,7 +32,7 @@ for (const signedIn of [false, true]) {
       ),
     );
     await page.goto(`/planner?code=${encodeURIComponent(CODE)}`);
-    await expect(page.getByLabel('Class')).toHaveValue('warrior');
+    await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
     await expect(page.getByTestId('tree-points-164')).toHaveText('24');
     await expect(page.getByText('Talents loaded from a character', { exact: false })).toBeVisible();
   });

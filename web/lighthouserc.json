@@ -28,6 +28,7 @@
       ],
       "numberOfRuns": 3,
       "settings": {
+        "chromeFlags": "--host-resolver-rules=\"MAP api.foreversixty.gg ~NOTFOUND\"",
         "formFactor": "mobile",
         "screenEmulation": {
           "mobile": true,

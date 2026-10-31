@@ -3,7 +3,8 @@
 // selector's panel gains the account head and the Your profile, Account, Plan and Sign out rows;
 // signed out it leads with Sign in with Battle.net. Open and close, the keyboard, 44 px rows,
 // the sheet fitting 360 px and the bar not moving when the panel opens.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { OBNOXIOUS, armoryPointer, signInWith, signedOut, storePointer } from './support/selector';
 
 const FOUNDER_BILLING = {

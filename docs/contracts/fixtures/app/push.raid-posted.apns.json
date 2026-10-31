@@ -1,0 +1,49 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Onyxia's Lair",
+      "body": "Sign-ups are open: Thu 5 Nov, 20:00 CST."
+    },
+    "sound": "default",
+    "thread-id": "raid-7",
+    "category": "RAID_SIGNUP"
+  },
+  "kind": "raid.posted",
+  "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+  "actions": [
+    {
+      "id": "signup_in",
+      "title": "In",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "in"
+      }
+    },
+    {
+      "id": "signup_late",
+      "title": "Late",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "late"
+      }
+    },
+    {
+      "id": "signup_out",
+      "title": "Out",
+      "method": "PUT",
+      "path": "/v1/guilds/2/raids/7/signups/{character}",
+      "body": {
+        "state": "out"
+      }
+    }
+  ],
+  "data": {
+    "guild_id": "2",
+    "raid_id": "7",
+    "character_key": "us/pvp/obnoxious-yell",
+    "ask_spec": "false",
+    "answers": "{\"in\":{\"title\":\"You are In for Onyxia's Lair\",\"body\":\"Sunday 7 pm, as DPS on Obnoxious Yell. 24 of 40 signed up.\"},\"late\":{\"title\":\"You are Late for Onyxia's Lair\",\"body\":\"Sunday 7 pm, as DPS on Obnoxious Yell. Add a note for the officers on the raid page.\"},\"out\":{\"title\":\"You are Out of Onyxia's Lair\",\"body\":\"Sunday 7 pm. Change it on the raid page any time before sign-ups lock.\"},\"moved\":{\"title\":\"\",\"body\":\" {name} moved to Bench.\"},\"locked\":{\"title\":\"Sign-ups for Onyxia's Lair are locked\",\"body\":\"An officer can still change yours.\"},\"cancelled\":{\"title\":\"Onyxia's Lair was cancelled\",\"body\":\"Nothing was saved.\"},\"failed\":{\"title\":\"That did not save\",\"body\":\"Open the raid to sign up. Onyxia's Lair, Sunday 7 pm.\"}}"
+  }
+}

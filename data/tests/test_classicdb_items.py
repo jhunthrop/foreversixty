@@ -30,10 +30,12 @@ from pipeline.classicdb_items import (
     ItemSpellSlot,
     class_allowed,
     classic_honor_ranks,
+    classic_unranked_ids,
     effect_text,
     equip_stats,
     extract_records,
     honor_rank_for_name,
+    honor_ranks,
     honor_ranks_by_title_for_untitled_items,
     is_gm_class_mask,
     planner_stats,
@@ -748,6 +750,31 @@ def test_honor_ranks_by_title_for_untitled_items_fills_only_the_gap():
     }
 
 
+def test_honor_ranks_trusts_classic_db_over_a_title_or_a_recovered_rank():
+    """bis-phase-gate lane, 2026-10-30: classic-db states every classic
+    item's honor rank, zero included, and agrees with the client's
+    RequiredPVPRank on every ranked id of 1.60.1.70658 (441 of 441). So a
+    classic id it names unranked is no rank reward: not by its title
+    (Legionnaire's Band, a Warsong Outriders reward; Legionnaire's
+    Leggings, a level-24 green), and not by a rank recovered from an
+    earlier loot.json (Dryad's Wrist Bindings). A Forever-new id still
+    gets its rank from its title."""
+    classic = [
+        _item(id=16465, name="Field Marshal's Chain Helm", required_honor_rank=17),
+        _item(id=19510, name="Legionnaire's Band"),
+        _item(id=4816, name="Legionnaire's Leggings"),
+        _item(id=19595, name="Dryad's Wrist Bindings"),
+    ]
+    item_rows = [
+        {"id": 19510, "name": "Legionnaire's Band"},
+        {"id": 4816, "name": "Legionnaire's Leggings"},
+        {"id": 231562, "name": "Field Marshal's Chain Greathelm"},
+    ]
+    recovered = {19595: 12, 227046: 12}
+    assert honor_ranks(recovered, classic, item_rows) == {16465: 17, 227046: 12, 231562: 17}
+    assert classic_unranked_ids(classic) == {19510, 4816, 19595}
+
+
 def test_to_gear_item_records_equip_hit_and_crit_as_percent_stats_not_ratings():
     """classic-db's raw_stats are rating points; an on-equip aura is a literal
     percent. `percent_stats` names the aura-sourced share so the ranker never
@@ -761,3 +788,11 @@ def test_to_gear_item_records_equip_hit_and_crit_as_percent_stats_not_ratings():
     gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
     assert gear.stats == {"hit": 20, "crit": 2}
     assert gear.percent_stats == {"crit": 2}
+
+
+def test_to_gear_item_carries_armor_type_and_no_bonding():
+    """classic-db's extract states no bonding, so none is invented; the
+    armour word comes from the row's own class and subclass."""
+    chest = _item(id=2, class_id=4, subclass_id=2, inventory_type=5)
+    gear = to_gear_item(chest, _FakeSpellText({}), {}, fork_icons={}, wowhead_icons={})
+    assert (gear.armor_type, gear.bonding) == ("leather", None)

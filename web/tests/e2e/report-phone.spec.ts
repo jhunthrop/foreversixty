@@ -8,9 +8,13 @@
 // covers, and it is the width layout.spec.ts, gear.spec.ts, planner-phone.spec.ts and
 // report-brush.spec.ts all measure at. The project skip keeps the run to one device rather
 // than one per project, the same pairing report-brush.spec.ts uses.
-import { expect, test } from '@playwright/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { openChartIfCollapsed } from './support/report-chart';
+import { choose } from './support/select';
+
+// Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings?*'));
 
 test.use({ viewport: { width: 360, height: 800 } });
 
@@ -74,7 +78,7 @@ test('a damage row is a card with every field labelled', async ({ page }) => {
 // scrollWidth, so the sweep would pass with the table flush to the screen edge.
 test('the compare table stays inside the page gutter once a second fight is picked', async ({ page }) => {
   await page.goto(`${REPORT}&mode=compare`);
-  await page.getByTestId('compare-with').selectOption('1');
+  await choose(page.getByTestId('compare-with'), '1');
   // A phone gets one card per player; the table is the desktop's.
   await expect(page.getByTestId('compare-cards')).toBeVisible();
 

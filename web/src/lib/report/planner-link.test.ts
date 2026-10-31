@@ -8,6 +8,7 @@ import {
   gearFromCombatant,
   plannerLinkFor,
   treeRanksFromTalents,
+  wornAtPull,
 } from './planner-link';
 
 const summary = fixtureSummary as Summary;
@@ -77,5 +78,19 @@ describe('plannerLinkFor', () => {
   it('leaves the race field empty, because no combat-log event records it', () => {
     const link = plannerLinkFor({ ...base, combatant: tank })!;
     expect(decodeURIComponent(link.href)).toContain(':warrior::');
+  });
+});
+
+describe('wornAtPull', () => {
+  it('keys the log’s 19 positions by paperdoll slot, shirt, ranged and tabard included, skipping empties', () => {
+    const piece = (ID: number) => ({ ID, ItemLevel: 60, Enchants: null, BonusIDs: null, Gems: null });
+    const gear = Array.from({ length: 19 }, (_, index) => piece(index === 1 ? 0 : 1000 + index));
+    const worn = wornAtPull(gear);
+    expect(worn.head?.ID).toBe(1000);
+    expect(worn.neck).toBeUndefined();
+    expect(worn.shirt?.ID).toBe(1003);
+    expect(worn.back?.ID).toBe(1014);
+    expect(worn.ranged?.ID).toBe(1017);
+    expect(worn.tabard?.ID).toBe(1018);
   });
 });

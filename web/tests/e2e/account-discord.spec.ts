@@ -7,7 +7,8 @@
 // /v1/me and the three notification routes are stubbed; the fixture webhook URL and token appear
 // only in the typed input and the PUT body the stub records.
 import { createRequire } from 'node:module';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   DISCORD_NAME_LIMIT,
   notificationsCopy as copy,

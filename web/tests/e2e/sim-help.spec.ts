@@ -8,7 +8,8 @@
 // content the brief calls out by name.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 
 // Same fixture sim-settings.spec.ts and sim-run.spec.ts load: an addon export needs no API
@@ -61,21 +62,25 @@ test('a HelpNote opens on a click, names the control it explains, and closes on 
   await expect(trigger).toBeFocused();
 });
 
-test('Fight style’s help note names all nine styles, including what their names alone do not say', async ({
-  page,
-}) => {
+// Each style's description rides on its own option now (controls-charts spec §A10 row 15): the
+// list shows it under the name on a fine pointer, and the help note no longer repeats it.
+test('every fight style carries what its name alone does not say', async ({ page }) => {
   await loadFury(page);
-  await page.getByTestId('sim-style-help-trigger').click();
-  const panel = page.getByTestId('sim-style-help-panel');
-
+  const options = page.getByTestId('sim-style').locator('option');
   for (const label of Object.values(simCopy.styleLabel)) {
-    await expect(panel).toContainText(label);
+    await expect(options.filter({ hasText: label })).toHaveCount(1);
   }
   // Cleave's targets share Patchwerk's own execute threshold, and the dungeon schedule is
   // fixed at 160 seconds regardless of Fight length -- neither is obvious from the option's
   // name alone (task-7-brief.md's own warning against writing flattering copy over it).
-  await expect(panel).toContainText('sharing the same 25% execute threshold as Patchwerk');
-  await expect(panel).toContainText('fixed schedule, not a repeating pull');
+  await expect(page.getByTestId('sim-style').locator('option[value="cleave-2"]')).toHaveAttribute(
+    'data-description',
+    /sharing the same 25% execute threshold as Patchwerk/,
+  );
+  await expect(page.getByTestId('sim-style').locator('option[value="dungeon"]')).toHaveAttribute(
+    'data-description',
+    /fixed schedule, not a repeating pull/,
+  );
 });
 
 test('Execute phase’s note states the current run’s state, not just the concept', async ({ page }) => {

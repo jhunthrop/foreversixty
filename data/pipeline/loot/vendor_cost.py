@@ -179,7 +179,14 @@ def apply_vendor_cost_gate(
     moved = 0
     for source in document.sources:
         npc_id = source.npc_id
-        if source.kind != "vendor" or not source.items or npc_id not in scraped_npc_ids:
+        if (
+            source.kind != "vendor"
+            or not source.items
+            or source.opens
+            or npc_id not in scraped_npc_ids
+        ):
+            # Already gated (a content-phase vendor such as Anachronos):
+            # nothing in it is reachable at launch to split out.
             new_sources.append(source)
             continue
         ungated_items: list[int] = []
@@ -209,7 +216,9 @@ def apply_vendor_cost_gate(
     if not moved:
         return document, 0
     for npc_id, item_ids in sorted(gated_items.items()):
-        base = next(s for s in document.sources if s.kind == "vendor" and s.npc_id == npc_id)
+        base = next(
+            s for s in document.sources if s.kind == "vendor" and s.npc_id == npc_id and not s.opens
+        )
         new_sources.append(
             base.model_copy(
                 update={

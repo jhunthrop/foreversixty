@@ -1,5 +1,5 @@
 // web/tests/e2e/report-deaths.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 const DEATHS = '/reports/fixture2abcd?fight=3&tab=deaths';
 

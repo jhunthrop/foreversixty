@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "data": {
+    "raid_id": 29,
+    "guild_id": 2,
+    "guild_name": "OLYMPUS XXVII",
+    "zone_name": "Onyxia's Lair",
+    "starts_at": "2026-12-15T01:00:00Z",
+    "report_id": "ewlrx3enxbeb",
+    "character": {
+      "character_key": "us/pvp/obnoxious-yell",
+      "name": "Obnoxious Yell",
+      "class": "warrior",
+      "spec": "warrior-fury",
+      "spec_name": "Fury",
+      "role": "dps"
+    },
+    "kills": 1,
+    "wipes": 0,
+    "new_bests": 1,
+    "loot": [
+      {
+        "item_id": 17078,
+        "name": "Sapphiron Drape",
+        "quality": 4,
+        "icon": "inv_misc_cape_16",
+        "slot": "Back",
+        "boss": "Onyxia",
+        "awarded_by": "Kraggor",
+        "replaces": {
+          "item_id": 13340,
+          "name": "Cape of the Black Baron",
+          "quality": 3,
+          "item_level": 63
+        }
+      }
+    ],
+    "bests": [
+      {
+        "boss": "Onyxia",
+        "dps": 712.4,
+        "percentile": 91,
+        "kill_ms": 268000
+      }
+    ],
+    "coach_notes": [
+      "Whirlwind sat unused for 40 seconds during the whelp waves; press it on cooldown when two or more whelps are in range.",
+      "Deep Breath hit you once at 2:41; when she lifts off, move out from under her to the sides of the cave.",
+      "No Elixir of the Mongoose or Juju Power on the pull; both were on the guild's consumables list."
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

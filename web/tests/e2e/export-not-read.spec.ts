@@ -3,7 +3,8 @@
 // not seventeen "Empty" rows; the band's best in slot stays below it. And the upload form's two
 // advisory warnings, which never block. Captures at 1280 go to docs/superpowers/reviews/
 // lifecycle/r1 when E2E_CAPTURE is set.
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -56,9 +57,9 @@ test.describe('character page with a gearless export', () => {
     await expect(page.getByTestId('character-gear-totals')).toHaveCount(0);
   });
 
-  test('a character with gear still draws the slot list', async ({ page }) => {
+  test('a character with gear still draws the paperdoll', async ({ page }) => {
     await openCharacter(page, GEAR);
-    await expect(page.getByTestId('character-gear-list')).toBeVisible();
+    await expect(page.getByTestId('character-gear-paperdoll')).toBeVisible();
     await expect(page.getByTestId('export-not-read')).toHaveCount(0);
   });
 

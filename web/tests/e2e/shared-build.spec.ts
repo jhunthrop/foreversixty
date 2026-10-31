@@ -1,8 +1,9 @@
 // web/tests/e2e/shared-build.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 
 import { bandCompareCopy } from '../../src/lib/planner/copy';
 import { ACTIVE_BUILD } from './support/active-build';
+import { nativeSelect } from './support/select';
 
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
 // Worker proxy (Task 12). Playwright serves the static site only, so the page is stubbed
@@ -50,7 +51,7 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   await expect(page.getByTestId('planner-level')).toHaveText('12');
-  await expect(page.getByLabel('Class')).toBeDisabled();
+  await expect(nativeSelect(page, 'Class')).toBeDisabled();
 
   await page.getByTestId('talent-1002').click();
   await expect(page.getByTestId('planner-refusal')).toHaveText(
@@ -59,7 +60,7 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
 
   await page.getByRole('button', { name: 'Fork' }).click();
-  await expect(page.getByLabel('Class')).toBeEnabled();
+  await expect(nativeSelect(page, 'Class')).toBeEnabled();
   await page.getByTestId('talent-1002').click();
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
   await expect(page.getByTestId('planner-spent')).toHaveText('4/51');
@@ -128,7 +129,7 @@ test('a build attribute that is not JSON still mounts an editable planner', asyn
 
   await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
-  await expect(page.getByLabel('Class')).toBeEnabled();
+  await expect(nativeSelect(page, 'Class')).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Fork' })).toBeHidden();
 });

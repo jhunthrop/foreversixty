@@ -56,7 +56,12 @@ func TestBareSignupCard(t *testing.T) {
 				t.Fatalf("button %d = %q, want %q", i, row[i].Label, label)
 			}
 		}
-		if row[0].Style != StyleSuccess || row[1].Style != StyleSecondary || row[4].Style != StyleLink {
+		for i, b := range row[:4] {
+			if b.Style != StyleSecondary {
+				t.Fatalf("answer %d style = %d, want Secondary: no answer reads as chosen", i, b.Style)
+			}
+		}
+		if row[4].Style != StyleLink {
 			t.Fatalf("styles = %+v", row)
 		}
 		if got, want := row[0].CustomID, fmt.Sprintf("gsgn:1:in:%d:%s", w.raidID, keyZulmara); got != want {

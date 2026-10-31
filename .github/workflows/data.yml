@@ -105,10 +105,44 @@ jobs:
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
           echo "BUILD=$BUILD" >> "$GITHUB_ENV"
           echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"
+      # A build directory that has never been built starts with none of the
+      # nightly fill-in caches (bis.yml's quest-levels, item-sources and
+      # loot-merge commit them under raw/ over many nights) nor the hotfix
+      # dump `pipeline hotfixes` writes from a play session's DBCache. normalize
+      # reads the classic-db supplement and the hotfix dump, loot's curated
+      # overlays name sources only the item-sources cache supplies (the first
+      # 1.60.1.70291 fetches, 2026-10-08, lost 2,388 items and failed on
+      # `vendor:15192`). Item and quest ids are stable across builds, so a new
+      # build is seeded from the newest other build's files, each only where it
+      # has none. A seeded hotfix dump is marked SEEDED_FROM, and
+      # pipeline.hotfix_merge then only ADDS the ids the new client lacks: a
+      # hotfix the new client baked in with a different value is never rolled
+      # back to the old dump.
+      # wowhead/items.json is wowhead's gear-planner item records carried
+      # forward (pipeline.wowhead_items.carry_forward): the live feed lost 292
+      # of the ~700 items only it carries between 70658 and 70685 (2026-10-29),
+      # and a build with no seed fell back to 1.12 stats. It is seeded here,
+      # BEFORE fetch-wowhead, which merges the live feed over it.
+      - name: Seed the fill-in caches and the hotfix dump from the previous build
+        run: |
+          PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
+          [ -n "$PREV" ] || exit 0
+          for rel in quests/quest-levels.json items/item-sources.json classicdb/*.json hotfixes/*.csv wowhead/items.json; do
+            for src in builds/"$PREV"/raw/$rel; do
+              [ -e "$src" ] || continue
+              dst="builds/$BUILD/raw/${src#builds/$PREV/raw/}"
+              [ -e "$dst" ] && continue
+              mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "seeded $dst from $PREV"
+              case "$dst" in */raw/hotfixes/*) echo "$PREV" > "builds/$BUILD/raw/hotfixes/SEEDED_FROM";; esac
+            done
+          done
       # Wowhead's Forever gear planner carries the items Blizzard ships as hotfixes,
       # which never reach the client files wago exports (4,712 of 11,239 items on
-      # 2026-09-27). normalize, icons and simdb merge it in when it is present in raw/.
-      - run: uv run python -m pipeline fetch-wowhead --build "$BUILD"
+      # 2026-09-27). fetch-wowhead merges the live feed over the seeded
+      # raw/wowhead/items.json and refuses a feed listing under 90% of the seeded
+      # supplement (allow_shrink accepts it and still carries the rest); normalize,
+      # icons and simdb read the merged file.
+      - run: uv run python -m pipeline fetch-wowhead --build "$BUILD" $SHRINK
       # Blizzard ships most Forever talent-tree changes as hotfixes, which the DB2 tables
       # above never carry. Wowhead's talent payload is read off the live game: normalize
       # takes the talent trees from it when raw/wowhead-talents.json exists, and falls
@@ -140,32 +174,6 @@ jobs:
           git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
       # classicdb-fidelity, 2026-09-30: normalize reads the fork's item database for the
       # icon names of classic-db-only rows, so the fork checkout moves ahead of it.
-      # A build directory that has never been built starts with none of the
-      # nightly fill-in caches (bis.yml's quest-levels, item-sources and
-      # loot-merge commit them under raw/ over many nights) nor the hotfix
-      # dump `pipeline hotfixes` writes from a play session's DBCache. normalize
-      # reads the classic-db supplement and the hotfix dump, loot's curated
-      # overlays name sources only the item-sources cache supplies (the first
-      # 1.60.1.70291 fetches, 2026-10-08, lost 2,388 items and failed on
-      # `vendor:15192`). Item and quest ids are stable across builds, so a new
-      # build is seeded from the newest other build's files, each only where it
-      # has none. A seeded hotfix dump is marked SEEDED_FROM, and
-      # pipeline.hotfix_merge then only ADDS the ids the new client lacks: a
-      # hotfix the new client baked in with a different value is never rolled
-      # back to the old dump.
-      - name: Seed the fill-in caches and the hotfix dump from the previous build
-        run: |
-          PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
-          [ -n "$PREV" ] || exit 0
-          for rel in quests/quest-levels.json items/item-sources.json classicdb/*.json hotfixes/*.csv; do
-            for src in builds/"$PREV"/raw/$rel; do
-              [ -e "$src" ] || continue
-              dst="builds/$BUILD/raw/${src#builds/$PREV/raw/}"
-              [ -e "$dst" ] && continue
-              mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "seeded $dst from $PREV"
-              case "$dst" in */raw/hotfixes/*) echo "$PREV" > "builds/$BUILD/raw/hotfixes/SEEDED_FROM";; esac
-            done
-          done
       - run: uv run python -m pipeline normalize --build "$BUILD" --engine ../.engine $SHRINK
       # simconst (spellconst/ from the raw spell tables) and levels (levels.json
       # and spellranks.json) come straight after normalize: icons writes the

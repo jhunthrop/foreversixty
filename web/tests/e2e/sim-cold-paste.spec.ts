@@ -8,7 +8,7 @@
 // which cannot exercise `$state` or a real run against the fake engine.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './support/test';
 import { landingCopy } from '../../src/lib/sim/landing-copy';
 import { simCopy } from '../../src/lib/sim/copy';
 

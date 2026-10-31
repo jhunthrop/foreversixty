@@ -7,8 +7,14 @@
     targetOptions,
     type ReportFilters,
   } from '../../lib/report/filters';
+  import activeBuild from '../../data/active-build.json';
   import { splitUnitName } from '../../lib/characters';
+  import { loadSpellIconUrls, type IconUrl } from '../../lib/coach/names';
   import type { Actor } from '../../lib/report/types';
+  import { selectCopy } from '../../lib/ui/copy';
+  import { iconOption } from '../../lib/ui/select-options';
+  import Select from '../ui/Select.svelte';
+  import { reportCopy } from '../../lib/report/copy';
 
   let {
     filters,
@@ -30,7 +36,23 @@
   const targets = $derived(targetOptions(actors));
   /** The option the filter's value names, which over a night is an enemy's name, not a GUID. */
   const picked = $derived(targetOptionId(actors, filters.target));
-  const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
+  /** A target list longer than this gets the filter field (§A10 row 6). */
+  const SEARCHABLE_OVER = 15;
+  /** Spell icons for the Ability list, loaded once from the build's icon table (§A10 row 7). */
+  let iconUrl = $state<IconUrl>(() => null);
+  $effect(() => {
+    void loadSpellIconUrls(activeBuild.build).then((urls) => {
+      iconUrl = urls;
+    });
+  });
+  const targetChoices = $derived([
+    { value: '', label: reportCopy.everyTarget },
+    ...targets.map((option) => ({ value: option.id, label: splitUnitName(option.name).name })),
+  ]);
+  const abilityChoices = $derived([
+    { value: '', label: reportCopy.everyAbility },
+    ...abilities.map((option) => iconOption(option.id, option.name, iconUrl(Number(option.id)), 'spell')),
+  ]);
   const toggle = 'flex min-h-11 items-center gap-2 text-[13px] md:min-h-0';
   // The 44px hit target for a checkbox is the label around it, not the box: a click
   // anywhere in the label toggles the input, and `toggle` above gives every one of them
@@ -39,39 +61,38 @@
 </script>
 
 <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="filter-bar">
-  <label class="quiet-label flex items-center gap-2" for="filter-target">
-    Target
-    <select
+  <div class="flex items-center gap-2">
+    <label class="quiet-label" for="filter-target">{reportCopy.target}</label>
+    <Select
       id="filter-target"
-      class={select}
+      class="w-[200px]"
+      size="dense"
       value={picked}
+      options={targetChoices}
+      searchable={targets.length > SEARCHABLE_OVER}
+      searchPlaceholder={selectCopy.filterTargets}
+      testid="filter-target"
       onchange={(event) => onChange({ ...filters, target: (event.currentTarget as HTMLSelectElement).value })}
-    >
-      <option value="">Every target</option>
-      {#each targets as option (option.id)}
-        <option value={option.id}>{splitUnitName(option.name).name}</option>
-      {/each}
-    </select>
-  </label>
+    />
+  </div>
 
-  <label class="quiet-label flex items-center gap-2" for="filter-ability">
-    Ability
-    <select
+  <div class="flex items-center gap-2">
+    <label class="quiet-label" for="filter-ability">{reportCopy.ability}</label>
+    <Select
       id="filter-ability"
-      class={select}
+      class="w-[220px]"
+      size="dense"
       value={filters.ability === null ? '' : String(filters.ability)}
-      data-testid="filter-ability"
+      options={abilityChoices}
+      searchable
+      searchPlaceholder={selectCopy.filterAbilities}
+      testid="filter-ability"
       onchange={(event) => {
         const raw = (event.currentTarget as HTMLSelectElement).value;
         onChange({ ...filters, ability: raw === '' ? null : Number(raw) });
       }}
-    >
-      <option value="">Every ability</option>
-      {#each abilities as option (option.id)}
-        <option value={option.id}>{option.name}</option>
-      {/each}
-    </select>
-  </label>
+    />
+  </div>
 
   {#if showBossOnly}
     <label class={toggle}>

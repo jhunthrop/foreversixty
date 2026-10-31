@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-const appSignInVersion = 59
+const appSignInVersion = 60
 
-// 0059 adds app_auth_flows and devices.kind; every existing device reads as a companion.
+// 0060 adds app_auth_flows and devices.kind; every existing device reads as a companion.
 func TestMigrationAddsAppSignIn(t *testing.T) {
 	url := testURL(t)
 	if err := Migrate(url); err != nil {

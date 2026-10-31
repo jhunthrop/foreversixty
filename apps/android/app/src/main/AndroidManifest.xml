@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Lane F4: the reminder ask (spec F4.4) asks for it in context, after a first In. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:name=".ForeverApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ForeverSixty">
+
+        <!-- Sentry starts only from CrashReporting.start, under its privacy policy. -->
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+                TODO(lane F1, owner): App Links for https://foreversixty.gg/app/*. Add the
+                filter below once the site serves /.well-known/assetlinks.json with the Play
+                App Signing SHA-256 (Play Console > App integrity) and the debug key's:
+
+                <intent-filter android:autoVerify="true">
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data android:scheme="https" android:host="foreversixty.gg" android:pathPrefix="/app/" />
+                </intent-filter>
+
+                The sign-in redirect (SignInContract.REDIRECT_URI) and the notification deep
+                links (F7) both arrive through it; MainActivity already routes them.
+            -->
+        </activity>
+
+        <!-- Lane F4: In, Late and Out answered from the notification, in the background. -->
+        <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
+
+        <!--
+            TODO(lane A2, lane F7, owner): FCM. Needs the owner's Firebase project
+            (google-services.json, never committed; CI writes it from a secret), the
+            com.google.gms.google-services plugin, firebase-messaging, a
+            FirebaseMessagingService that registers its token with lane A2's push_tokens
+            endpoint, and POST_NOTIFICATIONS requested at the moment F7's spec names.
+        -->
+    </application>
+</manifest>

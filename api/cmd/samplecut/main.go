@@ -8,6 +8,8 @@
 //
 //	go run ./cmd/samplecut -log WoWCombatLog.txt -out ../web/public/sample-report/sample
 //
+// -recount <dir> refreshes an existing cut's kill counts from its own events (recount.go).
+//
 // Fights with no player in them are dropped and the rest renumbered from 1. The log is only
 // read. -names writes the originals to a file (kept outside the repo) for the leak check.
 package main
@@ -29,6 +31,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/parquet"
 	"github.com/jhunthrop/foreversixty/logs/engine/session"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 const (
@@ -50,8 +53,12 @@ func run(args []string, out io.Writer) error {
 	outDir := fs.String("out", "", "the directory to write meta.json, report.json and fights/")
 	seed := fs.String("seed", "forever-sample-2026-09-17", "the pseudonym seed")
 	names := fs.String("names", "", "write the original unit names here, for the leak check")
+	recountDir := fs.String("recount", "", "refresh this cut's kill counts from its events, without the log")
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+	if *recountDir != "" {
+		return recount(*recountDir)
 	}
 	if *logPath == "" || *outDir == "" {
 		return fmt.Errorf("-log and -out are required")
@@ -165,6 +172,23 @@ func playersOf(entries []store.FightEntry) []string {
 	return out
 }
 
+// groupAffiliation is the unit flags' MINE, PARTY and RAID bits (logs/engine/units).
+const groupAffiliation = units.FlagAffiliationMine | units.FlagAffiliationParty | units.FlagAffiliationRaid
+
+// groupOf is the players in the logger's group, by each unit's last-seen flags, sorted. The
+// sample's meta carries it so the island's first table scopes to the group before report.json
+// (every unit) arrives; web/src/lib/report/group.ts reads the same bits off the units after.
+func groupOf(us []units.Unit) []string {
+	out := []string{}
+	for _, u := range us {
+		if u.Kind == units.KindPlayer && u.Flags&groupAffiliation != 0 {
+			out = append(out, u.GUID)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
 // writeMeta writes meta.json in the shape of GET /v1/reports/{id}: public, no owner, the
 // night's own date and zone, and the static data base.
 func writeMeta(dir string, rep store.Report) error {
@@ -181,7 +205,7 @@ func writeMeta(dir string, rep store.Report) error {
 	meta := map[string]any{
 		"id": reportID, "title": title, "visibility": "public", "owner": nil,
 		"zone": zone, "status": "complete", "engine_version": rep.EngineVersion,
-		"fights": rep.Fights, "players": playersOf(rep.Fights),
+		"fights": rep.Fights, "players": playersOf(rep.Fights), "group": groupOf(rep.Units),
 		"created_at": rep.Fights[0].Start.UTC(), "data_base_url": dataBase, "phase": "launch",
 	}
 	b, err := json.MarshalIndent(meta, "", "  ")

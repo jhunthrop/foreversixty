@@ -2,8 +2,8 @@
 // The Threat tab's two additions: the target picker, which turns one table of totals into
 // "who has the most threat on this enemy", and the taunt list under it, which answers
 // "who took the boss off me, and when" in one click.
-import { expect, test } from '@playwright/test';
-import { openChartIfCollapsed } from './support/report-chart';
+import { expect, test } from './support/test';
+import { choose, fieldBox } from './support/select';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -15,8 +15,8 @@ test('threat on a target lists each player’s threat on the picked enemy, and t
 }) => {
   await page.goto(FIGHT);
   const picker = page.getByTestId('threat-target');
-  await expect(picker).toBeVisible();
-  await picker.selectOption({ label: 'Warden Kelthas' });
+  await expect(fieldBox(page, 'threat-target')).toBeVisible();
+  await choose(picker, { label: 'Warden Kelthas' });
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
   await expect(page.getByTestId('threat-on-target').getByTestId('threat-share').first()).toContainText('%');
   await expect(page.getByTestId('threat-taunts')).toContainText('Taunt');
@@ -31,7 +31,7 @@ test('every enemy keeps the totals table, and picking one swaps in that enemy’
   await expect(page.getByTestId('threat-table')).toContainText('Warden Kelthas');
   await expect(page.getByTestId('threat-on-target')).toHaveCount(0);
 
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   const rows = page.getByTestId('threat-on-target').locator('li');
   // The four players who built threat on the boss, largest first; the boss itself is not
   // one of its own attackers, so it has no row here.
@@ -55,7 +55,7 @@ test('a source scope narrows the rows but not the share they are measured agains
 
 test('the picked enemy rides in the URL, so the link opens on it', async ({ page }) => {
   await page.goto(FIGHT);
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page).toHaveURL(new RegExp(`target=${KELTHAS}`));
 
   await page.goto(`${FIGHT}&target=${KELTHAS}`);
@@ -107,7 +107,7 @@ test('the whole night names the pull each taunt came from', async ({ page }) => 
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
   await expect(page.getByTestId('threat-taunts')).toContainText('Warden Kelthas · pull 1');
   // Over the night a pair's target is the enemy's name, one row per name across pulls.
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
 });
 
@@ -117,11 +117,11 @@ test('the whole night names the pull each taunt came from', async ({ page }) => 
 // the filter bar still said "Every target".
 test('an enemy picked on the night’s Threat tab keeps the damage tabs’ rows', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
-  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
   await expect(page).toHaveURL(/target=Warden\+Kelthas/);
 
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
   else await page.getByTestId('tab-damage-done').click();
   const rows = page.getByTestId('actor-table').locator('li');
   await expect(rows.first()).toBeVisible();
@@ -205,23 +205,28 @@ test('the totals table shares the players to 100% and leaves the enemies out of 
 // rest of the page uses.
 test('the threat chart draws one line per player and marks the taunts', async ({ page }) => {
   await page.goto(FIGHT);
-  // The shared chart above this one is collapsed by default on a phone (design review
-  // 2026-09-26 finding 1); this test's first `chart-scale` assertion means the shared
-  // chart's own scale, so it has to be open for that to be the first one in the DOM.
-  await openChartIfCollapsed(page);
   const chart = page.getByTestId('threat-chart');
   await expect(chart).toBeVisible();
-  // Four players built threat on Warden Kelthas, so four legend entries.
-  await expect(chart.getByTestId('chart-line-label')).toHaveCount(4);
+  // One chart per tab (spec §B1.7): the main chart is not drawn on the Threat tab.
+  await expect(page.getByTestId('time-chart')).toHaveCount(0);
+  // Four players built threat on Warden Kelthas, so four legend chips.
+  await expect(chart.getByTestId('legend-chip')).toHaveCount(4);
   await expect(chart).toContainText('Baelgrim');
-  // With no enemy picked the chart says which one it is drawing.
-  await expect(page.getByTestId('threat-chart-note')).toContainText('Warden Kelthas');
-  await expect(chart.getByTestId('chart-mark')).toHaveCount(1);
-  await expect(chart.getByTestId('chart-mark').first()).toHaveAttribute('title', /Taunt/);
-  // The lines are a running total, not a rate: the scale gutter drops "/s", unlike the
-  // per-second chart above it on the same page.
-  await expect(page.getByTestId('chart-scale').first()).toContainText('/s');
-  await expect(chart.getByTestId('chart-scale')).not.toContainText(/\/s/);
+  // The chart says which enemy it draws, and that it is an estimate.
+  // "Every enemy" is picked, so the title says so (fix round 2): the title and the field agree.
+  await expect(chart.getByRole('heading')).toHaveText('Estimated threat, every enemy');
+  const taunts = chart.locator('[data-testid="lane-marker"][data-kind="taunt"]');
+  await expect(taunts).toHaveCount(1);
+  await expect(taunts.first()).toHaveAttribute('aria-label', /Taunt · Baelgrim on Warden Kelthas/);
+  // The lines are a running total, not a rate: the head says so.
+  // (On a phone the title takes the head; the brush carries the window there.)
+  if ((page.viewportSize()?.width ?? 1280) >= 768)
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText('Cumulative · Whole fight');
+  // The caveat line says what the estimate leaves out and links to the glossary's entry.
+  await expect(chart.getByTestId('threat-caveat').getByRole('link')).toHaveAttribute(
+    'href',
+    '#glossary-threat',
+  );
 });
 
 test('the threat chart’s own brush sets the report’s window', async ({ page }) => {
@@ -241,4 +246,27 @@ test('the glossary explains standing and built', async ({ page }) => {
   await page.getByTestId('glossary').locator('summary').click();
   await expect(page.getByTestId('glossary')).toContainText('Standing threat');
   await expect(page.getByTestId('glossary')).toContainText('Threat built in a window');
+});
+
+// Owner 2026-10-30: the open "More" menu disappeared under the threat chart. The tab row is
+// sticky, so it is its own stacking context; the menu's z-index only ranked inside it until
+// the row carried one too. The topmost element at each menu item's centre must be that item.
+test('the open More menu sits above the threat chart', async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 1280) < 1024, 'the More menu is the desktop tab row');
+  await page.goto(FIGHT);
+  await expect(page.getByTestId('threat-chart')).toBeVisible();
+  await page.getByTestId('tab-more').click();
+  const items = page.getByTestId('tab-more-menu').locator('[role="tab"], a, button');
+  const count = await items.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i += 1) {
+    const item = items.nth(i);
+    const box = await item.boundingBox();
+    if (box === null) continue;
+    const onTop = await page.evaluate(
+      ({ x, y }) => document.elementFromPoint(x, y)?.closest('[data-testid="tab-more-menu"]') !== null,
+      { x: box.x + box.width / 2, y: box.y + box.height / 2 },
+    );
+    expect(onTop, `menu item ${i} is covered`).toBe(true);
+  }
 });

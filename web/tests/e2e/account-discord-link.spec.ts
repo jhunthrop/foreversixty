@@ -6,16 +6,16 @@
 // warm layout shift at 390 and 1440. /v1/me, /v1/devices, /v1/reports and the unlink route are
 // stubbed; the start route is the API's and is only observed.
 import { createRequire } from 'node:module';
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { expect, test } from './support/test';
 import { discordLinkCopy as copy } from '../../src/lib/account/discord-link-copy';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
-import { envelope } from './support/discord-notifications';
+import { E2E_API_BASE, envelope } from './support/discord-notifications';
 import { addSessionHint, createHold, measureHeldLoad, seedWarm, type Hold } from './support/account-reserve';
 import { gotoHydrated } from './support/hydrated';
 import { recordShifts } from './support/layout-shift';
 
-const API_BASE = 'https://api.foreversixty.gg';
-const START_URL = `${API_BASE}/v1/discord/link/start`;
+const START_URL = `${E2E_API_BASE}/v1/discord/link/start`;
 const UNLINK_GLOB = '**/v1/discord/link';
 const DISPLAY_NAME = 'zulmara';
 const GUILD_NAME = 'Olympus XXVII';

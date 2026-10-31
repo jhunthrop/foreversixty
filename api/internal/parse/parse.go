@@ -209,7 +209,9 @@ func (d Deps) writeFight(ctx context.Context, rep reports.Report, pub store.Publ
 		DurationMS: c.Fight.Duration().Milliseconds(), StartMS: c.Fight.Start.UnixMilli(),
 		// Parsed here from the original bytes, so there is nothing to
 		// verify against: this is the verification.
-		Verified: true, Players: c.Fight.Players, Deaths: c.Fight.Deaths, NPCKills: c.Fight.NPCKills,
+		Verified: true, Players: c.Fight.Players, Deaths: c.Fight.Deaths,
+		MobDeaths: c.Fight.MobDeaths, GroupKills: c.Fight.GroupKills,
+		GroupDeaths: c.Fight.GroupDeaths, Group: c.Fight.Group,
 		RawStart: &c.Fight.StartOffset, RawEnd: &c.Fight.EndOffset,
 	}
 	if c.Fight.EncounterID != 0 {

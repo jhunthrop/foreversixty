@@ -4,20 +4,18 @@
 import { REGIONS, RULESETS } from '../characters';
 import { classRows } from '../planner/reference';
 import { titleize } from '../report/og-meta';
+import { specIconSrc } from '../guild/raid-spec';
 import { SPECS } from '../sim/specs';
+import type { SelectOption } from '../ui/listbox-model';
+import { classOption } from '../ui/select-options';
 import type { EncounterOption } from './api';
 import { rankingsCopy } from './copy';
 import { PHASES } from './phases';
 import { FACTIONS, RANKING_METRICS } from './url';
 
-export interface FilterOption {
-  value: string;
-  label: string;
-  /** A resting option the player cannot pick (the raid roster's `—`, raids spec 3.7). */
-  disabled?: boolean;
-  /** The option's accessible name when its label is a mark, not words. */
-  ariaLabel?: string;
-}
+/** One filter choice: the shared dropdown's option (a resting `disabled` one is the raid
+ *  roster's `—`, raids spec 3.7; `ariaLabel` names an option whose label is a mark). */
+export type FilterOption = SelectOption;
 
 const all = (label: string): FilterOption => ({ value: '', label });
 
@@ -54,7 +52,7 @@ export const metricOptions = (): FilterOption[] =>
 
 export const classOptions = (): FilterOption[] => [
   all(rankingsCopy.everyClass),
-  ...classRows.map((row) => ({ value: row.slug, label: row.name })),
+  ...classRows.map((row) => classOption({ value: row.slug, label: row.name, className: row.slug })),
 ];
 
 /** The chosen class's specs, by their own names (what the API files a build under). */
@@ -63,5 +61,6 @@ export const specOptions = (classSlug: string): FilterOption[] => [
   ...SPECS.filter((spec) => spec.class_slug === classSlug).map((spec) => ({
     value: spec.name,
     label: spec.name,
+    icon: { kind: 'spec' as const, src: specIconSrc(spec) },
   })),
 ];

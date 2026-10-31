@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The window behind Compose: the house background, so launch shows no white flash. -->
+    <style name="Theme.ForeverSixty" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/forever_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+    <!-- FsColor.bg (Tokens.kt): the window shows before Compose can read the token. -->
+    <color name="forever_bg">#FF07090D</color>
+</resources>
