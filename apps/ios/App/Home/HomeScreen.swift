@@ -19,6 +19,8 @@ struct HomeDependencies {
     let isEnabled: Bool
     /// Lane F5: Sims, pushed from the Sims row; nil while its feature switch is off.
     var sims: SimsDependencies?
+    /// Lane F6: the Talents screen's files; nil while its feature switch is off.
+    var talents: (any TalentsSource)?
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
@@ -32,7 +34,8 @@ struct HomeDependencies {
             catalog: catalog,
             cache: FileHomeCache.standard() ?? MemoryHomeCache(),
             isEnabled: environment.isAvailable(.characterHome),
-            sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil
+            sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil,
+            talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil
         )
     }
 }
@@ -123,6 +126,9 @@ struct HomeCharacterScreen: View {
     @State private var tooltip: ItemTooltipRequest?
     @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
+    @State private var showTalents = false
+    /// Lane F6: one Talents model per character, shared by Home's row and the pushed screen.
+    @State private var talentsModel: TalentsModel?
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
@@ -141,6 +147,9 @@ struct HomeCharacterScreen: View {
         self.showsSelector = showsSelector
         self.openBis = openBis
         _store = State(initialValue: .live(client: dependencies.client, cache: dependencies.cache))
+        _talentsModel = State(initialValue: dependencies.talents.map {
+            TalentsModel(source: $0, character: TalentCharacter(character), catalog: .bundled())
+        })
     }
 
     var body: some View {
@@ -148,7 +157,10 @@ struct HomeCharacterScreen: View {
             ScrollView {
                 HomeAnswerView(
                     phase: store.phase,
-                    presenter: HomePresenter(character: character, finishedSims: finishedSims, time: HomeTime(now: Date())),
+                    presenter: HomePresenter(
+                        character: character, finishedSims: finishedSims, time: HomeTime(now: Date()),
+                        talentStatus: talentsModel?.phase.presenter?.status
+                    ),
                     build: home?.dataBuild ?? "",
                     offlineStamp: offlineStamp,
                     send: handle
@@ -160,12 +172,14 @@ struct HomeCharacterScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showGear) { gear }
             .navigationDestination(isPresented: simsShown) { sims }
+            .navigationDestination(isPresented: $showTalents) { talents }
             .characterSelector(isOn: showsSelector)
         }
         .sheet(item: $tooltip) { request in
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
         }
         .task { await store.load(character) }
+        .task { await talentsModel?.load() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.refreshIfStale(character) } }
         }
@@ -193,6 +207,13 @@ struct HomeCharacterScreen: View {
         }
     }
 
+    @ViewBuilder
+    private var talents: some View {
+        if let talentsModel {
+            TalentsScreen(character: character, model: talentsModel)
+        }
+    }
+
     private func handle(_ intent: HomeIntent) {
         switch intent {
         case let .openItem(look, sourceLine, wornID):
@@ -207,6 +228,8 @@ struct HomeCharacterScreen: View {
             openBis()
         case .openNext(.sims):
             simsRouter?.showsList = dependencies.sims != nil
+        case .openNext(.talents):
+            showTalents = talentsModel != nil
         case .openNext:
             break
         case .retry:

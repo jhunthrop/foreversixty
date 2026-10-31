@@ -1,0 +1,34 @@
+---
+// web/src/pages/app/auth.astro
+// Where the API's app sign-in hands its one-time code (api/internal/auth/app_auth.go):
+// https://foreversixty.gg/app/auth?code=…&state=…. The phone apps catch this link
+// themselves; this page shows only when they did not. Its handoff script runs first thing
+// in <head>: the code and state leave the address bar before paint and live only in that
+// script's memory, and the button carries them back to the app. public/_headers serves
+// /app/* with no referrer and no caching. Only /app/* opens the apps (app-links.json).
+import Base from '../../layouts/Base.astro';
+import appLinks from '../../../app-links.json';
+import { appHandoff } from '../../lib/app-links/handoff';
+import { handoffCopy } from '../../lib/app-links/handoff-copy';
+import { button } from '../../lib/ui/button';
+
+const handoffScript = `(${appHandoff.toString()})(window, ${JSON.stringify(appLinks.androidPackage)});`;
+---
+
+<Base title={handoffCopy.title} description={handoffCopy.description} path="/app/auth">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    <script is:inline set:html={handoffScript}></script>
+  </Fragment>
+  <main id="main" tabindex="-1" class="measure-reading px-[18px] md:px-0 py-10 flex flex-col gap-4">
+    <h1 class="heading-page">{handoffCopy.heading}</h1>
+    <p class="text-[15px] text-muted">{handoffCopy.body}</p>
+    <button type="button" class={`${button('primary')} self-start`} data-app-handoff hidden>
+      {handoffCopy.button}
+    </button>
+    <p class="text-[15px] text-muted" data-app-handoff-missing hidden>
+      {handoffCopy.missing}
+    </p>
+    <p class="text-[14px] text-muted">{handoffCopy.notYou}</p>
+  </main>
+</Base>

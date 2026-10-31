@@ -117,8 +117,8 @@ type Service struct {
 // have once they are set.
 func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	limit := httpx.RateLimitPer(billingRateLimitPerHour, time.Hour, trustedProxyHops)
-	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireSession(s.checkout)))
-	mux.Handle("POST /v1/billing/portal", limit(auth.RequireSession(s.portal)))
+	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireBrowserSession(s.checkout)))
+	mux.Handle("POST /v1/billing/portal", limit(auth.RequireBrowserSession(s.portal)))
 	mux.HandleFunc("POST /v1/billing/webhook", s.webhook)
 	mountGuild(mux, s, trustedProxyHops)
 }

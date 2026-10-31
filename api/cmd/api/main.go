@@ -573,7 +573,8 @@ func serve(log *slog.Logger) error {
 		ResendCooldown: resendCooldown, MaxSendsPerHour: maxSendsPerHour,
 	}
 
-	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log}
+	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log,
+		AppTokenIdle: cfg.AppTokenIdle, AppTokenMaxAge: cfg.AppTokenMaxAge}
 	// The guild control centre's own claimed_by_name (home) and loot award
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.
@@ -595,6 +596,9 @@ func serve(log *slog.Logger) error {
 	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+		// The native app sign-in rides the same Battle.net start and callback; dark until
+		// APP_SIGN_IN=true.
+		accounts.AppSignIn = cfg.AppSignIn
 		bnetSvcClient := bnetClient(cfg, log)
 		bnetTables, ok, err := bnetbuild.LoadTables(cfg.TreeDataDir, treeData)
 		if err != nil {

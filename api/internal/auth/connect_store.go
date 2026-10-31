@@ -167,7 +167,7 @@ func (s *Store) PollConnect(ctx context.Context, id string, tokenHash []byte) (C
 		return ConnectState{Status: status}, nil
 	}
 
-	d := Device{ID: NewDeviceID(), UserID: *userID, Name: name, Platform: platform}
+	d := Device{ID: NewDeviceID(), UserID: *userID, Name: name, Platform: platform, Kind: DeviceKindCompanion}
 	if err := tx.QueryRow(ctx,
 		`insert into devices (id, user_id, name, platform, token_hash) values ($1, $2, $3, $4, $5)
 		 returning created_at`, d.ID, d.UserID, name, platform, tokenHash).Scan(&d.CreatedAt); err != nil {

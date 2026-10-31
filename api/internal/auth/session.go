@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -25,6 +26,8 @@ type Actor struct {
 	Role     string
 	Method   string
 	DeviceID string
+	// DeviceKind is DeviceKindCompanion or DeviceKindApp for a device, empty otherwise.
+	DeviceKind string
 }
 
 // Signed reports whether the request carries any identity at all.
@@ -33,9 +36,13 @@ func (a Actor) Signed() bool { return a.UserID != 0 }
 // IsDevice reports whether the identity came from a device token.
 func (a Actor) IsDevice() bool { return a.DeviceID != "" }
 
+// IsApp reports whether the identity came from a signed-in native app's token.
+func (a Actor) IsApp() bool { return a.IsDevice() && a.DeviceKind == DeviceKindApp }
+
 // IsModerator reports whether the actor may act on other people's
-// reports and rankings.
-func (a Actor) IsModerator() bool { return a.Role == "moderator" || a.Role == "admin" }
+// reports and rankings. An app token never carries moderator powers: those
+// stay with a browser session.
+func (a Actor) IsModerator() bool { return !a.IsApp() && (a.Role == "moderator" || a.Role == "admin") }
 
 type ctxKey int
 
@@ -84,15 +91,19 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 				u, uerr := a.Store.User(r.Context(), d.UserID)
 				if uerr == nil {
 					next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
-						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID})))
+						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID, DeviceKind: d.Kind})))
 					return
 				}
 				err = uerr
 			}
-			if err != ErrNotFound {
+			httpx.MarkDeadToken(TokenHash(token))
+			if errors.Is(err, ErrDeviceExpired) {
+				httpx.WriteError(w, r, http.StatusUnauthorized, "session_expired", "this sign-in has expired; sign in again", nil)
+				return
+			}
+			if !errors.Is(err, ErrNotFound) {
 				a.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "device", "err", err)
 			}
-			httpx.MarkDeadToken(TokenHash(token))
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "that device token is not valid", nil)
 			return
 		}
@@ -236,12 +247,15 @@ func Require(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// RequireSession wraps a handler so only a browser session reaches it: a
-// device token cannot pair another device or sign anything out.
+// RequireSession wraps a handler so only the account holder reaches it: a
+// browser session, or a native app signed in through /v1/auth/app (a
+// first-party client acting as its person). A companion's device token
+// is refused: it uploads, and cannot read the account, pair another
+// device or sign anything out.
 func RequireSession(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		a := ActorFrom(r.Context())
-		if !a.Signed() || a.IsDevice() {
+		if !a.Signed() || (a.IsDevice() && !a.IsApp()) {
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "sign in on the site first", nil)
 			return
 		}
@@ -249,12 +263,44 @@ func RequireSession(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// RequireDevice wraps a handler so only a companion reaches it.
+// RequireBrowserSession wraps a handler that only a browser session may reach: billing
+// writes, for one. An app token is told plainly to use the site; a companion token and an
+// anonymous caller get the usual 401.
+func RequireBrowserSession(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		a := ActorFrom(r.Context())
+		switch {
+		case a.IsApp():
+			httpx.WriteError(w, r, http.StatusForbidden, "browser_session_required",
+				"this can only be done on foreversixty.gg in a browser", nil)
+		case !a.Signed() || a.IsDevice():
+			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "sign in on the site first", nil)
+		default:
+			h(w, r)
+		}
+	}
+}
+
+// RequireDevice wraps a handler so only a companion reaches it. A signed-in app's token
+// is a device token too, but it never uploads, reads the companion's inbox or forgets a
+// companion: those routes stay with the companion.
 func RequireDevice(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !ActorFrom(r.Context()).IsDevice() {
+		if a := ActorFrom(r.Context()); !a.IsDevice() || a.IsApp() {
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized",
-				"this route needs a device token", nil)
+				"this route needs a companion's device token", nil)
+			return
+		}
+		h(w, r)
+	}
+}
+
+// RequireApp wraps a handler so only a signed-in native app's token reaches it.
+func RequireApp(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !ActorFrom(r.Context()).IsApp() {
+			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized",
+				"this route needs an app's device token", nil)
 			return
 		}
 		h(w, r)
