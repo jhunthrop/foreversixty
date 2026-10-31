@@ -154,9 +154,11 @@ private fun Includes(features: List<PlanFeature>) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
         HorizontalDivider(color = FsColor.lineSoft)
         MicroLabel(stringResource(R.string.plan_includes))
+        // The tick grows with the text, up to the scale where the row stacks.
+        val tick = 16.dp * LocalDensity.current.fontScale.coerceAtMost(STACK_FONT_SCALE)
         features.forEach { feature ->
             Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
-                Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.kill, modifier = Modifier.padding(top = 2.dp).size(16.dp))
+                Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.kill, modifier = Modifier.padding(top = 2.dp).size(tick))
                 Text(PlanCopy.feature(feature), style = FsType.body, color = FsColor.text)
             }
         }
