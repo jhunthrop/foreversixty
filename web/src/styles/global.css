@@ -84,6 +84,14 @@
     background: var(--color-muted);
   }
 }
+/* A sideways tab row that scrolls on a phone: no bar at all (its own fade says there is more),
+   where the themed bar above would otherwise draw under, or beside, the tabs. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 /* A disabled checkbox's label reads muted. Outside the layers so a row's own text-* class
    does not out-rank it. */
 label:has(input[type='checkbox']:disabled) {

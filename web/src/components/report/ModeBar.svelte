@@ -157,7 +157,7 @@
       onscroll={measureFade}
       role="tablist"
       aria-label="Mode"
-      class="border-line-soft flex flex-nowrap items-center overflow-x-auto border-b"
+      class="border-line-soft flex scrollbar-none flex-nowrap items-center overflow-x-auto overflow-y-hidden border-b"
     >
       {#each MODES as option (option.id)}
         {#if option.id === 'replay'}

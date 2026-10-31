@@ -226,9 +226,7 @@
                 >
                   <span class="flex w-full items-baseline gap-2">
                     <span
-                      class="min-w-0 flex-1 truncate leading-tight {isSelected
-                        ? 'text-strong'
-                        : 'text-muted'}"
+                      class="text-strong min-w-0 flex-1 truncate leading-tight"
                       title={`Trash · ${row.zone}`}>Trash · {row.zone}</span
                     >
                   </span>

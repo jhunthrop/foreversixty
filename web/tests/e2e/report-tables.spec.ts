@@ -22,7 +22,7 @@ const FIGHT = '/reports/fixture2abcd?fight=3';
 test('the summary tab lists the roster with specs and deaths', async ({ page }) => {
   await page.goto(FIGHT);
   await expect(page.getByTestId('summary-tab')).toContainText('5 players');
-  await expect(page.getByTestId('summary-tab')).toContainText('1 deaths');
+  await expect(page.getByTestId('summary-tab')).toContainText('1 death ·');
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
   await expect(page.getByTestId('combatants')).toContainText('item level 183');
 });

@@ -29,7 +29,15 @@ const fulfil = (body: unknown, status = 200) => ({
 
 const ME = {
   user: { id: 1, battletag: 'Hunthrop#1894', email: null, role: 'user', anonymize: false },
-  characters: [],
+  characters: [
+    {
+      key: 'us/hardcore/elyra-duskvale',
+      region: 'us',
+      ruleset: 'hardcore',
+      name: 'Elyra Duskvale',
+      class: 'Priest',
+    },
+  ],
   guilds: [],
 };
 

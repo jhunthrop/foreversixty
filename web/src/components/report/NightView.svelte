@@ -206,7 +206,8 @@
               style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
               title={cell.title}
               >{cell.text}
-              <span class="label ml-2 text-[10px]">{open === player.guid ? 'hide pulls' : 'per pull ›'}</span
+              <span class="label block text-[10px] whitespace-nowrap"
+                >{open === player.guid ? 'hide pulls' : 'per pull ›'}</span
               ></span
             >
             <span class="numeric hidden text-right md:inline">{player.fights}</span>
