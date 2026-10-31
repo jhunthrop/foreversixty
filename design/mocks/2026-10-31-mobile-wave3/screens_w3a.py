@@ -2,8 +2,9 @@
 from w3kit import *  # noqa: F403
 from w3kit import W3, CLASSES, TAB_CLEAR
 from model import ROSTER, SPEC, WORN, slots
-from screens_more import ranks_of
+from w3_tree import ranks_of
 from kit import DATA
+import guide_data as G
 
 SHA = CLASS_COLOR["shaman"]
 
@@ -30,7 +31,7 @@ def guides_root(plat: str, strip: str = "") -> str:
 
 
 def at_a_glance() -> str:
-    stats = ["Intellect", "Spell power", "Hit", "Nature power", "Critical strike", "Spell haste", "Spell penetration"]
+    stats = G.FM["statPriority"]
     chips = "".join(f"<span class=\"numchip t-meta\"><span class=\"n\">{i + 1}</span>{s}</span>" for i, s in enumerate(stats))
     return card(f"<div class=\"t-micro micro\">Role</div><div class=\"t-body strong\" style=\"margin-top:2px\">Ranged spell damage</div>"
                 f"<div class=\"t-micro micro\" style=\"margin-top:14px\">Stat priority</div><div style=\"display:flex;flex-wrap:wrap;gap:6px;margin-top:8px\">{chips}</div>",
@@ -43,10 +44,11 @@ def guide_head(plat: str) -> str:
 
 
 def guide_page(plat: str, strip: str = "") -> str:
+    strengths, weaknesses = "<br>".join(G.bullets("Strengths")[:2]), "<br>".join(G.bullets("Weaknesses")[:2])
     over = ("<div class=\"t-micro micro pad\" style=\"margin-top:20px\">Overview</div>" + card(
-        "<div class=\"t-body\">Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bolt, Chain Lightning, Flame Shock and Lava Burst, backed by fire totems.</div>"
-        "<div class=\"t-micro micro\" style=\"margin-top:12px\">Strengths</div><div class=\"t-body\" style=\"margin-top:4px\">Forever's baseline cast-time cut to Lightning Bolt and Chain Lightning<br>Chain Lightning hits every target for close to single-target damage</div>"
-        "<div class=\"t-micro micro\" style=\"margin-top:12px\">Weaknesses</div><div class=\"t-body\" style=\"margin-top:4px\">Slower leveling than Enhancement<br>Hard casts leave it idle while moving</div>", pad="14px 16px"))
+        f"<div class=\"t-body\">{G.overview()}</div>"
+        f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Strengths</div><div class=\"t-body\" style=\"margin-top:4px\">{strengths}</div>"
+        f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Weaknesses</div><div class=\"t-body\" style=\"margin-top:4px\">{weaknesses}</div>", pad="14px 16px"))
     body = (guide_head(plat) + hscroll(["Overview", "Talents", "Rotation", "Stats", "Gear", "Races"], 0) + at_a_glance() + over)
     top = content_top(plat)
     left = back_btn(plat, "Guides") + (f"<span class=\"cond\" style=\"font-size:22px\">Elemental Shaman</span>" if plat == "and" else "")
@@ -54,29 +56,31 @@ def guide_page(plat: str, strip: str = "") -> str:
     return device(plat, bar + f"<div style=\"padding-top:{top}px\">{strip}{body}{TAB_CLEAR}</div>", "Guides")
 
 
-KEY_TALENTS = [("Concussion", "Raises the damage of Lightning Bolt, Chain Lightning and Earth Shock."), ("Call of Flame", "Boosts Lava Burst and Fire Nova alongside Flame Shock."),
-               ("Elemental Fury", "Raises critical strike damage on the spec's spells and totems."), ("Lightning Overload", "A chance to cast a second, weaker bolt for free."),
-               ("Elemental Alacrity", "Cuts the cast time of Lightning Bolt, Chain Lightning and Lava Burst."), ("Lava Burst", "The capstone nuke; hits harder against Flame Shock.")]
-ROT = [("spell_nature_manaregentotem", "Mana Spring Totem", "Mana Spring Totem", "Down first. It lasts five minutes."), ("spell_shaman_lavaburst", "Lava Burst", "Lava Burst", "On every cooldown, ahead of the totems."),
-       ("spell_fire_searingtotem", "Searing Totem", "Searing Totem", "One target."), ("spell_fire_selfdestruct", "Magma Totem", "Magma Totem", "Two or more targets."),
-       ("spell_nature_chainlightning", "Chain Lightning", "Chain Lightning", "Two or more targets."), ("spell_nature_lightning", "Lightning Bolt", "Lightning Bolt", "Fills every free global.")]
+ROT_ICON = {"Mana Spring Totem": "spell_nature_manaregentotem", "Lava Burst": "spell_shaman_lavaburst", "Searing Totem": "spell_fire_searingtotem", "Magma Totem": "spell_fire_selfdestruct",
+            "Chain Lightning": "spell_nature_chainlightning", "Lightning Bolt": "spell_nature_lightning", "Flame Shock": "spell_fire_flameshock", "Earth Shock": "spell_nature_earthshock"}
+# Screen order and the short condition for each line the guide's loop names (guide_data.rotation() is the check that none is missing).
+ROT = [("Mana Spring Totem", "Down first. It returns mana for the rest of the fight."), ("Lava Burst", "On every cooldown, ahead of the totems."),
+       ("Flame Shock", "Not in this site's loop. In our sim it costs more mana than it adds, even counting Lava Burst's 20% bonus."), ("Searing Totem", "One target."), ("Magma Totem", "Two or more targets."),
+       ("Chain Lightning", "Two or more targets."), ("Lightning Bolt", "Fills every free global.")]
+assert {n for n, _ in G.rotation()} - {"Earth Shock"} <= {n for n, _ in ROT}, "the guide's loop names a spell the board does not show"
 
 
-def guide_mid(plat: str) -> str:
-    tal = {t["name"]: t for t in DATA["trees"][0]["talents"]}
-    rows = "".join(f"<div class=\"lrow\" style=\"min-height:64px\">{sp(tal[n]['icon'], 40)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{n} <span class=\"mono muted t-meta\">{tal[n]['max_rank']} {'rank' if tal[n]['max_rank'] == 1 else 'ranks'}</span></div><div class=\"t-meta muted\">{why}</div></div></div>" for n, why in KEY_TALENTS)
+def guide_mid(plat: str, scroll: int = 0) -> str:
+    words = G.talent_words()
+    rows = "".join(f"<div class=\"lrow\" style=\"min-height:64px\">{sp(words[n]['icon'], 40)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{n} <span class=\"mono muted t-meta\">{words[n]['max_rank']} {'rank' if words[n]['max_rank'] == 1 else 'ranks'}</span></div><div class=\"t-meta muted\">{words[n]['text']}</div></div></div>" for n in G.key_talents())
     g = ranks_of(DATA["bands"]["raid"]["talents"])
     tot = " / ".join(str(sum(t)) for t in g)
     build = (f"<div class=\"lrow\" style=\"min-height:60px\">{tile('tree')}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">Raid build</div><div class=\"t-meta muted\"><span class=\"mono\">{tot}</span> · Level 60</div></div><span class=\"t-meta gold\" style=\"font-weight:600\">Compare</span><span class=\"chev\">{glyph('chev-right', 18)}</span></div>"
              f"<div class=\"lrow\" style=\"min-height:52px\"><span class=\"t t-body gold\" style=\"font-weight:600\">Open this build in the planner</span><span class=\"chev gold\">{glyph('chev-right', 18)}</span></div>")
     ranks = W3["ranks"]
-    rot = "".join(f"<div class=\"lrow\" style=\"min-height:60px\"><span class=\"mono muted t-meta\" style=\"width:14px\">{i + 1}</span>{sp(ic, 40)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{n} <span class=\"mono muted t-meta\">Rank {ranks[n]['max_rank']}</span></div><div class=\"t-meta muted\">{cond}</div></div></div>" for i, (ic, n, _, cond) in enumerate(ROT))
+    rot = "".join(f"<div class=\"lrow\" style=\"min-height:60px\"><span class=\"mono muted t-meta\" style=\"width:14px\">{i + 1}</span>{sp(ROT_ICON[n], 40)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{n} <span class=\"mono muted t-meta\">Rank {ranks[n]['max_rank']}</span></div><div class=\"t-meta muted\">{cond}</div></div></div>" for i, (n, cond) in enumerate(ROT))
     inner = (hscroll(["Overview", "Talents", "Rotation", "Stats", "Gear", "Races"], 1) + label("Talents", extra="margin-top:18px") + card(rows + build)
-             + label("Rotation") + card(rot) + note("Ranks are the ones you have at 60. Lava Burst is new in Forever."))
+             + label("Rotation") + card(rot) + note("Ranks are the ones you have at 60. Talent text is the game's own."))
     top = content_top(plat)
     left = back_btn(plat, "Guides") + (f"<span class=\"cond\" style=\"font-size:22px\">Elemental Shaman</span>" if plat == "and" else "")
     bar = top_bar(plat, f"<span style=\"display:flex;align-items:center;gap:4px\">{left}</span>", icon_btn(plat, "share", "Share"))
-    return device(plat, bar + f"<div style=\"padding-top:{top}px\">{inner}{TAB_CLEAR}</div>", "Guides")
+    cover = f"<div style=\"position:absolute;top:0;left:0;right:0;height:{DEVICES[plat]['top']}px;background:var(--bg);z-index:11\"></div>"
+    return device(plat, cover + bar + f"<div style=\"padding-top:{top}px\"><div style=\"transform:translateY(-{scroll}px)\">{inner}{TAB_CLEAR}</div></div>", "Guides")
 
 
 TIER_COL = {"S": "#ff8000", "A": "#b866f5", "B": "#3d94f0", "C": "#1eff00", "D": "#9a9484"}
@@ -92,17 +96,20 @@ def tier_row(r: dict, mine: bool = False) -> str:
             f"<div style=\"text-align:right;flex:none\"><span class=\"tierchip\" style=\"color:{TIER_COL[r['tier']]}\">{r['tier']}</span><div class=\"mono t-meta strong\" style=\"margin-top:4px\">{ties}{'−' + str(r['gap']) + '%' if r['gap'] else 'Top'}</div></div></div>")
 
 
+SAMPLE_SPEC = "mage-fire"  # the tier board's sample player; Elemental stays off this board until its band is verified (spec F9 accuracy gate)
+
+
 def tier_list(plat: str) -> str:
     rows = W3["tiers"]
-    me = next(r for r in rows if r["slug"] == "shaman-elemental")
+    me = next(r for r in rows if r["slug"] == SAMPLE_SPEC)
     top = rows[0]
-    call = card(f"<div style=\"display:flex;gap:12px;align-items:center;padding:14px 16px\">{spec_mark('shaman-elemental', 40)}<div style=\"flex:1\"><div class=\"t-micro micro gold\">Your spec</div>"
-                f"<div class=\"t-body strong\" style=\"font-weight:700\">Elemental Shaman is {ORD(me['rank'])} of {len(rows)} DPS specs.</div><div class=\"t-meta muted\">{me['gap']}% behind {top['name']} {top['class'].title()}.</div></div></div>", quiet=False, margin="14px 16px 0")
+    call = card(f"<div style=\"display:flex;gap:12px;align-items:center;padding:14px 16px\">{spec_mark(SAMPLE_SPEC, 40)}<div style=\"flex:1\"><div class=\"t-micro micro gold\">Your spec</div>"
+                f"<div class=\"t-body strong\" style=\"font-weight:700\">{me['name']} {me['class'].title()} is {ORD(me['rank'])} of {len(rows)} DPS specs.</div><div class=\"t-meta muted\">{me['gap']}% behind {top['name']} {top['class'].title()}.</div></div></div>", quiet=False, margin="14px 16px 0")
     chips = f"<div class=\"hscroll\" style=\"margin-top:12px\">{chip('DPS', True)}{chip('Tank', chev=False)}{chip('Healer', chev=False)}{chip(f'<img src={HORDE} width=22 height=22 alt=>Horde')}</div>"
     inner = (seg_n(["Guides", "Tier lists", "What changed"], 1) + chips + call
              + note("Ranked at best in slot with the Phase 1 raid buffs. Each spec is simmed as its best Horde race, named under it.")
-             + card("".join(tier_row(r, r["slug"] == "shaman-elemental") for r in rows[:6])) + TAB_CLEAR)
-    return root(plat, "Guides", inner, "Guides")
+             + card("".join(tier_row(r, r["slug"] == SAMPLE_SPEC) for r in rows[:6])) + TAB_CLEAR)
+    return root(plat, "Guides", inner, "Guides", who={"name": "Emberquill", "cls": "mage", "desc": "Fire · 60"})
 
 
 def whats_new(plat: str) -> str:
@@ -151,15 +158,14 @@ def reports_list(plat: str, state: str = "default") -> str:
     elif state == "error":
         inner = card(fail("Your reports did not load."), margin="14px 16px 0")
     else:
-        week = (rep_row("Onyxia's Lair", "Updated 20 s ago · 1 boss · 1 kill", live, "users", pressed=True) + rep_row("Onyxia's Lair", "Thu 10 Dec · 1 boss · 1 kill", "", "users")
-                + rep_row("Onyxia's Lair", "Thu 3 Dec · 1 boss · 1 kill", "", "users")
-                + rep_row("Blackrock Depths", "Tue 1 Dec · 4 bosses · 4 kills", "<span class=\"tag tag-gold\">Processing</span>", "lock"))
-        old = rep_row("Lower Blackrock Spire", "Sun 29 Nov · 3 bosses · 3 kills", "", "lock") + rep_row("Stratholme", "Sun 22 Nov · could not be read", "<span class=\"tag tag-wipe\">Failed</span>", "lock", cls="shaman")
+        week = (rep_row("Onyxia's Lair", "Updated 20 s ago · 1 boss · 1 kill", live, "users") + rep_row("Blackrock Depths", "Tue 15 Dec · 4 bosses · 4 kills", "<span class=\"tag tag-gold\">Processing</span>", "lock"))
+        old = (rep_row("Onyxia's Lair", "Thu 10 Dec · 1 boss · 1 kill", "", "users", pressed=True) + rep_row("Lower Blackrock Spire", "Sun 6 Dec · 3 bosses · 3 kills", "", "lock")
+               + rep_row("Stratholme", "Sun 29 Nov · could not be read", "<span class=\"tag tag-wipe\">Failed</span>", "lock", cls="shaman"))
         inner = label("This week", first=True) + card(week) + label("Earlier") + card(old) + note("Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.")
     return pushed(plat, "Home", "Your reports", inner + TAB_CLEAR, "Home", right=icon_btn(plat, "refresh", "Refresh"))
 
 
-FIGHTS = [("wipe", "Onyxia", "Wipe · 1:12 · boss at 61%", ""), ("wipe", "Onyxia", "Wipe · 2:41 · boss at 22%", ""), ("kill", "Onyxia", "Kill · 3:12 · 40 players · 1 death", "")]
+FIGHTS = [("wipe", "Onyxia", "Wipe · 1:12 · boss at 61%", ""), ("wipe", "Onyxia", "Wipe · 2:41 · boss at 22%", ""), ("kill", "Onyxia", "Kill · 3:12 · 38 players · 1 death", "")]
 
 
 def fights_card() -> str:
@@ -173,20 +179,20 @@ def fights_card() -> str:
 def parses_card() -> str:
     return card(f"<div style=\"padding:14px 16px 4px\"><div class=\"t-micro micro gold\">Your parses</div></div>"
                 f"<div class=\"lrow\" style=\"min-height:72px;border-top:0\">{crest('shaman', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:700\">Onyxia</div><div class=\"t-meta muted\">Kill 3:12 · Lightningbolltz, Elemental</div></div>"
-                f"<div style=\"text-align:right\"><div class=\"mono t-sec strong\" style=\"font-size:20px\">412 <span class=\"t-meta muted\">DPS</span></div><div class=\"t-meta\">{pct(78)} <span class=\"muted\">percentile</span></div></div></div>", quiet=False, margin="14px 16px 0")
+                f"<div style=\"text-align:right\"><div class=\"mono t-sec strong\" style=\"font-size:20px\">398 <span class=\"t-meta muted\">DPS</span></div><div class=\"t-meta\">{pct(93)} <span class=\"muted\">percentile</span></div></div></div>", quiet=False, margin="14px 16px 0")
 
 
 def report_head(plat: str, live: bool = False) -> str:
     return (f"<div class=\"pad\"><div style=\"display:flex;align-items:center;gap:8px;margin-top:4px\"><span class=\"t-micro micro gold\">Report</span>{tag('Guild', 'muted')}</div>"
-            f"<div class=\"t-meta muted\" style=\"margin-top:4px\">Thursday 3 December 2026 · logged by Lightningbolltz</div></div>")
+            f"<div class=\"t-meta muted\" style=\"margin-top:4px\">Thursday 10 December 2026 · logged by Lightningbolltz</div></div>")
 
 
 def coach_card() -> str:
     return card(f"<div style=\"padding:14px 16px\"><div style=\"display:flex;justify-content:space-between\"><span class=\"cond t-sec\">Your Elemental coach</span>{tag('Premium', 'gold')}</div>"
-                f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Fix first</div><div class=\"t-body\" style=\"margin-top:2px\">Mana Spring Totem was down for 41 seconds of the kill. Drop it before the pull.</div>"
+                f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Fix first</div><div class=\"t-body\" style=\"margin-top:2px\">Mana Spring Totem was not up for 41 seconds of the 3:12 kill. Drop it before the pull.</div>"
                 f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Practice</div><div class=\"t-body\" style=\"margin-top:2px\">Cast Lava Burst on cooldown. 3 of 11 casts waited more than 2 seconds.</div>"
                 f"<div class=\"t-micro micro\" style=\"margin-top:12px\">Doing well</div><div class=\"t-body\" style=\"margin-top:2px\">You never stood in the breath.</div>"
-                f"<div class=\"t-meta muted\" style=\"margin-top:12px\">Reviewed 3 Dec · Based on: this log, the Elemental guide.</div></div>", margin="8px 16px 0")
+                f"<div class=\"t-meta muted\" style=\"margin-top:12px\">Reviewed 10 Dec · Based on: this log, the Elemental guide.</div></div>", margin="8px 16px 0")
 
 
 def report_page(plat: str, scroll: int = 0, overlay: str = "", state: str = "default") -> str:
@@ -203,7 +209,7 @@ def report_page(plat: str, scroll: int = 0, overlay: str = "", state: str = "def
 
 def meter_rows() -> str:
     names = [n for n, _, _ in ROSTER["DPS"]]
-    vals = [596, 571, 548, 533, 497, 412, 401, 388, 372, 355, 341]
+    vals = [520, 486, 455, 431, 412, 398, 383, 371, 352, 340, 331]
     order = [n for n in names if n != "Lightningbolltz"][:5] + ["Lightningbolltz"] + [n for n in names if n != "Lightningbolltz"][5:10]
     out = ""
     for i, n in enumerate(order):
@@ -218,8 +224,8 @@ def meter_rows() -> str:
 
 def fight_sheet(plat: str) -> str:
     inner = (f"<div style=\"padding:0 16px\"><div style=\"display:flex;align-items:center;gap:10px\"><span class=\"dot\" style=\"background:var(--kill)\"></span><span class=\"t-body strong\" style=\"font-weight:700\">Onyxia</span>"
-             f"<span class=\"t-meta muted\">Kill · 3:12 · 40 players</span></div></div>{seg_n(['Damage', 'Healing', 'Damage taken'], 0)}"
-             f"<div style=\"margin-top:8px\">{meter_rows()}</div><div class=\"lrow\" style=\"min-height:48px;border-top:1px solid var(--line-soft)\"><span class=\"t t-body gold\" style=\"font-weight:600\">Show all 40</span></div>")
+             f"<span class=\"t-meta muted\">Kill · 3:12 · 38 players</span></div></div>{seg_n(['Damage', 'Healing', 'Damage taken'], 0)}"
+             f"<div style=\"margin-top:8px\">{meter_rows()}</div><div class=\"lrow\" style=\"min-height:48px;border-top:1px solid var(--line-soft)\"><span class=\"t t-body gold\" style=\"font-weight:600\">Show all 38</span></div>")
     return sheet(plat, inner, 700, "Damage done")
 
 
@@ -239,22 +245,23 @@ GUILDS = ["Hordebreakers", "Nightfall Raiders", "Olympus XXVII", "Iron Pact", "B
 
 
 def rank_row(i: int, name: str, own: bool = False, pin: bool = False) -> str:
-    val = 548 - int(i ** 0.8 * 5)
+    val = 462 - round(17.7 * i ** 0.5)
     pcol = parse_color(100 - (i / 212 * 100)) if i < 200 else parse_color(15)
     n = i + 1
     return (f"<div class=\"lrow\" style=\"min-height:68px;gap:12px;{'background:var(--row);box-shadow:inset 3px 0 0 var(--gold);' if own else ''}\"><span class=\"mono t-body\" style=\"width:30px;text-align:right;font-weight:700;color:{pcol}\">{n}</span>"
-            f"<div class=\"t\"><div class=\"t-body\" style=\"font-weight:700;color:{SHA}\">{name}{' ' + tag('You') if own else ''}</div><div class=\"t-meta muted\">{GUILDS[i % len(GUILDS)]} · 40 · 3:{12 + i % 40:02d} · {3 + i} d ago</div></div>"
+            f"<div class=\"t\"><div class=\"t-body\" style=\"font-weight:700;color:{SHA}\">{name}{' ' + tag('You') if own else ''}</div><div class=\"t-meta muted\">{GUILDS[i % len(GUILDS)]} · 40 players · 3:{12 + i % 40:02d} · {1 + i % 18} d ago</div></div>"
             f"<div style=\"text-align:right\"><div class=\"mono t-body strong\">{val}</div><div class=\"t-micro muted\">DPS</div></div><span class=\"chev\">{glyph('chev-right', 18)}</span></div>")
 
 
 def rankings(plat: str, state: str = "default") -> str:
-    ans = card(f"<div style=\"padding:14px 16px\"><div class=\"t-micro micro\">Your rank</div><div style=\"display:flex;align-items:baseline;gap:8px;margin-top:2px\"><span class=\"cond t-stat\">14th</span>"
-               f"<span class=\"t-body muted\">of 212 Elemental Shaman characters</span></div><div class=\"t-meta muted\" style=\"margin-top:2px\">Your best kill on Onyxia, Normal, Phase 1.</div></div>", quiet=False, margin="14px 16px 0")
+    who = "Sparkwick" if state == "pinned" else "Lightningbolltz"  # pinned: an alt of the same account, geared for 60 a week ago
+    ans = card(f"<div style=\"padding:14px 16px\"><div class=\"t-micro micro\">Your rank</div><div style=\"display:flex;align-items:baseline;gap:8px;margin-top:2px\"><span class=\"cond t-stat\" style=\"text-transform:none\">14th</span>"
+               f"<span class=\"t-body muted\">of 212 Elemental Shaman characters</span></div><div class=\"t-meta muted\" style=\"margin-top:2px\"><span style=\"color:{SHA};font-weight:600\">{who}</span> · best kill on Onyxia, Normal, Phase 1.</div></div>", quiet=False, margin="14px 16px 0")
     summ = (f"<div style=\"display:flex;align-items:center;gap:10px;padding:12px 16px 0\"><div class=\"t-meta nav\" style=\"flex:1;color:var(--nav)\">Onyxia · Normal · All regions · Phase 1 · Damage</div>"
             f"<span class=\"btn btn-secondary\" style=\"min-height:44px\">{glyph('sliders', 16)}Filters</span></div>")
     if state == "pinned":
-        ans = ans.replace("14th", "204th").replace("of 212", "of 212")
-        pin = (f"<div class=\"t-micro micro pad\" style=\"margin-top:16px\">Your best kill</div>" + card(rank_row(203, "Lightningbolltz", own=True), margin="6px 16px 0")
+        ans = ans.replace("14th", "204th")
+        pin = (f"<div class=\"t-micro micro pad\" style=\"margin-top:16px\">Your best kill</div>" + card(rank_row(203, who, own=True), margin="6px 16px 0")
                + "<div style=\"height:1px;background:var(--line-soft);margin:14px 16px 0\"></div>")
         rows = card("".join(rank_row(i, NAMES[i]) for i in range(5)), margin="14px 16px 0")
         inner = ans + summ + pin + rows
@@ -289,7 +296,7 @@ def score_card() -> str:
     bars = "".join(f"<div style=\"display:flex;align-items:center;gap:10px;margin-top:8px\"><span class=\"t-meta muted\" style=\"width:86px\">{n}</span><div class=\"bar8\" style=\"flex:1\"><i style=\"width:{v / m * 100:.0f}%;background:var(--tile-ink)\"></i></div><span class=\"mono t-meta strong\" style=\"width:34px;text-align:right\">{v}</span></div>" for n, v, m in comps)
     spark = "<svg width=\"96\" height=\"34\" viewBox=\"0 0 96 34\" fill=\"none\" stroke=\"#b866f5\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M2 30 L18 26 L34 27 L50 18 L66 14 L82 9 L94 5\"/></svg>"
     return card(f"<div style=\"padding:14px 16px\"><div style=\"display:flex;justify-content:space-between;align-items:flex-start\"><div><div class=\"t-micro micro\">Forever Score</div><div style=\"display:flex;align-items:baseline;gap:8px\"><span class=\"cond t-stat\" style=\"font-size:36px\">1,830</span>"
-                f"<span class=\"tag\" style=\"color:#b866f5;border-color:#b866f5;background:rgba(163,53,238,.12)\">Epic</span></div><div class=\"t-meta muted\">As of 4 Nov</div></div>{spark}</div>{bars}"
+                f"<span class=\"tag\" style=\"color:#b866f5;border-color:#b866f5;background:rgba(163,53,238,.12)\">Epic</span></div><div class=\"t-meta muted\">As of 17 Dec</div></div>{spark}</div>{bars}"
                 f"<div class=\"t-meta gold\" style=\"margin-top:12px;font-weight:600\">How is this calculated?</div></div>", quiet=False, margin="14px 16px 0")
 
 
@@ -299,7 +306,7 @@ def char_head() -> str:
 
 
 def bests_card() -> str:
-    rows = [("Onyxia", "Normal · 3 d ago", "541", 97), ("Barrow Deeps", "Normal · 9 d ago", "498", 81)]
+    rows = [("Onyxia", "Normal · 3 d ago", "462", 99), ("Barrow Deeps", "Normal · 8 d ago", "431", 81)]
     r = "".join(f"<div class=\"lrow\" style=\"min-height:64px\"><div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{e}</div><div class=\"t-meta muted\">{m}</div></div><div style=\"text-align:right\"><div class=\"mono t-body strong\">{v} <span class=\"t-meta muted\">DPS</span></div><div class=\"t-meta\">{pct(p)} <span class=\"muted\">percentile</span></div></div></div>" for e, m, v, p in rows)
     return label("Bests") + card(r)
 
@@ -316,7 +323,7 @@ def char_page(plat: str, part: int = 1, state: str = "default") -> str:
         inner = card("<div class=\"t-body strong\" style=\"font-size:17px\">We have no character called Voltxris.</div><div class=\"t-meta muted\" style=\"margin-top:4px\">Check the spelling, the region and the ruleset.</div><div style=\"display:flex;gap:10px;margin-top:12px\"><span class=\"btn btn-secondary\">Search again</span></div>", margin="16px 16px 0", pad="16px")
     elif part == 1:
         inner = char_head() + score_card() + bests_card() + label("Recent fights") + card(
-            "".join(f"<div class=\"lrow\" style=\"min-height:56px\"><span class=\"dot\" style=\"background:var(--kill)\"></span><div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{e}</div><div class=\"t-meta muted\">Kill · {d}</div></div><span class=\"mono t-body strong\">{v} <span class=\"t-meta muted\">DPS</span></span></div>" for e, d, v in [("Onyxia", "3 d ago", "541"), ("Barrow Deeps", "9 d ago", "498")]))
+            "".join(f"<div class=\"lrow\" style=\"min-height:56px\"><span class=\"dot\" style=\"background:var(--kill)\"></span><div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{e}</div><div class=\"t-meta muted\">Kill · {d}</div></div><span class=\"mono t-body strong\">{v} <span class=\"t-meta muted\">DPS</span></span></div>" for e, d, v in [("Onyxia", "3 d ago", "462"), ("Barrow Deeps", "8 d ago", "431")]))
     else:
         inner = (char_head() + label("Gear") + card(paperdoll(), pad="14px 8px 10px")
                  + card(f"<div class=\"lrow\" style=\"min-height:52px\"><span class=\"t t-body strong\" style=\"font-weight:600\">Gear gap</span><span class=\"mono t-body strong\">38 points</span></div>", margin="8px 16px 0")

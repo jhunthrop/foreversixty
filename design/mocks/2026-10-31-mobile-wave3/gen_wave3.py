@@ -16,7 +16,7 @@ RENDERS = HERE / "renders"
 
 def boards(p: str) -> dict[str, tuple[str, list[str]]]:
     i = p == "ios"
-    f14 = ([cell("<b>F14.1 Home screen.</b> Small next raid, small next upgrade, medium next raid with In / Late / Out, medium upgrades.", C.home_widgets(p)),
+    f14 = ([cell("<b>F14.1 Home screen, 7:07 pm on raid day.</b> Small next raid, small next upgrade, medium next raid with In / Late / Out, medium upgrades.", C.home_widgets(p)),
             cell("<b>F14.2 Widget states.</b> Every small state: signed out, no guild, none planned, locked, cancelled, older than 12 h, unanswered, no spec.", C.widget_states(p)),
             cell("<b>F14.3 Lock screen.</b> Inline, rectangular and circular widgets, and the raid Live Activity from 1 hour before invites.", C.lock_widgets()),
             cell("<b>F14.4 Dynamic Island and sim.</b> Compact and expanded raid countdown; the server sim running and finished.", C.island())]
@@ -39,8 +39,9 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
         f"f9-guides-{p}": ("F9 guides, tier lists and what changed", [
             cell("<b>F9.1 Guides tab.</b> The fifth tab. Your guide first, then all nine classes.", A.guides_root(p)),
             cell("<b>F9.2 A guide.</b> Role and stat priority first; sections in a strip.", A.guide_page(p)),
-            cell("<b>F9.3 Talents and rotation.</b> Every talent and spell has its icon and rank.", A.guide_mid(p)),
-            cell("<b>F9.4 Tier lists.</b> Your spec on top; order and gaps from the nightly files.", A.tier_list(p)),
+            cell("<b>F9.3 Talents.</b> Every talent has its icon, rank and the game's own text.", A.guide_mid(p)),
+            cell("<b>F9.3b Rotation.</b> The same page scrolled. From the guide's own loop; Flame Shock is shown as not in it.", A.guide_mid(p, 895)),
+            cell("<b>F9.4 Tier lists.</b> Sample player: a Fire Mage. Elemental ships only after its band is verified (spec, F9 accuracy gate).", A.tier_list(p)),
             cell("<b>F9.5 What changed.</b> Key dates, then the changelog.", A.whats_new(p)),
             cell("<b>F9.6 Offline class page.</b> Saved and not-saved guides.", A.class_page(p)),
             cell("<b>F9.7 Loading.</b>", A.guide_loading(p))]),
@@ -80,7 +81,7 @@ def boards(p: str) -> dict[str, tuple[str, list[str]]]:
         f"f16-guild-{p}": ("F16 guild extras", [
             cell("<b>F16.1 Roster.</b> Spec, level, rank, attendance.", C.roster(p)),
             cell("<b>F16.2 No match.</b>", C.roster(p, "empty")),
-            cell("<b>F16.3 Raid history.</b> Paged by cursor.", C.raid_history(p)),
+            cell("<b>F16.3 Raid history.</b> Paged by cursor. Drawn on Thu 17 Dec; F16.4 to F16.7 on Tue 8 Dec.", C.raid_history(p)),
             cell("<b>F16.4 Calendar.</b> A calendar the app keeps up to date, and a link.", C.calendar_settings(p)),
             cell("<b>F16.5 Access off.</b>", C.calendar_settings(p, True)),
             cell("<b>F16.6 The event.</b> " + ("Apple Calendar." if p == "ios" else "Google Calendar."), C.cal_event(p)),

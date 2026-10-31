@@ -94,11 +94,11 @@ def next_rows_nogear() -> str:
 def tooltip_panel(item_id: int, slot_label: str) -> str:
     """The site's tooltip model in the client's order: name, Binds, Unique, slot and armor type on one
     line, armor, stats, Requires Level, Item Level. Binds, Unique and the armor type come from the
-    client's ItemSparse and Item rows; a Back item shows no armor type, as the Classic client does."""
+    client's ItemSparse and Item rows; a cloak reads "Back" with "Cloth" beside it, as the Classic client prints it."""
     it = item(item_id)
     bind = f"<div class=\"ln t-body\">{it['bonding']}</div>" if it.get("bonding") else ""
     uniq = "<div class=\"ln t-body\">Unique</div>" if it.get("unique") else ""
-    kind = it.get("armor_type") if slot_label != "Back" else None
+    kind = it.get("armor_type")
     slot_line = (f"<div class=\"ln t-body\" style=\"display:flex;justify-content:space-between\"><span>{slot_label}</span><span>{kind or ''}</span></div>")
     armor = f"<div class=\"ln t-body\">{it['armor']} Armor</div>" if it.get("armor") else ""
     stats = "".join(f"<div class=\"ln t-body\">{s}</div>" for s in stat_lines(item_id))
