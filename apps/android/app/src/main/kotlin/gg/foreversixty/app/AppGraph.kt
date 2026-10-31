@@ -75,7 +75,9 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     }
 
     /** Lane F2: the home answer, its static item data and its cache. */
-    val home = HomeDependencies.create(context, config, accountApi, apiClient, talents) { isAvailable(Feature.CharacterHome) }
+    val home = HomeDependencies.create(context, config, accountApi, apiClient, talents, isSimsOn = { isAvailable(Feature.Sims) }) {
+        isAvailable(Feature.CharacterHome)
+    }
 
     /** Lane F4: guild raids and sign-up; their own static client reads the active build for icons. */
     val raids = RaidsFeature(
@@ -101,6 +103,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         clearCaches = {
             home.cache.removeAll()
             raids.cache.removeAll()
+            home.sims?.cache?.removeAll()
         },
     )
 

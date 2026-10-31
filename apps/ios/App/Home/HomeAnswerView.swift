@@ -261,9 +261,9 @@ struct NextRows: View {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                    // Lane F6: the Talents row pushes the Talents screen.
-                    if row.kind == .talents {
-                        Button { send(.openNext(row.kind)) } label: { NextRowView(row: row, chevron: true) }
+                    // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
+                    if row.kind == .sims || row.kind == .talents {
+                        Button { send(.openNext(row.kind)) } label: { NextRowView(row: row) }
                             .buttonStyle(RowPress())
                     } else {
                         NextRowView(row: row)
@@ -277,7 +277,6 @@ struct NextRows: View {
 
 struct NextRowView: View {
     let row: HomeNextRow
-    var chevron = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -296,10 +295,6 @@ struct NextRowView: View {
             case .matches: TagView(text: Copy.homeNextMatches, color: FSColor.kill)
             case .differs: TagView(text: Copy.homeNextDiffers, color: FSColor.gold)
             case nil: EmptyView()
-            }
-            if chevron {
-                Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(FSColor.muted).accessibilityHidden(true)
             }
         }
         .padding(.horizontal, 16)

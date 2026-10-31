@@ -58,6 +58,8 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.sims.SimsFeature
+import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.talents.TalentsRoute
 import java.io.File
@@ -79,7 +81,11 @@ class HomeDependencies(
     /** Lane F6: the Talents screen's files; null while its feature switch is off. */
     val talents: TalentsFeature? = null,
     private val isOn: () -> Boolean,
+    /** Lane F5: Sims, pushed from the Sims row; null while its feature switch is off. */
+    private val simsFeature: SimsFeature? = null,
 ) {
+    val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
+
     val isEnabled: Boolean get() = isOn()
 
     companion object {
@@ -89,16 +95,19 @@ class HomeDependencies(
             accountApi: AccountApi,
             client: ApiClient,
             talents: TalentsFeature?,
+            isSimsOn: () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
+            val catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data"))
             return HomeDependencies(
                 accountApi = accountApi,
                 client = client,
-                catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data")),
+                catalog = catalog,
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
                 talents = talents,
                 isOn = isOn,
+                simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn),
             )
         }
     }
@@ -126,7 +135,7 @@ fun HomeRoute(
     if (session != null && sessionMe != null) {
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
-            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis) {
+            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims) {
                 CharacterSelectorBar(session)
             }
             return
@@ -146,7 +155,7 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, topB
     val answer = me
     val character = (answer as? ApiResult.Success)?.data?.mainCharacter
     if (answer is ApiResult.Success && character != null) {
-        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, topBar)
+        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, answer.data.entitlements.serverSims, topBar)
         return
     }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
@@ -172,6 +181,7 @@ fun HomeCharacterScreen(
     finishedSims: List<FinishedSim>,
     dependencies: HomeDependencies,
     openBis: () -> Unit,
+    serverSims: Boolean = false,
     topBar: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -195,8 +205,11 @@ fun HomeCharacterScreen(
         home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, res, sourceLine, wornId) }
     }
 
+    val sims = dependencies.sims
     val talents = dependencies.talents
-    if (showTalents && talents != null) {
+    if (sims != null && sims.navigator.showsList) {
+        SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
+    } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
         TalentsRoute(character, talents.source, talents.catalog) { showTalents = false }
     } else if (showGear && home != null) {
@@ -217,7 +230,10 @@ fun HomeCharacterScreen(
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
                         HomeIntent.OpenGear -> showGear = true
                         HomeIntent.Retry -> scope.launch { store.refresh(character) }
-                        is HomeIntent.OpenNext -> showTalents = intent.kind == HomeNextRow.Kind.Talents && talents != null
+                        is HomeIntent.OpenNext -> when (intent.kind) {
+                            HomeNextRow.Kind.Sims -> sims?.navigator?.showsList = true
+                            HomeNextRow.Kind.Talents -> showTalents = talents != null
+                        }
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
                             HomeAction.Kind.OpenPlanner -> context.openInBrowser(HomeLinks.PLANNER)

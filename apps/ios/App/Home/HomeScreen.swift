@@ -17,6 +17,8 @@ struct HomeDependencies {
     let catalog: ItemCatalog
     let cache: any HomeCache
     let isEnabled: Bool
+    /// Lane F5: Sims, pushed from the Sims row; nil while its feature switch is off.
+    var sims: SimsDependencies?
     /// Lane F6: the Talents screen's files; nil while its feature switch is off.
     var talents: (any TalentsSource)?
 
@@ -26,11 +28,13 @@ struct HomeDependencies {
         case .live: URLSessionTransport()
         case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
         }
+        let catalog = ItemCatalog(client: StaticDataClient(transport: staticTransport))
         return HomeDependencies(
             client: environment.client,
-            catalog: ItemCatalog(client: StaticDataClient(transport: staticTransport)),
+            catalog: catalog,
             cache: FileHomeCache.standard() ?? MemoryHomeCache(),
             isEnabled: environment.isAvailable(.characterHome),
+            sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil,
             talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil
         )
     }
@@ -65,6 +69,7 @@ struct HomeTab: View {
             HomeCharacterScreen(
                 character: HomeCharacter(character),
                 finishedSims: me.finishedSims,
+                serverSims: me.entitlements.serverSims,
                 dependencies: dependencies,
                 showsSelector: session != nil,
                 openBis: openBis
@@ -110,6 +115,8 @@ struct HomeTab: View {
 struct HomeCharacterScreen: View {
     let character: HomeCharacter
     let finishedSims: [FinishedSim]
+    /// `entitlements.server_sims`, for Sims' Server runs section (lane F5).
+    let serverSims: Bool
     let dependencies: HomeDependencies
     /// Signed in, the toolbar carries lane F1's selector in place of the name title.
     let showsSelector: Bool
@@ -118,6 +125,7 @@ struct HomeCharacterScreen: View {
     @State private var store: HomeStore
     @State private var tooltip: ItemTooltipRequest?
     @State private var showGear = false
+    @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
     @State private var showTalents = false
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
@@ -125,12 +133,14 @@ struct HomeCharacterScreen: View {
     init(
         character: HomeCharacter,
         finishedSims: [FinishedSim],
+        serverSims: Bool = false,
         dependencies: HomeDependencies,
         showsSelector: Bool = false,
         openBis: @escaping () -> Void
     ) {
         self.character = character
         self.finishedSims = finishedSims
+        self.serverSims = serverSims
         self.dependencies = dependencies
         self.showsSelector = showsSelector
         self.openBis = openBis
@@ -153,6 +163,7 @@ struct HomeCharacterScreen: View {
             .navigationTitle(showsSelector ? "" : character.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showGear) { gear }
+            .navigationDestination(isPresented: simsShown) { sims }
             .navigationDestination(isPresented: $showTalents) { talents }
             .characterSelector(isOn: showsSelector)
         }
@@ -206,12 +217,26 @@ struct HomeCharacterScreen: View {
             openURL(HomeLinks.planner)
         case .action(.openList):
             openBis()
+        case .openNext(.sims):
+            simsRouter?.showsList = dependencies.sims != nil
         case .openNext(.talents):
             showTalents = dependencies.talents != nil
         case .openNext:
             break
         case .retry:
             Task { await store.refresh(character) }
+        }
+    }
+
+    /// Lane F5: Sims on Home's stack, driven by the router so a sim link can push it too.
+    private var simsShown: Binding<Bool> {
+        Binding(get: { simsRouter?.showsList ?? false }, set: { simsRouter?.showsList = $0 })
+    }
+
+    @ViewBuilder
+    private var sims: some View {
+        if let deps = dependencies.sims, let simsRouter {
+            SimsScreen(dependencies: deps, entitled: serverSims, router: simsRouter)
         }
     }
 

@@ -59,7 +59,8 @@ sealed interface HomeIntent {
     data object OpenGear : HomeIntent
     data class Action(val kind: HomeAction.Kind) : HomeIntent
     data object Retry : HomeIntent
-    /** Lane F6: a Next row that opens its screen (Talents). */
+
+    /** A "Next for {name}" row (lane F5: Sims, lane F6: Talents). */
     data class OpenNext(val kind: HomeNextRow.Kind) : HomeIntent
 }
 
@@ -278,20 +279,17 @@ private fun NextRows(title: String, rows: List<HomeNextRow>, send: (HomeIntent) 
     Column(Modifier.fillMaxWidth().quietCard()) {
         rows.forEachIndexed { index, row ->
             if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
-            // Lane F6: the Talents row pushes the Talents screen.
-            if (row.kind == HomeNextRow.Kind.Talents) {
-                NextRow(row, Modifier.clickable(role = Role.Button) { send(HomeIntent.OpenNext(row.kind)) }, chevron = true)
-            } else {
-                NextRow(row)
-            }
+            NextRow(row, send)
         }
     }
 }
 
 @Composable
-private fun NextRow(row: HomeNextRow, modifier: Modifier = Modifier, chevron: Boolean = false) {
+private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
+    // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
+    val tap = if (row.kind == HomeNextRow.Kind.Sims || row.kind == HomeNextRow.Kind.Talents) Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) } else Modifier
     Row(
-        modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
+        Modifier.fillMaxWidth().then(tap).heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -315,9 +313,6 @@ private fun NextRow(row: HomeNextRow, modifier: Modifier = Modifier, chevron: Bo
             HomeNextRow.Tag.Matches -> Tag(stringResource(R.string.home_next_matches), FsColor.kill)
             HomeNextRow.Tag.Differs -> Tag(stringResource(R.string.home_next_differs), FsColor.gold)
             null -> Unit
-        }
-        if (chevron) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(20.dp))
         }
     }
 }

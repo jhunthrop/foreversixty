@@ -1,5 +1,5 @@
 """F5 sims, F6 talents, F7 notifications (lock screens, settings, the in-context ask), F8 You and Premium."""
-from kit import (HERE, ME, back_btn, content_top, device, glyph, item_icon, sheet, spec_icon, top_bar, uri)
+from kit import (DATA, HERE, ME, ROLES, back_btn, content_top, device, glyph, item_icon, offline_strip, sheet, spec_icon, top_bar, uri)
 from model import SLOT_ORDER, slots
 
 APP_ICON = uri(HERE.parents[1] / "logo/export/foreversixty-icon-64.png")
@@ -16,43 +16,225 @@ def pushed(plat: str, back: str, title: str, inner: str, tab: str, overlay: str 
     return device(plat, top_bar(plat, f"<span style=\"display:flex;align-items:center;gap:4px\">{left}</span>", right) + f"<div style=\"padding-top:{top}px\">{head_}{inner}</div>", tab, overlay=overlay, xl=xl)
 
 
-# ---------- F5 sims ----------
+# ---------- F5 sims (revision for today's API, 2026-10-31) ----------
+# Rows follow the web's ServerRunRow: title, meta "{Spec} · {Kind}" (kind alone when untitled), a state line
+# with the age at right (dropping under the state when they do not fit), an 8 pt bar only for a bulk run
+# (combos_total > 0), `Run again` only on a failed row.
 
-def sims(plat: str, premium: bool = True) -> str:
-    running = (f"<div class=\"lrow\" style=\"align-items:flex-start\">{spec_icon('spell_nature_lightning', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">Elemental · Top gear, 64 combinations</div>"
-               f"<div class=\"t-meta muted\"><span class=\"gold\">Running</span> · takes about 4 minutes</div><div class=\"bar8\" style=\"margin-top:8px\"><i style=\"width:62%\"></i></div>"
-               f"<div class=\"t-micro muted mono\" style=\"margin-top:4px\">40 of 64 combinations</div></div></div>")
-    done = (f"<div class=\"lrow\">{spec_icon('spell_nature_lightning', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600;display:flex;gap:8px;align-items:center\"><span style=\"width:8px;height:8px;border-radius:4px;background:var(--gold)\" aria-label=\"Not opened yet\"></span>Elemental · Phase 1 raid set</div>"
-            f"<div class=\"t-meta muted\">Finished 2 h ago</div></div><span class=\"mono t-body strong\">412 DPS</span><span class=\"chev\">{glyph('chev-right', 16)}</span></div>")
-    failed = (f"<div class=\"lrow\" style=\"align-items:flex-start\">{spec_icon('spell_nature_lightning', 36)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">Elemental · Stat weights</div>"
-              f"<div class=\"t-meta wipe\">Failed: the engine stopped before the first result.</div><div class=\"t-meta muted\">Ended yesterday</div></div><span class=\"btn btn-secondary\" style=\"min-height:40px;padding:0 12px\">Run again</span></div>")
-    mine = "".join(f"<div class=\"lrow\">{spec_icon(ic, 32)}<div class=\"t\"><div class=\"t-body\" style=\"font-weight:600;color:var(--strong)\">{h}</div><div class=\"t-meta muted\">{d}</div></div><span class=\"mono t-body strong\">{dps}</span></div>"
-                   for ic, h, d, dps in [("spell_nature_lightning", "Elemental · Bare 60", "Saved from the browser · 26 Oct", "149 DPS"),
-                                         ("ability_warrior_innerrage", "Grimtusk · Fury 40 to 49", "Saved from the browser · 22 Oct", "88 DPS")])
-    if premium:
-        inner = (f"<div class=\"t-micro micro pad\" style=\"margin-top:12px\">Server runs</div><div class=\"card quiet\" style=\"margin:8px 16px 0\">{running}{done}{failed}</div>"
-                 f"<div class=\"t-micro micro pad\" style=\"margin-top:22px\">Your sims</div><div class=\"card quiet\" style=\"margin:8px 16px 0\">{mine}</div>"
-                 f"<div class=\"t-meta muted pad\" style=\"margin-top:12px\">Start a sim on foreversixty.gg/sim. Server runs keep going after you close the app.</div>")
+ELE = "spell_nature_lightning"
+WAR = "ability_warrior_innerrage"
+HEADLINE = "+2 DPS from Spritecaster Cape"
+BASE_BACK = 19121     # Deep Woodlands Cloak: the cloak the run wore; the result swaps in Spritecaster Cape
+CHANGED_SLOT = "back"
+LEGEND = "Gold corner: the slot this result changes"
+FOOT_PREMIUM = "Start a sim on foreversixty.gg/sim. Server runs keep going after you close the app."
+FOOT_FREE = "Start a sim on foreversixty.gg/sim and it shows here."
+OVERFLOW = "<div class=\"t-meta muted\" style=\"padding:8px 16px\">Older finished runs are in Your sims below.</div>"
+TAB_CLEAR = "<div style=\"height:120px\"></div>"
+
+
+def hit(plat: str) -> int:
+    return 44 if plat == "ios" else 48
+
+
+def _dot() -> str:
+    return "<span style=\"display:inline-block;width:8px;height:8px;border-radius:4px;background:var(--gold)\"></span>"
+
+
+def _state_line(left: str, right: str, xl: bool) -> str:
+    # State never wraps first: the age drops under it when both do not fit (flex-wrap), always under at XL.
+    left_style = "" if xl else "white-space:nowrap"
+    wrap = "flex-direction:column;gap:2px" if xl else "flex-wrap:wrap;justify-content:space-between;column-gap:12px"
+    return (f"<div class=\"t-meta\" style=\"display:flex;align-items:baseline;{wrap};margin-top:4px\"><span style=\"{left_style}\">{left}</span>"
+            f"<span class=\"muted\" style=\"{'' if xl else 'white-space:nowrap'}\">{right}</span></div>")
+
+
+def _btn(label: str, plat: str, *, disabled: bool = False, xl: bool = False) -> str:
+    fs = f"font-size:{ROLES[f'{plat}-xl']['meta']}px;white-space:normal;padding:10px 18px;" if xl else ""
+    return f"<span class=\"btn btn-secondary full\" style=\"margin-top:8px;min-height:{hit(plat)}px;{fs}{'opacity:.45' if disabled else ''}\">{label}</span>"
+
+
+def _line(text: str, tone: str = "wipe", extra: str = "") -> str:
+    return f"<div class=\"t-meta {tone}\" role=\"alert\" style=\"margin-top:6px\">{text}{extra}</div>"
+
+
+def _plans(plat: str) -> str:
+    return f"<span class=\"gold\" style=\"text-decoration:underline;display:inline-flex;min-height:{hit(plat)}px;align-items:center;margin-left:4px\">See plans</span>"
+
+
+def _srow(title: str, meta: str, state: str, age: str, *, unseen: bool = False, bar: tuple[int, int] | None = None, action: str = "", link: bool = False, xl: bool = False) -> str:
+    dot = f"<span aria-label=\"Not opened yet\" style=\"margin-right:8px;display:inline-block;vertical-align:middle\">{_dot()}</span>" if unseen else ""
+    barhtml = ""
+    if bar:
+        done, total = bar
+        barhtml = (f"<div class=\"bar8\" style=\"margin-top:8px\"><i style=\"width:{done * 100 // total}%\"></i></div>"
+                   f"<div class=\"t-micro muted mono\" style=\"margin-top:4px\">{done} of {total} combinations</div>")
+    chev = f"<span class=\"chev\" style=\"align-self:center\">{glyph('chev-right', 16)}</span>" if link else ""
+    return (f"<div class=\"lrow\" style=\"align-items:flex-start;min-height:{88 if not link else 72}px;padding:12px 16px\">{spec_icon(ELE, 36)}"
+            f"<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{dot}{title}</div><div class=\"t-meta muted\">{meta}</div>"
+            f"{_state_line(state, age, xl)}{barhtml}{action}</div>{chev}</div>")
+
+
+RUN_PLAIN = lambda xl=False: _srow("Council pull", "Elemental · Sim", "<span class=\"gold\">Running</span> · takes about 4 minutes", "Started 1 min ago", xl=xl)
+RUN_BULK = lambda xl=False: _srow("Elemental", "Top Gear", "<span class=\"gold\">Running</span> · takes about 4 minutes", "Started 3 min ago", bar=(40, 64), xl=xl)
+DONE_UNSEEN = lambda xl=False: _srow("MC full buffs", "Elemental · Sim", "<span class=\"mono strong\">412 DPS</span>", "Finished 2 h ago", unseen=True, link=True, xl=xl)
+
+
+def _failed(plat: str, xl: bool = False, action: str | None = None) -> str:
+    return _srow("Elemental", "Stat weights", "<span class=\"wipe\">Failed: the engine stopped</span>", "Ended yesterday",
+                 action=_btn("Run again", plat, xl=xl) if action is None else action, xl=xl)
+
+
+def _srows(plat: str, xl: bool = False) -> str:
+    return RUN_BULK(xl) + RUN_PLAIN(xl) + DONE_UNSEEN(xl) + _failed(plat, xl)
+
+
+def _mine_row(ic: str, title: str, headline: str, meta: str, *, unseen: bool = False, mono: bool = True) -> str:
+    dot = f"<span style=\"margin-right:8px;display:inline-block;vertical-align:middle\">{_dot()}</span>" if unseen else ""
+    return (f"<div class=\"lrow\" style=\"align-items:flex-start;min-height:72px;padding:12px 16px\">{spec_icon(ic, 32)}<div class=\"t\"><div class=\"t-body strong\" style=\"font-weight:600\">{dot}{title}</div>"
+            f"<div class=\"t-body strong{' mono' if mono else ''}\">{headline}</div><div class=\"t-meta muted\">{meta}</div></div>"
+            f"<span class=\"chev\" style=\"align-self:center\">{glyph('chev-right', 16)}</span></div>")
+
+
+def _mine(count: int = 3) -> str:
+    rows = [_mine_row(ELE, "MC full buffs", "412 DPS", "Ran on the server · 31 Oct", unseen=True),
+            _mine_row(ELE, "Elemental", HEADLINE, "Saved from the browser · 28 Oct", mono=False),
+            _mine_row(WAR, "Fury 40 to 49", "88 DPS", "Saved from the browser · 22 Oct")]
+    return "".join(rows[:count])
+
+
+def _section(label: str, inner: str, first: bool = False) -> str:
+    return f"<div class=\"t-micro micro pad\" style=\"margin-top:{12 if first else 22}px\">{label}</div><div class=\"card quiet\" style=\"margin:8px 16px 0\">{inner}</div>"
+
+
+def _skel_row(h: int, icon: int) -> str:
+    return (f"<div class=\"lrow\" style=\"min-height:{h}px;padding:12px 16px;align-items:flex-start\"><span class=\"skel\" style=\"flex:none;width:{icon}px;height:{icon}px\"></span>"
+            f"<div class=\"t\" style=\"display:flex;flex-direction:column;gap:8px\"><span class=\"skel\" style=\"height:15px;width:180px;max-width:100%\"></span><span class=\"skel\" style=\"height:12px;width:120px\"></span>"
+            f"<span class=\"skel\" style=\"height:14px;width:140px\"></span></div></div>")
+
+
+def _failed_block(msg: str) -> str:
+    return (f"<div style=\"padding:16px\"><div class=\"t-body wipe\" role=\"alert\">{msg}</div>"
+            f"<span class=\"btn btn-secondary\" style=\"margin-top:12px\">{glyph('refresh', 16)}Try again</span></div>")
+
+
+def _spinner_row() -> str:
+    return ("<div style=\"height:56px;display:grid;place-items:center\"><span style=\"width:22px;height:22px;border-radius:11px;"
+            "border:3px solid var(--line);border-top-color:var(--gold)\"></span></div>")
+
+
+def _msg(text: str) -> str:
+    return f"<div style=\"padding:18px 16px\"><div class=\"t-body\">{text}</div></div>"
+
+
+def _screen(plat: str, title: str, back: str, sections: str, *, strip: str = "", foot: str = "", xl: bool = False, height: int | None = None, tab: bool = True) -> str:
+    """A pushed screen: iOS large title then the offline strip, Android title in the bar then the strip."""
+    top = content_top(plat)
+    head_ = "" if plat == "and" else f"<div class=\"cond t-title pad\" style=\"margin-top:4px\">{title}</div>"
+    foot_html = f"<div class=\"t-meta muted pad\" style=\"margin-top:12px\">{foot}</div>" if foot else ""
+    left = back_btn(plat, back) + (f"<span class=\"cond\" style=\"font-size:22px\">{title}</span>" if plat == "and" else "")
+    bar = top_bar(plat, f"<span style=\"display:flex;align-items:center;gap:4px\">{left}</span>", "")
+    return device(plat, bar + f"<div style=\"padding-top:{top}px\">{head_}{strip}{sections}{foot_html}{TAB_CLEAR}</div>", "Home", xl=xl, height=height)
+
+
+def sims(plat: str, state: str = "premium", xl: bool = False) -> str:
+    strip = offline_strip() if state == "offline" else ""
+    server: str | None
+    height = None
+    foot = FOOT_PREMIUM
+    if state == "premium":
+        server, mine, height = _srows(plat, xl) + OVERFLOW, _mine(2), (None if xl else 1160)
+        if xl:
+            server = _failed(plat, True) + RUN_PLAIN(True)
+    elif state == "free":
+        server, mine, foot = None, _mine(), FOOT_FREE
+    elif state == "lapsed":
+        failed = _failed(plat, action=_btn("Run again", plat) + _line("Server sims are part of Premium.", "wipe", _plans(plat)))
+        old = _srow("MC full buffs", "Elemental · Sim", "<span class=\"mono strong\">412 DPS</span>", "Finished 12 Oct", link=True)
+        server, mine, foot = failed + old, _mine(), FOOT_FREE
+    elif state == "loading":
+        server, mine, foot = "".join(_skel_row(88, 36) for _ in range(3)), "".join(_skel_row(72, 32) for _ in range(3)), ""
+    elif state == "empty":
+        server, mine, foot = _msg("No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close the app."), _msg("No sims yet. Start one on foreversixty.gg/sim and it shows here."), ""
+    elif state == "error":
+        server, mine = _failed_block("Your server runs did not load."), _mine()
+    elif state == "paging":
+        server, mine = None, _mine(3) + _spinner_row()
+        foot = ""
+    elif state == "pagefail":
+        server, mine = None, _mine(3) + _failed_block("Your sims did not load.")
+        foot = ""
+    else:  # offline: cached rows, polling stopped, Run again disabled with its sentence
+        server = (_srow("Council pull", "Elemental · Sim", "<span class=\"mono strong\">388 DPS</span>", "Finished 2 h ago", link=True)
+                  + _failed(plat, action=_btn("Run again", plat, disabled=True) + _line("You are offline. Run again needs a connection.", "muted")))
+        mine = _mine()
+    sections = (_section("Server runs", server, first=True) if server is not None else "") + _section("Your sims", mine, first=server is None)
+    return _screen(plat, "Sims", "Home", sections, strip=strip, foot=foot, xl=xl, height=height)
+
+
+def rerun(plat: str, state: str) -> str:
+    """One failed Server runs row in each Run again state."""
+    strip = offline_strip() if state == "offline" else ""
+    action = {
+        "starting": _btn("Starting…", plat, disabled=True),
+        "started": _btn("Started", plat, disabled=True),
+        "failed": _btn("Run again", plat) + _line("Could not start it again. Try again."),
+        "lapsed": _btn("Run again", plat) + _line("Server sims are part of Premium.", "wipe", _plans(plat)),
+        "lapsed-plain": _btn("Run again", plat) + _line("Server sims are part of Premium."),
+        "offline": _btn("Run again", plat, disabled=True) + _line("You are offline. Run again needs a connection.", "muted"),
+    }[state]
+    return _screen(plat, "Sims", "Home", _section("Server runs", _failed(plat, action=action), first=True), strip=strip, height=640)
+
+
+def _gear_icons(kind: str, count: int | None, unknown: bool) -> str:
+    keys = SLOT_ORDER if count is None else SLOT_ORDER[:count]
+    out = []
+    for k in keys:
+        item_id = BASE_BACK if (k == CHANGED_SLOT and kind != "run") else slots()[k]["item_id"]
+        icon = item_icon(item_id, 40)
+        if unknown and k == "trinket2":
+            icon = ("<span style=\"display:grid;place-items:center;width:40px;height:40px;border-radius:6px;border:1.5px solid var(--line);background:#11151f;"
+                    "color:var(--muted)\" class=\"t-body mono\">?</span>")
+        if k == CHANGED_SLOT and kind != "run":
+            icon = (f"<span style=\"position:relative;display:block;width:40px;height:40px\">{icon}<span aria-label=\"Changed by this result\" style=\"position:absolute;top:0;right:0;width:0;height:0;"
+                    "border-top:12px solid var(--gold);border-left:12px solid transparent;border-top-right-radius:6px\"></span></span>")
+        out.append(icon)
+    return "".join(out)
+
+
+def sim_result(plat: str, kind: str = "run", xl: bool = False, state: str = "ok") -> str:
+    fig = 64 if (xl and plat == "ios") else 60 if xl else 52
+    gh_fs = ROLES[f"{plat}-xl"]["meta"] if xl else 13
+    title, kind_label = ("MC full buffs", "Sim") if kind == "run" else ("Elemental", "Top Gear")
+    if state == "loading":
+        inner = ("<div class=\"pad\"><span class=\"skel\" style=\"display:block;height:20px;width:160px;margin-top:8px\"></span><span class=\"skel\" style=\"display:block;height:12px;width:120px;margin-top:10px\"></span>"
+                 "<span class=\"skel\" style=\"display:block;height:52px;width:200px;margin-top:16px\"></span><div style=\"display:grid;grid-template-columns:repeat(6,40px);gap:8px;margin-top:40px\">"
+                 + "".join("<span class=\"skel\" style=\"display:block;width:40px;height:40px\"></span>" for _ in range(12)) + "</div></div>")
+        return _result_screen(plat, "Sim", inner, xl)
+    if state == "failed":
+        return _result_screen(plat, "Sim", "<div class=\"pad\">" + _failed_block("That sim did not load.") + "</div>", xl)
+    if kind == "run":
+        answer = (f"<div style=\"display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:16px\"><span class=\"cond\" style=\"font-size:{fig}px;line-height:1\">412.3</span><span class=\"t-body muted\">DPS</span></div>")
     else:
-        inner = (f"<div class=\"t-micro micro pad\" style=\"margin-top:12px\">Your sims</div><div class=\"card quiet\" style=\"margin:8px 16px 0\">{mine}</div>"
-                 f"<div class=\"t-meta muted pad\" style=\"margin-top:12px\">Start a sim on foreversixty.gg/sim and it shows here.</div>")
-    return pushed(plat, "Home", "Sims", inner, "Home")
+        answer = f"<div class=\"cond t-stat\" style=\"margin-top:16px;text-transform:none\">{HEADLINE}</div>"
+    head_ = "" if plat == "and" else f"<div class=\"cond t-title\" style=\"margin-top:4px\">{title}</div>"
+    gear = ""
+    if state != "nogear":
+        legend = f"<div class=\"t-meta muted\" style=\"margin-top:8px\">{LEGEND}</div>" if kind != "run" else ""
+        gear = (f"<div class=\"t-micro micro\" style=\"margin-top:20px\">The gear it ran</div><div style=\"display:grid;grid-template-columns:repeat(6,40px);gap:8px;margin-top:8px\">"
+                f"{_gear_icons(kind, None, state == 'unknown')}</div>{legend}")
+    inner = (f"<div class=\"pad\">{head_}<div class=\"t-micro micro\" style=\"margin-top:4px\">{kind_label}</div>"
+             f"<div class=\"t-meta\" style=\"margin-top:4px\"><span style=\"color:var(--c-shaman,#2f7bdb)\">Elemental Shaman</span><span class=\"muted\"> · level 60</span></div>{answer}"
+             f"<div class=\"t-meta muted mono\" style=\"margin-top:6px\">± 1.8 · 10,000 iterations · engine 1f542def3</div>{gear}"
+             f"<span class=\"btn btn-ghost\" style=\"margin-top:12px;padding:0;min-height:{hit(plat)}px;font-size:{gh_fs}px;white-space:normal;text-align:left;display:flex;flex-wrap:wrap;justify-content:flex-start;min-width:0;max-width:100%;overflow-wrap:anywhere\">Full breakdown on foreversixty.gg{glyph('external', 14)}</span></div>")
+    return _result_screen(plat, title, inner, xl, strip=offline_strip() if state == "offline" else "", height=1500 if xl else None)
 
 
-def sim_result(plat: str, premium: bool = True, link_region: bool = True) -> str:
-    icons = "".join(item_icon(slots()[k]["item_id"], 40) for k in SLOT_ORDER)
-    action = ""
-    if premium:
-        action = "<span class=\"btn btn-secondary full\" style=\"margin-top:16px\">Run again on the server</span>"
-    elif link_region:
-        action = "<div class=\"t-meta muted\" style=\"margin-top:16px\">Server sims are part of Premium. <span class=\"gold\" style=\"text-decoration:underline\">See plans</span></div>"
-    inner = (f"<div class=\"pad\"><div class=\"t-meta muted\" style=\"margin-top:4px\">Elemental Shaman · level 60 · Phase 1 raid buffs · Finished 2 h ago</div>"
-             f"<div style=\"display:flex;align-items:baseline;gap:8px;margin-top:16px\"><span class=\"cond\" style=\"font-size:52px;line-height:1\">412.3</span><span class=\"t-body muted\">DPS</span></div>"
-             f"<div class=\"t-meta muted mono\">± 1.8 · 10,000 iterations · engine 1.60.1.70532</div>"
-             f"<div class=\"t-meta\" style=\"margin-top:8px\"><span class=\"mono strong\">453.6 DPS</span> at best in slot for your level range</div>"
-             f"<div class=\"t-micro micro\" style=\"margin-top:20px\">The gear it ran</div><div style=\"display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px\">{icons}</div>"
-             f"{action}<span class=\"btn btn-ghost\" style=\"margin-top:8px;padding:0\">Full breakdown on foreversixty.gg{glyph('external', 14)}</span></div>")
-    return pushed(plat, "Sims", "Phase 1 raid set", inner, "Home")
+def _result_screen(plat: str, title: str, inner: str, xl: bool, strip: str = "", height: int | None = None) -> str:
+    top = content_top(plat)
+    left = back_btn(plat, "Sims") + (f"<span class=\"cond\" style=\"font-size:22px\">{title}</span>" if plat == "and" else "")
+    bar = top_bar(plat, f"<span style=\"display:flex;align-items:center;gap:4px\">{left}</span>", "")
+    return device(plat, bar + f"<div style=\"padding-top:{top}px\">{strip}{inner}{TAB_CLEAR}</div>", "Home", xl=xl, height=height)
 
 
 # ---------- F7 notifications ----------

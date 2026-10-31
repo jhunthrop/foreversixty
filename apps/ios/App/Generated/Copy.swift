@@ -1545,9 +1545,6 @@ enum Copy {
     /// No sims yet. Start one on foreversixty.gg/sim and it shows here.
     static var simsEmpty: String { text("sims.empty") }
 
-    /// Run again on the server
-    static var simsRunAgain: String { text("sims.runAgain") }
-
     /// Run again
     static var simsRunAgainRow: String { text("sims.runAgainRow") }
 
@@ -1570,8 +1567,83 @@ enum Copy {
     static var simsBreakdown: String { text("sims.breakdown") }
 
     /// ± {error} · {n} iterations · engine {version}
-    static func simsError(error: String, n: Int, version: String) -> String {
+    static func simsError(error: String, n: String, version: String) -> String {
         format("sims.error", error, n, version)
+    }
+
+    /// Sim
+    static var simsKindRun: String { text("sims.kind.run") }
+
+    /// Top Gear
+    static var simsKindGear: String { text("sims.kind.gear") }
+
+    /// Talent compare
+    static var simsKindTalents: String { text("sims.kind.talents") }
+
+    /// Droptimizer
+    static var simsKindDrops: String { text("sims.kind.drops") }
+
+    /// Stat weights
+    static var simsKindWeights: String { text("sims.kind.weights") }
+
+    /// Started {age}
+    static func simsStarted(age: String) -> String {
+        format("sims.started", age)
+    }
+
+    /// Ended {age}
+    static func simsEnded(age: String) -> String {
+        format("sims.ended", age)
+    }
+
+    /// {done} of {total} combinations
+    static func simsCombos(done: Int, total: Int) -> String {
+        format("sims.combos", done, total)
+    }
+
+    /// about a minute
+    static var simsEstimateMinute: String { text("sims.estimate.minute") }
+
+    /// about {n} minutes
+    static func simsEstimateMinutes(n: Int) -> String {
+        format("sims.estimate.minutes", n)
+    }
+
+    /// about {n} hours
+    static func simsEstimateHours(n: Int) -> String {
+        format("sims.estimate.hours", n)
+    }
+
+    /// No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close the app.
+    static var simsServerEmpty: String { text("sims.serverEmpty") }
+
+    /// Older finished runs are in Your sims below.
+    static var simsOverflow: String { text("sims.overflow") }
+
+    /// Your server runs did not load.
+    static var simsServerFailed: String { text("sims.serverFailed") }
+
+    /// Your sims did not load.
+    static var simsFailedLoad: String { text("sims.failedLoad") }
+
+    /// That sim did not load.
+    static var simsResultFailed: String { text("sims.resultFailed") }
+
+    /// You are offline. Run again needs a connection.
+    static var simsOffline: String { text("sims.offline") }
+
+    /// Opens the result
+    static var simsOpenHint: String { text("sims.openHint") }
+
+    /// Gold corner: the slot this result changes
+    static var simsChanged: String { text("sims.changed") }
+
+    /// Changed by this result
+    static var simsChangedLabel: String { text("sims.changedLabel") }
+
+    /// level {n}
+    static func simsLevel(n: Int) -> String {
+        format("sims.level", n)
     }
 
     /// Talents
