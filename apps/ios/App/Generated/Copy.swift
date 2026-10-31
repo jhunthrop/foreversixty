@@ -2349,6 +2349,9 @@ enum Copy {
     /// Private
     static var reportsVisibilityPrivate: String { text("reports.visibility.private") }
 
+    /// Refresh
+    static var reportsRefresh: String { text("reports.refresh") }
+
     /// Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.
     static var reportsFooter: String { text("reports.footer") }
 
@@ -2381,6 +2384,12 @@ enum Copy {
     static func reportMeta(weekday: String, date: String, character: String) -> String {
         format("report.meta", weekday, date, character)
     }
+
+    /// Report
+    static var reportTag: String { text("report.tag") }
+
+    /// Coach
+    static var reportCoach: String { text("report.coach") }
 
     /// Your parses
     static var reportYourParses: String { text("report.yourParses") }
@@ -2518,6 +2527,11 @@ enum Copy {
     /// {boss}, wipe, {time}, boss at {n} percent
     static func reportA11yWipe(boss: String, time: String, n: Int) -> String {
         format("report.a11y.wipe", boss, time, n)
+    }
+
+    /// {boss}, wipe, {time}
+    static func reportA11yWipePlain(boss: String, time: String) -> String {
+        format("report.a11y.wipePlain", boss, time)
     }
 
     /// Trash in {zone}, {pulls}, {time}

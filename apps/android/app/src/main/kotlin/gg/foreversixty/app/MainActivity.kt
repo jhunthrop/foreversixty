@@ -92,6 +92,8 @@ class MainActivity : ComponentActivity() {
             null -> Unit
             // Lane F5: a sim link opens Home, Sims and the result.
             is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
+            // Lane F10: a report link opens Home, Your reports and the report.
+            is DeepLink.Report -> graph.home.reports?.navigator?.open(parsed)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

@@ -6017,6 +6017,18 @@
         }
       }
     },
+    "report.a11y.wipePlain": {
+      "comment": "Arguments: 1 boss (string), 2 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, wipe, %2$@"
+          }
+        }
+      }
+    },
     "report.bossPulls": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -6037,6 +6049,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "report.coach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
           }
         }
       }
@@ -6326,6 +6349,17 @@
         }
       }
     },
+    "report.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
     "report.trash": {
       "extractionState": "manual",
       "localizations": {
@@ -6585,6 +6619,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "reports.refresh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh"
           }
         }
       }

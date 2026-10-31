@@ -713,6 +713,7 @@
     <string name="reports_visibility_unlisted">Unlisted</string>
     <string name="reports_visibility_guild">Guild</string>
     <string name="reports_visibility_private">Private</string>
+    <string name="reports_refresh">Refresh</string>
     <string name="reports_footer">Newest first. Logs come from the companion on your PC; the app reads them, it does not upload.</string>
     <string name="reports_empty">No reports yet. Upload a log, or let the companion send your next raid.</string>
     <string name="reports_getCompanion">Get the companion</string>
@@ -722,6 +723,8 @@
     <string name="reports_a11y_live">live, updated %1$s seconds ago</string>
     <string name="report_openWeb">Open on foreversixty.gg</string>
     <string name="report_meta">%1$s %2$s · logged by %3$s</string>
+    <string name="report_tag">Report</string>
+    <string name="report_coach">Coach</string>
     <string name="report_yourParses">Your parses</string>
     <string name="report_parseMeta">Kill %1$s · %2$s, %3$s</string>
     <string name="report_unit_dps">DPS</string>
@@ -770,6 +773,7 @@
     <string name="report_a11y_parseNoRank">%1$s, kill, %2$s, %3$s %4$s</string>
     <string name="report_a11y_kill">%1$s, kill, %2$s, %3$s, %4$s</string>
     <string name="report_a11y_wipe" tools:ignore="PluralsCandidate">%1$s, wipe, %2$s, boss at %3$d percent</string>
+    <string name="report_a11y_wipePlain">%1$s, wipe, %2$s</string>
     <string name="report_a11y_trash">Trash in %1$s, %2$s, %3$s</string>
     <string name="report_a11y_showsMeters">Shows the meters</string>
     <string name="report_a11y_perSecond_dps">damage per second</string>

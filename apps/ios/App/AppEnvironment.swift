@@ -56,6 +56,7 @@ struct AppEnvironment {
                 FileHomeCache.standard()?.removeAll()
                 DiskRaidCache.standard().removeAll()
                 DiskRaidCache.sims().removeAll()
+                DiskRaidCache.reports().removeAll()
             }
         )
     }

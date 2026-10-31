@@ -13,6 +13,7 @@ import gg.foreversixty.app.talents.TalentStatusLine
 import gg.foreversixty.app.talents.TalentTagKind
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.FinishedSim
+import gg.foreversixty.app.model.ReportRow
 import gg.foreversixty.app.model.HomeUpgrade
 import gg.foreversixty.app.model.HomeWorn
 import kotlin.math.roundToInt
@@ -82,9 +83,12 @@ sealed interface HomeAnswerBody {
 
 /** One "Next for {name}" row. */
 data class HomeNextRow(val kind: Kind, val title: String, val line: String, val tag: Tag?) {
-    enum class Kind { Talents, Sims }
+    enum class Kind { Talents, Sims, Logs }
     enum class Tag { Matches, Differs }
 }
+
+/** Lane F10: the Logs row's newest report; [latest] null means none yet. */
+data class HomeLogs(val latest: ReportRow?)
 
 /** Everything Home draws for one answer. Built by [HomePresenter], rendered by `HomeAnswer`. */
 data class HomeAnswerModel(
@@ -115,6 +119,8 @@ class HomePresenter(
      * fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
      */
     private val talentStatus: TalentStatusLine? = null,
+    /** Lane F10: the Logs row, only while the `reports` switch is on (null hides it). */
+    private val logs: HomeLogs? = null,
 ) {
     fun model(home: CharacterHome): HomeAnswerModel {
         val isAnswer = home.state == STATE_OK && home.upgradeCount > 0
@@ -129,12 +135,12 @@ class HomePresenter(
             body = body(home),
             already = already(home),
             nextTitle = res.getString(R.string.home_next_title, character.name),
-            next = listOf(talentsRow(home), simsRow(home.spec)),
+            next = listOfNotNull(talentsRow(home), simsRow(home.spec), logsRow()),
         )
     }
 
     /** The Next rows alone, for the error state with nothing cached. */
-    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOfNotNull(talentStatus?.let(::talentsRow), simsRow(null))
+    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOfNotNull(talentStatus?.let(::talentsRow), simsRow(null), logsRow())
 
     /** The Talents row from F6's status: its tag (Matches or Differs) and its sentence. */
     private fun talentsRow(status: TalentStatusLine): HomeNextRow {
@@ -252,6 +258,15 @@ class HomePresenter(
             "no_build" -> HomeNextRow(HomeNextRow.Kind.Talents, title, res.getString(R.string.home_next_talentsNoBuild), null)
             else -> HomeNextRow(HomeNextRow.Kind.Talents, title, res.getString(R.string.home_next_talentsNone), null)
         }
+    }
+
+    /** `Your last raid: Onyxia's Lair, 1 kill` or `No reports yet.` (spec F10 Interactions). */
+    private fun logsRow(): HomeNextRow? {
+        val current = logs ?: return null
+        val line = current.latest?.let {
+            res.getString(R.string.home_logs_last, it.zone, res.getQuantityString(R.plurals.reports_kills, it.killCount, it.killCount))
+        } ?: res.getString(R.string.home_logs_none)
+        return HomeNextRow(HomeNextRow.Kind.Logs, res.getString(R.string.home_logs), line, null)
     }
 
     /** The newest unseen finished server run for this spec (`/v1/me` `finished_sims`, newest first). */

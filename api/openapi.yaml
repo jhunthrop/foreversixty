@@ -3820,7 +3820,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The meters"
-          x-fixtures: [reports.meters]
+          x-fixtures: [reports.meters, reports.meters.trash]
           content:
             application/json:
               schema:

@@ -132,6 +132,10 @@ func TestAppContractReportMeters(t *testing.T) {
 	id, _ := h.onyxiaNight(Public)
 	contract.AssertFixture(t, "reports.meters",
 		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/fights/3/meters", "", nil), http.StatusOK), contract.Options{})
+	h.appReportJSON(store.FightEntry{Index: 1, Kind: "trash", Name: "Trash", Zone: "Onyxia's Lair", DurationMS: 40_000})
+	h.appSummary(1, 40_000, roster("baelgrim", "Warrior", "Fury", "dps", 20_000, 0, 0, 0))
+	contract.AssertFixture(t, "reports.meters.trash",
+		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/fights/1/meters?scope=trash", "", nil), http.StatusOK), contract.Options{})
 	contract.AssertFixture(t, "reports.meters.error-not-found",
 		reportBody(t, h.do(http.MethodGet, "/v1/reports/"+id+"/fights/9/meters", "", nil), http.StatusNotFound), contract.Options{})
 }

@@ -1,4 +1,4 @@
-"""One story for every F10 fixture: Obnoxious Yell's guild Onyxia night (report ewlrx3enxbeb).
+"""One story for every F10 fixture: Obnoxious Yell's guild Onyxia night, Monday 14 December in the guild's Chicago evening (report ewlrx3enxbeb).
 
 The kill is fight 9, 4:28 (268,000 ms), 40 players, 3 deaths. Obnoxious Yell's 190,923 damage over
 268 s is 712.40 DPS, the 712.4 DPS and 91st percentile of me.raid-night; every figure below is
@@ -156,7 +156,7 @@ for index, kind, name, enc, ms, kill, deaths, health in FIGHTS:
     t += ms // 1000 + 240
 trash = [f for f in fights if f["kind"] == "trash"]
 write("reports.get", env({
-    "id": REPORT, "title": "Onyxia, Tuesday", "visibility": "guild",
+    "id": REPORT, "title": "Onyxia, Monday", "visibility": "guild",
     "owner": {"id": 1812, "battletag": "Yell#1604"},
     "guild": {"id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp"},
     "zone": "Onyxia's Lair", "status": "complete", "engine_version": "1f542def3",
@@ -176,7 +176,7 @@ write("reports.list", env({
         {"id": "m4xk9d2pqz7a", "title": "", "zone": "Blackrock Spire", "status": "live", "visibility": "private",
          "created_at": "2026-12-16T00:10:00Z", "fight_count": 4, "kill_count": 0, "boss_count": 0,
          "logging_character": YELL_REF, "last_upload_at": "2026-12-16T00:31:12Z", "heartbeat_at": "2026-12-16T00:31:40Z"},
-        {"id": REPORT, "title": "Onyxia, Tuesday", "zone": "Onyxia's Lair", "status": "complete", "visibility": "guild",
+        {"id": REPORT, "title": "Onyxia, Monday", "zone": "Onyxia's Lair", "status": "complete", "visibility": "guild",
          "created_at": "2026-12-15T01:58:00Z", "fight_count": len(fights),
          "kill_count": sum(1 for f in fights if f["kill"]),
          "boss_count": len({f["name"] for f in fights if f["kill"]}),
@@ -189,4 +189,28 @@ write("reports.list", env({
          "logging_character": YELL_REF, "last_upload_at": "2026-11-29T21:40:00Z", "heartbeat_at": None},
     ],
     "total": 4, "page": 1, "per_page": 100,
+}))
+
+# The trash group's combined meters: the same 40 over the six trash pulls (460,000 ms, the
+# group's summed length), each at a little over half their boss rate, as AoE trash reads.
+TRASH_MS = sum(f["duration_ms"] for f in trash)
+assert TRASH_MS == 460_000
+
+
+def trash_player(row):
+    p = player(row)
+    scale = 0.55
+    for total in ("damage_done", "healing_done", "damage_taken"):
+        p[total] = round(p[total] / KILL_MS * TRASH_MS * scale)
+    p["active_ms"] = round(TRASH_MS * 0.82)
+    p["dps"], p["hps"], p["dtps"] = (figure(p["damage_done"], TRASH_MS), figure(p["healing_done"], TRASH_MS),
+                                     figure(p["damage_taken"], TRASH_MS))
+    p["deaths"] = 0
+    return p
+
+
+TRASH_PLAYERS = sorted([trash_player(r) for r in ROSTER], key=lambda p: (-p["dps"], p["name"]))
+write("reports.meters.trash", env({
+    "fight_index": trash[0]["index"], "scope": "trash", "metric": "damage", "kill": False,
+    "duration_ms": TRASH_MS, "players": [p for p in TRASH_PLAYERS if p["damage_done"] > 0],
 }))
