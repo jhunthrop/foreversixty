@@ -33,8 +33,9 @@ struct CalendarSheet: UIViewControllerRepresentable {
         draft.startDate = event.start
         draft.endDate = event.end
         draft.location = event.location
+        // The link has its own URL field here; repeating it in notes showed it twice.
+        // (Android's insert intent has no URL field, so its description carries the link.)
         draft.url = event.url
-        draft.notes = event.url.absoluteString
         controller.event = draft
         controller.editViewDelegate = context.coordinator
         return controller
