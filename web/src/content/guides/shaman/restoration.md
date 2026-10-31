@@ -3,11 +3,11 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70658:shaman:dwarf:53/0/5532003315513151:'
+build: 'FS1:1.60.1.70658:shaman:dwarf:0/55/5530003315513151:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Restoration Shaman overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-07
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -48,7 +48,7 @@ Restoration is Shaman's healing spec, built on Healing Wave, Chain Heal and Ript
 
 ## Talents and builds
 
-The build is nearly all Restoration, with the rest in Elemental where the points cost a healer nothing. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is nearly all Restoration, with the other ten points in Enhancement: Thundering Strikes, whose critical strike chance covers heals (Forever has one crit stat for spells and attacks), and Ancestral Knowledge for the Intellect. They replace Convection, which only cheapens shocks and Lightning Bolt, Concussion, which only adds to their damage, and Natural Grace, which only lowers threat; that gained about 4% healing in our level-60 heal run. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Improved Healing Wave** shortens Healing Wave, and **Healing Way** strengthens it; **Purification** is a flat multiplier on every heal.
 - **Tidal Focus** makes the healing spells cheaper (and adds hit, which a healer does not use), **Mindfulness** keeps part of your regeneration running while you cast, and **Tidal Mastery** adds critical chance.

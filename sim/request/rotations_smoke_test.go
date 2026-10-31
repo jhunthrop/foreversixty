@@ -190,7 +190,8 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 1326047}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
 	},
 	"shaman-enhancement": {
-		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
+		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
+		"{SpellID: 408498}": "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
 		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go, Forever's tree); this build takes none.",

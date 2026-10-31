@@ -4,11 +4,11 @@ classSlug: shaman
 spec: elemental
 role: dps
 build: 'FS1:1.60.1.70658:shaman:dwarf:551033130000135/03/503352:'
-raidBuild: 'FS1:1.60.1.70658:shaman:dwarf:5510331300001351/052/053302:'
+raidBuild: 'FS1:1.60.1.70658:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -49,7 +49,7 @@ Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bo
 
 ## Talents and builds
 
-In rough priority order: **Concussion** raises the damage of Lightning Bolt, Chain Lightning, and Earth Shock, a broad multiplier across the entire single-target and AoE kit. **Call of Flame**, reworked in Forever, now boosts Lava Burst and Fire Nova alongside Flame Shock within a single talent instead of touching only the Fire Totems it used to buff, effectively unifying the tree's fire-damage kit under one pick. **Elemental Fury** raises critical strike damage on the totems and elements the spec relies on, moved earlier in the tree with a lower first-rank value than 1.12's single large-rank version. **Lightning Overload** gives Lightning Bolt and Chain Lightning a chance to cast a second, weaker bolt for free, a straight damage-per-cast increase. **Elemental Alacrity** cuts the cast time of Lightning Bolt, Chain Lightning, and Lava Burst further on top of the baseline speed-up Forever already gave those spells — maxed, it brings deep Elemental's effective cast speed roughly back to where 1.12 Elemental topped out, since the starting point is already faster. **Lava Burst**, the tree's new capstone nuke, hits harder against a target already carrying Flame Shock. **Elemental Mastery** is reworked too: instead of 1.12's free critical next spell it takes 0.5 seconds off Lightning Bolt and Lava Burst for 15 seconds, which with Elemental Alacrity puts Lightning Bolt on the global cooldown, and removes Chain Lightning's cooldown for the same window. The raid build takes it with the 31st Elemental point, and moves Totemic Focus's five points into Thundering Strikes and Ancestral Knowledge; together that gained about 4% in our level-60 raid search run.
+In rough priority order: **Concussion** raises the damage of Lightning Bolt, Chain Lightning, and Earth Shock, a broad multiplier across the entire single-target and AoE kit. **Call of Flame**, reworked in Forever, now boosts Lava Burst and Fire Nova alongside Flame Shock within a single talent instead of touching only the Fire Totems it used to buff, effectively unifying the tree's fire-damage kit under one pick. **Elemental Fury** raises critical strike damage on the totems and elements the spec relies on, moved earlier in the tree with a lower first-rank value than 1.12's single large-rank version. **Lightning Overload** gives Lightning Bolt and Chain Lightning a chance to cast a second, weaker bolt for free, a straight damage-per-cast increase. **Elemental Alacrity** cuts the cast time of Lightning Bolt, Chain Lightning, and Lava Burst further on top of the baseline speed-up Forever already gave those spells — maxed, it brings deep Elemental's effective cast speed roughly back to where 1.12 Elemental topped out, since the starting point is already faster. **Lava Burst**, the tree's new capstone nuke, hits harder against a target already carrying Flame Shock. **Elemental Mastery** is reworked too: instead of 1.12's free critical next spell it takes 0.5 seconds off Lightning Bolt and Lava Burst for 15 seconds, which with Elemental Alacrity puts Lightning Bolt on the global cooldown, and removes Chain Lightning's cooldown for the same window. The raid build takes it with the 31st Elemental point, and moves Totemic Focus's five points into Thundering Strikes and Ancestral Knowledge; together that gained about 4% in our level-60 raid search run. Natural Grace only lowers threat, so the raid build moves its three points into Ancestral Knowledge for the Intellect, about 1% more in a later search.
 
 ## Rotation and priority
 
