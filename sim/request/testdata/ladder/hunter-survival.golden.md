@@ -104,7 +104,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 0000000000000000-0000000000000000-500230231051222100 | main_hand:869 off_hand:6829 ranged:2825 | 121.5 | 6 | other:attack/2=85.6, other:attack/1=52.4, spell:14263=20.2, spell:1317257=19.2, spell:14269=13.3 | {SpellID: 10610} |
 | 40 | 0000000000000000-0000000000000000-500230231051222111 | main_hand:2164 off_hand:9465 ranged:2825 | 125.7 | 7 | other:attack/2=104.5, other:attack/1=86.0, spell:14264=18.6, spell:1317257=17.6, spell:14269=16.5 | {SpellID: 10610} |
 | 50 | 0000000000000000-3210000000000000-500230231051222151 | main_hand:2163 off_hand:6660 ranged:2824 | 152.8 | 6 | other:attack/2=144.6, other:attack/1=115.9, spell:14270=19.1, spell:14265=18.4, spell:1317257=16.5 | {SpellID: 10610} |
-| 60 | 0000000000000000-3250050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 324.0 | 7 | other:attack/2=69.8, other:attack/1=49.7, spell:1317257=18.5, spell:14266=17.6, spell:14271=12.3 | {SpellID: 10610} |
+| 60 | 0000000000000000-3250050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 320.6 | 7 | other:attack/2=69.8, other:attack/1=49.7, spell:1317257=18.5, spell:14266=17.6, spell:14271=12.3 | {SpellID: 10610} |
 
 ## Learned but unused (informational)
 
@@ -176,7 +176,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
-- Explosive Trap Effect (spell 13812)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265056)
 - Pinch (spell 1264739)
@@ -201,7 +200,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
-- Explosive Trap Effect (spell 13812)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
 - Pinch (spell 1264739)
@@ -228,7 +226,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 3010)
 - Counterattack (spell 20909)
 - Dismember (spell 1264930)
-- Explosive Trap Effect (spell 14314)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25011)
 - Mine! (spell 1265058)
@@ -256,7 +253,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 3009)
 - Counterattack (spell 20910)
 - Dismember (spell 1264933)
-- Explosive Trap Effect (spell 14315)
 - Hydra Shot (spell 1293020)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25012)
