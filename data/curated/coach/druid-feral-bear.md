@@ -22,12 +22,11 @@ This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the
 
 - Everything is in Bear Form, which Dire Bear Form replaces at level forty.
 - Primal Bite on its cooldown.
-- Lacerate kept ticking: it stacks, and Rend and Tear reads it.
+- Lacerate built to five stacks and kept ticking: Rend and Tear reads it, and a cast on a full stack hits hardest.
 - Maul, queued on your next swing with spare Rage.
 - Swipe as the Rage dump.
 - Barkskin on its cooldown, a small cut in damage taken for a smaller cut in threat.
 - Frenzied Regeneration as the emergency heal: under half health with twenty rage to convert.
-- Berserk on its cooldown adds threat.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -12,14 +12,6 @@
       ],
       "talent": true,
       "verified": "1.60.1.70658/spellconst/druid.json#1238073"
-    },
-    {
-      "family": "Berserk",
-      "spell_ids": [
-        417141
-      ],
-      "talent": true,
-      "verified": "1.60.1.70658/spellconst/druid.json#417141"
     }
   ],
   "auras": [
