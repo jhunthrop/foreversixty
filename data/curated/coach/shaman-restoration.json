@@ -1,6 +1,6 @@
 {
   "spec": "shaman-restoration",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [],
   "auras": [
     {
@@ -11,7 +11,7 @@
       "name": "Water Shield",
       "kind": "self_buff",
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/shaman.json#408510"
+      "verified": "1.60.1.70707/spellconst/shaman.json#408510"
     }
   ],
   "downranks": [],
@@ -26,7 +26,7 @@
         1325256
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/shaman.json#1325256"
+      "verified": "1.60.1.70707/spellconst/shaman.json#1325256"
     },
     {
       "family": "Nature's Swiftness",
@@ -34,7 +34,7 @@
         16188
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/shaman.json#16188"
+      "verified": "1.60.1.70707/spellconst/shaman.json#16188"
     }
   ]
 }

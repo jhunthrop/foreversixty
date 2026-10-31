@@ -1,6 +1,6 @@
 {
   "spec": "priest-holy",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [],
   "auras": [
     {
@@ -15,7 +15,7 @@
       ],
       "name": "Inner Fire",
       "kind": "self_buff",
-      "verified": "1.60.1.70658/spellconst/priest.json#10952"
+      "verified": "1.60.1.70707/spellconst/priest.json#10952"
     }
   ],
   "downranks": [
@@ -47,7 +47,7 @@
         25315
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/priest.json#25315"
+      "verified": "1.60.1.70707/spellconst/priest.json#25315"
     }
   ],
   "defensives": [
@@ -63,7 +63,7 @@
         19243
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/priest.json#19243"
+      "verified": "1.60.1.70707/spellconst/priest.json#19243"
     }
   ],
   "efficiency": [
@@ -73,7 +73,7 @@
         14751
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/priest.json#14751"
+      "verified": "1.60.1.70707/spellconst/priest.json#14751"
     }
   ]
 }

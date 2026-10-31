@@ -1,6 +1,6 @@
 {
   "spec": "mage-frost",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [],
   "auras": [],
   "downranks": [],
@@ -11,7 +11,7 @@
         11958
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/mage.json#11958"
+      "verified": "1.60.1.70707/spellconst/mage.json#11958"
     },
     {
       "family": "Ice Barrier",
@@ -23,7 +23,7 @@
         13033
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/mage.json#13033"
+      "verified": "1.60.1.70707/spellconst/mage.json#13033"
     }
   ],
   "efficiency": []

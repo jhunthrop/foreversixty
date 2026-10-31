@@ -1,6 +1,6 @@
 {
   "spec": "hunter-survival",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Raptor Strike",
@@ -31,7 +31,7 @@
         14266
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#14266"
+      "verified": "1.60.1.70707/spellconst/hunter.json#14266"
     },
     {
       "family": "Strider Kick",
@@ -39,7 +39,7 @@
         1317257
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/hunter.json#1317257"
+      "verified": "1.60.1.70707/spellconst/hunter.json#1317257"
     },
     {
       "family": "Immolation Trap",
@@ -56,7 +56,7 @@
         14305
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#14305"
+      "verified": "1.60.1.70707/spellconst/hunter.json#14305"
     }
   ],
   "auras": [
@@ -70,7 +70,7 @@
       ],
       "name": "Lacerate",
       "kind": "dot",
-      "verified": "1.60.1.70658/spellconst/hunter.json#1299332"
+      "verified": "1.60.1.70707/spellconst/hunter.json#1299332"
     }
   ],
   "downranks": [],
@@ -81,7 +81,7 @@
         5384
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#5384"
+      "verified": "1.60.1.70707/spellconst/hunter.json#5384"
     },
     {
       "family": "Deterrence",
@@ -89,7 +89,7 @@
         19263
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/hunter.json#19263"
+      "verified": "1.60.1.70707/spellconst/hunter.json#19263"
     }
   ],
   "efficiency": []

@@ -1,6 +1,6 @@
 {
   "spec": "druid-balance",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [],
   "auras": [
     {
@@ -15,7 +15,7 @@
       "name": "Insect Swarm",
       "kind": "dot",
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/druid.json#24977"
+      "verified": "1.60.1.70707/spellconst/druid.json#24977"
     }
   ],
   "downranks": [],
@@ -26,7 +26,7 @@
         22812
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/druid.json#22812"
+      "verified": "1.60.1.70707/spellconst/druid.json#22812"
     }
   ],
   "efficiency": []

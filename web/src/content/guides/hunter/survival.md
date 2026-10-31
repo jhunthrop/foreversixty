@@ -17,10 +17,10 @@ sources:
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty build data, data/builds/1.60.1.70374/talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70658/talents/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70707/talents/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, data/builds/1.60.1.70374/spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70658/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70707/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
     url: https://foreversixty.gg/data/1.60.1.69893/combos.json
