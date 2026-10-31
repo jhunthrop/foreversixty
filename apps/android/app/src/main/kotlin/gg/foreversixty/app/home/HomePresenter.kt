@@ -8,6 +8,9 @@ import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemNumbers
 import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.model.AccountCharacter
+import gg.foreversixty.app.model.BuildTalents
+import gg.foreversixty.app.talents.TalentStatusLine
+import gg.foreversixty.app.talents.TalentTagKind
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.FinishedSim
 import gg.foreversixty.app.model.HomeUpgrade
@@ -29,6 +32,9 @@ data class HomeCharacter(
     val faction: String?,
     /** Worn item ids by slot from the last export, for the gear rows the answer does not name. */
     val gear: Map<String, Int> = emptyMap(),
+    /** The last export's talent ranks and the build it was made on (lane F6 draws them). */
+    val talents: BuildTalents? = null,
+    val dataBuild: String? = null,
 ) {
     /** The path segment of the character routes (`velaren` in `us/normal/velaren`). */
     val slug: String get() = key.substringAfterLast('/')
@@ -38,6 +44,7 @@ data class HomeCharacter(
             key = character.key, region = character.region, ruleset = character.ruleset, name = character.name,
             race = character.race, className = character.className, specName = character.spec, level = character.level,
             guild = character.guild?.name, faction = character.faction, gear = character.build?.gear.orEmpty(),
+            talents = character.build?.talents, dataBuild = character.build?.dataBuild,
         )
     }
 }
@@ -103,6 +110,11 @@ class HomePresenter(
     private val finishedSims: List<FinishedSim>,
     private val time: HomeTime,
     private val res: Resources,
+    /**
+     * Lane F6: the Talents screen's own status line. While the home endpoint's talents are a
+     * fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
+     */
+    private val talentStatus: TalentStatusLine? = null,
 ) {
     fun model(home: CharacterHome): HomeAnswerModel {
         val isAnswer = home.state == STATE_OK && home.upgradeCount > 0
@@ -122,7 +134,17 @@ class HomePresenter(
     }
 
     /** The Next rows alone, for the error state with nothing cached. */
-    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOf(simsRow(null))
+    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOfNotNull(talentStatus?.let(::talentsRow), simsRow(null))
+
+    /** The Talents row from F6's status: its tag (Matches or Differs) and its sentence. */
+    private fun talentsRow(status: TalentStatusLine): HomeNextRow {
+        val tag = when (status.tagKind) {
+            TalentTagKind.Matches -> HomeNextRow.Tag.Matches
+            TalentTagKind.Differs -> HomeNextRow.Tag.Differs
+            TalentTagKind.Muted -> null
+        }
+        return HomeNextRow(HomeNextRow.Kind.Talents, res.getString(R.string.home_next_talents), status.sentence, tag)
+    }
 
     /** `Orc Beast Mastery Hunter · Level 60 · Olympus XXVII`. */
     val heroMeta: String
@@ -213,6 +235,7 @@ class HomePresenter(
             ?.let { best -> res.getString(R.string.home_upgrades_already, best.joinToString(", ") { it.slotLabel }) }
 
     private fun talentsRow(home: CharacterHome): HomeNextRow {
+        talentStatus?.let { return talentsRow(it) }
         val band = bandWords(home).orEmpty()
         val talents = home.talents
         val title = res.getString(R.string.home_next_talents)

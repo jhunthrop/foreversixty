@@ -16,18 +16,23 @@ struct HomeCharacter: Equatable, Sendable {
     let faction: String?
     /// Worn item ids by slot from the last export, for the gear rows the answer does not name.
     let gear: [String: Int]
+    /// The last export's talent ranks and the build it was made on (lane F6 draws them).
+    let talents: BuildTalents?
+    let dataBuild: String?
 
     init(_ character: AccountCharacter) {
         self.init(
             key: character.key, region: character.region, ruleset: character.ruleset, name: character.name,
             race: character.race, className: character.className, specName: character.spec, level: character.level,
-            guild: character.guild?.name, faction: character.faction, gear: character.build?.gear ?? [:]
+            guild: character.guild?.name, faction: character.faction, gear: character.build?.gear ?? [:],
+            talents: character.build?.talents, dataBuild: character.build?.dataBuild
         )
     }
 
     init(
         key: String, region: String, ruleset: String, name: String, race: String?, className: String?,
-        specName: String?, level: Int?, guild: String?, faction: String?, gear: [String: Int] = [:]
+        specName: String?, level: Int?, guild: String?, faction: String?, gear: [String: Int] = [:],
+        talents: BuildTalents? = nil, dataBuild: String? = nil
     ) {
         self.key = key
         self.region = region
@@ -40,6 +45,8 @@ struct HomeCharacter: Equatable, Sendable {
         self.guild = guild
         self.faction = faction
         self.gear = gear
+        self.talents = talents
+        self.dataBuild = dataBuild
     }
 
     /// The path segment of the character routes (`velaren` in `us/normal/velaren`).
@@ -121,6 +128,9 @@ struct HomePresenter {
     let character: HomeCharacter
     let finishedSims: [FinishedSim]
     let time: HomeTime
+    /// Lane F6: the Talents screen's own status line. While the home endpoint's talents are a
+    /// fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
+    var talentStatus: TalentStatusLine?
 
     func model(_ home: CharacterHome) -> HomeAnswerModel {
         let isAnswer = home.state == "ok" && home.upgradeCount > 0
@@ -139,7 +149,19 @@ struct HomePresenter {
     }
 
     /// The Next rows alone, for the error state with nothing cached.
-    func nextRowsWithoutAnswer() -> [HomeNextRow] { [simsRow(spec: nil)] }
+    func nextRowsWithoutAnswer() -> [HomeNextRow] {
+        [talentStatus.map(Self.talentsRow), simsRow(spec: nil)].compactMap(\.self)
+    }
+
+    /// The Talents row from F6's status: its tag (Matches or Differs) and its sentence.
+    static func talentsRow(_ status: TalentStatusLine) -> HomeNextRow {
+        let tag: HomeNextRow.Tag? = switch status.tagKind {
+        case .matches: .matches
+        case .differs: .differs
+        case .muted: nil
+        }
+        return HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: status.sentence, tag: tag)
+    }
 
     /// `Orc Beast Mastery Hunter · Level 60 · Olympus XXVII`.
     var heroMeta: String {
@@ -261,6 +283,7 @@ struct HomePresenter {
     }
 
     private func talentsRow(_ home: CharacterHome) -> HomeNextRow {
+        if let talentStatus { return Self.talentsRow(talentStatus) }
         let band = bandWords(home) ?? ""
         let talents = home.talents
         switch talents.state {

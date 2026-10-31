@@ -60,7 +60,7 @@ sealed interface HomeIntent {
     data class Action(val kind: HomeAction.Kind) : HomeIntent
     data object Retry : HomeIntent
 
-    /** A "Next for {name}" row (lane F5: Sims). */
+    /** A "Next for {name}" row (lane F5: Sims, lane F6: Talents). */
     data class OpenNext(val kind: HomeNextRow.Kind) : HomeIntent
 }
 
@@ -286,8 +286,8 @@ private fun NextRows(title: String, rows: List<HomeNextRow>, send: (HomeIntent) 
 
 @Composable
 private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
-    // Lane F5: the Sims row pushes Sims (spec F2.1 item 4).
-    val tap = if (row.kind == HomeNextRow.Kind.Sims) Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) } else Modifier
+    // Lanes F5 and F6: the Sims and Talents rows push their screens (spec F2.1 item 4).
+    val tap = if (row.kind == HomeNextRow.Kind.Sims || row.kind == HomeNextRow.Kind.Talents) Modifier.clickable { send(HomeIntent.OpenNext(row.kind)) } else Modifier
     Row(
         Modifier.fillMaxWidth().then(tap).heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {},
