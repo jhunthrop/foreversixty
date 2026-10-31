@@ -4,11 +4,11 @@ classSlug: paladin
 spec: retribution
 role: dps
 build: 'FS1:1.60.1.70658:paladin:human:52003003/052/05025331001330311:'
-raidBuild: 'FS1:1.60.1.70658:paladin:human:550030031001/0/0522533100133032:'
+raidBuild: 'FS1:1.60.1.70658:paladin:human:52003/503/0522533100133032:'
 recommendedRaces: [human, undead]
 statPriority: [Strength, Attack power, Critical strike, Hit, Agility, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Retribution Paladin melee damage in Forever.'
-updated: 2026-09-24
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -54,11 +54,11 @@ Retribution is the Paladin melee damage tree: keep a Seal up, Judge on cooldown,
 ### In a raid
 
 - **Role:** Melee damage dealer
-- **Brings:** Its own damage, plus blessings and an aura like any Paladin
+- **Brings:** Its own damage, plus Blessing of Might and Blessing of Wisdom
 
 ## Talents and builds
 
-**Improved Seals** (3/3), **Divine Strength** (5/5), **Champion of the Light** (3/3), **Vengeance**, **Two-Handed Weapon Specialization**, **Conviction**, **Benediction**, **Seal of Command**, **Vindication**, and **Sacred Arbiter** hold unchanged. **Sanctified Judgement**, held at 3/3 (a 33% chance for Judgement to refund 20% of the judged Seal's mana cost), is still the single largest damage contributor in this build's own probe, since sustaining more Judgements over a fight is worth real DPS even though the tooltip reads like a mana talent. **Holy Conduit**, held at 2/2 (20% less mana cost on Consecration, Holy Wrath, Exorcism, and Hammer of Wrath), is a real if smaller damage gain rather than pure sustain. The rotation casts exactly what it did before: no ability in the priority list goes idle at any level of the ladder. This build measures about +6% over the previous spend in our level-60 search run. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+**Improved Seals** (3/3), **Divine Strength** (5/5), **Champion of the Light** (3/3), **Vengeance**, **Two-Handed Weapon Specialization**, **Conviction**, **Benediction**, **Seal of Command**, **Vindication**, and **Sacred Arbiter** hold unchanged. **Sanctified Judgement**, held at 3/3 (a 33% chance for Judgement to refund 20% of the judged Seal's mana cost), is still the single largest damage contributor in this build's own probe, since sustaining more Judgements over a fight is worth real DPS even though the tooltip reads like a mana talent. **Holy Conduit**, held at 2/2 (20% less mana cost on Consecration, Holy Wrath, Exorcism, and Hammer of Wrath), is a real if smaller damage gain rather than pure sustain. The rotation casts exactly what it did before: no ability in the priority list goes idle at any level of the ladder. This build measures about +6% over the previous spend in our level-60 search run. The raid build also takes **Precision** (3/3), 3% hit behind five points of Toughness, with the points moved out of Reverence, Purifying Power, Divine Favor and three of Divine Intellect: none of those adds damage to a melee paladin, and the build measured about 2% ahead in our level-60 raid search run. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 

@@ -720,9 +720,11 @@ func healingPriestOptions(p *proto.Player) {
 
 func retributionPaladinOptions(p *proto.Player) {
 	p.Spec = &proto.Player_RetributionPaladin{RetributionPaladin: &proto.RetributionPaladin{
+		// No aura: Sanctity Aura (spell 20218) has no SkillLineAbility row
+		// in the Forever client, so no paladin can learn it, and no aura a
+		// Forever paladin trains adds damage to a melee paladin.
 		Options: &proto.PaladinOptions{
 			PrimarySeal: proto.PaladinSeal_Righteousness,
-			Aura:        proto.PaladinAura_SanctityAura,
 		},
 	}}
 }

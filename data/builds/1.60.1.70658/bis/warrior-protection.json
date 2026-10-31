@@ -1,8 +1,8 @@
 {
   "spec": "warrior-protection",
   "build": "1.60.1.70658",
-  "engine_version": "1f542def3",
-  "generated_at": "2026-10-31T14:18:13Z",
+  "engine_version": "816ec57c0",
+  "generated_at": "2026-10-31T18:43:39Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -869,8 +869,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 5.264012738,
-      "verify_run_seconds": 2.030451004,
+      "weights_run_seconds": 3.489706105,
+      "verify_run_seconds": 1.496502883,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1834,8 +1834,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 5.264012738,
-      "verify_run_seconds": 2.024353006,
+      "weights_run_seconds": 3.489706105,
+      "verify_run_seconds": 1.517050405,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2815,8 +2815,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.111730314,
-      "verify_run_seconds": 2.074781615,
+      "weights_run_seconds": 3.4035739720000002,
+      "verify_run_seconds": 1.507887867,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3797,8 +3797,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.111730314,
-      "verify_run_seconds": 1.923536517,
+      "weights_run_seconds": 3.4035739720000002,
+      "verify_run_seconds": 1.43301516,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4786,8 +4786,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.725140905,
-      "verify_run_seconds": 2.202289082,
+      "weights_run_seconds": 3.115773417,
+      "verify_run_seconds": 1.571760493,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5773,8 +5773,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.725140905,
-      "verify_run_seconds": 2.270111507,
+      "weights_run_seconds": 3.115773417,
+      "verify_run_seconds": 1.6770887920000002,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6838,8 +6838,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.082622608,
-      "verify_run_seconds": 4.685510656,
+      "weights_run_seconds": 3.304340984,
+      "verify_run_seconds": 3.395447264,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7921,8 +7921,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.082622608,
-      "verify_run_seconds": 4.7029215109999996,
+      "weights_run_seconds": 3.304340984,
+      "verify_run_seconds": 3.283937354,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8984,8 +8984,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.411523922,
-      "verify_run_seconds": 7.33901892,
+      "weights_run_seconds": 3.514794092,
+      "verify_run_seconds": 5.492512393,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10048,8 +10048,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.411523922,
-      "verify_run_seconds": 7.342677487,
+      "weights_run_seconds": 3.514794092,
+      "verify_run_seconds": 5.718202931,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -11110,8 +11110,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.142730947,
-      "verify_run_seconds": 7.733533359,
+      "weights_run_seconds": 4.026680696,
+      "verify_run_seconds": 5.739132271,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -12154,8 +12154,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.142730947,
-      "verify_run_seconds": 7.73215318,
+      "weights_run_seconds": 4.026680696,
+      "verify_run_seconds": 5.81850635,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -12360,10 +12360,6 @@
           "label": "Improved Scorch"
         },
         {
-          "id": "winters_chill",
-          "label": "Winter's Chill"
-        },
-        {
           "id": "curse_of_recklessness",
           "label": "Curse of Recklessness"
         }
@@ -12402,7 +12398,7 @@
           "label": "Mighty Rage Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md)."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
     }
   }
 }
