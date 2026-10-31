@@ -1,3 +1,4 @@
+import DesignSystem
 import DesignTokens
 import SwiftUI
 import UIKit
@@ -73,25 +74,55 @@ struct ItemIconView: View {
     let size: CGFloat
     var dashed = false
 
+    var body: some View {
+        let color = ItemQuality(value: quality).border
+        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        GameIconImage(icon: icon, build: build)
+            // A new icon is a new image: a reused row never keeps the last one's art.
+            .id("\(build)/\(icon ?? "")")
+            .frame(width: size, height: size)
+            .clipShape(shape)
+            .overlay(shape.inset(by: 1.5).stroke(Color.black, lineWidth: 1))
+            .overlay(dashed ? AnyView(shape.stroke(FSColor.line, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])))
+                : AnyView(shape.stroke(color, lineWidth: 1.5)))
+            .shadow(color: dashed ? .clear : color.opacity(0.22), radius: 5)
+            .accessibilityHidden(true)
+    }
+}
+
+/// A spec's talent-tab icon (spec §4.3): square, the pill radius, a 1 pt line; the same loader.
+struct SpecIcon: View {
+    let icon: String
+    let build: String
+    var size: CGFloat = 28
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        GameIconImage(icon: icon, build: build)
+            // A new icon is a new image: a reused row never keeps the last one's art.
+            .id("\(build)/\(icon)")
+            .frame(width: size, height: size)
+            .clipShape(shape)
+            .overlay(shape.stroke(GameColors.iconLine, lineWidth: 1))
+            .accessibilityHidden(true)
+    }
+}
+
+/// The icon file on the `#131824` tile: the cached copy at once, else loaded and faded in.
+private struct GameIconImage: View {
+    let icon: String?
+    let build: String
+
     @Environment(\.itemIconSource) private var source
     @State private var image: UIImage?
 
     var body: some View {
-        let color = ItemQuality(value: quality).border
-        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
         ZStack {
             FSColor.cardTop
             if let shown = image ?? icon.flatMap({ source.cached(icon: $0, build: build) }) {
                 Image(uiImage: shown).resizable().scaledToFill().transition(.opacity)
             }
         }
-        .frame(width: size, height: size)
-        .clipShape(shape)
-        .overlay(shape.inset(by: 1.5).stroke(Color.black, lineWidth: 1))
-        .overlay(dashed ? AnyView(shape.stroke(FSColor.line, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])))
-            : AnyView(shape.stroke(color, lineWidth: 1.5)))
-        .shadow(color: dashed ? .clear : color.opacity(0.22), radius: 5)
-        .accessibilityHidden(true)
         .task(id: icon) {
             guard let icon, image == nil else { return }
             let loaded = await source.load(icon: icon, build: build)

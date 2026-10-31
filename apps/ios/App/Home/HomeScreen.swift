@@ -149,7 +149,7 @@ struct HomeCharacterScreen: View {
             .navigationTitle(showsSelector ? "" : character.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showGear) { gear }
-            .modifier(OptionalCharacterSelector(isOn: showsSelector))
+            .characterSelector(isOn: showsSelector)
         }
         .sheet(item: $tooltip) { request in
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
@@ -230,14 +230,5 @@ struct GearScreen: View {
         .task {
             sources = try? await catalog.sources(for: .forHome(Self.probe, home: home, character: character))
         }
-    }
-}
-
-/// Lane F1's selector, only where the session is in the environment (signed-in Home).
-private struct OptionalCharacterSelector: ViewModifier {
-    let isOn: Bool
-
-    func body(content: Content) -> some View {
-        if isOn { content.characterSelector() } else { content }
     }
 }

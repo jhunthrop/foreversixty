@@ -2422,6 +2422,7 @@ components:
         reference_dps_per_point: { type: number }
         scale_reference_stat: { type: string }
         set_dps: { type: number }
+        role: { type: string, enum: [dps, healer, tank], description: "The spec's role. A healer band's dps_delta and set_dps are healing per second; a tank band's are its tank score." }
         new_at_band: { type: array, items: { type: string }, description: "\"slot: item name\" for each pick new at this band." }
         weights:
           type: array
@@ -2467,6 +2468,7 @@ components:
                     dps_delta: { type: number, description: Negative against the pick. }
                     source_line: { type: string, description: "The site's formatted source, as HomePick.source_line. Pending in the ranker (lane F2)." }
                     drop_chance: { type: [number, "null"], description: Percent when known. }
+                    verified: { type: boolean }
               score: { type: number }
               sim_dps: { type: number }
               dps_delta: { type: number }
@@ -2492,6 +2494,7 @@ components:
                   set: { type: string }
                   pieces: { type: integer }
                   bonus: { type: string }
+              low_value: { type: boolean }
               faction_note: { type: string }
               empty_reason: { type: string }
     ItemsFile:

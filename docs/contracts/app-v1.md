@@ -451,8 +451,11 @@ score_unit, reference_dps_per_point, ... }`. Pick a band by (band, faction, pres
   `item_name`, `source` (the game's words), `source_kind` (`vendor|rep|quest|crafted|dungeon|raid|...`),
   `alternatives[]` (runners-up: `{ item_id, item_name, source, source_kind, dps_delta }`, `dps_delta`
   is negative against the pick), `score`, `sim_dps`, `chance` (drop fraction), `effect_unmodelled`
-  (true when a proc the sim leaves out makes the item good: say so), `swap_note`, `ties`,
-  `set_bonus`, `faction_note`.
+  (true when a proc the sim leaves out makes the item good: say so), `swap_note`, `ties`
+  (`[{ item_id, item_name }]`, items that measure the same), `set_bonus` (`{ set, pieces, bonus }`),
+  `faction_note`, `low_value`.
+- `role` (`dps|healer|tank`): a healer band's `dps_delta` and `set_dps` are healing per second, a
+  tank band's its tank score. `new_at_band[]` is `"<slot>: <item name>"` strings.
 - `empty_reason` on a slot with no pick (`two_hand_equipped` for an off hand under a two-hander).
 - `weights[]`: `{ stat, weight, error, scale_factor, dps_per_point, weight_per_percent, insignificant }`.
   **Show the scale factor** (normalised so the top stat is 1.00); haste is per 1%.

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/pb33f/libopenapi"
 )
 
 // repoRoot is the repository root, found from this file's compiled-in path.
@@ -166,5 +167,44 @@ func TestCDNBisFixtureLoadsThroughTheAPIReader(t *testing.T) {
 	}
 	if len(band.Slots) == 0 || band.ScoreUnit == "" {
 		t.Fatalf("band = %+v", band)
+	}
+}
+
+// The apps decode the real files with models generated from api/openapi.yaml, so every BiS and
+// items file the generator writes for the active build must match its schema, not only the
+// fixture's slice of one spec: a kind the spec gets wrong (a tie's object read as an id) fails
+// every app's decode of that file.
+func TestCDNGeneratorFilesMatchTheOpenAPISpec(t *testing.T) {
+	dir := activeBuildDir(t)
+	raw, _ := loadSpec(t)
+	document, err := libopenapi.NewDocument(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	model, buildErr := document.BuildV3Model()
+	if buildErr != nil {
+		t.Fatal(buildErr)
+	}
+	for _, set := range []struct{ glob, schema string }{
+		{"bis/*.json", "BisFile"},
+		{"items/*.json", "ItemsFile"},
+	} {
+		proxy, ok := model.Model.Components.Schemas.Get(set.schema)
+		if !ok {
+			t.Fatalf("no schema %s", set.schema)
+		}
+		files, err := filepath.Glob(filepath.Join(dir, set.glob))
+		if err != nil || len(files) == 0 {
+			t.Fatalf("no %s in %s: %v", set.glob, dir, err)
+		}
+		for _, file := range files {
+			t.Run(filepath.Join(filepath.Base(filepath.Dir(file)), filepath.Base(file)), func(t *testing.T) {
+				body, err := os.ReadFile(file)
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertSchema(t, proxy.Schema(), body)
+			})
+		}
 	}
 }

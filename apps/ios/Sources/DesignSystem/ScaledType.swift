@@ -36,5 +36,7 @@ public enum ScaledType {
     public static let micro = Font.custom(Face.bodyBold, size: FSTextSize.micro, relativeTo: .caption2)
     public static let button = Font.custom(Face.bodyBold, size: Size.button, relativeTo: .subheadline)
     public static let wordmark = Font.custom(Face.wordmark, size: Size.wordmark, relativeTo: .title2)
-    public static let mono = Font.system(size: FSTextSize.body, weight: .semibold, design: .monospaced)
+    /// Figures, counts and times: the system monospaced face at body size (15 pt, `.subheadline`),
+    /// scaling with the text size like every other role.
+    public static let mono = Font.system(.subheadline, design: .monospaced, weight: .semibold)
 }

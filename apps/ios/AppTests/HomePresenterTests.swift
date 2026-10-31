@@ -45,7 +45,6 @@ struct HomePresenterTests {
     @Test("a negative gain keeps its true minus")
     func negativeGain() {
         #expect(ItemNumbers.signedTenths(-0.8) == "\u{2212}0.8")
-        #expect(ItemNumbers.delta(-5.31) == "\u{2212}5.3")
     }
 
     @Test("what a row replaces: the worn item, an empty slot, or an item our data does not know")
@@ -202,7 +201,7 @@ struct ItemTooltipTests {
         #expect(model.itemLevel == "Item Level 61")
         #expect(model.source == "Crafted: Leatherworking")
         #expect(model.alternatives.count == 2)
-        #expect(model.pickFooter == "Best in slot for Head · Beast Mastery 60 · Raid-ready, Phase 1")
+        #expect(model.pickFooter == "Best in slot for Head · Beast Mastery 60 · raid")
     }
 
     @Test("a vendor item adds the standing it requires to the site's line")

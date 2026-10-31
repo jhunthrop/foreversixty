@@ -283,13 +283,14 @@ struct HomePresenter {
 }
 
 extension ItemTooltipRequest {
-    /// A tooltip for an item on Home or Your gear, in the answer's build, spec and band.
+    /// A tooltip for an item on Home or Your gear, in the answer's build, spec and band. The band
+    /// label is the band head (`60 · raid`), so the pick footer names the raid list without a preset id.
     static func forHome(
         _ look: HomeItemLook, home: CharacterHome, character: HomeCharacter, sourceLine: String? = nil, wornID: Int? = nil
     ) -> ItemTooltipRequest {
         ItemTooltipRequest(
             itemID: look.id, fallback: look, build: home.dataBuild, classSlug: classSlug(home: home, character: character),
-            spec: home.spec, specName: character.specName, band: home.band, bandLabel: home.bandLabel,
+            spec: home.spec, specName: character.specName, band: home.band, bandLabel: HomePresenter.bandHeadText(home),
             preset: home.preset, faction: character.faction, sourceLine: sourceLine, wornID: wornID
         )
     }

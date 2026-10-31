@@ -52,12 +52,22 @@ targets:
         excludes: ["*.txt"]
       - path: ../shared/brand/ios/Brand.xcassets
         buildPhase: resources
-      # Lane F1: the HD class crests and the LX seal, from the site's own files (spec §4.3:
-      # crests are bundled): the `crests` folder and seal-400.png at the bundle root.
+      # The bundled repo files, each the repo's one copy: the HD class crests, the faction marks and
+      # the LX seal (spec §4.3: crests are bundled), and for BiS the spec catalogue the CDN does not
+      # publish plus the active build and key dates a first offline launch reads.
       - path: ../../web/public/icons/hd/crests
         type: folder
         buildPhase: resources
+      - path: ../../web/public/icons/hd/faction
+        type: folder
+        buildPhase: resources
       - path: ../../web/public/seal-400.png
+        buildPhase: resources
+      - path: ../../data/curated/specs.json
+        buildPhase: resources
+      - path: ../../web/src/data/active-build.json
+        buildPhase: resources
+      - path: ../../web/src/data/dates.json
         buildPhase: resources
     dependencies:
       - package: ForeverKit

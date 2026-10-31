@@ -280,11 +280,12 @@ class HomePresenter(
             look: ItemLook,
             home: CharacterHome,
             character: HomeCharacter,
+            res: Resources,
             sourceLine: String? = null,
             wornId: Int? = null,
         ) = ItemTooltipRequest(
             itemId = look.id, fallback = look, build = home.dataBuild, classSlug = classSlug(home, character),
-            spec = home.spec, specName = character.specName, band = home.band, bandLabel = home.bandLabel,
+            spec = home.spec, specName = character.specName, band = home.band, bandLabel = bandHead(home, res),
             preset = home.preset, faction = character.faction, sourceLine = sourceLine, wornId = wornId,
         )
 

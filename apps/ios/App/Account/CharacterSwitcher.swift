@@ -140,4 +140,10 @@ struct CharacterSelectorToolbar: ViewModifier {
 extension View {
     /// The one character switcher, for the Home, Raids and BiS root screens (spec §3.4).
     func characterSelector() -> some View { modifier(CharacterSelectorToolbar()) }
+
+    /// The selector only where the session is in play (sign-in on); a no-op otherwise.
+    @ViewBuilder
+    func characterSelector(isOn: Bool) -> some View {
+        if isOn { characterSelector() } else { self }
+    }
 }

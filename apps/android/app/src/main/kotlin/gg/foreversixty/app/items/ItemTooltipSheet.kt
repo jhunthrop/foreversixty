@@ -1,5 +1,7 @@
 package gg.foreversixty.app.items
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -22,11 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +42,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
 
@@ -160,7 +161,7 @@ private fun Header(look: ItemLook, meta: String, build: String, showsName: Boole
 fun ItemTooltipPanel(model: ItemTooltipModel) {
     val shape = RoundedCornerShape(FsRadius.control)
     Column(
-        Modifier.fillMaxWidth().background(PANEL, shape).border(1.dp, PANEL_LINE, shape)
+        Modifier.fillMaxWidth().background(GameColors.tooltipPanel, shape).border(1.dp, GameColors.iconLine, shape)
             .padding(horizontal = 14.dp, vertical = 12.dp).semantics(mergeDescendants = true) {},
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -207,5 +208,3 @@ private fun Line(text: String, color: Color = FsColor.strong) {
     Text(text, style = FsType.tooltip, color = color)
 }
 
-private val PANEL = Color(0xFF0A0D14)
-private val PANEL_LINE = Color(0xFF3A4256)
