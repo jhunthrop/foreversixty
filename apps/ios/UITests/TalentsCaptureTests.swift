@@ -37,7 +37,7 @@ final class TalentsCaptureTests: XCTestCase {
         return app
     }
 
-    private func openTalents(_ app: XCUIApplication) {
+    private func openTalents(_ app: XCUIApplication, savingRowAs rowShot: String? = nil) throws {
         // From AX1 the row reads its tag first (`Differs, Talents, …`).
         let row = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Talents'")).firstMatch
         // Above the floating tab bar, not merely on screen: at AX5 the row sits low.
@@ -48,6 +48,7 @@ final class TalentsCaptureTests: XCTestCase {
             swipes += 1
         }
         XCTAssertTrue(row.waitForExistence(timeout: 5))
+        if let rowShot { try save(rowShot) }
         // The row's top edge, clear of the floating tab bar when the row runs under it.
         row.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.15)).tap()
         sleep(4)
@@ -59,7 +60,7 @@ final class TalentsCaptureTests: XCTestCase {
         app.swipeUp()
         sleep(1)
         try save("home-talents-row")
-        openTalents(app)
+        try openTalents(app)
         try save("app-talents-differs")
         app.swipeUp()
         sleep(2)
@@ -74,7 +75,7 @@ final class TalentsCaptureTests: XCTestCase {
 
     func testTalentsScreenAtLargestText() throws {
         let app = home(Self.largestText)
-        openTalents(app)
+        try openTalents(app, savingRowAs: "home-talents-row-large")
         try save("app-talents-differs-large")
         app.swipeUp()
         sleep(2)

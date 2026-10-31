@@ -143,4 +143,10 @@ struct TalentsSnapshotTests {
     func smallPhone() {
         snap(screen(.loaded(presenter(), offlineSince: nil)), device: Self.iPhoneSE, named: "talents-differs-se")
     }
+
+    @Test("rank sheet at AX5, drawn whole to its last line")
+    func rankLargeEnd() throws {
+        let tall = ViewImageConfig(safeArea: .zero, size: CGSize(width: 402, height: 1700), traits: UITraitCollection(userInterfaceStyle: .dark))
+        snap(TalentRankContent(model: try sheet("Call of Flame"), build: BisTestData.build), size: .ax5, device: tall, named: "talents-rank-large-end")
+    }
 }

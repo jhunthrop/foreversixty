@@ -226,7 +226,7 @@ struct TalentCompareBar: View {
     }
 
     private var rowTabs: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: Self.tabGutter) {
             ForEach(tabs) { tab in
                 Button { tree = tab.index } label: {
                     tabLabel(tab)
@@ -245,6 +245,11 @@ struct TalentCompareBar: View {
         .overlay(alignment: .bottom) { FSColor.line.frame(height: 1) }
     }
 
+    /// The least space between two row tabs; with less, the tabs stack (F6 ux re-check).
+    private static let tabGutter: CGFloat = 12
+    /// A stacked tab is 56 tall at large text, 44 when it stacks only for a narrow screen.
+    private var stackedRowHeight: CGFloat { isLarge ? 56 : 44 }
+
     private var stackedTabs: some View {
         VStack(spacing: 0) {
             ForEach(tabs) { tab in
@@ -259,7 +264,7 @@ struct TalentCompareBar: View {
                         if tab.differing > 0 { DiffDot() }
                     }
                     .padding(.horizontal, 14)
-                    .frame(maxWidth: .infinity, minHeight: 56)
+                    .frame(maxWidth: .infinity, minHeight: stackedRowHeight)
                     .background(tree == tab.index ? FSColor.gold.opacity(0.12) : .clear)
                     .overlay(alignment: .leading) { if tree == tab.index { FSColor.gold.frame(width: 3) } }
                     .contentShape(Rectangle())

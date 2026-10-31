@@ -65,6 +65,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -298,7 +299,7 @@ fun TalentCompareBar(
             haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
             onTree(index)
         }
-        if (large) StackedTabs(tabs, tree, pick) else FittingTabs(tabs, tree, pick)
+        if (large) StackedTabs(tabs, tree, pick, rowHeight = 56.dp) else FittingTabs(tabs, tree, pick)
     }
 }
 
@@ -346,14 +347,15 @@ private fun FittingTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
             val dot = if (tab.differing > 0) with(density) { (DOT_GAP + DOT_SIZE).roundToPx() } else 0
             name + points + dot + with(density) { (LABEL_GAP + TAB_PADDING * 2).roundToPx() }
         }
-        if (widths.sum() <= constraints.maxWidth) RowTabs(tabs, widths, tree, onTree) else StackedTabs(tabs, tree, onTree)
+        val gutters = with(density) { (TAB_GUTTER * (tabs.size - 1)).roundToPx() }
+        if (widths.sum() + gutters <= constraints.maxWidth) RowTabs(tabs, widths, tree, onTree) else StackedTabs(tabs, tree, onTree, rowHeight = 44.dp)
     }
 }
 
 @Composable
 private fun RowTabs(tabs: List<TalentTabModel>, widths: List<Int>, tree: Int, onTree: (Int) -> Unit) {
     val res = LocalResources.current
-    Row(Modifier.fillMaxWidth().selectableGroup().drawLine()) {
+    Row(Modifier.fillMaxWidth().selectableGroup().drawLine(), horizontalArrangement = Arrangement.spacedBy(TAB_GUTTER)) {
         tabs.forEachIndexed { position, tab ->
             val selected = tab.index == tree
             Box(
@@ -390,7 +392,7 @@ private fun TabLabel(tab: TalentTabModel, selected: Boolean) {
 }
 
 @Composable
-private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> Unit) {
+private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> Unit, rowHeight: Dp) {
     val res = LocalResources.current
     val shape = RoundedCornerShape(FsRadius.control)
     Column(Modifier.fillMaxWidth().border(1.dp, FsColor.line, shape).background(FsColor.raised, shape).selectableGroup()) {
@@ -399,7 +401,7 @@ private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 56.dp)
+                    .heightIn(min = rowHeight)
                     .background(if (selected) FsColor.gold.copy(alpha = TILE_ALPHA) else FsColor.raised)
                     .selectable(selected, role = Role.Tab) { onTree(tab.index) }
                     .clearAndSetSemantics {
@@ -408,7 +410,7 @@ private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.width(3.dp).height(56.dp).background(if (selected) FsColor.gold else FsColor.raised))
+                Box(Modifier.width(3.dp).height(rowHeight).background(if (selected) FsColor.gold else FsColor.raised))
                 Text(
                     tab.name,
                     style = FsType.bodyStrong,
@@ -492,3 +494,5 @@ private val LABEL_GAP = 6.dp
 private val DOT_GAP = 6.dp
 private val DOT_SIZE = 8.dp
 private val TAB_PADDING = 2.dp
+/** The least space between two row tabs; with less, the tabs stack (F6 ux re-check). */
+private val TAB_GUTTER = 12.dp

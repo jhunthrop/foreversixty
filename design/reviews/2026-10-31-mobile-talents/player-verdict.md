@@ -28,4 +28,14 @@ Seen: iOS and Android running-app captures (Obnoxious Yell, Fury 58), the Elemen
 ## Missing vs the in-game frame
 Nothing blocking. Gold for maxed is green here by design.
 
-VERDICT: HOLD
+(First pass ended HOLD; see Re-check below.)
+
+## Re-check (2026-10-31, after the fix round)
+
+Looked at the new captures, not the report.
+- Blocker 1 cleared: home-talents-row-ios now reads "8 of your 49 points differ from the 50 to 59 guide build." with Differs, the same sentence as F6. The impossible 51 is gone.
+- Blocker 2 cleared: app-talents-differs-large-ios is F6 at big text (tag above a wrapped sentence, the beyond line, stacked segments, stacked tabs with the Arms dot, Fury selected); -large-tree-and shows the tree with icons at fixed size and the legend wrapping. The Home row no longer shatters.
+- New talents-restoration-ios: Tidal Focus 4/5 with the gold "-1" chip and dashed ring, Restoration tab dot, Healing Way to Riptide line. Matches the data (Tidal Focus tier 0 column 2, guide 5, yours 4).
+- Shoulds 1 (level 58 reads Differs) and 2 (dots all red) stand as owner rulings; not blocking. Should 3 to 5 unchanged.
+
+VERDICT: SHIP

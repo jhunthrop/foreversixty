@@ -65,3 +65,23 @@ Reviewed: the captures in this folder against `design/specs/2026-10-31-mobile-ta
 - [ ] Section 14 captures attached in full (item 4)
 
 VERDICT: SHIP WITH FIXES
+
+## Re-check (after the fix round)
+
+Re-viewed: home-talents-row-ios, app-talents-differs-large-ios and -large-tree-ios, app-talents-differs-large-tree-and, app-talents-rank-ios, talents-differs-360-and, talents-differs-se-ios, talents-restoration-ios.
+
+Cleared:
+- Blocker 1: Home's row reads `8 of your 49 points differ from the 50 to 59 guide build.` with the Differs tag, the same as F6.
+- Blocker 2 (iOS Home row at AX5): the Home AX5 capture itself was not re-supplied (the path was only named), so I take the stacking from the agent's report. The F6 AX5 captures are correct.
+- Blocker 3: iOS AX5 F6 now shows the tag above the sentence, the beyond line, stacked segments, stacked tab rows with the gold rail and dots, then the tree and the wrapping legend.
+- Must fix 4, partly: the Restoration tab capture shows the dot, the `-1` gold chip on a closed tree. The SE and 360 first screens exist.
+- Must fix 5: the full stop is F6's own sentence, so the Home row and F6 now agree. Closed.
+- Polish 6: the iOS sheet opens at content height with the tapped cell ringed above it.
+
+Still open, none blocking:
+- 360 x 640: the three tabs stack, which the spec allows when labels do not fit. It pushes the tree down to about tier 2 above the tab bar, against spec 1 (tiers 1 to 5 on small phones). Shorten nothing, but consider a 3-row compact tab at 360 (single-line rows 44 tall) so the tree starts higher. Polish.
+- iPhone SE 375: the tabs fit one line but `Enhancement 3` and `Restoration` touch with no gutter. Add a 12 pt minimum gap, or stack. Polish.
+- No `talents-rank-large` / `-large-end` for iOS (Android right-column large exists). Capture before the pass closes.
+- The iOS scroll-edge fragments are accepted as the system effect.
+
+VERDICT: SHIP WITH FIXES
