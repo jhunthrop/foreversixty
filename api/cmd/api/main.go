@@ -669,6 +669,8 @@ func serve(log *slog.Logger) error {
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
+	deps.LiveSurface = newLiveSurface(ctx, liveSurfaceWiring{cfg: cfg, pool: pool, auth: authStore,
+		guilds: guildService, sims: simStore, entitle: entStore, log: log})
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,

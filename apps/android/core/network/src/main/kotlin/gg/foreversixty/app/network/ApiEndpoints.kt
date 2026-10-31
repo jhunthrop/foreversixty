@@ -24,6 +24,8 @@ import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.ItemSet
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
+import gg.foreversixty.app.model.LiveActivityRegistered
+import gg.foreversixty.app.model.LiveActivityRequest
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.model.NotificationSettings
@@ -45,6 +47,7 @@ import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimResult
 import gg.foreversixty.app.model.SimStarted
 import gg.foreversixty.app.model.TalentsFile
+import gg.foreversixty.app.model.Widget
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.encodeURLPathPart
@@ -193,6 +196,18 @@ object ApiEndpoints {
     fun deletePushToken(token: String): Endpoint<Unit> =
         Endpoint(HttpMethod.Delete, "/v1/me/push-tokens/${token.encodeURLPathPart()}", Unit.serializer())
 
+    /** GET /v1/me/widget: The home-screen and lock-screen snapshot (dark, APP_WIDGETS) */
+    fun getWidget(character: String? = null): Endpoint<Widget> =
+        Endpoint(HttpMethod.Get, "/v1/me/widget", Widget.serializer(), query = listOfNotNull(character?.let { "character" to it }))
+
+    /** POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS) */
+    fun registerLiveActivity(body: LiveActivityRequest): Endpoint<LiveActivityRegistered> =
+        Endpoint(HttpMethod.Post, "/v1/me/live-activities", LiveActivityRegistered.serializer(), body = ApiJson.encodeToString(LiveActivityRequest.serializer(), body))
+
+    /** DELETE /v1/me/live-activities/{id}: End a live registration (dark, APP_WIDGETS) */
+    fun deleteLiveActivity(id: Long): Endpoint<Unit> =
+        Endpoint(HttpMethod.Delete, "/v1/me/live-activities/$id", Unit.serializer())
+
     /** GET /v1/app/config: What the apps read once at launch (dark, APP_API) */
     fun getAppConfig(): Endpoint<AppConfig> =
         Endpoint(HttpMethod.Get, "/v1/app/config", AppConfig.serializer())
@@ -266,6 +281,9 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Patch, "/v1/me/notifications", "app.notifications", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.fromValue(204)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
+        FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/app/config", "app.config", HttpStatusCode.fromValue(200)),
     )
 

@@ -1,0 +1,28 @@
+{
+  "aps": {
+    "timestamp": 1765414800,
+    "event": "start",
+    "content-state": {
+      "starts_at": 1765418400,
+      "invite_at": null,
+      "status": "open",
+      "my_state": "in",
+      "role": "dps",
+      "signed_up": 38,
+      "size": 40
+    },
+    "attributes-type": "RaidActivityAttributes",
+    "attributes": {
+      "raid_id": "7",
+      "guild_id": "2",
+      "guild_name": "OLYMPUS XXVII",
+      "zone_name": "Onyxia's Lair",
+      "character_name": "Lightningbolltz"
+    },
+    "alert": {
+      "title": "Onyxia's Lair",
+      "body": "Invites in 60 minutes."
+    },
+    "stale-date": 1765419300
+  }
+}

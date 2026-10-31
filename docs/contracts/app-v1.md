@@ -697,6 +697,76 @@ always present (`{}` when nothing is switched). Fixture `app.config`. The handle
 (`api/internal/app`, dark behind `APP_API`); it does not send `features` yet (see lane P1's
 report for the addition).
 
+## Live surfaces (Wave 3 lane F14)
+
+Spec `design/specs/2026-10-31-mobile-wave3.md` §5.6, contracts W3-C12 to W3-C14. Dark: mounted
+only with `APP_WIDGETS=true` (404 until then), and the apps draw nothing until the `widgets`
+feature switch is on. Handler `api/internal/livesurface`.
+
+### GET /v1/me/widget
+Auth session or device. Caching private; send the ETag back (an unchanged answer is a free 304).
+Query `character` (optional): the widget's setting, a key of one of your characters; empty or
+unknown reads your main, else your first. **The one snapshot every surface draws from**: the
+home-screen and lock-screen widgets, the Live Activity and the Android ongoing notification and
+quick-settings tile all read this answer from the app's shared container (iOS App Group, Android
+DataStore) and compute their figures from it with the same clock, so no two surfaces disagree.
+`data` is `{ generated_at, character, guild, next_raid, last_raid, upgrades, live }`:
+- `character` `{ key, name, class, spec_name }` or null (no characters).
+- `guild` `{ id, name }` or null: `No guild yet`.
+- `next_raid` or null (`No raid planned`): the first raid of the raids tab's calendar that has not
+  ended, cancelled ones included. `{ raid_id, guild_id, guild_name, zone, zone_name, starts_at,
+  invite_at (null until raids carry an invite time), pull_at (= starts_at), ends_at, size,
+  signed_up (In plus Late, the raid page's band count), status ("open"|"locked"|"cancelled"),
+  my { state ("in"|"late"|"bench"|"out"|null), spec (null: `Choose a spec`), role }, can_sign_up }`.
+  A press on In, Late or Out is the sign-up `PUT` above.
+- `last_raid` `{ zone_name, starts_at }` or null: `Last: {zone}, {d Mon}.`
+- `upgrades` `{ state, sentence, count, total_gain, unit, rows[] }` or null: the Home answer's
+  first three rows in its order with the whole list's count and total; any state but `ok` has no
+  rows and a `sentence` the widget shows as is. Null until the Home answer's builder (lane A3)
+  backs it.
+- `live` `{ sim_runs_running }`.
+
+`generated_at` is to the minute. `Updated {n} h ago` (past 12 hours) is measured from when the app
+last fetched, a 304 included. Fixtures `widget.get`, `widget.get.no-guild`. Errors: 401 (the
+widget shows its signed-out state).
+
+### POST /v1/me/live-activities and DELETE /v1/me/live-activities/{id}
+Auth session or device; 30 registrations a minute per account, at most 20 kept (the oldest goes).
+Body `{ kind ("raid"|"sim"), platform ("ios"|"android"), push_token, push_to_start_token?,
+object_id }`: `push_token` is the ActivityKit update token (hex, 64 to 200) or the FCM token,
+`push_to_start_token` iOS only, `object_id` the raid id or the server sim's id. Answer **201**
+`{ id }` (`live.register`). Registering the same token for the same object again refreshes it.
+A registration ends with its object (a raid's end plus 15 minutes; a sim after 6 hours), when its
+token fails, or on `DELETE` (**204** whether or not it was there; only your own). Tokens are never
+logged or answered back. Errors: 400 `invalid` (not JSON), 422 `invalid` with `fields` (`kind`,
+`platform`, `push_token`, `push_to_start_token`, `object_id`), 402 `premium_required` for a sim
+without `server_sims` (`live.register.error-premium-required`), 404 for a raid you may not see,
+one that has ended, or a sim that is not yours, 429.
+
+### Live-surface pushes (W3-C14)
+Built by `api/internal/livesurface/payloads.go` and pinned to their fixtures exactly. Events:
+`widget.refresh` (silent, collapses per user), `live.raid.start`, `live.raid.update`,
+`live.raid.end`, `live.sim.update`, `live.sim.end`.
+- **APNs Live Activity** (`apns-push-type: liveactivity`): `aps { timestamp, event
+  ("start"|"update"|"end"), content-state, stale-date?, dismissal-date? }`; a push-to-start adds
+  `attributes-type` (`RaidActivityAttributes`|`SimActivityAttributes`), `attributes` and `alert`.
+  The raid's attributes are `{ raid_id, guild_id, guild_name, zone_name, character_name }` and its
+  content-state `{ starts_at, invite_at, status, my_state, role, signed_up, size }`; a sim's
+  `{ sim_id, title }` and `{ state ("running"|"finished"|"failed"), done, total, eta_sec, dps }`.
+  **Times are Unix seconds** (ActivityKit decodes a Date as seconds since 2001).
+  Fixtures `surface.live-raid-start.apns`, `surface.live-sim-update.apns`.
+- **APNs widget refresh** (`apns-push-type: background`): `{ aps { content-available: 1 }, kind }`
+  (`surface.widget-refresh.apns`).
+- **FCM**: a data message `{ message { token, data { kind, ... }, android { priority,
+  collapse_key } } }`; `data` is the attributes and state above as strings, and `collapse_key` is
+  `widget.refresh`, `live-raid-<id>` or `live-sim-<id>`. Android draws the ongoing notification
+  itself. Fixtures `surface.*.fcm`.
+
+**Pending.** The senders are lane A2's (`api/internal/push`), which is not on main: until it lands
+no live push is sent, so iOS Live Activities and the Android ongoing notification are started and
+updated by the app while it runs, and widgets tick on their timelines. Apple's APNs key does not
+exist yet either; remote Live Activity updates need it.
+
 ## Not in v1
 
 No in-app purchase (decision P). Not read: rankings, tier lists, guides (static site pages), the

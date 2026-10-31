@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/livesurface"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
@@ -67,6 +68,9 @@ type Deps struct {
 	Coach *coach.Service
 	// Tiles serves the Discord panel's item tiles; nil leaves the route unmounted.
 	Tiles *sheet.Tiles
+	// LiveSurface serves the apps' widget snapshot and live registrations; nil (APP_WIDGETS
+	// off) leaves them unmounted.
+	LiveSurface *livesurface.Service
 
 	TrustedProxyHops int
 }
@@ -143,6 +147,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Tiles != nil {
 		d.Tiles.Mount(mux)
+	}
+	if d.LiveSurface != nil {
+		livesurface.Mount(mux, d.LiveSurface)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

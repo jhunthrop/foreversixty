@@ -2277,6 +2277,286 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Next raid
+    static var widgetNextRaid: String { text("widget.nextRaid") }
+
+    /// Next upgrade
+    static var widgetNextUpgrade: String { text("widget.nextUpgrade") }
+
+    /// Upgrades · {name}
+    static func widgetUpgrades(name: String) -> String {
+        format("widget.upgrades", name)
+    }
+
+    /// Sign in to see your next raid.
+    static var widgetSignedOut: String { text("widget.signedOut") }
+
+    /// Open the app
+    static var widgetOpenApp: String { text("widget.openApp") }
+
+    /// No guild yet
+    static var widgetNoGuild: String { text("widget.noGuild") }
+
+    /// Your raids show here once you are on a roster.
+    static var widgetNoGuildSub: String { text("widget.noGuildSub") }
+
+    /// No raid planned
+    static var widgetNoRaid: String { text("widget.noRaid") }
+
+    /// Last: {zone}, {date}.
+    static func widgetLastRaid(zone: String, date: String) -> String {
+        format("widget.lastRaid", zone, date)
+    }
+
+    /// Locked
+    static var widgetLocked: String { text("widget.locked") }
+
+    /// Cancelled
+    static var widgetCancelled: String { text("widget.cancelled") }
+
+    /// Updated {n} h ago
+    static func widgetUpdated(n: Int) -> String {
+        format("widget.updated", n)
+    }
+
+    /// Choose a spec
+    static var widgetChooseSpec: String { text("widget.chooseSpec") }
+
+    /// Not saved
+    static var widgetNotSaved: String { text("widget.notSaved") }
+
+    /// {n} of {size} signed up
+    static func widgetSignedUp(n: Int, size: Int) -> String {
+        format("widget.signedUp", n, size)
+    }
+
+    /// {n} of {size}
+    static func widgetOfSize(n: Int, size: Int) -> String {
+        format("widget.ofSize", n, size)
+    }
+
+    /// signed up
+    static var widgetSignedUpLabel: String { text("widget.signedUpLabel") }
+
+    /// Add the addon to see your upgrades.
+    static var widgetNoGear: String { text("widget.noGear") }
+
+    /// Sign in on the app and pick a character.
+    static var widgetNoCharacter: String { text("widget.noCharacter") }
+
+    /// Not signed up
+    static var widgetNotSignedUp: String { text("widget.notSignedUp") }
+
+    /// {state} · {role}
+    static func widgetAnswer(state: String, role: String) -> String {
+        format("widget.answer", state, role)
+    }
+
+    /// You: {answer}
+    static func widgetYou(answer: String) -> String {
+        format("widget.you", answer)
+    }
+
+    /// {zone} · {time} · {answer}
+    static func widgetInline(zone: String, time: String, answer: String) -> String {
+        format("widget.inline", zone, time, answer)
+    }
+
+    /// in 1 day {hours} h
+    static func widgetInDayHours(hours: Int) -> String {
+        format("widget.in.dayHours", hours)
+    }
+
+    /// in {days} days {hours} h
+    static func widgetInDaysHours(days: Int, hours: Int) -> String {
+        format("widget.in.daysHours", days, hours)
+    }
+
+    /// in {days} days
+    static func widgetInDays(days: Int) -> String {
+        format("widget.in.days", days)
+    }
+
+    /// in {hours} h {minutes} min
+    static func widgetInHoursMinutes(hours: Int, minutes: Int) -> String {
+        format("widget.in.hoursMinutes", hours, minutes)
+    }
+
+    /// in {hours} h
+    static func widgetInHours(hours: Int) -> String {
+        format("widget.in.hours", hours)
+    }
+
+    /// in {minutes} min
+    static func widgetInMinutes(minutes: Int) -> String {
+        format("widget.in.minutes", minutes)
+    }
+
+    /// Starting now
+    static var widgetNow: String { text("widget.now") }
+
+    /// {n}d
+    static func widgetShortDays(n: Int) -> String {
+        format("widget.short.days", n)
+    }
+
+    /// {n}h
+    static func widgetShortHours(n: Int) -> String {
+        format("widget.short.hours", n)
+    }
+
+    /// {n}m
+    static func widgetShortMinutes(n: Int) -> String {
+        format("widget.short.minutes", n)
+    }
+
+    /// {upgrades} · +{total} {unit}
+    static func widgetUpgradesFooter(upgrades: String, total: String, unit: String) -> String {
+        format("widget.upgradesFooter", upgrades, total, unit)
+    }
+
+    /// +{gain} {unit}
+    static func widgetGain(gain: String, unit: String) -> String {
+        format("widget.gain", gain, unit)
+    }
+
+    /// —
+    static var widgetNoGain: String { text("widget.noGain") }
+
+    /// Character
+    static var widgetCharacterSetting: String { text("widget.characterSetting") }
+
+    /// Current character
+    static var widgetCurrentCharacter: String { text("widget.currentCharacter") }
+
+    /// Your guild's next raid and your answer. Answer In, Late or Out from here.
+    static var widgetGalleryRaid: String { text("widget.gallery.raid") }
+
+    /// Your next upgrades, measured for your character.
+    static var widgetGalleryUpgrade: String { text("widget.gallery.upgrade") }
+
+    /// Next raid, {zone}, {when}, {countdown}.
+    static func widgetA11yRaid(zone: String, when: String, countdown: String) -> String {
+        format("widget.a11y.raid", zone, when, countdown)
+    }
+
+    /// You are {state} as {role}.
+    static func widgetA11yYou(state: String, role: String) -> String {
+        format("widget.a11y.you", state, role)
+    }
+
+    /// {n} of {size} signed up.
+    static func widgetA11ySignedUp(n: Int, size: Int) -> String {
+        format("widget.a11y.signedUp", n, size)
+    }
+
+    /// {n} days
+    static func widgetA11yDays(n: Int) -> String {
+        format("widget.a11y.days", n)
+    }
+
+    /// {n} hours
+    static func widgetA11yHours(n: Int) -> String {
+        format("widget.a11y.hours", n)
+    }
+
+    /// {n} minutes
+    static func widgetA11yMinutes(n: Int) -> String {
+        format("widget.a11y.minutes", n)
+    }
+
+    /// in {span}
+    static func widgetA11yIn(span: String) -> String {
+        format("widget.a11y.in", span)
+    }
+
+    /// Next upgrade, {slot}, {item}, {gain}.
+    static func widgetA11yUpgrade(slot: String, item: String, gain: String) -> String {
+        format("widget.a11y.upgrade", slot, item, gain)
+    }
+
+    /// until invites at {time}
+    static func liveInvites(time: String) -> String {
+        format("live.invites", time)
+    }
+
+    /// until the pull at {time}
+    static func liveStarts(time: String) -> String {
+        format("live.starts", time)
+    }
+
+    /// You are {state} · {role} · {name}
+    static func liveYou(state: String, role: String, name: String) -> String {
+        format("live.you", state, role, name)
+    }
+
+    /// Invites for {zone} in 1 minute
+    static func liveNotifTitleOne(zone: String) -> String {
+        format("live.notifTitleOne", zone)
+    }
+
+    /// Invites for {zone} in {n} minutes
+    static func liveNotifTitle(zone: String, n: Int) -> String {
+        format("live.notifTitle", zone, n)
+    }
+
+    /// Invites for {zone} now
+    static func liveNotifTitleNow(zone: String) -> String {
+        format("live.notifTitleNow", zone)
+    }
+
+    /// {n} of {m} combinations
+    static func liveSim(n: Int, m: Int) -> String {
+        format("live.sim", n, m)
+    }
+
+    /// about {n} min left
+    static func liveSimLeft(n: Int) -> String {
+        format("live.simLeft", n)
+    }
+
+    /// Finished
+    static var liveFinished: String { text("live.finished") }
+
+    /// {dps} DPS · tap for the result
+    static func liveFinishedSub(dps: String) -> String {
+        format("live.finishedSub", dps)
+    }
+
+    /// Failed
+    static var liveFailed: String { text("live.failed") }
+
+    /// Open the run
+    static var liveOpenRun: String { text("live.openRun") }
+
+    /// Live surfaces
+    static var liveSettings: String { text("live.settings") }
+
+    /// Raid starting countdown
+    static var liveRaidSetting: String { text("live.raidSetting") }
+
+    /// Server sim progress
+    static var liveSimSetting: String { text("live.simSetting") }
+
+    /// Raid starting
+    static var liveChannelRaid: String { text("live.channel.raid") }
+
+    /// Server sims
+    static var liveChannelSims: String { text("live.channel.sims") }
+
+    /// Invites for {zone} in {span}. You are {state}.
+    static func liveA11yRaid(zone: String, span: String, state: String) -> String {
+        format("live.a11y.raid", zone, span, state)
+    }
+
+    /// Next raid
+    static var liveTileTitle: String { text("live.tile.title") }
+
+    /// {time} · {answer}
+    static func liveTileSub(time: String, answer: String) -> String {
+        format("live.tile.sub", time, answer)
+    }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }
