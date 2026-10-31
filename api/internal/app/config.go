@@ -59,7 +59,9 @@ func (s Settings) featureMap() map[string]bool {
 }
 
 // config answers GET /v1/app/config; 503 while no client build is loaded. The checkout
-// regions depend on the calling platform, so the answer varies on X-App.
+// regions depend on the calling platform, so the answer varies on X-App, and it is private:
+// the CDN in front of the API does not key on X-App and would hand one platform's answer
+// to the other.
 func (s *Service) config(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Vary", AppHeader)
 	build, ok := s.Data.ActiveBuild()
@@ -67,7 +69,7 @@ func (s *Service) config(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusServiceUnavailable, "unavailable", "no client build is loaded", nil)
 		return
 	}
-	httpx.CachePublic(w, configMaxAge, 0)
+	httpx.CachePrivateFor(w, configMaxAge)
 	httpx.WriteOK(w, r, http.StatusOK, Config{
 		WebCheckoutRegions: s.Settings.regionsFor(AppPlatform(r.Header.Get(AppHeader))),
 		ActiveBuild:        build,

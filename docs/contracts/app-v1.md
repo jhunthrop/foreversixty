@@ -679,7 +679,7 @@ app's device token once A1 admits app tokens on session routes; the sign-up PUT 
 while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a player.
 
 ### GET /v1/app/config
-Auth public. Caching `public, max-age=300`, `Vary: X-App`. Call on launch. Answer
+Auth public. Caching `private, max-age=300`, `Vary: X-App` (never the CDN, which does not key on `X-App`). Call on launch. Answer
 `{ web_checkout_regions[], min_app_version { ios, android }, active_build, features { <key>: bool } }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from

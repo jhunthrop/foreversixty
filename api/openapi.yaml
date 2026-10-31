@@ -5041,7 +5041,7 @@ paths:
     get:
       summary: What the apps read once at launch (APP_API)
       description: >-
-        Public. Cache-Control public, max-age=300; Vary X-App, because web_checkout_regions is
+        Public. Cache-Control private, max-age=300 (never a shared cache: the CDN does not key on X-App); Vary X-App, because web_checkout_regions is
         the calling platform's (decision L: ios ["US"], android [], a missing or unknown
         platform []). 503 unavailable when no client build is loaded.
       operationId: getAppConfig
