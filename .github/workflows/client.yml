@@ -22,6 +22,12 @@
 # web's lhci 07:15 UTC) so they run against the new build. Dispatch with `build`
 # (and `product` when wago lists it under a key the config does not know) to move
 # to a specific build by hand; `inspect` stops before anything is committed.
+#
+# A stopped move (the watch, the fetch or the activation) opens the issue "Client build
+# <build> is blocked" (label client-build-blocked) with the step, the reason, the hand
+# command, the run and how many days the site has been behind; each later failing run
+# comments on it. A landed move closes every open client-build-blocked issue
+# (tools/client-alert.sh).
 name: client
 on:
   schedule:
@@ -54,6 +60,10 @@ jobs:
       build: ${{ steps.decide.outputs.build }}
       product: ${{ steps.decide.outputs.product }}
       needs_fetch: ${{ steps.decide.outputs.needs_fetch }}
+      active: ${{ steps.check.outputs.active }}
+      newest: ${{ steps.check.outputs.newest_build }}
+      behind_since: ${{ steps.check.outputs.behind_since }}
+      behind_days: ${{ steps.check.outputs.behind_days }}
     defaults: { run: { working-directory: data } }
     steps:
       - uses: actions/checkout@v4
@@ -131,7 +141,7 @@ jobs:
     if: ${{ !cancelled() && (needs.watch.outputs.newer == 'true' || needs.watch.outputs.resume == 'true') && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    permissions: { contents: write, actions: write }
+    permissions: { contents: write, actions: write, issues: write }
     # The activation's test gate (tools/activation-gate.sh) runs the API packages that
     # read the active build; the database-backed ones need api.yml's Postgres.
     services:
@@ -179,6 +189,7 @@ jobs:
           PRODUCT: ${{ needs.watch.outputs.product }}
           INSPECT: ${{ inputs.inspect }}
           MOVE_BREADCRUMB: ${{ runner.temp }}/client-move-step
+          MOVE_REPORT: ${{ runner.temp }}/client-move-report.md
         run: |
           if [ "$INSPECT" = "true" ]; then
             tools/activate-build.sh "$BUILD" --no-commit
@@ -196,6 +207,7 @@ jobs:
           BUILD: ${{ needs.watch.outputs.build }}
           PRODUCT: ${{ needs.watch.outputs.product }}
           CRUMB: ${{ runner.temp }}/client-move-step
+          REPORT: ${{ runner.temp }}/client-move-report.md
         run: |
           if grep -qx reported "$CRUMB" 2>/dev/null; then exit 0; fi
           hand="gh workflow run client.yml -f build=$BUILD${PRODUCT:+ -f product=$PRODUCT}"
@@ -214,8 +226,26 @@ jobs:
             echo "**Reason:** $reason"
             echo
             echo "**To finish or redo the move:** $hand"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee "$REPORT" >> "$GITHUB_STEP_SUMMARY"
           echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"
+      # The report above or the script's own, as the blocked-build issue. An inspect run
+      # moves nothing, so it raises nothing.
+      - name: open or update the blocked-build issue
+        if: always() && steps.move.outcome != 'success' && inputs.inspect != true
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          ACTIVE: ${{ needs.watch.outputs.active }}
+          NEWEST: ${{ needs.watch.outputs.newest }}
+          BEHIND_SINCE: ${{ needs.watch.outputs.behind_since }}
+          BEHIND_DAYS: ${{ needs.watch.outputs.behind_days }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: tools/client-alert.sh blocked "$RUNNER_TEMP/client-move-report.md"
+      - name: close the blocked-build issues
+        if: success() && inputs.inspect != true
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: tools/client-alert.sh cleared "$BUILD"
 
   # The watch and the fetch fail outside activate-build.sh, which writes its own report;
   # this names their step, the reason and the hand command the same way.
@@ -224,14 +254,18 @@ jobs:
     if: ${{ failure() && needs.activate.result != 'failure' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions: { contents: read, issues: write }
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
+      - uses: actions/checkout@v4
       - name: say where the move stopped
         env:
           WATCH: ${{ needs.watch.result }}
           FETCH: ${{ needs.fetch.result }}
           BUILD: ${{ needs.watch.outputs.build }}
           PRODUCT: ${{ needs.watch.outputs.product }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           redo="gh workflow run client.yml -f build=${BUILD:-<build>}${PRODUCT:+ -f product=$PRODUCT}"
           if [ "$WATCH" = failure ]; then
@@ -253,5 +287,14 @@ jobs:
             echo "**To finish or redo the move:** $hand"
             echo
             echo "Run: $RUN_URL"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee "$RUNNER_TEMP/client-move-report.md" >> "$GITHUB_STEP_SUMMARY"
           echo "::error title=client move stopped at: $step::$reason -- to finish: $hand"
+      - name: open or update the blocked-build issue
+        if: always() && inputs.inspect != true
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          ACTIVE: ${{ needs.watch.outputs.active }}
+          NEWEST: ${{ needs.watch.outputs.newest }}
+          BEHIND_SINCE: ${{ needs.watch.outputs.behind_since }}
+          BEHIND_DAYS: ${{ needs.watch.outputs.behind_days }}
+        run: tools/client-alert.sh blocked "$RUNNER_TEMP/client-move-report.md"
