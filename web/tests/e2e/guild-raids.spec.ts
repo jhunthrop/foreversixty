@@ -163,6 +163,17 @@ test('an officer posts a raid with Post to Discord, and the planned row opens it
   await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
 });
 
+test('a 429 on Post the raid says to wait, keeps the form and posts nothing', async ({ page }) => {
+  const stub = await openRaidsTab(page, { viewer: 'officer' });
+  await openForm(page);
+  stub.refuseNext = { create: { code: 'rate_limited', status: 429 } };
+  await page.getByTestId('raid-form-submit').click();
+  const form = page.getByTestId('raid-form-create');
+  await expect(form.getByRole('alert')).toHaveText(raidCopy.rateLimited);
+  await expect(form).not.toContainText(raidCopy.form.errors.failed);
+  await expect(page.getByTestId(`planned-raid-${FIRST_NEW_ID}`)).toHaveCount(0);
+});
+
 test('counts change on the 10 s poll without a reload', async ({ page }) => {
   const stub = await openRaid(page, { viewer: 'member' });
   const count = page.getByTestId('raid-count');
