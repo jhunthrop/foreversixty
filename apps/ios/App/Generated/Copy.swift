@@ -1859,22 +1859,25 @@ enum Copy {
     /// What your plan includes
     static var planIncludes: String { text("plan.includes") }
 
-    /// Server sims that keep running after you close the app
-    static var planFeatureServerSims: String { text("plan.feature.serverSims") }
-
-    /// Coach notes on your raid logs
+    /// Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.
     static var planFeatureCoach: String { text("plan.feature.coach") }
 
-    /// Score and parse history charts
+    /// Server sims keep running, and the site tells you when they finish.
+    static var planFeatureServerSims: String { text("plan.feature.serverSims") }
+
+    /// See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.
     static var planFeatureHistory: String { text("plan.feature.history") }
 
-    /// Sim results and logs kept for a year
-    static var planFeatureRetention: String { text("plan.feature.retention") }
+    /// A message in your own Discord channel when a server sim finishes or a log is parsed.
+    static var planFeatureDiscord: String { text("plan.feature.discord") }
+
+    /// A Supporter mark beside your name on your characters and in your guild's roster.
+    static var planFeatureSupporter: String { text("plan.feature.supporter") }
 
     /// Manage billing on foreversixty.gg
     static var planManage: String { text("plan.manage") }
 
-    /// Billing is managed on the web.
+    /// Billing is managed on foreversixty.gg.
     static var planManagedOnWeb: String { text("plan.managedOnWeb") }
 
     /// Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.
@@ -1890,11 +1893,6 @@ enum Copy {
         format("plan.ends", date)
     }
 
-    /// A seat from {guild}
-    static func planSeatFrom(guild: String) -> String {
-        format("plan.seatFrom", guild)
-    }
-
     /// Given by {name}. It lasts while the guild's plan does; nothing is billed to you.
     static func planSeatGivenBy(name: String) -> String {
         format("plan.seatGivenBy", name)
@@ -1905,6 +1903,67 @@ enum Copy {
 
     /// Founder price, kept while your plan stays active.
     static var planFounderNote: String { text("plan.founderNote") }
+
+    /// Premium
+    static var planPremium: String { text("plan.premium") }
+
+    /// Premium · renews {date} · {price}
+    static func planLineRenewsPrice(date: String, price: String) -> String {
+        format("plan.line.renewsPrice", date, price)
+    }
+
+    /// Premium · ends {date} · then a seat from {guild}
+    static func planLineEndsThenSeat(date: String, guild: String) -> String {
+        format("plan.line.endsThenSeat", date, guild)
+    }
+
+    /// Premium · granted until {date}
+    static func planLineGrantUntil(date: String) -> String {
+        format("plan.line.grantUntil", date)
+    }
+
+    /// Premium · granted, no end date
+    static var planLineGrantNoEnd: String { text("plan.line.grantNoEnd") }
+
+    /// Premium · a seat from {guild}
+    static func planLineSeat(guild: String) -> String {
+        format("plan.line.seat", guild)
+    }
+
+    /// Given by Forever Sixty. It ends on its own; nothing is billed to you.
+    static var planGivenGrantUntil: String { text("plan.given.grantUntil") }
+
+    /// Given by Forever Sixty. Nothing is billed to you.
+    static var planGivenGrantNoEnd: String { text("plan.given.grantNoEnd") }
+
+    /// {amount} a year
+    static func planPriceYearly(amount: String) -> String {
+        format("plan.price.yearly", amount)
+    }
+
+    /// {amount} a month
+    static func planPriceMonthly(amount: String) -> String {
+        format("plan.price.monthly", amount)
+    }
+
+    /// Plan, Free, See plans, opens in browser
+    static var planA11ySeePlans: String { text("plan.a11y.seePlans") }
+
+    /// Plan, Free
+    static var planA11yFree: String { text("plan.a11y.free") }
+
+    /// Plan, {line}
+    static func planA11yRow(line: String) -> String {
+        format("plan.a11y.row", line)
+    }
+
+    /// Plan, {line}, Founder
+    static func planA11yRowFounder(line: String) -> String {
+        format("plan.a11y.rowFounder", line)
+    }
+
+    /// Manage billing on foreversixty.gg, opens in browser
+    static var planA11yManage: String { text("plan.a11y.manage") }
 
     /// Update Forever Sixty
     static var updateRequiredTitle: String { text("update.required.title") }

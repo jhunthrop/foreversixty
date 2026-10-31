@@ -3543,6 +3543,63 @@
         }
       }
     },
+    "plan.a11y.free": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan, Free"
+          }
+        }
+      }
+    },
+    "plan.a11y.manage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage billing on foreversixty.gg, opens in browser"
+          }
+        }
+      }
+    },
+    "plan.a11y.row": {
+      "comment": "Arguments: 1 line (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan, %1$@"
+          }
+        }
+      }
+    },
+    "plan.a11y.rowFounder": {
+      "comment": "Arguments: 1 line (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan, %1$@, Founder"
+          }
+        }
+      }
+    },
+    "plan.a11y.seePlans": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan, Free, See plans, opens in browser"
+          }
+        }
+      }
+    },
     "plan.ends": {
       "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
@@ -3561,7 +3618,18 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coach notes on your raid logs"
+            "value": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped."
+          }
+        }
+      }
+    },
+    "plan.feature.discord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A message in your own Discord channel when a server sim finishes or a log is parsed."
           }
         }
       }
@@ -3572,18 +3640,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Score and parse history charts"
-          }
-        }
-      }
-    },
-    "plan.feature.retention": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sim results and logs kept for a year"
+            "value": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point."
           }
         }
       }
@@ -3594,7 +3651,18 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Server sims that keep running after you close the app"
+            "value": "Server sims keep running, and the site tells you when they finish."
+          }
+        }
+      }
+    },
+    "plan.feature.supporter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A Supporter mark beside your name on your characters and in your guild's roster."
           }
         }
       }
@@ -3632,6 +3700,28 @@
         }
       }
     },
+    "plan.given.grantNoEnd": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Given by Forever Sixty. Nothing is billed to you."
+          }
+        }
+      }
+    },
+    "plan.given.grantUntil": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Given by Forever Sixty. It ends on its own; nothing is billed to you."
+          }
+        }
+      }
+    },
     "plan.includes": {
       "extractionState": "manual",
       "localizations": {
@@ -3639,6 +3729,65 @@
           "stringUnit": {
             "state": "translated",
             "value": "What your plan includes"
+          }
+        }
+      }
+    },
+    "plan.line.endsThenSeat": {
+      "comment": "Arguments: 1 date (string), 2 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium · ends %1$@ · then a seat from %2$@"
+          }
+        }
+      }
+    },
+    "plan.line.grantNoEnd": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium · granted, no end date"
+          }
+        }
+      }
+    },
+    "plan.line.grantUntil": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium · granted until %1$@"
+          }
+        }
+      }
+    },
+    "plan.line.renewsPrice": {
+      "comment": "Arguments: 1 date (string), 2 price (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium · renews %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "plan.line.seat": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium · a seat from %1$@"
           }
         }
       }
@@ -3660,7 +3809,42 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Billing is managed on the web."
+            "value": "Billing is managed on foreversixty.gg."
+          }
+        }
+      }
+    },
+    "plan.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium"
+          }
+        }
+      }
+    },
+    "plan.price.monthly": {
+      "comment": "Arguments: 1 amount (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ a month"
+          }
+        }
+      }
+    },
+    "plan.price.yearly": {
+      "comment": "Arguments: 1 amount (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ a year"
           }
         }
       }
@@ -3673,18 +3857,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Premium · renews %1$@"
-          }
-        }
-      }
-    },
-    "plan.seatFrom": {
-      "comment": "Arguments: 1 guild (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A seat from %1$@"
           }
         }
       }
