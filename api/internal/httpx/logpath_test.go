@@ -15,6 +15,10 @@ func TestLogPathRedactsTheCalendarToken(t *testing.T) {
 		"/v1/calendar/":                "/v1/calendar/",
 		"/v1/me/calendar-feed":         "/v1/me/calendar-feed",
 		"/v1/guilds/2/home":            "/v1/guilds/2/home",
+		"//v1/calendar/tok.ics":        "/v1/calendar/:redacted",
+		"/v1/./calendar/tok.ics":       "/v1/calendar/:redacted",
+		"/a/../v1/calendar/tok.ics":    "/v1/calendar/:redacted",
+		"/v1/calendar//tok.ics":        "/v1/calendar/:redacted",
 	}
 	for in, want := range cases {
 		if got := LogPath(in); got != want {

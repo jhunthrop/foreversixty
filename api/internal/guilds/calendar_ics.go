@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -104,7 +105,20 @@ func icsTime(t time.Time) string { return t.UTC().Format("20060102T150405Z") }
 // breaks, so a guild or raid name cannot end a property or inject one.
 func escapeICSText(s string) string {
 	r := strings.NewReplacer(`\`, `\\`, ";", `\;`, ",", `\,`, "\r\n", `\n`, "\n", `\n`, "\r", `\n`)
-	return r.Replace(s)
+	return r.Replace(strings.Map(dropICSControl, s))
+}
+
+// dropICSControl removes the characters some calendar parsers read as a line break or choke
+// on: control characters other than tab, CR and LF (which escapeICSText escapes), and the
+// Unicode line and paragraph separators. Guild names are typed by players.
+func dropICSControl(r rune) rune {
+	switch {
+	case r == '\t' || r == '\r' || r == '\n':
+		return r
+	case unicode.IsControl(r), r == '\u2028', r == '\u2029':
+		return -1
+	}
+	return r
 }
 
 // foldICSLine ends a content line with CRLF, folded at 75 octets without splitting a UTF-8

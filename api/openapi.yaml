@@ -5117,8 +5117,9 @@ paths:
         {n} of {size} signed up.", URL the raid page, no VALARM. Cancelled raids are left out, so
         a subscribed calendar drops them. Membership is read on every fetch. The golden body is
         docs/contracts/fixtures/app/calendar.ics. 404 not_found, one body, for a malformed,
-        unknown or revoked token; 60 reads an hour per token and 600 per address (429). The path
-        is redacted in the API's logs. Opened by calendar apps, never by the API client.
+        unknown or revoked token; 60 reads an hour per live token, and 30 misses an hour per
+        address (429; a real link is never refused for its address). The path is redacted in
+        the API's logs. Opened by calendar apps, never by the API client.
       operationId: getCalendarICS
       tags: [app-browser]
       parameters:

@@ -155,6 +155,21 @@ func TestCalendarICSBudgetIsSixtyAnHourPerLink(t *testing.T) {
 	expectError(t, w.h.do(http.MethodGet, path, ""), http.StatusTooManyRequests, "rate_limited")
 }
 
+func TestCalendarICSMissesAreBudgetedPerAddressOnly(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.as(w.member)
+	live := icsPath(t, feedOf(t, w, http.MethodGet, "/v1/me/calendar-feed").URL)
+	w.as(0)
+	unknown := CalendarFeedPrefix + strings.Repeat("B", 43) + ".ics"
+	for i := 0; i < calendarMissesPerIPHour; i++ {
+		expectError(t, w.h.do(http.MethodGet, unknown, ""), http.StatusNotFound, "not_found")
+	}
+	expectError(t, w.h.do(http.MethodGet, unknown, ""), http.StatusTooManyRequests, "rate_limited")
+	expectError(t, w.h.do(http.MethodGet, CalendarFeedPrefix+"short.ics", ""), http.StatusTooManyRequests, "rate_limited")
+	// A real link from the same address still reads: misses never spend its budget.
+	guildBody(t, w.h.do(http.MethodGet, live, ""), http.StatusOK)
+}
+
 func TestCalendarFeedResetBudget(t *testing.T) {
 	w := newRaidWorld(t, true)
 	w.as(w.member)
@@ -224,6 +239,9 @@ func TestRenderCalendarGolden(t *testing.T) {
 func TestICSTextEscapesEverySeparator(t *testing.T) {
 	if got := escapeICSText("a\\b;c,d\ne"); got != `a\\b\;c\,d\ne` {
 		t.Fatalf("escapeICSText = %q", got)
+	}
+	if got := escapeICSText("Olym\x00pus\u2028X\u0085\tY"); got != "OlympusX\tY" {
+		t.Fatalf("escapeICSText keeps a control or separator: %q", got)
 	}
 	long := strings.Repeat("·", 60)
 	folded := foldICSLine("SUMMARY:" + long)

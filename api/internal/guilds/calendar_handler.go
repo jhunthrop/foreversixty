@@ -7,7 +7,7 @@
 //   - GET /v1/calendar/{token}.ics is public by token: the planned raids of the account's guilds.
 //
 // The token is 256 random bits (auth.NewSessionID), shown once, stored as its SHA-256, never
-// logged (httpx.LogPath redacts the route), and budgeted per token and per address.
+// logged (httpx.LogPath redacts the route), and budgeted per live token and per address's misses.
 package guilds
 
 import (
@@ -27,10 +27,11 @@ const (
 	calendarFeedSuffix = ".ics"
 	// calendarReadsPerTokenHour is the spec's budget: 60 reads an hour per link.
 	calendarReadsPerTokenHour = 60
-	// calendarReadsPerIPHour bounds one address across links. Calendar services fetch many
-	// players' links from a few addresses, so it is looser than the per-link budget; the
-	// token's 256 bits, not this budget, are what make a link unguessable.
-	calendarReadsPerIPHour = 600
+	// calendarMissesPerIPHour bounds the links one address may try that do not exist. Only a
+	// miss spends it: Google's and Apple's calendar services fetch many players' real links
+	// from a few shared addresses, and a budget on every read would refuse them. The token's
+	// 256 bits, not this budget, are what make a link unguessable.
+	calendarMissesPerIPHour = 30
 	// calendarResetsPerHour bounds an account's resets.
 	calendarResetsPerHour = 10
 	// calendarFeedMaxAge is how long a calendar app may keep a fetched feed (spec §10).
@@ -52,9 +53,12 @@ func mountCalendar(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("GET /v1/me/calendar-feed", auth.RequireSession(s.getCalendarFeed))
 	resets := httpx.RateLimitByKey(calendarResetsPerHour, time.Hour, auth.AccountRateLimitKey)
 	mux.Handle("POST /v1/me/calendar-feed/reset", resets(auth.RequireSession(s.resetCalendarFeed)))
-	perIP := httpx.RateLimitPer(calendarReadsPerIPHour, time.Hour, trustedProxyHops)
-	perToken := httpx.NewKeyLimiter(calendarReadsPerTokenHour, time.Hour)
-	mux.Handle("GET "+CalendarFeedPrefix+"{file}", perIP(s.calendarFeed(perToken)))
+	limits := calendarLimits{
+		perToken: httpx.NewKeyLimiter(calendarReadsPerTokenHour, time.Hour),
+		misses:   httpx.NewKeyLimiter(calendarMissesPerIPHour, time.Hour),
+		hops:     trustedProxyHops,
+	}
+	mux.HandleFunc("GET "+CalendarFeedPrefix+"{file}", s.calendarFeed(limits))
 }
 
 // calendarFeedURL is the link a calendar app subscribes to.
@@ -95,28 +99,50 @@ func writeCalendarNotFound(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such calendar", nil)
 }
 
-// calendarFeed serves the .ics. The order matters: the form check and the per-link budget run
-// before any database read, and every failure to find a live link answers the same 404.
-func (s *Service) calendarFeed(perToken *httpx.KeyLimiter) http.HandlerFunc {
+// calendarLimits are the feed's two budgets. perToken is keyed by a live link's hash only, so
+// random tokens can never fill it; misses is keyed by address and spent only by a link that
+// does not exist.
+type calendarLimits struct {
+	perToken, misses *httpx.KeyLimiter
+	hops             int
+}
+
+func writeCalendarRateLimited(w http.ResponseWriter, r *http.Request) {
+	httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
+}
+
+// calendarMiss answers a link that is malformed, unknown or revoked: the one 404, or 429 once
+// the address has spent its misses.
+func (l calendarLimits) miss(w http.ResponseWriter, r *http.Request) {
+	if !l.misses.Allow(httpx.ClientIP(r, l.hops)) {
+		writeCalendarRateLimited(w, r)
+		return
+	}
+	writeCalendarNotFound(w, r)
+}
+
+// calendarFeed serves the .ics. Every failure to find a live link answers the same 404 (or the
+// same 429 once the address has tried too many), and a live link is budgeted per link.
+func (s *Service) calendarFeed(limits calendarLimits) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		token, ok := strings.CutSuffix(r.PathValue("file"), calendarFeedSuffix)
 		if !ok || !calendarToken.MatchString(token) {
-			writeCalendarNotFound(w, r)
+			limits.miss(w, r)
 			return
 		}
 		hash := auth.TokenHash(token)
-		if !perToken.Allow(hex.EncodeToString(hash)) {
-			httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
-			return
-		}
 		userID, found, err := s.Store.CalendarFeedUser(r.Context(), hash)
 		if err != nil {
 			s.fail(w, r, "calendar_ics", err, "could not load that calendar just now")
 			return
 		}
 		if !found {
-			writeCalendarNotFound(w, r)
+			limits.miss(w, r)
+			return
+		}
+		if !limits.perToken.Allow(hex.EncodeToString(hash)) {
+			writeCalendarRateLimited(w, r)
 			return
 		}
 		now := time.Now()

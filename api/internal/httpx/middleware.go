@@ -403,3 +403,7 @@ func CORS(allowedOrigin string) func(http.Handler) http.Handler {
 		})
 	}
 }
+
+// ClientIP is the address RateLimitPer keys by, for a handler that budgets some outcomes of a
+// request (a miss, say) rather than every request.
+func ClientIP(r *http.Request, trustedHops int) string { return clientIP(r, trustedHops) }

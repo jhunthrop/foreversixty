@@ -402,7 +402,9 @@ Depths and Lower Blackrock Spire runs, every night a different length) and `guil
   `LOCATION {guild} · {zone}`, `DESCRIPTION Pull {time}. {n} of {size} signed up.`, `URL` the raid
   page, no `VALARM`. Golden body: `docs/contracts/fixtures/app/calendar.ics`. 404 `not_found`,
   one body, for a malformed, unknown or revoked token (`calendar.ics.error-not-found`); 60 reads an
-  hour per token and 600 an hour per address (429).
+  hour per live token, and 30 misses an hour per address (429): only a link that does not exist
+  spends the address budget, so calendar services fetching many real links from one address are
+  never refused.
 - **Security.** The token is 256 random bits (base64url, 43 characters), shown once, stored only
   as its SHA-256 (`calendar_feeds`, migration 0063, one live row per account), revocable, and never
   logged: the API's request and panic logs write the route as `/v1/calendar/:redacted`

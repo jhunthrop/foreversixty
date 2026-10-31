@@ -22,6 +22,9 @@ const calendarFeedPast = 30 * 24 * time.Hour
 // this is a ceiling for a player in many guilds, never a page.
 const calendarFeedMaxRaids = 200
 
+// calendarFeedLockClass is the first key of the advisory lock a reset takes per account.
+const calendarFeedLockClass = 6301
+
 // CalendarFeed is an account's live feed row.
 type CalendarFeed struct {
 	UserID    int64
@@ -56,6 +59,11 @@ func (s *Store) CreateCalendarFeed(ctx context.Context, userID int64, tokenHash 
 func (s *Store) ResetCalendarFeed(ctx context.Context, userID int64, tokenHash []byte) (CalendarFeed, error) {
 	feed := CalendarFeed{UserID: userID}
 	err := pgx.BeginFunc(ctx, s.Pool, func(tx pgx.Tx) error {
+		// One reset per account at a time: two concurrent resets would otherwise both revoke
+		// the old row and the second insert would hit the one-live-link index.
+		if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock($1, $2)`, calendarFeedLockClass, userID); err != nil {
+			return err
+		}
 		if _, err := tx.Exec(ctx,
 			`update calendar_feeds set revoked_at = now() where user_id = $1 and revoked_at is null`, userID); err != nil {
 			return err
