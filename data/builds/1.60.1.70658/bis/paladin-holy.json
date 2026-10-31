@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70658",
-  "engine_version": "816ec57c0",
-  "generated_at": "2026-10-31T18:07:57Z",
+  "engine_version": "56f97823e",
+  "generated_at": "2026-10-31T19:27:20Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -704,8 +704,8 @@
         "finger2: Volcanic Rock Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 3.392312296,
-      "verify_run_seconds": 11.259238814,
+      "weights_run_seconds": 4.12536444,
+      "verify_run_seconds": 14.087082561,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1503,8 +1503,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 3.392312296,
-      "verify_run_seconds": 11.434069705,
+      "weights_run_seconds": 4.12536444,
+      "verify_run_seconds": 14.015695398,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2366,8 +2366,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.28570758,
-      "verify_run_seconds": 11.604324919,
+      "weights_run_seconds": 4.147082305,
+      "verify_run_seconds": 15.391355322999999,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3227,8 +3227,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.28570758,
-      "verify_run_seconds": 12.295900824,
+      "weights_run_seconds": 4.147082305,
+      "verify_run_seconds": 16.00860221,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4094,8 +4094,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 5.335328149,
-      "verify_run_seconds": 20.082110159,
+      "weights_run_seconds": 6.782142018,
+      "verify_run_seconds": 26.026342711,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4960,8 +4960,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 5.335328149,
-      "verify_run_seconds": 20.406030804,
+      "weights_run_seconds": 6.782142018,
+      "verify_run_seconds": 26.074086747,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5916,8 +5916,8 @@
         "trinket1: Uther's Strength",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 5.576666796,
-      "verify_run_seconds": 25.89474176,
+      "weights_run_seconds": 7.033581357,
+      "verify_run_seconds": 32.766839728,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6856,8 +6856,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Protector Buckler"
       ],
-      "weights_run_seconds": 5.576666796,
-      "verify_run_seconds": 25.899589863,
+      "weights_run_seconds": 7.033581357,
+      "verify_run_seconds": 33.096796062,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7820,8 +7820,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Elunarian Sphere"
       ],
-      "weights_run_seconds": 5.46483166,
-      "verify_run_seconds": 71.294761203,
+      "weights_run_seconds": 6.897287748,
+      "verify_run_seconds": 88.992474021,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8791,8 +8791,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Elunarian Sphere"
       ],
-      "weights_run_seconds": 5.46483166,
-      "verify_run_seconds": 70.812797942,
+      "weights_run_seconds": 6.897287748,
+      "verify_run_seconds": 88.978742825,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -9765,8 +9765,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 3.237880156,
-      "verify_run_seconds": 24.831034981,
+      "weights_run_seconds": 4.109220112,
+      "verify_run_seconds": 31.796108772,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10739,8 +10739,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 3.237880156,
-      "verify_run_seconds": 24.662061922,
+      "weights_run_seconds": 4.109220112,
+      "verify_run_seconds": 31.784457188,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -10890,10 +10890,6 @@
           "label": "Moonkin Aura"
         },
         {
-          "id": "sanctity_aura",
-          "label": "Sanctity Aura"
-        },
-        {
           "id": "strength_of_earth_totem",
           "label": "Strength of Earth Totem"
         },
@@ -10978,7 +10974,7 @@
           "label": "Major Mana Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); the engine also applies Kings to Alliance characters only, so the two factions would differ. If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might and Blessing of Wisdom to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free."
     }
   },
   "heal_profile": {
