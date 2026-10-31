@@ -7,6 +7,7 @@
 // query string is read before report.json arrives, so the real list of fights is not
 // known there. `?fight=0` therefore parses even though fight_index is 1-based and no
 // report has a fight 0, and so does `?fight=999` and a number that falls in a gap.
+import { type KillCounts, sumKillCounts } from './kill-counts';
 import { formatDuration } from './format';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS } from './url';
@@ -84,7 +85,8 @@ export type FightRow =
       key: number;
       zone: string;
       fights: FightEntry[];
-      kills: number;
+      /** The run's summed kill counts; null when any pull predates them (lib/report/kill-counts). */
+      kills: KillCounts | null;
       duration_ms: number;
       deaths: number;
     };
@@ -105,7 +107,7 @@ export function fightRows(fights: readonly FightEntry[]): FightRow[] {
         key: run[0].index,
         zone: run[0].zone ?? '',
         fights: run,
-        kills: run.reduce((sum, entry) => sum + entry.npc_kills, 0),
+        kills: sumKillCounts(run),
         duration_ms: run.reduce((sum, entry) => sum + entry.duration_ms, 0),
         deaths: run.reduce((sum, entry) => sum + entry.deaths, 0),
       });

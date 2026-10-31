@@ -5,7 +5,8 @@
      single most common thing anyone does here. -->
 <script lang="ts">
   import { fightRows, fightTitle, pullNumbers } from '../../lib/report/fights';
-  import { formatClock, formatDuration, outcomeLabel } from '../../lib/report/format';
+  import { formatClock, formatDuration, joinFacts, outcomeLabel } from '../../lib/report/format';
+  import { killCountsLabel } from '../../lib/report/kill-counts';
   import type { FightEntry } from '../../lib/report/types';
   import { ALL_FIGHTS } from '../../lib/report/url';
   import Card from '../ui/Card.svelte';
@@ -37,7 +38,11 @@
   const currentLabel = $derived(
     selected === ALL_FIGHTS || current === null
       ? 'All boss pulls'
-      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))}${current.kind === 'encounter' ? ` · ${formatDuration(current.duration_ms)}` : ''}`,
+      : joinFacts(
+          fightTitle(current),
+          outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? '')),
+          current.kind === 'encounter' ? formatDuration(current.duration_ms) : '',
+        ),
   );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
@@ -85,26 +90,34 @@
         >
           {fightTitle(fight)}
         </span>
-        <span
-          class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
-            ? 'text-gold'
-            : fight.kind !== 'encounter'
-              ? 'text-muted'
+        {#if fight.in_progress || fight.kind === 'encounter'}
+          <span
+            class="tabular numeric shrink-0 text-[12px] font-semibold {fight.in_progress
+              ? 'text-gold'
               : fight.kill
                 ? 'text-kill'
                 : 'text-wipe'}"
-          title={fight.kind !== 'encounter'
-            ? 'Trash: how many enemies died'
-            : fight.kill
-              ? 'The boss died'
-              : 'The percentage is the boss’s health when the pull ended'}
-          data-testid={`fight-${fight.index}-outcome`}
-        >
-          {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
-        </span>
+            title={fight.in_progress
+              ? 'This pull is still going'
+              : fight.kill
+                ? 'The boss died'
+                : 'The percentage is the boss’s health when the pull ended'}
+            data-testid={`fight-${fight.index}-outcome`}
+          >
+            {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
+          </span>
+        {/if}
       </span>
-      <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
+      <span class="text-muted numeric flex w-full flex-wrap items-baseline gap-x-2 text-[11px]">
         <span>{formatClock(fight.start)}</span>
+        {#if !fight.in_progress && fight.kind !== 'encounter' && outcome(fight) !== ''}
+          <!-- Every mob that died in range, and the ones the group killed. A pull from before
+               engine 0.6 has no true count, so it shows none. -->
+          <span
+            title="Mobs that died in range, each counted once, and how many of them your group killed"
+            data-testid={`fight-${fight.index}-kills`}>{outcome(fight)}</span
+          >
+        {/if}
         <!-- A trash row's name already says its length ("Trash · 3:26"): once is enough. -->
         {#if fight.kind === 'encounter'}<span>{formatDuration(fight.duration_ms)}</span>{/if}
         {#if fight.deaths > 0}
@@ -203,12 +216,15 @@
                       class="text-muted min-w-0 flex-1 truncate leading-tight"
                       title={`Trash · ${row.zone}`}>Trash · {row.zone}</span
                     >
-                    <span class="text-muted numeric shrink-0 text-[12px]" title="Trash: how many enemies died"
-                      >{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
-                    >
                   </span>
-                  <span class="text-muted numeric flex w-full items-baseline gap-2 text-[11px]">
+                  <span class="text-muted numeric flex w-full flex-wrap items-baseline gap-x-2 text-[11px]">
                     <span>{formatDuration(row.duration_ms)}</span>
+                    {#if row.kills !== null}
+                      <span
+                        title="Mobs that died in range over these pulls, each counted once, and how many of them your group killed"
+                        data-testid={`fight-group-${row.key}-kills`}>{killCountsLabel(row.kills)}</span
+                      >
+                    {/if}
                     {#if row.deaths > 0}
                       <span
                         class="text-death"

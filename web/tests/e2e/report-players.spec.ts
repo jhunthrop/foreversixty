@@ -25,7 +25,7 @@ function betaText(text: string): string {
 
 async function serveBetaReport(
   page: Page,
-  options: { zone: string; credit?: { key: string; name: string } },
+  options: { zone: string; credit?: { key: string; name: string }; oldCounts?: boolean },
 ) {
   const report = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'report.json'), 'utf8')));
   const meta = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8')));
@@ -44,7 +44,18 @@ async function serveBetaReport(
   const fights = report.fights.map((fight: Record<string, unknown>) => {
     const zone = fight.kind === 'trash' ? options.zone : fight.zone;
     const next: Record<string, unknown> = { ...fight, zone };
-    if (fight.kind === 'trash') next.npc_kills = 115;
+    if (fight.kind === 'trash') {
+      delete next.npc_kills;
+      if (options.oldCounts) {
+        // A line indexed before engine 0.6: only the double-counted npc_kills.
+        delete next.mob_deaths;
+        delete next.group_kills;
+        next.npc_kills = 230;
+      } else {
+        next.mob_deaths = 115;
+        next.group_kills = 26;
+      }
+    }
     if (zone === '') delete next.zone;
     return next;
   });
@@ -170,7 +181,7 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('rating-panel-none')).toHaveCount(0);
   });
 
-  test('zone-less trash keeps its rows, titled by length with a kill count; the untitled report is dated', async ({
+  test('zone-less trash keeps its rows, titled by length with its true kill counts; the untitled report is dated', async ({
     page,
   }) => {
     await serveBetaReport(page, { zone: '' });
@@ -178,8 +189,20 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
     await page.getByTestId('toggle-trash').click();
     await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
-    await expect(page.getByTestId('fight-1-outcome')).toHaveText('115 kills');
+    await expect(page.getByTestId('fight-1-kills')).toHaveText('115 mobs died · your group killed 26');
+    await expect(page.getByTestId('fight-1-outcome')).toHaveCount(0);
     await expect(page.getByTestId('fight-3')).toContainText('Warden Kelthas');
+  });
+
+  test('trash from before engine 0.6 shows no kill count rather than the double-counted one', async ({
+    page,
+  }) => {
+    await serveBetaReport(page, { zone: '', oldCounts: true });
+    await page.goto(`/reports/${ID}?fight=3`);
+    await page.getByTestId('toggle-trash').click();
+    await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
+    await expect(page.getByTestId('fight-1-kills')).toHaveCount(0);
+    await expect(page.getByTestId('fight-selector')).not.toContainText(/230|kills|mobs died/);
   });
 
   test('trash in a zone folds into one row per zone and opens to its pulls', async ({ page }) => {
@@ -188,7 +211,7 @@ test.describe('a beta-log report', () => {
     await page.getByTestId('toggle-trash').click();
     const group = page.getByTestId('fight-group-1');
     await expect(group).toContainText('Trash · Sanguine Depths');
-    await expect(group).toContainText('230 kills');
+    await expect(page.getByTestId('fight-group-1-kills')).toHaveText('230 mobs died · your group killed 52');
     await expect(group).toContainText('2 pulls');
     await expect(page.getByTestId('fight-1')).toHaveCount(0);
     await group.click();
