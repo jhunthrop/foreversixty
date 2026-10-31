@@ -64,6 +64,11 @@ public extension Endpoint where Response == Empty {
     static func deletePushToken(token: String) -> Endpoint {
         Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
     }
+
+    /// DELETE /v1/me/live-activities/{id}: End a live registration (dark, APP_WIDGETS)
+    static func deleteLiveActivity(id: Int64) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/live-activities/\(id)")
+    }
 }
 
 public extension Endpoint where Response == ReportList {
@@ -287,8 +292,24 @@ public extension Endpoint where Response == PushTokenRegistered {
     }
 }
 
+public extension Endpoint where Response == Widget {
+    /// GET /v1/me/widget: The home-screen and lock-screen snapshot (dark, APP_WIDGETS)
+    static func getWidget(character: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/me/widget", query: [
+            character.map { URLQueryItem(name: "character", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == LiveActivityRegistered {
+    /// POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS)
+    static func registerLiveActivity(_ body: LiveActivityRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/me/live-activities", body: body)
+    }
+}
+
 public extension Endpoint where Response == AppConfig {
-    /// GET /v1/app/config: What the apps read once at launch (dark, APP_API)
+    /// GET /v1/app/config: What the apps read once at launch (APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
 }
 
@@ -379,6 +400,9 @@ public enum ContractRoutes {
         FixtureRoute(.patch, "/v1/me/notifications", fixture: "app.notifications", status: 200),
         FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
         FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
+        FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),
+        FixtureRoute(.post, "/v1/me/live-activities", fixture: "live.register", status: 201),
+        FixtureRoute(.delete, "/v1/me/live-activities/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
     ]
 

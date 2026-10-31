@@ -177,6 +177,8 @@ final class SignupController {
                 blocks[other.characterKey, default: SignupBlock()].status = .info(Copy.raidMoved(name: moved))
             }
             deps.haptics.success()
+            // Lane F14: the widgets and the raid Live Activity redraw with this answer.
+            NotificationCenter.default.post(name: .raidSignupSaved, object: nil)
             if state.isComing { await considerReminderAsk() }
         } catch {
             blocks[key, default: SignupBlock()].shown = previous

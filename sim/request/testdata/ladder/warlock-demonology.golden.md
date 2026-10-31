@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 6.4 | 4 | spell:5019=27.1, spell:172=15.2, spell:707=14.9, other:mana_gain=0.9, spell:1454=0.9 | {OtherID: 13}, {SpellID: 19028} |
-| 20 | 00000000000000000-2332100000000000000-0000000000000000 | main_hand:890 ranged:5243 | 17.7 | 5 | spell:5676=52.9, other:mana_gain=30.2, spell:1455=30.2, spell:5019=29.8, spell:1094=13.6 | {OtherID: 13}, {SpellID: 19028} |
-| 30 | 00000000000000000-2332113101220000000-0000000000000000 | main_hand:273040 ranged:5213 | 40.0 | 5 | spell:17919=61.0, other:mana_gain=31.6, spell:1456=31.6, spell:5019=31.3, spell:2941=13.6 | {OtherID: 13}, {SpellID: 19028} |
-| 38 | 00000000000000000-2332113101220001340-0000000000000000 | main_hand:7714 ranged:13064 | 58.8 | 6 | spell:17920=60.2, other:mana_gain=26.4, spell:11687=26.4, spell:5019=26.1, spell:2941=14.0 | {OtherID: 13} |
-| 40 | 10000000000000000-2332113101220001350-0000000000000000 | main_hand:7714 ranged:5216 | 85.3 | 6 | spell:17920=60.9, other:mana_gain=27.0, spell:11687=27.0, spell:5019=26.7, spell:11665=14.1 | {OtherID: 13} |
-| 50 | 25400000000000000-2332113101220001350-0000000000000000 | main_hand:812 ranged:249232 | 134.9 | 7 | spell:5019=26.2, spell:17922=20.7, other:mana_gain=18.4, spell:11688=18.4, spell:6353=15.6 | {OtherID: 13} |
-| 60 | 25522000000000000-2332113101220001350-0050000000000000 | main_hand:22630 ranged:22821 | 332.1 | 8 | spell:5019=38.9, spell:17923=38.7, other:mana_gain=27.1, spell:11689=27.1, spell:17924=23.4 | {OtherID: 13} |
+| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 9.0 | 6 | other:mana_gain=34.4, spell:1454=34.4, spell:695=34.1, spell:172=14.0, spell:707=13.3 | {OtherID: 13}, {SpellID: 18788}, {SpellID: 19028} |
+| 20 | 00000000000000000-2332100000000000000-0000000000000000 | main_hand:890 ranged:5243 | 15.3 | 7 | other:mana_gain=33.2, spell:1455=33.2, spell:1088=25.3, spell:1094=12.1, spell:6222=11.7 | {OtherID: 13}, {SpellID: 18788}, {SpellID: 19028} |
+| 30 | 00000000000000000-2332113101220000000-0000000000000000 | main_hand:273040 ranged:5213 | 34.9 | 8 | other:mana_gain=28.5, spell:1456=28.5, spell:1106=24.0, spell:5019=15.2, spell:2941=12.9 | {OtherID: 13}, {SpellID: 19028} |
+| 38 | 00000000000000000-2332113101220001340-0000000000000000 | main_hand:7714 ranged:13064 | 57.3 | 8 | spell:7641=29.7, other:mana_gain=29.5, spell:11687=29.5, spell:2941=13.4, spell:7648=10.3 | {OtherID: 13} |
+| 40 | 10000000000000000-2332113101220001350-0000000000000000 | main_hand:7714 ranged:5216 | 84.6 | 8 | spell:7641=29.7, other:mana_gain=29.5, spell:11687=29.5, spell:11665=13.3, spell:7648=10.4 | {OtherID: 13} |
+| 50 | 25400000000000000-2332113101220001350-0000000000000000 | main_hand:812 ranged:249232 | 131.9 | 9 | other:mana_gain=20.2, spell:11688=20.2, spell:6353=15.2, spell:11659=12.4, spell:11667=11.6 | {OtherID: 13} |
+| 60 | 25522000000000000-2332113101220001350-0050000000000000 | main_hand:22630 ranged:22821 | 310.8 | 11 | other:mana_gain=29.2, spell:11689=29.2, spell:11661=23.3, spell:17924=19.0, spell:11668=11.5 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -114,7 +114,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Bane of Agony (spell 980)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
-- Shadow Bolt (spell 695)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
@@ -125,7 +124,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 3698)
 - Lash of Pain (spell 7814)
 - Rain of Fire (spell 5740)
-- Shadow Bolt (spell 1088)
+- Searing Pain (spell 5676)
 - Shadow Cleave (spell 403841)
 - Shadowburn (spell 17877)
 
@@ -140,7 +139,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Hellfire Effect (spell 5857)
 - Lash of Pain (spell 7815)
 - Rain of Fire (spell 5740)
-- Shadow Bolt (spell 1106)
+- Searing Pain (spell 17919)
 - Shadow Cleave (spell 403842)
 - Shadowburn (spell 18867)
 
@@ -155,7 +154,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Hellfire Effect (spell 5857)
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
-- Shadow Bolt (spell 7641)
+- Searing Pain (spell 17920)
 - Shadow Cleave (spell 403843)
 - Shadowburn (spell 18868)
 
@@ -172,7 +171,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Incinerate (spell 412758)
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
-- Shadow Bolt (spell 7641)
+- Searing Pain (spell 17920)
 - Shadow Cleave (spell 403843)
 - Shadowburn (spell 18869)
 - Unstable Affliction (spell 427717)
@@ -191,7 +190,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Incinerate (spell 1293812)
 - Lash of Pain (spell 11778)
 - Rain of Fire (spell 11677)
-- Shadow Bolt (spell 11659)
+- Searing Pain (spell 17922)
 - Shadow Cleave (spell 403844)
 - Shadowburn (spell 18870)
 - Unstable Affliction (spell 1242972)
@@ -210,7 +209,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
-- Shadow Bolt (spell 11661)
+- Searing Pain (spell 17923)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
 - Test Curse of Agony (spell 28608)
@@ -219,4 +218,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warlock-demonology level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)

@@ -30,9 +30,14 @@ public struct KeychainTokenStore: TokenStore {
     static let account = "device"
 
     private let service: String
+    /// The keychain access group a new item is written to: the App Group id, so the widget
+    /// extension's sign-up intent reads the same token (lane F14). Reads, updates and deletes
+    /// search every group the process holds, so an item written before the group still loads.
+    private let accessGroup: String?
 
-    public init(service: String = Self.defaultService) {
+    public init(service: String = Self.defaultService, accessGroup: String? = nil) {
         self.service = service
+        self.accessGroup = accessGroup
     }
 
     public func load() throws(TokenStoreError) -> String? {
@@ -58,7 +63,13 @@ public struct KeychainTokenStore: TokenStore {
         var add = baseQuery
         add[kSecValueData as String] = data
         add[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        let added = SecItemAdd(add as CFDictionary, nil)
+        if let accessGroup { add[kSecAttrAccessGroup as String] = accessGroup }
+        var added = SecItemAdd(add as CFDictionary, nil)
+        if added == errSecMissingEntitlement, accessGroup != nil {
+            // A build without the App Group (a test host signed without it) keeps the token private.
+            add.removeValue(forKey: kSecAttrAccessGroup as String)
+            added = SecItemAdd(add as CFDictionary, nil)
+        }
         guard added == errSecSuccess else { throw .keychain(added) }
     }
 

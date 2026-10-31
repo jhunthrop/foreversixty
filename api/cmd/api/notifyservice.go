@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"strings"
 
@@ -45,23 +46,20 @@ func newDiscordOAuth(cfg config.Config) notify.OAuthClient {
 	return notify.NewHTTPOAuthClient(cfg.DiscordClientID, cfg.DiscordClientSecret, notify.CallbackURL(cfg.APIBaseURL))
 }
 
-// newJobDeliverer is the poster the sim and parse jobs use, built from the
-// same wiring as the routes. It is nil when notifications are off, so the
-// jobs' optional Notify stays a true nil interface.
-func newJobDeliverer(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *notify.Deliverer {
-	service := newNotifyService(cfg, pool, &entitlements.Store{Pool: pool}, log)
-	if service == nil {
-		return nil
-	}
-	return service.Deliverer()
-}
-
 // newJobGuilds is the guilds service a job tells of a completed report
 // (reports.Completed), on the job's own pool. It carries no Discord
-// poster yet: the job's report_ready post arrives with Lane G2's later
-// tasks.
+// poster; with the app notifications on it publishes the night's
+// report.ready to the raiders.
 func newJobGuilds(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *guilds.Service {
-	return &guilds.Service{Store: &guilds.Store{Pool: pool}, PublicBaseURL: cfg.PublicBaseURL, Log: log}
+	g := &guilds.Service{Store: &guilds.Store{Pool: pool}, PublicBaseURL: cfg.PublicBaseURL, Log: log}
+	if !cfg.Push.Enabled {
+		return g
+	}
+	if router := newEventsRouter(context.Background(), cfg, pool, nil, log); router != nil {
+		// The night's raid.summary names the coach notes to an account that holds the coach.
+		g.Events, g.Entitlements = router, &entitlements.Store{Pool: pool}
+	}
+	return g
 }
 
 // wireNotify builds the notify service into deps and connects it to the

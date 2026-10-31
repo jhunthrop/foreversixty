@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lane F14: the server-sim notification's body (spec §5.6, board F14.3). Android 12 and later tint a
+    standard progress bar with the system accent, so the bar is drawn here in the board's gold. The
+    text keeps the system's notification text appearances, so it reads on light and dark shades.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/sim_title"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/sim_text"
+        style="@style/TextAppearance.Compat.Notification.Info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" />
+
+    <ProgressBar
+        android:id="@+id/sim_progress"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginTop="10dp"
+        android:progressTint="#FFE5B955"
+        android:progressBackgroundTint="#FF9A9484"
+        android:indeterminateTint="#FFE5B955" />
+</LinearLayout>

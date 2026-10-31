@@ -51,3 +51,32 @@ One MUST. Everything else is SHOULD or polish. Fix the MUST, re-capture `reports
 - [ ] Largest text on F10.1 iOS (MUST 1; SHOULD 1, 2)
 - [~] Largest text on F10.2 and F10.3 (SHOULD 3 to 6)
 - [ ] Deep-link capture
+
+## Round 2
+
+Re-reviewed on the re-recorded captures: `reports-list-large-ios`, `report-kill-ios`, `report-kill-large-ios`, `meters-damage-large-ios`, `meters-damage-large-and`, `report-kill-and`, `report-deeplink-and`; the new files `report-deeplink-ios/-and`, `report-coachwriting-ios`, `report-error-ios`, `reports-offline-ios` exist.
+
+### Verdict: SHIP
+
+No MUST.
+
+### Round 1 findings
+
+- MUST 1 (iOS list margin at AX5): fixed. Gutter is about 17 pt, matching default.
+- SHOULD 1 (row furniture): fixed. Crest and glyph scale, the glyph sits inline with the meta, the chevron sits on the first line.
+- SHOULD 2 (title inversion): fixed. `YOUR REPORTS` stays the largest text.
+- SHOULD 3 (`FIGHTS` count): fixed. Label over an unsplit `3 BOSS PULLS`.
+- SHOULD 4 (dots and chevrons): fixed, centred on the first text line.
+- SHOULD 5 (meter icon): fixed. Icon is 40 pt and centred on the two-line row. At largest text the sheet shows 4 rows, your own row (rank 6), then `Show all 40`, which keeps the answer on screen.
+- SHOULD 6 (Android segments): fixed. All three are one height.
+- SHOULD 7 (flagged sheet segments): fixed per the build note; `meters-flagged-*` not re-opened.
+- SHOULD 8 (coverage): fixed, deep link and the three iOS parity captures now exist.
+- Polish 6 (Android drag handle): fixed.
+- Polish 1 (damage-taken bars), polish 5 (Home chevrons): deferred by the implementer, accepted. Home chevrons stay a shared-pattern follow-up.
+
+### New, polish only
+
+1. Pull numbers. `Onyxia · pull 1 of 3` is not spec copy (§5.2 says boss name). It helps tell three identical rows apart and carries into the sheet head. Accept, and add it to spec §5.2 F10.2 and F10.3 so spec and build agree.
+2. Wipe 2 now reads `4:52` where round 1 read `2:41`. Confirm it matches the fixture.
+3. `reports-list-large-ios.png`: wrapped meta starts a line with a leading dot (`· 1 kill`, `· 0 kills`). Break before the separator, not after.
+4. `meters-damage-large-and.png`: `40 players` orphans on its own line in the sheet head. Acceptable at font scale 2.0.

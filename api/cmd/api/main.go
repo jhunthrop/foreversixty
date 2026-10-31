@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
@@ -263,8 +264,8 @@ func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, t
 		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
 		Completed: newJobGuilds(cfg, pool, log),
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(context.Background(), cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return deps
 }
@@ -288,8 +289,8 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return sims.Run(ctx, deps, args[0])
 }
@@ -668,11 +669,25 @@ func serve(log *slog.Logger) error {
 	deps.Addon.SimRequests = deps.Sims
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
+	if cfg.App.Enabled {
+		// The apps' home answer reads the same card, BiS files and item tables as the
+		// Discord /char panel (guildService's build reads), so the two agree.
+		deps.App = &app.Service{
+			Characters: deps.Rankings, Data: guildService, Exports: &app.Store{Pool: pool}, Log: log,
+			Settings: app.Settings{WebCheckoutRegions: cfg.App.WebCheckoutRegions, Features: cfg.App.Features,
+				MinVersionIOS: cfg.App.MinVersionIOS, MinVersionAndroid: cfg.App.MinVersionAndroid},
+		}
+		log.Info("app", "state", "APP_API is on", "effect", "the app home and config routes are mounted")
+	}
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
+	deps.LiveSurface = newLiveSurface(ctx, liveSurfaceWiring{cfg: cfg, pool: pool, auth: authStore,
+		guilds: guildService, sims: simStore, entitle: entStore, homes: deps.App, log: log})
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
+	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
+	wireEvents(ctx, cfg, pool, &deps, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer

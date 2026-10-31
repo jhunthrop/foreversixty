@@ -2863,9 +2863,9 @@ public struct Item: Codable, Sendable, Equatable {
     public let iconSource: String
     public let weaponType: String?
     public let supersededBy: Int?
-    /// Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
+    /// Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest), or classic-db's item_template.bonding for an item the client's ItemSparse lacks; null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then.
     public let bonding: String?
-    /// Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published.
+    /// Spec C6: Item SubclassID for ClassID 4 (armor) as a word (a cloak is cloth, as the client prints "Back ... Cloth"); null for a neck, a ring, a trinket, a weapon or unknown. Omitted until published; draw no armour word then.
     public let armorType: String?
     /// Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published.
     public let minStanding: String?
@@ -3069,6 +3069,40 @@ public struct KeyDate: Codable, Sendable, Equatable {
         self.running = running
         self.role = role
         self.highlight = highlight
+    }
+}
+
+public struct LiveActivityRegistered: Codable, Sendable, Equatable {
+    /// What DELETE /v1/me/live-activities/{id} takes.
+    public let id: Int64
+
+    public init(
+        id: Int64
+    ) {
+        self.id = id
+    }
+}
+
+/// POST /v1/me/live-activities (W3-C13). push_token is the ActivityKit update token (hex) or the FCM registration token; push_to_start_token iOS only. object_id is the raid id or the server sim's id.
+public struct LiveActivityRequest: Codable, Sendable, Equatable {
+    public let kind: String
+    public let platform: String
+    public let pushToken: String
+    public let pushToStartToken: String?
+    public let objectId: String
+
+    public init(
+        kind: String,
+        platform: String,
+        pushToken: String,
+        pushToStartToken: String? = nil,
+        objectId: String
+    ) {
+        self.kind = kind
+        self.platform = platform
+        self.pushToken = pushToken
+        self.pushToStartToken = pushToStartToken
+        self.objectId = objectId
     }
 }
 
@@ -5799,5 +5833,248 @@ public struct WeightsSpec: Codable, Sendable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         stats = try c.decodeIfPresent([String].self, forKey: .stats) ?? []
         reference = try c.decode(String.self, forKey: .reference)
+    }
+}
+
+/// GET /v1/me/widget (W3-C12): the one snapshot every widget, lock-screen widget, Live Activity and ongoing notification draws from, so no two surfaces disagree. The apps keep it in their shared container (iOS App Group, Android DataStore). generated_at is to the minute; staleness (`Updated {n} h ago` past 12 hours) is measured from when the app last fetched it, a 304 included.
+public struct Widget: Codable, Sendable, Equatable {
+    public let generatedAt: Date
+    /// null for an account with no characters.
+    public let character: WidgetCharacter?
+    /// null when the character is on no guild's roster (`No guild yet`).
+    public let guild: WidgetGuild?
+    /// null when the guild has nothing planned (`No raid planned`).
+    public let nextRaid: WidgetNextRaid?
+    public let lastRaid: WidgetLastRaid?
+    /// null while the Home answer (APP_API) is off.
+    public let upgrades: WidgetUpgrades?
+    public let live: WidgetLive
+
+    public init(
+        generatedAt: Date,
+        character: WidgetCharacter? = nil,
+        guild: WidgetGuild? = nil,
+        nextRaid: WidgetNextRaid? = nil,
+        lastRaid: WidgetLastRaid? = nil,
+        upgrades: WidgetUpgrades? = nil,
+        live: WidgetLive
+    ) {
+        self.generatedAt = generatedAt
+        self.character = character
+        self.guild = guild
+        self.nextRaid = nextRaid
+        self.lastRaid = lastRaid
+        self.upgrades = upgrades
+        self.live = live
+    }
+}
+
+public struct WidgetCharacter: Codable, Sendable, Equatable {
+    public let key: String
+    public let name: String
+    public let className: String?
+    /// The primary tree; null when not known yet.
+    public let specName: String?
+
+    public init(
+        key: String,
+        name: String,
+        className: String? = nil,
+        specName: String? = nil
+    ) {
+        self.key = key
+        self.name = name
+        self.className = className
+        self.specName = specName
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case name
+        case className = "class"
+        case specName
+    }
+}
+
+public struct WidgetGuild: Codable, Sendable, Equatable {
+    public let id: Int64
+    public let name: String
+
+    public init(
+        id: Int64,
+        name: String
+    ) {
+        self.id = id
+        self.name = name
+    }
+}
+
+public struct WidgetLastRaid: Codable, Sendable, Equatable {
+    public let zoneName: String
+    public let startsAt: Date
+
+    public init(
+        zoneName: String,
+        startsAt: Date
+    ) {
+        self.zoneName = zoneName
+        self.startsAt = startsAt
+    }
+}
+
+public struct WidgetLive: Codable, Sendable, Equatable {
+    /// The caller's server runs queued or running.
+    public let simRunsRunning: Int
+
+    public init(
+        simRunsRunning: Int
+    ) {
+        self.simRunsRunning = simRunsRunning
+    }
+}
+
+public struct WidgetMine: Codable, Sendable, Equatable {
+    public let state: String?
+    /// The raid spec's name; null means the widget shows `Choose a spec`.
+    public let spec: String?
+    public let role: String
+
+    public init(
+        state: String? = nil,
+        spec: String? = nil,
+        role: String
+    ) {
+        self.state = state
+        self.spec = spec
+        self.role = role
+    }
+}
+
+/// The next raid on the guild's calendar (the raids tab's list), cancelled ones included. pull_at is the raid's start; invite_at is null until raids carry an invite time. signed_up is In plus Late, the raid page's band count.
+public struct WidgetNextRaid: Codable, Sendable, Equatable {
+    public let raidId: Int64
+    public let guildId: Int64
+    public let guildName: String
+    public let zone: String
+    public let zoneName: String
+    public let startsAt: Date
+    public let inviteAt: Date?
+    public let pullAt: Date
+    public let endsAt: Date
+    public let size: Int?
+    public let signedUp: Int
+    public let status: String
+    public let my: WidgetMine
+    /// The character may answer In, Late or Out now: open, not ended, verified.
+    public let canSignUp: Bool
+
+    public init(
+        raidId: Int64,
+        guildId: Int64,
+        guildName: String,
+        zone: String,
+        zoneName: String,
+        startsAt: Date,
+        inviteAt: Date? = nil,
+        pullAt: Date,
+        endsAt: Date,
+        size: Int? = nil,
+        signedUp: Int,
+        status: String,
+        my: WidgetMine,
+        canSignUp: Bool
+    ) {
+        self.raidId = raidId
+        self.guildId = guildId
+        self.guildName = guildName
+        self.zone = zone
+        self.zoneName = zoneName
+        self.startsAt = startsAt
+        self.inviteAt = inviteAt
+        self.pullAt = pullAt
+        self.endsAt = endsAt
+        self.size = size
+        self.signedUp = signedUp
+        self.status = status
+        self.my = my
+        self.canSignUp = canSignUp
+    }
+}
+
+public struct WidgetUpgradePick: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let quality: Int
+    public let icon: String
+    public let itemLevel: Int
+
+    public init(
+        id: Int,
+        name: String,
+        quality: Int,
+        icon: String,
+        itemLevel: Int
+    ) {
+        self.id = id
+        self.name = name
+        self.quality = quality
+        self.icon = icon
+        self.itemLevel = itemLevel
+    }
+}
+
+public struct WidgetUpgradeRow: Codable, Sendable, Equatable {
+    public let slot: String
+    public let slotLabel: String
+    public let pick: WidgetUpgradePick
+    /// null: `Gain not modelled yet`, drawn as `—`.
+    public let gain: Double?
+
+    public init(
+        slot: String,
+        slotLabel: String,
+        pick: WidgetUpgradePick,
+        gain: Double? = nil
+    ) {
+        self.slot = slot
+        self.slotLabel = slotLabel
+        self.pick = pick
+        self.gain = gain
+    }
+}
+
+/// The Home answer's first three rows in its order, with the whole list's count and total. Any state but ok has no rows and a sentence the widget shows as is.
+public struct WidgetUpgrades: Codable, Sendable, Equatable {
+    public let state: String
+    public let sentence: String?
+    public let count: Int
+    public let totalGain: Double?
+    public let unit: String
+    public let rows: [WidgetUpgradeRow]
+
+    public init(
+        state: String,
+        sentence: String? = nil,
+        count: Int,
+        totalGain: Double? = nil,
+        unit: String,
+        rows: [WidgetUpgradeRow] = []
+    ) {
+        self.state = state
+        self.sentence = sentence
+        self.count = count
+        self.totalGain = totalGain
+        self.unit = unit
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        state = try c.decode(String.self, forKey: .state)
+        sentence = try c.decodeIfPresent(String.self, forKey: .sentence)
+        count = try c.decode(Int.self, forKey: .count)
+        totalGain = try c.decodeIfPresent(Double.self, forKey: .totalGain)
+        unit = try c.decode(String.self, forKey: .unit)
+        rows = try c.decodeIfPresent([WidgetUpgradeRow].self, forKey: .rows) ?? []
     }
 }

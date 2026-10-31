@@ -25,11 +25,11 @@ type expertiseToCap struct {
 }
 
 // expertiseToCapFor picks the figure a spec publishes: nil for a spec that
-// never swings a weapon in melee (leveling.NoMeleeAutoAttackSpecs, the rule
-// hitToCapFor uses) or whose engine character does not auto-attack in melee,
+// never swings a weapon in melee (leveling.NoMeleeAutoAttackSpecs and
+// leveling.RangedWeaponSpecs, the rules hitToCapFor uses) or whose engine character does not auto-attack in melee,
 // the dodge distance for a damage dealer, plus the parry distance for a tank.
 func expertiseToCapFor(spec string, profile core.HitProfile) *expertiseToCap {
-	if leveling.NoMeleeAutoAttackSpecs[spec] || !profile.Physical || !profile.Melee {
+	if leveling.NoMeleeAutoAttackSpecs[spec] || leveling.RangedWeaponSpecs[spec] || !profile.Physical || !profile.Melee {
 		return nil
 	}
 	out := &expertiseToCap{Baseline: profile.Expertise, Dodge: profile.ToDodgeCap()}

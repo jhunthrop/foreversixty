@@ -27,7 +27,6 @@ REQUIRED_BUFFS = {
     "trueshot_aura",
     "heart_of_the_lion",
     "leader_of_the_pack",
-    "sanctity_aura",
     "strength_of_earth_totem",
     "mana_spring_totem",
 }
@@ -41,8 +40,16 @@ REQUIRED_DEBUFFS = {
     "curse_of_recklessness",
 }
 #: A buff the preset must never carry: Forever has no world buffs, Shadow Weaving is a
-#: self-buff now, and Blessing of Kings is not in the live paladin trees.
-FORBIDDEN = {"shadow_weaving", "blessing_of_kings", "songflower_serenade", "spirit_of_zandalar"}
+#: self-buff now, Blessing of Kings may not stack with Heart of the Lion (the client
+#: cannot say), and Sanctity Aura (20218) has no SkillLineAbility row, so no Forever
+#: paladin can learn it.
+FORBIDDEN = {
+    "shadow_weaving",
+    "blessing_of_kings",
+    "sanctity_aura",
+    "songflower_serenade",
+    "spirit_of_zandalar",
+}
 #: Consumables from Ahn'Qiraj or Naxxramas, or a world buff by another name.
 #: Flask of the Titans is NOT here: its recipe drops from General Drakkisath
 #: in Blackrock Spire, Phase 1 content. Dirge's chops need the Ahn'Qiraj

@@ -498,6 +498,7 @@
     <string name="talents_matches">Matches</string>
     <string name="talents_differs">Differs</string>
     <string name="talents_match">Your build is the %1$s %2$s guide build.</string>
+    <string name="talents_matchBeyond">Your build has every point of the %1$s %2$s guide build.</string>
     <string name="talents_differ" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the %3$s guide build.</string>
     <plurals name="talents_unspent">
         <item quantity="one">1 point unspent.</item>
@@ -516,7 +517,7 @@
         <item quantity="one">The guide build takes 1 point you have not.</item>
         <item quantity="other">The guide build takes %1$d points you have not.</item>
     </plurals>
-    <string name="talents_beyond" tools:ignore="PluralsCandidate">Level %1$d is past the %2$s guide build\'s %3$d points, so points past it show as differing.</string>
+    <string name="talents_beyond" tools:ignore="PluralsCandidate">+%1$d beyond the guide</string>
     <string name="talents_requiresTree" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s Talents</string>
     <string name="talents_requiresTalent" tools:ignore="PluralsCandidate">Requires %1$d points in %2$s</string>
     <string name="talents_requiresTalentOne">Requires 1 point in %1$s</string>
@@ -806,4 +807,91 @@
     <string name="coach_writing">Your coach is writing…</string>
     <string name="coach_preparing">Still writing. Check back in a few minutes.</string>
     <string name="coach_failed">The coach couldn\'t read this pull just now.</string>
+    <string name="widget_nextRaid">Next raid</string>
+    <string name="widget_nextUpgrade">Next upgrade</string>
+    <string name="widget_upgrades">Upgrades · %1$s</string>
+    <string name="widget_signedOut">Sign in to see your next raid.</string>
+    <string name="widget_openApp">Open the app</string>
+    <string name="widget_noGuild">No guild yet</string>
+    <string name="widget_noGuildSub">Your raids show here once you are on a roster.</string>
+    <string name="widget_noRaid">No raid planned</string>
+    <string name="widget_lastRaid">Last: %1$s, %2$s.</string>
+    <string name="widget_locked">Locked</string>
+    <string name="widget_cancelled">Cancelled</string>
+    <string name="widget_updated" tools:ignore="PluralsCandidate">Updated %1$d h ago</string>
+    <string name="widget_chooseSpec">Choose a spec</string>
+    <string name="widget_notSaved">Not saved</string>
+    <string name="widget_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up</string>
+    <string name="widget_ofSize" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="widget_signedUpLabel">signed up</string>
+    <string name="widget_noGear">Add the addon to see your upgrades.</string>
+    <string name="widget_noCharacter">Sign in on the app and pick a character.</string>
+    <string name="widget_notSignedUp">Not signed up</string>
+    <string name="widget_answer">%1$s · %2$s</string>
+    <string name="widget_you">You: %1$s</string>
+    <string name="widget_inline">%1$s · %2$s · %3$s</string>
+    <string name="widget_in_dayHours" tools:ignore="PluralsCandidate">in 1 day %1$d h</string>
+    <string name="widget_in_daysHours" tools:ignore="PluralsCandidate">in %1$d days %2$d h</string>
+    <plurals name="widget_in_days">
+        <item quantity="one">in 1 day</item>
+        <item quantity="other">in %1$d days</item>
+    </plurals>
+    <string name="widget_in_hoursMinutes" tools:ignore="PluralsCandidate">in %1$d h %2$d min</string>
+    <string name="widget_in_hours" tools:ignore="PluralsCandidate">in %1$d h</string>
+    <string name="widget_in_minutes" tools:ignore="PluralsCandidate">in %1$d min</string>
+    <string name="widget_now">Starting now</string>
+    <string name="widget_short_days" tools:ignore="PluralsCandidate">%1$dd</string>
+    <string name="widget_short_hours" tools:ignore="PluralsCandidate">%1$dh</string>
+    <string name="widget_short_minutes" tools:ignore="PluralsCandidate">%1$dm</string>
+    <string name="widget_upgradesFooter">%1$s · +%2$s %3$s</string>
+    <string name="widget_gain">+%1$s %2$s</string>
+    <string name="widget_noGain">—</string>
+    <string name="widget_characterSetting">Character</string>
+    <string name="widget_currentCharacter">Current character</string>
+    <string name="widget_gallery_raid">Your guild\'s next raid and your answer. Answer In, Late or Out from here.</string>
+    <string name="widget_gallery_upgrade">Your next upgrades, measured for your character.</string>
+    <string name="widget_a11y_raid">Next raid, %1$s, %2$s, %3$s.</string>
+    <string name="widget_a11y_you">You are %1$s as %2$s.</string>
+    <string name="widget_a11y_signedUp" tools:ignore="PluralsCandidate">%1$d of %2$d signed up.</string>
+    <plurals name="widget_a11y_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="widget_a11y_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="widget_a11y_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="widget_a11y_in">in %1$s</string>
+    <string name="widget_a11y_upgrade">Next upgrade, %1$s, %2$s, %3$s.</string>
+    <string name="live_invites">until invites at %1$s</string>
+    <string name="live_starts">until the pull at %1$s</string>
+    <string name="live_you">You are %1$s · %2$s · %3$s</string>
+    <string name="live_notifTitleOne">Invites for %1$s in 1 minute</string>
+    <string name="live_notifTitle" tools:ignore="PluralsCandidate">Invites for %1$s in %2$d minutes</string>
+    <string name="live_notifTitleNow">Invites for %1$s now</string>
+    <string name="live_pullTitleOne">%1$s starts in 1 minute</string>
+    <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
+    <string name="live_pullTitleNow">%1$s starts now</string>
+    <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
+    <plurals name="live_simLeft">
+        <item quantity="one">about 1 min left</item>
+        <item quantity="other">about %1$d min left</item>
+    </plurals>
+    <string name="live_finished">Finished</string>
+    <string name="live_finishedSub">%1$s DPS · tap for the result</string>
+    <string name="live_failed">Failed</string>
+    <string name="live_openRun">Open the run</string>
+    <string name="live_settings">Live surfaces</string>
+    <string name="live_raidSetting">Raid starting countdown</string>
+    <string name="live_simSetting">Server sim progress</string>
+    <string name="live_channel_raid">Raid starting</string>
+    <string name="live_channel_sims">Server sims</string>
+    <string name="live_a11y_raid">Invites for %1$s in %2$s. You are %3$s.</string>
+    <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
+    <string name="live_tile_title">Next raid</string>
+    <string name="live_tile_sub">%1$s · %2$s</string>
 </resources>

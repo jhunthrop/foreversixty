@@ -1,8 +1,9 @@
 // api/cmd/api/raid_posts.go
 //
 // raid-posts is the Cloud Scheduler job that runs every ten minutes: it sends the raid posts
-// and day-before reminders that have come due, then brings the bot's posts up to date. It is
-// the clock that works while the service is cold. It logs counts only.
+// and day-before reminders that have come due, then brings the bot's posts up to date, then
+// (with APP_NOTIFICATIONS_ENABLED) publishes the time-based player events and prunes the old
+// delivery log. It is the clock that works while the service is cold. It logs counts only.
 package main
 
 import (
@@ -18,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -57,11 +59,26 @@ type raidDrainer interface {
 	DrainOnce(ctx context.Context) error
 }
 
-// raidPostsServices is what the job runs. Drainer is nil when the bot is not configured; tests
-// build it with fakes.
+// eventScheduler publishes the time-based player events that are due (guilds.Service).
+type eventScheduler interface {
+	RunEventSchedule(ctx context.Context, now time.Time) (guilds.EventScheduleRun, error)
+}
+
+// deliveryPruner forgets old deliveries (events.Store).
+type deliveryPruner interface {
+	PruneDeliveries(ctx context.Context, now time.Time, limit int) (int64, error)
+}
+
+// pruneBatch bounds the deliveries one run forgets.
+const pruneBatch = 5000
+
+// raidPostsServices is what the job runs. Drainer is nil when the bot is not configured, and
+// Events and Prune are nil until the app notifications are on; tests build it with fakes.
 type raidPostsServices struct {
 	Guilds  raidScheduler
 	Drainer raidDrainer
+	Events  eventScheduler
+	Prune   deliveryPruner
 }
 
 // newRaidPostsServices builds the guilds, notify and bot wiring serve uses for the raid router,
@@ -83,6 +100,10 @@ func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logge
 		wireGuildRaidChannel(n, guildService)
 	}
 	svc := raidPostsServices{Guilds: guildService}
+	if router := newEventsRouter(context.Background(), cfg, pool, deps.Notify, log); cfg.Push.Enabled && router != nil {
+		guildService.Events = router
+		svc.Events, svc.Prune = guildService, &events.Store{Pool: pool}
+	}
 	if !botEnabled(cfg, deps, log) {
 		return svc, nil
 	}
@@ -114,8 +135,33 @@ func raidPosts(ctx context.Context, log *slog.Logger, svc raidPostsServices, now
 		}
 	}
 	log.Info("raid-posts", "posted", run.Posted, "reminded", run.Reminded, "failed", run.Failed)
+	if err := runEvents(ctx, log, svc, now); err != nil {
+		errs = append(errs, err)
+	}
 	if err := errors.Join(errs...); err != nil {
 		return fmt.Errorf("raid-posts: %w", err)
 	}
 	return nil
+}
+
+// runEvents publishes the due player events and prunes the delivery log; a no-op until the
+// app notifications are on.
+func runEvents(ctx context.Context, log *slog.Logger, svc raidPostsServices, now time.Time) error {
+	if svc.Events == nil {
+		return nil
+	}
+	var errs []error
+	run, err := svc.Events.RunEventSchedule(ctx, now)
+	if err != nil {
+		errs = append(errs, fmt.Errorf("events: %w", err))
+	}
+	var pruned int64
+	if svc.Prune != nil {
+		if pruned, err = svc.Prune.PruneDeliveries(ctx, now, pruneBatch); err != nil {
+			errs = append(errs, fmt.Errorf("prune: %w", err))
+		}
+	}
+	log.Info("raid-posts", "events_posted", run.Posted, "nudged", run.Nudged, "short", run.Short,
+		"starting", run.Starting, "pending", run.Pending, "pruned", pruned)
+	return errors.Join(errs...)
 }

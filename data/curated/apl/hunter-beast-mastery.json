@@ -1,7 +1,7 @@
 {
   "spec": "hunter-beast-mastery",
   "state": "written",
-  "notes": "wowsims-forever models one Hunter spell package for all three specs (engine spec mapping, design section on the APL rotation lane); Beast Mastery, Marksmanship and Survival share this same Aimed Shot / Multi-Shot weave and differ mainly in which cooldowns and secondary shots they lean on. The cited Warcraft Tavern BM guide's own numbered rotation (step 7) says to cast and refresh Serpent Sting -- it only calls Arcane Shot a leveling-only filler, not Serpent Sting -- so Serpent Sting upkeep is kept here, in the same shape as hunter-marksmanship's. Bestial Wrath is added as the spec's own cooldown, timed with Rapid Fire so both land in the one burst window a Classic-length fight allows. Every rank named here is checked against this build's own spellconst: the fork's p1.apl.json preset names Multi-Shot as spell 25294, which does not exist in this build at all (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 in this build's spellconst -- both fixed here rather than copied stale. Aimed Shot (20904) is registered by the engine again since 2026-09-28 (its registration had been commented out, and the cast line was declared inert until then). What did need fixing: nothing in this site's request pipeline (sim/request) ever sets a character's DistanceFromTarget, so every hunter starts at 0 -- under Multi-Shot, Serpent Sting and Aimed Shot's own ExtraCastCondition floor of 12 (core.MinRangedAttackDistance), which also gates the ranged auto-attack itself (sim/core/attack.go's startPull). A `move` prepull action to 30 yards is added so this and every future simulation of this spec actually has a ranged auto-attack and can cast its ranged abilities. Under this smoke build specifically (no gear equipped anywhere) the ranged weapon's SwingSpeed is the Weapon{} zero value, which collapses the ranged swing timer to its 500ms cast-time floor (sim/core/attack.go's WeaponAttack.updateSwingDuration: curSwingDuration = weapon.SwingSpeed / hasteMultiplier = 0) -- a real ranged weapon's positive SwingSpeed does not have this problem. The resulting sub-GCD auto-shot loop saturates the character's action economy so completely that the priority list, including Multi-Shot and Serpent Sting, never gets a decision window in this one bare-weapon run; this is a new engine-side artifact of the no-gear smoke build (recorded for the engine ledger), not a defect in this rotation's gates. Rotation-accuracy program diagnosis (2026-09-28), inert 2643 and 3045: both are unranked single-id abilities in spellranks.json (Multi-Shot's rank-1 id 2643 is the ONLY row spellranks.json carries for this ability in this build -- its higher client ranks 14288/14289/14290/25294 are simply absent from the data entirely -- and Rapid Fire 3045 is genuinely a single, unranked ability), each with rank:0 and a real nonzero level column (2643 at 18, 3045 at 26) that the ladder's own idLearnLevel deliberately skips for EVERY rank<=0 row (the same skip that correctly keeps Bloodrage/Judgement -- true always-known, no engine level gate at all -- from being wrongly treated as gated). Multi-Shot and Rapid Fire are the opposite case: sim/hunter/multi_shot.go's rank 1 carries RequiredLevel 18, and sim/hunter/rapid_fire.go's registerRapidFire returns immediately `if hunter.Level < 26`, so the engine really does gate both on a level spellranks.json's rank<=0 shape cannot express to this harness. Fix round: not declared inert here (that would wrongly tell the level-60 smoke test to expect them permanently unresolved, when the pinned engine resolves both fine above their real gate). Fixed instead with a small, explicit, engine-verified allowlist in sim/internal/spellranks (singleTierLevelOverrides) and its read-only ladder-side mirror (sim/request/ladder.go's idLearnLevel): only these two ids (plus druid-feral's Tiger's Fury, the same shape) are promoted from 'untracked, always learned' to a real single-tier gate, so Bloodrage (spellranks.json row: level 10, rank 0) and Judgement (level 4, rank 0) are untouched -- neither is actually level-gated by the engine at all (checked directly: sim/warrior/bloodrage.go and sim/paladin/judgement.go register unconditionally), so a blanket 'rank 0 with Level>0 means level-gated' rule would have wrongly broken them. See this lane's report for the fuller diagnosis and the data-pipeline follow-up (Multi-Shot's own higher client ranks 14288/14289/14290/25294 are simply missing from spellranks.json entirely, a separate gap from this level-10 false unresolved). 2026-10-21 (ladder rotations lane): Arcane Shot also fires while Aimed Shot cannot start (the next auto shot is within a second, which is Aimed Shot's own gate). At level 50 the ladder's 1.6 second ranged weapon never leaves a window for Aimed Shot, which then sat ready forever and held Arcane Shot behind it, so the shot never fired.",
+  "notes": "wowsims-forever models one Hunter spell package for all three specs (engine spec mapping, design section on the APL rotation lane); Beast Mastery, Marksmanship and Survival share this same Aimed Shot / Multi-Shot weave and differ mainly in which cooldowns and secondary shots they lean on. The cited Warcraft Tavern BM guide's own numbered rotation (step 7) says to cast and refresh Serpent Sting -- it only calls Arcane Shot a leveling-only filler, not Serpent Sting -- so Serpent Sting upkeep is kept here, in the same shape as hunter-marksmanship's. Bestial Wrath is added as the spec's own cooldown, timed with Rapid Fire so both land in the one burst window a Classic-length fight allows. Every rank named here is checked against this build's own spellconst: the fork's p1.apl.json preset names Multi-Shot as spell 25294, which does not exist in this build at all (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 in this build's spellconst -- both fixed here rather than copied stale. Aimed Shot (20904) is registered by the engine again since 2026-09-28 (its registration had been commented out, and the cast line was declared inert until then). What did need fixing: nothing in this site's request pipeline (sim/request) ever sets a character's DistanceFromTarget, so every hunter starts at 0 -- under Multi-Shot, Serpent Sting and Aimed Shot's own ExtraCastCondition floor of 12 (core.MinRangedAttackDistance), which also gates the ranged auto-attack itself (sim/core/attack.go's startPull). A `move` prepull action to 30 yards is added so this and every future simulation of this spec actually has a ranged auto-attack and can cast its ranged abilities. Under this smoke build specifically (no gear equipped anywhere) the ranged weapon's SwingSpeed is the Weapon{} zero value, which collapses the ranged swing timer to its 500ms cast-time floor (sim/core/attack.go's WeaponAttack.updateSwingDuration: curSwingDuration = weapon.SwingSpeed / hasteMultiplier = 0) -- a real ranged weapon's positive SwingSpeed does not have this problem. The resulting sub-GCD auto-shot loop saturates the character's action economy so completely that the priority list, including Multi-Shot and Serpent Sting, never gets a decision window in this one bare-weapon run; this is a new engine-side artifact of the no-gear smoke build (recorded for the engine ledger), not a defect in this rotation's gates. Rotation-accuracy program diagnosis (2026-09-28), inert 2643 and 3045: both are unranked single-id abilities in spellranks.json (Multi-Shot's rank-1 id 2643 is the ONLY row spellranks.json carries for this ability in this build -- its higher client ranks 14288/14289/14290/25294 are simply absent from the data entirely -- and Rapid Fire 3045 is genuinely a single, unranked ability), each with rank:0 and a real nonzero level column (2643 at 18, 3045 at 26) that the ladder's own idLearnLevel deliberately skips for EVERY rank<=0 row (the same skip that correctly keeps Bloodrage/Judgement -- true always-known, no engine level gate at all -- from being wrongly treated as gated). Multi-Shot and Rapid Fire are the opposite case: sim/hunter/multi_shot.go's rank 1 carries RequiredLevel 18, and sim/hunter/rapid_fire.go's registerRapidFire returns immediately `if hunter.Level < 26`, so the engine really does gate both on a level spellranks.json's rank<=0 shape cannot express to this harness. Fix round: not declared inert here (that would wrongly tell the level-60 smoke test to expect them permanently unresolved, when the pinned engine resolves both fine above their real gate). Fixed instead with a small, explicit, engine-verified allowlist in sim/internal/spellranks (singleTierLevelOverrides) and its read-only ladder-side mirror (sim/request/ladder.go's idLearnLevel): only these two ids (plus druid-feral's Tiger's Fury, the same shape) are promoted from 'untracked, always learned' to a real single-tier gate, so Bloodrage (spellranks.json row: level 10, rank 0) and Judgement (level 4, rank 0) are untouched -- neither is actually level-gated by the engine at all (checked directly: sim/warrior/bloodrage.go and sim/paladin/judgement.go register unconditionally), so a blanket 'rank 0 with Level>0 means level-gated' rule would have wrongly broken them. See this lane's report for the fuller diagnosis and the data-pipeline follow-up (Multi-Shot's own higher client ranks 14288/14289/14290/25294 are simply missing from spellranks.json entirely, a separate gap from this level-10 false unresolved). 2026-10-21 (ladder rotations lane): Arcane Shot also fires while Aimed Shot cannot start (the next auto shot is within a second, which is Aimed Shot's own gate). At level 50 the ladder's 1.6 second ranged weapon never leaves a window for Aimed Shot, which then sat ready forever and held Arcane Shot behind it, so the shot never fired. 2026-10-31 (theorycraft audit fixes): Multi-Shot and Aimed Shot share one 6 second cooldown in Forever (client spell category 2; both tooltips say so), and the engine now runs them on one timer. On that shared timer the instant Multi-Shot outdamages Aimed Shot, whose 2 second cast pauses the auto shot, so Multi-Shot fires on every cooldown and Aimed Shot is only the pre-pull opener. The lines that used to read Aimed Shot's cooldown now read Multi-Shot's, the same clock.",
   "inert": [],
   "sources": [
     {
@@ -87,7 +87,7 @@
         }
       },
       {
-        "notes": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.",
+        "notes": "Rapid Fire timed to land with an incoming auto shot just as Multi-Shot is about to come off cooldown, so both benefit.",
         "action": {
           "condition": {
             "and": {
@@ -113,8 +113,8 @@
                     "lhs": {
                       "spellTimeToReady": {
                         "spellId": {
-                          "spellId": 20904,
-                          "rank": 6
+                          "spellId": 2643,
+                          "rank": 0
                         }
                       }
                     },
@@ -136,49 +136,8 @@
         }
       },
       {
-        "notes": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
+        "notes": "Multi-Shot on cooldown. It shares its 6 second cooldown with Aimed Shot, and the instant shot does more over a fight than Aimed Shot's cast, which pauses the auto shot.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGt",
-              "lhs": {
-                "autoTimeToNext": {
-                  "autoType": "Ranged"
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "1s"
-                }
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 20904,
-              "rank": 6
-            }
-          }
-        }
-      },
-      {
-        "notes": "Multi-Shot as the filler between Aimed Shots.",
-        "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGt",
-              "lhs": {
-                "autoTimeToNext": {
-                  "autoType": "Ranged"
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.5s"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
               "spellId": 2643,
@@ -188,7 +147,7 @@
         }
       },
       {
-        "notes": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+        "notes": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
         "action": {
           "condition": {
             "and": {
@@ -217,8 +176,8 @@
                     "lhs": {
                       "spellTimeToReady": {
                         "spellId": {
-                          "spellId": 20904,
-                          "rank": 6
+                          "spellId": 2643,
+                          "rank": 0
                         }
                       }
                     },
@@ -241,7 +200,7 @@
         }
       },
       {
-        "notes": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+        "notes": "Arcane Shot as the last filler, only when Multi-Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
         "action": {
           "condition": {
             "and": {
@@ -260,42 +219,21 @@
                   }
                 },
                 {
-                  "or": {
-                    "vals": [
-                      {
-                        "cmp": {
-                          "op": "OpGt",
-                          "lhs": {
-                            "spellTimeToReady": {
-                              "spellId": {
-                                "spellId": 20904,
-                                "rank": 6
-                              }
-                            }
-                          },
-                          "rhs": {
-                            "const": {
-                              "val": "1.5s"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "cmp": {
-                          "op": "OpLe",
-                          "lhs": {
-                            "autoTimeToNext": {
-                              "autoType": "Ranged"
-                            }
-                          },
-                          "rhs": {
-                            "const": {
-                              "val": "1s"
-                            }
-                          }
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "spellTimeToReady": {
+                        "spellId": {
+                          "spellId": 2643,
+                          "rank": 0
                         }
                       }
-                    ]
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "1.5s"
+                      }
+                    }
                   }
                 }
               ]
@@ -310,8 +248,5 @@
         }
       }
     ]
-  },
-  "engineering_notes": {
-    "6": "Multi-Shot's real cooldown is 6s; a wait-for-Multi-Shot clause here previously treated it as always 'about to be ready' and zeroed Arcane Shot at bands 40 and 60 until the 2026-09-29 fix."
   }
 }

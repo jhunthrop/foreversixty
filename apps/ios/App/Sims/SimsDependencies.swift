@@ -13,6 +13,8 @@ struct SimsDependencies {
     let iconBuild: @Sendable () async -> String?
     /// F8's rule: See plans only where the storefront may link to web checkout (fail closed).
     let mayLinkToPlans: @MainActor () async -> Bool
+    /// Lane F14: the server runs in flight, for their Live Activities; nil draws none.
+    var liveSims: (@MainActor ([SimLiveRun]) async -> Void)?
 
     @MainActor
     static func live(_ environment: AppEnvironment, catalog: ItemCatalog) -> SimsDependencies {
@@ -31,8 +33,22 @@ struct SimsDependencies {
             mayLinkToPlans: {
                 await environment.plansLink.resolve()
                 return environment.plansLink.mayLink
-            }
+            },
+            liveSims: liveSims(environment)
         )
+    }
+}
+
+extension SimsDependencies {
+    /// Lane F14: the runs' Live Activities, behind the widgets switch and `server_sims`.
+    @MainActor
+    private static func liveSims(_ environment: AppEnvironment) -> (@MainActor ([SimLiveRun]) async -> Void)? {
+        guard environment.isAvailable(.widgets) else { return nil }
+        let controller = environment.liveActivities
+        let session = environment.session
+        return { runs in
+            await controller.syncSims(runs, entitled: session.phase.me?.entitlements.serverSims == true)
+        }
     }
 }
 

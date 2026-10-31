@@ -2826,6 +2826,297 @@
         }
       }
     },
+    "live.a11y.raid": {
+      "comment": "Arguments: 1 zone (string), 2 span (string), 3 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in %2$@. You are %3$@."
+          }
+        }
+      }
+    },
+    "live.a11y.raidPull": {
+      "comment": "Arguments: 1 zone (string), 2 span (string), 3 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$@. You are %3$@."
+          }
+        }
+      }
+    },
+    "live.channel.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid starting"
+          }
+        }
+      }
+    },
+    "live.channel.sims": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server sims"
+          }
+        }
+      }
+    },
+    "live.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed"
+          }
+        }
+      }
+    },
+    "live.finished": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
+          }
+        }
+      }
+    },
+    "live.finishedSub": {
+      "comment": "Arguments: 1 dps (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ DPS · tap for the result"
+          }
+        }
+      }
+    },
+    "live.invites": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "until invites at %1$@"
+          }
+        }
+      }
+    },
+    "live.notifTitle": {
+      "comment": "Arguments: 1 zone (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in %2$lld minutes"
+          }
+        }
+      }
+    },
+    "live.notifTitleNow": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ now"
+          }
+        }
+      }
+    },
+    "live.notifTitleOne": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites for %1$@ in 1 minute"
+          }
+        }
+      }
+    },
+    "live.openRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the run"
+          }
+        }
+      }
+    },
+    "live.pullTitle": {
+      "comment": "Arguments: 1 zone (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in %2$lld minutes"
+          }
+        }
+      }
+    },
+    "live.pullTitleNow": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts now"
+          }
+        }
+      }
+    },
+    "live.pullTitleOne": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ starts in 1 minute"
+          }
+        }
+      }
+    },
+    "live.raidSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid starting countdown"
+          }
+        }
+      }
+    },
+    "live.settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live surfaces"
+          }
+        }
+      }
+    },
+    "live.sim": {
+      "comment": "Arguments: 1 n (int), 2 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld combinations"
+          }
+        }
+      }
+    },
+    "live.simLeft": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "about 1 min left"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "about %1$lld min left"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "live.simSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server sim progress"
+          }
+        }
+      }
+    },
+    "live.starts": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "until the pull at %1$@"
+          }
+        }
+      }
+    },
+    "live.tile.sub": {
+      "comment": "Arguments: 1 time (string), 2 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "live.tile.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "live.you": {
+      "comment": "Arguments: 1 state (string), 2 role (string), 3 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
     "meters.a11y.mine": {
       "comment": "Arguments: 1 row (string)",
       "extractionState": "manual",
@@ -7694,13 +7985,13 @@
       }
     },
     "talents.beyond": {
-      "comment": "Arguments: 1 l (int), 2 band (string), 3 g (int)",
+      "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Level %1$lld is past the %2$@ guide build's %3$lld points, so points past it show as differing."
+            "value": "+%1$lld beyond the guide"
           }
         }
       }
@@ -7814,6 +8105,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your build is the %1$@ %2$@ guide build."
+          }
+        }
+      }
+    },
+    "talents.matchBeyond": {
+      "comment": "Arguments: 1 spec (string), 2 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your build has every point of the %1$@ %2$@ guide build."
           }
         }
       }
@@ -8341,6 +8644,609 @@
           "stringUnit": {
             "state": "translated",
             "value": "Update Forever Sixty"
+          }
+        }
+      }
+    },
+    "widget.a11y.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 hour"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.in": {
+      "comment": "Arguments: 1 span (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$@"
+          }
+        }
+      }
+    },
+    "widget.a11y.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 minute"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.a11y.raid": {
+      "comment": "Arguments: 1 zone (string), 2 when (string), 3 countdown (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid, %1$@, %2$@, %3$@."
+          }
+        }
+      }
+    },
+    "widget.a11y.signedUp": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld signed up."
+          }
+        }
+      }
+    },
+    "widget.a11y.upgrade": {
+      "comment": "Arguments: 1 slot (string), 2 item (string), 3 gain (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next upgrade, %1$@, %2$@, %3$@."
+          }
+        }
+      }
+    },
+    "widget.a11y.you": {
+      "comment": "Arguments: 1 state (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@ as %2$@."
+          }
+        }
+      }
+    },
+    "widget.answer": {
+      "comment": "Arguments: 1 state (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "widget.cancelled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        }
+      }
+    },
+    "widget.characterSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character"
+          }
+        }
+      }
+    },
+    "widget.chooseSpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a spec"
+          }
+        }
+      }
+    },
+    "widget.currentCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current character"
+          }
+        }
+      }
+    },
+    "widget.gain": {
+      "comment": "Arguments: 1 gain (string), 2 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "widget.gallery.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild's next raid and your answer. Answer In, Late or Out from here."
+          }
+        }
+      }
+    },
+    "widget.gallery.upgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your next upgrades, measured for your character."
+          }
+        }
+      }
+    },
+    "widget.in.dayHours": {
+      "comment": "Arguments: 1 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in 1 day %1$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.days": {
+      "comment": "Arguments: 1 days (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "in 1 day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "in %1$lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.in.daysHours": {
+      "comment": "Arguments: 1 days (int), 2 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld days %2$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.hours": {
+      "comment": "Arguments: 1 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld h"
+          }
+        }
+      }
+    },
+    "widget.in.hoursMinutes": {
+      "comment": "Arguments: 1 hours (int), 2 minutes (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "widget.in.minutes": {
+      "comment": "Arguments: 1 minutes (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in %1$lld min"
+          }
+        }
+      }
+    },
+    "widget.inline": {
+      "comment": "Arguments: 1 zone (string), 2 time (string), 3 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "widget.lastRaid": {
+      "comment": "Arguments: 1 zone (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last: %1$@, %2$@."
+          }
+        }
+      }
+    },
+    "widget.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
+        }
+      }
+    },
+    "widget.nextRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "widget.nextUpgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next upgrade"
+          }
+        }
+      }
+    },
+    "widget.noCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in on the app and pick a character."
+          }
+        }
+      }
+    },
+    "widget.noGain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "—"
+          }
+        }
+      }
+    },
+    "widget.noGear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add the addon to see your upgrades."
+          }
+        }
+      }
+    },
+    "widget.noGuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No guild yet"
+          }
+        }
+      }
+    },
+    "widget.noGuildSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your raids show here once you are on a roster."
+          }
+        }
+      }
+    },
+    "widget.noRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned"
+          }
+        }
+      }
+    },
+    "widget.notSaved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not saved"
+          }
+        }
+      }
+    },
+    "widget.notSignedUp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed up"
+          }
+        }
+      }
+    },
+    "widget.now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting now"
+          }
+        }
+      }
+    },
+    "widget.ofSize": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "widget.openApp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app"
+          }
+        }
+      }
+    },
+    "widget.short.days": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldd"
+          }
+        }
+      }
+    },
+    "widget.short.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldh"
+          }
+        }
+      }
+    },
+    "widget.short.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldm"
+          }
+        }
+      }
+    },
+    "widget.signedOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to see your next raid."
+          }
+        }
+      }
+    },
+    "widget.signedUp": {
+      "comment": "Arguments: 1 n (int), 2 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld signed up"
+          }
+        }
+      }
+    },
+    "widget.signedUpLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "signed up"
+          }
+        }
+      }
+    },
+    "widget.updated": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$lld h ago"
+          }
+        }
+      }
+    },
+    "widget.upgrades": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrades · %1$@"
+          }
+        }
+      }
+    },
+    "widget.upgradesFooter": {
+      "comment": "Arguments: 1 upgrades (string), 2 total (string), 3 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · +%2$@ %3$@"
+          }
+        }
+      }
+    },
+    "widget.you": {
+      "comment": "Arguments: 1 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You: %1$@"
           }
         }
       }

@@ -1,0 +1,12 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "kind": "widget.refresh"
+    },
+    "android": {
+      "priority": "NORMAL",
+      "collapse_key": "widget.refresh"
+    }
+  }
+}

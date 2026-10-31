@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70658:rogue:night-elf:005320105/31530300001515231/002:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Combat Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -55,7 +55,7 @@ Point allocation runs deep into Combat to reach Adrenaline Rush at the bottom of
 
 ## Rotation and priority
 
-Open with Slice and Dice at three combo points, then spend combo points on Eviscerate at five: in this site's simulator, keeping Slice and Dice up the whole fight measured worse than putting those combo points into Eviscerate, so after the opener the simulated priority does not spend more points on it. Use Adrenaline Rush on cooldown as the burst window (Blade Flurry goes up alongside it whenever it is ready), and build with Backstab when a dagger is in your main hand: it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and a chance at a second combo point to it. In this site's simulator the Backstab version beat the Sinister Strike one by about 10%. With a sword or mace in the main hand Backstab cannot be cast, and Sinister Strike builds instead. There is no opener-specific sequencing beyond that in the current simulated priority, and the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affect the numbers behind each swing rather than the order abilities are used in. Poisons are your weapon imbues: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30. In this site's simulator that beat two Instants by a few percent in a raid and by about 10% at levels 30 to 50, and it beat the same two poisons the other way round.
+Open with Slice and Dice at three combo points, then spend combo points on Eviscerate at five: in this site's simulator, keeping Slice and Dice up the whole fight measured worse than putting those combo points into Eviscerate, so after the opener the simulated priority does not spend more points on it. Use Adrenaline Rush on cooldown as the burst window (Blade Flurry goes up alongside it whenever it is ready), and build with Backstab when a dagger is in your main hand: it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and a chance at a second combo point to it. In this site's simulator the Backstab version beat the Sinister Strike one by about 10%. With a sword or mace in the main hand Backstab cannot be cast, and Sinister Strike builds instead. There is no opener-specific sequencing beyond that in the current simulated priority, and the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affect the numbers behind each swing rather than the order abilities are used in. Poisons are your weapon imbues: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30. In this site's simulator that beat two Instants by a few percent in a raid and by about 10% at levels 30 to 50, and it beat the same two poisons the other way round. Thistle Tea goes in whenever energy is near empty: 100 Energy on a 5 minute cooldown.
 
 ## Stat priority
 

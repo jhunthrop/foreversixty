@@ -1093,9 +1093,9 @@ data class Item(
     @SerialName("icon_source") val iconSource: String,
     @SerialName("weapon_type") val weaponType: String? = null,
     @SerialName("superseded_by") val supersededBy: Int? = null,
-    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest); null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
+    /** Spec C6 (lane F2): ItemSparse Bonding as a word (1 pickup, 2 equip, 3 use, 4 quest), or classic-db's item_template.bonding for an item the client's ItemSparse lacks; null when 0 or unknown. Omitted until the data lane publishes it; draw no Binds line then. */
     @SerialName("bonding") val bonding: String? = null,
-    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word; null for a cloak, a neck, a ring, a trinket, a weapon or unknown. Omitted until published. */
+    /** Spec C6: Item SubclassID for ClassID 4 (armor) as a word (a cloak is cloth, as the client prints "Back ... Cloth"); null for a neck, a ring, a trinket, a weapon or unknown. Omitted until published; draw no armour word then. */
     @SerialName("armor_type") val armorType: String? = null,
     /** Spec C6: ItemSparse MinReputation as a standing word when MinFactionID is set, else null. Omitted until published. */
     @SerialName("min_standing") val minStanding: String? = null,
@@ -1142,6 +1142,22 @@ data class KeyDate(
     @SerialName("running") val running: String? = null,
     @SerialName("role") val role: String? = null,
     @SerialName("highlight") val highlight: Boolean? = null,
+)
+
+@Serializable
+data class LiveActivityRegistered(
+    /** What DELETE /v1/me/live-activities/{id} takes. */
+    @SerialName("id") val id: Long,
+)
+
+/** POST /v1/me/live-activities (W3-C13). push_token is the ActivityKit update token (hex) or the FCM registration token; push_to_start_token iOS only. object_id is the raid id or the server sim's id. */
+@Serializable
+data class LiveActivityRequest(
+    @SerialName("kind") val kind: String,
+    @SerialName("platform") val platform: String,
+    @SerialName("push_token") val pushToken: String,
+    @SerialName("push_to_start_token") val pushToStartToken: String? = null,
+    @SerialName("object_id") val objectId: String,
 )
 
 @Serializable
@@ -2169,4 +2185,104 @@ data class WeightsSpec(
     @SerialName("stats") val stats: List<String> = emptyList(),
     /** The stat normalised to exactly 1.0. It is required and must be one of stats: a reference that is not among the stats being weighed would normalise against a number nobody computed. The per-spec default is reference_stat on GET /v1/specs. */
     @SerialName("reference") val reference: String,
+)
+
+/** GET /v1/me/widget (W3-C12): the one snapshot every widget, lock-screen widget, Live Activity and ongoing notification draws from, so no two surfaces disagree. The apps keep it in their shared container (iOS App Group, Android DataStore). generated_at is to the minute; staleness (`Updated {n} h ago` past 12 hours) is measured from when the app last fetched it, a 304 included. */
+@Serializable
+data class Widget(
+    @SerialName("generated_at") val generatedAt: String,
+    /** null for an account with no characters. */
+    @SerialName("character") val character: WidgetCharacter? = null,
+    /** null when the character is on no guild's roster (`No guild yet`). */
+    @SerialName("guild") val guild: WidgetGuild? = null,
+    /** null when the guild has nothing planned (`No raid planned`). */
+    @SerialName("next_raid") val nextRaid: WidgetNextRaid? = null,
+    @SerialName("last_raid") val lastRaid: WidgetLastRaid? = null,
+    /** null while the Home answer (APP_API) is off. */
+    @SerialName("upgrades") val upgrades: WidgetUpgrades? = null,
+    @SerialName("live") val live: WidgetLive,
+)
+
+@Serializable
+data class WidgetCharacter(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    /** The primary tree; null when not known yet. */
+    @SerialName("spec_name") val specName: String? = null,
+)
+
+@Serializable
+data class WidgetGuild(
+    @SerialName("id") val id: Long,
+    @SerialName("name") val name: String,
+)
+
+@Serializable
+data class WidgetLastRaid(
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("starts_at") val startsAt: String,
+)
+
+@Serializable
+data class WidgetLive(
+    /** The caller's server runs queued or running. */
+    @SerialName("sim_runs_running") val simRunsRunning: Int,
+)
+
+@Serializable
+data class WidgetMine(
+    @SerialName("state") val state: String? = null,
+    /** The raid spec's name; null means the widget shows `Choose a spec`. */
+    @SerialName("spec") val spec: String? = null,
+    @SerialName("role") val role: String,
+)
+
+/** The next raid on the guild's calendar (the raids tab's list), cancelled ones included. pull_at is the raid's start; invite_at is null until raids carry an invite time. signed_up is In plus Late, the raid page's band count. */
+@Serializable
+data class WidgetNextRaid(
+    @SerialName("raid_id") val raidId: Long,
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("zone") val zone: String,
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("starts_at") val startsAt: String,
+    @SerialName("invite_at") val inviteAt: String? = null,
+    @SerialName("pull_at") val pullAt: String,
+    @SerialName("ends_at") val endsAt: String,
+    @SerialName("size") val size: Int? = null,
+    @SerialName("signed_up") val signedUp: Int,
+    @SerialName("status") val status: String,
+    @SerialName("my") val my: WidgetMine,
+    /** The character may answer In, Late or Out now: open, not ended, verified. */
+    @SerialName("can_sign_up") val canSignUp: Boolean,
+)
+
+@Serializable
+data class WidgetUpgradePick(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("icon") val icon: String,
+    @SerialName("item_level") val itemLevel: Int,
+)
+
+@Serializable
+data class WidgetUpgradeRow(
+    @SerialName("slot") val slot: String,
+    @SerialName("slot_label") val slotLabel: String,
+    @SerialName("pick") val pick: WidgetUpgradePick,
+    /** null: `Gain not modelled yet`, drawn as `—`. */
+    @SerialName("gain") val gain: Double? = null,
+)
+
+/** The Home answer's first three rows in its order, with the whole list's count and total. Any state but ok has no rows and a sentence the widget shows as is. */
+@Serializable
+data class WidgetUpgrades(
+    @SerialName("state") val state: String,
+    @SerialName("sentence") val sentence: String? = null,
+    @SerialName("count") val count: Int,
+    @SerialName("total_gain") val totalGain: Double? = null,
+    @SerialName("unit") val unit: String,
+    @SerialName("rows") val rows: List<WidgetUpgradeRow> = emptyList(),
 )

@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-10000000000000000 | main_hand:263937 ranged:263430 | 11.3 | 3 | spell:5019=96.5, spell:8092=17.6, spell:594=10.9 | {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-54200000000000000 | main_hand:890 ranged:5243 | 23.2 | 4 | spell:5019=95.0, spell:8102=12.8, spell:970=8.5, spell:2944=2.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:273040 ranged:5213 | 36.6 | 4 | spell:5019=82.4, spell:17311=28.3, spell:992=1.8, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:7714 ranged:13064 | 55.4 | 4 | spell:5019=70.8, spell:17312=25.6, spell:2767=2.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:7714 ranged:5216 | 74.1 | 5 | spell:5019=57.3, spell:17312=36.1, spell:2767=2.3, spell:19277=2.0, spell:15473=1.0 | {SpellID: 14751} |
-| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:812 ranged:249232 | 114.8 | 5 | spell:5019=48.3, spell:17313=31.8, spell:10893=3.0, spell:19278=2.0, spell:15473=1.0 | {SpellID: 14751} |
-| 60 | 524010031130000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 288.7 | 8 | spell:18807=50.5, spell:5019=31.5, spell:10894=6.0, spell:14751=1.5, spell:19280=1.5 | - |
+| 10 | 000000000000000000-00000000000000000-10000000000000000 | main_hand:263937 ranged:263430 | 10.9 | 3 | spell:5019=86.1, spell:8092=17.6, spell:594=11.2 | {SpellID: 14751}, {SpellID: 15473} |
+| 20 | 000000000000000000-00000000000000000-54200000000000000 | main_hand:890 ranged:5243 | 22.1 | 4 | spell:5019=86.1, spell:8102=11.5, spell:970=9.5, spell:2944=2.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
+| 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:273040 ranged:5213 | 35.7 | 5 | spell:5019=78.3, spell:17311=26.1, spell:8104=2.0, spell:992=1.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:7714 ranged:13064 | 53.4 | 5 | spell:5019=67.6, spell:17312=23.2, spell:8105=2.9, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:7714 ranged:5216 | 74.9 | 6 | spell:5019=55.3, spell:17312=30.5, spell:8106=3.8, spell:2767=2.3, spell:19277=1.9 | {SpellID: 14751} |
+| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:812 ranged:249232 | 115.9 | 6 | spell:5019=43.9, spell:17313=28.4, spell:10945=4.5, spell:10893=2.3, spell:19278=2.0 | {SpellID: 14751} |
+| 60 | 524010031130000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 263.8 | 8 | spell:18807=38.4, spell:5019=36.3, spell:10947=7.0, spell:10894=3.3, spell:19280=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -130,7 +130,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
-- Mind Blast (spell 8104)
 - Smite (spell 1004)
 - Starshards (spell 19299)
 
@@ -140,7 +139,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
-- Mind Blast (spell 8105)
 - Shadow Word: Death (spell 1309595)
 - Smite (spell 6060)
 - Starshards (spell 19302)
@@ -151,7 +149,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277326)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
-- Mind Blast (spell 8106)
 - Shadow Word: Death (spell 1309633)
 - Smite (spell 6060)
 - Starshards (spell 19302)
@@ -162,7 +159,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277327)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
-- Mind Blast (spell 10945)
 - Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)

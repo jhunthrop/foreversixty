@@ -55,7 +55,7 @@ struct TalentRulesTests {
     func sameBuildMatches() {
         let guide = TalentRules.rankByID(shaman, treeRanks: TalentRules.ranks(ofBand: TalentTestData.shamanGuide))
         let diff = TalentRules.compare(shaman, yours: guide, guide: guide)
-        #expect(diff == TalentDiff(diffCount: 0, missingCount: 0, differing: []))
+        #expect(diff == TalentDiff(diffCount: 0, missingCount: 0, extraCount: 0, differing: []))
         #expect(diff.status == .matches)
         #expect(TalentRules.pointsPerTree(shaman, ranks: guide) == [30, 3, 18])
     }
@@ -66,7 +66,30 @@ struct TalentRulesTests {
         let yours = TalentRules.rankByID(warrior, treeRanks: TalentRules.ranks(ofBand: TalentTestData.band50))
         let diff = TalentRules.compare(warrior, yours: yours, guide: guide)
         #expect(diff.diffCount == 0)
+        #expect(diff.extraCount == 0)
         #expect(diff.status == .toTake(10))
+    }
+
+    @Test("Level 58: 49 points holding the whole 41-point guide match, 8 beyond it")
+    func beyondTheGuideMatches() {
+        let guide = TalentRules.rankByID(warrior, treeRanks: TalentRules.ranks(ofBand: TalentTestData.band50))
+        let yours = TalentRules.rankByID(warrior, treeRanks: TalentTestData.yoursTrees)
+        let diff = TalentRules.compare(warrior, yours: yours, guide: guide)
+        #expect(diff.diffCount == 0)
+        #expect(diff.missingCount == 0)
+        #expect(diff.extraCount == 8)
+        #expect(diff.status == .matches)
+    }
+
+    @Test("Stray points differ only up to the guide's total: 10 stray − (46 − 41) = 5")
+    func strayCappedAtGuideTotal() {
+        let guide = TalentRules.rankByID(warrior, treeRanks: TalentRules.ranks(ofBand: TalentTestData.band50))
+        let yours = TalentRules.rankByID(warrior, treeRanks: TalentRules.ranks(ofBand: TalentTestData.strayAndShort))
+        let diff = TalentRules.compare(warrior, yours: yours, guide: guide)
+        #expect(diff.diffCount == 5)
+        #expect(diff.missingCount == 5)
+        #expect(diff.extraCount == 5)
+        #expect(diff.status == .differs(5))
     }
 
     @Test("Cells read maxed, filled, open and locked")

@@ -18,7 +18,7 @@ Verdict: `design/reviews/2026-10-31-mobile-talents/mock-player-verdict.md`. The 
 10. **Copy changes.** `talents.differ` and `home.next.talentsDiffer` now end `guide build.` (`... differ from the {band} guide build.`), as does `talents.toTake`; `talents.legend` gains the chip sentence.
 11. **Names in mixed case.** The sheet's talent name is `name` role (Barlow 700), not the uppercase condensed `sec`. The tree tabs were already mixed case.
 12. **Matches with unspent points.** The unspent line shows (a level 55 character who spent exactly the band 50 build's 41 points reads `Matches` and `5 points unspent.`).
-13. **Band strings are sized to the band's bottom level.** A band's string holds `band - 9` points (band 20: 11, 50: 41, 60: 51). **Decision: count as the planner does.** `BandCompare` runs `diffAgainstBand` on the band's whole string and the build's ranks with no level cut (`loadFromBandAtLevel` cuts only when loading). So a level 58 character (49 points) against the 41-point band 50 build reads `Differs` by at least their 8 extra points, on the site and in the app. Parity with the planner and "the count equals the drawn dashed cells" win; the app does not invent a second rule. To explain it, when `yourTotal > guideTotal` a `meta` line reads `talents.beyond`. A smarter rule (the points past the guide's length are free) is a change to `diffAgainstBand` plus both apps, to be ruled by the owner, and is flagged. No board for it; a unit test covers it.
+13. **Band strings are sized to the band's bottom level.** A band's string holds `band - 9` points (band 20: 11, 50: 41, 60: 51). **Ruled 2026-10-31: points beyond the guide's total are not differences**, on the site (`diffAgainstBand`) and in both apps (§4.4). A level 58 character (49 points) holding the whole 41-point band 50 build reads `Matches`, `Your build has every point of the {spec} 50 to 59 guide build.`, and a `meta` line `talents.beyond`: `+8 beyond the guide` (shown whenever `extraCount > 0`). Unit tests cover it on all three.
 14. **Elemental Mastery is 0 in the guide string.** That is the data's (the band's talent string), not a design choice, and is not ours to change; the accuracy reviewer owns it. The mock draws the data as shipped.
 
 ## 1. The one question and the first-screen answer
@@ -85,16 +85,18 @@ The brief proposed `bare`. **This spec uses the planner's rule instead**, becaus
 ### 4.4 The compare, on the device (`TalentCompare`)
 
 For every tree `i` and talent `j`, with `g` the guide rank and `y` your rank:
-- `diffCount += max(y - g, 0)` (your points where the guide spends fewer; the planner's `diffCount`);
+- `stray += max(y - g, 0)` (your points where the guide spends fewer);
 - `missingCount += max(g - y, 0)`;
 - the cell is **dashed** when `y != g`.
 
+Then (owner ruling 2026-10-31, the planner's `diffAgainstBand`): `extraCount = max(0, yourTotal - guideTotal)` and `diffCount = max(0, stray - extraCount)`. Points past the guide's own total are not differences; stray points differ only up to the guide's total.
+
 Status:
-- no dashed cell: `Matches`;
+- `missingCount == 0` (you hold every guide point): `Matches`, with `talents.matchBeyond` as the sentence when `extraCount > 0`;
 - else `diffCount > 0`: `Differs`, `{n}` is `diffCount`, `{m}` is your total (`talents.differ`);
 - else (your build is inside the guide's and only short of it): `Differs`, `{n}` is `missingCount` (`talents.toTake`), as the planner's `toTakeSuffix`.
 
-The count and the dashes come from the same pass over the same drawn ranks, so they cannot disagree (Revision 2 blocker 1). `Matches` and the dashes also agree: `Matches` is exactly "zero dashed cells". Note the count can be smaller than the number of dashed cells (the mock gives 2 points of count and 4 dashes); the legend says dashed means "rank differs", and the sentence says "points differ".
+The count and the dashes come from the same pass over the same drawn ranks (Revision 2 blocker 1). A `Matches` build with `extraCount > 0` keeps its dashed `+n` cells: they are the points beyond the guide, which the `talents.beyond` line counts. Note the count can be smaller than the number of dashed cells (the mock gives 2 points of count and 4 dashes); the legend says dashed means "rank differs", and the sentence says "points differ".
 
 **Test vector** (Elemental Shaman, level 60, Horde, band 60 raid). Guide `5510331300001350-030000000000000000-0533520000000000`; yours `5512311100001350-030000000000000000-0433520000000000`. Expected: `diffCount 2`, `missingCount 5`, 4 dashed cells (Reverberation `+2`, Call of Flame `−2`, Elemental Warding `−2` in Elemental; Tidal Focus `−1` in Restoration, so the Restoration tab carries a dot), totals 28, 3, 17 (= 48), unspent 3. With yours equal to the guide: 0, 0, no dashed cell, `Matches`, totals 30, 3, 18 (= 51), unspent 0.
 
@@ -156,7 +158,7 @@ Opens on `Your build` when Your build can be drawn (export present, not stale) a
 | State | Trigger | What draws |
 |---|---|---|
 | **Loading** | First open, the tree file not yet cached | Status block: a 72 x 22 and a 220 x 14 skeleton. Segments skeleton full width at their real height. Tabs: three 100 x 14. Tree: 14 skeleton cells (48 x 48, radius 8) in a fixed sparse pattern inside the reserved 476-tall region. `meta` `talents.loading` below (also the announcement). Footer drawn. Never a spinner. A refresh never replaces content with skeletons. Home prefetches the current character's talent file, so this is rare. |
-| **Matches** | No dashed cell | Status `Matches`; no legend dashes; `talents.tapHint`. |
+| **Matches** | Every guide point held (`missingCount == 0`) | Status `Matches`; no legend dashes; `talents.tapHint`. |
 | **Differs** | At least one dashed cell | Status `Differs` with `talents.differ` or `talents.toTake`; dashed cells on Your build; `talents.legend`. |
 | **Guide segment** | Guide build selected | Guide totals, no dashes, no gold; `talents.tapHint`. Status unchanged (it is about your build). |
 | **No export** | `build` or `build.talents` absent | Guide build only. No segments. Status: muted tag `Guide build` and `home.next.talentsNone`. If there is no guide either, show that line and `talents.noList` and no tree. |
@@ -245,7 +247,8 @@ New keys (add to `apps/shared/copy/en.json` under `talents.`):
 | `talents.tapHint` | `Tap a talent for its rank text.` |
 | `talents.toTake` | `{n} of the {band} guide build's points still to take.` (n int, band string) |
 | `talents.missing` | plural, one `The guide build takes 1 point you have not.`, other `The guide build takes {n} points you have not.` |
-| `talents.beyond` | `Level {l} is past the {band} guide build's {g} points, so points past it show as differing.` (l, g int notPlural; band string) |
+| `talents.beyond` | `+{n} beyond the guide` (n int notPlural) |
+| `talents.matchBeyond` | `Your build has every point of the {spec} {band} guide build.` |
 | `talents.requiresTree` | `Requires {n} points in {tree} Talents` (n int notPlural) |
 | `talents.requiresTalent` | `Requires {n} points in {talent}` (n int notPlural, at least 2) |
 | `talents.requiresTalentOne` | `Requires 1 point in {talent}` |
@@ -296,7 +299,7 @@ Review compares them with the `f6-*` boards side by side.
 
 - [ ] Reached only from Home's Talents row; never signed out; the stack pops on a 401.
 - [ ] Guide band chosen by `selectBand` (raid if present, else bare); under 20 is No build.
-- [ ] Count is `diffCount` (or `missingCount` in the `toTake` case); `Matches` iff zero dashed cells; totals summed from the drawn ranks.
+- [ ] Count is `diffCount` (or `missingCount` in the `toTake` case); `Matches` iff `missingCount == 0`; totals summed from the drawn ranks.
 - [ ] 4 columns, 48 icons, pitch `min(96, ...)`, fits 360 and 375; 7 tiers reserved.
 - [ ] Cells, badges, lines (with arrowheads) per 5.2; dashes and `+n`/`−n` chips on Your build only; no gold on Your build; a dot on every tab whose tree has a dashed cell.
 - [ ] Sheet: name, `Rank n/max`, current text, `Next rank`, guide line only on difference; never clips (7, points 1 to 5); the tapped cell stays visible above it.
