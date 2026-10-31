@@ -262,9 +262,9 @@
         "character_key": "us/pvp/grimtusk"
       },
       {
-        "name": "Bloodmaw",
+        "name": "Obnoxious Yell",
         "state": "approved",
-        "rank": "member",
+        "rank": "officer",
         "class": "warrior",
         "level": 60,
         "spec": "warrior-fury",
@@ -272,7 +272,7 @@
         "role": "dps",
         "spec_name": "Fury Warrior",
         "spec_icon": "ability_warrior_innerrage",
-        "character_key": "us/pvp/bloodmaw"
+        "character_key": "us/pvp/obnoxious-yell"
       },
       {
         "name": "Korrakh",
@@ -565,17 +565,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/kraggor",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -603,17 +603,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/mendara",
         "class": "priest",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -641,17 +641,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/draknar",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -679,17 +679,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/lightningbolltz",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -717,17 +717,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/rainspeaker",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -755,17 +755,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/skarn",
         "class": "rogue",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -793,17 +793,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/zekra",
         "class": "rogue",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -831,17 +831,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/morvane",
         "class": "warlock",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -869,17 +869,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/thokgar",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -907,17 +907,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/ursoka",
         "class": "druid",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -945,17 +945,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/hollowmere",
         "class": "priest",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -983,17 +983,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 4,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 4,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/sennari",
         "class": "priest",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1021,17 +1021,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/tidecaller",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1059,17 +1059,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/zuljak",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1097,17 +1097,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/ombrewood",
         "class": "druid",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1135,17 +1135,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 3,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 3,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/fernhoof",
         "class": "druid",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1173,17 +1173,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/vashkar",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1211,17 +1211,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/grimtusk",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1249,23 +1249,23 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 3,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 3,
           "nights": 8
         },
-        "character_key": "us/pvp/bloodmaw",
+        "character_key": "us/pvp/obnoxious-yell",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
         "may_remove": false,
-        "name": "Bloodmaw",
-        "rank": "member",
+        "name": "Obnoxious Yell",
+        "rank": "officer",
         "region": "us",
         "role": "dps",
         "ruleset": "pvp",
@@ -1287,17 +1287,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 2,
+          "present": 0,
           "nights": 8
         },
         "attendance_30": {
-          "present": 2,
+          "present": 0,
           "nights": 8
         },
         "character_key": "us/pvp/korrakh",
         "class": "warrior",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": null,
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1325,17 +1325,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/sliverfang",
         "class": "rogue",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1363,17 +1363,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/nightvex",
         "class": "rogue",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1401,17 +1401,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/pyrelle",
         "class": "mage",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1439,17 +1439,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/frostmaw",
         "class": "mage",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1477,17 +1477,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/embersong",
         "class": "mage",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1515,17 +1515,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 1,
+          "present": 0,
           "nights": 8
         },
         "attendance_30": {
-          "present": 1,
+          "present": 0,
           "nights": 8
         },
         "character_key": "us/pvp/quillara",
         "class": "mage",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": null,
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1553,17 +1553,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 7,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/hexmire",
         "class": "warlock",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1591,17 +1591,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 5,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/duskwhisper",
         "class": "warlock",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1629,17 +1629,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "attendance_30": {
-          "present": 8,
+          "present": 2,
           "nights": 8
         },
         "character_key": "us/pvp/arrowmane",
         "class": "hunter",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1667,17 +1667,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 6,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 6,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/talonstrike",
         "class": "hunter",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1705,17 +1705,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 4,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 4,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/grizzlepaw",
         "class": "hunter",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1743,17 +1743,17 @@
           "snapshot_at": "2026-12-17T03:11:00Z"
         },
         "attendance": {
-          "present": 3,
+          "present": 1,
           "nights": 8
         },
         "attendance_30": {
-          "present": 3,
+          "present": 1,
           "nights": 8
         },
         "character_key": "us/pvp/stormhide",
         "class": "shaman",
         "consent": "gear",
-        "last_report_at": "2026-12-17T05:02:00Z",
+        "last_report_at": "2026-12-19T03:28:00Z",
         "logged_at": "2026-12-17T03:10:00Z",
         "logged_recently": true,
         "may_approve": false,
@@ -1856,8 +1856,8 @@
       "updated_at": "2026-12-15T05:11:00Z"
     },
     "viewer": {
-      "role": "member",
-      "character_key": "us/pvp/lightningbolltz",
+      "role": "officer",
+      "character_key": "us/pvp/obnoxious-yell",
       "verified": true,
       "officer_tools": false,
       "raid_guild_tools": false,

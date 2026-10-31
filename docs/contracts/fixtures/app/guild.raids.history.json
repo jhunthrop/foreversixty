@@ -77,13 +77,18 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/kraggor",
-            "name": "Kraggor",
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
             "class": "warrior"
           },
           {
@@ -92,39 +97,34 @@
             "class": "priest"
           },
           {
-            "character_key": "us/pvp/draknar",
-            "name": "Draknar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/rainspeaker",
-            "name": "Rainspeaker",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/skarn",
-            "name": "Skarn",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
-          },
-          {
             "character_key": "us/pvp/morvane",
             "name": "Morvane",
             "class": "warlock"
           },
           {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/ursoka",
-            "name": "Ursoka",
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
             "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
           }
         ],
         "raid_id": null
@@ -204,28 +204,28 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/rainspeaker",
-            "name": "Rainspeaker",
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
             "class": "shaman"
           },
           {
-            "character_key": "us/pvp/skarn",
-            "name": "Skarn",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/morvane",
-            "name": "Morvane",
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
             "class": "warlock"
           },
           {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
             "class": "warrior"
           }
         ],
@@ -297,14 +297,9 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/morvane",
-            "name": "Morvane",
-            "class": "warlock"
-          },
-          {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
-            "class": "warrior"
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
           },
           {
             "character_key": "us/pvp/ursoka",
@@ -312,39 +307,44 @@
             "class": "druid"
           },
           {
-            "character_key": "us/pvp/hollowmere",
-            "name": "Hollowmere",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/sennari",
-            "name": "Sennari",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/tidecaller",
-            "name": "Tidecaller",
-            "class": "shaman"
-          },
-          {
             "character_key": "us/pvp/zuljak",
             "name": "Zul'jak",
             "class": "shaman"
           },
           {
-            "character_key": "us/pvp/ombrewood",
-            "name": "Ombrewood",
-            "class": "druid"
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
           },
           {
-            "character_key": "us/pvp/fernhoof",
-            "name": "Fernhoof",
-            "class": "druid"
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
           },
           {
             "character_key": "us/pvp/vashkar",
             "name": "Vashkar",
             "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
           }
         ],
         "raid_id": null
@@ -424,14 +424,14 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/hollowmere",
-            "name": "Hollowmere",
-            "class": "priest"
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
           },
           {
             "character_key": "us/pvp/sennari",
@@ -439,14 +439,14 @@
             "class": "priest"
           },
           {
-            "character_key": "us/pvp/tidecaller",
-            "name": "Tidecaller",
-            "class": "shaman"
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
           },
           {
-            "character_key": "us/pvp/zuljak",
-            "name": "Zul'jak",
-            "class": "shaman"
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
           }
         ],
         "raid_id": null
@@ -535,24 +535,24 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/zuljak",
-            "name": "Zul'jak",
-            "class": "shaman"
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/ombrewood",
-            "name": "Ombrewood",
-            "class": "druid"
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/fernhoof",
-            "name": "Fernhoof",
-            "class": "druid"
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
           },
           {
-            "character_key": "us/pvp/vashkar",
-            "name": "Vashkar",
-            "class": "shaman"
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
           },
           {
             "character_key": "us/pvp/grimtusk",
@@ -628,44 +628,14 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/vashkar",
-            "name": "Vashkar",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/grimtusk",
-            "name": "Grimtusk",
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/bloodmaw",
-            "name": "Bloodmaw",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/korrakh",
-            "name": "Korrakh",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/sliverfang",
-            "name": "Sliverfang",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/nightvex",
-            "name": "Nightvex",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/pyrelle",
-            "name": "Pyrelle",
-            "class": "mage"
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
           },
           {
             "character_key": "us/pvp/frostmaw",
@@ -673,8 +643,38 @@
             "class": "mage"
           },
           {
-            "character_key": "us/pvp/embersong",
-            "name": "Embersong",
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/shadeleaf",
+            "name": "Shadeleaf",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/stormhide",
+            "name": "Stormhide",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
             "class": "mage"
           }
         ],
@@ -755,29 +755,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/korrakh",
-            "name": "Korrakh",
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/gruzz",
+            "name": "Gruzz",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/sliverfang",
-            "name": "Sliverfang",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/nightvex",
-            "name": "Nightvex",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/pyrelle",
-            "name": "Pyrelle",
-            "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/frostmaw",
-            "name": "Frostmaw",
-            "class": "mage"
+            "character_key": "us/pvp/fernhoof",
+            "name": "Fernhoof",
+            "class": "druid"
           }
         ],
         "raid_id": null
@@ -857,29 +857,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/pyrelle",
-            "name": "Pyrelle",
-            "class": "mage"
+            "character_key": "us/pvp/brokkar",
+            "name": "Brokkar",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/frostmaw",
-            "name": "Frostmaw",
-            "class": "mage"
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
           },
           {
             "character_key": "us/pvp/embersong",
             "name": "Embersong",
             "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/quillara",
-            "name": "Quillara",
-            "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/hexmire",
-            "name": "Hexmire",
-            "class": "warlock"
           }
         ],
         "raid_id": null
@@ -959,29 +959,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/quillara",
-            "name": "Quillara",
-            "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/hexmire",
-            "name": "Hexmire",
-            "class": "warlock"
-          },
-          {
-            "character_key": "us/pvp/duskwhisper",
-            "name": "Duskwhisper",
-            "class": "warlock"
-          },
-          {
-            "character_key": "us/pvp/arrowmane",
-            "name": "Arrowmane",
-            "class": "hunter"
-          },
-          {
             "character_key": "us/pvp/talonstrike",
             "name": "Talonstrike",
             "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
           }
         ],
         "raid_id": null
@@ -1034,58 +1034,23 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/arrowmane",
-            "name": "Arrowmane",
-            "class": "hunter"
-          },
-          {
-            "character_key": "us/pvp/talonstrike",
-            "name": "Talonstrike",
-            "class": "hunter"
-          },
-          {
-            "character_key": "us/pvp/grizzlepaw",
-            "name": "Grizzlepaw",
-            "class": "hunter"
-          },
-          {
-            "character_key": "us/pvp/stormhide",
-            "name": "Stormhide",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/voidsong",
-            "name": "Voidsong",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/moonveil",
-            "name": "Moonveil",
-            "class": "druid"
-          },
-          {
-            "character_key": "us/pvp/gruzz",
-            "name": "Gruzz",
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/shadeleaf",
-            "name": "Shadeleaf",
-            "class": "priest"
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/tazzlo",
-            "name": "Tazzlo",
-            "class": "mage"
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
           },
           {
-            "character_key": "us/pvp/brokkar",
-            "name": "Brokkar",
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
             "class": "warrior"
           },
           {
@@ -1094,43 +1059,18 @@
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/mendara",
-            "name": "Mendara",
-            "class": "priest"
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
           },
           {
-            "character_key": "us/pvp/draknar",
-            "name": "Draknar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/rainspeaker",
-            "name": "Rainspeaker",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/skarn",
-            "name": "Skarn",
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
             "class": "rogue"
           },
           {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/morvane",
-            "name": "Morvane",
-            "class": "warlock"
-          },
-          {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/ursoka",
-            "name": "Ursoka",
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
             "class": "druid"
           },
           {
@@ -1139,64 +1079,14 @@
             "class": "priest"
           },
           {
-            "character_key": "us/pvp/sennari",
-            "name": "Sennari",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/tidecaller",
-            "name": "Tidecaller",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/zuljak",
-            "name": "Zul'jak",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/ombrewood",
-            "name": "Ombrewood",
-            "class": "druid"
-          },
-          {
-            "character_key": "us/pvp/fernhoof",
-            "name": "Fernhoof",
-            "class": "druid"
-          },
-          {
-            "character_key": "us/pvp/vashkar",
-            "name": "Vashkar",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/grimtusk",
-            "name": "Grimtusk",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/bloodmaw",
-            "name": "Bloodmaw",
-            "class": "warrior"
-          },
-          {
             "character_key": "us/pvp/korrakh",
             "name": "Korrakh",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/sliverfang",
-            "name": "Sliverfang",
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
             "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/nightvex",
-            "name": "Nightvex",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/pyrelle",
-            "name": "Pyrelle",
-            "class": "mage"
           },
           {
             "character_key": "us/pvp/frostmaw",
@@ -1204,14 +1094,9 @@
             "class": "mage"
           },
           {
-            "character_key": "us/pvp/embersong",
-            "name": "Embersong",
-            "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/quillara",
-            "name": "Quillara",
-            "class": "mage"
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
           },
           {
             "character_key": "us/pvp/hexmire",
@@ -1219,9 +1104,124 @@
             "class": "warlock"
           },
           {
-            "character_key": "us/pvp/duskwhisper",
-            "name": "Duskwhisper",
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/sennari",
+            "name": "Sennari",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
             "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/quillara",
+            "name": "Quillara",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/brokkar",
+            "name": "Brokkar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/gruzz",
+            "name": "Gruzz",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/fernhoof",
+            "name": "Fernhoof",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/shadeleaf",
+            "name": "Shadeleaf",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/stormhide",
+            "name": "Stormhide",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/moonveil",
+            "name": "Moonveil",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/voidsong",
+            "name": "Voidsong",
+            "class": "priest"
           }
         ],
         "raid_id": 29
@@ -1301,29 +1301,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/stormhide",
-            "name": "Stormhide",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/voidsong",
-            "name": "Voidsong",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/moonveil",
-            "name": "Moonveil",
-            "class": "druid"
-          },
-          {
-            "character_key": "us/pvp/gruzz",
-            "name": "Gruzz",
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/shadeleaf",
-            "name": "Shadeleaf",
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
             "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
           }
         ],
         "raid_id": null
@@ -1412,44 +1412,24 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/gruzz",
-            "name": "Gruzz",
-            "class": "warrior"
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
           },
           {
-            "character_key": "us/pvp/shadeleaf",
-            "name": "Shadeleaf",
-            "class": "priest"
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
           },
           {
-            "character_key": "us/pvp/tazzlo",
-            "name": "Tazzlo",
-            "class": "mage"
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
           },
           {
-            "character_key": "us/pvp/brokkar",
-            "name": "Brokkar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/kraggor",
-            "name": "Kraggor",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/mendara",
-            "name": "Mendara",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/draknar",
-            "name": "Draknar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/rainspeaker",
-            "name": "Rainspeaker",
-            "class": "shaman"
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
           },
           {
             "character_key": "us/pvp/skarn",
@@ -1457,9 +1437,29 @@
             "class": "rogue"
           },
           {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
           }
         ],
         "raid_id": null
@@ -1539,29 +1539,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/brokkar",
-            "name": "Brokkar",
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/kraggor",
-            "name": "Kraggor",
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
             "class": "warrior"
           },
           {
-            "character_key": "us/pvp/mendara",
-            "name": "Mendara",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/draknar",
-            "name": "Draknar",
-            "class": "warrior"
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
           }
         ],
         "raid_id": null
@@ -1641,24 +1641,14 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/draknar",
-            "name": "Draknar",
-            "class": "warrior"
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
           },
           {
-            "character_key": "us/pvp/rainspeaker",
-            "name": "Rainspeaker",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/skarn",
-            "name": "Skarn",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
           },
           {
             "character_key": "us/pvp/morvane",
@@ -1666,28 +1656,38 @@
             "class": "warlock"
           },
           {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/ursoka",
-            "name": "Ursoka",
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
             "class": "druid"
           },
           {
-            "character_key": "us/pvp/hollowmere",
-            "name": "Hollowmere",
-            "class": "priest"
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
           },
           {
-            "character_key": "us/pvp/sennari",
-            "name": "Sennari",
-            "class": "priest"
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/tidecaller",
-            "name": "Tidecaller",
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
             "class": "shaman"
           }
         ],
@@ -1768,29 +1768,29 @@
         ],
         "present": [
           {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
             "character_key": "us/pvp/lightningbolltz",
             "name": "Lightningbolltz",
             "class": "shaman"
           },
           {
-            "character_key": "us/pvp/zekra",
-            "name": "Zekra",
-            "class": "rogue"
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
           },
           {
-            "character_key": "us/pvp/morvane",
-            "name": "Morvane",
-            "class": "warlock"
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
           },
           {
-            "character_key": "us/pvp/thokgar",
-            "name": "Thokgar",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/ursoka",
-            "name": "Ursoka",
-            "class": "druid"
+            "character_key": "us/pvp/sennari",
+            "name": "Sennari",
+            "class": "priest"
           }
         ],
         "raid_id": null
@@ -1879,28 +1879,28 @@
         ],
         "present": [
           {
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
             "character_key": "us/pvp/ursoka",
             "name": "Ursoka",
             "class": "druid"
           },
           {
-            "character_key": "us/pvp/hollowmere",
-            "name": "Hollowmere",
-            "class": "priest"
-          },
-          {
-            "character_key": "us/pvp/sennari",
-            "name": "Sennari",
-            "class": "priest"
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
           },
           {
             "character_key": "us/pvp/tidecaller",
             "name": "Tidecaller",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/zuljak",
-            "name": "Zul'jak",
             "class": "shaman"
           }
         ],
@@ -1981,19 +1981,24 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
-            "class": "shaman"
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
           },
           {
-            "character_key": "us/pvp/tidecaller",
-            "name": "Tidecaller",
-            "class": "shaman"
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
           },
           {
-            "character_key": "us/pvp/zuljak",
-            "name": "Zul'jak",
-            "class": "shaman"
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
           },
           {
             "character_key": "us/pvp/ombrewood",
@@ -2001,9 +2006,19 @@
             "class": "druid"
           },
           {
-            "character_key": "us/pvp/fernhoof",
-            "name": "Fernhoof",
-            "class": "druid"
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
           },
           {
             "character_key": "us/pvp/vashkar",
@@ -2014,21 +2029,6 @@
             "character_key": "us/pvp/grimtusk",
             "name": "Grimtusk",
             "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/bloodmaw",
-            "name": "Bloodmaw",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/korrakh",
-            "name": "Korrakh",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/sliverfang",
-            "name": "Sliverfang",
-            "class": "rogue"
           }
         ],
         "raid_id": null
@@ -2108,29 +2108,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/fernhoof",
-            "name": "Fernhoof",
-            "class": "druid"
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
           },
           {
-            "character_key": "us/pvp/vashkar",
-            "name": "Vashkar",
-            "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/grimtusk",
-            "name": "Grimtusk",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/bloodmaw",
-            "name": "Bloodmaw",
-            "class": "warrior"
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
           },
           {
             "character_key": "us/pvp/korrakh",
             "name": "Korrakh",
             "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
           }
         ],
         "raid_id": null
@@ -2210,29 +2210,29 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/lightningbolltz",
-            "name": "Lightningbolltz",
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
             "class": "shaman"
-          },
-          {
-            "character_key": "us/pvp/bloodmaw",
-            "name": "Bloodmaw",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/korrakh",
-            "name": "Korrakh",
-            "class": "warrior"
-          },
-          {
-            "character_key": "us/pvp/sliverfang",
-            "name": "Sliverfang",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/nightvex",
-            "name": "Nightvex",
-            "class": "rogue"
           }
         ],
         "raid_id": null
@@ -2321,28 +2321,28 @@
         ],
         "present": [
           {
-            "character_key": "us/pvp/nightvex",
-            "name": "Nightvex",
-            "class": "rogue"
-          },
-          {
-            "character_key": "us/pvp/pyrelle",
-            "name": "Pyrelle",
-            "class": "mage"
-          },
-          {
-            "character_key": "us/pvp/frostmaw",
-            "name": "Frostmaw",
-            "class": "mage"
-          },
-          {
             "character_key": "us/pvp/embersong",
             "name": "Embersong",
             "class": "mage"
           },
           {
-            "character_key": "us/pvp/quillara",
-            "name": "Quillara",
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
             "class": "mage"
           }
         ],

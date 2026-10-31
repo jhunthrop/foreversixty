@@ -32,3 +32,24 @@ Verdict: HOLD. Seen: iOS roster-all, history-page1, calendar-on, f16.6-event, ra
 - Boss lists and counts are right for the Blackrock Spire (upper and lower) and Blackrock Depths nights.
 
 Written to /Users/jh/code/forever/.claude/worktrees/mobile-guild-extras/design/reviews/2026-10-31-mobile-wave3-guild/player-verdict-build.md
+
+---
+
+# Round 2 (all 48 iOS and 52 Android captures opened; fixtures re-checked)
+
+Verdict: HOLD. Round-1 MUSTs 1 to 4, 6 and 7 are fixed. Round-1 MUST 5 is fixed on dates, lockout and roster size (Onyxia Wed 9 and Mon 14 Dec, 37 and 38 raiders). Spec icons draw, the switch has a knob, 38 matches everywhere, "8 of 8 nights" has a unit, pvp ruleset, rank ties in name order. Both platforms now match.
+
+## MUST
+1. Attendance contradicts the history it is built from. The footer says "Attendance is the last 8 raid nights with a log" (ios/f16.1-roster-all.png, android/f16.1-roster-foot.png). In the fixtures, Kraggor and Mendara read "8 of 8" but appear in 1 of the last 8 logged nights. Draknar reads "7 of 8" and appears in 1. Voidsong and Moonveil (Waiting) read "0 of 8 nights" yet both are in the Mon 14 Dec Onyxia log. The history is mostly 5- and 10-player dungeon groups, so nobody could be at 8 of 8. Make attendance count the same nights the history shows, or count raids only.
+2. The player's own character is not in the guild. The Raids tab (ios/f16.7-raids-tab.png, android/f16.7-raids-tab.png) shows "Obnoxious Yell, Fury · DPS", level 58, signed up In. Obnoxious Yell is not among the 38 on the roster. The roster's own viewer is Lightningbolltz. "YOU WERE THERE" on the history rows (android/f16.3-history-page1.png) cannot be him. A raider looks for himself first and finds nobody. Put him on the roster, or use Lightningbolltz everywhere.
+3. The calendar does not match the raids list. calendar.ics has Onyxia on Sat 19 Dec and a second Onyxia on Thu 24 Dec, 0 of 40 signed up. The Raids tab "ALSO PLANNED" shows Barrow Deeps on Tue 22 Dec and Onyxia on Sat 26 Dec at 8/40, Locked. The event in ios/f16.6-event.png is right, but the feed behind "Add to Calendar" disagrees with the Raids tab. The feed has no Barrow Deeps at all, and the Sat 26 Dec Onyxia is missing from it.
+
+## SHOULD
+1. ios/f16.7-raids-tab-xl.png: the Roster row icon overlaps "38 on the roster · attendance". The guild name touches the left edge. ios/you-calendar-row-xl.png has the Privacy and Terms rows squeezed together.
+2. ios/f16.7-raids-tab-app.png reads "Invites in 49 days 4 h" while the golden captures read "2 days 2 h". Take the live capture on the fixture clock.
+3. "Sat 26 Dec ... 8/40 LOCKED" is a week out. Locked that early looks like a bug. Barrow Deeps reads "11 signed up" with no "of N".
+4. Still ask for "Onyxia's Lair (In)" over "Onyxia's Lair · In", since "In" alone reads oddly in a calendar. This is a taste call you can overrule on the spec.
+5. Raid history is 23 nights in 10 days, mostly five-player runs, and Wed 9 Dec has a Blackrock Depths run starting at 1:58 pm. No guild logs this many dungeon nights. Limit the history to Onyxia and Upper Blackrock Spire, or label the page "Logged runs".
+6. Android shows no "Raid nights" section on the Raids tab at the first screen. I did not check below the fold.
+
+Barrow Deeps and Hyjal are accepted as Forever's own raids. Boss lists, sizes and spec names are right.

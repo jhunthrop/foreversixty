@@ -1,3 +1,32 @@
+# F16 Guild extras, build review (round 2, 2026-10-31)
+
+Verdict: HOLD on one MUST that is a one-image re-capture; every other round-1 MUST is closed. SHIP when MUST 1 is fixed. No further full review is needed.
+
+## MUST
+1. iOS, `f16.7-raids-tab-app.png`: Next raid shows `Invites in 49 days 4 h`. The board and Android (`android/f16.7-raids-tab.png`) show `in 2 days 2 h`. The iOS fixture clock is not frozen. Confirm it is the clock and not a countdown bug, freeze it, and re-capture.
+
+## SHOULD
+1. iOS, `f16.4-calendar-on-xl.png`: the Which raids and Alert chevrons are still 4 pt dots, and `1 hour before invites` still wraps under its label. Scale the chevron with the text and keep the value on one line or wrap it under the label.
+2. iOS, `f16.3-history-page1-xl.png`: the `YOU WERE THERE` tag stays at default size while the meta around it scales. Scale it with the row.
+3. Android, `f16.4-reset-alert.png`: about 30 pt of dead space under the buttons. Tighten the dialog.
+4. Android F16.6 and iOS F16.6 re-capture are accepted as noted (Google account needed; data unchanged).
+
+## Round-1 items closed (verified on the new captures)
+- Date block at largest text now fits and stacks above the text (`ios/f16.3-history-page1-xl.png`).
+- The switch knob draws in both states (`ios/f16.4-calendar-on-app.png`); Reset link matches Copy link height.
+- Guild head and Roster row both say 38 on both platforms; the faction crest replaces the shield and the star.
+- Real spec icons with the crest fallback (`ios/f16.1-roster-app.png`).
+- Condensed-caps titles on iOS Roster, Raid history and Calendar.
+- Search button trailing on iOS; chips have no stray edge lines.
+- Same order within a rank on both platforms (Kraggor, Draknar, Mendara, Thokgar).
+- `{n} of 8 nights` reads cleanly; mono gaps are gone.
+- History is 9-18 Dec, coherent with the Raids tab; iOS sort menu (`ios/f16.1-sort-menu.png`) and tab-bar captures supplied.
+- Android XL: the Sort chip wraps under the row; no clipping (`android/f16.1-roster-all-xl.png`).
+
+---
+
+# Round 1 (superseded where marked above)
+
 # F16 Guild extras, build review on captures (2026-10-31)
 
 Verdict: HOLD. Spec copy is exact on both platforms and Android is close to the board. iOS has one layout break at largest text, one accuracy contradiction, and states that cannot be judged.

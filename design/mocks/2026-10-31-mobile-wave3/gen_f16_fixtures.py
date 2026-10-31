@@ -1,6 +1,6 @@
 """Writes the F16 fixtures: guild.home.roster, guild.raids.history, guild.raids.history-2,
 and adds the W3-C16 fields to guild.home. Invented people; real zone sizes and bosses."""
-import base64, copy, hashlib, json, sys
+import base64, collections, copy, hashlib, json, sys
 from datetime import datetime, timedelta, timezone
 
 ROOT = sys.argv[1]
@@ -64,7 +64,7 @@ PEOPLE = [
     ("Fernhoof", "druid-restoration", 59, "member", 3, "approved", False),
     ("Vashkar", "shaman-restoration", 60, "member", 5, "approved", False),
     ("Grimtusk", "warrior-fury", 60, "member", 8, "approved", False),
-    ("Bloodmaw", "warrior-fury", 60, "member", 6, "approved", False),
+    ("Obnoxious Yell", "warrior-fury", 60, "officer", 8, "approved", False),
     ("Korrakh", "warrior-arms", 60, "member", 2, "approved", False),
     ("Sliverfang", "rogue-combat", 60, "member", 7, "approved", False),
     ("Nightvex", "rogue-combat", 60, "member", 8, "approved", False),
@@ -89,7 +89,7 @@ NIGHTS = 8
 
 
 def slug(name):
-    return name.lower().replace("'", "")
+    return name.lower().replace("'", "").replace(" ", "-")
 
 
 def spec_words(key):
@@ -107,9 +107,9 @@ def roster_row(base, p, idx):
         "account_key": f"u:{1800 + idx}", "character_key": ck, "class": key.split("-")[0],
         "name": name, "rank": rank, "role": role, "spec": sname, "spec_name": full, "spec_icon": icon,
         "supporter": supporter, "verified": state == "approved", "may_approve": False,
-        "may_remove": False, "attendance": {"present": present, "nights": NIGHTS},
-        "attendance_30": {"present": present, "nights": NIGHTS},
-        "region": "us", "ruleset": "pvp", "logged_at": "2026-12-17T03:10:00Z", "last_report_at": "2026-12-17T05:02:00Z" if present else None,
+        "may_remove": False, "attendance": {"present": ATTENDANCE[ck], "nights": NIGHTS},
+        "attendance_30": {"present": ATTENDANCE[ck], "nights": NIGHTS},
+        "region": "us", "ruleset": "pvp", "logged_at": "2026-12-17T03:10:00Z", "last_report_at": "2026-12-19T03:28:00Z" if ATTENDANCE[ck] else None,
         "item_level": 58 + (idx * 7) % 9,
     })
     row["addon"] = {"level": level, "spec": key, "gear_gap": idx % 5, "build": None,
@@ -164,7 +164,7 @@ def write_home():
     d["members"] = [member(p) for p in PEOPLE]
     d["counts"] = {"on_roster": len(PEOPLE), "in_game_no_account": sum(p[5] == "no_account" for p in PEOPLE),
                    "waiting": sum(p[5] == "waiting" for p in PEOPLE), "not_seen": 0}
-    d["viewer"] = {"role": "member", "character_key": "us/pvp/lightningbolltz", "verified": True,
+    d["viewer"] = {"role": "officer", "character_key": ME, "verified": True,
                    "officer_tools": False, "raid_guild_tools": False, "verify": {"has_approver": True}}
     d["addon_snapshot"]["by_character"] = "us/pvp/kraggor"
     d["addon_snapshot"]["members"] = len(PEOPLE)
@@ -188,7 +188,22 @@ BRD = [("Lord Roccor", 228), ("Ring of Law", 230), ("General Angerforge", 236),
        ("Golem Lord Argelmach", 237), ("Ambassador Flamelash", 242), ("Emperor Dagran Thaurissan", 245)]
 
 ROSTER_KEYS = [(f"us/pvp/{slug(p[0])}", p[0], p[1].split("-")[0]) for p in PEOPLE]
-ME = "us/pvp/lightningbolltz"
+# The viewer is me.json's account: Obnoxious Yell (and Yellfury, not in this guild).
+ME = "us/pvp/obnoxious-yell"
+# How often each person turns up, from PEOPLE's intended present-of-8 (in-game-only names a 3).
+WEIGHT = {f"us/pvp/{slug(p[0])}": (p[4] if p[4] is not None else 3) for p in PEOPLE}
+USED = collections.Counter()
+# Attendance is the API's: presence in the guild's last 8 logged nights (the newest 8 rows).
+ATTENDANCE = {}
+
+
+def pick(raiders, me, i):
+    """The night's raiders: the most regular people first, spread so nobody plays every run."""
+    keys = [k for k, _, _ in ROSTER_KEYS if k != ME]
+    keys.sort(key=lambda k: (-(WEIGHT[k] + 1) / (USED[k] + 1), hashlib.sha1(f"{k}{i}".encode()).hexdigest()))
+    chosen = ([ME] if me else []) + keys[: raiders - (1 if me else 0)]
+    USED.update(chosen)
+    return chosen
 
 # (local start, zone, bosses, size, raiders, wipes on the last boss, minutes, me)
 # Raids open Wed 9 Dec 2026; every night is on or after it and before the next planned raid
@@ -244,11 +259,8 @@ def night_row(i, plan):
             fights.append({"index": idx, "name": name, "encounter_id": enc, "kill": kill,
                            "duration_ms": dur, "deaths": d, "players": players})
             idx += 2  # trash between pulls takes the other indexes
-    pool = [r for r in ROSTER_KEYS if r[0] != ME]
-    take = raiders - (1 if me else 0)
-    present = [pool[(i * 3 + k) % len(pool)] for k in range(take)]
-    if me:
-        present.insert(0, next(r for r in ROSTER_KEYS if r[0] == ME))
+    by_key = {r[0]: r for r in ROSTER_KEYS}
+    present = [by_key[k] for k in pick(raiders, me, i)]
     present = [{"character_key": k, "name": n, "class": c} for k, n, c in dict.fromkeys(present)]
     assert len(present) == raiders, (date, len(present))
     rid = base64.b32encode(hashlib.sha1(f"{date}{zone}".encode()).digest()).decode().lower()[:12]
@@ -265,9 +277,16 @@ def night_row(i, plan):
     }
 
 
-def write_history():
-    base = load("guild.raids")
+def history_rows():
     rows = [night_row(i, p) for i, p in enumerate(NIGHTS_PLAN)]
+    for p in PEOPLE:
+        key = f"us/pvp/{slug(p[0])}"
+        ATTENDANCE[key] = sum(any(c["character_key"] == key for c in r["present"]) for r in rows[:NIGHTS])
+    return rows
+
+
+def write_history(rows):
+    base = load("guild.raids")
     for r in rows:
         assert r["created_at"] >= "2026-12-09T06:00:00Z", r
         assert all(f["players"] <= r["raiders"] for f in r["fights"]), r
@@ -280,6 +299,11 @@ def write_history():
     ony9.update(raid_id=28)
     raids = load("guild.raids")
     raids["data"]["rows"] = [copy.deepcopy(ony14)]
+    # The second Onyxia a week out is still open, not locked, with a believable count.
+    for planned in raids["data"]["planned"]:
+        if planned["id"] == 33:
+            planned["status"] = "planned"
+            planned["counts"] = {"in": 17, "late": 2, "bench": 0, "out": 2, "tanks": 2, "healers": 4, "dps": 11}
     dump("guild.raids", raids)
     for name in ("guild.home", "guild.home.roster"):
         home = load(name)
@@ -310,7 +334,8 @@ def write_me():
     dump("me", me)
 
 
+rows = history_rows()
 write_home()
-write_history()
+write_history(rows)
 write_me()
 print("ok")

@@ -203,17 +203,18 @@ func TestCalendarRouteIsRedactedInTheLogs(t *testing.T) {
 // RenderCalendar is held to the golden feed in the contract fixtures, the one the docs show.
 func TestRenderCalendarGolden(t *testing.T) {
 	stamp := time.Date(2026, 12, 15, 3, 0, 0, 0, time.UTC)
+	// The Raids tab's planned raids (fixture guild.raids): what the same player's link shows.
+	guild := Guild{Region: "us", Ruleset: "pvp", Name: "OLYMPUS XXVII"}
+	raid := func(id int64, zone string, start time.Time, signed int, state string) CalendarRaid {
+		return CalendarRaid{
+			Raid:  Raid{ID: id, Zone: zone, Title: "Onyxia, alts; bring resists", StartsAt: start, DurationMinutes: 180, Status: RaidPlanned, UpdatedAt: stamp},
+			Guild: guild, Timezone: "America/Chicago", SignedUp: signed, State: state,
+		}
+	}
 	raids := []CalendarRaid{
-		{
-			Raid: Raid{ID: 31, Zone: raidZoneOny, Title: "Onyxia's Lair", StartsAt: time.Date(2026, 12, 20, 1, 0, 0, 0, time.UTC),
-				DurationMinutes: 180, Status: RaidPlanned, UpdatedAt: stamp},
-			Guild: Guild{Region: "us", Ruleset: "pvp", Name: "OLYMPUS XXVII"}, Timezone: "America/Chicago", SignedUp: 24, State: "in",
-		},
-		{
-			Raid: Raid{ID: 32, Zone: raidZoneOny, Title: "Onyxia, alts; bring resists", StartsAt: time.Date(2026, 12, 25, 1, 0, 0, 0, time.UTC),
-				DurationMinutes: 150, Status: RaidPlanned, UpdatedAt: stamp},
-			Guild: Guild{Region: "us", Ruleset: "pvp", Name: "OLYMPUS XXVII"}, Timezone: "America/Chicago", SignedUp: 0,
-		},
+		raid(31, raidZoneOny, time.Date(2026, 12, 20, 1, 0, 0, 0, time.UTC), 24, "in"),
+		raid(32, "raid:barrow-deeps", time.Date(2026, 12, 23, 1, 0, 0, 0, time.UTC), 11, ""),
+		raid(33, raidZoneOny, time.Date(2026, 12, 27, 2, 0, 0, 0, time.UTC), 19, "in"),
 	}
 	got := RenderCalendar(raids, "https://foreversixty.gg", stamp)
 	path := filepath.Join(filepath.Dir(contract.FixturePath("x")), "calendar.ics")
