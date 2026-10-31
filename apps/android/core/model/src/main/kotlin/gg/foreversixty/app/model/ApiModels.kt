@@ -1127,6 +1127,8 @@ data class RaidAttendanceRow(
 @Serializable
 data class RaidBuff(
     @SerialName("key") val key: String,
+    /** A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load. */
+    @SerialName("label") val label: String,
     /** The spell's name in the client, e.g. Power Word: Fortitude. */
     @SerialName("name") val name: String,
     /** The icon stem, /data/{build}/icons/{stem}.webp. */
@@ -1154,7 +1156,7 @@ data class RaidClassCount(
     @SerialName("count") val count: Int,
 )
 
-/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count) and soulstone (warlock). */
+/** The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon. */
 @Serializable
 data class RaidComposition(
     @SerialName("classes") val classes: List<RaidClassCount> = emptyList(),

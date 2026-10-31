@@ -301,9 +301,11 @@ pre_done_status, match, night, attendance, report }`.
   - `composition`: the raid leader's read, computed by the API and rendered as is: `classes[]`
     (`{ class, count }`, all nine in the game's order, counting In and Late), `roles` (`{ tanks,
     healers, dps }`, In only), `targets` (the same shape, or null when the raid sets none) and
-    `buffs[]` (`{ key, name, icon, present, count }`: fortitude, mark_of_the_wild,
-    arcane_intellect, blessings, shadow_protection, soulstone and battle_rez, from the classes
-    signed In or Late).
+    `buffs[]` (`{ key, name, label, icon, present, count }`: fortitude, mark_of_the_wild,
+    arcane_intellect, blessings, shadow_protection, soulstone, battle_rez and the shaman totems
+    windfury_totem, strength_of_earth and mana_spring, from the classes signed In or Late; the
+    list is `data/curated/raid-buffs.json`, and the apps draw `label` inside a tile whose icon is
+    missing).
   - `signups[]` and `not_signed[]` gain `spec_name` and `spec_icon` (the talent-tab icon stem);
     `not_signed[]` gains `role`, the spec's role, for an officer's Add.
   - `viewer.characters[]` gains `spec_name`, `spec_icon` and `spec_options[]` (`{ spec, name,
@@ -436,11 +438,10 @@ data generator's real output for the active build.
 character's own export names the build it was made on (`/v1/me` `characters[].build.data_build`).
 For the lists and the BiS, read the active build. Build ids look like `1.60.1.70658`.
 
-> **Open item (publication).** `active-build.json` and `dates.json` are checked into
-> `web/src/data/` today but not copied into `public/data/` by `web/scripts/sync-data.mjs`, so they
-> are not on the CDN yet. Until a follow-up publishes them at `/data/active-build.json` and
-> `/data/dates.json`, an app that needs them has no fetchable source. Everything else below is
-> published.
+> **Publication.** `web/scripts/sync-data.mjs` copies `web/src/data/active-build.json` and
+> `dates.json` to `public/data/` on every build (lane F4, 2026-10-31), so they are served at
+> `/data/active-build.json` and `/data/dates.json` from the next site deploy. Before that the CDN
+> answered 404 and an app had no build to hang icon, list and BiS URLs off.
 
 ### /data/active-build.json
 `{ "build": "1.60.1.70658" }`. Fixture `cdn.active-build`. Fetch on launch; revalidate (an hour).

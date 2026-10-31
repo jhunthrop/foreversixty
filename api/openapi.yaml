@@ -2124,8 +2124,10 @@ components:
         or Late; roles are the In counts by role; targets are the raid's role targets, null when
         the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed
         In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez
-        (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count) and
-        soulstone (warlock).
+        (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count),
+        soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and
+        mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data
+        pipeline exports each icon.
       required: [classes, roles, targets, buffs]
       properties:
         classes:
@@ -2144,9 +2146,10 @@ components:
           items:
             type: object
             title: RaidBuff
-            required: [key, name, icon, present, count]
+            required: [key, name, label, icon, present, count]
             properties:
-              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessings, shadow_protection, soulstone, battle_rez] }
+              key: { type: string, enum: [fortitude, mark_of_the_wild, arcane_intellect, blessings, shadow_protection, soulstone, battle_rez, windfury_totem, strength_of_earth, mana_spring] }
+              label: { type: string, description: "A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load." }
               name: { type: string, description: "The spell's name in the client, e.g. Power Word: Fortitude." }
               icon: { type: string, description: "The icon stem, /data/{build}/icons/{stem}.webp." }
               present: { type: boolean }

@@ -72,6 +72,7 @@
           {
             "key": "fortitude",
             "name": "Power Word: Fortitude",
+            "label": "Fort",
             "icon": "spell_holy_wordfortitude",
             "present": true,
             "count": 4
@@ -79,6 +80,7 @@
           {
             "key": "mark_of_the_wild",
             "name": "Mark of the Wild",
+            "label": "MotW",
             "icon": "spell_nature_regeneration",
             "present": true,
             "count": 3
@@ -86,6 +88,7 @@
           {
             "key": "arcane_intellect",
             "name": "Arcane Intellect",
+            "label": "Int",
             "icon": "spell_holy_magicalsentry",
             "present": true,
             "count": 2
@@ -93,6 +96,7 @@
           {
             "key": "blessings",
             "name": "Blessings",
+            "label": "Bless",
             "icon": "spell_holy_fistofjustice",
             "present": false,
             "count": 0
@@ -100,6 +104,7 @@
           {
             "key": "shadow_protection",
             "name": "Shadow Protection",
+            "label": "SPro",
             "icon": "spell_shadow_antishadow",
             "present": true,
             "count": 4
@@ -107,6 +112,7 @@
           {
             "key": "soulstone",
             "name": "Soulstone",
+            "label": "SS",
             "icon": "inv_misc_orb_04",
             "present": true,
             "count": 2
@@ -114,9 +120,34 @@
           {
             "key": "battle_rez",
             "name": "Rebirth",
+            "label": "Rez",
             "icon": "spell_nature_reincarnation",
             "present": true,
             "count": 3
+          },
+          {
+            "key": "windfury_totem",
+            "name": "Windfury Totem",
+            "label": "WF",
+            "icon": "spell_nature_windfury",
+            "present": true,
+            "count": 4
+          },
+          {
+            "key": "strength_of_earth",
+            "name": "Strength of Earth Totem",
+            "label": "SoE",
+            "icon": "spell_nature_earthbindtotem",
+            "present": true,
+            "count": 4
+          },
+          {
+            "key": "mana_spring",
+            "name": "Mana Spring Totem",
+            "label": "MS",
+            "icon": "spell_nature_manaregentotem",
+            "present": true,
+            "count": 4
           }
         ]
       },

@@ -46,3 +46,33 @@ The sign-up beats a Discord button at default size on both platforms. Two things
 ## Re-review needs
 
 Moved capture on both platforms with Bench drawn; xl captures (tab, raid page, officer view, raid night) on both platforms with no mid-word breaks; the tightened card; the hand-driven iOS move menu.
+
+## Re-check (fix round)
+
+Verdict: HOLD on one new blocker. Both original blockers are resolved.
+
+### Original blockers
+1. **Moved to Bench: resolved.** raid-page-moved-ios and -and draw Bench checked with the 2 pt underline on Obnoxious Yell. "Obnoxious Yell moved to Bench." sits under that block. Yellfury shows In with "Saved." in kill green. The Vorgash waiting row is correct.
+2. **Large text: resolved.** Checked raid-page-xl, raids-tab-loaded-xl and the spec/officer/raid-night xl captures, iOS AX5 and Android 2.0.
+   - No mid-word breaks. Wraps fall only between words ("Pull 7:00 / pm", "signed / up").
+   - The status chip stays on one line, with the guild name on its own line.
+   - The who-line stacks crest, name, Change spec. The segments become a 2x2 grid.
+   - The count sits above a full-width bar.
+   - The tab-card date block stacks above the title. The Also planned date block stays 56 wide, with the chip under the title.
+
+### Composition block
+- Class names and counts are right. Zeros are muted. All nine classes show in class colours with crests. The moved capture sums to 24 (4+0+3+2+4+4+2+2+3), and the XL capture's 5 Warrior and 2 Hunter is the same roster with Yell In and Yellfury not In.
+- Role counts: Tanks 3, Healers 6, DPS 14 match the header line (23 In plus 1 Late). No targets show because the fixture's targets are null, as intended.
+- "Missing: Blessings" matches the one dimmed tile, the 4th in the order.
+
+### Blocker (new)
+**Buff and utility icons render as seven blank bordered tiles on both platforms.** This includes Android, whose emulator loads the class crests from the CDN in the same capture. The report names only two missing icons (Mark of the Wild, Blessings). So five more are missing or unresolved.
+- The row cannot be read. Present buffs cannot be told apart. Only the one muted tile and the "Missing" text carry meaning.
+- That is a missing-icon defect on a first-class element.
+- Fix: resolve all seven icon names against the export and recapture. Or, until the export lands, draw a short text label ("Fort", "MotW", "AI", "Bless", "SP", "SS", "Reb") inside the tile when the icon fails to load. Recapture on both platforms.
+
+### Shoulds (not blocking)
+- Mono is still wide at XL ("11  signed  up", "8/40"). Bundle JetBrains Mono and set only the digits in mono.
+- On the iOS tab xl capture, the second Also planned row's date block sits about 12 pt right of the first row's.
+- The toast inset is unchanged. Keyboard focus and VoiceOver/TalkBack captures are still owed.
+- Everything else from the first pass stands: the More menu, calendar sheet, officer move menu and notification answers now have captures.

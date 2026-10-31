@@ -3028,6 +3028,8 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
 
 public struct RaidBuff: Codable, Sendable, Equatable {
     public let key: String
+    /// A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load.
+    public let label: String
     /// The spell's name in the client, e.g. Power Word: Fortitude.
     public let name: String
     /// The icon stem, /data/{build}/icons/{stem}.webp.
@@ -3038,12 +3040,14 @@ public struct RaidBuff: Codable, Sendable, Equatable {
 
     public init(
         key: String,
+        label: String,
         name: String,
         icon: String,
         present: Bool,
         count: Int
     ) {
         self.key = key
+        self.label = label
         self.name = name
         self.icon = icon
         self.present = present
@@ -3101,7 +3105,7 @@ public struct RaidClassCount: Codable, Sendable, Equatable {
     }
 }
 
-/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count) and soulstone (warlock).
+/// The raid leader's read (lane F4 contract, handler pending; the apps render it and never compute it). classes lists all nine classes in the game's order with the count signed In or Late; roles are the In counts by role; targets are the raid's role targets, null when the raid sets none; buffs is the Classic raid-essentials coverage from the classes signed In or Late: fortitude and shadow_protection (priest), mark_of_the_wild and battle_rez (druid), arcane_intellect (mage), blessings (paladin, count is the paladin count), soulstone (warlock), and the shaman totems windfury_totem, strength_of_earth and mana_spring. The list, names, labels and icons are data/curated/raid-buffs.json; the data pipeline exports each icon.
 public struct RaidComposition: Codable, Sendable, Equatable {
     public let classes: [RaidClassCount]
     public let roles: RaidRoleCounts

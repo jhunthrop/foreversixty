@@ -37,3 +37,21 @@ Question this answers: "Am I in for Saturday, and who else is?" The In / Late / 
 - Lock, Unlock, Copy the list, Move to Bench, Remove from the raid, and "Kraggor · In as Tank" in the menu header.
 - Roster groups Tanks, Healers, DPS, Late, Bench, Out, Not signed up, with the player's own row highlighted.
 - Spec icon plus class-coloured name per row (Android).
+
+## Re-check (2026-10-31, after the fix round)
+
+Verdict: HOLD (one blocker left)
+
+Cleared:
+- iOS fixture mode: iOS captures exist and show the full roster. Cleared.
+- iOS officer move menu: `officer-move-menu-ios` shows "Kraggor · In as Tank", Move to Bench, Remove from the raid. Cleared.
+- Notification answer: `notification-answer-in-ios` and `notification-answer-in-and` show "You are In for Onyxia's Lair". The action path works; push registration waits for F7 as ruled.
+- Composition: class names with counts and a muted "0" for Paladin, "Tanks 3/4, Healers 6/8, DPS 14/28" against targets, and "Missing: Blessings". The counts match the roster rows (5 Warrior, 4 Priest, 4 Shaman, 3 Druid, 24 total with one Late). No Paladin gives a correct Blessings gap. The targets add up to 40.
+
+Remaining blocker:
+1. The buff and utility row is seven blank tiles on both platforms. In `raid-page-officer-ios`, `officer-move-menu-ios` and `raid-page-officer-and` you cannot tell Fortitude from Soulstone, and the muted Blessings tile is just a darker box. The only readable cue is the "Missing: Blessings" line. The report admits the icons do not load on the live iOS simulator, and the CDN export lacks `spell_nature_regeneration` and `spell_holy_fistofjustice`. There is no capture of this row with real icons on any platform: the Android emulator roster capture is scrolled past it. A leader checks this row first, so a row of empty boxes is a screenshot-and-mock item. Fix: capture the composition block on the Android emulator with real icons, get the iOS icons loading, and add the missing two icons to the export. Or give each tile a short text label (Fort, MotW, Int, Bless, ShadowProt, SS, BR) until icons load.
+
+New Classic points (should, not blockers):
+- Buff list is right for Classic (Fortitude, Mark of the Wild, Arcane Intellect, Blessings, Shadow Protection, Soulstone, Rebirth). It omits shaman totems (Windfury, Strength of Earth, Mana Spring), and Forever has shamans on both sides, so the "utility" row is incomplete. The fixture raid has 4 shamans and the row says nothing about them.
+- Role targets of 4 tanks, 8 healers and 28 DPS for 40 are a sane Classic spread. They are fine as a fixture.
+- Label "Battle Rez" is the brief's wording. The tile is Rebirth, so name it "Rebirth" (the Classic name) in the label.
