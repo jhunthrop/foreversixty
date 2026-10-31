@@ -363,6 +363,13 @@
               "label": "Major Mana Potion",
               "reason": "Mana user among ranged."
             }
+          ],
+          "rogue": [
+            {
+              "id": "conjured_rogue_thistle_tea",
+              "label": "Thistle Tea",
+              "reason": "Rogue energy consumable (item 7676, +100 Energy, 5 minute cooldown), the rogue's counterpart of the warrior's rage potion; cooked from a vendor recipe."
+            }
           ]
         },
         "by_spec": {

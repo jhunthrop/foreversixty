@@ -1,7 +1,7 @@
 {
   "spec": "rogue-subtlety",
   "state": "written",
-  "notes": "Subtlety at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md). The stealth opener (Stealth, Premeditation, Ambush) is unchanged. In the fight, Hemorrhage builds and keeps its Rupture-amplifying debuff up, Ghostly Strike goes on cooldown, Rupture is the main finisher whenever it has lapsed, and Eviscerate and Slice and Dice spend the combo points that build while it runs. Every rank named here is checked against this build's own spellconst.",
+  "notes": "Subtlety at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md). The stealth opener (Stealth, Premeditation, Ambush) is unchanged. In the fight, Hemorrhage builds and keeps its Rupture-amplifying debuff up, Ghostly Strike goes on cooldown, Rupture is the main finisher whenever it has lapsed, and Eviscerate and Slice and Dice spend the combo points that build while it runs. Every rank named here is checked against this build's own spellconst. 2026-10-31 (theorycraft audit fixes): Ambush moves from one second before the pull to the pull itself. The engine records no damage dealt before the pull, so the -1 s Ambush spent 60 Energy and its hit counted for nothing; at 0 s the rogue is still stealthed and the hit counts.",
   "expected_idle": [
     {
       "id": 11294,
@@ -80,7 +80,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-1s"
+            "val": "0s"
           }
         }
       }
