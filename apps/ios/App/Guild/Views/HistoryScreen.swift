@@ -118,9 +118,10 @@ struct HistoryRow: View {
             meta(night.sizeLine, large: large)
             if night.youWereThere {
                 if large {
-                    // The shared tag never shrinks; at the largest sizes it must fit the row.
+                    // The shared tag is one fixed-width line; at the largest sizes it scales with the
+                    // text like the meta and wraps inside the row instead.
                     Text(Copy.historyThere.uppercased()).font(ScaledType.micro).tracking(1)
-                        .lineLimit(1).minimumScaleFactor(0.5)
+                        .fixedSize(horizontal: false, vertical: true)
                         .foregroundStyle(FSColor.kill)
                         .padding(.horizontal, 8).padding(.vertical, 2)
                         .background(FSColor.kill.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))

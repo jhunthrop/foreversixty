@@ -38,7 +38,7 @@ struct RaidsDependencies {
             haptics: SystemRaidHaptics(),
             permission: SystemNotificationPermission(),
             askStore: UserDefaultsReminderAskStore(),
-            now: { Date() },
+            now: AppClock.now,
             clock: RaidClock(),
             iconBuild: { try? await statics.activeBuild().build }
         )
@@ -233,7 +233,7 @@ struct RaidsTab: View {
             if let extras {
                 HistoryRoute(
                     extras: extras, guild: guild,
-                    yourKeys: (content?.accountKeys ?? []).union([rosterStore?.viewerKey].compactMap { $0 }),
+                    yourKeys: content?.accountKeys ?? [],
                     openNight: { router.path.append(.night(raid: $0)) }
                 )
             }

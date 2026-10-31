@@ -12,6 +12,8 @@ final class GuildCaptureTests: XCTestCase {
         .deletingLastPathComponent() // repo root
         .appending(path: "design/reviews/2026-10-31-mobile-wave3-guild/build/ios")
     private let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+    /// The snapshot goldens' frozen instant (AppTests RaidTime.now), so countdowns match them.
+    private static let fixtureNow = ["-FSNow", "2026-12-17T22:30:00Z"]
 
     override func setUp() async throws {
         continueAfterFailure = false
@@ -25,7 +27,7 @@ final class GuildCaptureTests: XCTestCase {
     /// The app on You › Calendar.
     private func openCalendarScreen() -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-FSTab", "you"]
+        app.launchArguments = ["-FSTab", "you"] + Self.fixtureNow
         app.launch()
         let row = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "Calendar")).firstMatch
         if !row.waitForExistence(timeout: 20) {
@@ -87,7 +89,7 @@ final class GuildCaptureTests: XCTestCase {
     /// The app on the Raids tab, pushed to one of the guild rows.
     private func openRaidsRow(_ title: String) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-FSTab", "raids"]
+        app.launchArguments = ["-FSTab", "raids"] + Self.fixtureNow
         app.launch()
         let row = app.buttons.containing(begins(title)).firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 20))

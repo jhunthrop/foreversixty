@@ -123,16 +123,16 @@ struct CalendarContentView: View {
         .accessibilityValue(value)
     }
 
+    /// The value and its chevron, both at the meta text style so the chevron grows with the
+    /// text; a long value wraps in its own column, never under the chevron.
     private func valueLabel(_ value: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
             Text(value).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 .multilineTextAlignment(large ? .leading : .trailing)
                 .fixedSize(horizontal: false, vertical: true)
             Image(systemName: "chevron.up.chevron.down")
-                .font(.system(size: 12, weight: .bold))
+                .font(ScaledType.meta.weight(.semibold))
                 .foregroundStyle(FSColor.muted)
-                .frame(width: 20)
-                .fixedSize()
                 .accessibilityHidden(true)
         }
     }

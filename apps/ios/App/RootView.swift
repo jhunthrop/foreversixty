@@ -56,7 +56,7 @@ struct RootView: View {
         let session = environment.session
         let loader = CalendarInputLoader(service: service, currentKey: { session.currentCharacter?.key })
         _calendarSync = State(initialValue: CalendarSyncController(
-            adapter: EventKitCalendarAdapter(), store: UserDefaultsCalendarSyncStore(), now: { Date() }, clock: RaidClock(),
+            adapter: EventKitCalendarAdapter(), store: UserDefaultsCalendarSyncStore(), now: AppClock.now, clock: RaidClock(),
             loadInput: { await loader.load() }
         ))
     }

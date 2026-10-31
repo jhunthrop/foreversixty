@@ -115,7 +115,7 @@ struct GuildSnapshotTests {
     ) -> some View {
         pushed(Copy.historyTitle, back: Copy.tabRaids) {
             HistoryContentView(
-                phase: phase, paging: paging, yourKeys: [GuildFixture.viewerKey], clock: RaidTime.clock, now: { RaidTime.now },
+                phase: phase, paging: paging, yourKeys: (try? GuildFixture.yourKeys()) ?? [], clock: RaidTime.clock, now: { RaidTime.now },
                 open: { _ in }, loadMore: {}, retry: {}
             )
         }

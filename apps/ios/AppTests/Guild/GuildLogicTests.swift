@@ -65,7 +65,8 @@ struct RosterListTests {
     @Test("attendance sorts most nights present first; no attendance sorts last")
     func sortAttendance() throws {
         let sorted = try list().visible(role: .all, query: "", sort: .attendance)
-        #expect(sorted.first?.standing == .attendance(present: 8, nights: 8))
+        #expect(sorted.first?.name == "Obnoxious Yell")
+        #expect(sorted.first?.standing == .attendance(present: 3, nights: 8))
         let tail = sorted.suffix(6)
         #expect(tail.allSatisfy { $0.standing == .waiting || $0.standing == .noAccount })
     }
@@ -73,11 +74,11 @@ struct RosterListTests {
     @Test("attendance and the supporter mark join by character key")
     func join() throws {
         let kraggor = try entry("Kraggor")
-        #expect(kraggor.standing == .attendance(present: 8, nights: 8))
+        #expect(kraggor.standing == .attendance(present: 2, nights: 8))
         #expect(kraggor.supporter)
         let bolt = try entry("Lightningbolltz")
-        #expect(bolt.standing == .attendance(present: 6, nights: 8))
-        #expect(bolt.attendanceCaption == "6 of 8 nights")
+        #expect(bolt.standing == .attendance(present: 2, nights: 8))
+        #expect(bolt.attendanceCaption == "2 of 8 nights")
         #expect(!(try entry("Mendara")).supporter)
     }
 
@@ -126,15 +127,15 @@ struct RosterListTests {
     @Test("rows with the same sort key keep name order")
     func tieOrder() throws {
         let byRank = try list().visible(role: .all, query: "", sort: .rank).map(\.name)
-        #expect(Array(byRank.prefix(4)) == ["Kraggor", "Draknar", "Mendara", "Thokgar"])
+        #expect(Array(byRank.prefix(5)) == ["Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"])
         let eights = try list().visible(role: .all, query: "", sort: .attendance)
-            .filter { $0.standing == .attendance(present: 8, nights: 8) }.map(\.name)
+            .filter { $0.standing == .attendance(present: 2, nights: 8) }.map(\.name)
         #expect(eights == eights.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })
     }
 
     @Test("VoiceOver reads the row in words; the bar is not read")
     func accessibility() throws {
-        #expect(try entry("Kraggor").accessibilityLabel == "Kraggor, Protection Warrior, level 60, Guild Master, attended 8 of 8 recent raid nights")
+        #expect(try entry("Kraggor").accessibilityLabel == "Kraggor, Protection Warrior, level 60, Guild Master, attended 2 of 8 recent raid nights")
         #expect(try entry("Voidsong").accessibilityLabel == "Voidsong, Shadow Priest, level 57, Member, waiting for approval")
         #expect(try entry("Gruzz").accessibilityLabel == "Gruzz, Fury Warrior, level 54, Member, No account")
     }
@@ -143,11 +144,9 @@ struct RosterListTests {
 @Suite("Raid history")
 struct HistoryNightTests {
     let clock = RaidTime.clock
-    let yours: Set<String> = [GuildFixture.viewerKey]
-
     private func night(_ index: Int) throws -> HistoryNight {
         let rows = try GuildFixture.historyPage1().rows
-        return HistoryNight(row: rows[index], yourKeys: yours)
+        return HistoryNight(row: rows[index], yourKeys: try GuildFixture.yourKeys())
     }
 
     @Test("bosses are the distinct fight names; wipes read no wipes or n wipes")

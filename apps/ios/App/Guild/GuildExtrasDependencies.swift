@@ -15,7 +15,7 @@ struct GuildExtrasDependencies {
             service: service(environment),
             cache: DiskRaidCache.standard(),
             linkStore: KeychainCalendarLinkStore(),
-            now: { Date() },
+            now: AppClock.now,
             clock: RaidClock()
         )
     }
