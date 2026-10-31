@@ -46,6 +46,13 @@ struct RootView: View {
     @State private var raidsRouter = RaidsRouter()
     /// Lane F5: Home's Sims stack, which sim links push onto.
     @State private var simsRouter = SimsRouter()
+    /// Lane F12: the search cover and the BiS list a result asks for.
+    @State private var search: SearchNavigator
+
+    init(environment: AppEnvironment) {
+        self.environment = environment
+        _search = State(initialValue: SearchNavigator(dependencies: .live(environment)))
+    }
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -66,6 +73,13 @@ struct RootView: View {
         .tint(Theme.Palette.accent)
         .environment(environment.session)
         .environment(simsRouter)
+        .environment(\.searchNavigator, searchIsOn ? search : nil)
+        .fullScreenCover(isPresented: $search.isPresented) {
+            SearchScreen(navigator: search).tint(Theme.Palette.accent)
+        }
+        .onChange(of: search.bisRequest) { _, request in
+            if request != nil { selection = .bis }
+        }
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
@@ -79,6 +93,9 @@ struct RootView: View {
             #endif
         }
     }
+
+    /// Lane F12: universal search, its button and the item page.
+    private var searchIsOn: Bool { environment.isAvailable(.search) }
 
     /// Lane F1: the account states and the character selector.
     private var signInAvailable: Bool { environment.isAvailable(.signIn) }

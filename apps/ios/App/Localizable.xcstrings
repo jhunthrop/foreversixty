@@ -1975,6 +1975,29 @@
         }
       }
     },
+    "itemPage.pickMetaBare": {
+      "comment": "Arguments: 1 spec (string), 2 band (string), 3 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "itemPage.preset.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phase 1 raid"
+          }
+        }
+      }
+    },
     "itemPage.questLevel": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",

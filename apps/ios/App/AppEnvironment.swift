@@ -19,6 +19,11 @@ struct AppEnvironment {
     let identity: ClientIdentity
     /// Lane F8: whether See plans may link to web checkout here (decision P, fail closed).
     let plansLink: PlansLink
+    /// Lane F12: the site's static files on this phone, per build (spec Wave 3 §14), shared by
+    /// the tooltip, search and the item page; F9 and F15 reuse it. Cleared at sign-out.
+    let staticData: StaticDataStore
+    /// Lane F12: the search index over `staticData`, built once per build.
+    let searchIndex: SearchIndexReader
 
     @MainActor
     init(
@@ -42,6 +47,10 @@ struct AppEnvironment {
         let appConfig = AppConfigStore(client: client, cache: configCache)
         self.appConfig = appConfig
         let mode = configuration.mode
+        let staticData = StaticDataStore(client: StaticDataClient(transport: Self.staticTransport(mode, bundle: bundle)))
+        self.staticData = staticData
+        self.searchIndex = SearchIndexReader(store: staticData)
+        let recentSearches = UserDefaultsRecentSearches()
         self.plansLink = PlansLink(appConfig: appConfig, storefront: storefront) {
             appConfig.isAvailable(.premiumLink, mode: mode, isDebugBuild: Self.isDebugBuild)
         }
@@ -56,6 +65,8 @@ struct AppEnvironment {
                 FileHomeCache.standard()?.removeAll()
                 DiskRaidCache.standard().removeAll()
                 DiskRaidCache.sims().removeAll()
+                recentSearches.clear()
+                Task { await staticData.removeAll() }
             }
         )
     }
@@ -63,6 +74,14 @@ struct AppEnvironment {
     /// Whether a feature's screens show: on in debug and fixture builds, else as the config says.
     func isAvailable(_ feature: Feature) -> Bool {
         appConfig.isAvailable(feature, mode: configuration.mode, isDebugBuild: Self.isDebugBuild)
+    }
+
+    /// The static files' transport: the CDN, or the bundled `cdn.*` fixtures in fixture mode.
+    static func staticTransport(_ mode: APIMode, bundle: Bundle = .main) -> any HTTPTransport {
+        switch mode {
+        case .live: URLSessionTransport()
+        case .fixture: FixtureTransport.bundled(in: bundle) ?? FixtureTransport(directory: bundle.bundleURL)
+        }
     }
 
     #if DEBUG

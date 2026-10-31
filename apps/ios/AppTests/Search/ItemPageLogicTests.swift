@@ -1,0 +1,121 @@
+@testable import ForeverSixty
+import Foundation
+import Models
+import Networking
+import Testing
+
+@MainActor
+@Suite("Item page")
+struct ItemPageLogicTests {
+    private let raid = BisSelection(classSlug: "shaman", spec: "shaman-elemental", range: BisRange(band: 60, preset: "raid"), faction: "horde")
+
+    private func band(_ selection: BisSelection) throws -> BisBand {
+        let bis = try #require(try SearchTestData.tooltipSources().bis)
+        return try #require(bis.bands.first { $0.band == selection.range.band && $0.preset == selection.range.preset && $0.faction == selection.faction })
+    }
+
+    @Test("your pick: Spritecaster Cape is Elemental's Back pick at 60, Phase 1 raid, Horde")
+    func pick() throws {
+        let card = ItemPageLogic.yourPick(itemID: SearchTestData.cape, band: try band(raid), selection: raid, specName: "Elemental", className: "shaman")
+        #expect(card?.title == "Your Back pick")
+        #expect(card?.meta == "Elemental · 60 · Phase 1 raid · Horde")
+    }
+
+    @Test("runner-up: on the bare 60 Horde list the Cape is runner-up 1 for Back")
+    func runnerUp() throws {
+        let bare = raid.withRange(BisRange(band: 60, preset: "bare"))
+        let card = ItemPageLogic.yourPick(itemID: SearchTestData.cape, band: try band(bare), selection: bare, specName: "Elemental", className: "shaman")
+        #expect(card?.title == "Runner-up 1 for Back")
+        #expect(card?.meta == "Elemental · 60 · Horde")
+    }
+
+    @Test("not on the list, or no list: no card")
+    func notOnList() throws {
+        #expect(ItemPageLogic.yourPick(itemID: 16866, band: try band(raid), selection: raid, specName: "Elemental", className: "shaman") == nil)
+        #expect(ItemPageLogic.yourPick(itemID: SearchTestData.cape, band: nil, selection: raid, specName: "Elemental", className: "shaman") == nil)
+    }
+
+    @Test("sources: place and kind, a chance only when known, never 0%; quest level; world drop once")
+    func sources() {
+        let rows = ItemPageLogic.sources([
+            ItemUseSource(kind: "dungeon", title: "High Interrogator Gerstahn", place: "Blackrock Depths"),
+            ItemUseSource(kind: "raid", title: "Onyxia", place: "Onyxia's Lair", chance: 19.6),
+            ItemUseSource(kind: "raid", title: "Ragnaros", place: "Molten Core", chance: 0.3),
+            ItemUseSource(kind: "quest", title: "The Heart of the Mountain", place: "Horde", minLevel: 52),
+            ItemUseSource(kind: "world_drop", title: "World drop"),
+            ItemUseSource(kind: "vendor", title: "Meilosh"),
+        ])
+        #expect(rows.map(\.meta) == [
+            "Blackrock Depths · Dungeon · Drop chance not known",
+            "Onyxia's Lair · Raid · 20% from Onyxia",
+            "Molten Core · Raid · <1% from Ragnaros",
+            "Horde · Quest · Requires level 52",
+            "",
+            "Vendor",
+        ])
+        #expect(!rows.contains { $0.meta.contains("0%") && !$0.meta.contains("20%") && !$0.meta.contains("<1%") })
+        #expect(rows[4].accessibilityLabel == "World drop")
+        #expect(rows[0].accessibilityLabel == "High Interrogator Gerstahn, Blackrock Depths · Dungeon · Drop chance not known")
+    }
+
+    @Test("best in slot for: the file's order, Pick or Runner-up n, raid or bare meta, six then more")
+    func specs() throws {
+        let catalog = try BisTestData.catalog()
+        let rows = ItemPageLogic.specs(try SearchTestData.capeUses().specs, catalog: catalog)
+        #expect(rows.first?.title == "Balance Druid")
+        #expect(rows.first?.tag == .pick)
+        #expect(rows.first?.meta == "60 · Phase 1 raid")
+        #expect(rows.first?.icon != nil)
+        let runner = ItemPageLogic.specs([ItemUseSpec(spec: "mage-fire", className: "mage", specName: "Fire", band: 50, preset: "bare", rank: 2)], catalog: catalog)
+        #expect(runner.first?.tag == .runnerUp(2) && runner.first?.tag.text == "Runner-up 2")
+        #expect(runner.first?.meta == "50")
+
+        let many = Array(repeating: rows, count: 3).flatMap { $0 }.prefix(11)
+        let shown = ItemPageLogic.visible(Array(many), expanded: false)
+        #expect(shown.rows.count == 6 && shown.hidden == 5)
+        #expect(ItemPageLogic.visible(Array(many), expanded: true).hidden == 0)
+        #expect(ItemPageLogic.visible(Array(rows.prefix(6)), expanded: false).hidden == 0)
+    }
+
+    @Test("a spec row opens that list: its band, preset and faction, else the viewer's side")
+    func selection() {
+        let use = ItemUseSpec(spec: "mage-frost", className: "mage", specName: "Frost", band: 60, preset: "raid", faction: nil, rank: 0)
+        let picked = ItemPageLogic.selection(use, viewerFaction: "alliance")
+        #expect(picked == BisSelection(classSlug: "mage", spec: "mage-frost", range: BisRange(band: 60, preset: "raid"), faction: "alliance"))
+        #expect(ItemPageLogic.selection(use, viewerFaction: nil).faction == "horde")
+    }
+
+    @Test("the tooltip reads the viewer's class file when they can use the item, else the first that can")
+    func tooltipClass() throws {
+        let cape = try #require(try SearchTestData.corpus().item(SearchTestData.cape))
+        let own = BisSelection.forCharacter(SearchTestData.lightningbolltz, catalog: try BisTestData.catalog())
+        let request = ItemPageLogic.tooltipRequest(item: cape, route: ItemPageRoute(itemID: cape.id), build: "b", character: SearchTestData.lightningbolltz, own: own)
+        #expect(request.classSlug == "shaman")
+        #expect(request.spec == "shaman-elemental" && request.preset == "raid" && request.faction == "horde")
+        let helm = SearchItem(id: 16866, name: "Helm of Might", icon: "x", quality: 4, slot: "head", itemLevel: 66, requiredLevel: 60, classes: ["warrior"])
+        #expect(ItemPageLogic.tooltipRequest(item: helm, route: ItemPageRoute(itemID: 16866), build: "b", character: SearchTestData.lightningbolltz, own: own).classSlug == "warrior")
+    }
+
+    @Test("the page loads the fixture item: head from the index, sources, specs; an unknown id says so")
+    func store() async throws {
+        let statics = StaticDataStore(client: StaticDataClient(transport: FixtureTransport(directory: HomeFixtures.directory)), directory: nil)
+        let deps = SearchDependencies(
+            index: SearchIndexReader(store: statics), catalog: ItemCatalog(store: statics), specs: try BisTestData.catalog(),
+            characters: FakeCharacterSearch(.success([])), recent: MemoryRecentSearches(),
+            build: { SearchTestData.build }, context: { SearchContext(character: SearchTestData.fury) }, sleep: { _ in }
+        )
+        let page = ItemPageStore(route: ItemPageRoute(itemID: SearchTestData.cape), dependencies: deps)
+        await page.load()
+        #expect(page.state.look.name == "Spritecaster Cape")
+        #expect(page.state.meta == "Rare · Back · item level 52")
+        guard case let .loaded(sources) = page.state.sources else { Issue.record("sources"); return }
+        #expect(sources.count == 2)
+        guard case let .loaded(specs) = page.state.specs else { Issue.record("specs"); return }
+        #expect(!specs.isEmpty)
+        #expect(page.state.pick == nil)
+
+        let unknown = ItemPageStore(route: ItemPageRoute(itemID: 999_999_999), dependencies: deps)
+        await unknown.load()
+        #expect(!unknown.state.isKnown)
+    }
+}

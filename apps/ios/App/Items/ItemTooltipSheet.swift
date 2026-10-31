@@ -7,6 +7,8 @@ import SwiftUI
 struct ItemTooltipSheet: View {
     let request: ItemTooltipRequest
     let catalog: ItemCatalog
+    /// Lane F12: `More about this item`, which pushes the item page; nil while search is off.
+    var moreAbout: (() -> Void)?
 
     @State private var phase: Phase = .loading
 
@@ -17,7 +19,7 @@ struct ItemTooltipSheet: View {
     }
 
     var body: some View {
-        ItemTooltipContent(request: request, phase: phase, retry: { Task { await load() } })
+        ItemTooltipContent(request: request, phase: phase, retry: { Task { await load() } }, moreAbout: moreAbout)
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(FSColor.raised)
@@ -40,6 +42,7 @@ struct ItemTooltipContent: View {
     let request: ItemTooltipRequest
     let phase: ItemTooltipSheet.Phase
     var retry: () -> Void = {}
+    var moreAbout: (() -> Void)?
 
     var body: some View {
         ScrollView {
@@ -57,6 +60,7 @@ struct ItemTooltipContent: View {
                     if let footer = model.pickFooter {
                         Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     }
+                    if let moreAbout { moreAboutRow(moreAbout) }
                 case .failed:
                     header(look: request.fallback, meta: ItemQuality(value: request.fallback.quality).name)
                     Text(Copy.itemsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
@@ -86,6 +90,23 @@ struct ItemTooltipContent: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
+    }
+
+    /// Lane F12: the row that pushes the item page (spec §3.1).
+    private func moreAboutRow(_ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(Copy.itemPageMoreAbout).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(FSColor.muted).accessibilityHidden(true)
+            }
+            .padding(.horizontal, 14)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .contentShape(.rect)
+        }
+        .buttonStyle(RowPressStyle())
+        .quietCard()
     }
 
     @ViewBuilder

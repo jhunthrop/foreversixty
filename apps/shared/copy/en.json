@@ -747,6 +747,8 @@
     "itemPage.usesFailed": "Sources did not load.",
     "itemPage.moreAbout": "More about this item",
     "itemPage.a11y.source": "{title}, {meta}",
-    "itemPage.a11y.spec": "{spec}, {meta}, {tag}. Opens that list"
+    "itemPage.a11y.spec": "{spec}, {meta}, {tag}. Opens that list",
+    "itemPage.preset.raid": "Phase 1 raid",
+    "itemPage.pickMetaBare": "{spec} · {band} · {faction}"
   }
 }

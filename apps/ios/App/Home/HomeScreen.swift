@@ -24,11 +24,7 @@ struct HomeDependencies {
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
-        let staticTransport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let catalog = ItemCatalog(client: StaticDataClient(transport: staticTransport))
+        let catalog = ItemCatalog(store: environment.staticData)
         return HomeDependencies(
             client: environment.client,
             catalog: catalog,
@@ -124,6 +120,9 @@ struct HomeCharacterScreen: View {
 
     @State private var store: HomeStore
     @State private var tooltip: ItemTooltipRequest?
+    /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
+    @State private var itemPage: ItemPageRoute?
+    @Environment(\.searchNavigator) private var search
     @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
     @State private var showTalents = false
@@ -173,10 +172,19 @@ struct HomeCharacterScreen: View {
             .navigationDestination(isPresented: $showGear) { gear }
             .navigationDestination(isPresented: simsShown) { sims }
             .navigationDestination(isPresented: $showTalents) { talents }
+            .navigationDestination(item: $itemPage) { route in
+                if let search {
+                    ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
+                }
+            }
             .characterSelector(isOn: showsSelector)
+            .searchButton()
         }
         .sheet(item: $tooltip) { request in
-            ItemTooltipSheet(request: request, catalog: dependencies.catalog)
+            ItemTooltipSheet(request: request, catalog: dependencies.catalog, moreAbout: search.map { _ in {
+                tooltip = nil
+                itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
+            } })
         }
         .task { await store.load(character) }
         .task { await talentsModel?.load() }
