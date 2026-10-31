@@ -40,3 +40,19 @@ Question this answers: "Which of my characters am I looking at, and is my guild'
 
 ## Bottom line
 The buff row fix is real and readable, the counts add up, and the buttons are consistent. Two things stand in the way: there is no evidence the selector switches guilds, and Home and BiS disagree about which gear band a level-58 warrior is in. Fix those two and re-capture, and this ships with the shoulds queued.
+
+## Re-check (after selector-open-raids and selector-raids-switched captures)
+
+Blocker 1, selector changes the guild: cleared.
+- Both platforms show the "Your characters" sheet opened from the Raids tab, with Obnoxious Yell (Orc Fury Warrior, 58, OLYMPUS XXVII, ticked) and Yellfury (Orc Hunter, 31, No guild).
+- After picking Yellfury the chip changes to the hunter and the page becomes "NO GUILD YET" with "Yellfury is not in a guild on Forever Sixty." A raid leader sees the raid view follow the character. It would be nicer to see a second guild's raids, but the fixture has one guild, so this is accepted.
+- The sheet reads like the client's own character list: crest, class-coloured name, "Orc Hunter · Level 31", guild or "No guild".
+- New should: on iOS the chip truncates the second line to "Hunt..." while Android shows "Hunter · 31". Shorten it or let the chip grow.
+
+Blocker 2, Home "60 · raid" versus BiS "50 to 59": moved off this integration. It lives on Home (F2 and B) and BiS (F3), not in the Raids merge, so it does not hold this ship. It must stay on the Home and BiS owners' list, with two parts: the band must match what BiS opens on, and the "raid" tag is wrong for crafted and Stratholme gear. A player will meet it on the first screen after install.
+
+"Not now" sentence case: claimed fixed on Android. I did not see the re-recorded goldens, and the iOS golden is still being recorded. Check both once they land.
+
+All earlier shoulds stand. The buff names on live icons, the missing role targets on the live card, and the iOS tab bar showing content through it are the ones I would fix first.
+
+## Final verdict: SHIP (Raids integration only), with the shoulds above and the Home/BiS band mismatch tracked separately
