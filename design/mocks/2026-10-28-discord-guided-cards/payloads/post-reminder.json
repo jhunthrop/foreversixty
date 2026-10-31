@@ -10,7 +10,7 @@
         "components": [
           {
             "type": 2,
-            "style": 3,
+            "style": 2,
             "label": "In",
             "custom_id": "raid:1829:in"
           },
@@ -121,7 +121,7 @@
         "components": [
           {
             "type": 2,
-            "style": 3,
+            "style": 2,
             "label": "In",
             "custom_id": "raid:1829:in"
           },

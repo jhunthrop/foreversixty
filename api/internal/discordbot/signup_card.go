@@ -212,12 +212,8 @@ func signupRows(raids []guilds.Raid, views map[int64]guilds.RaidView, verified [
 		rows = append(rows, ActionRow{signupCharSelect(verified, p)})
 	}
 	buttons := make(ActionRow, 0, len(signUpStates)+1)
-	for i, st := range signUpStates {
-		style := StyleSecondary
-		if i == 0 {
-			style = StyleSuccess
-		}
-		buttons = append(buttons, Component{Kind: KindButton, Style: style, Label: st.Label, CustomID: signupCardID(st.State, p)})
+	for _, st := range signUpStates {
+		buttons = append(buttons, answerButton(st.Label, signupCardID(st.State, p)))
 	}
 	return append(rows, rowOf(append(buttons, linkButton(postCopy.RaidPage, raidURL))...)...)
 }
