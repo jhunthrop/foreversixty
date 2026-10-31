@@ -134,12 +134,6 @@ test('the chosen character follows the player through every page', async ({ page
     ref: BOW,
     label: `Bow Jackzon · ${bow.spec} Hunter`,
   });
-  // The spine bar's Plan door opens the planner on the account character, not a class.
-  await expect(page.getByTestId('current-character-bar-plan')).toHaveAttribute(
-    'href',
-    `/planner?character=${encodeURIComponent(BOW)}`,
-  );
-  await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Hunter');
   await shot(page, '03-sim');
   // A bare /sim still restores the same character, and still leaves the pointer alone.
   await page.goto('/sim');
@@ -149,10 +143,7 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 4. The character's own page reads as owned.
   await page.goto('/character/us/pvp/bow-jackzon');
-  // Owned: the spine bar speaks for this character, and the page reads its gear against the player's levels.
-  // The page's card carries the identity, so the strip shows only its doors.
-  await expect(page.getByTestId('current-character-bar-identity')).toHaveCount(0);
-  await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Hunter');
+  // Owned: the page reads its gear against the player's levels.
   await expect(page.getByRole('main')).toContainText('from your talents');
   // One spec: the owner's talents decide it, spelt as a player says it, with the split beside it.
   await expect(page.getByRole('main')).toContainText(`${bow.spec} Hunter · ${bow.split}`);
@@ -204,10 +195,14 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByTestId('character-header-action')).toBeDisabled();
   await shot(page, '08-guild-gear-in-planner');
 
-  // 7. Forget clears the pointer and the header falls back to the account's main.
+  // 7. On a later visit (a fresh tab session) the header says the character was restored, and
+  // its Forget clears the pointer so the header falls back to the account's main.
+  await page.evaluate(() => window.sessionStorage.clear());
   await page.goto('/sim');
   await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
-  await page.getByTestId('current-character-forget').click();
+  await page.getByTestId('character-selector').click();
+  await expect(page.getByTestId('selector-restored')).toContainText('Restored your last character');
+  await page.getByTestId('selector-forget').click();
   expect(await pointerOf(page)).toBeNull();
   await page.goto('/tiers');
   await expect(page.getByTestId('selector-name')).toHaveText('Pipsqueak');
@@ -227,8 +222,6 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByTestId('sim-run-block-not-simulated')).toHaveText('Not simulated yet');
   await expect(page.getByTestId(`sim-pick-${PIPSQUEAK}`)).toHaveCount(0);
   await expect(page.getByTestId(`sim-pick-${BOW}`)).toBeVisible();
-  // The card carries the identity once: the strip above it shows only its doors.
-  await expect(page.getByTestId('current-character-bar-identity')).toHaveCount(0);
   await shot(page, '13-sim-landing');
 });
 

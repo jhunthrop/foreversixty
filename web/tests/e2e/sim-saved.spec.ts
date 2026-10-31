@@ -193,9 +193,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
 // A saved sim is somebody else's result opened cold: no character is "loaded" here, and the
 // chip's empty line ("No character loaded...") sat directly above a full result. The casts
 // tab also carried the log viewer's note about other players' rows, which a one-player
-// simulated fight does not have. Since 46a937fdb the sim mounts the spine bar with
-// quietSignedOut, so a visitor with no character gets no bar at all (not an empty one):
-// neither the bar nor the old chip is on the page.
+// simulated fight does not have. Neither the old chip nor the retired spine bar is on the page.
 test('a saved sim opened cold says nothing about a missing character or other players', async ({ page }) => {
   await page.goto('/sim/simfixtureab');
   await expect(page.getByTestId('sim-dps')).toBeVisible();

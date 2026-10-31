@@ -219,9 +219,9 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint
-           (Base.astro's inline script), the same synchronous, before-first-paint timing
-           `html:not([data-session='1']) .chip-slot` already relies on elsewhere in
-           global.css -- so a `display:none` swap here costs no layout shift either way. -->
+           (Base.astro's inline script), synchronous and before first paint (global.css's
+           data-signed-out-only rule) -- so a `display:none` swap here costs no layout shift
+           either way. -->
       <div data-signed-out-only>
         <Card
           glyph="sword"

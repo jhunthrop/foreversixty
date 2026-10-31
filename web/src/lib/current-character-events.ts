@@ -12,7 +12,7 @@ export const CURRENT_CHARACTER_STORAGE_KEY = 'fs.currentCharacter';
 
 /**
  * Dispatched on `window` by a component that has just written a new pointer, for a sibling
- * island on the same page that shows it (CurrentCharacterBar). Islands share no store, and
+ * island on the same page that shows it (the header selector). Islands share no store, and
  * the `storage` event does not fire in the tab that made the change.
  */
 export const CURRENT_CHARACTER_CHANGED = 'fs:current-character';

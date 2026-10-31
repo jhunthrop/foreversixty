@@ -25,6 +25,13 @@ describe('selector account copy', () => {
     );
   });
 
+  it('words the restored line and its Forget', () => {
+    expect(selectorCopy.restoredLine).toBe('Restored your last character');
+    expect(selectorCopy.forget).toBe('Forget');
+    expect(selectorCopy.forgetAria('Thrall')).toBe('Forget Thrall');
+    expect(selectorCopy.forgotten('Thrall')).toBe('Forgot Thrall.');
+  });
+
   it('words the signed-out panel', () => {
     expect(selectorCopy.signedOutBody).toBe(
       'Sign in and your characters arrive with their gear, talents and guild.',
