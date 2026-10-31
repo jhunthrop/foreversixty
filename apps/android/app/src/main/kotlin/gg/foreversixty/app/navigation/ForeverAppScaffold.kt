@@ -57,6 +57,14 @@ fun ForeverAppScaffold(
             raids.navigator.wantsTab = false
         }
     }
+    // Lane F5: a sim link selects Home, where Sims and the result are pushed.
+    val wantsHome = home.sims?.navigator?.wantsHome == true
+    LaunchedEffect(wantsHome) {
+        if (wantsHome) {
+            selected = ForeverTab.Home
+            home.sims?.navigator?.wantsHome = false
+        }
+    }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
         // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {

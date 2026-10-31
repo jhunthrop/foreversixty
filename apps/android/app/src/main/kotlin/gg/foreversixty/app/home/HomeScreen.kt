@@ -58,6 +58,8 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.sims.SimsFeature
+import gg.foreversixty.app.sims.SimsRoute
 import java.io.File
 import java.time.Instant
 import kotlinx.coroutines.launch
@@ -75,7 +77,11 @@ class HomeDependencies(
     val catalog: ItemCatalog,
     val cache: HomeCache,
     private val isOn: () -> Boolean,
+    /** Lane F5: Sims, pushed from the Sims row; null while its feature switch is off. */
+    private val simsFeature: SimsFeature? = null,
 ) {
+    val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
+
     val isEnabled: Boolean get() = isOn()
 
     companion object {
@@ -84,15 +90,18 @@ class HomeDependencies(
             config: ApiConfig,
             accountApi: AccountApi,
             client: ApiClient,
+            isSimsOn: () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
+            val catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data"))
             return HomeDependencies(
                 accountApi = accountApi,
                 client = client,
-                catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data")),
+                catalog = catalog,
                 cache = FileHomeCache(File(context.noBackupFilesDir, "home-answers")),
                 isOn = isOn,
+                simsFeature = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn),
             )
         }
     }
@@ -120,7 +129,7 @@ fun HomeRoute(
     if (session != null && sessionMe != null) {
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
-            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis) {
+            HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims) {
                 CharacterSelectorBar(session)
             }
             return
@@ -140,7 +149,7 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, topB
     val answer = me
     val character = (answer as? ApiResult.Success)?.data?.mainCharacter
     if (answer is ApiResult.Success && character != null) {
-        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, topBar)
+        HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, answer.data.entitlements.serverSims, topBar)
         return
     }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
@@ -166,6 +175,7 @@ fun HomeCharacterScreen(
     finishedSims: List<FinishedSim>,
     dependencies: HomeDependencies,
     openBis: () -> Unit,
+    serverSims: Boolean = false,
     topBar: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -188,7 +198,10 @@ fun HomeCharacterScreen(
         home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, res, sourceLine, wornId) }
     }
 
-    if (showGear && home != null) {
+    val sims = dependencies.sims
+    if (sims != null && sims.navigator.showsList) {
+        SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
+    } else if (showGear && home != null) {
         BackHandler { showGear = false }
         GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
     } else {
@@ -206,6 +219,7 @@ fun HomeCharacterScreen(
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
                         HomeIntent.OpenGear -> showGear = true
                         HomeIntent.Retry -> scope.launch { store.refresh(character) }
+                        is HomeIntent.OpenNext -> if (intent.kind == HomeNextRow.Kind.Sims) sims?.navigator?.showsList = true
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
                             HomeAction.Kind.OpenPlanner -> context.openInBrowser(HomeLinks.PLANNER)
