@@ -1363,15 +1363,20 @@ def test_a_block_rating_stays_block():
 def test_armor_type_for_maps_the_contract_words():
     from pipeline.normalize.gear import armor_type_for
 
-    chest = 5  # INVTYPE_CHEST
-    assert armor_type_for(4, 1, chest) == "cloth"
-    assert armor_type_for(4, 2, chest) == "leather"
-    assert armor_type_for(4, 3, chest) == "mail"
-    assert armor_type_for(4, 4, chest) == "plate"
-    assert armor_type_for(4, 6, 14) == "shield"
-    assert armor_type_for(4, 1, 16) is None  # a cloak: spec C6 names none
-    assert armor_type_for(4, 0, 2) is None  # miscellaneous: a neck
-    assert armor_type_for(WEAPON, 4, 13) is None  # a mace, not mail
+    assert armor_type_for(4, 1) == "cloth"
+    assert armor_type_for(4, 2) == "leather"
+    assert armor_type_for(4, 3) == "mail"
+    assert armor_type_for(4, 4) == "plate"
+    assert armor_type_for(4, 6) == "shield"
+    assert armor_type_for(4, 0) is None  # miscellaneous: a neck, a ring, a trinket
+    assert armor_type_for(WEAPON, 4) is None  # a mace, not mail
+
+
+def test_a_cloak_reads_cloth_as_the_client_prints_it():
+    """Wave 3 spec F12.4: a cloak's slot line is "Back" with "Cloth" on the right."""
+    from pipeline.normalize.gear import armor_type_for
+
+    assert armor_type_for(4, 1) == "cloth"  # Spritecaster Cape: class 4 subclass 1, INVTYPE_CLOAK
 
 
 def test_bonding_for_maps_the_contract_words():
