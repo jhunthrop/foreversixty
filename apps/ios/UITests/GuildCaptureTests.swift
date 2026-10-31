@@ -81,4 +81,47 @@ final class GuildCaptureTests: XCTestCase {
         sleep(2)
         try save("f16.6-event.png")
     }
+
+    private func begins(_ text: String) -> NSPredicate { NSPredicate(format: "label BEGINSWITH %@", text) }
+
+    /// The app on the Raids tab, pushed to one of the guild rows.
+    private func openRaidsRow(_ title: String) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = ["-FSTab", "raids"]
+        app.launch()
+        let row = app.buttons.containing(begins(title)).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 20))
+        sleep(3)
+        return app
+    }
+
+    /// F16.7 with the tab bar, then the roster with the tab bar, its sort menu, and its foot
+    /// after scrolling all 38 rows.
+    func testRaidsTabAndRosterInApp() throws {
+        let app = openRaidsRow("Roster")
+        try save("f16.7-raids-tab-app.png")
+        app.buttons.containing(begins("Roster")).firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["ROSTER"].waitForExistence(timeout: 10))
+        sleep(4)
+        try save("f16.1-roster-app.png")
+        let sort = app.buttons.containing(begins("Sort:")).firstMatch
+        XCTAssertTrue(sort.waitForExistence(timeout: 5))
+        sort.tap()
+        sleep(1)
+        try save("f16.1-sort-menu.png")
+        app.buttons["Attendance"].firstMatch.tap()
+        sleep(1)
+        let footer = app.staticTexts.containing(begins("Attendance is the last")).firstMatch
+        for _ in 0..<20 where !(footer.exists && footer.isHittable) { app.swipeUp(velocity: .fast) }
+        sleep(2)
+        try save("f16.1-roster-scrolled-foot.png")
+    }
+
+    func testHistoryInApp() throws {
+        let app = openRaidsRow("Raid history")
+        app.buttons.containing(begins("Raid history")).firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["RAID HISTORY"].waitForExistence(timeout: 10))
+        sleep(2)
+        try save("f16.3-history-app.png")
+    }
 }

@@ -18,11 +18,13 @@ struct RosterContentView: View {
     @Binding var query: RosterQuery
     let open: (URL) -> Void
     let retry: () -> Void
+    /// The trailing search button: shows the field, or hides and clears it.
+    var toggleSearch: () -> Void = {}
     @FocusState private var searchFocused: Bool
     @State private var width: CGFloat = 402
 
     var body: some View {
-        GuildScreenScroll(offlineStrip: offlineStrip) {
+        GuildScreenScroll(title: Copy.rosterTitle, offlineStrip: offlineStrip, trailing: { searchButton }) {
             switch phase {
             case .loading:
                 GuildSkeletonRows(count: 8, height: 64)
@@ -60,6 +62,19 @@ struct RosterContentView: View {
         }
     }
 
+    /// The trailing search button (spec F16.1): a 44 pt circle on the title row.
+    private var searchButton: some View {
+        Button(action: toggleSearch) {
+            Image(systemName: query.searching ? "xmark" : "magnifyingglass")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(FSColor.strong)
+                .frame(width: 44, height: 44)
+                .guildPill(fill: GameColors.controlFill, line: FSColor.line)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(query.searching ? Copy.commonCancel : Copy.rosterSearch)
+    }
+
     private var searchField: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass").foregroundStyle(FSColor.muted).accessibilityHidden(true)
@@ -73,7 +88,7 @@ struct RosterContentView: View {
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 44)
-        .pillSurface(fill: GameColors.controlFill, line: searchFocused ? FSColor.gold : FSColor.line)
+        .guildPill(fill: GameColors.controlFill, line: searchFocused ? FSColor.gold : FSColor.line)
         .onAppear { searchFocused = query.search.isEmpty }
     }
 }
@@ -118,8 +133,8 @@ struct RosterChips: View {
                         .foregroundStyle(selected ? FSColor.gold : FSColor.text)
                         .padding(.horizontal, 14)
                         .frame(minHeight: 36)
-                        .pillSurface(fill: selected ? GameColors.pressedWash : GameColors.controlFill, line: selected ? FSColor.gold : FSColor.line)
-                        .frame(minHeight: 44)
+                        .guildPill(fill: selected ? GameColors.pressedWash : GameColors.controlFill, line: selected ? FSColor.gold : FSColor.line)
+                        .padding(.vertical, 4)
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
@@ -137,8 +152,8 @@ struct RosterChips: View {
                 .foregroundStyle(FSColor.muted)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 36)
-                .pillSurface(fill: GameColors.controlFill, line: FSColor.line)
-                .frame(minHeight: 44)
+                .guildPill(fill: GameColors.controlFill, line: FSColor.line)
+                .padding(.vertical, 4)
                 .contentShape(.rect)
             }
         }
@@ -167,9 +182,14 @@ struct GuildRosterRowView: View {
     private func content(chevron: Bool) -> some View {
         let large = typeSize.isAccessibilitySize
         return HStack(alignment: large ? .top : .center, spacing: 12) {
-            icon
+            // Largest text: the icon sits on the name line, centred on it.
+            if !large { icon }
             VStack(alignment: .leading, spacing: 2) {
-                nameLine
+                if large {
+                    HStack(alignment: .center, spacing: 10) { icon; nameLine }
+                } else {
+                    nameLine
+                }
                 Text(entry.meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
                 if large { standing(showsBar: false).padding(.top, 4) }
@@ -190,13 +210,8 @@ struct GuildRosterRowView: View {
         .accessibilityAddTraits(chevron ? .isButton : [])
     }
 
-    @ViewBuilder
     private var icon: some View {
-        if entry.specIcon != nil {
-            GameIcon(stem: entry.specIcon, size: 32)
-        } else {
-            ClassCrest(className: entry.className, size: 32)
-        }
+        SpecOrCrest(icon: entry.specIcon, className: entry.className, size: 32)
     }
 
     private var nameLine: some View {
@@ -217,7 +232,7 @@ struct GuildRosterRowView: View {
             VStack(alignment: .trailing, spacing: 4) {
                 if showsBar, let bar = entry.bar { AttendanceBarView(bar: bar) }
                 if let caption = entry.attendanceCaption {
-                    Text(caption).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    Text(caption).font(ScaledType.meta.monospacedDigit()).foregroundStyle(FSColor.muted)
                 }
             }
         case .noNights:
@@ -260,22 +275,14 @@ struct RosterScreen: View {
     var body: some View {
         RosterContentView(
             phase: store.phase, clock: clock, now: now, query: $query,
-            open: { openURL($0) }, retry: { Task { await store.load() } }
+            open: { openURL($0) }, retry: { Task { await store.load() } },
+            toggleSearch: {
+                query.searching.toggle()
+                if !query.searching { query.search = "" }
+            }
         )
         .refreshable { await store.load() }
-        .navigationTitle(Copy.rosterTitle)
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    query.searching.toggle()
-                    if !query.searching { query.search = "" }
-                } label: {
-                    Image(systemName: query.searching ? "xmark" : "magnifyingglass")
-                }
-                .accessibilityLabel(query.searching ? Copy.commonCancel : Copy.rosterSearch)
-            }
-        }
+        .guildPushedBar(Copy.rosterTitle)
         .task { await store.load() }
     }
 }

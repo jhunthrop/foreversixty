@@ -27,20 +27,48 @@ struct GuildTabRowsCard: View {
     }
 }
 
-/// A pushed guild screen's frame: the offline strip, then the padded content.
-struct GuildScreenScroll<Content: View>: View {
+/// A pushed guild screen's frame: the offline strip, the condensed-caps title (v1 §4, as Sims
+/// and the raid page) with an optional trailing control, then the padded content.
+struct GuildScreenScroll<Content: View, Trailing: View>: View {
+    let title: String
     let offlineStrip: String?
+    @ViewBuilder let trailing: () -> Trailing
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 if let offlineStrip { OfflineStrip(text: offlineStrip) }
-                VStack(alignment: .leading, spacing: 16) { content() }
-                    .padding(16)
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(alignment: .center, spacing: 12) {
+                        Text(title.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityAddTraits(.isHeader)
+                        Spacer(minLength: 0)
+                        trailing()
+                    }
+                    content()
+                }
+                .padding(16)
             }
         }
         .background(FSColor.bg)
+    }
+}
+
+extension GuildScreenScroll where Trailing == EmptyView {
+    init(title: String, offlineStrip: String?, @ViewBuilder content: @escaping () -> Content) {
+        self.init(title: title, offlineStrip: offlineStrip, trailing: { EmptyView() }, content: content)
+    }
+}
+
+extension View {
+    /// A pushed guild screen's bar: the back control only; the title draws in the content. The
+    /// title still names the next screen's back button.
+    func guildPushedBar(_ title: String) -> some View {
+        navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
     }
 }
 

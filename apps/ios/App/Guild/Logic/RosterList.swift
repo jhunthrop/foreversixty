@@ -43,6 +43,19 @@ enum RosterSort: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+/// Joins meta segments so a line breaks only after a separator: a non-breaking space before
+/// each ` · `, and [keepTogether] segments with no break inside (`Guild Master`).
+enum MetaLine {
+    static let nbsp = "\u{00A0}"
+    static let separator = "\u{00A0}· "
+
+    static func join(_ segments: [String], keepTogether: Bool = false) -> String {
+        segments.map { keepTogether ? unbroken($0) : $0 }.joined(separator: separator)
+    }
+
+    static func unbroken(_ text: String) -> String { text.replacingOccurrences(of: " ", with: nbsp) }
+}
+
 /// What a row shows on its right.
 enum RosterStanding: Equatable, Sendable {
     case attendance(present: Int, nights: Int)
@@ -132,10 +145,12 @@ struct RosterEntry: Equatable, Identifiable, Sendable {
         specName ?? className.flatMap(GameClass.init(rawValue:))?.name ?? className?.capitalized ?? ""
     }
 
-    /// `{Spec} · {level} · {rank}`.
+    /// `{Spec} · {level} · {rank}`, breaking only after a separator, the rank kept whole.
     var meta: String {
-        level.map { Copy.rosterMeta(spec: specWords, level: $0, rank: rankWord) }
-            ?? Copy.rosterMetaNoLevel(spec: specWords, rank: rankWord)
+        let rank = MetaLine.unbroken(rankWord)
+        let text = level.map { Copy.rosterMeta(spec: specWords, level: $0, rank: rank) }
+            ?? Copy.rosterMetaNoLevel(spec: specWords, rank: rank)
+        return text.replacingOccurrences(of: " · ", with: MetaLine.separator)
     }
 
     var bar: AttendanceBar? {

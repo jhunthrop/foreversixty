@@ -45,16 +45,16 @@ struct HistoryNight: Equatable, Identifiable, Sendable {
     private var wipeWords: String { wipes == 0 ? Copy.historyNoWipes : Copy.historyWipes(n: wipes) }
     private var sizeWords: String { isDungeon ? Copy.historyPlayers(n: size) : Copy.historyRaiders(n: size) }
 
-    /// `1 boss · 1 kill · no wipes`.
+    /// `1 boss · 1 kill · no wipes`; a line breaks only between segments.
     var factsLine: String {
-        [Copy.historyBosses(n: bosses), Copy.historyKills(n: kills), wipeWords].joined(separator: " · ")
+        MetaLine.join([Copy.historyBosses(n: bosses), Copy.historyKills(n: kills), wipeWords], keepTogether: true)
     }
 
-    /// `38 raiders · 1 h 47 m`, or `5 players · 1 h 38 m`.
+    /// `38 raiders · 1 h 47 m`, or `5 players · 1 h 38 m`; a line breaks only between segments.
     var sizeLine: String {
         let (hours, rest) = (minutes / 60, minutes % 60)
         let length = hours > 0 ? Copy.historyLength(h: hours, m: rest) : Copy.historyLengthMinutes(m: rest)
-        return "\(sizeWords) · \(length)"
+        return MetaLine.join([sizeWords, length], keepTogether: true)
     }
 
     var target: HistoryTarget {

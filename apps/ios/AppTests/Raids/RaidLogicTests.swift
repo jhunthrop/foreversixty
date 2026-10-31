@@ -404,7 +404,7 @@ struct RaidsTabModelTests {
         guard case let .loaded(content) = tab.state else { Issue.record("not loaded"); return }
         #expect(content.planned.count == 3)
         #expect(content.waiting == 2)
-        #expect(content.head.line == "Horde · US PvP · 24 on the roster")
+        #expect(content.head.line == "Horde · US PvP · 38 on the roster")
     }
 
     @Test("offline with a cached answer shows it under the strip; with none, the error")

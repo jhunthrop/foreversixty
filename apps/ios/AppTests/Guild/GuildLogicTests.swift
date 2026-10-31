@@ -5,6 +5,9 @@ import Networking
 import Testing
 
 /// The F16 test list; Android's guild extras tests carry the same names.
+/// The meta with its non-breaking spaces read as spaces.
+func plain(_ text: String) -> String { text.replacingOccurrences(of: "\u{00A0}", with: " ") }
+
 @Suite("Roster")
 struct RosterListTests {
     private func list() throws -> RosterList { RosterList(home: try GuildFixture.home()) }
@@ -74,7 +77,7 @@ struct RosterListTests {
         #expect(kraggor.supporter)
         let bolt = try entry("Lightningbolltz")
         #expect(bolt.standing == .attendance(present: 6, nights: 8))
-        #expect(bolt.attendanceCaption == "6 of 8")
+        #expect(bolt.attendanceCaption == "6 of 8 nights")
         #expect(!(try entry("Mendara")).supporter)
     }
 
@@ -99,9 +102,9 @@ struct RosterListTests {
 
     @Test("the meta reads the full spec name, level and rank word")
     func meta() throws {
-        #expect(try entry("Kraggor").meta == "Protection Warrior · 60 · Guild Master")
-        #expect(try entry("Mendara").meta == "Holy Priest · 60 · Officer")
-        #expect(try entry("Lightningbolltz").meta == "Elemental Shaman · 60 · Member")
+        #expect(plain(try entry("Kraggor").meta) == "Protection Warrior · 60 · Guild Master")
+        #expect(plain(try entry("Mendara").meta) == "Holy Priest · 60 · Officer")
+        #expect(plain(try entry("Lightningbolltz").meta) == "Elemental Shaman · 60 · Member")
         #expect(RosterEntry.rankWord("leader") == "Guild Master")
         #expect(RosterEntry.rankWord("officer") == "Officer")
         #expect(RosterEntry.rankWord("member") == "Member")
@@ -111,7 +114,22 @@ struct RosterListTests {
     func metaFallback() throws {
         let member = GuildMember(name: "Ash", characterKey: "us/pvp/ash", state: "approved", rank: "member", className: "mage", level: 58)
         let entry = RosterEntry(member: member, row: nil)
-        #expect(entry.meta == "Mage · 58 · Member")
+        #expect(plain(entry.meta) == "Mage · 58 · Member")
+    }
+
+    @Test("the meta breaks only after a separator and never inside the rank")
+    func metaJoin() throws {
+        #expect(try entry("Kraggor").meta == "Protection Warrior\u{00A0}· 60\u{00A0}· Guild\u{00A0}Master")
+        #expect(MetaLine.join(["5 bosses", "1 wipe"], keepTogether: true) == "5\u{00A0}bosses\u{00A0}· 1\u{00A0}wipe")
+    }
+
+    @Test("rows with the same sort key keep name order")
+    func tieOrder() throws {
+        let byRank = try list().visible(role: .all, query: "", sort: .rank).map(\.name)
+        #expect(Array(byRank.prefix(4)) == ["Kraggor", "Draknar", "Mendara", "Thokgar"])
+        let eights = try list().visible(role: .all, query: "", sort: .attendance)
+            .filter { $0.standing == .attendance(present: 8, nights: 8) }.map(\.name)
+        #expect(eights == eights.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })
     }
 
     @Test("VoiceOver reads the row in words; the bar is not read")
@@ -134,46 +152,45 @@ struct HistoryNightTests {
 
     @Test("bosses are the distinct fight names; wipes read no wipes or n wipes")
     func facts() throws {
-        #expect(try night(0).factsLine == "1 boss · 1 kill · no wipes")
-        #expect(try night(1).factsLine == "5 bosses · 5 kills · 1 wipe")
-        #expect(try night(3).factsLine == "1 boss · 1 kill · 1 wipe")
+        #expect(plain(try night(9).factsLine) == "1 boss · 1 kill · 2 wipes")
+        #expect(plain(try night(0).factsLine) == "5 bosses · 5 kills · 1 wipe")
+        #expect(plain(try night(1).factsLine) == "6 bosses · 6 kills · no wipes")
     }
 
     @Test("a night of 10 or fewer reads players, a raid reads raiders; lengths in h and m")
     func size() throws {
-        #expect(try night(0).sizeLine == "40 raiders · 52 m")
-        #expect(try night(1).sizeLine == "10 players · 1 h 48 m")
-        #expect(try night(2).sizeLine == "5 players · 2 h 11 m")
-        #expect(try night(3).sizeLine == "39 raiders · 1 h 11 m")
+        #expect(plain(try night(9).sizeLine) == "38 raiders · 1 h 8 m")
+        #expect(plain(try night(0).sizeLine) == "10 players · 1 h 52 m")
+        #expect(plain(try night(1).sizeLine) == "5 players · 2 h 8 m")
     }
 
     @Test("the date block is the night's start, created_at minus its length, in the device zone")
     func start() throws {
-        let night = try night(3)
-        let block = clock.dateBlock(night.start)
-        #expect(block.weekday == "SUN" && block.day == "27" && block.month == "DEC")
+        let block = clock.dateBlock(try night(9).start)
+        #expect(block.weekday == "MON" && block.day == "14" && block.month == "DEC")
     }
 
     @Test("You were there when one of your characters is in present[]")
     func there() throws {
-        #expect(try night(0).youWereThere)
-        #expect(!(try night(2)).youWereThere)
-        #expect(!HistoryNight(row: try GuildFixture.historyPage1().rows[0], yourKeys: []).youWereThere)
+        #expect(try night(9).youWereThere)
+        #expect(!(try night(1)).youWereThere)
+        #expect(!HistoryNight(row: try GuildFixture.historyPage1().rows[9], yourKeys: []).youWereThere)
     }
 
     @Test("a tap opens your raid night when you were there and it has a raid, else the report")
     func target() throws {
-        #expect(try night(0).target == .night(raid: 40))
-        #expect(try night(1).target == .report(URL(string: "https://foreversixty.gg/reports/g2k4der64mlv")!))
-        #expect(try night(5).target == .report(URL(string: "https://foreversixty.gg/reports/jz2vv7qhmvgk")!))
+        #expect(try night(9).target == .night(raid: 29))
+        #expect(try night(0).target == .report(URL(string: "https://foreversixty.gg/reports/5owictw7n3jw")!))
+        let absent = HistoryNight(row: try GuildFixture.historyPage1().rows[9], yourKeys: [])
+        #expect(absent.target == .report(URL(string: "https://foreversixty.gg/reports/ewlrx3enxbeb")!))
     }
 
     @Test("VoiceOver reads the night in words")
     func accessibility() throws {
-        #expect(try night(3).accessibilityLabel(clock: clock)
-            == "Onyxia's Lair, Sunday 27 December, 1 boss, 1 kill, 1 wipe, 39 raiders, 1 hour 11 minutes. You were there.")
-        #expect(try night(2).accessibilityLabel(clock: clock)
-            == "Blackrock Depths, Tuesday 29 December, 6 bosses, 6 kills, no wipes, 5 players, 2 hours 11 minutes")
+        #expect(try night(9).accessibilityLabel(clock: clock)
+            == "Onyxia's Lair, Monday 14 December, 1 boss, 1 kill, 2 wipes, 38 raiders, 1 hour 8 minutes. You were there.")
+        #expect(try night(1).accessibilityLabel(clock: clock)
+            == "Blackrock Depths, Friday 18 December, 6 bosses, 6 kills, no wipes, 5 players, 2 hours 8 minutes")
     }
 }
 
@@ -194,7 +211,7 @@ struct HistoryStoreTests {
         await store.loadMore()
         #expect(store.content?.rows.count == 23)
         #expect(store.content?.hasMore == false)
-        #expect(service.cursors == [nil, "MjAyNi0xMi0xMFQyMDo1NTowMFp8bjNhcDVrdzd0aml5"])
+        #expect(service.cursors == [nil, "MjAyNi0xMi0xMFQyMzo0NTowMFp8bHQ0d3R4bG02ZGxq"])
         await store.loadMore()
         #expect(service.cursors.count == 2)
     }

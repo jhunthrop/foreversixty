@@ -21,6 +21,9 @@ struct GuildSnapshotTests {
         }
         let config = ViewImageConfig(safeArea: Self.safeArea, size: CGSize(width: 402, height: height), traits: traits)
         let sized = view
+            // Real spec icons from the repo's icon files, as the Sims and BiS snapshots.
+            .environment(\.raidIconBuild, SimsTestData.build)
+            .environment(\.itemIconSource, RepoItemIconSource())
             .environment(\.dynamicTypeSize, large ? .accessibility5 : .large)
             .preferredColorScheme(.dark)
         assertSnapshot(
@@ -34,9 +37,7 @@ struct GuildSnapshotTests {
     private func pushed(_ title: String, back: String, @ViewBuilder _ content: @escaping () -> some View) -> some View {
         NavigationStack(path: .constant([1])) {
             Color.clear.navigationTitle(back).navigationDestination(for: Int.self) { _ in
-                content()
-                    .navigationTitle(title)
-                    .navigationBarTitleDisplayMode(.large)
+                content().guildPushedBar(title)
             }
         }
     }
@@ -46,7 +47,6 @@ struct GuildSnapshotTests {
     private func roster(_ phase: GuildLoadPhase<GuildHome>, query: RosterQuery = RosterQuery()) -> some View {
         pushed(Copy.rosterTitle, back: Copy.tabRaids) {
             RosterContentView(phase: phase, clock: RaidTime.clock, now: { RaidTime.now }, query: .constant(query), open: { _ in }, retry: {})
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { Image(systemName: "magnifyingglass") } }
         }
     }
 
@@ -59,6 +59,22 @@ struct GuildSnapshotTests {
 
     @Test func rosterTanks() throws {
         snap(roster(try loadedRoster(), query: RosterQuery(role: .tanks)), "f16.1-roster-tanks")
+    }
+
+    @Test func rosterDps() throws {
+        snap(roster(try loadedRoster(), query: RosterQuery(role: .dps)), "f16.1-roster-dps", height: 1400)
+    }
+
+    @Test func rosterSortName() throws {
+        snap(roster(try loadedRoster(), query: RosterQuery(sort: .name)), "f16.1-roster-sort-name", height: 1400)
+    }
+
+    @Test func rosterSortClass() throws {
+        snap(roster(try loadedRoster(), query: RosterQuery(sort: .className)), "f16.1-roster-sort-class", height: 1400)
+    }
+
+    @Test func rosterSortLevel() throws {
+        snap(roster(try loadedRoster(), query: RosterQuery(sort: .level)), "f16.1-roster-sort-level", height: 3000)
     }
 
     @Test func rosterHealers() throws {

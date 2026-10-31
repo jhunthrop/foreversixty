@@ -20,7 +20,7 @@ struct HistoryContentView: View {
     let retry: () -> Void
 
     var body: some View {
-        GuildScreenScroll(offlineStrip: offlineStrip) {
+        GuildScreenScroll(title: Copy.historyTitle, offlineStrip: offlineStrip) {
             switch phase {
             case .loading:
                 SectionLabel(text: Copy.historyLabel)
@@ -77,8 +77,9 @@ struct HistoryContentView: View {
     }
 }
 
-/// A history row (72 min): the date block, the zone, two meta lines that never wrap, and the
-/// `You were there` tag under them; rows top-aligned.
+/// A history row (72 min): the date block, the zone, two meta lines and the `You were there`
+/// tag under them; rows top-aligned. Default size: each meta line on one line. Largest text: the
+/// date block above the text, and a meta line wraps only between its segments.
 struct HistoryRow: View {
     let night: HistoryNight
     let clock: RaidClock
@@ -89,16 +90,12 @@ struct HistoryRow: View {
         let large = typeSize.isAccessibilitySize
         Button(action: open) {
             HStack(alignment: .top, spacing: 12) {
-                DateBlock(date: night.start, clock: clock, width: large ? 56 : 48, height: 52)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(night.zone).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                        .fixedSize(horizontal: false, vertical: true)
-                    metaLines(large: large)
-                    if night.youWereThere {
-                        TagView(text: Copy.historyThere, color: FSColor.kill).padding(.top, 4)
-                    }
+                (large
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+                    : AnyLayout(HStackLayout(alignment: .top, spacing: 12))) {
+                    DateBlock(date: night.start, clock: clock, width: large ? 64 : 48, height: 52)
+                    text(large: large)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(FSColor.muted)
                     .padding(.top, 4)
                     .accessibilityHidden(true)
@@ -113,16 +110,38 @@ struct HistoryRow: View {
         .accessibilityAddTraits(.isButton)
     }
 
-    /// Default: two single lines. Largest text: one clause a line, so a clause never breaks.
-    @ViewBuilder
-    private func metaLines(large: Bool) -> some View {
-        if large {
-            ForEach(Array((night.factsLine + " · " + night.sizeLine).components(separatedBy: " · ").enumerated()), id: \.offset) { item in
-                Text(item.element).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).lineLimit(1).minimumScaleFactor(0.6)
+    private func text(large: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(night.zone).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                .fixedSize(horizontal: false, vertical: true)
+            meta(night.factsLine, large: large)
+            meta(night.sizeLine, large: large)
+            if night.youWereThere {
+                if large {
+                    // The shared tag never shrinks; at the largest sizes it must fit the row.
+                    Text(Copy.historyThere.uppercased()).font(ScaledType.micro).tracking(1)
+                        .lineLimit(1).minimumScaleFactor(0.5)
+                        .foregroundStyle(FSColor.kill)
+                        .padding(.horizontal, 8).padding(.vertical, 2)
+                        .background(FSColor.kill.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                        .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(FSColor.kill.opacity(0.35)))
+                        .padding(.top, 4)
+                } else {
+                    TagView(text: Copy.historyThere, color: FSColor.kill).padding(.top, 4)
+                }
             }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// The body face with tabular figures, so `1 h 48 m` reads tight.
+    @ViewBuilder
+    private func meta(_ line: String, large: Bool) -> some View {
+        let text = Text(line).font(ScaledType.meta.monospacedDigit()).foregroundStyle(FSColor.muted)
+        if large {
+            text.fixedSize(horizontal: false, vertical: true)
         } else {
-            Text(night.factsLine).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).lineLimit(1).minimumScaleFactor(0.7)
-            Text(night.sizeLine).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).lineLimit(1).minimumScaleFactor(0.7)
+            text.lineLimit(1).minimumScaleFactor(0.8)
         }
     }
 }
@@ -150,8 +169,7 @@ struct HistoryScreen: View {
             retry: { Task { await store.load() } }
         )
         .refreshable { await store.load() }
-        .navigationTitle(Copy.historyTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .guildPushedBar(Copy.historyTitle)
         .task { await store.load() }
     }
 }

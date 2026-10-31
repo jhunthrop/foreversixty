@@ -179,9 +179,9 @@ struct GuildCrest: View {
         .accessibilityHidden(true)
     }
 
+    /// The bundled faction crest (v1 §4.3), the same mark Android draws.
     private var factionMark: some View {
-        Image(systemName: "shield.lefthalf.filled")
-            .foregroundStyle(faction == "alliance" ? FSColor.alliance : FSColor.horde)
+        FactionMark(faction: faction ?? "", size: 28)
     }
 }
 

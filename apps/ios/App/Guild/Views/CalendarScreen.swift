@@ -29,9 +29,12 @@ struct CalendarActions {
 struct CalendarContentView: View {
     let state: CalendarScreenState
     let actions: CalendarActions
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var large: Bool { typeSize.isAccessibilitySize }
 
     var body: some View {
-        GuildScreenScroll(offlineStrip: nil) {
+        GuildScreenScroll(title: Copy.calendarTitle, offlineStrip: nil) {
             SectionLabel(text: Copy.calendarSection)
             if state.sync == .accessOff { accessOffCard }
             syncCard
@@ -64,7 +67,7 @@ struct CalendarContentView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                .tint(FSColor.gold)
+                .toggleStyle(GuildSwitchStyle())
                 .disabled(accessOff)
                 .opacity(accessOff ? 0.5 : 1)
                 if state.sync == .removed {
@@ -92,20 +95,27 @@ struct CalendarContentView: View {
         .quietCard()
     }
 
+    /// A menu row at the switch row's inset: label and value on one line, or the value under
+    /// its label at accessibility sizes; the chevron keeps its size.
     private func menuRow(_ title: String, value: String, @ViewBuilder picker: () -> some View) -> some View {
         Menu { picker() } label: {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) {
-                    Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                    Spacer(minLength: 8)
-                    valueLabel(value)
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                    valueLabel(value)
+            Group {
+                if large {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                        valueLabel(value)
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                        Spacer(minLength: 8)
+                        valueLabel(value)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
+            .padding(.vertical, 8)
             .frame(minHeight: 52)
             .contentShape(.rect)
         }
@@ -114,9 +124,15 @@ struct CalendarContentView: View {
     }
 
     private func valueLabel(_ value: String) -> some View {
-        HStack(spacing: 4) {
-            Text(value).font(ScaledType.meta).foregroundStyle(FSColor.muted).multilineTextAlignment(.trailing)
-            Image(systemName: "chevron.up.chevron.down").font(.system(size: 10, weight: .bold)).foregroundStyle(FSColor.muted)
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Text(value).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                .multilineTextAlignment(large ? .leading : .trailing)
+                .fixedSize(horizontal: false, vertical: true)
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(FSColor.muted)
+                .frame(width: 20)
+                .fixedSize()
                 .accessibilityHidden(true)
         }
     }
@@ -125,12 +141,15 @@ struct CalendarContentView: View {
 
     private var linkCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
+            (large
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+                : AnyLayout(HStackLayout(alignment: .top, spacing: 12))) {
                 Image(systemName: "link")
                     .font(.callout)
                     .foregroundStyle(FSColor.gold)
                     .frame(width: 32, height: 32)
                     .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                    .fixedSize()
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Copy.calendarLink).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
@@ -158,10 +177,14 @@ struct CalendarContentView: View {
             resetButton.frame(maxWidth: .infinity)
             messageLine
         case .ready:
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) { copyButton; resetButton }
-                VStack(spacing: 10) { copyButton; resetButton }
+            Group {
+                if large {
+                    VStack(spacing: 10) { copyButton; resetButton }
+                } else {
+                    HStack(spacing: 10) { copyButton; resetButton }
+                }
             }
+            .fixedSize(horizontal: false, vertical: true)
             linkButton(Copy.calendarAddToCalendar, systemImage: "calendar.badge.plus", action: actions.addToCalendar)
             if state.copied {
                 Text(Copy.calendarCopied).font(ScaledType.meta).foregroundStyle(FSColor.kill)
@@ -182,26 +205,24 @@ struct CalendarContentView: View {
     }
 
     private var resetButton: some View {
-        Button(action: actions.askReset) {
-            HStack(spacing: 8) {
-                if state.resetting { ProgressView().controlSize(.small) }
-                Text(Copy.calendarReset)
-            }
-        }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48))
-        .disabled(state.linkOffline || state.resetting)
-        .opacity(state.linkOffline ? 0.5 : 1)
+        linkButton(Copy.calendarReset, systemImage: "arrow.counterclockwise", busy: state.resetting, action: actions.askReset)
     }
 
-    private func linkButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+    /// One shape for every link button, so Copy and Reset are the same height at every size.
+    private func linkButton(_ title: String, systemImage: String, busy: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                Image(systemName: systemImage).accessibilityHidden(true)
+                if busy {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Image(systemName: systemImage).accessibilityHidden(true)
+                }
                 Text(title)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .buttonStyle(BrandButtonStyle(.secondary, height: 48))
-        .disabled(state.linkOffline)
+        .disabled(state.linkOffline || busy)
         .opacity(state.linkOffline ? 0.5 : 1)
     }
 }
@@ -217,8 +238,7 @@ struct CalendarScreen: View {
 
     var body: some View {
         CalendarContentView(state: state, actions: actions)
-            .navigationTitle(Copy.calendarTitle)
-            .navigationBarTitleDisplayMode(.large)
+            .guildPushedBar(Copy.calendarTitle)
             .alert(Copy.calendarResetAsk, isPresented: $askingReset) {
                 Button(Copy.calendarResetConfirm, role: .destructive) {
                     copied = false
