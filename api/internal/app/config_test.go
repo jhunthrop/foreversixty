@@ -38,7 +38,7 @@ func TestTheAppConfigRoute(t *testing.T) {
 	w.svc.Settings = Settings{WebCheckoutRegions: decisionL, MinVersionIOS: "1.2.0", MinVersionAndroid: "1.1.0",
 		Features: []string{"raids"}}
 	rec, c := w.getConfig(t, "ios/1.2.0 (42)")
-	if rec.Code != http.StatusOK || rec.Header().Get("Cache-Control") != "public, max-age=300" {
+	if rec.Code != http.StatusOK || rec.Header().Get("Cache-Control") != "private, max-age=300" {
 		t.Fatalf("%d %q", rec.Code, rec.Header().Get("Cache-Control"))
 	}
 	if !strings.Contains(strings.Join(rec.Header().Values("Vary"), ","), AppHeader) {
