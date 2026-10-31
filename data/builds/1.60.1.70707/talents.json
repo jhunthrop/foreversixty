@@ -818,9 +818,9 @@
     "tier": 2,
     "column": 1,
     "spell_ids": [
-      17106,
-      17106,
-      17106
+      17118,
+      17118,
+      17118
     ],
     "prereq_talent_id": null
   },
@@ -832,7 +832,7 @@
     "tier": 2,
     "column": 3,
     "spell_ids": [
-      414673
+      1328621
     ],
     "prereq_talent_id": null
   },
@@ -858,9 +858,9 @@
     "tier": 1,
     "column": 1,
     "spell_ids": [
-      17118,
-      17118,
-      17118
+      17106,
+      17106,
+      17106
     ],
     "prereq_talent_id": null
   },
@@ -1125,11 +1125,11 @@
     "tier": 0,
     "column": 2,
     "spell_ids": [
-      17003,
-      17003,
-      17003,
-      17003,
-      17003
+      17056,
+      17056,
+      17056,
+      17056,
+      17056
     ],
     "prereq_talent_id": null
   },
@@ -1260,7 +1260,7 @@
     "tier": 3,
     "column": 1,
     "spell_ids": [
-      407995
+      1328617
     ],
     "prereq_talent_id": 104948
   },
@@ -1283,11 +1283,11 @@
     "tab_name": "Feral Combat",
     "class_id": 11,
     "tier": 3,
-    "column": 0,
+    "column": 2,
     "spell_ids": [
-      1322605
+      1328613
     ],
-    "prereq_talent_id": 104945
+    "prereq_talent_id": null
   },
   {
     "id": 104952,
@@ -1295,7 +1295,7 @@
     "tab_name": "Feral Combat",
     "class_id": 11,
     "tier": 3,
-    "column": 2,
+    "column": 0,
     "spell_ids": [
       16972,
       16972,
@@ -1309,7 +1309,7 @@
     "tab_name": "Feral Combat",
     "class_id": 11,
     "tier": 5,
-    "column": 2,
+    "column": 0,
     "spell_ids": [
       1223246,
       1223246,
@@ -1325,7 +1325,7 @@
     "tab_name": "Feral Combat",
     "class_id": 11,
     "tier": 5,
-    "column": 0,
+    "column": 3,
     "spell_ids": [
       417051,
       417051,
@@ -1355,7 +1355,7 @@
     "tier": 6,
     "column": 1,
     "spell_ids": [
-      417141
+      407995
     ],
     "prereq_talent_id": 104955
   },
@@ -1383,11 +1383,11 @@
     "tier": 0,
     "column": 2,
     "spell_ids": [
-      17056,
-      17056,
-      17056,
-      17056,
-      17056
+      17003,
+      17003,
+      17003,
+      17003,
+      17003
     ],
     "prereq_talent_id": null
   },
@@ -1548,7 +1548,7 @@
     "tab_name": "Beast Mastery",
     "class_id": 3,
     "tier": 1,
-    "column": 3,
+    "column": 2,
     "spell_ids": [
       24443,
       24443
@@ -1560,8 +1560,8 @@
     "tab_id": 361,
     "tab_name": "Beast Mastery",
     "class_id": 3,
-    "tier": 1,
-    "column": 2,
+    "tier": 2,
+    "column": 0,
     "spell_ids": [
       19559,
       19559
@@ -2075,22 +2075,21 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 4,
+    "tier": 3,
     "column": 0,
     "spell_ids": [
       1310904,
-      1310904,
       1310904
     ],
-    "prereq_talent_id": 105323
+    "prereq_talent_id": null
   },
   {
     "id": 105325,
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 3,
-    "column": 2,
+    "tier": 2,
+    "column": 0,
     "spell_ids": [
       20216
     ],
@@ -2101,8 +2100,8 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 2,
-    "column": 2,
+    "tier": 1,
+    "column": 3,
     "spell_ids": [
       429144,
       429144
@@ -2114,7 +2113,7 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 3,
+    "tier": 2,
     "column": 1,
     "spell_ids": [
       20210,
@@ -2130,20 +2129,20 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 2,
-    "column": 0,
+    "tier": 3,
+    "column": 2,
     "spell_ids": [
-      1310897
+      1328548
     ],
     "prereq_talent_id": null
   },
   {
     "id": 105331,
-    "tab_id": 382,
-    "tab_name": "Holy",
+    "tab_id": 381,
+    "tab_name": "Retribution",
     "class_id": 2,
-    "tier": 1,
-    "column": 3,
+    "tier": 2,
+    "column": 1,
     "spell_ids": [
       9453,
       9453
@@ -2152,11 +2151,11 @@
   },
   {
     "id": 105332,
-    "tab_id": 382,
-    "tab_name": "Holy",
+    "tab_id": 383,
+    "tab_name": "Protection",
     "class_id": 2,
     "tier": 0,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
       20257,
       20257,
@@ -2190,6 +2189,8 @@
     "spell_ids": [
       20224,
       20224,
+      20224,
+      20224,
       20224
     ],
     "prereq_talent_id": null
@@ -2199,9 +2200,12 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 1,
+    "tier": 0,
     "column": 1,
     "spell_ids": [
+      20205,
+      20205,
+      20205,
       20205,
       20205
     ],
@@ -2212,8 +2216,8 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 4,
-    "column": 1,
+    "tier": 2,
+    "column": 0,
     "spell_ids": [
       1311015
     ],
@@ -2256,24 +2260,10 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 6,
+    "tier": 4,
     "column": 1,
     "spell_ids": [
       20925
-    ],
-    "prereq_talent_id": 105625
-  },
-  {
-    "id": 105629,
-    "tab_id": 383,
-    "tab_name": "Protection",
-    "class_id": 2,
-    "tier": 3,
-    "column": 1,
-    "spell_ids": [
-      20196,
-      20196,
-      20196
     ],
     "prereq_talent_id": null
   },
@@ -2282,8 +2272,8 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 0,
-    "column": 1,
+    "tier": 2,
+    "column": 3,
     "spell_ids": [
       20143,
       20143,
@@ -2298,7 +2288,7 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 2,
+    "tier": 1,
     "column": 3,
     "spell_ids": [
       1224697,
@@ -2311,8 +2301,8 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 3,
-    "column": 2,
+    "tier": 2,
+    "column": 1,
     "spell_ids": [
       20487,
       20487,
@@ -2325,7 +2315,7 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 2,
+    "tier": 3,
     "column": 1,
     "spell_ids": [
       20468,
@@ -2339,8 +2329,8 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 1,
-    "column": 3,
+    "tier": 3,
+    "column": 2,
     "spell_ids": [
       20096,
       20096,
@@ -2379,17 +2369,14 @@
   },
   {
     "id": 105639,
-    "tab_id": 382,
-    "tab_name": "Holy",
+    "tab_id": 383,
+    "tab_name": "Protection",
     "class_id": 2,
-    "tier": 0,
-    "column": 1,
+    "tier": 4,
+    "column": 0,
     "spell_ids": [
-      20262,
-      20262,
-      20262,
-      20262,
-      20262
+      1328546,
+      1328546
     ],
     "prereq_talent_id": null
   },
@@ -2403,7 +2390,7 @@
     "spell_ids": [
       1310735
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105694
   },
   {
     "id": 105693,
@@ -2411,13 +2398,13 @@
     "tab_name": "Retribution",
     "class_id": 2,
     "tier": 4,
-    "column": 1,
+    "column": 2,
     "spell_ids": [
       20049,
       20049,
       20049
     ],
-    "prereq_talent_id": 105701
+    "prereq_talent_id": 105696
   },
   {
     "id": 105694,
@@ -2425,7 +2412,7 @@
     "tab_name": "Retribution",
     "class_id": 2,
     "tier": 4,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
       20066
     ],
@@ -2448,8 +2435,8 @@
     "tab_id": 381,
     "tab_name": "Retribution",
     "class_id": 2,
-    "tier": 4,
-    "column": 0,
+    "tier": 3,
+    "column": 3,
     "spell_ids": [
       20111,
       20111,
@@ -2489,7 +2476,7 @@
     "tab_name": "Retribution",
     "class_id": 2,
     "tier": 3,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
       1311087
     ],
@@ -2500,8 +2487,8 @@
     "tab_id": 381,
     "tab_name": "Retribution",
     "class_id": 2,
-    "tier": 2,
-    "column": 1,
+    "tier": 1,
+    "column": 2,
     "spell_ids": [
       1311074,
       1311074,
@@ -2529,10 +2516,8 @@
     "tab_name": "Retribution",
     "class_id": 2,
     "tier": 1,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
-      20117,
-      20117,
       20117,
       20117,
       20117
@@ -2541,11 +2526,11 @@
   },
   {
     "id": 105704,
-    "tab_id": 381,
-    "tab_name": "Retribution",
+    "tab_id": 382,
+    "tab_name": "Holy",
     "class_id": 2,
-    "tier": 1,
-    "column": 1,
+    "tier": 2,
+    "column": 2,
     "spell_ids": [
       1237268,
       1237268
@@ -3792,6 +3777,7 @@
     "column": 2,
     "spell_ids": [
       28574,
+      28574,
       28574
     ],
     "prereq_talent_id": null
@@ -4460,7 +4446,7 @@
     "tier": 3,
     "column": 3,
     "spell_ids": [
-      401937
+      1328569
     ],
     "prereq_talent_id": null
   },
@@ -6204,10 +6190,9 @@
     "tab_id": 382,
     "tab_name": "Holy",
     "class_id": 2,
-    "tier": 2,
+    "tier": 1,
     "column": 1,
     "spell_ids": [
-      1310899,
       1310899,
       1310899
     ],
@@ -6219,7 +6204,7 @@
     "tab_name": "Holy",
     "class_id": 2,
     "tier": 4,
-    "column": 2,
+    "column": 0,
     "spell_ids": [
       1310905,
       1310905
@@ -6232,7 +6217,7 @@
     "tab_name": "Holy",
     "class_id": 2,
     "tier": 3,
-    "column": 0,
+    "column": 1,
     "spell_ids": [
       426065,
       426065
@@ -6248,7 +6233,6 @@
     "column": 2,
     "spell_ids": [
       20150,
-      20150,
       20150
     ],
     "prereq_talent_id": 105626
@@ -6258,12 +6242,12 @@
     "tab_id": 383,
     "tab_name": "Protection",
     "class_id": 2,
-    "tier": 2,
-    "column": 0,
+    "tier": 6,
+    "column": 1,
     "spell_ids": [
-      1314103
+      1328544
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105628
   },
   {
     "id": 110876,
@@ -6291,7 +6275,7 @@
     "spell_ids": [
       1310994
     ],
-    "prereq_talent_id": 110875
+    "prereq_talent_id": 105625
   },
   {
     "id": 110879,
@@ -6303,22 +6287,7 @@
     "spell_ids": [
       1311034,
       1311034,
-      1311034,
-      1311034,
       1311034
-    ],
-    "prereq_talent_id": null
-  },
-  {
-    "id": 110880,
-    "tab_id": 381,
-    "tab_name": "Retribution",
-    "class_id": 2,
-    "tier": 5,
-    "column": 2,
-    "spell_ids": [
-      1311085,
-      1311085
     ],
     "prereq_talent_id": null
   },
@@ -6328,8 +6297,10 @@
     "tab_name": "Retribution",
     "class_id": 2,
     "tier": 5,
-    "column": 1,
+    "column": 2,
     "spell_ids": [
+      1311084,
+      1311084,
       1311084,
       1311084,
       1311084
@@ -6357,11 +6328,10 @@
     "tab_id": 281,
     "tab_name": "Feral Combat",
     "class_id": 11,
-    "tier": 4,
-    "column": 0,
+    "tier": 6,
+    "column": 2,
     "spell_ids": [
-      1322670,
-      1322670
+      1322605
     ],
     "prereq_talent_id": 104951
   },
@@ -6405,5 +6375,47 @@
       1326079
     ],
     "prereq_talent_id": 105806
+  },
+  {
+    "id": 113629,
+    "tab_id": 381,
+    "tab_name": "Retribution",
+    "class_id": 2,
+    "tier": 4,
+    "column": 0,
+    "spell_ids": [
+      1328370,
+      1328370
+    ],
+    "prereq_talent_id": null
+  },
+  {
+    "id": 113630,
+    "tab_id": 382,
+    "tab_name": "Holy",
+    "class_id": 2,
+    "tier": 0,
+    "column": 2,
+    "spell_ids": [
+      20262,
+      20262,
+      20262,
+      20262,
+      20262
+    ],
+    "prereq_talent_id": null
+  },
+  {
+    "id": 113631,
+    "tab_id": 382,
+    "tab_name": "Holy",
+    "class_id": 2,
+    "tier": 4,
+    "column": 2,
+    "spell_ids": [
+      1328550,
+      1328550
+    ],
+    "prereq_talent_id": 105323
   }
 ]
