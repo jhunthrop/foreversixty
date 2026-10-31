@@ -76,7 +76,7 @@ struct UpgradeRectangularView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
-            Text(figures.rectTitle ?? Copy.widgetNextUpgrade).font(.headline).lineLimit(1).minimumScaleFactor(0.8)
+            Text(figures.rectTitle ?? Copy.widgetNextUpgrade).font(.headline).lineLimit(1).minimumScaleFactor(0.8).widgetAccentable()
             if let row = figures.rows.first {
                 Text(row.name).font(.caption).lineLimit(1)
                 Text(row.gain).font(.caption.monospacedDigit())

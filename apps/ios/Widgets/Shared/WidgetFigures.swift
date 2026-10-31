@@ -147,7 +147,7 @@ struct WidgetFigures: Equatable, Sendable {
         time = clock.dayTime(raid.startsAt)
         timeShort = clock.dayTimeShort(raid.startsAt)
         inline = Copy.widgetInline(zone: raid.zoneName, time: clock.dayTimeShort(raid.startsAt), answer: Self.inlineWord(kind, role: role))
-        you = Copy.widgetYou(answer: Self.tagWord(personal, role: role))
+        you = Copy.widgetYou(answer: Self.youWord(personal, role: role))
         signedUpCount = raid.signedUp
         size = raid.size
         signedUp = raid.size.map { Copy.widgetOfSize(n: raid.signedUp, size: $0) } ?? "\(raid.signedUp)"
@@ -159,7 +159,7 @@ struct WidgetFigures: Equatable, Sendable {
         liveTarget = target
         let inWindow = now >= target.addingTimeInterval(-Self.liveLead) && now < raid.startsAt.addingTimeInterval(Self.liveTail)
         liveActive = !cancelled && inWindow && (mine == "in" || mine == "late")
-        liveTitle = liveActive ? Self.liveTitle(zone: raid.zoneName, target: target, now: now) : nil
+        liveTitle = liveActive ? Self.liveTitle(zone: raid.zoneName, target: target, invites: raid.inviteAt != nil, now: now) : nil
         liveUntil = raid.inviteAt.map { Copy.liveInvites(time: clock.time($0)) } ?? Copy.liveStarts(time: clock.time(raid.startsAt))
         accessibility = Self.spoken(raid, kind: personal, role: role, count: count, clock: clock)
     }
@@ -223,11 +223,28 @@ struct WidgetFigures: Equatable, Sendable {
         return hours >= staleAfterHours ? Copy.widgetUpdated(n: hours) : nil
     }
 
-    private static func liveTitle(zone: String, target: Date, now: Date) -> String {
+    /// `Invites for {zone} in 39 minutes` with an invite time; `{zone} starts in 39 minutes` when
+    /// the countdown runs to the pull, so the title never names invites a raid does not have.
+    private static func liveTitle(zone: String, target: Date, invites: Bool, now: Date) -> String {
         let minutes = Countdown(from: now, to: target).totalMinutes
-        if minutes <= 0 { return Copy.liveNotifTitleNow(zone: zone) }
-        if minutes == 1 { return Copy.liveNotifTitleOne(zone: zone) }
-        return Copy.liveNotifTitle(zone: zone, n: minutes)
+        switch (invites, minutes) {
+        case (true, ...0): return Copy.liveNotifTitleNow(zone: zone)
+        case (true, 1): return Copy.liveNotifTitleOne(zone: zone)
+        case (true, _): return Copy.liveNotifTitle(zone: zone, n: minutes)
+        case (false, ...0): return Copy.livePullTitleNow(zone: zone)
+        case (false, 1): return Copy.livePullTitleOne(zone: zone)
+        default: return Copy.livePullTitle(zone: zone, n: minutes)
+        }
+    }
+
+    /// The `You:` line names the role with every answer: `You: Late · DPS` (figures.json).
+    private static func youWord(_ kind: WidgetTagKind, role: String) -> String {
+        switch kind {
+        case .in, .late, .bench, .out:
+            Copy.widgetAnswer(state: stateWord(kind.rawValue) ?? kind.rawValue, role: role)
+        default:
+            tagWord(kind, role: role)
+        }
     }
 
     /// `Next raid, Onyxia's Lair, Thursday 8 pm, in 2 days 2 hours. You are In as DPS. 24 of 40 signed up.`

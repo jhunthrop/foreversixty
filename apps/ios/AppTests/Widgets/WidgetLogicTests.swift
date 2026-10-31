@@ -113,7 +113,8 @@ struct WidgetLogicTests {
         #expect(aps["attributes-type"] as? String == "RaidActivityAttributes")
         #expect(attributes.zoneName == "Onyxia's Lair" && attributes.characterName == "Lightningbolltz")
         #expect(state.signedUp == 38 && state.size == 40 && state.myState == "in" && state.inviteAt == nil)
-        #expect(state.startDate == Date(timeIntervalSince1970: 1_765_418_400))
+        let rawStart = (aps["content-state"] as? [String: Any])?["starts_at"] as? Int ?? 0
+        #expect(state.startDate == Date(timeIntervalSince1970: TimeInterval(rawStart)))
 
         let sim = try #require(JSONSerialization.jsonObject(with: RaidFixture.data("surface.live-sim-update.apns")) as? [String: Any])
         let simAps = try #require(sim["aps"] as? [String: Any])

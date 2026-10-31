@@ -106,18 +106,22 @@ struct WidgetItemIcon: View {
     let quality: Int
     let size: CGFloat
     let icons: WidgetIcons
+    @Environment(\.widgetRenderingMode) private var renderingMode
 
     var body: some View {
-        let color = ItemQuality(value: quality).border
+        // Tinted mode has no quality colours: the border joins the accent group so it stays legible.
+        let tinted = renderingMode == .accented
+        let color = tinted ? Color.white.opacity(0.8) : ItemQuality(value: quality).border
         ZStack {
             RoundedRectangle(cornerRadius: 6).fill(FSColor.cardTop)
             if let image = icons.image(icon) {
-                Image(uiImage: image).resizable().scaledToFill()
+                // Tinted home screens: the art stays visible, desaturated, instead of a flat tint.
+                Image(uiImage: image).resizable().widgetAccentedRenderingMode(.desaturated).scaledToFill()
             }
         }
         .frame(width: size, height: size)
         .clipShape(.rect(cornerRadius: 6))
-        .overlay(RoundedRectangle(cornerRadius: 6).stroke(color, lineWidth: 1.5))
+        .overlay(RoundedRectangle(cornerRadius: 6).stroke(color, lineWidth: 1.5).widgetAccentable(tinted))
         .accessibilityHidden(true)
     }
 }

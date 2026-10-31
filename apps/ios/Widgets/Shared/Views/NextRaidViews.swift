@@ -73,6 +73,26 @@ struct RaidHeadline: View {
     }
 }
 
+/// The answer in words at a raid widget's foot: the tag, the `You:` line when the tag is about
+/// the raid rather than you (Locked, Cancelled), and `Updated {n} h ago` under them when stale.
+struct RaidFoot: View {
+    let figures: WidgetFigures
+    /// The medium widget's checked button already says In, Late or Out.
+    var buttonsSayIt = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if let tag = figures.tag, let kind = figures.tagKind, !(buttonsSayIt && [.in, .late, .out].contains(kind)) {
+                WidgetTag(text: tag, kind: kind)
+            }
+            if figures.tagKind == .locked || figures.tagKind == .cancelled, let you = figures.you {
+                Text(you).font(ScaledType.meta).foregroundStyle(FSColor.text).lineLimit(1).minimumScaleFactor(0.8)
+            }
+            if let stale = figures.stale { StaleLine(text: stale) }
+        }
+    }
+}
+
 /// Next raid, small (spec §5.6): the headline, then your answer as the foot tag.
 struct NextRaidSmallView: View {
     let figures: WidgetFigures
@@ -83,11 +103,7 @@ struct NextRaidSmallView: View {
             VStack(alignment: .leading, spacing: 0) {
                 RaidHeadline(figures: figures)
                 Spacer(minLength: 4)
-                if let stale = figures.stale {
-                    StaleLine(text: stale)
-                } else if let tag = figures.tag, let kind = figures.tagKind {
-                    WidgetTag(text: tag, kind: kind)
-                }
+                RaidFoot(figures: figures)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .accessibilityElement(children: .ignore)
@@ -99,8 +115,9 @@ struct NextRaidSmallView: View {
     }
 }
 
-/// Next raid, medium: the headline on the left; the count and In, Late, Out on the right. A press
-/// answers in place through RaidAnswerIntent; with no spec saved every button opens the spec ask.
+/// Next raid, medium: the headline and the count on top; under them, 8 pt clear, the answer in
+/// words on the left and In, Late, Out on the right. A press answers in place through
+/// RaidAnswerIntent; with no spec saved every button opens the spec ask.
 struct NextRaidMediumView: View {
     let figures: WidgetFigures
     let lastRaid: String?
@@ -108,31 +125,30 @@ struct NextRaidMediumView: View {
     let characterKey: String?
 
     static let answers = ["in", "late", "out"]
+    static let buttonGap: CGFloat = 8
 
     var body: some View {
         if figures.state == .raid, let raid {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .top, spacing: 12) {
                     RaidHeadline(figures: figures)
-                    Spacer(minLength: 4)
-                    if let stale = figures.stale {
-                        StaleLine(text: stale)
-                    } else if !figures.buttons, let tag = figures.tag, let kind = figures.tagKind {
-                        WidgetTag(text: tag, kind: kind)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(figures.accessibility)
+                    if let signed = figures.signedUp {
+                        VStack(alignment: .trailing, spacing: 0) {
+                            Text(signed).font(ScaledType.monoDay).foregroundStyle(FSColor.strong).lineLimit(1)
+                            Text(Copy.widgetSignedUpLabel).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                        }
+                        .accessibilityElement(children: .combine)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(figures.accessibility)
-                VStack(alignment: .trailing, spacing: 0) {
-                    if let signed = figures.signedUp {
-                        Text(signed).font(ScaledType.monoDay).foregroundStyle(FSColor.strong).lineLimit(1)
-                        Text(Copy.widgetSignedUpLabel).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    }
-                    Spacer(minLength: 6)
+                Spacer(minLength: Self.buttonGap)
+                HStack(alignment: .bottom, spacing: 8) {
+                    RaidFoot(figures: figures, buttonsSayIt: figures.buttons)
+                    Spacer(minLength: 0)
                     if figures.buttons { buttons(raid) }
                 }
-                .accessibilityElement(children: .contain)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .widgetTextCap()
@@ -147,6 +163,7 @@ struct NextRaidMediumView: View {
                 answerButton(state, raid: raid)
             }
         }
+        .fixedSize()
     }
 
     @ViewBuilder
@@ -174,8 +191,10 @@ struct AnswerButtonLabel: View {
         Text(title)
             .font(ScaledType.button)
             .foregroundStyle(failed ? FSColor.wipe : (checked ? FSColor.strong : FSColor.nav))
-            .lineLimit(1)
-            .minimumScaleFactor(0.6)
+            // `Not saved` wraps to two lines rather than cut (spec §9: an answer never collapses).
+            .lineLimit(failed ? 2 : 1)
+            .multilineTextAlignment(.center)
+            .minimumScaleFactor(0.7)
             .frame(minWidth: WidgetMetrics.buttonHeight, minHeight: WidgetMetrics.buttonHeight)
             .padding(.horizontal, 4)
             .background(checked ? FSColor.kill.opacity(0.16) : Color.white.opacity(0.06), in: .rect(cornerRadius: 12))
@@ -204,13 +223,13 @@ struct RaidRectangularView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             if figures.state == .raid {
-                Text(figures.zone ?? "").font(.headline).lineLimit(1)
+                Text(figures.zone ?? "").font(.headline).lineLimit(1).widgetAccentable()
                 Text([figures.time, figures.countdown ?? figures.tag].compactMap { $0 }.joined(separator: " · "))
                     .font(.caption).lineLimit(1).minimumScaleFactor(0.7)
                 Text(figures.tagKind == .locked || figures.tagKind == .cancelled ? (figures.tag ?? "") : (figures.you ?? ""))
                     .font(.caption).lineLimit(1)
             } else {
-                Text(Copy.widgetNextRaid).font(.headline).lineLimit(1)
+                Text(Copy.widgetNextRaid).font(.headline).lineLimit(1).widgetAccentable()
                 Text(figures.inline).font(.caption).lineLimit(2)
             }
         }
@@ -229,13 +248,28 @@ struct RaidSignedUpCircularView: View {
             Gauge(value: Double(min(count, size)), in: 0...Double(size)) {
                 Text(Copy.widgetSignedUpLabel)
             } currentValueLabel: {
-                Text("\(count)").font(.system(.title3, design: .rounded, weight: .semibold))
+                // The unit rides under the figure: `24` over `of 40` (widget.ofSize, split at the count).
+                VStack(spacing: -2) {
+                    Text("\(count)").font(.system(.title3, design: .rounded, weight: .semibold))
+                    Text(Self.ofSize(count: count, size: size)).font(.system(size: 10, weight: .medium, design: .rounded))
+                }
+                .minimumScaleFactor(0.7)
             }
             .gaugeStyle(.accessoryCircularCapacity)
+            .widgetAccentable()
             .accessibilityLabel(figures.signedUp.map { "\($0) \(Copy.widgetSignedUpLabel)" } ?? "")
         } else {
             CircularWords(text: figures.state == .raid ? (figures.signedUp ?? "") : "—")
         }
+    }
+}
+
+extension RaidSignedUpCircularView {
+    /// `of 40`: widget.ofSize with the count taken off its front, so the words stay the catalog's.
+    static func ofSize(count: Int, size: Int) -> String {
+        let whole = Copy.widgetOfSize(n: count, size: size)
+        let lead = "\(count)"
+        return whole.hasPrefix(lead) ? String(whole.dropFirst(lead.count)).trimmingCharacters(in: .whitespaces) : whole
     }
 }
 
@@ -256,6 +290,7 @@ struct CircularWords: View {
         ZStack {
             AccessoryWidgetBackground()
             Text(text).font(.system(.title3, design: .rounded, weight: .semibold)).minimumScaleFactor(0.6)
+                .widgetAccentable()
         }
     }
 }

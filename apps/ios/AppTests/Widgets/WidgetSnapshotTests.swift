@@ -19,7 +19,7 @@ struct WidgetSnapshotTests {
         return (try? Data(contentsOf: url)).flatMap(UIImage.init(data:))
     }
 
-    private func snap(_ view: some View, _ name: String, size: CGSize, large: Bool = false) {
+    private func snap(_ view: some View, _ name: String, size: CGSize, large: Bool = false, ground: Color? = nil, keyWindow: Bool = false) {
         let traits = UITraitCollection { traits in
             traits.userInterfaceStyle = .dark
             traits.preferredContentSizeCategory = large ? .accessibilityExtraExtraExtraLarge : .large
@@ -29,10 +29,13 @@ struct WidgetSnapshotTests {
             .environment(\.dynamicTypeSize, large ? .accessibility5 : .large)
             .preferredColorScheme(.dark)
             .padding(16)
-            .background(Color(red: 0.16, green: 0.12, blue: 0.09))
+            .background(ground ?? Color(red: 0.16, green: 0.12, blue: 0.09))
+        let layout = SwiftUISnapshotLayout.fixed(width: size.width + 32, height: size.height + 32)
         assertSnapshot(
             of: framed,
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .fixed(width: size.width + 32, height: size.height + 32), traits: traits),
+            as: keyWindow
+                ? .image(drawHierarchyInKeyWindow: true, precision: 0.99, perceptualPrecision: 0.98, layout: layout, traits: traits)
+                : .image(precision: 0.99, perceptualPrecision: 0.98, layout: layout, traits: traits),
             testName: name
         )
     }
@@ -113,6 +116,18 @@ struct WidgetSnapshotTests {
         let tall = WidgetMetrics.medium
         snap(WidgetFrame(size: tall) { UpgradeMediumView(figures: figures, className: className, icons: icons) },
              "ios-upgrade-medium-ax5", size: tall, large: true)
+        // Tinted home screen (iOS 18+): the rendering mode set, the art desaturated and the whole
+        // widget washed in the tint, as an approximation of the system pass.
+        snap(WidgetFrame(size: WidgetMetrics.medium) { UpgradeMediumView(figures: figures, className: className, icons: icons) }
+            .environment(\.widgetRenderingMode, .accented).grayscale(1).colorMultiply(Color(red: 0.75, green: 0.88, blue: 1.0)),
+             "ios-upgrade-medium-tinted", size: WidgetMetrics.medium)
+        let base = snapshot.widget
+        let noHome = UpgradeFigures(WidgetSnapshot(widget: Widget(
+            generatedAt: base.generatedAt, character: base.character, guild: base.guild, nextRaid: base.nextRaid,
+            lastRaid: base.lastRaid, upgrades: nil, live: base.live
+        ), fetchedAt: now))
+        snap(WidgetFrame(size: WidgetMetrics.small) { UpgradeSmallView(figures: noHome, className: className, icons: icons) },
+             "ios-upgrade-small-no-home", size: WidgetMetrics.small)
         let noGear = UpgradeFigures(try WidgetFixtures.snapshot("widget.get.no-guild"))
         snap(WidgetFrame(size: WidgetMetrics.small) { UpgradeSmallView(figures: noGear, className: "hunter", icons: icons) },
              "ios-upgrade-small-no-gear", size: WidgetMetrics.small)
@@ -121,9 +136,19 @@ struct WidgetSnapshotTests {
     @Test("lock screen: inline, rectangular, both circulars, the upgrade rectangle")
     func lockScreen() throws {
         let figures = raid(try WidgetFixtures.snapshot())
+        // A snapshot cannot run the system's tint pass. Each lock widget is drawn three ways: the
+        // default (white), vibrant (the rendering mode set, white at 80% over a blurred-photo grey)
+        // and accented (the mode set, the accent group in the lock screen's tint, the rest dimmed),
+        // which approximates what `widgetAccentable` marks. Verify the real tint on a device.
         func lock(_ view: some View, _ name: String, _ size: CGSize) {
             snap(WidgetFrame(size: size, card: false) { view.foregroundStyle(.white).frame(width: size.width, height: size.height) },
                  "ios-lock-\(name)", size: size)
+            snap(WidgetFrame(size: size, card: false) {
+                view.environment(\.widgetRenderingMode, .vibrant).foregroundStyle(.white.opacity(0.8)).frame(width: size.width, height: size.height)
+            }, "ios-lock-\(name)-vibrant", size: size, ground: Color(red: 0.32, green: 0.33, blue: 0.38))
+            snap(WidgetFrame(size: size, card: false) {
+                view.environment(\.widgetRenderingMode, .accented).foregroundStyle(Color(red: 0.55, green: 0.78, blue: 1.0)).frame(width: size.width, height: size.height)
+            }, "ios-lock-\(name)-accented", size: size, ground: Color(red: 0.08, green: 0.12, blue: 0.22))
         }
         lock(RaidInlineView(figures: figures), "inline", WidgetMetrics.inline)
         lock(RaidRectangularView(figures: figures), "rectangular", WidgetMetrics.rectangular)
@@ -184,8 +209,43 @@ struct WidgetSnapshotTests {
                 .navigationTitle(Copy.liveSettings)
                 .navigationBarTitleDisplayMode(.inline)
         }
-        snap(view, "ios-settings-live-surfaces", size: CGSize(width: 402, height: 360))
-        snap(view, "ios-settings-live-surfaces-ax5", size: CGSize(width: 402, height: 600), large: true)
+        // Drawn in a key window so the switches render with their knobs and on state.
+        snap(view, "ios-settings-live-surfaces", size: CGSize(width: 402, height: 360), keyWindow: true)
+        snap(view, "ios-settings-live-surfaces-ax5", size: CGSize(width: 402, height: 600), large: true, keyWindow: true)
         defaults.removePersistentDomain(forName: suite)
+    }
+
+    @Test("the home screen on a light and a dark wallpaper, and the gallery entry")
+    func wallpapersAndGallery() throws {
+        let snapshot = try WidgetFixtures.snapshot()
+        let className = snapshot.widget.character?.className
+        let screen = CGSize(width: 402, height: 420)
+        func home(_ wallpaper: [Color]) -> some View {
+            VStack(spacing: 18) {
+                HStack(spacing: 22) {
+                    WidgetFrame(size: WidgetMetrics.small) { NextRaidSmallView(figures: raid(snapshot), lastRaid: nil) }
+                    WidgetFrame(size: WidgetMetrics.small) { UpgradeSmallView(figures: UpgradeFigures(snapshot), className: className, icons: icons) }
+                }
+                WidgetFrame(size: WidgetMetrics.medium) {
+                    NextRaidMediumView(figures: raid(snapshot), lastRaid: nil, raid: snapshot.widget.nextRaid, characterKey: nil)
+                }
+            }
+            .frame(width: screen.width, height: screen.height)
+            .background(LinearGradient(colors: wallpaper, startPoint: .top, endPoint: .bottom))
+        }
+        snap(home([Color(red: 0.93, green: 0.87, blue: 0.78), Color(red: 0.72, green: 0.82, blue: 0.92)]), "ios-home-wallpaper-light", size: screen)
+        snap(home([Color(red: 0.24, green: 0.15, blue: 0.08), Color(red: 0.05, green: 0.08, blue: 0.16)]), "ios-home-wallpaper-dark", size: screen)
+
+        // The widget gallery's entry, composed from the extension's own name, description and view
+        // (the system sheet itself cannot be drawn in a test).
+        let gallery = VStack(spacing: 14) {
+            WidgetFrame(size: WidgetMetrics.medium) {
+                NextRaidMediumView(figures: raid(snapshot), lastRaid: nil, raid: snapshot.widget.nextRaid, characterKey: nil)
+            }
+            Text(Copy.widgetNextRaid).font(.title3.weight(.semibold)).foregroundStyle(.white)
+            Text(Copy.widgetGalleryRaid).font(.subheadline).foregroundStyle(.white.opacity(0.7)).multilineTextAlignment(.center)
+        }
+        .frame(width: screen.width - 32)
+        snap(gallery, "ios-gallery-next-raid", size: CGSize(width: 402, height: 300), ground: Color(red: 0.11, green: 0.11, blue: 0.12))
     }
 }

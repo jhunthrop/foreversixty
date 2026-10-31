@@ -98,7 +98,10 @@ struct RaidLiveLockView: View {
                 LiveLeadBar(target: state.targetDate, fixedNow: fixedNow)
             }
             HStack {
-                Text(Self.you(attributes, state)).font(ScaledType.body).foregroundStyle(FSColor.text).lineLimit(1)
+                // A cancelled raid has no answer to report; the count stays.
+                if state.status != "cancelled" {
+                    Text(Self.you(attributes, state)).font(ScaledType.body).foregroundStyle(FSColor.text).lineLimit(1)
+                }
                 Spacer()
                 if let signed = figures.signedUp { Text(signed).font(ScaledType.mono).foregroundStyle(FSColor.text) }
             }
@@ -118,11 +121,11 @@ struct RaidLiveLockView: View {
     /// `Invites for Onyxia's Lair in 38 minutes. You are In.`; the countdown is not read per tick.
     static func spoken(_ attributes: RaidActivityAttributes, _ state: RaidActivityAttributes.ContentState, now: Date) -> String {
         if state.status == "cancelled" { return "\(attributes.zoneName), \(Copy.widgetCancelled)" }
-        let minutes = max(0, Countdown(from: now, to: state.targetDate).totalMinutes)
-        return Copy.liveA11yRaid(
-            zone: attributes.zoneName, span: Copy.widgetA11yMinutes(n: minutes),
-            state: WidgetFigures.stateWord(state.myState) ?? Copy.widgetNotSignedUp
-        )
+        let span = Copy.widgetA11yMinutes(n: max(0, Countdown(from: now, to: state.targetDate).totalMinutes))
+        let word = WidgetFigures.stateWord(state.myState) ?? Copy.widgetNotSignedUp
+        return state.inviteAt == nil
+            ? Copy.liveA11yRaidPull(zone: attributes.zoneName, span: span, state: word)
+            : Copy.liveA11yRaid(zone: attributes.zoneName, span: span, state: word)
     }
 }
 
@@ -138,9 +141,17 @@ struct RaidIslandExpandedView: View {
         VStack(spacing: 12) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(attributes.zoneName).font(ScaledType.name).foregroundStyle(FSColor.strong).lineLimit(1)
-                    Text([figures.liveUntil, figures.you].compactMap { $0 }.joined(separator: " · "))
-                        .font(ScaledType.meta).foregroundStyle(FSColor.text).lineLimit(2)
+                    HStack(spacing: 6) {
+                        SealMark()
+                        Text(attributes.zoneName).font(ScaledType.name).foregroundStyle(FSColor.strong).lineLimit(1)
+                    }
+                    Text(figures.liveUntil ?? "").font(ScaledType.meta).foregroundStyle(FSColor.text).lineLimit(1)
+                    if state.status != "cancelled" {
+                        Text(RaidLiveLockView.you(attributes, state)).font(ScaledType.meta).foregroundStyle(FSColor.text).lineLimit(1)
+                    }
+                    if let signed = figures.signedUp {
+                        Text(signed).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    }
                 }
                 Spacer()
                 if state.status == "cancelled" {
