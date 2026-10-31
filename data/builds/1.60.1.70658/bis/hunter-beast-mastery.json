@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70658",
-  "engine_version": "56f97823e",
-  "generated_at": "2026-10-31T19:13:58Z",
+  "engine_version": "c99fb94b4",
+  "generated_at": "2026-10-31T20:29:01Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -659,8 +659,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.042186063,
-      "verify_run_seconds": 2.083464748,
+      "weights_run_seconds": 1.713290513,
+      "verify_run_seconds": 1.857985083,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -747,8 +747,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.472803634328058,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -1428,8 +1428,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.042186063,
-      "verify_run_seconds": 3.371385302,
+      "weights_run_seconds": 1.713290513,
+      "verify_run_seconds": 3.1393919869999998,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1516,8 +1516,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.472803634328058,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -2303,8 +2303,8 @@
         "off_hand: Jade Serpentblade",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.133607983,
-      "verify_run_seconds": 2.061711896,
+      "weights_run_seconds": 1.956791819,
+      "verify_run_seconds": 1.958249741,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -2395,8 +2395,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.9101228931239245,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -3190,8 +3190,8 @@
         "off_hand: Jade Serpentblade",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.133607983,
-      "verify_run_seconds": 1.951016557,
+      "weights_run_seconds": 1.956791819,
+      "verify_run_seconds": 1.8673758299999998,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3282,8 +3282,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.9101228931239245,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -4055,8 +4055,8 @@
         "main_hand: Steel Spear",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.340499544,
-      "verify_run_seconds": 2.358831976,
+      "weights_run_seconds": 1.927891191,
+      "verify_run_seconds": 2.047961763,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4147,8 +4147,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 3.6165965033117513,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -4928,8 +4928,8 @@
         "main_hand: Steel Spear",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.340499544,
-      "verify_run_seconds": 2.319910754,
+      "weights_run_seconds": 1.927891191,
+      "verify_run_seconds": 2.081832062,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5020,8 +5020,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 3.6165965033117513,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -5149,7 +5149,7 @@
               "item_name": "Kaleidoscope Chain",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.426065576,
+              "dps_delta": -1.617782282,
               "verified": true
             },
             {
@@ -5238,8 +5238,7 @@
               "item_name": "Blackflame Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.664389547,
-              "verified": true
+              "dps_delta": -0.714543944
             },
             {
               "item_id": 8259,
@@ -5323,19 +5322,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 14807,
+              "item_name": "Bloodlust Bracelets",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.952725258
+            },
+            {
               "item_id": 15084,
               "item_name": "Wicked Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.952725258
-            },
-            {
-              "item_id": 14807,
-              "item_name": "Bloodlust Bracelets",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.010111391,
-              "verified": true
             },
             {
               "item_id": 14672,
@@ -5347,14 +5345,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 15084,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
-            },
-            {
               "item_id": 14807,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            {
+              "item_id": 15084,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             }
           ]
         },
@@ -5430,7 +5428,7 @@
               "item_name": "Skulker's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.135620859,
+              "dps_delta": -1.632362293,
               "verified": true
             }
           ],
@@ -5475,7 +5473,7 @@
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.271007914,
+              "dps_delta": -1.317886183,
               "verified": true
             }
           ],
@@ -5545,8 +5543,8 @@
           "source_kind": "quest",
           "score": 43.423612012,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +3.7 DPS (223.3 vs 219.5 set DPS)",
-          "dps_delta": 3.7408243814904267,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +3.8 DPS (224.7 vs 220.9 set DPS)",
+          "dps_delta": 3.792547387424122,
           "alternatives": [
             {
               "item_id": 7552,
@@ -5629,20 +5627,22 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 249470,
-          "item_name": "Molten Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "sim_dps": 223.26620906865486,
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
           "item_id": 249469,
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 223.26620906865486,
+          "sim_dps": 224.68809258904105,
+          "verified": true,
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.4 DPS (224.7 vs 223.3 set DPS)",
+          "dps_delta": 1.4218835203861886
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 249470,
+          "item_name": "Molten Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 224.68809258904105,
           "verified": true,
           "alternatives": [
             {
@@ -5659,7 +5659,8 @@
               "source_kind": "quest",
               "source": "The Pariah's Instructions"
             }
-          ]
+          ],
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.02 vs 0.51 ± 0.24 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -5667,7 +5668,7 @@
           "item_name": "Ebon Shiv",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 223.26620906865486,
+          "sim_dps": 224.68809258904105,
           "verified": true,
           "alternatives": [
             {
@@ -5689,7 +5690,7 @@
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.517677985,
+              "dps_delta": -2.395277804,
               "verified": true
             }
           ],
@@ -5778,7 +5779,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 223.26620906865486,
+          "sim_dps": 224.68809258904105,
           "verified": true,
           "alternatives": [
             {
@@ -5800,7 +5801,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -5.84021751,
+              "dps_delta": -5.633687168,
               "verified": true
             }
           ],
@@ -5818,7 +5819,7 @@
           ]
         }
       ],
-      "set_dps": 223.26620906865486,
+      "set_dps": 224.68809258904105,
       "no_source_count": 879,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -5849,14 +5850,14 @@
         "feet: Albino Crocscale Boots",
         "finger1: Masons Fraternity Ring",
         "finger2: Ring of the Underwood",
-        "trinket1: Molten Heart of the Mountain",
-        "trinket2: Frozen Heart of the Mountain",
+        "trinket1: Frozen Heart of the Mountain",
+        "trinket2: Molten Heart of the Mountain",
         "main_hand: Ebon Shiv",
         "off_hand: Widowmaker",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.388186936,
-      "verify_run_seconds": 2.971310044,
+      "weights_run_seconds": 1.982654969,
+      "verify_run_seconds": 2.665535442,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5947,8 +5948,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.8577372341277636,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -6767,8 +6768,8 @@
         "off_hand: Widowmaker",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.388186936,
-      "verify_run_seconds": 3.183557116,
+      "weights_run_seconds": 1.982654969,
+      "verify_run_seconds": 3.019724029,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6859,8 +6860,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 2.8577372341277636,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -6935,7 +6936,7 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -6957,7 +6958,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -10.990935249,
+              "dps_delta": -10.828006397,
               "verified": true
             }
           ],
@@ -6988,7 +6989,7 @@
               "item_name": "Sunprism Pendant",
               "source_kind": "quest",
               "source": "Vyral the Vile",
-              "dps_delta": -1.279151166,
+              "dps_delta": -1.080550165,
               "verified": true
             },
             {
@@ -7077,7 +7078,7 @@
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.85571499,
+              "dps_delta": -1.900909331,
               "verified": true
             },
             {
@@ -7136,7 +7137,7 @@
               "item_name": "Shadowcraft Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -5.389814,
+              "dps_delta": -5.908304783,
               "verified": true
             }
           ],
@@ -7188,7 +7189,7 @@
               "item_name": "Shadowcraft Bracers",
               "source_kind": "dungeon",
               "source": "Scholomance: Scholomance Occultist",
-              "dps_delta": -8.951586365,
+              "dps_delta": -8.816856828,
               "verified": true
             }
           ],
@@ -7211,7 +7212,7 @@
           "item_name": "Beaststalker's Gloves",
           "source": "Blackrock Spire: War Master Voone",
           "source_kind": "dungeon",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7233,7 +7234,7 @@
               "item_name": "Mourning Handguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -6.846477505,
+              "dps_delta": -6.860685351,
               "verified": true
             }
           ],
@@ -7262,7 +7263,7 @@
           "source": "Blackrock Spire: Smolderthorn Headhunter",
           "source_kind": "dungeon",
           "chance": 0.0418,
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7284,7 +7285,7 @@
               "item_name": "Sagebrush Girdle",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -7.910062153,
+              "dps_delta": -7.617349938,
               "verified": true
             }
           ],
@@ -7312,7 +7313,7 @@
           "item_name": "Beaststalker's Pants",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7334,7 +7335,7 @@
               "item_name": "Windrunner Legguards",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -11.675395052,
+              "dps_delta": -10.770566097,
               "verified": true
             }
           ],
@@ -7357,7 +7358,7 @@
           "item_name": "Beaststalker's Boots",
           "source": "Stratholme: Nerub'enkan",
           "source_kind": "dungeon",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7379,7 +7380,7 @@
               "item_name": "Shadowcraft Boots",
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "dps_delta": -9.559265517,
+              "dps_delta": -9.070260923,
               "verified": true
             }
           ],
@@ -7409,8 +7410,8 @@
           "source_kind": "quest",
           "score": 43.506868971,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +4.0 DPS (292.9 vs 288.9 set DPS)",
-          "dps_delta": 3.981157399638505,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +3.8 DPS (294.7 vs 290.8 set DPS)",
+          "dps_delta": 3.8474859937663837,
           "alternatives": [
             {
               "item_id": 7552,
@@ -7497,10 +7498,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
-          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +2.5 DPS (292.9 vs 290.4 set DPS)",
-          "dps_delta": 2.4580588014008526
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.9 DPS (294.7 vs 292.8 set DPS)",
+          "dps_delta": 1.885281195035077
         },
         {
           "slot": "trinket2",
@@ -7508,7 +7509,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7526,7 +7527,7 @@
               "source": "The Pariah's Instructions"
             }
           ],
-          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.36 vs 0.49 ± 0.32 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.49 vs 0.49 ± 0.33 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -7534,7 +7535,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7556,7 +7557,7 @@
               "item_name": "Enchanted Azsharite Felbane Sword",
               "source_kind": "quest",
               "source": "Enchanted Azsharite Fel Weaponry",
-              "dps_delta": -10.482639363,
+              "dps_delta": -9.484388678,
               "verified": true
             }
           ],
@@ -7584,7 +7585,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 292.88958933044273,
+          "sim_dps": 294.69279195437616,
           "verified": true,
           "alternatives": [
             {
@@ -7606,7 +7607,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -12.07873167,
+              "dps_delta": -11.296916194,
               "verified": true
             }
           ],
@@ -7624,7 +7625,7 @@
           ]
         }
       ],
-      "set_dps": 292.88958933044273,
+      "set_dps": 294.69279195437616,
       "no_source_count": 1749,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -7653,13 +7654,11 @@
         "waist: Beaststalker's Belt",
         "legs: Beaststalker's Pants",
         "feet: Beaststalker's Boots",
-        "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Molten Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.35165701,
-      "verify_run_seconds": 7.984494175,
+      "weights_run_seconds": 2.148438911,
+      "verify_run_seconds": 7.260918919,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7750,8 +7749,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 5.842488250598351,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -8539,8 +8538,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.35165701,
-      "verify_run_seconds": 7.869818055,
+      "weights_run_seconds": 2.148438911,
+      "verify_run_seconds": 7.238487696,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8631,8 +8630,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 5.842488250598351,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -8707,7 +8706,7 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -8729,7 +8728,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -12.993163767,
+              "dps_delta": -12.39867525,
               "verified": true
             }
           ],
@@ -8848,7 +8847,7 @@
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.220247238,
+              "dps_delta": -3.415345639,
               "verified": true
             },
             {
@@ -8907,7 +8906,7 @@
               "item_name": "Shadowcraft Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -12.234271989,
+              "dps_delta": -12.165003952,
               "verified": true
             }
           ],
@@ -8959,7 +8958,7 @@
               "item_name": "Shadowcraft Bracers",
               "source_kind": "dungeon",
               "source": "Scholomance: Scholomance Occultist",
-              "dps_delta": -4.948366897,
+              "dps_delta": -5.004641077,
               "verified": true
             }
           ],
@@ -9004,7 +9003,7 @@
               "item_name": "Devilsaur Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -6.896043923,
+              "dps_delta": -6.894356341,
               "verified": true
             }
           ],
@@ -9049,7 +9048,7 @@
               "item_name": "Wicked Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -6.008552967,
+              "dps_delta": -5.959165612,
               "verified": true
             }
           ],
@@ -9072,7 +9071,7 @@
           "item_name": "Beaststalker's Pants",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -9094,7 +9093,7 @@
               "item_name": "Windrunner Legguards",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.69984448,
+              "dps_delta": -8.443780212,
               "verified": true
             }
           ],
@@ -9122,7 +9121,7 @@
           "item_name": "Beaststalker's Boots",
           "source": "Stratholme: Nerub'enkan",
           "source_kind": "dungeon",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -9144,7 +9143,7 @@
               "item_name": "Shadowcraft Boots",
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "dps_delta": -4.406260049,
+              "dps_delta": -3.935243012,
               "verified": true
             }
           ],
@@ -9174,8 +9173,8 @@
           "source_kind": "quest",
           "score": 45.776402128,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +8.1 DPS (630.1 vs 622.0 set DPS)",
-          "dps_delta": 8.134129895025694,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +7.7 DPS (635.7 vs 627.9 set DPS)",
+          "dps_delta": 7.744142622888376,
           "alternatives": [
             {
               "item_id": 7552,
@@ -9262,10 +9261,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
-          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +6.2 DPS (630.1 vs 623.9 set DPS)",
-          "dps_delta": 6.194215938740513
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +5.3 DPS (635.7 vs 630.4 set DPS)",
+          "dps_delta": 5.326385653477473
         },
         {
           "slot": "trinket2",
@@ -9273,7 +9272,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -9291,7 +9290,7 @@
               "source": "The Pariah's Instructions"
             }
           ],
-          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 3.03 vs 0.84 ± 0.69 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 2.98 vs 0.84 ± 0.68 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -9299,7 +9298,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -9321,7 +9320,7 @@
               "item_name": "Enchanted Azsharite Felbane Sword",
               "source_kind": "quest",
               "source": "Enchanted Azsharite Fel Weaponry",
-              "dps_delta": -22.842269234,
+              "dps_delta": -20.568744082,
               "verified": true
             }
           ],
@@ -9349,7 +9348,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 630.0950506688636,
+          "sim_dps": 635.6900210313217,
           "verified": true,
           "alternatives": [
             {
@@ -9371,7 +9370,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -17.887151663,
+              "dps_delta": -17.671743222,
               "verified": true
             }
           ],
@@ -9389,7 +9388,7 @@
           ]
         }
       ],
-      "set_dps": 630.0950506688636,
+      "set_dps": 635.6900210313217,
       "no_source_count": 1749,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -9417,13 +9416,11 @@
         "hands: Mourning Handguards",
         "legs: Beaststalker's Pants",
         "feet: Beaststalker's Boots",
-        "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Molten Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.272056751,
-      "verify_run_seconds": 7.54457062,
+      "weights_run_seconds": 1.974427629,
+      "verify_run_seconds": 7.054949866,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9514,8 +9511,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 5.480537873989719,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     },
@@ -10303,8 +10300,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.272056751,
-      "verify_run_seconds": 7.43587158,
+      "weights_run_seconds": 1.974427629,
+      "verify_run_seconds": 7.23919541,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10395,8 +10392,8 @@
       "scale_reference_stat": "agility",
       "haste_scale_factor": 5.480537873989719,
       "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
+        "baseline": 1,
+        "specials": 8
       },
       "haste_on_items": false
     }

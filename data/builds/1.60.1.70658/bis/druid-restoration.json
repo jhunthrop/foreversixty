@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70658",
-  "engine_version": "56f97823e",
-  "generated_at": "2026-10-31T19:12:27Z",
+  "engine_version": "c99fb94b4",
+  "generated_at": "2026-10-31T20:27:35Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -711,8 +711,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 4.356643806,
-      "verify_run_seconds": 14.751666676,
+      "weights_run_seconds": 3.765449212,
+      "verify_run_seconds": 12.792865184,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1519,8 +1519,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.356643806,
-      "verify_run_seconds": 13.951814649,
+      "weights_run_seconds": 3.765449212,
+      "verify_run_seconds": 12.319200465,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2385,8 +2385,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 6.123525136,
-      "verify_run_seconds": 20.843221581999998,
+      "weights_run_seconds": 5.281786512,
+      "verify_run_seconds": 17.392562826,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3243,8 +3243,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 6.123525136,
-      "verify_run_seconds": 21.070640643,
+      "weights_run_seconds": 5.281786512,
+      "verify_run_seconds": 17.308823331,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4106,8 +4106,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 6.876067961,
-      "verify_run_seconds": 24.635192874,
+      "weights_run_seconds": 5.539364623,
+      "verify_run_seconds": 20.450823001,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4969,8 +4969,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 6.876067961,
-      "verify_run_seconds": 24.578796133,
+      "weights_run_seconds": 5.539364623,
+      "verify_run_seconds": 20.432147352,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5867,8 +5867,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.048254947,
-      "verify_run_seconds": 24.390646958,
+      "weights_run_seconds": 5.860216162,
+      "verify_run_seconds": 19.949075223,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6745,8 +6745,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.048254947,
-      "verify_run_seconds": 24.331871031,
+      "weights_run_seconds": 5.860216162,
+      "verify_run_seconds": 19.818512177,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7643,8 +7643,8 @@
         "finger1: Band of the Hierophant",
         "finger2: Eye of Adaegus"
       ],
-      "weights_run_seconds": 7.169257275,
-      "verify_run_seconds": 65.036885549,
+      "weights_run_seconds": 5.889972576,
+      "verify_run_seconds": 53.110140189,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8559,8 +8559,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 7.169257275,
-      "verify_run_seconds": 65.17192533,
+      "weights_run_seconds": 5.889972576,
+      "verify_run_seconds": 52.720871296,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9487,8 +9487,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 5.209714054,
-      "verify_run_seconds": 42.509221377,
+      "weights_run_seconds": 4.356012805,
+      "verify_run_seconds": 35.036447277,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10393,8 +10393,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 5.209714054,
-      "verify_run_seconds": 42.413899802,
+      "weights_run_seconds": 4.356012805,
+      "verify_run_seconds": 34.954812977,
       "coverage": {
         "back": {
           "eligible": 391,

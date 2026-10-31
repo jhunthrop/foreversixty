@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70658",
-  "engine_version": "56f97823e",
-  "generated_at": "2026-10-31T19:49:40Z",
+  "engine_version": "c99fb94b4",
+  "generated_at": "2026-10-31T20:59:48Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -727,8 +727,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.557078379,
-      "verify_run_seconds": 3.044746275,
+      "weights_run_seconds": 1.359314773,
+      "verify_run_seconds": 2.715660388,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1549,8 +1549,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.557078379,
-      "verify_run_seconds": 3.044638642,
+      "weights_run_seconds": 1.359314773,
+      "verify_run_seconds": 2.750165011,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2442,8 +2442,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.590499855,
-      "verify_run_seconds": 3.203178665,
+      "weights_run_seconds": 1.300783882,
+      "verify_run_seconds": 2.865904031,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3340,8 +3340,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.590499855,
-      "verify_run_seconds": 3.203119192,
+      "weights_run_seconds": 1.300783882,
+      "verify_run_seconds": 2.862767447,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4213,8 +4213,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.555972122,
-      "verify_run_seconds": 1.665453477,
+      "weights_run_seconds": 1.408656021,
+      "verify_run_seconds": 1.465064999,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5085,8 +5085,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.555972122,
-      "verify_run_seconds": 1.649848568,
+      "weights_run_seconds": 1.408656021,
+      "verify_run_seconds": 1.492626411,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6005,8 +6005,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.093054607,
-      "verify_run_seconds": 2.132935312,
+      "weights_run_seconds": 1.770082388,
+      "verify_run_seconds": 1.86765341,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6923,8 +6923,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.093054607,
-      "verify_run_seconds": 2.125029999,
+      "weights_run_seconds": 1.770082388,
+      "verify_run_seconds": 1.892191986,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7842,8 +7842,8 @@
         "main_hand: Masterwork Stormhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 1.982054857,
-      "verify_run_seconds": 3.301945792,
+      "weights_run_seconds": 1.6710957880000001,
+      "verify_run_seconds": 2.960919904,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8762,8 +8762,8 @@
         "main_hand: Masterwork Stormhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 1.982054857,
-      "verify_run_seconds": 3.238696883,
+      "weights_run_seconds": 1.6710957880000001,
+      "verify_run_seconds": 2.94378382,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9680,8 +9680,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 2.304845616,
-      "verify_run_seconds": 3.5291428270000003,
+      "weights_run_seconds": 1.9380531460000001,
+      "verify_run_seconds": 3.188621935,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10599,8 +10599,8 @@
         "main_hand: Greenhammer",
         "off_hand: Ironwood Blade"
       ],
-      "weights_run_seconds": 2.304845616,
-      "verify_run_seconds": 3.599466607,
+      "weights_run_seconds": 1.9380531460000001,
+      "verify_run_seconds": 3.286838328,
       "coverage": {
         "back": {
           "eligible": 390,
