@@ -51,3 +51,20 @@ Call sites
 
 ## Not reviewed
 loading-390/1280 and empty-1280 boards were not opened; the build-time reviewer should check them against §4.
+
+## Re-check (2026-10-31, after fix round 1)
+
+Reviewed: beta-360, longest-360, tip-flip-1280, tip-phone-390, tip-phoneflip-390 and spec sections 3.3, 4.2, 10. Verdict: SHIP. No blocker remains.
+
+Blockers
+1. Phone gain row: CLOSED. beta-360 draws the upgrade as a full-width 44 px row under each pair, slot word first, pick name on 2 lines, gain right-aligned in gold. "Head / Lionheart Helm / +60.0" and "Shoulder / Truestrike Shoulders / +24.2" cannot be confused. The head figure (+148.8 across 9 slots) matches the 9 gain rows drawn.
+2. Clamping at 360: CLOSED on the board. longest-360 uses the worst launch-legal names, shows 3 lines with no name cut, and the rule is in the spec table. See must-fix A for one residual.
+3. Two-hander: CLOSED. Arcanite Champion in main hand, the off hand is a plain dashed empty socket with "Two-hand in main hand", no ghost icon. This matches the client behaviour the spec now cites (PaperDollFrame.lua).
+4. Tooltip boards: CLOSED. Desktop right column flips to align-end (panel right edge on cell right edge, 8 px gap, flips above near the bottom), panel is about 358 px, clear of the crest and item level. Phone panel is 358 px between 16 px gutters, 8 px below the tapped cell, and flips above near the bottom without covering its trigger.
+
+New findings
+- A (must fix at build, not a blocker): longest-360 breaks "Electromagne|tic" with no hyphen mark. Spec 3.3 says a long word is hyphenated, never cut without a mark. The headless render lacks `hyphens: auto`. Build must insert soft hyphens (or ship a hyphenation that works in Chromium on macOS and WebKit) and the 360 acceptance capture must show the "-".
+- B (polish): the open desktop tooltip crops the row beside it ("Plaguehound Leggings" is clipped by the panel top). Transient and accepted by 4.2; no change needed.
+- C (polish): the phone tooltip hides the rows below the tapped cell. Expected. Confirm that tapping outside or Escape closes it, as in 4.1, in the acceptance capture.
+
+Acceptance: the implementer attaches longest-360 with the hyphen visible and tip-phone at 360 as built.

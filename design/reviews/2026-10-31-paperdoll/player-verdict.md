@@ -21,3 +21,26 @@ Seen: raid-1280, beta-1280, raid-390, states. Read but not looked at: raid-1024,
 - Phone (raid-390): "Signet Ring of the Bronze Dragonflight" clamps to "Signet Ring of the Bronze". Names cut at about 15 characters give a wrong name. Allow 3 lines or reduce font size on long names. Main hand is also cut, and ranged sits left of centre, not centred as specced.
 - Quality colours read right. The 2 px game-hue border and the name text colour agree. Purple and blue on dark are legible. Gold item level is fine.
 - Data to check for accuracy: the Frozen Heart of the Mountain trinket on Arms and Fury (its Use is not modelled yet), "Ravencrest's Legacy" and "Shadowsong's Sorrow" as a Fury raid pair, and The Purifier as the ranged pick. Check that the Knight-Lieutenant and Sergeant Major PvP items are the rank 7 and rank 5 sets (both under rank 10).
+
+## Re-check (fix round 1)
+
+Seen: states-1280, beta-1280, raid-1280, tip-right-1280, tip-phone-390. Read only: the other tip boards, raid-390/1024/2000.
+
+### Verdict: SHIP (no blockers left)
+
+### My four blockers
+1. Gains: closed. Hands on beta-1280 now reads "Devilsaur Gauntlets" with "Timbermaw Brawlers +4.4", a different item. Worn picks read "Star of Mystaria / Best in slot" and "Frozen Heart of the Mountain / Best in slot", muted, with no gain. The header "+148.8 points across 9 slots" matches nine gain lines. The board shows nine, so it checks out.
+2. Item level: closed. beta-1280 has no figure, and the footer note says "Item level shows once every item is known." raid-1280 shows 62.0 with all slots known. The counted slots are named in §3.5 (every slot except shirt and tabard). One small point: the two-hander's empty off hand must not count as unknown. §3.5 should say so in one clause.
+3. Tooltip board: closed. The icon no longer sits on the name, the panel hangs from the right edge on the right column, and on phone it sits below the tapped cell. The numbers (Timbermaw Brawlers ilvl 61, Requires Level 56, 107 Armor, Plaguehound Leggings ilvl 62, Requires Level 57) come from the record.
+   - "Requires Blacksmithing (300)": I agree with the decline. The client shows a profession requirement on the recipe, not on the crafted item. My request was wrong. "Crafted: Leatherworking" is the site's own line, and a reasonable one.
+4. Two-hander: closed. Arcanite Champion has the empty off-hand socket and "Two-hand in main hand". That matches the client, where the off hand is simply empty.
+
+### Declined suggestions
+- Weapons centred, as the client has them: I accept it for now. The site and the Discord sheet should show one picture, and a player will not mistake the layout for something else. It is a parity decision, so the owner should rule on it together with the shirt and tabard sockets. Do not leave it as an unstated default. If the owner wants the client layout, the sheet changes too.
+- Empty shirt and tabard sockets: I accept it, with the same owner ruling. The hole under the left column at 1280 is visible, but it is not a defect.
+
+### Remaining shoulds, none blocking
+- The tooltip lacks "Binds when picked up" and the armour type word beside the slot ("Legs" / "Leather"; "Hands" / "Leather"), which the client shows on every armour tooltip. Add both.
+- The unknown-item slots now read "Waist · Item 288887", which fixes my slot-word complaint.
+- Gain lines are now "Lionheart Helm +60.0" with no unit word. The header says "points", but each row does not. Acceptable.
+- The raid-1280 board's "Hyper Deluxe Sniper Rifle Mk XVII" wraps to two lines. That is fine, and the full name shows.
