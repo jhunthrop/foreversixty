@@ -117,6 +117,7 @@ func sampleMetrics() *proto.UnitMetrics {
 		Resources: []*proto.ResourceMetrics{
 			{Id: spellID(20, 0), Type: proto.ResourceType_ResourceTypeEnergy, Gain: 100, ActualGain: 80},
 		},
+		SecondsOomAvg: 2.5,
 	}
 }
 
@@ -135,6 +136,9 @@ func TestNewReportSortsAndScalesRows(t *testing.T) {
 	if !strings.HasPrefix(r.Actions[0].Name, "High") || !strings.HasPrefix(r.Actions[1].Name, "Low") {
 		t.Errorf("actions not sorted by DPS: %+v", r.Actions)
 	}
+	if !near(r.SecondsOOM, 2.5) {
+		t.Errorf("seconds out of mana = %v, want 2.5", r.SecondsOOM)
+	}
 	if !near(r.Actions[0].DPS, 40) || !near(r.Actions[0].Share, 80) {
 		t.Errorf("top action dps/share = %v/%v", r.Actions[0].DPS, r.Actions[0].Share)
 	}
@@ -150,7 +154,7 @@ func TestNewReportSortsAndScalesRows(t *testing.T) {
 func TestMarkdownRendersTablesAndSkipsEmptyRows(t *testing.T) {
 	out := sampleReport().markdown()
 	for _, want := range []string{
-		testSpec + "  DPS 50.0 +/- 1.5", "consumes: [a]", "buffs: [b]",
+		testSpec + "  DPS 50.0 +/- 1.5", "out of mana: 2.5 s of 10 s", "consumes: [a]", "buffs: [b]",
 		"| High (2) | 40.0 | 80.0 |", "| Long (11) | 50.0 | 2.00 |", "| Combo (20) | ResourceTypeEnergy | 50.0 | 40.0 |",
 	} {
 		if !strings.Contains(out, want) {

@@ -1,7 +1,7 @@
 {
   "spec": "shaman-elemental",
   "state": "written",
-  "notes": "Elemental at 60: Lightning Bolt spammed the rest of the time, Chain Lightning taking over on 2+ targets, with Searing Totem or Magma Totem dropped depending on target count, and Earth Shock as a mana-percent-gated filler -- matching the community guide's 'totems up, Flame Shock up, then Lightning Bolt' summary; Earth Shock as a mana dump is our own design choice, matching the enhancement rotation's own precedent, not something the guide says. The fork's elemental_shaman/apls/default.apl.json is the starting point but two lines are not adapted as-is: it casts Chain Lightning (10605) with no target-count condition ahead of Lightning Bolt in the priority list, which would fire Chain Lightning on every single-target cast too since it has no ability cooldown of its own -- gated it on numberTargets >= 2 here instead. It also filled its Lightning Bolt line with rank 4 (915) rather than the top rank; used rank 10 (15208), the highest this build's spellconst has, since nothing here calls for downranking. Fix round 1: the first pass here left Earth Shock out over an assumed shared cooldown with Chain Lightning; that assumption was wrong. Read sim/shaman/shocks.go and sim/shaman/chain_lightning.go directly: registerShocks() shares one shockTimer across Earth Shock, Flame Shock, and Frost Shock only, while registerChainLightningSpell() owns an independent cdTimer never tied to that shared timer -- the category_cooldown_ms: 6000 spellconst reports for both the shocks and Chain Lightning is coincidental, not a shared category. A priority list already skips an on-cooldown action and falls through, so Earth Shock is added back as a mana-percent-gated filler ahead of the Lightning Bolt default, the same placement the preset used it in and the same design our own enhancement rotation already uses -- not something the cited guide itself recommends. All non-cast aura references here are dotIsActive checks against Searing Totem (10438), Magma Totem (10587), and Flame Shock (29228); each is registered with its Dot directly on the same spell object as its own ActionID (sim/shaman/fire_totems.go, sim/shaman/flame_shock.go), not via a separate buff-aura helper, so dotIsActive resolves correctly for all three -- verified the same way the enhancement fix below required for Windfury Totem, which does not have this direct self-reference. Rotation-accuracy program, night-lava-burst lane (2026-09-28): added Lava Burst (1238300, top rank; family 408490/1238299/1238300, spell_level 40/50/60) above Chain Lightning, gated on Flame Shock's own dotIsActive (29228) rather than cast unconditionally, since the talent's tooltip bonus (+20% damage) only applies while Flame Shock is on the target and Flame Shock is otherwise kept up continuously by the line above -- the guide's level-60 build (FS1 elemental tree digits) already spends the talent point, and the ladder's own budget=level-9 truncation (sim/leveling/talents.go) does not reach it until budget=31, i.e. level 40, which is also spellranks.json's own learn level for rank 1, so the line resolves to a no-op below level 40 for two independent reasons rather than needing an expected_idle entry. Golden DPS at 40/50/60 actually DROPPED slightly (40.7->40.6, 55.2->54.7, 86.0->84.8; -0.2% to -1.4%): expected, not a defect. This client's Lava Burst is a flat +20%-vs-Flame-Shocked multiplier, not Classic's guaranteed crit, and its sp_coefficient (0.714) over its cast time (2.5s) is 0.343/s even with Call of Flame's +15% (already maxed in this build) applied, versus Lightning Bolt's 0.857 coefficient over 3s = 0.286/s -- Lava Burst's spellpower scaling per cast-second is higher, but its BASE damage per cast-second (220*1.2*1.15/2.5=121/s) is well below Lightning Bolt's (452 avg/3=151/s), so at this ladder's deliberately bare spell power (~0, no gear/buffs/consumables) trading an occasional Lightning Bolt cast for Lava Burst is a net loss. The two scale-with-SP terms cross at roughly 270 spell power (150.83-121.4 = (0.343-0.286)*SP), well within a raid-geared Elemental shaman's range, so this is a bare-ladder artifact, not a reason to drop the line -- FOREVER_LADDER_STRICT=1 reports no new violations from adding it (dps_regression is level-over-level, not before/after a rotation change, and 40/50/60 still each exceed the level below). Fire Nova / Mana Spring lane (2026-10-07): Forever Fire Nova (408341-408345, a ranked instant spell on a 10 s cooldown that needs a live fire totem; engine ids in sim/shaman/fire_nova.go) was swept as an insertion after the totems at no gate and at 20/40/60/80% mana gates: every variant lost DPS (about 3x worse damage per mana than Lightning Bolt in a mana-limited fight), so no Fire Nova line. Mana Spring Totem (10497) was made real in the engine (a five-minute MP5 aura, 10 mana per 2 s at rank 4) and added as a first priority line refreshed at 1.5 s remaining; it beat the previous rotation beyond error (see design/reviews/2026-10-07-shaman-fire-nova.md for paired numbers). Mana Spring sits ahead of autocastOtherCooldowns: the rotation search's swap of the two lines gained 1.9 +/- 0.3 DPS at 3000 iterations on two seeds, so the cooldowns start one global later. The mechanism is not understood; it is the one place in this file where autocastOtherCooldowns is not the first line.",
+  "notes": "Elemental at 60: Lightning Bolt spammed the rest of the time, Chain Lightning taking over on 2+ targets, with Searing Totem or Magma Totem dropped depending on target count, and Earth Shock as a mana-percent-gated filler -- matching the community guide's 'totems up, Flame Shock up, then Lightning Bolt' summary; Earth Shock as a mana dump is our own design choice, matching the enhancement rotation's own precedent, not something the guide says. The fork's elemental_shaman/apls/default.apl.json is the starting point but two lines are not adapted as-is: it casts Chain Lightning (10605) with no target-count condition ahead of Lightning Bolt in the priority list, which would fire Chain Lightning on every single-target cast too since it has no ability cooldown of its own -- gated it on numberTargets >= 2 here instead. It also filled its Lightning Bolt line with rank 4 (915) rather than the top rank; used rank 10 (15208), the highest this build's spellconst has, since nothing here calls for downranking. Fix round 1: the first pass here left Earth Shock out over an assumed shared cooldown with Chain Lightning; that assumption was wrong. Read sim/shaman/shocks.go and sim/shaman/chain_lightning.go directly: registerShocks() shares one shockTimer across Earth Shock, Flame Shock, and Frost Shock only, while registerChainLightningSpell() owns an independent cdTimer never tied to that shared timer -- the category_cooldown_ms: 6000 spellconst reports for both the shocks and Chain Lightning is coincidental, not a shared category. A priority list already skips an on-cooldown action and falls through, so Earth Shock is added back as a mana-percent-gated filler ahead of the Lightning Bolt default, the same placement the preset used it in and the same design our own enhancement rotation already uses -- not something the cited guide itself recommends. All non-cast aura references here are dotIsActive checks against Searing Totem (10438), Magma Totem (10587), and Flame Shock (29228); each is registered with its Dot directly on the same spell object as its own ActionID (sim/shaman/fire_totems.go, sim/shaman/flame_shock.go), not via a separate buff-aura helper, so dotIsActive resolves correctly for all three -- verified the same way the enhancement fix below required for Windfury Totem, which does not have this direct self-reference. Rotation-accuracy program, night-lava-burst lane (2026-09-28): added Lava Burst (1238300, top rank; family 408490/1238299/1238300, spell_level 40/50/60) above Chain Lightning, gated on Flame Shock's own dotIsActive (29228) rather than cast unconditionally, since the talent's tooltip bonus (+20% damage) only applies while Flame Shock is on the target and Flame Shock is otherwise kept up continuously by the line above -- the guide's level-60 build (FS1 elemental tree digits) already spends the talent point, and the ladder's own budget=level-9 truncation (sim/leveling/talents.go) does not reach it until budget=31, i.e. level 40, which is also spellranks.json's own learn level for rank 1, so the line resolves to a no-op below level 40 for two independent reasons rather than needing an expected_idle entry. Golden DPS at 40/50/60 actually DROPPED slightly (40.7->40.6, 55.2->54.7, 86.0->84.8; -0.2% to -1.4%): expected, not a defect. This client's Lava Burst is a flat +20%-vs-Flame-Shocked multiplier, not Classic's guaranteed crit, and its sp_coefficient (0.714) over its cast time (2.5s) is 0.343/s even with Call of Flame's +15% (already maxed in this build) applied, versus Lightning Bolt's 0.857 coefficient over 3s = 0.286/s -- Lava Burst's spellpower scaling per cast-second is higher, but its BASE damage per cast-second (220*1.2*1.15/2.5=121/s) is well below Lightning Bolt's (452 avg/3=151/s), so at this ladder's deliberately bare spell power (~0, no gear/buffs/consumables) trading an occasional Lightning Bolt cast for Lava Burst is a net loss. The two scale-with-SP terms cross at roughly 270 spell power (150.83-121.4 = (0.343-0.286)*SP), well within a raid-geared Elemental shaman's range, so this is a bare-ladder artifact, not a reason to drop the line -- FOREVER_LADDER_STRICT=1 reports no new violations from adding it (dps_regression is level-over-level, not before/after a rotation change, and 40/50/60 still each exceed the level below). Fire Nova / Mana Spring lane (2026-10-07): Forever Fire Nova (408341-408345, a ranked instant spell on a 10 s cooldown that needs a live fire totem; engine ids in sim/shaman/fire_nova.go) was swept as an insertion after the totems at no gate and at 20/40/60/80% mana gates: every variant lost DPS (about 3x worse damage per mana than Lightning Bolt in a mana-limited fight), so no Fire Nova line. Mana Spring Totem (10497) was made real in the engine (a five-minute MP5 aura, 10 mana per 2 s at rank 4) and added as a first priority line refreshed at 1.5 s remaining; it beat the previous rotation beyond error (see design/reviews/2026-10-07-shaman-fire-nova.md for paired numbers). Mana Spring sits ahead of autocastOtherCooldowns: the rotation search's swap of the two lines gained 1.9 +/- 0.3 DPS at 3000 iterations on two seeds, so the cooldowns start one global later. The mechanism is not understood; it is the one place in this file where autocastOtherCooldowns is not the first line. Caster tier lane (2026-10-31): the raid band is not mana-limited -- spec-breakdown's out-of-mana line reads well under 1 s of 180 s under the raid preset -- so the earlier 'runs dry either way' sweep, measured on the bare ladder character, no longer decides the raid rotation. Flame Shock is kept up again (one line after the cooldowns, no mana gate: 10% and 20% gates both measured lower) and Lava Burst waits for it, so every Lava Burst carries the +20%; together about +9% at the level-60 raid band. Lava Burst names rank 4 (1326047, level 60, a trainer rank in spellranks.json that the engine fork did not register until this lane). Mana Spring Totem's five minutes and 10 mana every 2 s are the client's own numbers (SpellMisc duration index 5 = 300000 ms; SpellEffect 10494 base 10, period 2000), not a modelling shortcut. Earth Shock is no longer a line: it shares the shock cooldown with Flame Shock and sat below an unconditional Lightning Bolt, so it could only fire when Lightning Bolt was unaffordable, and Earth Shock costs more (the wow-player review called it dead code; the ladder never cast it above level 10 either). Elemental Mastery is not a line because the guide's raid build does not take it and the engine fork leaves it unregistered (sim/shaman/talents.go); an open follow-up, not a rotation choice.",
   "expected_idle": [
     {
       "id": 10587,
@@ -10,15 +10,8 @@
     {
       "id": 10605,
       "reason": "Chain Lightning is gated on numberTargets >= 2 (AoE-only); the ladder's default encounter is single-target, so this line's own condition never passes."
-    },
-    {
-      "id": 10414,
-      "reason": "Rotation-accuracy program diagnosis (2026-09-28): at level 10 specifically Earth Shock's currentManaPercent <= 30% gate never passes -- the golden's own level 10 row carries no other:mana_gain entry in its top casts at all (every higher level does, often prominently), meaning this build's mana pool comfortably outlasts a level 10 fight rather than crashing the way it does by level 60 (see this line's own notes: SecondsOomAvg ~138s of a 180s fight at 60). Same root cause as the level-60 finding already documented and threshold-tuned in this file (a mana-dump filler that is provably dead code whenever this bare build's mana curve does not cross the gate), just the opposite direction: too MUCH mana at level 10 instead of too little at 60. This exemption is id-wide, not level-specific (the ladder's expected_idle schema has no per-level scoping) -- Earth Shock casts normally at every level 20 through 60, so a future regression there would be masked by this entry; flagged here rather than silently relied on."
     }
   ],
-  "engineering_notes": {
-    "5": "Fix round: the 50% gate this line previously used never once passed under this build's bare (no mp5 gear, no talents, no consumables) mana curve -- SecondsOomAvg is ~138s of a 180s fight at 60, i.e. this character is fully out of mana for roughly three-quarters of the encounter. Instrumented thresholds from 50% down to 10% at level 60 (2000 iterations, smokeSeed): 50% never casts Earth Shock (dps=50.48); 30%, 20%, and 10% are indistinguishable from each other (each casts Earth Shock 0.835/iteration, dps=49.80). Lowered to 30%, the highest value that actually lets the line fire. This costs about 0.7 dps (1.4%) relative to never casting it under this deliberately bare build; a geared, buffed Elemental shaman with real mp5 will cross 30% mana far more often."
-  },
   "sources": [
     {
       "label": "wowsims-forever elemental_shaman default priority list",
@@ -52,18 +45,26 @@
     ],
     "priorityList": [
       {
-        "notes": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast. It carries no Flame Shock condition because the rotation does not keep Flame Shock up: under the raid preset the shock costs 410 mana for about 940 damage against Lightning Bolt's 220 for about 835, the character runs dry either way, and every Flame Shock variant swept (always kept up, kept up above 50/70/90% mana) lost to leaving it out. The +20% Flame Shock bonus is therefore never collected.",
+        "notes": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight. 10 s cooldown, 2.0 s cast with Elemental Alacrity.",
         "action": {
+          "condition": {
+            "dotIsActive": {
+              "spellId": {
+                "spellId": 29228,
+                "rank": 6
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
-              "spellId": 1238300,
-              "rank": 3
+              "spellId": 1326047,
+              "rank": 4
             }
           }
         }
       },
       {
-        "notes": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+        "notes": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -91,6 +92,29 @@
       {
         "action": {
           "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 29228,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 29228,
+              "rank": 6
+            }
+          }
         }
       },
       {
@@ -208,30 +232,6 @@
             "spellId": {
               "spellId": 15208,
               "rank": 10
-            }
-          }
-        }
-      },
-      {
-        "notes": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-        "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentManaPercent": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "30%"
-                }
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 10414,
-              "rank": 7
             }
           }
         }

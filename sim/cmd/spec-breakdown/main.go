@@ -315,6 +315,8 @@ type report struct {
 	Spec, Preset       string
 	Consumes, Buffs    []string
 	DPS, Error         float64
+	FightSeconds       float64
+	SecondsOOM         float64 // average seconds per iteration spent out of mana
 	Actions            []actionRow
 	Auras              []auraRow
 	Resources          []resourceRow
@@ -325,7 +327,8 @@ type report struct {
 func newReport(req api.SimRequest, est api.Estimate, p *proto.UnitMetrics, names map[int32]string) report {
 	iters := float64(req.Iterations)
 	secs := float64(req.Encounter.DurationSec)
-	r := report{Spec: req.Spec, Consumes: req.Character.Consumes, Buffs: req.Character.Buffs, DPS: est.Mean, Error: est.Error}
+	r := report{Spec: req.Spec, Consumes: req.Character.Consumes, Buffs: req.Character.Buffs, DPS: est.Mean, Error: est.Error,
+		FightSeconds: secs, SecondsOOM: p.GetSecondsOomAvg()}
 	for _, a := range p.GetActions() {
 		r.Actions = append(r.Actions, foldAction(a, iters, secs, est.Mean, names))
 	}
@@ -410,7 +413,8 @@ func actionName(id *proto.ActionID, names map[int32]string) string {
 
 func (r report) markdown() string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s  DPS %.1f +/- %.1f\nconsumes: %v\nbuffs: %v\n\n", r.Spec, r.DPS, r.Error, r.Consumes, r.Buffs)
+	fmt.Fprintf(&b, "%s  DPS %.1f +/- %.1f\nout of mana: %.1f s of %.0f s\nconsumes: %v\nbuffs: %v\n\n",
+		r.Spec, r.DPS, r.Error, r.SecondsOOM, r.FightSeconds, r.Consumes, r.Buffs)
 	b.WriteString("| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |\n|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, a := range r.Actions {
 		if a.DPS == 0 && a.CastsPerIter == 0 {

@@ -31,7 +31,7 @@ sources:
 
 ## Overview
 
-Balance is the Druid ranged caster tree: Starfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura.
+Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura.
 
 ### Strengths
 
@@ -43,7 +43,7 @@ Balance is the Druid ranged caster tree: Starfire and Insect Swarm damage from M
 ### Weaknesses
 
 - Starfire's 3.5 second cast leaves little room to move
-- Mana limits it: keeping Moonfire up costs more than it returns
+- Two DoTs to keep up alongside a long Starfire cast
 - Damage is confined to the Nature and Arcane schools
 
 ### In a raid
@@ -63,7 +63,7 @@ Balance is the Druid ranged caster tree: Starfire and Insect Swarm damage from M
 
 ## Rotation and priority
 
-Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Insect Swarm ticking on the target: it is a cheap DoT with no real GCD contention beyond applying and refreshing it. Starfire is everything else: cast it on repeat for the rest of the fight. Moonfire is no longer a maintained DoT: keeping it up all fight costs more mana than it returns, and dropping that upkeep was worth about +7% in our level-60 search run. It is kept only to clip the last seconds. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
+Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Moonfire and then Insect Swarm ticking on the target: with Improved Moonfire and Nature's Splendor, a Moonfire does more damage per second of casting than Starfire, and a raid-buffed Balance druid has the mana to keep both up. Starfire is everything else: cast it on repeat for the rest of the fight. An earlier search dropped Moonfire upkeep to save mana, but that run's character was running dry; with raid buffs and consumables, keeping Moonfire up gained about 5% in our level-60 raid run. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
 
 ## Stat priority
 

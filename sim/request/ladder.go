@@ -1674,6 +1674,10 @@ var talentOwnedAuraIDs = map[string]map[int]int{
 		// RegisterAura(fingersOfFrostBuffSpellId) when
 		// Talents.FingersOfFrost == 0.
 		400669: 400647,
+		// sim/mage/talents.go: applyWintersChill returns before it builds
+		// the Winter's Chill debuff array (core.WintersChillAura, 12579)
+		// when Talents.WintersChill == 0.
+		12579: 11180,
 	},
 }
 
