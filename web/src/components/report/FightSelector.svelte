@@ -6,6 +6,7 @@
 <script lang="ts">
   import { fightRows, fightTitle, pullNumbers } from '../../lib/report/fights';
   import { formatClock, formatDuration, joinFacts, outcomeLabel } from '../../lib/report/format';
+  import { fightDeathMark } from '../../lib/report/group';
   import { killCountsLabel } from '../../lib/report/kill-counts';
   import type { FightEntry } from '../../lib/report/types';
   import { ALL_FIGHTS } from '../../lib/report/url';
@@ -19,6 +20,7 @@
     onSelect,
     phaseOf = new Map<number, string>(),
     foldOnPhone = false,
+    deathsInRange = false,
   }: {
     /** On a phone, fold the list to the one row that names the fight on show (the sample report,
      *  whose table would otherwise start two screens down). */
@@ -28,6 +30,9 @@
     onSelect: (index: number) => void;
     /** Per fight index, the phase that pull reached; a wipe's row says which. */
     phaseOf?: ReadonlyMap<number, string>;
+    /** The report's default scope is the logger's group, but a fight from before engine 0.6.0
+     *  counts every player the log saw: its marks say so (lib/report/group fightDeathMark). */
+    deathsInRange?: boolean;
   } = $props();
 
   let showTrash = $state(false);
@@ -67,6 +72,7 @@
 {#snippet fightRow(fight: FightEntry, nested: boolean)}
   {@const pull = pulls.get(fight.index)}
   {@const isSelected = fight.index === selected}
+  {@const deathMark = fightDeathMark([fight], deathsInRange)}
   <!-- Two lines: the name on its own line so it is never cut to "Gener Kaal", and the
            clock, length, deaths and pull number under it. The selected row carries a gold
            edge and the raised card colour; a background shade alone was too close to the
@@ -98,7 +104,7 @@
                 ? 'text-kill'
                 : 'text-wipe'}"
             title={fight.in_progress
-              ? 'This pull is still going'
+              ? 'The fight is still being logged'
               : fight.kill
                 ? 'The boss died'
                 : 'The percentage is the boss’s health when the pull ended'}
@@ -120,13 +126,9 @@
         {/if}
         <!-- A trash row's name already says its length ("Trash · 3:26"): once is enough. -->
         {#if fight.kind === 'encounter'}<span>{formatDuration(fight.duration_ms)}</span>{/if}
-        {#if fight.deaths > 0}
-          <span
-            class="text-death"
-            title={`${fight.deaths} ${fight.deaths === 1 ? 'death' : 'deaths'}`}
-            data-testid={`fight-${fight.index}-deaths`}
-          >
-            {fight.deaths}<span aria-hidden="true">†</span>
+        {#if deathMark !== null}
+          <span class="text-death" title={deathMark.title} data-testid={`fight-${fight.index}-deaths`}>
+            {deathMark.count}<span aria-hidden="true">†</span>
           </span>
         {/if}
         {#if pull !== undefined && pull.of > 1}
@@ -199,6 +201,7 @@
             {:else}
               {@const holdsSelected = row.fights.some((entry) => entry.index === selected)}
               {@const isOpen = holdsSelected || openGroups.includes(row.key)}
+              {@const groupMark = fightDeathMark(row.fights, deathsInRange)}
               <!-- Consecutive trash in one zone: one row, opened to reach each pull. -->
               <li>
                 <button
@@ -225,11 +228,12 @@
                         data-testid={`fight-group-${row.key}-kills`}>{killCountsLabel(row.kills)}</span
                       >
                     {/if}
-                    {#if row.deaths > 0}
+                    {#if groupMark !== null}
                       <span
                         class="text-death"
-                        title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}
-                        >{row.deaths}<span aria-hidden="true">†</span></span
+                        title={groupMark.title}
+                        data-testid={`fight-group-${row.key}-deaths`}
+                        >{groupMark.count}<span aria-hidden="true">†</span></span
                       >
                     {/if}
                     <span class="ml-auto">{row.fights.length} pulls {isOpen ? '‹' : '›'}</span>

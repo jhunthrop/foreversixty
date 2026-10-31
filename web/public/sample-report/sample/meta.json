@@ -3374,6 +3374,13 @@
       "group_deaths": 0
     }
   ],
+  "group": [
+    "Player-4184-00000038",
+    "Player-4184-00000143",
+    "Player-4184-00000144",
+    "Player-4184-00000146",
+    "Player-4184-00000311"
+  ],
   "id": "sample",
   "owner": null,
   "phase": "launch",

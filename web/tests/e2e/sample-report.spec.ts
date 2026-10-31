@@ -1,10 +1,38 @@
 // web/tests/e2e/sample-report.spec.ts
 // The sample report is bundled with the site (lib/report/sample.ts): /logs offers it, the
 // click lands on fights, and no API is involved at any step.
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { SAMPLE_REPORT_META } from './support/logs-sample-fixture';
+import { fieldBox } from './support/select';
 
 const SHOT_DIR = process.env.SAMPLE_SHOT_DIR;
+
+/**
+ * From the next navigation on, sums the layout shifts of anything inside the report. The site
+ * header's own font-swap nudge (a 3 px text move in the nav, before the island mounts) is not
+ * the report's and is left to the header's specs.
+ */
+async function recordReportShifts(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const w = window as unknown as { __reportShift: number };
+    w.__reportShift = 0;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries() as (PerformanceEntry & {
+        value: number;
+        hadRecentInput: boolean;
+        sources?: { node?: Node | null }[];
+      })[]) {
+        const inReport = (entry.sources ?? []).some(
+          (source) => source.node?.parentElement?.closest('#report') != null,
+        );
+        if (!entry.hadRecentInput && inReport) w.__reportShift += entry.value;
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  });
+}
+
+const reportShift = (page: Page): Promise<number> =>
+  page.evaluate(() => (window as unknown as { __reportShift: number }).__reportShift);
 
 test('the sample report opens from /logs and shows fights, with no API', async ({ page }, info) => {
   const api: string[] = [];
@@ -61,7 +89,8 @@ test('the sample report opens from /logs and shows fights, with no API', async (
     'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',
   );
   await expect(page).not.toHaveURL(/fight=/);
-  // Opens on the biggest pull (fight 6, 12:43), not the first.
+  // Opens on its first boss kill, else its longest boss attempt, else its longest pull. The
+  // sample has no boss, so that is its longest pull (fight 6, 12:43), not the first.
   await expect(page.getByTestId('fight-6')).toHaveAttribute('aria-current', 'true');
   // Class colours: no name keeps the plain text colour.
   const colours = await roster
@@ -78,4 +107,118 @@ test('the sample report opens from /logs and shows fights, with no API', async (
     const width = info.project.name === 'mobile' ? 390 : 1280;
     await page.screenshot({ path: `${SHOT_DIR}/l8-sample-${width}.png`, fullPage: false });
   }
+});
+
+test.describe('the sample report’s chart', () => {
+  test('on a desktop is the full chart, as a real report draws it', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'the desktop layout');
+    await recordReportShifts(page);
+    for (const width of [1280, 1440, 2000]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/reports/sample');
+      const chart = page.getByTestId('time-chart');
+      await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+      await expect(chart).not.toHaveAttribute('data-compact', 'true');
+      // The head with its title and units, the legend, the Window presets and the brush.
+      await expect(chart.getByText('Damage done', { exact: true }).first()).toBeVisible();
+      await expect(chart.getByTestId('chart-head-meta')).toContainText('DPS');
+      await expect(chart.getByTestId('chart-legend')).toBeVisible();
+      await expect(fieldBox(chart, 'window-select')).toBeVisible();
+      await expect(chart.getByTestId('overview-brush')).toBeVisible();
+      // A plot of about 200 px (220 from 1440), plus its 22 px axis.
+      const plot = (await chart.getByTestId('chart-plot').boundingBox())!;
+      expect(plot.height).toBeGreaterThanOrEqual(200 + 22);
+      // The full chart's frame reserves its loaded height: nothing moves as it arrives.
+      expect(await reportShift(page)).toBe(0);
+    }
+  });
+
+  test('on a phone stays the compact strip, once opened', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'the phone layout');
+    await page.goto('/reports/sample');
+    await page.getByTestId('chart-toggle').click();
+    const chart = page.getByTestId('time-chart');
+    await expect(chart).toHaveAttribute('data-compact', 'true');
+    await expect(chart.getByTestId('chart-legend')).toHaveCount(0);
+    const box = (await chart.boundingBox())!;
+    expect(box.height).toBeLessThanOrEqual(100);
+  });
+});
+
+test.describe('the brush on a fight that does not end on a whole second', () => {
+  // 1 s, 2 s and 5 s points (lib/chart/buckets.ts); the 10 s case is OverviewBrush.test.ts's.
+  const FIGHTS = [
+    { fight: 2, durationMs: 9_879, label: '0:09.9' },
+    { fight: 9, durationMs: 80_261, label: '1:20' },
+    { fight: 6, durationMs: 763_140, label: '12:43' },
+  ];
+  for (const { fight, durationMs, label } of FIGHTS) {
+    test(`fight ${fight}: the whole-fight end handle sits on the track's end`, async ({ page }) => {
+      // 1024 px: the full chart and its brush on both projects (a phone draws the strip, no brush).
+      await page.setViewportSize({ width: 1024, height: 900 });
+      await page.goto(`/reports/sample?fight=${fight}`);
+      const chart = page.getByTestId('time-chart');
+      await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+      const end = chart.getByTestId('window-end');
+      await expect(end).toHaveAttribute('max', String(durationMs));
+      // The browser's own reading of the input: a step that did not divide the fight snapped it down.
+      expect(await end.inputValue()).toBe(String(durationMs));
+      expect(await end.evaluate((input: HTMLInputElement) => input.valueAsNumber / Number(input.max))).toBe(
+        1,
+      );
+      await expect(end).toHaveAttribute('aria-valuetext', label);
+      await expect(chart.getByTestId('brush-domain-label')).toHaveText(label);
+    });
+  }
+});
+
+test.describe('the sample’s counts say what they count', () => {
+  // An open-world log sees every player in range: fight 6 has 265 of them and the logger's
+  // party is five of them (the pull's own flags, engine 0.6.0). The default scope is the group; Everyone in range is one pick away.
+  test('the default is the logger’s group, and nothing claims a raid', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample');
+    const source = page.getByTestId('source-scope');
+    await expect(source.locator('option:checked')).toHaveText('Your group');
+    // Fight 6's own flags put five players in the group; the report-wide last-seen flags said four.
+    await expect(page.getByTestId('summary-roster-card')).toContainText(/\b5 players · 0 deaths\b/);
+    const chart = page.getByTestId('time-chart');
+    await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group \d+ DPS over the whole fight$/);
+    await expect(chart.getByTestId('chart-legend')).toContainText('Group median');
+    await expect(chart).not.toContainText('Raid');
+    // The two deaths in fight 6 are outsiders': the group's chart does not mark them.
+    await expect(chart.getByTestId('death-marker')).toHaveCount(0);
+    // The trash row's counts are true and say whose they are: every mob that died in range, and
+    // the group's own kills.
+    await expect(page.getByTestId('fight-6-kills')).toHaveText('177 mobs died · your group killed 26');
+    // Deaths read the group's, like the kill line: the subtitle and the row both show none (the
+    // two in fight 6 were outsiders', counted under Everyone in range).
+    await expect(page.getByTestId('report-subtitle')).not.toContainText('death');
+    await expect(page.getByTestId('fight-6-deaths')).toHaveCount(0);
+  });
+
+  test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample?source=everyone');
+    await expect(page.getByTestId('summary-roster-card')).toContainText('265 players seen');
+    const chart = page.getByTestId('time-chart');
+    await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total \d+ DPS over the whole fight$/);
+    await expect(fieldBox(chart, 'players')).toContainText(/Top 4, bottom 4 of \d+ players seen/);
+    // The longer field still shows its value whole (the dropdown's fitted-field rule).
+    const label = fieldBox(chart, 'players').locator('.sel-label');
+    expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+    await expect(chart.getByTestId('death-marker').first()).toBeVisible();
+    await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
+    await expect(page.getByTestId('report-subtitle')).toContainText('2 deaths');
+  });
+
+  test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/reports/sample?fight=2');
+    await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
+    await expect(page.getByTestId('summary-roster-card')).toContainText('players seen');
+    await expect(page.getByTestId('time-chart').getByTestId('chart-head-meta')).toHaveText(/^Total /);
+  });
 });

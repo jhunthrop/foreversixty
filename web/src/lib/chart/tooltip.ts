@@ -2,6 +2,7 @@
 // The tooltip's rows at one second (controls and charts spec §B5.7): highest value first, the
 // legend-hovered series always in, players who died before this second last as "Died m:ss", and
 // at most 12 rows then a count.
+import { valueAt } from './buckets';
 import { chartCopy } from './copy';
 import type { ChartSeries } from './types';
 
@@ -27,11 +28,10 @@ export function tooltipLines(
     format: (value: number) => string;
   },
 ): { lines: TooltipLine[]; more: number } {
-  const index = Math.floor(ms / 1000);
   const all: TooltipLine[] = series
     .filter((line) => !options.hidden.has(line.id))
     .map((line) => {
-      const raw = line.values[index] ?? null;
+      const raw = valueAt(line, ms) ?? null;
       const dead = raw === null && line.diedAtMs !== undefined && line.diedAtMs <= ms;
       return {
         id: line.id,

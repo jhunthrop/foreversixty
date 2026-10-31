@@ -1,9 +1,11 @@
 // web/src/lib/chart/rate.ts
 // The damage, healing and damage-taken chart's model (controls and charts spec D5, §B5.3): every
-// player's 5 s average, the top 8 of N plus the always-drawn players, the raid median and a class
+// player's average over the fight's bucket (buckets.ts: every second on a short pull, 5 s on a long fight), the top 8 of N plus the always-drawn players, the raid median and a class
 // median, and the head's raid figure, which is the sum of the figures the legend shows.
 import { classColorVar } from '../report/format';
-import type { TimeWindow } from '../report/window';
+import { BUCKET_MS, type TimeWindow } from '../report/window';
+import { bucketMeans, chartBucket, type ChartBucket } from './buckets';
+import type { ScopeNoun } from '../report/group';
 import type { RateMetric } from './copy';
 import { chartCopy } from './copy';
 import {
@@ -14,7 +16,6 @@ import {
   roundedSum,
   selectDrawn,
   stopAtDeath,
-  trailingAverage,
   windowRate,
 } from './drawn';
 import type { ChartSeries, PlayerEntry } from './types';
@@ -37,6 +38,8 @@ export interface RateInput {
   metric: RateMetric;
   players: readonly RatePlayer[];
   window: TimeWindow;
+  /** The whole fight: it picks the bucket the lines are averaged over. */
+  durationMs: number;
   /** The Source player and you: always drawn. */
   pinned: ReadonlySet<string>;
   youGuid?: string;
@@ -49,6 +52,8 @@ export interface RateInput {
   deadSpans?: ReadonlyMap<string, readonly DeadSpan[]>;
   /** One player as the Source: their line is the gold area (today's look). */
   single?: string;
+  /** What the players are (lib/report/group.ts): it names the median line. A raid when absent. */
+  noun?: ScopeNoun;
 }
 
 export interface MedianInfo {
@@ -67,6 +72,10 @@ export interface RateModel {
   total: number;
   isDefault: boolean;
   medians: MedianInfo[];
+  /** The width every line's points are averaged over. */
+  bucket: ChartBucket;
+  /** One more line (a charted ability) on the same points: averaged over the bucket, with its step. */
+  pointsOf: (values: readonly number[]) => Pick<ChartSeries, 'values' | 'stepMs'>;
 }
 
 /** The players a median is taken over: damage dealers, healers, or (damage taken) everyone. */
@@ -97,12 +106,16 @@ export function classMedianInfo(players: readonly RatePlayer[], className: strin
   };
 }
 
+/** A series as the chart draws it: averaged over the bucket, across the fight's seconds. */
+type Averaged = (values: readonly number[]) => number[];
+
 function medianLine(
   id: string,
   label: string,
   colour: string,
   members: readonly RatePlayer[],
   window: TimeWindow,
+  averaged: Averaged,
 ): ChartSeries {
   return {
     id,
@@ -110,13 +123,18 @@ function medianLine(
     colour,
     kind: 'median',
     dash: MEDIAN_DASH,
-    values: medianSeries(members.map((player) => trailingAverage(player.series))),
+    values: medianSeries(members.map((player) => averaged(player.series))),
     figure: median(members.map((player) => windowRate(player.series, window))),
   };
 }
 
 export function buildRateModel(input: RateInput): RateModel {
   const { metric, players, window, pinned, chosen, compare } = input;
+  const bucket = chartBucket(input.durationMs);
+  const stepMs = bucket.seconds * BUCKET_MS;
+  const spanS = Math.ceil(Math.max(0, input.durationMs) / BUCKET_MS);
+  const averaged: Averaged = (values) => bucketMeans(values, bucket.seconds, spanS);
+  const medianName = chartCopy.median(input.noun ?? 'raid');
   const figures = new Map(players.map((player) => [player.guid, windowRate(player.series, window)]));
   const inFight = new Set(players.map((player) => player.guid));
   const pinnedHere = new Set([...pinned].filter((guid) => inFight.has(guid)));
@@ -138,7 +156,7 @@ export function buildRateModel(input: RateInput): RateModel {
   const medians: MedianInfo[] = [
     {
       id: RAID_MEDIAN_ID,
-      label: chartCopy.raidMedian,
+      label: medianName,
       description: chartCopy.raidMedianDescription(metric, group.length),
       count: group.length,
       on: compare.raid,
@@ -161,10 +179,19 @@ export function buildRateModel(input: RateInput): RateModel {
 
   const medianSeriesDrawn: ChartSeries[] = [
     ...(compare.raid && group.length > 0
-      ? [medianLine(RAID_MEDIAN_ID, chartCopy.raidMedian, 'var(--color-text)', group, window)]
+      ? [medianLine(RAID_MEDIAN_ID, medianName, 'var(--color-text)', group, window, averaged)]
       : []),
     ...(compare.className !== null && classMembers.length > 0
-      ? [medianLine(medians[1].id, medians[1].label, classColorVar(compare.className), classMembers, window)]
+      ? [
+          medianLine(
+            medians[1].id,
+            medians[1].label,
+            classColorVar(compare.className),
+            classMembers,
+            window,
+            averaged,
+          ),
+        ]
       : []),
   ];
 
@@ -177,7 +204,7 @@ export function buildRateModel(input: RateInput): RateModel {
       label: player.name,
       colour: single ? 'var(--color-gold)' : (player.colour ?? classColorVar(player.className)),
       kind: single ? 'single' : 'player',
-      values: stopAtDeath(trailingAverage(player.series), spans),
+      values: stopAtDeath(averaged(player.series), spans, stepMs),
       figure: figures.get(guid) ?? 0,
       pinned: pinnedHere.has(guid),
       you: guid === input.youGuid,
@@ -200,11 +227,13 @@ export function buildRateModel(input: RateInput): RateModel {
     }));
 
   return {
-    series: [...medianSeriesDrawn, ...playerSeries],
+    series: [...medianSeriesDrawn, ...playerSeries].map((line) => ({ ...line, stepMs })),
     entries,
     raidFigure: roundedSum([...figures.values()]),
     total: players.length,
     isDefault: chosen === null,
     medians,
+    bucket,
+    pointsOf: (values) => ({ values: averaged(values), stepMs }),
   };
 }

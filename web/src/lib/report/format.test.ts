@@ -96,6 +96,7 @@ describe('report formatting', () => {
     // A trash line from before engine 0.6 has only the double-counted npc_kills: no figure.
     expect(outcomeLabel({ ...trash, npc_kills: 115 } as never)).toBe('');
     expect(joinFacts('Trash · 3:26', '', '0:09')).toBe('Trash · 3:26 · 0:09');
+    expect(outcomeLabel({ ...trash, in_progress: true, mob_deaths: 1, group_kills: 1 })).toBe('Live');
     expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
     expect(parseTitle(100, 1)).toContain('first of one');
     expect(parseTitle('none')).toContain('no parse');

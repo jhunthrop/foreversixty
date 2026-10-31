@@ -26,3 +26,37 @@ describe('the threat title and the Enemy field agree (fix round 2)', () => {
     );
   });
 });
+
+describe('chartCopy.tooltipRate', () => {
+  it('names the average the points are', () => {
+    expect(chartCopy.tooltipRate('damage-done', 5)).toBe('DPS, 5 s average');
+    expect(chartCopy.tooltipRate('healing', 2)).toBe('HPS, 2 s average');
+    expect(chartCopy.tooltipRate('damage-done', 1)).toBe('DPS, each second');
+  });
+});
+
+describe('the chart says what its players are', () => {
+  it('names the head’s figure for the set it sums', () => {
+    expect(chartCopy.rateMeta('damage-done', '412', 'the whole fight', undefined, 'raid')).toBe(
+      'Raid 412 DPS over the whole fight',
+    );
+    expect(chartCopy.rateMeta('damage-done', '49', 'the whole fight', undefined, 'group')).toBe(
+      'Group 49 DPS over the whole fight',
+    );
+    expect(chartCopy.rateMeta('healing', '11', 'the whole fight', 'Hogger', 'everyone')).toBe(
+      'Total 11 HPS over the whole fight · on Hogger',
+    );
+  });
+
+  it('never calls a median a raid’s when the set is not a raid', () => {
+    expect(chartCopy.median('raid')).toBe('Raid median');
+    expect(chartCopy.median('group')).toBe('Group median');
+    expect(chartCopy.median('everyone')).toBe('Median player');
+  });
+
+  it('says a count of everyone in range is the players seen', () => {
+    expect(chartCopy.playersField(8, 90, 'split', true)).toBe('Top 4, bottom 4 of 90 players seen');
+    expect(chartCopy.playersField(5, 5, 'split', true)).toBe('All 5 players seen');
+    expect(chartCopy.playersField(8, 90, 'split')).toBe('Top 4, bottom 4 of 90');
+  });
+});

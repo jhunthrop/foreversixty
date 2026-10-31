@@ -505,6 +505,12 @@ export interface ReportMeta {
   engine_version: string;
   fights: FightEntry[];
   players: string[];
+  /**
+   * The players in the logger's group (their unit flags carry MINE, PARTY or RAID). Only the
+   * bundled sample's meta carries it (api/cmd/samplecut), so its first table can scope to the
+   * group before report.json arrives; otherwise the island reads the units' flags.
+   */
+  group?: string[];
   created_at: string;
   /** Where report.json and the fight files are served from, with no trailing slash. */
   data_base_url: string;

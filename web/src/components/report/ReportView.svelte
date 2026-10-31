@@ -7,6 +7,7 @@
      Tasks 10 to 17 add panels inside the content column. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import Card from '../ui/Card.svelte';
   import PageHead from '../ui/PageHead.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -24,7 +25,7 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { biggestFightIndex, defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
+  import { defaultFightIndex, resolveFightIndex, sampleFightIndex } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
   import {
     formatDuration,
@@ -38,6 +39,7 @@
     FLAG_LETTERS,
     MISSING_FIGHT,
     SOURCE_ENEMIES,
+    SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
     TABS,
     type FlagKey,
@@ -129,6 +131,7 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
+  import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
@@ -175,9 +178,9 @@
   const inflight = new Map<number, Promise<void>>();
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
-  /** The fight a bare url opens on: the first boss pull, not the first trash. */
+  /** The fight a bare url opens on: the first boss pull, not the first trash; the sample's own rule for the sample. */
   const firstFight = $derived(
-    isSampleReport(reportId) ? biggestFightIndex(fights) : defaultFightIndex(fights),
+    isSampleReport(reportId) ? sampleFightIndex(fights) : defaultFightIndex(fights),
   );
   /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
   const showParse = $derived(hasRankedKill(fights));
@@ -241,7 +244,8 @@
       verb === 'dispelled'
         ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
         : '';
-    if (state.source === SOURCE_FRIENDLIES) return `Nothing was ${verb} in the whole fight.${tail}`;
+    if (state.source === SOURCE_FRIENDLIES || state.source === SOURCE_EVERYONE)
+      return `Nothing was ${verb} in the whole fight.${tail}`;
     if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
     return `${name} ${verb} nothing in this fight.${tail}`;
@@ -250,6 +254,51 @@
   const playerSet = $derived(
     file === null && summaryFirst ? new Set(meta?.players ?? []) : playerGuids(file?.units ?? []),
   );
+  /**
+   * The pulls the scope is read from: the one on show, or the night's boss pulls. report.json's
+   * own lines once it has arrived (the units the fallback reads come from the same file), the
+   * meta's before.
+   */
+  const scopeFights = $derived.by(() => {
+    const lines = file?.fights ?? fights;
+    return nightMode
+      ? lines.filter((entry) => entry.kind === 'encounter')
+      : lines.filter((entry) => entry.index === state.fight);
+  });
+  /**
+   * Who the default scope is (lib/report/group.ts). From engine 0.6.0 each pull says who was in
+   * the group while it ran, so it is read from there. An older report falls back to the
+   * report-wide flags: the logger's group when outsiders outnumber it (an open-world log), else
+   * every player; before report.json the sample reads its meta's group.
+   */
+  const groupScopeNow = $derived(
+    fightGroupScope(scopeFights, raidFlaggedPlayers(file?.units ?? [])) ??
+      (file === null && summaryFirst
+        ? groupScope(
+            (meta?.players ?? []).map((guid) => ({ guid, kind: 'player', flags: 0 })),
+            meta?.group ?? [],
+            fight?.players,
+          )
+        : groupScope(file?.units ?? [], undefined, nightMode ? undefined : fight?.players)),
+  );
+  /** Everyone in range is the friendlies over every player seen; the scope rules read it so. */
+  const scopeKey = $derived(state.source === SOURCE_EVERYONE ? SOURCE_FRIENDLIES : state.source);
+  /** The players the friendlies scope keeps: the group when the default narrows to it. */
+  const scopePlayers = $derived(
+    state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped ? groupScopeNow.group : playerSet,
+  );
+  /**
+   * The subtitle's deaths: the fight's own count, or under the group scope the group's: the
+   * pull's own group_deaths from engine 0.6.0, else the group's deaths in the fight's summary.
+   */
+  const subtitleDeaths = $derived(
+    !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES
+      ? (fight?.deaths ?? 0)
+      : (fight?.group_deaths ??
+          (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length),
+  );
+  /** What the scope's players are called on the chart and the tables. */
+  const noun = $derived(scopeNoun(groupScopeNow, state.source));
   /** The players and their pets and totems: what the enemies scope leaves out. */
   const friendlySet = $derived(
     file === null && summaryFirst ? new Set(meta?.players ?? []) : friendlyGuids(file?.units ?? []),
@@ -540,7 +589,7 @@
   /** The fight in the window, before the source scope: what the events view reads whole. */
   const windowed = $derived(base === null ? null : scopeSummary(base, cutWindow));
   const scoped = $derived(
-    windowed === null ? null : scopeSource(windowed, state.source, playerSet, friendlySet),
+    windowed === null ? null : scopeSource(windowed, scopeKey, scopePlayers, friendlySet),
   );
   // The death presets follow the source pick: with one player chosen, "20 s before X
   // died" offers that player's deaths, not everyone's.
@@ -565,7 +614,7 @@
   );
   /** The source scope over the whole fight: the chart's lines run across the fight and the window zooms them. */
   const wholeScoped = $derived(
-    base === null || nightMode ? null : scopeSource(base, state.source, playerSet, friendlySet),
+    base === null || nightMode ? null : scopeSource(base, scopeKey, scopePlayers, friendlySet),
   );
   const wholeChartActors = $derived.by(() => {
     if (wholeScoped === null) return [];
@@ -575,13 +624,15 @@
         : chartMetric === 'healing'
           ? wholeScoped.healing
           : wholeScoped.damage_done;
-    return table.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet));
+    return table.filter((actor) => inSource(actor.guid, scopeKey, scopePlayers, friendlySet));
   });
   /** The brush's shape on every chart: the raid's damage per second over the whole fight. */
   const brushShape = $derived(
     base === null
       ? []
-      : combinedSeries(base.damage_done.filter((actor) => playerSet.size === 0 || playerSet.has(actor.guid))),
+      : combinedSeries(
+          base.damage_done.filter((actor) => scopePlayers.size === 0 || scopePlayers.has(actor.guid)),
+        ),
   );
   const chartPhases = $derived<ChartPhase[]>(
     (base?.phases ?? []).map((phase) => ({ name: phase.name, startMs: phase.start_ms, endMs: phase.end_ms })),
@@ -619,10 +670,24 @@
   }
   const iconOf = (_spellId: number, stem?: string): string | null =>
     stem === undefined ? null : dataUrl(activeBuild.build, `icons/${stem}.webp`);
+  /**
+   * The chart marks the scope's own deaths and cooldowns: under the group scope an outsider's death
+   * is not drawn over the group's lines. Every other source marks as before (rateMarkers narrows a
+   * single player itself).
+   */
+  function inMarkedScope(guid: string): boolean {
+    return state.source !== SOURCE_FRIENDLIES || !groupScopeNow.scoped || groupScopeNow.group.has(guid);
+  }
   const mainMarkers = $derived(
     base === null || nightMode
       ? []
-      : rateMarkers({ deaths: base.deaths, casts: base.casts, sourcePlayer, deathHref, iconOf }),
+      : rateMarkers({
+          deaths: base.deaths.filter((death) => inMarkedScope(death.guid)),
+          casts: base.casts.filter((row) => inMarkedScope(row.owner_guid ?? row.guid)),
+          sourcePlayer,
+          deathHref,
+          iconOf,
+        }),
   );
   const threatPlayers = $derived(
     new Map<string, ThreatPlayer>(
@@ -671,6 +736,13 @@
     }
   }
   let chartOpen = $state(prefersOpenChart());
+  /**
+   * The sample report draws the 74 px strip only on a phone, where its first screen promises the
+   * damage rows (onboarding-second-screen.spec.ts). From md up it draws the full chart, head,
+   * legend, presets and brush, as a real report does (owner, 2026-10-30: "still too small").
+   */
+  const wideViewport = new MediaQuery('min-width: 768px', true);
+  const compactChart = $derived(isSampleReport(reportId) && !wideViewport.current);
   $effect(() => {
     // The visitor's remembered choice, read once after mount -- never at the component's
     // own evaluation, so there is nothing here for a server render to disagree with.
@@ -761,7 +833,13 @@
   // scope falls back to everyone, instead of every tab answering "nothing" as a fact.
   $effect(() => {
     const source = state.source;
-    if (file === null || source === SOURCE_FRIENDLIES || source === SOURCE_ENEMIES) return;
+    if (
+      file === null ||
+      source === SOURCE_FRIENDLIES ||
+      source === SOURCE_EVERYONE ||
+      source === SOURCE_ENEMIES
+    )
+      return;
     if (unitNames.has(source)) return;
     const wanted = source.toLowerCase();
     // Players first: a boss's mirror images borrow players' names, and a typed name means
@@ -934,7 +1012,7 @@
             ? scoped.healing
             : [];
     const bySource =
-      state.source === 'friendlies'
+      scopeKey === SOURCE_FRIENDLIES
         ? source.filter((actor) => filterContext.players.has(actor.guid))
         : state.source === 'enemies'
           ? source.filter((actor) => !friendlySet.has(actor.guid))
@@ -986,7 +1064,7 @@
     const shown = new Set(tabActors.map((actor) => actor.guid));
     return scoped.roster
       .filter((row) => playerSet.has(row.guid) && !shown.has(row.guid))
-      .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
+      .filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet))
       .map((row) => ({
         name: splitUnitName(row.name).name,
         deadSince: deadSince(row.guid, cutWindow.endMs),
@@ -1617,9 +1695,9 @@
         >
       {/if}
       <span class="numeric">{formatDuration(fight.duration_ms)}</span>
-      {#if fight.deaths > 0}
-        · <span class="text-death numeric">{fight.deaths}</span>
-        {fight.deaths === 1 ? 'death' : 'deaths'}
+      {#if subtitleDeaths > 0}
+        · <span class="text-death numeric">{subtitleDeaths}</span>
+        {subtitleDeaths === 1 ? 'death' : 'deaths'}
       {/if}{/if}
   </span>
   <!-- The bundled sample was logged by no one the site knows: no credit line. -->
@@ -1821,6 +1899,7 @@
         onSelect={(index) => patch({ fight: index })}
         {phaseOf}
         foldOnPhone={isSampleReport(reportId)}
+        deathsInRange={groupScopeNow.scoped}
       />
 
       <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
@@ -1840,7 +1919,7 @@
              at 1280 x 800 that pushed Fix first's last line past the 640 px fold (coach-report). -->
         <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px] md:-mb-4" aria-hidden="true"></div>
         <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
-          <ModeBar {state} {roster} onPatch={patch} {nightMode} />
+          <ModeBar {state} {roster} onPatch={patch} {nightMode} scope={groupScopeNow} />
         </div>
         <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
            Mechanics ignores the window, so it does not show a strip it would then disown.
@@ -1882,7 +1961,8 @@
                 : { label: chartedAbility.label, series: chartedAbility.series }}
               syncKey={chartSyncKey}
               onOpenDeath={openDeaths}
-              compact={isSampleReport(reportId)}
+              compact={compactChart}
+              {noun}
             />
           {:else}
             <div
@@ -1933,6 +2013,7 @@
               {treeSizesFor}
               onSelectPlayer={(guid) => patch({ source: guid })}
               players={playerSet}
+              seen={noun === 'everyone'}
               onTab={(tab) => patch({ tab })}
               {reportId}
               fightIndex={state.fight}
@@ -2049,7 +2130,7 @@
               names={unitNames}
             />
           {:else if state.tab === 'debuffs'}
-            {#if state.source === 'friendlies'}
+            {#if scopeKey === SOURCE_FRIENDLIES}
               <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
                 These are the debuffs on the raid. The ones on the enemies, a boss’s Flame Shock among them,
                 are under
@@ -2078,9 +2159,7 @@
               approximate={!windowIsWhole}
               measured={castExact ?? undefined}
               measureError={castMeasureError}
-              whole={base === null
-                ? undefined
-                : scopeSource(base, state.source, playerSet, friendlySet).casts}
+              whole={base === null ? undefined : scopeSource(base, scopeKey, scopePlayers, friendlySet).casts}
               names={unitNames}
             />
           {:else if state.tab === 'interrupts'}
@@ -2185,7 +2264,7 @@
               {fight}
               {firstFight}
               {roster}
-              source={state.source}
+              source={scopeKey}
               {nightMode}
               onSelectPlayer={(guid) => patch({ source: guid })}
             />
@@ -2199,7 +2278,7 @@
                 {reportId}
                 fightIndex={state.fight}
                 {roster}
-                source={state.source}
+                source={scopeKey}
                 onSelectPlayer={(guid) => patch({ source: guid })}
               />
             {:else}
@@ -2232,7 +2311,7 @@
               auraOrder={[
                 ...new Set(
                   (summary?.auras ?? [])
-                    .filter((track) => inSource(track.target_guid, state.source, playerSet, friendlySet))
+                    .filter((track) => inSource(track.target_guid, scopeKey, scopePlayers, friendlySet))
                     .map((track) => track.name),
                 ),
               ].sort((a, b) => a.localeCompare(b))}
@@ -2247,7 +2326,7 @@
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
-              inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
+              inScope={(guid) => inSource(guid, scopeKey, scopePlayers, friendlySet)}
               off={state.eventsOff}
               search={state.find}
               onPatch={patch}
@@ -2288,7 +2367,7 @@
               rightIndex={state.compareWith}
               metric={state.compareMetric}
               vs={state.compareVs}
-              source={state.source}
+              source={scopeKey}
               onPatch={patch}
             />
           {:else}

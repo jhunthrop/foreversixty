@@ -12,7 +12,7 @@
   import { chartCursor, clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clusterRows, eventsNear, laneItems, type LaneItem } from '../../lib/chart/events';
   import { resolveColour, withAlpha } from '../../lib/chart/palette';
-  import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
+  import { clockLabel, TIME_STEP_FLOOR_S, timeTicks } from '../../lib/chart/time-axis';
   import { tooltipLines } from '../../lib/chart/tooltip';
   import type { ChartEvent, ChartPhase, ChartSeries } from '../../lib/chart/types';
   import {
@@ -25,7 +25,7 @@
   } from '../../lib/chart/layout';
   import { LOG_FLOOR, logTicks, niceTop, valueLabel, valueTicks } from '../../lib/chart/value-axis';
   import { subscribeOverlays } from '../../lib/ui/overlay';
-  import type { TimeWindow } from '../../lib/report/window';
+  import { BUCKET_MS, type TimeWindow } from '../../lib/report/window';
   import Glyph from '../ui/Glyph.svelte';
   import ChartTooltip, { type TooltipRow } from './ChartTooltip.svelte';
   import OverviewBrush from './OverviewBrush.svelte';
@@ -54,6 +54,7 @@
     rowsLabel = '',
     onScrub,
     onOpenDeath,
+    labelFloorS = TIME_STEP_FLOOR_S,
     testid = 'chart-frame',
   }: {
     series: readonly ChartSeries[];
@@ -89,6 +90,8 @@
     onScrub?: (ms: number | null) => void;
     /** A death marker (or a collapsed cluster) pressed: the report opens it on the Deaths tab in place. */
     onOpenDeath?: (deaths: readonly ChartEvent[]) => void;
+    /** The time axis' finest label step, in seconds: 2 s on a chart of one-second points (lib/chart/buckets.ts). */
+    labelFloorS?: number;
     testid?: string;
   } = $props();
 
@@ -128,11 +131,13 @@
   const showLane = $derived(!compact && laneEvents.length > 0);
   const showEventLine = $derived(!compact && coarse);
   const zoomed = $derived(current.startMs > 0 || current.endMs < domainMs);
+  /** The width of each point: every line on one chart shares it (ChartSeries.stepMs). */
+  const stepMs = $derived(series[0]?.stepMs ?? BUCKET_MS);
 
   /** The visible series have nothing inside the window: the empty state. */
   const empty = $derived.by(() => {
-    const from = Math.floor(current.startMs / 1000);
-    const to = Math.ceil(current.endMs / 1000);
+    const from = Math.floor(current.startMs / stepMs);
+    const to = Math.ceil(current.endMs / stepMs);
     return !series.some(
       (line) =>
         !hidden.has(line.id) &&
@@ -171,11 +176,12 @@
   const font = '11px Barlow, system-ui, sans-serif';
 
   /**
-   * Every line over the whole fight, one value per second. A summary's series stops at its last
-   * busy second: past it a rate is zero and a running total holds its last value.
+   * Every line over the whole fight, one value per point (a second unless the lines bucket wider).
+   * A summary's series stops at its last busy second: past it a rate is zero and a running total
+   * holds its last value.
    */
   const full = $derived.by((): ChartSeries[] => {
-    const length = Math.max(1, Math.ceil(domainMs / 1000) + 1);
+    const length = Math.max(1, Math.ceil(domainMs / stepMs) + 1);
     return series.map((line) => {
       if (line.values.length >= length) return line;
       const tail = mode === 'cumulative' ? (line.values.at(-1) ?? 0) : 0;
@@ -188,7 +194,7 @@
   });
 
   function data(): uPlot.AlignedData {
-    const xs = Array.from({ length: full[0]?.values.length ?? 1 }, (_, index) => index);
+    const xs = Array.from({ length: full[0]?.values.length ?? 1 }, (_, index) => (index * stepMs) / 1000);
     const lines = full.map((line) =>
       line.values.map((value) =>
         value === null ? null : scale === 'log' ? Math.max(LOG_FLOOR, value) : value,
@@ -235,7 +241,8 @@
           grid: { show: false },
           ticks: { show: true, size: 4, width: 1, stroke: () => colour('var(--color-line)') },
           border: { show: true, width: 1, stroke: () => colour('var(--color-line)') },
-          splits: (u) => timeTicks(u.scales.x.min ?? 0, u.scales.x.max ?? 0, u.bbox.width / devicePixelRatio),
+          splits: (u) =>
+            timeTicks(u.scales.x.min ?? 0, u.scales.x.max ?? 0, u.bbox.width / devicePixelRatio, labelFloorS),
           values: (_u, splits) => splits.map((at) => clockLabel(at * 1000)),
           gap: 4,
         },
@@ -316,10 +323,10 @@
     ctx.setLineDash([]);
     series.forEach((entry, index) => {
       if (entry.diedAtMs === undefined || hidden.has(entry.id)) return;
-      const at = Math.floor(entry.diedAtMs / 1000);
+      const at = Math.floor(entry.diedAtMs / stepMs);
       const value = u.data[index + 1][at];
       if (value === null || value === undefined) return;
-      const x = u.valToPos(at, 'x', true);
+      const x = u.valToPos((at * stepMs) / 1000, 'x', true);
       const y = u.valToPos(value, 'y', true);
       if (x < left || x > left + plotWidth) return;
       ctx.strokeStyle = colour(entry.colour);
@@ -402,7 +409,7 @@
   $effect(() => {
     const element = host;
     // Rebuilt when the lines, the scale, the height, the gutter or the phases change.
-    void [series, scale, plotHeight, gutter, phases, events, domainMs];
+    void [series, scale, plotHeight, gutter, phases, events, domainMs, labelFloorS];
     if (element === null || !measured) return;
     const built = untrack(
       () => new uPlot(options(), data(), element.querySelector<HTMLElement>('[data-uplot]')!),

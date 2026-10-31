@@ -21,6 +21,7 @@
     medians = [],
     choice,
     presets,
+    seen = false,
     formatValue,
     onToggle,
     onMedian,
@@ -34,6 +35,8 @@
     choice: PlayersChoice;
     /** The presets this chart offers: all three on the damage chart, Top 8 on threat. */
     presets: readonly DrawPreset[];
+    /** The entries are everyone in range: the field says "players seen". */
+    seen?: boolean;
     formatValue: (value: number) => string;
     onToggle: (id: string) => void;
     onMedian?: (id: string) => void;
@@ -72,7 +75,7 @@
     ...entries.filter((entry) => entry.drawn).map((entry) => entry.id),
   ]);
   const fieldText = $derived(
-    chartCopy.playersField(entries.filter((entry) => entry.drawn).length, entries.length, choice),
+    chartCopy.playersField(entries.filter((entry) => entry.drawn).length, entries.length, choice, seen),
   );
   const footActions = $derived<FootAction[]>([
     ...presets.map((preset) => ({
@@ -104,7 +107,7 @@
 
 <Select
   {id}
-  class="w-[196px] max-md:w-full"
+  class="{seen ? 'w-[260px]' : 'w-[196px]'} max-md:w-full"
   size="dense"
   align="end"
   multiple

@@ -5,6 +5,7 @@
      pin and cannot be turned off. On a phone the row is one line, `+{n}` counts the chips that did
      not fit, and while a finger scrubs the plot each chip reads the value at the finger. -->
 <script lang="ts">
+  import { valueAt } from '../../lib/chart/buckets';
   import { chartCopy } from '../../lib/chart/copy';
   import type { ChartSeries } from '../../lib/chart/types';
   import { valueLabel } from '../../lib/chart/value-axis';
@@ -70,7 +71,7 @@
 
   const valueOf = (line: ChartSeries): string => {
     if (scrubMs !== null) {
-      const value = line.values[Math.floor(scrubMs / 1000)];
+      const value = valueAt(line, scrubMs);
       return value === null || value === undefined ? '—' : formatValue(value);
     }
     return formatValue(line.figure);
