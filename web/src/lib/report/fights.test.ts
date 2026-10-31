@@ -22,7 +22,8 @@ function fight(index: number): FightEntry {
     duration_ms: 60_000,
     players: [],
     deaths: 0,
-    npc_kills: 1,
+    mob_deaths: 1,
+    group_kills: 1,
   };
 }
 
@@ -90,7 +91,8 @@ describe('fightTitle and fightRows', () => {
     name: 'Trash',
     zone,
     duration_ms: ms,
-    npc_kills: kills,
+    mob_deaths: kills,
+    group_kills: Math.floor(kills / 2),
   });
 
   it('titles trash by its length and keeps a boss name', () => {
@@ -98,7 +100,7 @@ describe('fightTitle and fightRows', () => {
     expect(fightTitle(fight(2))).toBe('Fight 2');
   });
 
-  it('folds consecutive trash of one zone into one row, summing time and deaths', () => {
+  it('folds consecutive trash of one zone into one row, summing mob deaths, group kills and time', () => {
     const rows = fightRows([
       trash(1, 'Zone A', 60_000, 5),
       trash(2, 'Zone A', 60_000, 7),
@@ -110,11 +112,17 @@ describe('fightTitle and fightRows', () => {
       type: 'trash-group',
       key: 1,
       zone: 'Zone A',
+      kills: { mobDeaths: 12, groupKills: 5 },
       duration_ms: 120_000,
     });
     expect(rows[1]).toMatchObject({ type: 'fight' });
     expect(rows[2]).toMatchObject({ type: 'fight' });
-    expect(rows[0]).not.toHaveProperty('kills');
+  });
+
+  it('gives a group with a pull from before engine 0.6 no kill count, not a partial one', () => {
+    const old: FightEntry = { ...trash(2, 'Zone A'), mob_deaths: undefined, group_kills: undefined };
+    const rows = fightRows([trash(1, 'Zone A'), old]);
+    expect(rows[0]).toMatchObject({ type: 'trash-group', kills: null });
   });
 
   it('starts a new group when the zone changes', () => {

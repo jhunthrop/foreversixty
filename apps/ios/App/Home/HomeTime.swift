@@ -12,23 +12,6 @@ struct HomeTime {
     }
 
     func stamp(_ date: Date) -> String {
-        let time = format(date, "h:mm a").replacingOccurrences(of: "AM", with: "am").replacingOccurrences(of: "PM", with: "pm")
-        if calendar.isDate(date, inSameDayAs: now) { return time }
-        if let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: date), to: calendar.startOfDay(for: now)).day,
-           days < 7 {
-            return "\(format(date, "EEE")) \(time)"
-        }
-        return "\(format(date, "d MMM")), \(time)"
-    }
-
-    private func format(_ date: Date, _ pattern: String) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = pattern
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
-        return formatter.string(from: date)
+        OfflineStamp.format(date, now: now, calendar: calendar)
     }
 }

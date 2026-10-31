@@ -463,8 +463,18 @@ export interface FightEntry {
   end: string;
   duration_ms: number;
   players: string[];
+  /** Every player death in range. */
   deaths: number;
-  npc_kills: number;
+  /** Hostile NPCs that died in range, each once (engine 0.6.0). Absent on a fight indexed
+   *  earlier, whose retired npc_kills double counted: read it through lib/report/kill-counts. */
+  mob_deaths?: number;
+  /** How many of mob_deaths the logger's group killed. Absent before engine 0.6.0. */
+  group_kills?: number;
+  /** Player deaths among the group. Absent before engine 0.6.0. */
+  group_deaths?: number;
+  /** The players flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0,
+   *  and when nobody was; fall back to the report-wide unit flags then. */
+  group?: string[];
   /** On a wipe, the boss's health the last time the log showed it; -1 when it never did. Absent from reports written before engine 0.2.0. */
   boss_health_pct?: number;
 }

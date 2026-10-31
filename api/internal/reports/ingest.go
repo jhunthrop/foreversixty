@@ -334,7 +334,8 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	record := FightRecord{
 		ReportID: rep.ID, Index: n, Name: engine.NameFromEvents(head, rebuilt),
 		Kill: f.Kill, DurationMS: rebuilt.DurationMS, StartMS: f.Start.UnixMilli(),
-		Players: f.Players, Deaths: f.Deaths, NPCKills: f.NPCKills,
+		Players: f.Players, Deaths: f.Deaths,
+		MobDeaths: f.MobDeaths, GroupKills: f.GroupKills, GroupDeaths: f.GroupDeaths, Group: f.Group,
 		RawStart: &rawRange.StartOffset, RawEnd: &rawRange.EndOffset, RawSHA256: sha,
 	}
 	if f.EncounterID != 0 {

@@ -387,8 +387,13 @@ private; **anything you may not read is 404, never 403**. Answer `{ id, title, v
 ({ id, battletag }, or null), guild (omitted when none), zone, status, engine_version, fights[],
 players[], created_at, last_upload_at, heartbeat_at, data_base_url, logging_character }` plus
 omitted `flagged`. A fight is `{ index, kind ("encounter"|"trash"), name, kill, in_progress, start,
-end, duration_ms, players[], deaths, npc_kills, verified }` plus omitted `encounter_id`,
-`difficulty`, `size`, `zone`, `boss_health_pct`. The per-fight tables are files under
+end, duration_ms, players[], deaths, verified }` plus omitted `encounter_id`,
+`difficulty`, `size`, `zone`, `boss_health_pct`, `mob_deaths`, `group_kills`, `group_deaths` and
+`group[]`. The last four come from engine 0.6.0: `mob_deaths` is every hostile NPC that died in
+range, once each; `group_kills` how many of those the logger's group killed; `group_deaths` the
+group's own deaths; `group` the players flagged MINE, PARTY or RAID during that fight. A fight
+indexed earlier has none of them, and the app shows no kill count for it (the retired
+`npc_kills` counted a group kill twice). The per-fight tables are files under
 `data_base_url`, which v1 does not read: the app shows the summary and opens the full report on the
 web. Fixtures `reports.get`. Errors: 404 (`reports.get.error-not-found`).
 
@@ -451,8 +456,11 @@ score_unit, reference_dps_per_point, ... }`. Pick a band by (band, faction, pres
   `item_name`, `source` (the game's words), `source_kind` (`vendor|rep|quest|crafted|dungeon|raid|...`),
   `alternatives[]` (runners-up: `{ item_id, item_name, source, source_kind, dps_delta }`, `dps_delta`
   is negative against the pick), `score`, `sim_dps`, `chance` (drop fraction), `effect_unmodelled`
-  (true when a proc the sim leaves out makes the item good: say so), `swap_note`, `ties`,
-  `set_bonus`, `faction_note`.
+  (true when a proc the sim leaves out makes the item good: say so), `swap_note`, `ties`
+  (`[{ item_id, item_name }]`, items that measure the same), `set_bonus` (`{ set, pieces, bonus }`),
+  `faction_note`, `low_value`.
+- `role` (`dps|healer|tank`): a healer band's `dps_delta` and `set_dps` are healing per second, a
+  tank band's its tank score. `new_at_band[]` is `"<slot>: <item name>"` strings.
 - `empty_reason` on a slot with no pick (`two_hand_equipped` for an off hand under a two-hander).
 - `weights[]`: `{ stat, weight, error, scale_factor, dps_per_point, weight_per_percent, insignificant }`.
   **Show the scale factor** (normalised so the top stat is 1.00); haste is per 1%.

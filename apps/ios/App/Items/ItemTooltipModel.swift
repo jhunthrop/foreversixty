@@ -99,8 +99,8 @@ struct ItemTooltipModel: Equatable {
             requiresLevel: item.requiredLevel > 0 ? Copy.tooltipRequires(n: item.requiredLevel) : nil,
             itemLevel: Copy.tooltipItemLevel(n: item.itemLevel),
             source: Self.source(item, request: request, band: band),
-            alternatives: Self.alternatives(pickSlot, request: request, items: sources.items),
-            pickFooter: pickSlot.flatMap { _ in Self.footer(slotName: slotName, request: request, bis: sources.bis) }
+            alternatives: Self.alternatives(pickSlot, request: request, items: sources.items, unit: BisUnit(role: band?.role)),
+            pickFooter: pickSlot.flatMap { Self.footer(slot: $0.slot, request: request) }
         )
     }
 
@@ -170,21 +170,28 @@ struct ItemTooltipModel: Equatable {
         return nil
     }
 
-    /// Up to two runners-up from the BiS row; the worn one leads with "You wear this · ".
-    private static func alternatives(_ slot: BisSlot?, request: ItemTooltipRequest, items: [Int: Item]) -> [ItemTooltipAlternative] {
-        (slot?.alternatives ?? []).prefix(2).map { alt in
+    /// Spec F2.6: up to two runners-up.
+    private static let maxAlternatives = 2
+
+    /// Up to two runners-up from the BiS row, each in the band's unit (DPS, HPS or score); the
+    /// worn one leads with "You wear this · ".
+    private static func alternatives(
+        _ slot: BisSlot?, request: ItemTooltipRequest, items: [Int: Item], unit: BisUnit
+    ) -> [ItemTooltipAlternative] {
+        (slot?.alternatives ?? []).prefix(maxAlternatives).map { alt in
             let row = items[alt.itemId]
             let look = HomeItemLook(id: alt.itemId, name: row?.name ?? alt.itemName, quality: row?.quality, icon: row?.icon, itemLevel: row?.itemLevel)
-            let delta = alt.dpsDelta == 0 ? Copy.itemsSameDps : Copy.tooltipDelta(delta: ItemNumbers.delta(alt.dpsDelta))
+            let delta = BisListBuilder.signedDelta(alt.dpsDelta).map { Copy.tooltipDelta(delta: $0, unit: unit.word) }
+                ?? Copy.itemsSameDps(unit: unit.word)
             let worn = alt.itemId == request.wornID ? Copy.tooltipYouWear : ""
             return ItemTooltipAlternative(look: look, meta: worn + delta, source: alt.sourceLine ?? alt.source)
         }
     }
 
-    private static func footer(slotName: String?, request: ItemTooltipRequest, bis: BisFile?) -> String? {
-        guard let slotName, let specName = request.specName, let bandLabel = request.bandLabel,
-              let preset = request.preset, let label = bis?.presets[preset]?.label
-        else { return nil }
-        return Copy.tooltipPickOf(slot: slotName, spec: specName, band: bandLabel, preset: label)
+    /// `Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid`, named by the BiS row's slot; the
+    /// band label carries the phase, never a preset id.
+    private static func footer(slot: String, request: ItemTooltipRequest) -> String? {
+        guard let specName = request.specName, let bandLabel = request.bandLabel else { return nil }
+        return Copy.tooltipPickOf(slot: ItemVocabulary.slotLabel(slot), spec: specName, band: bandLabel)
     }
 }

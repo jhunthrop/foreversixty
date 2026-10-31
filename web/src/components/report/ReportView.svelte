@@ -131,7 +131,7 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
-  import { groupScope, scopeNoun } from '../../lib/report/group';
+  import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
@@ -255,17 +255,31 @@
     file === null && summaryFirst ? new Set(meta?.players ?? []) : playerGuids(file?.units ?? []),
   );
   /**
-   * Who the default scope is: the logger's group when outsiders outnumber it (an open-world log),
-   * else every player (lib/report/group.ts). Before report.json the sample reads its meta's group.
+   * The pulls the scope is read from: the one on show, or the night's boss pulls. report.json's
+   * own lines once it has arrived (the units the fallback reads come from the same file), the
+   * meta's before.
+   */
+  const scopeFights = $derived.by(() => {
+    const lines = file?.fights ?? fights;
+    return nightMode
+      ? lines.filter((entry) => entry.kind === 'encounter')
+      : lines.filter((entry) => entry.index === state.fight);
+  });
+  /**
+   * Who the default scope is (lib/report/group.ts). From engine 0.6.0 each pull says who was in
+   * the group while it ran, so it is read from there. An older report falls back to the
+   * report-wide flags: the logger's group when outsiders outnumber it (an open-world log), else
+   * every player; before report.json the sample reads its meta's group.
    */
   const groupScopeNow = $derived(
-    file === null && summaryFirst
-      ? groupScope(
-          (meta?.players ?? []).map((guid) => ({ guid, kind: 'player', flags: 0 })),
-          meta?.group ?? [],
-          fight?.players,
-        )
-      : groupScope(file?.units ?? [], undefined, nightMode ? undefined : fight?.players),
+    fightGroupScope(scopeFights, raidFlaggedPlayers(file?.units ?? [])) ??
+      (file === null && summaryFirst
+        ? groupScope(
+            (meta?.players ?? []).map((guid) => ({ guid, kind: 'player', flags: 0 })),
+            meta?.group ?? [],
+            fight?.players,
+          )
+        : groupScope(file?.units ?? [], undefined, nightMode ? undefined : fight?.players)),
   );
   /** Everyone in range is the friendlies over every player seen; the scope rules read it so. */
   const scopeKey = $derived(state.source === SOURCE_EVERYONE ? SOURCE_FRIENDLIES : state.source);
@@ -275,7 +289,8 @@
   );
   /**
    * The subtitle's deaths: the fight's own count, or under the group scope the group's deaths in
-   * the fight's summary (the fight list's count is every player the log saw).
+   * the fight's summary, the same list the Deaths tab shows below it (the fight list's mark reads
+   * the engine's group_deaths, which also takes back a hunter's Feign Death).
    */
   const subtitleDeaths = $derived(
     !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES

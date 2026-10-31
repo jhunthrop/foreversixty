@@ -1,5 +1,7 @@
 package gg.foreversixty.app.navigation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,20 +13,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
+import gg.foreversixty.app.account.CharacterSelectorBar
 import gg.foreversixty.app.account.HomeAccountGate
 import gg.foreversixty.app.account.YouRoute
+import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.home.HomeDependencies
+import gg.foreversixty.app.bis.BisModel
+import gg.foreversixty.app.bis.BisOwner
+import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.home.HomeRoute
 
 /**
@@ -32,7 +38,7 @@ import gg.foreversixty.app.home.HomeRoute
  * session and sign-in, null while its feature switch is off.
  */
 @Composable
-fun ForeverAppScaffold(home: HomeDependencies, account: AccountDeps? = null) {
+fun ForeverAppScaffold(home: HomeDependencies, bis: BisModel? = null, account: AccountDeps? = null) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     val openBis = { selected = ForeverTab.Bis }
     ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
@@ -47,10 +53,29 @@ fun ForeverAppScaffold(home: HomeDependencies, account: AccountDeps? = null) {
                     }
                 }
             ForeverTab.Raids -> ComingSoon(selected)
-            ForeverTab.Bis -> ComingSoon(selected)
+            ForeverTab.Bis ->
+                if (bis == null) {
+                    ComingSoon(selected)
+                } else {
+                    BisTab(bis, home, account)
+                }
             ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
         }
     }
+}
+
+/**
+ * The BiS tab under the character selector (spec §3.4): the list follows the session's current
+ * character, and waits while a signed-in session's characters are still on their way.
+ */
+@Composable
+private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?) {
+    val session = account?.session
+    val phase = session?.phase?.collectAsStateWithLifecycle()?.value
+    val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
+    val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
+    val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
+    BisRoute(bis, home.catalog, BisOwner(characterKey, waiting)) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /** The scaffold with a navigation bar, stateless so screenshot tests can drive it. */
