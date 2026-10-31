@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -115,16 +118,28 @@ fun CalendarContent(state: CalendarScreenState, actions: CalendarActions, back: 
     }
 }
 
-/** The standard Material 3 alert: the question in the body face, Cancel and the destructive Reset. */
+/**
+ * The Material 3 alert, laid out by hand so the buttons sit 8 dp off the bottom edge (the stock
+ * AlertDialog leaves its 24 dp padding under a 40 dp button row): the question in the body face,
+ * Cancel and the destructive Reset.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ResetDialog(onReset: () -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = FsColor.raised,
-        text = { Text(stringResource(R.string.calendar_resetAsk), style = FsType.lead, color = FsColor.strong) },
-        confirmButton = { TextButton(onReset) { Text(stringResource(R.string.calendar_resetConfirm), style = FsType.bodyStrong, color = FsColor.wipe) } },
-        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav) } },
-    )
+    BasicAlertDialog(onDismissRequest = onDismiss) {
+        Surface(shape = RoundedCornerShape(DIALOG_RADIUS), color = FsColor.raised, tonalElevation = 6.dp) {
+            Column(Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
+                Text(stringResource(R.string.calendar_resetAsk), style = FsType.lead, color = FsColor.strong)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                ) {
+                    TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav) }
+                    TextButton(onReset) { Text(stringResource(R.string.calendar_resetConfirm), style = FsType.bodyStrong, color = FsColor.wipe) }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -293,3 +308,6 @@ private fun LinkCard(state: CalendarScreenState, copy: () -> Unit, askReset: () 
 }
 
 private const val DISABLED_ALPHA = 0.5f
+
+/** Material 3's dialog corner. */
+private val DIALOG_RADIUS = 28.dp

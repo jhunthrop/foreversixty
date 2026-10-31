@@ -8,7 +8,10 @@ import gg.foreversixty.app.home.HomeFixtures
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -57,6 +60,7 @@ import gg.foreversixty.app.raids.makeController
 import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.raids.logic.GuildHead
 import gg.foreversixty.app.raids.logic.RaidsTabContent
+import gg.foreversixty.app.raids.logic.RaidsTabModel
 import gg.foreversixty.app.raids.logic.RaidsTabState
 import gg.foreversixty.app.raids.ui.RaidsTabContentView
 import java.io.IOException
@@ -84,7 +88,14 @@ class GuildScreenshotTest {
 
     /** The whole screen, so menus and dialogs (their own windows) are in the picture. */
     @OptIn(ExperimentalRoborazziApi::class)
-    private fun capture(name: String, large: Boolean = false, tab: ForeverTab = ForeverTab.Raids, scrollTo: Int? = null, screen: @Composable () -> Unit) {
+    private fun capture(
+        name: String,
+        large: Boolean = false,
+        tab: ForeverTab = ForeverTab.Raids,
+        scrollTo: Int? = null,
+        scrollToText: String? = null,
+        screen: @Composable () -> Unit,
+    ) {
         if (large) RuntimeEnvironment.setFontScale(2f)
         compose.setContent {
             ForeverTheme {
@@ -95,6 +106,7 @@ class GuildScreenshotTest {
             }
         }
         scrollTo?.let { compose.onNode(hasScrollToIndexAction()).performScrollToIndex(it) }
+        scrollToText?.let { compose.onNode(hasScrollAction()).performScrollToNode(hasText(it)) }
         compose.waitForIdle()
         captureScreenRoboImage("src/test/screenshots/guild/$name${if (large) "-xl" else ""}.png", roborazziOptions = TOLERANT)
     }
@@ -254,7 +266,7 @@ class GuildScreenshotTest {
             head = GuildHead.of(requireNotNull(character.guild), me.guilds.firstOrNull(), resources()),
             character = character,
             planned = raids.planned.orEmpty(),
-            nights = emptyList(),
+            nights = raids.rows.filter { it.raidId != null }.take(RaidsTabModel.NIGHT_ROWS),
             waiting = null,
             offlineSince = null,
         )
@@ -278,6 +290,9 @@ class GuildScreenshotTest {
     }
 
     @Test fun raidsTab() = capture("f16.7-raids-tab") { RaidsTab() }
+
+    /** The foot of the tab: Also planned, then the Raid nights section. */
+    @Test fun raidsTab_foot() = capture("f16.7-raids-tab-foot", scrollToText = raidsContent().nights.first().title) { RaidsTab() }
 
     @Test fun raidsTab_xl() = capture("f16.7-raids-tab", large = true) { RaidsTab() }
 

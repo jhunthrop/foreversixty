@@ -9,6 +9,7 @@ import gg.foreversixty.app.guild.logic.GuildService
 import gg.foreversixty.app.model.CalendarFeed
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildRaids
+import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.RaidFixture
 import gg.foreversixty.app.raids.ok
@@ -21,8 +22,8 @@ object GuildFixture {
     fun feed(shown: Boolean = true): CalendarFeed =
         RaidFixture.load(CalendarFeed.serializer(), if (shown) "calendar.feed" else "calendar.feed.shown")
 
-    /** The fixture viewer's account (guild.home.roster viewer.character_key). */
-    val mine: Set<String> = setOf("us/pvp/lightningbolltz")
+    /** The account's characters (me.json: Obnoxious Yell, Yellfury), as the Raids tab reads them. */
+    val mine: Set<String> get() = RaidFixture.load(Me.serializer(), "me").characters.map { it.key }.toSet()
 }
 
 /** A scripted guild service; every call is recorded. */

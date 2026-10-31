@@ -110,7 +110,8 @@ class RaidLogicTest {
     @Test
     fun `one tank reads 1 tank, no late clause when nobody is late`() {
         val ony = RaidFixture.load(GuildRaids.serializer(), "guild.raids").planned.orEmpty()[2]
-        assertEquals("1 tank · 2 healers · 5 DPS", RaidFacts(ony, RaidTime.now).breakdown(resources()))
+        val small = ony.copy(counts = ony.counts.copy(tanks = 1, healers = 2, dps = 5, late = 0))
+        assertEquals("1 tank · 2 healers · 5 DPS", RaidFacts(small, RaidTime.now).breakdown(resources()))
     }
 
     @Test
@@ -138,7 +139,7 @@ class RaidLogicTest {
         val planned = RaidFixture.load(GuildRaids.serializer(), "guild.raids").planned.orEmpty()
         assertEquals(RowChip.Signed(SignupState.In, "dps"), RaidFacts(planned[0], RaidTime.now).rowChip(null))
         assertEquals(RowChip.NotSigned, RaidFacts(planned[1], RaidTime.now).rowChip(null))
-        assertEquals(RowChip.Status(RaidChip.Locked), RaidFacts(planned[2], RaidTime.now).rowChip(null))
+        assertEquals(RowChip.Status(RaidChip.Locked), RaidFacts(planned[2].copy(status = "locked"), RaidTime.now).rowChip(null))
         assertEquals(RowChip.Status(RaidChip.Cancelled), RaidFacts(RaidFixture.raid("guild.raid.cancelled"), RaidTime.now).rowChip(null))
     }
 

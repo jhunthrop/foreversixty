@@ -50,9 +50,9 @@ class GuildLogicTest {
 
     @Test
     fun `attendance and the supporter mark join from the roster by character key`() {
-        assertEquals(RosterStanding.Attended(8, 8), entry("Kraggor").standing)
+        assertEquals(RosterStanding.Attended(2, 8), entry("Kraggor").standing)
         assertTrue(entry("Kraggor").supporter)
-        assertEquals(RosterStanding.Attended(3, 8), entry("Fernhoof").standing)
+        assertEquals(RosterStanding.Attended(1, 8), entry("Fernhoof").standing)
         assertFalse(entry("Mendara").supporter)
     }
 
@@ -89,8 +89,8 @@ class GuildLogicTest {
     @Test
     fun `rank sort is leader, officers, members, each by name`() {
         val sorted = names(RosterQuery(sort = RosterSort.Rank))
-        assertEquals(listOf("Kraggor", "Draknar", "Mendara", "Thokgar"), sorted.take(4))
-        val members = sorted.drop(4)
+        assertEquals(listOf("Kraggor", "Draknar", "Mendara", "Obnoxious Yell", "Thokgar"), sorted.take(5))
+        val members = sorted.drop(5)
         assertTrue(members.all { entry(it).rank == GuildRank.Member })
         assertEquals(members.sortedWith(String.CASE_INSENSITIVE_ORDER), members)
     }
@@ -115,8 +115,9 @@ class GuildLogicTest {
     fun `name, attendance and level sorts`() {
         assertEquals("Arrowmane", names(RosterQuery(sort = RosterSort.Name)).first())
         val byAttendance = RosterList.apply(entries, RosterQuery(sort = RosterSort.Attendance))
-        assertEquals(RosterStanding.Attended(8, 8), byAttendance.first().standing)
-        assertEquals(RosterStanding.Attended(1, 8), byAttendance.first { it.name == "Quillara" }.standing)
+        assertEquals("Obnoxious Yell", byAttendance.first().name)
+        assertEquals(RosterStanding.Attended(3, 8), byAttendance.first().standing)
+        assertEquals(RosterStanding.Attended(0, 8), byAttendance.first { it.name == "Quillara" }.standing)
         assertTrue(byAttendance.indexOfFirst { it.name == "Quillara" } < byAttendance.indexOfFirst { it.name == "Voidsong" })
         val byLevel = RosterList.apply(entries, RosterQuery(sort = RosterSort.Level))
         assertEquals("Brokkar", byLevel.last().name)
@@ -138,7 +139,7 @@ class GuildLogicTest {
     fun `the row reads as one sentence`() {
         val copy = RosterCopy(resources())
         assertEquals(
-            "Kraggor, Protection Warrior, level 60, Guild Master, attended 8 of 8 recent raid nights",
+            "Kraggor, Protection Warrior, level 60, Guild Master, attended 2 of 8 recent raid nights",
             copy.a11y(entry("Kraggor")),
         )
         assertEquals("Voidsong, Shadow Priest, level 57, Member, waiting for approval", copy.a11y(entry("Voidsong")))
