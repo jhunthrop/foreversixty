@@ -203,7 +203,7 @@ data class ItemTooltipModel(
         }
 
         /**
-         * `Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid`, named by the BiS row's slot; the
+         * `Best in slot for Finger 1 · Fury Warrior 60 · Phase 1 raid`, named by the BiS row's slot; the
          * band label carries the phase, never a preset id.
          */
         private fun footer(slotName: String, request: ItemTooltipRequest, res: Resources): String? {

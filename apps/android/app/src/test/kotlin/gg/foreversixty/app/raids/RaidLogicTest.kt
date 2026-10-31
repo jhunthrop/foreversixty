@@ -174,6 +174,14 @@ class RaidLogicTest {
     }
 
     @Test
+    fun `every buff tile is named, live art or not - the short label under it, the full name for TalkBack`() {
+        val read = requireNotNull(CompositionRead.of(RaidFixture.raid().composition, resources()))
+        assertEquals(listOf("Fort", "MotW", "Int", "Bless", "SPro", "SS", "Rez", "WF", "SoE", "MS"), read.buffs.map { it.label })
+        assertTrue(read.buffs.all { it.accessibilityLabel.startsWith(it.name) })
+        assertEquals("Power Word: Fortitude", read.buffs.first { it.key == "fortitude" }.name)
+    }
+
+    @Test
     fun `the composition block words the API's counts, targets and buff coverage`() {
         val read = requireNotNull(CompositionRead.of(RaidFixture.raid().composition, resources()))
         assertEquals(listOf(5, 0, 2, 2, 4, 4, 2, 2, 3), read.classes.map { it.count })

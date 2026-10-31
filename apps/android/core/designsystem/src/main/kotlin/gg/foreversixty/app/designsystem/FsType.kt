@@ -39,12 +39,22 @@ object FsType {
 
     /** The selector name stops growing at 22 sp (spec §3.4). */
     @Composable
-    fun cappedName(): TextStyle {
+    fun cappedName(): TextStyle = capped(name)
+
+    /** The selector's description line, capped with the name so the two lines keep their proportion (spec §3.4). */
+    @Composable
+    fun cappedMeta(): TextStyle = capped(meta)
+
+    /** [style] grown with the font scale only up to the selector's ceiling (22 sp for the 17 sp name). */
+    @Composable
+    private fun capped(style: TextStyle): TextStyle {
         val scale = LocalDensity.current.fontScale
-        val size: TextUnit = ((NAME_SIZE * scale).coerceAtMost(NAME_CEILING) / scale).sp
-        return name.copy(fontSize = size)
+        val factor = scale.coerceAtMost(SELECTOR_SCALE_CEILING) / scale
+        fun TextUnit.cap(): TextUnit = if (isSp) (value * factor).sp else this
+        return style.copy(fontSize = style.fontSize.cap(), lineHeight = style.lineHeight.cap())
     }
 
     private const val NAME_SIZE = 17f
     private const val NAME_CEILING = 22f
+    private const val SELECTOR_SCALE_CEILING = NAME_CEILING / NAME_SIZE
 }

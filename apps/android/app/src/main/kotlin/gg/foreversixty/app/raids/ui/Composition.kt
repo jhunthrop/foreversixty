@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.items.GameIconLabel
 import gg.foreversixty.app.raids.logic.CompositionRead
 
 /**
@@ -61,17 +62,7 @@ fun CompositionBlock(read: CompositionRead) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SectionLabel(stringResource(R.string.raids_comp_buffs))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                read.buffs.forEach { buff ->
-                    Column(Modifier.width(36.dp).clearAndSetSemantics { contentDescription = buff.accessibilityLabel }) {
-                        GameIcon(
-                            buff.icon,
-                            36.dp,
-                            border = if (buff.present) FsColor.kill.copy(alpha = 0.6f) else FsColor.line,
-                            fallback = buff.label,
-                            dimmed = !buff.present,
-                        )
-                    }
-                }
+                read.buffs.forEach { BuffTile(it) }
             }
             Text(read.buffSummary, style = FsType.meta, color = if (read.allCovered) FsColor.kill else FsColor.muted)
         }
@@ -79,3 +70,21 @@ fun CompositionBlock(read: CompositionRead) {
 }
 
 private const val CLASS_COLUMNS = 3
+
+/**
+ * One raid buff: its icon with the short name under it, live art or not (`Fort`, `SPro`), so two
+ * buffs never differ by their art alone. TalkBack reads one node with the full name and the count.
+ */
+@Composable
+private fun BuffTile(buff: CompositionRead.BuffLine) {
+    Column(
+        Modifier.widthIn(min = BUFF_TILE).clearAndSetSemantics { contentDescription = buff.accessibilityLabel },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        GameIcon(buff.icon, BUFF_TILE, border = if (buff.present) FsColor.kill.copy(alpha = 0.6f) else FsColor.line, dimmed = !buff.present)
+        GameIconLabel(buff.label, dimmed = !buff.present)
+    }
+}
+
+private val BUFF_TILE = 36.dp

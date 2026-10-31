@@ -2,6 +2,8 @@ package gg.foreversixty.app.home
 
 import android.content.res.Resources
 import gg.foreversixty.app.R
+import gg.foreversixty.app.bis.BisLabels
+import gg.foreversixty.app.bis.BisRange
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemNumbers
 import gg.foreversixty.app.items.ItemTooltipRequest
@@ -111,7 +113,7 @@ class HomePresenter(
             gainUnit = if (isAnswer && home.totalGain != null) home.unitWord.orEmpty() else null,
             note = if (isAnswer) note(home) else null,
             synced = synced(home),
-            bandHead = bandHead(home, res),
+            bandHead = bandHead(home, character, res),
             body = body(home),
             already = already(home),
             nextTitle = res.getString(R.string.home_next_title, character.name),
@@ -133,8 +135,11 @@ class HomePresenter(
             ).joinToString(" · ")
         }
 
+    /** The band's words for the sentences (`50 to 59`, `60`), null when no band is known. */
+    private fun bandWords(home: CharacterHome): String? = range(home, character)?.let { BisLabels.band(res, it) }
+
     private fun note(home: CharacterHome): String? {
-        val label = home.bandLabel ?: return null
+        val label = bandWords(home) ?: return null
         val base = res.getString(R.string.home_answer_note, label)
         val unmodelled = home.notModelledCount
         return if (unmodelled > 0) base + res.getQuantityString(R.plurals.home_answer_notModelled, unmodelled, unmodelled) else base
@@ -148,7 +153,7 @@ class HomePresenter(
 
     private fun body(home: CharacterHome): HomeAnswerBody {
         val spec = character.specName.orEmpty()
-        val band = home.bandLabel.orEmpty()
+        val band = bandWords(home).orEmpty()
         return when (home.state) {
             "no_gear" -> HomeAnswerBody.Message(
                 res.getString(R.string.home_answer_noGear),
@@ -208,7 +213,7 @@ class HomePresenter(
             ?.let { best -> res.getString(R.string.home_upgrades_already, best.joinToString(", ") { it.slotLabel }) }
 
     private fun talentsRow(home: CharacterHome): HomeNextRow {
-        val band = home.bandLabel.orEmpty()
+        val band = bandWords(home).orEmpty()
         val talents = home.talents
         val title = res.getString(R.string.home_next_talents)
         return when (talents.state) {
@@ -239,11 +244,17 @@ class HomePresenter(
         const val VISIBLE_ROWS = 5
         private const val STATE_OK = "ok"
 
-        /** `60 · raid` for the raid preset, the band label alone otherwise. */
-        fun bandHead(home: CharacterHome, res: Resources): String? {
-            val label = home.bandLabel ?: return null
-            return if (home.preset == "raid") res.getString(R.string.home_upgrades_bandRaid, label) else label
-        }
+        /**
+         * The list Home answers from: the character's level through the site's band rule
+         * ([BisRange.forLevel]), the rule BiS opens the character's list with. The server's band
+         * stands in only when the level is unknown, and goes through the same rule.
+         */
+        fun range(home: CharacterHome, character: HomeCharacter): BisRange? =
+            (character.level ?: home.band)?.let(BisRange::forLevel)
+
+        /** `60 · raid` for the raid list, the band's words (`50 to 59`) otherwise. */
+        fun bandHead(home: CharacterHome, character: HomeCharacter, res: Resources): String? =
+            range(home, character)?.let { BisLabels.head(res, it) }
 
         /**
          * `Replaces Belt of the Archmage, ilvl 62`; the server's own label for an item our data
@@ -275,7 +286,7 @@ class HomePresenter(
         fun words(slug: String): String =
             slug.split('_', '-', ' ').filter { it.isNotEmpty() }.joinToString(" ") { it.replaceFirstChar(Char::uppercaseChar) }
 
-        /** A tooltip for an item on Home or Your gear, in the answer's build, spec and band. */
+        /** A tooltip for an item on Home or Your gear, in the answer's build and spec and Home's band. */
         fun tooltipRequest(
             look: ItemLook,
             home: CharacterHome,
@@ -283,11 +294,14 @@ class HomePresenter(
             res: Resources,
             sourceLine: String? = null,
             wornId: Int? = null,
-        ) = ItemTooltipRequest(
-            itemId = look.id, fallback = look, build = home.dataBuild, classSlug = classSlug(home, character),
-            spec = home.spec, specName = character.specName, band = home.band, bandLabel = bandHead(home, res),
-            preset = home.preset, faction = character.faction, sourceLine = sourceLine, wornId = wornId,
-        )
+        ): ItemTooltipRequest {
+            val range = range(home, character)
+            return ItemTooltipRequest(
+                itemId = look.id, fallback = look, build = home.dataBuild, classSlug = classSlug(home, character),
+                spec = home.spec, specName = character.specName, band = range?.band, bandLabel = bandHead(home, character, res),
+                preset = range?.preset, faction = character.faction, sourceLine = sourceLine, wornId = wornId,
+            )
+        }
 
         /** The items file to read: the class part of the spec slug (`hunter-beast-mastery`), else the character's class. */
         fun classSlug(home: CharacterHome, character: HomeCharacter): String =

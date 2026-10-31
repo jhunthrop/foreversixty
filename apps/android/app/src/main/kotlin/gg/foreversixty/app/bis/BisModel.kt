@@ -286,9 +286,20 @@ object BisLabels {
         range.preset == BisRange.RAID && opening != null && opening.isUpcoming(nowMillis) ->
             res.getString(R.string.bis_range_p1Opens, opening.label)
         range.preset == BisRange.RAID -> res.getString(R.string.bis_range_p1)
-        range.band == BisRange.LAST_BAND -> res.getString(R.string.bis_range_top, range.band)
-        else -> res.getString(R.string.bis_range_span, range.band, range.band + BisRange.BAND_STEP - 1)
+        else -> band(res, range)
     }
+
+    /** The band's own words, whatever the preset: `50 to 59`, or `60` for the last band. */
+    fun band(res: Resources, range: BisRange): String =
+        if (range.band == BisRange.LAST_BAND) {
+            res.getString(R.string.bis_range_top, range.band)
+        } else {
+            res.getString(R.string.bis_range_span, range.band, range.band + BisRange.BAND_STEP - 1)
+        }
+
+    /** Home's band head: `60 · raid` for the raid list, the band's words otherwise. */
+    fun head(res: Resources, range: BisRange): String =
+        if (range.preset == BisRange.RAID) res.getString(R.string.home_upgrades_bandRaid, band(res, range)) else band(res, range)
 
     fun faction(res: Resources, slug: String): String =
         res.getString(if (slug == "horde") R.string.bis_faction_horde else R.string.bis_faction_alliance)

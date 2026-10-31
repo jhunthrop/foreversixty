@@ -138,7 +138,7 @@ fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = n
     val url = if (icon != null && build != null) ItemIconLoader.url(icon, build) else null
     val loads = url != null && !failed && (local == null || painter != null)
     Box(Modifier.size(size), contentAlignment = Alignment.Center) {
-        if (fallback != null && !loads) FallbackLabel(fallback, dimmed)
+        if (fallback != null && !loads) GameIconLabel(fallback, dimmed)
         if (loads && painter != null) {
             Image(painter, null, art, contentScale = ContentScale.Crop, colorFilter = filter)
         } else if (loads) {
@@ -156,9 +156,12 @@ fun GameIconImage(icon: String?, build: String?, size: Dp, fallback: String? = n
     }
 }
 
-/** A tile's short label (`MotW`, `Bless`): strong, or muted on a dimmed tile, both AA on the tile. */
+/**
+ * A game icon's short label (`MotW`, `Bless`): strong, or muted for a dimmed (missing) tile, both
+ * AA on the card. Drawn on a tile whose art cannot load, and under every raid buff tile.
+ */
 @Composable
-private fun FallbackLabel(text: String, dimmed: Boolean) {
+fun GameIconLabel(text: String, dimmed: Boolean) {
     // In dp, not sp: the tile is a fixed size, so its label does not grow with the font scale.
     val size = with(LocalDensity.current) { FALLBACK_SIZE.toSp() }
     Text(

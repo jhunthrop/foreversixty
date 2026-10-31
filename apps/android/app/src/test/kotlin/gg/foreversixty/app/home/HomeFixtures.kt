@@ -68,8 +68,8 @@ object HomeFixtures {
         bis = staticFile("cdn.bis.hunter-beast-mastery", BisFile.serializer()),
     )
 
-    fun presenter(res: Resources, sims: List<FinishedSim> = emptyList()) =
-        HomePresenter(velaren, sims, HomeTime(now, ZoneOffset.UTC), res)
+    fun presenter(res: Resources, sims: List<FinishedSim> = emptyList(), character: HomeCharacter = velaren) =
+        HomePresenter(character, sims, HomeTime(now, ZoneOffset.UTC), res)
 
     /** The repo root, from the app module's working directory (apps/android/app). */
     private val repoRoot: File = File(System.getProperty("user.dir").orEmpty()).absoluteFile.parentFile?.parentFile?.parentFile

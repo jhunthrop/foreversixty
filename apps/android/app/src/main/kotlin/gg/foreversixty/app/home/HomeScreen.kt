@@ -245,7 +245,7 @@ private fun GearPage(home: CharacterHome, character: HomeCharacter, catalog: Ite
     Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
         GearList(
             rows = GearModel.rows(home, character.gear, items, res, blocker),
-            intro = stringResource(R.string.gear_intro, HomePresenter.bandHead(home, res).orEmpty()),
+            intro = stringResource(R.string.gear_intro, HomePresenter.bandHead(home, character, res).orEmpty()),
             build = home.dataBuild,
             open = open,
         )

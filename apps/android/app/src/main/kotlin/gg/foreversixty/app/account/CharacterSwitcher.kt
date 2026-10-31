@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
@@ -60,13 +59,11 @@ import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.Me
 
-/** Font scale from which the selector drops its short line (Android 1.3x, spec §3.4). */
-private const val DROP_DETAIL_SCALE = 1.3f
-
 /**
  * The selector (spec §3.4): crest 34, the full name in the class colour, the short line and a
- * chevron. The one way to switch; Home, Raids and BiS put it in their TopAppBar title slot. The
- * name never truncates; it stops growing at 22 sp and the short line drops from 1.3x.
+ * chevron. The one way to switch; Home, Raids and BiS put it at the top of the screen. Neither
+ * line truncates ("full name at every width"): both take their full width and stop growing with
+ * the name's 22 sp ceiling.
  */
 @Composable
 fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () -> Unit) {
@@ -74,7 +71,6 @@ fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () ->
     val label = AccountCopy.selectorLabel(character)
     val hint = stringResource(R.string.account_switcher_open)
     val action = stringResource(R.string.account_switcher_action)
-    val compact = LocalDensity.current.fontScale >= DROP_DETAIL_SCALE
     Row(
         Modifier
             .shadow(if (open) 8.dp else 0.dp, shape, ambientColor = FsColor.gold, spotColor = FsColor.gold)
@@ -93,7 +89,7 @@ fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () ->
         Column {
             Text(character.name, style = FsType.cappedName(), color = classColor(character.className), softWrap = false)
             val detail = AccountCopy.selectorDetail(character)
-            if (!compact && detail != null) Text(detail, style = FsType.meta, color = FsColor.muted, maxLines = 1)
+            if (detail != null) Text(detail, style = FsType.cappedMeta(), color = FsColor.muted, softWrap = false)
         }
         Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
     }

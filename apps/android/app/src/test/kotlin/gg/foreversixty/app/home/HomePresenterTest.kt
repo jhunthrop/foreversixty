@@ -1,6 +1,7 @@
 package gg.foreversixty.app.home
 
 import android.content.res.Resources
+import gg.foreversixty.app.bis.BisRange
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.items.ItemCatalog
@@ -64,6 +65,26 @@ class HomePresenterTest {
         assertEquals("Best in slot for 60, together · 2 gains not modelled yet", model.note)
         assertEquals("Synced 2 h ago from the addon", model.synced)
         assertEquals("60 · raid", model.bandHead)
+    }
+
+    @Test
+    fun `Home's band is the site rule over the character's level, the list BiS opens on`() {
+        val home = HomeFixtures.home()
+        val cases = listOf(Triple(49, 40, "40 to 49"), Triple(50, 50, "50 to 59"), Triple(59, 50, "50 to 59"), Triple(60, 60, "60 · raid"))
+        for ((level, band, head) in cases) {
+            val character = HomeFixtures.velaren.copy(level = level)
+            val range = HomePresenter.range(home, character)
+            assertEquals("level $level", BisRange.forLevel(level), range)
+            assertEquals("level $level", band, range?.band)
+            assertEquals("level $level", head, HomeFixtures.presenter(res, character = character).model(home).bandHead)
+            val tooltip = HomePresenter.tooltipRequest(ItemLook(1), home, character, res)
+            assertEquals("level $level", Triple(range?.band, range?.preset, head), Triple(tooltip.band, tooltip.preset, tooltip.bandLabel))
+        }
+    }
+
+    @Test
+    fun `with no level known, the server's band goes through the same rule`() {
+        assertEquals(BisRange.forLevel(60), HomePresenter.range(HomeFixtures.home(), HomeFixtures.velaren.copy(level = null)))
     }
 
     @Test

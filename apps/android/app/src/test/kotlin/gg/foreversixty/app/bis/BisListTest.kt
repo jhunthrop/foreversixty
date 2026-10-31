@@ -43,6 +43,10 @@ class BisListTest {
         assertEquals(BisRange(60, "raid"), BisRange.forLevel(60))
         assertEquals(BisRange(20, "bare"), BisRange.forLevel(12))
         assertEquals(BisRange(20, "bare"), BisRange.forLevel(29))
+        assertEquals(BisRange(40, "bare"), BisRange.forLevel(49))
+        assertEquals(BisRange(50, "bare"), BisRange.forLevel(50))
+        assertEquals(BisRange(50, "bare"), BisRange.forLevel(59))
+        assertEquals(BisRange(60, "raid"), BisRange.forLevel(61))
         assertEquals(
             listOf("20 to 29", "30 to 39", "40 to 49", "50 to 59", "60", "60 · Phase 1 raid"),
             BisRange.all.map { BisLabels.range(res, it) },
@@ -95,8 +99,8 @@ class BisListTest {
         assertEquals("Neck · Quest: Falrin's Vendetta", rows[1].pick?.slotSource)
         assertEquals("Shoulder · Vendor: Creeg Bothunk", rows[2].pick?.slotSource)
         assertEquals("Wrist · Warsong Outriders", rows[5].pick?.slotSource)
-        assertEquals("Ring 1", rows[10].slotLabel)
-        assertEquals("Ring 2", rows[11].slotLabel)
+        assertEquals("Finger 1", rows[10].slotLabel)
+        assertEquals("Finger 2", rows[11].slotLabel)
         assertEquals("Trinket 1", rows[12].slotLabel)
         assertEquals(
             "PvP rank 14 · Champion · Horde",
@@ -196,7 +200,7 @@ class BisListTest {
     fun `the tooltip footer names the slot, spec and band, never a preset id`() {
         val fury = BisTestData.bis()
         assertEquals("Best in slot for Head · Fury Warrior 50 to 59", model(fury, request(fury, 50, "bare", 0)).pickFooter)
-        assertEquals("Best in slot for Ring 1 · Fury Warrior 60 · Phase 1 raid", model(fury, request(fury, 60, "raid", 10)).pickFooter)
+        assertEquals("Best in slot for Finger 1 · Fury Warrior 60 · Phase 1 raid", model(fury, request(fury, 60, "raid", 10)).pickFooter)
     }
 
     @Test
