@@ -224,7 +224,8 @@ func (h *harness) seedFight(index int, encounterID int64, start, end int64) {
 	rec := FightRecord{
 		ReportID: h.reportID, Index: index, Name: "Warden Kelthas", Kill: true,
 		DurationMS: 30000, StartMS: time.Now().UnixMilli(), Verified: true,
-		Players: []string{"Player-1", "Player-2"}, Deaths: 1, NPCKills: 2,
+		Players: []string{"Player-1", "Player-2"}, Deaths: 1,
+		MobDeaths: 3, GroupKills: 2, GroupDeaths: 1, Group: []string{"Player-1"},
 		RawStart: &start, RawEnd: &end,
 	}
 	if encounterID != 0 {

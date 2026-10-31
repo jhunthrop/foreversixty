@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
@@ -74,7 +75,7 @@ func TestRebuildRejectsAnEmptyBundle(t *testing.T) {
 	}
 }
 
-func TestRebuildCountsPlayerDeathsAndNPCKills(t *testing.T) {
+func TestRebuildCountsPlayerDeaths(t *testing.T) {
 	f, err := NewFixture("rpt")
 	if err != nil {
 		t.Fatal(err)
@@ -91,6 +92,49 @@ func TestRebuildCountsPlayerDeathsAndNPCKills(t *testing.T) {
 	}
 	if got.Deaths != 1 {
 		t.Fatalf("deaths = %d, want 1", got.Deaths)
+	}
+}
+
+// An uploaded fight is counted the way the whole-file parse counts it: a
+// group kill logged as PARTY_KILL and UNIT_DIED is one mob death and one of
+// the group's, and a mob an outsider finished is a death but not the group's.
+func TestRebuildCountsEachMobDeathOnceAndTheGroupsKills(t *testing.T) {
+	f, err := NewFixture("rpt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const (
+		mob      = "Creature-0-2085-2284-7855-169753-0000BB0001"
+		other    = "Creature-0-2085-2284-7855-169753-0000BB0002"
+		logger   = "Player-4184-000000A1"
+		stranger = "Player-4184-000000F9"
+	)
+	before, _, err := Rebuild(1, fixtureHeader(), f.Events)
+	if err != nil {
+		t.Fatal(err)
+	}
+	at := f.Events[len(f.Events)-1].Time
+	hostile := event.Unit{GUID: mob, Flags: 0xa48}
+	events := append(append([]event.Event{}, f.Events...),
+		event.Event{Time: at, Kind: event.PartyKill, Name: "PARTY_KILL",
+			Source: event.Unit{GUID: logger, Flags: 0x511}, Dest: hostile},
+		event.Event{Time: at, Kind: event.Death, Name: "UNIT_DIED", Dest: hostile},
+		event.Event{Time: at, Kind: event.Damage, Name: "SWING_DAMAGE",
+			Source: event.Unit{GUID: stranger, Flags: 0x518}, Dest: event.Unit{GUID: other, Flags: 0xa48}},
+		event.Event{Time: at, Kind: event.Death, Name: "UNIT_DIED", Dest: event.Unit{GUID: other, Flags: 0xa48}},
+	)
+	got, _, err := Rebuild(1, fixtureHeader(), events)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if d := got.MobDeaths - before.MobDeaths; d != 2 {
+		t.Errorf("mob deaths rose by %d, want 2", d)
+	}
+	if d := got.GroupKills - before.GroupKills; d != 1 {
+		t.Errorf("group kills rose by %d, want 1", d)
+	}
+	if !slices.Contains(got.Group, logger) || slices.Contains(got.Group, stranger) {
+		t.Errorf("group = %v, want the logger and not the stranger", got.Group)
 	}
 }
 

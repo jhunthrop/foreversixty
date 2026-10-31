@@ -1572,8 +1572,16 @@ public struct FightEntry: Codable, Sendable, Equatable {
     public let end: Date?
     public let durationMs: Int64
     public let players: [String]
+    /// Every player death in range
     public let deaths: Int?
-    public let npcKills: Int?
+    /// Hostile NPCs that died in range, each once. Absent on a fight indexed before engine 0.6.0: show no kill count then
+    public let mobDeaths: Int?
+    /// How many of mob_deaths the logger's group killed. Absent before engine 0.6.0
+    public let groupKills: Int?
+    /// Player deaths among the group. Absent before engine 0.6.0
+    public let groupDeaths: Int?
+    /// Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was
+    public let group: [String]?
     public let verified: Bool
 
     public init(
@@ -1591,7 +1599,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         durationMs: Int64,
         players: [String] = [],
         deaths: Int? = nil,
-        npcKills: Int? = nil,
+        mobDeaths: Int? = nil,
+        groupKills: Int? = nil,
+        groupDeaths: Int? = nil,
+        group: [String]? = nil,
         verified: Bool
     ) {
         self.index = index
@@ -1608,7 +1619,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         self.durationMs = durationMs
         self.players = players
         self.deaths = deaths
-        self.npcKills = npcKills
+        self.mobDeaths = mobDeaths
+        self.groupKills = groupKills
+        self.groupDeaths = groupDeaths
+        self.group = group
         self.verified = verified
     }
 
@@ -1628,7 +1642,10 @@ public struct FightEntry: Codable, Sendable, Equatable {
         durationMs = try c.decode(Int64.self, forKey: .durationMs)
         players = try c.decodeIfPresent([String].self, forKey: .players) ?? []
         deaths = try c.decodeIfPresent(Int.self, forKey: .deaths)
-        npcKills = try c.decodeIfPresent(Int.self, forKey: .npcKills)
+        mobDeaths = try c.decodeIfPresent(Int.self, forKey: .mobDeaths)
+        groupKills = try c.decodeIfPresent(Int.self, forKey: .groupKills)
+        groupDeaths = try c.decodeIfPresent(Int.self, forKey: .groupDeaths)
+        group = try c.decodeIfPresent([String].self, forKey: .group)
         verified = try c.decode(Bool.self, forKey: .verified)
     }
 }

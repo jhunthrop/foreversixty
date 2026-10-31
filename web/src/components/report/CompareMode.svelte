@@ -33,7 +33,13 @@
     type CompareMetric,
   } from '../../lib/report/compare';
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatAmount, formatDuration, outcomeLabel } from '../../lib/report/format';
+  import {
+    classColorVar,
+    formatAmount,
+    formatDuration,
+    joinFacts,
+    outcomeLabel,
+  } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
   import { clampWindow, scopeSummary, type TimeWindow } from '../../lib/report/window';
@@ -105,9 +111,7 @@
     return {
       value: String(fight.index),
       label: `${fight.name}${pull === '' ? '' : ` · ${pull}`}`,
-      description: [outcomeLabel(fight), formatDuration(fight.duration_ms)]
-        .filter((part) => part !== '')
-        .join(' · '),
+      description: joinFacts(outcomeLabel(fight), formatDuration(fight.duration_ms)),
       group,
     };
   }
@@ -224,7 +228,7 @@
       own === null
         ? formatDuration(fight.duration_ms)
         : `${formatDuration(own.startMs)} to ${formatDuration(Math.min(own.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
-    return [fight.name, stretch, outcomeLabel(fight).toLowerCase()].filter((part) => part !== '').join(' · ');
+    return joinFacts(fight.name, stretch, outcomeLabel(fight).toLowerCase());
   }
 
   interface Line {

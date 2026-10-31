@@ -387,8 +387,13 @@ private; **anything you may not read is 404, never 403**. Answer `{ id, title, v
 ({ id, battletag }, or null), guild (omitted when none), zone, status, engine_version, fights[],
 players[], created_at, last_upload_at, heartbeat_at, data_base_url, logging_character }` plus
 omitted `flagged`. A fight is `{ index, kind ("encounter"|"trash"), name, kill, in_progress, start,
-end, duration_ms, players[], deaths, npc_kills, verified }` plus omitted `encounter_id`,
-`difficulty`, `size`, `zone`, `boss_health_pct`. The per-fight tables are files under
+end, duration_ms, players[], deaths, verified }` plus omitted `encounter_id`,
+`difficulty`, `size`, `zone`, `boss_health_pct`, `mob_deaths`, `group_kills`, `group_deaths` and
+`group[]`. The last four come from engine 0.6.0: `mob_deaths` is every hostile NPC that died in
+range, once each; `group_kills` how many of those the logger's group killed; `group_deaths` the
+group's own deaths; `group` the players flagged MINE, PARTY or RAID during that fight. A fight
+indexed earlier has none of them, and the app shows no kill count for it (the retired
+`npc_kills` counted a group kill twice). The per-fight tables are files under
 `data_base_url`, which v1 does not read: the app shows the summary and opens the full report on the
 web. Fixtures `reports.get`. Errors: 404 (`reports.get.error-not-found`).
 

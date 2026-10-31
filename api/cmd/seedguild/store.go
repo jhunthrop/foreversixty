@@ -263,8 +263,8 @@ func insertFightsAndMetrics(ctx context.Context, tx pgx.Tx, pool *pgxpool.Pool, 
 		}
 		if _, err := tx.Exec(ctx,
 			`insert into fights (report_id, fight_index, encounter_id, name, difficulty, size, kill,
-			   duration_ms, start_ms, verified, players, deaths, npc_kills)
-			 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10, $11, 0)`,
+			   duration_ms, start_ms, verified, players, deaths)
+			 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10, $11)`,
 			pr.ID, idx, encounterID, f.Name, difficulty, size, f.Kill, f.DurationMS,
 			foughtAt.UnixMilli(), keys, fightDeaths); err != nil {
 			return fmt.Errorf("seedguild: insert fight %s/%d: %w", pr.ID, idx, err)

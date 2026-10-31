@@ -349,8 +349,11 @@ components:
         end: { type: string, format: date-time }
         duration_ms: { type: integer, format: int64 }
         players: { type: array, items: { type: string } }
-        deaths: { type: integer }
-        npc_kills: { type: integer }
+        deaths: { type: integer, description: "Every player death in range" }
+        mob_deaths: { type: integer, description: "Hostile NPCs that died in range, each once. Absent on a fight indexed before engine 0.6.0: show no kill count then" }
+        group_kills: { type: integer, description: "How many of mob_deaths the logger's group killed. Absent before engine 0.6.0" }
+        group_deaths: { type: integer, description: "Player deaths among the group. Absent before engine 0.6.0" }
+        group: { type: array, items: { type: string }, description: "Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was" }
         verified: { type: boolean }
     RankingRow:
       type: object

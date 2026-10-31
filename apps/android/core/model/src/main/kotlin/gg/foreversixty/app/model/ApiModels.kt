@@ -614,8 +614,16 @@ data class FightEntry(
     @SerialName("end") val end: String? = null,
     @SerialName("duration_ms") val durationMs: Long,
     @SerialName("players") val players: List<String> = emptyList(),
+    /** Every player death in range */
     @SerialName("deaths") val deaths: Int? = null,
-    @SerialName("npc_kills") val npcKills: Int? = null,
+    /** Hostile NPCs that died in range, each once. Absent on a fight indexed before engine 0.6.0: show no kill count then */
+    @SerialName("mob_deaths") val mobDeaths: Int? = null,
+    /** How many of mob_deaths the logger's group killed. Absent before engine 0.6.0 */
+    @SerialName("group_kills") val groupKills: Int? = null,
+    /** Player deaths among the group. Absent before engine 0.6.0 */
+    @SerialName("group_deaths") val groupDeaths: Int? = null,
+    /** Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was */
+    @SerialName("group") val group: List<String>? = null,
     @SerialName("verified") val verified: Boolean,
 )
 
