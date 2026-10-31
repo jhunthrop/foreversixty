@@ -61,7 +61,12 @@ func TestTheHeartbeatPostsAtTheIntervalAndStopsWhenTheReportCloses(t *testing.T)
 func TestAHeartbeatThatFailsIsLoggedOnceAndRetriedOnTheNextTick(t *testing.T) {
 	r := beatRig(t)
 	r.srv.FailNext("POST /v1/reports/{id}/heartbeat", 3)
-	until(t, "a heartbeat after three failures", func() bool { return r.srv.Heartbeats() > 0 })
+	// A beat already sent before FailNext can land first, so wait for the
+	// three refusals themselves, then for a beat accepted after them.
+	refused := func() int { return r.srv.HeartbeatRequests() - r.srv.Heartbeats() }
+	until(t, "three refused heartbeats", func() bool { return refused() >= 3 })
+	accepted := r.srv.Heartbeats()
+	until(t, "a heartbeat after three failures", func() bool { return r.srv.Heartbeats() > accepted })
 	r.pipe.Close() // waits for the goroutine, so the log is safe to read
 	if n := strings.Count(r.logs.String(), "a heartbeat did not land"); n != 1 {
 		t.Fatalf("the failure was logged %d times; want once per report\n%s", n, r.logs.String())
