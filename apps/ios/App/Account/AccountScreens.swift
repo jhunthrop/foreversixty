@@ -67,23 +67,27 @@ struct YouScreen: View {
     /// You's version line and About's version (`AccountCopy.version`).
     let version: String
     let onPickClass: () -> Void
+    /// Lane F8: See plans and Manage billing, where the store allows them.
+    let plansLink: PlansLink
     @State private var deviceCount: Int?
 
     var body: some View {
         NavigationStack {
             if let me = session.phase.me {
                 let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
-                YouView(summary: summary) {
+                YouView(summary: summary, mayLink: plansLink.mayLink) {
                     Task { await session.signOut() }
                 }
                 .navigationDestination(for: YouRoute.self) { route in
                     switch route {
+                    case .plan: PlanView(plan: summary.plan, mayLink: plansLink.mayLink)
                     case .devices: DevicesScreen(session: session) { deviceCount = $0 }
                     case .deleteAccount: DeleteAccountScreen(session: session)
                     case .about: AboutView(version: version)
                     }
                 }
                 .task { deviceCount = (try? await session.devices())?.count }
+                .task { await plansLink.resolve() }
             } else if session.phase.isSignedIn {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity).background(FSColor.bg)
             } else {

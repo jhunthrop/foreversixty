@@ -99,7 +99,8 @@ struct RootView: View {
             YouScreen(
                 session: environment.session,
                 version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
-                onPickClass: { selection = .bis }
+                onPickClass: { selection = .bis },
+                plansLink: environment.plansLink
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
