@@ -130,3 +130,24 @@ plugged in.
   the night view has always done it.
 - The trash entry sits after its zone's boss pulls. On a night that clears trash first, the entry
   comes after the bosses, not in time order. That is deliberate (the Warcraft Logs layout).
+
+## Finish round (2026-10-31)
+
+- **Reviews.** ux-designer SHIP and wow-player SHIP, both on round 2; verdicts in
+  `design/reviews/2026-10-31-reports-trash/verdicts.md`.
+  - ux round 1 blocked on a stray scrollbar thumb on the mode tab row. Fixed with a `scrollbar-none`
+    utility on sideways tab rows.
+  - wow-player's owner follow-ups are logged in the verdicts: report-level fight totals counting
+    trash, the "mobs died" wording, the Active % denominator, and the list row affordance.
+- **Merge.** Merged origin/main, including logs-engine-counts. The trash entry now carries its
+  summed kill counts and the group death mark. The `toggle-trash` e2e steps are gone.
+- **Gates.**
+  - check, lint, format:check and the full vitest pass (7783 tests).
+  - Full Playwright, built and served with `PUBLIC_API_BASE_URL=http://127.0.0.1:9`: 3387 passed,
+    27 failed.
+    - The account-discord(-link), guild-discord-bot, guild-settings-discord, report-queries and
+      guild-raid-spec-ask failures also fail on a clean origin/main built the same way.
+    - home-panel's late-shift check failed under full-suite load. It passes in isolation, run
+      twice.
+  - lhci: the reports URL passes. bis/marksmanship LCP, sim and planner miss locally on both this
+    branch and clean main (machine noise; this lane's only change there is the scrollbar CSS).
