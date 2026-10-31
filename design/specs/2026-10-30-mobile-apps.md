@@ -790,7 +790,7 @@ Everything in premium-entry spec §2 holds, plus:
 
 Settles what §5.8 left to the builders. Boards: `design/mocks/2026-10-30-mobile-apps/renders/f8-build-ios.png` and `f8-build-and.png`. Where this section and §5.8 or §14 C3 differ, this section wins.
 
-**The contract as shipped.** `GET /v1/app/config` answers `web_checkout_regions` (ISO alpha-2, upper case, one list for both apps) and `features.premium_link`. §14 C3's `plans_link.ios` (alpha-3) is superseded. iOS reads `Storefront.current?.countryCode` (alpha-3) and converts it to alpha-2 with Foundation's `Locale` region (`Locale(identifier: "und_" + alpha3).region?.identifier`, `und_USA` gives `US`); a code Foundation cannot resolve is not a link region. The plans URL is the constant `https://foreversixty.gg/premium`; the billing URL is `https://foreversixty.gg/account#plan`.
+**The contract as shipped.** `GET /v1/app/config` answers `web_checkout_regions` (ISO alpha-2, upper case, one list per platform by `X-App`, decision L) and `features.premium_link`. §14 C3's `plans_link.ios` (alpha-3) is superseded. iOS reads `Storefront.current?.countryCode` (alpha-3) and converts it to alpha-2 with Foundation's `Locale` region (`Locale(identifier: "und_" + alpha3).region?.identifier`, `und_USA` gives `US`); a code Foundation cannot resolve is not a link region. The plans URL is the constant `https://foreversixty.gg/premium`; the billing URL is `https://foreversixty.gg/account#plan`.
 
 ### Link region (one rule, both apps)
 Link region is true only when all three hold: `features.premium_link` is true, the config has loaded (the last good cached config counts; a first launch with no cache and no answer does not), and the storefront country, converted to alpha-2, is in `web_checkout_regions`. Anything else (config unreachable with no cache, storefront unreadable, flag off, unknown country) is not a link region. Fail closed.
@@ -1468,6 +1468,8 @@ Each lane also records:
 - [ ] Captures per §15 attached; ux-designer and wow-player SHIP on them.
 
 # 17. Open questions only the owner can answer
+
+**Ruled 2026-10-31** (owner delegated: "make the best decisions that are best for the success of the product"). The rulings are decisions L, W, U and Q in `docs/superpowers/plans/2026-10-30-mobile-apps-lanes.md`: Q1 v1.1; Q2 Android ships with no link region until the Play enrolment, iOS links in the US; Q3 accept the review risk; Q4 after launch, its own lane and security review; Q5 no DMs in v1; Q6 phone layout at launch.
 
 1. **Approving characters in the app.** Locking and moving are in v1 (ruled). Approving waiting characters stays on the web. Do you want it in v1.1?
 2. **Google Play in the US.** The plan reads the US storefront as a link region on both stores. Play's US external-link rules have changed during 2025. Confirm that the Play Console account is enrolled in whatever programme Play now requires for a link to web checkout, and that any fee is accepted. Until then, should `plans_link.android` ship empty?
