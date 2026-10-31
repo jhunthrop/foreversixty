@@ -295,3 +295,99 @@ All checks were exit-code checked.
 | `astro check` | 0 errors |
 | lint, format | pass |
 | Playwright on 4705, desktop and mobile: every `report-*.spec.ts`, plus sample-report, coach-report, onboarding-second-screen and launch-polish | 442 passed, 56 skipped (project-specific), 0 failed |
+
+## Round 3: the code review's FIX FIRST
+
+The review is `docs/superpowers/reports/2026-10-31-logs-engine-counts-review.md`, committed with
+both design verdicts.
+
+### H1. Neutral mobs (fixed)
+
+**What counts as a mob** (`fight.Counter`): a non-player unit that either
+- was hostile on any line of the fight, or
+- is neutral and the group damaged it or PARTY_KILLed it.
+
+**How the counts follow:**
+- A PARTY_KILL on a neutral NPC counts toward both `mob_deaths` and `group_kills`.
+- Group damage on neutral NPCs is tracked (`groupHit`), and so is the last hit
+  (`lastHitByGroup`). A neutral unit the group never touched (someone else's pull, or a critter
+  in someone else's AoE) is not counted.
+
+**Critters.** This repository's data has no creature types: `data/builds` carries no creature
+table, and the classic-db `creature_template` exists only in the audit pipeline's uncommitted
+cache. So the line is drawn by health:
+- A neutral unit whose known maximum health is at most `fight.Options.CritterMaxHP` is a critter
+  and never a mob. The default is 10, in `DefaultOptions`.
+- The weakest level-one neutral beasts in the Forever sample have 42 HP.
+- When no advanced block ever showed the unit's health, it counts.
+
+**Segmentation fix.** The neutral-beast test showed that a pull of only neutral beasts **never
+opened a fight at all**: `hostileCombat` required one side to be hostile. It now uses
+`units.Enemy`, which the summary already used for damage and threat. Two neutral units, or two
+friendly ones, are still no fight. The `v16`, `v22` and Forever summary goldens are unchanged, and
+so is the regenerated web report fixture.
+
+**Tests:**
+- The old critter case is now separate cases: a neutral beast the group killed (counts, with and
+  without a PARTY_KILL), a neutral unit the group never hit (does not count), a critter the group
+  PARTY_KILLed (does not count), and the configurable cutoff.
+- A segmenter test checks that a neutral-beast pull opens a fight.
+- The session oracle now runs over the v16, v22 and Forever fixtures. It reads mob deaths from the
+  text by the same rule, using a CSV reader so names with commas parse.
+
+### M1. Feign Death (handled; not confirmed on a real log)
+
+- A player UNIT_DIED counts, but stays pending.
+- If the same GUID then casts (SPELL_CAST_START or SPELL_CAST_SUCCESS) or swings (SWING_*)
+  before any SPELL_RESURRECT names them, the death is taken back from `deaths` and, when it
+  counted there, from `group_deaths`.
+- Ticks from a DoT and hits from a pet carry on after their owner dies, so they are not signs of
+  life.
+- The synthetic test covers a feign undone by the hunter's swing, and a real death that a DoT
+  tick does not undo, followed by a resurrect and a cast, which keeps it.
+- **No real Forever hunter log was available to confirm how the client logs Feign Death.**
+- **Known gap:** a shaman's Reincarnation, if the client logs it as a cast with no
+  SPELL_RESURRECT, would undo a real death.
+
+### M2. Charmed mobs (fixed)
+
+An NPC seen hostile anywhere in the fight counts when it dies, even when it dies carrying a group
+member's charm flags. Covered by a test.
+
+### LOWs
+
+| Finding | Action |
+| --- | --- |
+| L1, L2 (rollout window) | No change. Both need an old revision to serve traffic during the deploy, and the web shows no count rather than a wrong one. |
+| L3 (no backfill for old fights) | Follow-up: a production recount over each fight's stored `events.parquet`, the way `samplecut -recount` works. Not built here. |
+| L4 (no migration test) | Added `api/internal/db/fight_counts_migration_test.go`. Up adds the four columns as nullable, and down removes them. |
+| L5 (subtitle and death list disagree) | Under the group scope the subtitle reads the summary's death list again, the same list as the Deaths tab, so the two always agree. The fight list's mark still reads `group_deaths`, which also takes back a feign. Making the summary's death list feign-aware is a follow-up. |
+
+### Sample
+
+`samplecut -recount` was rerun:
+- **Fight 6 is unchanged: 177 mobs died, your group killed 26, 0 group deaths, a group of five.**
+- Fight 20 is now 5 mob deaths and 2 group kills (was 3 and 0).
+- Fight 21 is now 2 mob deaths and 1 group kill (was 1 and 0). The new kills in fights 20 and 21
+  are the Galestriders.
+- Night totals: 678 mob deaths, 81 group kills.
+- **Caveat:** recount keeps the sample's 0.5 fight boundaries. A re-cut from the log could add
+  pulls of only neutral beasts that the old segmenter never made into fights.
+- The captures were re-taken. `sample-neutral-kills-1440.png` is new and shows fights 20 and 21.
+
+### Gates (round 3)
+
+All checks were exit-code checked.
+
+| Gate | Result |
+| --- | --- |
+| `go vet ./...` on logs and api | clean |
+| `go test -race ./...` on logs | pass |
+| `go test -race -p 1` on api reports, parse, engine, coach, db (with the new 0059 test) and cmd/... (private db, dropped afterwards) | pass |
+| sim adapter tests; companion build | pass |
+| vitest: lib/report, components/report, lib/coach, fixtures, lib/mobile | 79 files, 809 tests, pass |
+| `astro check` | 0 errors |
+| lint, format | pass |
+| Playwright on 4705, desktop and mobile: every `report-*.spec.ts`, plus sample-report, coach-report, onboarding-second-screen and launch-polish | 442 passed, 56 skipped, 0 failed |
+
+The engine version stays 0.6.0, because 0.6.0 has not shipped.
