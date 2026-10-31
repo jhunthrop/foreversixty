@@ -198,3 +198,9 @@ def test_fetch_refuses_to_overwrite_with_era_data(tmp_path: Path) -> None:
     with pytest.raises(wh.WowheadPayloadError, match="11300"):
         wh.fetch_wowhead("1.60.1.70009", root=tmp_path, client=client)
     assert not (tmp_path / "1.60.1.70009").exists()
+
+
+def test_to_gear_item_carries_armor_type_and_no_bonding() -> None:
+    item = _wowhead_item(class_id=4, subclass_id=3, inventory_type=10)
+    gear = wh.to_gear_item(item)
+    assert (gear.armor_type, gear.bonding) == ("mail", None)

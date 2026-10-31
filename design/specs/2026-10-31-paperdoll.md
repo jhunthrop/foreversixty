@@ -241,7 +241,7 @@ The gain figure is the API's `gap` (`CharacterGearSlot.gap`). The model never sh
 
 - **Counted slots:** every equipped slot except shirt and tabard.
   - An empty slot is not equipped, so it is not counted.
-  - The empty off hand under a two-hander is not counted.
+  - The empty off hand under a two-hander is not counted, and never counts as an unknown slot: it is empty, not an item missing from our data, so it never hides the figure.
 - **Shown only when every counted slot is known.** If any equipped item is not in our data, the label and the figure are both absent. There is no partial mean, no "12 of 15" and no dash.
 - **The figure** is the mean item level of the counted items, to one decimal.
 - **Why:** the unknown items are the newest and likely the highest level, so a partial mean is wrong in exactly the case that matters (player blocker 2).
@@ -283,11 +283,8 @@ Every row below is drawn in `states-1280.png`.
 
 **Keyboard and touch:**
 
-- Keyboard order:
-  1. the left column, top to bottom;
-  2. the right column;
-  3. main hand, off hand, ranged.
-- On desktop each cell's pick follows its cell. On phone, the DOM order is the visual order: pair, then its upgrade rows.
+- Keyboard order (build ruling): one DOM order for both frames, so it is the phone's visual order. Each pair's left cell, its pick, then the right cell and its pick (Head, Hands, Neck, Waist and so on), then main hand, off hand, ranged. Desktop reads the frame row by row, as the sheet's alt text does. A column-first order would need a second DOM for desktop.
+- Each cell's pick follows its cell.
 - The list is `role="list"`, "Gear by slot".
 - Every target is at least 44 px.
 - The 8 px gap between phone columns belongs to no target: a tap in it hits nothing. Each cell's box ends at its column edge.
@@ -313,10 +310,11 @@ The rule extends `lib/items/tooltip-position.ts`. It is shown on the `tip-*` boa
 
 **On "Requires Blacksmithing (300)":** the reviewer asked for this line. It is not on Lionheart Helm in the client. That line appears only on the recipe (Plans: Lionheart Helm), because wearing the helm needs no profession. Printing it on the helm would be false (tenet 8), so the tooltip keeps "Crafted: Blacksmithing".
 
-**Found in the shared tooltip.** These are outside this lane. They are raised for the tooltip owner, and the boards show them as shipped:
+**Fixed in the shared tooltip (build lane, 2026-10-31).** Both defects were fixed at `lib/items/tooltip.ts`, with unit tests:
 
-- A drop chance under 0.5% prints "(0%)". `percentLabel` in `tooltip.ts` uses `Math.round`. It should print "(<1%)", as `gear/panel.ts` already does. The mock draws "<1%".
-- An item whose stat is stored as a percent (`percent_stats`, e.g. Truestrike Shoulders `hit: 2`) prints "+2 Hit". The client says "Equip: Improves your chance to hit by 2%."
+- A drop chance under 1% prints "(<1%)", never "(0%)". One helper, `lib/items/drop-chance.ts`, now prints every drop chance on the site (the tooltip, the BiS source cell, the character page).
+- A stat stored as a percent (`percent_stats`) prints the client's sentence after the flat stats: "Equip: Improves your chance to hit by 2%." (crit, dodge, parry and block likewise; defense as "Equip: Increased Defense +7.").
+- The tooltip also adds "Binds when picked up" (equipped, used, Quest Item) and the armour type beside the slot ("Leather") wherever the build publishes `bonding` and `armor_type` (api/openapi.yaml `Item`, spec C6). The pipeline emits both from the next nightly build; until then the lines are absent, never guessed.
 
 ## 5. Hierarchy
 

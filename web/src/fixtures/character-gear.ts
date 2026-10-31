@@ -261,20 +261,6 @@ export const GEAR_FIXTURE: CharacterGearSlot[] = [
 /** Both fields as the API sends them: the gaps' plain sum, one decimal. */
 export const GEAR_PANEL_FIXTURE: CharacterGear = { gear: GEAR_FIXTURE, gear_gap_total: 70 };
 
-/** A long worn name for the separator checks (L8.6 fix round 5 item 1): the panel above with
- *  Shoulder's "Best for your band" row worn as "Mantle of the Unforgiving Majesty", a name that
- *  cannot share a line with its note at 360 to 414px. 99002 is a stub id the build does not
- *  carry (the name in the body colour, an empty icon box). */
-export const GEAR_FIXTURE_LONG_NAME: CharacterGearSlot[] = GEAR_FIXTURE.map((slot) =>
-  slot.slot === 'shoulder' && slot.pick !== null
-    ? {
-        ...slot,
-        worn: { id: 99002, name: 'Mantle of the Unforgiving Majesty', item_level: 76 },
-        pick: { ...slot.pick, id: 99002, name: 'Mantle of the Unforgiving Majesty' },
-      }
-    : slot,
-);
-
 /** The build's items/priest.json rows for every fixture id (99001 is not in the build): the
  *  e2e stub of that file, so the names take their qualities and icons, the worn staff reads as
  *  two-handed, and the tooltip has a real row to show. */
@@ -793,3 +779,28 @@ export const GEAR_FIXTURE_ITEMS: Item[] = [
     effect_text: 'Increases damage done by Shadow spells and effects by up to 14.',
   },
 ];
+
+/** The paperdoll's worst case (design/specs/2026-10-31-paperdoll.md §3.3): every slot worn, each
+ *  with the longest launch-legal name a warrior can wear there in build 1.60.1.70658 (the
+ *  longest-*.png boards), so no clamp may cut one at any width. */
+export const GEAR_FIXTURE_LONGEST: CharacterGearSlot[] = (
+  [
+    ['head', 9492, 'Electromagnetic Gigaflux Reactivator'],
+    ['neck', 13091, 'Medallion of Grand Marshal Morris'],
+    ['shoulder', 18742, 'Stratholme Militia Shoulderguard'],
+    ['back', 11812, 'Cape of the Fire Salamander'],
+    ['chest', 250520, "Protector's Silvered Chain Shirt"],
+    ['wrist', 17714, 'Bracers of the Stone Princess'],
+    ['hands', 10808, "Gloves of the Atal'ai Prophet"],
+    ['waist', 252476, "Skycaller's Leather Waistguard"],
+    ['legs', 250525, "Protector's Silvered Chain Leggings"],
+    ['feet', 22240, 'Greaves of Withering Despair'],
+    ['finger1', 6321, "Silverlaine's Family Seal"],
+    ['finger2', 273030, 'Ring of Power Regulation'],
+    ['trinket1', 249473, 'Dormant Heart of the Mountain'],
+    ['trinket2', 11811, 'Smoking Heart of the Mountain'],
+    ['main_hand', 810, 'Hammer of the Northern Wind'],
+    ['off_hand', 7726, 'Aegis of the Scarlet Commander'],
+    ['ranged', 279273, 'Hyper Deluxe Sniper Rifle Mk XVII'],
+  ] as const
+).map(([slot, id, name]) => ({ slot, worn: { id, name, item_level: 60 }, pick: null, gap: null }));

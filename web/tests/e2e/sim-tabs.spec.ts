@@ -144,13 +144,13 @@ test.describe('the simulator tab strip', () => {
     // merely that it carries a code= parameter.
     await page.goto(quickSimHref ?? '/sim');
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('paperdoll-descriptor')).toContainText('Fury Warrior');
 
     // Same proof for the tools island's own `?code=` bootstrap (ToolsView.svelte's
     // `bootstrapCharacter`, `runBootstrapRestore` with `storeHandlesUrl: false`).
     await page.goto(gearHref ?? '/sim/gear');
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('paperdoll-descriptor')).toContainText('Fury Warrior');
   });
 
   // The tools island's own `characterCode` fallback (bulk-store.svelte.ts): every tab on

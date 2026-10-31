@@ -72,7 +72,14 @@ const BUDGETS = [
 // no test here measures directly.
 const PAGE_ISLAND_BUDGETS = [
   { component: 'Rankings', limitBytes: 16 * 1024 },
-  { component: 'Character', limitBytes: 16 * 1024 },
+  // Raised 16 -> 18 KB (paperdoll lane, 2026-10-31): the character page's Gear section became
+  // the shared Paperdoll (design/specs/2026-10-31-paperdoll.md), which statically carries the
+  // frame, its model and ItemHover. The spec's own §8 budget lets that frame add up to 4 KB
+  // gzipped; measured, Character went from 14.7 KB (main 99d6cae) to 17.9 KB, +3.6 KB. The
+  // section is on the page's first view for a character with gear, so lazy-loading it would
+  // trade bytes for a second paint of the frame; 18 KB keeps the same ~0.1 KB slack per KB
+  // the other page islands have and still trips an accidental heavy import.
+  { component: 'Character', limitBytes: 18 * 1024 },
   { component: 'GuildShell', limitBytes: 16 * 1024 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners

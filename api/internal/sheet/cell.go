@@ -3,6 +3,7 @@ package sheet
 import (
 	"image"
 	"image/color"
+	"slices"
 	"strings"
 	"sync"
 )
@@ -64,11 +65,13 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 }
 
 // fitEmpty is an empty socket's words, the panel's grammar: "{Slot} · Upgrade available" or
-// "{Slot} · Gain not modelled yet" with the status in gold; "{Slot} · Empty" (/char, no pick)
-// and "{Slot} · No pick" (/bis) all muted.
+// "{Slot} · Gain not modelled yet" with the status in gold; "{Slot} · Empty" (/char, no pick),
+// "{Slot} · No pick" (/bis) and "Off hand · Two-hand in main hand" all muted.
 func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
 	status, gold := CopyNone, false
-	if kind == KindChar {
+	if sl.TwoHandOff {
+		status = CopyTwoHand
+	} else if kind == KindChar {
 		status, gold = CopyEmpty, sl.Gain != ""
 		if gold {
 			status = sl.Gain
@@ -87,6 +90,9 @@ func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
 		tailColor = colorGold
 	}
 	words := append(spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin), spanWords(tail, tailColor, status)...)
+	if sl.TwoHandOff {
+		words = keepLastTogether(words)
+	}
 	return cellText{label: wrapWords(words, d(textW+fitSlack))}, nil
 }
 
@@ -257,4 +263,16 @@ func (r *renderer) socket(c cell, x, y int) {
 	fillMask(r.img, p, outer, c.ring)
 	fillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorBlack)
 	placeImage(r.img, p.Add(image.Pt(inset, inset)), int(d(iconW)), int(d(iconW)), c.icon, inner)
+}
+
+// keepLastTogether joins the last two words into one unbreakable word, so "main hand" never
+// leaves "hand" alone on a line.
+func keepLastTogether(words []word) []word {
+	if len(words) < 2 {
+		return words
+	}
+	n := len(words)
+	joined := words[n-2]
+	joined.text += " " + words[n-1].text
+	return append(slices.Clone(words[:n-2]), joined)
 }

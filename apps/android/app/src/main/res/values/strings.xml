@@ -129,8 +129,8 @@
     <string name="items_slot_waist">Waist</string>
     <string name="items_slot_legs">Legs</string>
     <string name="items_slot_feet">Feet</string>
-    <string name="items_slot_finger1">Ring 1</string>
-    <string name="items_slot_finger2">Ring 2</string>
+    <string name="items_slot_finger1">Finger 1</string>
+    <string name="items_slot_finger2">Finger 2</string>
     <string name="items_slot_trinket1">Trinket 1</string>
     <string name="items_slot_trinket2">Trinket 2</string>
     <string name="items_slot_mainHand">Main hand</string>

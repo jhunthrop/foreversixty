@@ -58,6 +58,7 @@ from pipeline.normalize.gear import (
     SLOT_BY_INVENTORY_TYPE,
     STAT_BY_MODIFIER_ID,
     TWO_HAND_INVENTORY_TYPES,
+    armor_type_for,
     is_junk_name,
     is_weapon_row,
     percent_stats_of,
@@ -1057,6 +1058,7 @@ def to_gear_item(
         unique=item.unique,
         icon_source=icon_source,
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
+        armor_type=armor_type_for(item.class_id, item.subclass_id, item.inventory_type),
     )
 
 

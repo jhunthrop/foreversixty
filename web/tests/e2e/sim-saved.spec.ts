@@ -101,7 +101,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     // The fixture's stored request carries real gear entries, so `gearKnown` is true and
     // the strip renders the grid rather than `simCopy.savedNoGear` -- the inverse of a
     // request with no gear at all, exercised below against a stubbed id.
-    await expect(page.getByTestId('sim-slot-head')).toBeVisible();
+    await expect(page.getByTestId('paperdoll-slot-head')).toBeVisible();
     await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
 
     // Controller addendum (Task 17's review, MEDIUM): the strip's "Change source" button
@@ -178,7 +178,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-character')).toBeVisible();
     // The stored request's own character, not a guess: the same class and gear the saved
     // sim ran with (src/fixtures/sim/result.json's request.character).
-    await expect(page.getByTestId('sim-slot-head')).toBeVisible();
+    await expect(page.getByTestId('paperdoll-slot-head')).toBeVisible();
   });
 });
 
@@ -298,7 +298,7 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-no-gear')).toBeVisible();
-  await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
+  await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
 });
 
 // Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
@@ -357,7 +357,7 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
     await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
     // A weights result has no gear story (design 7): the strip's grid does not claim one.
-    await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
+    await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
   });
 });
 

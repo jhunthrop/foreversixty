@@ -16,6 +16,7 @@ const (
 	CopyMark        = "foreversixty.gg"                      // sheet.mark
 	CopyNotModelled = "Gain not modelled yet"                // item.notModelled
 	CopyAltOffHand  = "Off hand: none, two-handed main hand" // sheet.alt.offhand
+	CopyTwoHand     = "Two-hand in main hand"                // paperdoll: the off hand under a two-hander
 
 	altBisLead  = "Best in slot sheet, "
 	altCharLead = "Character sheet, "
@@ -25,7 +26,7 @@ const (
 	metaILvl    = "item level "
 )
 
-// SlotOff is the off hand's slot key: a two-handed main hand leaves it out of the sheet.
+// SlotOff is the off hand's slot key: under a two-handed main hand it is drawn empty.
 const SlotOff = "off_hand"
 
 // slotLabels are the 17 slot keys (the BiS data's bis.Slot.Slot) and their words, in the
@@ -33,7 +34,7 @@ const SlotOff = "off_hand"
 var slotLabels = []struct{ key, label string }{
 	{"head", "Head"}, {"neck", "Neck"}, {"shoulder", "Shoulder"}, {"back", "Back"},
 	{"chest", "Chest"}, {"wrist", "Wrist"}, {"hands", "Hands"}, {"waist", "Waist"},
-	{"legs", "Legs"}, {"feet", "Feet"}, {"finger1", "Ring 1"}, {"finger2", "Ring 2"},
+	{"legs", "Legs"}, {"feet", "Feet"}, {"finger1", "Finger 1"}, {"finger2", "Finger 2"},
 	{"trinket1", "Trinket 1"}, {"trinket2", "Trinket 2"}, {"main_hand", "Main hand"},
 	{SlotOff, "Off hand"}, {"ranged", "Ranged"},
 }
@@ -47,7 +48,7 @@ func SlotKeys() []string {
 	return out
 }
 
-// SlotLabel is "Ring 1" for "finger1", and "" for a key that is not a gear slot.
+// SlotLabel is "Finger 1" for "finger1", and "" for a key that is not a gear slot.
 func SlotLabel(key string) string {
 	for _, s := range slotLabels {
 		if s.key == key {

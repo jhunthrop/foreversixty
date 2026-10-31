@@ -788,3 +788,11 @@ def test_to_gear_item_records_equip_hit_and_crit_as_percent_stats_not_ratings():
     gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
     assert gear.stats == {"hit": 20, "crit": 2}
     assert gear.percent_stats == {"crit": 2}
+
+
+def test_to_gear_item_carries_armor_type_and_no_bonding():
+    """classic-db's extract states no bonding, so none is invented; the
+    armour word comes from the row's own class and subclass."""
+    chest = _item(id=2, class_id=4, subclass_id=2, inventory_type=5)
+    gear = to_gear_item(chest, _FakeSpellText({}), {}, fork_icons={}, wowhead_icons={})
+    assert (gear.armor_type, gear.bonding) == ("leather", None)

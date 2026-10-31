@@ -121,11 +121,9 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 3. "Sim this build": the simulator shows the character, not a bare code.
   await simLink.click();
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
-  await expect(page.getByTestId('sim-character-descriptor')).toContainText(
-    `${bow.race} ${bow.spec} Hunter · 60`,
-  );
-  await expect(page.getByTestId('sim-source-pill')).toHaveText('Build from planner · Bow Jackzon’s gear');
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('paperdoll-descriptor')).toContainText(`${bow.race} ${bow.spec} Hunter · 60`);
+  await expect(page.getByTestId('paperdoll-source')).toHaveText('Build from planner · Bow Jackzon’s gear');
   await expect(page.getByTestId('sim-gear')).toBeVisible();
   await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
@@ -143,7 +141,7 @@ test('the chosen character follows the player through every page', async ({ page
   await shot(page, '03-sim');
   // A bare /sim still restores the same character, and still leaves the pointer alone.
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
   await expect(page.getByText('Sign in with Battle.net to find your characters')).toHaveCount(0);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
 
@@ -206,7 +204,7 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 7. Forget clears the pointer and the header falls back to the account's main.
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
   await page.getByTestId('current-character-forget').click();
   expect(await pointerOf(page)).toBeNull();
   await page.goto('/tiers');
@@ -256,8 +254,8 @@ test('a linked code never replaces the character, and a nameless one is never th
   const nameless = 'FS1:1.60.1.70450:hunter:human:0/0/0:';
   await page.goto(`/sim?code=${encodeURIComponent(nameless)}`);
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-character-name')).toHaveCount(0);
-  await expect(page.getByTestId('sim-source-pill')).toHaveText('Entered by hand');
+  await expect(page.getByTestId('paperdoll-name')).toHaveCount(0);
+  await expect(page.getByTestId('paperdoll-source')).toHaveText('Entered by hand');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await page.goto(`/planner?code=${encodeURIComponent(nameless)}`);
   await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
@@ -338,7 +336,7 @@ test.describe('at 360 px', () => {
     if (CAPTURES !== undefined) await card.screenshot({ path: `${CAPTURES}/w12-16-planner-card-360.png` });
 
     await page.getByTestId('planner-sim-link').click();
-    await expect(page.getByTestId('sim-character-name')).toHaveText('Bow Jackzon');
+    await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
     if (CAPTURES !== undefined)
       await page.getByTestId('sim-character').screenshot({ path: `${CAPTURES}/w12-17-sim-card-360.png` });

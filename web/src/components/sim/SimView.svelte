@@ -658,6 +658,7 @@
         <CharacterStrip
           character={store.character}
           items={store.items}
+          itemsStatus={store.itemsStatus}
           races={store.races}
           onchange={() => (switcherOpen = true)}
           onrace={(slug) => store.setRace(slug)}

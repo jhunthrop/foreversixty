@@ -63,6 +63,9 @@ function delay(ms: number): Promise<void> {
 // A plain Map, not a SvelteMap: `items` below is replaced wholesale when the class changes
 // and only ever read by key, so per-key tracking would be machinery for mutations that
 // never happen.
+/** Where the character's items file stands. */
+export type ItemsStatus = 'loading' | 'ready' | 'failed';
+
 function toItemMap(items: readonly Item[]): Map<number, Item> {
   return new Map(items.map((item) => [item.id, item]));
 }
@@ -173,6 +176,9 @@ export function createSimStore(init: SimStoreInit) {
   let buffNames = $state<BuffNames | null>(null);
   let loadedBuffNamesFor = '';
   let items = $state<Map<number, Item>>(toItemMap([]));
+  /** Whether `items` is the character's file yet: the paperdoll shimmers while 'loading' and
+   *  says so when 'failed'. */
+  let itemsStatus = $state<ItemsStatus>('loading');
 
   let pool: SimPool | null = init.pool ?? null;
   let handle: RunHandle | null = null;
@@ -263,10 +269,13 @@ export function createSimStore(init: SimStoreInit) {
     iterationsTotal = 0;
     relative = 0;
     phase = 'idle';
+    itemsStatus = 'loading';
     try {
       const file = await loadItems(outcome.character.tree_version, outcome.character.class_slug);
       items = toItemMap(file.items);
+      itemsStatus = 'ready';
     } catch {
+      itemsStatus = 'failed';
       // The strip renders slot names and "Empty" without the item file; it is a nicety, and
       // a failed fetch here must not stop a player from running a sim.
       items = toItemMap([]);
@@ -490,6 +499,9 @@ export function createSimStore(init: SimStoreInit) {
     },
     get items() {
       return items;
+    },
+    get itemsStatus() {
+      return itemsStatus;
     },
     get premium() {
       return premium;

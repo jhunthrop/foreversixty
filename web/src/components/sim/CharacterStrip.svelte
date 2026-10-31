@@ -2,35 +2,34 @@
 <!-- Who is being simulated. Read-only by design: gear is changed in the planner, which the
      "Open in planner" link goes to, and a second editor here would be a second set of rules
      to keep in step with lib/planner/rules.ts.
-     The slot grid's markup is deliberately a copy of GearPanel.svelte's rather than a reuse
-     of the component: that one is a button grid bound to PlannerStore and opens an item
-     picker, and none of that belongs on this page. The shared parts -- SLOTS, SLOT_LABELS,
-     rarityClassFor, dataUrl -- are imported, so only the layout is duplicated. -->
+     The card's head is the compact head ("CHARACTER" and "Change source"); its body is the shared
+     Paperdoll (design/specs/2026-10-31-paperdoll.md, call site 1) with the crest, name,
+     descriptor and source in its centre, then the race question, the level note and the talents
+     row. An export that was not read, or a saved sim with no gear list, draws no frame: the
+     identity stands alone over the "not read" panel or the line that says so. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
   import { button } from '../../lib/ui/button';
-  import { cardClass } from '../../lib/ui/card';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
+  import Paperdoll from '../character/Paperdoll.svelte';
+  import Card from '../ui/Card.svelte';
   import { simCharacterHasGear } from '../../lib/addon-export';
-  import { rarityClassFor, wornItemLabel } from '../../lib/planner/items';
-  import { dataUrl, loadItemNames, loadTalents } from '../../lib/planner/load';
+  import { gearCopy } from '../../lib/gear/copy';
+  import type { PaperdollIdentity } from '../../lib/gear/paperdoll';
+  import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
+  import { loadItemNames, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
-  import {
-    SLOTS,
-    SLOT_LABELS,
-    type Item,
-    type RaceRow,
-    type Slot,
-    type TalentFile,
-  } from '../../lib/planner/types';
+  import { SLOTS, type Item, type RaceRow, type Slot, type TalentFile } from '../../lib/planner/types';
+  import { factionOfRace } from '../../lib/race-faction';
+  import type { ItemsStatus } from '../../lib/sim/store.svelte';
   import type { SimCharacter } from '../../lib/sim/character';
   import { needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
   import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
-  import { specLabel } from '../../lib/sim/spec-label';
+  import { specDisplayName, specLabel } from '../../lib/sim/spec-label';
   import Select from '../ui/Select.svelte';
 
   /** "high-order-skyborne" -> "High Order Skyborne". */
@@ -45,6 +44,7 @@
   let {
     character,
     items,
+    itemsStatus = 'ready',
     races = [],
     gearKnown = true,
     readonly = false,
@@ -55,6 +55,8 @@
   }: {
     character: SimCharacter;
     items: Map<number, Item>;
+    /** Whether `items` is the class's file yet: the frame shimmers while it loads. */
+    itemsStatus?: ItemsStatus;
     /** The build's races, for the one-time picker. Only the fight source ever needs it. */
     races?: RaceRow[];
     /** False on a saved sim, whose stored request has no gear list. */
@@ -165,24 +167,79 @@
       ? `${specLabel(character.spec)} · ${character.level}`
       : `${raceWords(character.race_slug)} ${specLabel(character.spec)} · ${character.level}`,
   );
+  const faction = $derived(
+    (races.find((row) => row.slug === character.race_slug)?.faction as
+      PaperdollIdentity['faction'] | undefined) ?? factionOfRace(character.race_slug),
+  );
+  const source = $derived(sourcePill(character.source, new Date(), character.name));
+  const identity = $derived<PaperdollIdentity>({
+    name: character.name,
+    classSlug: character.class_slug,
+    race: pending ? '' : raceWords(character.race_slug),
+    spec: specDisplayName(character.spec),
+    level: character.level,
+    faction,
+    source,
+  });
+  const paperdollSlots = $derived(
+    slotsFromWorn(character.gear, {
+      lookup: (id) => items.get(id),
+      outsideName: (id) => outsideNames[String(id)],
+      failed: itemsStatus === 'failed',
+    }),
+  );
   const split = $derived(
     character.point_order.length > 0 ? character.point_order.length : (talentPoints ?? 0),
   );
 </script>
 
-<section class="{cardClass(false)} mx-[18px] flex flex-col gap-4 p-4 md:mx-0" data-testid="sim-character">
-  <div class="flex flex-wrap items-center gap-3">
-    <ClassCrestRing characterClass={character.class_slug} size={40} testid="sim-character-class-icon" />
-    <!-- A build that names no character has no name to show: the descriptor beside this
-         already reads its race, spec and class, and a class word is never made a name. -->
-    {#if character.name !== ''}
-      <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="sim-character-name">
-        {character.name}
-      </span>
+{#snippet changeSource()}
+  {#if !readonly}
+    <button
+      type="button"
+      class={button('secondary', 'sm')}
+      onclick={onchange}
+      data-testid="sim-change-source"
+    >
+      {simCopy.changeSource}
+    </button>
+  {/if}
+{/snippet}
+
+<Card
+  glyph="user"
+  title={gearCopy.paperdoll.simHead}
+  compact
+  body="none"
+  aside={changeSource}
+  class="mx-[18px] md:mx-0"
+  testid="sim-character"
+>
+  <div class="border-line-soft flex flex-col gap-4 border-t p-4 md:p-5">
+    {#if unread || !gearKnown}
+      <!-- No frame: the identity stands alone over what is said in its place. -->
+      <div class="flex flex-wrap items-center gap-3">
+        <ClassCrestRing characterClass={character.class_slug} size={40} testid="sim-character-class-icon" />
+        {#if character.name !== ''}
+          <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="paperdoll-name">
+            {character.name}
+          </span>
+        {/if}
+        <span class="text-muted text-[13px]" data-testid="paperdoll-descriptor">{descriptor}</span>
+        <span class="pill pill-site" data-testid="paperdoll-source">{source}</span>
+      </div>
+    {:else}
+      <Paperdoll
+        {identity}
+        slots={paperdollSlots}
+        build={character.tree_version}
+        classSlug={character.class_slug}
+        loading={itemsStatus === 'loading'}
+        failed={itemsStatus === 'failed'}
+        testid="sim-gear"
+      />
     {/if}
-    <span class="text-muted text-[13px]" data-testid="sim-character-descriptor">
-      {descriptor}
-    </span>
+
     {#if pending}
       <!-- One question, asked once. The run control stays disabled until it is answered,
            because sim/request.ParseRace refuses an empty race at the boundary and a failed
@@ -203,68 +260,21 @@
         />
       </div>
     {/if}
-    <span class="pill pill-site" data-testid="sim-source-pill"
-      >{sourcePill(character.source, new Date(), character.name)}</span
-    >
-    {#if !readonly}
-      <button
-        type="button"
-        class="{button('secondary', 'sm')} ml-auto"
-        onclick={onchange}
-        data-testid="sim-change-source"
-      >
-        {simCopy.changeSource}
-      </button>
+
+    {#if levelNote !== ''}
+      <p class="text-muted text-[13px]" data-testid="sim-level-note">{levelNote}</p>
     {/if}
-  </div>
 
-  {#if levelNote !== ''}
-    <p class="text-muted -mt-2 text-[13px]" data-testid="sim-level-note">{levelNote}</p>
-  {/if}
+    {#if unread}
+      <ExportNotRead capturedAt={character.source.captured_at} testid="sim-export-not-read" />
+    {:else if !gearKnown}
+      <p class="text-muted text-[13px]" data-testid="sim-no-gear">{simCopy.savedNoGear}</p>
+    {/if}
 
-  {#if unread}
-    <ExportNotRead capturedAt={character.source.captured_at} testid="sim-export-not-read" />
-  {:else if !gearKnown}
-    <p class="text-muted text-[13px]" data-testid="sim-no-gear">{simCopy.savedNoGear}</p>
-  {:else}
-    <div class="grid grid-cols-2 gap-2 md:grid-cols-4" data-testid="sim-gear">
-      {#each SLOTS as slot (slot)}
-        {@const equippedId = character.gear[slot as Slot]}
-        {@const item = equippedId === undefined ? undefined : items.get(equippedId)}
-        <div
-          class="border-line rounded-control bg-card-top flex min-h-11 items-center gap-2 border px-2 py-1"
-          data-testid={`sim-slot-${slot}`}
-        >
-          {#if item}
-            <img
-              src={dataUrl(character.tree_version, `icons/${item.icon}.webp`)}
-              alt=""
-              width="28"
-              height="28"
-              loading="lazy"
-              decoding="async"
-              class="rounded-control border-line h-7 w-7 border object-cover"
-            />
-          {:else}
-            <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
-          {/if}
-          <span class="flex min-w-0 flex-col">
-            <span class="label text-muted">{SLOT_LABELS[slot]}</span>
-            <span
-              class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
-            >
-              {wornItemLabel(item?.name, equippedId, outsideNames, simCopy)}
-            </span>
-          </span>
-        </div>
-      {/each}
-    </div>
-  {/if}
-
-  {#if !unread}
-    <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
-      {#if levelNote === ''}<span class="text-muted label">Talents</span>{/if}
-      <!-- A saved sim's stored request carries the engine's talent *string*, not the
+    {#if !unread}
+      <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
+        {#if levelNote === ''}<span class="text-muted label">Talents</span>{/if}
+        <!-- A saved sim's stored request carries the engine's talent *string*, not the
          planner's point order (Task 17), so its `point_order` is always empty --
          `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what
          keeps `split` honest there instead (2026-09-21 result-page review round 3). Neither
@@ -273,22 +283,23 @@
          showing "0 points" would claim a build spent none, which this guard still avoids
          for the one remaining case (character/talentPoints both absent) where the count is
          simply unknown. -->
-      {#if split > 0 && levelNote === ''}
-        <span class="text-strong numeric" data-testid="sim-talent-count">{split} points</span>
-      {/if}
-      <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
+        {#if split > 0 && levelNote === ''}
+          <span class="text-strong numeric" data-testid="sim-talent-count">{split} points</span>
+        {/if}
+        <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
          does not. `h-11` gives the link itself a real 44px box (what the touch-target check
          measures); the matching negative `-my-3` cancels that growth back out of this row's
          own layout contribution, so the fix stays local to the link's hit area rather than
          growing the strip and shifting the /sim skeleton's CLS-tuned reserved height
          ([id].astro's own comment) or anything mounted below it. -->
-      <a
-        class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
-        href={plannerHref ?? plannerHrefFor(character, talentIndex)}
-        data-testid="sim-open-planner"
-      >
-        {simCopy.openInPlanner}
-      </a>
-    </div>
-  {/if}
-</section>
+        <a
+          class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
+          href={plannerHref ?? plannerHrefFor(character, talentIndex)}
+          data-testid="sim-open-planner"
+        >
+          {simCopy.openInPlanner}
+        </a>
+      </div>
+    {/if}
+  </div>
+</Card>

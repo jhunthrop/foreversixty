@@ -5,15 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { GEAR_FIXTURE, GEAR_PANEL_FIXTURE } from '../../fixtures/character-gear';
 import { gearCopy } from './copy';
-import {
-  gearGapCount,
-  gearRows,
-  gearSpecLine,
-  gearTitle,
-  gearTitleSummary,
-  gearTotalsLine,
-  type GearRow,
-} from './panel';
+import { gearGapCount, gearRows, gearSpecLine, gearTitle, gearTitleSummary, type GearRow } from './panel';
 import type { CharacterGearSlot } from './types';
 
 /** The title as read: its no-break spaces (which keep each dot on the line before it) as spaces. */
@@ -35,7 +27,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     expect(gearRows(GEAR_FIXTURE).map((r) => r.slot)).toEqual(GEAR_FIXTURE.map((slot) => slot.slot));
   });
 
-  it('labels the pairs "Ring 1", "Ring 2", "Trinket 1", "Trinket 2" in export order (fix 1 ruling 7)', () => {
+  it('labels the pairs "Finger 1", "Finger 2", "Trinket 1", "Trinket 2" in export order (fix 1 ruling 7)', () => {
     expect(gearRows(GEAR_FIXTURE).map((r) => r.label)).toEqual([
       'Head',
       'Neck',
@@ -47,8 +39,8 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       'Waist',
       'Legs',
       'Feet',
-      'Ring 1',
-      'Ring 2',
+      'Finger 1',
+      'Finger 2',
       'Trinket 1',
       'Trinket 2',
       'Main hand',
@@ -247,25 +239,6 @@ describe('gearTitle (L8.6 fix round 1 ruling 3)', () => {
   it('nulls are counted with any total: "Gear · 2 not scored"', () => {
     const unscored = [GEAR_FIXTURE[8], { ...GEAR_FIXTURE[0], gap: null }];
     expect(title(unscored, null)).toBe('Gear · 2 not scored');
-  });
-});
-
-describe('gearTotalsLine (L8.6 fix round 1 ruling 3)', () => {
-  it('names both numbers: the card’s gear gap and gear_gap_total', () => {
-    expect(gearTotalsLine(88, 70)).toBe(
-      'The card’s 88 counts the level range’s best set. These 70 count the picks you can wear.',
-    );
-    // A total of 0 has its own wording (fix 2 ruling 5).
-    expect(gearTotalsLine(26, 0)).toBe(
-      'The card’s 26 counts the level range’s best set. Nothing you can wear adds to it.',
-    );
-    expect(gearTotalsLine(88, 18.4)).toContain('These 18.4 count');
-  });
-
-  it('is omitted when the card has no gear gap, or the API scored no slot', () => {
-    expect(gearTotalsLine(null, 70)).toBeNull();
-    expect(gearTotalsLine(0, 70)).toBeNull();
-    expect(gearTotalsLine(88, null)).toBeNull();
   });
 });
 

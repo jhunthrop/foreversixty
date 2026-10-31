@@ -429,10 +429,10 @@ enum Copy {
     /// Feet
     static var itemsSlotFeet: String { text("items.slot.feet") }
 
-    /// Ring 1
+    /// Finger 1
     static var itemsSlotFinger1: String { text("items.slot.finger1") }
 
-    /// Ring 2
+    /// Finger 2
     static var itemsSlotFinger2: String { text("items.slot.finger2") }
 
     /// Trinket 1

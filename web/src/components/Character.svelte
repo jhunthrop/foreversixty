@@ -38,7 +38,8 @@
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
-  import { componentGaps, foreverOf, hasScore, ownCharacter } from '../lib/score/score';
+  import { sourcePill } from '../lib/sim/sources';
+  import { foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
   import { characterPrompt, showsNoDataPage } from '../lib/character-prompt';
@@ -340,7 +341,6 @@
       <CharacterGearPanel
         gear={data.gear}
         total={data.gear_gap_total ?? null}
-        cardGap={componentGaps(foreverOf(data).components).find((part) => part.key === 'gear')?.gap ?? null}
         classSlug={data.character.class === undefined || data.character.class === ''
           ? null
           : classSlugFromName(data.character.class)}
@@ -352,6 +352,18 @@
         first={gearFirst}
         planner={prompt?.primary === 'planner'}
         capturedAt={own?.build?.captured_at ?? null}
+        identity={{
+          name: data.character.name,
+          classSlug:
+            data.character.class === undefined || data.character.class === ''
+              ? ''
+              : classSlugFromName(data.character.class),
+          race: data.character.race ?? '',
+          spec: resolvedProfileSpec(data, own) ?? '',
+          level: typeof data.character.level === 'number' ? data.character.level : null,
+          faction: factionOfRace(data.character.race),
+          source: sourcePill({ kind: 'addon', ref: '', captured_at: own?.build?.captured_at ?? '' }),
+        }}
         {owned}
       />
     {/if}

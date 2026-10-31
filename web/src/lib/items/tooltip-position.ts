@@ -18,6 +18,8 @@ const VIEWPORT_MARGIN_PX = 8;
 // one is "how far from the anchor" and the other "how far from the viewport edge": two
 // different reasons that happen to share a value, not one value with two names.
 const TOOLTIP_ANCHOR_GAP_PX = 8;
+/** ItemTooltip.svelte's phone width is `100vw - 32px`: a 16 px gutter each side. */
+const PHONE_GUTTER_PX = 16;
 
 /**
  * Pure: the CSS shift (always <= 0) that keeps a `panelWidth`-wide panel hung from
@@ -34,6 +36,32 @@ export function tooltipShiftPx(
 ): number {
   const maxLeft = viewportWidth - margin - panelWidth - anchorLeft;
   return Math.min(0, maxLeft);
+}
+
+/** Which anchor edge the panel's matching edge meets (paperdoll spec §4.2): `start`, left to
+ *  left (the default, every list and the paperdoll's left column); `end`, right to right (the
+ *  paperdoll's right column, so the panel opens toward the centre, never over the far column). */
+export type TooltipAlign = 'start' | 'end';
+
+/**
+ * Pure: the panel's left offset from its anchor's left edge. `start` is `tooltipShiftPx`;
+ * `end` meets the panel's right edge with the anchor's, then keeps it `margin` inside both
+ * viewport edges.
+ */
+export function tooltipLeftPx(
+  align: TooltipAlign,
+  anchorLeft: number,
+  anchorWidth: number,
+  viewportWidth: number,
+  panelWidth: number = TOOLTIP_PANEL_WIDTH_PX,
+  margin: number = VIEWPORT_MARGIN_PX,
+): number {
+  // On a phone the panel is the viewport minus two gutters: it spans exactly those gutters,
+  // whichever cell or column was tapped (paperdoll spec §4.2 rule 5).
+  if (viewportWidth - panelWidth <= 2 * PHONE_GUTTER_PX) return PHONE_GUTTER_PX - anchorLeft;
+  if (align === 'start') return tooltipShiftPx(anchorLeft, viewportWidth, panelWidth, margin);
+  const maxLeft = viewportWidth - margin - panelWidth - anchorLeft;
+  return Math.min(maxLeft, Math.max(margin - anchorLeft, anchorWidth - panelWidth));
 }
 
 export type TooltipVerticalSide = 'below' | 'above';
@@ -80,7 +108,7 @@ export function tooltipVerticalPlacementFor(
  * demand if the host moves -- this only ever needs the DOM, never a re-mount, since the
  * panel's `mount()` props are otherwise a point-in-time snapshot.
  */
-export function positionTooltipPanel(host: HTMLElement): void {
+export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 'start'): void {
   const anchor = host.getBoundingClientRect();
   const viewportWidth = document.documentElement.clientWidth;
   const viewportHeight = document.documentElement.clientHeight;
@@ -89,7 +117,7 @@ export function positionTooltipPanel(host: HTMLElement): void {
 
   host.style.setProperty(
     '--item-tooltip-shift',
-    `${tooltipShiftPx(anchor.left, viewportWidth, panelRect?.width ?? TOOLTIP_PANEL_WIDTH_PX)}px`,
+    `${tooltipLeftPx(align, anchor.left, anchor.width, viewportWidth, panelRect?.width ?? TOOLTIP_PANEL_WIDTH_PX)}px`,
   );
 
   const { side, maxHeightPx } = tooltipVerticalPlacementFor(

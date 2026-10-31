@@ -143,7 +143,7 @@ test.describe('a signed-in member with characters', () => {
     await block.getByTestId('sim-run-block-action').click();
 
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-source-pill')).toHaveText('Addon export, just now');
+    await expect(page.getByTestId('paperdoll-source')).toHaveText('Addon export, just now');
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
   });
 
@@ -196,7 +196,7 @@ test.describe('a signed-in member with characters', () => {
     await page.getByTestId('sim-pick-us/normal/thrallgar').click();
 
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-source-pill')).toHaveText('Addon export, just now');
+    await expect(page.getByTestId('paperdoll-source')).toHaveText('Addon export, just now');
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
   });
 

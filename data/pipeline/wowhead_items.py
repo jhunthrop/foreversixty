@@ -43,6 +43,7 @@ from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
     SLOT_BY_INVENTORY_TYPE,
+    armor_type_for,
     is_junk_name,
     is_weapon_row,
     resolve_required_level,
@@ -391,6 +392,7 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
         unique=item.unique,
         icon_source="wowhead",
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
+        armor_type=armor_type_for(item.class_id, item.subclass_id, item.inventory_type),
     )
 
 

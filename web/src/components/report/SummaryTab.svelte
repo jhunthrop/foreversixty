@@ -395,7 +395,13 @@
             {/if}
             {#if gearOpen === combatant.guid}
               <div class="basis-full pt-2">
-                <GearList gear={combatant.gear} className={classOf.get(combatant.guid)} {dataBuild} />
+                <GearList
+                  gear={combatant.gear}
+                  className={classOf.get(combatant.guid)}
+                  {dataBuild}
+                  name={display.text}
+                  spec={combatant.spec ?? ''}
+                />
               </div>
             {/if}
           </li>

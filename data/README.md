@@ -513,6 +513,16 @@ list below is what the script does and what to check when it stops.
     one; `pipeline.normalize.gear.WEAPON_TYPE_BY_SUBCLASS`) on every weapon row, client
     and classic-db alike, so a ranged weapon's real subclass — not just its slot — is
     on the row. `null` for a non-weapon row.
+  - **`bonding`** and **`armor_type`** (spec C6, published by the paperdoll lane,
+    2026-10-31) are the contract's words (`api/openapi.yaml` `Item`,
+    `docs/contracts/app-v1.md`) for the tooltip's bind line and armour word. `bonding` is
+    the client's own `ItemSparse.Bonding` as `pickup`/`equip`/`use`/`quest`
+    (`pipeline.normalize.gear.bonding_for`); only a client row of a build whose ItemSparse
+    has the column carries one, and no binding, a classic-db row and a wowhead row are
+    `null`, because neither source states one. `armor_type` is `cloth`/`leather`/`mail`/
+    `plate`/`shield` from `Item.ClassID` 4's `SubclassID` (`armor_type_for`), on client,
+    classic-db and wowhead rows alike; `null` for a cloak (the contract names none), a
+    neck, a ring, a trinket, a weapon and a relic.
 
 ## What the beta client changed about the talents
 

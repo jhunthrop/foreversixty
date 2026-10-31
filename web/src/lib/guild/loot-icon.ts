@@ -24,6 +24,7 @@ export function awardTooltipModel(award: RaidLootAward): ItemTooltipModel {
     icon: award.icon,
     slotLabel: '',
     typeLabel: undefined,
+    bindLabel: null,
     itemLevel: 0,
     requiredLevel: 0,
     armor: null,

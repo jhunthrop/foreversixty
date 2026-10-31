@@ -28,7 +28,7 @@
 <script lang="ts">
   import { mount, unmount, untrack, type Component, type Snippet } from 'svelte';
   import { fetchItemTooltipModel } from '../lib/items/lookup';
-  import { positionTooltipPanel } from '../lib/items/tooltip-position';
+  import { positionTooltipPanel, type TooltipAlign } from '../lib/items/tooltip-position';
   import { rarityClassFor } from '../lib/planner/items';
   import { dataUrl } from '../lib/planner/load';
 
@@ -38,7 +38,10 @@
     build,
     model,
     class: pillClass = '',
+    hostClass = 'inline-flex',
+    align = 'start',
     label,
+    testid,
     children,
   }: {
     itemId: number;
@@ -46,6 +49,13 @@
     build: string;
     model?: ItemTooltipModel;
     class?: string;
+    /** The host's display: `inline-flex` inline in text (the default), `flex` for a block trigger
+     *  that fills its box (a paperdoll cell). */
+    hostClass?: string;
+    /** Which anchor edge the panel meets (tooltip-position.ts `TooltipAlign`). */
+    align?: TooltipAlign;
+    /** Overrides the trigger's `item-hover-<id>` test id. */
+    testid?: string;
     /** The accessible name when `children` hold no text (an icon drawn apart from the name). */
     label?: string;
     children?: Snippet;
@@ -93,7 +103,7 @@
       target: host,
       props: { model: resolvedModel, build, id: tooltipId },
     });
-    positionTooltipPanel(host);
+    positionTooltipPanel(host, align);
   }
 
   function ensureModel(): void {
@@ -120,6 +130,24 @@
     });
   }
 
+  /** Whether the panel was shut when the current press began: a tap fires focus (and an emulated
+   *  mouseenter) before its click, and that click must not close what the same tap opened. */
+  let shutAtPress = false;
+
+  function onpointerdown(): void {
+    shutAtPress = !isOpen;
+  }
+
+  /** Hover is a mouse's (or a pen's): a touch's compatibility enter and leave events would open
+   *  and then shut a panel the tap itself toggles. */
+  function onpointerenter(event: PointerEvent): void {
+    if (event.pointerType !== 'touch') open();
+  }
+
+  function onpointerleave(event: PointerEvent): void {
+    if (event.pointerType !== 'touch') close();
+  }
+
   function open(): void {
     activeHoverId = hoverId;
     ensureModel();
@@ -138,8 +166,10 @@
    *  bubbling listener, so stopPropagation alone would not stop it. */
   function toggle(event: MouseEvent): void {
     event.preventDefault();
-    if (isOpen) close();
-    else open();
+    const opening = shutAtPress;
+    shutAtPress = false;
+    if (!isOpen) open();
+    else if (!opening) close();
   }
 
   function onkeydown(event: KeyboardEvent): void {
@@ -154,20 +184,22 @@
   $effect(() => () => unmountPanel());
 </script>
 
-<span class="relative inline-flex min-w-0" bind:this={host}>
+<span class={`relative min-w-0 ${hostClass}`} bind:this={host}>
   <span
     class={`inline-flex min-w-0 items-center gap-1 ${pillClass}`}
     tabindex="0"
     role="button"
     aria-label={label}
-    data-testid={`item-hover-${itemId}`}
+    data-testid={testid ?? `item-hover-${itemId}`}
+    data-item-hover={itemId}
     aria-haspopup="true"
     aria-describedby={isOpen ? tooltipId : undefined}
-    onmouseenter={open}
-    onmouseleave={close}
+    {onpointerenter}
+    {onpointerleave}
     onfocus={open}
     onblur={close}
     onclick={toggle}
+    {onpointerdown}
     {onkeydown}
   >
     {#if children}

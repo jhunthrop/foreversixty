@@ -47,7 +47,7 @@ test.describe('current character', () => {
   test('a code that names nobody is looked at and never becomes the current character', async ({ page }) => {
     await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-character-name')).toHaveCount(0);
+    await expect(page.getByTestId('paperdoll-name')).toHaveCount(0);
     expect(await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter'))).toBeNull();
     await page.goto('/sim');
     await expect(page.getByTestId('sim-character')).toHaveCount(0);

@@ -27,7 +27,21 @@
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
 
-  let { characterClass, size, testid }: { characterClass: string; size: number; testid?: string } = $props();
+  let {
+    characterClass,
+    size,
+    testid,
+    class: sizeClass = '',
+  }: {
+    characterClass: string;
+    /** The crest's px size; with `class`, only its intrinsic width and height attributes, the
+     *  drawn size then the caller's (a size set per container width). */
+    size: number;
+    testid?: string;
+    class?: string;
+  } = $props();
+
+  const box = $derived(sizeClass === '' ? `width: ${size}px; height: ${size}px;` : '');
 
   const slug = $derived(classSlugFromName(characterClass));
   const color = $derived(classColorVar(characterClass));
@@ -35,8 +49,8 @@
 
 {#if characterClass === ''}
   <span
-    class="bg-raised border-line inline-block shrink-0 rounded-full border"
-    style={`width: ${size}px; height: ${size}px;`}
+    class="bg-raised border-line inline-block shrink-0 rounded-full border {sizeClass}"
+    style={box}
     aria-hidden="true"
     data-testid={testid ? `${testid}-fallback` : undefined}
   ></span>
@@ -48,8 +62,8 @@
     height={size}
     loading="lazy"
     decoding="async"
-    class="crest-ring bg-raised shrink-0 rounded-full object-cover"
-    style={`--c: ${color}; width: ${size}px; height: ${size}px;`}
+    class="crest-ring bg-raised shrink-0 rounded-full object-cover {sizeClass}"
+    style={`--c: ${color}; ${box}`}
     data-testid={testid}
   />
 {/if}
