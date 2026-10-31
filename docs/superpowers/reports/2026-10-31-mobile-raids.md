@@ -242,3 +242,51 @@ Each command ran on its own, with its exit code checked.
    - The toast inset is unchanged.
    - Keyboard focus and VoiceOver/TalkBack recordings still need a hand-driven pass.
 3. **Two buff icons the export lacks.** `spell_nature_regeneration` (Mark of the Wild) and `spell_holy_fistofjustice` (Blessings) are true game icons that today's icon export lacks. The API lane must export them with the composition handler.
+
+## Second fix round (2026-10-31): blank buff tiles and iOS icons
+
+### Root cause of the iOS icon bug
+
+Every game icon URL (spec, item and buff) is `/data/<build>/icons/<icon>.webp`, and the build comes from `/data/active-build.json`. That file was never published.
+- `web/scripts/sync-data.mjs` copied only the build directories into `public/data/`, so `https://foreversixty.gg/data/active-build.json` answered 404 (checked with curl). `app-v1.md` had listed this as an open publication item.
+- The iOS raids feature read the active build with a live `StaticDataClient(transport: URLSessionTransport())`, even in fixture mode. With the 404 it had no build, so it built no icon URLs, and every tile stayed blank.
+- Android looked fine only because its fixture engine answers `/data/active-build.json` from the bundled `cdn.active-build` fixture.
+- Any iOS or Android feature that reads the active build from the live site (Home and BiS included) hits the same 404 in live mode until the site deploys this fix.
+
+There was no ATS, https or cache problem: once a build is known, iOS loads the icons (see the live captures).
+
+### The fix
+
+- **Site.** `sync-data.mjs` now publishes `active-build.json` and `dates.json` at `/data/` on every build (`ROOT_FILES`, with a vitest case), and `app-v1.md` says so. This takes effect with the next site deploy.
+- **iOS fixture mode.** The static client now reads the bundled fixtures, as Android's fixture engine does. A test on each platform pins fixture mode's active build and the icon URL built from it.
+- **Proof.** `raid-page-roster-ios.png` and `raid-composition-ios.png` are live simulator captures of the roster with real spec icons and the composition block with real buff icons.
+
+### Buff icons and totems
+
+- **One list.** `data/curated/raid-buffs.json` is now the single list of the composition buffs: key, client name, short label, icon and class.
+  - Added the shaman totems Windfury Totem, Strength of Earth Totem and Mana Spring Totem. The class data and presets carry all three, and Forever gives the Alliance shamans too.
+  - The API computes the totems from shamans signed In or Late, through the same composition block. `RaidBuff` gains `label`, and the fixtures and models are regenerated.
+- **Checked against the export** (`data/builds/1.60.1.70658/icons/` and 70707):
+  - Present: `spell_holy_wordfortitude`, `spell_holy_magicalsentry`, `spell_shadow_antishadow`, `inv_misc_orb_04`, `spell_nature_reincarnation`, `spell_nature_windfury`, `spell_nature_earthbindtotem` and `spell_nature_manaregentotem`.
+  - Missing: `spell_nature_regeneration` (Mark of the Wild) and `spell_holy_fistofjustice` (Blessings).
+- **Export list.** `data/pipeline/icons.py` gains `raid_buff_icon_names`, folded into the `extra` set that `icons_for_build` downloads, with pytest cases. The nightly's icon export will then publish the two missing icons.
+- **Fallback labels.** Until then, those tiles draw their short label (MotW, Bless) inside the tile, as does any tile whose icon fails to load: Coil's `onError` on Android, `AsyncImage`'s failure phase on iOS. The snapshot suites have no network, so every buff tile there shows its label; that is the fallback state.
+
+### Second fix round tests
+
+Each command ran on its own, with its exit code checked.
+
+| Check | Exit | Result |
+|---|---|---|
+| `make -C apps/ios test` | 0 | 88 tests in 14 suites |
+| `make -C apps/ios captures` | 2 | 3 of 4 UI tests passed: roster and composition, More menu and calendar, officer menu. The notification long-press test could not find the posted notification on this run. The earlier pass of that test is still in the folder (`notification-*-ios.png`). |
+| `./gradlew test :app:verifyRoborazziDebug lint assembleDebug` | 0 | 47 F4 logic tests, 33 goldens, lint clean |
+| Go contract tests (private DB `forever_gc_f4c`, since dropped) | 0 | ok |
+| `uv run pytest --no-cov tests/test_icons.py` and `ruff check` | 0 | 32 passed, clean |
+| web `npm run check`, `lint`, `format:check`, and vitest on sync-data and the mobile drift checks | 0 | 0 errors; 55 passed |
+
+### Captures
+
+- `raid-composition-ios.png` and `raid-page-roster-ios.png`: the live simulator, with real icons and the MotW and Bless labels.
+- `emulator-raid-composition-and.png`: the live emulator, with real icons and the same two labels.
+- Every snapshot and Roborazzi capture, refreshed.

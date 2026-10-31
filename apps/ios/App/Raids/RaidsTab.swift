@@ -19,7 +19,14 @@ struct RaidsDependencies {
     let iconBuild: @Sendable () async -> String?
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
-        let statics = StaticDataClient(transport: URLSessionTransport())
+        // The active build names every icon URL. In fixture mode it comes from the bundled
+        // cdn.active-build fixture, as Android's fixture engine answers it; live, from the site's
+        // /data/active-build.json (published by web/scripts/sync-data.mjs).
+        let staticTransport: any HTTPTransport = switch environment.configuration.mode {
+        case .fixture: FixtureTransport.bundled() ?? URLSessionTransport()
+        case .live: URLSessionTransport()
+        }
+        let statics = StaticDataClient(transport: staticTransport)
         var service: any RaidService = LiveRaidService(client: environment.client)
         #if DEBUG
         if let fixture = RaidDebugLaunch.service(baseURL: environment.configuration.baseURL) { service = fixture }

@@ -51,9 +51,9 @@ struct CompositionView: View {
     private var buffs: some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionLabel(text: Copy.raidsCompBuffs)
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 36), spacing: 8)], alignment: .leading, spacing: 8) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40), spacing: 8)], alignment: .leading, spacing: 8) {
                 ForEach(read.buffs) { buff in
-                    GameIcon(stem: buff.icon, size: 32, border: buff.present ? Theme.Palette.kill.opacity(0.6) : Theme.Palette.line)
+                    GameIcon(stem: buff.icon, size: 36, border: buff.present ? Theme.Palette.kill.opacity(0.6) : Theme.Palette.line, fallback: buff.label)
                         .opacity(buff.present ? 1 : 0.35)
                         .saturation(buff.present ? 1 : 0)
                         .accessibilityHidden(false)

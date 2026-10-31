@@ -14,6 +14,7 @@ struct CompositionRead: Equatable, Sendable {
     struct BuffLine: Equatable, Sendable, Identifiable {
         let key: String
         let name: String
+        let label: String
         let icon: String
         let present: Bool
         let accessibilityLabel: String
@@ -43,7 +44,7 @@ struct CompositionRead: Equatable, Sendable {
         }
         buffs = composition.buffs.map { buff in
             BuffLine(
-                key: buff.key, name: buff.name, icon: buff.icon, present: buff.present,
+                key: buff.key, name: buff.name, label: buff.label, icon: buff.icon, present: buff.present,
                 accessibilityLabel: buff.present ? Copy.raidsA11yBuffPresent(name: buff.name, n: buff.count) : Copy.raidsA11yBuffMissing(name: buff.name)
             )
         }

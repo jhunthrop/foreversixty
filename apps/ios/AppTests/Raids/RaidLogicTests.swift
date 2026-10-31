@@ -146,10 +146,20 @@ struct RosterTests {
         #expect(read.roles == ["Tanks 3", "Healers 6", "DPS 14"])
         #expect(read.buffSummary == "Missing: Blessings")
         #expect(read.buffs.first { $0.key == "blessings" }?.accessibilityLabel == "Blessings, missing")
+        #expect(read.buffs.first { $0.key == "mark_of_the_wild" }?.label == "MotW")
+        #expect(read.buffs.contains { $0.key == "windfury_totem" && $0.present })
         #expect(read.classesAccessibilityLabel.hasPrefix("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
         let officer = try #require(CompositionRead(try RaidFixture.raid("guild.raid.officer").composition))
         #expect(officer.roles == ["Tanks 3/4", "Healers 6/8", "DPS 14/28"])
         #expect(CompositionRead(nil) == nil)
+    }
+
+    @Test("fixture mode reads the active build from the bundled fixtures, so icon URLs resolve")
+    func fixtureActiveBuild() async throws {
+        let transport = try #require(FixtureTransport.bundled())
+        let build = try await StaticDataClient(transport: transport).activeBuild().build
+        #expect(build == "1.60.1.70658")
+        #expect(RaidIcons(build: build).url("spell_nature_windfury")?.absoluteString == "https://foreversixty.gg/data/1.60.1.70658/icons/spell_nature_windfury.webp")
     }
 
     @Test("the move menu offers the spec's items per place")

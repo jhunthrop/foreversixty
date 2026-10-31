@@ -52,6 +52,20 @@ final class RaidCaptureTests: XCTestCase {
         try save("raid-page-calendar-sheet-ios.png")
     }
 
+    /// The roster with real spec icons and the composition block with real buff icons (and the
+    /// labels for the two the icon export does not publish yet), loaded from the CDN.
+    func testRosterAndCompositionWithIcons() throws {
+        let app = launch(["-FSOpenLink", Self.raidLink])
+        XCTAssertTrue(app.staticTexts["ONYXIA'S LAIR"].waitForExistence(timeout: 15))
+        let composition = app.staticTexts["RAID COMPOSITION"]
+        for _ in 0..<8 where !composition.isHittable { app.swipeUp() }
+        sleep(4)
+        try save("raid-composition-ios.png")
+        app.swipeUp()
+        sleep(3)
+        try save("raid-page-roster-ios.png")
+    }
+
     func testOfficerMoveMenu() throws {
         let app = launch(["-FSOpenLink", Self.raidLink, "-FSRaidFixture", "officer"])
         XCTAssertTrue(app.staticTexts["ONYXIA'S LAIR"].waitForExistence(timeout: 15))

@@ -58,6 +58,8 @@ struct GameIcon: View {
     let size: CGFloat
     var border: Color = Color(red: 0x3A / 255, green: 0x42 / 255, blue: 0x56 / 255)
     var borderWidth: CGFloat = 1
+    /// A short label drawn inside the tile while the icon is missing or fails to load.
+    var fallback: String?
     @Environment(\.raidIcons) private var icons
 
     var body: some View {
@@ -66,14 +68,34 @@ struct GameIcon: View {
             .overlay {
                 if let url = icons.url(stem) {
                     AsyncImage(url: url, transaction: Transaction(animation: .easeIn(duration: 0.12))) { phase in
-                        if let image = phase.image { image.resizable().scaledToFill() } else { Color.clear }
+                        switch phase {
+                        case let .success(image): image.resizable().scaledToFill()
+                        case .failure: label
+                        default: Color.clear
+                        }
                     }
+                } else {
+                    label
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.pill))
             .overlay(RoundedRectangle(cornerRadius: Theme.Radius.pill).stroke(border, lineWidth: borderWidth))
             .frame(width: size, height: size)
             .accessibilityHidden(true)
+    }
+}
+
+extension GameIcon {
+    @ViewBuilder
+    fileprivate var label: some View {
+        if let fallback {
+            Text(fallback)
+                .font(.system(size: size * 0.3, weight: .bold))
+                .foregroundStyle(Theme.Palette.nav)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .padding(2)
+        }
     }
 }
 
