@@ -149,7 +149,7 @@ Sheets from anywhere: F1.5 the switcher (from the selector), F2.6 the item toolt
 
 The selector (memory rule "one way to switch") is the only character switcher. It sits on Home, Raids and BiS, in the same place and the same look. It shows the class crest (34 pt), the full name in the class colour, the short description (`Elemental · 60`) and a chevron. A tap opens F1.5. Picking a character changes Home, Raids (its guild) and BiS (its spec, range and faction, while BiS shows `Yours`). You has no selector; it is the account, not a character.
 
-The full name shows at every width and every text size. Names are one word, so they cannot wrap at a space. From iOS AX1 and Android 1.3x the selector's name stops growing (iOS: `.dynamicTypeSize(...DynamicTypeSize.accessibility1)` on the selector, 28 pt; Android: the name in `sp` with a 22 sp ceiling) and the description line drops. On iOS a long press shows the Large Content Viewer with the name (`.accessibilityShowsLargeContentViewer()`). Inside the switcher sheet the name keeps growing and breaks inside the word (`overflow-wrap: anywhere` in the mock; `lineBreakMode` character wrapping in SwiftUI, `LineBreak.Simple` with `Hyphens.None` and `softWrap` in Compose) rather than being cut (XL.3).
+The full name shows at every width and every text size. Names are one word, so they cannot wrap at a space. From iOS AX1 and Android 1.3x the selector stops growing (iOS: `.dynamicTypeSize(...DynamicTypeSize.accessibility1)` on the selector, 28 pt name; Android: the name in `sp` with a 22 sp ceiling, the description capped in proportion). The description line (`Hunter · 31`) stays at every text size and is never cut: like the name it takes its full width (follow-up 2026-10-31, after the iOS toolbar cut it to `Hunt...`). On iOS a long press shows the Large Content Viewer with the name (`.accessibilityShowsLargeContentViewer()`). Inside the switcher sheet the name keeps growing and breaks inside the word (`overflow-wrap: anywhere` in the mock; `lineBreakMode` character wrapping in SwiftUI, `LineBreak.Simple` with `Hyphens.None` and `softWrap` in Compose) rather than being cut (XL.3).
 
 The current character persists per device: the last one picked, else `main_character_key`, else the most recently synced character. Picking writes nothing to the server.
 
@@ -859,7 +859,7 @@ There is one gold-filled button per screen at most. Gold text marks links and th
 | Home rows above the fold | 3 | 5 | 1 |
 | Upgrade gain | right column | right column | moves under the name as a mono meta line `+5.3 DPS` (XL.1) |
 | Segments | 4 across | 4 across | 2 x 2 grid from iOS AX1 and Android 1.5x (XL.2) |
-| Selector | full name, description | full name, description | full name capped at 28 pt (iOS) / 22 sp (Android), no description |
+| Selector | full name, description | full name, description | full name capped at 28 pt (iOS) / 22 sp (Android), description capped with it |
 | Classes strip | 9 across at 26 | 9 across at 30 | 5 then 4, crests at 36 |
 | Date block | 48 x 52 | 52 x 56 | grows with its text; the title wraps under it |
 | Settings value | trailing | trailing | trailing; the label wraps (XL.4) |
