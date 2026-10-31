@@ -55,7 +55,14 @@ struct RootView: View {
         .tint(Theme.Palette.accent)
         .task { await environment.appConfig.refresh() }
         .onOpenURL { url in DeepLink(url: url).map(openRaids) }
-        .task { RaidNotificationCenter.shared.onOpen = openRaids }
+        .task {
+            RaidNotificationCenter.shared.onOpen = openRaids
+            #if DEBUG
+            // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
+            if let link = RaidDebugLaunch.link { openRaids(link) }
+            await RaidDebugLaunch.postRaidPushIfAsked()
+            #endif
+        }
     }
 
     @ViewBuilder

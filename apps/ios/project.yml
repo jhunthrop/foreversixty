@@ -129,7 +129,29 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: $(BUILT_PRODUCTS_DIR)/ForeverSixty.app/ForeverSixty
         BUNDLE_LOADER: $(TEST_HOST)
+  # Lane F4 review captures that need real taps (menus, the calendar sheet, the notification
+  # long-press); run only by `make captures`, never by `make test`.
+  ForeverSixtyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: ForeverSixty
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ForeverSixty
 schemes:
+  ForeverSixtyCaptures:
+    build:
+      targets:
+        ForeverSixty: all
+        ForeverSixtyUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - ForeverSixtyUITests
   ForeverSixty:
     build:
       targets:

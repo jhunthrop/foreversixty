@@ -40,7 +40,7 @@ struct RaidSnapshotTests {
                 openRaid: { _, _ in }, openNight: { _ in }, openWeb: { _ in }, retry: {}
             )
             .navigationTitle(Copy.tabRaids)
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.inline)
         }
     }
 
@@ -148,10 +148,10 @@ struct RaidSnapshotTests {
 
     @Test func raidPage_moved() async throws {
         let service = FakeRaidService()
-        let answer = SignupAnswer(raid: try RaidFixture.raid("guild.raid.two-characters"), moved: "Yellfury")
+        let answer = try RaidFixture.load(SignupAnswer.self, "guild.signup.moved")
         service.signupAnswer = { _ in answer }
         let controller = try makeController(try RaidFixture.raid("guild.raid.two-characters"), service: service)
-        await controller.press("us/pvp/obnoxious-yell", .signedIn)
+        await controller.press("us/pvp/yellfury", .signedIn)
         snap(page(controller), "raid-page-moved-ios", height: 1100)
     }
 
@@ -170,6 +170,10 @@ struct RaidSnapshotTests {
     @Test func raidPage_done() throws { snap(page(try makeController(try RaidFixture.raid("guild.raid.done"))), "raid-page-done-ios") }
 
     @Test func raidPage_officer() throws { snap(page(try makeController(try RaidFixture.raid("guild.raid.officer"))), "raid-page-officer-ios", height: 3200) }
+
+    @Test func raidPage_officer_xl() throws {
+        snap(page(try makeController(try RaidFixture.raid("guild.raid.officer"))), "raid-page-officer-xl-ios", height: 3600, large: true)
+    }
 
     @Test func raidPage_officerLocked() async throws {
         let service = FakeRaidService()
@@ -207,4 +211,6 @@ struct RaidSnapshotTests {
     @Test func raidNight_premium() throws { snap(try night("me.raid-night"), "raid-night-premium-ios") }
 
     @Test func raidNight_free() throws { snap(try night("me.raid-night.free"), "raid-night-free-ios") }
+
+    @Test func raidNight_xl() throws { snap(try night("me.raid-night"), "raid-night-xl-ios", height: 2400, large: true) }
 }

@@ -138,12 +138,18 @@ struct RosterTests {
         #expect(roster.groups.first { $0.kind == .bench }?.rows.map(\.name).contains("Kraggor") == true)
     }
 
-    @Test("the classes strip counts In and Late per class, and reads every class to VoiceOver")
-    func classes() throws {
-        let strip = ClassStrip(raid: try RaidFixture.raid())
-        #expect(strip.entries.map(\.count) == [5, 0, 2, 2, 4, 4, 2, 2, 3])
-        #expect(strip.accessibilityLabel.hasPrefix("Classes coming: Warrior 5, Hunter 2"))
-        #expect(strip.accessibilityLabel.hasSuffix("no Paladins"))
+    @Test("the composition block words the API's counts, targets and buff coverage")
+    func composition() throws {
+        let read = try #require(CompositionRead(try RaidFixture.raid().composition))
+        #expect(read.classes.map(\.count) == [5, 0, 2, 2, 4, 4, 2, 2, 3])
+        #expect(read.classes[1].name == "Paladin")
+        #expect(read.roles == ["Tanks 3", "Healers 6", "DPS 14"])
+        #expect(read.buffSummary == "Missing: Blessings")
+        #expect(read.buffs.first { $0.key == "blessings" }?.accessibilityLabel == "Blessings, missing")
+        #expect(read.classesAccessibilityLabel.hasPrefix("Classes coming: Warrior 5, Paladin 0, Hunter 2"))
+        let officer = try #require(CompositionRead(try RaidFixture.raid("guild.raid.officer").composition))
+        #expect(officer.roles == ["Tanks 3/4", "Healers 6/8", "DPS 14/28"])
+        #expect(CompositionRead(nil) == nil)
     }
 
     @Test("the move menu offers the spec's items per place")
@@ -261,17 +267,16 @@ struct SignupControllerTests {
         #expect(service.signups.first?.request.spec == "warrior-arms")
     }
 
-    @Test("moved names the other character on its own block (R3)")
+    @Test("moved draws Bench on the other character's block, with its line (R3, F4.12)")
     func moved() async throws {
         let service = FakeRaidService()
-        let answer = SignupAnswer(
-            raid: try RaidFixture.raid("guild.raid.two-characters"),
-            moved: try RaidFixture.load(SignupAnswer.self, "guild.signup.moved").moved
-        )
+        let answer = try RaidFixture.load(SignupAnswer.self, "guild.signup.moved")
         service.signupAnswer = { _ in answer }
         let controller = try makeController(try RaidFixture.raid("guild.raid.two-characters"), service: service)
-        await controller.press(key, .signedIn)
-        #expect(controller.block("us/pvp/yellfury").status == .info("Yellfury moved to Bench."))
+        await controller.press("us/pvp/yellfury", .signedIn)
+        #expect(controller.block("us/pvp/yellfury").shown == .signedIn)
+        #expect(controller.block(key).shown == .bench)
+        #expect(controller.block(key).status == .info("Obnoxious Yell moved to Bench."))
     }
 
     @Test("a locked raid disables a member's segments and keeps an officer's")
@@ -438,7 +443,7 @@ struct RaidPushTests {
         service.signupAnswer = { _ in moved }
         let outcome = await RaidPushAnswerer(service: service).answer(try payload(), state: .signedIn)
         guard case let .answered(answer) = outcome else { Issue.record("not answered"); return }
-        #expect(answer.body.hasSuffix(" Yellfury moved to Bench."))
+        #expect(answer.body.hasSuffix(" Obnoxious Yell moved to Bench."))
     }
 
     @Test("a locked raid posts the locked answer; a failure posts the failed one")

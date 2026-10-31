@@ -35,6 +35,8 @@ struct SegmentsView: View {
         return Button { press(state) } label: {
             Text(state.label)
                 .font(Theme.Typography.segment)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(checked ? Theme.Palette.strong : Theme.Palette.muted)
                 .frame(maxWidth: .infinity, minHeight: 48)
                 .background(checked ? (state.isComing ? Theme.Palette.kill.opacity(0.15) : Theme.Palette.lineWarm) : .clear)
@@ -69,11 +71,17 @@ private struct SegmentPressStyle: ButtonStyle {
     }
 }
 
-/// The 20 pt status line, always present so nothing shifts; announced politely when it changes.
+/// The 20 pt status line, announced politely when it changes. On the raid page it is always
+/// reserved so nothing shifts; on the next raid card it draws only with text (UX should 1).
 struct StatusLineView: View {
     let status: StatusLine?
+    var reserves = true
 
     var body: some View {
+        if reserves || status != nil { line }
+    }
+
+    private var line: some View {
         Text(status?.text ?? " ")
             .font(Theme.Typography.metaText)
             .foregroundStyle(color)
@@ -102,22 +110,36 @@ struct WhoLine: View {
     let specIcon: String?
     let role: String
     var trailing: AnyView?
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 12) {
-            CrestView(className: className, size: 36)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name).font(Theme.Typography.name).foregroundStyle(Theme.Palette.classColor(className))
-                HStack(spacing: 6) {
-                    GameIcon(stem: specIcon, size: 18)
-                    Text(specName.map { Copy.raidsWho(spec: $0, role: RaidRole.label(role)) } ?? RaidRole.label(role))
-                        .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
-                }
+        if typeSize.isAccessibilitySize {
+            // Large text: the crest above the name, Change spec below at full width (spec 10).
+            VStack(alignment: .leading, spacing: 6) {
+                CrestView(className: className, size: 36)
+                labels
+                trailing
             }
-            .accessibilityElement(children: .combine)
-            Spacer(minLength: 8)
-            trailing
+        } else {
+            HStack(spacing: 12) {
+                CrestView(className: className, size: 36)
+                labels
+                Spacer(minLength: 8)
+                trailing
+            }
         }
+    }
+
+    private var labels: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            NameText(text: name, font: Theme.Typography.name, color: Theme.Palette.classColor(className))
+            HStack(spacing: 6) {
+                GameIcon(stem: specIcon, size: 18)
+                Text(specName.map { Copy.raidsWho(spec: $0, role: RaidRole.label(role)) } ?? RaidRole.label(role))
+                    .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -126,6 +148,8 @@ struct SignupBlockView: View {
     let controller: SignupController
     let character: RaidViewerCharacter
     var showsNote = true
+    /// The raid page reserves the status line; the next raid card draws it only with text.
+    var reservesStatus = true
     @FocusState private var noteFocused: Bool
 
     var body: some View {
@@ -143,7 +167,7 @@ struct SignupBlockView: View {
                 SegmentsView(characterName: character.name, block: block, enabled: controller.segmentsEnabled(key)) { state in
                     Task { await controller.press(key, state) }
                 }
-                StatusLineView(status: controller.restingStatus(key))
+                StatusLineView(status: controller.restingStatus(key), reserves: reservesStatus)
                 if showsNote, block.shown != nil {
                     noteField(key, block: block)
                 }

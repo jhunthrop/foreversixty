@@ -96,7 +96,6 @@ struct RaidPageContent: View {
                         SignupCard(controller: controller, facts: facts, clock: clock, currentKey: currentKey)
                         if raid.viewer.raidNight == true { nightRow }
                         if let report = raid.match?.reportId, facts.chip == .done { reportRow(report) }
-                        ClassStripView(strip: ClassStrip(raid: raid)) { withAnimation { proxy.scrollTo("roster", anchor: .top) } }
                         notes
                         RosterView(controller: controller, facts: facts).id("roster")
                     }
@@ -202,15 +201,21 @@ struct RaidHead: View {
     let clock: RaidClock
     let now: () -> Date
     var guildName: String?
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(Copy.raidEyebrow.uppercased()).font(Theme.Typography.micro).tracking(1.5).foregroundStyle(Theme.Palette.accent)
+                Text(Copy.raidEyebrow.uppercased()).font(Theme.Typography.micro)
+                    .tracking(typeSize.isAccessibilitySize ? 0 : 1.5).lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(Theme.Palette.accent)
                 StatusTag(chip: facts.chip)
-                if let guildName {
-                    Text(guildName).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
+                if let guildName, !typeSize.isAccessibilitySize {
+                    Text(guildName).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted).lineLimit(1)
                 }
+            }
+            if let guildName, typeSize.isAccessibilitySize {
+                // Large text: the guild name drops to its own line.
+                Text(guildName).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
             }
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Text(raid.title.uppercased()).font(Theme.Typography.pageTitle).foregroundStyle(facts.chip == .cancelled ? Theme.Palette.muted : Theme.Palette.strong)
@@ -247,9 +252,12 @@ struct TimesLine: View {
             let pieces = label.components(separatedBy: "{}")
             let separator = item.offset == 0 ? Text("") : Text(" · ").foregroundStyle(Theme.Palette.muted)
             let head = Text(pieces.first ?? "").foregroundStyle(Theme.Palette.muted)
-            let figure = Text(time).font(Theme.Typography.mono).foregroundStyle(Theme.Palette.strong)
+            // Only the digits are mono; `pm` stays in Barlow (UX should 2).
+            let digits = time.split(separator: " ", maxSplits: 1).map(String.init)
+            let figure = Text(digits.first ?? time).font(Theme.Typography.mono).foregroundStyle(Theme.Palette.strong)
+            let unit = Text(digits.count > 1 ? " " + digits[1] : "").foregroundStyle(Theme.Palette.strong)
             let tail = Text(pieces.dropFirst().joined()).foregroundStyle(Theme.Palette.muted)
-            return Text("\(line)\(separator)\(head)\(figure)\(tail)")
+            return Text("\(line)\(separator)\(head)\(figure)\(unit)\(tail)")
         }
         .font(Theme.Typography.bodyText)
         .fixedSize(horizontal: false, vertical: true)
@@ -273,7 +281,7 @@ struct CountdownLine: View {
             let live = facts.chip == .planned || facts.chip == .locked
             let running = live && target > current
             let head = Text(pieces.first ?? "").foregroundStyle(Theme.Palette.text)
-            let figure = Text(countdown).font(Theme.Typography.mono).foregroundStyle(running ? Theme.Palette.accent : Theme.Palette.muted)
+            let figure = Text(countdown).font(Theme.Typography.bodyStrong).foregroundStyle(running ? Theme.Palette.accent : Theme.Palette.muted)
             let tail = Text(pieces.dropFirst().joined()).foregroundStyle(Theme.Palette.text)
             Text("\(head)\(figure)\(tail)")
                 .font(Theme.Typography.bodyText)
@@ -317,35 +325,6 @@ struct SignupCard: View {
            let state = own.state.flatMap(SignupState.init) {
             Text(Copy.raidCancelledYou(state: state.label, role: RaidRole.label(own.role)))
                 .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
-        }
-    }
-}
-
-/// The classes strip (spec F4.2 item 6): nine crests with In plus Late under each.
-struct ClassStripView: View {
-    let strip: ClassStrip
-    let tap: () -> Void
-    @Environment(\.dynamicTypeSize) private var typeSize
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            SectionLabel(text: Copy.raidClasses)
-            let large = typeSize >= .accessibility1
-            let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: large ? 5 : 9)
-            Button(action: tap) {
-                LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(strip.entries) { entry in
-                        VStack(spacing: 4) {
-                            CrestView(className: entry.gameClass.rawValue, size: large ? 36 : 30)
-                            Text("\(entry.count)").font(Theme.Typography.monoMeta).foregroundStyle(Theme.Palette.strong)
-                        }
-                        .opacity(entry.count == 0 ? 0.4 : 1)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(strip.accessibilityLabel)
         }
     }
 }

@@ -72,6 +72,7 @@ struct RosterView: View {
                     .accessibilityAddTraits(.isHeader)
                 Text(facts.ratio).font(Theme.Typography.mono).foregroundStyle(Theme.Palette.muted)
             }
+            if let read = CompositionRead(controller.raid.composition) { CompositionView(read: read) }
             ForEach(roster.groups) { group in
                 VStack(alignment: .leading, spacing: 8) {
                     SectionLabel(text: group.kind.label, trailing: "\(group.rows.count)")
@@ -134,7 +135,7 @@ struct RosterRowView: View {
             HStack(spacing: 12) {
                 GameIcon(stem: row.specIcon, size: 28)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(row.name).font(Theme.Typography.bodyStrong).foregroundStyle(Theme.Palette.classColor(row.className))
+                    NameText(text: row.name, font: Theme.Typography.bodyStrong, color: Theme.Palette.classColor(row.className))
                     if !row.specName.isEmpty {
                         Text(row.specName).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
                     }

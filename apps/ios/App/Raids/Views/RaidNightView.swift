@@ -102,15 +102,16 @@ struct RaidNightView: View {
     private func loaded(_ night: RaidNightSummary) -> some View {
         Text(Copy.nightMeta(zone: night.zoneName, weekday: clock.weekday(night.startsAt), date: clock.dayMonth(night.startsAt), guild: night.guildName))
             .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
-        HStack(alignment: .center, spacing: 16) {
-            figure(night.kills, Copy.nightKill(n: night.kills))
-            figure(night.wipes, Copy.nightWipes(n: night.wipes))
-            figure(night.newBests, Copy.nightBest(n: night.newBests))
-            Spacer(minLength: 8)
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(night.character.name).font(Theme.Typography.name).foregroundStyle(Theme.Palette.classColor(night.character.className))
-                Text(Copy.raidsWho(spec: night.character.specName, role: RaidRole.label(night.character.role)))
-                    .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 16) {
+                figures(night)
+                Spacer(minLength: 8)
+                who(night, alignment: .trailing)
+            }
+            // Large text: the figures stack, the character under them.
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) { figures(night) }
+                who(night, alignment: .leading)
             }
         }
         .primaryCard()
@@ -138,6 +139,21 @@ struct RaidNightView: View {
             }
         }
         Button(Copy.nightReport) { openURL(RaidLinks.report(night.reportId)) }.buttonStyle(GoldLinkStyle())
+    }
+
+    @ViewBuilder
+    private func figures(_ night: RaidNightSummary) -> some View {
+        figure(night.kills, Copy.nightKill(n: night.kills))
+        figure(night.wipes, Copy.nightWipes(n: night.wipes))
+        figure(night.newBests, Copy.nightBest(n: night.newBests))
+    }
+
+    private func who(_ night: RaidNightSummary, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
+            NameText(text: night.character.name, font: Theme.Typography.name, color: Theme.Palette.classColor(night.character.className))
+            Text(Copy.raidsWho(spec: night.character.specName, role: RaidRole.label(night.character.role)))
+                .font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
+        }
     }
 
     /// The one figure: the number in `stat`, its word in meta (the plural carries the count).

@@ -125,32 +125,6 @@ struct RosterGroups: Equatable, Sendable {
     }
 }
 
-/// The classes strip (spec F4.2 item 6): In plus Late per class, in the game's order. A count of
-/// the view's own rows.
-struct ClassStrip: Equatable, Sendable {
-    struct Entry: Equatable, Sendable, Identifiable {
-        let gameClass: GameClass
-        let count: Int
-        var id: GameClass { gameClass }
-    }
-
-    let entries: [Entry]
-
-    init(raid: RaidView) {
-        let coming = raid.signups.filter { SignupState(rawValue: $0.state)?.isComing == true }
-        entries = GameClass.allCases.map { cls in
-            Entry(gameClass: cls, count: coming.filter { $0.className.lowercased() == cls.rawValue }.count)
-        }
-    }
-
-    /// `Classes coming: Warrior 4, Hunter 2, …, no Paladins`.
-    var accessibilityLabel: String {
-        let present = entries.filter { $0.count > 0 }.map { Copy.raidsA11yClassCount(className: $0.gameClass.name, n: $0.count) }
-        let missing = entries.filter { $0.count == 0 }.map(\.gameClass.none)
-        return Copy.raidsA11yClasses(list: (present + missing).joined(separator: ", "))
-    }
-}
-
 /// The officer's Copy the list (the site's copyList): the title and guild time, the count and its
 /// breakdown, then each non-empty group's names.
 enum RosterCopy {

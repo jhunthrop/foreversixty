@@ -20,8 +20,12 @@ struct RaidsDependencies {
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
         let statics = StaticDataClient(transport: URLSessionTransport())
+        var service: any RaidService = LiveRaidService(client: environment.client)
+        #if DEBUG
+        if let fixture = RaidDebugLaunch.service(baseURL: environment.configuration.baseURL) { service = fixture }
+        #endif
         return RaidsDependencies(
-            service: LiveRaidService(client: environment.client),
+            service: service,
             cache: DiskRaidCache.standard(),
             haptics: SystemRaidHaptics(),
             permission: SystemNotificationPermission(),
@@ -101,7 +105,7 @@ struct RaidsTab: View {
             )
             .refreshable { await reload() }
             .navigationTitle(Copy.tabRaids)
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.inline)
             .navigationDestination(for: RaidsRoute.self) { destination($0) }
         }
         .environment(\.raidIcons, icons)

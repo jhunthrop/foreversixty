@@ -77,15 +77,18 @@ struct GameIcon: View {
     }
 }
 
-/// `micro` uppercase .14em section label.
+/// `micro` uppercase .14em section label; at accessibility sizes the tracking drops and the label
+/// shrinks rather than breaking.
 struct SectionLabel: View {
     let text: String
     var color: Color = Theme.Palette.muted
     var trailing: String?
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: 6) {
-            Text(text.uppercased()).font(Theme.Typography.micro).tracking(1.5).foregroundStyle(color)
+            Text(text.uppercased()).font(Theme.Typography.micro).tracking(typeSize.isAccessibilitySize ? 0 : 1.5)
+                .lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(color)
             if let trailing {
                 Text(trailing).font(Theme.Typography.monoMeta).foregroundStyle(color)
             }
@@ -118,6 +121,8 @@ struct StatusTag: View {
         Text(text.uppercased())
             .font(Theme.Typography.micro)
             .tracking(0.8)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
             .foregroundStyle(color)
             .padding(.horizontal, 7)
             .frame(minHeight: 22)
@@ -140,27 +145,46 @@ struct DateBlock: View {
             Text(parts.day).font(Theme.Typography.monoDay).foregroundStyle(Theme.Palette.strong)
             Text(parts.month).font(Theme.Typography.micro).foregroundStyle(Theme.Palette.muted)
         }
+        // The block keeps its width at every size; its words shrink, never break.
+        .lineLimit(1)
+        .minimumScaleFactor(0.4)
         .padding(.vertical, 4)
-        .frame(minWidth: width, minHeight: height)
+        .padding(.horizontal, 2)
+        .frame(width: width)
+        .frame(minHeight: height)
         .background(Theme.Palette.background.opacity(0.5), in: .rect(cornerRadius: Theme.Radius.control))
         .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).stroke(Theme.Palette.line))
         .accessibilityHidden(true)
     }
 }
 
-/// The 8 pt progress bar: line-soft track, gold fill.
+/// The 8 pt progress bar: line-soft track, gold fill. A nil width takes the full row.
 struct FillBar: View {
     let fill: Double
-    let width: CGFloat
+    let width: CGFloat?
     var muted = false
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            Capsule().fill(Theme.Palette.lineSoft)
-            Capsule().fill(muted ? Theme.Palette.muted : Theme.Palette.accent).frame(width: width * fill)
-        }
-        .frame(width: width, height: 8)
-        .accessibilityHidden(true)
+        Capsule().fill(Theme.Palette.lineSoft)
+            .overlay(alignment: .leading) {
+                GeometryReader { proxy in
+                    Capsule().fill(muted ? Theme.Palette.muted : Theme.Palette.accent).frame(width: proxy.size.width * fill)
+                }
+            }
+            .frame(width: width, height: 8)
+            .frame(maxWidth: width == nil ? .infinity : nil, alignment: .leading)
+            .accessibilityHidden(true)
+    }
+}
+
+/// A one-word name: one line at every size, shrinking before it would break inside the word.
+struct NameText: View {
+    let text: String
+    let font: Font
+    let color: Color
+
+    var body: some View {
+        Text(text).font(font).foregroundStyle(color).lineLimit(1).minimumScaleFactor(0.5)
     }
 }
 
@@ -168,12 +192,19 @@ struct FillBar: View {
 struct CountBlock: View {
     let facts: RaidFacts
     var muted = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 12) {
-                if let fill = facts.fill { FillBar(fill: fill, width: 120, muted: muted) }
-                Text(facts.countLine).font(Theme.Typography.mono).foregroundStyle(Theme.Palette.strong)
+            if typeSize.isAccessibilitySize {
+                // Large text: the count above a full-width bar (spec 10).
+                Text(facts.countLine).font(Theme.Typography.bodyStrong).foregroundStyle(Theme.Palette.strong)
+                if let fill = facts.fill { FillBar(fill: fill, width: nil, muted: muted) }
+            } else {
+                HStack(spacing: 12) {
+                    if let fill = facts.fill { FillBar(fill: fill, width: 120, muted: muted) }
+                    Text(facts.countLine).font(Theme.Typography.bodyStrong).foregroundStyle(Theme.Palette.strong)
+                }
             }
             Text(facts.breakdown).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
         }
@@ -241,6 +272,8 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(Theme.Typography.button)
             .tracking(0.9)
             .textCase(.uppercase)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
             .foregroundStyle(gold ? Theme.Palette.accent : Theme.Palette.strong)
             .padding(.horizontal, 14)
             .frame(minHeight: 48)
@@ -254,6 +287,8 @@ struct GoldLinkStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Theme.Typography.bodyStrong)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
             .foregroundStyle(configuration.isPressed ? Theme.Palette.goldHover : Theme.Palette.accent)
             .frame(minHeight: 44)
             .contentShape(Rectangle())

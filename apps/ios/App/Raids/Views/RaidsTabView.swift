@@ -4,6 +4,7 @@ import SwiftUI
 
 /// F4.1 the Raids tab's content, pure over its state so snapshot tests draw every state.
 struct RaidsTabContentView: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let state: RaidsTabState
     let clock: RaidClock
     let now: () -> Date
@@ -86,7 +87,9 @@ struct RaidsTabContentView: View {
         }
         if let waiting = content.waiting {
             Button { if let url = content.head.webURL { openWeb(url) } } label: {
-                HStack(spacing: 12) {
+                (typeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                    : AnyLayout(HStackLayout(spacing: 12))) {
                     Image(systemName: "person.badge.clock").foregroundStyle(Theme.Palette.accent)
                         .frame(width: 36, height: 36)
                         .background(Theme.Palette.accent.opacity(0.12), in: .rect(cornerRadius: Theme.Radius.control))
@@ -133,9 +136,13 @@ struct RaidsTabContentView: View {
 /// The guild head: crest 40, the name, `{Faction} · {Region} {Ruleset} · {n} on the roster`.
 struct GuildHeadView: View {
     let head: GuildHead
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 12) {
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout(spacing: 12))
+        layout {
             GuildCrest(url: head.crestURL, faction: head.faction)
             VStack(alignment: .leading, spacing: 2) {
                 Text(head.name.uppercased()).font(Theme.Typography.cardHead).foregroundStyle(Theme.Palette.strong)
@@ -183,6 +190,7 @@ struct NextRaidCard: View {
     let currentKey: String?
     /// Pushes the raid page; true scrolls it to the roster.
     let open: (Bool) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let raid = controller.raid
@@ -190,7 +198,10 @@ struct NextRaidCard: View {
         VStack(alignment: .leading, spacing: 14) {
             Button { open(false) } label: {
                 VStack(alignment: .leading, spacing: 14) {
-                    HStack(alignment: .top, spacing: 12) {
+                    // Large text: the date block above the title instead of beside it.
+                    (typeSize.isAccessibilitySize
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+                        : AnyLayout(HStackLayout(alignment: .top, spacing: 12))) {
                         DateBlock(date: raid.startsAt, clock: clock)
                         VStack(alignment: .leading, spacing: 4) {
                             SectionLabel(text: Copy.raidsNext, color: Theme.Palette.accent)
@@ -209,7 +220,7 @@ struct NextRaidCard: View {
             Rectangle().fill(Theme.Palette.lineSoft).frame(height: 1)
             SectionLabel(text: Copy.raidYourSignup)
             if let character = facts.viewerCharacters(currentKey: currentKey).first {
-                SignupBlockView(controller: controller, character: character, showsNote: false)
+                SignupBlockView(controller: controller, character: character, showsNote: false, reservesStatus: false)
             }
             if controller.showsReminderAsk {
                 ReminderAskView { turnOn in Task { await controller.answerReminderAsk(turnOn: turnOn) } }
@@ -221,6 +232,7 @@ struct NextRaidCard: View {
                 }
             }
             .buttonStyle(GoldLinkStyle())
+            .padding(.top, -6)
         }
         .primaryCard()
         .sheet(item: Binding(get: { controller.specAsk }, set: { if $0 == nil { controller.closeSpecSheet() } })) { ask in
@@ -235,6 +247,7 @@ struct NextRaidCard: View {
 
 /// An Also planned row (min 76): date block, title, when, count with a 64 pt bar, one chip.
 struct PlannedRow: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let raid: RaidView
     let clock: RaidClock
     let now: Date
@@ -243,20 +256,27 @@ struct PlannedRow: View {
 
     var body: some View {
         let facts = RaidFacts(raid: raid, now: now)
+        let large = typeSize.isAccessibilitySize
         Button(action: open) {
             HStack(alignment: .top, spacing: 12) {
-                DateBlock(date: raid.startsAt, clock: clock, width: 48, height: 52)
+                // The date block keeps its width; the text column takes the rest.
+                DateBlock(date: raid.startsAt, clock: clock, width: large ? 56 : 48, height: 52)
+                    .frame(width: large ? 56 : nil)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(raid.title).font(Theme.Typography.bodyStrong).foregroundStyle(Theme.Palette.strong).lineLimit(2)
                     Text(clock.when(raid.startsAt, now: now)).font(Theme.Typography.metaText).foregroundStyle(Theme.Palette.muted)
                     HStack(spacing: 8) {
                         Text(raid.size == nil ? facts.countLine : facts.ratio)
                             .font(Theme.Typography.monoMeta).foregroundStyle(Theme.Palette.strong)
-                        if let fill = facts.fill { FillBar(fill: fill, width: 64) }
+                        if let fill = facts.fill, !large { FillBar(fill: fill, width: 64) }
                     }
+                    // Large text: the chip moves under the title.
+                    if large { chip(facts.rowChip(currentKey: currentKey)) }
                 }
-                Spacer(minLength: 8)
-                chip(facts.rowChip(currentKey: currentKey))
+                if !large {
+                    Spacer(minLength: 8)
+                    chip(facts.rowChip(currentKey: currentKey))
+                }
             }
             .padding(14)
             .frame(minHeight: 76)

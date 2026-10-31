@@ -48,7 +48,7 @@ enum RaidRole {
     }
 }
 
-/// The game's class order (the roster, the classes strip) and each class's names.
+/// The game's class order (the roster) and each class's name.
 enum GameClass: String, CaseIterable, Sendable {
     case warrior, paladin, hunter, rogue, priest, shaman, mage, warlock, druid
 
@@ -67,21 +67,6 @@ enum GameClass: String, CaseIterable, Sendable {
         case .mage: Copy.raidsClassMage
         case .warlock: Copy.raidsClassWarlock
         case .druid: Copy.raidsClassDruid
-        }
-    }
-
-    /// `no Paladins`, for the strip's VoiceOver label.
-    var none: String {
-        switch self {
-        case .warrior: Copy.raidsClassNoneWarrior
-        case .paladin: Copy.raidsClassNonePaladin
-        case .hunter: Copy.raidsClassNoneHunter
-        case .rogue: Copy.raidsClassNoneRogue
-        case .priest: Copy.raidsClassNonePriest
-        case .shaman: Copy.raidsClassNoneShaman
-        case .mage: Copy.raidsClassNoneMage
-        case .warlock: Copy.raidsClassNoneWarlock
-        case .druid: Copy.raidsClassNoneDruid
         }
     }
 }
