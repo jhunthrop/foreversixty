@@ -32,6 +32,16 @@ var NoMeleeAutoAttackSpecs = map[string]bool{
 	"shaman-restoration": true,
 }
 
+// RangedWeaponSpecs fight at range with a ranged weapon and carry their
+// melee weapons as stat sticks: Beast Mastery and Marksmanship. Survival
+// is melee in Forever. Their rotations move out to range before the pull,
+// so a profile of the character built before then still reads a melee
+// dual wielder, and the published hit and expertise figures must not.
+var RangedWeaponSpecs = map[string]bool{
+	"hunter-beast-mastery": true,
+	"hunter-marksmanship":  true,
+}
+
 // CasterDistanceFromTarget clears MinRangedAttackDistance (12 yards,
 // sim/core/constants.go) so a wand/Shoot-using character's own ranged
 // auto-attack still fires, while also clearing MaxMeleeAttackDistance
