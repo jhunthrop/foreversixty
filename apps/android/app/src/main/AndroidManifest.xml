@@ -45,6 +45,42 @@
             -->
         </activity>
 
+        <!-- Lane F14: the Next raid and Next upgrade widgets, their character setting, the tile. Off in
+             the manifest; WidgetComponents turns them on while the `widgets` switch is on. -->
+        <receiver android:name=".widgets.glance.NextRaidWidgetReceiver" android:enabled="false" android:exported="false" android:label="@string/widget_nextRaid">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_next_raid" />
+        </receiver>
+        <receiver android:name=".widgets.glance.NextUpgradeWidgetReceiver" android:enabled="false" android:exported="false" android:label="@string/widget_nextUpgrade">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_next_upgrade" />
+        </receiver>
+        <activity
+            android:name=".widgets.WidgetConfigActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/widget_characterSetting">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".widgets.tile.NextRaidTileService"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@drawable/ic_tile_raid"
+            android:label="@string/live_tile_title"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="true" />
+        </service>
+
         <!-- Lane F4: In, Late and Out answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
 

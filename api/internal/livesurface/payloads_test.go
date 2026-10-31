@@ -38,7 +38,7 @@ func assertBuilt(t *testing.T, name string, built any) {
 
 // liveRaid is the board's raid an hour before the pull: 38 of 40 signed up.
 func liveRaid() guilds.WidgetNextRaid {
-	starts := time.Unix(1765418400, 0).UTC()
+	starts := time.Unix(1796954400, 0).UTC()
 	return guilds.WidgetNextRaid{
 		RaidID: 7, GuildID: 2, GuildName: "OLYMPUS XXVII", ZoneName: "Onyxia's Lair", StartsAt: starts, PullAt: starts,
 		Size: ptr(40), SignedUp: 38, Status: guilds.WidgetRaidOpen, My: guilds.WidgetMine{State: ptr("in"), Role: "dps"},
@@ -46,8 +46,8 @@ func liveRaid() guilds.WidgetNextRaid {
 }
 
 func TestRaidStartPayloads(t *testing.T) {
-	now := time.Unix(1765414800, 0)
-	stale := time.Unix(1765419300, 0)
+	now := time.Unix(1796950800, 0)
+	stale := time.Unix(1796955300, 0)
 	attrs, state := RaidLive(liveRaid(), "Lightningbolltz")
 	assertBuilt(t, "surface.live-raid-start.apns", APNsLive("start", now, RaidActivityType, attrs, state,
 		&Alert{Title: "Onyxia's Lair", Body: "Invites in 60 minutes."}, &stale, nil))
@@ -55,8 +55,8 @@ func TestRaidStartPayloads(t *testing.T) {
 }
 
 func TestSimUpdatePayloads(t *testing.T) {
-	now := time.Unix(1765414800, 0)
-	stale := time.Unix(1765415700, 0)
+	now := time.Unix(1796950800, 0)
+	stale := time.Unix(1796951700, 0)
 	state := SimState{State: SimRunning, Done: 40, Total: ptr(64), EtaSec: ptr(120)}
 	assertBuilt(t, "surface.live-sim-update.apns", APNsLive("update", now, SimActivityType, nil, state, nil, &stale, nil))
 	attrs := SimAttributes{SimID: "k3v9q2m8x1ab", Title: "Elemental · Top Gear"}
@@ -76,7 +76,7 @@ func TestRaidLiveCarriesTheInviteTimeWhenSet(t *testing.T) {
 	if state.InviteAt == nil || *state.InviteAt != invite.Unix() {
 		t.Fatalf("invite_at = %v", state.InviteAt)
 	}
-	if d := RaidData(RaidAttributes{}, state); d["invite_at"] != "1765417500" {
+	if d := RaidData(RaidAttributes{}, state); d["invite_at"] != "1796953500" {
 		t.Fatalf("fcm invite_at = %q", d["invite_at"])
 	}
 }

@@ -1,0 +1,71 @@
+{
+  "note": "Golden vectors for the widget figures (spec 2026-10-31-mobile-wave3 §5.6). Every surface (home-screen and lock-screen widgets, the Live Activity, the Android ongoing notification and tile) computes its words from ONE snapshot (GET /v1/me/widget, fixture named by `snapshot`) and ONE clock, through WidgetFigures on iOS and Android; both platforms' unit tests read this file, so the figures are identical across surfaces and platforms. `patch` overrides fields of data.next_raid. Times are in `zone`. Rules: minutes left = ceil(seconds / 60); a day or more shows days and whole hours (minutes dropped); under a day shows hours and minutes; the short form is the leading unit. `stale` is from fetched_at, past 12 hours. The Live Activity counts to invite_at, else starts_at, and runs from 60 minutes before that until starts_at plus 15 minutes. A null expectation means the surface shows nothing there.",
+  "cases": [
+    {
+      "name": "in, two days out, fresh",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:30:00Z", "zone": "America/Chicago",
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 2 days 2 h", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": null, "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "stale after fourteen hours",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T09:20:00Z", "zone": "America/Chicago",
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 2 days 2 h", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": "Updated 14 h ago", "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "exactly two days",
+      "snapshot": "widget.get", "now": "2026-12-09T02:00:00Z", "fetched_at": "2026-12-09T02:00:00Z", "zone": "America/Chicago",
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 2 days", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": null, "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "tonight, hours and minutes",
+      "snapshot": "widget.get", "now": "2026-12-10T22:20:00Z", "fetched_at": "2026-12-10T22:20:00Z", "zone": "America/Chicago",
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 3 h 40 min", "short": "3h", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": null, "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "the Live Activity window, 38 minutes 12 seconds out",
+      "snapshot": "widget.get", "now": "2026-12-11T01:21:48Z", "fetched_at": "2026-12-11T01:20:00Z", "zone": "America/Chicago",
+      "patch": { "signed_up": 38 },
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 39 min", "short": "39m", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "38 of 40", "stale": null, "buttons": true, "liveActive": true, "liveTitle": "Invites for Onyxia's Lair in 39 minutes", "liveUntil": "until the pull at 8:00 pm" }
+    },
+    {
+      "name": "with an invite time",
+      "snapshot": "widget.get", "now": "2026-12-11T01:06:48Z", "fetched_at": "2026-12-11T01:00:00Z", "zone": "America/Chicago",
+      "patch": { "invite_at": "2026-12-11T01:45:00Z", "signed_up": 38 },
+      "expect": { "state": "raid", "tag": "In · DPS", "tagKind": "in", "countdown": "in 54 min", "short": "54m", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · In", "you": "You: In · DPS", "signedUp": "38 of 40", "stale": null, "buttons": true, "liveActive": true, "liveTitle": "Invites for Onyxia's Lair in 39 minutes", "liveUntil": "until invites at 7:45 pm" }
+    },
+    {
+      "name": "not signed up",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:39:00Z", "zone": "America/Chicago",
+      "patch": { "my": { "state": null, "spec": "Elemental", "role": "dps" } },
+      "expect": { "state": "raid", "tag": "Not signed up", "tagKind": "notSignedUp", "countdown": "in 2 days 2 h", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · Not signed up", "you": "You: Not signed up", "signedUp": "24 of 40", "stale": null, "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "no spec saved",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:39:00Z", "zone": "America/Chicago",
+      "patch": { "my": { "state": null, "spec": null, "role": "dps" } },
+      "expect": { "state": "raid", "tag": "Choose a spec", "tagKind": "chooseSpec", "countdown": "in 2 days 2 h", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · Choose a spec", "you": "You: Choose a spec", "signedUp": "24 of 40", "stale": null, "buttons": true, "liveActive": false }
+    },
+    {
+      "name": "locked",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:39:00Z", "zone": "America/Chicago",
+      "patch": { "status": "locked", "can_sign_up": false },
+      "expect": { "state": "raid", "tag": "Locked", "tagKind": "locked", "countdown": "in 2 days 2 h", "short": "2d", "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · Locked", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": null, "buttons": false, "liveActive": false }
+    },
+    {
+      "name": "cancelled",
+      "snapshot": "widget.get", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:39:00Z", "zone": "America/Chicago",
+      "patch": { "status": "cancelled", "can_sign_up": false },
+      "expect": { "state": "raid", "tag": "Cancelled", "tagKind": "cancelled", "countdown": null, "short": null, "time": "Thu 8:00 pm", "timeShort": "Thu 8 pm", "inline": "Onyxia's Lair · Thu 8 pm · Cancelled", "you": "You: In · DPS", "signedUp": "24 of 40", "stale": null, "buttons": false, "liveActive": false }
+    },
+    {
+      "name": "no guild",
+      "snapshot": "widget.get.no-guild", "now": "2026-12-08T23:39:00Z", "fetched_at": "2026-12-08T23:39:00Z", "zone": "America/Chicago",
+      "expect": { "state": "noGuild", "tag": null, "tagKind": null, "countdown": null, "short": null, "time": null, "timeShort": null, "inline": "No guild yet", "you": null, "signedUp": null, "stale": null, "buttons": false, "liveActive": false }
+    }
+  ],
+  "upgrades": {
+    "snapshot": "widget.get",
+    "expect": { "header": "Upgrades · Lightningbolltz", "rows": [["Knowledge of the Timbermaw", "+5.3 DPS"], ["Dryad's Wrist Bindings", "+4.0 DPS"], ["Arcanoweave Cloak", "+3.1 DPS"]], "footer": "8 upgrades · +18.3 DPS", "rectTitle": "Next upgrade · Waist" },
+    "noGear": { "snapshot": "widget.get.no-guild", "sentence": "Add the addon to see your upgrades." }
+  }
+}

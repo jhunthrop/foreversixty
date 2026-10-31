@@ -69,6 +69,7 @@ struct RootView: View {
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
+        .widgetRefreshTriggers(environment)
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
         .task {
             RaidNotificationCenter.shared.onOpen = openRaids
@@ -103,7 +104,9 @@ struct RootView: View {
                 session: environment.session,
                 version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
                 onPickClass: { selection = .bis },
-                plansLink: environment.plansLink
+                plansLink: environment.plansLink,
+                liveSurfaces: environment.isAvailable(.widgets),
+                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } }
             )
         case .you: PlaceholderScreen(title: tab.title)
         }

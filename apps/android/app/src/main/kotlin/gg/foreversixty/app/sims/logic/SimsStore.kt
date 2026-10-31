@@ -68,6 +68,8 @@ class SimsStore(
     private val cache: RaidCache,
     private val now: () -> Instant,
     initial: SimsPhase = SimsPhase.Loading,
+    /** Lane F14: each in-flight server run's poll answer, for its ongoing notification. */
+    private val onProgress: suspend (SimRow, SimProgress) -> Unit = { _, _ -> },
 ) {
     var phase: SimsPhase by mutableStateOf(initial)
         private set
@@ -134,6 +136,7 @@ class SimsStore(
         for (id in ServerRuns.inFlightIds(current.serverRows, now())) {
             val answer = (service.progress(id) as? ApiResult.Success)?.data ?: continue
             progress[id] = answer
+            current.serverRows.firstOrNull { it.simId == id }?.let { onProgress(it, answer) }
             ended = ended || ServerRuns.hasEnded(answer)
         }
         if (ended) load()

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lane F14: the widget's foot tag in its colour (spec §5.6). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#1AF0736B" />
+    <stroke android:width="1dp" android:color="#80F0736B" />
+    <corners android:radius="6dp" />
+</shape>

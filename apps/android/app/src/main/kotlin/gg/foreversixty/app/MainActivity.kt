@@ -57,12 +57,16 @@ class MainActivity : ComponentActivity() {
             graph.session.refresh()
         }
         lifecycleScope.launch { graph.session.watchForDeadTokens() }
+        // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
+        if (graph.widgets != null) gg.foreversixty.app.widgets.WidgetRefreshWork.periodic(this)
     }
 
     override fun onResume() {
         super.onResume()
         // A Custom Tab closed without a redirect: back to signed out (spec F1.2's cancel).
         graph.session.onReturnedToApp()
+        // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
+        graph.widgets?.let { widgets -> lifecycleScope.launch { widgets.refresher.refresh() } }
     }
 
     override fun onNewIntent(intent: Intent) {

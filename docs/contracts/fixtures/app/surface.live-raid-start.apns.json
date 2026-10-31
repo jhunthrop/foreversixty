@@ -1,9 +1,9 @@
 {
   "aps": {
-    "timestamp": 1765414800,
+    "timestamp": 1796950800,
     "event": "start",
     "content-state": {
-      "starts_at": 1765418400,
+      "starts_at": 1796954400,
       "invite_at": null,
       "status": "open",
       "my_state": "in",
@@ -23,6 +23,6 @@
       "title": "Onyxia's Lair",
       "body": "Invites in 60 minutes."
     },
-    "stale-date": 1765419300
+    "stale-date": 1796955300
   }
 }
