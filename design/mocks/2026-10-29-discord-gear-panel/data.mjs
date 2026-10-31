@@ -157,7 +157,7 @@ export function sourceShort(loot, id, kind, faction, full) {
 // ---- slots ----
 export const SLOT_LABELS = {
   head: "Head", neck: "Neck", shoulder: "Shoulder", back: "Back", chest: "Chest", wrist: "Wrist",
-  hands: "Hands", waist: "Waist", legs: "Legs", feet: "Feet", finger1: "Ring 1", finger2: "Ring 2",
+  hands: "Hands", waist: "Waist", legs: "Legs", feet: "Feet", finger1: "Finger 1", finger2: "Finger 2",
   trinket1: "Trinket 1", trinket2: "Trinket 2", main_hand: "Main hand", off_hand: "Off hand", ranged: "Ranged",
 };
 // The in-game character frame's columns (shirt and tabard have no BiS row; the sheet draws
