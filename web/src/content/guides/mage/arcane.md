@@ -43,7 +43,7 @@ Arcane is the Mage burst spec: Arcane Power and Presence of Mind concentrate dam
 
 - Less sustained damage than Fire once the target's debuffs are stacked
 - Arcane Power costs 30% more mana per cast
-- Each Arcane Blast stack raises the next Blast's mana cost by 175%
+- Each Arcane Blast stack raises the next Blast's mana cost by 100%
 
 ### In a raid
 
@@ -54,7 +54,7 @@ Arcane is the Mage burst spec: Arcane Power and Presence of Mind concentrate dam
 
 - **Precision** (Frost tree) — up to 6% more hit chance with all your spells at rank 3. The client removed Arcane Focus and widened Elemental Precision, now named Precision, from Frost and Fire to every school, so the three Frost points this build already spent carry the Arcane hit Arcane Focus used to.
 - **Arcane Concentration** — up to a 10% chance for a damage spell to grant Clearcasting, making your next cast free; a large mana saver over a long fight.
-- **Arcane Blast** (1 point) — a required pick, not an optional one, and missing from an earlier draft of this guide's talent section: it opens every cycle of the two-Blast loop described below in Rotation and priority, so without it there's no spell to stack the buff with in the first place.
+- **Arcane Blast** (1 point) — a required pick: every cast gives you 12% of your Intellect as spell damage, stacking four times for 18 seconds from the first Blast, and it opens every cycle of the Blast loop described below in Rotation and priority.
 - **Missile Barrage** — a proc off Arcane Blast, Arcane Wrath, Fireball, Frostbolt, or Frostfire Bolt that halves Arcane Missiles' channel time and drops its mana cost to zero. It now sits one row lower in the tree, and both builds take both ranks.
 - **Presence of Mind** — turns your next sub-10-second cast instant, with no cast time of its own.
 - **Arcane Mind** — up to 10% Intellect and a 100% bonus to Arcane critical strike damage at rank 5.
@@ -68,7 +68,7 @@ The other 20 points split 10 and 10. Fire keeps **Incineration** (3/5), **Accele
 
 ## Rotation and priority
 
-Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. This site's simulator has Arcane Blast, its stacking buff and Missile Barrage wired up, including the part of Arcane Blast's tooltip that matters most: it costs 15% of your base mana, and every stack of its buff raises the next Blast's cost by 175%. Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank (half the channel time, no mana cost) to cash in the proc. Otherwise cast Arcane Blast until its buff carries three stacks, then Frostbolt. The buff lasts 15 seconds from the first Blast and does not refresh, so Frostbolt fills until it runs out and the next Blast starts a fresh, cheap set. Each stack raises the next Blast's damage and cost: three stacks measured ahead of two (about +4% in our audit run) and of four, whose fourth Blast costs more than it returns. Frostfire Bolt can fill the Frostbolt slot (it also rolls Missile Barrage's chance) but measured lower, so Frostbolt stays. If the build hasn't taken Arcane Blast yet, plain Arcane Missiles fills instead, the same way pre-Arcane-Blast Era Arcane played.
+Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. This site's simulator has Arcane Blast, its stacking buff and Missile Barrage wired up, including the part of Arcane Blast's tooltip that matters most: it costs 15% of your base mana, and every stack of its buff raises the next Blast's cost by 100%. Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank (half the channel time, no mana cost) to cash in the proc. Otherwise cast Arcane Blast until its buff carries three stacks. Past three, keep blasting while your mana is ahead of the fight (a larger share of your mana bar left than of the fight) and above 20%; once you fall behind, cast Frostbolt instead. The buff lasts 18 seconds from the first Blast and does not refresh, so Frostbolt fills until it runs out and the next Blast starts a fresh, cheap set. The mana-paced fourth stack gained about 10% at the raid band in our run and was even at the bare band, where mana runs out first. Frostfire Bolt can fill the Frostbolt slot (it also rolls Missile Barrage's chance) but measured lower, so Frostbolt stays. If the build hasn't taken Arcane Blast yet, plain Arcane Missiles fills instead, the same way pre-Arcane-Blast Era Arcane played.
 
 ## Stat priority
 
