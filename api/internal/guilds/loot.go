@@ -695,6 +695,7 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 	default:
 		s.logger().Info("guilds", "op", "loot_award", "guild_id", guildID, "item_id", in.ItemID,
 			"character_key", in.CharacterKey, "user_id", actor.UserID)
+		s.publishLootAwarded(r.Context(), guildID, id, in.CharacterKey, in.ItemID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]any{"award_id": id, "status": "awarded"})
 	}
 }

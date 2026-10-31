@@ -12,6 +12,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
@@ -100,7 +101,9 @@ type Service struct {
 	// API failing to start (coordinator's lane constraint).
 	Gateway Gateway
 	// Mailer sends the billing-daily notices; the routes never use it.
-	Mailer        mail.Mailer
+	Mailer mail.Mailer
+	// Events publishes billing.failed to the payer; nil publishes nothing.
+	Events        events.Publisher
 	PublicBaseURL string
 	WebhookSecret string
 	Log           *slog.Logger

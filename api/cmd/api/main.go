@@ -263,8 +263,8 @@ func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, t
 		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
 		Completed: newJobGuilds(cfg, pool, log),
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(context.Background(), cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return deps
 }
@@ -288,8 +288,8 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
 	}
-	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
-		deps.Notify = deliverer
+	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
+		deps.Notify = notifier
 	}
 	return sims.Run(ctx, deps, args[0])
 }
@@ -673,6 +673,8 @@ func serve(log *slog.Logger) error {
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
+	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
+	wireEvents(ctx, cfg, pool, &deps, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer
