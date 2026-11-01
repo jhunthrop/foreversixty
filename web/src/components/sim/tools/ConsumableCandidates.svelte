@@ -16,18 +16,19 @@
     buffs,
     treeVersion,
     spec,
+    level,
     ontoggle,
   }: {
     picked: readonly string[];
     buffs: SimBuffFile;
     treeVersion: string;
-    /** Task 4: the physical and caster consumable halves differ (Ruling 2), keyed off this
-     *  character's own `reference_stat`. */
+    /** The character's spec key and level: the offer is that spec's raid set at that level. */
     spec: string;
+    level: number;
     ontoggle: (id: string) => void;
   } = $props();
 
-  const offered = $derived([...new Set(presetConsumables('raid-buffed', spec))]);
+  const offered = $derived([...new Set(presetConsumables('raid-buffed', spec, level))]);
 </script>
 
 <section

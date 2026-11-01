@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -13,6 +14,18 @@ import (
 )
 
 const raidConsumesPath = "raid-consumes.json"
+
+// publishedConsumes is what spec-breakdown and the ranker send at level under the raid
+// preset: the preset resolved for the spec, the class kit at that level layered on top.
+func publishedConsumes(t *testing.T, presets Presets, spec specs.Spec, level int) []string {
+	t.Helper()
+	resolved, err := presets.Resolve(RaidPreset, spec)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, want := resolved.Layer(leveling.KitBuffs(spec.Spec, level), leveling.KitConsumes(spec.Spec, level))
+	return want
+}
 
 // The /sim page's Raid-buffed consumables are this file (owner ruling, round 5): the
 // published level-60 numbers' own set, so the page and the published DPS agree by
@@ -31,9 +44,9 @@ func TestRaidConsumesJSONIsCommitted(t *testing.T) {
 	}
 }
 
-// Every spec's row is exactly what the published numbers send: the raid preset resolved
-// for the spec with the class kit layered on top (spec-breakdown, leveling-bis).
-func TestRaidConsumesAreThePublishedSet(t *testing.T) {
+// Every spec's set at every level is exactly what the published numbers send at that level:
+// the raid preset resolved for the spec with the class kit of that level layered on top.
+func TestRaidConsumesAreThePublishedSetAtEveryLevel(t *testing.T) {
 	presets := loadRealPresets(t)
 	got, err := RaidConsumes(presets)
 	if err != nil {
@@ -43,24 +56,49 @@ func TestRaidConsumesAreThePublishedSet(t *testing.T) {
 		t.Fatalf("%d specs, want %d", len(got), len(specs.All))
 	}
 	for _, spec := range specs.All {
-		resolved, err := presets.Resolve(RaidPreset, spec)
-		if err != nil {
-			t.Fatal(err)
+		rows := got[spec.Spec]
+		if len(rows) == 0 || rows[0].FromLevel != 1 {
+			t.Fatalf("%s: rows %+v do not start at level 1", spec.Spec, rows)
 		}
-		_, want := resolved.Layer(leveling.KitBuffs(spec.Spec, api.MaxLevel), leveling.KitConsumes(spec.Spec, api.MaxLevel))
-		if !slices.Equal(got[spec.Spec], want) {
-			t.Errorf("%s: %v, want %v", spec.Spec, got[spec.Spec], want)
-		}
-		if len(got[spec.Spec]) == 0 {
-			t.Errorf("%s carries no consumables", spec.Spec)
+		for level := 1; level <= api.MaxLevel; level++ {
+			if have, want := ConsumesAtLevel(rows, level), publishedConsumes(t, presets, spec, level); !slices.Equal(have, want) {
+				t.Errorf("%s level %d: %v, want %v", spec.Spec, level, have, want)
+			}
 		}
 	}
 }
 
-func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
+// The kit's level gates reach the rows: a rogue's Instant Poisons from 20, Deadly in the
+// main hand from 30; an Enhancement shaman's Rockbiter Weapon until 30, then Windfury.
+func TestRaidConsumesFollowTheKitsLevelGates(t *testing.T) {
 	got, err := RaidConsumes(loadRealPresets(t))
 	if err != nil {
 		t.Fatal(err)
+	}
+	combat := got["rogue-combat"]
+	if at := ConsumesAtLevel(combat, 25); !slices.Contains(at, "main_hand_imbue:instant_poison") || slices.Contains(at, "main_hand_imbue:deadly_poison") {
+		t.Errorf("rogue-combat at 25: %v, want Instant Poison in the main hand", at)
+	}
+	if at := ConsumesAtLevel(combat, 19); slices.ContainsFunc(at, func(id string) bool { return strings.HasSuffix(id, "_poison") }) {
+		t.Errorf("rogue-combat at 19 carries a poison: %v", at)
+	}
+	enh := got["shaman-enhancement"]
+	if at := ConsumesAtLevel(enh, 29); !slices.Contains(at, "main_hand_imbue:rockbiter_weapon") {
+		t.Errorf("shaman-enhancement at 29: %v, want Rockbiter Weapon", at)
+	}
+	if at := ConsumesAtLevel(enh, 30); !slices.Contains(at, "main_hand_imbue:windfury_weapon") {
+		t.Errorf("shaman-enhancement at 30: %v, want Windfury Weapon", at)
+	}
+}
+
+func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
+	all, err := RaidConsumes(loadRealPresets(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string][]string{}
+	for spec, rows := range all {
+		got[spec] = ConsumesAtLevel(rows, api.MaxLevel)
 	}
 	for _, spec := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
 		for _, id := range []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison", "conjured_rogue_thistle_tea"} {
@@ -87,17 +125,13 @@ func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
 // no default carries it.
 func TestNoRaidDefaultCarriesPowerInfusion(t *testing.T) {
 	presets := loadRealPresets(t)
-	consumes, err := RaidConsumes(presets)
-	if err != nil {
-		t.Fatal(err)
-	}
 	for _, spec := range specs.All {
 		resolved, err := presets.Resolve(RaidPreset, spec)
 		if err != nil {
 			t.Fatal(err)
 		}
-		buffs, _ := resolved.Layer(leveling.KitBuffs(spec.Spec, api.MaxLevel), leveling.KitConsumes(spec.Spec, api.MaxLevel))
-		for _, id := range append(buffs, consumes[spec.Spec]...) {
+		buffs, consumes := resolved.Layer(leveling.KitBuffs(spec.Spec, api.MaxLevel), leveling.KitConsumes(spec.Spec, api.MaxLevel))
+		for _, id := range append(buffs, consumes...) {
 			if buffBase(id) == "power_infusions" {
 				t.Errorf("%s: the raid default carries %s", spec.Spec, id)
 			}

@@ -1,10 +1,10 @@
 package request
 
-// The consumables every spec's published level-60 raid number carries, for the /sim page.
+// The consumables every spec carries under the raid preset at each level, for the /sim page.
 //
 // The BiS ranker, the tier list and spec-breakdown resolve the raid preset for a spec and
 // layer the class kit on top (a rogue's poisons, Thistle Tea; a Survival hunter's ranged
-// group). The page cannot run that resolution itself, so `go run ./internal/genraidconsumes`
+// group, and the kit follows the level: a rogue's poisons from 20, Deadly from 30). The page cannot run that resolution itself, so `go run ./internal/genraidconsumes`
 // writes its output to sim/request/raid-consumes.json, web/scripts/sync-raid-preset.mjs
 // copies it into the page's build, and TestRaidConsumesJSONIsCommitted fails when the
 // committed file and this code disagree. One source of truth: data/curated/presets.json
@@ -13,38 +13,70 @@ package request
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
-// raidConsumesFile is the generated file's shape.
-type raidConsumesFile struct {
-	Preset string              `json:"preset"`
-	Level  int                 `json:"level"`
-	Specs  map[string][]string `json:"specs"`
+// LevelConsumes is the set a spec carries from FromLevel until the next row's level.
+type LevelConsumes struct {
+	FromLevel int      `json:"from_level"`
+	Consumes  []string `json:"consumes"`
 }
 
-// RaidConsumes is, per spec key, the consumable ids the published level-60 raid numbers
-// send: the raid preset resolved for the spec with the class kit layered on top.
-func RaidConsumes(presets Presets) (map[string][]string, error) {
-	out := make(map[string][]string, len(specs.All))
+// raidConsumesFile is the generated file's shape.
+type raidConsumesFile struct {
+	Preset string                     `json:"preset"`
+	Specs  map[string][]LevelConsumes `json:"specs"`
+}
+
+// RaidConsumes is, per spec key, the consumable ids the raid preset sends at each level,
+// as rows that start where the set changes (the class kit's level gates): the raid preset
+// resolved for the spec with the kit of that level layered on top, as spec-breakdown and
+// the BiS ranker build it.
+func RaidConsumes(presets Presets) (map[string][]LevelConsumes, error) {
+	out := make(map[string][]LevelConsumes, len(specs.All))
 	for _, spec := range specs.All {
 		resolved, err := presets.Resolve(RaidPreset, spec)
 		if err != nil {
 			return nil, fmt.Errorf("raid consumes for %s: %w", spec.Spec, err)
 		}
-		_, consumeIDs := resolved.Layer(
-			leveling.KitBuffs(spec.Spec, api.MaxLevel),
-			leveling.KitConsumes(spec.Spec, api.MaxLevel),
-		)
-		if len(consumeIDs) == 0 {
-			return nil, fmt.Errorf("raid consumes for %s: the published set is empty", spec.Spec)
+		rows, err := levelRows(resolved, spec.Spec)
+		if err != nil {
+			return nil, err
 		}
-		out[spec.Spec] = consumeIDs
+		out[spec.Spec] = rows
 	}
 	return out, nil
+}
+
+// levelRows walks levels 1 to max and starts a row wherever the layered set changes.
+func levelRows(resolved ResolvedPreset, spec string) ([]LevelConsumes, error) {
+	var rows []LevelConsumes
+	for level := 1; level <= api.MaxLevel; level++ {
+		_, consumeIDs := resolved.Layer(leveling.KitBuffs(spec, level), leveling.KitConsumes(spec, level))
+		if len(consumeIDs) == 0 {
+			return nil, fmt.Errorf("raid consumes for %s at level %d: the set is empty", spec, level)
+		}
+		if len(rows) == 0 || !slices.Equal(rows[len(rows)-1].Consumes, consumeIDs) {
+			rows = append(rows, LevelConsumes{FromLevel: level, Consumes: consumeIDs})
+		}
+	}
+	return rows, nil
+}
+
+// ConsumesAtLevel is the row in force at level; rows start at level 1.
+func ConsumesAtLevel(rows []LevelConsumes, level int) []string {
+	var at []string
+	for _, row := range rows {
+		if row.FromLevel > level {
+			break
+		}
+		at = row.Consumes
+	}
+	return at
 }
 
 // RaidConsumesJSON is RaidConsumes as the committed file states it.
@@ -53,7 +85,7 @@ func RaidConsumesJSON(presets Presets) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	b, err := json.MarshalIndent(raidConsumesFile{Preset: RaidPreset, Level: api.MaxLevel, Specs: bySpec}, "", "  ")
+	b, err := json.MarshalIndent(raidConsumesFile{Preset: RaidPreset, Specs: bySpec}, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("encoding the raid consumes: %w", err)
 	}

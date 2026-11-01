@@ -221,7 +221,7 @@ export function createBulkStore(init: BulkStoreInit) {
       return;
     }
     character = outcome.character;
-    settings = withSpecForPreset(settings, outcome.character.spec);
+    settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
     progress = null;
     capNotice = null;

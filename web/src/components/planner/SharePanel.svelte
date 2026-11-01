@@ -191,10 +191,10 @@
     if (!confirmedIncludeSim || character === null || store.talentIndex === null) return;
     cardState = 'running';
     // The card sim runs at the settings the sim page opens on -- raid-buffed, three
-    // minutes, single target, split physical or caster by this build's own spec. The
+    // minutes, single target, with this build's spec and level's own raid consumables. The
     // planner has no settings bar of its own, and inventing one here would put two
     // vocabularies on one page; `/sim` is where settings are chosen.
-    const settings = defaultSettings(character.spec);
+    const settings = defaultSettings(character.spec, character.level);
     try {
       const result = await runSim(
         poolOnce(),

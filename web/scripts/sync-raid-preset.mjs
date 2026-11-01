@@ -49,7 +49,25 @@ if (preset === undefined) {
   throw new Error(`sync-raid-preset: ${source} has no "${PRESET}" preset`);
 }
 
-/** Per spec, the published set's consumable ids; every row non-empty and every id a string. */
+/** One spec's rows: each starts at a level (the first at 1) and names a non-empty id list. */
+function validRows(spec, rows) {
+  const ok =
+    Array.isArray(rows) &&
+    rows.length > 0 &&
+    rows[0]?.from_level === 1 &&
+    rows.every(
+      (row, index) =>
+        Number.isInteger(row?.from_level) &&
+        (index === 0 || row.from_level > rows[index - 1].from_level) &&
+        Array.isArray(row.consumes) &&
+        row.consumes.length > 0 &&
+        row.consumes.every((id) => typeof id === 'string' && id !== ''),
+    );
+  if (!ok) throw new Error(`sync-raid-preset: ${consumesSource} spec "${spec}" has no valid level rows`);
+  return rows;
+}
+
+/** Per spec, the raid set's consumable ids by level (the class kit's level gates). */
 async function consumesBySpec() {
   let generated;
   try {
@@ -65,12 +83,7 @@ async function consumesBySpec() {
   }
   const entries = Object.entries(generated.specs);
   if (entries.length === 0) throw new Error(`sync-raid-preset: ${consumesSource} names no spec`);
-  for (const [spec, ids] of entries) {
-    if (!Array.isArray(ids) || ids.length === 0 || ids.some((id) => typeof id !== 'string' || id === '')) {
-      throw new Error(`sync-raid-preset: ${consumesSource} spec "${spec}" has no consumable ids`);
-    }
-  }
-  return Object.fromEntries(entries);
+  return Object.fromEntries(entries.map(([spec, rows]) => [spec, validRows(spec, rows)]));
 }
 
 const out = {

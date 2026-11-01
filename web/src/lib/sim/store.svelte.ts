@@ -262,7 +262,7 @@ export function createSimStore(init: SimStoreInit) {
       return;
     }
     character = outcome.character;
-    settings = withSpecForPreset(settings, outcome.character.spec);
+    settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
     estimate = EMPTY_ESTIMATE;
     iterationsDone = 0;

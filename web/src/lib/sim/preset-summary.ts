@@ -29,9 +29,10 @@ export interface PresetSummaryGroup {
 export function presetSummary(
   preset: Exclude<BuffPresetId, 'custom'>,
   spec: string,
+  level: number,
   names: BuffNames | null,
 ): PresetSummaryGroup[] {
-  const applied = new Set([...PRESET_BUFFS[preset], ...presetConsumables(preset, spec)]);
+  const applied = new Set([...PRESET_BUFFS[preset], ...presetConsumables(preset, spec, level)]);
   return BUFF_GROUPS.map((group) => ({
     group,
     rows: rowsIn(group)

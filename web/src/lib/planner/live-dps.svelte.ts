@@ -44,7 +44,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
   async function start(character: SimCharacter, index: TalentIndex): Promise<void> {
     state = 'running';
     const unit = scoreUnitForSpec(character.spec);
-    const settings = defaultSettings(character.spec);
+    const settings = defaultSettings(character.spec, character.level);
     handle = runSim(
       poolOnce(),
       {

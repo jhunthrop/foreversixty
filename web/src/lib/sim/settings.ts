@@ -139,24 +139,36 @@ export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly stri
   solo: [],
 };
 
-/**
- * The published set's consumables per spec key (owner ruling, round 5): the raid preset
- * resolved for each spec with its class kit on top -- a rogue's poisons and Thistle Tea, a
- * Survival hunter's ranged group, a Fire mage's Fire Power elixir -- exactly what the BiS
- * ranker, the tier list and spec-breakdown send, so the page's default figure is the
- * published one. Generated in Go (sim/request/raid-consumes.json, held current by
- * TestRaidConsumesJSONIsCommitted) and synced here by scripts/sync-raid-preset.mjs.
- */
-const RAID_CONSUMES: Readonly<Record<string, readonly string[]>> = raidPreset.consumes;
+/** One row of a spec's raid set: in force from `from_level` until the next row's level. */
+interface LevelConsumes {
+  from_level: number;
+  consumes: readonly string[];
+}
 
 /**
- * The preset's consumable half for one spec key ("rogue-combat"). Solo carries none. A spec
- * the published set does not know (no character yet, or a malformed one) carries none
- * either, rather than another spec's set: the request then sims what it says it does.
+ * The raid set's consumables per spec key and level (owner ruling, round 5): the raid
+ * preset resolved for each spec with the class kit of the character's level on top -- a
+ * rogue's poisons (Instant from 20, Deadly in the main hand from 30) and Thistle Tea, an
+ * Enhancement shaman's Rockbiter then Windfury, a Survival hunter's ranged group -- exactly
+ * what the BiS ranker, the tier list and spec-breakdown send, so the page's default figure
+ * is the published one. Generated in Go (sim/request/raid-consumes.json, held to the
+ * published setup at every level by its tests) and synced by scripts/sync-raid-preset.mjs.
  */
-export function presetConsumables(preset: Exclude<BuffPresetId, 'custom'>, spec: string): readonly string[] {
+const RAID_CONSUMES: Readonly<Record<string, readonly LevelConsumes[]>> = raidPreset.consumes;
+
+/**
+ * The preset's consumable half for one spec key ("rogue-combat") at the character's level.
+ * Solo carries none. A spec the raid set does not know (no character yet, or a malformed
+ * one) carries none either, rather than another spec's set: the request then sims what it
+ * says it does.
+ */
+export function presetConsumables(
+  preset: Exclude<BuffPresetId, 'custom'>,
+  spec: string,
+  level: number,
+): readonly string[] {
   if (preset === 'solo') return [];
-  return RAID_CONSUMES[spec] ?? [];
+  return (RAID_CONSUMES[spec] ?? []).filter((row) => row.from_level <= level).at(-1)?.consumes ?? [];
 }
 
 export interface SimSettings {
@@ -169,28 +181,33 @@ export interface SimSettings {
 }
 
 /**
- * `spec` is the character's spec key ("warrior-fury"); empty before a character is in hand.
- * This and `withPreset` stay pure over it, so a store calls them from wherever it already
- * knows the spec (live-dps.svelte.ts and SharePanel.svelte from the character in hand; the
- * sim/bulk stores own the re-apply, below).
+ * `spec` is the character's spec key ("warrior-fury") and `level` its level; both default to
+ * "no character yet" (no spec, so no consumables). This and `withPreset` stay pure over them,
+ * so a store calls them from wherever it already knows the character (live-dps.svelte.ts and
+ * SharePanel.svelte from the character in hand; the sim/bulk stores own the re-apply, below).
  */
-export function defaultSettings(spec = ''): SimSettings {
+export function defaultSettings(spec = '', level: number = MAX_LEVEL): SimSettings {
   return {
     encounter: applyFightStyle({ ...DEFAULT_ENCOUNTER }, DEFAULT_STYLE_ID),
     preset: 'raid-buffed',
     buffs: [...PRESET_BUFFS['raid-buffed']],
-    consumables: [...presetConsumables('raid-buffed', spec)],
+    consumables: [...presetConsumables('raid-buffed', spec, level)],
     cooldowns: [],
   };
 }
 
-export function withPreset(settings: SimSettings, preset: BuffPresetId, spec: string): SimSettings {
+export function withPreset(
+  settings: SimSettings,
+  preset: BuffPresetId,
+  spec: string,
+  level: number,
+): SimSettings {
   if (preset === 'custom') return { ...settings, preset };
   return {
     ...settings,
     preset,
     buffs: [...PRESET_BUFFS[preset]],
-    consumables: [...presetConsumables(preset, spec)],
+    consumables: [...presetConsumables(preset, spec, level)],
   };
 }
 
@@ -202,9 +219,9 @@ export function withPreset(settings: SimSettings, preset: BuffPresetId, spec: st
  * switching from a mage to a warrior must not silently discard a player's own ticks, only
  * the wizard oil a *preset* would have carried. Pure, like `withPreset` itself.
  */
-export function withSpecForPreset(settings: SimSettings, spec: string): SimSettings {
+export function withSpecForPreset(settings: SimSettings, spec: string, level: number): SimSettings {
   if (settings.preset === 'custom') return settings;
-  return withPreset(settings, settings.preset, spec);
+  return withPreset(settings, settings.preset, spec, level);
 }
 
 /**
