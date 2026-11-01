@@ -20,7 +20,14 @@ from pipeline import wowhead_items as wh
 from pipeline.simdb.items import build_wowhead_sim_items
 from pipeline.simproto import pb
 
-RATING_FACTORS = {"hit": 10.0, "crit": 14.0, "dodge": 12.0, "parry": 15.0, "block": 5.0, "defense": 1.5}
+RATING_FACTORS = {
+    "hit": 10.0,
+    "crit": 14.0,
+    "dodge": 12.0,
+    "parry": 15.0,
+    "block": 5.0,
+    "defense": 1.5,
+}
 
 
 def _ring(stats: dict[str, float]) -> wh.WowheadItem:
