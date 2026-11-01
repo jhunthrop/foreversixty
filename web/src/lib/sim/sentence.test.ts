@@ -71,6 +71,36 @@ describe('summarySentence', () => {
     );
   });
 
+  it('leaves out an always-on buff the player never casts (Resourcefulness, a proc at 99%), but names one the player keeps up', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const passive = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:34494',
+      applications: 55,
+      uptime_ms: summary.duration_ms * 0.99,
+    };
+    const kept = { ...passive, name: 'spell:6774', applications: 6, uptime_ms: summary.duration_ms * 0.97 };
+    const table: ActionNames = {
+      spell: { ...names.spell, '34494': 'Resourcefulness', '6774': 'Slice and Dice' },
+      item: {},
+    };
+    expect(summarySentence({ ...base, auras: [passive] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage.',
+    );
+    const cast = {
+      ...summary.casts[0]!,
+      guid: actor.guid,
+      spell_id: 6774,
+      spell_name: 'spell:6774',
+      succeeded: 6,
+    };
+    expect(summarySentence({ ...base, auras: [passive, kept], casts: [cast] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Slice and Dice is up 97% of the fight.',
+    );
+  });
+
   it('leaves a buff that is up the whole fight out: it is not a finding', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];

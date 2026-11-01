@@ -108,6 +108,25 @@ function isOwnSpecAura(key: string, names: ActionNames | null): boolean {
   return names.ownSpell.has(parsed.label);
 }
 
+/**
+ * A buff the player never casts that covers at least this share of the fight is always on:
+ * a passive, a pull-time self-buff or a proc that refreshes faster than it can fall
+ * (Heart of the Lion, Resourcefulness at 99%). A buff the player casts and keeps up (Slice
+ * and Dice at 97%) is a finding and is named.
+ */
+const ALWAYS_ON_PERCENT = 90;
+
+/** True for a buff the line has nothing to say about: up the whole fight, or always on
+ *  without the player casting it. */
+function alwaysOn(
+  track: { name: string; uptime_ms: number },
+  durationMs: number,
+  playerCasts: ReadonlySet<string>,
+): boolean {
+  const share = percent(track.uptime_ms, durationMs);
+  return share >= 100 || (share >= ALWAYS_ON_PERCENT && !playerCasts.has(sentenceKey(track.name)));
+}
+
 export function playerActor(summary: Summary): Actor | null {
   if (summary.damage_done.length === 0) return null;
   return summary.damage_done.reduce((best, actor) => (actor.total > best.total ? actor : best));
@@ -148,12 +167,17 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
   // cooldowns. No own-spec buff aura is not "fall back to whichever raid buff is up
   // longest" -- it is nothing to say about uptime at all (2026-09-21 result-page review,
   // Defect 2).
+  const playerCasts = new Set(
+    summary.casts
+      .filter((row) => row.guid === actor.guid && row.succeeded > 0)
+      .map((row) => sentenceKey(row.spell_name)),
+  );
   const aura = sanitizeAuraTracks(summary.auras)
     .filter((track) => track.target_guid === actor.guid && track.type === 'BUFF')
     .filter((track) => isOwnSpecAura(track.name, names))
-    // A buff up the whole fight (a self-buff cast at the pull, Heart of the Lion) is not a
+    // A buff that is always on (up the whole fight, or applied once and kept) is not a
     // finding about how the fight went, so the line names the biggest one that is not.
-    .filter((track) => percent(track.uptime_ms, summary.duration_ms) < 100)
+    .filter((track) => !alwaysOn(track, summary.duration_ms, playerCasts))
     .sort((a, b) => b.uptime_ms - a.uptime_ms)[0];
   if (aura === undefined || summary.duration_ms <= 0) return `${damage}.`;
 
