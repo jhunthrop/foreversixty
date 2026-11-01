@@ -37,14 +37,18 @@ class GuidesFeature(
      * On launch and on foreground after an hour (spec F9, Sync): read the active build (a new one
      * waits behind the strip) and save the guides of every class the player has a character in.
      */
-    suspend fun sync() {
+    suspend fun sync(force: Boolean = false) {
         val at = now()
         val last = lastSync
-        if (last != null && Duration.between(last, at) < SYNC_INTERVAL) return
+        if (!force && last != null && Duration.between(last, at) < SYNC_INTERVAL) return
         lastSync = at
         if (store.build == null) store.start() else store.checkForNewBuild()
-        store.prefetch(characters().mapNotNull { it.className }.toSet())
+        // Lane F15: You › Offline data's `Keep my classes ready` and `Download on Wi-Fi only`.
+        if (force || mayPrefetch()) store.prefetch(characters().mapNotNull { it.className }.toSet())
     }
+
+    /** Lane F15 sets it from Offline data's switches; on by default. */
+    var mayPrefetch: () -> Boolean = { true }
 
     companion object {
         private val SYNC_INTERVAL: Duration = Duration.ofHours(1)

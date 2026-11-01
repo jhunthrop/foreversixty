@@ -1,5 +1,10 @@
 package gg.foreversixty.app
 
+import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.rankings.logic.LiveRankingsService
+import gg.foreversixty.app.items.ItemIconLoader
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.system.SystemFeature
 import gg.foreversixty.app.bis.staticDataStore
 import android.content.Context
 import android.os.Build
@@ -156,7 +161,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     )
 
     /** The account (lane F1): signed in or out, the current character, sign-in and sign-out. */
-    val session = SessionManager(
+    val session: SessionManager = SessionManager(
         client = apiClient,
         tokens = sessionTokens,
         signInFlow = signIn,
@@ -172,6 +177,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             home.rankings?.cache?.removeAll()
             widgets?.signOut()
             guildExtras?.clear()
+            system.signOut()
         },
     )
 
@@ -207,6 +213,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         plansLink = plansLink,
         liveSurfaces = widgets?.settings,
         guildExtras = guildExtras,
+        offlineData = { system.offlineData().takeIf { system.enabled } },
     )
 
     /**
@@ -237,6 +244,25 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         )
     } else {
         null
+    }
+
+    /**
+     * Lane F15: the launcher shortcuts, the Assistant routes, You › Offline data and `Sign up In`.
+     * Always built (the static shortcuts are always declared); the `system` switch gates what it does.
+     */
+    val system: SystemFeature = SystemFeature(
+        context = context,
+        statics = statics,
+        guides = guides,
+        raids = raids.service,
+        watching = { (LiveRankingsService(apiClient).watching() as? ApiResult.Success)?.data?.rows.orEmpty() },
+        signedIn = { tokens.bearerToken() != null },
+        currentCharacter = { session.currentCharacter() },
+        connectivity = Connectivity.of(context),
+        isOn = { isAvailable(Feature.System) },
+    ).also { system ->
+        ItemIconLoader.mayDownload = system::mayDownload
+        guides?.mayPrefetch = system::mayPrefetch
     }
 }
 

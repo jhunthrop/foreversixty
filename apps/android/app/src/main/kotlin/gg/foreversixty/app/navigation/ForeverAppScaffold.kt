@@ -1,5 +1,6 @@
 package gg.foreversixty.app.navigation
 
+import gg.foreversixty.app.system.SystemNavigator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Box
@@ -66,8 +67,17 @@ fun ForeverAppScaffold(
     raids: RaidsFeature? = null,
     search: SearchFeature? = null,
     guides: GuidesFeature? = null,
+    /** Lane F15: where a launcher shortcut or the Assistant asked to go. */
+    system: SystemNavigator? = null,
 ) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
+    val wantsTab = system?.wantsTab
+    LaunchedEffect(wantsTab) {
+        if (wantsTab != null) {
+            if (wantsTab != ForeverTab.Guides || guides != null) selected = wantsTab
+            system.wantsTab = null
+        }
+    }
     val openBis = { selected = ForeverTab.Bis }
     // Lane F9: a guide link selects the Guides tab, where the guide is pushed.
     val wantsGuides = guides?.navigator?.wantsTab == true

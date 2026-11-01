@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Sign up In launcher shortcut (board F15.1): the app's own ic_check_gold glyph in gold on the raised ground. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/shortcut_ground" />
+    <foreground>
+        <inset android:drawable="@drawable/ic_check_gold" android:inset="34%" />
+    </foreground>
+</adaptive-icon>

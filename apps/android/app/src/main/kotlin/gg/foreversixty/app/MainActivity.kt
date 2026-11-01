@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import gg.foreversixty.app.system.logic.AppShortcut
 import androidx.compose.runtime.getValue
 import android.content.Intent
 import android.graphics.Color
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
                         raids = graph.raids.takeIf { it.enabled },
                         search = graph.search.takeIf { it.enabled },
                         guides = graph.guides,
+                        system = graph.system.navigator,
                     )
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -71,11 +73,24 @@ class MainActivity : ComponentActivity() {
         graph.guides?.let { guides -> lifecycleScope.launch { guides.sync() } }
         // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
         graph.widgets?.let { widgets -> lifecycleScope.launch { widgets.refresher.refresh() } }
+        // Lane F15: the dynamic shortcuts follow the data (and go when signed out or switched off).
+        lifecycleScope.launch { graph.system.refreshShortcuts() }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+    }
+
+    /** A static shortcut's extra, or the Assistant's `feature`; true when it named a screen. */
+    private fun openShortcut(intent: Intent?): Boolean {
+        intent ?: return false
+        val shortcut = AppShortcut.of(intent.getStringExtra(AppShortcut.EXTRA))
+            ?: AppShortcut.ofFeature(intent.getStringExtra(ASSISTANT_FEATURE)).takeIf { graph.system.enabled }
+            ?: return false
+        if (shortcut == AppShortcut.Search) graph.search.takeIf { it.enabled }?.navigator?.openSearch()
+        graph.system.navigator.open(shortcut)
+        return true
     }
 
     private fun openStore(url: String) {
@@ -94,6 +109,8 @@ class MainActivity : ComponentActivity() {
         if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
             gg.foreversixty.app.raids.push.RaidDebugPush.post(this)
         }
+        // Lane F15: a launcher shortcut or the Assistant's Open app feature.
+        if (openShortcut(intent)) return
         val link = intent?.dataString ?: return
         when (val parsed = DeepLink.parse(link)) {
             is DeepLink.SignIn -> graph.session.handleRedirect(link)
@@ -111,3 +128,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+/** The Assistant's `OPEN_APP_FEATURE` parameter (shortcuts.xml). */
+private const val ASSISTANT_FEATURE = "feature"
