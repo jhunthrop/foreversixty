@@ -833,7 +833,7 @@ is the newest log's zone and `size` the most common raid size, each null when no
 Fixture `rankings.encounters`.
 
 ### GET /v1/me/watching; PUT and DELETE /v1/me/watching/{region}/{ruleset}/{name} (W3-C7)
-Session or app. Migration 0064 `watched_characters (user_id, character_key, added_at)`. `GET`
+Session or app. Migration 0065 `watched_characters (user_id, character_key, added_at)`. `GET`
 answers `{ rows: [ { key, region, ruleset, name, class, level, added_at } ] }`, newest first;
 `class` and `level` are null when no source knows them (level by the character page's rule), and a
 character whose account turns anonymous is left out. `PUT` is idempotent and answers the row (200,
