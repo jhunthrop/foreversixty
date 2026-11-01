@@ -36,6 +36,8 @@ Specs: mage-arcane, mage-fire, mage-frost, priest-discipline, priest-holy, pries
 | R2 | Ice Lance's coefficient. The client column is 0 on every rank, while Arcane Blast, Fire Blast and Frostfire Bolt carry 0.429 / 0.429 / 0.814. | The engine's 0.4286 is the instant-spell convention. The same logs show unfrozen hits about 12 above the rank's base range, so Ice Lance does scale with spell power, but one character with unknown spell power cannot fix the value. R1 makes this worth more: Ice Lance's share of Frost damage rose. | OPEN (round 4 R3). Settled by a log with a known spell-power sheet. | - |
 | R3 | Fresh, checked and aligned (client plus push): Frostbolt 10181, Cone of Cold 10161 (10 yd, 12 with Arctic Reach, whose push mask adds Ice Lance), Ice Barrier with Frigid Power, Winter's Chill, Fingers of Frost, Shatter, Ice Shards, Frost Channeling, Precision. | Frostbolt: 386, ±7.6%, +2.9 a level, coefficient 0.814, 260 mana, 3 s. Missile speeds (Frostbolt 28, Ice Lance 38) match SpellMisc. Frigid Power is 15% and Ice Barrier's own effects 5% (pushed values). Winter's Chill is 20% and 7% a stack. Fingers of Frost is 15% a Chill, 2 charges, 15 s. | Aligned | - |
 | R4 | Robe of the Archmage (see M2). | Frost wears it too. | CONFIRMED-BUG | as M2 |
+| R5 | Raid talent search and rotation search after R1 (lane engine `fc3d8aadf`, site `dacbb98a1`, horde, `-keep` from raid-keeps.json). | Talent search: no variant beats the guide beyond error; the best is +2.0 ± 2.2 (590.6 guide). Rotation search: the curated rotation is the best found, +1.9 ± 2.4. Ice Lance is now worth 74 DPS by removal. | Aligned (guide build and APL kept) | - |
+| R6 | Ice Lance coefficient weight. | With the coefficient at 0, horde Frost drops from 590.1 / 590.1 to 532.6 / 533.1 (-9.7%), and Ice Lance is 15.6% of Frost damage. A second source would settle it: a level-60 Forever log of Ice Lance hits from a character whose spell power is known (a warcraftlogs sheet, or one target dummy test with and without a spell-power item). | OPEN | - |
 
 ## Mage: Fire
 
@@ -46,6 +48,7 @@ Specs: mage-arcane, mage-fire, mage-frost, priest-discipline, priest-holy, pries
 | F2 | **The raid preset gave every spec a raid mage's Improved Scorch.** | 22959 is aura 270, "Increases Fire damage taken from the Mage" (client). Blizzard's Mage deep dive: the debuff "now benefits only the casting Mage" (Warcraft Tavern recap; three Forever Fire guides agree). `data/curated/presets.json` listed `improved_scorch` for the whole raid. A Fire mage still stacks her own through Scorch. Test: `TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes` bans it (it failed, then passed). | CONFIRMED-BUG (fresh, two sources). **Moves other groups**, see the table below. | S d1ddb012a |
 | F3 | Fresh, checked and aligned: Fireball 10151, Fire Blast 10199 (8 s on category 19 with Ice Lance, -1 s a rank of Improved Fire Blast), Scorch 10207, Pyroblast 18809, Heating Up, Improved Scorch, Combustion, Critical Mass, Fire Power, Master of Elements, Incineration, Evocation. | Fireball: 451, ±24%, coefficient 1, 395 mana, 3.5 s, with a DoT of 14 a tick. Pyroblast: 583, DoT 53 a tick at 0.15, 6 s cast. Heating Up: -25% a stack, 3 stacks, 20 s. Combustion: +10% a stack, ends on the third crit. Fire Power: 1% a rank per Fire effect, up to 4. | Aligned | - |
 | F4 | Master of Elements on a Clearcasting cast (round 5 F3). | No new evidence. | OPEN. Needs a level-60 log. | - |
+| F5 | Raid talent search and rotation search after F1 and F2 (lane engine `fc3d8aadf`, site `dacbb98a1`, horde, `-keep` from raid-keeps.json). | Talent search: the guide raid build is the best build found (655.6 ± 1.5). Rotation search: dropping the Improved Scorch upkeep line (#4) gains +6.1 ± 2.1 at 800 iterations, because the Scorch filler keeps the stacks anyway. At 10,000 iterations it is +0.4 / +0.3% alliance (648.3 / 649.6 to 651.0 / 651.5) and +0.5 / +0.4% horde (656.7 / 657.6 to 660.2 / 660.3). That is beyond error but under the 1% bar the lane holds builds to, and the line was restored deliberately in an earlier fix round. | Hold (+0.4%, below 1%). The guide build and APL are kept. | - |
 
 ## Mage: Arcane
 
@@ -104,13 +107,13 @@ Before: pin `8baffe5fc` on origin/main `21d97955f`. After: lane engine `fc3d8aad
 
 ## Still open
 
-- Ice Lance's coefficient: the client shows 0, the engine uses 0.4286 (R2). R1 raises the stakes.
+- Ice Lance's coefficient: the client shows 0, the engine uses 0.4286 (R2). It is now worth 9.7% of Frost (R6).
 - Ignite's logged ratio of about 0.73 (F1b), and Master of Elements on a Clearcasting cast (F4). Both need level-60 logs.
 - Prayer of Mending's bounce-heal mask (H2b).
 - Missile Barrage on a miss (A2), and Arcane Concentration from each bolt (A3).
 - Shadowfiend at launch (I5).
 - Dynamic DoTs outside mage and priest: warlock curses, Siphon Life, Drain Life, Ignite, and every heal over time rewrite their snapshots and need their own per-tick read. These belong to their lanes and to the Healers lane.
-- Fire and Frost were not re-searched after F1 and R1. A raid talent search and a rotation search for both are due at the pin.
+- Fire's rotation-search winner (drop the Improved Scorch upkeep line, +0.4%) is held under 1% (F5).
 - Routed to the integrator:
   - Holy Nova is one spell for heal and damage, so Spiritual Healing also raises its damage half. No list casts it.
   - The healer notes the Healers lane owns: Discipline's "Prayer of Healing at rank 1" note is stale, Holy's notes overstate the top ranks, and the coach files expect book ranks 25315 and 25316.
