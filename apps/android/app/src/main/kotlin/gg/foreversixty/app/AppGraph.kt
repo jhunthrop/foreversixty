@@ -151,7 +151,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         statics = statics,
         catalog = home.catalog,
         activeBuild = createBisDataSource(context, statics, appConfig)::activeBuild,
-    ) { isAvailable(Feature.Search) }
+    ) { isAvailable(Feature.Search) }.also { search ->
+        // Lane F15: F11.7's `Search again` opens Search with the name in the field.
+        home.rankings?.let { rankings ->
+            rankings.searchAgain = { name ->
+                rankings.navigator.character = null
+                if (search.enabled) search.navigator.openSearch(name)
+            }
+        }
+    }
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

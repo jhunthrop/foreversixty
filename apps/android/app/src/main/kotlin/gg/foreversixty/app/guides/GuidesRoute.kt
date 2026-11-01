@@ -1,7 +1,8 @@
 package gg.foreversixty.app.guides
 
+import gg.foreversixty.app.system.logic.TierRole
+import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -77,6 +78,8 @@ private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, sel
     val store = feature.store
     val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val res = LocalResources.current
     val segments = GuidesSegment.visible(feature.showsTiers)
     var segment by remember(segments) { mutableStateOf(GuidesSegment.load(feature.segment, feature.showsTiers)) }
     LaunchedEffect(segment, store.build) {
@@ -111,7 +114,9 @@ private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, sel
                 TierListActions(choose = {
                     haptics.selection()
                     choice = it
-                }, open = open, retry = { scope.launch { store.loadTiers() } }),
+                }, open = open, retry = { scope.launch { store.loadTiers() } }, share = { picked ->
+                    ShareText.send(context, ShareText.tiers(res, TierRole.of(picked.role)))
+                }),
             )
             GuidesSegment.Changes -> WhatChangedContent(
                 WhatChangedState(store.dates, store.changelog, feature.now().atZone(feature.zone).toLocalDate()),
@@ -165,7 +170,7 @@ private fun GuideRoute(feature: GuidesFeature, spec: String, openBis: (GuideFile
         feature.now(),
         GuideReaderActions(
             back = feature.navigator::pop,
-            share = { link -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType(SHARE_TYPE).putExtra(Intent.EXTRA_TEXT, link), null)) },
+            share = { message -> ShareText.send(context, message) },
             retry = { scope.launch { store.build?.let { guide.load(it) } } },
             update = {
                 scope.launch {
@@ -185,5 +190,4 @@ private val GuidesSegment.label: Int
         GuidesSegment.Changes -> R.string.guides_segment_changes
     }
 
-private const val SHARE_TYPE = "text/plain"
 private val SEGMENT_GAP = 8.dp

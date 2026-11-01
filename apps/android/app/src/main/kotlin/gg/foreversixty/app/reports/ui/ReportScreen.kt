@@ -1,5 +1,11 @@
 package gg.foreversixty.app.reports.ui
 
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.IconButton
+import gg.foreversixty.app.system.logic.ShareText
+import gg.foreversixty.app.system.logic.ShareMessage
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +52,8 @@ data class ReportActions(
     val retryParses: () -> Unit = {},
     val retryCoach: () -> Unit = {},
     val openMeters: (MetersTarget) -> Unit = {},
+    /** Lane F15: a public or unlisted report's share; null (and for guild or private ones) no button. */
+    val share: ((ShareMessage) -> Unit)? = null,
 )
 
 /** Everything F10.2 draws, apart from the store so screenshots drive every state. */
@@ -63,7 +71,18 @@ fun ReportContent(state: ReportScreenState, now: Instant, actions: ReportActions
     val copy = ReportsCopy(LocalResources.current, zone)
     val report = (state.phase as? ReportPhase.Loaded)?.report
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
-        ReportsBar(report?.zone ?: state.title, stringResource(R.string.reports_back), actions.back, BarAction.openWeb(actions.openWeb))
+        val res = LocalResources.current
+        val message = report?.let { r -> ShareText.report(res, r.id, r.zone ?: r.title, Instant.parse(r.createdAt), r.visibility, zone) }
+        val openWeb = BarAction.openWeb(actions.openWeb)
+        ReportsBar(report?.zone ?: state.title, stringResource(R.string.reports_back), actions.back) {
+            val share = actions.share
+            if (message != null && share != null) {
+                IconButton(onClick = { share(message) }) {
+                    Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.share_action), tint = FsColor.strong)
+                }
+            }
+            IconButton(onClick = openWeb.run) { Icon(openWeb.icon(), contentDescription = openWeb.label, tint = FsColor.strong) }
+        }
         when (val phase = state.phase) {
             ReportPhase.Loading -> ReportSkeleton()
             ReportPhase.Failed -> ErrorRegion(stringResource(R.string.report_failed), actions.retry)

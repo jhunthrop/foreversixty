@@ -1,5 +1,7 @@
 package gg.foreversixty.app.navigation
 
+import gg.foreversixty.app.rankings.logic.RankingsViewer
+import gg.foreversixty.app.rankings.RankingsRoute
 import gg.foreversixty.app.system.SystemNavigator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -129,6 +131,8 @@ fun ForeverAppScaffold(
                         ForeverTab.Home ->
                             if (account == null) {
                                 HomeRoute(home, openBis = openBis, onSearch = onSearch) { ComingSoon(selected) }
+                            } else if (publicRankings(home, account)) {
+                                PublicRankings(home, account)
                             } else {
                                 HomeAccountGate(account, openBis) {
                                     HomeRoute(home, account.session, openBis, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
@@ -141,12 +145,12 @@ fun ForeverAppScaffold(
                             } else {
                                 BisTab(bis, home, account, onSearch)
                             }
-                        ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis) { selected = ForeverTab.Bis }
+                        ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis, onSearch) { selected = ForeverTab.Bis }
                         ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
                     }
                 }
             }
-            if (search != null) SearchOverlay(search, searchOwner(account), exits)
+            if (search != null) SearchOverlay(search, searchOwner(account), exits, home.rankings?.searchLink())
         }
     }
 }
@@ -170,7 +174,7 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?,
  * A guide's Gear row asks BiS for that spec's level-60 raid list and switches to it.
  */
 @Composable
-private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, showBis: () -> Unit) {
+private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, onSearch: (() -> Unit)?, showBis: () -> Unit) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
@@ -184,7 +188,7 @@ private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisMode
                 showBis()
             }
         },
-    ) { if (session != null) CharacterSelectorBar(session) }
+    ) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
 }
 
 /**
@@ -201,6 +205,27 @@ private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: Report
     val me = (phase as? SessionPhase.SignedIn)?.me
     val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
     RaidsRoute(raids, characterKey, reportsLink) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
+}
+
+/**
+ * Lane F15 (follow-up of F11): a rankings or player link opens for a signed-out player and for one
+ * with no character. Rankings and character pages are public; the board simply has no `Your rank`.
+ */
+@Composable
+private fun publicRankings(home: HomeDependencies, account: AccountDeps): Boolean {
+    val nav = home.rankings?.navigator ?: return false
+    val phase = account.session.phase.collectAsStateWithLifecycle().value
+    val wantsRankings = nav.showsBoard || nav.character != null
+    val gated = phase !is SessionPhase.SignedIn || phase.me?.characters?.isEmpty() == true
+    return wantsRankings && gated
+}
+
+@Composable
+private fun PublicRankings(home: HomeDependencies, account: AccountDeps) {
+    val rankings = home.rankings ?: return
+    val me = account.session.phase.collectAsStateWithLifecycle().value.me
+    val viewer = me?.let { RankingsViewer.of(it, null) } ?: RankingsViewer.SignedOut
+    RankingsRoute(rankings, viewer, null) { rankings.navigator.showsBoard = false }
 }
 
 /** Search's owner: the session's current character and the account's character keys (`You`). */

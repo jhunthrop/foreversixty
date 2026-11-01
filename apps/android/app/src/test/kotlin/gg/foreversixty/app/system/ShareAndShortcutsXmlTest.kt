@@ -20,16 +20,18 @@ class ShareAndShortcutsXmlTest {
     private val res = resources()
 
     @Test fun `a character shares its page and its one line`() {
+        val url = "https://foreversixty.gg/character/us/normal/lightningbolltz"
         assertEquals(
-            ShareMessage("Lightningbolltz, Elemental Shaman, level 60", "https://foreversixty.gg/character/us/normal/Lightningbolltz"),
-            ShareText.character(res, "us", "normal", "Lightningbolltz", "Elemental", "Shaman", 60),
+            ShareMessage("Lightningbolltz, Elemental Shaman, level 60", url),
+            ShareText.character(res, url, "Lightningbolltz", "Elemental", "Shaman", 60),
         )
+        assertEquals(ShareMessage("Lightningbolltz", url), ShareText.character(res, url, "Lightningbolltz", null, "Shaman", 60))
     }
 
     @Test fun `a guide shares its class and spec page`() {
         assertEquals(
             ShareMessage("Elemental Shaman guide", "https://foreversixty.gg/guides/shaman/elemental"),
-            ShareText.guide(res, "shaman-elemental", "shaman", "Elemental", "Shaman"),
+            ShareText.guide(res, "shaman", "elemental", "Elemental", "Shaman"),
         )
     }
 

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.model.CharacterSearchRow
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.sp
@@ -78,6 +79,10 @@ data class SearchScreenState(
     val build: String,
     /** The signed-in account's character keys: their rows carry `You`. */
     val ownKeys: Set<String> = emptySet(),
+    /** Lane F15: the account's watched characters (`GET /v1/me/watching`), the Watching group. */
+    val watching: List<CharacterSearchRow> = emptyList(),
+    /** Lane F15: F11 is on, so characters and Rankings open in the app. */
+    val rankingsInApp: Boolean = false,
 )
 
 /** What the screen's controls do; the route wires them. */
@@ -210,14 +215,25 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
                 add(
                     QuickLink(
                         R.drawable.ic_trophy, stringResource(R.string.search_forCharacter_rankings),
-                        RowTrailing.of(WebHandoff.RANKINGS, RowTrailing.Chevron), actions.onOpenRankings,
+                        RowTrailing.of(WebHandoff.rankingsOpenWebsite(state.rankingsInApp), RowTrailing.Chevron), actions.onOpenRankings,
                     ),
                 )
             }
             RowCard(links.size) { i -> LinkRow(links[i].icon, links[i].label, links[i].trailing, links[i].onClick) }
         }
     }
-    // Watching (F11's /v1/me/watching) slots in here when that lane lands.
+    if (state.watching.isNotEmpty()) {
+        item(key = "watching") {
+            SectionLabel(stringResource(R.string.search_group_watching))
+            RowCard(state.watching.size) { i ->
+                val target = SearchTarget.Character(state.watching[i])
+                TargetRow(
+                    target, copy.title(target), copy.meta(target), state.build, titleColor(target),
+                    trailing = RowTrailing.of(WebHandoff.opensWebsite(target, state.rankingsInApp)),
+                ) { actions.onOpen(target) }
+            }
+        }
+    }
     if (state.recents.isNotEmpty()) {
         item(key = "recent") {
             SectionLabel(stringResource(R.string.search_group_recent)) {
@@ -229,7 +245,7 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
                 val target = state.recents[i]
                 TargetRow(
                     target, copy.title(target), copy.kind(target), state.build, titleColor(target),
-                    trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
+                    trailing = RowTrailing.of(WebHandoff.opensWebsite(target, state.rankingsInApp)),
                 ) { actions.onOpen(target) }
             }
         }
@@ -278,7 +294,7 @@ private fun ResultRow(target: SearchTarget, copy: SearchCopy, state: SearchScree
     // The watch star (F11) joins character rows when /v1/me/watching exists.
     TargetRow(
         target, copy.title(target), copy.meta(target), state.build, titleColor(target),
-        youTag = you, trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
+        youTag = you, trailing = RowTrailing.of(WebHandoff.opensWebsite(target, state.rankingsInApp)),
     ) { actions.onOpen(target) }
 }
 

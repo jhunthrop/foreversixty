@@ -1,5 +1,7 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.raids.logic.GameClass
+import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -200,12 +202,21 @@ fun CharacterRouteScreen(
         back = back,
         retry = { scope.launch { store.load() } },
         toggleWatch = { scope.launch { store.toggleWatch(haptics) } },
-        share = { RankingsFeature.share(context, CharacterCard.shareUrl(route)) },
+        share = {
+            val loaded = profile
+            val message = ShareText.character(
+                res, CharacterCard.shareUrl(route), loaded?.character?.name ?: route.name,
+                loaded?.let { CharacterCard.specName(it, feature.specs) },
+                loaded?.character?.className?.let { slug -> GameClass.of(slug)?.let { res.getString(it.label) } },
+                loaded?.character?.level,
+            )
+            ShareText.send(context, message)
+        },
         openHow = { AccountLinks.open(context, CharacterCard.HOW_URL) },
         openSocket = { slot -> profile?.let { p -> build?.let { b -> tooltip = tooltipRequest(slot, p, b, feature, res) } } },
         openFight = { fight -> openReport(fight.reportId) },
         openHistory = { AccountLinks.open(context, CharacterCard.historyUrl(route)) },
-        searchAgain = back,
+        searchAgain = { feature.searchAgain?.invoke(route.name) ?: back() },
     )
     val state = CharacterScreenState(route, store.phase, store.watch, viewer, items, build, reports != null)
     PullToRefreshBox(

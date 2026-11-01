@@ -17,10 +17,16 @@ data class ShareMessage(val text: String, val url: String) {
 }
 
 /** The tier lists a share can name (`/tiers`, `/tiers/tank`, `/tiers/healer`). */
-enum class TierRole(val path: String, val word: Int) {
-    Dps("", R.string.guides_role_dps),
-    Tank("/tank", R.string.guides_role_tank),
-    Healer("/healer", R.string.guides_role_healer),
+enum class TierRole(val wire: String, val path: String, val word: Int) {
+    Dps("dps", "", R.string.guides_role_dps),
+    Tank("tank", "/tank", R.string.guides_role_tank),
+    Healer("healer", "/healer", R.string.guides_role_healer),
+    ;
+
+    companion object {
+        /** The tier list role of the Guides tab's chip (`dps`, `tank`, `healer`); DPS for anything else. */
+        fun of(role: String): TierRole = entries.firstOrNull { it.wire == role } ?: Dps
+    }
 }
 
 /** The share texts (spec §5.7 Share table), pure over their inputs. Only things with a working web page share. */
@@ -28,16 +34,23 @@ object ShareText {
     private const val SITE = "https://foreversixty.gg"
     private val DAY_MONTH: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
 
-    /** `Lightningbolltz, Elemental Shaman, level 60` and `/character/{region}/{ruleset}/{name}`. */
-    fun character(res: Resources, region: String, ruleset: String, name: String, spec: String, className: String, level: Int) = ShareMessage(
-        res.getString(R.string.share_character, name, spec, className, level),
-        "$SITE/character/${seg(region)}/${seg(ruleset)}/${seg(name)}",
-    )
+    /**
+     * `Lightningbolltz, Elemental Shaman, level 60` and the character page [url]
+     * (`/character/{region}/{ruleset}/{name}`). Missing a spec, class or level, the name alone.
+     */
+    fun character(res: Resources, url: String, name: String, spec: String?, className: String?, level: Int?): ShareMessage {
+        val text = if (spec != null && className != null && level != null) {
+            res.getString(R.string.share_character, name, spec, className, level)
+        } else {
+            name
+        }
+        return ShareMessage(text, url)
+    }
 
-    /** `Elemental Shaman guide` and `/guides/{class}/{spec}`; [specId] is `shaman-elemental`. */
-    fun guide(res: Resources, specId: String, classSlug: String, specName: String, className: String) = ShareMessage(
+    /** `Elemental Shaman guide` and `/guides/{class}/{spec}`. */
+    fun guide(res: Resources, classSlug: String, specSlug: String, specName: String, className: String) = ShareMessage(
         res.getString(R.string.share_guide, specName, className),
-        "$SITE/guides/${seg(classSlug)}/${seg(specId.removePrefix("$classSlug-"))}",
+        "$SITE/guides/${seg(classSlug)}/${seg(specSlug)}",
     )
 
     /** `DPS tier list` and `/tiers`, `/tiers/tank` or `/tiers/healer`. */

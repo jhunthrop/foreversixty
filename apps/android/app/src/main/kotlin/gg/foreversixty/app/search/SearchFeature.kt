@@ -1,5 +1,7 @@
 package gg.foreversixty.app.search
 
+import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.model.CharacterSearchRow
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.StringRes
@@ -80,8 +82,13 @@ class SearchNavigator {
     var session by mutableIntStateOf(0)
         private set
 
-    fun openSearch() {
+    /** The field's text when this session opened (`Search again` with the name, lane F15); empty from the button. */
+    var initialQuery by mutableStateOf("")
+        private set
+
+    fun openSearch(query: String = "") {
         session++
+        initialQuery = query
         stack = listOf(SearchDestination.Search)
     }
 
@@ -120,6 +127,16 @@ data class SearchOwner(val character: AccountCharacter? = null, val ownKeys: Set
 fun interface SearchExits {
     fun openBis(selection: BisSelection?)
 }
+
+/**
+ * Lane F15: Search's way into F11 while `rankings` is on: the board, a character page by its link,
+ * and the account's watched characters for the Watching group.
+ */
+class SearchRankings(
+    val open: (DeepLink) -> Unit,
+    val openBoard: () -> Unit,
+    val watching: suspend () -> List<CharacterSearchRow>,
+)
 
 /** F12's dependencies, built once in the app graph. */
 class SearchFeature(
@@ -188,7 +205,7 @@ class SearchFeature(
  * so nothing under it reacts, and pads for the system bars and the keyboard.
  */
 @Composable
-fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits) {
+fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits, rankings: SearchRankings? = null) {
     val navigator = feature.navigator
     val top = navigator.stack.lastOrNull() ?: return
     val scope = rememberCoroutineScope()
@@ -198,7 +215,10 @@ fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits
     }
     val store = remember(navigator.session, context) { SearchStore(feature.reader, feature.characters, context, scope) }
     val build by produceState("", feature) { value = feature.build() }
-    LaunchedEffect(store) { store.loadIndex() }
+    LaunchedEffect(store) {
+        if (navigator.initialQuery.isNotEmpty()) store.type(navigator.initialQuery)
+        store.loadIndex()
+    }
     BackHandler { navigator.pop() }
     Box(
         Modifier.fillMaxSize().background(FsColor.bg)
@@ -206,7 +226,7 @@ fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         when (top) {
-            SearchDestination.Search -> SearchRoute(feature, store, owner, selection, build, exits)
+            SearchDestination.Search -> SearchRoute(feature, store, owner, selection, build, exits, rankings)
             is SearchDestination.Item -> ItemPageRoute(feature, top, ItemPageOwner(owner.character?.className, selection), build, exits)
         }
     }
@@ -220,10 +240,14 @@ private fun SearchRoute(
     selection: BisSelection?,
     build: String,
     exits: SearchExits,
+    rankings: SearchRankings?,
 ) {
     val context = LocalContext.current
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
+    val watching by produceState(emptyList<CharacterSearchRow>(), rankings, owner.ownKeys) {
+        value = if (owner.ownKeys.isEmpty()) emptyList() else rankings?.watching?.invoke().orEmpty()
+    }
     var talent by remember { mutableStateOf<TalentSheetModel?>(null) }
     val character = owner.character
     val spec = selection?.let { feature.specs.spec(it.spec) }
@@ -234,7 +258,12 @@ private fun SearchRoute(
         feature.recents.add(target)
         when (target) {
             is SearchTarget.Item -> feature.navigator.openItem(ItemLook(target.item.id, target.item.name, target.item.quality, target.item.icon, target.item.itemLevel))
-            is SearchTarget.Character -> context.openInBrowser(SearchLinks.character(target.character.region, target.character.ruleset, target.character.name))
+            is SearchTarget.Character -> if (rankings != null) {
+                feature.navigator.close()
+                rankings.open(DeepLink.Player(target.character.region, target.character.ruleset, target.character.name))
+            } else {
+                context.openInBrowser(SearchLinks.character(target.character.region, target.character.ruleset, target.character.name))
+            }
             is SearchTarget.Guide -> context.openInBrowser(SearchLinks.guide(target.guide.className, target.guide.spec))
             is SearchTarget.Talent -> scope.launch { talent = feature.talentSheet(target.talent) }
         }
@@ -250,6 +279,8 @@ private fun SearchRoute(
             forCharacter = forCharacter,
             build = build,
             ownKeys = owner.ownKeys,
+            watching = watching,
+            rankingsInApp = rankings != null,
         ),
         SearchActions(
             onQuery = store::type,
@@ -263,7 +294,14 @@ private fun SearchRoute(
                 exits.openBis(selection)
             },
             onOpenGuide = { spec?.let { context.openInBrowser(SearchLinks.guide(it.classSlug, it.spec.removePrefix("${it.classSlug}-"))) } },
-            onOpenRankings = { context.openInBrowser(SearchLinks.RANKINGS) },
+            onOpenRankings = {
+                if (rankings != null) {
+                    feature.navigator.close()
+                    rankings.openBoard()
+                } else {
+                    context.openInBrowser(SearchLinks.RANKINGS)
+                }
+            },
         ),
     )
     talent?.let { model ->

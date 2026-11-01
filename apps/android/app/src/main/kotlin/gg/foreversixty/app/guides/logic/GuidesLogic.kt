@@ -125,13 +125,8 @@ object Guides {
     /** The new-data strip shows when a different build is found while a build's data is on screen. */
     fun isNewData(shown: String?, latest: String?): Boolean = shown != null && latest != null && shown != latest
 
-    /** The site page a guide shares (spec F9.2): `https://foreversixty.gg/guides/{class}/{spec}`. */
-    fun shareLink(guide: GuideFile): String = "$SITE/guides/${guide.classSlug}/${guide.specSlug}"
-
     /** The spec id of a `/guides/{class}/{spec}` link: `shaman-elemental`. */
     fun specId(classSlug: String, specSlug: String): String = "$classSlug-$specSlug"
-
-    private const val SITE = "https://foreversixty.gg"
 }
 
 /** The data's ISO days in the app's words, read as calendar days (no zone shift). */

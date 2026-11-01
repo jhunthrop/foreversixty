@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports
 
+import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.Connectivity
 import android.content.Context
@@ -182,6 +183,7 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
         retryParses = { scope.launch { store.loadParses() } },
         retryCoach = { scope.launch { store.loadParses() } },
         openMeters = { target -> meters = MetersStore(route.id, target, feature.service).also { scope.launch { it.load() } } },
+        share = { message -> ShareText.send(context, message) },
     )
     PullToRefreshBox(
         isRefreshing = refreshing,

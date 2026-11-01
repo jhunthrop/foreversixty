@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.model.CharacterSearchRow
+import gg.foreversixty.app.search.SearchRankings
 import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
@@ -71,6 +74,24 @@ class RankingsFeature(
     val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val navigator = RankingsNavigator()
+
+    /** Lane F15: `Search again` on F11.7 opens Search with the name in the field; null goes back. */
+    var searchAgain: ((String) -> Unit)? = null
+
+    /** Search's way in (lane F15): the board, a character page, the Watching group. */
+    fun searchLink(): SearchRankings = SearchRankings(
+        open = { link -> navigator.open(link) },
+        openBoard = {
+            navigator.character = null
+            navigator.showsBoard = true
+            navigator.wantsHome = true
+        },
+        watching = {
+            (service.watching() as? ApiResult.Success)?.data?.rows.orEmpty().map {
+                CharacterSearchRow(it.key, it.region, it.ruleset, it.name, it.className, it.level)
+            }
+        },
+    )
 
     /** Rankings ships dark behind `rankings` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
