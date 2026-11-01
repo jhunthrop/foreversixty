@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.common.rememberHaptics
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,6 @@ import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemTooltipSheet
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.paperdoll.PaperdollSlot
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.rankings.logic.CharacterCard
 import gg.foreversixty.app.rankings.logic.CharacterPhase
 import gg.foreversixty.app.rankings.logic.CharacterRoute
@@ -184,7 +184,7 @@ fun CharacterRouteScreen(
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
     val store = remember(route, viewer) { CharacterStore(route, feature.service, feature.cache, viewer, feature.connectivity, feature.now) }
-    val haptics = remember(view) { ViewRaidHaptics(view) }
+    val haptics = rememberHaptics()
     var refreshing by remember { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(store) { store.load() }

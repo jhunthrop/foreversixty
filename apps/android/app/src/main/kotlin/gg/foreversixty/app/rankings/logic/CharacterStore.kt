@@ -10,7 +10,7 @@ import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.logic.RaidCache
-import gg.foreversixty.app.raids.logic.RaidHaptics
+import gg.foreversixty.app.common.Haptics
 import java.time.Instant
 
 sealed interface CharacterPhase {
@@ -73,7 +73,7 @@ class CharacterStore(
     }
 
     /** The star: filled at once, the write behind it; a failure reverts and says so under the head. */
-    suspend fun toggleWatch(haptics: RaidHaptics) {
+    suspend fun toggleWatch(haptics: Haptics) {
         val current = watch ?: return
         if (current.busy) return
         val next = !current.watching

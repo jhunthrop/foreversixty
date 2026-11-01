@@ -1,5 +1,6 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.common.rememberHaptics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,8 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
@@ -167,7 +166,7 @@ fun CharacterSelectorWithSheet(
     onPick: (AccountCharacter) -> Unit,
 ) {
     current ?: return
-    val haptics = LocalHapticFeedback.current
+    val haptics = rememberHaptics()
     CharacterSelector(current, open) { onOpenChange(true) }
     if (open) {
         ModalBottomSheet(
@@ -176,7 +175,7 @@ fun CharacterSelectorWithSheet(
             containerColor = FsColor.raised,
         ) {
             SwitcherSheetContent(me, current.key) {
-                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                haptics.selection()
                 onPick(it)
                 onOpenChange(false)
             }

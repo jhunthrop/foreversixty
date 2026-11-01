@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -209,8 +210,12 @@ private fun Chips(controls: RosterControls) {
         itemVerticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
+        val haptics = rememberHaptics()
         RosterRole.entries.forEach { role ->
-            Chip(stringResource(role.label), selected = controls.query.role == role) { controls.query = controls.query.copy(role = role) }
+            Chip(stringResource(role.label), selected = controls.query.role == role) {
+                haptics.selection()
+                controls.query = controls.query.copy(role = role)
+            }
         }
         Box {
             Chip(
@@ -225,6 +230,7 @@ private fun Chips(controls: RosterControls) {
 
 @Composable
 private fun SortMenu(controls: RosterControls) {
+    val haptics = rememberHaptics()
     DropdownMenu(expanded = controls.sortMenuOpen, onDismissRequest = { controls.sortMenuOpen = false }, containerColor = GameColors.sheet) {
         RosterSort.entries.forEach { sort ->
             val current = controls.query.sort == sort
@@ -236,6 +242,7 @@ private fun SortMenu(controls: RosterControls) {
                     null
                 },
                 onClick = {
+                    haptics.selection()
                     controls.query = controls.query.copy(sort = sort)
                     controls.sortMenuOpen = false
                 },

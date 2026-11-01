@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids
 
+import gg.foreversixty.app.common.rememberHaptics
 import android.Manifest
 import android.content.Context
 import androidx.activity.compose.BackHandler
@@ -48,7 +49,6 @@ import gg.foreversixty.app.raids.logic.ReminderAskStore
 import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.raids.logic.SystemNotificationPermission
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
 import gg.foreversixty.app.raids.ui.RaidNightScreen
 import gg.foreversixty.app.reports.ReportRoute
@@ -153,11 +153,12 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
-    val deps = remember(feature) {
+    val haptics = rememberHaptics()
+    val deps = remember(feature, haptics) {
         SignupController.Dependencies(
             service = feature.service,
             res = res,
-            haptics = ViewRaidHaptics(view),
+            haptics = haptics,
             permission = SystemNotificationPermission(context),
             askStore = feature.askStore,
             now = feature.now,

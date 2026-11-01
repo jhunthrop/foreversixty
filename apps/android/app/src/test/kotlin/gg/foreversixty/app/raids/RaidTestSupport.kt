@@ -17,7 +17,7 @@ import gg.foreversixty.app.raids.logic.Cached
 import gg.foreversixty.app.raids.logic.NotificationPermission
 import gg.foreversixty.app.raids.logic.RaidCache
 import gg.foreversixty.app.raids.logic.RaidClock
-import gg.foreversixty.app.raids.logic.RaidHaptics
+import gg.foreversixty.app.common.Haptics
 import gg.foreversixty.app.raids.logic.RaidService
 import gg.foreversixty.app.raids.logic.ReminderAskPolicy
 import gg.foreversixty.app.raids.logic.ReminderAskStore
@@ -100,9 +100,11 @@ class FakeRaidService : RaidService {
 fun <T> ok(data: T): ApiResult<T> = ApiResult.Success(data, "test")
 fun fail(error: ApiError): ApiResult<Nothing> = ApiResult.Failure(error)
 
-class RecordingHaptics : RaidHaptics {
+/** Records every haptic moment, for the haptics tests (W3 §5.7: a unit test records every call). */
+class RecordingHaptics : Haptics {
     val calls = mutableListOf<String>()
     override fun selection() { calls += "selection" }
+    override fun impactMedium() { calls += "impactMedium" }
     override fun success() { calls += "success" }
     override fun error() { calls += "error" }
 }

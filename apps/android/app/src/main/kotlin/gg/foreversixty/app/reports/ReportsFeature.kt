@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports
 
+import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.view.View
@@ -34,7 +35,6 @@ import gg.foreversixty.app.network.dataOrNull
 import gg.foreversixty.app.raids.logic.FileRaidCache
 import gg.foreversixty.app.raids.logic.RaidCache
 import gg.foreversixty.app.raids.logic.RaidLinks
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.reports.logic.LiveReportsService
 import gg.foreversixty.app.reports.logic.MetersStore
 import gg.foreversixty.app.reports.logic.ReportStore
@@ -198,7 +198,7 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
 @Composable
 private fun FightSheet(store: MetersStore, feature: ReportsFeature, build: String?, view: View, close: () -> Unit) {
     val scope = rememberCoroutineScope()
-    val haptics = remember(view) { ViewRaidHaptics(view) }
+    val haptics = rememberHaptics()
     MetersSheet(
         MetersSheetState(store.target, store.metric, store.phase, store.showAll),
         feature.specs,

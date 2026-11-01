@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides
 
+import gg.foreversixty.app.common.rememberHaptics
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -18,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
@@ -50,7 +50,6 @@ import gg.foreversixty.app.guides.ui.WhatChangedState
 import gg.foreversixty.app.guides.ui.screenMargins
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.GuideFile
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.sims.ui.ScreenTitle
 import kotlinx.coroutines.launch
 
@@ -76,8 +75,7 @@ fun GuidesRoute(feature: GuidesFeature, character: AccountCharacter?, openBis: (
 @Composable
 private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, selector: @Composable () -> Unit) {
     val store = feature.store
-    val view = LocalView.current
-    val haptics = remember(view) { ViewRaidHaptics(view) }
+    val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
     val segments = GuidesSegment.visible(feature.showsTiers)
     var segment by remember(segments) { mutableStateOf(GuidesSegment.load(feature.segment, feature.showsTiers)) }
@@ -110,7 +108,10 @@ private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, sel
             GuidesSegment.Tiers -> TierListContent(
                 TierListState(store.tiers, choice, yours?.spec),
                 feature.now(),
-                TierListActions(choose = { choice = it }, open = open, retry = { scope.launch { store.loadTiers() } }),
+                TierListActions(choose = {
+                    haptics.selection()
+                    choice = it
+                }, open = open, retry = { scope.launch { store.loadTiers() } }),
             )
             GuidesSegment.Changes -> WhatChangedContent(
                 WhatChangedState(store.dates, store.changelog, feature.now().atZone(feature.zone).toLocalDate()),
@@ -146,8 +147,7 @@ fun GuidesRootLayout(
 private fun GuideRoute(feature: GuidesFeature, spec: String, openBis: (GuideFile) -> Unit) {
     val store = feature.store
     val context = LocalContext.current
-    val view = LocalView.current
-    val haptics = remember(view) { ViewRaidHaptics(view) }
+    val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
     // The saved copy is drawn before the first frame: a guide opens from cache with no spinner (spec §11).
     val guide = remember(spec) { GuideStore(spec, feature.files).also { saved -> store.build?.let(saved::drawSaved) } }
