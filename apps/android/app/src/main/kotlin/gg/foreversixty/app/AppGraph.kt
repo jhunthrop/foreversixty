@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import gg.foreversixty.app.bis.staticDataStore
 import android.content.Context
 import android.os.Build
 import java.io.File
@@ -79,21 +80,19 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     /** Whether a feature's screens show: on in debug and fixture builds, else as the config says. */
     fun isAvailable(feature: Feature): Boolean = appConfig.isAvailable(feature, config.mode, BuildConfig.DEBUG)
 
+    /**
+     * The one static data store (lanes F12 and F15): guides, BiS lists, talents, the tooltip's files,
+     * the search index and the item pages, saved in one folder for offline use until a newer build
+     * swaps them out; sized and removed by You › Offline data; cleared at sign-out.
+     */
+    val statics: StaticDataStore = staticDataStore(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)))
+
     /** Lane F6: the Talents screen pushed from Home; null while its switch is off. */
     private val talents: TalentsFeature? = if (isAvailable(Feature.Talents)) {
-        TalentsFeature.create(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)
+        TalentsFeature.create(context, statics, appConfig)
     } else {
         null
     }
-
-    /**
-     * The per-build static data store (lane F12): the tooltip's files, the search index and the
-     * item pages, saved for offline use until a newer build swaps them out; cleared at sign-out.
-     */
-    val statics = StaticDataStore(
-        StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
-        File(context.noBackupFilesDir, "static-store"),
-    )
 
     /** Lane F8: whether See plans may link to web checkout here (decision P, fail closed). */
     val plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) }
@@ -146,7 +145,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         apiClient = apiClient,
         statics = statics,
         catalog = home.catalog,
-        activeBuild = createBisDataSource(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)::activeBuild,
+        activeBuild = createBisDataSource(context, statics, appConfig)::activeBuild,
     ) { isAvailable(Feature.Search) }
 
     val signIn = AppSignIn(
@@ -217,7 +216,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     val guides: GuidesFeature? = if (isAvailable(Feature.Guides)) {
         GuidesFeature.create(
             context = context,
-            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            statics = statics,
             tiersOn = { isAvailable(Feature.GuideTiers) },
             characters = { session.phase.value.me?.characters.orEmpty() },
         )
@@ -232,7 +231,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     val bisModel: BisModel? = if (isAvailable(Feature.Bis)) {
         createBisModel(
             context = context,
-            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            statics = statics,
             appConfig = appConfig,
             character = { session.currentCharacter() },
         )

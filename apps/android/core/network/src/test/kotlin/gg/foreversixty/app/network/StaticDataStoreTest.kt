@@ -13,7 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-/** The per-build static data store (Wave 3 spec §14, lane F12), the same list as iOS's StaticDataStoreTests. */
+/** The one static data store (Wave 3 spec §14, lanes F12 and F15), the same list as iOS's StaticDataStoreTests. */
 class StaticDataStoreTest {
     @get:Rule
     val temp = TemporaryFolder()
@@ -32,7 +32,8 @@ class StaticDataStoreTest {
         respond(body, HttpStatusCode.OK)
     }
 
-    private fun store(directory: File? = temp.root) = StaticDataStore(StaticDataClient(engine), directory)
+    private fun store(directory: File? = temp.root) =
+        StaticDataStore(StaticDataClient(engine), directory?.let(::FileStaticFileCache) ?: InMemoryStaticFileCache())
 
     @Test
     fun `a file is fetched once, then answered from memory`() = runTest {
@@ -65,8 +66,8 @@ class StaticDataStoreTest {
         store.get(StaticEndpoints.getSearchIndex(older))
         store.get(search)
         store.swap(build)
-        assertFalse(File(temp.root, older).exists())
-        assertTrue(File(temp.root, build).exists())
+        assertFalse(File(temp.root, "data/$older").exists())
+        assertTrue(File(temp.root, "data/$build").exists())
         offline = true
         assertTrue(store.get(search) is ApiResult.Success)
         assertTrue(store.get(StaticEndpoints.getSearchIndex(older)) is ApiResult.Failure)
@@ -88,8 +89,28 @@ class StaticDataStoreTest {
     fun `without a directory it keeps files in memory only`() = runTest {
         val store = store(directory = null)
         store.get(search)
-        assertEquals(0L, store.sizeBytes())
+        assertEquals(0, temp.root.listFiles()?.size ?: 0)
         offline = true
         assertTrue(store.get(search) is ApiResult.Success)
+    }
+
+    @Test
+    fun `the size report lists each saved file with its path, bytes and time`() = runTest {
+        val store = StaticDataStore(StaticDataClient(engine), FileStaticFileCache(temp.root), clock = { SAVED_AT })
+        store.get(search)
+        val files = store.files()
+        assertEquals(listOf(search.path), files.map { it.path })
+        assertEquals(body.toByteArray().size.toLong(), files.single().bytes)
+        assertEquals(SAVED_AT, files.single().savedAtMillis)
+    }
+
+    @Test
+    fun `a path names its build, and build-less files have none`() {
+        assertEquals(build, StaticDataStore.buildOf(search.path))
+        assertEquals(null, StaticDataStore.buildOf("/data/active-build.json"))
+    }
+
+    private companion object {
+        const val SAVED_AT = 1_700_000_000_000L
     }
 }

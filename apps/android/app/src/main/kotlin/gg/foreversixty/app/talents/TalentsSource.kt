@@ -5,14 +5,12 @@ import gg.foreversixty.app.bis.BisDataSource
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.bis.bundledSpecCatalog
 import gg.foreversixty.app.bis.createBisDataSource
-import gg.foreversixty.app.bis.staticFiles
 import gg.foreversixty.app.network.AppConfigRepository
-import io.ktor.client.engine.HttpClientEngine
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.TalentsFile
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
-import gg.foreversixty.app.network.CachedStaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticEndpoints
 
 /**
@@ -27,7 +25,7 @@ interface TalentsSource {
 
 /** The live source: the CDN through the offline cache, the build as the BiS tab reads it. */
 class LiveTalentsSource(
-    private val files: CachedStaticDataClient,
+    private val files: StaticDataStore,
     private val bisSource: BisDataSource,
 ) : TalentsSource {
     override suspend fun activeBuild(): String = bisSource.activeBuild()
@@ -38,8 +36,8 @@ class LiveTalentsSource(
 /** What the Talents screen needs from the app graph (lane F6): its files and the spec catalogue. */
 class TalentsFeature(val source: TalentsSource, val catalog: SpecCatalog) {
     companion object {
-        fun create(context: Context, engine: HttpClientEngine, appConfig: AppConfigRepository) = TalentsFeature(
-            source = LiveTalentsSource(staticFiles(context, engine), createBisDataSource(context, engine, appConfig)),
+        fun create(context: Context, statics: StaticDataStore, appConfig: AppConfigRepository) = TalentsFeature(
+            source = LiveTalentsSource(statics, createBisDataSource(context, statics, appConfig)),
             catalog = bundledSpecCatalog(context),
         )
     }

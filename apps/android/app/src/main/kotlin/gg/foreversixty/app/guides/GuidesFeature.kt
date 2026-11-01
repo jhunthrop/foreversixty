@@ -3,15 +3,12 @@ package gg.foreversixty.app.guides
 import android.content.Context
 import gg.foreversixty.app.PrefsValue
 import gg.foreversixty.app.auth.session.StoredValue
-import gg.foreversixty.app.bis.staticFileCache
 import gg.foreversixty.app.guides.logic.GuideFiles
 import gg.foreversixty.app.guides.logic.GuidesNavigator
 import gg.foreversixty.app.guides.logic.GuidesStore
 import gg.foreversixty.app.guides.logic.LiveGuideFiles
 import gg.foreversixty.app.model.AccountCharacter
-import gg.foreversixty.app.network.CachedStaticDataClient
-import gg.foreversixty.app.network.StaticDataClient
-import io.ktor.client.engine.HttpClientEngine
+import gg.foreversixty.app.network.StaticDataStore
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -52,10 +49,9 @@ class GuidesFeature(
     companion object {
         private val SYNC_INTERVAL: Duration = Duration.ofHours(1)
 
-        fun create(context: Context, engine: HttpClientEngine, tiersOn: () -> Boolean, characters: () -> List<AccountCharacter>): GuidesFeature {
-            val cache = staticFileCache(context)
+        fun create(context: Context, statics: StaticDataStore, tiersOn: () -> Boolean, characters: () -> List<AccountCharacter>): GuidesFeature {
             return GuidesFeature(
-                files = LiveGuideFiles(CachedStaticDataClient(StaticDataClient(engine), cache), cache),
+                files = LiveGuideFiles(statics),
                 segment = PrefsValue(context, PrefsValue.GUIDES_SEGMENT),
                 tiersOn = tiersOn,
                 characters = characters,
