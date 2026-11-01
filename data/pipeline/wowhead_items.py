@@ -87,7 +87,7 @@ STAT_KEYS: dict[str, str | None] = {
     "spldmg": "spell_power",
     "splheal": "healing",
     "atkpwr": "attack_power",
-    "rgdatkpwr": None,  # ranged attack power: STAT_BY_MODIFIER_ID maps 39 to None too
+    "rgdatkpwr": "ranged_attack_power",  # the client's ItemSparse stat 39
     "feratkpwr": None,
     "manargn": "mp5",
     "healthrgn": None,

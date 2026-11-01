@@ -159,7 +159,9 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     31: "hit",
     32: "crit",
     38: "attack_power",
-    39: None,  # ranged attack power
+    # ITEM_MOD_RANGED_ATTACK_POWER: 37 rows on 1.60.1.70707 (Core Marksman
+    # Rifle, Rhok'delar, the Dawnstalker set); wowhead Forever shows the same.
+    39: "ranged_attack_power",
     41: "healing",
     42: "spell_power",
     43: "mp5",
