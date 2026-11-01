@@ -22,7 +22,7 @@ struct ReportsScreen: View {
         self.signIn = signIn
         _store = State(initialValue: ReportsStore(
             service: dependencies.service, cache: dependencies.cache, now: dependencies.now, signedIn: account.signedIn
-        ))
+        ).connected())
     }
 
     var body: some View {
@@ -72,7 +72,7 @@ struct ReportScreen: View {
         self.dependencies = dependencies
         _store = State(initialValue: ReportStore(
             id: route.id, account: account, service: dependencies.service, cache: dependencies.cache, now: dependencies.now
-        ))
+        ).connected())
     }
 
     var body: some View {
@@ -91,6 +91,9 @@ struct ReportScreen: View {
         .background(FSColor.bg)
         .refreshable { await store.load() }
         .reportsBar(title: store.report?.zone ?? Copy.reportsBack) {
+            if let share = store.report.flatMap(ShareText.report) {
+                ShareButton(share, accessibility: Copy.shareAction)
+            }
             Button { openURL(ReportsLinks.web(route.id)) } label: { Image(systemName: "arrow.up.right.square") }
                 .accessibilityLabel(Copy.reportOpenWeb)
         }

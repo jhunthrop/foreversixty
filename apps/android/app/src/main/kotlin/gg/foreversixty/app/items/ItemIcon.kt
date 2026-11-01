@@ -39,8 +39,12 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.disk.DiskCache
 import coil3.disk.directory
+import coil3.intercept.Interceptor
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import coil3.request.ImageResult
 import coil3.request.crossfade
+import java.io.File
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
@@ -67,17 +71,44 @@ object ItemIconLoader {
     @Volatile
     private var loader: ImageLoader? = null
 
+    /**
+     * Lane F15: whether an icon may download now (`Download on Wi-Fi only`). False, icons already on
+     * the phone still draw and the rest wait. The app graph sets it once from You › Offline data.
+     */
+    @Volatile
+    var mayDownload: () -> Boolean = { true }
+
     fun get(context: Context): ImageLoader = loader ?: synchronized(this) {
         loader ?: ImageLoader.Builder(context.applicationContext)
             .diskCache {
                 DiskCache.Builder()
-                    .directory(context.applicationContext.cacheDir.resolve("item-icons"))
+                    .directory(folder(context))
                     .maxSizeBytes(DISK_BYTES)
                     .build()
             }
+            .components { add(WifiGate { mayDownload() }) }
             .crossfade(FADE_MS)
             .build()
             .also { loader = it }
+    }
+
+    /** The icons' disk cache folder: Offline data sizes it as `Item icons`. */
+    fun folder(context: Context): File = context.applicationContext.cacheDir.resolve("item-icons")
+
+    /** Offline data's Remove: the disk and memory caches both. */
+    fun clear(context: Context) {
+        val current = get(context)
+        current.memoryCache?.clear()
+        current.diskCache?.clear()
+    }
+
+    /** Turns the network off for an icon request while downloads must wait for Wi-Fi. */
+    private class WifiGate(private val allowed: () -> Boolean) : Interceptor {
+        override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
+            if (allowed()) return chain.proceed()
+            val cachedOnly = chain.request.newBuilder().networkCachePolicy(CachePolicy.DISABLED).build()
+            return chain.withRequest(cachedOnly).proceed()
+        }
     }
 
     fun url(icon: String, build: String): String = "${StaticDataClient.SITE_URL}/data/$build/icons/$icon.webp"

@@ -9,6 +9,8 @@ struct GuildExtrasDependencies {
     let linkStore: any CalendarLinkStore
     let now: @Sendable () -> Date
     let clock: RaidClock
+    /// Lane F15: the connection, for the stale strip; nil (tests) keeps v1's offline rule alone.
+    var connectivity: (any Connectivity)?
 
     static func live(_ environment: AppEnvironment) -> GuildExtrasDependencies {
         GuildExtrasDependencies(
@@ -16,7 +18,8 @@ struct GuildExtrasDependencies {
             cache: DiskRaidCache.standard(),
             linkStore: KeychainCalendarLinkStore(),
             now: AppClock.now,
-            clock: RaidClock()
+            clock: RaidClock(),
+            connectivity: PathConnectivity.shared
         )
     }
 
@@ -30,12 +33,12 @@ struct GuildExtrasDependencies {
 
     @MainActor
     func rosterStore(guild: Int64) -> RosterStore {
-        RosterStore(guild: guild, service: service, cache: cache, now: now)
+        RosterStore(guild: guild, service: service, cache: cache, now: now).connected(connectivity)
     }
 
     @MainActor
     func historyStore(guild: Int64) -> HistoryStore {
-        HistoryStore(guild: guild, service: service, cache: cache, now: now)
+        HistoryStore(guild: guild, service: service, cache: cache, now: now).connected(connectivity)
     }
 
     @MainActor

@@ -90,11 +90,11 @@ final class FakePlannerSource: PlannerSource, @unchecked Sendable {
     }
 }
 
-/// Records every haptic the planner plays.
-@MainActor
-final class RecordingPlannerHaptics: PlannerHaptics {
-    private(set) var played: [PlannerHaptic] = []
-    func play(_ haptic: PlannerHaptic) { played.append(haptic) }
+/// Records every haptic the planner plays, through the app's one facade.
+typealias RecordingPlannerHaptics = RecordingHaptics
+
+extension RecordingHaptics {
+    var played: [HapticMoment] { moments }
 }
 
 final class MemoryPlannerDraftStore: PlannerDraftStore, @unchecked Sendable {
@@ -107,7 +107,7 @@ final class MemoryPlannerDraftStore: PlannerDraftStore, @unchecked Sendable {
 extension PlannerDependencies {
     static func test(
         source: any PlannerSource, drafts: any PlannerDraftStore = MemoryPlannerDraftStore(),
-        haptics: any PlannerHaptics = RecordingPlannerHaptics(), cache: any RaidCache = MemoryRaidCache()
+        haptics: any Haptics = RecordingPlannerHaptics(), cache: any RaidCache = MemoryRaidCache()
     ) -> PlannerDependencies {
         PlannerDependencies(source: source, drafts: drafts, haptics: haptics, cache: cache)
     }

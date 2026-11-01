@@ -1,5 +1,7 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,7 +61,6 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -116,6 +117,8 @@ data class CharacterActions(
     val openFight: (CharacterFight) -> Unit = {},
     val openHistory: () -> Unit = {},
     val searchAgain: () -> Unit = {},
+    /** Lane F15: Builds seen's `Open in planner`; null while `planner` is off. */
+    val openPlanner: ((DeepLink.Planner) -> Unit)? = null,
 )
 
 private object CharacterLayout {
@@ -138,11 +141,11 @@ fun CharacterContent(state: CharacterScreenState, specs: SpecCatalog, now: Insta
         // The head right under the bar names the character, so the bar title stays empty while it shows.
         ReportsBar(if (loaded != null) "" else name, stringResource(R.string.rank_title), actions.back) {
             if (loaded != null) {
-                state.watch?.let { WatchStar(it, name, enabled = offline == null, actions.toggleWatch) }
+                state.watch?.let { WatchStar(it, name, enabled = offline == null || loaded.stale, actions.toggleWatch) }
                 IconButton(onClick = actions.share) { Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.char_share), tint = FsColor.strong) }
             }
         }
-        offline?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now, zone))) }
+        offline?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), loaded.stale, actions.retry) }
         Column(Modifier.padding(horizontal = 16.dp).padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
             when (val phase = state.phase) {
                 CharacterPhase.Loading -> Skeleton()
@@ -185,6 +188,19 @@ private fun Profile(profile: CharacterProfile, state: CharacterScreenState, spec
                     Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)) {
                         Text(b.talentSplit, style = FsType.mono, color = FsColor.strong)
                         Text(copy.buildMeta(b.spec, b.firstSeen), style = FsType.meta, color = FsColor.muted)
+                    }
+                }
+            }
+            val open = actions.openPlanner
+            val link = CharacterCard.plannerLink(profile)
+            if (open != null && link != null) {
+                Divided(profile.buildsSeen.size) {
+                    Row(
+                        Modifier.fillMaxWidth().clickable(role = Role.Button) { open(link) }.heightIn(min = 52.dp).padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(stringResource(R.string.char_openPlanner), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+                        Chevron(20.dp)
                     }
                 }
             }

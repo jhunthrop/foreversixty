@@ -1,5 +1,7 @@
 package gg.foreversixty.app.guides.ui
 
+import gg.foreversixty.app.system.logic.ShareMessage
+import gg.foreversixty.app.system.logic.ShareText
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -73,7 +75,7 @@ data class GuideReaderState(
 
 class GuideReaderActions(
     val back: () -> Unit = {},
-    val share: (String) -> Unit = {},
+    val share: (ShareMessage) -> Unit = {},
     val retry: () -> Unit = {},
     val update: () -> Unit = {},
     /** A section chip pressed: the selection haptic. */
@@ -88,8 +90,9 @@ class GuideReaderActions(
 @Composable
 fun GuideReader(state: GuideReaderState, now: Instant, actions: GuideReaderActions) {
     val guide = (state.phase as? Loadable.Loaded)?.value
+    val res = LocalResources.current
     val title = guide?.let { specTitle(it.specName, it.className) } ?: state.title
-    val share = guide?.let { file -> BarAction(stringResource(R.string.guides_share), { rememberVectorPainter(Icons.Filled.Share) }) { actions.share(Guides.shareLink(file)) } }
+    val share = guide?.let { file -> BarAction(stringResource(R.string.guides_share), { rememberVectorPainter(Icons.Filled.Share) }) { actions.share(ShareText.guide(res, file.classSlug, file.specSlug, file.specName, file.className)) } }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         ReportsBar(title, stringResource(R.string.guides_title), actions.back, share, titleColor = classColor(guide?.classSlug ?: state.classSlug))
         state.newData?.let { NewDataStrip(stringResource(if (it.failed) R.string.offline_updateFailed else R.string.offline_newData), stringResource(R.string.offline_update), actions.update, it.failed) }

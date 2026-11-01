@@ -18,9 +18,14 @@ struct HistoryContentView: View {
     let open: (HistoryTarget) -> Void
     let loadMore: () -> Void
     let retry: () -> Void
+    /// Lane F15: the stale strip's time.
+    var staleSince: Date?
 
     var body: some View {
-        GuildScreenScroll(title: Copy.historyTitle, offlineStrip: offlineStrip) {
+        GuildScreenScroll(
+            title: Copy.historyTitle, offlineStrip: offlineStrip,
+            stale: staleSince.map { StaleStrip(time: clock.stripTime($0, now: now()), retry: retry) }
+        ) {
             switch phase {
             case .loading:
                 SectionLabel(text: Copy.historyLabel)
@@ -159,7 +164,8 @@ struct HistoryScreen: View {
                 }
             },
             loadMore: { Task { await store.loadMore() } },
-            retry: { Task { await store.load() } }
+            retry: { Task { await store.load() } },
+            staleSince: store.staleSince
         )
         .refreshable { await store.load() }
         .guildPushedBar(Copy.historyTitle)

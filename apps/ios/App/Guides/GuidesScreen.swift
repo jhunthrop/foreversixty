@@ -46,6 +46,14 @@ struct GuidesScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(removing: .title)
             .characterSelector(isOn: session != nil)
+            .toolbar {
+                if segment == .tiers {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ShareButton(ShareText.tiers(tiers.choice.role), accessibility: Copy.shareAction)
+                    }
+                }
+            }
+            .searchButton()
             .toolbarBackground(FSColor.bg, for: .navigationBar)
             .navigationDestination(for: GuidesRoute.self, destination: destination)
         }
@@ -223,8 +231,7 @@ extension View {
                         Text(guide.specName).font(ScaledType.name).foregroundStyle(ClassColor.of(guide.classSlug))
                     }
                     ToolbarItem(placement: .topBarTrailing) {
-                        ShareLink(item: GuideCopy.shareURL(guide)) { Image(systemName: "square.and.arrow.up") }
-                            .accessibilityLabel(Copy.guidesShare)
+                        ShareButton(ShareText.guide(guide), accessibility: Copy.guidesShare)
                     }
                 }
             }

@@ -71,6 +71,8 @@ struct BoardContent: Equatable, Sendable {
     let exhausted: Bool
     /// Set while the cached board shows because a refresh could not connect.
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
 
     var hasMorePages: Bool { !exhausted && rows.count < first.total }
 }
@@ -97,6 +99,8 @@ final class RankingsStore {
     private let specs: SpecCatalog
     private let now: @Sendable () -> Date
     private let linkedEncounter: String?
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     init(
         service: any RankingsService, cache: any RaidCache, specs: SpecCatalog, now: @escaping @Sendable () -> Date,
@@ -187,7 +191,13 @@ final class RankingsStore {
             phase = .loaded(Self.content(page, offlineSince: nil))
         } catch {
             guard filters == self.filters else { return }
-            if SignupRefusal.isOffline(error), let cached = cache.read(RankingsPage.self, key: key) {
+            if let cached = cache.read(RankingsPage.self, key: key), let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                var shown = Self.content(cached.value, offlineSince: nil)
+                shown.staleSince = since
+                phase = .loaded(shown)
+            } else if SignupRefusal.isOffline(error), let cached = cache.read(RankingsPage.self, key: key) {
                 phase = .loaded(Self.content(cached.value, offlineSince: cached.savedAt))
             } else if content == nil {
                 // A refresh that fails keeps what is drawn; only a first load shows the error.

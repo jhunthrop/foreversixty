@@ -27,6 +27,7 @@ struct ItemPageScreen: View {
     let openList: (BisSelection) -> Void
 
     @State private var store: ItemPageStore
+    @Environment(\.scenePhase) private var scenePhase
 
     init(route: ItemPageRoute, dependencies: SearchDependencies, backTitle: String = Copy.itemPageBackPlain, openList: @escaping (BisSelection) -> Void) {
         self.route = route
@@ -42,8 +43,17 @@ struct ItemPageScreen: View {
             openSpec: { row in openList(ItemPageLogic.selection(row.use, viewerFaction: dependencies.context().character?.faction)) },
             retry: { Task { await store.load() } }
         )
+        .safeAreaInset(edge: .top, spacing: 0) {
+            NewDataStrip(store.newData) { Task { await store.applyNewData() } }
+        }
         .itemPageBar(backTitle: backTitle)
-        .task { await store.load() }
+        .task {
+            await store.load()
+            await store.checkForNewData()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await store.checkForNewData() } }
+        }
     }
 }
 

@@ -22,12 +22,10 @@ struct LiveWidgetCalls: WidgetCalls {
     func answer(guild: Int64, raid: Int64, characterKey: String, state: String) async throws(APIError) {
         let view = try await client.send(.getGuildRaid(id: guild, raid: raid))
         let note = view.signups.first { $0.characterKey == characterKey }?.note ?? ""
-        let parts = characterKey.split(separator: "/", omittingEmptySubsequences: false).map(String.init)
-        guard parts.count == 3 else { throw .decoding("not a character key: \(characterKey)") }
-        _ = try await client.send(.putRaidSignup(
-            id: guild, raid: raid, region: parts[0], ruleset: parts[1], name: parts[2],
+        _ = try await RaidSignupPUT.send(
+            client, guild: guild, raid: raid, characterKey: characterKey,
             SignupRequest(state: state, role: nil, note: note, spec: nil)
-        ))
+        )
     }
 }
 

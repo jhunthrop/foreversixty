@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
@@ -40,7 +41,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.quietCard
@@ -95,7 +95,7 @@ fun ReportsList(
                 BrandButton(stringResource(R.string.signin_button), BrandButtonKind.Primary, actions.signIn)
             }
             is ReportsPhase.Loaded -> {
-                phase.content.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now, zone))) }
+                phase.content.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), phase.content.stale, actions.refresh) }
                 Loaded(phase.content, pageFailed, viewer, now, copy, actions)
             }
         }

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.model.CharacterSearchRow
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.sp
@@ -78,7 +79,15 @@ data class SearchScreenState(
     val build: String,
     /** The signed-in account's character keys: their rows carry `You`. */
     val ownKeys: Set<String> = emptySet(),
-)
+    /** Lane F15: the account's watched characters (`GET /v1/me/watching`), the Watching group. */
+    val watching: List<CharacterSearchRow> = emptyList(),
+    /** Lane F15: F11 is on, so characters and Rankings open in the app. */
+    val rankingsInApp: Boolean = false,
+    /** Lane F15: F9 is on, so guides open in the app (no external-link arrow). */
+    val guidesInApp: Boolean = false,
+) {
+    fun opensWebsite(target: SearchTarget): Boolean = WebHandoff.opensWebsite(target, rankingsInApp, guidesInApp)
+}
 
 /** What the screen's controls do; the route wires them. */
 data class SearchActions(
@@ -127,7 +136,7 @@ private fun SearchField(query: String, actions: SearchActions, focus: Boolean) {
             expanded = true,
             onExpandedChange = {},
             modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-            placeholder = { Text(stringResource(R.string.search_placeholder), style = FsType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, maxLines = 1) },
+            placeholder = { Text(stringResource(R.string.search_placeholder), style = FsType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, maxLines = 3) },
             leadingIcon = {
                 IconButton(onClick = actions.onBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.search_cancel), tint = FsColor.strong)
@@ -206,18 +215,29 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
             SectionLabel(stringResource(R.string.search_group_forCharacter, mine.name))
             val links = buildList {
                 add(QuickLink(R.drawable.ic_shield, stringResource(R.string.search_forCharacter_bis, mine.name), RowTrailing.Chevron, actions.onOpenBis))
-                mine.guideLabel?.let { add(QuickLink(R.drawable.ic_guide, it, RowTrailing.of(WebHandoff.GUIDES, RowTrailing.Chevron), actions.onOpenGuide)) }
+                mine.guideLabel?.let { add(QuickLink(R.drawable.ic_guide, it, RowTrailing.of(WebHandoff.guidesOpenWebsite(state.guidesInApp), RowTrailing.Chevron), actions.onOpenGuide)) }
                 add(
                     QuickLink(
                         R.drawable.ic_trophy, stringResource(R.string.search_forCharacter_rankings),
-                        RowTrailing.of(WebHandoff.RANKINGS, RowTrailing.Chevron), actions.onOpenRankings,
+                        RowTrailing.of(WebHandoff.rankingsOpenWebsite(state.rankingsInApp), RowTrailing.Chevron), actions.onOpenRankings,
                     ),
                 )
             }
             RowCard(links.size) { i -> LinkRow(links[i].icon, links[i].label, links[i].trailing, links[i].onClick) }
         }
     }
-    // Watching (F11's /v1/me/watching) slots in here when that lane lands.
+    if (state.watching.isNotEmpty()) {
+        item(key = "watching") {
+            SectionLabel(stringResource(R.string.search_group_watching))
+            RowCard(state.watching.size) { i ->
+                val target = SearchTarget.Character(state.watching[i])
+                TargetRow(
+                    target, copy.title(target), copy.meta(target), state.build, titleColor(target),
+                    trailing = RowTrailing.of(state.opensWebsite(target)),
+                ) { actions.onOpen(target) }
+            }
+        }
+    }
     if (state.recents.isNotEmpty()) {
         item(key = "recent") {
             SectionLabel(stringResource(R.string.search_group_recent)) {
@@ -229,7 +249,7 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
                 val target = state.recents[i]
                 TargetRow(
                     target, copy.title(target), copy.kind(target), state.build, titleColor(target),
-                    trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
+                    trailing = RowTrailing.of(state.opensWebsite(target)),
                 ) { actions.onOpen(target) }
             }
         }
@@ -278,7 +298,7 @@ private fun ResultRow(target: SearchTarget, copy: SearchCopy, state: SearchScree
     // The watch star (F11) joins character rows when /v1/me/watching exists.
     TargetRow(
         target, copy.title(target), copy.meta(target), state.build, titleColor(target),
-        youTag = you, trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
+        youTag = you, trailing = RowTrailing.of(state.opensWebsite(target)),
     ) { actions.onOpen(target) }
 }
 

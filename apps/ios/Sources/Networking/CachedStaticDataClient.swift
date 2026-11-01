@@ -59,8 +59,11 @@ public struct DiskStaticFileCache: StaticFileCache {
         try? FileManager.default.setAttributes([.modificationDate: date], ofItemAtPath: url.path)
     }
 
+    /// `/data/1.60.1.70658/bis/warrior-fury.json` is `1.60.1.70658/bis/warrior-fury.json` here: one
+    /// folder per build, so swapping builds deletes whole folders (the app's StaticDataStore).
     private func file(for path: String) -> URL {
-        let relative = path.split(separator: "/").filter { $0 != ".." && !$0.isEmpty }.joined(separator: "/")
+        let parts = path.split(separator: "/").filter { $0 != ".." && !$0.isEmpty }
+        let relative = (parts.first == "data" ? parts.dropFirst() : parts[...]).joined(separator: "/")
         return directory.appending(path: relative)
     }
 }

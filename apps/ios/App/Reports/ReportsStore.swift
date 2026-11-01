@@ -11,6 +11,8 @@ struct ReportsContent: Equatable, Sendable {
     let page: Int
     /// Set while the cached answer shows because a refresh could not connect.
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
 
     var hasMorePages: Bool { rows.count < total }
 }
@@ -34,6 +36,8 @@ final class ReportsStore {
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
     private let signedIn: Bool
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     static let cacheKey = "reports"
 
@@ -61,7 +65,13 @@ final class ReportsStore {
             pageFailed = false
             phase = .loaded(Self.content(list, offlineSince: nil))
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(ReportList.self, key: Self.cacheKey) {
+            if let cached = cache.read(ReportList.self, key: Self.cacheKey), let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                var shown = Self.content(cached.value, offlineSince: nil)
+                shown.staleSince = since
+                phase = .loaded(shown)
+            } else if SignupRefusal.isOffline(error), let cached = cache.read(ReportList.self, key: Self.cacheKey) {
                 phase = .loaded(Self.content(cached.value, offlineSince: cached.savedAt))
             } else if content == nil {
                 // A refresh that fails keeps what is drawn; only a first load shows the error.

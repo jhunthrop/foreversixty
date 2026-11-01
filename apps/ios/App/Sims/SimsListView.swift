@@ -45,6 +45,9 @@ struct SimsListView: View {
         if let since = content.offlineSince {
             OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
         }
+        if let since = content.staleSince {
+            StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
+        }
         VStack(alignment: .leading, spacing: 22) {
             if ServerRuns.showsSection(entitled: entitled, serverRows: content.serverRows) || content.serverFailed {
                 serverSection(content)

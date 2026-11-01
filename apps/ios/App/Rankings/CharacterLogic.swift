@@ -1,5 +1,6 @@
 import Auth
 import Foundation
+import Routing
 import Models
 
 /// One Forever Score component bar (spec F11.4): its length is the value over the API's cap.
@@ -38,6 +39,13 @@ struct BuildLine: Equatable, Sendable {
 
 /// The character page's words and figures (spec F11.4 to F11.7), from `CharacterProfile`.
 enum CharacterPage {
+    /// The planner on the character's class (`/app/planner/{class}`): the class only, since
+    /// rankings carry no build code or race. Nil when the class is not known.
+    static func plannerLink(_ profile: CharacterProfile) -> DeepLink? {
+        guard let slug = profile.character.className?.lowercased(), !slug.isEmpty else { return nil }
+        return .planner(className: slug)
+    }
+
     private static let separator = " · "
     private static let treeSeparator = " / "
 

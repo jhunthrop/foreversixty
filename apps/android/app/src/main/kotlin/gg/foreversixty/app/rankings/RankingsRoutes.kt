@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.raids.logic.GameClass
+import gg.foreversixty.app.system.logic.ShareText
+import gg.foreversixty.app.common.rememberHaptics
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +45,6 @@ import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemTooltipSheet
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.paperdoll.PaperdollSlot
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.rankings.logic.CharacterCard
 import gg.foreversixty.app.rankings.logic.CharacterPhase
 import gg.foreversixty.app.rankings.logic.CharacterRoute
@@ -183,8 +185,8 @@ fun CharacterRouteScreen(
     val view = LocalView.current
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
-    val store = remember(route, viewer) { CharacterStore(route, feature.service, feature.cache, viewer, feature.now) }
-    val haptics = remember(view) { ViewRaidHaptics(view) }
+    val store = remember(route, viewer) { CharacterStore(route, feature.service, feature.cache, viewer, feature.connectivity, feature.now) }
+    val haptics = rememberHaptics()
     var refreshing by remember { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(store) { store.load() }
@@ -200,12 +202,23 @@ fun CharacterRouteScreen(
         back = back,
         retry = { scope.launch { store.load() } },
         toggleWatch = { scope.launch { store.toggleWatch(haptics) } },
-        share = { RankingsFeature.share(context, CharacterCard.shareUrl(route)) },
+        share = {
+            val loaded = profile
+            val message = ShareText.character(
+                // The card's own key names the page, so the link and the sentence are one character.
+                res, loaded?.character?.key?.let(CharacterCard::shareUrl) ?: CharacterCard.shareUrl(route), loaded?.character?.name ?: route.name,
+                loaded?.let { CharacterCard.specName(it, feature.specs) },
+                loaded?.character?.className?.let { slug -> GameClass.of(slug)?.let { res.getString(it.label) } },
+                loaded?.character?.level,
+            )
+            ShareText.send(context, message)
+        },
         openHow = { AccountLinks.open(context, CharacterCard.HOW_URL) },
         openSocket = { slot -> profile?.let { p -> build?.let { b -> tooltip = tooltipRequest(slot, p, b, feature, res) } } },
         openFight = { fight -> openReport(fight.reportId) },
         openHistory = { AccountLinks.open(context, CharacterCard.historyUrl(route)) },
-        searchAgain = back,
+        searchAgain = { feature.searchAgain?.invoke(route.name) ?: back() },
+        openPlanner = feature.openPlanner,
     )
     val state = CharacterScreenState(route, store.phase, store.watch, viewer, items, build, reports != null)
     PullToRefreshBox(

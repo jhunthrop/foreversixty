@@ -35,7 +35,7 @@ struct FiltersSheet: View {
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
         .presentationBackground(GameColors.sheet)
-        .sensoryFeedback(.selection, trigger: filters)
+        .haptic(.selection, trigger: filters)
     }
 }
 

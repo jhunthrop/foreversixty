@@ -23,6 +23,8 @@ sealed interface TalentGuideBuild {
     data class Build(val talents: String, val band: Int) : TalentGuideBuild
     /** No band, no file or no entry: `talents.noList`. */
     data object None : TalentGuideBuild
+    /** A shared build's ranks per tree (lane F15, F13.5 `Compare with mine`): the other side as is. */
+    data class Ranks(val trees: List<List<Int>>) : TalentGuideBuild
     /** The character has no spec, so there is no BiS file to read. */
     data object NoSpec : TalentGuideBuild
     /** The BiS file failed to load. */
@@ -43,7 +45,13 @@ data class TalentStatusLine(
 }
 
 /** One tree tab: `{Tree} {points}`, plus the dot for a tree holding a dashed cell. */
-data class TalentTabModel(val index: Int, val name: String, val points: Int, val differing: Int)
+data class TalentTabModel(
+    val index: Int,
+    val name: String,
+    val points: Int,
+    val differing: Int,
+    val against: CompareAgainst = CompareAgainst.Guide,
+)
 
 /** One drawn cell: the talent, its rank and state, and on Your build its signed difference. */
 data class TalentCellModel(
@@ -53,6 +61,7 @@ data class TalentCellModel(
     /** Your rank minus the guide's, on Your build when they differ; null otherwise. */
     val delta: Int?,
     val guideRank: Int?,
+    val against: CompareAgainst = CompareAgainst.Guide,
 ) {
     val badge: String get() = "$rank/${talent.maxRank}"
     val chip: String? get() = delta?.let { if (it > 0) "+$it" else "−${-it}" }
@@ -81,10 +90,15 @@ class TalentsPresenter(
     val export: TalentExport,
     val level: Int?,
     val specName: String,
+    /** What the other side is, and so the compare's words (a band's guide build, or a shared build). */
+    val against: CompareAgainst = CompareAgainst.Guide,
 ) {
     val trees: List<TalentTree> = TalentRules.trees(file)
-    val guideRanks: Map<Int, Int>? =
-        (guide as? TalentGuideBuild.Build)?.let { TalentRules.rankById(file, TalentRules.ranksOfBand(it.talents)) }
+    val guideRanks: Map<Int, Int>? = when (guide) {
+        is TalentGuideBuild.Build -> TalentRules.rankById(file, TalentRules.ranksOfBand(guide.talents))
+        is TalentGuideBuild.Ranks -> TalentRules.rankById(file, guide.trees)
+        else -> null
+    }
     val yourRanks: Map<Int, Int>? = (export as? TalentExport.Ranks)?.let { TalentRules.rankById(file, it.trees) }
 
     val diff: TalentDiff? = guideRanks?.let { g -> yourRanks?.let { y -> TalentRules.compare(file, y, g) } }
@@ -112,30 +126,30 @@ class TalentsPresenter(
             TalentGuideBuild.Failed -> TalentStatusLine(null, TalentTagKind.Muted, res.getString(R.string.talents_guideFailed), isError = true)
             TalentGuideBuild.NoSpec -> muted(res, R.string.talents_yours, R.string.talents_pickSpec)
             TalentGuideBuild.None -> muted(res, R.string.talents_yours, R.string.talents_noList)
-            is TalentGuideBuild.Build -> compareStatus(res)
+            is TalentGuideBuild.Build, is TalentGuideBuild.Ranks -> compareStatus(res)
         }
         TalentExport.Stale -> TalentStatusLine(guideTag(res), TalentTagKind.Muted, res.getString(R.string.talents_staleExport))
         TalentExport.None -> TalentStatusLine(guideTag(res), TalentTagKind.Muted, res.getString(R.string.home_next_talentsNone))
     }
 
-    private fun guideTag(res: Resources): String? = guideRanks?.let { res.getString(R.string.talents_guide) }
+    private fun guideTag(res: Resources): String? = guideRanks?.let { res.getString(against.side) }
 
     private fun muted(res: Resources, tag: Int, sentence: Int) =
         TalentStatusLine(res.getString(tag), TalentTagKind.Muted, res.getString(sentence))
 
     private fun compareStatus(res: Resources): TalentStatusLine {
-        val diff = diff ?: return muted(res, R.string.talents_yours, R.string.talents_noList)
+        val diff = diff ?: return muted(res, against.yours, R.string.talents_noList)
         val band = bandLabel(res).orEmpty()
         val differs = res.getString(R.string.talents_differs)
         return when (val status = diff.status) {
             TalentStatus.Matches -> {
-                val sentence = if (diff.extraCount > 0) R.string.talents_matchBeyond else R.string.talents_match
+                val sentence = if (diff.extraCount > 0) against.matchBeyond else against.match
                 TalentStatusLine(res.getString(R.string.talents_matches), TalentTagKind.Matches, res.getString(sentence, specName, band))
             }
             is TalentStatus.Differs ->
-                TalentStatusLine(differs, TalentTagKind.Differs, res.getString(R.string.talents_differ, status.count, yourTotal ?: 0, band))
+                TalentStatusLine(differs, TalentTagKind.Differs, res.getString(against.differ, status.count, yourTotal ?: 0, band))
             is TalentStatus.ToTake ->
-                TalentStatusLine(differs, TalentTagKind.Differs, res.getString(R.string.talents_toTake, status.count, band))
+                TalentStatusLine(differs, TalentTagKind.Differs, res.getString(against.toTake, status.count, band))
         }
     }
 
@@ -148,9 +162,9 @@ class TalentsPresenter(
         }
         val diff = diff
         if (diff != null && diff.diffCount > 0 && diff.missingCount > 0) {
-            add(res.getQuantityString(R.plurals.talents_missing, diff.missingCount, diff.missingCount))
+            add(res.getQuantityString(against.missing, diff.missingCount, diff.missingCount))
         }
-        if (diff != null && diff.extraCount > 0) add(res.getString(R.string.talents_beyond, diff.extraCount))
+        if (diff != null && diff.extraCount > 0) add(res.getString(against.beyond, diff.extraCount))
         // No export and no guide either: say both, and draw no tree (spec F6 §6, No export).
         if (!hasTree) add(res.getString(R.string.talents_noList))
     }
@@ -161,7 +175,7 @@ class TalentsPresenter(
         val points = TalentRules.pointsPerTree(file, ranks(build))
         val differing = differingIds(build)
         return trees.mapIndexed { index, tree ->
-            TalentTabModel(index, tree.name, points[index], tree.talents.count { it.id in differing })
+            TalentTabModel(index, tree.name, points[index], tree.talents.count { it.id in differing }, against)
         }
     }
 
@@ -176,7 +190,7 @@ class TalentsPresenter(
             val rank = ranks[talent.id] ?: 0
             val guideRank = marks?.get(talent.id)
             val delta = guideRank?.let { if (rank == it) null else rank - it }
-            TalentCellModel(talent, rank, TalentRules.cellState(talent, drawn, ranks), delta, guideRank)
+            TalentCellModel(talent, rank, TalentRules.cellState(talent, drawn, ranks), delta, guideRank, against)
         }
     }
 
@@ -184,7 +198,7 @@ class TalentsPresenter(
         trees.getOrNull(tree)?.let { TalentRules.connectors(it, ranks(build)) }.orEmpty()
 
     fun legend(build: TalentBuildKind, res: Resources): String =
-        res.getString(if (differingIds(build).isEmpty()) R.string.talents_tapHint else R.string.talents_legend)
+        res.getString(if (differingIds(build).isEmpty()) R.string.talents_tapHint else against.legend)
 
     private fun differingIds(build: TalentBuildKind): Set<Int> =
         if (build == TalentBuildKind.Yours) diff?.differing.orEmpty() else emptySet()
@@ -198,7 +212,7 @@ class TalentsPresenter(
         val rank = ranks[talent.id] ?: 0
         val guideRank = if (build == TalentBuildKind.Yours) guideRanks?.get(talent.id) else null
         val differs = guideRank != null && guideRank != rank
-        val guideLine = guideRank?.takeIf { differs }?.let { res.getString(R.string.talents_guideRank, it, talent.maxRank) }
+        val guideLine = guideRank?.takeIf { differs }?.let { res.getString(against.rank, it, talent.maxRank) }
         return TalentSheetModel(
             talent = talent,
             rank = rank,
@@ -228,10 +242,10 @@ class TalentsPresenter(
 
 /** A cell's accessibility label (spec F6 §11). */
 fun TalentCellModel.accessibilityLabel(res: Resources): String =
-    if (guideRank != null && delta != null) res.getString(R.string.talents_a11yCellGuide, talent.name, rank, talent.maxRank, guideRank)
+    if (guideRank != null && delta != null) res.getString(against.a11yCell, talent.name, rank, talent.maxRank, guideRank)
     else res.getString(R.string.talents_a11yCell, talent.name, rank, talent.maxRank)
 
 /** A tab's accessibility value: its points, and how many talents differ when it carries the dot. */
 fun TalentTabModel.accessibilityValue(res: Resources): String =
-    if (differing > 0) res.getString(R.string.talents_a11yTabDiffers, points, differing)
+    if (differing > 0) res.getString(against.a11yTab, points, differing)
     else res.getQuantityString(R.plurals.talents_points, points, points)

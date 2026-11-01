@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.logic
 
+import gg.foreversixty.app.common.Haptics
 import android.content.res.Resources
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -64,7 +65,7 @@ class SignupController(
     class Dependencies(
         val service: RaidService,
         val res: Resources,
-        val haptics: RaidHaptics,
+        val haptics: Haptics,
         val permission: NotificationPermission,
         val askStore: ReminderAskStore,
         val now: () -> Instant,

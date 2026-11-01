@@ -190,7 +190,7 @@ struct RankingsSnapshotTests {
                     )
                 }
                 .background(FSColor.bg)
-                .characterBar(title: name, share: ref.webURL, star: star) {}
+                .characterBar(title: name, share: ShareText.character(key: ref.key, name: name, spec: nil, className: nil, level: nil), star: star) {}
             }
         }
         .tint(FSColor.gold)

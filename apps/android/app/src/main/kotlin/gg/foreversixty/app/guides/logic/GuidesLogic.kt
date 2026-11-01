@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides.logic
 
+import gg.foreversixty.app.system.offline.OfflineData
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.GuideBuild
 import gg.foreversixty.app.model.GuideFile
@@ -14,7 +15,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Locale
-import kotlin.math.roundToLong
 
 /** A cell of `All classes` (spec F9.1). */
 data class ClassCell(val classSlug: String, val className: String)
@@ -51,8 +51,6 @@ data class BuildRow(val kind: BuildKind, val totals: String, val build: GuideBui
 /** F9's rules for the Guides tab and the reader. Nothing here sorts or rewrites the guide's own data. */
 object Guides {
     private const val TOTALS_SEPARATOR = " / "
-    private const val KB = 1024L
-    private const val MB = KB * KB
 
     /** Nine cells, always: the index's classes in its (classes.json) order. */
     fun classCells(index: GuideIndex): List<ClassCell> = index.classes.map { ClassCell(it.classSlug, it.className) }
@@ -86,12 +84,8 @@ object Guides {
         return SavedSummary(classes, saved.values.sum())
     }
 
-    /** `47 KB` under a megabyte, else `2.4 MB`; never `0 KB`. */
-    fun formatSize(bytes: Long): String = if (bytes < MB) {
-        "${(bytes.toDouble() / KB).roundToLong().coerceAtLeast(1)} KB"
-    } else {
-        String.format(Locale.US, "%.1f MB", bytes.toDouble() / MB)
-    }
+    /** The footer's size: Offline data's own formatter, so the two screens print one figure (lane F15). */
+    fun formatSize(bytes: Long): String = OfflineData.size(bytes)
 
     /** Exactly the sections the file names, in its order; an unknown name is skipped. */
     fun sections(guide: GuideFile): List<GuideSection> = guide.sections.mapNotNull(GuideSection::of)
@@ -128,13 +122,8 @@ object Guides {
     /** The new-data strip shows when a different build is found while a build's data is on screen. */
     fun isNewData(shown: String?, latest: String?): Boolean = shown != null && latest != null && shown != latest
 
-    /** The site page a guide shares (spec F9.2): `https://foreversixty.gg/guides/{class}/{spec}`. */
-    fun shareLink(guide: GuideFile): String = "$SITE/guides/${guide.classSlug}/${guide.specSlug}"
-
     /** The spec id of a `/guides/{class}/{spec}` link: `shaman-elemental`. */
     fun specId(classSlug: String, specSlug: String): String = "$classSlug-$specSlug"
-
-    private const val SITE = "https://foreversixty.gg"
 }
 
 /** The data's ISO days in the app's words, read as calendar days (no zone shift). */

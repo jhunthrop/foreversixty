@@ -90,13 +90,40 @@ struct SearchRow<Icon: View, Title: View>: View {
     }
 }
 
-/// A row's name: wraps, never cut.
+/// A row's name: wraps, never cut. At accessibility sizes it wraps only between words, and a
+/// word wider than the row (a long character name) shrinks to fit rather than break inside it.
 struct SearchRowName: View {
     let text: String
     var color: Color = FSColor.strong
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        Text(text).font(ScaledType.bodyStrong).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        if typeSize.isAccessibilitySize {
+            WordWrapText(text: text, font: ScaledType.bodyStrong, color: color)
+        } else {
+            Text(text).font(ScaledType.bodyStrong).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
+/// Words laid out with WrapLayout: lines break only between words; a word that cannot fit a
+/// line on its own scales down instead of splitting (lane F15 ruling: never a break in a name).
+struct WordWrapText: View {
+    let text: String
+    let font: Font
+    let color: Color
+    @ScaledMetric(relativeTo: .body) private var gap: CGFloat = 4
+
+    private static let minimumScale = 0.5
+
+    var body: some View {
+        WrapLayout(spacing: gap) {
+            ForEach(Array(text.split(separator: " ").enumerated()), id: \.offset) { _, word in
+                Text(word).font(font).foregroundStyle(color).lineLimit(1).minimumScaleFactor(Self.minimumScale)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(text)
     }
 }
 
@@ -129,8 +156,11 @@ enum SearchRows {
         }
     }
 
-    static func guide(_ hit: SearchGuideHit, build: String, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.guideMeta(hit.guide), trailing: SearchDestination.guide.trailing, action: action) {
+    static func guide(
+        _ hit: SearchGuideHit, build: String, trailing: SearchRowTrailing = SearchDestination.guide.trailing,
+        action: @escaping () -> Void
+    ) -> some View {
+        SearchRow(meta: SearchWords.guideMeta(hit.guide), trailing: trailing, action: action) {
             SpecIcon(icon: hit.guide.icon, build: build, size: SearchLayout.rowIcon)
         } title: {
             SearchRowName(text: hit.title, color: ClassColor.of(hit.guide.className))
@@ -146,8 +176,11 @@ enum SearchRows {
     }
 
     /// The watch star (F11) joins this row when `/v1/me/watching` exists; until then no star.
-    static func character(_ row: CharacterSearchRow, isYours: Bool, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.characterMeta(row), trailing: SearchDestination.character.trailing, action: action) {
+    static func character(
+        _ row: CharacterSearchRow, isYours: Bool, trailing: SearchRowTrailing = SearchDestination.character.trailing,
+        action: @escaping () -> Void
+    ) -> some View {
+        SearchRow(meta: SearchWords.characterMeta(row), trailing: trailing, action: action) {
             ClassCrest(className: row.className, size: SearchLayout.rowIcon)
         } title: {
             if isYours {

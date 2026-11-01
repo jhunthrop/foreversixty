@@ -37,6 +37,10 @@ struct ItemPageState: Equatable, Sendable {
 @Observable
 final class ItemPageStore {
     private(set) var state: ItemPageState
+    /// Lane F15: a newer build found while the page is open; it waits for `Update`.
+    private(set) var newData: NewDataState = .none
+    /// The build `Update` moved the page to, ahead of the app's own read.
+    private var pinnedBuild: String?
     private let route: ItemPageRoute
     private let dependencies: SearchDependencies
 
@@ -48,7 +52,8 @@ final class ItemPageStore {
 
     func load() async {
         state = ItemPageState(route: route, build: state.build)
-        guard let build = await dependencies.build() else { return fail() }
+        let read: String? = if let pinnedBuild { pinnedBuild } else { await dependencies.build() }
+        guard let build = read else { return fail() }
         state.build = build
         guard let corpus = try? await dependencies.index.corpus(build: build) else { return fail() }
         guard let item = corpus.item(route.itemID) else {
@@ -60,6 +65,20 @@ final class ItemPageStore {
         async let tooltip: Void = loadTooltip(item, build: build)
         async let uses: Void = loadUses(item, corpus: corpus)
         _ = await (tooltip, uses)
+    }
+
+    /// On open and on foreground: a newer active build shows the strip; nothing else moves.
+    func checkForNewData() async {
+        guard !state.build.isEmpty else { return }
+        newData = NewDataCheck.state(shown: state.build, latest: await dependencies.latestBuild())
+    }
+
+    /// `Update`: the page reads the new build.
+    func applyNewData() async {
+        guard case let .ready(next) = newData else { return }
+        newData = .none
+        pinnedBuild = next
+        await load()
     }
 
     private func fail() {

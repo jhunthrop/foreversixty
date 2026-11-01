@@ -11,7 +11,7 @@ import SwiftUI
 struct RaidsDependencies {
     let service: any RaidService
     let cache: any RaidCache
-    let haptics: any RaidHaptics
+    let haptics: any Haptics
     let permission: any NotificationPermission
     let askStore: any ReminderAskStore
     let now: @Sendable () -> Date
@@ -20,6 +20,8 @@ struct RaidsDependencies {
     let iconBuild: @Sendable () async -> String?
     /// Lane F10: the report F4.22's row pushes; nil while the reports switch is off.
     let reports: ReportsDependencies?
+    /// Lane F15: the connection, for the stale strip; nil (tests) keeps v1's offline rule alone.
+    var connectivity: (any Connectivity)?
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
         // The active build names every icon URL. In fixture mode it comes from the bundled
@@ -37,13 +39,14 @@ struct RaidsDependencies {
         return RaidsDependencies(
             service: service,
             cache: DiskRaidCache.standard(),
-            haptics: SystemRaidHaptics(),
+            haptics: SystemHaptics(),
             permission: SystemNotificationPermission(),
             askStore: UserDefaultsReminderAskStore(),
             now: AppClock.now,
             clock: RaidClock(),
             iconBuild: { try? await statics.activeBuild().build },
-            reports: environment.isAvailable(.reports) ? .live(environment) : nil
+            reports: environment.isAvailable(.reports) ? .live(environment) : nil,
+            connectivity: PathConnectivity.shared
         )
     }
 
@@ -120,7 +123,7 @@ struct RaidsTab: View {
         self.session = session
         self.extras = extras
         self.calendar = calendar
-        _model = State(initialValue: RaidsTabModel(service: dependencies.service, cache: dependencies.cache, now: dependencies.now))
+        _model = State(initialValue: RaidsTabModel(service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity))
     }
 
     var body: some View {
@@ -218,7 +221,7 @@ struct RaidsTab: View {
             RaidPageScreen(
                 model: RaidPageModel(
                     guild: guild, raid: raid, deps: dependencies.signup, cache: dependencies.cache, openAction: open,
-                    onChange: { view in raidChanged(view) }
+                    onChange: { view in raidChanged(view) }, connectivity: dependencies.connectivity
                 ),
                 clock: dependencies.clock, now: dependencies.now, currentKey: content?.character.key,
                 guildName: content?.head.name ?? "", guildURL: content?.head.webURL,
@@ -228,7 +231,7 @@ struct RaidsTab: View {
             )
         case let .night(raid):
             RaidNightView(
-                model: RaidNightModel(raid: raid, service: dependencies.service, cache: dependencies.cache, now: dependencies.now),
+                model: RaidNightModel(raid: raid, service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity),
                 clock: dependencies.clock, now: dependencies.now,
                 openReport: dependencies.reports == nil ? nil : { router.path.append(.report(id: $0)) }
             )

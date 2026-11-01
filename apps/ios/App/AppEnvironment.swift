@@ -86,6 +86,8 @@ struct AppEnvironment {
                 Task { await liveActivities.endAll() }
                 // Lane F16: the calendar link is the account's, never the next one's.
                 KeychainCalendarLinkStore().clear()
+                // Lane F15: Spotlight forgets the account.
+                Task { await SpotlightIndexer().clear() }
             }
         )
     }

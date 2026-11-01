@@ -30,6 +30,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Lane F15: the long-press shortcuts and the Assistant's Open app feature (spec F15.1, F15.2). -->
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
 
             <!--
                 TODO(lane F1, owner): App Links for https://foreversixty.gg/app/*. Add the
@@ -86,6 +88,16 @@
             </intent-filter>
             <meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="true" />
         </service>
+
+        <!-- Lane F15: `Sign up In` from the launcher: no UI, out of Recents; it toasts and finishes. Not
+             exported: the launcher starts shortcuts as this app, and no other app may sign the player up. -->
+        <activity
+            android:name=".system.platform.SignupShortcutActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Lane F4: In, Late and Out answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />

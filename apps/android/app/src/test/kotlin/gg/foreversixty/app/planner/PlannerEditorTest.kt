@@ -182,7 +182,7 @@ class PlannerEditorTest {
         m.remove(id("Convection"))
         m.add(id("Elemental Mastery"))
         m.undo()
-        assertEquals(listOf("added", "removed", "refused"), haptics.played)
+        assertEquals(listOf("selection", "impactMedium", "error"), haptics.calls)
     }
 
     @Test fun `the draft is saved as you go and reopens after the process dies`() = runTest {
@@ -245,7 +245,7 @@ class PlannerEditorTest {
         assertEquals(listOf(id("Convection")), body.pointOrder)
         assertEquals(emptyMap<String, Int>(), body.gear)
         assertEquals("Elemental raid", body.title)
-        assertEquals("shared", haptics.played.last())
+        assertEquals("success", haptics.calls.last())
     }
 
     @Test fun `an empty title is left out`() {

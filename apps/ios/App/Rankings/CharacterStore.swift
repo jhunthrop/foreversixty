@@ -7,6 +7,8 @@ import Observation
 struct CharacterContent: Equatable, Sendable {
     let profile: CharacterProfile
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
 }
 
 enum CharacterPhase: Equatable, Sendable {
@@ -32,6 +34,8 @@ final class CharacterStore {
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
     private let itemsFor: @Sendable (String) async -> [Int: Item]
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     init(
         ref: CharacterRef, service: any RankingsService, cache: any RaidCache, now: @escaping @Sendable () -> Date,
@@ -45,6 +49,7 @@ final class CharacterStore {
     }
 
     private var cacheKey: String { "character-\(ref.key)" }
+
 
     private var content: CharacterContent? {
         if case let .loaded(content) = phase { return content }
@@ -62,6 +67,10 @@ final class CharacterStore {
         } catch {
             if case let .server(status, _, _) = error, status == Self.notFound {
                 phase = .notFound
+            } else if let cached = cache.read(CharacterProfile.self, key: cacheKey), let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                phase = .loaded(CharacterContent(profile: cached.value, offlineSince: nil, staleSince: since))
             } else if SignupRefusal.isOffline(error), let cached = cache.read(CharacterProfile.self, key: cacheKey) {
                 phase = .loaded(CharacterContent(profile: cached.value, offlineSince: cached.savedAt))
             } else if content == nil {

@@ -51,6 +51,8 @@ enum YouRoute: Hashable {
     case liveSurfaces
     /// Lane F16: You › Calendar.
     case calendar
+    /// Lane F15: You › Offline data.
+    case offlineData
 }
 
 /// The You tab. Pure: the snapshot tests render it with a summary.
@@ -62,6 +64,8 @@ struct YouView: View {
     var showsLiveSurfaces = false
     /// Lane F16: the Calendar row, while `guild_extras` is on.
     var showsCalendar = false
+    /// Lane F15: the Offline data row, while `system` is on.
+    var showsOfflineData = false
     let onSignOut: () -> Void
     @Environment(\.openURL) private var openURL
     @State private var confirmingSignOut = false
@@ -90,6 +94,12 @@ struct YouView: View {
                         Divider().overlay(FSColor.lineSoft)
                         NavigationLink(value: YouRoute.calendar) {
                             AccountRow(icon: "calendar", title: Copy.calendarTitle, subtitle: Copy.calendarYouRowSub, chevron: true)
+                        }
+                    }
+                    if showsOfflineData {
+                        Divider().overlay(FSColor.lineSoft)
+                        NavigationLink(value: YouRoute.offlineData) {
+                            AccountRow(icon: "arrow.down.circle", title: Copy.offlineDataTitle, subtitle: Copy.offlineDataYouRowSub, chevron: true)
                         }
                     }
                 }

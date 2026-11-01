@@ -52,6 +52,8 @@ struct RaidsTabContent: Equatable {
     let waiting: Int?
     /// Set while the cached answer shows because a refresh could not connect.
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
     /// Every character key on the account (lane F16's `You were there`).
     var accountKeys: Set<String> = []
 
@@ -75,12 +77,17 @@ final class RaidsTabModel {
     private let service: any RaidService
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
+    private let connectivity: (any Connectivity)?
 
-    init(service: any RaidService, cache: any RaidCache, now: @escaping @Sendable () -> Date, initial: RaidsTabState = .loading) {
+    init(
+        service: any RaidService, cache: any RaidCache, now: @escaping @Sendable () -> Date,
+        initial: RaidsTabState = .loading, connectivity: (any Connectivity)? = nil
+    ) {
         self.service = service
         self.cache = cache
         self.now = now
         self.state = initial
+        self.connectivity = connectivity
     }
 
     func load() async {
@@ -111,7 +118,14 @@ final class RaidsTabModel {
             cache.write(raids, key: key, at: now())
             state = .loaded(content(head, character, raids, offlineSince: nil, me: me))
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(GuildRaids.self, key: key) {
+            let cached = cache.read(GuildRaids.self, key: key)
+            if let cached, let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .homeAndRaids, now: now()
+            ) {
+                var shown = content(head, character, cached.value, offlineSince: nil, me: me)
+                shown.staleSince = since
+                state = .loaded(shown)
+            } else if SignupRefusal.isOffline(error), let cached {
                 state = .loaded(content(head, character, cached.value, offlineSince: cached.savedAt, me: me))
             } else {
                 state = .failed

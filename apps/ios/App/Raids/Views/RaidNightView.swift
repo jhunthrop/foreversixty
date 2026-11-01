@@ -16,17 +16,24 @@ final class RaidNightModel {
 
     private(set) var state: State
     private(set) var offlineSince: Date?
+    /// Lane F15: Forever Sixty did not answer and the saved night is past its limit.
+    private(set) var staleSince: Date?
     let raidID: Int64
     private let service: any RaidService
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
+    private let connectivity: (any Connectivity)?
 
-    init(raid: Int64, service: any RaidService, cache: any RaidCache, now: @escaping @Sendable () -> Date, initial: State = .loading) {
+    init(
+        raid: Int64, service: any RaidService, cache: any RaidCache, now: @escaping @Sendable () -> Date,
+        initial: State = .loading, connectivity: (any Connectivity)? = nil
+    ) {
         raidID = raid
         self.service = service
         self.cache = cache
         self.now = now
         state = initial
+        self.connectivity = connectivity
     }
 
     private var key: String { "night-\(raidID)" }
@@ -37,9 +44,16 @@ final class RaidNightModel {
             let night = try await service.night(raid: raidID)
             cache.write(night, key: key, at: now())
             offlineSince = nil
+            staleSince = nil
             state = .loaded(night)
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(RaidNightSummary.self, key: key) {
+            let cached = cache.read(RaidNightSummary.self, key: key)
+            if let cached, let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .homeAndRaids, now: now()
+            ) {
+                staleSince = since
+                state = .loaded(cached.value)
+            } else if SignupRefusal.isOffline(error), let cached {
                 offlineSince = cached.savedAt
                 state = .loaded(cached.value)
             } else if case .loaded = state {
@@ -72,6 +86,9 @@ struct RaidNightView: View {
             VStack(alignment: .leading, spacing: 0) {
                 if let since = model.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(since, now: now())))
+                }
+                if let since = model.staleSince {
+                    StaleStrip(time: clock.stripTime(since, now: now())) { Task { await model.load() } }
                 }
                 VStack(alignment: .leading, spacing: 22) { content }.padding(16)
             }

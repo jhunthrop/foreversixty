@@ -1,10 +1,9 @@
 package gg.foreversixty.app.planner
 
+import gg.foreversixty.app.planner.logic.SharedCompare
 import android.content.Context
 import gg.foreversixty.app.PrefsValue
 import gg.foreversixty.app.bis.createBisDataSource
-import gg.foreversixty.app.bis.staticFileCache
-import gg.foreversixty.app.bis.staticFiles
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.network.ApiClient
@@ -16,7 +15,7 @@ import gg.foreversixty.app.planner.logic.PlannerNavigator
 import gg.foreversixty.app.planner.logic.PlannerScreen
 import gg.foreversixty.app.planner.logic.PlannerSource
 import gg.foreversixty.app.talents.LiveTalentsSource
-import io.ktor.client.engine.HttpClientEngine
+import gg.foreversixty.app.network.StaticDataStore
 
 /**
  * Lane F13's dependencies, built once in the app graph behind the `planner` switch ([create]); tests
@@ -30,7 +29,12 @@ class PlannerFeature(
     val signedIn: () -> Boolean,
     /** The session's current character, for `Plan a new build`. */
     val character: () -> AccountCharacter?,
+    /** Lane F15: the account's characters, for `Compare with mine` on a shared build of another class. */
+    val characters: () -> List<AccountCharacter> = { listOfNotNull(character()) },
 ) {
+    /** The export `Compare with mine` holds against a shared build of [classSlug]; null hides the button. */
+    fun compareExport(classSlug: String): AccountCharacter? = SharedCompare.exportFor(classSlug, character(), characters())
+
     val navigator = PlannerNavigator()
 
     /** A planner link (spec §3.4); false when it is not one, or needs a sign-in it does not have. */
@@ -48,21 +52,22 @@ class PlannerFeature(
     companion object {
         fun create(
             context: Context,
-            engine: HttpClientEngine,
+            statics: StaticDataStore,
             appConfig: AppConfigRepository,
             api: ApiClient,
             signedIn: () -> Boolean,
             character: () -> AccountCharacter?,
+            characters: () -> List<AccountCharacter>,
         ) = PlannerFeature(
             source = LivePlannerSource(
-                files = staticFiles(context, engine),
-                talentsSource = LiveTalentsSource(staticFiles(context, engine), createBisDataSource(context, engine, appConfig)),
+                files = statics,
+                talentsSource = LiveTalentsSource(statics, createBisDataSource(context, statics, appConfig)),
                 api = api,
-                cache = staticFileCache(context),
             ),
             drafts = PlannerDrafts { slug -> PrefsValue(context, PlannerDrafts.key(slug)) },
             signedIn = signedIn,
             character = character,
+            characters = characters,
         )
     }
 }

@@ -32,6 +32,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case guideTiers = "guide_tiers"
     /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
     case guildExtras = "guild_extras"
+    /// F15: System integration: Siri and App Shortcuts, the Control, Spotlight, the Android shortcuts and Assistant features, and You › Offline data. Share actions, the stale strip and haptics follow their own screens' switches
+    case system = "system"
     /// F13: The talent planner: plan a build, share it, open a shared /b/ link, and Your builds
     case planner = "planner"
 
@@ -53,6 +55,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .guides: false
         case .guideTiers: false
         case .guildExtras: false
+        case .system: false
         case .planner: false
         }
     }

@@ -23,6 +23,10 @@ final class SimResultStore {
     private let now: @Sendable () -> Date
     private let markSeen: (String) async -> Void
     private var seenPosted = false
+    /// Lane F15: set while the saved result shows because Forever Sixty did not answer.
+    private(set) var staleSince: Date?
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     init(
         id: String,
@@ -48,10 +52,17 @@ final class SimResultStore {
         do {
             let result = try await service.result(id: id)
             cache.write(result, key: cacheKey, at: now())
+            staleSince = nil
             phase = .loaded(await model(result), offlineSince: nil)
             await postSeenOnce()
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(SimResult.self, key: cacheKey) {
+            let cached = cache.read(SimResult.self, key: cacheKey)
+            if let cached, let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                staleSince = since
+                phase = .loaded(await model(cached.value), offlineSince: nil)
+            } else if SignupRefusal.isOffline(error), let cached {
                 phase = .loaded(await model(cached.value), offlineSince: cached.savedAt)
             } else {
                 phase = .failed

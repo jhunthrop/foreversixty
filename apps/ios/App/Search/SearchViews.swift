@@ -12,6 +12,8 @@ struct SearchFieldBar: View {
     var focused: FocusState<Bool>.Binding
     let cancel: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         HStack(spacing: 12) {
             HStack(spacing: 8) {
@@ -21,7 +23,9 @@ struct SearchFieldBar: View {
                 // typed line break is dropped and the keyboard closes.
                 ZStack(alignment: .leading) {
                     if query.isEmpty {
-                        Text(Copy.searchPlaceholder).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                        // At accessibility sizes the long placeholder would be cut: `Search`.
+                        Text(typeSize.isAccessibilitySize ? Copy.searchButton : Copy.searchPlaceholder)
+                            .font(ScaledType.body).foregroundStyle(FSColor.muted)
                             .lineLimit(1)
                             .minimumScaleFactor(Self.placeholderScale)
                             .accessibilityHidden(true)
@@ -149,11 +153,19 @@ struct RingedCapsule: View {
     }
 }
 
+/// A guide by its class and spec slugs (`/app/guides/{class}/{spec}`).
+struct SearchGuideLink: Equatable {
+    let className: String
+    let spec: String
+}
+
 /// The `For {name}` card's character: the BiS link, the guide link when the spec is known.
 struct SearchForCharacter: Equatable {
     let name: String
     let guideTitle: String?
     let guideURL: URL?
+    /// The guide's class and spec slugs, for the in-app guide (lane F15).
+    let guideLink: SearchGuideLink?
 
     init?(_ context: SearchContext, specs: SpecCatalog) {
         guard let character = context.character else { return nil }
@@ -161,10 +173,13 @@ struct SearchForCharacter: Equatable {
         let spec = character.className.flatMap { slug in character.spec.flatMap { specs.spec(classSlug: slug, named: $0) } }
         if let spec, let specName = character.spec {
             guideTitle = Copy.searchForCharacterGuide(spec: specName, className: SearchWords.className(spec.classSlug))
-            guideURL = SearchLinks.guide(className: spec.classSlug, spec: SearchLinks.guideSpec(specKey: spec.spec, className: spec.classSlug))
+            let slug = SearchLinks.guideSpec(specKey: spec.spec, className: spec.classSlug)
+            guideURL = SearchLinks.guide(className: spec.classSlug, spec: slug)
+            guideLink = SearchGuideLink(className: spec.classSlug, spec: slug)
         } else {
             guideTitle = nil
             guideURL = nil
+            guideLink = nil
         }
     }
 }
@@ -182,6 +197,10 @@ struct SearchActions {
     var retryCharacters: () -> Void = {}
     var openMyBis: () -> Void = {}
     var openURL: (URL) -> Void = { _ in }
+    /// Lane F15: a guide by its class and spec slugs, F9 in the app when `guides` is on.
+    var openGuideLink: (String, String) -> Void = { _, _ in }
+    /// Lane F15: the `Rankings` link, F11 in the app when its switch is on.
+    var openRankings: () -> Void = {}
 }
 
 /// F12's body under the field and chips, pure over its inputs so the snapshot tests draw it.
@@ -197,6 +216,16 @@ struct SearchContentView: View {
     let viewer: SearchViewer
     let build: String
     var actions = SearchActions()
+    /// Lane F15: the characters you watch, between `For {name}` and `Recent`.
+    var watching: [CharacterSearchRow] = []
+    /// Lane F15: characters and Rankings open in the app (a chevron, not the external glyph).
+    var nativeRankings = false
+    /// Lane F15: guides open in the app (F9) rather than the website.
+    var nativeGuides = false
+
+    private var guideTrailing: SearchRowTrailing { nativeGuides ? .chevron : SearchDestination.guide.trailing }
+
+    private var characterTrailing: SearchRowTrailing { nativeRankings ? .chevron : SearchDestination.character.trailing }
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: SearchLayout.sectionGap) {
@@ -215,17 +244,23 @@ struct SearchContentView: View {
             SearchSection(title: Copy.searchGroupForCharacter(name: forCharacter.name)) {
                 SearchCard {
                     SearchRows.link(Copy.searchForCharacterBis(name: forCharacter.name), systemImage: "shield", trailing: SearchDestination.bis.trailing, action: actions.openMyBis)
-                    if let title = forCharacter.guideTitle, let url = forCharacter.guideURL {
-                        SearchRows.link(title, systemImage: "book.closed", trailing: SearchDestination.guide.trailing) { actions.openURL(url) }
+                    if let title = forCharacter.guideTitle, let link = forCharacter.guideLink {
+                        SearchRows.link(title, systemImage: "book.closed", trailing: guideTrailing) { actions.openGuideLink(link.className, link.spec) }
                     }
-                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy", trailing: SearchDestination.rankings.trailing) {
-                        actions.openURL(SearchLinks.rankings)
+                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy", trailing: characterTrailing, action: actions.openRankings)
+                }
+            }
+        }
+        // A group with nothing in it is not drawn.
+        if !watching.isEmpty {
+            SearchSection(title: Copy.searchGroupWatching) {
+                SearchCard {
+                    ForEach(watching, id: \.key) { row in
+                        SearchRows.character(row, isYours: false, trailing: characterTrailing) { actions.openCharacter(row) }
                     }
                 }
             }
         }
-        // TODO(lane F11): the `Watching` group joins here, between `For {name}` and `Recent`, once
-        // `GET /v1/me/watching` exists. A group with nothing in it is not drawn.
         if !recent.isEmpty {
             SearchSection(title: Copy.searchGroupRecent, trailing: (Copy.searchRecentClear, actions.clearRecent)) {
                 SearchCard {
@@ -242,11 +277,11 @@ struct SearchContentView: View {
     @ViewBuilder
     private var resultsBody: some View {
         indexStatus
-        group(.guides, results.guides) { hit in SearchRows.guide(hit, build: build) { actions.openGuide(hit) } }
+        group(.guides, results.guides) { hit in SearchRows.guide(hit, build: build, trailing: guideTrailing) { actions.openGuide(hit) } }
         group(.talents, results.talents) { talent in SearchRows.talent(talent, build: build) { actions.openTalent(talent) } }
         group(.items, results.items) { item in SearchRows.item(item, build: build) { actions.openItem(item) } }
         group(.characters, results.characters) { row in
-            SearchRows.character(row, isYours: viewer.ownKeys.contains(row.key)) { actions.openCharacter(row) }
+            SearchRows.character(row, isYours: viewer.ownKeys.contains(row.key), trailing: characterTrailing) { actions.openCharacter(row) }
         }
         charactersStatus
         if showsNoResults { noResults }

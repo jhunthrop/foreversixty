@@ -1,4 +1,5 @@
 import DesignSystem
+import Models
 import Routing
 import SwiftUI
 
@@ -66,6 +67,8 @@ struct RootView: View {
     /// Lane F9: keeps the guides of the player's classes saved.
     @State private var guidesPrefetcher: GuidesPrefetcher?
     @Environment(\.scenePhase) private var scenePhase
+    /// Lane F15: where an intent or a Spotlight tap asks the app to go.
+    @State private var intentRouter = IntentRouter.shared
     /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
     /// access until the player flips its switch.
     @State private var calendarSync: CalendarSyncController
@@ -124,12 +127,23 @@ struct RootView: View {
         .widgetRefreshTriggers(environment)
         .task(id: GuidesPrefetchTrigger(active: scenePhase == .active, classes: playerClasses)) { await prefetchGuides() }
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
+        // Lane F15: Siri, Shortcuts and Spotlight taps open what they name.
+        .onChange(of: intentRouter.pending) { _, destination in
+            guard let destination else { return }
+            intentRouter.pending = nil
+            openIntent(destination)
+        }
+        .task(id: SpotlightTrigger(
+            active: scenePhase == .active, account: environment.session.phase.me,
+            current: environment.session.currentCharacter?.key, enabled: environment.isAvailable(.system)
+        )) { await refreshSpotlight() }
         .task {
             RaidNotificationCenter.shared.onOpen = openRaids
             #if DEBUG
                 // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
-                // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests).
-                if let link = RaidDebugLaunch.link { PlannerRouter.handles(link) ? openLink(link) : openRaids(link) }
+                // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests),
+                // and lane F15's open guides and character pages (UITests/SystemCaptureTests).
+                if let link = RaidDebugLaunch.link { openLink(link) }
                 await RaidDebugLaunch.postRaidPushIfAsked()
             #endif
         }
@@ -145,6 +159,14 @@ struct RootView: View {
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
+        case .home where signInAvailable && environment.session.homeGateHolds:
+            // Lane F15: rankings and player links open over the gate (public data).
+            PublicRankingsHost(
+                dependencies: HomeDependencies.live(environment).rankings,
+                account: RankingsAccount.of(environment.session.phase.me, current: nil), router: rankingsRouter
+            ) {
+                HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) { EmptyView() }
+            }
         case .home where signInAvailable:
             HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) {
                 HomeTab(dependencies: .live(environment), session: environment.session, openBis: { selection = .bis })
@@ -178,7 +200,8 @@ struct RootView: View {
                 plansLink: environment.plansLink,
                 liveSurfaces: environment.isAvailable(.widgets),
                 onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
-                calendar: guildExtras.map { ($0, calendarSync) }
+                calendar: guildExtras.map { ($0, calendarSync) },
+                offlineData: environment.isAvailable(.system) ? { OfflineDataModel.live(environment) } : nil
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
@@ -229,10 +252,49 @@ extension RootView {
         raidsRouter.open(link)
     }
 
+    /// Lane F15: an intent's or a Spotlight tap's destination, opened as the in-app link would be.
+    private func openIntent(_ destination: IntentDestination) {
+        switch destination {
+        case let .link(link): openLink(link)
+        case let .tab(tab): selection = tab
+        case let .character(key): openCharacter(key)
+        case .rankingsBoard:
+            guard environment.isAvailable(.rankings) else { return }
+            selection = .home
+            rankingsRouter.player = nil
+            rankingsRouter.encounter = nil
+            rankingsRouter.showsBoard = true
+        }
+    }
+
+    /// A character opens F11.4 when `rankings` is on; else Home on it (your own characters only).
+    private func openCharacter(_ key: String) {
+        let parts = key.split(separator: "/").map(String.init)
+        if environment.isAvailable(.rankings), parts.count == 3 {
+            openLink(.player(region: parts[0], ruleset: parts[1], name: parts[2]))
+            return
+        }
+        if environment.session.phase.me?.characters.contains(where: { $0.key == key }) == true {
+            environment.session.pick(key)
+        }
+        selection = .home
+    }
+
+    private func refreshSpotlight() async {
+        guard scenePhase == .active else { return }
+        let session = environment.session
+        await SpotlightRefresher.live(environment, session: signInAvailable ? session : nil).refresh(
+            me: session.phase.me, currentKey: session.currentCharacter?.key, enabled: environment.isAvailable(.system)
+        )
+    }
+
     /// Lane F9: on launch and on foreground (at most hourly), the guides of every class the
     /// player has a character in are fetched, so they open offline.
     private func prefetchGuides() async {
-        guard scenePhase == .active, environment.isAvailable(.guides) else { return }
+        // Lane F15: `Keep my classes ready` drives it; `Download on Wi-Fi only` holds new guides.
+        let settings = OfflineSettings()
+        guard scenePhase == .active, environment.isAvailable(.guides), settings.keepClassesReady,
+              settings.mayDownload(on: PathConnectivity.shared) else { return }
         let prefetcher = guidesPrefetcher ?? GuidesPrefetcher(
             source: GuidesDependencies.live(environment, session: signInAvailable ? environment.session : nil).source,
             now: { Date() }
@@ -252,6 +314,15 @@ extension RootView {
         guard signInAvailable else { return [] }
         return Set(environment.session.phase.me?.characters.compactMap(\.className) ?? [])
     }
+}
+
+/// Lane F15: rebuilds Spotlight when the app comes forward, the account or character changes,
+/// or the `system` switch flips.
+private struct SpotlightTrigger: Equatable {
+    let active: Bool
+    let account: Me?
+    let current: String?
+    let enabled: Bool
 }
 
 /// Runs the guide prefetch again when the app comes forward or the player's classes change.

@@ -14,8 +14,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-/** The same list as iOS's CachedStaticDataTests. */
-class CachedStaticDataClientTest {
+/** The store's network-first read ([StaticDataStore.load]); the same list as iOS's CachedStaticDataTests. */
+class StaticDataLoadTest {
     @get:Rule
     val temp = TemporaryFolder()
 
@@ -35,7 +35,7 @@ class CachedStaticDataClientTest {
     }
 
     private fun client(cache: StaticFileCache, now: Long) =
-        CachedStaticDataClient(StaticDataClient(engine), cache, clock = { now })
+        StaticDataStore(StaticDataClient(engine), cache, clock = { now })
 
     @Test
     fun `a fetched file is decoded, saved, and marked fresh`() = runTest {
@@ -93,6 +93,21 @@ class CachedStaticDataClientTest {
         assertEquals("{}", entry.body)
         assertEquals(1_700_000_000_000L, entry.savedAtMillis)
         assertNull(cache.read("/data/1.60.1.70658/bis/warrior-arms.json"))
+    }
+
+    @Test
+    fun `keeping a build drops the other builds' files and keeps build-less ones`() {
+        val cache = FileStaticFileCache(temp.newFolder("keep"))
+        cache.write("{}", "/data/1.60.1.70658/bis/warrior-fury.json", 1)
+        cache.write("{}", "/data/1.60.1.70532/bis/warrior-fury.json", 1)
+        cache.write("{}", "/data/active-build.json", 1)
+        cache.keepBuild("1.60.1.70658")
+        assertEquals(
+            setOf("/data/1.60.1.70658/bis/warrior-fury.json", "/data/active-build.json"),
+            cache.files().map { it.path }.toSet(),
+        )
+        cache.deleteAll()
+        assertTrue(cache.files().isEmpty())
     }
 
     private fun <T> assertNotNullAndGet(value: T?): T {

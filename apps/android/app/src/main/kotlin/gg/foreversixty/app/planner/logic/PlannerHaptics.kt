@@ -1,59 +1,15 @@
 package gg.foreversixty.app.planner.logic
 
-import android.os.Build
-import android.view.HapticFeedbackConstants
-import android.view.View
+import gg.foreversixty.app.common.Haptics
 
-/** The planner's four haptics (spec F13.1, F13.3). iOS: the matching UIFeedbackGenerator calls. */
-interface PlannerHaptics {
-    /** A point added: `SEGMENT_TICK`. */
-    fun added()
-
-    /** A point removed: `LONG_PRESS`. */
-    fun removed()
-
-    /** A refusal: `REJECT`. */
-    fun refused()
-
-    /** A build shared: `CONFIRM`. */
-    fun shared()
-
-    /** The haptic one edit plays; an undo, a clear or a no-op plays none. */
-    fun play(outcome: EditOutcome) = when (outcome) {
-        EditOutcome.Added -> added()
-        EditOutcome.Removed -> removed()
-        EditOutcome.Refused -> refused()
-        EditOutcome.Undone, EditOutcome.Cleared, EditOutcome.Unchanged -> Unit
-    }
-}
-
-/** The system haptics on the editor's view; below API 30 confirm and reject play nothing. */
-class ViewPlannerHaptics(private val view: View) : PlannerHaptics {
-    override fun added() {
-        val tick = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            HapticFeedbackConstants.SEGMENT_TICK
-        } else {
-            HapticFeedbackConstants.CLOCK_TICK
-        }
-        view.performHapticFeedback(tick)
-    }
-
-    override fun removed() {
-        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-    }
-
-    override fun refused() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) view.performHapticFeedback(HapticFeedbackConstants.REJECT)
-    }
-
-    override fun shared() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-    }
-}
-
-object NoPlannerHaptics : PlannerHaptics {
-    override fun added() = Unit
-    override fun removed() = Unit
-    override fun refused() = Unit
-    override fun shared() = Unit
+/**
+ * The planner's haptics through the app's one facade (W3 §5.7 Haptics, planner rows): a point added
+ * is a selection tick, a point removed (long press) impact medium / LONG_PRESS, a refusal error /
+ * REJECT. An undo, a clear or a no-op plays none. A shared build plays success ([Haptics.success]).
+ */
+fun Haptics.play(outcome: EditOutcome) = when (outcome) {
+    EditOutcome.Added -> selection()
+    EditOutcome.Removed -> impactMedium()
+    EditOutcome.Refused -> error()
+    EditOutcome.Undone, EditOutcome.Cleared, EditOutcome.Unchanged -> Unit
 }

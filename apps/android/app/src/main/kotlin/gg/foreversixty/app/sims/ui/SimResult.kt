@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +35,6 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemVocabulary
@@ -72,7 +72,7 @@ fun SimResultContent(
             SimResultPhase.Failed -> { ScreenTitle(); ErrorBlock(stringResource(R.string.sims_resultFailed), retry) }
             is SimResultPhase.Loaded -> {
                 ScreenTitle(phase.model.title)
-                phase.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
+                phase.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now), phase.stale, retry) }
                 Loaded(phase.model, looks, build, openItem, openBreakdown)
             }
         }

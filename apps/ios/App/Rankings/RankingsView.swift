@@ -31,6 +31,9 @@ struct RankingsView: View {
                 if case let .loaded(content) = phase, let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
+                if case let .loaded(content) = phase, let since = content.staleSince {
+                    StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
+                }
                 SimsTitle(text: Copy.rankTitle)
                 VStack(alignment: .leading, spacing: 12) {
                     switch phase {
@@ -162,7 +165,9 @@ struct RankRowMenu: View {
             Button { openReport(row) } label: { Label(Copy.rankMenuReport, systemImage: "doc.text") }
         }
         if let ref = CharacterRef(key: row.player.key, name: row.player.name) {
-            ShareLink(item: ref.webURL) { Label(Copy.rankMenuShare, systemImage: "square.and.arrow.up") }
+            ShareButton(item: ShareText.character(key: ref.key, name: row.player.name, spec: nil, className: nil, level: nil)) {
+                Label(Copy.rankMenuShare, systemImage: "square.and.arrow.up")
+            }
         }
     }
 }

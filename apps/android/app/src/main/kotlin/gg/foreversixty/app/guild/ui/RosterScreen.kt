@@ -1,5 +1,7 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.common.rememberHaptics
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,7 +59,6 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.guild.logic.Loadable
@@ -114,7 +115,7 @@ fun RosterContent(
             when (state) {
                 Loadable.Loading -> skeleton()
                 Loadable.Failed -> item { Box(Modifier.padding(16.dp)) { ErrorRegion(stringResource(R.string.roster_error), retry) } }
-                is Loadable.Loaded -> loaded(state, controls, copy, stripTime, open)
+                is Loadable.Loaded -> loaded(state, controls, copy, stripTime, open, retry)
             }
         }
     }
@@ -146,10 +147,11 @@ private fun LazyListScope.loaded(
     copy: RosterCopy,
     stripTime: (Instant) -> String,
     open: (RosterEntry) -> Unit,
+    retry: () -> Unit,
 ) {
     val home = state.value
     val rows = RosterList.apply(RosterEntries.of(home), controls.query)
-    state.offlineSince?.let { since -> item { OfflineStrip(stringResource(R.string.offline_strip, stripTime(since))) } }
+    state.offlineSince?.let { since -> item { SavedAnswerStrip(stripTime(since), state.stale, retry) } }
     item { CountsCard(home.counts) }
     item { Chips(controls) }
     if (rows.isEmpty()) {
@@ -208,8 +210,12 @@ private fun Chips(controls: RosterControls) {
         itemVerticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
+        val haptics = rememberHaptics()
         RosterRole.entries.forEach { role ->
-            Chip(stringResource(role.label), selected = controls.query.role == role) { controls.query = controls.query.copy(role = role) }
+            Chip(stringResource(role.label), selected = controls.query.role == role) {
+                haptics.selection()
+                controls.query = controls.query.copy(role = role)
+            }
         }
         Box {
             Chip(
@@ -224,6 +230,7 @@ private fun Chips(controls: RosterControls) {
 
 @Composable
 private fun SortMenu(controls: RosterControls) {
+    val haptics = rememberHaptics()
     DropdownMenu(expanded = controls.sortMenuOpen, onDismissRequest = { controls.sortMenuOpen = false }, containerColor = GameColors.sheet) {
         RosterSort.entries.forEach { sort ->
             val current = controls.query.sort == sort
@@ -235,6 +242,7 @@ private fun SortMenu(controls: RosterControls) {
                     null
                 },
                 onClick = {
+                    haptics.selection()
                     controls.query = controls.query.copy(sort = sort)
                     controls.sortMenuOpen = false
                 },

@@ -30,7 +30,7 @@ struct RankingsScreen: View {
         _store = State(initialValue: RankingsStore(
             service: dependencies.service, cache: dependencies.cache, specs: dependencies.specs, now: dependencies.now,
             account: account, encounter: encounter
-        ))
+        ).connected())
         _watchList = State(initialValue: WatchList(service: dependencies.service, signedIn: account.signedIn))
     }
 
@@ -44,7 +44,7 @@ struct RankingsScreen: View {
         .background(FSColor.bg)
         .refreshable { await store.load() }
         .reportsBar(title: Copy.rankTitle) { EmptyView() }
-        .sensoryFeedback(.success, trigger: watchList.confirmed)
+        .haptic(.success, trigger: watchList.confirmed)
         .sheet(isPresented: $showsFilters) {
             if let filters = store.filters, let setup = store.setup {
                 FiltersSheet(
@@ -118,6 +118,9 @@ struct CharacterScreen: View {
     @State private var report: OpenReport?
     @Environment(\.openURL) private var openURL
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.searchNavigator) private var searchNavigator
+    /// Lane F13's planner, for `Open in planner` (lane F15); its switch decides the row.
+    @Environment(PlannerRouter.self) private var planner: PlannerRouter?
 
     var body: some View {
         ScrollView {
@@ -130,12 +133,12 @@ struct CharacterScreen: View {
         .background(FSColor.bg)
         .refreshable { await store?.load() }
         .characterBar(
-            title: route.ref.name, share: route.ref.webURL,
+            title: route.ref.name, share: shareItem,
             star: account.signedIn && showsPage
                 ? WatchStarState(name: displayName, watching: watchList.isWatching(route.ref.key), offline: isOffline)
                 : nil
         ) { Task { await watchList.toggle(route.ref) } }
-        .sensoryFeedback(.success, trigger: watchList.confirmed)
+        .haptic(.success, trigger: watchList.confirmed)
         .sheet(item: $tooltip) { request in
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
         }
@@ -149,7 +152,7 @@ struct CharacterScreen: View {
             let store = store ?? CharacterStore(
                 ref: route.ref, service: dependencies.service, cache: dependencies.cache, now: dependencies.now,
                 items: dependencies.items(build: build)
-            )
+            ).connected()
             self.store = store
             await store.load()
             if watchList.keys.isEmpty { await watchList.load() }
@@ -162,6 +165,16 @@ struct CharacterScreen: View {
     }
 
     private var showsPage: Bool { profile != nil }
+
+    /// `Lightningbolltz, Elemental Shaman, level 60` (spec §5.7 Share).
+    private var shareItem: ShareItem {
+        let head = profile?.character
+        return ShareText.character(
+            key: route.ref.key, name: head?.name ?? route.ref.name,
+            spec: profile.flatMap { CharacterPage.spec($0, specs: dependencies.specs) },
+            className: head?.className, level: head?.level
+        )
+    }
     private var displayName: String { profile?.character.name ?? route.ref.name }
 
     private var isOffline: Bool {
@@ -185,7 +198,11 @@ struct CharacterScreen: View {
                 report = OpenReport(route: ReportRoute(id: line.reportID), yours: account.characterKeys.contains(route.ref.key))
             },
             openHistory: { openURL(route.ref.historyURL) },
-            searchAgain: { dismiss() }
+            searchAgain: {
+                // Lane F15: Search with the name in the field, when Search is on; else back.
+                if let searchNavigator { searchNavigator.open(query: route.ref.name) } else { dismiss() }
+            },
+            openPlanner: planner.flatMap { router in router.isOn ? { link in _ = router.open(link) } : nil }
         )
     }
 }
@@ -207,7 +224,7 @@ struct WatchStarState: Equatable {
 extension View {
     /// The character page's bar (board F11.4): back, then the Watch star and share, each a
     /// 44 pt target drawn without the shared glass ground so the two read as one group.
-    func characterBar(title: String, share: URL, star: WatchStarState?, toggle: @escaping () -> Void) -> some View {
+    func characterBar(title: String, share: ShareItem, star: WatchStarState?, toggle: @escaping () -> Void) -> some View {
         navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(removing: .title)
@@ -219,7 +236,7 @@ extension View {
                     .sharedBackgroundVisibility(.hidden)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: share) {
+                    ShareButton(item: share) {
                         Image(systemName: "square.and.arrow.up").foregroundStyle(FSColor.strong)
                             .frame(width: RankingsLayout.star, height: RankingsLayout.star)
                     }

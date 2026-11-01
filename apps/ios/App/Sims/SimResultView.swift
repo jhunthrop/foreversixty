@@ -18,6 +18,8 @@ struct SimResultView: View {
     var openItem: (SimGearCell) -> Void = { _ in }
     var openBreakdown: (URL) -> Void = { _ in }
     var retry: () -> Void = {}
+    /// Lane F15: the stale strip's time.
+    var staleSince: Date?
 
     private var title: String {
         if case let .loaded(model, _) = phase { return model.title }
@@ -41,6 +43,7 @@ struct SimResultView: View {
                 .padding(16)
             case let .loaded(model, since):
                 if let since { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now))) }
+                if let staleSince { StaleStrip(time: OfflineStamp.format(staleSince, now: now), retry: retry) }
                 content(model)
             }
         }

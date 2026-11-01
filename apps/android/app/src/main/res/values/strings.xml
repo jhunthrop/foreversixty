@@ -1378,4 +1378,111 @@
     <string name="plan_removed">Removed.</string>
     <string name="plan_removedUndo">Undo</string>
     <string name="plan_removeFailed">That build was not removed. Try again.</string>
+    <string name="plan_cmp_title">Compare with mine</string>
+    <string name="plan_cmp_side">Shared build</string>
+    <string name="plan_cmp_yours">Your build</string>
+    <string name="plan_cmp_match">Your build is this shared build.</string>
+    <string name="plan_cmp_matchBeyond">Your build has every point of this shared build.</string>
+    <string name="plan_cmp_differ" tools:ignore="PluralsCandidate">%1$d of your %2$d points differ from the shared build.</string>
+    <string name="plan_cmp_toTake" tools:ignore="PluralsCandidate">%1$d of the shared build\'s points still to take.</string>
+    <plurals name="plan_cmp_missing">
+        <item quantity="one">The shared build takes 1 point you have not.</item>
+        <item quantity="other">The shared build takes %1$d points you have not.</item>
+    </plurals>
+    <string name="plan_cmp_beyond" tools:ignore="PluralsCandidate">+%1$d beyond the shared build</string>
+    <string name="plan_cmp_legend">Dashed: your rank differs from the shared build. +n is points over it, −n points under it. Tap a talent for both ranks and its text.</string>
+    <string name="plan_cmp_rank" tools:ignore="PluralsCandidate">Shared build: rank %1$d/%2$d</string>
+    <string name="plan_cmp_a11yTab" tools:ignore="PluralsCandidate">%1$d points. Talents that differ from the shared build: %2$d.</string>
+    <string name="plan_cmp_a11yCell" tools:ignore="PluralsCandidate">%1$s, rank %2$d of %3$d, shared build rank %4$d</string>
+    <string name="plan_cmp_on">%1$s\'s talents against this build. Change talents in the game; the addon sends them on your next logout.</string>
+    <string name="offline_stale">Forever Sixty did not answer. Showing what you had at %1$s.</string>
+    <string name="offline_retry">Retry</string>
+    <string name="offline_needsConnection">%1$s needs a connection.</string>
+    <string name="offlineData_title">Offline data</string>
+    <string name="offlineData_youRow_sub">Guides, lists and talents on this phone</string>
+    <string name="offlineData_section">On this phone, %1$s</string>
+    <string name="offlineData_guides">Guides</string>
+    <string name="offlineData_bis">Best in slot lists</string>
+    <string name="offlineData_talents">Talents</string>
+    <string name="offlineData_search">Search index</string>
+    <string name="offlineData_icons">Item icons</string>
+    <string name="offlineData_rowMeta">%1$s · %2$s · Updated %3$s</string>
+    <string name="offlineData_rowMetaNoWhat">%1$s · Updated %2$s</string>
+    <string name="offlineData_today">today</string>
+    <string name="offlineData_yesterday">yesterday</string>
+    <string name="offlineData_empty">Nothing is saved on this phone yet.</string>
+    <string name="offlineData_emptySub">Guides and lists save here the first time you open them.</string>
+    <string name="offlineData_updates">Updates</string>
+    <string name="offlineData_keep">Keep my classes ready</string>
+    <string name="offlineData_keepNote">Saves the guide, lists and talents for every class you have a character in.</string>
+    <string name="offlineData_wifi">Download on Wi-Fi only</string>
+    <string name="offlineData_wifiNote">Icons and new guides wait for Wi-Fi.</string>
+    <string name="offlineData_updateNow">Update now</string>
+    <string name="offlineData_updating">Updating</string>
+    <string name="offlineData_upToDate">Everything on this phone is up to date.</string>
+    <string name="offlineData_remove">Remove downloaded data</string>
+    <string name="offlineData_removeConfirm">Remove downloaded data? It downloads again when you open a guide or list.</string>
+    <string name="offlineData_removeAction">Remove</string>
+    <string name="offlineData_footer">Checked %1$s. Your characters, sign-ups and sims are not stored here; they load when you are online.</string>
+    <string name="offlineData_footerNever">Not checked yet. Your characters, sign-ups and sims are not stored here; they load when you are online.</string>
+    <string name="offlineData_checkedAt">%1$s at %2$s</string>
+    <string name="intent_signup_title">Sign up for a raid</string>
+    <string name="intent_nextUpgrade_title">Next upgrade</string>
+    <string name="intent_nextRaid_title">Next raid</string>
+    <string name="intent_whoIsComing_title">Who is coming</string>
+    <string name="intent_openBis_title">Open my best in slot list</string>
+    <string name="intent_control_title">In for the next raid</string>
+    <string name="intent_state_in">In</string>
+    <string name="intent_state_late">Late</string>
+    <string name="intent_state_out">Out</string>
+    <string name="intent_confirmSignup">Sign %1$s up as %2$s for %3$s, %4$s %5$s?</string>
+    <string name="intent_confirmAction">Sign up</string>
+    <string name="intent_which">Which raid?</string>
+    <string name="intent_spec">Which spec is %1$s on %2$s?</string>
+    <string name="intent_signedUp" tools:ignore="PluralsCandidate">You are %1$s for %2$s, %3$s at %4$s, as %5$s on %6$s. %7$d of %8$d signed up.</string>
+    <string name="intent_nextRaid" tools:ignore="PluralsCandidate">%1$s, %2$s at %3$s. You are %4$s. %5$d of %6$d signed up.</string>
+    <string name="intent_nextRaidUnanswered" tools:ignore="PluralsCandidate">%1$s, %2$s at %3$s. You have not signed up. %4$d of %5$d signed up.</string>
+    <string name="intent_whoIsComing" tools:ignore="PluralsCandidate">%1$d of %2$d signed up: %3$s.</string>
+    <plurals name="intent_roles_tanks">
+        <item quantity="one">1 tank</item>
+        <item quantity="other">%1$d tanks</item>
+    </plurals>
+    <plurals name="intent_roles_healers">
+        <item quantity="one">1 healer</item>
+        <item quantity="other">%1$d healers</item>
+    </plurals>
+    <string name="intent_roles_dps" tools:ignore="PluralsCandidate">%1$d DPS</string>
+    <string name="intent_roles_late" tools:ignore="PluralsCandidate">%1$d late</string>
+    <string name="intent_upgradeMeta" tools:ignore="PluralsCandidate">%1$s · item level %2$d · %3$s</string>
+    <string name="intent_upgradeMetaNoSource" tools:ignore="PluralsCandidate">%1$s · item level %2$d</string>
+    <string name="intent_upgradeGain">+%1$s DPS for %2$s. Replaces %3$s.</string>
+    <string name="intent_upgradeGainEmpty">+%1$s DPS for %2$s. Fills an empty slot.</string>
+    <string name="intent_upgradeNoGain">Gain not modelled yet for %1$s. Replaces %2$s.</string>
+    <string name="intent_noUpgrade">%1$s has no upgrade on the list right now.</string>
+    <string name="intent_signedOut">Sign in to Forever Sixty first.</string>
+    <string name="intent_noCharacter">Add a character in Forever Sixty first.</string>
+    <string name="intent_noGuild">%1$s is on no guild roster yet.</string>
+    <string name="intent_noRaid">No raid planned.</string>
+    <string name="intent_cancelled">%1$s on %2$s is cancelled.</string>
+    <string name="intent_off">Forever Sixty cannot do that yet.</string>
+    <string name="intent_offline">Forever Sixty needs a connection for that.</string>
+    <string name="intent_character">Character</string>
+    <string name="intent_raid">Raid</string>
+    <string name="shortcut_nextRaid">Next raid</string>
+    <string name="shortcut_signupIn">Sign up In</string>
+    <string name="shortcut_upgrades">My upgrades</string>
+    <string name="shortcut_search">Search</string>
+    <string name="shortcut_signupToast">You are In for %1$s.</string>
+    <string name="shortcut_characterSub">Forever Sixty · character</string>
+    <string name="shortcut_disabled">Open Forever Sixty to use this shortcut.</string>
+    <string name="spotlight_characterSub">%1$s %2$s · %3$s · %4$s</string>
+    <string name="spotlight_characterSubNoGuild">%1$s %2$s · %3$s</string>
+    <string name="spotlight_guideSub">Guide · Updated %1$s</string>
+    <string name="spotlight_raidTitle">%1$s · %2$s %3$s</string>
+    <string name="spotlight_raidSub">Raid · %1$s</string>
+    <string name="share_character" tools:ignore="PluralsCandidate">%1$s, %2$s %3$s, level %4$d</string>
+    <string name="share_guide">%1$s %2$s guide</string>
+    <string name="share_tiers">%1$s tier list</string>
+    <string name="share_report">%1$s · %2$s</string>
+    <string name="share_action">Share</string>
 </resources>

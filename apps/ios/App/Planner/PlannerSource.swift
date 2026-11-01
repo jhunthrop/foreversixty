@@ -1,7 +1,6 @@
 import Foundation
 import Models
 import Networking
-import UIKit
 
 /// What the planner reads and writes: the static talent, race, combo and class files through
 /// the offline cache, and the builds API. A protocol so every model is tested without a network.
@@ -38,34 +37,14 @@ struct LivePlannerSource: PlannerSource {
     func remove(id: String) async throws(APIError) { _ = try await client.send(.removeBuild(id: id)) }
 }
 
-/// The planner's haptics (spec F13.1 Interactions; the web's SEGMENT_TICK, LONG_PRESS, REJECT and
-/// CONFIRM): selection on an added point, a medium impact on a removed one, error on a refusal,
-/// success on a share.
-@MainActor
-protocol PlannerHaptics {
-    func play(_ haptic: PlannerHaptic)
-}
-
-enum PlannerHaptic: Equatable, Sendable {
-    case segmentTick, longPress, reject, confirm
-
-    static func of(_ event: PlannerEvent) -> PlannerHaptic {
+/// The planner's moments on the app's one Haptics facade (spec §5.7 Haptics): an added point
+/// `.selection`, a removed one `.impact(.medium)`, a refusal `.error`; a share `.success`.
+enum PlannerHaptic {
+    static func of(_ event: PlannerEvent) -> HapticMoment {
         switch event {
-        case .added: .segmentTick
-        case .removed: .longPress
-        case .refused: .reject
-        }
-    }
-}
-
-@MainActor
-struct SystemPlannerHaptics: PlannerHaptics {
-    func play(_ haptic: PlannerHaptic) {
-        switch haptic {
-        case .segmentTick: UISelectionFeedbackGenerator().selectionChanged()
-        case .longPress: UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        case .reject: UINotificationFeedbackGenerator().notificationOccurred(.error)
-        case .confirm: UINotificationFeedbackGenerator().notificationOccurred(.success)
+        case .added: .selection
+        case .removed: .impactMedium
+        case .refused: .error
         }
     }
 }
@@ -74,7 +53,7 @@ struct SystemPlannerHaptics: PlannerHaptics {
 struct PlannerDependencies {
     let source: any PlannerSource
     let drafts: any PlannerDraftStore
-    let haptics: any PlannerHaptics
+    let haptics: any Haptics
     /// Saved shared builds, so a viewer opened once opens offline.
     let cache: any RaidCache
 
@@ -86,7 +65,7 @@ struct PlannerDependencies {
         return PlannerDependencies(
             source: LivePlannerSource(files: talents.files, talentsSource: talents, client: environment.client),
             drafts: UserDefaultsPlannerDraftStore(),
-            haptics: SystemPlannerHaptics(),
+            haptics: SystemHaptics(),
             cache: DiskRaidCache(directory: base.appending(path: "builds", directoryHint: .isDirectory))
         )
     }

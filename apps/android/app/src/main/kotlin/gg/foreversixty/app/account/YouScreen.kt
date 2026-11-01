@@ -90,6 +90,8 @@ class YouActions(
     val onSignOut: () -> Unit,
     /** Lane F16: You › Calendar; null hides the row while `guild_extras` is off. */
     val onCalendar: (() -> Unit)? = null,
+    /** Lane F15: You › Offline data; null hides the row while `system` is off. */
+    val onOfflineData: (() -> Unit)? = null,
 )
 
 /**
@@ -131,6 +133,16 @@ fun YouScreen(
                     subtitle = stringResource(R.string.calendar_youRow_sub),
                     chevron = true,
                     onClick = onCalendar,
+                )
+            }
+            actions.onOfflineData?.let { onOfflineData ->
+                HorizontalDivider(color = FsColor.lineSoft)
+                AccountRow(
+                    painterResource(R.drawable.ic_cloud_download),
+                    stringResource(R.string.offlineData_title),
+                    subtitle = stringResource(R.string.offlineData_youRow_sub),
+                    chevron = true,
+                    onClick = onOfflineData,
                 )
             }
         }

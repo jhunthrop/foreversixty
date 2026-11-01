@@ -116,7 +116,9 @@ private fun SharedHead(view: SharedBuildView, state: SharedPageState) {
     ) {
         ClassCrest(view.classSlug, 44.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(headLine(stringResource(R.string.plan_shared_head, view.raceName, view.className, totals), totals), style = FsType.bodyStrong, color = FsColor.strong)
+            // The totals sit on their own line, as on iOS (review round 2): `Orc Shaman`, then `30 / 3 / 18`.
+            Text(stringResource(R.string.plan_shared_head, view.raceName, view.className, "").trimEnd(), style = FsType.bodyStrong, color = FsColor.strong)
+            Text(headLine(totals, totals), style = FsType.bodyStrong, color = FsColor.strong)
             Text(meta, style = FsType.meta, color = FsColor.muted)
         }
     }

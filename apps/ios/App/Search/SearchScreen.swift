@@ -1,6 +1,7 @@
 import DesignSystem
 import DesignTokens
 import Models
+import Routing
 import SwiftUI
 
 /// A talent result's sheet, by the talent it names.
@@ -23,6 +24,7 @@ struct SearchScreen: View {
     @State private var store: SearchStore
     @State private var path: [ItemPageRoute] = []
     @State private var talent: SearchTalentRoute?
+    @State private var watching: [WatchedCharacter] = []
     @FocusState private var focused: Bool
     @Environment(\.openURL) private var openURL
 
@@ -41,7 +43,9 @@ struct SearchScreen: View {
                     hasQuery: store.hasQuery, query: store.query, scope: store.scope, index: store.index,
                     results: store.results, characters: store.characters, recent: store.recent,
                     forCharacter: SearchForCharacter(store.context, specs: dependencies.specs),
-                    viewer: store.context.viewer, build: build, actions: actions
+                    viewer: store.context.viewer, build: build, actions: actions,
+                    watching: watching.map(SearchWords.row), nativeRankings: dependencies.nativeRankings,
+                    nativeGuides: dependencies.nativeGuides
                 )
             }
             .navigationTitle(Copy.itemPageBack)
@@ -55,7 +59,11 @@ struct SearchScreen: View {
         }
         .task { await store.loadIndex() }
         .task(id: CharacterAskKey(query: store.query, scope: store.scope)) { await store.searchCharacters() }
-        .onAppear { focused = true }
+        .task { watching = await dependencies.watching() }
+        .onAppear {
+            if let name = navigator.takePrefill() { store.query = name }
+            focused = true
+        }
     }
 
     private var build: String { store.index.corpus?.build ?? "" }
@@ -68,11 +76,11 @@ struct SearchScreen: View {
             },
             openCharacter: { row in
                 store.opened(RecentSearch(character: row))
-                openURL(SearchLinks.character(key: row.key))
+                openCharacter(row.key)
             },
             openGuide: { hit in
                 store.opened(RecentSearch(guide: hit))
-                openURL(SearchLinks.guide(className: hit.guide.className, spec: hit.guide.spec))
+                openGuide(hit.guide.className, hit.guide.spec)
             },
             openTalent: { found in
                 store.opened(RecentSearch(talent: found))
@@ -86,8 +94,32 @@ struct SearchScreen: View {
             openMyBis: {
                 navigator.openList(store.context.character.flatMap { BisSelection.forCharacter($0, catalog: dependencies.specs) })
             },
-            openURL: { openURL($0) }
+            openURL: { openURL($0) },
+            openGuideLink: { openGuide($0, $1) },
+            openRankings: {
+                if dependencies.nativeRankings { navigator.leave(to: .rankingsBoard) } else { openURL(SearchLinks.rankings) }
+            }
         )
+    }
+
+    /// F9 in the app when `guides` is on (lane F15), else the website as before.
+    private func openGuide(_ className: String, _ spec: String) {
+        guard dependencies.nativeGuides else {
+            openURL(SearchLinks.guide(className: className, spec: spec))
+            return
+        }
+        navigator.leave(to: .link(.guide(className: className, spec: spec)))
+    }
+
+    /// F11.4 in the app when `rankings` is on (lane F15), else the website as before.
+    private func openCharacter(_ key: String) {
+        guard dependencies.nativeRankings else {
+            openURL(SearchLinks.character(key: key))
+            return
+        }
+        let parts = key.split(separator: "/").map(String.init)
+        guard parts.count == 3 else { return }
+        navigator.leave(to: .link(.player(region: parts[0], ruleset: parts[1], name: parts[2])))
     }
 
     /// A Recent row opens what it remembers, and moves to the top.
@@ -97,9 +129,9 @@ struct SearchScreen: View {
         case let .item(id):
             path.append(ItemPageRoute(itemID: id))
         case let .character(key):
-            openURL(SearchLinks.character(key: key))
+            openCharacter(key)
         case let .guide(className, spec):
-            openURL(SearchLinks.guide(className: className, spec: spec))
+            openGuide(className, spec)
         case let .talent(id, _):
             if let found = store.index.corpus?.talent(id) { talent = SearchTalentRoute(talent: found) }
         }

@@ -59,7 +59,7 @@ struct TierChips: View {
                     .allowsHitTesting(false)
             }
         }
-        .sensoryFeedback(.selection, trigger: choice)
+        .haptic(.selection, trigger: choice)
     }
 
     private func chip(_ title: String, isOn: Bool, action: @escaping () -> Void) -> some View {

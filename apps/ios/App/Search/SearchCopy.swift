@@ -7,6 +7,14 @@ enum SearchWords {
         GameClass(rawValue: slug.lowercased())?.name ?? slug.capitalized
     }
 
+    /// A watched character drawn as a character result (lane F15's Watching group).
+    static func row(_ watched: WatchedCharacter) -> CharacterSearchRow {
+        CharacterSearchRow(
+            key: watched.key, region: watched.region, ruleset: watched.ruleset, name: watched.name,
+            className: watched.className, level: watched.level
+        )
+    }
+
     /// `Elemental Shaman`.
     static func specClass(spec: String, classSlug: String) -> String {
         Copy.bisSpecChip(spec: spec, className: className(classSlug))

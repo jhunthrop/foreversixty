@@ -1,7 +1,10 @@
 package gg.foreversixty.app.planner
 
-import android.content.Context
-import android.content.Intent
+import gg.foreversixty.app.system.logic.ShareMessage
+import gg.foreversixty.app.system.logic.ShareText
+import gg.foreversixty.app.talents.TalentsPhase
+import gg.foreversixty.app.talents.TalentsPage
+import gg.foreversixty.app.planner.logic.SharedCompare
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarDuration
@@ -18,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
@@ -34,7 +36,7 @@ import gg.foreversixty.app.planner.logic.PlannerScreen
 import gg.foreversixty.app.planner.logic.ShareOutcome
 import gg.foreversixty.app.planner.logic.SharedBuildModel
 import gg.foreversixty.app.planner.logic.SharedBuildPhase
-import gg.foreversixty.app.planner.logic.ViewPlannerHaptics
+import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.planner.logic.YourBuildsModel
 import gg.foreversixty.app.planner.logic.YourBuildsPhase
 import gg.foreversixty.app.planner.ui.BuildsActions
@@ -82,11 +84,11 @@ private enum class EditorSheet { None, Race, Level, Reset, Share }
 
 @Composable
 private fun PlannerEditorRoute(feature: PlannerFeature, request: EditorRequest, back: () -> Unit) {
-    val view = LocalView.current
     val context = LocalContext.current
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
-    val model = remember(request) { PlannerEditorModel(feature.source, feature.drafts, request, ViewPlannerHaptics(view)) }
+    val haptics = rememberHaptics()
+    val model = remember(request) { PlannerEditorModel(feature.source, feature.drafts, request, haptics) }
     val phase by model.phase.collectAsStateWithLifecycle()
     var tree by rememberSaveable(request) { mutableStateOf(0) }
     var settled by rememberSaveable(request) { mutableStateOf(false) }
@@ -154,19 +156,13 @@ private fun PlannerEditorRoute(feature: PlannerFeature, request: EditorRequest, 
                     scope.launch {
                         val outcome = model.share(title)
                         dismiss()
-                        if (outcome is ShareOutcome.Shared) openShareSheet(context, outcome.saved.url, shareText(ready, res))
+                        if (outcome is ShareOutcome.Shared) ShareText.send(context, ShareMessage(shareText(ready, res), outcome.saved.url))
                     }
                 },
                 cancel = dismiss,
             )
         }
     }
-}
-
-/** The system share sheet with the link (spec F13.4). */
-private fun openShareSheet(context: Context, url: String, title: String) {
-    val send = Intent(Intent.ACTION_SEND).setType(SHARE_TYPE).putExtra(Intent.EXTRA_TEXT, url).putExtra(Intent.EXTRA_TITLE, title)
-    context.startActivity(Intent.createChooser(send, title))
 }
 
 /** `Orc Shaman · 30 / 3 / 18`: the share sheet's preview line. */
@@ -193,17 +189,30 @@ private fun SharedBuildRoute(feature: PlannerFeature, id: String, back: () -> Un
     }
     val loaded = (phase as? SharedBuildPhase.Loaded)?.view
     val fromList = feature.navigator.stack.dropLast(1).lastOrNull() == PlannerScreen.Builds
+    // Lane F15: `Compare with mine` draws F6's compare over this build, with the shared build's words.
+    val mine = loaded?.let { feature.compareExport(it.classSlug) }
+    var comparing by rememberSaveable(id) { mutableStateOf(false) }
+    if (comparing && loaded != null && mine != null) {
+        BackHandler { comparing = false }
+        SharedCompareRoute(SharedCompare.presenter(loaded, mine), loaded.build.treeVersion) { comparing = false }
+        return
+    }
     SharedBuildPage(
         SharedPageState(
             phase = phase,
             tree = tree,
             offlineStamp = loaded?.offlineSinceMillis?.let { OfflineStamp.format(Instant.ofEpochMilli(it), Instant.now()) },
+            canCompare = mine != null,
             backLabel = if (fromList) res.getString(R.string.plan_yourBuilds) else null,
         ),
         SharedActions(
             back = back,
-            share = { buildId -> openShareSheet(context, DeepLink.SharedBuild(buildId).url(), res.getString(R.string.plan_shared_title)) },
+            share = { buildId ->
+                val text = loaded?.let { res.getString(R.string.plan_shareText, it.raceName, it.className, PlannerCopy(res).totals(it.totals)) }
+                ShareText.send(context, ShareMessage(text ?: res.getString(R.string.plan_shared_title), DeepLink.SharedBuild(buildId).url()))
+            },
             editCopy = { view -> feature.navigator.push(PlannerScreen.Editor(EditorRequest.Copy(view.classSlug, view.build))) },
+            compare = { comparing = true },
             onTree = { tree = it },
             openTalent = { sheetId = it },
             retry = { scope.launch { model.load() } },
@@ -211,6 +220,29 @@ private fun SharedBuildRoute(feature: PlannerFeature, id: String, back: () -> Un
     )
     val sheet = loaded?.let { view -> sheetId?.let { talentId -> rankSheet(view.file, view.ranks).sheet(TalentBuildKind.Yours, talentId, res) } }
     sheet?.let { TalentRankSheet(it, loaded.build.treeVersion) { sheetId = null } }
+}
+
+/** F6's compare over a shared build (F13.5): the same screen as Talents, titled `Compare with mine`. */
+@Composable
+private fun SharedCompareRoute(presenter: TalentsPresenter, build: String, back: () -> Unit) {
+    val res = LocalResources.current
+    var shown by rememberSaveable { mutableStateOf(presenter.initialBuild) }
+    var tree by rememberSaveable { mutableStateOf(presenter.openingTree) }
+    var sheetId by remember { mutableStateOf<Int?>(null) }
+    TalentsPage(
+        phase = TalentsPhase.Loaded(presenter, null),
+        build = build,
+        offlineStamp = null,
+        shown = shown,
+        tree = tree,
+        onShow = { shown = it },
+        onTree = { tree = it },
+        selectedId = sheetId,
+        openTalent = { sheetId = it },
+        back = back,
+        title = res.getString(R.string.plan_cmp_title),
+    )
+    presenter.sheet(shown, sheetId ?: return, res)?.let { TalentRankSheet(it, build) { sheetId = null } }
 }
 
 /** F6's rank sheet over a planner build's ranks (the editor's strip, a shared build): the same sheet, read only. */
@@ -258,6 +290,5 @@ private fun YourBuildsRoute(feature: PlannerFeature, back: () -> Unit) {
     )
 }
 
-private const val SHARE_TYPE = "text/plain"
 /** The snackbar's `Removed. Undo` stays 5 s (spec F13.6). */
 private const val SNACKBAR_MILLIS = 5_000L

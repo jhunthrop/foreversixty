@@ -14,7 +14,7 @@ import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
-import gg.foreversixty.app.network.CachedStaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticEndpoints
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -52,7 +52,7 @@ interface BisDataSource {
 
 /** The live source: the CDN through the offline cache, the build from the app config. */
 class LiveBisDataSource(
-    private val files: CachedStaticDataClient,
+    private val files: StaticDataStore,
     private val configuredBuild: suspend () -> String?,
     private val character: suspend () -> AccountCharacter?,
     /** Null only for a broken build; the first offline launch then shows the not-saved sentence. */
@@ -217,6 +217,14 @@ class BisModel(
 
     /** Pull to refresh and `Try again`: refetch the current list, keeping what is on screen. */
     suspend fun refresh() = load()
+
+    /** The new-data strip's `Update` (lane F15): the list again on the active build, now the newer one. */
+    suspend fun update() {
+        val build = source.activeBuild()
+        mutable.update { it.copy(build = build) }
+        drawSaved(build)
+        load()
+    }
 
     /** A picker choice: applies at once and the list redraws under the sheet. */
     suspend fun select(selection: BisSelection) {

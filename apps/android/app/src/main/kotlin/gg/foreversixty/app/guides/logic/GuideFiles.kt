@@ -3,8 +3,7 @@ package gg.foreversixty.app.guides.logic
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
-import gg.foreversixty.app.network.CachedStaticDataClient
-import gg.foreversixty.app.network.StaticFileCache
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticResource
 import java.time.Instant
 
@@ -23,11 +22,11 @@ interface GuideFiles {
     fun savedBytes(resource: StaticResource<*>): Long?
 }
 
-/** The CDN through the app's offline cache (the same cache the BiS and Talents features use). */
-class LiveGuideFiles(private val files: CachedStaticDataClient, private val cache: StaticFileCache) : GuideFiles {
+/** The CDN through the app's one static data store (the same store BiS, Talents and Search use). */
+class LiveGuideFiles(private val files: StaticDataStore) : GuideFiles {
     override suspend fun <T> load(resource: StaticResource<T>) = files.load(resource)
     override fun <T> cached(resource: StaticResource<T>) = files.cached(resource)
-    override fun savedBytes(resource: StaticResource<*>): Long? = cache.read(resource.path)?.body?.toByteArray()?.size?.toLong()
+    override fun savedBytes(resource: StaticResource<*>): Long? = files.savedBytes(resource)
 }
 
 /** One region's data (spec v1 §5.0): loading, drawn (with when it was saved, offline), not saved, or failed. */

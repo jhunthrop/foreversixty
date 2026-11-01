@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.logic
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.res.Resources
 import androidx.annotation.StringRes
 import gg.foreversixty.app.R
@@ -173,8 +174,8 @@ class RosterCopy(private val res: Resources) {
 }
 
 /** `GET /v1/guilds/{id}/home` for the roster and the Raids tab's `Roster` row, cache first. */
-class RosterStore(val guild: Long, service: GuildService, cache: RaidCache, now: () -> Instant) {
-    private val loader = CacheFirst("guild-$guild-home", GuildHome.serializer(), cache, now) { service.home(guild) }
+class RosterStore(val guild: Long, service: GuildService, cache: RaidCache, connectivity: Connectivity = Connectivity.Unknown, now: () -> Instant) {
+    private val loader = CacheFirst("guild-$guild-home", GuildHome.serializer(), cache, now, connectivity) { service.home(guild) }
 
     val state: Loadable<GuildHome> get() = loader.state
 

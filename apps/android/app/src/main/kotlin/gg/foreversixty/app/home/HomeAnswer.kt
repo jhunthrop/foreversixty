@@ -45,7 +45,7 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
+import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.primaryCard
@@ -79,11 +79,11 @@ fun HomeAnswer(
     phase: HomePhase,
     presenter: HomePresenter,
     build: String,
-    offlineStrip: String?,
+    stripStamp: String?,
     send: (HomeIntent) -> Unit = {},
 ) {
     Column(Modifier.fillMaxWidth()) {
-        offlineStrip?.let { OfflineStrip(it) }
+        stripStamp?.let { SavedAnswerStrip(it, (phase as? HomePhase.Loaded)?.stale == true, onRetry = { send(HomeIntent.Retry) }) }
         when (phase) {
             HomePhase.Loading -> HomeSkeleton()
             is HomePhase.Loaded -> Answer(presenter.model(phase.home), build, send)

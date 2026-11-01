@@ -34,11 +34,14 @@ struct GuildScreenScroll<Content: View, Trailing: View>: View {
     let offlineStrip: String?
     @ViewBuilder let trailing: () -> Trailing
     @ViewBuilder let content: () -> Content
+    /// Lane F15: the stale strip, when Forever Sixty did not answer.
+    var stale: StaleStrip?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 if let offlineStrip { OfflineStrip(text: offlineStrip) }
+                if let stale { stale }
                 VStack(alignment: .leading, spacing: 16) {
                     HStack(alignment: .center, spacing: 12) {
                         Text(title.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
@@ -57,8 +60,8 @@ struct GuildScreenScroll<Content: View, Trailing: View>: View {
 }
 
 extension GuildScreenScroll where Trailing == EmptyView {
-    init(title: String, offlineStrip: String?, @ViewBuilder content: @escaping () -> Content) {
-        self.init(title: title, offlineStrip: offlineStrip, trailing: { EmptyView() }, content: content)
+    init(title: String, offlineStrip: String?, stale: StaleStrip? = nil, @ViewBuilder content: @escaping () -> Content) {
+        self.init(title: title, offlineStrip: offlineStrip, trailing: { EmptyView() }, content: content, stale: stale)
     }
 }
 

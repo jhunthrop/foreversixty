@@ -1,5 +1,9 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.model.CharacterSearchRow
+import gg.foreversixty.app.search.SearchRankings
+import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -66,15 +70,38 @@ class RankingsFeature(
     private val isAvailable: () -> Boolean,
     val now: () -> Instant = Instant::now,
     val zone: ZoneId = ZoneId.systemDefault(),
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val navigator = RankingsNavigator()
+
+    /** Lane F15: Builds seen's `Open in planner` (F13); null while `planner` is off. */
+    var openPlanner: ((DeepLink.Planner) -> Unit)? = null
+
+    /** Lane F15: `Search again` on F11.7 opens Search with the name in the field; null goes back. */
+    var searchAgain: ((String) -> Unit)? = null
+
+    /** Search's way in (lane F15): the board, a character page, the Watching group. */
+    fun searchLink(): SearchRankings = SearchRankings(
+        open = { link -> navigator.open(link) },
+        openBoard = {
+            navigator.character = null
+            navigator.showsBoard = true
+            navigator.wantsHome = true
+        },
+        watching = {
+            (service.watching() as? ApiResult.Success)?.data?.rows.orEmpty().map {
+                CharacterSearchRow(it.key, it.region, it.ruleset, it.name, it.className, it.level)
+            }
+        },
+    )
 
     /** Rankings ships dark behind `rankings` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
 
     suspend fun iconBuild(): String? = build()
 
-    fun store(viewer: RankingsViewer) = RankingsStore(service, cache, viewer, specs, now)
+    fun store(viewer: RankingsViewer) = RankingsStore(service, cache, viewer, specs, connectivity, now)
 
     /**
      * Home's Rankings row (spec F11.1): one read of the current character's board with its
@@ -96,6 +123,7 @@ class RankingsFeature(
             specs: SpecCatalog,
             catalog: ItemCatalog,
             isAvailable: () -> Boolean,
+            connectivity: Connectivity = Connectivity.Unknown,
         ) = RankingsFeature(
             service = LiveRankingsService(apiClient),
             cache = FileRaidCache(File(context.filesDir, "rankings")),
@@ -103,6 +131,7 @@ class RankingsFeature(
             catalog = catalog,
             build = { statics.activeBuild().dataOrNull()?.build },
             isAvailable = isAvailable,
+            connectivity = connectivity,
         )
 
         /** The system share sheet with a web link. */

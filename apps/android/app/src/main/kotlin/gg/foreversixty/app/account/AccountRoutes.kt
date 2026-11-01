@@ -1,5 +1,7 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.system.offline.OfflineDataRoute
+import gg.foreversixty.app.system.offline.OfflineDataModel
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -80,6 +82,8 @@ class AccountDeps(
     val liveSurfaces: LiveSurfaceSettings? = null,
     /** Lane F16: You › Calendar; null while `guild_extras` is off. */
     val guildExtras: GuildExtrasFeature? = null,
+    /** Lane F15: You › Offline data's model; null while `system` is off. */
+    val offlineData: () -> OfflineDataModel? = { null },
 )
 
 /**
@@ -125,7 +129,7 @@ fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOu
     )
 }
 
-private enum class YouPage { Root, Plan, Devices, Delete, About, Calendar }
+private enum class YouPage { Root, Plan, Devices, Delete, About, Calendar, OfflineData }
 
 /** The You tab: the account section when signed in, the sign-in panel when not. */
 @Composable
@@ -154,6 +158,7 @@ private fun SignedInYou(deps: AccountDeps) {
     val version = AccountCopy.version(deps.versionName, deps.versionCode, deps.dataBuild())
     val mayLink by deps.plansLink.mayLink.collectAsStateWithLifecycle()
     val plan = PlanSummary.of(me, Instant.now())
+    val offlineData = remember(deps) { deps.offlineData() }
     BackHandler(enabled = page != YouPage.Root) { page = YouPage.Root }
     LaunchedEffect(Unit) {
         deviceCount = (session.devices() as? ApiResult.Success)?.data?.size
@@ -182,6 +187,7 @@ private fun SignedInYou(deps: AccountDeps) {
                 onDeleteAccount = { page = YouPage.Delete },
                 onSignOut = { scope.launch { session.signOut() } },
                 onCalendar = deps.guildExtras?.let { { page = YouPage.Calendar } },
+                onOfflineData = offlineData?.let { { page = YouPage.OfflineData } },
             ),
             mayLink = mayLink,
             liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
@@ -190,6 +196,7 @@ private fun SignedInYou(deps: AccountDeps) {
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
         YouPage.Delete -> DeleteRoute(session, DeletionConsequence.of(me))
         YouPage.About -> AboutScreen(version)
+        YouPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { page = YouPage.Root } }
         YouPage.Calendar -> deps.guildExtras?.let { extras ->
             CalendarRoute(extras, me.user.id.toString(), session.currentCharacter(phase, picked)?.key) { page = YouPage.Root }
         }

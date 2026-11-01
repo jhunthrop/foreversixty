@@ -58,7 +58,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import gg.foreversixty.app.R
-import gg.foreversixty.app.designsystem.OfflineStrip
+import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidView
@@ -98,6 +98,8 @@ fun RaidPageScreen(
         }
         is RaidPageModel.State.Loaded -> RaidPageContent(
             state.controller, clock, now, currentKey, model.offlineSince, guildName, guildUrl, openNight, back, requestPermission,
+            stale = model.stale,
+            retry = { scope.launch { model.load() } },
         )
         RaidPageModel.State.Failed -> PageMessage(back) {
             ErrorRegion(stringResource(R.string.raid_failed)) { scope.launch { model.load() } }
@@ -147,6 +149,8 @@ fun RaidPageContent(
     openNight: (Long) -> Unit,
     back: () -> Unit,
     requestPermission: () -> Unit,
+    stale: Boolean = false,
+    retry: () -> Unit = {},
 ) {
     val raid = controller.raid
     val facts = controller.facts
@@ -183,7 +187,7 @@ fun RaidPageContent(
                 windowInsets = WindowInsets(0, 0, 0, 0),
             )
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-                offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, clock.stripTime(it, now()))) }
+                offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), stale, retry) }
                 Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
                     RaidHead(raid, facts, clock, now, guildName)
                     CountBlock(facts, muted = facts.chip == RaidChip.Cancelled)

@@ -1,5 +1,8 @@
 package gg.foreversixty.app.sims.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import android.content.res.Resources
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,14 +10,14 @@ import androidx.compose.runtime.setValue
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.model.SimResult
 import gg.foreversixty.app.model.SimRow
-import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.logic.RaidCache
 import java.time.Instant
 
 sealed interface SimResultPhase {
     data object Loading : SimResultPhase
-    data class Loaded(val model: SimResultModel, val offlineSince: Instant?) : SimResultPhase
+    /** [offlineSince] is set while the saved result shows under a strip: offline, or [stale] (W3 §5.7). */
+    data class Loaded(val model: SimResultModel, val offlineSince: Instant?, val stale: Boolean = false) : SimResultPhase
     data object Failed : SimResultPhase
 }
 
@@ -27,6 +30,7 @@ class SimResultStore(
     private val specs: SpecCatalog,
     private val res: Resources,
     private val now: () -> Instant,
+    private val connectivity: Connectivity = Connectivity.Unknown,
     private val markSeen: suspend (String) -> Unit,
 ) {
     var phase: SimResultPhase by mutableStateOf(SimResultPhase.Loading)
@@ -47,11 +51,8 @@ class SimResultStore(
             }
             is ApiResult.Failure -> {
                 val cached = cache.read(cacheKey, SimResult.serializer())
-                phase = if (answer.error is ApiError.Network && cached != null) {
-                    SimResultPhase.Loaded(model(cached.value), cached.savedAt)
-                } else {
-                    SimResultPhase.Failed
-                }
+                val saved = StripDecision.savedView(answer.error, cached?.value, cached?.savedAt, now(), CacheLimits.SIMS, connectivity.isConnected())
+                phase = saved?.let { SimResultPhase.Loaded(model(it.value), it.since, it.stale) } ?: SimResultPhase.Failed
             }
         }
     }

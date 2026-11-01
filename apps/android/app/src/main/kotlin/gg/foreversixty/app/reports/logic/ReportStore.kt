@@ -1,5 +1,8 @@
 package gg.foreversixty.app.reports.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,7 +17,8 @@ import java.time.Instant
 
 sealed interface ReportPhase {
     data object Loading : ReportPhase
-    data class Loaded(val report: Report, val offlineSince: Instant?) : ReportPhase
+    /** [offlineSince] is set while the saved report shows under a strip: offline, or [stale] (W3 §5.7). */
+    data class Loaded(val report: Report, val offlineSince: Instant?, val stale: Boolean = false) : ReportPhase
     data object Failed : ReportPhase
 
     /** A 404: private, removed, or not the viewer's to see (spec F10.5). */
@@ -80,6 +84,7 @@ class ReportStore(
     private val service: ReportsService,
     private val cache: RaidCache,
     private val viewer: ReportsViewer,
+    private val connectivity: Connectivity = Connectivity.Unknown,
     private val now: () -> Instant,
 ) {
     var phase: ReportPhase by mutableStateOf(ReportPhase.Loading)
@@ -113,9 +118,10 @@ class ReportStore(
             is ApiResult.Failure -> {
                 val error = answer.error
                 val cached = cache.read(cacheKey, Report.serializer())
+                val saved = StripDecision.savedView(error, cached?.value, cached?.savedAt, now(), CacheLimits.REPORTS, connectivity.isConnected())
                 phase = when {
                     error is ApiError.Server && error.status == NOT_FOUND -> ReportPhase.NotYours
-                    error is ApiError.Network && cached != null -> ReportPhase.Loaded(cached.value, cached.savedAt)
+                    saved != null -> ReportPhase.Loaded(saved.value, saved.since, saved.stale)
                     loaded != null -> phase
                     else -> ReportPhase.Failed
                 }

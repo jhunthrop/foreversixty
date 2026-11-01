@@ -87,11 +87,10 @@ final class FakeRaidService: RaidService, @unchecked Sendable {
 }
 
 @MainActor
-final class RecordingHaptics: RaidHaptics {
-    private(set) var calls: [String] = []
-    func selection() { calls.append("selection") }
-    func success() { calls.append("success") }
-    func error() { calls.append("error") }
+final class RecordingHaptics: Haptics {
+    private(set) var moments: [HapticMoment] = []
+    var calls: [String] { moments.map { "\($0)" } }
+    func play(_ moment: HapticMoment) { moments.append(moment) }
 }
 
 struct FakePermission: NotificationPermission {

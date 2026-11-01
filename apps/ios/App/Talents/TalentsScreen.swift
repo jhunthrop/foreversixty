@@ -14,15 +14,19 @@ struct TalentsScreen: View {
     @State private var tree = 0
     @State private var sheet: TalentSheetModel?
     @State private var settled = false
+    /// Lane F15: a newer build waits behind the new-data strip.
+    @State private var newData: NewDataState = .none
+    private let latestBuild: @Sendable () async -> String?
     @Environment(\.openURL) private var openURL
     @Environment(PlannerRouter.self) private var planner: PlannerRouter?
     @Environment(SessionStore.self) private var session: SessionStore?
     @State private var showBuilds = false
 
     /// [model] is Home's, already loading for the Talents row, so the push draws at once.
-    init(character: HomeCharacter, model: TalentsModel) {
+    init(character: HomeCharacter, model: TalentsModel, latestBuild: @escaping @Sendable () async -> String? = { nil }) {
         self.character = character
         _model = State(initialValue: model)
+        self.latestBuild = latestBuild
     }
 
     var body: some View {
@@ -43,6 +47,12 @@ struct TalentsScreen: View {
         .toolbarBackground(FSColor.bg, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: model.build ?? "") }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            NewDataStrip(newData) {
+                newData = .none
+                Task { await model.load() }
+            }
+        }
         .navigationDestination(isPresented: $showBuilds) {
             if let planner {
                 YourBuildsScreen(
@@ -54,6 +64,7 @@ struct TalentsScreen: View {
         .task {
             if model.phase.presenter == nil { await model.load() }
             settle()
+            if let shown = model.build { newData = NewDataCheck.state(shown: shown, latest: await latestBuild()) }
         }
     }
 
@@ -111,11 +122,7 @@ extension LiveTalentsSource {
     /// The live source over the same CDN, offline cache and active build the BiS tab reads.
     @MainActor
     static func make(_ environment: AppEnvironment) -> LiveTalentsSource {
-        let transport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let files = CachedStaticDataClient(client: StaticDataClient(transport: transport), cache: DiskStaticFileCache.applicationSupport())
+        let files = environment.staticData.files
         let bis = LiveBisDataSource(files: files, appConfig: environment.appConfig, character: { nil }, bundledBuild: BundledBuild.read())
         return LiveTalentsSource(files: files, bisSource: bis)
     }

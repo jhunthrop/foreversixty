@@ -82,21 +82,28 @@ final class HomeStore {
 
     private(set) var phase: HomePhase = .loading
     private(set) var fetchedAt: Date?
+    /// Lane F15: connected, but the API did not answer and the cache is past five minutes.
+    private(set) var staleSince: Date?
     private let fetch: Fetch
     private let cache: any HomeCache
     private let now: @Sendable () -> Date
+    private let connectivity: (any Connectivity)?
 
-    init(fetch: @escaping Fetch, cache: any HomeCache, now: @escaping @Sendable () -> Date = { Date() }) {
+    init(
+        fetch: @escaping Fetch, cache: any HomeCache, now: @escaping @Sendable () -> Date = { Date() },
+        connectivity: (any Connectivity)? = nil
+    ) {
         self.fetch = fetch
         self.cache = cache
         self.now = now
+        self.connectivity = connectivity
     }
 
     /// The live store: `GET /v1/characters/{region}/{ruleset}/{name}/home`.
     static func live(client: APIClient, cache: any HomeCache) -> HomeStore {
         HomeStore(fetch: { character throws(APIError) in
             try await client.send(.getCharacterHome(region: character.region, ruleset: character.ruleset, name: character.slug))
-        }, cache: cache)
+        }, cache: cache, connectivity: PathConnectivity.shared)
     }
 
     /// Draws the cached answer, then fetches.
@@ -124,17 +131,25 @@ final class HomeStore {
             let at = now()
             cache.save(HomeCacheEntry(home: home, fetchedAt: at), for: character.key)
             fetchedAt = at
+            staleSince = nil
             phase = .loaded(home, offlineSince: nil)
         } catch {
             fail(error, cached: cache.load(character.key))
         }
     }
 
+    /// Offline, stale or the young cache keep the answer; no cache or a `4xx` is the error state.
     private func fail(_ error: APIError, cached: HomeCacheEntry?) {
-        if case .transport = error, let cached {
-            phase = .loaded(cached.home, offlineSince: cached.fetchedAt)
-        } else {
-            phase = .failed(cached: cached?.home)
+        let outcome = CacheFreshness.decide(
+            error, connected: connectivity?.isConnected, cachedAt: cached?.fetchedAt, limit: .homeAndRaids, now: now()
+        )
+        staleSince = nil
+        switch (outcome, cached) {
+        case let (.offline(since), cached?): phase = .loaded(cached.home, offlineSince: since)
+        case let (.stale(since), cached?):
+            staleSince = since
+            phase = .loaded(cached.home, offlineSince: nil)
+        default: phase = .failed(cached: cached?.home)
         }
     }
 }

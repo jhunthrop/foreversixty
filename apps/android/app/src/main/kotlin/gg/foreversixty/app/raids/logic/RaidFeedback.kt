@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-import android.view.HapticFeedbackConstants
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import gg.foreversixty.app.model.ApiJson
@@ -20,39 +18,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import kotlinx.serialization.json.put
-
-/** The sign-up's haptics (spec 7): a tick on a press, confirm on a save, reject on a refusal. */
-interface RaidHaptics {
-    fun selection()
-    fun success()
-    fun error()
-}
-
-/** The system haptics on the view the press came from; none below API 30 for confirm and reject. */
-class ViewRaidHaptics(private val view: View) : RaidHaptics {
-    override fun selection() {
-        val tick = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            HapticFeedbackConstants.SEGMENT_TICK
-        } else {
-            HapticFeedbackConstants.CLOCK_TICK
-        }
-        view.performHapticFeedback(tick)
-    }
-
-    override fun success() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-    }
-
-    override fun error() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) view.performHapticFeedback(HapticFeedbackConstants.REJECT)
-    }
-}
-
-object NoRaidHaptics : RaidHaptics {
-    override fun selection() = Unit
-    override fun success() = Unit
-    override fun error() = Unit
-}
 
 /** Whether POST_NOTIFICATIONS is still undecided (Android 13+); 9 to 12 need no ask (spec F4.4). */
 fun interface NotificationPermission {

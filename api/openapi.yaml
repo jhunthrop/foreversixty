@@ -4013,7 +4013,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The record (Cache-Control: public, max-age=86400)"
-          x-fixtures: [builds.get]
+          x-fixtures: [builds.get, builds.get.compare]
           content:
             application/json:
               schema:

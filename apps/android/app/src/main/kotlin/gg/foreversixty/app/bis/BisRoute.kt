@@ -1,5 +1,7 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.common.NewBuildStrip
+import gg.foreversixty.app.network.StaticDataStore
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import android.content.Context
@@ -44,7 +46,6 @@ import gg.foreversixty.app.model.KeyDate
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.ListSerializer
 import gg.foreversixty.app.network.AppConfigRepository
-import gg.foreversixty.app.network.CachedStaticDataClient
 import gg.foreversixty.app.network.FileStaticFileCache
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.dataOrNull
@@ -93,6 +94,8 @@ fun BisRoute(
                 if (!searching) query = ""
             })
         }
+        // Lane F15: a newer build waits behind the strip; the list moves only on Update.
+        NewBuildStrip(model) { scope.launch { model.update() } }
         PullToRefreshBox(
             isRefreshing = refreshing,
             onRefresh = {
@@ -164,11 +167,11 @@ private fun SearchBar(
 /** The live model: the CDN (or the fixtures) through the offline cache, the build from the app config. */
 fun createBisModel(
     context: Context,
-    engine: HttpClientEngine,
+    statics: StaticDataStore,
     appConfig: AppConfigRepository,
     character: suspend () -> AccountCharacter?,
 ): BisModel = BisModel(
-    source = createBisDataSource(context, engine, appConfig, character),
+    source = createBisDataSource(context, statics, appConfig, character),
     catalog = bundledSpecCatalog(context),
     preferences = SharedBisPreferences(context.getSharedPreferences(SharedBisPreferences.FILE, Context.MODE_PRIVATE)),
     res = context.resources,
@@ -177,11 +180,11 @@ fun createBisModel(
 /** The live BiS files: the CDN (or the fixtures) through the offline cache, the build from the app config. */
 fun createBisDataSource(
     context: Context,
-    engine: HttpClientEngine,
+    statics: StaticDataStore,
     appConfig: AppConfigRepository,
     character: suspend () -> AccountCharacter? = { null },
 ): LiveBisDataSource = LiveBisDataSource(
-    files = staticFiles(context, engine),
+    files = statics,
     configuredBuild = {
         appConfig.current?.activeBuild ?: appConfig.refresh().dataOrNull()?.activeBuild
     },
@@ -190,12 +193,12 @@ fun createBisDataSource(
     bundledDates = readAsset(context, BUNDLED_DATES)?.let { decode(it, ListSerializer(KeyDate.serializer())) }.orEmpty(),
 )
 
-/** The static files with their offline copies, one cache folder for every screen that reads them. */
-fun staticFiles(context: Context, engine: HttpClientEngine): CachedStaticDataClient =
-    CachedStaticDataClient(StaticDataClient(engine), staticFileCache(context))
-
-/** The one folder of saved static files; the Guides tab also sizes what is in it. */
-fun staticFileCache(context: Context): FileStaticFileCache = FileStaticFileCache(File(context.noBackupFilesDir, STATIC_DATA_DIR))
+/**
+ * The app's one static data store (lane F15): every screen's static files in one folder, with one
+ * build swap, one delete and one size report (You › Offline data). Built once, in the app graph.
+ */
+fun staticDataStore(context: Context, engine: HttpClientEngine): StaticDataStore =
+    StaticDataStore(StaticDataClient(engine), FileStaticFileCache(File(context.noBackupFilesDir, STATIC_DATA_DIR)))
 
 private const val STATIC_DATA_DIR = "static-data"
 

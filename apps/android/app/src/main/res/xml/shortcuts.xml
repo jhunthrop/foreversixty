@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lane F15 (spec F15.1, F15.2): the launcher's long-press shortcuts and the Assistant's Open app
+    feature. Static, so they stay declared with the `system` switch off; then each opens the app
+    as usual and `Sign up In` opens the app instead of signing up.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <capability android:name="actions.intent.OPEN_APP_FEATURE">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="gg.foreversixty.app"
+            android:targetClass="gg.foreversixty.app.MainActivity">
+            <parameter android:name="feature" android:key="feature" />
+        </intent>
+    </capability>
+    <shortcut
+        android:shortcutId="next_raid"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_next_raid"
+        android:shortcutShortLabel="@string/shortcut_nextRaid"
+        android:shortcutLongLabel="@string/shortcut_nextRaid"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="gg.foreversixty.app"
+            android:targetClass="gg.foreversixty.app.MainActivity">
+            <extra android:name="gg.foreversixty.app.SHORTCUT" android:value="next_raid" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="signup_in"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_signup"
+        android:shortcutShortLabel="@string/shortcut_signupIn"
+        android:shortcutLongLabel="@string/shortcut_signupIn"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="gg.foreversixty.app"
+            android:targetClass="gg.foreversixty.app.system.platform.SignupShortcutActivity">
+            <extra android:name="gg.foreversixty.app.SHORTCUT" android:value="signup_in" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="upgrades"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_upgrades"
+        android:shortcutShortLabel="@string/shortcut_upgrades"
+        android:shortcutLongLabel="@string/shortcut_upgrades"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="gg.foreversixty.app"
+            android:targetClass="gg.foreversixty.app.MainActivity">
+            <extra android:name="gg.foreversixty.app.SHORTCUT" android:value="upgrades" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutShortLabel="@string/shortcut_search"
+        android:shortcutLongLabel="@string/shortcut_search"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="gg.foreversixty.app"
+            android:targetClass="gg.foreversixty.app.MainActivity">
+            <extra android:name="gg.foreversixty.app.SHORTCUT" android:value="search" />
+        </intent>
+    </shortcut>
+</shortcuts>

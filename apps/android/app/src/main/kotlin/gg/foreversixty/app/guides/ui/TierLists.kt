@@ -1,5 +1,7 @@
 package gg.foreversixty.app.guides.ui
 
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.IconButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -84,6 +86,8 @@ class TierListActions(
     val choose: (TierChoice) -> Unit = {},
     val open: (String) -> Unit = {},
     val retry: () -> Unit = {},
+    /** Lane F15: shares the role's tier list page; null draws no share button. */
+    val share: ((TierChoice) -> Unit)? = null,
 )
 
 /** F9.4: role and faction chips, the callout for your spec, then the file's rows as they come. */
@@ -92,7 +96,7 @@ fun TierListContent(state: TierListState, now: Instant, actions: TierListActions
     Column(Modifier.fillMaxWidth()) {
         (state.tiers as? Loadable.Loaded)?.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
         Column(Modifier.screenMargins().padding(top = GuideSpace.labelGap)) {
-            Chips(state.choice, actions.choose)
+            Chips(state.choice, actions.choose, actions.share)
             when (val tiers = state.tiers) {
                 Loadable.Loading -> TierSkeleton()
                 Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap))
@@ -115,7 +119,7 @@ private fun Loaded(file: TiersFile, state: TierListState, actions: TierListActio
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Chips(choice: TierChoice, choose: (TierChoice) -> Unit) {
+private fun Chips(choice: TierChoice, choose: (TierChoice) -> Unit, share: ((TierChoice) -> Unit)?) {
     val copy = GuidesCopy(LocalResources.current)
     var factionMenu by remember { mutableStateOf(false) }
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -135,6 +139,11 @@ private fun Chips(choice: TierChoice, choose: (TierChoice) -> Unit) {
                         choose(choice.copy(faction = faction))
                     })
                 }
+            }
+        }
+        share?.let {
+            IconButton(onClick = { it(choice) }) {
+                Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.share_action), tint = FsColor.strong)
             }
         }
     }
