@@ -1269,11 +1269,11 @@ type bandReport struct {
 	// published, exactly as the engine already computed it, with this
 	// flag naming what it is not a measurement of.
 	SetDPSPartial bool `json:"set_dps_partial,omitempty"`
-	// KeptIncumbent is present only on a healer band that kept the set the
-	// site published before, because that set beat the new pick beyond error
-	// under the final harness (incumbent.go).
-	KeptIncumbent *keptIncumbent `json:"kept_incumbent,omitempty"`
-	NoSourceCount int            `json:"no_source_count"`
+	// KeptAlternative is present only on a band that published a set it
+	// considered instead of its final set, because that set beat the final
+	// one beyond error under the guard harness (incumbent.go).
+	KeptAlternative *keptAlternative `json:"kept_alternative,omitempty"`
+	NoSourceCount   int              `json:"no_source_count"`
 	// UnconfirmedWithinErrorHeld counts the slots where an item whose
 	// stats the client has not confirmed lost the pick to a
 	// confirmed-stats item because it did not beat it beyond the sim error

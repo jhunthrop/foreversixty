@@ -1086,6 +1086,55 @@ func TestRogueSpecsWeighStrength(t *testing.T) {
 	}
 }
 
+// TestWeightStatsCoverTheForeverTalentConversions is round 5's ranker
+// finding: Forever's talents turn Intellect into attack power and spell
+// power (the engine's AddStatDependency rows): Mental Dexterity (100% of
+// Intellect as attack power) and Mental Quickness (30% as spell damage) for
+// Enhancement, Careful Aim (100% as melee and ranged attack power) for every
+// hunter build that takes it, and Champion of the Light (60% as spell power)
+// for Retribution, whose seals scale with spell power. None of these specs
+// weighed Intellect or spell power, so the ranker scored Black Dragonscale
+// Helm (+38 Intellect) at 2.8 attack power per Intellect too low and put a
+// 1% crit, 2% hit mask over it, which the sim scores 25 DPS lower. A
+// weights sweep on the published band-60 sets measures Intellect at 2.8
+// (Enhancement), 2.2 to 2.8 (Marksmanship, Beast Mastery), 1.8 (Survival)
+// and 2.5 (Retribution) attack power per point, and spell power at 0.9,
+// 0.5, 0.9 and 2.0.
+func TestWeightStatsCoverTheForeverTalentConversions(t *testing.T) {
+	want := map[string][]string{
+		"shaman-enhancement":   {"intellect", "spell_power"},
+		"paladin-retribution":  {"intellect", "spell_power"},
+		"hunter-marksmanship":  {"intellect", "spell_power"},
+		"hunter-beast-mastery": {"intellect", "spell_power"},
+		"hunter-survival":      {"intellect"},
+		// Mana: a caster that runs dry values spirit and mp5. On the
+		// published band-60 bare sets the sweep measures spirit at 0.34 to
+		// 0.93 and mp5 at 0.6 to 2.9 spell power per point (Arcane 0.37 and
+		// 1.0, Shadow 0.93 and 2.9); warlocks, on Life Tap, measure neither.
+		"mage-arcane":      {"spirit", "mp5"},
+		"mage-fire":        {"spirit", "mp5"},
+		"mage-frost":       {"spirit", "mp5"},
+		"druid-balance":    {"spirit", "mp5"},
+		"shaman-elemental": {"spirit", "mp5"},
+		"priest-shadow":    {"spirit", "mp5"},
+	}
+	for spec, stats := range want {
+		s, err := loadSpec(publishedRepoRoot, spec)
+		if err != nil {
+			t.Fatalf("loadSpec(%s): %v", spec, err)
+		}
+		have := map[string]bool{}
+		for _, stat := range s.WeightStats {
+			have[stat] = true
+		}
+		for _, stat := range stats {
+			if !have[stat] {
+				t.Errorf("%s weight_stats = %v, want %q (Forever turns it into damage: a talent conversion or the rotation's spell scaling)", spec, s.WeightStats, stat)
+			}
+		}
+	}
+}
+
 func TestLoadAPLState(t *testing.T) {
 	state, err := loadAPLState(repoRootFixture, "hunter-marksmanship")
 	if err != nil {

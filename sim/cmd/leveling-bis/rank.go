@@ -159,6 +159,16 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	}
 	candidates := []scored{*current.Item}
 	seen := map[int]bool{current.Item.ID: true}
+	// The pick's stat runner-up is measured too, so the closest stat
+	// challenger stays the slot's verify runner-up when it out-measures the
+	// effect items. Without it, verify only ever compared the pick with an
+	// effect item (round 5: Arcane's Kindling Stave was checked against a
+	// sword 47 DPS behind it, never against Glowing Brightwood Staff).
+	if ru := current.RunnerUp; ru != nil && !seen[ru.ID] && ru.ID != mateID && (mateName == "" || ru.Name != mateName) &&
+		!(slot == "main_hand" && leveling.DualWieldSpecs[spec.Spec] && ru.TwoHand) {
+		candidates = append(candidates, *ru)
+		seen[ru.ID] = true
+	}
 	for _, c := range pool {
 		if len(candidates) >= 1+effectRankTopN {
 			break
