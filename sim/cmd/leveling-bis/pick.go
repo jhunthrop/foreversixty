@@ -330,7 +330,7 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			// gave it, the same shield/held-item pool shaman-elemental
 			// already draws from.
 			if leveling.DualWieldSpecs[spec] {
-				list = mergeByScore(list, oneHandedWeapons(bySlot["main_hand"]))
+				list = mergeByScore(list, offHandWeapons(bySlot["main_hand"]))
 			}
 			// A one-hander already worn in the main hand is not
 			// offered again for the off hand: this lane's prototype
@@ -465,6 +465,19 @@ func oneHandedWeapons(list []scored) []scored {
 	return out
 }
 
+// offHandWeapons is the one-handed weapons a dual-wielder can put in the
+// off hand: oneHandedWeapons less the main-hand-only ones, which the game
+// refuses there and the engine swings nothing for.
+func offHandWeapons(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, sc := range oneHandedWeapons(list) {
+		if !sc.MainHandOnly {
+			out = append(out, sc)
+		}
+	}
+	return out
+}
+
 // excludeTwoHand drops two-handed weapons from a dual-wielder's main-
 // hand candidates: see pick()'s own "main_hand" case for why score()'s
 // per-slot heuristic cannot be trusted to make this call by itself.
@@ -516,7 +529,7 @@ func twoHandBeatsPair(bySlot map[string][]scored) bool {
 	bestMain := oneHanders[0]
 	pairScore := roundScore(bestMain.Score)
 
-	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], oneHanders), bestMain.ID, bestMain.Name))
+	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], offHandWeapons(oneHanders)), bestMain.ID, bestMain.Name))
 	if len(offPool) > 0 {
 		pairScore = roundScore(pairScore + offPool[0].Score)
 	}

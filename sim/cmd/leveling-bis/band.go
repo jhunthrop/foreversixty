@@ -664,7 +664,7 @@ func withoutRareSpawnDrops(bySlot map[string][]scored, dualWield bool) (map[int]
 				continue
 			}
 			perSlot[slot]++
-			if slot == "main_hand" && dualWield && oneHandedWeapon(s.candidate) {
+			if slot == "main_hand" && dualWield && oneHandedWeapon(s.candidate) && !s.MainHandOnly {
 				toOffHand = append(toOffHand, s)
 			}
 		}

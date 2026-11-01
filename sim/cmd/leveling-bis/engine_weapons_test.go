@@ -61,3 +61,52 @@ func nonWeaponIsAbsent(t *testing.T) bool {
 	_, ok := simdb.Weapon(handOfJustice)
 	return !ok
 }
+
+// A main-hand-only weapon cannot go in the off hand. The item file's slot
+// is "main_hand" for one-handers and main-hand-only weapons alike, so the
+// ranker took the engine's hand type for granted and put Teebu's Blazing
+// Longsword (1728, "Main Hand") in Survival's off hand at band 60
+// (bis.yml 2026-11-01). The engine swings no off hand for it: 650.8 DPS
+// against 742.6 with Heartseeker.
+func TestEngineWeaponRowMarksAMainHandOnlyWeapon(t *testing.T) {
+	sword := candidate{ID: 1728, Name: "Teebu's Blazing Longsword", DamageMin: 96, DamageMax: 178, Speed: 2.9}
+	dagger := candidate{ID: 12783, Name: "Heartseeker", DamageMin: 49, DamageMax: 92, Speed: 1.7}
+	lookup := func(id int32) (simdb.WeaponDamage, bool) {
+		switch id {
+		case 1728:
+			return simdb.WeaponDamage{Min: 96, Max: 178, Speed: 2.9, MainHandOnly: true}, true
+		case 12783:
+			return simdb.WeaponDamage{Min: 49, Max: 92, Speed: 1.7}, true
+		}
+		return simdb.WeaponDamage{}, false
+	}
+	out := withEngineWeaponDamage([]candidate{sword, dagger}, lookup)
+	if !out[0].MainHandOnly {
+		t.Errorf("Teebu's Blazing Longsword: MainHandOnly = false, want true")
+	}
+	if out[1].MainHandOnly {
+		t.Errorf("Heartseeker: MainHandOnly = true, want false")
+	}
+}
+
+func TestOffHandCandidatesRefuseAMainHandOnlyWeapon(t *testing.T) {
+	sword := scored{candidate: candidate{ID: 1728, Name: "Teebu's", ClassID: itemClassWeapon, MainHandOnly: true}, Score: 100}
+	dagger := scored{candidate: candidate{ID: 12783, Name: "Heartseeker", ClassID: itemClassWeapon}, Score: 50}
+	got := offHandWeapons([]scored{sword, dagger})
+	if len(got) != 1 || got[0].ID != 12783 {
+		t.Fatalf("offHandWeapons = %v, want only Heartseeker", got)
+	}
+}
+
+func TestEmbeddedSimDBMarksTeebusMainHandOnly(t *testing.T) {
+	w, ok := simdb.Weapon(1728)
+	if !ok {
+		t.Skip("Teebu's Blazing Longsword is not in this build's simdb.bin")
+	}
+	if !w.MainHandOnly {
+		t.Fatalf("Weapon(1728).MainHandOnly = false, want true (client: Main Hand)")
+	}
+	if h, ok := simdb.Weapon(12783); ok && h.MainHandOnly {
+		t.Fatalf("Weapon(12783) (Heartseeker, One-Hand) is MainHandOnly")
+	}
+}
