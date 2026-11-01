@@ -4510,6 +4510,12 @@
           {
             "spell_id": 417058,
             "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
+          },
+          {
+            "spell_id": 417058,
+            "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
@@ -4575,6 +4581,12 @@
           {
             "spell_id": 417059,
             "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
+          },
+          {
+            "spell_id": 417059,
+            "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
@@ -4622,7 +4634,7 @@
           {
             "spell_id": 740,
             "name": "Tranquility",
-            "condition": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
+            "condition": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
             "icon": "spell_nature_tranquility"
           },
           {
@@ -4642,6 +4654,12 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
+          },
+          {
+            "spell_id": 417061,
+            "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
           },
           {
             "spell_id": 417061,
@@ -4693,7 +4711,7 @@
           {
             "spell_id": 740,
             "name": "Tranquility",
-            "condition": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
+            "condition": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
             "icon": "spell_nature_tranquility"
           },
           {
@@ -4713,6 +4731,12 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
+          },
+          {
+            "spell_id": 417062,
+            "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
           },
           {
             "spell_id": 417062,
@@ -4770,7 +4794,7 @@
           {
             "spell_id": 8918,
             "name": "Tranquility",
-            "condition": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
+            "condition": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
             "icon": "spell_nature_tranquility"
           },
           {
@@ -4790,6 +4814,12 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
+          },
+          {
+            "spell_id": 417063,
+            "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
           },
           {
             "spell_id": 417063,
@@ -4847,7 +4877,7 @@
           {
             "spell_id": 9862,
             "name": "Tranquility",
-            "condition": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
+            "condition": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
             "icon": "spell_nature_tranquility"
           },
           {
@@ -4867,6 +4897,12 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
+          },
+          {
+            "spell_id": 417064,
+            "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
           },
           {
             "spell_id": 417064,
@@ -4924,7 +4960,7 @@
           {
             "spell_id": 9863,
             "name": "Tranquility",
-            "condition": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
+            "condition": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown.",
             "icon": "spell_nature_tranquility"
           },
           {
@@ -4944,6 +4980,12 @@
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
+          },
+          {
+            "spell_id": 417068,
+            "name": "Rejuvenation",
+            "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
+            "icon": "spell_nature_rejuvenation"
           },
           {
             "spell_id": 417068,
@@ -6358,6 +6400,12 @@
           {
             "spell_id": 19750,
             "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19750,
+            "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
@@ -6405,6 +6453,12 @@
           {
             "spell_id": 1311606,
             "name": "Holy Shock",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_searinglight"
+          },
+          {
+            "spell_id": 1311606,
+            "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
@@ -6430,6 +6484,12 @@
             "spell_id": 19939,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19939,
+            "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -6482,6 +6542,12 @@
           {
             "spell_id": 1311606,
             "name": "Holy Shock",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_searinglight"
+          },
+          {
+            "spell_id": 1311606,
+            "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
@@ -6507,6 +6573,12 @@
             "spell_id": 19940,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19940,
+            "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -6559,6 +6631,12 @@
           {
             "spell_id": 20473,
             "name": "Holy Shock",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_searinglight"
+          },
+          {
+            "spell_id": 20473,
+            "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
@@ -6584,6 +6662,12 @@
             "spell_id": 19940,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19940,
+            "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -6636,6 +6720,12 @@
           {
             "spell_id": 20929,
             "name": "Holy Shock",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_searinglight"
+          },
+          {
+            "spell_id": 20929,
+            "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
@@ -6661,6 +6751,12 @@
             "spell_id": 19942,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19942,
+            "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -6713,6 +6809,12 @@
           {
             "spell_id": 20930,
             "name": "Holy Shock",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
+            "icon": "spell_holy_searinglight"
+          },
+          {
+            "spell_id": 20930,
+            "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
@@ -6738,6 +6840,12 @@
             "spell_id": 19943,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 19943,
+            "name": "Flash of Light",
+            "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -7543,36 +7651,30 @@
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal"
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
             "condition": "",
             "icon": "spell_holy_heal"
           },
@@ -7592,12 +7694,6 @@
             "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal"
-          },
-          {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
             "icon": "spell_holy_heal"
           },
           {
@@ -7678,33 +7774,63 @@
             "icon": "spell_holy_renew"
           },
           {
+            "spell_id": 401937,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 9472,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 9472,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal"
+            "spell_id": 401937,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 401937,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 401937,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 401937,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 9472,
+            "name": "Flash Heal",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -7716,12 +7842,6 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal02"
-          },
-          {
-            "spell_id": 6063,
-            "name": "Heal",
             "condition": "",
             "icon": "spell_holy_heal02"
           },
@@ -7741,12 +7861,6 @@
             "spell_id": 6063,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
-          },
-          {
-            "spell_id": 6063,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
             "icon": "spell_holy_heal02"
           },
           {
@@ -7827,33 +7941,63 @@
             "icon": "spell_holy_renew"
           },
           {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 9474,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 9474,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal"
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 9474,
+            "name": "Flash Heal",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -7865,12 +8009,6 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal02"
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
             "condition": "",
             "icon": "spell_holy_heal02"
           },
@@ -7890,12 +8028,6 @@
             "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
-          },
-          {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
             "icon": "spell_holy_heal02"
           },
           {
@@ -7976,33 +8108,63 @@
             "icon": "spell_holy_renew"
           },
           {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 9474,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 9474,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal"
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240771,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 9474,
+            "name": "Flash Heal",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -8012,10 +8174,10 @@
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal02"
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -8042,10 +8204,10 @@
             "icon": "spell_holy_heal02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
-            "icon": "spell_holy_heal02"
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -8125,33 +8287,63 @@
             "icon": "spell_holy_renew"
           },
           {
+            "spell_id": 1240773,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 10916,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal"
+            "spell_id": 1240773,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240773,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240773,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240773,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 10916,
+            "name": "Flash Heal",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -8161,10 +8353,10 @@
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal02"
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -8191,10 +8383,10 @@
             "icon": "spell_holy_heal02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
-            "icon": "spell_holy_heal02"
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -8274,33 +8466,63 @@
             "icon": "spell_holy_renew"
           },
           {
+            "spell_id": 1240774,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 27608,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 27608,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal"
+            "spell_id": 1240774,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 27608,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240774,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 27608,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240774,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 27608,
             "name": "Flash Heal",
-            "condition": "",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
+            "icon": "spell_holy_flashheal"
+          },
+          {
+            "spell_id": 1240774,
+            "name": "Binding Heal",
+            "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 27608,
+            "name": "Flash Heal",
+            "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
@@ -8310,10 +8532,10 @@
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Heal is the mana-efficient filler at rank 4: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
-            "icon": "spell_holy_heal02"
+            "spell_id": 25314,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -8340,10 +8562,10 @@
             "icon": "spell_holy_heal02"
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.",
-            "icon": "spell_holy_heal02"
+            "spell_id": 25314,
+            "name": "Greater Heal",
+            "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
+            "icon": "spell_holy_greaterheal"
           },
           {
             "spell_id": 6064,
@@ -10848,7 +11070,7 @@
           {
             "spell_id": 1064,
             "name": "Chain Heal",
-            "condition": "Chain Heal off the tank jumps to the two most hurt members when the group has taken damage.",
+            "condition": "Chain Heal on the tank once any of the five party members (you among them) is under 90 percent, while the mana bar keeps up with 90 percent of the share of the fight left.",
             "icon": "spell_nature_healingwavegreater"
           },
           {
@@ -10955,7 +11177,7 @@
           {
             "spell_id": 10622,
             "name": "Chain Heal",
-            "condition": "Chain Heal off the tank jumps to the two most hurt members when the group has taken damage.",
+            "condition": "Chain Heal on the tank once any of the five party members (you among them) is under 90 percent, while the mana bar keeps up with 90 percent of the share of the fight left.",
             "icon": "spell_nature_healingwavegreater"
           },
           {
@@ -11062,7 +11284,7 @@
           {
             "spell_id": 10623,
             "name": "Chain Heal",
-            "condition": "Chain Heal off the tank jumps to the two most hurt members when the group has taken damage.",
+            "condition": "Chain Heal on the tank once any of the five party members (you among them) is under 90 percent, while the mana bar keeps up with 90 percent of the share of the fight left.",
             "icon": "spell_nature_healingwavegreater"
           },
           {
@@ -95426,16 +95648,6 @@
           [
             2,
             2,
-            1
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             2
           ],
           [
@@ -95475,8 +95687,8 @@
           ],
           [
             2,
-            3,
-            1
+            2,
+            3
           ],
           [
             2,
@@ -95487,6 +95699,16 @@
             2,
             4,
             2
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            3
           ]
         ]
       },
@@ -95686,21 +95908,6 @@
           [
             2,
             2,
-            1
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             2
           ],
           [
@@ -95735,18 +95942,33 @@
           ],
           [
             2,
-            3,
-            1
-          ],
-          [
             2,
-            3,
-            1
+            3
           ],
           [
             2,
             4,
             2
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            3
           ]
         ]
       }
@@ -96453,29 +96675,29 @@
             3
           ],
           [
-            2,
             1,
-            1
+            1,
+            2
           ],
           [
-            2,
             1,
-            1
-          ],
-          [
-            2,
-            1,
-            1
-          ],
-          [
-            2,
             1,
             2
           ],
           [
             2,
             1,
-            2
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
           ],
           [
             2,
@@ -96650,16 +96872,6 @@
           [
             3,
             5,
-            1
-          ],
-          [
-            3,
-            5,
-            1
-          ],
-          [
-            3,
-            5,
             2
           ],
           [
@@ -96689,53 +96901,58 @@
           ],
           [
             3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
             7,
             2
           ],
           [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            2,
             1,
-            1
-          ],
-          [
-            2,
             1,
-            1
+            2
           ],
           [
-            2,
             1,
-            1
+            1,
+            2
           ],
           [
-            2,
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
             1,
             2
           ],
           [
             2,
             1,
-            2
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
           ],
           [
             2,
@@ -96786,6 +97003,11 @@
             2,
             2,
             3
+          ],
+          [
+            2,
+            3,
+            1
           ],
           [
             2,
@@ -97613,21 +97835,6 @@
           ],
           [
             2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
             2,
             1
           ],
@@ -97730,6 +97937,16 @@
             2,
             5,
             2
+          ],
+          [
+            2,
+            6,
+            3
+          ],
+          [
+            2,
+            6,
+            3
           ],
           [
             2,
@@ -97742,16 +97959,6 @@
             2
           ],
           [
-            2,
-            6,
-            3
-          ],
-          [
-            2,
-            6,
-            3
-          ],
-          [
             1,
             1,
             1
@@ -97793,12 +98000,12 @@
           ],
           [
             1,
-            2,
-            2
+            1,
+            3
           ],
           [
             1,
-            2,
+            1,
             3
           ],
           [
@@ -97819,6 +98026,21 @@
           [
             1,
             2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            4,
+            3
+          ],
+          [
+            1,
+            4,
             3
           ],
           [
@@ -99820,34 +100042,34 @@
             3
           ],
           [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
-            2,
+            3,
+            7,
             2
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
           ],
           [
             1,
@@ -102594,21 +102816,6 @@
           [
             3,
             2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
             2
           ],
           [
@@ -102619,12 +102826,7 @@
           [
             3,
             2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
+            4
           ],
           [
             3,
@@ -102669,6 +102871,16 @@
           [
             3,
             5,
+            1
+          ],
+          [
+            3,
+            5,
+            1
+          ],
+          [
+            3,
+            5,
             2
           ],
           [
@@ -102679,17 +102891,27 @@
           [
             3,
             6,
-            3
+            1
           ],
           [
             3,
             6,
-            3
+            1
           ],
           [
             3,
             6,
-            3
+            1
+          ],
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            3,
+            6,
+            1
           ],
           [
             3,
@@ -102854,21 +103076,6 @@
           [
             3,
             2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
             2
           ],
           [
@@ -102879,12 +103086,7 @@
           [
             3,
             2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
+            4
           ],
           [
             3,
@@ -102929,6 +103131,16 @@
           [
             3,
             5,
+            1
+          ],
+          [
+            3,
+            5,
+            1
+          ],
+          [
+            3,
+            5,
             2
           ],
           [
@@ -102939,17 +103151,27 @@
           [
             3,
             6,
-            3
+            1
           ],
           [
             3,
             6,
-            3
+            1
           ],
           [
             3,
             6,
-            3
+            1
+          ],
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            3,
+            6,
+            1
           ],
           [
             3,
@@ -104966,16 +105188,6 @@
           ],
           [
             1,
-            2,
-            3
-          ],
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            1,
             3,
             3
           ],
@@ -104997,32 +105209,32 @@
           [
             1,
             4,
-            2
+            1
           ],
           [
             1,
             4,
-            2
+            1
+          ],
+          [
+            1,
+            4,
+            1
+          ],
+          [
+            1,
+            4,
+            1
+          ],
+          [
+            1,
+            4,
+            1
           ],
           [
             1,
             5,
             2
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
-            5,
-            3
           ],
           [
             1,
@@ -105038,11 +105250,6 @@
             1,
             6,
             3
-          ],
-          [
-            1,
-            7,
-            2
           ],
           [
             1,
@@ -105138,6 +105345,21 @@
             3,
             1,
             3
+          ],
+          [
+            3,
+            3,
+            2
+          ],
+          [
+            3,
+            3,
+            2
+          ],
+          [
+            3,
+            3,
+            2
           ],
           [
             3,
@@ -105986,7 +106208,17 @@
           [
             3,
             2,
-            3
+            2
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            2,
+            2
           ],
           [
             3,
@@ -106005,6 +106237,11 @@
           ],
           [
             3,
+            2,
+            3
+          ],
+          [
+            3,
             3,
             2
           ],
@@ -106066,21 +106303,6 @@
           [
             3,
             5,
-            3
-          ],
-          [
-            3,
-            5,
-            3
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
             3
           ],
           [
@@ -106090,6 +106312,21 @@
           ],
           [
             3,
+            5,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
             6,
             3
           ],
@@ -106164,28 +106401,13 @@
             3
           ],
           [
-            2,
             1,
+            3,
             4
           ],
           [
-            2,
             1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
+            3,
             4
           ]
         ]
@@ -108953,6 +109175,7 @@
     "1866": 6,
     "1943": 20,
     "2054": 16,
+    "2060": 40,
     "2061": 20,
     "2458": 30,
     "2495": 6,
@@ -109130,6 +109353,7 @@
     "10945": 10,
     "10947": 10,
     "10960": 30,
+    "10963": 40,
     "11129": 40,
     "11273": 20,
     "11275": 20,
@@ -109294,6 +109518,7 @@
     "25307": 1,
     "25309": 1,
     "25311": 4,
+    "25314": 40,
     "25316": 30,
     "25345": 8,
     "25357": 1,
@@ -109321,6 +109546,7 @@
     "400623": 6,
     "400640": 20,
     "401859": 40,
+    "401937": 25,
     "402174": 30,
     "407632": 40,
     "407995": 25,
@@ -109401,6 +109627,9 @@
     "1240047": 20,
     "1240720": 30,
     "1240721": 30,
+    "1240771": 25,
+    "1240773": 25,
+    "1240774": 25,
     "1240826": 40,
     "1240827": 40,
     "1241582": 30,
