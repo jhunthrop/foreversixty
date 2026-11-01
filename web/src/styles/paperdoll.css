@@ -136,6 +136,20 @@
   border-radius: 3px;
 }
 
+/* The off hand under a two-hander: the two-hander's own icon, greyed, as the game's character
+   pane draws it, so the slot reads as taken rather than as an empty socket. Keyed off the
+   cell's data-state so the frame's script only swaps the image. */
+[data-state='two-hand'] .pd-sock.pd-empty {
+  border-style: solid;
+  padding: 1px;
+}
+
+[data-state='two-hand'] .pd-sock.pd-empty img {
+  opacity: 0.35;
+  filter: grayscale(1);
+  border-radius: 4px;
+}
+
 .pd-sock.pd-unknown {
   border: 1px solid var(--color-line);
   padding: 1px;

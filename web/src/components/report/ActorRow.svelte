@@ -65,6 +65,7 @@
     characterLink = null,
     onChart = undefined,
     charted = '',
+    initiallyOpen = false,
   }: {
     rank: number;
     actor: Actor;
@@ -98,6 +99,8 @@
     onChart?: (actor: Actor, ability: Ability) => void;
     /** `${guid}|${abilityKey(ability)}` of the ability currently on the chart; '' for none. */
     charted?: string;
+    /** The row starts open on its abilities (a sim's own character); the reader can still close it. */
+    initiallyOpen?: boolean;
   } = $props();
 
   /**
@@ -123,7 +126,8 @@
   const ACTIVE_UNKNOWN = '—';
   const ACTIVE_UNKNOWN_TITLE = 'Not measured: this result was saved before the sim tracked pet uptime';
 
-  let open = $state(false);
+  // svelte-ignore state_referenced_locally
+  let open = $state(initiallyOpen);
   /** The exact split once measured; the prorated one shows until then. */
   let exact = $state<ExactSplit | null>(null);
   let measuring = $state(false);

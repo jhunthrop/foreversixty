@@ -20,6 +20,12 @@ const BASE_PROPS = {
 };
 
 describe('SimResults', () => {
+  it('opens the Damage tab on the player’s own spells, not a collapsed one-row table', () => {
+    const { body } = render(SimResults, { props: { ...BASE_PROPS, topUpgrade: null } });
+    expect(body).toContain('data-testid="row-detail"');
+    expect(body).toMatch(/aria-expanded="true"/);
+  });
+
   it('the first line points at Top Gear when there is no recorded upgrade', () => {
     const { body } = render(SimResults, { props: { ...BASE_PROPS, topUpgrade: null } });
     expect(body).toContain(afterSimCopy.noUpgrade);

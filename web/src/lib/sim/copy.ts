@@ -391,6 +391,8 @@ export const simCopy = {
   distHighest: 'Highest iteration',
   distIterations: 'Iterations',
   tabDamage: 'Damage',
+  /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
+  namelessActor: 'You',
   tabBuffs: 'Buffs',
   tabDebuffs: 'Debuffs',
   tabCasts: 'Casts',
@@ -740,7 +742,8 @@ export const simCopy = {
    */
   whatsInIt: "What's in it",
   /** Solo's own answer: no groups, so the panel says so rather than rendering empty. */
-  whatsInItEmpty: 'Nothing. Bare applies only your class’s own buffs and weapon imbues, and this spec carries none.',
+  whatsInItEmpty:
+    'Nothing. Bare applies only your class’s own buffs and weapon imbues, and this spec carries none.',
   /**
    * Task 6 (newcomer BLOCKER, tank MAJOR): RotationCard's "what it does" trigger
    * (`rotationLink`, unchanged) no longer navigates to /sim/specs#<spec>, which explains
