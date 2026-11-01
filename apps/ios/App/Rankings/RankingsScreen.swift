@@ -118,6 +118,7 @@ struct CharacterScreen: View {
     @State private var report: OpenReport?
     @Environment(\.openURL) private var openURL
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.searchNavigator) private var searchNavigator
 
     var body: some View {
         ScrollView {
@@ -195,7 +196,10 @@ struct CharacterScreen: View {
                 report = OpenReport(route: ReportRoute(id: line.reportID), yours: account.characterKeys.contains(route.ref.key))
             },
             openHistory: { openURL(route.ref.historyURL) },
-            searchAgain: { dismiss() }
+            searchAgain: {
+                // Lane F15: Search with the name in the field, when Search is on; else back.
+                if let searchNavigator { searchNavigator.open(query: route.ref.name) } else { dismiss() }
+            }
         )
     }
 }

@@ -11,6 +11,7 @@ struct BisScreen: View {
     /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
     @State private var itemPage: ItemPageRoute?
     @Environment(\.searchNavigator) private var search
+    @Environment(\.scenePhase) private var scenePhase
     private let catalog: ItemCatalog
     /// Lane F1's account, nil while its feature switch is off.
     private let session: SessionStore?
@@ -46,7 +47,9 @@ struct BisScreen: View {
                 onOpenPicker: { model.isPickerPresented = true },
                 onTryAgain: { Task { await model.refresh() } },
                 onOpenItem: { tooltip = $0 },
-                build: model.build
+                build: model.build,
+                newData: model.newData,
+                onUpdate: { Task { await model.applyNewData() } }
             )
             .refreshable { await model.refresh() }
             // The system search, minimised to the bar's trailing button (spec F3.1), until lane
@@ -71,6 +74,10 @@ struct BisScreen: View {
         }
         .onChange(of: search?.bisRequest) { Task { await takeBisRequest() } }
         .onChange(of: router?.request) { _, request in Task { await apply(request) } }
+        // Lane F15: a newer build waits behind the strip; nothing on screen moves.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await model.checkForNewData() } }
+        }
         .task(id: owner) {
             guard owner != nil else { return }
             await model.start()
@@ -138,6 +145,8 @@ extension BisScreen {
             bundledBuild: BundledBuild.read()
         )
         let model = BisModel(source: source, catalog: .bundled(), preferences: UserDefaultsBisPreferences())
+        let store = environment.staticData
+        model.latestBuild = { await store.latestBuild() }
         return BisScreen(model: model, catalog: ItemCatalog(store: environment.staticData), session: session, router: router)
     }
 }

@@ -85,13 +85,10 @@ final class OfflineDataModel {
     }
 
     static func live(_ environment: AppEnvironment) -> OfflineDataModel {
-        let files = environment.staticData.files
+        let store = environment.staticData
         return OfflineDataModel(
-            store: environment.staticData, icons: .live,
-            latestBuild: {
-                guard let answer = try? await files.load(.getActiveBuild), !answer.isFromCache else { return nil }
-                return answer.value.build
-            },
+            store: store, icons: .live,
+            latestBuild: { await store.latestBuild() },
             settings: OfflineSettings(), connectivity: PathConnectivity.shared, now: { Date() }
         )
     }

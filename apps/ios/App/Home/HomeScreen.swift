@@ -25,6 +25,8 @@ struct HomeDependencies {
     var reports: ReportsDependencies?
     /// Lane F11: Rankings and character pages, pushed from the Rankings row; nil while its switch is off.
     var rankings: RankingsDependencies?
+    /// Lane F15: the CDN's active build now, for Talents' new-data strip.
+    var latestBuild: @Sendable () async -> String? = { nil }
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
@@ -38,7 +40,8 @@ struct HomeDependencies {
             sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil,
             talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil,
             reports: reports,
-            rankings: environment.isAvailable(.rankings) ? .live(environment, catalog: catalog, reports: reports) : nil
+            rankings: environment.isAvailable(.rankings) ? .live(environment, catalog: catalog, reports: reports) : nil,
+            latestBuild: { [store = environment.staticData] in await store.latestBuild() }
         )
     }
 }
@@ -252,7 +255,7 @@ struct HomeCharacterScreen: View {
     @ViewBuilder
     private var talents: some View {
         if let talentsModel {
-            TalentsScreen(character: character, model: talentsModel)
+            TalentsScreen(character: character, model: talentsModel, latestBuild: dependencies.latestBuild)
         }
     }
 

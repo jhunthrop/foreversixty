@@ -182,6 +182,8 @@ struct SearchActions {
     var retryCharacters: () -> Void = {}
     var openMyBis: () -> Void = {}
     var openURL: (URL) -> Void = { _ in }
+    /// Lane F15: the `Rankings` link, F11 in the app when its switch is on.
+    var openRankings: () -> Void = {}
 }
 
 /// F12's body under the field and chips, pure over its inputs so the snapshot tests draw it.
@@ -197,6 +199,12 @@ struct SearchContentView: View {
     let viewer: SearchViewer
     let build: String
     var actions = SearchActions()
+    /// Lane F15: the characters you watch, between `For {name}` and `Recent`.
+    var watching: [CharacterSearchRow] = []
+    /// Lane F15: characters and Rankings open in the app (a chevron, not the external glyph).
+    var nativeRankings = false
+
+    private var characterTrailing: SearchRowTrailing { nativeRankings ? .chevron : SearchDestination.character.trailing }
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: SearchLayout.sectionGap) {
@@ -218,14 +226,20 @@ struct SearchContentView: View {
                     if let title = forCharacter.guideTitle, let url = forCharacter.guideURL {
                         SearchRows.link(title, systemImage: "book.closed", trailing: SearchDestination.guide.trailing) { actions.openURL(url) }
                     }
-                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy", trailing: SearchDestination.rankings.trailing) {
-                        actions.openURL(SearchLinks.rankings)
+                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy", trailing: characterTrailing, action: actions.openRankings)
+                }
+            }
+        }
+        // A group with nothing in it is not drawn.
+        if !watching.isEmpty {
+            SearchSection(title: Copy.searchGroupWatching) {
+                SearchCard {
+                    ForEach(watching, id: \.key) { row in
+                        SearchRows.character(row, isYours: false, trailing: characterTrailing) { actions.openCharacter(row) }
                     }
                 }
             }
         }
-        // TODO(lane F11): the `Watching` group joins here, between `For {name}` and `Recent`, once
-        // `GET /v1/me/watching` exists. A group with nothing in it is not drawn.
         if !recent.isEmpty {
             SearchSection(title: Copy.searchGroupRecent, trailing: (Copy.searchRecentClear, actions.clearRecent)) {
                 SearchCard {
@@ -246,7 +260,7 @@ struct SearchContentView: View {
         group(.talents, results.talents) { talent in SearchRows.talent(talent, build: build) { actions.openTalent(talent) } }
         group(.items, results.items) { item in SearchRows.item(item, build: build) { actions.openItem(item) } }
         group(.characters, results.characters) { row in
-            SearchRows.character(row, isYours: viewer.ownKeys.contains(row.key)) { actions.openCharacter(row) }
+            SearchRows.character(row, isYours: viewer.ownKeys.contains(row.key), trailing: characterTrailing) { actions.openCharacter(row) }
         }
         charactersStatus
         if showsNoResults { noResults }

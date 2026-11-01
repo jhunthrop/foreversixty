@@ -146,8 +146,11 @@ enum SearchRows {
     }
 
     /// The watch star (F11) joins this row when `/v1/me/watching` exists; until then no star.
-    static func character(_ row: CharacterSearchRow, isYours: Bool, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.characterMeta(row), trailing: SearchDestination.character.trailing, action: action) {
+    static func character(
+        _ row: CharacterSearchRow, isYours: Bool, trailing: SearchRowTrailing = SearchDestination.character.trailing,
+        action: @escaping () -> Void
+    ) -> some View {
+        SearchRow(meta: SearchWords.characterMeta(row), trailing: trailing, action: action) {
             ClassCrest(className: row.className, size: SearchLayout.rowIcon)
         } title: {
             if isYours {

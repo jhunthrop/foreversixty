@@ -12,6 +12,9 @@ struct BisView: View {
     var onOpenItem: (ItemTooltipRequest) -> Void = { _ in }
     var build: String?
     var now: Date = .now
+    /// Lane F15: the new-data strip and its Update.
+    var newData: NewDataState = .none
+    var onUpdate: () -> Void = {}
 
     var body: some View {
         ScrollView {
@@ -25,7 +28,10 @@ struct BisView: View {
         }
         .background(FSColor.bg)
         .safeAreaInset(edge: .top, spacing: 0) {
-            if let offlineSince { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(offlineSince, now: now))) }
+            VStack(spacing: 0) {
+                if let offlineSince { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(offlineSince, now: now))) }
+                NewDataStrip(newData, action: onUpdate)
+            }
         }
     }
 

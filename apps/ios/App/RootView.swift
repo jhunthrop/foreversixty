@@ -149,6 +149,14 @@ struct RootView: View {
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
+        case .home where signInAvailable && environment.session.homeGateHolds:
+            // Lane F15: rankings and player links open over the gate (public data).
+            PublicRankingsHost(
+                dependencies: HomeDependencies.live(environment).rankings,
+                account: RankingsAccount.of(environment.session.phase.me, current: nil), router: rankingsRouter
+            ) {
+                HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) { EmptyView() }
+            }
         case .home where signInAvailable:
             HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) {
                 HomeTab(dependencies: .live(environment), session: environment.session, openBis: { selection = .bis })
@@ -237,6 +245,12 @@ extension RootView {
         case let .link(link): openLink(link)
         case let .tab(tab): selection = tab
         case let .character(key): openCharacter(key)
+        case .rankingsBoard:
+            guard environment.isAvailable(.rankings) else { return }
+            selection = .home
+            rankingsRouter.player = nil
+            rankingsRouter.encounter = nil
+            rankingsRouter.showsBoard = true
         }
     }
 

@@ -30,6 +30,13 @@ actor StaticDataStore {
         files = CachedStaticDataClient(client: client, cache: cache)
     }
 
+    /// The active build as the CDN says it now; nil when it cannot be read now (offline). The
+    /// new-data strip and Update now compare against it.
+    nonisolated func latestBuild() async -> String? {
+        guard let answer = try? await files.load(.getActiveBuild), !answer.isFromCache else { return nil }
+        return answer.value.build
+    }
+
     /// `Application Support/static-data`, excluded from backup: the one directory.
     static var defaultDirectory: URL? {
         DiskStaticFileCache.applicationSupport().directory

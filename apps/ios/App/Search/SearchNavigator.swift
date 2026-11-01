@@ -25,6 +25,25 @@ final class SearchNavigator {
 
     func open() { isPresented = true }
 
+    /// Lane F15: `Search again` on a character not found opens Search with the name typed.
+    private(set) var prefill: String?
+
+    func open(query: String) {
+        prefill = query
+        isPresented = true
+    }
+
+    func takePrefill() -> String? {
+        defer { prefill = nil }
+        return prefill
+    }
+
+    /// Leaves Search for an in-app screen (F11 Rankings or a character page).
+    func leave(to destination: IntentDestination) {
+        isPresented = false
+        IntentRouter.shared.open(destination)
+    }
+
     /// Leaves search (when it is up) for a list in the BiS tab.
     func openList(_ selection: BisSelection?) {
         isPresented = false

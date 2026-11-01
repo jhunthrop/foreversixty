@@ -13,12 +13,16 @@ struct TalentsScreen: View {
     @State private var tree = 0
     @State private var sheet: TalentSheetModel?
     @State private var settled = false
+    /// Lane F15: a newer build waits behind the new-data strip.
+    @State private var newData: NewDataState = .none
+    private let latestBuild: @Sendable () async -> String?
     @Environment(\.openURL) private var openURL
 
     /// [model] is Home's, already loading for the Talents row, so the push draws at once.
-    init(character: HomeCharacter, model: TalentsModel) {
+    init(character: HomeCharacter, model: TalentsModel, latestBuild: @escaping @Sendable () async -> String? = { nil }) {
         self.character = character
         _model = State(initialValue: model)
+        self.latestBuild = latestBuild
     }
 
     var body: some View {
@@ -38,9 +42,16 @@ struct TalentsScreen: View {
         .toolbarBackground(FSColor.bg, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: model.build ?? "") }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            NewDataStrip(newData) {
+                newData = .none
+                Task { await model.load() }
+            }
+        }
         .task {
             if model.phase.presenter == nil { await model.load() }
             settle()
+            if let shown = model.build { newData = NewDataCheck.state(shown: shown, latest: await latestBuild()) }
         }
     }
 

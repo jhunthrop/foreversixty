@@ -116,6 +116,26 @@ final class BisModel {
         await load()
     }
 
+    /// Lane F15: a newer build found while the list is open; `Update` applies it.
+    private(set) var newData: NewDataState = .none
+    /// Lane F15: the CDN's active build now; nil keeps the strip away (tests, offline).
+    var latestBuild: (@Sendable () async -> String?)?
+
+    /// On foreground: a newer active build shows the strip and changes nothing else.
+    func checkForNewData() async {
+        guard let build, let latestBuild else { return }
+        newData = NewDataCheck.state(shown: build, latest: await latestBuild())
+    }
+
+    /// `Update`: the list of the new build replaces the open one.
+    func applyNewData() async {
+        guard case let .ready(next) = newData else { return }
+        newData = .none
+        build = next
+        drawSaved(build: next)
+        await load()
+    }
+
     /// Pull to refresh and `Try again`: refetch the current list, keeping what is on screen.
     func refresh() async {
         await load()

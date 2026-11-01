@@ -10,6 +10,8 @@ enum IntentDestination: Equatable, Sendable {
     case link(DeepLink)
     /// A character: F11.4 when `rankings` is on, else Home on that character.
     case character(key: String)
+    /// Rankings on Home, on its default board.
+    case rankingsBoard
     case tab(AppTab)
 }
 
