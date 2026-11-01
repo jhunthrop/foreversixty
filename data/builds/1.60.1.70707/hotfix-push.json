@@ -1,0 +1,384 @@
+{
+ "build": "1.60.1.70707",
+ "search_totals": {
+  "AreaTable": 33,
+  "ArmorLocation": 0,
+  "ChrClasses": 0,
+  "ChrRaces": 19,
+  "CurvePoint": 212,
+  "ItemArmorQuality": 0,
+  "ItemArmorShield": 0,
+  "ItemArmorTotal": 0,
+  "ItemDamageOneHand": 0,
+  "ItemDamageRanged": 0,
+  "ItemDamageThrown": 0,
+  "ItemDamageTwoHand": 0,
+  "ItemDamageWand": 0,
+  "ItemEffect": 19,
+  "ItemSet": 37,
+  "JournalInstance": 0,
+  "ManifestInterfaceData": 0,
+  "Map": 5,
+  "RandPropPoints": 0,
+  "SkillLine": 32,
+  "Spell": 6134,
+  "Talent": 0,
+  "TraitCond": 0,
+  "TraitCurrency": 1,
+  "TraitDefinition": 34,
+  "TraitEdge": 12,
+  "TraitNode": 244
+ },
+ "tables": {
+  "AreaTable": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "e7ccbde2cd084329ff0cccaa5af7f33facc42079d410bb1d2569dc9bce10a379",
+   "withheld": 14
+  },
+  "ArmorLocation": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "e13b149874fe9f8075411009f9c4e0d4140dd3298a647700feb155e6ad71f2fa",
+   "withheld": 0
+  },
+  "ChrClasses": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "e08c2f00e1652ff6857734915d649a80d8a2a86419986f59dbe82ba3a6975597",
+   "withheld": 0
+  },
+  "ChrRaces": {
+   "added": 0,
+   "changed": 9,
+   "removed": 0,
+   "sha256": "f0ff92bd23c1a7f39cd3b2bd119f6c8eb3261ba2ede7211ce1402121b1d48cee",
+   "withheld": 0
+  },
+  "CurvePoint": {
+   "added": 57,
+   "changed": 77,
+   "removed": 19,
+   "sha256": "1ce5941fc9efc30e3639359062e94f1778adfedc299f3d5c967a838b6b475102",
+   "withheld": 26
+  },
+  "ItemArmorQuality": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "1411c5bd3f36fc9faa8e27b6eb5dd29b839ad85880a19ba83e2cee7f5bdd7354",
+   "withheld": 0
+  },
+  "ItemArmorShield": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "741b0d7741dc4c91be5b45d3ced30a8198c3178ecdbdffe9bb055bb7479a8ff9",
+   "withheld": 0
+  },
+  "ItemArmorTotal": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "2cfdf38cc7dea5a92ca494eab45b4940d3415d3a137f6473716173d2d6413189",
+   "withheld": 0
+  },
+  "ItemDamageOneHand": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "591fd04d419f2cf878e614bec4c37aed120f00291c82b0c54799a24afbce6f7f",
+   "withheld": 0
+  },
+  "ItemDamageRanged": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "8b1516f55d59eaa4e7c42f6ce1d7554dd263224cc7c54e482f6cb84f94a84095",
+   "withheld": 0
+  },
+  "ItemDamageThrown": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "8e22434b5099a25f5bf07807088373d86d3486ecee79168a0c25ebf0e1384626",
+   "withheld": 0
+  },
+  "ItemDamageTwoHand": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "36061d34a6a15fc594be9a69afa0e5f29d1e4892fe88e593e2fac67539ff3f44",
+   "withheld": 0
+  },
+  "ItemDamageWand": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "652c2f8ea55caec49be8eff4a19249ef9b50a378482beb09fc907ccf3b684365",
+   "withheld": 0
+  },
+  "ItemEffect": {
+   "added": 3,
+   "changed": 1,
+   "removed": 0,
+   "sha256": "7a4052f24f1d1899a8bfdc24c333266d2cc0d0e8626904026f70a33fd09e50a6",
+   "withheld": 0
+  },
+  "ItemSet": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "227cea07f3595d34662640c5c761e56c6a3ea2867b84ec5ef53cceccab3298db",
+   "withheld": 0
+  },
+  "ItemSetSpell": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "d41d30ca156592761819d80bea3bb66c7ea2bcc43ecc71639e01c3a3ef9637ea",
+   "withheld": 0
+  },
+  "ItemXItemEffect": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "ad4b7a82731a4d9c5d8ede4c68f08fa0fa8a144fdc7bc991f03e0160e3e53f34",
+   "withheld": 0
+  },
+  "JournalInstance": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "dbf321122be9b72863d9c11c27fd5273c8106a1a4dabaceec7d83b2249ac5784",
+   "withheld": 0
+  },
+  "ManifestInterfaceData": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "71b82f75741b87ad38c82bb73cba99b3e3bdeb6c0c00e09dde1298dafce31441",
+   "withheld": 0
+  },
+  "Map": {
+   "added": 0,
+   "changed": 1,
+   "removed": 0,
+   "sha256": "94cee98987bd48ec830aa1a128ba9b748faa3111931f5ef7351b02be6406b135",
+   "withheld": 0
+  },
+  "RandPropPoints": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "e4a41af2ea8dc344c0c1ce36b26cba741b7f393cb74197e52d9893e6cb223db5",
+   "withheld": 0
+  },
+  "SkillLine": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "72715f0f750d222f5e907e84b91dd81f85999a2e901489946b8db1e4adfaaae7",
+   "withheld": 0
+  },
+  "SkillLineAbility": {
+   "added": 8,
+   "changed": 4,
+   "removed": 2,
+   "sha256": "58b69ee522b922050f050f38307c145932270ac590b91702434abe01b37c5fc1",
+   "withheld": 0
+  },
+  "SkillLineXTraitTree": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "e6774240ba1fda84bef060fda0d0b23e42d5ae9b4d8ae3323f7ccb31f38c5760",
+   "withheld": 0
+  },
+  "Spell": {
+   "added": 31,
+   "changed": 52,
+   "removed": 9,
+   "sha256": "1950078a7e4f0d91992f7078f6239c8977d251b4cb59253359ca160602de655f",
+   "withheld": 35
+  },
+  "SpellAuraOptions": {
+   "added": 9,
+   "changed": 10,
+   "removed": 11,
+   "sha256": "88b696a69f00c38d80ef12b4bfa6e0eaef02a42079041f8571c48d248e066e14",
+   "withheld": 1
+  },
+  "SpellCastTimes": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
+   "withheld": 0
+  },
+  "SpellClassOptions": {
+   "added": 18,
+   "changed": 1,
+   "removed": 0,
+   "sha256": "4b74850bd59935e2c322331a1651601993c3d985ff53051444b84208915d5492",
+   "withheld": 2
+  },
+  "SpellCooldowns": {
+   "added": 7,
+   "changed": 7,
+   "removed": 0,
+   "sha256": "a3f52d1da66989b61157705034fd70a58c38e3855a1ae259093817c3d375c546",
+   "withheld": 4
+  },
+  "SpellDuration": {
+   "added": 0,
+   "changed": 1,
+   "removed": 0,
+   "sha256": "222cc16277e0485349399d13665832ef957a843560ea71623395b3fd8f02702a",
+   "withheld": 0
+  },
+  "SpellEffect": {
+   "added": 71,
+   "changed": 85,
+   "removed": 10,
+   "sha256": "eaff7efc61b1036195eda1d4b35f13857421bb14e1ebf7f5694fc31d44879cdb",
+   "withheld": 21
+  },
+  "SpellItemEnchantment": {
+   "added": 1,
+   "changed": 1,
+   "removed": 0,
+   "sha256": "0f20e719e672a1faae3fd18bde72ae749396b79c593eb5c314ec321d1be8dbfd",
+   "withheld": 0
+  },
+  "SpellLevels": {
+   "added": 18,
+   "changed": 8,
+   "removed": 0,
+   "sha256": "e3522aa368e2def66b11a9a19c53e116cf0fde00283eeb4d29512f14597c893f",
+   "withheld": 5
+  },
+  "SpellMisc": {
+   "added": 28,
+   "changed": 1467,
+   "removed": 0,
+   "sha256": "a11d99154b0c225bd0f9a6e7c2e1eec714765b9d6a4e4503b3283210fe86e6a7",
+   "withheld": 17
+  },
+  "SpellName": {
+   "added": 31,
+   "changed": 4,
+   "removed": 9,
+   "sha256": "5af1b405473d9079ec469d59c2142057bd1730c9f195151e5b52ddcb81ca886c",
+   "withheld": 35
+  },
+  "SpellPower": {
+   "added": 8,
+   "changed": 3,
+   "removed": 0,
+   "sha256": "a7c96ddbe27d4b2319be7e63655ae5f15e617ab7099b92217caf8ae24972ae97",
+   "withheld": 19
+  },
+  "SpellRadius": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "c45efa9792d9be30af61aac2e2499493834bc030f6a29d0c119be76f9fe336ed",
+   "withheld": 0
+  },
+  "SpellRange": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
+   "withheld": 0
+  },
+  "Talent": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "ef5518c5a3aaa7458e074a7e41e87837f8a1c74da00938244019e2e8c0428b4a",
+   "withheld": 0
+  },
+  "TalentTab": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "9539a388c0e697381f7574247488da528f2647099db4c39096bdb2a8695139b9",
+   "withheld": 0
+  },
+  "TraitCond": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "08b6e59a3e49faa5fac554774494f5feb860c6c750981be46762bfc0e939e276",
+   "withheld": 0
+  },
+  "TraitCurrency": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "b2d6ef2dd53501743263af16368e3b2808f917a2356fd9ada6d0870b15c90ef5",
+   "withheld": 0
+  },
+  "TraitDefinition": {
+   "added": 3,
+   "changed": 13,
+   "removed": 0,
+   "sha256": "42ca30d251b054b095487c9bbdd3db968a6f3e2547c28db5d8b6e41d0ae4d98b",
+   "withheld": 0
+  },
+  "TraitDefinitionEffectPoints": {
+   "added": 10,
+   "changed": 0,
+   "removed": 3,
+   "sha256": "a43cfbb44064c02532ca5ea9deec00fe7c06060a54532887245ebd599ddfd945",
+   "withheld": 0
+  },
+  "TraitEdge": {
+   "added": 6,
+   "changed": 0,
+   "removed": 6,
+   "sha256": "81dbb7ec3094ce888ef39999b5269df6cb8006b3e9f4c90990bdcdff3c25b4f0",
+   "withheld": 0
+  },
+  "TraitNode": {
+   "added": 3,
+   "changed": 36,
+   "removed": 2,
+   "sha256": "1a9289bcb0babea3a5ed4be71d818019c9fc0ff327a95573dd8896070856b8d0",
+   "withheld": 0
+  },
+  "TraitNodeEntry": {
+   "added": 3,
+   "changed": 11,
+   "removed": 0,
+   "sha256": "052f8d708a2a95afcba3c1ac6d972d33a73b971913fedf3641f27b3537cbe7ac",
+   "withheld": 0
+  },
+  "TraitNodeGroup": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "84a49cd14fb71f1ace9e139ad44aeebc80172e430e2152756a6cfe6882e875cf",
+   "withheld": 0
+  },
+  "TraitNodeGroupXTraitNode": {
+   "added": 68,
+   "changed": 0,
+   "removed": 65,
+   "sha256": "12cb9af057b0819550b1a13c8baadb79cfd4b7b0228b420b194b39812644d4d5",
+   "withheld": 0
+  },
+  "TraitNodeXTraitNodeEntry": {
+   "added": 3,
+   "changed": 0,
+   "removed": 2,
+   "sha256": "cf672d42bfda5f5a51ae09f1642b131322e1ef5be273d7bf0191d9280205826b",
+   "withheld": 0
+  }
+ }
+}

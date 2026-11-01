@@ -4054,6 +4054,12 @@
             "icon": "ability_ghoulfrenzy"
           },
           {
+            "spell_id": 1328618,
+            "name": "Ferocious Bite",
+            "condition": "At 5 combo points with Rip having more than 6 seconds left, Ferocious Bite dumps them instead of capping out.",
+            "icon": "ability_druid_ferociousbite"
+          },
+          {
             "spell_id": 6800,
             "name": "Shred",
             "condition": "Shred builds combo points the rest of the time.",
@@ -4313,10 +4319,10 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 407995,
-            "name": "Primal Bite",
-            "condition": "Primal Bite (talent) on cooldown: the biggest threat hit per rage.",
-            "icon": "ability_racial_cannibalize"
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
+            "icon": "ability_druid_lacerate"
           },
           {
             "spell_id": 6809,
@@ -4342,10 +4348,10 @@
             "icon": "ability_bullrush"
           },
           {
-            "spell_id": 1238069,
-            "name": "Primal Bite",
-            "condition": "Primal Bite (talent) on cooldown: the biggest threat hit per rage.",
-            "icon": "ability_racial_cannibalize"
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
+            "icon": "ability_druid_lacerate"
           },
           {
             "spell_id": 8972,
@@ -4371,10 +4377,16 @@
             "icon": "ability_bullrush"
           },
           {
-            "spell_id": 1238069,
+            "spell_id": 407995,
             "name": "Primal Bite",
             "condition": "Primal Bite (talent) on cooldown: the biggest threat hit per rage.",
             "icon": "ability_racial_cannibalize"
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
+            "icon": "ability_druid_lacerate"
           },
           {
             "spell_id": 8972,
@@ -4406,7 +4418,7 @@
             "icon": "ability_bullrush"
           },
           {
-            "spell_id": 1238070,
+            "spell_id": 1238069,
             "name": "Primal Bite",
             "condition": "Primal Bite (talent) on cooldown: the biggest threat hit per rage.",
             "icon": "ability_racial_cannibalize"
@@ -6962,12 +6974,6 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.",
-            "icon": "ability_paladin_shieldofthetemplar"
-          },
-          {
             "spell_id": 5573,
             "name": "Divine Protection",
             "condition": "Divine Protection: 8 seconds of immunity with no attacks, the last resort.",
@@ -6978,6 +6984,12 @@
             "name": "Seal of Fury",
             "condition": "Seal of Fury kept up.",
             "icon": "spell_holy_retributionaura"
+          },
+          {
+            "spell_id": 20925,
+            "name": "Holy Shield",
+            "condition": "Holy Shield on cooldown: its 10 second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.",
+            "icon": "spell_holy_blessingofprotection"
           },
           {
             "spell_id": 680,
@@ -7015,12 +7027,6 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.",
-            "icon": "ability_paladin_shieldofthetemplar"
-          },
-          {
             "spell_id": 642,
             "name": "Divine Shield",
             "condition": "Divine Shield: 12 seconds of immunity at half damage dealt, the second panic button once Forbearance from the first has gone.",
@@ -7037,6 +7043,12 @@
             "name": "Seal of Fury",
             "condition": "Seal of Fury kept up.",
             "icon": "spell_holy_retributionaura"
+          },
+          {
+            "spell_id": 20925,
+            "name": "Holy Shield",
+            "condition": "Holy Shield on cooldown: its 10 second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.",
+            "icon": "spell_holy_blessingofprotection"
           },
           {
             "spell_id": 2495,
@@ -7074,12 +7086,6 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.",
-            "icon": "ability_paladin_shieldofthetemplar"
-          },
-          {
             "spell_id": 642,
             "name": "Divine Shield",
             "condition": "Divine Shield: 12 seconds of immunity at half damage dealt, the second panic button once Forbearance from the first has gone.",
@@ -7098,7 +7104,7 @@
             "icon": "spell_holy_retributionaura"
           },
           {
-            "spell_id": 20925,
+            "spell_id": 20927,
             "name": "Holy Shield",
             "condition": "Holy Shield on cooldown: its 10 second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.",
             "icon": "spell_holy_blessingofprotection"
@@ -7145,12 +7151,6 @@
         "level": 50,
         "lines": [
           {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.",
-            "icon": "ability_paladin_shieldofthetemplar"
-          },
-          {
             "spell_id": 1020,
             "name": "Divine Shield",
             "condition": "Divine Shield: 12 seconds of immunity at half damage dealt, the second panic button once Forbearance from the first has gone.",
@@ -7169,7 +7169,7 @@
             "icon": "spell_holy_retributionaura"
           },
           {
-            "spell_id": 20927,
+            "spell_id": 20928,
             "name": "Holy Shield",
             "condition": "Holy Shield on cooldown: its 10 second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.",
             "icon": "spell_holy_blessingofprotection"
@@ -7215,12 +7215,6 @@
       {
         "level": 60,
         "lines": [
-          {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.",
-            "icon": "ability_paladin_shieldofthetemplar"
-          },
           {
             "spell_id": 1020,
             "name": "Divine Shield",
@@ -7777,7 +7771,7 @@
             "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9472,
@@ -7789,7 +7783,7 @@
             "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9472,
@@ -7801,7 +7795,7 @@
             "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9472,
@@ -7813,7 +7807,7 @@
             "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9472,
@@ -7825,7 +7819,7 @@
             "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9472,
@@ -7944,7 +7938,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -7956,7 +7950,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -7968,7 +7962,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -7980,7 +7974,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -7992,7 +7986,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8111,7 +8105,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8123,7 +8117,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8135,7 +8129,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8147,7 +8141,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8159,7 +8153,7 @@
             "spell_id": 1240771,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 9474,
@@ -8290,7 +8284,7 @@
             "spell_id": 1240773,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 10916,
@@ -8302,7 +8296,7 @@
             "spell_id": 1240773,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 10916,
@@ -8314,7 +8308,7 @@
             "spell_id": 1240773,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 10916,
@@ -8326,7 +8320,7 @@
             "spell_id": 1240773,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 10916,
@@ -8338,7 +8332,7 @@
             "spell_id": 1240773,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 10916,
@@ -8469,7 +8463,7 @@
             "spell_id": 1240774,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 27608,
@@ -8481,7 +8475,7 @@
             "spell_id": 1240774,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 27608,
@@ -8493,7 +8487,7 @@
             "spell_id": 1240774,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 27608,
@@ -8505,7 +8499,7 @@
             "spell_id": 1240774,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 27608,
@@ -8517,7 +8511,7 @@
             "spell_id": 1240774,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_holy_blindingheal"
           },
           {
             "spell_id": 27608,
@@ -109480,16 +109474,16 @@
     "20922": 20,
     "20923": 20,
     "20924": 20,
-    "20925": 40,
-    "20927": 40,
-    "20928": 40,
+    "20925": 30,
+    "20927": 30,
+    "20928": 30,
     "20929": 30,
     "20930": 30,
     "21551": 40,
-    "22568": 32,
+    "22568": 24,
     "22812": 44,
-    "22827": 32,
-    "22828": 32,
+    "22827": 24,
+    "22828": 24,
     "22842": 36,
     "23881": 40,
     "23892": 40,
@@ -109535,7 +109529,7 @@
     "29166": 40,
     "29228": 10,
     "31016": 1,
-    "31018": 32,
+    "31018": 24,
     "399956": 30,
     "400574": 20,
     "400618": 6,
@@ -109549,7 +109543,7 @@
     "401937": 25,
     "402174": 30,
     "407632": 40,
-    "407995": 25,
+    "407995": 40,
     "408341": 12,
     "408342": 12,
     "408343": 12,
@@ -109609,11 +109603,10 @@
     "1220749": 4,
     "1220750": 4,
     "1220751": 4,
-    "1235826": 42,
-    "1235827": 42,
-    "1238069": 25,
-    "1238070": 25,
-    "1238073": 25,
+    "1235826": 25,
+    "1235827": 25,
+    "1238069": 40,
+    "1238073": 40,
     "1238299": 30,
     "1238300": 30,
     "1239242": 40,
@@ -109656,7 +109649,6 @@
     "1310200": 20,
     "1310707": 30,
     "1310994": 1,
-    "1311015": 30,
     "1311606": 30,
     "1311649": 10,
     "1311656": 10,
@@ -109665,7 +109657,10 @@
     "1317257": 30,
     "1322605": 1,
     "1325256": 1,
-    "1326047": 30
+    "1326047": 30,
+    "1328616": 25,
+    "1328617": 25,
+    "1328618": 24
   },
   "bis_names": {
     "720": "Brawler Gloves",

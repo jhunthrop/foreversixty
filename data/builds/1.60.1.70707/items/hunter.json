@@ -2549,14 +2549,15 @@
       "item_level": 56,
       "armor": 36,
       "stats": {
-        "spirit": 5
+        "spirit": 5,
+        "fire_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 17.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -4520,7 +4521,7 @@
       "armor": 63,
       "stats": {
         "agility": 9,
-        "intellect": 4,
+        "intellect": 5,
         "spirit": 2,
         "stamina": 8,
         "fire_res": 3,
@@ -4656,7 +4657,7 @@
       "stats": {
         "agility": 12,
         "intellect": 3,
-        "spirit": 4,
+        "spirit": 5,
         "stamina": 7,
         "shadow_res": 3,
         "hit": 5
@@ -5856,7 +5857,7 @@
       "stats": {
         "stamina": 1,
         "strength": 1,
-        "crit": 2,
+        "crit": 3,
         "attack_power": 5
       },
       "damage_min": 0,
@@ -7497,7 +7498,7 @@
       "item_level": 30,
       "armor": 0,
       "stats": {
-        "intellect": 8,
+        "intellect": 9,
         "stamina": 4
       },
       "damage_min": 15,
@@ -25482,7 +25483,7 @@
       "item_level": 17,
       "armor": 159,
       "stats": {
-        "strength": 2,
+        "strength": 3,
         "stamina": 4
       },
       "damage_min": 0,
@@ -32077,7 +32078,7 @@
       "armor": 19,
       "stats": {
         "intellect": 4,
-        "stamina": 2
+        "stamina": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -34434,7 +34435,7 @@
       "armor": 23,
       "stats": {
         "intellect": 4,
-        "agility": 2
+        "agility": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -47959,7 +47960,7 @@
       "item_level": 25,
       "armor": 19,
       "stats": {
-        "stamina": 2,
+        "stamina": 3,
         "agility": 4
       },
       "damage_min": 0,
@@ -66534,7 +66535,7 @@
       "item_level": 32,
       "armor": 22,
       "stats": {
-        "spirit": -4,
+        "spirit": -3,
         "stamina": 8
       },
       "damage_min": 0,
@@ -68381,7 +68382,7 @@
       "item_level": 35,
       "armor": 70,
       "stats": {
-        "stamina": 2,
+        "stamina": 3,
         "agility": 7,
         "spirit": 7
       },
@@ -77279,7 +77280,7 @@
       "item_level": 33,
       "armor": 0,
       "stats": {
-        "stamina": 4,
+        "stamina": 5,
         "agility": 2
       },
       "damage_min": 28,
@@ -77310,7 +77311,7 @@
       "item_level": 33,
       "armor": 0,
       "stats": {
-        "stamina": 4,
+        "stamina": 5,
         "agility": 2
       },
       "damage_min": 28,
@@ -81337,8 +81338,8 @@
       "armor": 81,
       "stats": {
         "agility": 8,
-        "intellect": 6,
-        "spirit": 6
+        "intellect": 7,
+        "spirit": 7
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -125499,14 +125500,15 @@
       "item_level": 47,
       "armor": 0,
       "stats": {
-        "spirit": 9
+        "spirit": 9,
+        "nature_power": 33
       },
       "damage_min": 75,
       "damage_max": 114,
       "speed": 2.3,
       "dps": 41.09,
       "two_hand": true,
-      "effect_text": "Increases damage done by Nature spells and effects by up to 33.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -134861,8 +134863,7 @@
       "armor": 0,
       "stats": {
         "hit": 7,
-        "attack_power": 42,
-        "ranged_attack_power": 42
+        "attack_power": 42
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -136712,8 +136713,7 @@
       "armor": 0,
       "stats": {
         "hit": 7,
-        "attack_power": 42,
-        "ranged_attack_power": 42
+        "attack_power": 42
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -136779,7 +136779,7 @@
       "speed": 1.8,
       "dps": 33.89,
       "two_hand": false,
-      "effect_text": "Blasts a target for 56 Fire damage and increases Fire damage done to target by 10 for 30 sec.",
+      "effect_text": "Chance on hit: +10 Fire Spell Damage.",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": true,
@@ -138194,14 +138194,15 @@
       "item_level": 52,
       "armor": 0,
       "stats": {
-        "frost_res": 10
+        "frost_res": 10,
+        "frost_power": 21
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 21. When struck in combat has a 1% chance of inflicting 50 Frost damage to the attacker and freezing them for 5 sec.",
+      "effect_text": "When struck in combat has a 1% chance of inflicting 50 Frost damage to the attacker and freezing them for 5 sec.",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -146181,14 +146182,15 @@
       "stats": {
         "fire_res": 15,
         "intellect": 10,
-        "spirit": 10
+        "spirit": 10,
+        "fire_power": 43
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 43.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -152132,7 +152134,7 @@
       "item_level": 55,
       "armor": 108,
       "stats": {
-        "agility": 22,
+        "agility": 23,
         "strength": 10,
         "stamina": 12
       },
@@ -152196,7 +152198,7 @@
       "item_level": 55,
       "armor": 54,
       "stats": {
-        "intellect": 22,
+        "intellect": 23,
         "stamina": 12,
         "healing": 22,
         "spell_power": 7
@@ -153578,7 +153580,7 @@
       "item_level": 55,
       "armor": 108,
       "stats": {
-        "agility": 22,
+        "agility": 23,
         "strength": 10,
         "stamina": 12
       },
@@ -153642,7 +153644,7 @@
       "item_level": 55,
       "armor": 54,
       "stats": {
-        "intellect": 22,
+        "intellect": 23,
         "stamina": 12,
         "healing": 22,
         "spell_power": 7
@@ -154206,14 +154208,15 @@
       "armor": 0,
       "stats": {
         "stamina": 7,
-        "intellect": 6
+        "intellect": 6,
+        "nature_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Nature spells and effects by up to 17.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -157926,14 +157929,15 @@
       "armor": 61,
       "stats": {
         "intellect": 8,
-        "stamina": 5
+        "stamina": 5,
+        "frost_power": 29
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 29.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -158319,7 +158323,7 @@
       "stats": {
         "defense": 9,
         "agility": 14,
-        "stamina": 12
+        "stamina": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -160636,7 +160640,7 @@
       "armor": 250,
       "stats": {
         "spell_power": 17,
-        "stamina": 12,
+        "stamina": 13,
         "strength": 11
       },
       "damage_min": 0,
@@ -163023,14 +163027,15 @@
       "item_level": 58,
       "armor": 47,
       "stats": {
-        "stamina": 12
+        "stamina": 12,
+        "shadow_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 19.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -164584,14 +164589,15 @@
       "item_level": 58,
       "armor": 52,
       "stats": {
-        "intellect": 12
+        "intellect": 12,
+        "frost_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 19.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -164738,14 +164744,15 @@
       "stats": {
         "spirit": 10,
         "stamina": 10,
-        "intellect": 10
+        "intellect": 10,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 14.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -167104,14 +167111,15 @@
       "item_level": 59,
       "armor": 0,
       "stats": {
-        "stamina": 10
+        "stamina": 10,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 13.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -168990,14 +168998,15 @@
       "armor": 33,
       "stats": {
         "intellect": 7,
-        "spirit": 7
+        "spirit": 7,
+        "arcane_power": 11
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Arcane spells and effects by up to 11.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -170814,14 +170823,15 @@
       "item_level": 60,
       "armor": 0,
       "stats": {
-        "stamina": 15
+        "stamina": 15,
+        "shadow_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 13.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -175666,14 +175676,15 @@
       "item_level": 60,
       "armor": 77,
       "stats": {
-        "intellect": 17
+        "intellect": 17,
+        "fire_power": 26
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 26.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -177438,14 +177449,15 @@
       "armor": 48,
       "stats": {
         "intellect": 14,
-        "stamina": 13
+        "stamina": 13,
+        "frost_power": 20
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 20.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -179136,14 +179148,15 @@
       "armor": 0,
       "stats": {
         "stamina": 8,
-        "intellect": 7
+        "intellect": 7,
+        "shadow_power": 20
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 20.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -179859,13 +179872,15 @@
       "required_level_source": "classic-db",
       "item_level": 61,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 24
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 24.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": true,
@@ -182275,14 +182290,15 @@
       "stats": {
         "intellect": 7,
         "spirit": 7,
-        "stamina": 6
+        "stamina": 6,
+        "nature_power": 29
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Nature spells and effects by up to 29.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -183234,14 +183250,15 @@
       "item_level": 61,
       "armor": 118,
       "stats": {
-        "healing": 37
+        "healing": 37,
+        "nature_power": 24
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Nature spells and effects by up to 24.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -184251,14 +184268,15 @@
       "item_level": 62,
       "armor": 0,
       "stats": {
-        "stamina": 5
+        "stamina": 5,
+        "shadow_power": 19
       },
       "damage_min": 40,
       "damage_max": 74,
       "speed": 1.4,
       "dps": 40.71,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 19.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -184800,14 +184818,15 @@
       "armor": 66,
       "stats": {
         "stamina": 19,
-        "intellect": 9
+        "intellect": 9,
+        "shadow_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 13.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -185704,14 +185723,15 @@
       "item_level": 62,
       "armor": 88,
       "stats": {
-        "stamina": 15
+        "stamina": 15,
+        "frost_power": 43
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 43.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -186565,14 +186585,15 @@
       "armor": 60,
       "stats": {
         "stamina": 9,
-        "intellect": 9
+        "intellect": 9,
+        "shadow_power": 27
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 27.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -187845,14 +187866,15 @@
       "stats": {
         "intellect": 12,
         "stamina": 12,
-        "spirit": 9
+        "spirit": 9,
+        "frost_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 17.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -188412,14 +188434,15 @@
       "armor": 55,
       "stats": {
         "stamina": 14,
-        "intellect": 14
+        "intellect": 14,
+        "shadow_power": 20
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 20.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -193613,14 +193636,15 @@
       "armor": 61,
       "stats": {
         "fire_res": 15,
-        "spirit": 5
+        "spirit": 5,
+        "fire_power": 29
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 29.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -193675,14 +193699,15 @@
       "armor": 73,
       "stats": {
         "intellect": 10,
-        "stamina": 10
+        "stamina": 10,
+        "frost_power": 41
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 41.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -194664,14 +194689,15 @@
       "armor": 78,
       "stats": {
         "stamina": 16,
-        "intellect": 16
+        "intellect": 16,
+        "shadow_power": 34
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 34.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -208175,14 +208201,15 @@
       "stats": {
         "intellect": 12,
         "stamina": 11,
-        "spirit": 7
+        "spirit": 7,
+        "nature_power": 40
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Nature spells and effects by up to 40.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -209699,14 +209726,15 @@
       "armor": 72,
       "stats": {
         "intellect": 12,
-        "stamina": 17
+        "stamina": 17,
+        "shadow_power": 43
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 43.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -210584,14 +210612,15 @@
       "item_level": 71,
       "armor": 95,
       "stats": {
-        "stamina": 21
+        "stamina": 21,
+        "shadow_power": 64
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 64.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -212734,6 +212763,7 @@
         "intellect": 19,
         "stamina": 18,
         "spirit": 8,
+        "fire_power": 23,
         "spell_power": 9,
         "healing": 9
       },
@@ -212742,7 +212772,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Fire spells and effects by up to 23.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -217405,14 +217435,15 @@
         "arcane_res": 10,
         "intellect": 24,
         "spirit": 14,
-        "stamina": 14
+        "stamina": 14,
+        "arcane_power": 36
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Arcane spells and effects by up to 36.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -223631,6 +223662,7 @@
       "stats": {
         "intellect": 12,
         "stamina": 11,
+        "frost_power": 40,
         "hit": 1
       },
       "damage_min": 0,
@@ -223638,7 +223670,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Frost spells and effects by up to 40.",
+      "effect_text": "",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -224166,14 +224198,15 @@
       "item_level": 71,
       "armor": 61,
       "stats": {
-        "stamina": 20
+        "stamina": 20,
+        "shadow_power": 33
       },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases damage done by Shadow spells and effects by up to 33. Restores 24 health per 5 sec.",
+      "effect_text": "Restores 24 health per 5 sec.",
       "stats_source": "classic-db",
       "set_id": null,
       "unique": false,
@@ -229602,7 +229635,7 @@
       "armor": 0,
       "stats": {
         "healing": 33,
-        "spirit": 12,
+        "spirit": 13,
         "stamina": 10,
         "spell_power": 11
       },

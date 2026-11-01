@@ -28967,6 +28967,18 @@
     "spells": {
       "added": [
         {
+          "id": 20575,
+          "name": "Command"
+        },
+        {
+          "id": 20576,
+          "name": "Command"
+        },
+        {
+          "id": 21563,
+          "name": "Command"
+        },
+        {
           "id": 36562,
           "name": "Dismiss Pet"
         },
@@ -29151,6 +29163,10 @@
           "name": "ZP - Effects - Dispel Mechanics (DND)"
         },
         {
+          "id": 1239570,
+          "name": "Holy Shield"
+        },
+        {
           "id": 1326619,
           "name": "Ancestral Spirit"
         },
@@ -29199,11 +29215,155 @@
           "name": "Arcane Bolt"
         },
         {
+          "id": 1328198,
+          "name": "Echo of Light"
+        },
+        {
+          "id": 1328206,
+          "name": "Echo of Wisdom"
+        },
+        {
+          "id": 1328370,
+          "name": "Turn Evil"
+        },
+        {
+          "id": 1328372,
+          "name": "Turn Evil"
+        },
+        {
+          "id": 1328373,
+          "name": "Turn Evil"
+        },
+        {
+          "id": 1328374,
+          "name": "Turn Evil"
+        },
+        {
           "id": 1328389,
           "name": "[DNT] Quest Cleanup"
+        },
+        {
+          "id": 1328544,
+          "name": "Shieldsworn"
+        },
+        {
+          "id": 1328546,
+          "name": "Stoicism"
+        },
+        {
+          "id": 1328548,
+          "name": "Oath of Light"
+        },
+        {
+          "id": 1328550,
+          "name": "Boundless Light"
+        },
+        {
+          "id": 1328551,
+          "name": "Shieldsworn"
+        },
+        {
+          "id": 1328569,
+          "name": "Holy Binding"
+        },
+        {
+          "id": 1328570,
+          "name": "Holy Binding"
+        },
+        {
+          "id": 1328613,
+          "name": "Predatory Discipline"
+        },
+        {
+          "id": 1328616,
+          "name": "Lacerate"
+        },
+        {
+          "id": 1328617,
+          "name": "Lacerate"
+        },
+        {
+          "id": 1328618,
+          "name": "Ferocious Bite"
+        },
+        {
+          "id": 1328621,
+          "name": "Bloom"
+        },
+        {
+          "id": 1328622,
+          "name": "Bloom"
+        },
+        {
+          "id": 1328891,
+          "name": "Enrage"
+        },
+        {
+          "id": 1328904,
+          "name": "Enrage"
+        },
+        {
+          "id": 1328906,
+          "name": "Love Crazed"
+        },
+        {
+          "id": 1328911,
+          "name": "Enrage"
+        },
+        {
+          "id": 1328913,
+          "name": "Enrage"
+        },
+        {
+          "id": 1328947,
+          "name": "Speed"
+        },
+        {
+          "id": 1328948,
+          "name": "Enchant Boots - Speed"
+        },
+        {
+          "id": 1329183,
+          "name": "Dummy"
         }
       ],
       "removed": [
+        {
+          "id": 1038,
+          "name": "Salvation"
+        },
+        {
+          "id": 1912,
+          "name": "Salvation"
+        },
+        {
+          "id": 19977,
+          "name": "Blessing of Light"
+        },
+        {
+          "id": 19978,
+          "name": "Blessing of Light"
+        },
+        {
+          "id": 19979,
+          "name": "Blessing of Light"
+        },
+        {
+          "id": 25890,
+          "name": "Greater Blessing of Light"
+        },
+        {
+          "id": 25895,
+          "name": "Mass Salvation"
+        },
+        {
+          "id": 1311085,
+          "name": "Instrument of Law"
+        },
+        {
+          "id": 1325499,
+          "name": "Revoke"
+        },
         {
           "id": 1328862,
           "name": "Camping"
@@ -29275,6 +29435,62 @@
           "after": {
             "id": 29438,
             "name": "Precision"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1259691,
+          "before": {
+            "id": 1259691,
+            "name": "Energized"
+          },
+          "after": {
+            "id": 1259691,
+            "name": "Attuned"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1259719,
+          "before": {
+            "id": 1259719,
+            "name": "Earth Fury"
+          },
+          "after": {
+            "id": 1259719,
+            "name": "Artisan's Precision"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1270893,
+          "before": {
+            "id": 1270893,
+            "name": "Elemental Blessing"
+          },
+          "after": {
+            "id": 1270893,
+            "name": "Charged"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1310735,
+          "before": {
+            "id": 1310735,
+            "name": "Twist of Light"
+          },
+          "after": {
+            "id": 1310735,
+            "name": "Unsealed Wrath"
           },
           "fields": [
             "name"

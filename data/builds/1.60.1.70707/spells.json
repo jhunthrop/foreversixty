@@ -1744,10 +1744,6 @@
     "name": "Seal of Fury"
   },
   {
-    "id": 1038,
-    "name": "Salvation"
-  },
-  {
     "id": 1042,
     "name": "Holy Light"
   },
@@ -2966,10 +2962,6 @@
   {
     "id": 1908,
     "name": "Uber Heal Over Time"
-  },
-  {
-    "id": 1912,
-    "name": "Salvation"
   },
   {
     "id": 1918,
@@ -41712,18 +41704,6 @@
     "name": "Entangling Roots"
   },
   {
-    "id": 19977,
-    "name": "Blessing of Light"
-  },
-  {
-    "id": 19978,
-    "name": "Blessing of Light"
-  },
-  {
-    "id": 19979,
-    "name": "Blessing of Light"
-  },
-  {
     "id": 19980,
     "name": "Holy Light"
   },
@@ -43246,6 +43226,14 @@
   {
     "id": 20574,
     "name": "Savage"
+  },
+  {
+    "id": 20575,
+    "name": "Command"
+  },
+  {
+    "id": 20576,
+    "name": "Command"
   },
   {
     "id": 20577,
@@ -45714,6 +45702,10 @@
   {
     "id": 21562,
     "name": "Prayer of Fortitude"
+  },
+  {
+    "id": 21563,
+    "name": "Command"
   },
   {
     "id": 21564,
@@ -56616,10 +56608,6 @@
     "name": "Brain Food"
   },
   {
-    "id": 25890,
-    "name": "Greater Blessing of Light"
-  },
-  {
     "id": 25891,
     "name": "Earthstrike"
   },
@@ -56634,10 +56622,6 @@
   {
     "id": 25894,
     "name": "Greater Blessing of Wisdom"
-  },
-  {
-    "id": 25895,
-    "name": "Mass Salvation"
   },
   {
     "id": 25896,
@@ -106948,6 +106932,10 @@
     "name": "Sunlight"
   },
   {
+    "id": 1239570,
+    "name": "Holy Shield"
+  },
+  {
     "id": 1239620,
     "name": "Wrath of the Ashbringer"
   },
@@ -112613,7 +112601,7 @@
   },
   {
     "id": 1259691,
-    "name": "Energized"
+    "name": "Attuned"
   },
   {
     "id": 1259705,
@@ -112633,7 +112621,7 @@
   },
   {
     "id": 1259719,
-    "name": "Earth Fury"
+    "name": "Artisan's Precision"
   },
   {
     "id": 1259721,
@@ -114857,7 +114845,7 @@
   },
   {
     "id": 1270893,
-    "name": "Elemental Blessing"
+    "name": "Charged"
   },
   {
     "id": 1270940,
@@ -125101,7 +125089,7 @@
   },
   {
     "id": 1310735,
-    "name": "Twist of Light"
+    "name": "Unsealed Wrath"
   },
   {
     "id": 1310785,
@@ -125222,10 +125210,6 @@
   {
     "id": 1311084,
     "name": "Champion of the Light"
-  },
-  {
-    "id": 1311085,
-    "name": "Instrument of Law"
   },
   {
     "id": 1311087,
@@ -127704,10 +127688,6 @@
     "name": "[DNT] Boosted Rest"
   },
   {
-    "id": 1325499,
-    "name": "Revoke"
-  },
-  {
     "id": 1325508,
     "name": "Perfected Form"
   },
@@ -128064,7 +128044,115 @@
     "name": "Arcane Bolt"
   },
   {
+    "id": 1328198,
+    "name": "Echo of Light"
+  },
+  {
+    "id": 1328206,
+    "name": "Echo of Wisdom"
+  },
+  {
+    "id": 1328370,
+    "name": "Turn Evil"
+  },
+  {
+    "id": 1328372,
+    "name": "Turn Evil"
+  },
+  {
+    "id": 1328373,
+    "name": "Turn Evil"
+  },
+  {
+    "id": 1328374,
+    "name": "Turn Evil"
+  },
+  {
     "id": 1328389,
     "name": "[DNT] Quest Cleanup"
+  },
+  {
+    "id": 1328544,
+    "name": "Shieldsworn"
+  },
+  {
+    "id": 1328546,
+    "name": "Stoicism"
+  },
+  {
+    "id": 1328548,
+    "name": "Oath of Light"
+  },
+  {
+    "id": 1328550,
+    "name": "Boundless Light"
+  },
+  {
+    "id": 1328551,
+    "name": "Shieldsworn"
+  },
+  {
+    "id": 1328569,
+    "name": "Holy Binding"
+  },
+  {
+    "id": 1328570,
+    "name": "Holy Binding"
+  },
+  {
+    "id": 1328613,
+    "name": "Predatory Discipline"
+  },
+  {
+    "id": 1328616,
+    "name": "Lacerate"
+  },
+  {
+    "id": 1328617,
+    "name": "Lacerate"
+  },
+  {
+    "id": 1328618,
+    "name": "Ferocious Bite"
+  },
+  {
+    "id": 1328621,
+    "name": "Bloom"
+  },
+  {
+    "id": 1328622,
+    "name": "Bloom"
+  },
+  {
+    "id": 1328891,
+    "name": "Enrage"
+  },
+  {
+    "id": 1328904,
+    "name": "Enrage"
+  },
+  {
+    "id": 1328906,
+    "name": "Love Crazed"
+  },
+  {
+    "id": 1328911,
+    "name": "Enrage"
+  },
+  {
+    "id": 1328913,
+    "name": "Enrage"
+  },
+  {
+    "id": 1328947,
+    "name": "Speed"
+  },
+  {
+    "id": 1328948,
+    "name": "Enchant Boots - Speed"
+  },
+  {
+    "id": 1329183,
+    "name": "Dummy"
   }
 ]

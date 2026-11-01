@@ -249,6 +249,18 @@
           "rank": 0
         }
       ],
+      "Bloom": [
+        {
+          "id": 1328621,
+          "level": 1,
+          "rank": 0
+        },
+        {
+          "id": 1328622,
+          "level": 1,
+          "rank": 0
+        }
+      ],
       "Boar Charge": [
         {
           "id": 25999,
@@ -752,30 +764,35 @@
       ],
       "Ferocious Bite": [
         {
+          "id": 1328618,
+          "level": 24,
+          "rank": 1
+        },
+        {
           "id": 22568,
           "level": 32,
-          "rank": 1
+          "rank": 2
         },
         {
           "id": 22827,
           "level": 40,
-          "rank": 2
+          "rank": 3
         },
         {
           "id": 22828,
           "level": 48,
-          "rank": 3
+          "rank": 4
         },
         {
           "id": 22829,
           "level": 56,
-          "rank": 4
+          "rank": 5
         },
         {
           "book": true,
           "id": 31018,
           "level": 60,
-          "rank": 5
+          "rank": 6
         }
       ],
       "Fire Cat Form": [
@@ -1264,19 +1281,29 @@
       ],
       "Lacerate": [
         {
+          "id": 1328617,
+          "level": 25,
+          "rank": 1
+        },
+        {
+          "id": 1328616,
+          "level": 34,
+          "rank": 2
+        },
+        {
           "id": 414644,
           "level": 42,
-          "rank": 1
+          "rank": 3
         },
         {
           "id": 1235826,
           "level": 50,
-          "rank": 2
+          "rank": 4
         },
         {
           "id": 1235827,
           "level": 58,
-          "rank": 3
+          "rank": 5
         }
       ],
       "Leader of the Pack": [
@@ -1680,17 +1707,17 @@
       "Primal Bite": [
         {
           "id": 407995,
-          "level": 25,
+          "level": 40,
           "rank": 1
         },
         {
           "id": 1238069,
-          "level": 36,
+          "level": 50,
           "rank": 2
         },
         {
           "id": 1238070,
-          "level": 48,
+          "level": 60,
           "rank": 3
         },
         {
@@ -8715,6 +8742,13 @@
           "rank": 0
         }
       ],
+      "Predatory Discipline": [
+        {
+          "id": 1328613,
+          "level": 1,
+          "rank": 0
+        }
+      ],
       "Presence of Mind": [
         {
           "id": 12043,
@@ -9588,19 +9622,9 @@
       ],
       "Blessing of Light": [
         {
-          "id": 19977,
-          "level": 40,
-          "rank": 1
-        },
-        {
-          "id": 19978,
-          "level": 50,
-          "rank": 2
-        },
-        {
-          "id": 19979,
+          "id": 26650,
           "level": 60,
-          "rank": 3
+          "rank": 0
         }
       ],
       "Blessing of Might": [
@@ -9701,6 +9725,13 @@
           "id": 25290,
           "level": 60,
           "rank": 6
+        }
+      ],
+      "Boundless Light": [
+        {
+          "id": 1328550,
+          "level": 1,
+          "rank": 0
         }
       ],
       "Cleanse": [
@@ -10084,13 +10115,6 @@
           "rank": 0
         }
       ],
-      "Greater Blessing of Light": [
-        {
-          "id": 25890,
-          "level": 60,
-          "rank": 0
-        }
-      ],
       "Greater Blessing of Might": [
         {
           "id": 25782,
@@ -10301,17 +10325,17 @@
       "Holy Shield": [
         {
           "id": 20925,
-          "level": 40,
+          "level": 30,
           "rank": 1
         },
         {
           "id": 20927,
-          "level": 50,
+          "level": 40,
           "rank": 2
         },
         {
           "id": 20928,
-          "level": 60,
+          "level": 50,
           "rank": 3
         }
       ],
@@ -11021,13 +11045,6 @@
           "rank": 0
         }
       ],
-      "Mass Salvation": [
-        {
-          "id": 25895,
-          "level": 60,
-          "rank": 0
-        }
-      ],
       "Purify": [
         {
           "id": 1152,
@@ -11113,13 +11130,6 @@
           "id": 10301,
           "level": 56,
           "rank": 5
-        }
-      ],
-      "Revoke": [
-        {
-          "id": 1325499,
-          "level": 26,
-          "rank": 0
         }
       ],
       "Righteous Fury": [
@@ -11361,13 +11371,6 @@
         {
           "id": 407805,
           "level": 1,
-          "rank": 0
-        }
-      ],
-      "Salvation": [
-        {
-          "id": 1038,
-          "level": 26,
           "rank": 0
         }
       ],
@@ -11627,6 +11630,18 @@
           "rank": 0
         }
       ],
+      "Shieldsworn": [
+        {
+          "id": 1328544,
+          "level": 1,
+          "rank": 0
+        },
+        {
+          "id": 1328551,
+          "level": 1,
+          "rank": 0
+        }
+      ],
       "Shock and Awe": [
         {
           "id": 440791,
@@ -11637,6 +11652,20 @@
           "id": 462834,
           "level": 0,
           "rank": 0
+        }
+      ],
+      "Stoicism": [
+        {
+          "id": 1328546,
+          "level": 1,
+          "rank": 0
+        }
+      ],
+      "Stun": [
+        {
+          "id": 20170,
+          "level": 22,
+          "rank": 1
         }
       ],
       "Swift Judgement": [
@@ -11655,13 +11684,6 @@
         {
           "id": 1240574,
           "level": 0,
-          "rank": 0
-        }
-      ],
-      "Templar's Bulwark": [
-        {
-          "id": 1311015,
-          "level": 30,
           "rank": 0
         }
       ],
@@ -11699,6 +11721,23 @@
           "id": 1262310,
           "level": 1,
           "rank": 0
+        }
+      ],
+      "Turn Evil": [
+        {
+          "id": 1328374,
+          "level": 38,
+          "rank": 1
+        },
+        {
+          "id": 1328373,
+          "level": 38,
+          "rank": 2
+        },
+        {
+          "id": 1328372,
+          "level": 52,
+          "rank": 3
         }
       ],
       "Turn Undead": [
@@ -12709,6 +12748,18 @@
           "id": 25816,
           "level": 60,
           "rank": 6
+        }
+      ],
+      "Holy Binding": [
+        {
+          "id": 1328569,
+          "level": 0,
+          "rank": 0
+        },
+        {
+          "id": 1328570,
+          "level": 1,
+          "rank": 0
         }
       ],
       "Holy Fire": [
