@@ -33,6 +33,9 @@ import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.logic.LiveRaidService
+import gg.foreversixty.app.auth.EncryptedSecretStore
+import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.update.InstallId
 import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
@@ -100,11 +103,24 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         isAvailable(Feature.CharacterHome)
     }
 
+    /** Lane F16: roster, raid history, calendar sync and link; null while `guild_extras` is off. */
+    val guildExtras: GuildExtrasFeature? = if (isAvailable(Feature.GuildExtras)) {
+        GuildExtrasFeature(
+            context = context,
+            apiClient = apiClient,
+            raids = LiveRaidService(apiClient),
+            secrets = EncryptedSecretStore.create(context, CALENDAR_LINK_FILE, CALENDAR_LINK_PURPOSE),
+        )
+    } else {
+        null
+    }
+
     /** Lane F4: guild raids and sign-up; their own static client reads the active build for icons. */
     val raids = RaidsFeature(
         context = context,
         apiClient = apiClient,
         statics = StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        extras = guildExtras,
     ) { isAvailable(Feature.Raids) }
 
     val signIn = AppSignIn(
@@ -127,6 +143,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             home.sims?.cache?.removeAll()
             home.reports?.cache?.removeAll()
             widgets?.signOut()
+            guildExtras?.clear()
         },
     )
 
@@ -161,6 +178,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         dataBuild = { appConfig.current?.activeBuild },
         plansLink = plansLink,
         liveSurfaces = widgets?.settings,
+        guildExtras = guildExtras,
     )
 
     /**
@@ -193,3 +211,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         null
     }
 }
+
+/** The calendar link's sealed store (W3-C17): beside the device token, under the same keyset. */
+private const val CALENDAR_LINK_FILE = "datastore/calendar_link.bin"
+private const val CALENDAR_LINK_PURPOSE = "gg.foreversixty.app/calendar-link/v1"

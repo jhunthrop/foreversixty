@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70707",
-  "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T15:04:28Z",
+  "engine_version": "640da215f",
+  "generated_at": "2026-11-01T17:21:42Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -618,40 +618,40 @@
           "source": "The Deadmines: Mr. Smite",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "score": 302.774144723,
+          "score": 302.834144723,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 872,
+              "item_name": "Rockslicer",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Rhahk'Zor",
+              "dps_delta": -0.227133301,
+              "verified": true
+            },
             {
               "item_id": 2205,
               "item_name": "Duskbringer",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep",
-              "dps_delta": -0.295463643
+              "dps_delta": -0.297876942
             },
             {
-              "item_id": 1318,
-              "item_name": "Night Reaver",
+              "item_id": 2271,
+              "item_name": "Staff of the Blessed Seer",
               "source_kind": "dungeon",
-              "source": "Shadowfang Keep",
-              "dps_delta": -0.503423437
-            },
-            {
-              "item_id": 6631,
-              "item_name": "Living Root",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Verdan the Everliving",
-              "dps_delta": -0.942664842,
-              "verified": true
+              "source": "Blackfathom Deeps",
+              "dps_delta": -0.312439953
             }
           ],
           "runners_up": [
             {
-              "item_id": 2205,
+              "item_id": 872,
               "source_kind": "dungeon",
-              "source": "Shadowfang Keep"
+              "source": "The Deadmines: Rhahk'Zor"
             },
             {
-              "item_id": 1318,
+              "item_id": 2205,
               "source_kind": "dungeon",
               "source": "Shadowfang Keep"
             }
@@ -742,8 +742,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.378420164,
-      "verify_run_seconds": 3.470709881,
+      "weights_run_seconds": 2.113094045,
+      "verify_run_seconds": 3.353752351,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1465,7 +1465,7 @@
           "item_name": "Hammerbone",
           "source": "Leaders of the Fang",
           "source_kind": "quest",
-          "score": 306.16,
+          "score": 306.176470588,
           "verified": true,
           "alternatives": [
             {
@@ -1473,21 +1473,21 @@
               "item_name": "Forsaken Greataxe",
               "source_kind": "quest",
               "source": "The Wrath of Rath'mael",
-              "dps_delta": -0.111760706
+              "dps_delta": -0.112343226
             },
             {
               "item_id": 7230,
               "item_name": "Smite's Mighty Hammer",
               "source_kind": "dungeon",
               "source": "The Deadmines: Mr. Smite",
-              "dps_delta": -0.1197486
+              "dps_delta": -0.118209082
             },
             {
-              "item_id": 6631,
-              "item_name": "Living Root",
+              "item_id": 872,
+              "item_name": "Rockslicer",
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Verdan the Everliving",
-              "dps_delta": -0.326086617
+              "source": "The Deadmines: Rhahk'Zor",
+              "dps_delta": -0.368488304
             }
           ],
           "runners_up": [
@@ -1588,8 +1588,8 @@
         "main_hand: Hammerbone",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.378420164,
-      "verify_run_seconds": 3.467752448,
+      "weights_run_seconds": 2.113094045,
+      "verify_run_seconds": 3.296661261,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2320,14 +2320,14 @@
               "item_name": "Corpsemaker",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": -0.538125661
+              "dps_delta": -0.5395426
             },
             {
               "item_id": 273037,
               "item_name": "Felbough Arm",
               "source_kind": "world",
               "source": "Fel Ancient",
-              "dps_delta": -0.887962461
+              "dps_delta": -0.886167672
             },
             {
               "item_id": 13045,
@@ -2436,8 +2436,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.582308024,
-      "verify_run_seconds": 2.291439064,
+      "weights_run_seconds": 2.310421734,
+      "verify_run_seconds": 2.181686576,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3170,14 +3170,14 @@
               "item_name": "Corpsemaker",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": -0.538125661
+              "dps_delta": -0.5395426
             },
             {
               "item_id": 273037,
               "item_name": "Felbough Arm",
               "source_kind": "world",
               "source": "Fel Ancient",
-              "dps_delta": -0.887962461
+              "dps_delta": -0.886167672
             },
             {
               "item_id": 13045,
@@ -3286,8 +3286,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.582308024,
-      "verify_run_seconds": 2.28061148,
+      "weights_run_seconds": 2.310421734,
+      "verify_run_seconds": 2.181148521,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4020,14 +4020,14 @@
               "item_name": "Primitive Fishing Pole",
               "source_kind": "vendor",
               "source": "Friz Frazzlespark",
-              "dps_delta": -1.085740566
+              "dps_delta": -1.11674678
             },
             {
               "item_id": 6830,
               "item_name": "Bonebiter",
               "source_kind": "quest",
               "source": "In the Name of the Light",
-              "dps_delta": -1.231749846
+              "dps_delta": -1.256949262
             },
             {
               "item_id": 870,
@@ -4135,8 +4135,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.876284267,
-      "verify_run_seconds": 2.545565148,
+      "weights_run_seconds": 2.526083254,
+      "verify_run_seconds": 2.430274753,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4869,14 +4869,14 @@
               "item_name": "Primitive Fishing Pole",
               "source_kind": "vendor",
               "source": "Friz Frazzlespark",
-              "dps_delta": -1.085740566
+              "dps_delta": -1.11674678
             },
             {
               "item_id": 873,
               "item_name": "Staff of Jordan",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.142977631
+              "dps_delta": -2.174019182
             },
             {
               "item_id": 870,
@@ -4984,8 +4984,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.876284267,
-      "verify_run_seconds": 2.569367388,
+      "weights_run_seconds": 2.526083254,
+      "verify_run_seconds": 2.445368326,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5221,19 +5221,19 @@
               "dps_delta": -1.116702992
             },
             {
-              "item_id": 13084,
-              "item_name": "Kaleidoscope Chain",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.250291382,
-              "verified": true
-            },
-            {
               "item_id": 13087,
               "item_name": "River Pride Choker",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.441597525
+            },
+            {
+              "item_id": 13084,
+              "item_name": "Kaleidoscope Chain",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.790359741,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -5243,7 +5243,7 @@
               "source": "Shade of the Archmage"
             },
             {
-              "item_id": 13084,
+              "item_id": 13087,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -5523,13 +5523,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 9652,
-              "item_name": "Gryphon Rider's Leggings",
-              "source_kind": "quest",
-              "source": "Saving Sharpbeak",
-              "dps_delta": -0.711110992
-            },
-            {
               "item_id": 10740,
               "item_name": "Centurion Legplates",
               "source_kind": "quest",
@@ -5542,18 +5535,26 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.937609352
+            },
+            {
+              "item_id": 9652,
+              "item_name": "Gryphon Rider's Leggings",
+              "source_kind": "quest",
+              "source": "Saving Sharpbeak",
+              "dps_delta": -1.390263862,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 9652,
-              "source_kind": "quest",
-              "source": "Saving Sharpbeak"
-            },
-            {
               "item_id": 10740,
               "source_kind": "quest",
               "source": "Rise, Obsidion!"
+            },
+            {
+              "item_id": 8262,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -5610,8 +5611,8 @@
           "chance": 0.25,
           "score": 20,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.9 DPS (179.8 vs 178.0 set DPS)",
-          "dps_delta": 1.8547274118382973,
+          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.8 DPS (180.9 vs 179.1 set DPS)",
+          "dps_delta": 1.8402919234077615,
           "ties": [
             {
               "item_id": 2262,
@@ -5714,7 +5715,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 179.8160199969624,
+          "sim_dps": 180.90887475816248,
           "verified": true
         },
         {
@@ -5723,7 +5724,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 179.8160199969624,
+          "sim_dps": 180.90887475816248,
           "verified": true,
           "alternatives": [
             {
@@ -5744,44 +5745,44 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 250613,
+          "item_name": "Thorium Greatmace",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 179.8160199969624,
+          "sim_dps": 180.90887475816248,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 812,
-              "item_name": "Glowing Brightwood Staff",
+              "item_id": 13052,
+              "item_name": "Warmonger",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0
+              "dps_delta": -0.33794593
             },
             {
-              "item_id": 250613,
-              "item_name": "Thorium Greatmace",
+              "item_id": 7959,
+              "item_name": "Blight",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0
+              "dps_delta": -1.092854761,
+              "verified": true
             },
             {
-              "item_id": 1982,
-              "item_name": "Nightblade",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -5.6005056,
-              "verified": true
+              "item_id": 12769,
+              "item_name": "Bleakwood Hew",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -2.624726671
             }
           ],
           "runners_up": [
             {
-              "item_id": 812,
+              "item_id": 13052,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             {
-              "item_id": 250613,
+              "item_id": 7959,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             }
@@ -5798,7 +5799,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 179.8160199969624,
+          "sim_dps": 180.90887475816248,
           "verified": true,
           "alternatives": [
             {
@@ -5820,7 +5821,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.854727412,
+              "dps_delta": -1.840291923,
               "verified": true
             }
           ],
@@ -5838,7 +5839,7 @@
           ]
         }
       ],
-      "set_dps": 179.8160199969624,
+      "set_dps": 180.90887475816248,
       "no_source_count": 1011,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -5871,11 +5872,11 @@
         "finger2: Mark of Kern",
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain",
-        "main_hand: Blight",
+        "main_hand: Thorium Greatmace",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.031141086,
-      "verify_run_seconds": 3.233197714,
+      "weights_run_seconds": 2.692803379,
+      "verify_run_seconds": 3.021374819,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6498,8 +6499,8 @@
           "source_kind": "quest",
           "score": 24,
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +2.3 DPS (184.7 vs 182.5 set DPS)",
-          "dps_delta": 2.2740437547523413,
+          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +2.2 DPS (185.0 vs 182.8 set DPS)",
+          "dps_delta": 2.229536503851051,
           "alternatives": [
             {
               "item_id": 2262,
@@ -6597,7 +6598,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 184.74133730018804,
+          "sim_dps": 185.04652690901034,
           "verified": true,
           "alternatives": [
             {
@@ -6605,7 +6606,7 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -5.166381663,
+              "dps_delta": -4.906309781,
               "verified": true
             }
           ],
@@ -6623,7 +6624,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 184.74133730018804,
+          "sim_dps": 185.04652690901034,
           "verified": true,
           "alternatives": [
             {
@@ -6631,7 +6632,7 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -1.227617232,
+              "dps_delta": -1.020325808,
               "verified": true
             }
           ],
@@ -6645,46 +6646,45 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 250613,
+          "item_name": "Thorium Greatmace",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 184.74133730018804,
+          "sim_dps": 185.04652690901034,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 812,
-              "item_name": "Glowing Brightwood Staff",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 250613,
-              "item_name": "Thorium Greatmace",
+              "item_id": 7959,
+              "item_name": "Blight",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0
             },
             {
-              "item_id": 1982,
-              "item_name": "Nightblade",
+              "item_id": 13052,
+              "item_name": "Warmonger",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.528109416,
-              "verified": true
+              "dps_delta": -0.33794593
+            },
+            {
+              "item_id": 12769,
+              "item_name": "Bleakwood Hew",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -2.624726671
             }
           ],
           "runners_up": [
             {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 250613,
+              "item_id": 7959,
               "source_kind": "crafted",
               "source": "Blacksmithing"
+            },
+            {
+              "item_id": 13052,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -6699,7 +6699,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 184.74133730018804,
+          "sim_dps": 185.04652690901034,
           "verified": true,
           "alternatives": [
             {
@@ -6721,7 +6721,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.895036462,
+              "dps_delta": -1.857947087,
               "verified": true
             }
           ],
@@ -6739,7 +6739,7 @@
           ]
         }
       ],
-      "set_dps": 184.74133730018804,
+      "set_dps": 185.04652690901034,
       "no_source_count": 990,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6773,11 +6773,11 @@
         "finger2: Blackstone Ring",
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain",
-        "main_hand: Blight",
+        "main_hand: Thorium Greatmace",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.031141086,
-      "verify_run_seconds": 3.179936403,
+      "weights_run_seconds": 2.692803379,
+      "verify_run_seconds": 3.067382648,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7659,8 +7659,8 @@
         "main_hand: Forest Defender's Axe",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.01035102,
-      "verify_run_seconds": 9.885105313,
+      "weights_run_seconds": 2.683937292,
+      "verify_run_seconds": 9.468495146,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8548,8 +8548,8 @@
         "main_hand: Forest Defender's Axe",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.01035102,
-      "verify_run_seconds": 9.950651981,
+      "weights_run_seconds": 2.683937292,
+      "verify_run_seconds": 9.463326485,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9432,8 +9432,8 @@
         "main_hand: Arcanite Champion",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.542643475,
-      "verify_run_seconds": 9.081488012,
+      "weights_run_seconds": 2.342734054,
+      "verify_run_seconds": 8.803053091,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10317,8 +10317,8 @@
         "main_hand: Arcanite Champion",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.542643475,
-      "verify_run_seconds": 9.143973438,
+      "weights_run_seconds": 2.342734054,
+      "verify_run_seconds": 8.857574053,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10496,6 +10496,10 @@
         {
           "id": "judgement_of_wisdom",
           "label": "Judgement of Wisdom"
+        },
+        {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader"
         },
         {
           "id": "judgement_of_light",

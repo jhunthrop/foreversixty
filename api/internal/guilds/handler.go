@@ -154,6 +154,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// including an unauthenticated caller, so the route's existence is
 	// never advertised by a 401/403 that a wrap would otherwise leak.
 	mux.HandleFunc("GET /v1/moderation/claims", s.moderationClaims)
+	mountCalendar(mux, s, trustedProxyHops)
 }
 
 // signupLimiter is the shared sign-up budget, built once when none was injected.

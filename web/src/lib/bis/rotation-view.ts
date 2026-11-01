@@ -119,22 +119,40 @@ export function alignNoteRank(note: string, name: string, bandRank: number | und
   return note.replace(named, `$1${bandRank}`);
 }
 
-/** The curated steps lined up with `entry`'s published lines, or `undefined` when they do
- *  not match one to one -- the words are then left off rather than put on the wrong line. */
+/** The curated step for each of `entry`'s published lines (`null` for a line with none), or
+ *  `undefined` when they do not line up -- the words are then left off rather than put on
+ *  the wrong line.
+ *
+ *  The published lines are nightly-owned and trail a curated change by up to a day. A spell
+ *  that only one side casts at all (an ability the curated list just dropped or added) is
+ *  set aside: it cannot shift another spell's words, so the rest must still match one to
+ *  one, in order. A set-aside line keeps its note and gets no words. */
 function stepsAlignedWith(
   entry: RotationEntry,
   spec: string,
   spellRanks: SpellRanksFile | undefined,
   classSlug: string,
-): AplStep[] | undefined {
+): (AplStep | null)[] | undefined {
   const families = spellRanks?.classes[classSlug];
   if (families === undefined) return undefined;
   const steps = loadAplSteps(spec, families, entry.level);
-  const aligned =
-    steps !== undefined &&
-    steps.length === entry.lines.length &&
-    steps.every((step, index) => step.resolvedSpellId === entry.lines[index].spell_id);
-  return aligned ? steps : undefined;
+  if (steps === undefined) return undefined;
+  const stepSpells = new Set(steps.map((step) => step.resolvedSpellId));
+  const lineSpells = new Set(entry.lines.map((line) => line.spell_id));
+  const sharedSteps = steps.filter((step) => lineSpells.has(step.resolvedSpellId));
+  const sharedLineCount = entry.lines.filter((line) => stepSpells.has(line.spell_id)).length;
+  if (sharedSteps.length !== sharedLineCount) return undefined;
+  const aligned: (AplStep | null)[] = [];
+  for (const line of entry.lines) {
+    if (!stepSpells.has(line.spell_id)) {
+      aligned.push(null);
+      continue;
+    }
+    const step = sharedSteps[aligned.filter((slot) => slot !== null).length];
+    if (step.resolvedSpellId !== line.spell_id) return undefined;
+    aligned.push(step);
+  }
+  return aligned;
 }
 
 /** Every row of `entry`, ready to render -- reads `spellranks.json` once per line rather
@@ -159,7 +177,7 @@ export function rotationLinesFor(
       condition,
       icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
       truncatedAtSource: line.condition.endsWith('…'),
-      words: steps?.[index].words ?? null,
+      words: steps?.[index]?.words ?? null,
     };
   });
   return collapseRuns(stepLines);

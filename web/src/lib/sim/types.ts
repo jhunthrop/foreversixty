@@ -140,7 +140,11 @@ export const DEFAULT_ENCOUNTER: EncounterSpec = {
   // Absent, not 0: the default fight uses the level's preset, and target_armor is not a
   // style-owned field (styles.ts's applyFightStyle never sets it), so leaving it out here
   // does not make the request drawer's style diff noisy the way a style-owned field would.
-  target_type: '',
+  // No creature type: the target every published number fights (sim/leveling
+  // RankerEncounter). An empty type would fight a Humanoid (sim/request request.go keeps
+  // that for requests stored before the field), where Murder and slaying gear count and
+  // the page would read above the tier list for no reason the player can see.
+  target_type: 'unknown',
   dummy: false,
 };
 

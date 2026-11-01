@@ -133,13 +133,37 @@ def test_normalizes_own_derived_value_survives_when_the_fork_lacks_the_id(tmp_pa
     assert by_id[999]["dps"] == 21.72
 
 
+def test_the_forks_era_numbers_never_replace_damage_normalize_resolved(tmp_path):
+    """The fork's db.json is Classic Era's itemisation. Thunderfury (19019) is
+    60 - 145 there, while the client's curve and wowhead Forever both give
+    44 - 115 (sim-audit round 4, physical X1). Normalize's resolved value
+    stands; the fork only fills a weapon normalize left at zero."""
+    build_dir = tmp_path / "1.60.1.70707"
+    items_dir = build_dir / "items"
+    items_dir.mkdir(parents=True)
+    rogue = ClassItems(
+        build="1.60.1.70707",
+        class_slug="rogue",
+        items=[gear_item(19019, damage_min=44, damage_max=115, speed=1.9, dps=41.84)],
+    )
+    (items_dir / "rogue.json").write_text(
+        json.dumps(rogue.model_dump(), indent=2) + "\n", encoding="utf-8"
+    )
+    won = apply_fork_weapon_damage(build_dir, {19019: (60, 145, 1.9)})
+    assert won == 0
+    rows = json.loads((items_dir / "rogue.json").read_text(encoding="utf-8"))
+    (row,) = rows["items"]
+    assert (row["damage_min"], row["damage_max"], row["dps"]) == (44, 115, 41.84)
+
+
 def test_is_idempotent(tmp_path):
     build_dir = prepared(tmp_path)
     damage = fork_weapon_damage(fork())
     first = apply_fork_weapon_damage(build_dir, damage)
     second_bytes = (build_dir / "items" / "warrior.json").read_text(encoding="utf-8")
     second = apply_fork_weapon_damage(build_dir, damage)
-    assert (first, second) == (1, 1)
+    # The second pass finds the row already filled, so it fills nothing.
+    assert (first, second) == (1, 0)
     assert (build_dir / "items" / "warrior.json").read_text(encoding="utf-8") == second_bytes
 
 

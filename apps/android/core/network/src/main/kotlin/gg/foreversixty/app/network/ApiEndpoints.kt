@@ -13,6 +13,7 @@ import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
 import gg.foreversixty.app.model.BuildList
 import gg.foreversixty.app.model.BuildSaved
+import gg.foreversixty.app.model.CalendarFeed
 import gg.foreversixty.app.model.Changelog
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
@@ -237,6 +238,14 @@ object ApiEndpoints {
     fun deleteLiveActivity(id: Long): Endpoint<Unit> =
         Endpoint(HttpMethod.Delete, "/v1/me/live-activities/$id", Unit.serializer())
 
+    /** GET /v1/me/calendar-feed: Your calendar link, made on first call (W3-C17; session or app token) */
+    fun getCalendarFeed(): Endpoint<CalendarFeed> =
+        Endpoint(HttpMethod.Get, "/v1/me/calendar-feed", CalendarFeed.serializer())
+
+    /** POST /v1/me/calendar-feed/reset: Replace your calendar link; the old one stops working (W3-C17; session or app token) */
+    fun resetCalendarFeed(): Endpoint<CalendarFeed> =
+        Endpoint(HttpMethod.Post, "/v1/me/calendar-feed/reset", CalendarFeed.serializer())
+
     /** GET /v1/app/config: What the apps read once at launch (APP_API) */
     fun getAppConfig(): Endpoint<AppConfig> =
         Endpoint(HttpMethod.Get, "/v1/app/config", AppConfig.serializer())
@@ -334,6 +343,8 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/calendar-feed", "calendar.feed", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/calendar-feed/reset", "calendar.feed", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/app/config", "app.config", HttpStatusCode.fromValue(200)),
     )
 

@@ -26,3 +26,15 @@ Reviewed iOS and Android captures against the boards and spec §5.1 F9, §4, §9
 - What changed key dates and changelog rows: yes
 - New-data strip over a guide: yes
 - Class page Saved / Not saved: yes
+
+## Round 2
+
+Verdict: SHIP
+
+Checked ios/f9-guide-rotation-ios.png, ios/f9-guide-large-ios.png, ios/f9-tiers-large-ios.png against round 1.
+
+- MUST 2 (icons): fixed. Fire Nova draws a neutral bordered tile, no question mark; the Trinkets row has no tile; Astral Recall is gone. Accepted. The empty tile is still a placeholder; if the client ever ships a Fire Nova rank icon, use it.
+- MUST 3 (AX5 chips): fixed. The number disc scales to match the label, labels wrap inside the pill, nothing is cut.
+- MUST 4 (AX5 tier chip): fixed. The letter chip is a pill and scales with the text, legible.
+- MUST 1 (Mana Spring Totem duration): withdrawn as a UX blocker. Spec F9.2 allows a duration when the client data and the guide agree, and the developer states both now say five minutes. Condition: the accuracy reviewer must confirm 300 s is what Forever ships (Era players know 60 s). If they do not, the line reverts to "Down first. It returns mana for the rest of the fight."
+- SHOULD items 1, 2, 3, 5 from round 1 are reported fixed; the running key date and segment stack at AX5 look correct in the captures I opened. Not re-opened: ios/f9-changes-ios.png and the Android set.

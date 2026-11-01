@@ -542,7 +542,6 @@ export const simCopy = {
    */
   targetArmorPreset: (armor: string): string => `${armor}, the preset for this level`,
   targetType: 'Target type',
-  targetTypeAny: 'Any',
   targetTypeLabel: {
     humanoid: 'Humanoid',
     undead: 'Undead',
@@ -552,7 +551,7 @@ export const simCopy = {
     elemental: 'Elemental',
     giant: 'Giant',
     mechanical: 'Mechanical',
-    unknown: 'Unknown',
+    unknown: 'No creature type',
   } as Record<string, string>,
   dummyTarget: 'Target dummy',
   dummyNote: 'No debuffs, no execute window and no armor reduction, the way a dummy fights back.',
@@ -827,7 +826,7 @@ export const simCopy = {
   targetArmorEmptyHelp: (preset: string): string => `Empty; the engine uses ${preset} instead.`,
   targetArmorSetHelp: (value: string, preset: string): string => `Set to ${value}, overriding ${preset}.`,
   targetTypeHelp:
-    'Restricts the run to abilities and talents that only affect this creature type. "Any" applies no restriction.',
+    'Talents and gear that work against one creature type, such as Murder or a slaying enchant, count only against that type. "No creature type" is the target the tier list and BiS numbers use.',
   /**
    * Newcomer MINOR (204-207): "Execute phase" was ticked by default under Patchwerk with
    * no way to tell whether the run actually had one. This says the current state, not just

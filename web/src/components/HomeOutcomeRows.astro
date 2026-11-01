@@ -27,22 +27,24 @@ const ROW_GLYPHS: Record<string, GlyphName> = { planner: 'tree', sim: 'bolt', lo
 <script>
   import { afterPaint } from '../lib/after-paint';
 
-  // The rows' links follow the stored character; they already work as rendered, so the
-  // retarget runs after first paint (src/lib/after-paint.ts), at `load` for a visitor who has one.
+  // The rows' links follow the stored character, and every later choice in the header selector;
+  // they already work as rendered, so the retarget runs after first paint (src/lib/after-paint.ts).
   afterPaint(() => {
     void Promise.all([import('../lib/current-character'), import('../lib/home/outcome-rows')]).then(
-      ([{ readCurrent }, { outcomeHrefs }]) => {
-        const current = readCurrent();
-        if (current === null) return;
-        const hrefs = outcomeHrefs(current);
-        for (const link of document.querySelectorAll<HTMLAnchorElement>(
-          '[data-testid="home-outcomes"] a[data-testid^="home-outcome-"]',
-        )) {
-          const href = (hrefs as Record<string, string | undefined>)[
-            (link.dataset.testid ?? '').replace('home-outcome-', '')
-          ];
-          if (href !== undefined) link.setAttribute('href', href);
-        }
+      ([{ onCurrentCharacterChange, readCurrent }, { outcomeHrefs }]) => {
+        const retarget = (): void => {
+          const hrefs = outcomeHrefs(readCurrent());
+          for (const link of document.querySelectorAll<HTMLAnchorElement>(
+            '[data-testid="home-outcomes"] a[data-testid^="home-outcome-"]',
+          )) {
+            const href = (hrefs as Record<string, string | undefined>)[
+              (link.dataset.testid ?? '').replace('home-outcome-', '')
+            ];
+            if (href !== undefined && link.getAttribute('href') !== href) link.setAttribute('href', href);
+          }
+        };
+        retarget();
+        onCurrentCharacterChange(retarget);
       },
     );
   });

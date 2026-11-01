@@ -89,6 +89,10 @@ class RaidsTabModel(
     /** The character the tab is for; null follows the account's main (lane F1's selector sets it). */
     var currentKey: String? = null
 
+    /** The account's character keys from the last `/v1/me` (F16.3's `You were there`). */
+    var accountKeys: Set<String> = emptySet()
+        private set
+
     suspend fun load() {
         val me = when (val result = service.me()) {
             is ApiResult.Success -> result.data.also { cache.write(ME, Me.serializer(), it, now()) }
@@ -108,6 +112,7 @@ class RaidsTabModel(
     }
 
     private suspend fun load(me: Me) {
+        accountKeys = me.characters.map { it.key }.toSet()
         val character = me.characters.firstOrNull { it.key == currentKey } ?: me.mainCharacter
         if (character == null) {
             state = RaidsTabState.NoGuild("")

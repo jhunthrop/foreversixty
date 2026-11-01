@@ -90,7 +90,8 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura", "heart_of_the_lion",
 		"leader_of_the_pack", "strength_of_earth_totem",
 		"mana_spring_totem", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
-		"judgement_of_wisdom", "judgement_of_light", "hunters_mark", "curse_of_recklessness",
+		"judgement_of_wisdom", "judgement_of_light", "judgement_of_the_crusader", "hunters_mark",
+		"curse_of_recklessness",
 	} {
 		if !slices.Contains(have, want) {
 			t.Errorf("the raid preset lacks %q", want)

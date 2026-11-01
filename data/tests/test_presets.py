@@ -36,6 +36,7 @@ REQUIRED_DEBUFFS = {
     "faerie_fire",
     "judgement_of_wisdom",
     "judgement_of_light",
+    "judgement_of_the_crusader",
     "hunters_mark",
     "curse_of_recklessness",
 }

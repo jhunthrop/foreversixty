@@ -25,3 +25,22 @@ Android large-text captures and error and loading states were only skimmed by na
 
 ## Accuracy handoff
 Fire Nova name and condition, Mana Spring Totem numbers, hit cap, Nature power and Spell haste as stats, race ability text.
+
+# Round 2
+
+Verdict: SHIP (no MUSTs left; SHOULDs below)
+
+Checked: ios/f9-guide-rotation-ios.png, f9-guide-large-ios.png, f9-changes-ios.png. Android and the remaining captures were not re-read.
+
+Closed:
+- Fire Nova no longer shows the red "?". Astral Recall is gone from Cooldowns. The no-spell row (Trinkets, racials and potions) has no blank tile.
+- AX5 stat chips: digits now scale with the name and every stat wraps inside its chip, nothing cut.
+- Key dates: Name reservation shows one line.
+- Mana Spring Totem duration: accepted. The spec rule prints a duration when client data and guide agree, and both say 300 s. If the accuracy reviewer settles on 60 s, this line must change with it.
+- Race rows with a faction mark: accepted per spec F9.2.
+
+SHOULD (carry forward):
+1. Fire Nova (priority row 7, ios/f9-guide-rotation-ios.png) is still a plain empty dark square among real icons. A player reads that as a missing icon. Use the Fire Nova Totem icon if the client has none for the spell.
+2. Talents tab and the Elemental Mastery row were not re-read in this round; confirm in ios/f9-guide-talents-ios.png.
+3. Round 1 SHOULDs still open: mixed date formats (Oct 27 / 10/28 / 1 Nov 2026), hit cap 10%, Nature power and Spell haste as stats, race ability text, offline "Connect once to save it" line.
+4. Fire Nova's condition "On a Clearcasting proc" does not mention the Fire totem requirement the guide prose gives; accuracy reviewer to check.

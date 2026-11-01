@@ -26,6 +26,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case guides = "guides"
     /// F9: The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4)
     case guideTiers = "guide_tiers"
+    /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
+    case guildExtras = "guild_extras"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -42,6 +44,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .reports: false
         case .guides: false
         case .guideTiers: false
+        case .guildExtras: false
         }
     }
 }

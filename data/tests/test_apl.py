@@ -246,6 +246,41 @@ def test_on_next_swing_casts_use_the_engines_queue_tag():
     assert checked >= 1, "no written rotation names a known on-next-swing spell"
 
 
+#: Client spells a Forever player cannot learn, though a SkillLineAbility row
+#: names them, mapped to the evidence. A rotation must never cast one.
+NOT_LEARNABLE = {
+    # Shadowfiend: row 49886 (Shadow Magic, AcquireMethod 0) has no learn
+    # level (SpellLevels BaseLevel 0), and in 1,103 beta dungeon encounters
+    # (foreverlogs.gg, 8 to 23 October 2026, builds that carried the same
+    # row) about 25 priests cast Binding Heal, Dark Sacrifice, Inner Focus
+    # and mana potions but never Shadowfiend. Sim-accuracy round 3, casters.
+    401977: "Shadowfiend",
+}
+
+
+def test_no_rotation_casts_a_spell_a_player_cannot_learn():
+    for key, document in documents().items():
+        for spell_id, _rank, _tag in cast_spell_action_ids(document.rotation):
+            assert spell_id not in NOT_LEARNABLE, (
+                f"{key} casts {NOT_LEARNABLE.get(spell_id)} ({spell_id}), "
+                "which a Forever player cannot learn"
+            )
+
+
+# Evocation (12051) is the one mana cooldown a mage has. Once Clearcasting
+# was spent by one cast (sim-accuracy round 4, casters), the Fire list ran
+# dry about 49 s into a 180 s fight; Evocating below 5% mana gains about 17%
+# on the level-60 raid character. Arcane and Frost measured no gain.
+MANA_COOLDOWN_CASTERS = {"mage-fire": 12051}
+
+
+def test_a_rotation_that_runs_dry_casts_its_mana_cooldown():
+    docs = documents()
+    for key, spell_id in MANA_COOLDOWN_CASTERS.items():
+        cast = {sid for sid, _rank, _tag in cast_spell_action_ids(docs[key].rotation)}
+        assert spell_id in cast, f"{key} never casts its mana cooldown {spell_id}"
+
+
 def test_cast_spell_action_ids_ignores_conditions_and_auras():
     """Only a `castSpell` action's own ActionID carries a tag that matters for
     casting; an `auraIsActive` condition referencing the same spell id is not
@@ -275,6 +310,7 @@ EXPECTED_ABILITY_NAMES = {
         11551: "Battle Shout",
         2687: "Bloodrage",
         12328: "Death Wish",
+        1719: "Recklessness",
         23894: "Bloodthirst",
         1680: "Whirlwind",
         20662: "Execute",
@@ -288,7 +324,7 @@ EXPECTED_ABILITY_NAMES = {
         13033: "Ice Barrier",
         10161: "Cone of Cold",
         12579: "Winter's Chill",
-        25345: "Arcane Missiles",
+        10212: "Arcane Missiles",
         400589: "Missile Barrage",
     },
 }

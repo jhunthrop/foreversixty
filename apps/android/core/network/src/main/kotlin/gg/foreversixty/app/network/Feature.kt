@@ -27,4 +27,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Guides("guides", false),
     /** F9: The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4) */
     GuideTiers("guide_tiers", false),
+    /** F16: Guild roster with attendance, raid history, calendar sync and the calendar link */
+    GuildExtras("guild_extras", false),
 }

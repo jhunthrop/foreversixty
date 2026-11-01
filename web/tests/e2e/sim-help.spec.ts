@@ -107,12 +107,12 @@ test('Target armor’s note says whether the placeholder is in effect or overrid
 
   const panel = page.getByTestId('sim-target-armor-help-panel');
   await page.getByTestId('sim-target-armor-help-trigger').click();
-  await expect(panel).toContainText('Empty; the engine uses 3,731, the preset for this level instead.');
+  await expect(panel).toContainText('Empty; the engine uses 1,980, the preset for this level instead.');
 
   // The input's own onchange (withTargetArmor) fires on blur, not on fill() alone.
   await page.getByTestId('sim-target-armor').fill('5000');
   await page.getByTestId('sim-target-armor').blur();
-  await expect(panel).toContainText('Set to 5,000, overriding 3,731, the preset for this level.');
+  await expect(panel).toContainText('Set to 5,000, overriding 1,980, the preset for this level.');
 });
 
 test('Buffs keeps its own help note distinct from "what’s in it"', async ({ page }) => {

@@ -5,8 +5,8 @@ tables, the dispatch by SubclassID/InventoryType and the pure damage formula
 live in `pipeline.normalize.weapon_curves` -- this module re-exports
 `WeaponCurves`/`load_weapon_curves`/`WeaponDamage` for its existing callers
 and adds the one thing that is specific to the simulator's own item rows:
-reading ItemSparse's columns (`ItemDelay`, `DmgVariance`, `MinDamage_0`/
-`MaxDamage_0`) through `pipeline.normalize.gear`'s row helpers.
+reading ItemSparse's columns (`ItemDelay`, `DmgVariance`, `QualityModifier`,
+`Flags_4`, `MinDamage_0`/`MaxDamage_0`) through `pipeline.normalize.gear`'s row helpers.
 
 An older-schema build states the damage in a column; `weapon_damage` reads
 the columns when the row has them (`row_has_literal_weapon_damage`), the
@@ -15,7 +15,7 @@ same per-row branch `gear.py`'s `_row_has_literal_amounts` makes for stats.
 
 from __future__ import annotations
 
-from pipeline.normalize.gear import column_value, int_column
+from pipeline.normalize.gear import column_value, int_column, weapon_curve_modifiers
 from pipeline.normalize.weapon_curves import (
     WeaponCurves,
     WeaponDamage,
@@ -65,4 +65,5 @@ def weapon_damage(
         quality=int_column(sparse_row, "OverallQualityID"),
         speed=speed,
         variance=float(column_value(sparse_row, "DmgVariance")),
+        **weapon_curve_modifiers(sparse_row),
     )

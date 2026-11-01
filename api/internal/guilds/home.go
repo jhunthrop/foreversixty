@@ -139,7 +139,11 @@ type RosterRow struct {
 	Class          *string `json:"class,omitempty"`
 	Spec           *string `json:"spec,omitempty"`
 	Role           *string `json:"role,omitempty"`
-	ItemLevel      *int    `json:"item_level,omitempty"`
+	// SpecName ("Holy Paladin") and SpecIcon are the catalogue's words for Spec
+	// (describeRosterRows), omitted with it.
+	SpecName  *string `json:"spec_name,omitempty"`
+	SpecIcon  *string `json:"spec_icon,omitempty"`
+	ItemLevel *int    `json:"item_level,omitempty"`
 	// LoggedAt is addon_exports.updated_at - the contract's own replacement for
 	// logged_recently (kept below too, unchanged, per the contract's own instruction).
 	LoggedAt   time.Time  `json:"logged_at"`
@@ -566,7 +570,9 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	if err != nil {
 		return HomeView{}, err
 	}
+	describeRosterRows(roster)
 	members, counts := mergeRoster(roster, invited, snapshotLines)
+	describeMembers(members, roster)
 	claim := claimState(g, time.Now())
 	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
 		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {

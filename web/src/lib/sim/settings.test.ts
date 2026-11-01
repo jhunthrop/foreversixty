@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
@@ -28,6 +31,7 @@ import {
   TARGET_TYPES,
   targetArmorField,
   targetLevelFor,
+  targetTypeShown,
   VARIATIONS,
   withDummy,
   withDuration,
@@ -43,6 +47,10 @@ import {
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
 
+const CURATED_PRESETS = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../../data/curated/presets.json',
+);
 const PHYSICAL = 'attack_power';
 const CASTER = 'spell_power';
 
@@ -58,7 +66,9 @@ describe('defaultSettings', () => {
       style: 'patchwerk',
       target_level: 63,
       // Absent, not 0: the default fight carries no armor override at all (Defect 3).
-      target_type: '',
+      // The published numbers' target (sim/leveling RankerEncounter): no creature type, so
+      // a rogue's Murder or a slaying enchant reads the same here as on the tier list.
+      target_type: 'unknown',
       dummy: false,
     });
     expect(settings.encounter.target_armor).toBeUndefined();
@@ -87,9 +97,20 @@ describe('defaultSettings', () => {
  * one of the 70 accepted, no ErrUnknownBuff, no ErrUnknownConsume, no ErrAmbiguousConsume.
  */
 describe('the Raid-buffed preset', () => {
-  it('is exactly the brief’s 54 buff ids less the eight world buffs, never split by spec (Ruling 2)', () => {
-    expect(RAID_BUFFS).toHaveLength(46);
+  it('is the curated raid preset’s buffs and debuffs, the list every published level-60 number is simmed under, never split by spec', () => {
+    const curated = JSON.parse(readFileSync(CURATED_PRESETS, 'utf8')) as {
+      presets: { raid: { buffs: { id: string }[]; debuffs: { id: string }[] } };
+    };
+    const raid = curated.presets.raid;
+    expect([...RAID_BUFFS]).toEqual([...raid.buffs.map((b) => b.id), ...raid.debuffs.map((d) => d.id)]);
     expect(PRESET_BUFFS['raid-buffed']).toBe(RAID_BUFFS);
+  });
+
+  it('carries Heart of the Lion and none of the buffs the raid preset refuses (round 3 C3)', () => {
+    expect(RAID_BUFFS).toContain('heart_of_the_lion');
+    for (const refused of ['blessing_of_kings', 'sanctity_aura', 'winters_chill', 'shadow_weaving']) {
+      expect(RAID_BUFFS, refused).not.toContain(refused);
+    }
   });
 
   it('splits the consumable half by reference_stat: 9 physical ids, 7 caster ids', () => {
@@ -220,16 +241,22 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   // Level-aware sim design (2026-09-27), design step 5: extended down through level 1 for
-  // a levelling character's target (character level + 3), not just the raid range.
-  it('extends the armor table down through level 1, continuing the same rate, floored at zero', () => {
+  // a levelling character's target (character level + 3). Below 60 the figure is the one the
+  // engine runs (sim/api envelope.go armorBelowMaxLevel: the level-60 preset scaled by
+  // level), so the field never names an armor the run does not use.
+  it('extends the armor table down through level 1 with the engine’s own below-60 rule', () => {
     expect(Object.keys(TARGET_ARMOR_BY_LEVEL)).toHaveLength(63);
-    expect(TARGET_ARMOR_BY_LEVEL[1]).toBe(0);
-    expect(TARGET_ARMOR_BY_LEVEL[59]).toBeLessThan(TARGET_ARMOR_BY_LEVEL[60]);
-    // Every level's armor is non-negative and non-decreasing with level.
+    expect(TARGET_ARMOR_BY_LEVEL[41]).toBe(2255);
+    expect(TARGET_ARMOR_BY_LEVEL[36]).toBe(1980);
+    expect(TARGET_ARMOR_BY_LEVEL[1]).toBe(55);
     for (let level = 1; level < 63; level += 1) {
-      expect(TARGET_ARMOR_BY_LEVEL[level]).toBeGreaterThanOrEqual(0);
       expect(TARGET_ARMOR_BY_LEVEL[level + 1]).toBeGreaterThanOrEqual(TARGET_ARMOR_BY_LEVEL[level]);
     }
+  });
+
+  it('names the armor for the target level the character actually fights', () => {
+    // A level-33 character's default target is 36, not the level-63 boss.
+    expect(targetArmorField(DEFAULT_ENCOUNTER, 33)).toMatchObject({ level: 36, preset: 1980 });
   });
 
   describe('defaultTargetLevel', () => {
@@ -294,12 +321,19 @@ describe('the setters never mutate and always clamp', () => {
     });
   });
 
-  it('accepts only the contract’s target types, and the empty string for “any”', () => {
+  it('accepts only the contract’s target types; anything else is the default, no creature type', () => {
     const base = defaultSettings(PHYSICAL);
     expect(TARGET_TYPES).toContain('undead');
     expect(withTargetType(base, 'undead').encounter.target_type).toBe('undead');
-    expect(withTargetType(base, 'gnome').encounter.target_type).toBe('');
-    expect(withTargetType(base, '').encounter.target_type).toBe('');
+    expect(withTargetType(base, 'gnome').encounter.target_type).toBe('unknown');
+    expect(withTargetType(base, '').encounter.target_type).toBe('unknown');
+  });
+
+  it('shows an empty stored type as the humanoid the engine fights for it (sim/request request.go)', () => {
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: '' })).toBe('humanoid');
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: undefined })).toBe('humanoid');
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: 'beast' })).toBe('beast');
+    expect(targetTypeShown(DEFAULT_ENCOUNTER)).toBe('unknown');
   });
 
   it('turns the dummy on and off', () => {
