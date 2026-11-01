@@ -48,11 +48,6 @@ struct RootView: View {
     @State private var simsRouter = SimsRouter()
     /// Lane F12: the search cover and the BiS list a result asks for.
     @State private var search: SearchNavigator
-
-    init(environment: AppEnvironment) {
-        self.environment = environment
-        _search = State(initialValue: SearchNavigator(dependencies: .live(environment)))
-    }
     /// Lane F10: Home's Your reports stack, which report links push onto.
     @State private var reportsRouter = ReportsRouter()
     /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
@@ -61,6 +56,7 @@ struct RootView: View {
 
     init(environment: AppEnvironment) {
         self.environment = environment
+        _search = State(initialValue: SearchNavigator(dependencies: .live(environment)))
         let service = RaidsDependencies.live(environment).service
         let session = environment.session
         let loader = CalendarInputLoader(service: service, currentKey: { session.currentCharacter?.key })

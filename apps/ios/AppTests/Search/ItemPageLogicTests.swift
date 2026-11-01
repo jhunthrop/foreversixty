@@ -109,26 +109,30 @@ struct ItemPageLogicTests {
         #expect(ItemPageLogic.visible(Array(rows.prefix(6)), expanded: false).hidden == 0)
     }
 
-    @Test("on-equip shares print as the client's green Equip sentences, once; the rest stays white")
+    @Test("spell power, healing, mp5 and the like print only as the client's green Equip sentences")
     func equipLines() throws {
-        let corpus = try SearchTestData.corpus()
-        let cape = try #require(corpus.item(SearchTestData.cape))
-        let request = ItemPageLogic.tooltipRequest(item: cape, route: ItemPageRoute(itemID: cape.id), build: "b", character: SearchTestData.lightningbolltz, own: nil)
-        let model = ItemTooltipModel.build(request, sources: try SearchTestData.tooltipSources())
-        #expect(Set(model.stats) == ["+6 Intellect", "+6 Spirit", "+5 Stamina"])
-        #expect(model.equipLines == ["Equip: Increases damage and healing done by magical spells and effects by up to 14."])
-        #expect(model.binds == "Binds when picked up" && model.typeName == "Cloth")
+        let sources = try SearchTestData.tooltipSources()
+        let model = { (id: Int) -> ItemTooltipModel in
+            ItemTooltipModel.build(
+                ItemTooltipRequest(itemID: id, fallback: HomeItemLook(id: id, name: nil, quality: nil, icon: nil, itemLevel: nil),
+                                   build: "b", classSlug: "shaman", spec: nil, specName: nil, band: nil, bandLabel: nil, preset: nil,
+                                   faction: nil, sourceLine: nil, wornID: nil),
+                sources: sources
+            )
+        }
+        let cape = model(SearchTestData.cape)
+        #expect(Set(cape.stats) == ["+6 Intellect", "+6 Spirit", "+5 Stamina"])
+        #expect(cape.equipLines == ["Equip: Increases damage and healing done by magical spells and effects by up to 14."])
+        #expect(cape.binds == "Binds when picked up" && cape.typeName == "Cloth")
 
-        // No equip_stats (older data): every stat white, no sentence.
-        let sash = try #require(try SearchTestData.itemsFile("shaman").items.first { $0.id == SearchTestData.runnerUp })
-        let plain = ItemTooltipModel.build(
-            ItemTooltipRequest(itemID: sash.id, fallback: HomeItemLook(id: sash.id, name: nil, quality: nil, icon: nil, itemLevel: nil),
-                               build: "b", classSlug: "shaman", spec: nil, specName: nil, band: nil, bandLabel: nil, preset: nil,
-                               faction: nil, sourceLine: nil, wornID: nil),
-            sources: try SearchTestData.tooltipSources()
-        )
-        #expect(plain.stats.contains("+14 \(Copy.itemsStatSpellPower)"))
-        #expect(plain.equipLines.isEmpty)
+        let sash = model(SearchTestData.runnerUp)
+        #expect(!sash.stats.contains { $0.contains(Copy.itemsStatSpellPower) })
+        #expect(sash.equipLines == ["Equip: Increases damage and healing done by magical spells and effects by up to 14."])
+
+        let pauldrons = model(SearchTestData.notListed)
+        #expect(!pauldrons.stats.contains { $0.contains(Copy.itemsStatMp5) })
+        #expect(pauldrons.equipLines == ["Equip: Restores 4 mana per 5 sec."])
+        #expect(pauldrons.setName != nil)
     }
 
     @Test("a rating stat is an Equip sentence only when percent_stats states the same figure")

@@ -74,8 +74,7 @@ private struct ItemPageBar: ViewModifier {
                         .foregroundStyle(FSColor.strong)
                         .padding(.horizontal, 14)
                         .frame(minHeight: SearchLayout.target)
-                        .background(FSColor.raised, in: .capsule)
-                        .overlay(Capsule().strokeBorder(FSColor.lineSoft))
+                        .background { RingedCapsule(fill: FSColor.raised, ring: FSColor.lineSoft) }
                         .glassEffect(.regular, in: .capsule)
                         .contentShape(.capsule)
                     }
@@ -418,7 +417,8 @@ struct ItemSourceRowView: View {
     private var glyph: some View {
         switch SourceGlyph.of(row.kind) {
         case let .symbol(name): Image(systemName: name).font(.system(size: 14, weight: .semibold))
-        case let .text(text): Text(text).font(.system(size: 18, weight: .semibold))
+        // The text glyphs (skull, swords) are drawn larger and heavier to match a symbol's weight.
+        case let .text(text): Text(text).font(.system(size: 24, weight: .bold))
         }
     }
 }

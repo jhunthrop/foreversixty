@@ -30,17 +30,7 @@ enum SearchTestData {
     // MARK: The index
 
     static func itemsFile(_ classSlug: String) throws -> ItemsFile {
-        var root = try JSONSerialization.jsonObject(with: Data(contentsOf: buildDir.appending(path: "items/\(classSlug).json"))) as? [String: Any] ?? [:]
-        // The cape's 14 spell power is one on-equip spell that also gives 14 healing: the
-        // `equip_stats` the next data run publishes (the committed 70707 files predate it).
-        if var items = root["items"] as? [[String: Any]] {
-            items = items.map { item in
-                guard item["id"] as? Int == cape else { return item }
-                return item.merging(["equip_stats": ["spell_power": 14, "healing": 14]]) { _, new in new }
-            }
-            root["items"] = items
-        }
-        return try WireFormat.decoder().decode(ItemsFile.self, from: JSONSerialization.data(withJSONObject: root))
+        try WireFormat.decoder().decode(ItemsFile.self, from: Data(contentsOf: buildDir.appending(path: "items/\(classSlug).json")))
     }
 
     static func talentsFile(_ classSlug: String) throws -> TalentsFile {

@@ -52,11 +52,10 @@ struct SearchFieldBar: View {
             .padding(.trailing, query.isEmpty ? 14 : 0)
             .padding(.vertical, 4)
             .frame(minHeight: SearchLayout.fieldHeight)
-            // The field's own surface under the glass, so it reads as a field wherever the
-            // material is dropped (spec §7: glass, placeholder muted).
-            .background(FSColor.raised, in: .rect(cornerRadius: SearchLayout.fieldHeight / 2))
-            .overlay(RoundedRectangle(cornerRadius: SearchLayout.fieldHeight / 2).strokeBorder(FSColor.lineSoft))
-            .glassEffect(.regular, in: .rect(cornerRadius: SearchLayout.fieldHeight / 2))
+            // The field's own surface, so it reads as a field wherever the glass material is
+            // dropped (spec §7: glass, placeholder muted).
+            .background { RingedCapsule(fill: FSColor.raised, ring: FSColor.lineSoft) }
+            .glassEffect(.regular, in: .capsule)
             Button(Copy.searchCancel, action: cancel)
                 .font(ScaledType.bodyStrong)
                 .foregroundStyle(FSColor.gold)
@@ -124,19 +123,29 @@ struct SearchChip: View {
                 .padding(.vertical, 8)
                 .frame(minHeight: SearchLayout.target)
                 .background {
-                    // The 1 pt ring is the line colour showing round an inset fill: one capsule
-                    // shape for ring, fill and target, no stroked edge to render apart.
-                    ZStack {
-                        Capsule().fill(isOn ? FSColor.gold : FSColor.line)
-                        Capsule().fill(FSColor.bg).padding(1)
-                        Capsule().fill(isOn ? GameColors.pressedWash : GameColors.controlFill).padding(1)
-                    }
-                    .padding(.vertical, (SearchLayout.target - SearchLayout.chipHeight) / 2)
+                    RingedCapsule(fill: isOn ? GameColors.pressedWash : GameColors.controlFill, ring: isOn ? FSColor.gold : FSColor.line)
+                        .padding(.vertical, (SearchLayout.target - SearchLayout.chipHeight) / 2)
                 }
                 .contentShape(.capsule)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])
+    }
+}
+
+/// A capsule with a 1 pt ring, drawn as the ring colour showing round an inset fill rather than
+/// a stroke: a stroked capsule renders stray bars at its ends. `fill` may be translucent; the
+/// page ground sits under it.
+struct RingedCapsule: View {
+    let fill: Color
+    let ring: Color
+
+    var body: some View {
+        ZStack {
+            Capsule().fill(ring)
+            Capsule().fill(FSColor.bg).padding(1)
+            Capsule().fill(fill).padding(1)
+        }
     }
 }
 
