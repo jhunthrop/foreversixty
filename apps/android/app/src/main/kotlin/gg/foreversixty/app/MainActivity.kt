@@ -125,6 +125,8 @@ class MainActivity : ComponentActivity() {
         if (BuildConfig.DEBUG && intent?.getBooleanExtra(gg.foreversixty.app.raids.push.RaidDebugPush.EXTRA, false) == true) {
             gg.foreversixty.app.raids.push.RaidDebugPush.post(this)
         }
+        // Lane F15 review captures, debug builds only: the real share chooser with the app's share.
+        if (BuildConfig.DEBUG) intent?.getStringExtra(gg.foreversixty.app.system.platform.DebugShare.EXTRA)?.let { gg.foreversixty.app.system.platform.DebugShare.open(this, it) }
         // Lane F15: a launcher shortcut or the Assistant's Open app feature.
         if (openShortcut(intent)) return
         val link = intent?.dataString ?: return

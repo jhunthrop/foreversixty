@@ -9,7 +9,6 @@ import gg.foreversixty.app.model.TalentsFile
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
-import gg.foreversixty.app.planner.logic.PlannerHaptics
 import gg.foreversixty.app.planner.logic.PlannerSource
 import java.io.IOException
 
@@ -40,11 +39,5 @@ class FakePlannerSource(
     }
 }
 
-/** Records every haptic, in order. */
-class RecordingHaptics : PlannerHaptics {
-    val played = mutableListOf<String>()
-    override fun added() { played += "added" }
-    override fun removed() { played += "removed" }
-    override fun refused() { played += "refused" }
-    override fun shared() { played += "shared" }
-}
+/** The app's recording facade (W3 §5.7): the planner's haptics go through the one Haptics. */
+typealias RecordingHaptics = gg.foreversixty.app.raids.RecordingHaptics

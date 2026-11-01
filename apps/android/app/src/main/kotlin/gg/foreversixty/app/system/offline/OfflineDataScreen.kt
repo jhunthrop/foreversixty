@@ -1,5 +1,10 @@
 package gg.foreversixty.app.system.offline
 
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
@@ -42,7 +47,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
-import gg.foreversixty.app.account.ConfirmDialog
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
@@ -126,16 +130,49 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
             Text(copy.footer(state.checkedAt, now), style = FsType.meta, color = FsColor.muted)
         }
     }
-    if (state.confirmingRemove) {
-        ConfirmDialog(
-            title = stringResource(R.string.offlineData_removeConfirm),
-            body = null,
-            action = stringResource(R.string.offlineData_removeAction),
-            onConfirm = actions.remove,
-            onDismiss = actions.cancelRemove,
-        )
-    }
+    if (state.confirmingRemove) RemoveDialog(actions)
 }
+
+/**
+ * `Remove downloaded data?`: the sentence in the body face, 24 dp from the screen's sides, and at
+ * large text the two buttons stacked at one height so neither label breaks (review round 1).
+ */
+@Composable
+private fun RemoveDialog(actions: OfflineDataActions) {
+    val large = LocalDensity.current.fontScale >= STACK_BUTTONS_SCALE
+    val remove = @Composable { modifier: Modifier ->
+        TextButton(actions.remove, modifier.heightIn(min = 48.dp)) {
+            Text(stringResource(R.string.offlineData_removeAction), style = FsType.bodyStrong, color = FsColor.wipe, textAlign = TextAlign.Center)
+        }
+    }
+    val cancel = @Composable { modifier: Modifier ->
+        TextButton(actions.cancelRemove, modifier.heightIn(min = 48.dp)) {
+            Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav, textAlign = TextAlign.Center)
+        }
+    }
+    AlertDialog(
+        onDismissRequest = actions.cancelRemove,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.padding(horizontal = FsSpacing.space6),
+        containerColor = FsColor.raised,
+        text = { Text(stringResource(R.string.offlineData_removeConfirm), style = FsType.body, color = FsColor.strong) },
+        confirmButton = {
+            if (large) {
+                Column(Modifier.fillMaxWidth()) {
+                    remove(Modifier.fillMaxWidth())
+                    cancel(Modifier.fillMaxWidth())
+                }
+            } else {
+                Row {
+                    cancel(Modifier)
+                    remove(Modifier)
+                }
+            }
+        },
+    )
+}
+
+private const val STACK_BUTTONS_SCALE = 1.3f
 
 @Composable
 private fun Saved(report: OfflineReport, copy: OfflineDataCopy, now: Instant) {
@@ -192,7 +229,8 @@ private fun UpdateButtons(state: OfflineDataState, empty: Boolean, actions: Offl
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
-        if (!empty) BrandButton(stringResource(R.string.offlineData_remove), BrandButtonKind.Destructive, actions.askRemove, height = 48.dp)
+        // Shown on both platforms; with nothing saved it stays, disabled (review round 1).
+        BrandButton(stringResource(R.string.offlineData_remove), BrandButtonKind.Destructive, actions.askRemove, enabled = !empty, height = 48.dp)
     }
 }
 

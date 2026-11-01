@@ -52,7 +52,6 @@ import gg.foreversixty.app.guides.ui.screenMargins
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.planner.PlannerFeature
-import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.sims.ui.ScreenTitle
 import kotlinx.coroutines.launch
 

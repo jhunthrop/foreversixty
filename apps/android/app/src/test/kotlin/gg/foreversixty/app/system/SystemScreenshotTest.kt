@@ -1,5 +1,30 @@
 package gg.foreversixty.app.system
 
+import gg.foreversixty.app.bis.BisTestData
+import gg.foreversixty.app.talents.TalentBuildKind
+import gg.foreversixty.app.talents.TalentsPhase
+import gg.foreversixty.app.talents.TalentsPage
+import gg.foreversixty.app.talents.TalentTestData
+import gg.foreversixty.app.model.CharacterBuild
+import gg.foreversixty.app.model.BuildTalents
+import gg.foreversixty.app.model.AccountCharacter
+import gg.foreversixty.app.planner.ui.SharedPageState
+import gg.foreversixty.app.planner.ui.SharedBuildPage
+import gg.foreversixty.app.planner.ui.SharedActions
+import gg.foreversixty.app.planner.logic.SharedCompare
+import gg.foreversixty.app.planner.logic.SharedBuildPhase
+import gg.foreversixty.app.planner.logic.SharedBuildView
+import gg.foreversixty.app.planner.PlannerTestData
+import gg.foreversixty.app.rankings.ui.CharacterScreenState
+import gg.foreversixty.app.rankings.ui.CharacterContent
+import gg.foreversixty.app.rankings.ui.CharacterActions
+import gg.foreversixty.app.rankings.logic.WatchState
+import gg.foreversixty.app.rankings.logic.CharacterRoute
+import gg.foreversixty.app.rankings.logic.CharacterPhase as CharacterPagePhase
+import gg.foreversixty.app.rankings.RankingsTestData
+import gg.foreversixty.app.model.CharacterSearchRow
+import gg.foreversixty.app.model.WatchingList
+import gg.foreversixty.app.raids.RaidFixture
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -100,12 +125,15 @@ class SystemScreenshotTest {
         File(path).takeIf { it.exists() }?.copyTo(File(File(REVIEW_DIR).apply { mkdirs() }, "$file.png"), overwrite = true)
     }
 
+    /** The guides Offline data counts: Elemental Shaman and Fury Warrior, 2.4 MB together. */
+    private val savedGuides = mapOf(GuidesTestData.ELEMENTAL to ELEMENTAL_BYTES, "warrior-fury" to FURY_BYTES)
+
     // F15.4 Offline data
 
     private val report: OfflineReport = OfflineData.report(
         listOf(
-            SavedStaticFile("/data/$build/guides/shaman-elemental.json", 1_240_000, saved),
-            SavedStaticFile("/data/$build/guides/warrior-fury.json", 1_160_000, saved),
+            SavedStaticFile("/data/$build/guides/shaman-elemental.json", ELEMENTAL_BYTES, saved),
+            SavedStaticFile("/data/$build/guides/warrior-fury.json", FURY_BYTES, saved),
             SavedStaticFile("/data/$build/bis/shaman-elemental.json", 2_100_000, saved),
             SavedStaticFile("/data/$build/items/shaman.json", 1_000_000, saved),
             SavedStaticFile("/data/$build/talents/shaman.json", 600_000, saved),
@@ -161,7 +189,7 @@ class SystemScreenshotTest {
         Column {
             NewDataStrip("New game data is ready.", "Update", {})
             GuidesRootLayout(GuidesSegment.visible(tiersOn = true), GuidesSegment.Guides, {}) {
-                GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), emptyMap(), Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
+                GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), savedGuides, Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
             }
         }
     }
@@ -177,7 +205,7 @@ class SystemScreenshotTest {
         GuidesRootLayout(GuidesSegment.visible(tiersOn = true), GuidesSegment.Guides, {}, selector = {
             RootSearchBar({}) { Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterSelector(GuidesTestData.lightningbolltz, open = false) {} } }
         }) {
-            GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), emptyMap(), Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
+            GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), savedGuides, Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
         }
     }
 
@@ -199,7 +227,10 @@ class SystemScreenshotTest {
                 recents = emptyList(),
                 forCharacter = ForCharacter("Lightningbolltz", "Elemental Shaman guide"),
                 build = SearchTestData.BUILD,
-                watching = listOf(data.character("Voltaris", "shaman", level = 60), data.character("Obnoxiousyell", "warrior", level = 60)),
+                watching = RaidFixture.load(WatchingList.serializer(), "watching.list").rows.map {
+                    CharacterSearchRow(it.key, it.region, it.ruleset, it.name, it.className, it.level)
+                },
+                guidesInApp = true,
                 rankingsInApp = true,
             ),
             SearchActions(),
@@ -210,6 +241,66 @@ class SystemScreenshotTest {
     @Test fun searchWatching() = search(false)
 
     @Test fun searchWatchingLarge() = search(true)
+
+    // Round 2: F11.4 Builds seen's `Open in planner`
+
+    private fun openPlanner(large: Boolean) = capture("f15-char-open-planner", large, ForeverTab.Home) {
+        val state = CharacterScreenState(
+            CharacterRoute("us", "normal", "Voltaris"),
+            CharacterPagePhase.Loaded(RankingsTestData.voltaris()),
+            WatchState(watching = true),
+            RankingsTestData.viewer(),
+            RankingsTestData.items().items.associateBy { it.id },
+            RankingsTestData.BUILD,
+            reportsOn = true,
+        )
+        val list = rememberScrollState(Int.MAX_VALUE)
+        Box(Modifier.fillMaxSize().verticalScroll(list)) {
+            CharacterContent(state, RankingsTestData.specs(), now, CharacterActions(openPlanner = {}))
+        }
+    }
+
+    @Test fun charOpenPlanner() = openPlanner(false)
+
+    @Test fun charOpenPlannerLarge() = openPlanner(true)
+
+    // Round 2: F13.5 `Compare with mine` and the compare it opens
+
+    private val sharedView = SharedBuildView(PlannerTestData.sharedBuild(), PlannerTestData.shaman(), "shaman", "Shaman", "Orc")
+    private val mine = AccountCharacter(
+        key = "us/normal/lightningbolltz", region = "us", ruleset = "normal", name = "Lightningbolltz", source = "export",
+        className = "shaman", level = 60,
+        build = CharacterBuild(source = "export", capturedAt = "2026-11-04T19:00:00Z", talents = BuildTalents(TalentTestData.SHAMAN_YOURS.split("-"), listOf(1, 1, 1))),
+    )
+
+    private fun compareButton(name: String, large: Boolean, canCompare: Boolean) = capture(name, large, ForeverTab.Home) {
+        SharedBuildPage(SharedPageState(SharedBuildPhase.Loaded(sharedView), 0, canCompare = canCompare), SharedActions())
+    }
+
+    @Test fun compareButton() = compareButton("f15-shared-build-compare-button", false, canCompare = true)
+
+    @Test fun compareButtonLarge() = compareButton("f15-shared-build-compare-button", true, canCompare = true)
+
+    @Test fun compareButtonNoExport() = compareButton("f15-shared-build-compare-button-noexport", false, canCompare = false)
+
+    @Test fun compareButtonNoExportLarge() = compareButton("f15-shared-build-compare-button-noexport", true, canCompare = false)
+
+    private fun compare(large: Boolean) = capture("f15-shared-build-compare", large, ForeverTab.Home) {
+        val presenter = SharedCompare.presenter(sharedView, mine)
+        TalentsPage(
+            phase = TalentsPhase.Loaded(presenter, null),
+            build = BisTestData.BUILD,
+            offlineStamp = null,
+            shown = TalentBuildKind.Yours,
+            tree = presenter.openingTree,
+            title = "Compare with mine",
+        )
+    }
+
+    @Test fun sharedCompare() = compare(false)
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun sharedCompareLarge() = compare(true)
 }
 
 /** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
@@ -217,6 +308,8 @@ private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.Compar
 
 private const val LARGE_SCALE = 2f
 private const val SAVED_AGO = 3_600L
+private const val ELEMENTAL_BYTES = 1_240_000L
+private const val FURY_BYTES = 1_160_000L
 
 /** From apps/android/app (Gradle's test working directory) to the review folder. */
 private const val REVIEW_DIR = "../../../design/reviews/2026-11-01-mobile-integration/build/and"

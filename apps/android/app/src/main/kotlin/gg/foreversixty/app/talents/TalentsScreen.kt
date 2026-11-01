@@ -1,5 +1,6 @@
 package gg.foreversixty.app.talents
 
+import gg.foreversixty.app.common.rememberHaptics
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -51,10 +52,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -170,10 +169,12 @@ fun TalentsPage(
     openPlanner: () -> Unit = {},
     back: () -> Unit = {},
     planner: TalentsPlannerLinks? = null,
+    /** Lane F15: `Compare with mine` titles the same screen over a shared build. */
+    title: String = stringResource(R.string.talents_title),
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
-            title = { Text(stringResource(R.string.talents_title).uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong) },
+            title = { Text(title.uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong) },
             navigationIcon = {
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },
@@ -248,7 +249,8 @@ private fun TalentsContent(
                 }
             }
         }
-        item { TalentsFooter(openPlanner, planner) }
+        val shared = (phase as? TalentsPhase.Loaded)?.presenter?.against as? CompareAgainst.Shared
+        item { if (shared != null) SharedFooter(shared) else TalentsFooter(openPlanner, planner) }
     }
 }
 
@@ -301,19 +303,20 @@ fun TalentCompareBar(
     onTree: (Int) -> Unit,
     large: Boolean,
 ) {
-    val haptics = LocalHapticFeedback.current
+    val haptics = rememberHaptics()
+    val against = tabs.firstOrNull()?.against ?: CompareAgainst.Guide
     Column(
         Modifier.fillMaxWidth().background(FsColor.bg).padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (showsSegments) {
-            Segments(shown, large) {
-                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+            Segments(shown, large, against) {
+                haptics.selection()
                 onShow(it)
             }
         }
         val pick = { index: Int ->
-            haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+            haptics.selection()
             onTree(index)
         }
         if (large) StackedTabs(tabs, tree, pick, rowHeight = 56.dp) else FittingTabs(tabs, tree, pick)
@@ -321,9 +324,9 @@ fun TalentCompareBar(
 }
 
 @Composable
-private fun Segments(shown: TalentBuildKind, large: Boolean, onShow: (TalentBuildKind) -> Unit) {
+private fun Segments(shown: TalentBuildKind, large: Boolean, against: CompareAgainst, onShow: (TalentBuildKind) -> Unit) {
     val shape = RoundedCornerShape(if (large) FsRadius.control else SEGMENT_PILL)
-    val items = listOf(TalentBuildKind.Guide to R.string.talents_guide, TalentBuildKind.Yours to R.string.talents_yours)
+    val items = listOf(TalentBuildKind.Guide to against.side, TalentBuildKind.Yours to against.yours)
     val content = @Composable { kind: TalentBuildKind, label: Int, modifier: Modifier ->
         val checked = shown == kind
         Row(
@@ -469,6 +472,15 @@ private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?
             Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(16.dp))
         }
     }
+}
+
+/** A shared build's compare (F13.5): `{name}'s talents against this build. Change talents in the game; …` */
+@Composable
+private fun SharedFooter(against: CompareAgainst.Shared) {
+    Text(
+        stringResource(R.string.plan_cmp_on, against.yourName), style = FsType.meta, color = FsColor.muted,
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp),
+    )
 }
 
 /** One in-app planner link: gold text and a chevron, 48 tall. */

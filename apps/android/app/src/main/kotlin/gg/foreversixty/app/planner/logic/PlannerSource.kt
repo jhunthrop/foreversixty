@@ -14,9 +14,8 @@ import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
-import gg.foreversixty.app.network.CachedStaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticEndpoints
-import gg.foreversixty.app.network.StaticFileCache
 import gg.foreversixty.app.talents.TalentsSource
 import kotlinx.serialization.SerializationException
 
@@ -41,13 +40,14 @@ interface PlannerSource {
     suspend fun remove(id: String): ApiResult<Unit>
 }
 
-/** The live source: the CDN through the offline cache, the API through [api]. */
+/**
+ * The live source: the CDN through the app's one static data store (lane F15), the API through
+ * [api]; a shared build's last good answer is kept in the same store for offline.
+ */
 class LivePlannerSource(
-    private val files: CachedStaticDataClient,
+    private val files: StaticDataStore,
     private val talentsSource: TalentsSource,
     private val api: ApiClient,
-    private val cache: StaticFileCache,
-    private val clock: () -> Long = System::currentTimeMillis,
 ) : PlannerSource {
     override suspend fun activeBuild(): String = talentsSource.activeBuild()
     override suspend fun talents(build: String, classSlug: String) = talentsSource.talents(build, classSlug)
@@ -62,16 +62,15 @@ class LivePlannerSource(
         val path = cachePath(id)
         return when (val answer = api.send(ApiEndpoints.getBuild(id))) {
             is ApiResult.Success -> {
-                val now = clock()
-                cache.write(ApiJson.encodeToString(Build.serializer(), answer.data), path, now)
-                ApiResult.Success(CachedFile(answer.data, now, isFromCache = false), answer.requestId)
+                files.saveBody(path, ApiJson.encodeToString(Build.serializer(), answer.data))
+                ApiResult.Success(CachedFile(answer.data, files.savedBody(path)?.savedAtMillis ?: 0L, isFromCache = false), answer.requestId)
             }
             is ApiResult.Failure -> saved(path)?.takeIf { answer.error is ApiError.Network } ?: answer
         }
     }
 
     private fun saved(path: String): ApiResult<CachedFile<Build>>? {
-        val entry = cache.read(path) ?: return null
+        val entry = files.savedBody(path) ?: return null
         return try {
             ApiResult.Success(CachedFile(ApiJson.decodeFromString(Build.serializer(), entry.body), entry.savedAtMillis, isFromCache = true), "")
         } catch (e: SerializationException) {

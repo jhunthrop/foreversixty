@@ -1,5 +1,6 @@
 package gg.foreversixty.app.planner.logic
 
+import gg.foreversixty.app.common.Haptics
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.RaceClassCombo
 import gg.foreversixty.app.model.RaceInfo
@@ -56,7 +57,7 @@ class PlannerEditorModel(
     private val source: PlannerSource,
     private val drafts: PlannerDrafts,
     val request: EditorRequest,
-    private val haptics: PlannerHaptics,
+    private val haptics: Haptics,
 ) {
     private val mutable = MutableStateFlow<EditorPhase>(EditorPhase.Loading)
     val phase: StateFlow<EditorPhase> = mutable.asStateFlow()
@@ -139,7 +140,7 @@ class PlannerEditorModel(
         mutable.value = EditorPhase.Ready(view.copy(sharing = true, shareProblem = null))
         val input = PlannerShare.input(view.file.classId, race.id, build, view.state.order, title)
         val outcome = PlannerShare.outcome(source.save(input))
-        if (outcome is ShareOutcome.Shared) haptics.shared() else haptics.refused()
+        if (outcome is ShareOutcome.Shared) haptics.success() else haptics.error()
         problem(outcome.takeUnless { it is ShareOutcome.Shared })
         return outcome
     }

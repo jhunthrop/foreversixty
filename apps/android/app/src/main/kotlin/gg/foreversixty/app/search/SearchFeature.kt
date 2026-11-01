@@ -207,7 +207,14 @@ class SearchFeature(
  * so nothing under it reacts, and pads for the system bars and the keyboard.
  */
 @Composable
-fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits, rankings: SearchRankings? = null) {
+fun SearchOverlay(
+    feature: SearchFeature,
+    owner: SearchOwner,
+    exits: SearchExits,
+    rankings: SearchRankings? = null,
+    /** Lane F15: opens a guide in the Guides tab while `guides` is on; null opens the web page. */
+    openGuide: ((DeepLink.Guide) -> Unit)? = null,
+) {
     val navigator = feature.navigator
     val top = navigator.stack.lastOrNull() ?: return
     val scope = rememberCoroutineScope()
@@ -228,7 +235,7 @@ fun SearchOverlay(feature: SearchFeature, owner: SearchOwner, exits: SearchExits
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         when (top) {
-            SearchDestination.Search -> SearchRoute(feature, store, owner, selection, build, exits, rankings)
+            SearchDestination.Search -> SearchRoute(feature, store, owner, selection, build, exits, rankings, openGuide)
             is SearchDestination.Item -> ItemPageRoute(feature, top, ItemPageOwner(owner.character?.className, selection), build, exits)
         }
     }
@@ -243,6 +250,7 @@ private fun SearchRoute(
     build: String,
     exits: SearchExits,
     rankings: SearchRankings?,
+    openGuide: ((DeepLink.Guide) -> Unit)?,
 ) {
     val context = LocalContext.current
     val res = LocalResources.current
@@ -266,7 +274,7 @@ private fun SearchRoute(
             } else {
                 context.openInBrowser(SearchLinks.character(target.character.region, target.character.ruleset, target.character.name))
             }
-            is SearchTarget.Guide -> context.openInBrowser(SearchLinks.guide(target.guide.className, target.guide.spec))
+            is SearchTarget.Guide -> openGuideIn(feature, openGuide, context, target.guide.className, target.guide.spec)
             is SearchTarget.Talent -> scope.launch { talent = feature.talentSheet(target.talent) }
         }
     }
@@ -283,6 +291,7 @@ private fun SearchRoute(
             ownKeys = owner.ownKeys,
             watching = watching,
             rankingsInApp = rankings != null,
+            guidesInApp = openGuide != null,
         ),
         SearchActions(
             onQuery = store::type,
@@ -295,7 +304,7 @@ private fun SearchRoute(
                 feature.navigator.close()
                 exits.openBis(selection)
             },
-            onOpenGuide = { spec?.let { context.openInBrowser(SearchLinks.guide(it.classSlug, it.spec.removePrefix("${it.classSlug}-"))) } },
+            onOpenGuide = { spec?.let { openGuideIn(feature, openGuide, context, it.classSlug, it.spec.removePrefix("${it.classSlug}-")) } },
             onOpenRankings = {
                 if (rankings != null) {
                     feature.navigator.close()
@@ -346,6 +355,16 @@ private fun ItemPageBody(store: ItemPageStore, build: String, page: SearchDestin
 private fun openSpec(feature: SearchFeature, line: ItemSpecLine, exits: SearchExits) {
     feature.navigator.close()
     exits.openBis(BisSelection(line.classSlug, line.spec, BisRange(line.band, line.preset), line.faction.orEmpty()))
+}
+
+/** A guide: the native F9.2 in the Guides tab while `guides` is on (lane F15), else its web page. */
+private fun openGuideIn(feature: SearchFeature, openGuide: ((DeepLink.Guide) -> Unit)?, context: Context, classSlug: String, specSlug: String) {
+    if (openGuide == null) {
+        context.openInBrowser(SearchLinks.guide(classSlug, specSlug))
+        return
+    }
+    feature.navigator.close()
+    openGuide(DeepLink.Guide(classSlug, specSlug))
 }
 
 private fun Context.openInBrowser(url: String) {

@@ -170,7 +170,7 @@ fun ForeverAppScaffold(
                     }
                 }
             }
-            if (search != null) SearchOverlay(search, searchOwner(account), exits, home.rankings?.searchLink())
+            if (search != null) SearchOverlay(search, searchOwner(account), exits, home.rankings?.searchLink(), guides?.let { g -> { link -> g.navigator.open(link) } })
         }
     }
 }

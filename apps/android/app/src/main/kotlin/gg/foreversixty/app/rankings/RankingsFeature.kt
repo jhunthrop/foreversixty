@@ -75,6 +75,9 @@ class RankingsFeature(
 ) {
     val navigator = RankingsNavigator()
 
+    /** Lane F15: Builds seen's `Open in planner` (F13); null while `planner` is off. */
+    var openPlanner: ((DeepLink.Planner) -> Unit)? = null
+
     /** Lane F15: `Search again` on F11.7 opens Search with the name in the field; null goes back. */
     var searchAgain: ((String) -> Unit)? = null
 

@@ -72,7 +72,12 @@ fun BrandButton(
             enabled = enabled && !busy,
             shape = shape,
             contentPadding = padding,
-            modifier = size.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape),
+            // Disabled (not busy), the gold dims to the disabled alpha so it reads as unavailable.
+            modifier = size.background(
+                Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)),
+                shape,
+                alpha = if (enabled || busy) 1f else DISABLED_ALPHA,
+            ),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
                 contentColor = FsColor.bg,

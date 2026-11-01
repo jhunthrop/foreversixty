@@ -217,6 +217,7 @@ fun CharacterRouteScreen(
         openFight = { fight -> openReport(fight.reportId) },
         openHistory = { AccountLinks.open(context, CharacterCard.historyUrl(route)) },
         searchAgain = { feature.searchAgain?.invoke(route.name) ?: back() },
+        openPlanner = feature.openPlanner,
     )
     val state = CharacterScreenState(route, store.phase, store.watch, viewer, items, build, reports != null)
     PullToRefreshBox(

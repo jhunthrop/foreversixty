@@ -58,6 +58,15 @@ class StaticDataStore(
         return CachedFile(decoded.data, entry.savedAtMillis, isFromCache = true)
     }
 
+    /**
+     * An API answer kept beside the static files for offline use (lane F13's shared build), so the
+     * one store still has one folder, one delete and one size report. [path] is its own key.
+     */
+    fun saveBody(path: String, body: String) = cache.write(body, path, clock())
+
+    /** The body [saveBody] kept under [path], with when it was saved; null when none. */
+    fun savedBody(path: String): StaticFileEntry? = cache.read(path)
+
     /** The saved copy's size in bytes, or null when the file is not on the phone. */
     fun savedBytes(resource: StaticResource<*>): Long? = cache.read(resource.path)?.body?.toByteArray()?.size?.toLong()
 

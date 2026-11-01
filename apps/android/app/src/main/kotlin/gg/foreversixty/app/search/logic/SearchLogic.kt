@@ -98,16 +98,19 @@ class PreparedIndex(
  * and Rankings until F11. Drop an entry as its lane lands; the rows' external-link glyph follows.
  */
 object WebHandoff {
-    /** [rankingsInApp]: F11 is on, so characters (F11.4) and Rankings (F11.1) open in the app (lane F15). */
-    fun opensWebsite(target: SearchTarget, rankingsInApp: Boolean = false): Boolean = when (target) {
-        is SearchTarget.Guide -> GUIDES
+    /**
+     * [rankingsInApp]: F11 is on, so characters (F11.4) and Rankings (F11.1) open in the app;
+     * [guidesInApp]: F9 is on, so a guide opens the native guide (lane F15).
+     */
+    fun opensWebsite(target: SearchTarget, rankingsInApp: Boolean = false, guidesInApp: Boolean = false): Boolean = when (target) {
+        is SearchTarget.Guide -> !guidesInApp
         is SearchTarget.Character -> !rankingsInApp
         is SearchTarget.Item, is SearchTarget.Talent -> false
     }
 
     fun rankingsOpenWebsite(rankingsInApp: Boolean): Boolean = !rankingsInApp
 
-    const val GUIDES = true
+    fun guidesOpenWebsite(guidesInApp: Boolean): Boolean = !guidesInApp
 }
 
 /** The phone-side matches for one query, each group in its final order and uncapped. */

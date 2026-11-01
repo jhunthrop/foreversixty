@@ -113,11 +113,12 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     val planner: PlannerFeature? = if (isAvailable(Feature.Planner)) {
         PlannerFeature.create(
             context = context,
-            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            statics = statics,
             appConfig = appConfig,
             api = apiClient,
             signedIn = { session.phase.value.isSignedIn },
             character = { session.currentCharacter() },
+            characters = { session.phase.value.me?.characters.orEmpty() },
         )
     } else {
         null
@@ -185,6 +186,8 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
     ) { isAvailable(Feature.Search) }.also { search ->
         // Lane F15: F11.7's `Search again` opens Search with the name in the field.
         home.rankings?.let { rankings ->
+            // Lane F15: Builds seen's `Open in planner` opens F13 on the character's class.
+            rankings.openPlanner = planner?.let { feature -> { link -> feature.open(link) } }
             rankings.searchAgain = { name ->
                 rankings.navigator.character = null
                 if (search.enabled) search.navigator.openSearch(name)

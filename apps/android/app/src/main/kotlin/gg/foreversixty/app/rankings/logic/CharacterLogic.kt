@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings.logic
 
+import gg.foreversixty.app.navigation.DeepLink
 import android.content.res.Resources
 import androidx.annotation.StringRes
 import gg.foreversixty.app.R
@@ -89,6 +90,13 @@ object CharacterCard {
 
     /** The items file to read: the class slug. */
     fun classSlug(profile: CharacterProfile): String? = profile.character.className?.lowercase(Locale.ROOT)
+
+    /**
+     * Builds seen's `Open in planner` (lane F15, F13 follow-up): the planner on the character's class,
+     * with no code and no race (rankings carry no build code). Null with no class or no builds seen.
+     */
+    fun plannerLink(profile: CharacterProfile): DeepLink.Planner? =
+        classSlug(profile)?.takeIf { profile.buildsSeen.isNotEmpty() }?.let { DeepLink.Planner(it) }
 
     /** The web page a share and the share sheet open: `/character/{region}/{ruleset}/{name-slug}`. */
     fun shareUrl(route: CharacterRoute): String = "$SITE/character/${route.region}/${route.ruleset}/${route.slug}"
