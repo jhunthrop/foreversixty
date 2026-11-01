@@ -93,7 +93,7 @@ Open the planner at [/planner?class=paladin](/planner?class=paladin) to build th
 
 This is the rotation the simulator runs. It was measured in the simulator's tank fight (a level 63 boss that swings at you every two seconds, healers assumed), and mana, not cooldowns, is what limits it, so the order below is also the order in which mana is spent.
 
-1. **Righteous Fury** is a setting, not a button: keep it on. It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take. A Righteous-Fury-less rotation of the same gear makes far less threat.
+1. **Righteous Fury** is a setting, not a button: keep it on. It raises all the threat you make and raises the threat of your Holy damage further; the simulator multiplies the two bonuses together, and how the game combines them awaits a launch threat log. With Improved Righteous Fury it also lowers the damage you take. A Righteous-Fury-less rotation of the same gear makes far less threat.
 2. **Seal of Fury** up. Judgement no longer consumes your seal in Forever, so you recast the seal only when it runs out, not after every Judgement.
 3. **Holy Shield** on cooldown. It is both the best mitigation you have and the best use of your mana, so every other spell leaves its cost in the pool.
 4. **Hammer of the Righteous** and **Holy Strike** on their cooldowns, the first of which is the largest single threat gain in this list; with Shieldsworn, Holy Strike comes back every six seconds.
