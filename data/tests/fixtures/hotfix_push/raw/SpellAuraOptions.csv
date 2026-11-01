@@ -1,0 +1,2 @@
+ID,DifficultyID,CumulativeAura,ProcCategoryRecovery,ProcChance,ProcCharges,SpellProcsPerMinuteID,ProcTypeMask_0,ProcTypeMask_1,SpellID
+243729,0,0,25000,20,0,0,69972,0,1260189

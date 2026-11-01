@@ -65,7 +65,17 @@ addon writes it.
 
 ## Layout
 ```
-builds/<build>/raw/*.csv        downloaded DB2 exports (gitignored)
+builds/<build>/raw/*.csv        downloaded DB2 exports (gitignored). `fetch` then
+                                layers the server's hotfix push for the build
+                                (wago.tools/hotfixes) into every table but
+                                ItemSparse/Item, so every reader of raw/ -- normalize,
+                                simconst, trainables, levels, simdb, gen_set_rows and
+                                the engine fork's relicmods/periodiccrit/eureka -- sees
+                                the server's rows (pipeline/hotfix_push.py)
+builds/<build>/raw/shipped/*.csv  each layered table as fetched
+builds/<build>/raw/wago-push/   the cached push per table and LAYERED.json (what
+                                changed per table); `layer-hotfix-push --build <b>
+                                --offline` re-layers from it without the network
 builds/<build>/raw/hotfixes/{ItemSparse,Item}.csv  the beta client's own hotfix
                                 cache, from its `Cache/ADB/enUS/DBCache.bin` --
                                 decoded by `python -m pipeline hotfixes --build

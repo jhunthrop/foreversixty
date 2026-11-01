@@ -1,0 +1,4 @@
+ID,NameSubtext_lang,Description_lang,AuraDescription_lang
+11426,Rank 1,"Shield yourself, absorbing ${$s1+($SPFR*0.1)*($11189s3/100+1)} damage and increasing your Frost damage by $1326891s1% for $d. While shielded, your Frost damage is increased by an additional $s2% and you do not lose casting time when you take damage.",Absorbs $w1 damage and increases Frost damage dealt by ${$w2}%.
+1260189,Racial Passive,"Your spells and attacks have a $h% chance to drain Health from the target, up to $s1% of your maximum Health.",
+1326891,,Increases the damage done by your Frost spells by $s1%.,Increases the damage done by your Frost spells by $w1%.

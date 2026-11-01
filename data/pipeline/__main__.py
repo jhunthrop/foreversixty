@@ -9,9 +9,26 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="pipeline", description="Forever Sixty data pipeline")
     sub = p.add_subparsers(dest="command", required=True)
 
-    f = sub.add_parser("fetch", help="download DB2 CSV exports for a build")
+    f = sub.add_parser(
+        "fetch",
+        help="download DB2 CSV exports for a build, then layer the server's hotfix push "
+        "into them (pipeline.hotfix_push)",
+    )
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
+
+    lhp = sub.add_parser(
+        "layer-hotfix-push",
+        help="layer the build's hotfix push from wago.tools into raw/<Table>.csv (the file as "
+        "fetched is kept in raw/shipped/); `fetch` already does this",
+    )
+    lhp.add_argument("--build", required=True)
+    lhp.add_argument(
+        "--offline",
+        action="store_true",
+        help="re-layer from the push cached in raw/wago-push/ instead of fetching it; "
+        "fails when there is no cache",
+    )
 
     fw = sub.add_parser(
         "fetch-wowhead",
@@ -367,13 +384,30 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def _log_layer(summary: dict) -> None:
+    """The layer's counts go to the log, never stdout: data.yml reads the
+    fetched build from the last line `fetch` prints."""
+    moved = {
+        t: c for t, c in summary["tables"].items() if c["changed"] or c["added"] or c["removed"]
+    }
+    logging.getLogger("pipeline.hotfix_push").info(
+        "hotfix push layered into %d tables: %s", len(moved), sorted(moved)
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     args = build_parser().parse_args(argv)
     if args.command == "fetch":
-        from pipeline.wago import fetch_build
+        from pipeline import hotfix_push, wago
 
-        fetch_build(args.product, args.build)
+        build_dir = wago.fetch_build(args.product, args.build)
+        build = build_dir.name if build_dir is not None else args.build
+        _log_layer(hotfix_push.layer_hotfix_push(build))
+    elif args.command == "layer-hotfix-push":
+        from pipeline import hotfix_push
+
+        _log_layer(hotfix_push.layer_hotfix_push(args.build, offline=args.offline))
     elif args.command == "fetch-wowhead":
         from pipeline.wowhead_items import fetch_wowhead
 
