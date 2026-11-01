@@ -894,4 +894,125 @@
     <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
     <string name="live_tile_title">Next raid</string>
     <string name="live_tile_sub">%1$s · %2$s</string>
+    <string name="raids_rosterRow">Roster</string>
+    <plurals name="raids_rosterRow_sub">
+        <item quantity="one">1 on the roster · attendance</item>
+        <item quantity="other">%1$d on the roster · attendance</item>
+    </plurals>
+    <string name="raids_historyRow">Raid history</string>
+    <string name="raids_historyRow_sub">Logged raid nights</string>
+    <string name="roster_title">Roster</string>
+    <string name="roster_counts_onRoster">on the roster</string>
+    <string name="roster_counts_noAccount">in game, no account</string>
+    <string name="roster_counts_waiting">waiting</string>
+    <string name="roster_chip_all">All</string>
+    <string name="roster_chip_tanks">Tanks</string>
+    <string name="roster_chip_healers">Healers</string>
+    <string name="roster_chip_dps">DPS</string>
+    <string name="roster_sort">Sort: %1$s</string>
+    <string name="roster_sort_rank">Rank</string>
+    <string name="roster_sort_className">Class</string>
+    <string name="roster_sort_name">Name</string>
+    <string name="roster_sort_attendance">Attendance</string>
+    <string name="roster_sort_level">Level</string>
+    <string name="roster_rank_leader">Guild Master</string>
+    <string name="roster_rank_officer">Officer</string>
+    <string name="roster_rank_member">Member</string>
+    <string name="roster_meta" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
+    <string name="roster_metaNoLevel">%1$s · %2$s</string>
+    <string name="roster_attendance" tools:ignore="PluralsCandidate">%1$d of %2$d nights</string>
+    <string name="roster_waitingTag">Waiting</string>
+    <string name="roster_noAccountTag">No account</string>
+    <string name="roster_noNights">No logged nights yet.</string>
+    <string name="roster_empty_title">No raiders match.</string>
+    <string name="roster_empty_body">Change the role or clear the search.</string>
+    <string name="roster_footer">Attendance is the last 8 raid nights with a log. Tap a raider for their page.</string>
+    <string name="roster_error">The roster did not load.</string>
+    <string name="roster_search">Search the roster</string>
+    <string name="roster_supporter">Supporter</string>
+    <string name="roster_a11y_attended" tools:ignore="PluralsCandidate">attended %1$d of %2$d recent raid nights</string>
+    <string name="roster_a11y_waiting">waiting for approval</string>
+    <string name="roster_a11y_level" tools:ignore="PluralsCandidate">level %1$d</string>
+    <string name="history_title">Raid history</string>
+    <string name="history_label">Logged raid nights</string>
+    <string name="history_there">You were there</string>
+    <string name="history_more">Load more</string>
+    <string name="history_empty_title">No logged raid nights yet.</string>
+    <string name="history_empty_body">Nights show here once someone uploads a log.</string>
+    <string name="history_footer">A night opens your raid night when you were in it, otherwise its report.</string>
+    <string name="history_error">Raid history did not load.</string>
+    <string name="history_moreError">The next nights did not load.</string>
+    <plurals name="history_bosses">
+        <item quantity="one">1 boss</item>
+        <item quantity="other">%1$d bosses</item>
+    </plurals>
+    <plurals name="history_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <plurals name="history_wipes">
+        <item quantity="one">1 wipe</item>
+        <item quantity="other">%1$d wipes</item>
+    </plurals>
+    <string name="history_noWipes">no wipes</string>
+    <plurals name="history_raiders">
+        <item quantity="one">1 raider</item>
+        <item quantity="other">%1$d raiders</item>
+    </plurals>
+    <plurals name="history_players">
+        <item quantity="one">1 player</item>
+        <item quantity="other">%1$d players</item>
+    </plurals>
+    <string name="history_length" tools:ignore="PluralsCandidate">%1$d h %2$d m</string>
+    <string name="history_lengthMinutes" tools:ignore="PluralsCandidate">%1$d m</string>
+    <plurals name="history_a11y_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="history_a11y_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="history_a11y_there">You were there.</string>
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_youRow_sub">Raids in your calendar</string>
+    <string name="calendar_section">Calendar</string>
+    <string name="calendar_switch">Raids in my calendar</string>
+    <string name="calendar_switchNote">A calendar called Forever Sixty raids. The app keeps it up to date.</string>
+    <string name="calendar_which">Which raids</string>
+    <string name="calendar_which_all">All planned</string>
+    <string name="calendar_which_mine">Only ones I am In or Late for</string>
+    <string name="calendar_alert">Alert</string>
+    <string name="calendar_alert_none">None</string>
+    <string name="calendar_alert_minutes15">15 minutes before</string>
+    <string name="calendar_alert_hourBeforeInvites">1 hour before invites</string>
+    <string name="calendar_alert_day">1 day before</string>
+    <string name="calendar_off">Calendar access is off for Forever Sixty.</string>
+    <string name="calendar_offBody">Turn it on in Settings to add raids to your calendar.</string>
+    <string name="calendar_openSettings">Open Settings</string>
+    <string name="calendar_removed">The calendar was removed. Turn it on again.</string>
+    <string name="calendar_syncFailed">The calendar did not update. It tries again on the next refresh.</string>
+    <string name="calendar_share">Share</string>
+    <string name="calendar_link">Calendar link</string>
+    <string name="calendar_linkNote">For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild\'s raid times.</string>
+    <string name="calendar_copy">Copy link</string>
+    <string name="calendar_reset">Reset link</string>
+    <string name="calendar_addToCalendar">Add to Calendar</string>
+    <string name="calendar_copied">Link copied.</string>
+    <string name="calendar_resetAsk">Reset the link? The old link stops working.</string>
+    <string name="calendar_resetConfirm">Reset</string>
+    <string name="calendar_linkElsewhere">This link was shown on another phone or browser. Reset it to copy a link here.</string>
+    <string name="calendar_linkError">The link did not load. Try again.</string>
+    <string name="calendar_resetError">The link was not reset. Try again.</string>
+    <string name="calendar_footer">Your sign-up shows in the event title: “Onyxia\'s Lair · In”. Changing it in the app changes the event.</string>
+    <string name="calendar_name">Forever Sixty raids</string>
+    <string name="calendar_event_title">%1$s · %2$s</string>
+    <string name="calendar_event_in">In</string>
+    <string name="calendar_event_late">Late</string>
+    <string name="calendar_event_bench">Bench</string>
+    <string name="calendar_event_out">Out</string>
+    <string name="calendar_event_notSigned">Not signed up</string>
+    <string name="calendar_event_location">%1$s · %2$s</string>
+    <string name="calendar_event_notes" tools:ignore="PluralsCandidate">Pull %1$s. %2$d of %3$d signed up.</string>
+    <string name="calendar_event_notesNoSize" tools:ignore="PluralsCandidate">Pull %1$s. %2$d signed up.</string>
 </resources>

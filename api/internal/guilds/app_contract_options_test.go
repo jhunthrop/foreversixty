@@ -6,9 +6,9 @@ package guilds
 var homeOptional = []string{
 	"data.guild.crest_url", "data.viewer.character_key", "data.claim.since", "data.claim.claimed_by_name",
 	"data.standing", "data.next_cursor", "data.next_raid",
-	"data.roster[].class", "data.roster[].spec", "data.roster[].role", "data.roster[].item_level",
+	"data.roster[].class", "data.roster[].spec", "data.roster[].role", "data.roster[].spec_name", "data.roster[].spec_icon", "data.roster[].item_level",
 	"data.roster[].attendance_30", "data.roster[].best_parse", "data.roster[].rating",
-	"data.roster[].professions", "data.pending[].class", "data.pending[].spec", "data.pending[].role",
+	"data.roster[].professions", "data.pending[].class", "data.pending[].spec", "data.pending[].role", "data.pending[].spec_name", "data.pending[].spec_icon",
 	"data.pending[].item_level", "data.pending[].attendance_30", "data.pending[].best_parse",
 	"data.pending[].rating", "data.pending[].professions",
 	"data.members[].character_key", "data.members[].class", "data.members[].level", "data.members[].spec",

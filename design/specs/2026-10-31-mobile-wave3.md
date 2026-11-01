@@ -724,7 +724,7 @@ F15.1 the sign-up by voice with confirmation and the refused answer; F15.2; a Sh
 - Pushed from the Raids tab guild head row `Roster`. Large title `Roster`; trailing search button (filters the list by name).
 - **Counts card** (quiet): three figures at `stat` size with `meta` captions: `{n}` `on the roster`, `{n}` `in game, no account`, `{n}` `waiting`. They are the API's `counts`; officers see the same.
 - Chips: `All`, `Tanks`, `Healers`, `DPS`, then `Sort: {Rank}` (opens a menu: `Rank`, `Class`, `Name`, `Attendance`, `Level`).
-- **Row** (64 min): the spec icon 32 (a class crest when the spec is not known, never a letter tile), name in the class colour with the supporter mark when it applies, meta `{Spec} · {level} · {rank}`, and on the right attendance: a bar of 8 segments (7 x 12 pt, kill for a night present, `--color-line` for absent) over the mono caption `{n} of 8`. A character waiting for approval shows the tag `Waiting` instead. A chevron.
+- **Row** (64 min): the spec icon 32 (a class crest when the spec is not known, never a letter tile), name in the class colour with the supporter mark when it applies, meta `{Spec} · {level} · {rank}`, and on the right attendance: a bar of 8 segments (7 x 12 pt, kill for a night present, `--color-line` for absent) over the mono caption `{n} of 8 nights` (build review: a bare `8 of 8` had no unit). A character waiting for approval shows the tag `Waiting` instead; a name the addon sees in game that no account has claimed shows the tag `No account` and has no tap target. A chevron. Rows with the same sort key keep name order.
 - Attendance is the API's `{present, nights}`: the last 8 raid nights with a log. If `nights` is under 8 the bar has `nights` segments. With no nights: `No logged nights yet.`
 - Footer: `Attendance is the last 8 raid nights with a log. Tap a raider for their page.`
 - A row tap opens the character page (F11.4).
@@ -763,6 +763,8 @@ You › Calendar. Two parts:
 | `roster.empty` | `No raiders match.` / `Change the role or clear the search.` |
 | `roster.footer` | `Attendance is the last 8 raid nights with a log. Tap a raider for their page.` |
 | `roster.noNights` | `No logged nights yet.` |
+| `roster.attendance` | `{present} of {nights} nights` |
+| `roster.waitingTag` / `roster.noAccountTag` | `Waiting` / `No account` |
 | `roster.error` | `The roster did not load.` |
 | `history.title` | `Raid history` |
 | `history.label` | `Logged raid nights` |

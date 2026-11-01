@@ -48,6 +48,20 @@ struct RootView: View {
     @State private var simsRouter = SimsRouter()
     /// Lane F10: Home's Your reports stack, which report links push onto.
     @State private var reportsRouter = ReportsRouter()
+    /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
+    /// access until the player flips its switch.
+    @State private var calendarSync: CalendarSyncController
+
+    init(environment: AppEnvironment) {
+        self.environment = environment
+        let service = RaidsDependencies.live(environment).service
+        let session = environment.session
+        let loader = CalendarInputLoader(service: service, currentKey: { session.currentCharacter?.key })
+        _calendarSync = State(initialValue: CalendarSyncController(
+            adapter: EventKitCalendarAdapter(), store: UserDefaultsCalendarSyncStore(), now: AppClock.now, clock: RaidClock(),
+            loadInput: { await loader.load() }
+        ))
+    }
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -97,7 +111,10 @@ struct RootView: View {
             }
         case .home: HomeTab(dependencies: .live(environment), openBis: { selection = .bis })
         case .raids where environment.isAvailable(.raids):
-            RaidsTab(dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil)
+            RaidsTab(
+                dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil,
+                extras: guildExtras, calendar: guildExtras == nil ? nil : calendarSync
+            )
         case .raids: PlaceholderScreen(title: tab.title)
         case .bis where environment.isAvailable(.bis):
             BisScreen.live(environment, session: signInAvailable ? environment.session : nil)
@@ -109,7 +126,8 @@ struct RootView: View {
                 onPickClass: { selection = .bis },
                 plansLink: environment.plansLink,
                 liveSurfaces: environment.isAvailable(.widgets),
-                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } }
+                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
+                calendar: guildExtras.map { ($0, calendarSync) }
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
@@ -118,6 +136,12 @@ struct RootView: View {
 
 extension RootView {
     /// A link selects its tab: sim and report links Home (lanes F5, F10), raid links Raids (lane F4).
+    /// Lane F16: the guild extras' dependencies, nil while `guild_extras` is off.
+    private var guildExtras: GuildExtrasDependencies? {
+        environment.isAvailable(.guildExtras) ? .live(environment) : nil
+    }
+
+    /// A link selects its tab: sim links Home (lane F5), raid links Raids (lane F4).
     private func openLink(_ link: DeepLink) {
         if SimsRouter.handles(link) {
             guard environment.isAvailable(.sims) else { return }

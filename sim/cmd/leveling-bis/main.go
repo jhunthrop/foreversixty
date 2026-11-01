@@ -37,6 +37,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/request"
 )
@@ -363,6 +364,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// ever publish as a final pick already carries the flag before any
 	// band's own eligible()/pick()/tournament pass runs.
 	items = markNotInSimDB(items)
+	items = withEngineWeaponDamage(items, simdb.Weapon)
 	// A tank is ranked on tank score, not damage (score_tank.go).
 	runner = roleRunner(runner, specInfo)
 	// itemFactionRestriction: item id -> its own client-stated

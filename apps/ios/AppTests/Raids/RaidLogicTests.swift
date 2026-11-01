@@ -70,7 +70,14 @@ struct RaidFactsTests {
 
     @Test("one tank reads 1 tank; no late clause when nobody is late")
     func singularParts() throws {
-        let ony = try #require(RaidFixture.load(GuildRaids.self, "guild.raids").planned?[2])
+        // No fixture has a single tank and nobody late, so the raid fixture's counts are patched.
+        var object = try #require(try JSONSerialization.jsonObject(with: RaidFixture.data("guild.raid")) as? [String: Any])
+        var data = try #require(object["data"] as? [String: Any])
+        data["counts"] = ["in": 8, "late": 0, "bench": 0, "out": 0, "tanks": 1, "healers": 2, "dps": 5]
+        object["data"] = data
+        let patched = try JSONSerialization.data(withJSONObject: object)
+        struct Envelope: Decodable { let data: RaidView }
+        let ony = try WireFormat.decoder().decode(Envelope.self, from: patched).data
         #expect(RaidFacts(raid: ony, now: RaidTime.now).breakdown == "1 tank · 2 healers · 5 DPS")
     }
 
@@ -100,7 +107,8 @@ struct RaidFactsTests {
         let planned = try #require(RaidFixture.load(GuildRaids.self, "guild.raids").planned)
         #expect(RaidFacts(raid: planned[0], now: RaidTime.now).rowChip(currentKey: nil) == .signed("In · DPS"))
         #expect(RaidFacts(raid: planned[1], now: RaidTime.now).rowChip(currentKey: nil) == .notSigned)
-        #expect(RaidFacts(raid: planned[2], now: RaidTime.now).rowChip(currentKey: nil) == .status(.locked))
+        #expect(RaidFacts(raid: planned[2], now: RaidTime.now).rowChip(currentKey: nil) == .signed("In · DPS"))
+        #expect(RaidFacts(raid: try RaidFixture.raid("guild.raid.locked"), now: RaidTime.now).rowChip(currentKey: nil) == .status(.locked))
         #expect(RaidFacts(raid: try RaidFixture.raid("guild.raid.cancelled"), now: RaidTime.now).rowChip(currentKey: nil) == .status(.cancelled))
     }
 
@@ -404,7 +412,7 @@ struct RaidsTabModelTests {
         guard case let .loaded(content) = tab.state else { Issue.record("not loaded"); return }
         #expect(content.planned.count == 3)
         #expect(content.waiting == 2)
-        #expect(content.head.line == "Horde · US PvP · 24 on the roster")
+        #expect(content.head.line == "Horde · US PvP · 38 on the roster")
     }
 
     @Test("offline with a cached answer shows it under the strip; with none, the error")

@@ -96,7 +96,7 @@
         "rank": "officer",
         "consent": "gear_bags",
         "verified": true,
-        "verified_count": 24,
+        "verified_count": 32,
         "can": [
           "approve",
           "remove",
@@ -106,7 +106,7 @@
         "slug": "olympus-xxvii",
         "crest_url": null,
         "faction": "horde",
-        "roster_count": 24,
+        "roster_count": 38,
         "claim": null,
         "verify": null,
         "covered": null,

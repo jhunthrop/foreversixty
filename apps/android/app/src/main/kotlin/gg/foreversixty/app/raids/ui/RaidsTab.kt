@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -42,6 +41,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
@@ -71,6 +71,7 @@ fun RaidsTabContentView(
     openWeb: (String) -> Unit,
     retry: () -> Unit,
     requestPermission: () -> Unit,
+    guildRows: @Composable (RaidsTabContent) -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
         (state as? RaidsTabState.Loaded)?.content?.offlineSince?.let {
@@ -98,7 +99,12 @@ fun RaidsTabContentView(
                     }
                 }
                 RaidsTabState.Failed -> ErrorRegion(stringResource(R.string.raids_failed), retry)
-                is RaidsTabState.Loaded -> Loaded(state.content, clock, now, nextController, openRaid, openNight, openWeb, requestPermission)
+                is RaidsTabState.Loaded -> {
+                    GuildHeadView(state.content.head)
+                    // Lane F16: Roster and Raid history, for a verified member only.
+                    guildRows(state.content)
+                    Loaded(state.content, clock, now, nextController, openRaid, openNight, openWeb, requestPermission)
+                }
             }
         }
     }
@@ -129,7 +135,6 @@ private fun Loaded(
     requestPermission: () -> Unit,
 ) {
     val planned = PlannedRaids(content.planned, now())
-    GuildHeadView(content.head)
     val next = planned.next
     if (next != null && nextController != null && nextController.raid.id == next.id) {
         NextRaidCard(nextController, clock, now, content.character.key, requestPermission) { roster -> openRaid(nextController.raid, roster) }
@@ -183,15 +188,13 @@ private fun Loaded(
 @Composable
 fun GuildHeadView(head: GuildHead) {
     val crest = @Composable {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(40.dp).clip(CircleShape).background(FsColor.raised).border(1.dp, FsColor.line, CircleShape),
-        ) {
-            if (head.crestUrl != null) {
+        // The guild crest; with none, the faction mark (v1 spec 4.3, as the site's GuildCrest falls back).
+        if (head.crestUrl != null) {
+            Box(Modifier.size(40.dp).clip(CircleShape).background(FsColor.raised).border(1.dp, FsColor.line, CircleShape)) {
                 AsyncImage(model = head.crestUrl, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.size(40.dp))
-            } else {
-                Icon(Icons.Filled.Star, contentDescription = null, tint = if (head.faction == "alliance") FsColor.alliance else FsColor.horde)
             }
+        } else {
+            FactionMark(head.faction.orEmpty(), 40.dp)
         }
     }
     val text = @Composable {

@@ -22,6 +22,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case widgets = "widgets"
     /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
     case reports = "reports"
+    /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
+    case guildExtras = "guild_extras"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -36,6 +38,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .premiumLink: false
         case .widgets: false
         case .reports: false
+        case .guildExtras: false
         }
     }
 }

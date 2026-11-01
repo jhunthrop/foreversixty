@@ -28,6 +28,8 @@ import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.guild.CalendarRoute
+import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.premium.PlanScreen
 import gg.foreversixty.app.premium.PlanSummary
@@ -76,6 +78,8 @@ class AccountDeps(
     val plansLink: PlansLink,
     /** Lane F14: You › Live surfaces; null while the `widgets` switch is off. */
     val liveSurfaces: LiveSurfaceSettings? = null,
+    /** Lane F16: You › Calendar; null while `guild_extras` is off. */
+    val guildExtras: GuildExtrasFeature? = null,
 )
 
 /**
@@ -121,7 +125,7 @@ fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOu
     )
 }
 
-private enum class YouPage { Root, Plan, Devices, Delete, About }
+private enum class YouPage { Root, Plan, Devices, Delete, About, Calendar }
 
 /** The You tab: the account section when signed in, the sign-in panel when not. */
 @Composable
@@ -177,6 +181,7 @@ private fun SignedInYou(deps: AccountDeps) {
                 onAbout = { page = YouPage.About },
                 onDeleteAccount = { page = YouPage.Delete },
                 onSignOut = { scope.launch { session.signOut() } },
+                onCalendar = deps.guildExtras?.let { { page = YouPage.Calendar } },
             ),
             mayLink = mayLink,
             liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
@@ -185,6 +190,9 @@ private fun SignedInYou(deps: AccountDeps) {
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
         YouPage.Delete -> DeleteRoute(session, DeletionConsequence.of(me))
         YouPage.About -> AboutScreen(version)
+        YouPage.Calendar -> deps.guildExtras?.let { extras ->
+            CalendarRoute(extras, me.user.id.toString(), session.currentCharacter(phase, picked)?.key) { page = YouPage.Root }
+        }
     }
 }
 

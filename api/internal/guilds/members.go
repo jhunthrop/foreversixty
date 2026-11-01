@@ -43,6 +43,11 @@ type RosterEntry struct {
 	Level        *int    `json:"level,omitempty"`
 	Spec         *string `json:"spec,omitempty"`
 	SeenAt       string  `json:"seen_at,omitempty"`
+	// Role, SpecName ("Holy Paladin") and SpecIcon are the catalogue's words for Spec, else
+	// for the entry's roster row's spec (describeMembers); null when neither resolves.
+	Role     *string `json:"role"`
+	SpecName *string `json:"spec_name"`
+	SpecIcon *string `json:"spec_icon"`
 }
 
 // RosterCounts are the numbers the count line above the roster reads: everyone on it, and

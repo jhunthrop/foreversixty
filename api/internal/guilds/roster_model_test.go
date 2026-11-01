@@ -11,8 +11,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
 
-func strp(s string) *string { return &s }
-
 // TestMergeRosterTable pins the roster model: one entry per character the snapshot names and
 // per account character, merged by name, each with a state, and the counts the page's count
 // line reads. It is pure, so every shape of guild is one row of the table.
