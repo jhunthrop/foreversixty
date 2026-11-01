@@ -123,5 +123,12 @@ func toForeverScoreDTO(sc ScoreV2) rankings.ForeverScore {
 		Experience: &rankings.ScoreExperience{
 			Dungeons: sc.Experience.Dungeons, RaidKills: sc.Experience.RaidKills, Alts: sc.Experience.Alts,
 		},
+		ComponentCaps: &componentCaps,
 	}
+}
+
+// componentCaps are the five ceilings of score_v2.go, as the character page carries them.
+var componentCaps = rankings.ScoreComponents{
+	Gear: GearMax, Experience: ExperienceMax, Parses: ParsesMax,
+	Attendance: AttendanceMax, Discipline: DisciplineMax,
 }

@@ -1,0 +1,2946 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "rank": 1,
+        "player": {
+          "key": "us/normal/voltaris",
+          "name": "Voltaris",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Hordebreakers",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 462.0,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 193000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0001kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.968
+      },
+      {
+        "rank": 2,
+        "player": {
+          "key": "us/normal/stormwrath",
+          "name": "Stormwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 444.3,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0002kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.966
+      },
+      {
+        "rank": 3,
+        "player": {
+          "key": "us/normal/zulthrax",
+          "name": "Zulthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 434.2,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 195000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0003kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.964
+      },
+      {
+        "rank": 4,
+        "player": {
+          "key": "us/normal/crackleheim",
+          "name": "Crackleheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 427.2,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 196000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0004kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.962
+      },
+      {
+        "rank": 5,
+        "player": {
+          "key": "us/normal/thundergaze",
+          "name": "Thundergaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 421.8,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 197000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0005kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 6,
+        "player": {
+          "key": "us/normal/stormaris",
+          "name": "Stormaris",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 417.5,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 198000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0006kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.958
+      },
+      {
+        "rank": 7,
+        "player": {
+          "key": "us/normal/galetusk",
+          "name": "Galetusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 413.9,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 199000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0007kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.956
+      },
+      {
+        "rank": 8,
+        "player": {
+          "key": "us/normal/stormtusk",
+          "name": "Stormtusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 410.8,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 200000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0008kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.954
+      },
+      {
+        "rank": 9,
+        "player": {
+          "key": "us/normal/rumblegaze",
+          "name": "Rumblegaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 408.1,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 201000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0009kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.952
+      },
+      {
+        "rank": 10,
+        "player": {
+          "key": "us/normal/cracklehoof",
+          "name": "Cracklehoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 405.6,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 202000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0010kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 11,
+        "player": {
+          "key": "us/normal/galemane",
+          "name": "Galemane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 403.5,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 203000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0011kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.948
+      },
+      {
+        "rank": 12,
+        "player": {
+          "key": "us/normal/shockfang",
+          "name": "Shockfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 401.5,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 204000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0012kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.946
+      },
+      {
+        "rank": 13,
+        "player": {
+          "key": "us/normal/cracklejaw",
+          "name": "Cracklejaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 399.7,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 205000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0013kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.944
+      },
+      {
+        "rank": 14,
+        "player": {
+          "key": "us/normal/lightningbolltz",
+          "name": "Lightningbolltz",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Hordebreakers",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 398.0,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0014kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.942
+      },
+      {
+        "rank": 15,
+        "player": {
+          "key": "us/normal/voltmane",
+          "name": "Voltmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 396.5,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 207000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0015kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 16,
+        "player": {
+          "key": "us/normal/zulgaze",
+          "name": "Zulgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 395.0,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 208000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0016kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.938
+      },
+      {
+        "rank": 17,
+        "player": {
+          "key": "us/normal/tidefang",
+          "name": "Tidefang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 393.7,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 209000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0017kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.936
+      },
+      {
+        "rank": 18,
+        "player": {
+          "key": "us/normal/thundermane",
+          "name": "Thundermane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 392.4,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 210000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0018kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.934
+      },
+      {
+        "rank": 19,
+        "player": {
+          "key": "us/normal/shockjaw",
+          "name": "Shockjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 391.2,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 211000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0019kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.932
+      },
+      {
+        "rank": 20,
+        "player": {
+          "key": "us/normal/staticthrax",
+          "name": "Staticthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 390.1,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 212000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0020kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 21,
+        "player": {
+          "key": "us/normal/flintmane",
+          "name": "Flintmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 389.0,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 213000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0021kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.928
+      },
+      {
+        "rank": 22,
+        "player": {
+          "key": "us/normal/thunderjaw",
+          "name": "Thunderjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 388.0,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 214000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0022kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.926
+      },
+      {
+        "rank": 23,
+        "player": {
+          "key": "us/normal/shockmane",
+          "name": "Shockmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 387.0,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 192000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0023kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.924
+      },
+      {
+        "rank": 24,
+        "player": {
+          "key": "us/normal/ashgaze",
+          "name": "Ashgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 386.1,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 193000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0024kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.922
+      },
+      {
+        "rank": 25,
+        "player": {
+          "key": "us/normal/sparkgaze",
+          "name": "Sparkgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 385.2,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0025kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 26,
+        "player": {
+          "key": "us/normal/tidearis",
+          "name": "Tidearis",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 384.3,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 195000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0026kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.918
+      },
+      {
+        "rank": 27,
+        "player": {
+          "key": "us/normal/ashjaw",
+          "name": "Ashjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 383.5,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 196000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0027kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.916
+      },
+      {
+        "rank": 28,
+        "player": {
+          "key": "us/normal/stormthrax",
+          "name": "Stormthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 382.7,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 197000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0028kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.914
+      },
+      {
+        "rank": 29,
+        "player": {
+          "key": "us/normal/thunderwrath",
+          "name": "Thunderwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 382.0,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 198000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0029kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.912
+      },
+      {
+        "rank": 30,
+        "player": {
+          "key": "us/normal/galearis",
+          "name": "Galearis",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 381.2,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 199000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0030kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 31,
+        "player": {
+          "key": "us/normal/thundertusk",
+          "name": "Thundertusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 380.5,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 200000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0031kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.908
+      },
+      {
+        "rank": 32,
+        "player": {
+          "key": "us/normal/voltgaze",
+          "name": "Voltgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 379.8,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 201000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0032kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.906
+      },
+      {
+        "rank": 33,
+        "player": {
+          "key": "us/normal/voltwrath",
+          "name": "Voltwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 379.2,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 202000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0033kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.904
+      },
+      {
+        "rank": 34,
+        "player": {
+          "key": "us/normal/emberhoof",
+          "name": "Emberhoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 378.5,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 203000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0034kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.902
+      },
+      {
+        "rank": 35,
+        "player": {
+          "key": "us/normal/galejaw",
+          "name": "Galejaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 377.9,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 204000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0035kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 36,
+        "player": {
+          "key": "us/normal/cracklefang",
+          "name": "Cracklefang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 377.3,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 205000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0036kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.898
+      },
+      {
+        "rank": 37,
+        "player": {
+          "key": "us/normal/voltthrax",
+          "name": "Voltthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 376.7,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 206000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0037kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.896
+      },
+      {
+        "rank": 38,
+        "player": {
+          "key": "us/normal/thunderfang",
+          "name": "Thunderfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 376.2,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 207000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0038kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.894
+      },
+      {
+        "rank": 39,
+        "player": {
+          "key": "us/normal/zularis",
+          "name": "Zularis",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 375.6,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 208000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0039kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.892
+      },
+      {
+        "rank": 40,
+        "player": {
+          "key": "us/normal/emberheim",
+          "name": "Emberheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 375.1,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 209000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0040kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 41,
+        "player": {
+          "key": "us/normal/emberwrath",
+          "name": "Emberwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 374.6,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 210000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0041kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.888
+      },
+      {
+        "rank": 42,
+        "player": {
+          "key": "us/normal/thunderhoof",
+          "name": "Thunderhoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 374.0,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 211000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0042kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.886
+      },
+      {
+        "rank": 43,
+        "player": {
+          "key": "us/normal/rumblethrax",
+          "name": "Rumblethrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 373.5,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 212000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0043kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.884
+      },
+      {
+        "rank": 44,
+        "player": {
+          "key": "us/normal/sparkaris",
+          "name": "Sparkaris",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 373.1,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 213000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0044kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.882
+      },
+      {
+        "rank": 45,
+        "player": {
+          "key": "us/normal/thunderthrax",
+          "name": "Thunderthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 372.6,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 214000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0045kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 46,
+        "player": {
+          "key": "us/normal/galehoof",
+          "name": "Galehoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 372.1,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 192000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0046kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.878
+      },
+      {
+        "rank": 47,
+        "player": {
+          "key": "us/normal/ashfang",
+          "name": "Ashfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 371.7,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 193000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0047kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.876
+      },
+      {
+        "rank": 48,
+        "player": {
+          "key": "us/normal/shockgaze",
+          "name": "Shockgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 371.2,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0048kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.874
+      },
+      {
+        "rank": 49,
+        "player": {
+          "key": "us/normal/zulmane",
+          "name": "Zulmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 370.8,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 195000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0049kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.872
+      },
+      {
+        "rank": 50,
+        "player": {
+          "key": "us/normal/galegaze",
+          "name": "Galegaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 370.4,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 196000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0050kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 51,
+        "player": {
+          "key": "us/normal/staticheim",
+          "name": "Staticheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 370.0,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 197000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0051kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.868
+      },
+      {
+        "rank": 52,
+        "player": {
+          "key": "us/normal/shockwrath",
+          "name": "Shockwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 369.6,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 198000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0052kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.866
+      },
+      {
+        "rank": 53,
+        "player": {
+          "key": "us/normal/sparkheim",
+          "name": "Sparkheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 369.2,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 199000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0053kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.864
+      },
+      {
+        "rank": 54,
+        "player": {
+          "key": "us/normal/rumblearis",
+          "name": "Rumblearis",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 368.8,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 200000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0054kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.862
+      },
+      {
+        "rank": 55,
+        "player": {
+          "key": "us/normal/flintgaze",
+          "name": "Flintgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 368.4,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 201000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0055kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 56,
+        "player": {
+          "key": "us/normal/rumblehoof",
+          "name": "Rumblehoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 368.0,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 202000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0056kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.858
+      },
+      {
+        "rank": 57,
+        "player": {
+          "key": "us/normal/cracklethrax",
+          "name": "Cracklethrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 367.6,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 203000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0057kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.856
+      },
+      {
+        "rank": 58,
+        "player": {
+          "key": "us/normal/voltheim",
+          "name": "Voltheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 367.3,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 204000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0058kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.854
+      },
+      {
+        "rank": 59,
+        "player": {
+          "key": "us/normal/ashmane",
+          "name": "Ashmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 366.9,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 205000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0059kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.852
+      },
+      {
+        "rank": 60,
+        "player": {
+          "key": "us/normal/cindertusk",
+          "name": "Cindertusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 366.6,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 206000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0060kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 61,
+        "player": {
+          "key": "us/normal/tidehoof",
+          "name": "Tidehoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 366.2,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 207000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0061kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.848
+      },
+      {
+        "rank": 62,
+        "player": {
+          "key": "us/normal/staticjaw",
+          "name": "Staticjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 365.9,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 208000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0062kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.846
+      },
+      {
+        "rank": 63,
+        "player": {
+          "key": "us/normal/embermane",
+          "name": "Embermane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 365.6,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 209000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0063kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.844
+      },
+      {
+        "rank": 64,
+        "player": {
+          "key": "us/normal/galethrax",
+          "name": "Galethrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 365.2,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 210000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0064kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.842
+      },
+      {
+        "rank": 65,
+        "player": {
+          "key": "us/normal/thunderheim",
+          "name": "Thunderheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 364.9,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 211000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0065kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 66,
+        "player": {
+          "key": "us/normal/cinderwrath",
+          "name": "Cinderwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 364.6,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 212000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0066kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.838
+      },
+      {
+        "rank": 67,
+        "player": {
+          "key": "us/normal/zulhoof",
+          "name": "Zulhoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 364.3,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 213000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0067kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.836
+      },
+      {
+        "rank": 68,
+        "player": {
+          "key": "us/normal/shockhoof",
+          "name": "Shockhoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 364.0,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 214000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0068kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.834
+      },
+      {
+        "rank": 69,
+        "player": {
+          "key": "us/normal/rumbleheim",
+          "name": "Rumbleheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 363.7,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 192000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0069kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.832
+      },
+      {
+        "rank": 70,
+        "player": {
+          "key": "us/normal/ashtusk",
+          "name": "Ashtusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 363.4,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 193000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0070kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 71,
+        "player": {
+          "key": "us/normal/cracklewrath",
+          "name": "Cracklewrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 363.1,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0071kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.828
+      },
+      {
+        "rank": 72,
+        "player": {
+          "key": "us/normal/flintwrath",
+          "name": "Flintwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 362.8,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 195000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0072kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.826
+      },
+      {
+        "rank": 73,
+        "player": {
+          "key": "us/normal/tideheim",
+          "name": "Tideheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 362.5,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 196000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0073kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.824
+      },
+      {
+        "rank": 74,
+        "player": {
+          "key": "us/normal/galefang",
+          "name": "Galefang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 362.3,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 197000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0074kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.822
+      },
+      {
+        "rank": 75,
+        "player": {
+          "key": "us/normal/tidethrax",
+          "name": "Tidethrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 362.0,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 198000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0075kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 76,
+        "player": {
+          "key": "us/normal/rumblefang",
+          "name": "Rumblefang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 361.7,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 199000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0076kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.818
+      },
+      {
+        "rank": 77,
+        "player": {
+          "key": "us/normal/cinderaris",
+          "name": "Cinderaris",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 361.5,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 200000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0077kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.816
+      },
+      {
+        "rank": 78,
+        "player": {
+          "key": "us/normal/cracklegaze",
+          "name": "Cracklegaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 361.2,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 201000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0078kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.814
+      },
+      {
+        "rank": 79,
+        "player": {
+          "key": "us/normal/flinthoof",
+          "name": "Flinthoof",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 360.9,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 202000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0079kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.812
+      },
+      {
+        "rank": 80,
+        "player": {
+          "key": "us/normal/cinderthrax",
+          "name": "Cinderthrax",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 360.7,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 203000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0080kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 81,
+        "player": {
+          "key": "us/normal/statictusk",
+          "name": "Statictusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 360.4,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 204000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0081kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.808
+      },
+      {
+        "rank": 82,
+        "player": {
+          "key": "us/normal/flintaris",
+          "name": "Flintaris",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 360.2,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 205000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0082kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.806
+      },
+      {
+        "rank": 83,
+        "player": {
+          "key": "us/normal/shockheim",
+          "name": "Shockheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 359.9,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 206000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0083kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.804
+      },
+      {
+        "rank": 84,
+        "player": {
+          "key": "us/normal/emberfang",
+          "name": "Emberfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 359.7,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 207000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0084kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.802
+      },
+      {
+        "rank": 85,
+        "player": {
+          "key": "us/normal/sparktusk",
+          "name": "Sparktusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 359.4,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 208000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0085kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 86,
+        "player": {
+          "key": "us/normal/flintjaw",
+          "name": "Flintjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 359.2,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 209000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0086kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.798
+      },
+      {
+        "rank": 87,
+        "player": {
+          "key": "us/normal/ashheim",
+          "name": "Ashheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 359.0,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 210000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0087kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.796
+      },
+      {
+        "rank": 88,
+        "player": {
+          "key": "us/normal/flintheim",
+          "name": "Flintheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 358.7,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 211000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0088kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.794
+      },
+      {
+        "rank": 89,
+        "player": {
+          "key": "us/normal/stormgaze",
+          "name": "Stormgaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 358.5,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 212000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0089kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.792
+      },
+      {
+        "rank": 90,
+        "player": {
+          "key": "us/normal/cindermane",
+          "name": "Cindermane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 358.3,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 213000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0090kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 91,
+        "player": {
+          "key": "us/normal/cinderfang",
+          "name": "Cinderfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 358.1,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 214000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0091kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.788
+      },
+      {
+        "rank": 92,
+        "player": {
+          "key": "us/normal/staticmane",
+          "name": "Staticmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 357.8,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 192000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0092kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.786
+      },
+      {
+        "rank": 93,
+        "player": {
+          "key": "us/normal/shocktusk",
+          "name": "Shocktusk",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 357.6,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 193000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0093kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.784
+      },
+      {
+        "rank": 94,
+        "player": {
+          "key": "us/normal/flintfang",
+          "name": "Flintfang",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Blood & Thunder",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 357.4,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-13T19:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0094kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.782
+      },
+      {
+        "rank": 95,
+        "player": {
+          "key": "us/normal/embergaze",
+          "name": "Embergaze",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Ashen Covenant",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 357.2,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-12T14:00:00Z",
+        "duration_ms": 195000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0095kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      },
+      {
+        "rank": 96,
+        "player": {
+          "key": "us/normal/sparkwrath",
+          "name": "Sparkwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Thunder Bluff Irregulars",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 357.0,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-11T16:00:00Z",
+        "duration_ms": 196000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0096kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.778
+      },
+      {
+        "rank": 97,
+        "player": {
+          "key": "us/normal/voltjaw",
+          "name": "Voltjaw",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Bloodfang",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 356.8,
+        "ilvl": 62,
+        "size": 40,
+        "fought_at": "2026-12-10T18:00:00Z",
+        "duration_ms": 197000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0097kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.776
+      },
+      {
+        "rank": 98,
+        "player": {
+          "key": "us/normal/ashwrath",
+          "name": "Ashwrath",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Nightfall Raiders",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 356.6,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 198000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0098kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.774
+      },
+      {
+        "rank": 99,
+        "player": {
+          "key": "us/normal/galeheim",
+          "name": "Galeheim",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "OLYMPUS XXVII",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 356.4,
+        "ilvl": 60,
+        "size": 40,
+        "fought_at": "2026-12-15T15:00:00Z",
+        "duration_ms": 199000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 6,
+        "report_id": "onyx0099kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.772
+      },
+      {
+        "rank": 100,
+        "player": {
+          "key": "us/normal/stormmane",
+          "name": "Stormmane",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Iron Pact",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 356.2,
+        "ilvl": 63,
+        "size": 40,
+        "fought_at": "2026-12-14T17:00:00Z",
+        "duration_ms": 200000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 7,
+        "report_id": "onyx0100kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": null
+      }
+    ],
+    "total": 212,
+    "page": 1,
+    "per_page": 100,
+    "updated_at": "2026-12-17T19:56:00Z",
+    "deduped": true,
+    "character_rank": {
+      "rank": 14,
+      "row": {
+        "rank": 14,
+        "player": {
+          "key": "us/normal/lightningbolltz",
+          "name": "Lightningbolltz",
+          "class": "Shaman",
+          "spec": "Elemental"
+        },
+        "guild": {
+          "name": "Hordebreakers",
+          "region": "us",
+          "ruleset": "normal"
+        },
+        "value": 398.0,
+        "ilvl": 61,
+        "size": 40,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "duration_ms": 194000,
+        "talent_split": "30/0/21",
+        "trinkets": [
+          19120,
+          11302
+        ],
+        "buff_count": 8,
+        "report_id": "onyx0014kill",
+        "fight_index": 9,
+        "state": "ok",
+        "execution_score": 0.942
+      }
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

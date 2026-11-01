@@ -85,7 +85,12 @@ function rowOf(build: string, row: TierRow, views: ReturnType<typeof tierSpecVie
   };
 }
 
-function listsOf(build: string, data: TierData, faction: Faction, lists: RoleLists): Record<BisRole, AppTierList> {
+function listsOf(
+  build: string,
+  data: TierData,
+  faction: Faction,
+  lists: RoleLists,
+): Record<BisRole, AppTierList> {
   const views = tierSpecViews(lists);
   return Object.fromEntries(
     TIER_ROLES.map((role) => {

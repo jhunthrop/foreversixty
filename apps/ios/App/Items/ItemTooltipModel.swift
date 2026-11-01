@@ -62,7 +62,10 @@ struct ItemTooltipModel: Equatable {
     let weaponDamage: String?
     let weaponSpeed: String?
     let weaponDPS: String?
+    /// White `+n Name` lines.
     let stats: [String]
+    /// Green `Equip:` sentences, as the client prints spell power, healing, attack power, mp5…
+    let equipLines: [String]
     let effect: String?
     let setName: String?
     let setBonuses: [String]
@@ -93,6 +96,7 @@ struct ItemTooltipModel: Equatable {
             weaponSpeed: weapon ? Copy.itemsWeaponSpeed(speed: String(format: "%.2f", item.speed)) : nil,
             weaponDPS: weapon ? Copy.itemsWeaponDps(dps: String(format: "%.1f", item.dps)) : nil,
             stats: Self.statLines(item),
+            equipLines: Self.equipLines(item),
             effect: Self.effect(item),
             setName: set?.name,
             setBonuses: set?.bonuses.map { Copy.itemsSetBonus(n: $0.pieces, text: $0.description) } ?? [],
@@ -109,7 +113,7 @@ struct ItemTooltipModel: Equatable {
         return ItemTooltipModel(
             look: request.fallback, headerMeta: quality.name, known: false, binds: nil, unique: false,
             slotName: nil, typeName: nil, armor: nil, weaponDamage: nil, weaponSpeed: nil, weaponDPS: nil,
-            stats: [], effect: nil, setName: nil, setBonuses: [], requiresLevel: nil,
+            stats: [], equipLines: [], effect: nil, setName: nil, setBonuses: [], requiresLevel: nil,
             itemLevel: request.fallback.itemLevel.map { Copy.tooltipItemLevel(n: $0) },
             source: request.sourceLine, alternatives: [], pickFooter: nil
         )
@@ -136,12 +140,46 @@ struct ItemTooltipModel: Equatable {
         return item.slot == "ranged" ? Copy.itemsWeaponSlotRanged : Copy.itemsWeaponSlotOneHand
     }
 
-    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order.
+    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order (its
+    /// `statLines`). A stat the client prints as an `Equip:` sentence (spell power, healing, attack
+    /// power, mp5 and the rest, `ItemVocabulary.equipLine`) or a rating stat `percent_stats`
+    /// states as a percent is not a white line.
     private static func statLines(_ item: Item) -> [String] {
         ItemVocabulary.statOrder.compactMap { stat in
-            guard let value = item.stats[stat.key], value != 0 else { return nil }
+            guard let value = item.stats[stat.key], value != 0, percentLine(item, key: stat.key) == nil,
+                  ItemVocabulary.equipLine(stat.key, value: value) == nil else { return nil }
             return "\(value < 0 ? "-" : "+")\(abs(value)) \(stat.name)"
         }
+    }
+
+    /// The client's green `Equip:` sentences: the percent-stated rating stats, then one per positive
+    /// Equip stat share. One spell that gives equal spell power and healing is one sentence (the
+    /// site's `equipShares`). A sentence the item's own effect text already says is not repeated.
+    private static func equipLines(_ item: Item) -> [String] {
+        let shares = equipShares(item)
+        let percent = ItemVocabulary.statOrder.compactMap { percentLine(item, key: $0.key) }
+        let spells = ItemVocabulary.statOrder.compactMap { stat -> String? in
+            guard let share = shares[stat.key], share > 0 else { return nil }
+            return ItemVocabulary.equipLine(stat.key, value: share)
+        }
+        let effect = Self.effect(item) ?? ""
+        return (percent + spells).filter { !effect.localizedCaseInsensitiveContains($0.dropFirst(equipPrefix.count)) }
+    }
+
+    private static let equipPrefix = "Equip: "
+
+    /// The amount each Equip sentence states: one "Increase Spell Dam" spell gives equal spell power
+    /// and healing and is one sentence, so healing states only what it adds beyond spell power.
+    static func equipShares(_ item: Item) -> [String: Int] {
+        var shares = item.stats
+        let spellPower = shares["spell_power"] ?? 0
+        shares["healing"] = max(0, (shares["healing"] ?? 0) - spellPower)
+        return shares
+    }
+
+    private static func percentLine(_ item: Item, key: String) -> String? {
+        guard let value = item.stats[key], value != 0, item.percentStats[key] == value else { return nil }
+        return ItemVocabulary.percentLine(key, value: value)
     }
 
     private static func effect(_ item: Item) -> String? {

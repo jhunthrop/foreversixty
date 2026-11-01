@@ -24,8 +24,9 @@ func (panelReader) ScoreAndGear(context.Context, string) (ForeverScore, Characte
 	pick := 18814
 	return ForeverScore{
 		Score: &score, Tier: &tier, AsOf: &asOf,
-		Components: &ScoreComponents{Gear: 20, Experience: 14, Parses: 22, Attendance: 12, Discipline: 6},
-		Experience: &ScoreExperience{Dungeons: 9, RaidKills: 4, Alts: 1},
+		Components:    &ScoreComponents{Gear: 20, Experience: 14, Parses: 22, Attendance: 12, Discipline: 6},
+		Experience:    &ScoreExperience{Dungeons: 9, RaidKills: 4, Alts: 1},
+		ComponentCaps: &ScoreComponents{Gear: 500, Experience: 700, Parses: 600, Attendance: 200, Discipline: 100},
 	}, CharacterGear{
 		Slots: []GearSlot{
 			{Slot: "head", Worn: &GearWorn{ID: 10504, Name: &worn, ItemLevel: &level},

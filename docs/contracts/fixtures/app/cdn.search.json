@@ -1,0 +1,67 @@
+{
+  "build": "1.60.1.70658",
+  "item_uses_shards": 64,
+  "items": [
+    {
+      "id": 11623,
+      "name": "Spritecaster Cape",
+      "icon": "inv_misc_cape_20",
+      "quality": 3,
+      "slot": "back",
+      "item_level": 52,
+      "required_level": 47,
+      "classes": [
+        "druid",
+        "hunter",
+        "mage",
+        "paladin",
+        "priest",
+        "rogue",
+        "shaman",
+        "warlock",
+        "warrior"
+      ]
+    },
+    {
+      "id": 16866,
+      "name": "Helm of Might",
+      "icon": "inv_helmet_09",
+      "quality": 4,
+      "slot": "head",
+      "item_level": 66,
+      "required_level": 60,
+      "classes": [
+        "warrior"
+      ]
+    }
+  ],
+  "talents": [
+    {
+      "id": 104773,
+      "name": "Convection",
+      "icon": "spell_nature_wispsplode",
+      "class": "shaman",
+      "tree": "Elemental",
+      "spec_name": "Elemental",
+      "max_rank": 5
+    },
+    {
+      "id": 104766,
+      "name": "Elemental Fury",
+      "icon": "spell_fire_volcano",
+      "class": "shaman",
+      "tree": "Elemental",
+      "spec_name": "Elemental",
+      "max_rank": 5
+    }
+  ],
+  "guides": [
+    {
+      "class": "shaman",
+      "spec": "elemental",
+      "spec_name": "Elemental",
+      "role": "dps",
+      "icon": "spell_nature_lightning"
+    }
+  ]
+}

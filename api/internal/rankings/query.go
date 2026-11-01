@@ -354,6 +354,9 @@ type ForeverScore struct {
 	// AsOf is the newest rated fight's date, YYYY-MM-DD.
 	AsOf       *string          `json:"as_of"`
 	Experience *ScoreExperience `json:"experience"`
+	// ComponentCaps are each component's ceiling, so a bar is drawn as value over cap without
+	// the reader knowing the formula; null with the score.
+	ComponentCaps *ScoreComponents `json:"component_caps"`
 }
 
 // ScoreComponents are the score's five parts; they sum to the score.

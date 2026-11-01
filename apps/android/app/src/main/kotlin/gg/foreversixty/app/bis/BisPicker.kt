@@ -61,38 +61,49 @@ fun BisPickerContent(context: BisContext, catalog: SpecCatalog, build: String, o
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },
         )
-        Section(stringResource(R.string.bis_picker_class)) { ClassGrid(context, catalog, onSelect) }
-        Section(stringResource(R.string.bis_picker_spec)) {
-            FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                catalog.specsOf(selection.classSlug).forEach { spec ->
-                    val current = spec.spec == selection.spec
-                    val shape = RoundedCornerShape(FsRadius.control)
-                    Row(
-                        Modifier
-                            .heightIn(min = 48.dp)
-                            .pillSurface(fill(current), line(current), shape)
-                            .selectable(selected = current, role = Role.RadioButton) { onSelect(selection.copy(spec = spec.spec)) }
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        SpecIcon(spec.icon, build, 32.dp)
-                        Column {
-                            Text(spec.name, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold), color = FsColor.strong)
-                            Text(BisLabels.role(res, spec.role), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal), color = FsColor.muted)
-                        }
-                    }
-                }
-            }
+        ClassSpecSections(context, catalog, build, onSelect)
+        PickerSection(stringResource(R.string.bis_picker_range)) {
+            ChoicePills(BisRange.all, { context.rangeLabel(res, it) }, selection.range, mark = null) { onSelect(selection.copy(range = it)) }
         }
-        Section(stringResource(R.string.bis_picker_range)) {
-            Pills(BisRange.all, { context.rangeLabel(res, it) }, selection.range, mark = null) { onSelect(selection.copy(range = it)) }
-        }
-        Section(stringResource(R.string.bis_picker_faction)) {
-            Pills(BisSelection.factions, { BisLabels.faction(res, it) }, selection.faction, mark = { it }) { onSelect(selection.copy(faction = it)) }
+        PickerSection(stringResource(R.string.bis_picker_faction)) {
+            ChoicePills(BisSelection.factions, { BisLabels.faction(res, it) }, selection.faction, mark = { it }) { onSelect(selection.copy(faction = it)) }
         }
         context.backTarget?.let { (name, own) ->
             BrandButton(stringResource(R.string.bis_picker_back, name), BrandButtonKind.Secondary, { onSelect(own) }, height = 48.dp)
+        }
+    }
+}
+
+/**
+ * The picker's class grid and spec pills (F3.2), shared with Rankings' signed-out `Choose a class
+ * and spec` (lane F11): each pick applies at once through [onSelect].
+ */
+@Composable
+fun ClassSpecSections(context: BisContext, catalog: SpecCatalog, build: String, onSelect: (BisSelection) -> Unit) {
+    val res = LocalResources.current
+    val selection = context.selection
+    PickerSection(stringResource(R.string.bis_picker_class)) { ClassGrid(context, catalog, onSelect) }
+    PickerSection(stringResource(R.string.bis_picker_spec)) {
+        FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            catalog.specsOf(selection.classSlug).forEach { spec ->
+                val current = spec.spec == selection.spec
+                val shape = RoundedCornerShape(FsRadius.control)
+                Row(
+                    Modifier
+                        .heightIn(min = 48.dp)
+                        .pillSurface(fill(current), line(current), shape)
+                        .selectable(selected = current, role = Role.RadioButton) { onSelect(selection.copy(spec = spec.spec)) }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SpecIcon(spec.icon, build, 32.dp)
+                    Column {
+                        Text(spec.name, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold), color = FsColor.strong)
+                        Text(BisLabels.role(res, spec.role), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal), color = FsColor.muted)
+                    }
+                }
+            }
         }
     }
 }
@@ -132,8 +143,9 @@ private fun ClassGrid(context: BisContext, catalog: SpecCatalog, onSelect: (BisS
     }
 }
 
+/** A row of 48 dp choice pills, the current one in gold; [mark] leads each with a faction mark. Shared with Rankings' filters. */
 @Composable
-private fun <T> Pills(options: List<T>, label: (T) -> String, current: T, mark: ((T) -> String)?, onPick: (T) -> Unit) {
+fun <T> ChoicePills(options: List<T>, label: (T) -> String, current: T, mark: ((T) -> String)? = null, onPick: (T) -> Unit) {
     FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { option ->
             val isCurrent = option == current
@@ -161,8 +173,9 @@ private fun fill(current: Boolean) = if (current) GameColors.pressedWash else Ga
 
 private fun line(current: Boolean) = if (current) FsColor.gold else FsColor.lineCard
 
+/** A picker section: its micro label over its choices. */
 @Composable
-private fun Section(title: String, body: @Composable () -> Unit) {
+fun PickerSection(title: String, body: @Composable () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         MicroLabel(title)
         body()

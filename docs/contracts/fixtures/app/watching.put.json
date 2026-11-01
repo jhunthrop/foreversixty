@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "data": {
+    "key": "us/normal/voltaris",
+    "region": "us",
+    "ruleset": "normal",
+    "name": "Voltaris",
+    "class": "Shaman",
+    "level": 60,
+    "added_at": "2026-12-15T20:00:00Z"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

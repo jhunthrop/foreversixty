@@ -19,7 +19,9 @@ import gg.foreversixty.app.premium.PlayStorefront
 import gg.foreversixty.app.network.ApiMode
 import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.bis.BisModel
+import gg.foreversixty.app.bis.createBisDataSource
 import gg.foreversixty.app.bis.createBisModel
+import gg.foreversixty.app.search.SearchFeature
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -32,6 +34,7 @@ import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.planner.PlannerFeature
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.logic.LiveRaidService
@@ -102,6 +105,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         null
     }
 
+    /**
+     * The per-build static data store (lane F12): the tooltip's files, the search index and the
+     * item pages, saved for offline use until a newer build swaps them out; cleared at sign-out.
+     */
+    val statics = StaticDataStore(
+        StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        File(context.noBackupFilesDir, "static-store"),
+    )
+
     /** Lane F8: whether See plans may link to web checkout here (decision P, fail closed). */
     val plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) }
 
@@ -112,8 +124,10 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         accountApi,
         apiClient,
         talents,
+        statics,
         isSimsOn = { isAvailable(Feature.Sims) },
         isReportsOn = { isAvailable(Feature.Reports) },
+        isRankingsOn = { isAvailable(Feature.Rankings) },
         mayLinkToPlans = {
             plansLink.resolve()
             plansLink.mayLink.value
@@ -142,6 +156,18 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         extras = guildExtras,
     ) { isAvailable(Feature.Raids) }
 
+    /**
+     * Lane F12: universal search and the item page, over [statics]; the build is the one the BiS
+     * tab reads (the app config's, else the bundled copy).
+     */
+    val search = SearchFeature.create(
+        context = context,
+        apiClient = apiClient,
+        statics = statics,
+        catalog = home.catalog,
+        activeBuild = createBisDataSource(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)::activeBuild,
+    ) { isAvailable(Feature.Search) }
+
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,
         client = apiClient,
@@ -160,7 +186,10 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             home.cache.removeAll()
             raids.cache.removeAll()
             home.sims?.cache?.removeAll()
+            statics.deleteAll()
+            search.clear()
             home.reports?.cache?.removeAll()
+            home.rankings?.cache?.removeAll()
             widgets?.signOut()
             guildExtras?.clear()
         },

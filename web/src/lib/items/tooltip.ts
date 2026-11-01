@@ -15,18 +15,10 @@
 //   * a flat stat prints "+<value> <label>"; a rating-family stat an on-equip spell states as a
 //     literal percent (`percent_stats`) prints the client's own sentence ("Equip: Improves
 //     your chance to hit by 2%."), after the flat stats, as the client orders them.
-import { dropPercentLabel } from './drop-chance';
-import { craftedSourceLabel, pvpSourceLabel } from './source-labels';
+import { itemSourceRows, sourceRowLine } from './item-sources';
 import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS, type StatKey } from '../planner/types';
-import {
-  bossName,
-  itemsOfBoss,
-  itemsOfSource,
-  sourceLabel,
-  type LootFile,
-  type LootSource,
-} from '../sim/loot';
+import type { LootFile } from '../sim/loot';
 import { humanise } from '../sim/humanise';
 
 export interface WeaponLine {
@@ -79,12 +71,6 @@ export interface ItemTooltipSources {
  *  "and N more" (owner screenshot 2026-09-29, tooltip-polish brief item 4) -- a raid boss
  *  with a dozen possible drops used to print a dozen lines, dwarfing the rest of the panel. */
 const MAX_SOURCE_LINES = 3;
-
-/** `world` today, `world_drop` once the loot pipeline's own migration lands (a parallel
- *  lane, per this lane's brief) -- both name the exact same thing, so both collapse to the
- *  identical "World drop" line rather than drifting into two different sentences for one
- *  concept. */
-const WORLD_DROP_KINDS: ReadonlySet<string> = new Set(['world', 'world_drop']);
 
 const ALIAS_SLOT_LABELS: Record<string, string> = { finger: 'Finger', trinket: 'Trinket' };
 
@@ -157,20 +143,68 @@ function percentLineFor(item: Item, key: StatKey): string | null {
   return percent && line && percent === item.stats[key] ? line(percent) : null;
 }
 
-/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15"), then each percent stat in
- *  the client's "Equip:" words, in STAT_KEYS order within each group. */
+/** The stats the Classic client prints only as a green "Equip:" sentence, whatever states
+ *  them (an item stat or an on-equip spell): "Equip: Increases damage and healing done by
+ *  magical spells and effects by up to 14.", "Equip: Restores 4 mana per 5 sec.", never a white
+ *  "+14" line. The apps' ItemTooltipModel keeps the same list. */
+const EQUIP_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
+  spell_power: (value) =>
+    `Equip: Increases damage and healing done by magical spells and effects by up to ${value}.`,
+  healing: (value) => `Equip: Increases healing done by spells and effects by up to ${value}.`,
+  attack_power: (value) => `Equip: +${value} Attack Power.`,
+  ranged_attack_power: (value) => `Equip: +${value} ranged Attack Power.`,
+  mp5: (value) => `Equip: Restores ${value} mana per 5 sec.`,
+  spell_penetration: (value) => `Equip: Decreases the magical resistances of your spell targets by ${value}.`,
+  fire_power: (value) => `Equip: Increases damage done by Fire spells and effects by up to ${value}.`,
+  frost_power: (value) => `Equip: Increases damage done by Frost spells and effects by up to ${value}.`,
+  shadow_power: (value) => `Equip: Increases damage done by Shadow spells and effects by up to ${value}.`,
+  arcane_power: (value) => `Equip: Increases damage done by Arcane spells and effects by up to ${value}.`,
+  nature_power: (value) => `Equip: Increases damage done by Nature spells and effects by up to ${value}.`,
+  holy_power: (value) => `Equip: Increases damage done by Holy spells and effects by up to ${value}.`,
+  block_value: (value) => `Equip: Increases the block value of your shield by ${value}.`,
+};
+
+/** The client's casing for a white stat line ("+10 Shadow Resistance"); the site's own labels
+ *  (STAT_LABELS) are sentence case for its panels. */
+const CLIENT_STAT_LABELS: Partial<Record<StatKey, string>> = {
+  fire_res: 'Fire Resistance',
+  frost_res: 'Frost Resistance',
+  nature_res: 'Nature Resistance',
+  shadow_res: 'Shadow Resistance',
+  arcane_res: 'Arcane Resistance',
+};
+
+/**
+ * Each Equip stat as the amount its sentence states. A single "Increase Spell Dam" spell gives
+ * the same spell power and healing and is the one "damage and healing" sentence, so the healing
+ * sentence states only the healing beyond the spell power.
+ */
+function equipShares(stats: Item['stats']): Partial<Record<StatKey, number>> {
+  const spellPower = stats.spell_power ?? 0;
+  return { ...stats, healing: Math.max(0, (stats.healing ?? 0) - spellPower) };
+}
+
+/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15") for each white stat, then each
+ *  percent stat and each Equip stat in the client's "Equip:" words, in STAT_KEYS order within
+ *  each group. */
 function statLines(item: Item): string[] {
   const keys = STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]);
   const flat = keys
-    .filter((key) => percentLineFor(item, key) === null)
+    .filter((key) => percentLineFor(item, key) === null && EQUIP_STAT_LINES[key] === undefined)
     .map((key) => {
       const value = item.stats[key] as number;
-      return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`;
+      return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${CLIENT_STAT_LABELS[key] ?? STAT_LABELS[key]}`;
     });
   const percent = keys
     .map((key) => percentLineFor(item, key))
     .filter((line): line is string => line !== null);
-  return [...flat, ...percent];
+  const shares = equipShares(item.stats);
+  const equip = STAT_KEYS.flatMap((key) => {
+    const value = shares[key] ?? 0;
+    const line = EQUIP_STAT_LINES[key];
+    return value > 0 && line ? [line(value)] : [];
+  });
+  return [...flat, ...percent, ...equip];
 }
 
 function effectTextFor(item: Item): string | null {
@@ -183,156 +217,13 @@ function setNameFor(item: Item, sets: readonly ItemSet[]): string | null {
   return sets.find((set) => set.id === item.set_id)?.name ?? null;
 }
 
-/** One candidate source line before final ordering and capping: `priority` 0 for a named
- *  boss kill or a quest reward (the client's own "how you'd actually go get this" answer),
- *  1 for everything else; `chance` the drop percent when loot.json records one for this
- *  exact item at this exact source, `order` the original loot.json iteration position, used
- *  only to keep equal-priority/unknown-chance lines in a stable, deterministic order. */
-interface RankedSourceLine {
-  text: string;
-  priority: 0 | 1;
-  chance: number | undefined;
-  order: number;
-}
-
-/**
- * A `world`/`world_drop` source always renders as this single line (brief item 4) -- never
- * the raw `source.name`, and never one line per world source an item happens to drop from
- * (a client tooltip never lists individual zones for a world drop either). A `world_drop`
- * source from the classic-db pool classifier carries the pool's own `level_min`/`level_max`.
- */
-function worldDropLine(source: LootSource): string {
-  const { level_min: levelMin, level_max: levelMax } = source;
-  if (typeof levelMin === 'number' && typeof levelMax === 'number') {
-    return `World drop (BoE) · levels ${levelMin}-${levelMax}`;
-  }
-  return 'World drop';
-}
-
-/**
- * Every place loot.json says `itemId` comes from: a specific boss when one of the source's
- * bosses names it (checked first, so a raid/dungeon item never also prints its zone-level
- * source line for the same drop), else the source itself worded per kind, plus one line per
- * quest that rewards it. `sourceLabel` and `bossName` are loot.ts's own -- reused rather than
- * re-worded here, so a rep source with a standing or an unnamed boss never drifts from how
- * the source picker already renders the identical source.
- *
- * `world`/`world_drop` sources collapse to one "World drop" line; every other kind this
- * function does not specifically recognise (present or future) falls through to the final
- * `else` and is named by its own `source.name` rather than crashing or inventing wording --
- * the defensiveness the brief asks for.
- */
+/** The tooltip's source lines: `itemSourceRows`' ranked, deduped rows in one-line form, at
+ *  most `MAX_SOURCE_LINES` of them, the rest collapsed into one "and N more" line instead of
+ *  dwarfing the rest of the panel. */
 function sourceLinesFor(itemId: number, loot: LootFile): string[] {
-  const lines: RankedSourceLine[] = [];
-  let order = 0;
-
-  for (const source of loot.sources) {
-    if (WORLD_DROP_KINDS.has(source.kind)) {
-      // Only a world source that actually lists the item (owner report 2026-09-30:
-      // every tooltip read "World drop + 48 others" because all 48 level-banded
-      // world_drop pools were pushed for every item once their lines carried
-      // distinct level ranges and stopped deduping into one).
-      if (!(source.items ?? []).includes(itemId)) continue;
-      lines.push({ text: worldDropLine(source), priority: 1, chance: undefined, order: order++ });
-      continue;
-    }
-    const boss = (source.bosses ?? []).find((candidate) =>
-      itemsOfBoss(source, candidate.id).includes(itemId),
-    );
-    if (boss !== undefined) {
-      lines.push({
-        text: `${source.name} — ${bossName(source, boss)}`,
-        priority: 0,
-        chance: boss.item_chances?.[String(itemId)],
-        order: order++,
-      });
-      continue;
-    }
-    if (!itemsOfSource(source).includes(itemId)) continue;
-    const chance = source.item_chances?.[String(itemId)];
-    if (source.kind === 'crafted') {
-      lines.push({
-        // Shares craftedSourceLabel with the BiS panel's source cell
-        // (bis/source-cell.ts) so this line and the panel row read identically for the
-        // same source, never "Blacksmithing (blacksmithing)" (bis-web-polish, 2026-09-30).
-        text: craftedSourceLabel(source.name, source.profession),
-        priority: 1,
-        chance: undefined,
-        order: order++,
-      });
-    } else if (source.kind === 'rep') {
-      lines.push({ text: sourceLabel(source), priority: 1, chance: undefined, order: order++ });
-    } else if (source.kind === 'pvp') {
-      // Third wow-player sweep defect, 2026-09-29: never the bare bucket name ("Rank 11")
-      // -- `pvpSourceLabel` names the rank, its in-game title and the faction
-      // `pipeline.loot.pvp_faction` split this source into, the same vocabulary
-      // `bis/source-cell.ts`'s own pvp cell reads. Falls back to `source.name` for a
-      // pre-split source missing rank/faction, which should not happen on real data.
-      const text =
-        source.rank !== undefined && (source.faction === 'alliance' || source.faction === 'horde')
-          ? pvpSourceLabel(source.rank, source.faction)
-          : source.name;
-      lines.push({ text, priority: 1, chance: undefined, order: order++ });
-    } else if (
-      source.kind === 'vendor' &&
-      loot.sources.some((s) => s.kind === 'pvp' && itemsOfSource(s).includes(itemId))
-    ) {
-      // Fourth wow-player sweep, item 2: a rank quartermaster's own vendor row
-      // duplicates its matching pvp source's item list verbatim -- skip the
-      // redundant bare-name line ("Captain O'Neal") when the pvp branch above
-      // already names this item with its real rank/title/faction line, rather
-      // than showing both for the same purchase.
-    } else {
-      lines.push({ text: source.name, priority: 1, chance, order: order++ });
-    }
-  }
-  for (const quest of loot.quests?.[String(itemId)] ?? []) {
-    lines.push({
-      text: `${quest.name} (${humanise(quest.faction)})`,
-      priority: 0,
-      chance: undefined,
-      order: order++,
-    });
-  }
-
-  return finalizeSourceLines(lines);
-}
-
-/**
- * Ranks, formats, dedupes and caps the candidate lines `sourceLinesFor` built: boss kills
- * and quest rewards (`priority` 0) before everything else, a known drop chance descending
- * within its own priority group, an unknown chance last in its group -- ties broken by
- * loot.json's own order so this never reshuffles between two otherwise-identical runs. At
- * most `MAX_SOURCE_LINES` real lines; a longer list collapses the rest into one "and N
- * more" line instead of dwarfing the rest of the panel.
- */
-function finalizeSourceLines(lines: RankedSourceLine[]): string[] {
-  const ranked = [...lines].sort((a, b) => {
-    if (a.priority !== b.priority) return a.priority - b.priority;
-    if (a.chance !== b.chance) {
-      if (a.chance === undefined) return 1;
-      if (b.chance === undefined) return -1;
-      return b.chance - a.chance;
-    }
-    return a.order - b.order;
-  });
-  const texts = ranked.map((line) =>
-    line.chance === undefined ? line.text : `${line.text} (${dropPercentLabel(line.chance)})`,
-  );
-
-  // A quest that rewards the item to both factions separately (an Alliance-side and a
-  // Horde-side copy of the same quest, both humanising to "(Both)"), or the same "World
-  // drop" line named by two different world sources, would otherwise print an identical
-  // line twice -- besides being a pointless repeat, ItemTooltip.svelte keys its
-  // `{#each sourceLines as line (line)}` by the line's own text, and Svelte throws (rather
-  // than silently rendering) on a duplicate key, which would crash the tooltip instead of
-  // just showing it. `Set` preserves insertion (i.e. ranked) order, so this only removes
-  // the repeat, never reorders the real lines.
-  const deduped = [...new Set(texts)];
-
-  if (deduped.length <= MAX_SOURCE_LINES) return deduped;
-  const shown = deduped.slice(0, MAX_SOURCE_LINES);
-  return [...shown, `and ${deduped.length - MAX_SOURCE_LINES} more`];
+  const lines = itemSourceRows(itemId, loot).map(sourceRowLine);
+  if (lines.length <= MAX_SOURCE_LINES) return lines;
+  return [...lines.slice(0, MAX_SOURCE_LINES), `and ${lines.length - MAX_SOURCE_LINES} more`];
 }
 
 /** The one place every ItemHover/ItemTooltip in the site builds its model -- a runtime

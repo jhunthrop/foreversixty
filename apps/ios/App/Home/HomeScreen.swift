@@ -23,14 +23,13 @@ struct HomeDependencies {
     var talents: (any TalentsSource)?
     /// Lane F10: Your reports, pushed from the Logs row; nil while its feature switch is off.
     var reports: ReportsDependencies?
+    /// Lane F11: Rankings and character pages, pushed from the Rankings row; nil while its switch is off.
+    var rankings: RankingsDependencies?
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
-        let staticTransport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let catalog = ItemCatalog(client: StaticDataClient(transport: staticTransport))
+        let catalog = ItemCatalog(store: environment.staticData)
+        let reports: ReportsDependencies? = environment.isAvailable(.reports) ? .live(environment) : nil
         return HomeDependencies(
             client: environment.client,
             catalog: catalog,
@@ -38,7 +37,8 @@ struct HomeDependencies {
             isEnabled: environment.isAvailable(.characterHome),
             sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil,
             talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil,
-            reports: environment.isAvailable(.reports) ? .live(environment) : nil
+            reports: reports,
+            rankings: environment.isAvailable(.rankings) ? .live(environment, catalog: catalog, reports: reports) : nil
         )
     }
 }
@@ -74,6 +74,7 @@ struct HomeTab: View {
                 finishedSims: me.finishedSims,
                 serverSims: me.entitlements.serverSims,
                 reportsAccount: ReportsAccount.of(me, current: character),
+                rankingsAccount: RankingsAccount.of(me, current: character),
                 dependencies: dependencies,
                 showsSelector: session != nil,
                 openBis: openBis
@@ -123,6 +124,8 @@ struct HomeCharacterScreen: View {
     let serverSims: Bool
     /// Lane F10: who reads Your reports (crests, the coach card's `log_coach`).
     let reportsAccount: ReportsAccount
+    /// Lane F11: who reads Rankings (the aim, your row, the `You` tags, Parse history).
+    let rankingsAccount: RankingsAccount
     let dependencies: HomeDependencies
     /// Signed in, the toolbar carries lane F1's selector in place of the name title.
     let showsSelector: Bool
@@ -130,11 +133,19 @@ struct HomeCharacterScreen: View {
 
     @State private var store: HomeStore
     @State private var tooltip: ItemTooltipRequest?
+    /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
+    @State private var itemPage: ItemPageRoute?
+    @Environment(\.searchNavigator) private var search
     @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
     @Environment(ReportsRouter.self) private var reportsRouter: ReportsRouter?
     /// Lane F10: the Logs row's sub, from the newest report; nil until read.
     @State private var logsLine: String?
+    @Environment(RankingsRouter.self) private var rankingsRouter: RankingsRouter?
+    /// Lane F11: the Rankings row's sub; nil until read.
+    @State private var rankingsLine: String?
+    /// Lane F11: the watch list of a character page a player link pushes on Home.
+    @State private var watchList: WatchList?
     @State private var showTalents = false
     /// Lane F6: one Talents model per character, shared by Home's row and the pushed screen.
     @State private var talentsModel: TalentsModel?
@@ -146,6 +157,7 @@ struct HomeCharacterScreen: View {
         finishedSims: [FinishedSim],
         serverSims: Bool = false,
         reportsAccount: ReportsAccount = .signedOut,
+        rankingsAccount: RankingsAccount = .signedOut,
         dependencies: HomeDependencies,
         showsSelector: Bool = false,
         openBis: @escaping () -> Void
@@ -154,6 +166,7 @@ struct HomeCharacterScreen: View {
         self.finishedSims = finishedSims
         self.serverSims = serverSims
         self.reportsAccount = reportsAccount
+        self.rankingsAccount = rankingsAccount
         self.dependencies = dependencies
         self.showsSelector = showsSelector
         self.openBis = openBis
@@ -171,7 +184,8 @@ struct HomeCharacterScreen: View {
                     presenter: HomePresenter(
                         character: character, finishedSims: finishedSims, time: HomeTime(now: Date()),
                         talentStatus: talentsModel?.phase.presenter?.status,
-                        logsLine: dependencies.reports == nil ? nil : logsLine ?? ""
+                        logsLine: dependencies.reports == nil ? nil : logsLine ?? "",
+                        rankingsLine: dependencies.rankings == nil ? nil : rankingsLine ?? ""
                     ),
                     build: home?.dataBuild ?? "",
                     offlineStamp: offlineStamp,
@@ -185,15 +199,27 @@ struct HomeCharacterScreen: View {
             .navigationDestination(isPresented: $showGear) { gear }
             .navigationDestination(isPresented: simsShown) { sims }
             .navigationDestination(isPresented: $showTalents) { talents }
+            .navigationDestination(item: $itemPage) { route in
+                if let search {
+                    ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
+                }
+            }
             .navigationDestination(isPresented: reportsShown) { reports }
+            .navigationDestination(isPresented: rankingsShown) { rankings }
+            .navigationDestination(item: playerShown) { player($0) }
             .characterSelector(isOn: showsSelector)
+            .searchButton()
         }
         .sheet(item: $tooltip) { request in
-            ItemTooltipSheet(request: request, catalog: dependencies.catalog)
+            ItemTooltipSheet(request: request, catalog: dependencies.catalog, moreAbout: search.map { _ in {
+                tooltip = nil
+                itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
+            } })
         }
         .task { await store.load(character) }
         .task { await talentsModel?.load() }
         .task { await loadLogsLine() }
+        .task { await loadRankingsLine() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.refreshIfStale(character) } }
         }
@@ -246,6 +272,9 @@ struct HomeCharacterScreen: View {
             showTalents = talentsModel != nil
         case .openNext(.logs):
             reportsRouter?.showsList = dependencies.reports != nil
+        case .openNext(.rankings):
+            rankingsRouter?.encounter = nil
+            rankingsRouter?.showsBoard = dependencies.rankings != nil
         case .openNext:
             break
         case .retry:
@@ -275,6 +304,40 @@ struct HomeCharacterScreen: View {
         if let deps = dependencies.reports, let reportsRouter {
             ReportsScreen(dependencies: deps, account: reportsAccount, router: reportsRouter)
         }
+    }
+
+    /// Lane F11: Rankings on Home's stack, driven by the router so a rankings link can push it too.
+    private var rankingsShown: Binding<Bool> {
+        Binding(get: { rankingsRouter?.showsBoard ?? false }, set: { rankingsRouter?.showsBoard = $0 })
+    }
+
+    /// Lane F11: a character page a player link pushes on Home.
+    private var playerShown: Binding<PlayerRoute?> {
+        Binding(get: { rankingsRouter?.player }, set: { rankingsRouter?.player = $0 })
+    }
+
+    @ViewBuilder
+    private var rankings: some View {
+        if let deps = dependencies.rankings {
+            RankingsScreen(dependencies: deps, account: rankingsAccount, reportsAccount: reportsAccount, encounter: rankingsRouter?.encounter)
+                .id(rankingsRouter?.encounter)
+        }
+    }
+
+    @ViewBuilder
+    private func player(_ route: PlayerRoute) -> some View {
+        if let deps = dependencies.rankings {
+            let list = watchList ?? WatchList(service: deps.service, signedIn: rankingsAccount.signedIn)
+            CharacterScreen(route: route, dependencies: deps, account: rankingsAccount, reportsAccount: reportsAccount, watchList: list)
+                .onAppear { if watchList == nil { watchList = list } }
+        }
+    }
+
+    private func loadRankingsLine() async {
+        guard let deps = dependencies.rankings, let current = rankingsAccount.current else { return }
+        rankingsLine = await RankingsStore.homeLine(
+            service: deps.service, cache: deps.cache, specs: deps.specs, now: deps.now(), current: current
+        ) ?? ""
     }
 
     private func loadLogsLine() async {

@@ -18,10 +18,14 @@ public enum Feature: String, CaseIterable, Sendable {
     case notifications = "notifications"
     /// F8: See plans, where the storefront allows a web checkout link
     case premiumLink = "premium_link"
+    /// F12: One search for items, characters, guides and talents, and the item page
+    case search = "search"
     /// F14: Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications
     case widgets = "widgets"
     /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
     case reports = "reports"
+    /// F11: Rankings and character pages: your rank, the board and its filters, a character's Forever Score, bests and gear (the Paperdoll), watching
+    case rankings = "rankings"
     /// F9: The Guides tab: your guide, every class's guides saved for offline, and What changed
     case guides = "guides"
     /// F9: The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4)
@@ -42,8 +46,10 @@ public enum Feature: String, CaseIterable, Sendable {
         case .talents: false
         case .notifications: false
         case .premiumLink: false
+        case .search: false
         case .widgets: false
         case .reports: false
+        case .rankings: false
         case .guides: false
         case .guideTiers: false
         case .guildExtras: false

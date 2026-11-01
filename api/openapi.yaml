@@ -346,6 +346,51 @@ components:
         zone: { type: string }
         fights: { type: array, items: { type: integer }, description: "The pulls, in the night's order" }
         duration_ms: { type: integer, format: int64, description: "The pulls' lengths summed" }
+    RankingsPage:
+      type: object
+      required: [rows, total, page, per_page, updated_at, deduped]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/RankingRow' } }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer, enum: [100] }
+        updated_at: { type: string, format: date-time }
+        deduped: { type: boolean, description: "True when each row is a different character's best kill (distinct=character): the apps then say characters, else kills" }
+        character_rank:
+          type: object
+          title: CharacterRank
+          required: [rank, row]
+          description: "Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort"
+          properties:
+            rank: { type: integer }
+            row: { $ref: '#/components/schemas/RankingRow' }
+    RankingPercentile:
+      type: object
+      required: [percentile, ranked]
+      properties:
+        percentile: { type: number, description: "0 to 100" }
+        ranked: { type: integer, description: "Kills the bracket ranks" }
+    RankedEncounter:
+      type: object
+      required: [id, slug, name, zone, size, kills]
+      properties:
+        id: { type: integer, format: int64 }
+        slug: { type: string }
+        name: { type: string }
+        zone: { type: [string, "null"], description: "The zone the newest log of it named" }
+        size: { type: [integer, "null"], description: "The raid size most of its ranked kills had" }
+        kills: { type: integer, description: "Ranked kills" }
+    WatchedCharacter:
+      type: object
+      required: [key, region, ruleset, name, class, level, added_at]
+      properties:
+        key: { type: string, description: "<region>/<ruleset>/<name-slug>" }
+        region: { type: string }
+        ruleset: { type: string }
+        name: { type: string }
+        class: { type: [string, "null"], x-name: className }
+        level: { type: [integer, "null"], description: "The character page's level, null when no source knows it" }
+        added_at: { type: string, format: date-time }
     ReportMe:
       type: object
       description: >-
@@ -568,13 +613,18 @@ components:
         rank: { type: integer }
         player:
           type: object
+          title: RankingPlayer
+          required: [key, name]
           properties:
             key: { type: string, description: "<region>/<ruleset>/<name-slug>" }
             name: { type: string }
-            class: { type: string }
-            spec: { type: string }
+            class: { type: string, x-name: className, description: "Absent when the log did not say" }
+            spec: { type: string, description: "Absent when the log did not say" }
         guild:
           type: object
+          title: RankingGuild
+          required: [name, region, ruleset]
+          description: "Absent when the report is filed to no guild"
           properties:
             name: { type: string }
             region: { type: string }
@@ -1328,6 +1378,16 @@ components:
             parses: { type: integer, description: "Mean best parse percentile per boss, scaled 0-600." }
             attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }
             discipline: { type: integer, description: "Share of rated fights with a flask, a food and every enchantable slot (chest, feet, back, main hand) enchanted, times 100." }
+        component_caps:
+          type: [object, "null"]
+          description: "Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100), so a bar is drawn as value over cap; null with the score."
+          required: [gear, experience, parses, attendance, discipline]
+          properties:
+            gear: { type: integer }
+            experience: { type: integer }
+            parses: { type: integer }
+            attendance: { type: integer }
+            discipline: { type: integer }
         experience:
           type: [object, "null"]
           properties:
@@ -1621,7 +1681,7 @@ components:
       description: >-
         GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score
         field is null for a character with no rated fight: render "no logs yet", never 0.
-      required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, experience]
+      required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, component_caps, experience]
       properties:
         character:
           type: object
@@ -1670,6 +1730,17 @@ components:
         components:
           type: [object, "null"]
           title: ScoreComponents
+          required: [gear, experience, parses, attendance, discipline]
+          properties:
+            gear: { type: integer }
+            experience: { type: integer }
+            parses: { type: integer }
+            attendance: { type: integer }
+            discipline: { type: integer }
+        component_caps:
+          type: [object, "null"]
+          title: ScoreComponentCaps
+          description: "Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score."
           required: [gear, experience, parses, attendance, discipline]
           properties:
             gear: { type: integer }
@@ -3216,6 +3287,169 @@ components:
             properties:
               pieces: { type: integer }
               description: { type: string }
+    LootFile:
+      type: object
+      description: /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides.
+      required: [sources]
+      properties:
+        sources: { type: array, items: { $ref: '#/components/schemas/LootSource' } }
+        quests:
+          type: object
+          description: Item id (string key) -> the quests that reward it.
+          additionalProperties: { type: array, items: { $ref: '#/components/schemas/LootQuest' } }
+        factions:
+          type: object
+          description: Reputation faction id (string key) -> alliance, horde or both.
+          additionalProperties: { type: string }
+    LootSource:
+      type: object
+      required: [id, kind, name]
+      properties:
+        id: { type: string, description: "raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …" }
+        kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+        name: { type: string }
+        items: { type: array, items: { type: integer } }
+        trash: { type: array, items: { type: integer } }
+        bosses: { type: array, items: { $ref: '#/components/schemas/LootBoss' } }
+        item_chances: { type: object, additionalProperties: { type: number }, description: "Item id -> percent; absent when unknown." }
+        zone_id: { type: integer }
+        npc_id: { type: integer }
+        opens: { type: string, description: "A phase name, or later; absent means open from launch." }
+        profession: { type: string }
+        faction_id: { type: integer }
+        standing: { type: string }
+        rank: { type: integer }
+        faction: { type: string, enum: [alliance, horde] }
+        faction_source: { type: string }
+        title: { type: string }
+        level_min: { type: integer }
+        level_max: { type: integer }
+        rare_spawn: { type: boolean }
+        source_origin: { type: string }
+        source_note: { type: string }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+    LootBoss:
+      type: object
+      required: [id, name, items]
+      properties:
+        id: { type: string }
+        name: { type: string, description: "Empty for an unnamed pool." }
+        npc_id: { type: integer }
+        items: { type: array, items: { type: integer } }
+        item_chances: { type: object, additionalProperties: { type: number } }
+        item_source_origin: { type: object, additionalProperties: { type: string } }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+        rank: { type: integer }
+        rare_spawn: { type: boolean }
+    LootQuest:
+      type: object
+      required: [quest_id, name, faction, min_level, level]
+      properties:
+        quest_id: { type: integer }
+        name: { type: string }
+        faction: { type: string }
+        faction_source: { type: string }
+        min_level: { type: integer }
+        level: { type: integer }
+        level_source: { type: string }
+        opens: { type: string }
+        classes: { type: array, items: { type: string } }
+        required_rep_faction: { type: integer }
+        required_rep_standing: { type: string }
+        profession: { type: string }
+        skill: { type: integer }
+    SearchIndex:
+      type: object
+      description: /data/{build}/search.json (W3-C8), the apps' offline search.
+      required: [build, item_uses_shards, items, talents, guides]
+      properties:
+        build: { type: string }
+        item_uses_shards: { type: integer, description: "How many item-uses files; an item's shard is id % this." }
+        items:
+          type: array
+          items:
+            type: object
+            title: SearchItem
+            required: [id, name, icon, quality, slot, item_level, required_level, classes]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              quality: { type: integer, minimum: 0, maximum: 5 }
+              slot: { type: string }
+              item_level: { type: integer }
+              required_level: { type: integer }
+              classes: { type: array, items: { type: string }, description: "Class slugs whose items file carries it." }
+        talents:
+          type: array
+          items:
+            type: object
+            title: SearchTalent
+            required: [id, name, icon, class, tree, spec_name, max_rank]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              class: { type: string, x-name: className }
+              tree: { type: string, description: "The talent tree's own name." }
+              spec_name: { type: string, description: "The spec the tree is played as; the tree's name when none is written." }
+              max_rank: { type: integer }
+        guides:
+          type: array
+          items:
+            type: object
+            title: SearchGuide
+            required: [class, spec, spec_name, role, icon]
+            properties:
+              class: { type: string, x-name: className }
+              spec: { type: string, description: "The spec's slug inside its class, the guide's path segment." }
+              spec_name: { type: string }
+              role: { type: string }
+              icon: { type: string }
+    ItemUsesShard:
+      type: object
+      description: /data/{build}/item-uses/{shard}.json (W3-C8).
+      required: [build, shard, shards, items]
+      properties:
+        build: { type: string }
+        shard: { type: integer }
+        shards: { type: integer }
+        items:
+          type: object
+          description: Item id (string key) -> its uses.
+          additionalProperties: { $ref: '#/components/schemas/ItemUses' }
+    ItemUses:
+      type: object
+      required: [sources, specs]
+      properties:
+        sources:
+          type: array
+          description: Ranked; boss kills and quest rewards first, a known chance before an unknown one.
+          items:
+            type: object
+            title: ItemUseSource
+            required: [kind, title]
+            properties:
+              kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+              title: { type: string, description: "The boss, vendor, quest, recipe, faction and standing, or World drop." }
+              place: { type: string, description: "The instance of a boss drop, the side of a quest; absent when none." }
+              chance: { type: number, description: "Percent; absent when the data has none. Print Drop chance not known then." }
+              min_level: { type: integer, description: "A quest's minimum level; absent when unknown." }
+        specs:
+          type: array
+          description: One row per spec; picks before runners-up, then class and spec in the catalog's order.
+          items:
+            type: object
+            title: ItemUseSpec
+            required: [spec, class, spec_name, band, preset, faction, rank]
+            properties:
+              spec: { type: string, description: "The BiS file key, shaman-elemental." }
+              class: { type: string, x-name: className }
+              spec_name: { type: string }
+              band: { type: integer }
+              preset: { type: string }
+              faction: { type: [string, "null"], enum: [alliance, horde, null], description: "Null when both factions place it the same." }
+              rank: { type: integer, description: "0 is the pick; n is runner-up n." }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -4618,8 +4852,17 @@ paths:
         '502': { description: "Stored, but the parse job could not be started", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/rankings:
     get:
-      summary: A leaderboard page
+      operationId: getRankings
+      tags: [app]
+      summary: A leaderboard page (W3-C5)
+      description: >-
+        One page of 100 ranked kills (or, with distinct=character, each character's best kill)
+        for one encounter, filtered. Public; Cache-Control public, max-age=30. The apps' F11.1
+        board asks with distinct=character and the current character's class, spec and key, so
+        character_rank answers "where do I stand" whichever page the character is on.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - name: encounter
           in: query
           required: true
@@ -4638,8 +4881,65 @@ paths:
         - { name: character, in: query, schema: { type: string, example: "us/normal/obnoxious yell" }, description: "A player key (region/ruleset/name). Needs distinct=character. Adds character_rank to the response" }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Cache-Control: public, max-age=30"
+          x-fixtures: [rankings.list, rankings.list.off-page, rankings.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RankingsPage' } } }
+        '400':
+          description: "invalid: a metric, phase, region, ruleset, page, since or character the route does not know"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found: no encounter by that id or slug"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/rankings/percentile:
+    get:
+      operationId: getRankingPercentile
+      tags: [app]
+      summary: Where one value stands in its bracket (W3-C5)
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: encounter, in: query, required: true, schema: { type: string }, description: "Encounter id or slug" }
+        - { name: difficulty, in: query, required: true, schema: { type: integer } }
+        - { name: spec, in: query, schema: { type: string } }
+        - { name: phase, in: query, schema: { type: string } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken] } }
+        - { name: value, in: query, required: true, schema: { type: number } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "percentile, 0 to 100, and how many kills the bracket ranks"
+          x-fixtures: [rankings.percentile]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RankingPercentile' } } }
+        '404': { description: "Nothing ranked in that bracket yet", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/rankings/encounters:
+    get:
+      operationId: getRankingEncounters
+      tags: [app]
+      summary: The encounters that have ranked kills (W3-C6)
+      description: >-
+        For the F11.2 encounter list: every encounter with a ranked kill, most kills first, with
+        the zone the newest of its logs named and its usual raid size (each null when no log
+        says). Public; Cache-Control public, max-age=30.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The encounters"
+          x-fixtures: [rankings.encounters]
           content:
             application/json:
               schema:
@@ -4649,32 +4949,96 @@ paths:
                     properties:
                       data:
                         type: object
+                        title: RankedEncounters
+                        required: [encounters]
                         properties:
-                          rows: { type: array, items: { $ref: '#/components/schemas/RankingRow' } }
-                          total: { type: integer }
-                          page: { type: integer }
-                          per_page: { type: integer, enum: [100] }
-                          updated_at: { type: string, format: date-time }
-                          deduped: { type: boolean, description: "True when each row is a different character's best kill (distinct=character)" }
-                          character_rank:
-                            type: object
-                            description: "Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort"
-                            properties:
-                              rank: { type: integer }
-                              row: { $ref: '#/components/schemas/RankingRow' }
-  /v1/rankings/percentile:
+                          encounters: { type: array, items: { $ref: '#/components/schemas/RankedEncounter' } }
+  /v1/me/watching:
     get:
-      summary: Where one value stands in its bracket
+      operationId: getWatching
+      tags: [app]
+      summary: The characters you watch (W3-C7)
+      description: >-
+        Session or device token. Newest first, up to 50. A watched character whose account
+        turns anonymous is left out. Cache-Control private, no-cache.
       parameters:
-        - { name: encounter, in: query, required: true, schema: { type: string }, description: "Encounter id or slug" }
-        - { name: difficulty, in: query, required: true, schema: { type: integer } }
-        - { name: spec, in: query, schema: { type: string } }
-        - { name: phase, in: query, schema: { type: string } }
-        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken] } }
-        - { name: value, in: query, required: true, schema: { type: number } }
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
-        '200': { description: "percentile, 0 to 100", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "Nothing ranked in that bracket yet", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The watch list"
+          x-fixtures: [watching.list, watching.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        title: WatchingList
+                        required: [rows]
+                        properties:
+                          rows: { type: array, items: { $ref: '#/components/schemas/WatchedCharacter' } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/watching/{region}/{ruleset}/{name}:
+    put:
+      operationId: watchCharacter
+      tags: [app]
+      summary: Watch a character (W3-C7)
+      description: >-
+        Session or device token. Idempotent: watching again answers the same row. 404 for a
+        character the site does not show (unknown, or its account is anonymous); 409 limit past
+        50, with fields.character.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Watched; the row as GET /v1/me/watching lists it"
+          x-fixtures: [watching.put]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/WatchedCharacter' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found: no such character, or its account is anonymous"
+          x-fixtures: [watching.put.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "limit: you already watch 50"
+          x-fixtures: [watching.put.error-limit]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      operationId: unwatchCharacter
+      tags: [app]
+      summary: Stop watching a character (W3-C7)
+      description: Session or device token. 204 whether or not it was watched.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '204': { description: "Not watched" }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/rankings/guilds:
     get:
       summary: A guild leaderboard
@@ -5029,15 +5393,21 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/phases:
     get:
-      summary: The content phase boundaries
+      summary: The content phase boundaries (W3-C5)
       operationId: getPhases
+      tags: [app]
       description: >-
         The same four instants the rankings bucket by, from
         data/curated/phases.json. Cached an hour: they change only with a
-        deploy.
+        deploy. pre-beta's start is 0001-01-01T00:00:00Z, a phase with no opening instant.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: The phases, in order
+          x-fixtures: [phases]
           content:
             application/json:
               schema:
@@ -5047,11 +5417,15 @@ paths:
                     properties:
                       data:
                         type: object
+                        title: Phases
+                        required: [phases]
                         properties:
                           phases:
                             type: array
                             items:
                               type: object
+                              title: PhaseBoundary
+                              required: [name, start]
                               properties:
                                 name: { type: string, example: raids-1 }
                                 start: { type: string, format: date-time }
@@ -5149,7 +5523,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character card"
-          x-fixtures: [character.card, character.card.empty]
+          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours]
           content:
             application/json:
               schema:
@@ -5438,7 +5812,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The answer"
-          x-fixtures: [character.home, character.home.empty, character.home.no-gear]
+          x-fixtures: [character.home, character.home.empty, character.home.no-gear, character.home.yours]
           content:
             application/json:
               schema:
@@ -6273,7 +6647,7 @@ paths:
         '200':
           description: "The class's items"
           x-fixture-route: cdn.items.{class}
-          x-fixtures: [cdn.items.warrior, cdn.items.hunter]
+          x-fixtures: [cdn.items.warrior, cdn.items.hunter, cdn.items.shaman]
           content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
   /data/{build}/sets.json:
     servers: [{ url: 'https://foreversixty.gg' }]
@@ -6288,6 +6662,62 @@ paths:
           description: "One entry per set"
           x-fixtures: [cdn.sets]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
+  /data/{build}/loot.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Where every item of a build comes from (W3-C8)
+      description: >-
+        Lane F12. The site's loot file, documented for the apps: one entry per source (a raid or
+        dungeon with its bosses, a vendor, a reputation, a recipe, a world-drop pool, a PvP rank),
+        the quests that reward each item, and each reputation faction's side. Drop chances are
+        percents and are absent when unknown, never 0 for unknown. The item page reads the
+        formatted rows of item-uses instead; this file is for anything that needs the raw sources.
+      operationId: getLoot
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The loot file"
+          x-fixtures: [cdn.loot]
+          content: { application/json: { schema: { $ref: '#/components/schemas/LootFile' } } }
+  /data/{build}/search.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The apps' offline search index (W3-C8)
+      description: >-
+        Lane F12. Every item the class files carry (name, icon, quality, slot, item level,
+        required level and the classes that may use it), every talent and every written guide,
+        searched on the phone with no request. Emitted by the site build for the active build;
+        the build fails when it gzips over 300 KB.
+      operationId: getSearchIndex
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The index"
+          x-fixtures: [cdn.search]
+          content: { application/json: { schema: { $ref: '#/components/schemas/SearchIndex' } } }
+  /data/{build}/item-uses/{shard}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Item sources and the best-in-slot lists that use each item, one shard (W3-C8)
+      description: >-
+        Lane F12. An item's shard is its id modulo SearchIndex.item_uses_shards. Each item lists
+        its sources in the site tooltip's words (boss and instance, vendor, quest, recipe,
+        reputation, world drop) and one row per spec whose lists place it, at that spec's best
+        placement. An item with no source and no list is absent from its shard.
+      operationId: getItemUses
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: shard, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: "One shard"
+          x-fixtures: [cdn.item-uses]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ItemUsesShard' } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

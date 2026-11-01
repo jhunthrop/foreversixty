@@ -1,0 +1,302 @@
+{
+  "ok": true,
+  "data": {
+    "character": "us/normal/lightningbolltz",
+    "state": "ok",
+    "spec": "shaman-elemental",
+    "band": 60,
+    "band_label": "60",
+    "preset": "raid",
+    "unit": "dps",
+    "unit_word": "DPS",
+    "data_build": "1.60.1.70707",
+    "upgrade_count": 6,
+    "total_gain": 14.4,
+    "not_sim_checked_count": 0,
+    "not_modelled_count": 0,
+    "synced_at": "2026-12-17T17:00:00Z",
+    "synced_from": "addon",
+    "upgrades": [
+      {
+        "slot": "chest",
+        "slot_label": "Chest",
+        "pick": {
+          "id": 15066,
+          "name": "Ironfeather Breastplate",
+          "quality": 3,
+          "icon": "inv_chest_leather_06",
+          "item_level": 58,
+          "source_line": "Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16666,
+          "name": "Vest of Elements",
+          "quality": 3,
+          "icon": "inv_chest_chain_11",
+          "item_level": 63,
+          "known": true,
+          "label": "Vest of Elements"
+        },
+        "gain": 3.8,
+        "gain_words": "+3.8 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "head",
+        "slot_label": "Head",
+        "pick": {
+          "id": 252561,
+          "name": "Living Crown",
+          "quality": 4,
+          "icon": "inv_helmet_32",
+          "item_level": 61,
+          "source_line": "Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16667,
+          "name": "Coif of Elements",
+          "quality": 3,
+          "icon": "inv_helmet_04",
+          "item_level": 62,
+          "known": true,
+          "label": "Coif of Elements"
+        },
+        "gain": 3.1,
+        "gain_words": "+3.1 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "legs",
+        "slot_label": "Legs",
+        "pick": {
+          "id": 252486,
+          "name": "Ironfeather Leggings",
+          "quality": 4,
+          "icon": "inv_pants_leather_26",
+          "item_level": 61,
+          "source_line": "Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16668,
+          "name": "Kilt of Elements",
+          "quality": 3,
+          "icon": "inv_pants_03",
+          "item_level": 61,
+          "known": true,
+          "label": "Kilt of Elements"
+        },
+        "gain": 2.7,
+        "gain_words": "+2.7 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "shoulder",
+        "slot_label": "Shoulder",
+        "pick": {
+          "id": 15067,
+          "name": "Ironfeather Shoulders",
+          "quality": 3,
+          "icon": "inv_shoulder_06",
+          "item_level": 54,
+          "source_line": "Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16669,
+          "name": "Pauldrons of Elements",
+          "quality": 3,
+          "icon": "inv_shoulder_29",
+          "item_level": 60,
+          "known": true,
+          "label": "Pauldrons of Elements"
+        },
+        "gain": 2.0,
+        "gain_words": "+2.0 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "waist",
+        "slot_label": "Waist",
+        "pick": {
+          "id": 252476,
+          "name": "Skycaller's Leather Waistguard",
+          "quality": 3,
+          "icon": "inv_belt_43a",
+          "item_level": 55,
+          "source_line": "Leatherworking",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 16673,
+          "name": "Cord of Elements",
+          "quality": 3,
+          "icon": "inv_belt_16",
+          "item_level": 58,
+          "known": true,
+          "label": "Cord of Elements"
+        },
+        "gain": 1.6,
+        "gain_words": "+1.6 DPS",
+        "modelled": true
+      },
+      {
+        "slot": "trinket2",
+        "slot_label": "Trinket 2",
+        "pick": {
+          "id": 11302,
+          "name": "Uther's Strength",
+          "quality": 3,
+          "icon": "inv_jewelry_talisman_06",
+          "item_level": 52,
+          "source_line": "World drop",
+          "drop_chance": null
+        },
+        "worn": {
+          "id": 12930,
+          "name": "Briarwood Reed",
+          "quality": 3,
+          "icon": "inv_misc_root_02",
+          "item_level": 60,
+          "known": true,
+          "label": "Briarwood Reed"
+        },
+        "gain": 1.2,
+        "gain_words": "+1.2 DPS",
+        "modelled": true
+      }
+    ],
+    "already_best": [
+      {
+        "slot": "neck",
+        "slot_label": "Neck",
+        "item": {
+          "id": 15856,
+          "name": "Archlight Talisman",
+          "quality": 3,
+          "icon": "inv_jewelry_necklace_11",
+          "item_level": 60
+        }
+      },
+      {
+        "slot": "back",
+        "slot_label": "Back",
+        "item": {
+          "id": 11623,
+          "name": "Spritecaster Cape",
+          "quality": 3,
+          "icon": "inv_misc_cape_20",
+          "item_level": 52
+        }
+      },
+      {
+        "slot": "wrist",
+        "slot_label": "Wrist",
+        "item": {
+          "id": 254123,
+          "name": "Runecloth Cuffs",
+          "quality": 2,
+          "icon": "inv_bracer_13",
+          "item_level": 57
+        }
+      },
+      {
+        "slot": "hands",
+        "slot_label": "Hands",
+        "item": {
+          "id": 12632,
+          "name": "Storm Gauntlets",
+          "quality": 3,
+          "icon": "inv_gauntlets_30",
+          "item_level": 59
+        }
+      },
+      {
+        "slot": "feet",
+        "slot_label": "Feet",
+        "item": {
+          "id": 11822,
+          "name": "Omnicast Boots",
+          "quality": 3,
+          "icon": "inv_boots_05",
+          "item_level": 59
+        }
+      },
+      {
+        "slot": "finger1",
+        "slot_label": "Finger 1",
+        "item": {
+          "id": 13001,
+          "name": "Maiden's Circle",
+          "quality": 3,
+          "icon": "inv_jewelry_ring_12",
+          "item_level": 61
+        }
+      },
+      {
+        "slot": "finger2",
+        "slot_label": "Finger 2",
+        "item": {
+          "id": 7553,
+          "name": "Band of the Unicorn",
+          "quality": 2,
+          "icon": "inv_jewelry_ring_11",
+          "item_level": 48
+        }
+      },
+      {
+        "slot": "trinket1",
+        "slot_label": "Trinket 1",
+        "item": {
+          "id": 19120,
+          "name": "Rune of the Guard Captain",
+          "quality": 2,
+          "icon": "inv_misc_rune_07",
+          "item_level": 51
+        }
+      },
+      {
+        "slot": "main_hand",
+        "slot_label": "Main hand",
+        "item": {
+          "id": 2243,
+          "name": "Hand of Edward the Odd",
+          "quality": 4,
+          "icon": "inv_mace_14",
+          "item_level": 62
+        }
+      },
+      {
+        "slot": "off_hand",
+        "slot_label": "Off hand",
+        "item": {
+          "id": 11904,
+          "name": "Spirit of Aquementas",
+          "quality": 3,
+          "icon": "inv_ore_arcanite_02",
+          "item_level": 56
+        }
+      },
+      {
+        "slot": "ranged",
+        "slot_label": "Ranged",
+        "item": {
+          "id": 228176,
+          "name": "Totem of Thunder",
+          "quality": 3,
+          "icon": "inv_relics_totemofrebirth",
+          "item_level": 65
+        }
+      }
+    ],
+    "talents": {
+      "state": "optimized",
+      "points_differ": 0,
+      "band_points": 51
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

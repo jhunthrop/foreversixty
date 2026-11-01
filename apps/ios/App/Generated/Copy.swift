@@ -513,19 +513,19 @@ enum Copy {
     /// Fire spell damage
     static var itemsStatFirePower: String { text("items.stat.firePower") }
 
-    /// Fire resistance
+    /// Fire Resistance
     static var itemsStatFireRes: String { text("items.stat.fireRes") }
 
-    /// Frost resistance
+    /// Frost Resistance
     static var itemsStatFrostRes: String { text("items.stat.frostRes") }
 
-    /// Nature resistance
+    /// Nature Resistance
     static var itemsStatNatureRes: String { text("items.stat.natureRes") }
 
-    /// Shadow resistance
+    /// Shadow Resistance
     static var itemsStatShadowRes: String { text("items.stat.shadowRes") }
 
-    /// Arcane resistance
+    /// Arcane Resistance
     static var itemsStatArcaneRes: String { text("items.stat.arcaneRes") }
 
     /// Hated
@@ -2282,6 +2282,371 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Search
+    static var searchButton: String { text("search.button") }
+
+    /// Search items, characters, guides, talents
+    static var searchPlaceholder: String { text("search.placeholder") }
+
+    /// Cancel
+    static var searchCancel: String { text("search.cancel") }
+
+    /// Clear the search
+    static var searchClear: String { text("search.clear") }
+
+    /// All
+    static var searchScopeAll: String { text("search.scope.all") }
+
+    /// Items
+    static var searchScopeItems: String { text("search.scope.items") }
+
+    /// Characters
+    static var searchScopeCharacters: String { text("search.scope.characters") }
+
+    /// Guides
+    static var searchScopeGuides: String { text("search.scope.guides") }
+
+    /// Talents
+    static var searchScopeTalents: String { text("search.scope.talents") }
+
+    /// For {name}
+    static func searchGroupForCharacter(name: String) -> String {
+        format("search.group.forCharacter", name)
+    }
+
+    /// Best in slot for {name}
+    static func searchForCharacterBis(name: String) -> String {
+        format("search.forCharacter.bis", name)
+    }
+
+    /// {spec} {className} guide
+    static func searchForCharacterGuide(spec: String, className: String) -> String {
+        format("search.forCharacter.guide", spec, className)
+    }
+
+    /// Rankings
+    static var searchForCharacterRankings: String { text("search.forCharacter.rankings") }
+
+    /// Watching
+    static var searchGroupWatching: String { text("search.group.watching") }
+
+    /// Recent
+    static var searchGroupRecent: String { text("search.group.recent") }
+
+    /// Clear
+    static var searchRecentClear: String { text("search.recent.clear") }
+
+    /// Item
+    static var searchRecentItem: String { text("search.recent.item") }
+
+    /// Character
+    static var searchRecentCharacter: String { text("search.recent.character") }
+
+    /// Guide
+    static var searchRecentGuide: String { text("search.recent.guide") }
+
+    /// Talent
+    static var searchRecentTalent: String { text("search.recent.talent") }
+
+    /// Guides
+    static var searchGroupGuides: String { text("search.group.guides") }
+
+    /// Talents
+    static var searchGroupTalents: String { text("search.group.talents") }
+
+    /// Items
+    static var searchGroupItems: String { text("search.group.items") }
+
+    /// Characters
+    static var searchGroupCharacters: String { text("search.group.characters") }
+
+    /// Show all {n}
+    static func searchShowAll(n: Int) -> String {
+        format("search.showAll", n)
+    }
+
+    /// {slot} · item level {ilvl} · requires level {level}
+    static func searchItemMeta(slot: String, ilvl: Int, level: Int) -> String {
+        format("search.item.meta", slot, ilvl, level)
+    }
+
+    /// {slot} · item level {ilvl}
+    static func searchItemMetaNoLevel(slot: String, ilvl: Int) -> String {
+        format("search.item.metaNoLevel", slot, ilvl)
+    }
+
+    /// {className} · Level {level} · {region} {ruleset}
+    static func searchCharacterMeta(className: String, level: Int, region: String, ruleset: String) -> String {
+        format("search.character.meta", className, level, region, ruleset)
+    }
+
+    /// {className} · {region} {ruleset}
+    static func searchCharacterMetaNoLevel(className: String, region: String, ruleset: String) -> String {
+        format("search.character.metaNoLevel", className, region, ruleset)
+    }
+
+    /// You
+    static var searchCharacterYou: String { text("search.character.you") }
+
+    /// Guide · {role}
+    static func searchGuideMeta(role: String) -> String {
+        format("search.guide.meta", role)
+    }
+
+    /// {n} ranks
+    static func searchTalentRanks(n: Int) -> String {
+        format("search.talent.ranks", n)
+    }
+
+    /// {spec} {className} · {tree} · {ranks}
+    static func searchTalentMeta(spec: String, className: String, tree: String, ranks: String) -> String {
+        format("search.talent.meta", spec, className, tree, ranks)
+    }
+
+    /// Nothing matches “{query}”.
+    static func searchNoResultsTitle(query: String) -> String {
+        format("search.noResults.title", query)
+    }
+
+    /// Check the spelling. Characters need at least two letters and a connection.
+    static var searchNoResultsBody: String { text("search.noResults.body") }
+
+    /// Offline. Items, guides and talents still search; characters need a connection.
+    static var searchOffline: String { text("search.offline") }
+
+    /// Characters did not load.
+    static var searchCharactersFailed: String { text("search.charactersFailed") }
+
+    /// Loading the search…
+    static var searchIndexLoading: String { text("search.indexLoading") }
+
+    /// Search did not load.
+    static var searchIndexFailed: String { text("search.indexFailed") }
+
+    /// Try again
+    static var searchTryAgain: String { text("search.tryAgain") }
+
+    /// Open in planner
+    static var searchTalentOpenPlanner: String { text("search.talent.openPlanner") }
+
+    /// Rank {rank}/{max}
+    static func searchTalentRank(rank: Int, max: Int) -> String {
+        format("search.talent.rank", rank, max)
+    }
+
+    /// Search
+    static var itemPageBack: String { text("itemPage.back") }
+
+    /// {quality} · {slot} · item level {ilvl}
+    static func itemPageMeta(quality: String, slot: String, ilvl: Int) -> String {
+        format("itemPage.meta", quality, slot, ilvl)
+    }
+
+    /// Your {slot} pick
+    static func itemPagePick(slot: String) -> String {
+        format("itemPage.pick", slot)
+    }
+
+    /// Runner-up {n} for {slot}
+    static func itemPageRunnerUp(n: Int, slot: String) -> String {
+        format("itemPage.runnerUp", n, slot)
+    }
+
+    /// {spec} · {band} · {preset} · {faction}
+    static func itemPagePickMeta(spec: String, band: String, preset: String, faction: String) -> String {
+        format("itemPage.pickMeta", spec, band, preset, faction)
+    }
+
+    /// Yours
+    static var itemPageYours: String { text("itemPage.yours") }
+
+    /// Item
+    static var itemPageChipItem: String { text("itemPage.chip.item") }
+
+    /// Source
+    static var itemPageChipSource: String { text("itemPage.chip.source") }
+
+    /// Best in slot for
+    static var itemPageChipBisFor: String { text("itemPage.chip.bisFor") }
+
+    /// Where it comes from
+    static var itemPageSources: String { text("itemPage.sources") }
+
+    /// No source is in our data for this item yet.
+    static var itemPageNoSources: String { text("itemPage.noSources") }
+
+    /// {chance} from {boss}
+    static func itemPageDropChance(chance: String, boss: String) -> String {
+        format("itemPage.dropChance", chance, boss)
+    }
+
+    /// Drop chance not known
+    static var itemPageChanceUnknown: String { text("itemPage.chanceUnknown") }
+
+    /// Requires level {n}
+    static func itemPageQuestLevel(n: Int) -> String {
+        format("itemPage.questLevel", n)
+    }
+
+    /// Raid
+    static var itemPageKindRaid: String { text("itemPage.kind.raid") }
+
+    /// Dungeon
+    static var itemPageKindDungeon: String { text("itemPage.kind.dungeon") }
+
+    /// World drop
+    static var itemPageKindWorld: String { text("itemPage.kind.world") }
+
+    /// Zone
+    static var itemPageKindZone: String { text("itemPage.kind.zone") }
+
+    /// Vendor
+    static var itemPageKindVendor: String { text("itemPage.kind.vendor") }
+
+    /// Crafted
+    static var itemPageKindCrafted: String { text("itemPage.kind.crafted") }
+
+    /// Reputation
+    static var itemPageKindRep: String { text("itemPage.kind.rep") }
+
+    /// PvP
+    static var itemPageKindPvp: String { text("itemPage.kind.pvp") }
+
+    /// Quest
+    static var itemPageKindQuest: String { text("itemPage.kind.quest") }
+
+    /// Best in slot for
+    static var itemPageBisFor: String { text("itemPage.bisFor") }
+
+    /// No best in slot list uses this item.
+    static var itemPageBisForNone: String { text("itemPage.bisForNone") }
+
+    /// Pick
+    static var itemPageTagPick: String { text("itemPage.tag.pick") }
+
+    /// Runner-up {n}
+    static func itemPageTagRunnerUp(n: Int) -> String {
+        format("itemPage.tag.runnerUp", n)
+    }
+
+    /// {band} · Phase 1 raid
+    static func itemPageSpecMetaRaid(band: Int) -> String {
+        format("itemPage.specMeta.raid", band)
+    }
+
+    /// {band}
+    static func itemPageSpecMetaBare(band: Int) -> String {
+        format("itemPage.specMeta.bare", band)
+    }
+
+    /// {n} more specs
+    static func itemPageMoreSpecs(n: Int) -> String {
+        format("itemPage.moreSpecs", n)
+    }
+
+    /// This item is not in our data.
+    static var itemPageUnknown: String { text("itemPage.unknown") }
+
+    /// Sources did not load.
+    static var itemPageUsesFailed: String { text("itemPage.usesFailed") }
+
+    /// More about this item
+    static var itemPageMoreAbout: String { text("itemPage.moreAbout") }
+
+    /// {title}, {meta}
+    static func itemPageA11ySource(title: String, meta: String) -> String {
+        format("itemPage.a11y.source", title, meta)
+    }
+
+    /// {spec}, {meta}, {tag}. Opens that list
+    static func itemPageA11ySpec(spec: String, meta: String, tag: String) -> String {
+        format("itemPage.a11y.spec", spec, meta, tag)
+    }
+
+    /// Phase 1 raid
+    static var itemPagePresetRaid: String { text("itemPage.preset.raid") }
+
+    /// {spec} · {band} · {faction}
+    static func itemPagePickMetaBare(spec: String, band: String, faction: String) -> String {
+        format("itemPage.pickMetaBare", spec, band, faction)
+    }
+
+    /// Best in slot lists did not load.
+    static var itemPageBisForFailed: String { text("itemPage.bisForFailed") }
+
+    /// Back
+    static var itemPageBackPlain: String { text("itemPage.backPlain") }
+
+    /// Equip: Increases damage and healing done by magical spells and effects by up to {n}.
+    static func itemsEquipSpellPower(n: Int) -> String {
+        format("items.equip.spellPower", n)
+    }
+
+    /// Equip: Increases healing done by spells and effects by up to {n}.
+    static func itemsEquipHealing(n: Int) -> String {
+        format("items.equip.healing", n)
+    }
+
+    /// Equip: +{n} Attack Power.
+    static func itemsEquipAttackPower(n: Int) -> String {
+        format("items.equip.attackPower", n)
+    }
+
+    /// Equip: +{n} ranged Attack Power.
+    static func itemsEquipRangedAttackPower(n: Int) -> String {
+        format("items.equip.rangedAttackPower", n)
+    }
+
+    /// Equip: Restores {n} mana per 5 sec.
+    static func itemsEquipMp5(n: Int) -> String {
+        format("items.equip.mp5", n)
+    }
+
+    /// Equip: Decreases the magical resistances of your spell targets by {n}.
+    static func itemsEquipSpellPenetration(n: Int) -> String {
+        format("items.equip.spellPenetration", n)
+    }
+
+    /// Equip: Increases damage done by Fire spells and effects by up to {n}.
+    static func itemsEquipFirePower(n: Int) -> String {
+        format("items.equip.firePower", n)
+    }
+
+    /// Equip: Increases the block value of your shield by {n}.
+    static func itemsEquipBlockValue(n: Int) -> String {
+        format("items.equip.blockValue", n)
+    }
+
+    /// Equip: Increased Defense +{n}.
+    static func itemsEquipDefense(n: Int) -> String {
+        format("items.equip.defense", n)
+    }
+
+    /// Equip: Improves your chance to get a critical strike by {percent}.
+    static func itemsEquipCrit(percent: String) -> String {
+        format("items.equip.crit", percent)
+    }
+
+    /// Equip: Improves your chance to hit by {percent}.
+    static func itemsEquipHit(percent: String) -> String {
+        format("items.equip.hit", percent)
+    }
+
+    /// Equip: Increases your chance to dodge an attack by {percent}.
+    static func itemsEquipDodge(percent: String) -> String {
+        format("items.equip.dodge", percent)
+    }
+
+    /// Equip: Increases your chance to parry an attack by {percent}.
+    static func itemsEquipParry(percent: String) -> String {
+        format("items.equip.parry", percent)
+    }
+
+    /// Equip: Increases your chance to block attacks with a shield by {percent}.
+    static func itemsEquipBlock(percent: String) -> String {
+        format("items.equip.block", percent)
+    }
+
     /// Logs
     static var homeLogs: String { text("home.logs") }
 
@@ -2295,6 +2660,426 @@ enum Copy {
 
     /// Open the full report
     static var nightOpenReport: String { text("night.openReport") }
+
+    /// Rankings
+    static var homeRankings: String { text("home.rankings") }
+
+    /// {ordinal} of {total} {spec} {class} characters on {encounter}
+    static func homeRankingsLine(ordinal: String, total: Int, spec: String, className: String, encounter: String) -> String {
+        format("home.rankings.line", ordinal, total, spec, className, encounter)
+    }
+
+    /// Not ranked yet.
+    static var homeRankingsNone: String { text("home.rankings.none") }
+
+    /// Rankings
+    static var rankTitle: String { text("rank.title") }
+
+    /// Your rank
+    static var rankLabel: String { text("rank.label") }
+
+    /// of {total} {spec} {class} characters
+    static func rankUnit(total: Int, spec: String, className: String) -> String {
+        format("rank.unit", total, spec, className)
+    }
+
+    /// of {total} {spec} {class} kills
+    static func rankUnitKills(total: Int, spec: String, className: String) -> String {
+        format("rank.unitKills", total, spec, className)
+    }
+
+    /// Your best kill on {encounter}, {ruleset}, {phase}.
+    static func rankMeta(encounter: String, ruleset: String, phase: String) -> String {
+        format("rank.meta", encounter, ruleset, phase)
+    }
+
+    /// {name} · best kill on {encounter}, {ruleset}, {phase}.
+    static func rankMetaNamed(name: String, encounter: String, ruleset: String, phase: String) -> String {
+        format("rank.metaNamed", name, encounter, ruleset, phase)
+    }
+
+    /// Not ranked yet on {encounter}.
+    static func rankNone(encounter: String) -> String {
+        format("rank.none", encounter)
+    }
+
+    /// A logged kill puts you on the board.
+    static var rankNoneMeta: String { text("rank.noneMeta") }
+
+    /// No ranked fights yet for this filter. Rankings fill in as reports are uploaded.
+    static var rankEmpty: String { text("rank.empty") }
+
+    /// Your best kill
+    static var rankPin: String { text("rank.pin") }
+
+    /// Jump to your row, {ordinal}
+    static func rankJump(ordinal: String) -> String {
+        format("rank.jump", ordinal)
+    }
+
+    /// Filters
+    static var rankFilters: String { text("rank.filters") }
+
+    /// Reset filters
+    static var rankReset: String { text("rank.reset") }
+
+    /// The rankings did not load.
+    static var rankError: String { text("rank.error") }
+
+    /// Loading more
+    static var rankLoadingMore: String { text("rank.loadingMore") }
+
+    /// Choose a class and spec
+    static var rankChooseSpec: String { text("rank.chooseSpec") }
+
+    /// You
+    static var rankYou: String { text("rank.you") }
+
+    /// {guild} · {size} players · {time} · {age}
+    static func rankRowMeta(guild: String, size: Int, time: String, age: String) -> String {
+        format("rank.rowMeta", guild, size, time, age)
+    }
+
+    /// {size} players · {time} · {age}
+    static func rankRowMetaNoGuild(size: Int, time: String, age: String) -> String {
+        format("rank.rowMetaNoGuild", size, time, age)
+    }
+
+    /// DPS
+    static var rankUnitDps: String { text("rank.unit.dps") }
+
+    /// HPS
+    static var rankUnitHps: String { text("rank.unit.hps") }
+
+    /// DTPS
+    static var rankUnitDtps: String { text("rank.unit.dtps") }
+
+    /// Executed
+    static var rankUnitExecution: String { text("rank.unit.execution") }
+
+    /// All regions
+    static var rankLineAllRegions: String { text("rank.line.allRegions") }
+
+    /// Encounter
+    static var rankFilterEncounter: String { text("rank.filter.encounter") }
+
+    /// Measure
+    static var rankFilterMeasure: String { text("rank.filter.measure") }
+
+    /// Ruleset
+    static var rankFilterRuleset: String { text("rank.filter.ruleset") }
+
+    /// Region
+    static var rankFilterRegion: String { text("rank.filter.region") }
+
+    /// Phase
+    static var rankFilterPhase: String { text("rank.filter.phase") }
+
+    /// Faction
+    static var rankFilterFaction: String { text("rank.filter.faction") }
+
+    /// Today only
+    static var rankFilterToday: String { text("rank.filter.today") }
+
+    /// Damage
+    static var rankMeasureDamage: String { text("rank.measure.damage") }
+
+    /// Healing
+    static var rankMeasureHealing: String { text("rank.measure.healing") }
+
+    /// Damage taken
+    static var rankMeasureTaken: String { text("rank.measure.taken") }
+
+    /// Execution
+    static var rankMeasureExecution: String { text("rank.measure.execution") }
+
+    /// Normal
+    static var rankRulesetNormal: String { text("rank.ruleset.normal") }
+
+    /// PvP
+    static var rankRulesetPvp: String { text("rank.ruleset.pvp") }
+
+    /// RP
+    static var rankRulesetRp: String { text("rank.ruleset.rp") }
+
+    /// Hardcore
+    static var rankRulesetHardcore: String { text("rank.ruleset.hardcore") }
+
+    /// Every ruleset
+    static var rankRulesetAll: String { text("rank.ruleset.all") }
+
+    /// All
+    static var rankRegionAll: String { text("rank.region.all") }
+
+    /// Both
+    static var rankFactionBoth: String { text("rank.faction.both") }
+
+    /// Alliance
+    static var rankFactionAlliance: String { text("rank.faction.alliance") }
+
+    /// Horde
+    static var rankFactionHorde: String { text("rank.faction.horde") }
+
+    /// Pre-beta
+    static var rankPhasePreBeta: String { text("rank.phase.preBeta") }
+
+    /// Beta
+    static var rankPhaseBeta: String { text("rank.phase.beta") }
+
+    /// Launch
+    static var rankPhaseLaunch: String { text("rank.phase.launch") }
+
+    /// Phase 1
+    static var rankPhaseRaids1: String { text("rank.phase.raids1") }
+
+    /// {zone} · {size} players · {kills}
+    static func rankEncounterMeta(zone: String, size: Int, kills: String) -> String {
+        format("rank.encounterMeta", zone, size, kills)
+    }
+
+    /// {n} ranked kills
+    static func rankKills(n: Int) -> String {
+        format("rank.kills", n)
+    }
+
+    /// Watch
+    static var rankMenuWatch: String { text("rank.menu.watch") }
+
+    /// Stop watching
+    static var rankMenuUnwatch: String { text("rank.menu.unwatch") }
+
+    /// Open the report
+    static var rankMenuReport: String { text("rank.menu.report") }
+
+    /// Share
+    static var rankMenuShare: String { text("rank.menu.share") }
+
+    /// Rank {rank} of {total}, {name}, {value} {unit}, {guild}
+    static func rankA11yRow(rank: Int, total: Int, name: String, value: String, unit: String, guild: String) -> String {
+        format("rank.a11y.row", rank, total, name, value, unit, guild)
+    }
+
+    /// your character
+    static var rankA11yYours: String { text("rank.a11y.yours") }
+
+    /// damage per second
+    static var rankA11yPerSecondDps: String { text("rank.a11y.perSecond.dps") }
+
+    /// healing per second
+    static var rankA11yPerSecondHps: String { text("rank.a11y.perSecond.hps") }
+
+    /// damage taken per second
+    static var rankA11yPerSecondDtps: String { text("rank.a11y.perSecond.dtps") }
+
+    /// percent executed
+    static var rankA11yExecuted: String { text("rank.a11y.executed") }
+
+    /// Forever Score
+    static var charScore: String { text("char.score") }
+
+    /// How is this calculated?
+    static var charHow: String { text("char.how") }
+
+    /// As of {date}
+    static func charAsOf(date: String) -> String {
+        format("char.asOf", date)
+    }
+
+    /// Bests
+    static var charBests: String { text("char.bests") }
+
+    /// Recent fights
+    static var charRecent: String { text("char.recent") }
+
+    /// Gear
+    static var charGear: String { text("char.gear") }
+
+    /// Gear gap
+    static var charGap: String { text("char.gap") }
+
+    /// Builds seen
+    static var charBuilds: String { text("char.builds") }
+
+    /// No logs yet.
+    static var charNoLogs: String { text("char.noLogs") }
+
+    /// {name} has no rated fight in a public report, so there is no score to show.
+    static func charNoScore(name: String) -> String {
+        format("char.noScore", name)
+    }
+
+    /// {name} has not sent gear to Forever Sixty.
+    static func charNoGear(name: String) -> String {
+        format("char.noGear", name)
+    }
+
+    /// We have no character called {name}.
+    static func charNotFound(name: String) -> String {
+        format("char.notFound", name)
+    }
+
+    /// Check the spelling, the region and the ruleset.
+    static var charNotFoundHelp: String { text("char.notFoundHelp") }
+
+    /// Search again
+    static var charSearchAgain: String { text("char.searchAgain") }
+
+    /// Watch
+    static var charWatch: String { text("char.watch") }
+
+    /// Watching
+    static var charWatching: String { text("char.watching") }
+
+    /// Watch {name}
+    static func charWatchA11y(name: String) -> String {
+        format("char.watchA11y", name)
+    }
+
+    /// Stop watching {name}
+    static func charUnwatchA11y(name: String) -> String {
+        format("char.unwatchA11y", name)
+    }
+
+    /// {name} was not saved. Try again.
+    static func charWatchFailed(name: String) -> String {
+        format("char.watchFailed", name)
+    }
+
+    /// Share
+    static var charShare: String { text("char.share") }
+
+    /// That character did not load.
+    static var charError: String { text("char.error") }
+
+    /// You
+    static var charYou: String { text("char.you") }
+
+    /// Supporter
+    static var charSupporter: String { text("char.supporter") }
+
+    /// {race} {spec} {class} · Level {level}
+    static func charDescriptor(race: String, spec: String, className: String, level: Int) -> String {
+        format("char.descriptor", race, spec, className, level)
+    }
+
+    /// {race} {spec} {class}
+    static func charDescriptorNoLevel(race: String, spec: String, className: String) -> String {
+        format("char.descriptorNoLevel", race, spec, className)
+    }
+
+    /// {guild} · {region} {ruleset}
+    static func charWhere(guild: String, region: String, ruleset: String) -> String {
+        format("char.where", guild, region, ruleset)
+    }
+
+    /// {region} {ruleset}
+    static func charWhereNoGuild(region: String, ruleset: String) -> String {
+        format("char.whereNoGuild", region, ruleset)
+    }
+
+    /// Gear
+    static var charComponentGear: String { text("char.component.gear") }
+
+    /// Experience
+    static var charComponentExperience: String { text("char.component.experience") }
+
+    /// Parses
+    static var charComponentParses: String { text("char.component.parses") }
+
+    /// Attendance
+    static var charComponentAttendance: String { text("char.component.attendance") }
+
+    /// Discipline
+    static var charComponentDiscipline: String { text("char.component.discipline") }
+
+    /// Common
+    static var charTierCommon: String { text("char.tier.common") }
+
+    /// Uncommon
+    static var charTierUncommon: String { text("char.tier.uncommon") }
+
+    /// Rare
+    static var charTierRare: String { text("char.tier.rare") }
+
+    /// Epic
+    static var charTierEpic: String { text("char.tier.epic") }
+
+    /// Legendary
+    static var charTierLegendary: String { text("char.tier.legendary") }
+
+    /// {ruleset} · {age}
+    static func charBestMeta(ruleset: String, age: String) -> String {
+        format("char.bestMeta", ruleset, age)
+    }
+
+    /// Kill
+    static var charKill: String { text("char.kill") }
+
+    /// Wipe
+    static var charWipe: String { text("char.wipe") }
+
+    /// {result} · {age}
+    static func charFightMeta(result: String, age: String) -> String {
+        format("char.fightMeta", result, age)
+    }
+
+    /// percentile
+    static var charPercentile: String { text("char.percentile") }
+
+    /// Gold dot: the BiS list has a better item for this slot.
+    static var charGoldDot: String { text("char.goldDot") }
+
+    /// {points} points
+    static func charGapPoints(points: String) -> String {
+        format("char.gapPoints", points)
+    }
+
+    /// {spec} · first seen {date}
+    static func charBuildMeta(spec: String, date: String) -> String {
+        format("char.buildMeta", spec, date)
+    }
+
+    /// Open in planner
+    static var charOpenPlanner: String { text("char.openPlanner") }
+
+    /// Parse history
+    static var charParseHistory: String { text("char.parseHistory") }
+
+    /// Forever Score {score}, {tier}.
+    static func charA11yScore(score: String, tier: String) -> String {
+        format("char.a11y.score", score, tier)
+    }
+
+    /// {component} {value} of {cap}.
+    static func charA11yComponent(component: String, value: Int, cap: Int) -> String {
+        format("char.a11y.component", component, value, cap)
+    }
+
+    /// {slot}, {item}, {quality}, item level {level}.
+    static func paperdollA11ySocket(slot: String, item: String, quality: String, level: String) -> String {
+        format("paperdoll.a11y.socket", slot, item, quality, level)
+    }
+
+    /// {slot}, empty.
+    static func paperdollA11yEmpty(slot: String) -> String {
+        format("paperdoll.a11y.empty", slot)
+    }
+
+    /// Two-hand in main hand
+    static var paperdollTwoHand: String { text("paperdoll.twoHand") }
+
+    /// {slot} · Item {id}
+    static func itemsUnknownItem(slot: String, id: String) -> String {
+        format("items.unknownItem", slot, id)
+    }
+
+    /// A better item is on your best in slot list.
+    static var paperdollA11yBetter: String { text("paperdoll.a11y.better") }
+
+    /// {slot} · ilvl {n}
+    static func paperdollDetail(slot: String, n: Int) -> String {
+        format("paperdoll.detail", slot, n)
+    }
 
     /// Your reports
     static var reportsTitle: String { text("reports.title") }

@@ -59,7 +59,8 @@ function readEntry(dir: string, name: string): AppChangelogEntry {
   const id = name.replace(/\.md$/, '');
   const { frontmatter, body } = splitFrontmatter(readFileSync(path.join(dir, name), 'utf8'));
   const parsed = changelogSchema.safeParse(frontmatter);
-  if (!parsed.success) throw new Error(`changelog: ${id} fails the changelog schema: ${parsed.error.message}`);
+  if (!parsed.success)
+    throw new Error(`changelog: ${id} fails the changelog schema: ${parsed.error.message}`);
   const data = parsed.data;
   return {
     id,

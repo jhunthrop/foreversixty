@@ -70,7 +70,10 @@ data class ItemTooltipModel(
     val weaponDamage: String? = null,
     val weaponSpeed: String? = null,
     val weaponDps: String? = null,
+    /** The white `+N Stat` lines. */
     val stats: List<String> = emptyList(),
+    /** The client's green `Equip:` sentences for spell power, healing, mp5 and the rest. */
+    val equipLines: List<String> = emptyList(),
     val effect: String? = null,
     val setName: String? = null,
     val setBonuses: List<String> = emptyList(),
@@ -112,6 +115,7 @@ data class ItemTooltipModel(
                 weaponSpeed = if (weapon) res.getString(R.string.items_weapon_speed, ItemNumbers.hundredths(item.speed)) else null,
                 weaponDps = if (weapon) res.getString(R.string.items_weapon_dps, ItemNumbers.tenths(item.dps)) else null,
                 stats = statLines(item, res),
+                equipLines = equipLines(item, res),
                 effect = item.effectText.split(Regex("\\s+")).filter { it.isNotEmpty() }.joinToString(" ").ifEmpty { null },
                 setName = set?.name,
                 setBonuses = set?.bonuses.orEmpty().map { res.getString(R.string.items_setBonus, it.pieces, it.description) },
@@ -151,12 +155,48 @@ data class ItemTooltipModel(
             },
         )
 
-        /** `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order. */
+        /**
+         * `+22 Intellect`, `-15 Parry`: the client's sign, the site's stat order (its `statLines`). A
+         * stat the client prints as an `Equip:` sentence (spell power, healing, attack power, mp5 and
+         * the rest, `ItemVocabulary.equipStats`) or a rating stat `percent_stats` states as a percent
+         * is not a white line.
+         */
         private fun statLines(item: Item, res: Resources): List<String> =
             ItemVocabulary.statOrder.mapNotNull { (key, name) ->
                 val value = item.stats[key]?.takeIf { it != 0 } ?: return@mapNotNull null
+                if (percentLine(item, key, res) != null || key in ItemVocabulary.equipStats) return@mapNotNull null
                 "${if (value < 0) "-" else "+"}${abs(value)} ${res.getString(name)}"
             }
+
+        /** The green `Equip:` sentences: the percent ones, then one per positive Equip stat share. */
+        private fun equipLines(item: Item, res: Resources): List<String> {
+            val keys = ItemVocabulary.statOrder.map { it.first }
+            val percent = keys.filter { (item.stats[it] ?: 0) != 0 }.mapNotNull { percentLine(item, it, res) }
+            val shares = equipShares(item.stats.filterKeys { it in ItemVocabulary.equipStats })
+            val flat = keys.mapNotNull { key ->
+                val value = shares[key]?.takeIf { it > 0 } ?: return@mapNotNull null
+                ItemVocabulary.equipStats[key]?.let { res.getString(it, value) }
+            }
+            return percent + flat
+        }
+
+        /**
+         * The amount each Equip sentence states. One spell giving equal spell power and healing
+         * (`Increase Spell Dam`) is one sentence: healing keeps only what it adds beyond spell power.
+         */
+        fun equipShares(equip: Map<String, Int>): Map<String, Int> {
+            val spellPower = equip[SPELL_POWER] ?: 0
+            return equip + (HEALING to ((equip[HEALING] ?: 0) - spellPower).coerceAtLeast(0))
+        }
+
+        private const val SPELL_POWER = "spell_power"
+        private const val HEALING = "healing"
+
+        private fun percentLine(item: Item, key: String, res: Resources): String? {
+            val line = ItemVocabulary.percentEquipStats[key] ?: return null
+            val percent = item.percentStats[key]?.takeIf { it != 0 && it == item.stats[key] } ?: return null
+            return res.getString(line, "$percent%")
+        }
 
         /**
          * Where it comes from: the site's formatted line (the BiS row's, else the caller's, which

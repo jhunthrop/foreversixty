@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "limit",
+    "message": "you can watch up to 50 characters",
+    "fields": {
+      "character": "stop watching one of your 50 first"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

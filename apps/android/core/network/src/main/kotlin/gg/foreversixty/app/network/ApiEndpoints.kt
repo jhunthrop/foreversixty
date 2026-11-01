@@ -30,14 +30,17 @@ import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.ItemSet
+import gg.foreversixty.app.model.ItemUsesShard
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.LiveActivityRegistered
 import gg.foreversixty.app.model.LiveActivityRequest
+import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.model.NotificationSettings
 import gg.foreversixty.app.model.NotificationsPatch
+import gg.foreversixty.app.model.Phases
 import gg.foreversixty.app.model.PushTokenRegistered
 import gg.foreversixty.app.model.PushTokenRequest
 import gg.foreversixty.app.model.RaceClassCombo
@@ -46,9 +49,13 @@ import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
 import gg.foreversixty.app.model.RaidView
+import gg.foreversixty.app.model.RankedEncounters
+import gg.foreversixty.app.model.RankingPercentile
+import gg.foreversixty.app.model.RankingsPage
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
 import gg.foreversixty.app.model.ReportMe
+import gg.foreversixty.app.model.SearchIndex
 import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.model.SignupRequest
@@ -59,6 +66,8 @@ import gg.foreversixty.app.model.SimResult
 import gg.foreversixty.app.model.SimStarted
 import gg.foreversixty.app.model.TalentsFile
 import gg.foreversixty.app.model.TiersFile
+import gg.foreversixty.app.model.WatchedCharacter
+import gg.foreversixty.app.model.WatchingList
 import gg.foreversixty.app.model.Widget
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -132,6 +141,30 @@ object ApiEndpoints {
     fun getCoachRecent(): Endpoint<CoachRecent> =
         Endpoint(HttpMethod.Get, "/v1/me/coach/recent", CoachRecent.serializer())
 
+    /** GET /v1/rankings: A leaderboard page (W3-C5) */
+    fun getRankings(encounter: String, difficulty: Int? = null, metric: String? = null, spec: String? = null, `class`: String? = null, phase: String? = null, region: String? = null, ruleset: String? = null, faction: String? = null, since: String? = null, distinct: String? = null, character: String? = null, page: Int? = null): Endpoint<RankingsPage> =
+        Endpoint(HttpMethod.Get, "/v1/rankings", RankingsPage.serializer(), query = listOfNotNull("encounter" to encounter, difficulty?.let { "difficulty" to it.toString() }, metric?.let { "metric" to it }, spec?.let { "spec" to it }, `class`?.let { "class" to it }, phase?.let { "phase" to it }, region?.let { "region" to it }, ruleset?.let { "ruleset" to it }, faction?.let { "faction" to it }, since?.let { "since" to it }, distinct?.let { "distinct" to it }, character?.let { "character" to it }, page?.let { "page" to it.toString() }))
+
+    /** GET /v1/rankings/percentile: Where one value stands in its bracket (W3-C5) */
+    fun getRankingPercentile(encounter: String, difficulty: Int, spec: String? = null, phase: String? = null, metric: String? = null, value: Double): Endpoint<RankingPercentile> =
+        Endpoint(HttpMethod.Get, "/v1/rankings/percentile", RankingPercentile.serializer(), query = listOfNotNull("encounter" to encounter, "difficulty" to difficulty.toString(), spec?.let { "spec" to it }, phase?.let { "phase" to it }, metric?.let { "metric" to it }, "value" to value.toString()))
+
+    /** GET /v1/rankings/encounters: The encounters that have ranked kills (W3-C6) */
+    fun getRankingEncounters(): Endpoint<RankedEncounters> =
+        Endpoint(HttpMethod.Get, "/v1/rankings/encounters", RankedEncounters.serializer())
+
+    /** GET /v1/me/watching: The characters you watch (W3-C7) */
+    fun getWatching(): Endpoint<WatchingList> =
+        Endpoint(HttpMethod.Get, "/v1/me/watching", WatchingList.serializer())
+
+    /** PUT /v1/me/watching/{region}/{ruleset}/{name}: Watch a character (W3-C7) */
+    fun watchCharacter(region: String, ruleset: String, name: String): Endpoint<WatchedCharacter> =
+        Endpoint(HttpMethod.Put, "/v1/me/watching/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}", WatchedCharacter.serializer())
+
+    /** DELETE /v1/me/watching/{region}/{ruleset}/{name}: Stop watching a character (W3-C7) */
+    fun unwatchCharacter(region: String, ruleset: String, name: String): Endpoint<Unit> =
+        Endpoint(HttpMethod.Delete, "/v1/me/watching/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}", Unit.serializer())
+
     /** GET /v1/sims: The caller's own saved sims */
     fun listMySims(page: Int? = null, kind: String? = null, lane: String? = null): Endpoint<SimList> =
         Endpoint(HttpMethod.Get, "/v1/sims", SimList.serializer(), query = listOfNotNull("mine" to "1", page?.let { "page" to it.toString() }, kind?.let { "kind" to it }, lane?.let { "lane" to it }))
@@ -155,6 +188,10 @@ object ApiEndpoints {
     /** GET /v1/characters/{region}/{ruleset}/{name}/sim-input: The character model the sim page starts from */
     fun getSimInput(region: String, ruleset: String, name: String): Endpoint<SimInput> =
         Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/sim-input", SimInput.serializer())
+
+    /** GET /v1/phases: The content phase boundaries (W3-C5) */
+    fun getPhases(): Endpoint<Phases> =
+        Endpoint(HttpMethod.Get, "/v1/phases", Phases.serializer())
 
     /** GET /v1/characters/search: Characters whose name starts with the typed text (the lookup typeahead) */
     fun searchCharacters(q: String? = null, region: String? = null, ruleset: String? = null, limit: Int? = null): Endpoint<CharacterSearch> =
@@ -307,6 +344,18 @@ object StaticEndpoints {
     fun getSets(build: String): StaticResource<List<ItemSet>> =
         StaticResource("/data/${build.encodeURLPathPart()}/sets.json", ListSerializer(ItemSet.serializer()))
 
+    /** /data/{build}/loot.json: Where every item of a build comes from (W3-C8) */
+    fun getLoot(build: String): StaticResource<LootFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/loot.json", LootFile.serializer())
+
+    /** /data/{build}/search.json: The apps' offline search index (W3-C8) */
+    fun getSearchIndex(build: String): StaticResource<SearchIndex> =
+        StaticResource("/data/${build.encodeURLPathPart()}/search.json", SearchIndex.serializer())
+
+    /** /data/{build}/item-uses/{shard}.json: Item sources and the best-in-slot lists that use each item, one shard (W3-C8) */
+    fun getItemUses(build: String, shard: Int): StaticResource<ItemUsesShard> =
+        StaticResource("/data/${build.encodeURLPathPart()}/item-uses/$shard.json", ItemUsesShard.serializer())
+
     /** /data/{build}/talents/{class}.json: A class's talent trees */
     fun getTalents(build: String, className: String): StaticResource<TalentsFile> =
         StaticResource("/data/${build.encodeURLPathPart()}/talents/${className.encodeURLPathPart()}.json", TalentsFile.serializer())
@@ -330,12 +379,19 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/coach/night", "coach.night", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/reports/{id}/fights/{n}/coach", "coach.fight", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/me/coach/recent", "coach.recent", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/rankings", "rankings.list", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/rankings/percentile", "rankings.percentile", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/rankings/encounters", "rankings.encounters", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/watching", "watching.list", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Put, "/v1/me/watching/{region}/{ruleset}/{name}", "watching.put", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Delete, "/v1/me/watching/{region}/{ruleset}/{name}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/sims", "sims.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/sims/{id}", "sims.result", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/sims/{id}/seen", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Post, "/v1/sims/{id}/rerun", "sims.rerun", HttpStatusCode.fromValue(202)),
         FixtureRoute(HttpMethod.Get, "/v1/sims/{id}/progress", "sims.progress", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/sim-input", "character.sim-input.addon", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/phases", "phases", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/search", "character.search", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}", "character.card", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/home", "guild.home", HttpStatusCode.fromValue(200)),
@@ -376,6 +432,9 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/sets.json", "cdn.sets", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/loot.json", "cdn.loot", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/search.json", "cdn.search", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/item-uses/{shard}.json", "cdn.item-uses", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/talents/{class}.json", "cdn.talents.{class}", HttpStatusCode.fromValue(200)),
     )
 }

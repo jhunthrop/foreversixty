@@ -8,6 +8,9 @@ import SwiftUI
 struct BisScreen: View {
     @State private var model: BisModel
     @State private var tooltip: ItemTooltipRequest?
+    /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
+    @State private var itemPage: ItemPageRoute?
+    @Environment(\.searchNavigator) private var search
     private let catalog: ItemCatalog
     /// Lane F1's account, nil while its feature switch is off.
     private let session: SessionStore?
@@ -46,29 +49,52 @@ struct BisScreen: View {
                 build: model.build
             )
             .refreshable { await model.refresh() }
-            // The system search, minimised to the bar's trailing button (spec F3.1). The leading
-            // slot is the character selector (lane F1), the same on Home.
-            .searchable(text: $model.searchText, prompt: Copy.bisSearch)
+            // The system search, minimised to the bar's trailing button (spec F3.1), until lane
+            // F12's universal search replaces it. The leading slot is the character selector
+            // (lane F1), the same on Home.
+            .modifier(BisSearchMode(text: $model.searchText, isUniversal: search != nil))
             .characterSelector(isOn: session != nil)
-            .searchToolbarBehavior(.minimize)
             .toolbarBackground(FSColor.bg, for: .navigationBar)
             .sheet(isPresented: $model.isPickerPresented) {
                 BisPickerSheet(context: model.context, catalog: model.catalog, build: model.build) { selection in
                     Task { await model.select(selection) }
                 }
             }
-            .sheet(item: $tooltip) { ItemTooltipSheet(request: $0, catalog: catalog) }
+            .sheet(item: $tooltip) { request in
+                ItemTooltipSheet(request: request, catalog: catalog, moreAbout: search.map { _ in { openItemPage(request) } })
+            }
+            .navigationDestination(item: $itemPage) { route in
+                if let search {
+                    ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
+                }
+            }
         }
+        .onChange(of: search?.bisRequest) { Task { await takeBisRequest() } }
         .onChange(of: router?.request) { _, request in Task { await apply(request) } }
         .task(id: owner) {
             guard owner != nil else { return }
             await model.start()
             await apply(router?.request)
+            await takeBisRequest()
             #if DEBUG
                 // `-FSBisPicker open` opens the picker, so a capture script shows the real sheet.
                 if UserDefaults.standard.string(forKey: "FSBisPicker") == "open" { model.isPickerPresented = true }
                 await openFromLaunchArguments()
             #endif
+        }
+    }
+
+    private func openItemPage(_ request: ItemTooltipRequest) {
+        tooltip = nil
+        itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
+    }
+
+    /// Lane F12: a list a search result asked for (nil: the character's own), once the model is up.
+    private func takeBisRequest() async {
+        guard model.build != nil, let request = search?.takeBisRequest() else { return }
+        itemPage = nil
+        if let selection = request.selection ?? model.context.characterSelection {
+            await model.select(selection)
         }
     }
 
@@ -117,6 +143,24 @@ extension BisScreen {
             bundledBuild: BundledBuild.read()
         )
         let model = BisModel(source: source, catalog: .bundled(), preferences: UserDefaultsBisPreferences())
-        return BisScreen(model: model, catalog: ItemCatalog(client: staticClient), session: session, router: router)
+        return BisScreen(model: model, catalog: ItemCatalog(store: environment.staticData), session: session, router: router)
+    }
+}
+
+
+/// F3's own filter while lane F12's search is off; the universal search button once it is on
+/// (spec Wave 3 §3.2: F3 keeps no second search).
+private struct BisSearchMode: ViewModifier {
+    @Binding var text: String
+    let isUniversal: Bool
+
+    func body(content: Content) -> some View {
+        if isUniversal {
+            content.searchButton()
+        } else {
+            content
+                .searchable(text: $text, prompt: Copy.bisSearch)
+                .searchToolbarBehavior(.minimize)
+        }
     }
 }

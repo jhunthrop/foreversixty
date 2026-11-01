@@ -43,6 +43,14 @@ export function serializerOf(type) {
   }
 }
 
+// Kotlin's hard keywords: an OpenAPI name that is one (`class`) is written in backticks.
+const HARD_KEYWORDS = new Set([
+  'as', 'break', 'class', 'continue', 'do', 'else', 'false', 'for', 'fun', 'if', 'in', 'interface', 'is',
+  'null', 'object', 'package', 'return', 'super', 'this', 'throw', 'true', 'try', 'typealias', 'typeof',
+  'val', 'var', 'when', 'while',
+]);
+const ident = (name) => (HARD_KEYWORDS.has(name) ? `\`${name}\`` : name);
+
 const kdoc = (text, indent) => (text ? [`${indent}/** ${docLine(text)} */`] : []);
 
 function renderField(f) {
@@ -90,18 +98,18 @@ function kotlinPath(op) {
     .map((s) => {
       if (s.literal !== undefined) return s.literal;
       const isString = s.param.type.kind === 'scalar' && s.param.type.scalar === 'string';
-      return isString ? `\${${s.param.name}.encodeURLPathPart()}` : `$${s.param.name}`;
+      return isString ? `\${${ident(s.param.name)}.encodeURLPathPart()}` : `$${s.param.name}`;
     })
     .join('');
 }
 
 function params(op) {
   return [
-    ...op.pathParams.map((p) => `${p.name}: ${kotlinType(p.type)}`),
+    ...op.pathParams.map((p) => `${ident(p.name)}: ${kotlinType(p.type)}`),
     ...(op.body ? [`body: ${kotlinType(op.body.type)}`] : []),
     ...op.query
       .filter((q) => q.constant === undefined)
-      .map((q) => `${q.name}: ${kotlinType(q.type)}${q.required ? '' : '? = null'}`),
+      .map((q) => `${ident(q.name)}: ${kotlinType(q.type)}${q.required ? '' : '? = null'}`),
   ];
 }
 
@@ -109,8 +117,8 @@ function queryList(op) {
   const pairs = op.query.map((q) => {
     const text = q.type.kind === 'scalar' && q.type.scalar === 'string' ? '' : '.toString()';
     if (q.constant !== undefined) return `"${q.json}" to "${q.constant}"`;
-    if (q.required) return `"${q.json}" to ${q.name}${text}`;
-    return `${q.name}?.let { "${q.json}" to it${text} }`;
+    if (q.required) return `"${q.json}" to ${ident(q.name)}${text}`;
+    return `${ident(q.name)}?.let { "${q.json}" to it${text} }`;
   });
   return pairs.length ? `listOfNotNull(${pairs.join(', ')})` : null;
 }

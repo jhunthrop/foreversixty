@@ -53,8 +53,12 @@ struct RootView: View {
     @State private var raidsRouter = RaidsRouter()
     /// Lane F5: Home's Sims stack, which sim links push onto.
     @State private var simsRouter = SimsRouter()
+    /// Lane F12: the search cover and the BiS list a result asks for.
+    @State private var search: SearchNavigator
     /// Lane F10: Home's Your reports stack, which report links push onto.
     @State private var reportsRouter = ReportsRouter()
+    /// Lane F11: Home's Rankings and character pages, which rankings and player links push onto.
+    @State private var rankingsRouter = RankingsRouter()
     /// Lane F9: the Guides tab's stack, which guide links push onto.
     @State private var guidesRouter = GuidesRouter()
     /// Lane F9: lists a guide's Gear row and `/app/bis` links ask the BiS tab for.
@@ -71,6 +75,7 @@ struct RootView: View {
 
     init(environment: AppEnvironment) {
         self.environment = environment
+        _search = State(initialValue: SearchNavigator(dependencies: .live(environment)))
         let service = RaidsDependencies.live(environment).service
         let session = environment.session
         let loader = CalendarInputLoader(service: service, currentKey: { session.currentCharacter?.key })
@@ -102,7 +107,15 @@ struct RootView: View {
         .tint(Theme.Palette.accent)
         .environment(environment.session)
         .environment(simsRouter)
+        .environment(\.searchNavigator, searchIsOn ? search : nil)
+        .fullScreenCover(isPresented: $search.isPresented) {
+            SearchScreen(navigator: search).tint(Theme.Palette.accent)
+        }
+        .onChange(of: search.bisRequest) { _, request in
+            if request != nil { selection = .bis }
+        }
         .environment(reportsRouter)
+        .environment(rankingsRouter)
         .environment(plannerRouter)
         .modifier(PlannerHost(router: plannerRouter, newBuild: plannerNewBuild))
         .task { await environment.appConfig.refresh() }
@@ -120,6 +133,9 @@ struct RootView: View {
             #endif
         }
     }
+
+    /// Lane F12: universal search, its button and the item page.
+    private var searchIsOn: Bool { environment.isAvailable(.search) }
 
     /// Lane F1: the account states and the character selector.
     private var signInAvailable: Bool { environment.isAvailable(.signIn) }
@@ -169,13 +185,13 @@ struct RootView: View {
 }
 
 extension RootView {
-    /// A link selects its tab: sim and report links Home (lanes F5, F10), raid links Raids (lane F4).
     /// Lane F16: the guild extras' dependencies, nil while `guild_extras` is off.
     private var guildExtras: GuildExtrasDependencies? {
         environment.isAvailable(.guildExtras) ? .live(environment) : nil
     }
 
-    /// A link selects its tab: sim links Home (lane F5), raid links Raids (lane F4).
+    /// A link selects its tab: sim, report, rankings and player links Home (lanes F5, F10, F11),
+    /// guide links Guides and list links BiS (lane F9), raid links Raids (lane F4).
     private func openLink(_ link: DeepLink) {
         if PlannerRouter.handles(link) {
             // Lane F13: with the switch off, a pasted /b/ link opens the site's page instead.
@@ -188,6 +204,10 @@ extension RootView {
             guard environment.isAvailable(.reports) else { return }
             selection = .home
             reportsRouter.open(link)
+        } else if RankingsRouter.handles(link) {
+            guard environment.isAvailable(.rankings) else { return }
+            selection = .home
+            rankingsRouter.open(link)
         } else if GuidesRouter.handles(link) {
             guard environment.isAvailable(.guides) else { return }
             selection = .guides

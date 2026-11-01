@@ -49,6 +49,18 @@
       "example": "/app/report/ewlrx3enxbeb"
     },
     {
+      "path": "/app/rankings/{encounter}",
+      "screen": "rankings",
+      "opens": "Home, Rankings, on that encounter (its slug or id).",
+      "example": "/app/rankings/onyxia"
+    },
+    {
+      "path": "/app/player/{region}/{ruleset}/{name}",
+      "screen": "player",
+      "opens": "Home, that character's page (F11.4); the current character does not change.",
+      "example": "/app/player/us/normal/voltaris"
+    },
+    {
       "path": "/app/guides",
       "screen": "guides",
       "opens": "Guides tab.",

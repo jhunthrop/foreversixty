@@ -337,8 +337,17 @@ jobs:
               # 2026-09-29): tonight's regeneration is the right one, so take
               # it, finish the rebase, and let the autostash come back.
               git checkout --theirs -- "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
-              git add "data/builds/${{ steps.identity.outputs.build }}" 2>/dev/null || true
-              GIT_EDITOR=true git rebase --continue || git rebase --abort
+              # addon-data.json and Data.lua derive from the picks AND main's
+              # curated inputs, and data.yml's push job commits them too, so
+              # neither side is right after a rebase (run 41332442067 lost its
+              # picks on exactly this): render them again from the rebased tree.
+              # A failed render aborts the rebase rather than commit conflict markers.
+              if (cd data && uv run python -m pipeline addon-data --build "${{ steps.identity.outputs.build }}"); then
+                git add "data/builds/${{ steps.identity.outputs.build }}" addon/ForeverSixty/Data.lua
+                GIT_EDITOR=true git rebase --continue || git rebase --abort
+              else
+                git rebase --abort
+              fi
               if git stash list | grep -q autostash; then git stash pop || true; fi
               git push && exit 0
             fi

@@ -311,6 +311,7 @@ struct NextRowView: View {
         case .talents: "sparkles"
         case .sims: "flask"
         case .logs: "doc.text"
+        case .rankings: "trophy"
         }
     }
 

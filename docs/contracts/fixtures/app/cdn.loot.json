@@ -1,0 +1,137 @@
+{
+  "sources": [
+    {
+      "id": "dungeon:blackrock-depths",
+      "kind": "dungeon",
+      "name": "Blackrock Depths",
+      "zone_id": 1584,
+      "bosses": [
+        {
+          "id": "dungeon:blackrock-depths:9018",
+          "name": "High Interrogator Gerstahn ",
+          "npc_id": 9018,
+          "items": [
+            5432,
+            11140,
+            11446,
+            11623
+          ],
+          "item_chances": {
+            "5432": 14.2857,
+            "11140": 100.0,
+            "11446": 25.0,
+            "14047": 17.0,
+            "18945": 10.0,
+            "22528": 7.0
+          },
+          "item_source_origin": {
+            "5432": "wowhead",
+            "11623": "fork"
+          },
+          "rank": 1
+        },
+        {
+          "id": "dungeon:blackrock-depths:9319",
+          "name": "Houndmaster Grebmar",
+          "npc_id": 9319,
+          "items": [
+            11078,
+            11446,
+            11623,
+            11626
+          ],
+          "item_chances": {
+            "11078": 5.0,
+            "11446": 25.0,
+            "11628": 15.0,
+            "11629": 15.0,
+            "14047": 20.0,
+            "18945": 13.0,
+            "22528": 8.0
+          },
+          "item_source_origin": {
+            "11626": "fork"
+          },
+          "rank": 1
+        }
+      ],
+      "trash": [
+        11746,
+        11764,
+        11767
+      ]
+    },
+    {
+      "id": "vendor:10118",
+      "kind": "vendor",
+      "name": "Nessa Shadowsong",
+      "npc_id": 10118,
+      "items": [
+        6256,
+        6365
+      ],
+      "source_origin": "classic-db"
+    },
+    {
+      "id": "rep:bloodsail-buccaneers:friendly",
+      "kind": "rep",
+      "name": "Bloodsail Buccaneers",
+      "faction_id": 87,
+      "standing": "friendly",
+      "items": [
+        12185
+      ]
+    },
+    {
+      "id": "world_drop:1-10",
+      "kind": "world_drop",
+      "name": "World drop",
+      "items": [
+        805,
+        828,
+        4496
+      ],
+      "level_min": 1,
+      "level_max": 10,
+      "source_origin": "classic-db"
+    },
+    {
+      "id": "crafted:alchemy",
+      "kind": "crafted",
+      "name": "Alchemy",
+      "profession": "alchemy",
+      "items": [
+        13503
+      ],
+      "source_origin": "wowhead"
+    },
+    {
+      "id": "pvp:rank-10:alliance",
+      "kind": "pvp",
+      "name": "Rank 10 (Alliance)",
+      "rank": 10,
+      "faction": "alliance",
+      "faction_source": "title",
+      "title": "Knight",
+      "items": [
+        272695
+      ]
+    }
+  ],
+  "quests": {
+    "60": [
+      {
+        "quest_id": 6,
+        "name": "Bounty on Garrick Padfoot",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 2,
+        "level": 5,
+        "level_source": "classic-db"
+      }
+    ]
+  },
+  "factions": {
+    "744": "alliance"
+  }
+}

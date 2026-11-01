@@ -661,6 +661,40 @@ The game icon for any item, talent or spell: `icon` is the stem a JSON file carr
 never reinterpret or re-badge. A build that does not carry an icon answers 404: fall back to the
 neutral placeholder. Tree art is `/data/<build>/trees/<background>.webp`.
 
+### /data/{build}/loot.json (W3-C8, lane F12)
+
+`{ sources[], quests?, factions? }`: the site's loot file, now an app contract. A source is
+`{ id, kind, name, items?, trash?, bosses?[{ id, name, npc_id?, items, item_chances? }],
+item_chances?, … }` with `kind` one of `raid|dungeon|world|world_drop|zone|vendor|crafted|rep|pvp|quest`.
+`quests` maps an item id (string key) to the quests that reward it (`{ quest_id, name, faction,
+min_level, level, … }`). Drop chances are percents, absent when unknown, never 0 for unknown.
+The item page reads `item-uses` instead; this is for anything that needs the raw sources. Fixture
+`cdn.loot`, held to the generator's file by `TestCDNLootFixtureMatchesTheGenerator`.
+
+### /data/{build}/search.json (W3-C8, lane F12)
+
+`{ build, item_uses_shards, items[], talents[], guides[] }`, the apps' offline search. An item is
+`{ id, name, icon, quality, slot, item_level, required_level, classes[] }` (the class slugs whose
+items file carries it); a talent `{ id, name, icon, class, tree, spec_name, max_rank }`; a guide
+`{ class, spec, spec_name, role, icon }` for every spec with a written guide (`/guides/{class}/{spec}`).
+Emitted by the site build (`web/src/pages/data/[build]/search.json.ts`) for the active build, not
+by the data pipeline, so nothing is committed; the build fails when it gzips over 300 KB (215 KB
+on 70658). Fixture `cdn.search`, held to the generator by `web/src/lib/search/contract-fixtures.test.ts`.
+
+### /data/{build}/item-uses/{shard}.json (W3-C8, lane F12)
+
+`{ build, shard, shards, items: { "<id>": { sources[], specs[] } } }`. An item's shard is
+`id % search.item_uses_shards` (64). `sources[]` is `{ kind, title, place?, chance?, min_level? }`,
+ranked as the site tooltip ranks them (boss kills and quest rewards first, a known chance before an
+unknown one) and in its words (`web/src/lib/items/item-sources.ts`, which the tooltip also reads):
+`title` is the boss, vendor, quest, recipe, faction and standing or `World drop`; `place` the
+instance of a boss drop or the side of a quest. Print `Drop chance not known` for a boss drop with
+no `chance`, never `0%`. `specs[]` is `{ spec, class, spec_name, band, preset, faction, rank }`, one
+row per spec at its best placement (lower rank, then higher band, then the raid preset); `rank` 0 is
+the pick and n is runner-up n; `faction` is null when both sides place it the same. Picks come
+before runners-up, then class and spec in `data/curated/specs.json`'s order. An item with no source
+and no list is absent. Fixture `cdn.item-uses`.
+
 ### /data/dates.json
 The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a display date, "Nov 4"),
 `value` (the label), omitted `note`, `iso` (YYYY-MM-DD), `endIso`, `time`, `running` (the sentence
@@ -910,9 +944,47 @@ Apple's APNs key does not exist yet. So iOS Live Activities and the Android ongo
 are started and updated by the app while it runs, and widgets tick on their timelines; the
 registrations are kept and swept so the senders can use them the day they exist.
 
+## Rankings and character pages (Wave 3 lane F11)
+
+The apps' F11 (spec `design/specs/2026-10-31-mobile-wave3.md` §5.3). Fixtures tell one story,
+written by `design/mocks/2026-10-31-mobile-wave3/f11_fixtures.py`: the Elemental Shaman Onyxia
+board on 17 December, Lightningbolltz 14th of 212 at 398.0 DPS, his alt Sparkwick 204th.
+
+### GET /v1/rankings, /v1/rankings/percentile, /v1/phases (W3-C5)
+The site's own routes, unchanged, now app operations (X-App headers, 426). The board asks
+`distinct=character` with the current character's `class`, `spec` and `character` key, so
+`character_rank { rank, row }` places it whichever page it is on; `deduped` true means `total`
+counts characters (the app says "characters"), false kills. A row's `player.class` and
+`player.spec` are absent when the log did not name them, `guild` when the report is filed to no
+guild. Fixtures `rankings.list` (your row on page 1), `rankings.list.off-page` (pinned, rank
+204), `rankings.list.empty`, `rankings.percentile` (`{ percentile, ranked }`), `phases`.
+
+### GET /v1/rankings/encounters (W3-C6)
+Public. `{ encounters: [ { id, slug, name, zone, size, kills } ] }`, most ranked kills first:
+every encounter with a ranked kill (a kill whose rows are not removed, the boards' own rule). `zone`
+is the newest log's zone and `size` the most common raid size, each null when no log says.
+Fixture `rankings.encounters`.
+
+### GET /v1/me/watching; PUT and DELETE /v1/me/watching/{region}/{ruleset}/{name} (W3-C7)
+Session or app. Migration 0065 `watched_characters (user_id, character_key, added_at)`. `GET`
+answers `{ rows: [ { key, region, ruleset, name, class, level, added_at } ] }`, newest first;
+`class` and `level` are null when no source knows them (level by the character page's rule), and a
+character whose account turns anonymous is left out. `PUT` is idempotent and answers the row (200,
+not the spec's 204, so the app can draw the watched row without a second read); `404 not_found` for
+a character the site does not show; `409 limit` past 50 with `fields.character`. `DELETE` is 204
+whether or not it was watched. Fixtures `watching.list`, `watching.list.empty`, `watching.put`;
+errors `watching.put.error-not-found`, `watching.put.error-limit`.
+
+### GET /v1/characters/{region}/{ruleset}/{name}: component_caps
+The character card gains `component_caps { gear, experience, parses, attendance, discipline }`,
+the score's ceilings (500, 700, 600, 200, 100 from `api/internal/rating/score_v2.go`), so the app
+draws each bar as value over cap without knowing the formula; null with the score. New fixtures
+`character.card.ranked` (Voltaris, the board's first) and `character.card.yours` (Lightningbolltz),
+and `cdn.items.shaman`, the build's items for their gear.
+
 ## Not in v1
 
-No in-app purchase (decision P). Not read: rankings, tier lists, guides (static site pages), the
+No in-app purchase (decision P). Not read: tier lists, guides (static site pages), the
 report per-fight files and coach, `POST /v1/sims/run` (the app reruns, it does not compose a sim),
 loot awards, and the roster approve and remove routes (the officer roster actions stay on the web).
 If a later lane needs one, it adds its section here and its fixtures in the same commit.

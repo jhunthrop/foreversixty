@@ -58,6 +58,26 @@ object ItemVocabulary {
         "arcane_res" to R.string.items_stat_arcaneRes,
     )
 
+    /**
+     * The stats the Classic client prints only as a green `Equip:` sentence, whatever states them,
+     * and that sentence (the site's `EQUIP_STAT_LINES` in `tooltip.ts`).
+     */
+    val equipStats: Map<String, Int> = mapOf(
+        "spell_power" to R.string.items_equip_spellPower, "healing" to R.string.items_equip_healing,
+        "attack_power" to R.string.items_equip_attackPower, "ranged_attack_power" to R.string.items_equip_rangedAttackPower,
+        "mp5" to R.string.items_equip_mp5, "spell_penetration" to R.string.items_equip_spellPenetration,
+        "fire_power" to R.string.items_equip_firePower, "block_value" to R.string.items_equip_blockValue,
+    )
+
+    /**
+     * Defense and the rating family, which the client states as an Equip sentence only when the
+     * row's `percent_stats` gives the same figure; otherwise the stat stays a white line.
+     */
+    val percentEquipStats: Map<String, Int> = mapOf(
+        "crit" to R.string.items_equip_crit, "hit" to R.string.items_equip_hit, "dodge" to R.string.items_equip_dodge,
+        "parry" to R.string.items_equip_parry, "block" to R.string.items_equip_block, "defense" to R.string.items_equip_defense,
+    )
+
     private val standings = mapOf(
         "hated" to R.string.items_standing_hated, "hostile" to R.string.items_standing_hostile,
         "unfriendly" to R.string.items_standing_unfriendly, "neutral" to R.string.items_standing_neutral,

@@ -266,11 +266,11 @@ struct ItemTooltipTests {
         let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: blocker)
         #expect(rows.map(\.slot) == ItemVocabulary.frameSlots)
         #expect(rows.count == 17)
-        #expect(rows.first { $0.slot == "off_hand" }?.wornName == "none: Legionite Glaive is two-handed.")
+        #expect(rows.first { $0.slot == "off_hand" }?.wornName == "Two-hand in main hand")
         let trinket = try #require(rows.first { $0.slot == "trinket2" })
         #expect(trinket.worn == nil && trinket.wornName == "Empty" && trinket.pick?.id == 249_469)
         #expect(rows.first { $0.slot == "shoulder" }?.isBestInSlot == true)
-        #expect(rows.first { $0.slot == "wrist" }?.wornName == "Not in our item data yet")
+        #expect(rows.first { $0.slot == "wrist" }?.wornName == "Wrist · Item 999999")
         #expect(rows.first { $0.slot == "hands" }?.wornName == "Mourning Handguards")
     }
 }

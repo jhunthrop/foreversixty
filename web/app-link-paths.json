@@ -8,6 +8,8 @@
     "/app/bis/*/*",
     "/app/sim/*",
     "/app/report/*",
+    "/app/rankings/*",
+    "/app/player/*/*/*",
     "/app/guides",
     "/app/guides/*/*",
     "/app/planner/*",

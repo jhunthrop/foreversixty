@@ -1,5 +1,6 @@
 package gg.foreversixty.app.account
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
@@ -38,12 +39,16 @@ object AccountCopy {
 
     /** The site's ruleset labels (web/src/lib/characters.ts); an unknown one is echoed. */
     @Composable
-    fun ruleset(id: String): String = when (id) {
-        "normal" -> stringResource(R.string.account_ruleset_normal)
-        "pvp" -> stringResource(R.string.account_ruleset_pvp)
-        "rp" -> stringResource(R.string.account_ruleset_rp)
-        "hardcore" -> stringResource(R.string.account_ruleset_hardcore)
-        else -> id
+    fun ruleset(id: String): String = rulesetName(id)?.let { stringResource(it) } ?: id
+
+    /** The label's resource, for callers outside composition (Search's character rows). */
+    @StringRes
+    fun rulesetName(id: String): Int? = when (id) {
+        "normal" -> R.string.account_ruleset_normal
+        "pvp" -> R.string.account_ruleset_pvp
+        "rp" -> R.string.account_ruleset_rp
+        "hardcore" -> R.string.account_ruleset_hardcore
+        else -> null
     }
 
     @Composable
