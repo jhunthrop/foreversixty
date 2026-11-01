@@ -34,6 +34,8 @@ RATING_FACTORS = {
     "parry": 15.0,
     "block": 5.0,
     "defense": 1.0,
+    "expertise": 10.0,
+    "haste": 10.0,
 }
 
 
@@ -211,6 +213,32 @@ def test_item_stat_83_is_flat_weapon_damage():
     assert damage.bonus_physical_damage == expected
     agility_index = pb.Stat.Value("StatAgility")
     assert agility_index >= len(damage.stats) or damage.stats[agility_index] == 0
+
+
+def test_item_stat_37_is_expertise_at_ten_rating_a_percent():
+    """ItemSparse stat 37 is expertise rating: Wowhead Forever renders it as
+    "Reduces chance to be Dodged or Parried by N%" (2026-11-01: Dwarven Tree
+    Chopper 2907 0.6%, Servomechanic Sledgehammer 4548 1.0%, Band of the Better
+    Half 284716 1.2%), and the budget share over combatratings.txt's Expertise
+    column (10 at 60) reproduces all eight client rows Wowhead lists. The
+    engine's StatExpertise is that percentage. It was dropped (round 5)."""
+    expertise = _with_first_stat(12798, "37", "5000")
+    agility = _with_first_stat(12798, "3", "5000")
+    rating = agility.stats[pb.Stat.Value("StatAgility")]
+    assert rating > 0
+    assert expertise.stats[pb.Stat.Value("StatExpertise")] == pytest.approx(rating / 10.0)
+
+
+def test_item_stat_36_is_melee_and_spell_haste_at_ten_rating_a_percent():
+    """ItemSparse stat 36 is haste rating: Wowhead Forever renders it as
+    "Increases your attack speed and casting speed by N%" (Lightbreaker Wrists
+    239512: 1.0%, the budget share over the Haste columns' 10 at 60). No
+    Phase 1 item carries it; it is mapped so none is dropped silently."""
+    haste = _with_first_stat(12798, "36", "5000")
+    agility = _with_first_stat(12798, "3", "5000")
+    percent = agility.stats[pb.Stat.Value("StatAgility")] / 10.0
+    assert haste.stats[pb.Stat.Value("StatMeleeHaste")] == pytest.approx(percent)
+    assert haste.stats[pb.Stat.Value("StatSpellHaste")] == pytest.approx(percent)
 
 
 def test_an_unrestricted_item_has_an_empty_class_allowlist():

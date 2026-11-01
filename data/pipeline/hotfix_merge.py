@@ -29,6 +29,7 @@ from pipeline.hotfix_cache import (
     decode_table_hotfixes,
     read_cache,
 )
+from pipeline.wago_hotfixes import HOTFIX_BUILD_COLUMN, WAGO_HOTFIX_DIR
 
 #: Column `hotfix_csv_rows` adds to mark a row's hotfix status. Not a real
 #: client column -- `merge_hotfix_rows` strips it before a hotfix row
@@ -115,14 +116,53 @@ def merge_hotfix_rows(
 def merge_hotfix_table(raw: Path, table: str) -> list[dict[str, str]]:
     """`raw/<table>.csv` merged with `raw/hotfixes/<table>.csv`, or the
     shipped rows unchanged when no hotfix file exists for this table. A
-    hotfix directory carrying SEEDED_MARKER merges add-only."""
+    hotfix directory carrying SEEDED_MARKER merges add-only. wago.tools'
+    layered pushes (`raw/wago-hotfixes/<table>.csv`, written by
+    `python -m pipeline fetch-wago-hotfixes`) go over both, by
+    `merge_wago_rows`' rule."""
     shipped = read_csv(raw / f"{table}.csv")
     hotfix_dir = raw / "hotfixes"
     hotfix_path = hotfix_dir / f"{table}.csv"
-    if not hotfix_path.exists():
-        return shipped
-    add_only = (hotfix_dir / SEEDED_MARKER).exists()
-    return merge_hotfix_rows(shipped, read_csv(hotfix_path), add_only=add_only)
+    seeded = (hotfix_dir / SEEDED_MARKER).exists()
+    dump = read_csv(hotfix_path) if hotfix_path.exists() else []
+    merged = merge_hotfix_rows(shipped, dump, add_only=seeded) if dump else shipped
+    wago_path = raw / WAGO_HOTFIX_DIR / f"{table}.csv"
+    if not wago_path.exists():
+        return merged
+    own_session_ids = set() if seeded else {row["ID"] for row in dump}
+    return merge_wago_rows(
+        merged,
+        read_csv(wago_path),
+        shipped_ids={row["ID"] for row in shipped},
+        own_session_ids=own_session_ids,
+        build=raw.parent.name,
+    )
+
+
+def merge_wago_rows(
+    merged: list[dict[str, str]],
+    wago: list[dict[str, str]],
+    *,
+    shipped_ids: set[str],
+    own_session_ids: set[str],
+    build: str,
+) -> list[dict[str, str]]:
+    """`merged` (shipped plus the dump) with `pipeline.wago_hotfixes`' layered
+    rows over it. A wago row replaces any row for an id the shipped table lacks
+    (the seeded dump is older than every wago push), and a shipped row only
+    when it was pushed for this very build: an older build's push may since
+    have been baked into the client differently. A dump from this build's own
+    play session (no SEEDED_MARKER) beats wago for the ids it carries.
+    """
+    by_id = {row["ID"]: row for row in merged}
+    for row in wago:
+        row_id = row["ID"]
+        if row_id in own_session_ids:
+            continue
+        if row_id in shipped_ids and row.get(HOTFIX_BUILD_COLUMN) != build:
+            continue
+        by_id[row_id] = {k: v for k, v in row.items() if k != HOTFIX_BUILD_COLUMN}
+    return [by_id[row_id] for row_id in sorted(by_id, key=int)]
 
 
 #: (table name, table hash, schema) for every table `python -m pipeline

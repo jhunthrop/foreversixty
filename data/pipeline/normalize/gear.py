@@ -143,7 +143,14 @@ SLOT_BY_INVENTORY_TYPE: dict[int, str] = {
 #: `SimItem.bonus_physical_damage`; `build_class_items` keeps it out of the
 #: planner's `stats`.
 WEAPON_DAMAGE_STAT_KEY = "bonus_physical_damage"
-PLANNER_EXCLUDED_STAT_KEYS = frozenset({WEAPON_DAMAGE_STAT_KEY})
+#: ItemSparse stats 37 (expertise rating) and 36 (haste rating), Wowhead
+#: Forever's "Reduces chance to be Dodged or Parried by N%" and "Increases your
+#: attack speed and casting speed by N%". simdb converts them at
+#: combatratings.txt's level-60 factors (`pipeline.simdb.ratings`) and splits
+#: haste into melee and spell haste; the planner has no key for either.
+EXPERTISE_STAT_KEY = "expertise"
+HASTE_STAT_KEY = "haste"
+PLANNER_EXCLUDED_STAT_KEYS = frozenset({WEAPON_DAMAGE_STAT_KEY, EXPERTISE_STAT_KEY, HASTE_STAT_KEY})
 
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the
 #: planner does not track. An id that is not a key here raises ItemDataError
@@ -181,13 +188,13 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     56: "arcane_res",
     # The 1.60 client (Forever beta) is a modern client build: its ItemSparse rows
     # reference the full retail ITEM_MOD vocabulary even though Forever's Classic-style
-    # planner has no use for combat ratings retail grew after Classic (haste, expertise,
-    # armor penetration, mastery, versatility, avoidance, leech, speed, indestructible,
+    # planner has no use for combat ratings retail grew after Classic (armor
+    # penetration, mastery, versatility, avoidance, leech, speed, indestructible,
     # corruption resistance, socket bonuses and the rest). None of Classic Era's items
     # use them, so they are mapped to None here rather than guessed at with a stat key
     # the planner does not have.
-    36: None,  # haste rating
-    37: None,  # expertise rating
+    36: HASTE_STAT_KEY,  # Lightbreaker Wrists 239512; no Phase 1 item (round 5)
+    37: EXPERTISE_STAT_KEY,  # Signets of Vigilance, Dwarven Tree Chopper (round 5)
     44: None,  # armor penetration rating
     46: None,  # health regen
     47: "spell_penetration",  # Doomcaller's Robes, the PvP silk spaulders (build 1.60.1.70707)
