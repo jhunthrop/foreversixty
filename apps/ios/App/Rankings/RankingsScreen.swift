@@ -129,20 +129,12 @@ struct CharacterScreen: View {
         }
         .background(FSColor.bg)
         .refreshable { await store?.load() }
-        .navigationTitle(route.ref.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(removing: .title)
-        .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                if account.signedIn, showsPage {
-                    WatchStar(name: displayName, watching: watchList.isWatching(route.ref.key), offline: isOffline) {
-                        Task { await watchList.toggle(route.ref) }
-                    }
-                }
-                ShareLink(item: route.ref.webURL) { Image(systemName: "square.and.arrow.up") }
-                    .accessibilityLabel(Copy.charShare)
-            }
-        }
+        .characterBar(
+            title: route.ref.name, share: route.ref.webURL,
+            star: account.signedIn && showsPage
+                ? WatchStarState(name: displayName, watching: watchList.isWatching(route.ref.key), offline: isOffline)
+                : nil
+        ) { Task { await watchList.toggle(route.ref) } }
         .sensoryFeedback(.success, trigger: watchList.confirmed)
         .sheet(item: $tooltip) { request in
             ItemTooltipSheet(request: request, catalog: dependencies.catalog)
@@ -203,6 +195,39 @@ struct OpenReport: Hashable, Identifiable {
     let route: ReportRoute
     let yours: Bool
     var id: String { route.id }
+}
+
+/// The star's state in the bar; nil draws no star (signed out, or no page to watch).
+struct WatchStarState: Equatable {
+    let name: String
+    let watching: Bool
+    let offline: Bool
+}
+
+extension View {
+    /// The character page's bar (board F11.4): back, then the Watch star and share, each a
+    /// 44 pt target drawn without the shared glass ground so the two read as one group.
+    func characterBar(title: String, share: URL, star: WatchStarState?, toggle: @escaping () -> Void) -> some View {
+        navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
+            .toolbar {
+                if let star {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        WatchStar(name: star.name, watching: star.watching, offline: star.offline, toggle: toggle)
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: share) {
+                        Image(systemName: "square.and.arrow.up").foregroundStyle(FSColor.strong)
+                            .frame(width: RankingsLayout.star, height: RankingsLayout.star)
+                    }
+                    .accessibilityLabel(Copy.charShare)
+                }
+                .sharedBackgroundVisibility(.hidden)
+            }
+    }
 }
 
 /// The Watch star (spec F11.4, §7): 44 pt; outline muted, filled gold; 50% and disabled offline.

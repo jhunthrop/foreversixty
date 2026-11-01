@@ -252,13 +252,14 @@ struct ScoreCard: View {
             VStack(spacing: 8) {
                 ForEach(CharacterPage.bars(profile)) { ScoreBarRow(bar: $0) }
             }
+            // The link's 44 pt target reaches past its line, so the card ends at its own padding.
             Button(Copy.charHow, action: openHow)
                 .font(ScaledType.bodyStrong)
                 .foregroundStyle(FSColor.gold)
-                .frame(minHeight: 44)
+                .contentShape(Rectangle().inset(by: -RankingsLayout.linkSlop))
         }
         .padding(.horizontal, 16)
-        .padding(.top, 14)
+        .padding(.vertical, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .primaryCard()
     }

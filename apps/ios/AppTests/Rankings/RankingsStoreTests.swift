@@ -178,7 +178,7 @@ struct RankingsStoreTests {
         await store.load()
         guard case let .loaded(content) = store.phase else { Issue.record("not loaded"); return }
         #expect(content.profile.character.name == "Voltaris")
-        #expect(store.items[252604]?.name == "Blue Dragonscale Helm")
+        #expect(store.items[252561]?.name == "Living Crown")
     }
 
     @Test func character_404IsNotFound() async throws {

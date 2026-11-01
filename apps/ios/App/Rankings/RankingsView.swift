@@ -95,6 +95,7 @@ struct RankingsView: View {
         VStack(alignment: .leading, spacing: 6) {
             MicroLabel(Copy.rankPin)
             rowButton(row, content: content, filters: filters, mine: true, crests: RankingsBoard.showsCrests(content.rows))
+                .clipShape(RoundedRectangle(cornerRadius: FSRadius.panel))
                 .quietCard()
             FSColor.lineSoft.frame(height: 1).padding(.top, 8)
         }
@@ -112,6 +113,7 @@ struct RankingsView: View {
             }
             pageFooter(content)
         }
+        .clipShape(RoundedRectangle(cornerRadius: FSRadius.panel))
         .quietCard()
     }
 
@@ -121,22 +123,8 @@ struct RankingsView: View {
             RankRowView(row: row, total: content.first.total, metric: filters.metric, yours: yours, mine: mine, crest: crests, now: now)
         }
         .buttonStyle(RowPressStyle())
-        .contextMenu { menu(row) }
-    }
-
-    @ViewBuilder
-    private func menu(_ row: RankingRow) -> some View {
-        if account.signedIn {
-            let watched = watching.contains(row.player.key)
-            Button { actions.toggleWatch(row) } label: {
-                Label(watched ? Copy.rankMenuUnwatch : Copy.rankMenuWatch, systemImage: watched ? "star.slash" : "star")
-            }
-        }
-        if let openReport = actions.openReport {
-            Button { openReport(row) } label: { Label(Copy.rankMenuReport, systemImage: "doc.text") }
-        }
-        if let ref = CharacterRef(key: row.player.key, name: row.player.name) {
-            ShareLink(item: ref.webURL) { Label(Copy.rankMenuShare, systemImage: "square.and.arrow.up") }
+        .contextMenu {
+            RankRowMenu(row: row, signedIn: account.signedIn, watched: watching.contains(row.player.key), actions: actions)
         }
     }
 
@@ -152,6 +140,29 @@ struct RankingsView: View {
         } else if content.hasMorePages && content.offlineSince == nil {
             ProgressView().tint(FSColor.gold).frame(maxWidth: .infinity, minHeight: ReportsLayout.spinnerRow)
                 .accessibilityLabel(Copy.rankLoadingMore)
+        }
+    }
+}
+
+/// A row's long-press menu (spec F11.1): `Watch` or `Stop watching` signed in, `Open the report`
+/// while the reports switch is on, and `Share` (the web character page).
+struct RankRowMenu: View {
+    let row: RankingRow
+    let signedIn: Bool
+    let watched: Bool
+    let actions: RankingsActions
+
+    var body: some View {
+        if signedIn {
+            Button { actions.toggleWatch(row) } label: {
+                Label(watched ? Copy.rankMenuUnwatch : Copy.rankMenuWatch, systemImage: watched ? "star.slash" : "star")
+            }
+        }
+        if let openReport = actions.openReport {
+            Button { openReport(row) } label: { Label(Copy.rankMenuReport, systemImage: "doc.text") }
+        }
+        if let ref = CharacterRef(key: row.player.key, name: row.player.name) {
+            ShareLink(item: ref.webURL) { Label(Copy.rankMenuShare, systemImage: "square.and.arrow.up") }
         }
     }
 }
@@ -234,10 +245,10 @@ struct AnswerCard: View {
         Text(unit).font(ScaledType.body).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
     }
 
-    /// The meta, its leading character name in gold when the rank is another character's (F11.3).
-    private func metaText(_ meta: String, name: String?) -> some View {
+    /// The meta, its leading character name in gold (F11.1, F11.3).
+    private func metaText(_ meta: String, name: String) -> some View {
         var text = AttributedString(meta)
-        if let name, let range = text.range(of: name) {
+        if let range = text.range(of: name) {
             text[range].foregroundColor = FSColor.gold
             text[range].font = ScaledType.bodyStrong
         }
@@ -368,6 +379,8 @@ enum RankingsLayout {
     static let fightRow: CGFloat = 56
     static let barLabel: CGFloat = 86
     static let disabledOpacity = 0.5
+    /// A text link's hit area beyond its line, to a 44 pt target.
+    static let linkSlop: CGFloat = 12
     /// Row text stops growing here, as F10's rows do (spec §9, §11).
     static let rowTypeCap = DynamicTypeSize.accessibility3
 }

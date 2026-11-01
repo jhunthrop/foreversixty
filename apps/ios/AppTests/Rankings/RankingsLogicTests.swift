@@ -145,7 +145,7 @@ struct RankingsLogicTests {
         let row = try RankingsTestData.page().rows[0]
         #expect(RankingsCopy.value(row, metric: .dps) == "462")
         #expect(RankingsCopy.value(row, metric: .execution) == "97%")
-        #expect(RankingsCopy.rowMeta(row, now: RankingsTestData.now) == "Hordebreakers · 40 players · 3:13 · 2\u{00A0}d\u{00A0}ago")
+        #expect(RankingsCopy.rowMeta(row, now: RankingsTestData.now) == "Hordebreakers\u{00A0}· 40 players\u{00A0}· 3:13\u{00A0}· 2\u{00A0}d\u{00A0}ago")
         #expect(RankingsCopy.unit(.damageTaken) == "DTPS")
         #expect(RankingsCopy.a11y(row, total: 212, metric: .dps, yours: false)
             == "Rank 1 of 212, Voltaris, 462 damage per second, Hordebreakers")
@@ -157,7 +157,7 @@ struct RankingsLogicTests {
         let mine = RankingsCopy.answer(page: page, filters: RankingsTestData.filters, encounterName: "Onyxia", current: RankingsTestData.lightning)
         #expect(mine == .ranked(
             ordinal: "14th", tier: .purple, unit: "of 212 Elemental Shaman characters",
-            meta: "Your best kill on Onyxia, Normal, Phase 1.", name: nil
+            meta: "Lightningbolltz · best kill on Onyxia, Normal, Phase 1.", name: "Lightningbolltz"
         ))
         let off = try RankingsTestData.offPage()
         let alt = RankingsCopy.answer(page: off, filters: RankingsTestData.filters, encounterName: "Onyxia", current: RankingsTestData.lightning)

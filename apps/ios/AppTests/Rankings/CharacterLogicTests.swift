@@ -69,7 +69,7 @@ struct CharacterLogicTests {
     @Test func bests() throws {
         let rows = CharacterPage.bests(try RankingsTestData.voltaris(), now: now)
         #expect(rows.map(\.encounter) == ["Onyxia", "Emperor Dagran Thaurissan"])
-        #expect(rows[0].meta == "Normal · 1 d ago")
+        #expect(rows[0].meta == "Normal · 2 d ago")
         #expect(rows[0].value == "462")
         #expect(rows[0].unit == "DPS")
         #expect(rows[0].percentile == 99)
@@ -79,8 +79,8 @@ struct CharacterLogicTests {
     @Test func recent_killAndWipe() throws {
         let rows = CharacterPage.recent(try RankingsTestData.voltaris(), now: now)
         #expect(rows.map(\.kill) == [true, false, true])
-        #expect(rows[0].meta == "Kill · 1 d ago")
-        #expect(rows[1].meta == "Wipe · 1 d ago")
+        #expect(rows[0].meta == "Kill · 2 d ago")
+        #expect(rows[1].meta == "Wipe · 2 d ago")
         #expect(rows[0].reportID == "onyx0001kill")
     }
 
@@ -90,7 +90,8 @@ struct CharacterLogicTests {
     }
 
     @Test func gap() throws {
-        #expect(CharacterPage.gap(try RankingsTestData.voltaris().gearGapTotal) == "22.7 points")
+        #expect(CharacterPage.gap(try RankingsTestData.voltaris().gearGapTotal) == "3.0 points")
+        #expect(CharacterPage.gap(try RankingsTestData.lightningbolltz().gearGapTotal) == "36.0 points")
         #expect(CharacterPage.gap(nil) == nil)
     }
 
@@ -103,25 +104,25 @@ struct CharacterLogicTests {
         #expect(frame.right.map(\.slot) == ["hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2"])
         #expect(frame.weapons.map(\.slot) == ["main_hand", "off_hand", "ranged"])
         #expect(frame.all.count == 17)
-        #expect(slots.filter(\.better).map(\.slot) == ["head", "chest", "waist", "trinket2"])
+        // Voltaris wears his own list: one dot, Trinket 2.
+        #expect(slots.filter(\.better).map(\.slot) == ["trinket2"])
         guard case let .item(look) = slots[0].state else { Issue.record("head not an item"); return }
-        #expect(look.name == "Blue Dragonscale Helm")
+        #expect(look.name == "Living Crown")
         #expect(look.quality == 4)
-        #expect(look.icon == "inv_helmet_09")
+        #expect(look.icon == "inv_helmet_32")
         #expect(look.itemLevel == 61)
+        let behind = PaperdollModel.character(gear: try RankingsTestData.lightningbolltz().gear, items: try RankingsTestData.items())
+        #expect(behind.filter(\.better).map(\.slot) == ["head", "shoulder", "chest", "waist", "legs", "trinket2"])
     }
 
     @Test func paperdoll_neverADot_whenThePickIsWorn() throws {
-        let profile = try RankingsTestData.voltaris { data in
-            var gear = data["gear"] as? [[String: Any]] ?? []
-            // Trinket 2's pick (11302) worn in trinket 1: the pick is already worn, either way round.
-            if var worn = gear[12]["worn"] as? [String: Any] { worn["id"] = 11302; gear[12]["worn"] = worn }
-            // Head's pick worn in head itself.
-            if var worn = gear[0]["worn"] as? [String: Any] { worn["id"] = 252561; gear[0]["worn"] = worn }
-            data["gear"] = gear
-        }
-        let slots = PaperdollModel.character(gear: profile.gear, items: try RankingsTestData.items())
-        #expect(slots.filter(\.better).map(\.slot) == ["chest", "waist"])
+        var gear = try RankingsTestData.lightningbolltz().gear
+        // Trinket 2's pick (11302) worn in trinket 1: the pick is already worn, either way round.
+        gear[12] = CharacterGearSlot(slot: "trinket1", worn: CharacterGearSlotWorn(id: 11302, name: "Uther's Strength", itemLevel: 60), pick: nil, gap: nil)
+        // Head's pick worn in head itself.
+        gear[0] = CharacterGearSlot(slot: "head", worn: CharacterGearSlotWorn(id: 252561, name: "Living Crown", itemLevel: 61), pick: gear[0].pick, gap: gear[0].gap)
+        let slots = PaperdollModel.character(gear: gear, items: try RankingsTestData.items())
+        #expect(slots.filter(\.better).map(\.slot) == ["shoulder", "chest", "waist", "legs"])
     }
 
     @Test func paperdoll_twoHander_emptiesTheOffHandWithWords() throws {
@@ -133,7 +134,9 @@ struct CharacterLogicTests {
             data["gear"] = gear
         }
         let off = try #require(PaperdollModel.character(gear: profile.gear, items: items).first { $0.slot == "off_hand" })
-        #expect(off.state == .twoHandOff("none: Hand of Edward the Odd is two-handed."))
+        #expect(off.state == .twoHandOff)
+        #expect(PaperdollModel.name(off) == "Two-hand in main hand")
+        #expect(PaperdollModel.a11y(off) == "Off hand, Two-hand in main hand.")
         #expect(!off.better)
     }
 
@@ -145,14 +148,25 @@ struct CharacterLogicTests {
             data["gear"] = gear
         }
         let slots = PaperdollModel.character(gear: profile.gear, items: try RankingsTestData.items())
-        #expect(slots.first { $0.slot == "neck" }?.state == .unknown(288_887))
+        let neck = try #require(slots.first { $0.slot == "neck" })
+        #expect(neck.state == .unknown(288_887))
+        #expect(PaperdollModel.name(neck) == "Neck · Item 288887")
+        #expect(!PaperdollModel.showsSlotLine(neck))
+        #expect(PaperdollModel.a11y(neck) == "Neck · Item 288887.")
+        #expect(PaperdollModel.showsSlotLine(slots[0]))
         #expect(slots.first { $0.slot == "ranged" }?.state == .empty)
+        // An empty or unknown slot carries no dot without a pick that gains.
+        #expect(!neck.better)
+        let noGain = CharacterGearSlot(slot: "ranged", worn: nil, pick: CharacterGearSlotPick(id: 1, name: "X", source: "Y", chance: nil), gap: nil)
+        #expect(PaperdollModel.character(gear: [noGain], items: [:]).first { $0.slot == "ranged" }?.better == false)
     }
 
     @Test func paperdoll_a11y() throws {
         let slots = PaperdollModel.character(gear: try RankingsTestData.voltaris().gear, items: try RankingsTestData.items())
-        #expect(PaperdollModel.a11y(slots[0]) == "Head, Blue Dragonscale Helm, Epic, item level 61. A better item is on your best in slot list.")
+        #expect(PaperdollModel.a11y(slots[0]) == "Head, Living Crown, Epic, item level 61.")
         #expect(PaperdollModel.a11y(slots[1]) == "Neck, Archlight Talisman, Rare, item level 60.")
+        let trinket = try #require(slots.first { $0.slot == "trinket2" })
+        #expect(PaperdollModel.a11y(trinket).hasSuffix(" A better item is on your best in slot list."))
         let empty = PaperdollSlot(slot: "ranged", state: .empty, better: false)
         #expect(PaperdollModel.a11y(empty) == "Ranged, empty.")
     }
@@ -163,11 +177,12 @@ struct CharacterLogicTests {
         let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: "Arcanite Reaper")
         let slots = PaperdollModel.home(rows)
         #expect(slots.count == 17)
-        #expect(Set(slots.filter(\.better).map(\.slot)) == Set(rows.filter { $0.pick != nil }.map(\.slot)))
-        let off = try #require(slots.first { $0.slot == "off_hand" })
-        if rows.first(where: { $0.slot == "off_hand" })?.blockedByTwoHand == true {
-            #expect(off.state == .twoHandOff("none: Arcanite Reaper is two-handed."))
-        }
+        // Only measured gains carry a dot: the unknown Wrist and the empty Trinket 2 do not.
+        #expect(Set(slots.filter(\.better).map(\.slot)) == Set(rows.filter(\.gains).map(\.slot)))
+        #expect(slots.first { $0.slot == "wrist" }?.better == false)
+        #expect(slots.first { $0.slot == "trinket2" }?.better == false)
+        #expect(slots.first { $0.slot == "wrist" }.map(PaperdollModel.name) == "Wrist · Item 999999")
+        #expect(slots.first { $0.slot == "off_hand" }?.state == .twoHandOff)
     }
 }
 

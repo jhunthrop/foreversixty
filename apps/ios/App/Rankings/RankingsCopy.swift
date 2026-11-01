@@ -4,8 +4,8 @@ import Models
 
 /// The answer card (spec F11.1): your rank with its colour and words, or not ranked yet.
 enum RankAnswer: Equatable, Sendable {
-    /// `name` is the ranked character's name when it is not the current character (F11.3).
-    case ranked(ordinal: String, tier: ParseTier, unit: String, meta: String, name: String?)
+    /// `name` is the ranked character, named in gold in both states (fix round 1, "one character, one number").
+    case ranked(ordinal: String, tier: ParseTier, unit: String, meta: String, name: String)
     case unranked(title: String, meta: String)
 }
 
@@ -130,10 +130,12 @@ enum RankingsCopy {
     /// `Hordebreakers · 40 players · 3:13 · 2 d ago`.
     static func rowMeta(_ row: RankingRow, now: Date) -> String {
         let time = ReportsCopy.duration(Int64(row.durationMs))
-        // The age never breaks inside itself (`4 d` / `ago`) when the meta wraps.
+        // The age never breaks inside itself (`4 d` / `ago`), and a wrap leaves each `·` on the
+        // line before it, never leading the next.
         let age = RelativeAge(from: row.foughtAt, to: now).phrase.replacingOccurrences(of: " ", with: nonBreaking)
-        guard let guild = row.guild?.name else { return Copy.rankRowMetaNoGuild(size: row.size, time: time, age: age) }
-        return Copy.rankRowMeta(guild: guild, size: row.size, time: time, age: age)
+        let meta = row.guild.map { Copy.rankRowMeta(guild: $0.name, size: row.size, time: time, age: age) }
+            ?? Copy.rankRowMetaNoGuild(size: row.size, time: time, age: age)
+        return meta.replacingOccurrences(of: " \u{00B7} ", with: nonBreaking + "\u{00B7} ")
     }
 
     /// `Rank 14 of 212, Lightningbolltz, 398 damage per second, Hordebreakers, your character`.
@@ -147,16 +149,12 @@ enum RankingsCopy {
 
     /// The answer card; nil signed out (no current character).
     static func answer(page: RankingsPage, filters: RankingsFilters, encounterName: String, current: RankingsCharacter?) -> RankAnswer? {
-        guard let current else { return nil }
+        guard current != nil else { return nil }
         guard let placed = page.characterRank else {
             return .unranked(title: Copy.rankNone(encounter: encounterName), meta: Copy.rankNoneMeta)
         }
-        let named = placed.row.player.name == current.name ? nil : placed.row.player.name
-        let rulesetWords = ruleset(filters.ruleset)
-        let phaseWords = phase(filters.phase)
-        let meta = named.map {
-            Copy.rankMetaNamed(name: $0, encounter: encounterName, ruleset: rulesetWords, phase: phaseWords)
-        } ?? Copy.rankMeta(encounter: encounterName, ruleset: rulesetWords, phase: phaseWords)
+        let named = placed.row.player.name
+        let meta = Copy.rankMetaNamed(name: named, encounter: encounterName, ruleset: ruleset(filters.ruleset), phase: phase(filters.phase))
         return .ranked(
             ordinal: ReportsCopy.ordinal(placed.rank), tier: RankColor.tier(rank: placed.rank, total: page.total),
             unit: unit(page: page, filters: filters), meta: meta, name: named

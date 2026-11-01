@@ -16,7 +16,9 @@ struct RankingsSnapshotTests {
     private let clock = RankingsTestData.clock
     private let build = RankingsTestData.build
 
-    private func snap(_ view: some View, _ name: String, height: CGFloat = 874, large: Bool = false) {
+    /// `keyWindow` renders through the window, which draws the iOS 26 glass bar items (the Watch
+    /// star and share) that a layer render leaves out.
+    private func snap(_ view: some View, _ name: String, height: CGFloat = 874, large: Bool = false, keyWindow: Bool = false) {
         let traits = UITraitCollection { traits in
             traits.userInterfaceStyle = .dark
             traits.preferredContentSizeCategory = large ? .accessibilityExtraExtraExtraLarge : .large
@@ -28,7 +30,9 @@ struct RankingsSnapshotTests {
             .preferredColorScheme(.dark)
         assertSnapshot(
             of: sized,
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
+            as: keyWindow
+                ? .image(drawHierarchyInKeyWindow: true, precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits)
+                : .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
             testName: name
         )
     }
@@ -118,6 +122,39 @@ struct RankingsSnapshotTests {
         snap(sheet, "rankings-filters-ios")
     }
 
+    @Test func filters_todayOnly() throws {
+        let setup = try setup()
+        var today = RankingsTestData.filters
+        today.todayOnly = true
+        let sheet = SheetFrame(height: 800, behind: board(loaded(try RankingsTestData.page()), filters: today)) {
+            FiltersView(filters: today, setup: setup, apply: { _ in }, reset: {}, openEncounters: {})
+        }
+        snap(sheet, "rankings-filters-today-ios")
+    }
+
+    /// A row's long-press menu, its items drawn as the system menu lists them (an off-screen
+    /// capture cannot open the real one).
+    @Test func rowMenu() throws {
+        let page = try RankingsTestData.page()
+        let row = page.rows[0]
+        let menu = VStack(alignment: .leading, spacing: 0) {
+            RankRowView(row: row, total: page.total, metric: .dps, yours: false, mine: false, crest: false, now: now)
+                .quietCard()
+                .padding(.bottom, 12)
+            VStack(alignment: .leading, spacing: 0) {
+                RankRowMenu(row: row, signedIn: true, watched: false, actions: RankingsActions(openReport: { _ in }))
+                    .labelStyle(MenuCaptureLabelStyle())
+            }
+            .background(GameColors.sheet, in: .rect(cornerRadius: 14))
+            .frame(width: 250)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(Color.black.opacity(0.6))
+        .background(board(loaded(page)))
+        snap(menu, "rankings-menu-ios")
+    }
+
     @Test func encounterList() throws {
         let setup = try setup()
         let sheet = SheetFrame(height: 800, behind: board(loaded(try RankingsTestData.page()))) {
@@ -126,23 +163,37 @@ struct RankingsSnapshotTests {
                     .padding(.horizontal, 16).padding(.top, 16)
                 EncounterList(encounters: setup.encounters, selected: "onyxia") { _ in }
             }
+            .frame(maxHeight: .infinity, alignment: .top)
         }
         snap(sheet, "rankings-encounters-ios")
     }
 
     // MARK: F11.4 to F11.7 a character
 
+    /// The character page as pushed over Rankings, with its bar: back, the Watch star and share.
     private func page(
         _ phase: CharacterPhase, name: String = "Voltaris", items: [Int: Item] = [:], account: RankingsAccount = RankingsTestData.account(),
-        watchFailed: Bool = false
+        watching: Bool = false, offline: Bool = false, watchFailed: Bool = false
     ) throws -> some View {
         let ref = try #require(CharacterRef(key: "us/normal/\(name.lowercased())", name: name))
-        return pushed(back: Copy.rankTitle) {
-            CharacterView(
-                ref: ref, phase: phase, items: items, account: account, specs: RankingsTestData.specs, build: build,
-                watchFailed: watchFailed, now: now, clock: clock, actions: CharacterActions(openReport: { _ in })
-            )
+        let star: WatchStarState? = if case .loaded = phase, account.signedIn {
+            WatchStarState(name: name, watching: watching, offline: offline)
+        } else {
+            nil
         }
+        return NavigationStack(path: .constant([1])) {
+            Color.clear.navigationTitle(Copy.rankTitle).navigationDestination(for: Int.self) { _ in
+                ScrollView {
+                    CharacterView(
+                        ref: ref, phase: phase, items: items, account: account, specs: RankingsTestData.specs, build: build,
+                        watchFailed: watchFailed, now: now, clock: clock, actions: CharacterActions(openReport: { _ in })
+                    )
+                }
+                .background(FSColor.bg)
+                .characterBar(title: name, share: ref.webURL, star: star) {}
+            }
+        }
+        .tint(FSColor.gold)
     }
 
     private func profile(_ profile: CharacterProfile) -> CharacterPhase {
@@ -150,20 +201,20 @@ struct RankingsSnapshotTests {
     }
 
     @Test func character_other() throws {
-        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-other-ios")
+        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-other-ios", keyWindow: true)
     }
 
     @Test func character_yours() throws {
         snap(try page(profile(try RankingsTestData.lightningbolltz()), name: "Lightningbolltz", items: try RankingsTestData.items(),
-                      account: RankingsTestData.account(history: true)), "character-yours-ios")
+                      account: RankingsTestData.account(history: true)), "character-yours-ios", keyWindow: true)
     }
 
     @Test func character_large() throws {
-        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-large-ios", height: 2600, large: true)
+        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-large-ios", height: 2600, large: true, keyWindow: true)
     }
 
     @Test func character_gear() throws {
-        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-gear-ios", height: 2300)
+        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items()), "character-gear-ios", height: 2300, keyWindow: true)
     }
 
     @Test func character_gear_large() throws {
@@ -172,64 +223,50 @@ struct RankingsSnapshotTests {
 
     @Test func character_noGear() throws {
         let profile = try RankingsTestData.voltaris { $0["gear"] = [] as [Any]; $0["gear_gap_total"] = NSNull() }
-        snap(try page(self.profile(profile)), "character-nogear-ios", height: 1700)
+        snap(try page(self.profile(profile)), "character-nogear-ios", height: 1700, keyWindow: true)
     }
 
     @Test func character_noLogs() throws {
-        snap(try page(profile(try RankingsTestData.freshling()), name: "Freshling"), "character-nologs-ios")
+        snap(try page(profile(try RankingsTestData.freshling()), name: "Freshling"), "character-nologs-ios", keyWindow: true)
     }
 
     @Test func character_notFound() throws {
-        snap(try page(.notFound, name: "Voltxris"), "character-notfound-ios")
+        snap(try page(.notFound, name: "Voltxris"), "character-notfound-ios", keyWindow: true)
     }
 
     @Test func character_loading() throws {
-        snap(try page(.loading), "character-loading-ios")
+        snap(try page(.loading), "character-loading-ios", keyWindow: true)
     }
 
     @Test func character_offline() throws {
         let phase = CharacterPhase.loaded(CharacterContent(profile: try RankingsTestData.voltaris(), offlineSince: RaidTime.date("2026-12-17T18:00:00Z")))
-        snap(try page(phase, items: try RankingsTestData.items()), "character-offline-ios")
+        snap(try page(phase, items: try RankingsTestData.items(), offline: true), "character-offline-ios", keyWindow: true)
     }
 
+    @Test func character_error() throws {
+        snap(try page(.failed), "character-error-ios", keyWindow: true)
+    }
+
+    /// The star on in the bar (Voltaris watched); `character-other-ios` is the star off.
+    @Test func character_watching() throws {
+        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items(), watching: true), "character-watching-ios", keyWindow: true)
+    }
+
+    /// A failed watch: the star back off and the line under the head.
     @Test func character_watchFailed() throws {
-        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items(), watchFailed: true), "character-watchfailed-ios")
-    }
-
-    /// The Watch star, off and on (and offline), drawn in a bar of its own: iOS snapshots do not
-    /// draw the iOS 26 glass toolbar items.
-    @Test func watchStar() throws {
-        let profile = try RankingsTestData.voltaris()
-        func bar(watching: Bool, offline: Bool) -> some View {
-            HStack(spacing: 4) {
-                Spacer()
-                WatchStar(name: "Voltaris", watching: watching, offline: offline) {}
-                Image(systemName: "square.and.arrow.up").foregroundStyle(FSColor.strong).frame(width: 44, height: 44)
-            }
-        }
-        func card(watching: Bool, offline: Bool) -> some View {
-            VStack(alignment: .leading, spacing: 8) {
-                bar(watching: watching, offline: offline)
-                CharacterHead(profile: profile, specs: RankingsTestData.specs, yours: false)
-            }
-            .padding(16)
-            .quietCard()
-        }
-        let view = VStack(alignment: .leading, spacing: 20) {
-            card(watching: false, offline: false)
-            card(watching: true, offline: false)
-            card(watching: true, offline: true)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(FSColor.bg)
-        snap(view, "character-watch-ios")
+        snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items(), watchFailed: true), "character-watchfailed-ios", keyWindow: true)
     }
 
     // MARK: Home
 
+    /// Lightningbolltz, the Elemental Shaman the board places: Home's row says his ladder.
+    private static let lightningHome = HomeCharacter(
+        key: "us/normal/lightningbolltz", region: "us", ruleset: "normal", name: "Lightningbolltz", race: "troll",
+        className: "shaman", specName: "Elemental", level: 60, guild: "Hordebreakers", faction: "horde"
+    )
+
     @Test func home_rankingsRow() throws {
-        var presenter = HomeFixtures.presenter()
+        var presenter = HomeFixtures.presenter(character: Self.lightningHome)
         presenter.logsLine = ReportsCopy.homeLine(try ReportsTestData.list())
         presenter.rankingsLine = RankingsCopy.homeLine(page: try RankingsTestData.page(), filters: RankingsTestData.filters, encounterName: "Onyxia")
         let phase = HomePhase.loaded(try HomeFixtures.home(), offlineSince: nil)
@@ -237,5 +274,19 @@ struct RankingsSnapshotTests {
             HomeAnswerView(phase: phase, presenter: presenter, build: build)
         }
         snap(view, "home-rankings-ios", height: 2200)
+    }
+}
+
+/// A system menu row as captured: the title, then the glyph at the trailing edge, 44 pt.
+private struct MenuCaptureLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.title.font(ScaledType.body).foregroundStyle(FSColor.strong)
+            Spacer()
+            configuration.icon.foregroundStyle(FSColor.strong)
+        }
+        .padding(.horizontal, 16)
+        .frame(minHeight: 44)
+        .overlay(alignment: .bottom) { FSColor.lineSoft.frame(height: 1) }
     }
 }

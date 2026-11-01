@@ -15,6 +15,8 @@ struct GearRow: Equatable, Identifiable {
     let isBestInSlot: Bool
     /// The empty off hand under a two-handed main hand; `wornName` then carries its words.
     var blockedByTwoHand = false
+    /// The pick gains (a measured gain above zero): the Paperdoll's gold dot.
+    var gains = false
 
     var id: String { slot }
 }
@@ -31,8 +33,8 @@ enum GearModel {
             let name = ItemVocabulary.slotName(slot) ?? slot
             if let upgrade = upgrades[slot] { return upgradeRow(upgrade, slotName: name) }
             if let item = best[slot]?.item { return bestRow(item, slot: slot, slotName: name) }
-            if slot == offHand, gear[slot] == nil, let blocker = offHandBlockedBy {
-                return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.itemsOffHandTwoHand(item: blocker),
+            if slot == offHand, gear[slot] == nil, offHandBlockedBy != nil {
+                return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.paperdollTwoHand,
                                wornLevel: nil, pick: nil, isBestInSlot: false, blockedByTwoHand: true)
             }
             return exportRow(gear[slot], slot: slot, slotName: name, items: items)
@@ -55,21 +57,31 @@ enum GearModel {
         return items[id]?.name ?? main.itemName
     }
 
+    /// An item our data does not know (owner ruling, 2026-11-01): `Wrist · Item 288887`.
+    private static func unknown(_ slotName: String, _ id: Int) -> String {
+        Copy.itemsUnknownItem(slot: slotName, id: String(id))
+    }
+
+    /// A measured gain above zero (the server's), never a gain it did not model.
+    private static func gains(_ upgrade: HomeUpgrade) -> Bool {
+        upgrade.modelled && (upgrade.gain ?? 0) > 0
+    }
+
     private static func upgradeRow(_ upgrade: HomeUpgrade, slotName: String) -> GearRow {
         let pick = HomeItemLook(id: upgrade.pick.id, name: upgrade.pick.name, quality: upgrade.pick.quality,
                                 icon: upgrade.pick.icon, itemLevel: upgrade.pick.itemLevel)
         guard let worn = upgrade.worn else {
             return GearRow(slot: upgrade.slot, slotName: slotName, worn: nil, wornName: Copy.gearEmptySlot,
-                           wornLevel: nil, pick: pick, isBestInSlot: false)
+                           wornLevel: nil, pick: pick, isBestInSlot: false, gains: gains(upgrade))
         }
         let look = HomeItemLook(id: worn.id, name: worn.name, quality: worn.quality, icon: worn.icon, itemLevel: worn.itemLevel)
-        return GearRow(slot: upgrade.slot, slotName: slotName, worn: look, wornName: worn.known ? (worn.name ?? worn.label) : worn.label,
-                       wornLevel: worn.itemLevel.map { Copy.itemsIlvl(n: $0) }, pick: pick, isBestInSlot: false)
+        return GearRow(slot: upgrade.slot, slotName: slotName, worn: look, wornName: worn.known ? (worn.name ?? unknown(slotName, worn.id)) : unknown(slotName, worn.id),
+                       wornLevel: worn.itemLevel.map { Copy.itemsIlvl(n: $0) }, pick: pick, isBestInSlot: false, gains: gains(upgrade))
     }
 
     private static func bestRow(_ item: HomeItem, slot: String, slotName: String) -> GearRow {
         let look = HomeItemLook(id: item.id, name: item.name, quality: item.quality, icon: item.icon, itemLevel: item.itemLevel)
-        return GearRow(slot: slot, slotName: slotName, worn: look, wornName: item.name ?? Copy.itemsNotInData,
+        return GearRow(slot: slot, slotName: slotName, worn: look, wornName: item.name ?? unknown(slotName, item.id),
                        wornLevel: item.itemLevel.map { Copy.itemsIlvl(n: $0) }, pick: nil, isBestInSlot: true)
     }
 
@@ -80,7 +92,7 @@ enum GearModel {
         }
         guard let item = items[id] else {
             return GearRow(slot: slot, slotName: slotName, worn: HomeItemLook(id: id, name: nil, quality: nil, icon: nil, itemLevel: nil),
-                           wornName: Copy.itemsNotInData, wornLevel: nil, pick: nil, isBestInSlot: false)
+                           wornName: unknown(slotName, id), wornLevel: nil, pick: nil, isBestInSlot: false)
         }
         let look = HomeItemLook(id: id, name: item.name, quality: item.quality, icon: item.icon, itemLevel: item.itemLevel)
         return GearRow(slot: slot, slotName: slotName, worn: look, wornName: item.name,

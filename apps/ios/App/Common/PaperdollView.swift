@@ -45,7 +45,7 @@ struct PaperdollView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
             HStack(alignment: .top, spacing: PaperdollLayout.rowGap) {
-                ForEach(frame.weapons) { cell($0, side: .leading).frame(maxWidth: .infinity, alignment: .leading) }
+                ForEach(frame.weapons) { cell($0, side: .center).frame(maxWidth: .infinity, alignment: .top) }
             }
             .padding(.top, PaperdollLayout.weaponGap)
             .overlay(alignment: .top) { FSColor.lineSoft.frame(height: 1) }
@@ -54,7 +54,7 @@ struct PaperdollView: View {
 
     @ViewBuilder
     private func cell(_ slot: PaperdollSlot, side: HorizontalAlignment) -> some View {
-        let content = PaperdollCell(slot: slot, build: build, socket: socket, trailing: side == .trailing)
+        let content = PaperdollCell(slot: slot, build: build, socket: socket, side: side)
         if slot.look != nil {
             Button { open(slot) } label: { content }
                 .buttonStyle(RowPressStyle())
@@ -70,11 +70,20 @@ struct PaperdollCell: View {
     let slot: PaperdollSlot
     let build: String
     let socket: CGFloat
-    let trailing: Bool
+    /// Leading and trailing: the mirrored columns; centre: the weapons row, socket above the name.
+    let side: HorizontalAlignment
+
+    private var trailing: Bool { side == .trailing }
 
     var body: some View {
-        HStack(alignment: .center, spacing: PaperdollLayout.socketGap) {
-            if trailing { words; icon } else { icon; words }
+        Group {
+            if side == .center {
+                VStack(spacing: PaperdollLayout.rowGap) { icon; words }
+            } else {
+                HStack(alignment: .center, spacing: PaperdollLayout.socketGap) {
+                    if trailing { words; icon } else { icon; words }
+                }
+            }
         }
         .frame(minHeight: PaperdollLayout.cellHeight)
         .contentShape(Rectangle())
@@ -98,25 +107,21 @@ struct PaperdollCell: View {
     }
 
     private var words: some View {
-        VStack(alignment: trailing ? .trailing : .leading, spacing: 1) {
+        VStack(alignment: side, spacing: 1) {
             // Never clamped: a name or the two-hand words wrap in full (paperdoll spec §3.3).
             Text(name).font(ScaledType.socketName).foregroundStyle(nameColor)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(micro).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
+            // An unknown item's name already carries its slot (`Wrist · Item 288887`).
+            if PaperdollModel.showsSlotLine(slot) {
+                Text(micro).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .multilineTextAlignment(trailing ? .trailing : .leading)
-        .frame(maxWidth: .infinity, alignment: trailing ? .trailing : .leading)
+        .multilineTextAlignment(side == .center ? .center : trailing ? .trailing : .leading)
+        .frame(maxWidth: .infinity, alignment: Alignment(horizontal: side, vertical: .center))
     }
 
-    private var name: String {
-        switch slot.state {
-        case let .item(look): look.name ?? Copy.itemsNotInData
-        case .unknown: Copy.itemsNotInData
-        case .empty: Copy.gearEmptySlot
-        case let .twoHandOff(words): words
-        }
-    }
+    private var name: String { PaperdollModel.name(slot) }
 
     private var nameColor: Color {
         if let look = slot.look { return ItemQuality(value: look.quality).text }

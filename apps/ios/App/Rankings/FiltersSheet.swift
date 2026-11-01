@@ -80,7 +80,7 @@ struct FiltersView: View {
             Toggle(isOn: Binding(get: { filters.todayOnly }, set: { on in change { $0.todayOnly = on } })) {
                 Text(Copy.rankFilterToday).font(ScaledType.body).foregroundStyle(FSColor.text)
             }
-            .tint(FSColor.gold)
+            .toggleStyle(BrandSwitchStyle())
             .frame(minHeight: 44)
             SecondaryButton(title: Copy.rankReset, action: reset)
         }
@@ -122,7 +122,7 @@ struct FiltersView: View {
                         .foregroundStyle(isOn ? FSColor.gold : FSColor.nav)
                         .padding(.horizontal, 12)
                         .frame(minHeight: 44)
-                        .pillSurface(fill: isOn ? FSColor.gold.opacity(0.12) : .clear, line: isOn ? FSColor.gold : FSColor.line)
+                        .chipSurface(fill: isOn ? FSColor.gold.opacity(0.12) : .clear, line: isOn ? FSColor.gold : FSColor.line)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(isOn ? .isSelected : [])
@@ -135,6 +135,52 @@ struct FiltersView: View {
             MicroLabel(title).accessibilityAddTraits(.isHeader)
             body()
         }
+    }
+}
+
+private extension View {
+    /// A filter chip's capsule: the fill and a 1 pt ring cut from a filled capsule. A stroked
+    /// capsule draws stray tick marks at its ends in off-screen renders (fix round 1, F11.2).
+    func chipSurface(fill: Color, line: Color) -> some View {
+        background {
+            ZStack {
+                Capsule().fill(fill)
+                ZStack {
+                    Capsule().fill(line)
+                    Capsule().padding(1).blendMode(.destinationOut)
+                }
+                .compositingGroup()
+            }
+        }
+        .contentShape(.capsule)
+    }
+}
+
+/// A drawn switch (the system one draws no thumb in an off-screen capture): 51 x 31, gold when
+/// on, the thumb sliding over 150 ms; the whole row is the target.
+struct BrandSwitchStyle: ToggleStyle {
+    static let size = CGSize(width: 51, height: 31)
+    static let thumbInset: CGFloat = 2
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button { configuration.isOn.toggle() } label: {
+            HStack {
+                configuration.label
+                Spacer(minLength: 12)
+                ZStack(alignment: configuration.isOn ? .trailing : .leading) {
+                    Capsule().fill(configuration.isOn ? FSColor.gold : FSColor.line)
+                    Circle().fill(Color.white)
+                        .padding(Self.thumbInset)
+                        .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                }
+                .frame(width: Self.size.width, height: Self.size.height)
+                .animation(.easeOut(duration: 0.15), value: configuration.isOn)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isToggle)
+        .accessibilityValue(configuration.isOn ? "1" : "0")
     }
 }
 
