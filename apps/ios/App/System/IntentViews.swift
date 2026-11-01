@@ -36,6 +36,7 @@ struct IntentAnswerCard: View {
     let text: String
     var buttons: (accept: String, deny: String)?
     var snippet: UpgradeAnswer?
+    var snippetImage: UIImage?
 
     var body: some View {
         VStack(alignment: .leading, spacing: FSSpacing.space3) {
@@ -43,12 +44,17 @@ struct IntentAnswerCard: View {
                 Image(uiImage: BrandImages.seal ?? UIImage()).resizable().frame(width: 20, height: 20).clipShape(.circle).accessibilityHidden(true)
                 Text(Copy.appName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
-            Text(text).font(ScaledType.body).foregroundStyle(FSColor.strong).fixedSize(horizontal: false, vertical: true)
-            if let snippet { UpgradeSnippetView(answer: snippet, image: nil).clipShape(.rect(cornerRadius: 12)) }
+            // With a snippet, the snippet is the answer (board F15.2); Siri speaks the sentence.
+            if let snippet {
+                UpgradeSnippetView(answer: snippet, image: snippetImage).clipShape(.rect(cornerRadius: 12))
+            } else {
+                Text(text).font(ScaledType.body).foregroundStyle(FSColor.strong).fixedSize(horizontal: false, vertical: true)
+            }
             if let buttons {
-                HStack(spacing: FSSpacing.space2) {
-                    Text(buttons.deny).frame(maxWidth: .infinity, minHeight: 44).background(FSColor.line, in: .capsule)
-                    Text(buttons.accept).frame(maxWidth: .infinity, minHeight: 44).background(FSColor.gold, in: .capsule).foregroundStyle(FSColor.bg)
+                // Side by side while they fit; stacked at the largest sizes, never clipped.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: FSSpacing.space2) { choice(buttons.deny, accept: false); choice(buttons.accept, accept: true) }
+                    VStack(spacing: FSSpacing.space2) { choice(buttons.accept, accept: true); choice(buttons.deny, accept: false) }
                 }
                 .font(ScaledType.bodyStrong)
             }
@@ -56,5 +62,14 @@ struct IntentAnswerCard: View {
         .padding(FSSpacing.space4)
         .background(.ultraThinMaterial, in: .rect(cornerRadius: 24))
         .environment(\.colorScheme, .dark)
+    }
+
+    private func choice(_ title: String, accept: Bool) -> some View {
+        Text(title)
+            .lineLimit(1)
+            .padding(.horizontal, FSSpacing.space4)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(accept ? FSColor.gold : FSColor.line, in: .capsule)
+            .foregroundStyle(accept ? FSColor.bg : FSColor.strong)
     }
 }

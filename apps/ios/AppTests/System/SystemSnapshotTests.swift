@@ -66,7 +66,9 @@ struct SystemSnapshotTests {
     func reads() throws {
         let home = try HomeFixtures.home("character.home.yours")
         let upgrade = try #require(UpgradeAnswer(home: home, characterName: "Lightningbolltz"))
-        both(siri("What's my next upgrade", IntentAnswerCard(text: upgrade.gain, snippet: upgrade)), _name: "f15-siri-upgrade")
+        let iconURL = HomeFixtures.repoRoot.appending(path: "data/builds/\(SimsTestData.build)/icons/\(upgrade.icon ?? "").webp")
+        let image = (try? Data(contentsOf: iconURL)).flatMap(UIImage.init(data:))
+        both(siri("What's my next upgrade", IntentAnswerCard(text: upgrade.sentence, snippet: upgrade, snippetImage: image)), _name: "f15-siri-upgrade")
         let next = try #require(SystemStory.widget().nextRaid)
         both(siri("When is the next raid", IntentAnswerCard(text: answers.nextRaid(next))), _name: "f15-siri-nextraid")
         let raid = try SystemStory.raid(counts: ["in": 23, "late": 1, "tanks": 3, "healers": 6, "dps": 14])
