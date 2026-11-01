@@ -135,7 +135,7 @@ func run(execPath string, args []string) error {
 // than repeating the incident this function's caller documents, while
 // leaving room for the slowest honest spec. A healer at band 60 runs its
 // ranking sims at healIterationScale times the DPS count on top of set
-// completion and the incumbent check, which took the five healers past
+// completion and the verify-best guard, which took the five healers past
 // the old five-minute ceiling on 2026-10-08 and had the nightly skip
 // them all; thirty minutes is several times the slowest measured spec.
 const specTimeout = 30 * time.Minute
@@ -429,7 +429,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	log.Printf("leveling-bis: %s: weapon proficiency source: %s", spec, weaponSubclassesSource)
 
 	// The previous published report is read before this run can overwrite it:
-	// a healer keeps its published set when the new one does not beat it.
+	// a band keeps its published set when the new one does not beat it.
 	incumbents, err := loadIncumbentSets(filepath.Join(buildDir, "bis", spec+".json"))
 	if err != nil {
 		return err
@@ -720,6 +720,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				if err != nil {
 					return fmt.Errorf("band %d %s: %w", band, f.name, err)
 				}
+				// Every set this band passes through is one the guard
+				// (keepVerifyBest, incumbent.go) may publish instead.
+				considered := []consideredSet{
+					{Label: consideredBeforeVerify, Picks: picks},
+					{Label: consideredBeforeSets, Picks: verified.picks},
+				}
 				// Set completion runs on the swapped set, so a set trial must
 				// beat the picks the page would otherwise publish (sets.go).
 				var setNotes []string
@@ -730,20 +736,25 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				for _, n := range setNotes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
+				considered = append(considered, consideredSet{Label: consideredBeforeConfirmed, Picks: verified.picks})
 				var heldUnconfirmed int
 				verified, heldUnconfirmed, err = preferConfirmedStats(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot)
 				if err != nil {
 					return fmt.Errorf("band %d %s: %w", band, f.name, err)
 				}
-				var kept *keptIncumbent
-				if isHealer(specInfo) {
-					verified, kept, err = keepIncumbent(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}], pickBySlot)
-					if err != nil {
-						return fmt.Errorf("band %d %s: %w", band, f.name, err)
-					}
-					if kept != nil {
-						log.Printf("leveling-bis: %s band %d %s %s: kept the previous published set (%.1f +/- %.1f beats the new set's %.1f +/- %.1f; differs in %v)", spec, band, f.name, pass.name, kept.IncumbentScore, kept.IncumbentError, kept.NewScore, kept.NewError, kept.DifferingSlots)
-					}
+				incumbentGear := incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}]
+				if incumbent, ok := incumbentPicks(incumbentGear, verified.picks, pickBySlot); ok {
+					considered = append(considered, consideredSet{Label: consideredIncumbent, Picks: incumbent})
+				} else if len(incumbentGear) > 0 {
+					log.Printf("leveling-bis: %s band %d %s %s: the previous published set is not reproducible on this run's pools; the guard cannot compare it", spec, band, f.name, pass.name)
+				}
+				var kept *keptAlternative
+				verified, kept, err = keepVerifyBest(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, considered)
+				if err != nil {
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
+				if kept != nil {
+					log.Printf("leveling-bis: %s band %d %s %s: kept %s (%.1f +/- %.1f beats the final set's %.1f +/- %.1f; differs in %v)", spec, band, f.name, pass.name, kept.Kept, kept.KeptScore, kept.KeptError, kept.NewScore, kept.NewError, kept.DifferingSlots)
 				}
 				picks, setDPS, swaps, verifyErrors := verified.picks, verified.setDPS, verified.swaps, verified.errors
 				for _, e := range verifyErrors {
@@ -760,7 +771,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				report.WeightsLowConfidence = weightsLowConfidence
 				report.Preset = pass.name
 				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
-				report.KeptIncumbent = kept
+				report.KeptAlternative = kept
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
 				// exactly the anchor row, on an otherwise-trustworthy band
