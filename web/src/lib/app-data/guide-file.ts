@@ -18,7 +18,13 @@ import { keyTalentsFor } from '../guides/key-talents';
 import { plainText, splitOverview } from '../guides/overview';
 import { raceTableFor, specKindOf } from '../guides/race-table';
 import { railStatRows } from '../guides/rail-stats';
-import { loadApl, rotationListsFrom, specCooldowns, spellLookupFor, type RotationItem } from '../guides/rotation-lists';
+import {
+  loadApl,
+  rotationListsFrom,
+  specCooldowns,
+  spellLookupFor,
+  type RotationItem,
+} from '../guides/rotation-lists';
 import { splitSpecSections, type SpecSection } from '../guides/sections';
 import type { GuideSource } from './guide-content';
 
@@ -144,7 +150,10 @@ function className(slug: string): string {
   return found.name;
 }
 
-function buildOf(code: string | undefined, trees: readonly DecodedTreeView[] | undefined): AppGuideBuild | null {
+function buildOf(
+  code: string | undefined,
+  trees: readonly DecodedTreeView[] | undefined,
+): AppGuideBuild | null {
   if (code === undefined || trees === undefined || trees.length === 0) return null;
   return { code, totals: trees.map((tree) => tree.points), tree_names: trees.map((tree) => tree.name) };
 }
@@ -198,7 +207,9 @@ function withCastTalents(
   raidTrees: readonly DecodedTreeView[],
   rotation: AppGuideFile['rotation'],
 ): AppGuideKeyTalent[] {
-  const cast = new Set([...(rotation?.priority ?? []), ...(rotation?.cooldowns ?? [])].map((spell) => spell.name));
+  const cast = new Set(
+    [...(rotation?.priority ?? []), ...(rotation?.cooldowns ?? [])].map((spell) => spell.name),
+  );
   const named = new Set(key.map((talent) => talent.name));
   const added = raidTrees
     .flatMap((tree) => tree.talents)
@@ -231,10 +242,19 @@ function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
     facts,
     specCooldowns(ctx.build, ctx.classSlug, ctx.litTalents, facts),
   );
-  return { opener: lists.opener.map(spellOf), priority: lists.priority.map(spellOf), cooldowns: lists.cooldowns.map(spellOf) };
+  return {
+    opener: lists.opener.map(spellOf),
+    priority: lists.priority.map(spellOf),
+    cooldowns: lists.cooldowns.map(spellOf),
+  };
 }
 
-function gearOf(build: string, spec: string, classSlug: string, races: readonly string[]): AppGuideFile['gear'] {
+function gearOf(
+  build: string,
+  spec: string,
+  classSlug: string,
+  races: readonly string[],
+): AppGuideFile['gear'] {
   const file = rankedBisFile(build, spec);
   const faction = factionForFirstRace(classSlug, races);
   if (file === undefined || faction === undefined) return null;
@@ -272,19 +292,26 @@ export function buildGuideFile(
   const entry = catalogEntry(catalog, spec);
   const role: GuideRole = data.role ?? 'dps';
   const sections = splitSpecSections(source.body);
-  const prose = (section: SpecSection): string => (sections.get(section) ?? '').split('\n').slice(1).join('\n');
+  const prose = (section: SpecSection): string =>
+    (sections.get(section) ?? '').split('\n').slice(1).join('\n');
 
   const levelingTrees = data.build === undefined ? [] : (decodeBuildTrees(build, data.build) ?? []);
   const raidTrees =
-    data.raidBuild === undefined || data.raidBuild === data.build ? undefined : decodeBuildTrees(build, data.raidBuild);
+    data.raidBuild === undefined || data.raidBuild === data.build
+      ? undefined
+      : decodeBuildTrees(build, data.raidBuild);
   const overview = splitOverview(sections.get('Overview') ?? '');
   const raid = bulletLines(overview.raid);
   const weights = band60Weights(build, spec, classSlug, data.recommendedRaces);
   const statRows =
-    weights === undefined ? [] : railStatRows(data.statPriority, weights.weights, spec, weights.hasteScaleFactor);
+    weights === undefined
+      ? []
+      : railStatRows(data.statPriority, weights.weights, spec, weights.hasteScaleFactor);
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
   const litTalents = new Set(
-    [...levelingTrees, ...(raidTrees ?? [])].flatMap((tree) => tree.talents.filter((t) => t.rank > 0).map((t) => t.name)),
+    [...levelingTrees, ...(raidTrees ?? [])].flatMap((tree) =>
+      tree.talents.filter((t) => t.rank > 0).map((t) => t.name),
+    ),
   );
 
   const rotation = rotationOf({ build, classSlug, spec, litTalents });
@@ -314,7 +341,11 @@ export function buildGuideFile(
       raid: raid.filter((line) => !ROLE_LINE.test(line)),
     },
     talents: {
-      key: withCastTalents(keyTalents(prose('Talents and builds'), levelingTrees), raidTrees ?? levelingTrees, rotation),
+      key: withCastTalents(
+        keyTalents(prose('Talents and builds'), levelingTrees),
+        raidTrees ?? levelingTrees,
+        rotation,
+      ),
       leveling_build: buildOf(data.build, levelingTrees),
       raid_build: buildOf(data.raidBuild, raidTrees),
     },
@@ -325,4 +356,3 @@ export function buildGuideFile(
   };
   return { ...guide, sections: sectionsOf(guide) };
 }
-

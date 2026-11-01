@@ -8,7 +8,14 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import activeBuild from '../../data/active-build.json';
 import { readSpecCatalog } from '../bis/load';
-import { APP_FILE_BUDGETS, appChangelog, appGuideIndex, appGuides, appTiers, encodeAppFile } from './app-files';
+import {
+  APP_FILE_BUDGETS,
+  appChangelog,
+  appGuideIndex,
+  appGuides,
+  appTiers,
+  encodeAppFile,
+} from './app-files';
 import { markdownBlocks } from './changelog-file';
 import { bulletLines } from './guide-file';
 
@@ -28,7 +35,10 @@ function keysOf(value: unknown): string[] {
 
 describe('markdown helpers', () => {
   it('reads bullets as plain text', () => {
-    expect(bulletLines('- **Role:** Ranged\n- Uses `Lava Burst`\nprose')).toEqual(['Role: Ranged', 'Uses Lava Burst']);
+    expect(bulletLines('- **Role:** Ranged\n- Uses `Lava Burst`\nprose')).toEqual([
+      'Role: Ranged',
+      'Uses Lava Burst',
+    ]);
   });
 
   it('splits a changelog body into paragraphs, headings and items', () => {
@@ -99,15 +109,21 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
 
   it('never hands the apps the client placeholder icon', () => {
     for (const guide of guides) {
-      const spells = [...(guide.rotation?.opener ?? []), ...(guide.rotation?.priority ?? []), ...(guide.rotation?.cooldowns ?? [])];
-      for (const spell of spells) expect(spell.icon, `${guide.spec} ${spell.name}`).not.toBe('inv_misc_questionmark');
+      const spells = [
+        ...(guide.rotation?.opener ?? []),
+        ...(guide.rotation?.priority ?? []),
+        ...(guide.rotation?.cooldowns ?? []),
+      ];
+      for (const spell of spells)
+        expect(spell.icon, `${guide.spec} ${spell.name}`).not.toBe('inv_misc_questionmark');
     }
   });
 
   it('never repeats a talent text as its why', () => {
     for (const guide of guides) {
       for (const talent of guide.talents.key) {
-        if (talent.why !== null && talent.text !== null) expect(talent.text.startsWith(talent.why)).toBe(false);
+        if (talent.why !== null && talent.text !== null)
+          expect(talent.text.startsWith(talent.why)).toBe(false);
       }
     }
   });
@@ -116,7 +132,9 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
     const index = appGuideIndex(BUILD);
     expect(index.classes.map((row) => row.class)).toHaveLength(9);
     for (const row of index.classes) {
-      const trees = row.specs.map((spec) => catalog.find((entry) => entry.spec === spec.spec)?.tree_index ?? -1);
+      const trees = row.specs.map(
+        (spec) => catalog.find((entry) => entry.spec === spec.spec)?.tree_index ?? -1,
+      );
       expect(trees).toEqual([...trees].sort((a, b) => a - b));
     }
   });
@@ -126,7 +144,10 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
     const dps = tiers.factions.horde.dps.rows;
     expect(dps[0]?.gap_text).toBe('Top');
     expect(dps.map((row) => row.rank)).toEqual(dps.map((_, i) => i + 1));
-    for (const row of dps) expect(row.title).toMatch(new RegExp(`^${row.name} is \\d+(st|nd|rd|th) of ${dps.length} DPS specs\\.$`));
+    for (const row of dps)
+      expect(row.title).toMatch(
+        new RegExp(`^${row.name} is \\d+(st|nd|rd|th) of ${dps.length} DPS specs\\.$`),
+      );
     expect(tiers.factions.horde.tank.rows.every((row) => row.tier === null)).toBe(true);
   });
 

@@ -7,7 +7,10 @@ import type { AppGuideFile } from '../../../../lib/app-data/guide-file';
 
 export const getStaticPaths: GetStaticPaths = () =>
   activeBuildPaths().flatMap(({ params }) =>
-    appGuides(params.build).map((guide) => ({ params: { build: params.build, spec: guide.spec }, props: { guide } })),
+    appGuides(params.build).map((guide) => ({
+      params: { build: params.build, spec: guide.spec },
+      props: { guide },
+    })),
   );
 
 export const GET: APIRoute = ({ props }) => {

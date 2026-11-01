@@ -4,7 +4,15 @@
 // `node web/scripts/gen-mobile-links.mjs` and commit the result.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { OUTPUTS, appLinkPaths, buildRoutes, codeName, generate, renderKotlin, renderSwift } from '../../../scripts/gen-mobile-links.mjs';
+import {
+  OUTPUTS,
+  appLinkPaths,
+  buildRoutes,
+  codeName,
+  generate,
+  renderKotlin,
+  renderSwift,
+} from '../../../scripts/gen-mobile-links.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-links.mjs` and commit the result';
 const table = (routes: object[]) => JSON.stringify({ host: 'foreversixty.gg', routes });
