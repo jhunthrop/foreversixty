@@ -123,7 +123,8 @@ func TestShadowCastsMindBlastBeforeMindFlayAndKeepsDevouringPlague(t *testing.T)
 // 1.60.1.70707 (+100% cost a stack, 18 s) keeps blasting past 3 while the
 // mana bar is ahead of the fight.
 func TestMageMissileBarrageAndArcaneBlastStacks(t *testing.T) {
-	const arcaneMissiles = 25345
+	// Rank 7: rank 8 (25345) is an Ahn'Qiraj book (sim-accuracy round 4).
+	const arcaneMissiles = 10212
 	if ids := castOrder(t, "mage-frost"); !slices.Contains(ids, arcaneMissiles) {
 		t.Errorf("Frost never casts Arcane Missiles on Missile Barrage: %v", ids)
 	}

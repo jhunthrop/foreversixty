@@ -323,7 +323,7 @@ EXPECTED_ABILITY_NAMES = {
         13033: "Ice Barrier",
         10161: "Cone of Cold",
         12579: "Winter's Chill",
-        25345: "Arcane Missiles",
+        10212: "Arcane Missiles",
         400589: "Missile Barrage",
     },
 }
