@@ -56,9 +56,34 @@ Lane `mobile-search`, branch `wt/mobile-search`, with `wt/mobile-search-ios` and
 
 ## Reviews
 
-Captures: `design/reviews/2026-10-31-mobile-wave3-search/build/{ios,android}/`. Verdicts: `ux-verdict-build.md`, `player-verdict-build.md`.
+Captures are in `design/reviews/2026-10-31-mobile-wave3-search/build/{ios,android}/`. Verdicts:
+- **ux-designer:** SHIP in round 4 (`ux-verdict-build.md`).
+- **wow-player:** SHIP in round 3 (`player-verdict-build.md`).
+
+The rounds fixed:
+- Three real, distinct pick, runner-up and not-listed items from 70707.
+- `You` only on the current character.
+- The client's Equip sentences and tooltip order.
+- The developer captions, which are removed.
+- The iOS capsule end bars.
+- Region errors.
+- Skeletons with no layout shift.
+- Drop chance printed once.
+- Source glyphs by kind.
+
+The `search` switch stays at default off. The owner reverted the F14 bundled switch-on, so turning it on, by `/v1/app/config` or the default, is the coordinator's call.
+
+## Gates (final merge)
+
+- `make -C apps/ios test`: TEST SUCCEEDED.
+- Android: `./gradlew test`, `:app:verifyRoborazziDebug`, `lint` and `assembleDebug` all pass.
+- `go test ./internal/contract ./internal/app`: passes.
+- Web: `vitest src/lib/search src/lib/items src/lib/mobile` passes, which includes the codegen drift check.
+- Data: pytest on the touched modules and `ruff` pass.
 
 ## Gaps
+- **Site tooltip order.** The website tooltip still prints its Equip lines inside the stats block, before the set and Requires Level. That is a site follow-up.
+- **School spell power in the apps.** The apps' stat vocabulary has fire power only. The other school powers that main added are not drawn in the apps' tooltips yet.
 
 - **Watching and the star on character rows** wait for F11's `/v1/me/watching`.
 - **Characters, guides, Rankings and the planner** open the website, marked with an external-link glyph, until F9, F11 and F13 land.
