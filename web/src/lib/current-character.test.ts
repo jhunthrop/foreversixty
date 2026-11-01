@@ -4,8 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   CURRENT_CHARACTER_CHANGED,
   announcePageLoadedCharacter,
+  announceSessionHeal,
   clearCurrent,
   onCurrentCharacterChange,
+  onCurrentCharacterSwitch,
+  parseCurrentCharacter,
   plannerHrefFor,
   readCurrent,
   simHrefFor,
@@ -201,5 +204,35 @@ describe('onCurrentCharacterChange', () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+});
+
+describe('onCurrentCharacterSwitch', () => {
+  it('hands the listener the pointer before and after each choice, skipping page-load and heal writes', () => {
+    window.localStorage.setItem('fs.currentCharacter', 'first');
+    const listener = vi.fn();
+    const stop = onCurrentCharacterSwitch(listener);
+    window.localStorage.setItem('fs.currentCharacter', 'second');
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    window.localStorage.setItem('fs.currentCharacter', 'loaded');
+    announcePageLoadedCharacter();
+    window.localStorage.setItem('fs.currentCharacter', 'healed');
+    announceSessionHeal();
+    window.localStorage.removeItem('fs.currentCharacter');
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    expect(listener.mock.calls).toEqual([
+      [{ previousRaw: 'first', nextRaw: 'second' }],
+      [{ previousRaw: 'healed', nextRaw: null }],
+    ]);
+    stop();
+  });
+});
+
+describe('parseCurrentCharacter', () => {
+  it('reads a stored pointer and refuses anything else', () => {
+    expect(parseCurrentCharacter(JSON.stringify(sample))).toEqual(sample);
+    expect(parseCurrentCharacter(null)).toBeNull();
+    expect(parseCurrentCharacter('{not json')).toBeNull();
+    expect(parseCurrentCharacter(JSON.stringify({ ...sample, source: 'nope' }))).toBeNull();
   });
 });

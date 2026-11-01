@@ -1,14 +1,12 @@
 <!-- web/src/components/GuildLanding.svelte -->
 <!-- The bare `/guild` page: where the header's Guild door lands a visitor with no guild of
      their own (spec 2026-10-15-grouped-header.md section 2). A lookup by name, the top
-     guilds, and a line for officers. A signed-in member with a verified guild is sent on to
-     it once `/v1/me` answers; the lookup is already on screen meanwhile. -->
+     guilds, and a line for officers. A signed-in visitor whose current character has a guild
+     is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile. -->
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { onMount } from 'svelte';
   import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
-  import { fetchMeOnce } from '../lib/account/api';
-  import { sessionGuildOf } from '../lib/character-selector/session-guild';
   import { guildHref, REGIONS, RULESETS } from '../lib/characters';
   import { guildLandingCopy as copy } from '../lib/guild/copy';
   import { button } from '../lib/ui/button';
@@ -37,11 +35,12 @@
     window.location.assign(guildHref(region, ruleset, trimmed));
   }
 
+  // The current character's guild, when it has one, is this landing's answer (GuildShell follows
+  // later choices of character the same way).
   onMount(() => {
-    void fetchMeOnce().then((me) => {
-      const guild = sessionGuildOf(me);
-      if (guild !== null) window.location.replace(guild.href);
-    });
+    void import('../lib/character-selector/follow-page-run').then(({ openCurrentGuild }) =>
+      openCurrentGuild(),
+    );
   });
 </script>
 
