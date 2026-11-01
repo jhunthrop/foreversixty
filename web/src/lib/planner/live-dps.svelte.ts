@@ -14,6 +14,7 @@
 import type { TalentIndex } from './rules';
 import { EMPTY_ESTIMATE } from '../sim/estimate';
 import { runSim, SimRunError, type RunHandle } from '../sim/run';
+import { loadRaidConsumes } from '../sim/raid-consumes';
 import { defaultSettings } from '../sim/settings';
 import { toCharacterSpec, type SimCharacter } from '../sim/character';
 import { ITERATIONS, type Estimate } from '../sim/types';
@@ -41,9 +42,23 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
     return pool;
   }
 
+  // Bumped by every start, clear and dispose: a start still waiting on the raid consumables
+  // table when a newer one began (or the figure was cleared) runs nothing.
+  let startGeneration = 0;
+
   async function start(character: SimCharacter, index: TalentIndex): Promise<void> {
+    const generation = ++startGeneration;
     state = 'running';
     const unit = scoreUnitForSpec(character.spec);
+    try {
+      await loadRaidConsumes();
+    } catch {
+      if (generation !== startGeneration) return;
+      message = plannerScoreCopy.failed(unit);
+      state = 'error';
+      return;
+    }
+    if (generation !== startGeneration) return;
     const settings = defaultSettings(character.spec, character.level);
     handle = runSim(
       poolOnce(),
@@ -100,6 +115,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
     },
 
     request(character: SimCharacter | null, index: TalentIndex | null): void {
+      startGeneration += 1;
       if (timer !== null) clearTimeout(timer);
       handle?.cancel();
       if (character === null || index === null) {
@@ -119,6 +135,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
      * not a stale answer to this build, it is an answer to a different question.
      */
     clear(): void {
+      startGeneration += 1;
       if (timer !== null) clearTimeout(timer);
       timer = null;
       handle?.cancel();
@@ -129,6 +146,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
     },
 
     dispose(): void {
+      startGeneration += 1;
       if (timer !== null) clearTimeout(timer);
       timer = null;
       handle?.cancel();

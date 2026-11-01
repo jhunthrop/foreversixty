@@ -4,7 +4,7 @@
 // end for the happy path). The healer-sim defect (BLOCKER 2) is a request that must never
 // reach the pool at all -- a hand-built `deps` that would throw if `envelope()` or the pool
 // were ever touched is the sharpest way to prove that.
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import warriorTalentsJson from '../../fixtures/planner/talents/warrior.json';
 import type { TalentFile } from '../planner/types';
 import { buildRequest, type BulkRequestDeps } from './bulk-store-request';
@@ -16,6 +16,10 @@ import { specLabel } from './spec-label';
 import { WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from './weights';
 import type { SimCharacter } from './character';
 import type { SimPool } from './worker';
+import { loadRaidConsumes } from './raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
+beforeAll(() => loadRaidConsumes());
 
 const warriorTalents = warriorTalentsJson as unknown as TalentFile;
 

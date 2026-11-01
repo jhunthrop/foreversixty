@@ -1,16 +1,18 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { decodeFS1, orderFromRanks } from '../planner/fs1';
 import { createPlannerStore } from '../planner/store.svelte';
 import { indexTalents, validateOrder } from '../planner/rules';
 import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
 import { simCopy } from './copy';
 import { presetConsumables, RAID_BUFFS } from './settings';
-import raidPreset from '../../data/generated/raid-preset.json';
+import raidConsumes from '../../data/generated/raid-consumes.json';
 
 /** Fury's published raid set, which carries the warrior's Mighty Rage Potion. */
-const FURY_CONSUMABLES = presetConsumables('raid-buffed', 'warrior-fury', MAX_LEVEL);
+function furyConsumables(): readonly string[] {
+  return presetConsumables('raid-buffed', 'warrior-fury', MAX_LEVEL);
+}
 import {
   MAX_LEVEL,
   characterFromFs1,
@@ -34,6 +36,10 @@ import {
   needsRace,
 } from './character';
 import type { CharacterSource, CharacterSpec } from './types';
+import { loadRaidConsumes } from './raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
+beforeAll(() => loadRaidConsumes());
 
 const WEB_ROOT = path.resolve(import.meta.dirname, '../../..');
 const BUILD = '1.15.9.69722';
@@ -392,7 +398,7 @@ describe('toCharacterSpec', () => {
     // an off-hand imbue is slot-qualified. An unknown id fails the whole run.
     for (const id of [
       ...RAID_BUFFS,
-      ...Object.values(raidPreset.consumes).flatMap((rows) => rows.flatMap((row) => row.consumes)),
+      ...Object.values(raidConsumes).flatMap((rows) => rows.flatMap((row) => row.consumes)),
     ]) {
       expect(id).toMatch(/^[a-z0-9_]+(:[a-z0-9_]+)?$/);
     }
@@ -993,16 +999,16 @@ describe('toCharacterSpec: a consumable only ever reaches a class that can use i
   it('never sends a rage potion for a class with no rage bar', async () => {
     const index = indexTalents(await warriorTalents());
     for (const class_slug of ['rogue', 'hunter', 'shaman', 'paladin', 'mage']) {
-      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...FURY_CONSUMABLES]);
+      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...furyConsumables()]);
       expect(spec.consumes).not.toContain('mighty_rage_potion');
       // Nothing else is touched.
-      expect(spec.consumes).toEqual(FURY_CONSUMABLES.filter((id) => id !== 'mighty_rage_potion'));
+      expect(spec.consumes).toEqual(furyConsumables().filter((id) => id !== 'mighty_rage_potion'));
     }
   });
 
   it('sends every spec’s raid set untouched at every ladder band, so the page request is the published one', async () => {
     const index = indexTalents(await warriorTalents());
-    for (const [specKey, rows] of Object.entries(raidPreset.consumes)) {
+    for (const [specKey, rows] of Object.entries(raidConsumes)) {
       const class_slug = specKey.split('-')[0]!;
       for (const level of [20, 30, 40, 50, 60]) {
         const want = rows.filter((row) => row.from_level <= level).at(-1)!.consumes;
@@ -1020,7 +1026,7 @@ describe('toCharacterSpec: a consumable only ever reaches a class that can use i
   it('keeps it for the two classes that have rage', async () => {
     const index = indexTalents(await warriorTalents());
     for (const class_slug of ['warrior', 'druid']) {
-      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...FURY_CONSUMABLES]);
+      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...furyConsumables()]);
       expect(spec.consumes).toContain('mighty_rage_potion');
     }
   });

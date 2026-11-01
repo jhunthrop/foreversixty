@@ -62,6 +62,15 @@ function detailFor(row: TierRow, top: TierRow): string {
     : `${figure}% behind ${fullNameOf(top)}.`;
 }
 
+/** Where a row stands, in words: no place on a list not ranked yet, "tied" on a shared rank. */
+function placeTitle(row: TierRow, fullName: string, count: number, role: BisRole): string {
+  if (!row.ranked) {
+    return `${fullName} is on the ${ROLE_LABELS[role]} list; ranks appear once the next ranking publishes the measured error.`;
+  }
+  const tied = row.role === 'healer' && row.tie !== null ? 'tied ' : '';
+  return `${fullName} is ${tied}${ordinal(row.rank)} of ${count} ${ROLE_LABELS[role]} specs.`;
+}
+
 /** One view per row of one faction's lists. */
 export function tierSpecViews(lists: Record<BisRole, readonly TierRow[]>): TierSpecViews {
   const views: TierSpecViews = {};
@@ -76,7 +85,7 @@ export function tierSpecViews(lists: Record<BisRole, readonly TierRow[]>): TierS
         crestSrc: classCrestSrc(row.classSlug),
         colorVar: classColorVar(classNameOf(row.classSlug)),
         fullName,
-        title: `${fullName} is ${ordinal(row.rank)} of ${rows.length} ${ROLE_LABELS[role]} specs.`,
+        title: placeTitle(row, fullName, rows.length, role),
         detail: detailFor(row, top),
         bisHref: `/bis/${row.classSlug}/${row.specSlug}`,
         pointer: `${fullName} is on the ${ROLE_LABELS[role]} list. ${tiersCopy.pointerCta}`,

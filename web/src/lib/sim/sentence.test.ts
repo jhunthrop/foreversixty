@@ -46,6 +46,113 @@ function twoAbilities(): Summary {
 }
 
 describe('summarySentence', () => {
+  it('merges two rows of one ability (its tags and ranks) into one name in the sentence', () => {
+    // wow-player review: Survival read "main-hand white hits and Raptor Strike (2) are 40%".
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const split: Summary = {
+      ...withoutAuras(base),
+      damage_done: [
+        {
+          ...actor,
+          total: 1000,
+          abilities: [
+            { ...actor.abilities[0], spell_id: 1, name: 'spell:14266', total: 150 },
+            { ...actor.abilities[0], spell_id: 2, name: 'spell:14266/1', total: 150 },
+            { ...actor.abilities[0], spell_id: 3, name: 'other:attack/1', total: 250 },
+            { ...actor.abilities[0], spell_id: 4, name: 'spell:99999', total: 200 },
+          ],
+        },
+      ],
+    };
+    const raptor: ActionNames = { spell: { '14266': 'Raptor Strike', '99999': 'Wing Clip' }, item: {} };
+    expect(summarySentence(split, raptor)).toBe(
+      'Raptor Strike and main-hand white hits are 55% of your damage.',
+    );
+  });
+
+  it('leaves out an always-on buff the player never casts (Resourcefulness, a proc at 99%), but names one the player keeps up', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const passive = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:34494',
+      applications: 55,
+      uptime_ms: summary.duration_ms * 0.99,
+    };
+    const kept = { ...passive, name: 'spell:6774', applications: 6, uptime_ms: summary.duration_ms * 0.97 };
+    const table: ActionNames = {
+      spell: { ...names.spell, '34494': 'Resourcefulness', '6774': 'Slice and Dice' },
+      item: {},
+    };
+    expect(summarySentence({ ...base, auras: [passive] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage.',
+    );
+    const cast = {
+      ...summary.casts[0]!,
+      guid: actor.guid,
+      spell_id: 6774,
+      spell_name: 'spell:6774',
+      succeeded: 6,
+    };
+    expect(summarySentence({ ...base, auras: [passive, kept], casts: [cast] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Slice and Dice is up 97% of the fight.',
+    );
+  });
+
+  it('never names, as a buff, an ability the line already names (Raptor Strike’s next-swing queue)', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const queue = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:25286/2',
+      uptime_ms: summary.duration_ms * 0.3,
+    };
+    const flurry = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:12974',
+      uptime_ms: summary.duration_ms * 0.2,
+    };
+    const table: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
+    expect(summarySentence({ ...base, auras: [queue, flurry] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 20% of the fight.',
+    );
+  });
+
+  it('leaves a buff that is up the whole fight out: it is not a finding', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const withLion: Summary = {
+      ...base,
+      auras: [
+        {
+          ...summary.auras[0],
+          target_guid: actor.guid,
+          name: 'spell:409580',
+          uptime_ms: summary.duration_ms,
+        },
+        {
+          ...summary.auras[0],
+          target_guid: actor.guid,
+          name: 'spell:12974',
+          uptime_ms: summary.duration_ms * 0.4,
+        },
+      ],
+    };
+    const lion: ActionNames = {
+      spell: { ...names.spell, '409580': 'Heart of the Lion', '12974': 'Flurry' },
+      item: {},
+    };
+    expect(summarySentence(withLion, lion)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 40% of the fight.',
+    );
+    const onlyLion: Summary = { ...withLion, auras: [withLion.auras[0]!] };
+    expect(summarySentence(onlyLion, lion)).toBe('Heroic Strike and white hits are 61% of your damage.');
+  });
+
   it('names the two biggest damage sources, their share, and the biggest buff', () => {
     const withFlurry: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
     expect(summarySentence(twoAbilities(), withFlurry)).toBe(
@@ -225,7 +332,7 @@ describe('summarySentence', () => {
   // 2026-09-21 result-page review round 3, E8: "Battle Shout is up 101% of the fight" --
   // sim/combine's own bug (fixed at the source), pinned here as a last line of defence:
   // an aura whose uptime_ms somehow exceeds duration_ms must still read exactly 100%.
-  it('never reads an uptime over 100%, even when uptime_ms exceeds duration_ms', () => {
+  it('never reads an uptime over 100%: a row past the fight length counts as the whole fight and is left out', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
     const impossible: Summary = {
@@ -243,7 +350,7 @@ describe('summarySentence', () => {
     };
     const withFlurry: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
     expect(summarySentence(impossible, withFlurry)).toBe(
-      'Heroic Strike and white hits are 61% of your damage; Flurry is up 100% of the fight.',
+      'Heroic Strike and white hits are 61% of your damage.',
     );
   });
 });

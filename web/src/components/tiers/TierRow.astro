@@ -21,7 +21,7 @@ const href = hrefsFor(row);
 const isTank = row.role === 'tank';
 const key = specViewKey(row.classSlug, row.specSlug);
 const fullName = `${row.name} ${className}`;
-const isLeader = row.rank === 1 && row.gapPercent === 0;
+const isLeader = row.ranked && row.rank === 1 && row.gapPercent === 0;
 const unit = tiersCopy.rowUnit[row.role];
 const numberLabel = tiersCopy.headers.number[row.role];
 const gapLabel = tiersCopy.headers.gap[row.role];
@@ -34,7 +34,12 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   data-spec-key={key}
   data-rank={row.rank}
 >
-  <span class="tier-rank">{row.rank}</span>
+  <span
+    class:list={['tier-rank', row.tie !== null && row.role === 'healer' && 'is-tied']}
+    data-testid="tier-rank"
+  >
+    {tiersCopy.rankLabel(row)}
+  </span>
   <span class="tier-crest">
     <ClassCrest slug={row.classSlug} size={36} />
   </span>
@@ -312,8 +317,14 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     font-weight: 700;
   }
   .tier-tie {
-    font-size: 10px;
-    color: var(--color-muted);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .tier-rank.is-tied {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
   }
   .tier-links {
     grid-area: links;

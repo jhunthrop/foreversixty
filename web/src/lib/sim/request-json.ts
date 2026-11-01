@@ -71,7 +71,8 @@ function withDefined<T extends object>(base: T, patch: T): T {
  * under one would mean the next preset change silently discarded it.
  */
 export function settingsFromRequest(request: SimRequest): SimSettings {
-  const base = defaultSettings(request.spec);
+  // Only the encounter is read: the preset is custom and the lists are the request's own.
+  const base = defaultSettings();
   return {
     encounter: withDefined(base.encounter, request.encounter),
     preset: 'custom',

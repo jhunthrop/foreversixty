@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
 import { simCopy } from './copy';
@@ -44,6 +44,10 @@ import {
   withVariation,
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
+import { loadRaidConsumes } from './raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
+beforeAll(() => loadRaidConsumes());
 
 const CURATED_PRESETS = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

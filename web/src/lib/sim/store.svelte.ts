@@ -12,6 +12,7 @@
 //     page has the site's 1.6 s mobile LCP budget, so nothing touches the engine until the
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
+import { loadRaidConsumes } from './raid-consumes';
 import { loadItemsWithCurrentFallback, loadReference, loadTalents } from '../planner/load';
 import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
@@ -188,6 +189,11 @@ export function createSimStore(init: SimStoreInit) {
   // that a resolved handle.result means the player's Stop click was too late to matter.
   let stopRequested = false;
 
+  // Bumped by adopt(): a browser run still in flight for the character before is cancelled
+  // and writes nothing more (store-request.ts runAndSettle), so its result can never show
+  // under the character that replaced it.
+  let browserRunGeneration = 0;
+
   // True for the duration of a runOnServer() call, set synchronously before its first
   // `await` -- both the reentrancy guard (a second call while one is in flight is a no-op)
   // and what RunControl disables the primary button on, the server lane's own equivalent
@@ -258,6 +264,17 @@ export function createSimStore(init: SimStoreInit) {
       // `idle` either way -- with a character the page is back where it was, without one it
       // is back on the empty state -- and the message is what tells the two apart.
       message = outcome.message;
+      phase = 'idle';
+      return;
+    }
+    browserRunGeneration += 1;
+    handle?.cancel();
+    handle = null;
+    try {
+      // The Raid-buffed preset's consumables load on demand (raid-consumes.ts).
+      await loadRaidConsumes();
+    } catch {
+      message = simCopy.failed;
       phase = 'idle';
       return;
     }
@@ -359,6 +376,7 @@ export function createSimStore(init: SimStoreInit) {
     setPrecisionId: (value) => {
       precisionId = value;
     },
+    getRunGeneration: () => browserRunGeneration,
     getResult: () => result,
     setResult: (value) => {
       result = value;

@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { EMPTY_BUFF_NAMES } from './buff-names';
 import { presetSummary } from './preset-summary';
 import { presetConsumables, RAID_BUFFS } from './settings';
+import { loadRaidConsumes } from './raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
+beforeAll(() => loadRaidConsumes());
 
 describe('presetSummary', () => {
   it('is empty for solo, which applies nothing', () => {

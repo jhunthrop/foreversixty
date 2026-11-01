@@ -10,6 +10,7 @@ describe('afterSimSentence', () => {
         sourceName: 'Blackfathom Deeps',
         gain: '+14',
         savedAt: '',
+        characterKey: 'k',
       }),
     ).toBe('Upgrade: Bracers of X from Blackfathom Deeps, +14 DPS.');
   });
