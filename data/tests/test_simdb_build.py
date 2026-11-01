@@ -178,6 +178,11 @@ def test_a_known_on_equip_stat_survived_the_round_trip():
     raises both at once -- see statmap.py's own comment), additive with the
     explicit +42 Ranged Attack Power already there: 42 mirrored + 42
     explicit = 84.
+
+    Sim audit round 6: that reading was wrong. The tooltip states one +14
+    Attack Power line (plus a zone-tripled part); the spell's aura 124 row
+    is the generic AP's ranged half, and equip.py now counts it once. This
+    test pins the archived 70374 file's bytes, written before the fix.
     """
     rune = item(19120)
     assert rune.stats[pb.Stat.Value("StatAttackPower")] == 42.0

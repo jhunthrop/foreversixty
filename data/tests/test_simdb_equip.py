@@ -10,6 +10,8 @@ from pipeline.simdb.equip import (
     item_effect_spells,
     spell_bonus,
 )
+from pipeline.simdb.statmap import stat_array
+from pipeline.simproto import pb
 
 FIXTURES = Path(__file__).parent / "fixtures" / "sim"
 
@@ -40,11 +42,46 @@ def test_a_flat_stat_aura_is_read_as_the_client_states_it():
 
 
 def test_two_effects_of_one_spell_and_two_spells_of_one_item_both_land():
+    """Spell 14027 "Attack Power 24" is the client's generic +24 Attack
+    Power: aura 99 24 and aura 124 24 in one spell. It is attack_power once;
+    `statmap.stat_array` mirrors that into ranged attack power."""
     assert bonuses()[100001].stats == {
         "attack_power": 24.0,
-        "ranged_attack_power": 24.0,
         "spell_power": 85.0,
         "healing": 85.0,
+    }
+
+
+def _ap_spell(melee: str, ranged: str) -> list[dict[str, str]]:
+    base = next(row for row in effects()[14027] if row["EffectAura"] == "99")
+    return [
+        {**base, "EffectIndex": "0", "EffectAura": "99", "EffectBasePointsF": melee},
+        {**base, "EffectIndex": "1", "EffectAura": "124", "EffectBasePointsF": ranged},
+    ]
+
+
+def test_a_generic_attack_power_spell_grants_ranged_attack_power_once():
+    """Sim audit round 6: Rune of the Guard Captain (19120), Cleansed
+    Vilebranch Medallion (270275) and Graverobber's Shovel (273817) state
+    "+14 Attack Power" (wowhead Forever tooltip 19120, 2026-11-01) as one
+    70707 spell with aura 99 14 and aura 124 14 (1318000; Shovel's 1319047:
+    12/12). Counting the 124 row as well as the mirror doubled their ranged
+    attack power in simdb (84 for 42) and gave the planner a second +42
+    line. The fork's db.json states the rune at Era 20/20: ranged equals
+    melee. Classic-db's `equip_stats` already drops the 124 row."""
+    bonus = spell_bonus([1318000], {1318000: _ap_spell("14", "14")})
+    assert bonus.stats == {"attack_power": 14.0}
+    array = stat_array(bonus.stats.items())
+    assert array[pb.Stat.Value("StatRangedAttackPower")] == 14.0
+    assert array[pb.Stat.Value("StatAttackPower")] == 14.0
+
+
+def test_ranged_attack_power_beyond_a_spells_melee_amount_is_ranged_only():
+    """A spell whose ranged row exceeds its melee row keeps the excess as a
+    ranged-only bonus on top of the mirror."""
+    assert spell_bonus([1], {1: _ap_spell("10", "25")}).stats == {
+        "attack_power": 10.0,
+        "ranged_attack_power": 15.0,
     }
 
 

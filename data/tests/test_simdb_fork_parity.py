@@ -88,16 +88,11 @@ KNOWN_MISMATCHES: dict[int, dict[str, str]] = {
         "stamina": "fork engine-hardcoded item effect, not a declared stat -- see module docstring",
         "spirit": "same",
     },
-    # Rune of the Guard Captain: this codebase's own equip.py module
-    # docstring and test_simdb_build.py's test_a_known_on_equip_stat_survived_the_round_trip
-    # already pin this item's Forever-specific tooltip at +42 Attack Power
-    # and +42 Ranged Attack Power (wowhead's Forever corroboration, not
-    # Classic Era's). The fork's db.json states 20/20 -- Classic Era's
-    # un-re-itemized amount -- so it predates Forever's re-itemization of
-    # this item rather than disagreeing with this pipeline's math; the
-    # attack_power/ranged_attack_power mirror itself is exactly right (42
-    # mirrored + 42 explicit = 84 ranged attack power, additive as
-    # designed) and is what this test exists to catch if it regresses.
+    # Rune of the Guard Captain: Forever states +14 Attack Power plus a
+    # zone-tripled +28 (wowhead Forever tooltip, 2026-11-01), 42 in all;
+    # the fork's db.json states Classic Era's 20/20. Ranged equals melee on
+    # both sides since sim audit round 6 (equip.py `_generic_attack_power`:
+    # the spell's aura 124 row is the mirror, not a second bonus).
     19120: {
         "attack_power": "fork db.json predates Forever's re-itemization (Era 20 vs Forever 42)",
         "ranged_attack_power": "same",
