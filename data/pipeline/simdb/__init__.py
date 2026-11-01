@@ -58,6 +58,7 @@ from pipeline.simdb.items import (
     simdb_item_rows,
 )
 from pipeline.simdb.ratings import load_rating_factors
+from pipeline.simdb.shield_block import shield_block_values, with_shield_block
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
 
@@ -290,6 +291,11 @@ def build_sim_database(
             len(classicdb_sim_items),
             dict(classicdb_untracked),
         )
+
+    # Every shield's own block value, which the client does not state
+    # (pipeline/simdb/shield_block.py); Wowhead Forever's feed carries it.
+    if wowhead_path.exists():
+        items = with_shield_block(items, shield_block_values(wh.load_items(wowhead_path)))
 
     database = pb.SimDatabase(
         items=items,
