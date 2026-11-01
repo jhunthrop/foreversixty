@@ -19,6 +19,7 @@
   import { afterSimCopy, afterSimSentence } from '../../lib/sim/after-sim-copy';
   import { AURA_EMPTY_MESSAGE, simCopy } from '../../lib/sim/copy';
   import type { LastUpgrade } from '../../lib/sim/last-upgrade';
+  import { withoutAbsentPets } from '../../lib/sim/pet-rows';
   import { namedSummary, summarySentence } from '../../lib/sim/sentence';
   import type { Estimate, SampleCast } from '../../lib/sim/types';
   import type { Summary } from '../../lib/report/types';
@@ -65,8 +66,11 @@
   // Names resolved once, here, and passed down instead of `summary`: the report components
   // render `ability.name`, `aura.name` and `cast.spell_name` as they find them, and a sim's
   // are engine action keys. `named` is a copy -- the stored SimResult keeps the keys.
-  const named = $derived(namedSummary(summary, actionNames));
-  const sentence = $derived(summarySentence(summary, actionNames));
+  // A warlock's demons are all registered pets; the ones never out in the fight
+  // (pet-rows.ts) leave every tab here, before anything reads the rows.
+  const present = $derived(withoutAbsentPets(summary));
+  const named = $derived(namedSummary(present, actionNames));
+  const sentence = $derived(summarySentence(present, actionNames));
   const nextActionSentence = $derived(afterSimSentence(topUpgrade));
   const buffs = $derived(named.auras.filter((track) => track.type === 'BUFF'));
   const debuffs = $derived(named.auras.filter((track) => track.type === 'DEBUFF'));

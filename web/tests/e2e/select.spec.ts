@@ -67,20 +67,25 @@ test.describe('fine pointer: the listbox', () => {
   });
 
   test('the swap from the native field to the listbox moves the field by 0 px', async ({ page }) => {
-    await page.addInitScript(() => {
-      document.addEventListener('DOMContentLoaded', () => {
-        const box = document.querySelector('#sheet-fight-style')?.closest('.sel')?.getBoundingClientRect();
-        (window as unknown as { before: unknown }).before = box?.toJSON();
-      });
+    // Hold the lazy listbox chunk until the page has otherwise settled (hydrated, web fonts in),
+    // so "before" and "after" differ by the swap alone: measured at DOMContentLoaded, "before"
+    // also carried the font swap above the field, which on the Linux runner moved it 16 px.
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    await page.route('**/_astro/listbox.*.js', async (route) => {
+      await held;
+      await route.continue();
     });
     await openSheet(page);
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    const box = fieldBox(page, 'sheet-fight-style');
+    await expect(box.locator('[data-testid="sheet-fight-style-trigger"]')).toHaveCount(0);
+    const before = await box.evaluate((node) => node.getBoundingClientRect().toJSON());
+    release();
     const trigger = await enhanced(page, 'sheet-fight-style');
-    const before = await page.evaluate(() => (window as unknown as { before: DOMRect }).before);
-    const after = await fieldBox(page, 'sheet-fight-style').evaluate((node) =>
-      node.getBoundingClientRect().toJSON(),
-    );
+    const after = await box.evaluate((node) => node.getBoundingClientRect().toJSON());
     expect(after).toEqual(before);
-    const face = await fieldBox(page, 'sheet-fight-style').locator('.sel-face').boundingBox();
+    const face = await box.locator('.sel-face').boundingBox();
     expect(await trigger.boundingBox()).toEqual(face);
   });
 

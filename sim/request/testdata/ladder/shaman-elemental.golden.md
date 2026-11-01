@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.8 | 5 | spell:3606=64.8, other:attack/1=39.4, spell:529=29.3, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 18.1 | 5 | other:attack/1=69.9, spell:6350=64.3, spell:915=22.9, spell:6363=5.1, spell:8052=2.0 | - |
-| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:273053 off_hand:4066 | 32.1 | 6 | other:attack/1=69.0, spell:6351=65.7, spell:943=28.0, spell:6364=4.6, spell:8053=2.8 | {SpellID: 408490} |
-| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 43.9 | 7 | other:attack/1=89.6, spell:6351=65.6, spell:10391=19.3, spell:6364=4.6, spell:408490=4.5 | - |
-| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 48.5 | 7 | other:attack/1=86.6, spell:6352=64.3, spell:10391=21.6, spell:6365=4.0, spell:1238299=3.1 | - |
-| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:9419 off_hand:10195 | 60.1 | 7 | spell:10435=68.1, other:attack/1=52.5, spell:15207=21.9, spell:10437=3.9, spell:1238300=3.0 | - |
-| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:2243 off_hand:22819 | 87.4 | 7 | other:attack/1=69.7, spell:10436=68.5, spell:15208=24.5, spell:10438=3.6, spell:1326047=3.6 | - |
+| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 5 | spell:3606=64.5, other:attack/1=39.3, spell:529=29.4, spell:3599=5.9, spell:20572=2.0 | - |
+| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 18.1 | 5 | other:attack/1=69.9, spell:6350=64.3, spell:915=22.9, spell:6363=5.1, spell:8052=2.0 | {SpellID: 16246} |
+| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:273053 off_hand:4066 | 32.9 | 7 | other:attack/1=70.8, spell:6351=66.7, spell:943=26.4, spell:6364=4.7, spell:8053=3.1 | {SpellID: 408490} |
+| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 45.8 | 8 | other:attack/1=89.5, spell:6351=66.6, spell:10391=18.6, spell:408490=4.7, spell:6364=4.6 | - |
+| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 50.0 | 8 | other:attack/1=86.2, spell:6352=64.9, spell:10391=21.0, spell:6365=4.1, spell:1238299=3.1 | - |
+| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:9419 off_hand:10195 | 62.4 | 8 | spell:10435=68.2, other:attack/1=52.3, spell:15207=21.0, spell:10437=3.9, spell:1238300=3.3 | - |
+| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:2243 off_hand:22819 | 90.9 | 8 | spell:10436=69.8, other:attack/1=69.6, spell:15208=23.9, spell:1326047=3.8, spell:10438=3.7 | - |
 
 ## Learned but unused (informational)
 
@@ -170,4 +170,5 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- shaman-elemental level=20 kind=unresolved_id action={SpellID: 16246}
+- shaman-elemental level=20 kind=zero_casts spell="Fire Nova" id=408341 authored=408345

@@ -215,11 +215,13 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
           ENGINE_FOLLOWS: ${{ steps.engine.outputs.follows }}
         run: |
-          # dps-per-point.json and its carried-from marker are outputs of this workflow too
-          # (the re-measure below), so a re-measure does not re-rank the next night.
+          # dps-per-point.json, its carried-from marker and the manifest entries the
+          # re-measure below rewrites are outputs of this workflow too, so a re-measure
+          # does not re-rank the next night. The manifest only digests the build's other
+          # files, which the hash already reads.
           hash=$( {
             git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml
-            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\."
+            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\.|/manifest\.json$"
           } | sha256sum | cut -c1-16)
           last=$(git log -1 --format=%B -- "data/builds/$BUILD/bis" | sed -n 's/^Inputs: //p' | head -1)
           echo "hash=$hash" >> "$GITHUB_OUTPUT"
@@ -289,16 +291,8 @@ jobs:
         continue-on-error: true
         timeout-minutes: 90
         env: { BUILD: '${{ steps.identity.outputs.build }}' }
-        run: |
-          marker="data/builds/$BUILD/dps-per-point.carried-from"
-          if [ ! -f "$marker" ]; then
-            echo "dps-per-point.json is $BUILD's own (no carried-from); kept"
-            exit 0
-          fi
-          echo "dps-per-point.json is carried from $(cat "$marker"); re-measuring on tonight's picks"
-          go run ./sim/cmd/dps-per-point -repo-root .
-          rm "$marker"
-          echo "measured=true" >> "$GITHUB_OUTPUT"
+        # The script deletes the marker and keeps the build's manifest in step with it.
+        run: tools/remeasure-dps-per-point.sh "$BUILD"
       # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must
@@ -319,10 +313,11 @@ jobs:
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
           git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" addon/ForeverSixty/Data.lua
-          # The re-measured figures and the carried-from marker's removal, only when the
-          # measure succeeded (and only paths that exist: a build may have no figures).
+          # The re-measured figures, the carried-from marker's removal and the manifest that
+          # records both, only when the measure succeeded (and only paths that exist: a
+          # build may have no figures).
           if [ "$MEASURED" = true ]; then
-            git add -A -- "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.json" "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.carried-from"
+            git add -A -- "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.json" "data/builds/${{ steps.identity.outputs.build }}/dps-per-point.carried-from" "data/builds/${{ steps.identity.outputs.build }}/manifest.json"
           fi
           if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}" -m "Inputs: ${{ steps.inputs.outputs.hash }}"; then
             echo "nothing to commit"; exit 0

@@ -1,0 +1,595 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Cat DPS spends combo points on Rip and Ferocious Bite
+Shifting Power refills 40 energy for mana every 8 seconds
+Omen of Clarity is baseline, so Clearcasting hands out free attacks
+The same tree tanks in Bear Form, so one Druid can fill either role
+WEAKNESSES
+The cat and bear builds split the 51 points differently, so switching roles means a respec
+A cat gains nothing from Thick Hide’s Armor
+A bear has no shield, Parry or Block
+IN A RAID
+Role: Melee DPS in Cat Form, or main tank in Bear Form
+Brings: Leader of the Pack, a critical strike aura for the group
+TALENTS AND BUILDS
+Level 60 build
+BALANCE
+0/5
+0/5
+0/3
+0/2
+0/2
+0/2
+0/3
+0/1
+0/1
+0/5
+0/5
+0/2
+0/1
+0/3
+0/5
+0/1
+FERAL COMBAT
+5/5
+0/5
+2/2
+1/3
+2/2
+0/3
+3/3
+2/2
+1/1
+2/2
+3/3
+0/1
+1/1
+2/2
+1/1
+2/2
+3/5
+0/5
+0/1
+1/1
+RESTORATION
+5/5
+5/5
+5/5
+0/3
+2/3
+3/3
+0/5
+0/1
+0/5
+0/3
+0/1
+0/1
+0/3
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Raid build
+
+The raid build moves 11 points from Brutal Impact (2), Feral Charge (1), Blood Frenzy (1), Heart of the Wild (5) and 1 more to Genesis (5), Nature's Majesty (2), Feral Instinct (2) and Rend and Tear (2).
+
+BALANCE
+0/5
+5/5
+0/3
+0/2
+2/2
+0/2
+0/3
+0/1
+0/1
+0/5
+0/5
+0/2
+0/1
+0/3
+0/5
+0/1
+FERAL COMBAT
+5/5
+0/5
+2/2
+3/3
+0/2
+0/3
+3/3
+2/2
+0/1
+2/2
+3/3
+0/1
+1/1
+1/2
+1/1
+2/2
+5/5
+0/5
+0/1
+1/1
+RESTORATION
+5/5
+0/5
+5/5
+0/3
+0/3
+3/3
+0/5
+0/1
+0/5
+0/3
+0/1
+0/1
+0/3
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Ferocity
+5/5
+Up to 5 less Rage or Energy on Maul, Primal Bite, Swipe, Claw and Rake at rank 5
+Shredding Attacks
+3/3
+Up to 18 less energy on Shred at rank 3, the filler you press most
+Savage Fury
+2/2
+Up to 10% more damage at rank 2 on Claw, Rake, Shred, Maul and Swipe
+Sharpened Claws
+2/2
+Natural Instinct
+2/2
+6% more critical strike chance in Cat Form and 20% more critical damage on your melee abilities
+Predatory Strikes
+3/3
+Up to 150% of your level added to melee attack power in Cat or Bear Form at rank 3
+Blood Frenzy
+2/2
+Up to a 100% chance at rank 2 for bonus Rage on a Bear crit, and a 100% chance for a bonus combo point on a Cat crit
+Predatory Discipline
+1/1
+New in 1.60.1.70707: Ferocious Bite still deals its extra damage for the energy you have left after its cost, but no longer spends that energy. It is also the prerequisite for Shifting Power
+Leader of the Pack
+1/1
+3% more critical strike chance for the party and raid, on attacks and spells alike since 1.60.1.70707
+Rend and Tear
+3/5
+Up to 10% more damage from your melee abilities on a bleeding target. Your own Rip, Rake, Pounce or Lacerate counts, so once Rip is up the boss stays bleeding; the hits before your first Rip get no bonus. The raid build takes all five; the leveling build takes three, two of them from Feral Instinct, which only helps Swipe (about +1% in our level-60 search on the 1.60.1.70707 trees)
+Shifting Power
+1/1
+A 31-point talent behind Predatory Discipline since 1.60.1.70707; see below
+
+Client 1.60.1.70707 reworked this tree: Berserk and Improved Shifting Power are gone, Shifting Power and Primal Bite are the two 31-point talents, Lacerate and Predatory Discipline are new, and Furor and Heart of the Wild swapped trees (Furor is now on Feral’s top row, Heart of the Wild on Restoration’s).
+
+The Restoration points reach Naturalist, 2% more damage a rank (10% at 5/5). The leveling build also takes Heart of the Wild (10% more Strength in Cat Form) and two ranks of Natural Shapeshifter, which make Shifting Power cheaper. The raid build spends its Balance points on Genesis (10% more periodic damage, so a bigger Rip) and Nature’s Majesty (4% critical strike chance) instead of Heart of the Wild. Primal Bite and Lacerate are bear abilities and are left out.
+
+ROTATION AND PRIORITY
+Opener
+1
+ProwlRANK 3
+2 s before the pull
+2
+RavageRANK 4
+1 s before the pull
+Priority
+1
+MoonfireRANK 10
+Below level 20, before Cat Form is learned, keep Moonfire ticking
+2
+WrathRANK 8
+As the pre-Cat-Form filler once Moonfire is already ticking
+3
+Shifting Power
+On cooldown whenever the energy bar has room for all 40, which is 60 or less
+4
+RipRANK 6
+At 5 combo points, Rip once it has under 6 seconds left
+5
+Ferocious BiteRANK 5
+At 5 combo points with Rip having more than 6 seconds left
+6
+ShredRANK 5
+Builds combo points the rest of the time
+7
+ClawRANK 5
+The fallback builder below level 22, before Shred is learned
+Cooldowns
+Frenzied Regeneration
+3 min cooldown
+Dash
+5 min cooldown
+TranquilityRANK 4
+5 min cooldown
+Innervate
+6 min cooldown
+Challenging Roar
+10 min cooldown
+RebirthRANK 5
+30 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+Cat DPS: Tiger’s Fury is gone: Forever druids cannot learn it. Omen of Clarity is a trainer spell now, so every druid has it from level 20, and a Clearcasting proc makes whichever ability you press next cost nothing. Most of the time that is Shred, the filler, so it needs no button of its own; a free Rip or Ferocious Bite saves less. Leave Rake out: it costs 40 energy for a small bleed and one combo point, and in this site’s simulator that energy is worth more spent on Shred and Rip. Rip alone keeps the boss bleeding for Rend and Tear, and keeping Rake up as well still measured about 9% worse in the raid-ready run. At 5 combo points, cast Rip if it isn’t already running; once Rip is up, spend 5 combo points on Ferocious Bite instead of letting them cap out uselessly. Shred fills every other global, building combo points the rest of the time.
+
+Shifting Power: the tree’s energy tool. It is instant, turns a slice of your base mana into 40 energy, and has an 8 second cooldown since client 1.60.1.70707 (Improved Shifting Power, which took 8 seconds off its old 16, is gone and its reduction is now the spell’s own). Press it every time it comes off cooldown, but only when your energy is 60 or lower, so the whole 40 fits under the 100 cap; if you are above that, spend a few energy on Shred first and press it on the next global. It sits ahead of every finisher and builder in the order. The mana is otherwise unused in cat form, and Natural Shapeshifter makes it cheaper. Blizzard has not published whether it shares the global cooldown; our simulator treats it as an ordinary global, so if the real spell turns out to be off the global, you will do slightly better than this advice.
+
+Ferocious Bite with Predatory Discipline: the bite no longer drains your energy, so there is no reason to hold it back; bite at 5 combo points whenever Rip has time left, as above. Waiting for a full bar before biting measured worse in our raid-ready run.
+
+Bear tank: Bear Form tanking has its own guide, Feral Bear Druid, with its own simulated rotation, build and stat table.
+
+STAT PRIORITY
+1
+Agility
+2
+Strength
+3
+Hit
+4
+Critical strike
+5
+Attack power
+6
+Feral attack power
+7
+Melee haste
+
+Hit cap: 9%
+
+Stat	Weight (Agility = 1.00)	DPS per point
+Agility	
+1.00
+	0.41
+Strength	
+0.99
+	0.41
+Hit	
+0.86
+	0.36
+Critical strike	
+0.71
+	0.29
+Attack power	
+0.41
+	0.17
+Feral attack power	
+0.41
+	0.17
+Melee haste	
+3.7 per 1% haste
+	1.53
+
+1 point of agility = 0.41 DPS at level 60
+
+Expertise cap: 6.5% (dodge)
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Night Elf (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Shadowcraft Cap
+	
+Scholomance · Darkmaster Gandling
+Neck	
+Skibi's Pendant
+	
+World drop (BoE) · levels 45-53
+Shoulder	
+Shadowcraft Spaulders
+	
+Stratholme · Cannon Master Willey
+Back	
+Cape of the Black Baron
+	
+Stratholme · Baron Rivendare
+Chest	
+Timbermaw Tunic
+	
+Crafted: Leatherworking
+Wrist	
+Shadowcraft Bracers
+	
+6% from Scholomance Occultist
+Hands	
+Shadowcraft Gloves
+	
+Blackrock Spire · Shadow Hunter Vosh'gajin
+Waist	
+Might of the Timbermaw
+	
+Crafted: Leatherworking
+Legs	
+Warbear Woolies
+	
+Crafted: Leatherworking
+Feet	
+Shadowcraft Boots
+	
+16% from Rattlegore
+Ring	
+Masons Fraternity Ring
+	
+Quest: Divino-matic Rod · requires level 40
+Ring	
+Ring of the Underwood
+	
+World drop (BoE) · levels 32-39
+Trinket	
+Molten Heart of the Mountain
+	
+Crafted: Enchanting
+Trinket	
+Frozen Heart of the Mountain
+	
+Crafted: Enchanting
+Main hand	
+Elemental Mage Staff
+	
+World drop (BoE) · levels 57-62
+Off hand	Elemental Mage Staff is a two-hander; the off hand is taken.
+Ranged	
+Idol of the Dream
+	
+The Temple of Atal'Hakkar · Hazzas
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+For Bear tanking, look for armor, stamina, and defense skill first.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Back	
+Enchant Cloak - Lesser Agility
+	+3 agility
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Superior Strength
+	+9 strength
+Hands	
+Enchant Gloves - Greater Agility
+	+7 agility
+Feet	
+Enchant Boots - Greater Agility
+	+7 agility
+Weapon	
+Enchant 2H Weapon - Agility
+	+25 agility
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Elixir of the Mongoose
+	Agility and critical strike
+FOOD, OIL AND POTIONS
+
+Juju Power
+	Strength
+
+R.O.I.D.S.
+	Strength
+
+Grilled Squid
+	Agility
+
+Juju Might
+	Attack power
+RACES
+Night Elf
+(Recommended)
+Tauren
+(Recommended)
+High Order Skyborne
+Windshaper Skyborne
+Race	Faction	Racials
+
+Night Elf
+RECOMMENDED
+	Alliance	
+Elune's Light: Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown
+
+
+Tauren
+RECOMMENDED
+	Horde	
+Endurance: Grants 5% Health and 1% Hit chance
+
+
+High Order Skyborne
+	Alliance	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+
+Windshaper Skyborne
+	Horde	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+Night Elf is the Alliance pick: Elune's Light. Tauren is the Horde pick: Endurance.
+
+PROFESSIONS
+
+Skinning and Leatherworking is the standard Feral pairing in Classic-era play: Skinning is free crafting material from every kill, and Leatherworking turns it into armor a melee Druid can actually wear.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Ferocity
+5/5
+Furor
+5/5
+Feral Swiftness
+1/2
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Ferocity
+5/5
+Furor
+5/5
+Feral Swiftness
+2/2
+Feral Instinct
+3/3
+Brutal Impact
+2/2
+Shredding Attacks
+3/3
+Savage Fury
+1/2
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Ferocity
+5/5
+Furor
+5/5
+Feral Swiftness
+2/2
+Feral Instinct
+3/3
+Brutal Impact
+2/2
+Shredding Attacks
+3/3
+Savage Fury
+2/2
+Feral Charge
+1/1
+Sharpened Claws
+2/2
+Predatory Strikes
+1/3
+Predatory Discipline
+3/1
+Blood Frenzy
+2/2
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Ferocity
+5/5
+Furor
+5/5
+Feral Swiftness
+2/2
+Feral Instinct
+3/3
+Brutal Impact
+2/2
+Shredding Attacks
+3/3
+Savage Fury
+2/2
+Feral Charge
+1/1
+Sharpened Claws
+2/2
+Predatory Strikes
+1/3
+Predatory Discipline
+3/1
+Blood Frenzy
+2/2
+Natural Instinct
+1/2
+Rend and Tear
+2/5
+Shifting Power
+1/1
+Nature's Focus
+5/5
+Genesis
+1/5
+Level 60
+51 points
+LOAD IN PLANNER
+Ferocity
+5/5
+Furor
+5/5
+Feral Swiftness
+2/2
+Feral Instinct
+3/3
+Brutal Impact
+2/2
+Shredding Attacks
+3/3
+Savage Fury
+2/2
+Feral Charge
+1/1
+Sharpened Claws
+2/2
+Predatory Strikes
+1/3
+Predatory Discipline
+3/1
+Blood Frenzy
+2/2
+Natural Instinct
+1/2
+Rend and Tear
+2/5
+Shifting Power
+1/1
+Nature's Focus
+5/5
+Genesis
+1/5
+Naturalist
+5/5
+Reflection
+3/3
+Natural Shapeshifter
+2/3
+
+Feral is generally considered the strongest leveling spec for Druid: Cat Form gives questing speed and burst damage, and Bear Form gives the durability to solo tougher pulls or tank early dungeons.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

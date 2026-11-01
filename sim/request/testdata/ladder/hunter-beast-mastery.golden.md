@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 62.8 | 3 | other:shoot=86.1, spell:3044=18.5, spell:13549=17.2, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 2643} |
-| 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 83.6 | 5 | other:shoot=87.1, spell:2643=20.9, spell:14282=3.8, spell:13550=3.2, other:move=1.0 | {SpellID: 19574} |
-| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 105.8 | 6 | other:shoot=87.1, spell:2643=16.6, spell:14283=3.6, spell:13551=2.6, other:move=1.0 | {SpellID: 19574} |
-| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 129.1 | 6 | other:shoot=90.1, spell:2643=14.6, spell:13552=3.1, spell:14284=2.9, other:move=1.0 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 139.0 | 7 | other:shoot=90.3, spell:2643=13.4, spell:14284=2.8, spell:13552=2.2, spell:19574=2.0 | - |
-| 50 | 5420001505001251-0053200000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 166.1 | 7 | other:shoot=158.9, spell:2643=12.7, spell:14285=2.9, spell:13554=2.3, spell:19574=2.0 | - |
-| 60 | 5420001505001251-0053542001000000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 266.1 | 7 | other:shoot=84.4, spell:2643=12.3, spell:13555=3.2, spell:14287=2.9, spell:19574=2.0 | - |
+| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 62.7 | 3 | other:shoot=86.1, spell:3044=18.5, spell:13549=17.2, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 2643} |
+| 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 83.7 | 5 | other:shoot=87.2, spell:2643=20.8, spell:14282=3.8, spell:13550=3.2, other:move=1.0 | {SpellID: 19574} |
+| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 105.3 | 6 | other:shoot=87.1, spell:2643=16.7, spell:13551=3.2, spell:14283=2.8, other:move=1.0 | {SpellID: 19574} |
+| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 128.1 | 6 | other:shoot=90.2, spell:2643=14.7, spell:13552=3.2, spell:14284=2.9, other:move=1.0 | {SpellID: 19574} |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 138.3 | 7 | other:shoot=89.9, spell:2643=13.0, spell:13552=3.0, spell:14284=2.9, spell:19574=2.0 | - |
+| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 164.9 | 7 | other:shoot=159.0, spell:2643=12.4, spell:13554=3.1, spell:14285=2.9, spell:19574=2.0 | - |
+| 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 265.9 | 7 | other:shoot=83.9, spell:2643=11.9, spell:13555=3.2, spell:14287=2.8, spell:19574=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -170,7 +170,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
-- Explosive Trap Effect (spell 13812)
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265056)
@@ -195,7 +194,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
-- Explosive Trap Effect (spell 13812)
 - Lacerate (spell 24119)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
@@ -222,7 +220,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 3010)
 - Counterattack (spell 20909)
 - Dismember (spell 1264930)
-- Explosive Trap Effect (spell 14314)
 - Lacerate (spell 24120)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25011)
@@ -250,7 +247,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 3009)
 - Counterattack (spell 20910)
 - Dismember (spell 1264933)
-- Explosive Trap Effect (spell 14315)
 - Hydra Shot (spell 1293020)
 - Lacerate (spell 1299332)
 - Lava Breath (spell 444681)

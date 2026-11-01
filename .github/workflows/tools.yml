@@ -2,9 +2,12 @@
 #
 # The shell scripts the client move and the engine follow run, and the workflows that run
 # them: tools/tests/test_activation.sh (the activation gate, the move's failure report and
-# resume, the scripts' executable bits), tools/engine/tests/test_scripts.sh (the engine
-# follow hash, pin conditions, review branch, pinned build and ranking wait) and
-# tools/tests/test_release_apps.sh (the apps' release command) and tools/tests/play-upload.test.ts
+# resume, the blocked-build issue (tools/client-alert.sh), the scripts' executable bits),
+# tools/engine/tests/test_scripts.sh (the engine follow hash, pin conditions, review
+# branch, pinned build and ranking wait) and
+# tools/tests/test_release_apps.sh (the apps' release command),
+# tools/tests/test_remeasure.sh (bis.yml's dps-per-point re-measure and its manifest) and
+# tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
 # shellcheck over every script and actionlint over the move's workflows. Plain bash with stubs
 # and scratch git repositories: no network, no database, no secrets.
@@ -35,6 +38,8 @@ jobs:
         run: bash tools/engine/tests/test_scripts.sh
       - name: the apps release command
         run: bash tools/tests/test_release_apps.sh
+      - name: the dps-per-point re-measure
+        run: bash tools/tests/test_remeasure.sh
       # 24 runs the TypeScript directly, with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }

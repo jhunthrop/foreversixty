@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Tests for tools/activation-gate.sh, the test gate tools/activate-build.sh runs before it
 # commits, pushes or tags a client build move, and for activate-build.sh's failure
-# report. Plain bash, no bats, the shape of tools/engine/tests/test_scripts.sh: the gate
-# cases stub `npm` and `go` (NPM_BIN, GO_BIN) to write the reports the real tools write;
-# the report cases run the real script in a scratch repository whose steps are stubs.
+# report, and for tools/client-alert.sh (the blocked-build issue). Plain bash, no bats,
+# the shape of tools/engine/tests/test_scripts.sh: the gate cases stub `npm` and `go`
+# (NPM_BIN, GO_BIN) to write the reports the real tools write; the report cases run the
+# real script in a scratch repository whose steps are stubs.
 #
 #   bash tools/tests/test_activation.sh
 #
@@ -470,10 +471,115 @@ assert "and writes no failure summary" equal "$SUMMARY" ""
 activate "$d" "$OLD_BUILD"
 assert "the active build is nothing to do" equal "$STATUS" 0
 
+# MOVE_REPORT: the failure report is also written where client.yml's alert reads it.
+d=$SCRATCH/move-report-file
+make_move_repo "$d"
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" MOVE_REPORT="$d/report.md" bash tools/activate-build.sh "$NEW_BUILD" --no-commit --no-gate 2>&1) || STATUS=$?
+assert "report file: the move stopped" equal "$STATUS" 1
+assert "report file: holds the report" contains "$(cat "$d/report.md" 2>/dev/null)" "## Client move to $NEW_BUILD stopped"
+
+# tools/client-alert.sh: the blocked-build issue. A stub gh answers `issue list` from
+# files (label-list, search-list: "number<TAB>title" lines, what --jq would print) and
+# records every call and the last --body-file.
+readonly ALERT=$HERE/../client-alert.sh
+stub_gh() {
+	local dir=$1
+	mkdir -p "$dir"
+	: >"$dir/label-list"
+	: >"$dir/search-list"
+	cat >"$dir/gh" <<STUB
+#!/usr/bin/env bash
+echo "gh \$*" >>"$dir/calls"
+if [ "\$1 \$2" = "issue list" ]; then
+  case " \$* " in *" --label "*) cat "$dir/label-list" ;; *) cat "$dir/search-list" ;; esac
+fi
+prev=""
+for arg in "\$@"; do [ "\$prev" = --body-file ] && cp "\$arg" "$dir/body"; prev=\$arg; done
+exit 0
+STUB
+	chmod +x "$dir/gh"
+	printf '## Client move to %s stopped\n\n**Step:** the test gate\n\n**Reason:** red\n\n**To finish or redo the move:** gh workflow run client.yml -f build=%s\n' \
+		"$NEW_BUILD" "$NEW_BUILD" >"$dir/report.md"
+}
+# alert <dir> <args...>: client-alert.sh with the stub gh and a move 3 days behind.
+alert() {
+	local dir=$1
+	shift
+	STATUS=0
+	OUT=$(GH_BIN="$dir/gh" BUILD=$NEW_BUILD ACTIVE=$OLD_BUILD NEWEST=$NEW_BUILD BEHIND_SINCE="2026-10-28 22:10:00" BEHIND_DAYS=3 \
+		RUN_URL=https://github.com/o/r/actions/runs/9 bash "$ALERT" "$@" 2>&1) || STATUS=$?
+	CALLS=$(cat "$dir/calls" 2>/dev/null)
+	BODY=$(cat "$dir/body" 2>/dev/null)
+}
+
+# No issue yet: the label is made and the issue opened with the report, the lag and the run.
+d=$SCRATCH/alert-new
+stub_gh "$d"
+alert "$d" blocked "$d/report.md"
+assert "alert new: exits 0" equal "$STATUS" 0
+assert "alert new: makes the label idempotently" contains "$CALLS" "gh label create client-build-blocked --color B60205"
+assert "alert new: opens the titled, labelled issue" contains "$CALLS" "gh issue create --title Client build $NEW_BUILD is blocked --label client-build-blocked"
+assert "alert new: the body keeps the hand command" contains "$BODY" "**To finish or redo the move:** gh workflow run client.yml -f build=$NEW_BUILD"
+assert "alert new: the body says how far behind" contains "$BODY" "the site serves $OLD_BUILD; the newest Forever build is $NEW_BUILD; behind for 3 days (since 2026-10-28 22:10:00 UTC)"
+assert "alert new: the body links the run" contains "$BODY" "Run: https://github.com/o/r/actions/runs/9"
+assert "alert new: no comment" lacks "$CALLS" "issue comment"
+
+# The build's issue is open: a later failing run comments instead of opening another.
+d=$SCRATCH/alert-again
+stub_gh "$d"
+printf '12\tClient build 1.60.1.70690 is blocked\n14\tClient build %s is blocked\n' "$NEW_BUILD" >"$d/label-list"
+alert "$d" blocked "$d/report.md"
+assert "alert again: comments on the build's issue" contains "$CALLS" "gh issue comment 14 --body-file"
+assert "alert again: opens nothing" lacks "$CALLS" "issue create"
+
+# Found by title when its label was removed.
+d=$SCRATCH/alert-title
+stub_gh "$d"
+printf '21\tClient build %s is blocked\n' "$NEW_BUILD" >"$d/search-list"
+alert "$d" blocked "$d/report.md"
+assert "alert by title: comments on it" contains "$CALLS" "gh issue comment 21 "
+assert "alert by title: opens nothing" lacks "$CALLS" "issue create"
+
+# Another build's issue is open: this build gets its own.
+d=$SCRATCH/alert-other
+stub_gh "$d"
+printf '12\tClient build 1.60.1.70690 is blocked\n' >"$d/label-list"
+alert "$d" blocked "$d/report.md"
+assert "alert other build: opens a new issue" contains "$CALLS" "gh issue create --title Client build $NEW_BUILD is blocked"
+
+# The watch failed before naming a build: any open blocked issue takes the comment.
+d=$SCRATCH/alert-watch
+stub_gh "$d"
+printf '12\tClient build 1.60.1.70690 is blocked\n' >"$d/label-list"
+STATUS=0
+OUT=$(GH_BIN="$d/gh" BUILD="" ACTIVE=$OLD_BUILD NEWEST="" BEHIND_DAYS="" bash "$ALERT" blocked "$d/report.md" 2>&1) || STATUS=$?
+assert "alert watch failed: comments on the open issue" contains "$(cat "$d/calls")" "gh issue comment 12 "
+assert "alert watch failed: says the newest is unknown" contains "$(cat "$d/body")" "the newest Forever build is unknown"
+
+# No report file (the script stopped before writing one): still alerts.
+d=$SCRATCH/alert-noreport
+stub_gh "$d"
+alert "$d" blocked "$d/missing.md"
+assert "alert no report: exits 0" equal "$STATUS" 0
+assert "alert no report: still opens the issue" contains "$CALLS" "gh issue create --title Client build $NEW_BUILD is blocked"
+
+# A landed move closes every open blocked issue, naming the build.
+d=$SCRATCH/alert-cleared
+stub_gh "$d"
+printf '12\n14\n' >"$d/label-list"
+alert "$d" cleared "$NEW_BUILD"
+assert "alert cleared: closes the first" contains "$CALLS" "gh issue close 12 --comment Client build $NEW_BUILD is active"
+assert "alert cleared: closes the second" contains "$CALLS" "gh issue close 14 "
+d=$SCRATCH/alert-cleared-none
+stub_gh "$d"
+alert "$d" cleared "$NEW_BUILD"
+assert "alert cleared, nothing open: closes nothing" lacks "$CALLS" "issue close"
+
 # The workflows and activate-build.sh run these directly, and this repository has
 # core.fileMode off, so a script committed without its executable bit fails only on the
 # runner ("Permission denied", which the engine check would read as an unreadable stamp).
-for script in tools/activate-build.sh tools/activation-gate.sh tools/engine/pinned-build.sh \
+for script in tools/activate-build.sh tools/activation-gate.sh tools/client-alert.sh tools/remeasure-dps-per-point.sh tools/engine/pinned-build.sh \
 	tools/engine/ranking-wait.sh tools/engine/ranking-verdict.sh tools/engine/pin-conditions.sh tools/engine/follow-inputs-hash.sh tools/engine/push-review-branch.sh; do
 	mode=$(git -C "$HERE/../.." ls-files -s "$script" | cut -c1-6)
 	assert "$script is committed executable (mode $mode)" equal "$mode" 100755

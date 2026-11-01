@@ -2,7 +2,7 @@
 ## Title: Forever Sixty
 ## Notes: Your build, in game. Import your character into the planner and follow a build you chose on the site.
 ## Author: foreversixty.gg
-## Version: 2.0.20
+## Version: 2.0.21
 ## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy

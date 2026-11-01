@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:3440 | 30.1 | 2 | spell:6807/1=56.1, spell:6807=55.4, other:attack/1=17.7 | {SpellID: 417141} |
-| 20 | 0000000000000000-55100000000000000000-0000000000000000 | main_hand:7230 | 36.8 | 3 | spell:6808/1=72.9, spell:6808=71.9, spell:779=38.4, other:attack/1=1.2, other:rage_gain=0.2 | {SpellID: 417141} |
-| 30 | 0000000000000000-55230330000000000000-0000000000000000 | main_hand:13045 | 43.6 | 3 | spell:6809/1=72.9, spell:6809=71.9, spell:780=61.4, other:attack/1=1.2, other:rage_gain=0.2 | {SpellID: 407995}, {SpellID: 417141} |
-| 38 | 0000000000000000-55230332020130000000-0000000000000000 | main_hand:13045 | 74.2 | 5 | spell:8972/1=72.0, spell:8972=68.9, spell:769=57.5, spell:1238069=29.1, other:attack/1=4.2 | {SpellID: 417141} |
-| 40 | 0000000000000000-55230332020132000000-0000000000000000 | main_hand:13045 | 75.6 | 5 | spell:8972/1=72.0, spell:8972=69.0, spell:769=59.1, spell:1238069=29.1, other:rage_gain=10.5 | {SpellID: 417141} |
-| 50 | 0000000000000000-55230332020132012511-0000000000000000 | main_hand:13045 | 121.6 | 8 | spell:9880/1=71.5, spell:9880=68.3, spell:9754=53.1, spell:1238070=36.0, other:rage_gain=29.2 | - |
-| 60 | 0000000000000000-55230332020132012551-0510000000000000 | main_hand:22632 | 175.1 | 8 | spell:9881/1=72.0, spell:9881=69.4, spell:9908=57.2, spell:1238073=37.1, other:rage_gain=30.4 | - |
+| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:3440 | 9.0 | 2 | spell:6807/1=56.1, spell:6807=55.4, other:attack/1=17.7 | - |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | main_hand:7230 | 20.3 | 3 | spell:6808/1=72.9, spell:6808=71.9, spell:779=38.4, other:attack/1=1.2, other:rage_gain=0.2 | - |
+| 30 | 0000000000000000-55230330000000000000-0000000000000000 | main_hand:13045 | 32.2 | 3 | spell:6809/1=72.9, spell:6809=71.9, spell:780=61.4, other:attack/1=1.2, other:rage_gain=0.2 | - |
+| 38 | 0000000000000000-55230332023100000000-0000000000000000 | main_hand:13045 | 47.3 | 4 | spell:769=77.9, spell:8972/1=72.7, spell:8972=70.5, other:attack/1=2.7, spell:22842=1.5 | - |
+| 40 | 0000000000000000-55230332023102000000-0000000000000000 | main_hand:13045 | 48.1 | 4 | spell:769=79.1, spell:8972/1=72.7, spell:8972=70.4, other:rage_gain=9.8, other:attack/1=2.7 | {SpellID: 407995} |
+| 50 | 0000000000000000-55230332023102125110-0000000000000000 | main_hand:13045 | 112.0 | 7 | spell:9880/1=71.5, spell:9880=68.5, spell:9754=47.4, spell:1235826=31.3, spell:1238069=29.4 | - |
+| 60 | 0000000000000000-55230332023102125510-0510000000000000 | main_hand:22632 | 224.8 | 7 | spell:9881/1=72.3, spell:9881=69.9, spell:9908=50.6, spell:1235827=32.3, other:rage_gain=30.3 | - |
 
 ## Learned but unused (informational)
 
@@ -131,7 +131,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Entangling Roots (spell 5195)
 - Insect Swarm (spell 24974)
 - Moonfire (spell 8927)
-- Primal Bite (spell 407995)
 - Rake (spell 1822)
 - Rip (spell 9492)
 - Shred (spell 6800)
@@ -160,6 +159,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Hurricane (spell 16914)
 - Insect Swarm (spell 24975)
 - Moonfire (spell 8929)
+- Primal Bite (spell 407995)
 - Rake (spell 1823)
 - Ravage (spell 6785)
 - Rip (spell 9493)

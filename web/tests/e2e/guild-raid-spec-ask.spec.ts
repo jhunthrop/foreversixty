@@ -19,7 +19,7 @@ import {
 } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { shortControls } from './support/short-controls';
-import { choose } from './support/select';
+import { choose, fieldControl } from './support/select';
 
 test.use({ timezoneId: CHICAGO });
 
@@ -34,6 +34,9 @@ async function openAsking(page: Page): Promise<RaidStub> {
 }
 
 const specSelect = (page: Page): Locator => page.getByTestId(stripId('spec', VIEWER_MEMBER));
+// What the member sees of the field: the native select, or the listbox trigger that covers it
+// once select-boot.ts enhances the field after idle on a fine pointer (either can be showing).
+const specControl = (page: Page): Locator => fieldControl(page, stripId('spec', VIEWER_MEMBER));
 const toggle = (page: Page): Locator => page.getByTestId(`${stripId('spec', VIEWER_MEMBER)}-toggle`);
 const specLabel = (page: Page): Locator => page.getByTestId(`${stripId('spec', VIEWER_MEMBER)}-label`);
 const status = (page: Page): Locator => page.getByTestId(stripId('status', VIEWER_MEMBER));
@@ -46,7 +49,7 @@ test('In waits for the pick; the pick signs up with that spec and says it is kep
   await expect(specSelect(page)).toHaveCount(0);
 
   await segment(page, 'in').click();
-  await expect(specSelect(page)).toBeVisible();
+  await expect(specControl(page)).toBeVisible();
   await expect(specLabel(page)).toHaveText(raidCopy.spec.title);
   await expect(segment(page, 'in')).toHaveAttribute('aria-checked', 'false');
   await expect(segment(page, 'in')).toHaveAttribute('aria-busy', 'true');
@@ -64,7 +67,7 @@ test('In waits for the pick; the pick signs up with that spec and says it is kep
   expect(bodies(stub)).toEqual([{ state: 'in', role: 'dps', note: '', spec: 'hunter-survival' }]);
   await expect(toggle(page)).toHaveText(`Survival · ${raidCopy.spec.change}`);
   await expect(toggle(page)).toHaveAttribute('aria-expanded', 'false');
-  await expect(specSelect(page)).toBeHidden();
+  await expect(specControl(page)).toBeHidden();
   await toggle(page).click();
   await expect(specSelect(page)).toHaveValue('hunter-survival');
 });
@@ -94,7 +97,7 @@ test('pressing a state shifts nothing below the row', async ({ page }) => {
     const row = page.getByTestId(stripId('row', VIEWER_MEMBER));
     const before = (await row.boundingBox())?.height ?? 0;
     await segment(page, 'in').click();
-    await expect(specSelect(page)).toBeVisible();
+    await expect(specControl(page)).toBeVisible();
     const after = (await row.boundingBox())?.height ?? 0;
     expect(Math.abs(after - before)).toBeLessThanOrEqual(2);
   }
@@ -152,7 +155,7 @@ test('the select holds the 44 px floor at 360 and the page does not scroll sidew
   await page.setViewportSize(PHONE);
   await openAsking(page);
   await segment(page, 'in').click();
-  await expect(specSelect(page)).toBeVisible();
+  await expect(specControl(page)).toBeVisible();
   expect(await shortControls(page.getByTestId(stripId('row', VIEWER_MEMBER)))).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

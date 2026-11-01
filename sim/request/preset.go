@@ -283,7 +283,8 @@ func publicEntries(entries []presetEntry) []PresetEntry {
 // plain or its improved form) is carried once, in the kit's form; a
 // preset consumable whose slot the kit already fills is dropped, so a
 // rogue's poison or an enhancement shaman's Windfury Weapon is never
-// displaced by the preset's weapon imbue.
+// displaced by the preset's weapon imbue; a stone the preset puts on a
+// hand that holds a poison moves to that hand's stone field instead.
 func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs []string) {
 	buffs = slices.Clone(kitBuffs)
 	kitBases := make(map[string]bool, len(kitBuffs))
@@ -297,20 +298,40 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 	}
 
 	consumeIDs = slices.Clone(kitConsumes)
-	kitSlots := make(map[string]bool, len(kitConsumes))
+	kitSlots := make(map[string]string, len(kitConsumes))
 	for _, id := range kitConsumes {
 		slot, err := consumeSlot(id)
 		if err != nil {
 			slot = id
 		}
-		kitSlots[slot] = true
+		_, value := splitConsumeID(id)
+		kitSlots[slot] = value
 	}
 	for _, entry := range r.Consumes {
-		if !kitSlots[r.slots[entry.ID]] {
+		slot := r.slots[entry.ID]
+		kitValue, filled := kitSlots[slot]
+		switch {
+		case !filled:
 			consumeIDs = append(consumeIDs, entry.ID)
+		case roguePoisons[kitValue]:
+			if stoneSlot, ok := stoneSlotBesidePoison[slot]; ok {
+				_, value := splitConsumeID(entry.ID)
+				consumeIDs = append(consumeIDs, stoneSlot+":"+value)
+			}
 		}
 	}
 	return buffs, consumeIDs
+}
+
+// roguePoisons are the kit imbues Forever lets share a weapon with a
+// stone, weightstone or oil (the rogue and warlock Deep Dive, 2026-10-07).
+var roguePoisons = map[string]bool{"instant_poison": true, "deadly_poison": true, "wound_poison": true}
+
+// stoneSlotBesidePoison is the engine field that holds a hand's second
+// temporary enchant when its imbue field holds a poison.
+var stoneSlotBesidePoison = map[string]string{
+	"main_hand_imbue": "main_hand_stone",
+	"off_hand_imbue":  "off_hand_stone",
 }
 
 func buffBase(id string) string {

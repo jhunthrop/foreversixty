@@ -1,0 +1,586 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Judgement taunts from farther away than other tanks can
+Seal of Fury gives a tanking Seal with a small absorb on every proc
+Holy Shield raises block and adds threat on every block
+Righteous Fury lowers damage taken, and Templar’s Bulwark gives an emergency absorb
+WEAKNESSES
+Mana, not cooldowns, limits the rotation
+The emergency defensives share one Forbearance timer
+Hit is needed for Judgement and Holy Strike to land and hold threat
+IN A RAID
+Role: Main tank; pulls threat and holds a boss facing away from the raid
+Brings: Devotion Aura for the group’s armor; no blessing of its own from the Protection tree
+TALENTS AND BUILDS
+Level 60 and raid build
+HOLY
+0/5
+5/5
+0/3
+0/2
+5/5
+0/2
+0/1
+0/5
+0/2
+0/2
+0/2
+0/1
+0/2
+0/1
+0/2
+0/5
+0/1
+PROTECTION
+1/5
+5/5
+3/3
+0/2
+2/2
+1/1
+0/3
+2/2
+5/5
+1/1
+3/3
+5/5
+0/2
+1/1
+0/5
+3/3
+1/1
+RETRIBUTION
+5/5
+0/5
+0/2
+3/3
+0/3
+0/3
+0/2
+0/1
+0/2
+0/2
+0/1
+0/3
+0/2
+0/1
+0/3
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Divine Intellect
+1/5
+One point on the first row, for a little more mana
+Redoubt
+5/5
+A chance, whenever a melee attack damages you, to gain extra Block chance for a short window or until it has absorbed a few blocks
+Precision
+3/3
+Hit, so the Judgement and Holy Strike that carry your threat land
+Sacred Duty
+2/2
+Shorter cooldowns on your three emergency defensives, and a shorter Forbearance
+Templar's Bulwark
+1/1
+An activated absorb shield worth your whole health bar, followed by Forbearance. Swift Judgement requires it
+Shield Specialization
+2/2
+A stronger shield absorb and mana back on a Block, no more than once every few seconds
+Toughness
+5/5
+More armor from your items
+Swift Judgement
+1/1
+A second Judgement of your Seal on its own one minute cooldown, free and off the global cooldown
+Improved Righteous Fury
+3/3
+While Righteous Fury is on, all damage you take is reduced. In Forever it is a mitigation talent, not a threat one
+Anticipation
+5/5
+Defense Skill, which raises avoidance and lowers the chance to be critically hit
+Holy Shield
+1/1
+Now on the 21-point row: more Block for a short window, Holy damage on every Block, and a little extra threat on that damage
+Iron Creed
+3/3
+More threat on Holy Strike, and while Righteous Fury is on, Holy Strike also cuts the damage you take for a few seconds
+Shieldsworn
+1/1
+The capstone: Holy Strike's cooldown drops to six seconds, which keeps Iron Creed up all the time, and each Holy Strike also fires Holy Shield's damage and Shield Specialization's mana while Holy Shield is up. It is the largest single gain in the build, mostly in threat
+
+This build spends 33 points in Protection, 8 in Retribution and 10 in Holy, and it is the build this site’s tank simulator runs, taken from the client’s own talent text. Pricing each choice in the simulator’s tank fight is what put the points past the Protection core into Deflection, Sacred Duty, Iron Creed and Shieldsworn.
+
+Retribution: five points in Deflection, five percent more Parry and the only parry a paladin can get from a talent, then Conviction for critical strike on every attack and spell.
+
+Holy: Divine Strength for the raw Strength, and Improved Seals for more Seal of Fury and Judgement damage.
+
+Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit; priced in the simulator it adds less than Conviction), Stoicism, Guardian’s Favor and Improved Hammer of Justice (utility). Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own; the paladin’s own contribution to its armor is Devotion Aura, which the simulator keeps on.
+
+Open the planner at /planner?class=paladin to build this out.
+
+ROTATION AND PRIORITY
+Opener
+1
+Seal of FuryRANK 7
+3.5 s before the pull
+2
+Holy ShieldRANK 3
+2 s before the pull
+Priority
+1
+Templar's Bulwark
+An absorb of the paladin's whole health bar for 8 seconds, as the first panic button
+2
+Divine ShieldRANK 2
+3
+Divine ProtectionRANK 2
+4
+Seal of FuryRANK 7
+Kept up
+5
+Holy ShieldRANK 3
+On cooldown
+6
+Holy StrikeRANK 8
+On cooldown
+7
+Hammer of the Righteous
+On cooldown, once the Holy Shield mana is safe
+8
+Swift Judgement
+Whenever it is ready
+9
+Judgement
+On cooldown (an off-the-global cast of 6 percent of base mana)
+10
+ExorcismRANK 6
+On Undead and Demons only
+11
+ConsecrationRANK 5
+Last and only above half mana
+Cooldowns
+Templar's Bulwark
+5 min cooldown. An absorb of the paladin's whole health bar for 8 seconds, as the first panic button
+Divine ShieldRANK 2
+5 min cooldown
+Divine ProtectionRANK 2
+5 min cooldown
+Swift Judgement
+1 min cooldown. Whenever it is ready
+Voice of Truth
+3 min cooldown
+Blessing of ProtectionRANK 3
+5 min cooldown
+Lay on HandsRANK 3
+20 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+This is the rotation the simulator runs. It was measured in the simulator’s tank fight (a level 63 boss that swings at you every two seconds, healers assumed), and mana, not cooldowns, is what limits it, so the order below is also the order in which mana is spent.
+
+Righteous Fury is a setting, not a button: keep it on. It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take. A Righteous-Fury-less rotation of the same gear makes far less threat.
+Seal of Fury up. Judgement no longer consumes your seal in Forever, so you recast the seal only when it runs out, not after every Judgement.
+Holy Shield on cooldown. It is both the best mitigation you have and the best use of your mana, so every other spell leaves its cost in the pool.
+Hammer of the Righteous and Holy Strike on their cooldowns, the first of which is the largest single threat gain in this list; with Shieldsworn, Holy Strike comes back every six seconds.
+Judgement on cooldown, and Swift Judgement whenever it is ready: it is a second Judgement on its own cooldown.
+Consecration only with spare mana, where it pays for itself in threat.
+
+Templar’s Bulwark, Divine Protection and Divine Shield are for a fight you are losing: the simulator uses them on low health, where they cut the chance of death on a harder boss, and they never fire on the standard fight. Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar’s Bulwark.
+
+STAT PRIORITY
+1
+Expertise
+2
+Defense
+3
+Block
+4
+Dodge
+5
+Parry
+6
+Agility
+7
+Stamina
+8
+Hit
+9
+Strength
+10
+Critical strike
+11
+Armor
+12
+Attack power
+
+Hit cap: 1%
+
+Stat	Weight (Expertise = 1.00)	DPS per point
+Expertise	
+1.00
+	987.4
+Defense	
+0.28
+	276.5
+Block	
+0.19
+	190.6
+Dodge	
+0.18
+	177.2
+Parry	
+0.14
+	141.4
+Agility	
+0.14
+	141.0
+Stamina	
+0.11
+	111.8
+Hit	
+0.03
+	29.6
+Strength	
+0.02
+	15.3
+Critical strike	
+0.01
+	13.0
+Armor	
+0.01
+	7.00
+Attack power	
+0.00
+	3.88
+
+1 point of expertise = 987.4 DPS at level 60
+
+Expertise cap: 6.5% (dodge), 14% (parry)
+
+A tank is scored on one number that rewards, in this order, effective health (how much of the boss’s damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+
+Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches and powers Holy Shield’s damage and Redoubt. Strength adds threat and Block Value; Hit keeps Judgement and Holy Strike landing; Expertise lowers the boss’s chance to dodge or parry you, which is threat, not survival, and no item carries it yet.
+
+Two things the table cannot tell you. The item tables used here fold a shield’s Block Value into its Block line, so Block Value is not weighed apart from Block chance.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Dwarf (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Enchanted Thorium Helm
+	
+Crafted: Blacksmithing
+Neck	
+Medallion of Grand Marshal Morris
+	
+World drop (BoE) · levels 53-61
+Shoulder	
+Spaulders of Valor
+	
+Blackrock Spire · Warchief Rend Blackhand
+Back	
+Deep River Cloak
+	
+Quest: Strange Sources · requires level 51
+Chest	
+Enchanted Thorium Breastplate
+	
+Crafted: Blacksmithing
+Wrist	
+Sentinel's Wristguards
+	
+Crafted: Blacksmithing
+Hands	
+Heavy Thorium Gauntlets
+	
+Crafted: Blacksmithing
+Waist	
+Sentinel's Waistguard
+	
+Crafted: Blacksmithing
+Legs	
+Azerothium Legplates
+	
+Crafted: Blacksmithing
+Feet	
+Boots of Avoidance
+	
+World drop (BoE) · levels 41-49
+Ring	
+Masons Fraternity Ring
+	
+Quest: Divino-matic Rod · requires level 40
+Ring	
+Ring of the Underwood
+	
+World drop (BoE) · levels 32-39
+Trinket	
+Mark of the Chosen
+	
+Quest: The Pariah's Instructions · requires level 39
+Trinket	
+Arena Grand Master
+	
+Quest: Arena Grandmaster · requires level 1
+Main hand	
+Greenhammer
+	
+Crafted: Blacksmithing
+Off hand	
+Evergreen Shield
+	
+Crafted: Blacksmithing
+Ranged	Nothing sourced at this level helps your DPS
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Back	
+Enchant Cloak - Superior Defense
+	+70 armor
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Superior Stamina
+	+9 stamina
+Hands	
+Enchant Gloves - Greater Agility
+	+7 agility
+Feet	
+Enchant Boots - Greater Agility
+	+7 agility
+Weapon	
+Enchant Weapon - Agility
+	+15 agility
+Off hand	
+Enchant Shield - Greater Stamina
+	+7 stamina
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of the Titans
+— replaces both elixirs
+	1200 health for two hours
+WITHOUT A FLASK
+
+Elixir of Greater Defense
+	Armor
+
+Elixir of Fortitude
+	Health
+FOOD, OIL AND POTIONS
+
+Tender Wolf Steak
+	Stamina
+
+Rumsey Rum Black Label
+	Stamina
+
+Juju Power
+	Strength
+
+Juju Might
+	Attack power
+
+Major Mana Potion
+	Mana, used on cooldown
+RACES
+Human
+Dwarf
+(Recommended)
+Undead
+(Recommended)
+Race	Faction	Racials
+
+Human
+	Alliance	
+Sword Specialization: Grants 2% spell and ability critical strike chance with a sword
+
+
+Dwarf
+RECOMMENDED
+	Alliance	
+Stoneform: Reduces physical damage taken instead of raising armor
+
+
+Undead
+RECOMMENDED
+	Horde	
+Will of the Forsaken: Removes Charm, Fear, and Sleep
+
+Dwarf is the Alliance pick: Stoneform. Undead is the Horde pick: Will of the Forsaken.
+
+PROFESSIONS
+
+Blacksmithing suits Protection well since it can add sockets to armor pieces, letting a tank fill in stamina or defense the itemization doesn’t provide on its own. Engineering offers utility trinkets and gadgets a tank can use situationally.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Divine Intellect
+5/5
+Redoubt
+5/5
+Precision
+1/3
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Divine Intellect
+5/5
+Redoubt
+5/5
+Precision
+3/3
+Sacred Duty
+5/2
+Templar's Bulwark
+1/1
+Improved Hammer of Justice
+2/3
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Divine Intellect
+5/5
+Redoubt
+5/5
+Precision
+3/3
+Sacred Duty
+5/2
+Templar's Bulwark
+1/1
+Improved Hammer of Justice
+3/3
+Shield Specialization
+3/2
+Toughness
+2/5
+Swift Judgement
+1/1
+Improved Righteous Fury
+1/3
+Stoicism
+1/2
+Iron Creed
+1/3
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Divine Intellect
+5/5
+Redoubt
+5/5
+Precision
+3/3
+Sacred Duty
+5/2
+Templar's Bulwark
+1/1
+Improved Hammer of Justice
+3/3
+Shield Specialization
+3/2
+Toughness
+2/5
+Swift Judgement
+1/1
+Improved Righteous Fury
+3/3
+Stoicism
+1/2
+Iron Creed
+1/3
+Reckoning
+5/5
+Spiritual Focus
+3/5
+Level 60
+51 points
+LOAD IN PLANNER
+Divine Intellect
+5/5
+Redoubt
+5/5
+Precision
+3/3
+Sacred Duty
+5/2
+Templar's Bulwark
+1/1
+Improved Hammer of Justice
+3/3
+Shield Specialization
+3/2
+Toughness
+2/5
+Swift Judgement
+1/1
+Improved Righteous Fury
+3/3
+Stoicism
+1/2
+Iron Creed
+1/3
+Reckoning
+5/5
+Spiritual Focus
+5/5
+Improved Seals
+3/5
+Deflection
+5/5
+
+Retribution is the stronger leveling spec for Paladin — a shield and a threat rotation built for holding aggro on one enemy is a poor fit for the pace of solo questing. If leveling Protection anyway, expect it to feel closer to a Warrior’s tank stance than a fast solo spec.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+DATAMINED
+Forever Sixty build data, data/builds/1.60.1.69893/talents/paladin.json
+THIS SITE
+Forever Sixty stat weights, data/curated/specs.json
+THIS SITE
+Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json
+DATAMINED
+Forever Sixty build data, data/builds/1.60.1.69893/races.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

@@ -31,7 +31,7 @@ import (
 // daggerRequiredSpellIDs is Backstab's and Ambush's own spell ids
 // across every rank this build's spellconst carries
 // (data/builds/1.60.1.70009/spellconst/rogue.json: spells[<id>].name ==
-// "Backstab" or "Ambush"). Both are Classic's only two dagger-only
+// "Backstab" or "Ambush") plus Forever's Mutilate, the dagger-only
 // rogue abilities; a rotation naming either one, at any rank, cannot
 // function without a dagger equipped, so this table is keyed by spell
 // id rather than by spec - a future spec whose rotation also happens
@@ -46,6 +46,9 @@ var daggerRequiredSpellIDs = map[int]bool{
 	8676: true, 8724: true, 8725: true, 11267: true, 11268: true,
 	11269: true, 24337: true,
 	462718: true, 462719: true, 462720: true, 462721: true, 462722: true, 462723: true,
+	// Mutilate (Forever's Assassination builder): every rank's
+	// SpellEquippedItems row is the dagger mask on both hands.
+	1310707: true, 399956: true, 1241582: true, 1241584: true,
 }
 
 // aplRotationRequiresDagger reports whether

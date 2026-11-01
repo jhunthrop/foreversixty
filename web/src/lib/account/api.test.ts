@@ -2,7 +2,7 @@
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockEntitlements, premiumEntitlements } from '../../test-support/billing-fixtures';
-import { invalidate } from '../data/query';
+import { invalidate, subscribe } from '../data/query';
 import {
   ACCOUNT_FAILED,
   AccountError,
@@ -19,6 +19,7 @@ import {
   forgetSession,
   listCompanions,
   listDevices,
+  meKey,
   pairDevice,
   postMyExports,
   queueBuildToAddon,
@@ -232,6 +233,23 @@ describe('the account API', () => {
     expect(patch.method).toBe('PATCH');
     expect(patch.url).toBe(`${apiBase}/v1/me`);
     expect(await patch.json()).toEqual({ anonymize: true });
+  });
+
+  it('a sign-out the server refuses keeps the session: the cached /v1/me is never dropped', async () => {
+    const apiBase = `${API}/signout-refused`;
+    const me = { user: { id: 1 }, characters: [], guilds: [], entitlements: mockEntitlements() };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>().mockResolvedValueOnce(envelope(me)).mockResolvedValueOnce(envelope(null, 500)),
+    );
+    await fetchMeOnce(apiBase);
+    const statuses: string[] = [];
+    const unsubscribe = subscribe(meKey(apiBase), (state) => statuses.push(state.status));
+
+    await expect(signOut(apiBase)).rejects.toThrow();
+    unsubscribe();
+
+    expect(statuses).toEqual(['ready']);
   });
 
   it.each([

@@ -458,14 +458,22 @@ export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): 
   invalidate(devicesKey(apiBase));
 }
 
-export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
+/** Everything the browser kept for a signed-in visitor: cached answers, ETags, reserves, the
+ *  character pointer and the session hints. */
+export function forgetSignedInState(): void {
   forgetRemembered();
   forgetPrivate();
   forgetGuildReserves();
   clearPointerOnSignOut();
   clearPremiumHint();
   clearMeGuildCount();
+}
+
+/** Ends the session, then forgets what the browser kept for it. A refused DELETE leaves the
+ *  visitor signed in, so nothing is forgotten: the account panel keeps its rows and says so. */
+export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
+  forgetSignedInState();
 }
 
 /** PATCH /v1/me; the answer is the new `/v1/me`, normalized and cached. */

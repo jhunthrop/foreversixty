@@ -55,6 +55,11 @@ type Actor struct {
 	Abilities []Ability `json:"abilities"`
 	Targets   []Pair    `json:"targets"`
 	Series    []int64   `json:"series"`
+	// PetUptime is set by sim/adapter on a pet row whose ActiveMS is the
+	// engine's measured time summoned. A sim pet row without it was written
+	// before the engine measured pet uptime, and its ActiveMS is the fight's
+	// length, not the pet's. A logged fight never sets it.
+	PetUptime bool `json:"pet_uptime,omitempty"`
 }
 
 type actor struct {

@@ -126,7 +126,7 @@ SPECS = {
     ),
     # ---- tanks (3)
     "druid-feral-bear": dict(
-        core=["Primal Bite", "Berserk"],
+        core=["Primal Bite"],
         auras=[("Demoralizing Roar", DEF)],
         downranks=[],
         defensives=["Barkskin", "Frenzied Regeneration"],

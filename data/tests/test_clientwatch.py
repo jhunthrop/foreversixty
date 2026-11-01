@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,7 @@ from pipeline.clientwatch import (
     ClientConfig,
     ClientWatchError,
     check,
+    days_behind,
     interface_number,
     is_forever,
     load_config,
@@ -310,3 +312,28 @@ def test_the_committed_config_never_activates_a_ptr_key():
         assert not is_forever(Build(product, "1.60.2.71000", ""), config), product
     for product in config.products:
         assert is_forever(Build(product, "1.60.2.71000", ""), config), product
+
+
+def test_the_site_is_behind_since_the_first_newer_forever_build_not_the_newest():
+    builds = {
+        "wowf": [
+            {"version": "1.60.1.70707", "created_at": "2026-10-30 02:00:00"},
+            {"version": "1.60.1.70690", "created_at": "2026-10-28 22:10:00"},
+            {"version": "1.60.1.70658", "created_at": "2026-10-25 09:00:00"},
+        ],
+        "wow": [{"version": "12.1.7.70700", "created_at": "2026-10-27 00:00:00"}],
+    }
+    now = datetime(2026, 10, 31, 23, 0, tzinfo=UTC)
+    out = report(check(builds, "1.60.1.70658", CONFIG), now=now)
+    assert out["behind_since"] == "2026-10-28 22:10:00"
+    assert out["behind_days"] == 3
+
+
+def test_an_up_to_date_site_is_behind_by_nothing():
+    out = report(check(BUILDS, "1.60.1.70374", CONFIG), now=datetime(2026, 10, 31, tzinfo=UTC))
+    assert out["behind_since"] == ""
+    assert out["behind_days"] == ""
+
+
+def test_days_behind_ignores_an_unparseable_stamp():
+    assert days_behind("yesterday", datetime(2026, 10, 31, tzinfo=UTC)) is None

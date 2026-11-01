@@ -119,7 +119,9 @@ func TestShadowCastsMindBlastBeforeMindFlayAndKeepsDevouringPlague(t *testing.T)
 }
 
 // R1: Frost casts Arcane Missiles on Missile Barrage procs; A4: Arcane
-// stacks Arcane Blast to 3 before its Frostbolt filler.
+// stacks Arcane Blast to 3 before its Frostbolt filler, and since client
+// 1.60.1.70707 (+100% cost a stack, 18 s) keeps blasting past 3 while the
+// mana bar is ahead of the fight.
 func TestMageMissileBarrageAndArcaneBlastStacks(t *testing.T) {
 	const arcaneMissiles = 25345
 	if ids := castOrder(t, "mage-frost"); !slices.Contains(ids, arcaneMissiles) {
@@ -134,14 +136,31 @@ func TestMageMissileBarrageAndArcaneBlastStacks(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, item := range rot.PriorityList {
-		cmp := item.GetAction().GetCondition().GetCmp()
-		if cmp.GetLhs().GetAuraNumStacks() == nil {
+		either := item.GetAction().GetCondition().GetOr().GetVals()
+		if len(either) != 2 || either[0].GetCmp().GetLhs().GetAuraNumStacks() == nil {
 			continue
 		}
-		if got := cmp.GetRhs().GetConst().GetVal(); got != "3" {
+		if got := either[0].GetCmp().GetRhs().GetConst().GetVal(); got != "3" {
 			t.Errorf("Arcane Blast stacks to %s before Frostbolt, want 3", got)
+		}
+		if !conditionPacesMana(either[1]) {
+			t.Error("Arcane Blast's past-3 branch does not compare mana against the fight's remaining time")
 		}
 		return
 	}
 	t.Error("the Arcane rotation has no Arcane Blast stack condition")
+}
+
+// conditionPacesMana reports whether v (or one of the values it ands)
+// compares currentManaPercent against remainingTimePercent.
+func conditionPacesMana(v *proto.APLValue) bool {
+	if cmp := v.GetCmp(); cmp != nil {
+		return cmp.GetLhs().GetCurrentManaPercent() != nil && cmp.GetRhs().GetRemainingTimePercent() != nil
+	}
+	for _, inner := range v.GetAnd().GetVals() {
+		if conditionPacesMana(inner) {
+			return true
+		}
+	}
+	return false
 }

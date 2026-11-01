@@ -1,0 +1,520 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Power Word: Shield keeps a tank alive by preventing damage
+Penance adds a channelled heal that can also deal damage
+Divine Aegis turns critical heals into shields
+Lasts longer on its mana than Holy under the same fight
+WEAKNESSES
+Group-wide healing is lower than Holy’s
+A target under Weakened Soul cannot take another shield
+The fight is mana-bound, so the shield and filler need pacing
+IN A RAID
+Role: Tank healer; damage prevention more than raw throughput
+Brings: Power Word: Fortitude for the group, with shields and Prayer of Mending on the tank
+TALENTS AND BUILDS
+Level 60 and raid build
+DISCIPLINE
+0/5
+2/2
+5/5
+0/3
+0/3
+5/5
+0/2
+3/3
+1/1
+3/3
+3/3
+0/3
+0/2
+1/1
+1/1
+5/5
+3/3
+0/1
+HOLY
+0/3
+3/3
+5/5
+0/5
+5/5
+0/1
+0/3
+3/3
+0/2
+3/3
+0/2
+0/1
+0/2
+0/1
+0/5
+0/3
+0/1
+SHADOW
+0/5
+0/5
+0/5
+0/5
+0/2
+0/2
+0/2
+0/1
+0/2
+0/5
+0/1
+0/3
+0/1
+0/2
+0/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Divine Aegis
+3/3
+Your non-periodic critical heals create a protective shield on the target, absorbing 15% of the amount healed. Shields up to (20 * 60) damage and lasts 12 sec
+Renewed Hope
+5/5
+Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec
+Penance
+1/1
+Launches a volley of holy light at the target, causing 45 Holy damage to an enemy, or 134 healing to an ally, instantly and every 1 sec for 2 sec
+Soul Warding
+1/1
+Reduces the cooldown on your Power Word: Shield spell by 4 sec and reduces its mana cost by 15%
+Mental Agility
+3/3
+Reduces the mana cost of your Smite, Holy Fire, and instant cast spells by 10%
+Improved Power Word: Shield
+3/3
+Increases the damage absorbed by your Power Word: Shield by 20%
+
+The build spends its deep points in Discipline and fills Holy with the points that make the heals cast faster and cheaper. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the BiS page): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+
+Twin Disciplines, Improved Power Word: Shield and Mental Agility are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
+Meditation keeps part of your regeneration running while you cast and Mental Strength lifts Intellect; Inner Focus is a free, extra-critical heal on demand.
+Penance, Renewed Hope and Divine Aegis are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals. Divine Aegis takes all three ranks: the client removed Binding Heal, and its point measured about +1.7% healing as Divine Aegis’s third rank in our run.
+In Holy, Holy Specialization, Divine Fury and Improved Healing give critical chance, faster Heal and Greater Heal, and cheaper direct heals; Inspiration and Improved Renew fill the remaining points.
+
+Open the planner at /planner?class=priest to adjust it.
+
+ROTATION AND PRIORITY
+Opener
+1
+LightwellRANK 3
+2.5 s before the pull
+Priority
+1
+Shadowfiend
+Returns a share of the whole mana bar over its fifteen seconds
+2
+Dark SacrificeRANK 5
+Trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit…
+3
+PenanceRANK 4
+On its 12 second cooldown
+4
+Power Word: ShieldRANK 10
+Power Word
+5
+Flash HealRANK 7
+The fast heal and the dear one
+6
+Prayer of HealingRANK 5
+Heals the healer's whole party, so it is cast on a party member and only once three of…
+7
+HealRANK 4
+Rank 4 is the mana-efficient filler
+Cooldowns
+LightwellRANK 3
+10 min cooldown
+Dark SacrificeRANK 5
+10 min cooldown. Trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit…
+Fear Ward
+3 min cooldown
+FeedbackRANK 5
+3 min cooldown
+Elune's Grace
+5 min cooldown
+Shadowfiend
+5 min cooldown
+Contingency PlanRANK 5
+10 min cooldown
+Desperate PrayerRANK 7
+10 min cooldown
+Divine GraceRANK 7
+10 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+The curated rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul. Renew and Prayer of Mending go on the tank; Flash Heal is the emergency button for a nearly dead tank or member; Prayer of Healing answers several party members being hurt together; Heal is the efficient filler.
+
+The shield, the filler and Prayer of Healing are paced against your mana the way Holy’s are: they fire at their normal thresholds only while your mana is keeping up with the share of the fight that is left. Discipline lasts longer on its mana than Holy does under the same fight, which is why the shield is worth pacing rather than dropping.
+
+STAT PRIORITY
+1
+MP5
+2
+Spirit
+3
+Intellect
+4
+Healing power
+5
+Critical strike
+Stat	Weight (MP5 = 1.00)	DPS per point
+MP5	
+1.00
+	0.54
+Spirit	
+0.56
+	0.31
+Intellect	
+0.52
+	0.28
+Healing power	
+0.43
+	0.23
+Critical strike	
+0.25
+	0.14
+
+1 point of mp5 = 0.54 DPS at level 60
+
+In simulator-derived order, per point of stat: MP5 first, then Spirit, healing power and Intellect close together, with critical strike last and measured with less certainty. The fight is mana-bound, so regeneration and the pool matter more than a point of throughput. Items trade several points of one for few of another, so read the list as “which stat is cheap to give up”.
+
+Spell power adds nothing to a heal; it is the damage side of a healing item. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the BiS page): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Human (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Devout Crown
+	
+Scholomance · Darkmaster Gandling
+Neck	
+Glowing Eye of Mordresh
+	
+Razorfen Downs · Mordresh Fire Eye
+Shoulder	
+Devout Mantle
+	
+Blackrock Spire · Solakar Flamewreath
+Back	
+Sergeant Major's Cape
+	
+PvP rank 9 · Sergeant Major · Alliance
+Chest	
+Truefaith Vestments
+	
+Crafted: Tailoring
+Wrist	
+Devout Bracers
+	
+1% from Thuzadin Shadowcaster
+Hands	
+Devout Gloves
+	
+Stratholme · Archivist Galford
+Waist	
+Wisdom of the Timbermaw
+	
+Crafted: Tailoring
+Legs	
+Devout Skirt
+	
+Stratholme · Baron Rivendare
+Feet	
+Devout Sandals
+	
+Stratholme · Maleki the Pallid
+Ring	
+Band of the Hierophant
+	
+World drop (BoE) · levels 56-62
+Ring	
+Eye of Adaegus
+	
+World drop (BoE) · levels 49-57
+Trinket	
+Uther's Strength
+	
+World drop (BoE) · levels 48-55
+Trinket	
+Ankh of Life
+	
+World drop (BoE) · levels 42-49
+Main hand	
+Glowing Brightwood Staff
+	
+World drop (BoE) · levels 50-57
+Off hand	Glowing Brightwood Staff is a two-hander; the off hand is taken.
+Ranged	
+Torch of Light
+	
+Crafted: Enchanting
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it’s still the tree’s main sustain stat.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Healing Power
+	+24 healing power
+Feet	
+Enchant Boots - Spirit
+	+5 spirit
+Weapon	
+Enchant Weapon - Healing Power
+	+55 healing power
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of Distilled Wisdom
+— replaces both elixirs
+	A large pool of mana for the whole fight
+WITHOUT A FLASK
+
+Greater Mageblood Elixir
+	Mana per 5 sec
+
+Greater Cleric's Elixir
+	Healing power
+
+Elixir of Sages
+	Spirit and spell critical strike
+FOOD, OIL AND POTIONS
+
+Sage's Tea
+	Healing power
+
+Brilliant Mana Oil
+	Mana per 5 sec and healing power, on the main hand
+
+Major Mana Potion
+	Mana, used on cooldown
+
+Demonic Rune
+	Mana, used on cooldown
+RACES
+Human
+(Recommended)
+Dwarf
+Night Elf
+Undead
+(Recommended)
+Gnome
+Troll
+Race	Faction	Racials
+
+Human
+RECOMMENDED
+	Alliance	
+Perception: Gives 20 seconds of stealth detection
+The Human Spirit: Grants 5% Spirit
+
+
+Dwarf
+	Alliance	
+Stoneform: Reduces physical damage taken instead of raising armor
+
+
+Night Elf
+	Alliance	
+Elune's Light: Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown
+
+
+Undead
+RECOMMENDED
+	Horde	
+Will of the Forsaken: Removes Charm, Fear, and Sleep
+
+
+Gnome
+	Alliance	
+Escape Artist: Breaks and grants brief immunity to movement impairment on a 2 minute cooldown
+Expansive Mind: Grants 5% Mana, Rage and Energy
+
+
+Troll
+	Horde	
+Berserking: Grants 10% casting and attack speed on a 3 minute cooldown
+
+Human is the Alliance pick: Perception and The Human Spirit. Undead is the Horde pick: Will of the Forsaken.
+
+PROFESSIONS
+
+Community convention for healing Priests favors Tailoring for caster cloth stats alongside Enchanting for weapon and gear enchants, since neither profession competes with anything Discipline-specific.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Wand Specialization
+2/2
+Twin Disciplines
+5/5
+Mental Strength
+4/5
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Wand Specialization
+2/2
+Twin Disciplines
+5/5
+Mental Strength
+5/5
+Mental Agility
+3/3
+Inner Focus
+1/1
+Improved Power Word: Shield
+3/3
+Meditation
+2/3
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Wand Specialization
+2/2
+Twin Disciplines
+5/5
+Mental Strength
+5/5
+Mental Agility
+3/3
+Inner Focus
+1/1
+Improved Power Word: Shield
+3/3
+Meditation
+3/3
+Soul Warding
+1/1
+Penance
+1/1
+Renewed Hope
+5/5
+Divine Aegis
+2/3
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Wand Specialization
+2/2
+Twin Disciplines
+5/5
+Mental Strength
+5/5
+Mental Agility
+3/3
+Inner Focus
+1/1
+Improved Power Word: Shield
+3/3
+Meditation
+3/3
+Soul Warding
+1/1
+Penance
+1/1
+Renewed Hope
+5/5
+Divine Aegis
+2/3
+Improved Renew
+3/3
+Holy Specialization
+5/5
+Divine Fury
+2/5
+Level 60
+51 points
+LOAD IN PLANNER
+Wand Specialization
+2/2
+Twin Disciplines
+5/5
+Mental Strength
+5/5
+Mental Agility
+3/3
+Inner Focus
+1/1
+Improved Power Word: Shield
+3/3
+Meditation
+3/3
+Soul Warding
+1/1
+Penance
+1/1
+Renewed Hope
+5/5
+Divine Aegis
+2/3
+Improved Renew
+3/3
+Holy Specialization
+5/5
+Divine Fury
+5/5
+Inspiration
+3/3
+Improved Healing
+3/3
+Holy Binding
+1/1
+
+Shadow is the generally recommended leveling spec for Priest, not Discipline — Discipline’s shield-and-mitigation kit is built around keeping other people alive, which doesn’t translate to fast solo leveling the way Shadow’s self-sufficient damage and healing does.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+This site, stat weights
+THIS SITE
+This site, character planner
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

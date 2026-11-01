@@ -1421,7 +1421,7 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
     await page.goto(`${GUILD_URL}#roster`);
     const approveButton = page.locator('[data-testid="guild-roster-approve"][aria-label="Approve Rootgall"]');
     await approveButton.click();
-    expect(approveCalled).toBe(true);
+    await expect.poll(() => approveCalled).toBe(true);
     await expect(page.getByTestId('guild-roster-unverified-list')).not.toContainText('Rootgall');
   });
 
@@ -1509,7 +1509,8 @@ test.describe('guild crest (Settings tab, officer only)', () => {
     await expect(saveButton).toBeEnabled();
 
     await saveButton.click();
-    expect(putCalled).toBe(true);
+    // The click resolves before the upload's PUT reaches the route, so poll for it.
+    await expect.poll(() => putCalled).toBe(true);
     await expect(page.getByTestId('guild-faction-crest')).toHaveAttribute('src', /crest\.webp\?v=abc$/);
   });
 
@@ -1533,7 +1534,7 @@ test.describe('guild crest (Settings tab, officer only)', () => {
 
     await page.getByTestId('guild-crest-remove').click();
     await page.getByTestId('guild-crest-remove-confirm-button').click();
-    expect(deleteCalled).toBe(true);
+    await expect.poll(() => deleteCalled).toBe(true);
     await expect(page.getByTestId('guild-faction-crest')).toHaveAttribute('src', /horde-logo-512\.webp$/);
   });
 

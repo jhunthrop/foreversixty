@@ -20,8 +20,8 @@
 // typed or pasted, and the page shows the reason inline beside the field.
 import { API_BASE_URL } from '../planner/config';
 import { FS1_PREFIX, decodeFS1 } from '../planner/fs1';
-import { loadReference, loadTalents } from '../planner/load';
-import type { BuildRecord } from '../planner/types';
+import { DataLoadError, loadReference, loadTalents } from '../planner/load';
+import type { BuildRecord, TalentFile } from '../planner/types';
 import { fetchReportMeta, fetchSummary } from '../report/load';
 import { gearFromCombatant, treeRanksFromTalents } from '../report/planner-link';
 import { classSlugFromName } from '../report/tree-sizes';
@@ -136,6 +136,29 @@ async function reference(ctx: LoadContext) {
   return loadReference(ctx.treeVersion);
 }
 
+/** The client build an FS1 code was written on, its second field ("" for a malformed code). */
+function exportBuild(code: string): string {
+  return code.trim().split(':')[1] ?? '';
+}
+
+/**
+ * The talent tree an export's digits were written against. A tree's digits are read by
+ * position, and a later client build can lay a tree out differently, so a code is read against
+ * its own build's tree, the build `characterFromFs1` stamps on the character. Only when the
+ * site ships no file for that build (404) does it fall back to the current tree.
+ */
+async function talentsForExport(code: string, classSlug: string, ctx: LoadContext): Promise<TalentFile> {
+  const build = exportBuild(code);
+  if (build === '' || build === ctx.treeVersion) return loadTalents(ctx.treeVersion, classSlug);
+  try {
+    return await loadTalents(build, classSlug);
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404)
+      return loadTalents(ctx.treeVersion, classSlug);
+    throw error;
+  }
+}
+
 /** Sums a "31/0/20"-style tree-total talent split (fight_metrics.talent_split /
  *  SimInput.talents) into a point count. The one place this parse happens, so a caller
  *  reading this same field (the home Planner card, lib/home/next-steps.ts) reads it the
@@ -184,7 +207,7 @@ export async function fromStoredCharacter(
     let races;
     try {
       [talents, { classes, races }] = await Promise.all([
-        loadTalents(ctx.treeVersion, decoded.build.classSlug),
+        talentsForExport(code, decoded.build.classSlug, ctx),
         reference(ctx),
       ]);
     } catch {
@@ -304,7 +327,7 @@ async function loadFs1Character(
   let races;
   try {
     [talents, { classes, races }] = await Promise.all([
-      loadTalents(ctx.treeVersion, classSlug),
+      talentsForExport(code, classSlug, ctx),
       reference(ctx),
     ]);
   } catch {

@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.21
+
+Data for client build 1.60.1.70707: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
 ## 2.0.20
 
 Data for client build 1.60.1.70658: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.

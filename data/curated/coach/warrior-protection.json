@@ -1,6 +1,6 @@
 {
   "spec": "warrior-protection",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Bloodrage",
@@ -8,7 +8,7 @@
         2687
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/warrior.json#2687"
+      "verified": "1.60.1.70707/spellconst/warrior.json#2687"
     },
     {
       "family": "Shield Slam",
@@ -19,7 +19,7 @@
         23925
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#23925"
+      "verified": "1.60.1.70707/spellconst/warrior.json#23925"
     }
   ],
   "auras": [
@@ -30,7 +30,7 @@
       ],
       "name": "Shield Block",
       "kind": "defensive",
-      "verified": "1.60.1.70658/spellconst/warrior.json#2565"
+      "verified": "1.60.1.70707/spellconst/warrior.json#2565"
     },
     {
       "spell_id": 11556,
@@ -44,7 +44,7 @@
       ],
       "name": "Demoralizing Shout",
       "kind": "defensive",
-      "verified": "1.60.1.70658/spellconst/warrior.json#11556"
+      "verified": "1.60.1.70707/spellconst/warrior.json#11556"
     },
     {
       "spell_id": 11581,
@@ -64,7 +64,7 @@
       ],
       "name": "Thunder Clap",
       "kind": "defensive",
-      "verified": "1.60.1.70658/spellconst/warrior.json#11581"
+      "verified": "1.60.1.70707/spellconst/warrior.json#11581"
     }
   ],
   "downranks": [],
@@ -75,7 +75,7 @@
         871
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/warrior.json#871"
+      "verified": "1.60.1.70707/spellconst/warrior.json#871"
     },
     {
       "family": "Last Stand",
@@ -83,7 +83,7 @@
         12975
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#12975"
+      "verified": "1.60.1.70707/spellconst/warrior.json#12975"
     }
   ],
   "efficiency": []

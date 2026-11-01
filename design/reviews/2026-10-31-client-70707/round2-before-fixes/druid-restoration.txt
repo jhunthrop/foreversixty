@@ -1,0 +1,496 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Heals over time on several targets keep a group healthy at low cost
+Mana efficiency talents let it out-sustain other healers over a long fight
+Swiftmend turns a running heal over time into an instant heal
+Nature’s Swiftness into Healing Touch answers a nearly dead tank
+WEAKNESSES
+Heals over time are slow against sudden burst damage
+Healing Touch is held back so mana lasts the fight
+Spell power adds nothing to a heal; gear needs healing power
+IN A RAID
+Role: Healer, keeping the tank up with heals over time and group healing on pulses
+Brings: Mark of the Wild for the group and Innervate for casters
+TALENTS AND BUILDS
+Level 60 and raid build
+BALANCE
+4/5
+5/5
+3/3
+2/2
+2/2
+0/2
+0/3
+1/1
+0/1
+0/5
+0/5
+0/2
+0/1
+0/3
+0/5
+0/1
+FERAL COMBAT
+0/5
+0/5
+0/2
+0/3
+0/2
+0/3
+0/3
+0/2
+0/1
+0/2
+0/3
+0/1
+0/1
+0/2
+0/1
+0/2
+0/5
+0/5
+0/1
+0/1
+RESTORATION
+5/5
+0/5
+5/5
+3/3
+0/3
+0/3
+5/5
+1/1
+5/5
+3/3
+1/1
+1/1
+3/3
+2/2
+0/5
+0/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Living Spirit
+3/3
+Increases your Spirit by 15%
+Improved Tranquility
+2/2
+Reduces threat caused by Tranquility by 100% and its cooldown by 60%
+Nature's Swiftness
+1/1
+When activated, your next Nature spell becomes an instant cast spell
+Tranquil Spirit
+5/5
+Reduces the mana cost of your Healing Touch and Tranquility spells by 10%
+Improved Rejuvenation
+3/3
+Increases the effect of your Rejuvenation spell by 15%
+Swiftmend
+1/1
+Instantly heals a target with your active Rejuvenation or Regrowth effect for an amount equal to the full duration of the periodic effect of the consumed spell
+
+The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the BiS page): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+
+Naturalist shortens Healing Touch and Wild Growth, Gift of Nature strengthens every heal, and Improved Rejuvenation strengthens Rejuvenation.
+Reflection keeps part of your regeneration running while you cast, Tranquil Spirit makes Healing Touch and Tranquility cheaper, and Living Spirit lifts Spirit.
+Bloom (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
+Swiftmend (it eats the heal over time it reads) and Nature’s Swiftness are the burst tools.
+From Balance, Genesis adds 10% to every heal over time, Nature’s Majesty adds critical chance, and Nature’s Splendor lengthens your heal-over-time spells.
+
+The sim measured the capstone Wild Growth and Improved Regrowth against spending those points elsewhere, and under this profile and rotation the points did better elsewhere; since 1.60.1.70707 Wild Growth also has a 3 second cast. Swapping Nature’s Focus for Heart of the Wild (10% more Intellect, now on Restoration’s top row) measured under 1% better and is not taken, because the sim cannot see what Nature’s Focus does against interrupts. That is a statement about this rotation’s mana pacing, not about the spells. Open the planner at /planner?class=druid to adjust it.
+
+ROTATION AND PRIORITY
+Priority
+1
+Innervate
+On self when the bar runs low
+2
+Nature's Swiftness
+Emergency
+3
+Healing TouchRANK 11
+Gated on knowing the spell as well
+4
+Swiftmend
+Eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal…
+5
+TranquilityRANK 4
+Once two of the four party members are hurt
+6
+RegrowthRANK 9
+The tank's two heals over time stay up for the whole fight
+7
+RejuvenationRANK 11
+8
+Healing TouchRANK 11
+The big direct heal
+9
+Wild GrowthRANK 3
+On a party member when two are hurt, at the same pace
+10
+RejuvenationRANK 11
+A hurt party member gets Rejuvenation, at the same pace
+Cooldowns
+Innervate
+6 min cooldown. On self when the bar runs low
+TranquilityRANK 4
+5 min cooldown. Once two of the four party members are hurt
+Nature's Swiftness
+3 min cooldown
+Frenzied Regeneration
+3 min cooldown
+Dash
+5 min cooldown
+Challenging Roar
+10 min cooldown
+RebirthRANK 5
+30 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work. Healing Touch fires only on a real hole in the tank’s health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. Party members get Wild Growth when two are hurt, Rejuvenation when one is, and Tranquility when two are well down. Nature’s Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
+
+The rotation does not downrank.
+
+STAT PRIORITY
+1
+MP5
+2
+Spirit
+3
+Intellect
+4
+Healing power
+5
+Critical strike
+Stat	Weight (MP5 = 1.00)	DPS per point
+MP5	
+1.00
+	0.61
+Spirit	
+0.65
+	0.39
+Intellect	
+0.60
+	0.37
+Healing power	
+0.27
+	0.17
+Critical strike	
+0.09
+	0.05
+
+1 point of mp5 = 0.61 DPS at level 60
+
+In simulator-derived order, per point of stat: MP5 first, Spirit behind it, then healing power, Intellect and critical strike. Spirit also reaches the Living Spirit bonus. Items trade several points of one for few of another, so read the list as “which stat is cheap to give up”.
+
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the BiS page): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Night Elf (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Living Crown
+	
+Crafted: Leatherworking
+Neck	
+Horizon Choker
+	
+World drop (BoE) · levels 47-54
+Shoulder	
+Devout Mantle
+	
+Blackrock Spire · Solakar Flamewreath
+Back	
+Sergeant Major's Cape
+	
+PvP rank 9 · Sergeant Major · Alliance
+Chest	
+Devout Robe
+	
+Blackrock Spire · General Drakkisath
+Wrist	
+Devout Bracers
+	
+1% from Thuzadin Shadowcaster
+Hands	
+Devout Gloves
+	
+Stratholme · Archivist Galford
+Waist	
+Devout Belt
+	
+2% from Scarshield Spellbinder
+Legs	
+Devout Skirt
+	
+Stratholme · Baron Rivendare
+Feet	
+Mooncloth Boots
+	
+Crafted: Tailoring
+Ring	
+Band of the Hierophant
+	
+World drop (BoE) · levels 56-62
+Ring	
+Eye of Adaegus
+	
+World drop (BoE) · levels 49-57
+Trinket	
+Ankh of Life
+	
+World drop (BoE) · levels 42-49
+Trinket	
+Uther's Strength
+	
+World drop (BoE) · levels 48-55
+Main hand	
+Glowing Brightwood Staff
+	
+World drop (BoE) · levels 50-57
+Off hand	Glowing Brightwood Staff is a two-hander; the off hand is taken.
+Ranged	Nothing sourced at this level helps your HPS
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Healing Power
+	+24 healing power
+Feet	
+Enchant Boots - Spirit
+	+5 spirit
+Weapon	
+Enchant Weapon - Healing Power
+	+55 healing power
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of Distilled Wisdom
+— replaces both elixirs
+	A large pool of mana for the whole fight
+WITHOUT A FLASK
+
+Greater Mageblood Elixir
+	Mana per 5 sec
+
+Greater Cleric's Elixir
+	Healing power
+
+Elixir of Sages
+	Spirit and spell critical strike
+FOOD, OIL AND POTIONS
+
+Sage's Tea
+	Healing power
+
+Brilliant Mana Oil
+	Mana per 5 sec and healing power, on the main hand
+
+Major Mana Potion
+	Mana, used on cooldown
+
+Demonic Rune
+	Mana, used on cooldown
+RACES
+Night Elf
+(Recommended)
+Tauren
+(Recommended)
+High Order Skyborne
+Windshaper Skyborne
+Race	Faction	Racials
+
+Night Elf
+RECOMMENDED
+	Alliance	
+Elune's Light: Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown
+
+
+Tauren
+RECOMMENDED
+	Horde	
+Endurance: Grants 5% Health and 1% Hit chance
+
+
+High Order Skyborne
+	Alliance	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+
+Windshaper Skyborne
+	Horde	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+Night Elf is the Alliance pick: Elune's Light. Tauren is the Horde pick: Endurance.
+
+PROFESSIONS
+
+Herbalism and Alchemy is the general Classic-era pairing for a Restoration healer, giving access to self-crafted mana and healing consumables.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Nature's Focus
+5/5
+Naturalist
+5/5
+Subtlety
+1/3
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Nature's Focus
+5/5
+Naturalist
+5/5
+Subtlety
+3/3
+Gift of Nature
+5/5
+Bloom
+1/1
+Tranquil Spirit
+1/5
+Nature's Swiftness
+1/1
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Nature's Focus
+5/5
+Naturalist
+5/5
+Subtlety
+3/3
+Gift of Nature
+5/5
+Bloom
+1/1
+Tranquil Spirit
+5/5
+Nature's Swiftness
+1/1
+Improved Rejuvenation
+3/3
+Swiftmend
+1/1
+Living Spirit
+2/3
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Nature's Focus
+5/5
+Naturalist
+5/5
+Subtlety
+3/3
+Gift of Nature
+5/5
+Bloom
+1/1
+Tranquil Spirit
+5/5
+Nature's Swiftness
+1/1
+Improved Rejuvenation
+3/3
+Swiftmend
+1/1
+Living Spirit
+3/3
+Improved Tranquility
+2/2
+Improved Wrath
+4/5
+Genesis
+3/5
+Level 60
+51 points
+LOAD IN PLANNER
+Nature's Focus
+5/5
+Naturalist
+5/5
+Subtlety
+3/3
+Gift of Nature
+5/5
+Bloom
+1/1
+Tranquil Spirit
+5/5
+Nature's Swiftness
+1/1
+Improved Rejuvenation
+3/3
+Swiftmend
+1/1
+Living Spirit
+3/3
+Improved Tranquility
+2/2
+Improved Wrath
+4/5
+Genesis
+5/5
+Moonglow
+3/3
+Improved Moonfire
+2/2
+Nature's Majesty
+2/2
+Nature's Splendor
+1/1
+
+Feral is the stronger leveling choice for Druid overall, and Restoration is generally considered the slowest of the three specs to solo with, since its kit is built around sustaining others rather than dealing damage.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

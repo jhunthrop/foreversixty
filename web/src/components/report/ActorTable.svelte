@@ -130,9 +130,12 @@
         (actor.time_ms ?? durationMs) === 0
           ? '0'
           : (actor.effective / ((actor.time_ms ?? durationMs) / 1000)).toFixed(1),
-        (actor.time_ms ?? durationMs) === 0
-          ? '0'
-          : Math.min((actor.active_ms / (actor.time_ms ?? durationMs)) * 100, 100).toFixed(1),
+        // Blank for a pet row whose uptime was never measured, where the screen shows a dash.
+        actor.active_unknown === true
+          ? ''
+          : (actor.time_ms ?? durationMs) === 0
+            ? '0'
+            : Math.min((actor.active_ms / (actor.time_ms ?? durationMs)) * 100, 100).toFixed(1),
       ]);
     });
     return lines;

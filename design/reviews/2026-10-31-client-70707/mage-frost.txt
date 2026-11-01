@@ -1,0 +1,571 @@
+OVERVIEW
+
+The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.
+
+STRENGTHS
+Frostbolt slows enemies and keeps them at range
+Frost Nova and Ice Block cover emergencies
+Ice Shards adds up to 100% Frost critical strike damage
+Frost Channeling cuts Frost mana cost by 15% and threat by 30%
+WEAKNESSES
+Less sustained output than Fire
+No burst cooldown: Icy Veins is not in this client’s trees
+Shatter works on a boss only through Fingers of Frost
+IN A RAID
+Role: Caster DPS with personal safety and utility
+Brings: Arcane Intellect for the group
+TALENTS AND BUILDS
+Level 60 build
+ARCANE
+2/2
+3/5
+0/3
+0/2
+0/2
+5/5
+0/2
+0/2
+0/3
+0/1
+0/2
+0/2
+0/3
+0/1
+0/1
+0/5
+0/3
+0/1
+FIRE
+2/5
+3/5
+0/5
+2/2
+3/3
+0/3
+0/3
+0/1
+0/2
+0/3
+0/2
+0/1
+0/3
+0/3
+0/1
+0/3
+0/1
+FROST
+2/2
+5/5
+3/3
+5/5
+1/3
+0/2
+1/3
+3/3
+0/3
+1/1
+0/2
+0/1
+3/3
+0/3
+1/1
+2/2
+3/5
+1/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Raid build
+
+The raid build moves 6 points from Accelerant (2), Impact (3) and Winter's Chill (1) to Missile Barrage (2), Incineration (3) and Ice Block (1).
+
+ARCANE
+2/2
+3/5
+0/3
+0/2
+0/2
+5/5
+2/2
+0/2
+0/3
+0/1
+0/2
+0/2
+0/3
+0/1
+0/1
+0/5
+0/3
+0/1
+FIRE
+5/5
+1/5
+0/5
+2/2
+0/3
+0/3
+0/3
+0/1
+0/2
+0/3
+0/2
+0/1
+0/3
+0/3
+0/1
+0/3
+0/1
+FROST
+2/2
+5/5
+3/3
+5/5
+1/3
+0/2
+1/3
+3/3
+0/3
+1/1
+0/2
+1/1
+3/3
+0/3
+1/1
+2/2
+2/5
+1/1
+LOAD THIS BUILD
+SIM THIS BUILD
+Key talents
+Improved Frostbolt
+5/5
+Up to 0.5 seconds off Frostbolt's cast time at rank 5, the tree's most direct throughput gain
+Ice Shards
+5/5
+Up to 100% more Frost critical strike damage at rank 5, the biggest single damage multiplier in the tree
+Frost Channeling
+3/3
+Up to 15% off the mana cost of your Frost spells at rank 3, and 30% less threat from them
+Shatter
+3/3
+Up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below
+Fingers of Frost
+2/2
+Each Chill effect (Frostbolt, Frostfire Bolt, Cone of Cold, Improved Blizzard) has a 15% chance to grant a 15 second effect that treats your next 1 spell (2 at rank 2) as if the target were Frozen. That switches on Shatter's crit bonus and Ice Lance's frozen damage bonus against a target that Frost Nova cannot freeze. It needs Ice Lance, so that is a one-point cost
+Winter's Chill
+3/5
+Reworked in Forever: every Frostbolt and every Fingers of Frost Ice Lance stacks Winter's Chill on the target, up to 5, and only your own next Cone of Cold spends them, taking 20% more damage and 7% more of your spell damage per stack. A raid frost mage stands at range and does not cast Cone of Cold, so the raid build keeps just the 2 points Ice Barrier needs below it; the leveling build keeps 3, since you are often in Cone of Cold range while leveling
+Missile Barrage
+0/2
+Missile Barrage 2/2 gives Frostbolt a 20% chance to make your next Arcane Missiles free, halve its channel and fire the missiles every half second, and Precision (below) now covers those Arcane missiles' hit. Together with an Arcane Missiles cast on every proc it was worth about +7% in our audit run
+Ice Barrier
+1/1
+The shield also raises your Frost damage by 15% for a minute, and by another 5% while the shield holds, so it is a damage talent first. Both builds take it: the leveling build moves two Winter's Chill points into Cold Snap, its prerequisite, and Ice Barrier itself, about +12% in our level-60 search run
+
+Outside Frost, Precision (3/3) is Elemental Precision renamed, now adding 6% hit chance to all your spells. The client moved Improved Fire Blast two rows down the Fire tree, out of reach of a ten-point dip, so its point went to Incineration, which also raises Ice Lance’s critical strike chance; the raid build’s Incineration goes to 5/5, taking that point and one of the three Arcane Focus held before the client removed it. Precision now does Arcane Focus’s job for the Missile Barrage missiles, and its other two points go to Wand Specialization, which the Missile Barrage row needs above it. Accelerant speeds up nothing Frost casts. The leveling build’s three points open the Fire row that Flame Throwing and Impact sit in; the raid build’s one is a spare point, since moving it elsewhere measured within the run’s error.
+
+ROTATION AND PRIORITY
+Opener
+1
+Ice BarrierRANK 4
+1.5 s before the pull
+Priority
+1
+Ice BarrierRANK 4
+Keep Ice Barrier up
+2
+Ice LanceRANK 6
+On a Fingers of Frost charge
+3
+Arcane MissilesRANK 8
+On a Missile Barrage proc, raid build only (needs the talent)
+4
+Cone of ColdRANK 5
+Within 10 yards on five Winter's Chill stacks, which every rank reaches
+5
+FrostboltRANK 11
+The filler between Fingers of Frost charges
+Cooldowns
+Ice BarrierRANK 4
+30 s cooldown. Keep Ice Barrier up
+Ice Block
+5 min cooldown
+Cold Snap
+10 min cooldown
+Evocation
+8 min cooldown
+Trinkets, racials and potions
+On cooldown, with your biggest damage
+
+Put up Ice Barrier before the pull and recast it whenever its minute runs out, for its Frost damage bonus. Frostbolt is the filler. Cast Arcane Missiles whenever Missile Barrage procs. Wand only when you are out of mana: a wand shot cannot start during the global cooldown. When Fingers of Frost procs, cast Ice Lance while the effect is up: the held charge makes the target count as frozen, so Ice Lance deals four times its damage and Shatter’s crit bonus applies, and each cast spends one charge. In the simulator the Ice Lance line gains roughly 3% over Frostbolt alone, beyond the run’s error. Frostbolt’s own Chill can roll the next charge, so keep casting while charges are held rather than waiting. Frostfire Bolt, which you can train from level 40, is not a Frost filler: swapping it in for Frostbolt measured roughly a third lower damage, because its direct hit is smaller and the Frost talents above scale Frostbolt, not it. Frost Nova and the other freezes are not part of the boss rotation, since a boss cannot be frozen. Keep Ice Barrier up at all times: it is the largest single Frost damage bonus you have. Cone of Cold only reaches 10 yards (12 with Arctic Reach), and raid frost mages stand at range, so skip it on most bosses. If a fight lets you stand that close (no cleave, tail or melee-range mechanic), Cone of Cold is worth a global on five Winter’s Chill stacks: standing in range with more Winter’s Chill points measured about 6% ahead of the ranged build in our raid run, but it puts you in melee range, so the guide keeps the ranged build.
+
+STAT PRIORITY
+1
+Hit
+2
+Spell power
+3
+Frost power
+4
+Critical strike
+5
+Intellect
+6
+Spell haste
+7
+Spell penetration
+
+Hit cap: 16% · 6% from Precision, 10% from gear
+
+Stat	Weight (Hit = 1.00)	DPS per point
+Hit	
+1.00
+	0.41
+Spell power	
+1.00
+	0.41
+Frost power	
+0.80
+	0.33
+Critical strike	
+0.42
+	0.17
+Intellect	
+0.25
+	0.10
+Spell haste	
+23.9 per 1% haste
+	2.45
+Spell penetration	Not significant	
+
+1 point of hit = 0.41 DPS at level 60
+
+Spell penetration shows as "Not significant": the simulator cannot tell it from zero.
+
+BEST IN SLOT
+Alliance
+Horde
+Level 20 to 29
+Level 30 to 39
+Level 40 to 49
+Level 50 to 59
+Level 60
+
+Picks for a Gnome (Alliance), ranked by this site's simulator with every item equipped.
+
+Slot	Item	Source
+Head	
+Spellpower Goggles Xtreme Plus
+	
+Crafted: Engineering
+Neck	
+Archlight Talisman
+	
+Quest: Hidden Treasures · requires level 50
+Shoulder	
+Mantle of the Timbermaw
+	
+Crafted: Tailoring
+Back	
+Spritecaster Cape
+	
+Blackrock Depths · High Interrogator Gerstahn
+Chest	
+Robe of the Archmage
+	
+Crafted: Tailoring
+Wrist	
+Runecloth Cuffs
+	
+Crafted: Tailoring
+Hands	
+Gloves of Spell Mastery
+	
+Crafted: Tailoring
+Waist	
+Satyrmane Sash
+	
+Maraudon · Lord Vyletongue
+Legs	
+Ghostweave Pants
+	
+Crafted: Tailoring
+Feet	
+Earthen Silk Slippers
+	
+Crafted: Tailoring
+Ring	
+Maiden's Circle
+	
+World drop (BoE) · levels 57-62
+Ring	
+Band of the Unicorn
+	
+World drop (BoE) · levels 44-50
+Trinket	
+Frozen Heart of the Mountain
+	
+Crafted: Enchanting
+Trinket	
+Uther's Strength
+	
+World drop (BoE) · levels 48-55
+Main hand	
+Kindling Stave
+	
+20% from Pyromancer Loregrain
+Off hand	Kindling Stave is a two-hander; the off hand is taken.
+Ranged	
+Torch of Light
+	
+Crafted: Enchanting
+
+Full list and alternatives
+
+These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.
+
+ENCHANTS AND CONSUMABLES
+Enchants
+
+Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.
+
+Slot	Enchant	Gives
+Chest	
+Enchant Chest - Greater Stats
+	+4 to all stats
+Wrist	
+Enchant Bracer - Greater Intellect
+	+7 intellect
+Weapon	
+Enchant Weapon - Spell Power
+	+30 spell power
+Consumables
+
+What the simulator gives this spec in its raid-ready run.
+
+Consumable	Gives
+
+Flask of Supreme Power
+— replaces both elixirs
+	Spell power
+WITHOUT A FLASK
+
+Greater Arcane Elixir
+	Spell power
+
+Elixir of Frost Power
+	Frost spell damage
+FOOD, OIL AND POTIONS
+
+Runn Tum Tuber Surprise
+	Intellect (well fed)
+
+Brilliant Wizard Oil
+	Spell power, on the main hand
+
+Major Mana Potion
+	Mana, used on cooldown
+
+Demonic Rune
+	Mana, used on cooldown
+RACES
+Human
+Orc
+Undead
+Gnome
+(Recommended)
+Troll
+(Recommended)
+High Order Skyborne
+Race	Faction	Racials
+
+Human
+	Alliance	
+Perception: Gives 20 seconds of stealth detection
+The Human Spirit: Grants 5% Spirit
+
+
+Orc
+	Horde	
+Blood Fury: Grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown
+
+
+Undead
+	Horde	
+Will of the Forsaken: Removes Charm, Fear, and Sleep
+
+
+Gnome
+RECOMMENDED
+	Alliance	
+Escape Artist: Breaks and grants brief immunity to movement impairment on a 2 minute cooldown
+Expansive Mind: Grants 5% Mana, Rage and Energy
+
+
+Troll
+RECOMMENDED
+	Horde	
+Berserking: Grants 10% casting and attack speed on a 3 minute cooldown
+
+
+High Order Skyborne
+	Alliance	
+Read Ley Line: 100% health and mana regeneration for 15 seconds
+
+Gnome is the Alliance pick: Escape Artist and Expansive Mind. Troll is the Horde pick: Berserking.
+
+PROFESSIONS
+
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring’s crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
+
+LEVELING
+
+Outlined: points added in this level range.
+
+Level 20 to 29
+11 to 20 points
+LOAD IN PLANNER
+Frost Warding
+2/2
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+1/5
+Level 30 to 39
+21 to 30 points
+LOAD IN PLANNER
+Frost Warding
+2/2
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+5/5
+Frostbite
+1/3
+Permafrost
+1/3
+Frost Channeling
+3/3
+Ice Lance
+1/1
+Level 40 to 49
+31 to 40 points
+LOAD IN PLANNER
+Frost Warding
+2/2
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+5/5
+Frostbite
+1/3
+Permafrost
+1/3
+Frost Channeling
+3/3
+Ice Lance
+1/1
+Shatter
+3/3
+Fingers of Frost
+2/2
+Winter's Chill
+5/5
+Level 50 to 59
+41 to 50 points
+LOAD IN PLANNER
+Frost Warding
+2/2
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+5/5
+Frostbite
+1/3
+Permafrost
+1/3
+Frost Channeling
+3/3
+Ice Lance
+1/1
+Shatter
+3/3
+Fingers of Frost
+2/2
+Winter's Chill
+5/5
+Wand Specialization
+2/2
+Arcane Resilience
+3/3
+Missile Barrage
+5/2
+Level 60
+51 points
+LOAD IN PLANNER
+Frost Warding
+2/2
+Improved Frostbolt
+5/5
+Precision
+3/3
+Ice Shards
+5/5
+Frostbite
+1/3
+Permafrost
+1/3
+Frost Channeling
+3/3
+Ice Lance
+1/1
+Shatter
+3/3
+Fingers of Frost
+2/2
+Winter's Chill
+5/5
+Wand Specialization
+2/2
+Arcane Resilience
+3/3
+Missile Barrage
+5/2
+Incineration
+1/5
+Accelerant
+1/5
+Ignite
+3/5
+Impact
+2/3
+Burning Soul
+3/3
+
+Frost is the strong leveling choice for Mage generally, and that holds for itself: Frostbolt’s slow and Frost Nova’s root make solo play safer than either Arcane’s burst-dependent kit or Fire’s closer-range playstyle.
+
+SOURCES
+BLIZZARD
+Blizzard, Deep Dive panel recap
+COMMUNITY
+Talents Forever (demo transcription)
+THIS SITE
+Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json
+ON THIS PAGE
+Overview
+Talents and builds
+Rotation and priority
+Stat priority
+Best in slot
+Enchants and consumables
+Races
+Professions
+Leveling

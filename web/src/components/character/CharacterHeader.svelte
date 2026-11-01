@@ -56,7 +56,12 @@
   import { characterHeaderCopy } from '../../lib/character-header/copy';
   import { accountNameOf } from '../../lib/character-selector/rows';
   import { descriptorLines } from '../../lib/character-header/descriptor';
-  import { PLACEHOLDER_CHARACTER, placeholderAnswer } from '../../lib/character-header/placeholder';
+  import {
+    PLACEHOLDER_CHARACTER,
+    PLACEHOLDER_GEARLESS_CHARACTER,
+    placeholderAnswer,
+  } from '../../lib/character-header/placeholder';
+  import { rememberHeaderGear } from '../../lib/character-header/gear-hint';
   import { planAnswer } from '../../lib/character-header/answer-plan';
   import {
     STALE_SEPARATOR,
@@ -180,10 +185,23 @@
 
   const PLACEHOLDER_SYNC: SyncView = { source: 'Addon', age: '12 minutes ago', staleTail: null };
   const PLACEHOLDER_ACTION: HeaderAction = { label: ' ', href: '#' };
+  type FiguresView = Extract<AnswerView, { kind: 'figures' }>;
   const placeholderView = $derived.by((): AnswerView | null => {
     if (answer === undefined) return null;
     const ghostAnswer = placeholderAnswer(answer.placeholderBar === true);
     return { kind: 'figures', answer: ghostAnswer, label: ghostAnswer.label };
+  });
+  // A character with no gear on file draws no sync line and, on a page whose answer needs gear,
+  // the "add the addon" sentence: the gearless skeleton reserves exactly that box.
+  const gearlessPlaceholderView = $derived.by((): AnswerView | null => {
+    const view = answerViewFor(PLACEHOLDER_GEARLESS_CHARACTER, answer, { phase: 'loading' }, false);
+    return view?.kind === 'loading' ? placeholderView : view;
+  });
+
+  // The next page's skeleton takes the shape of the header drawn now (lib/character-header/gear-hint.ts).
+  $effect(() => {
+    if (view !== 'ready' || character === null) return;
+    rememberHeaderGear(character, localStorage);
   });
 </script>
 
@@ -200,7 +218,7 @@
   {@const slug = classSlugFromName(c.class ?? '')}
   {@const color = classColorVar(c.class)}
   <div class="ch-id">
-    <a class="ch-link" {href} data-testid="character-header-link">
+    <a class="ch-link" {href} data-testid={ghost ? undefined : 'character-header-link'}>
       {#if slug !== ''}
         <img
           class="ch-crest"
@@ -220,14 +238,15 @@
             class="ch-name"
             title={ghost ? undefined : c.name}
             style:color
-            data-testid="character-header-name">{@render txt(c.name, ghost)}</svelte:element
+            data-testid={ghost ? undefined : 'character-header-name'}
+            >{@render txt(c.name, ghost)}</svelte:element
           >
           {#if isSupporter && !ghost}<SupporterChip />{/if}
         </span>
       </span>
     </a>
     <div class="ch-meta">
-      <span class="ch-desc" data-testid="character-header-descriptor">
+      <span class="ch-desc" data-testid={ghost ? undefined : 'character-header-descriptor'}>
         {#if lines.identity !== ''}<span class="ch-d1">{@render txt(lines.identity, ghost)}</span>{/if}
         {#if lines.identity !== '' && (lines.level !== null || lines.faction !== null)}
           <span class="ch-dot ch-dot-wide" aria-hidden="true">&middot;</span>
@@ -248,10 +267,13 @@
         {/if}
       </span>
       {#if syncLine !== null}
-        <span class="ch-sync" data-testid="character-header-sync"
+        <span
+          class="ch-sync"
+          class:ch-ghost-geared={ghost}
+          data-testid={ghost ? undefined : 'character-header-sync'}
           >{@render txt(syncText(syncLine), ghost)}{#if syncLine.staleTail !== null}{STALE_SEPARATOR}<span
               class="ch-stale"
-              data-testid="character-header-stale">{syncLine.staleTail}</span
+              data-testid={ghost ? undefined : 'character-header-stale'}>{syncLine.staleTail}</span
             >{/if}</span
         >
       {/if}
@@ -259,66 +281,86 @@
   </div>
 {/snippet}
 
+{#snippet figuresBody(current: FiguresView, ghost: boolean)}
+  <span class="label ch-answer-label" data-testid={ghost ? undefined : 'character-header-answer-label'}
+    >{@render txt(current.label, ghost)}</span
+  >
+  <span class="ch-figures">
+    {#each current.answer.figures as figure, index (index)}
+      <span
+        class="ch-figure"
+        data-testid={ghost ? undefined : `character-header-figure-${index + 1}`}
+        style:color={figure.color}
+        >{@render txt(figure.value, ghost)}{#if figure.unit !== undefined}<span class="ch-unit"
+            >{` ${figure.unit}`}</span
+          >{/if}</span
+      >
+    {/each}
+  </span>
+  {#if current.answer.bar !== undefined}
+    <span class="ch-track" aria-hidden="true">
+      <span class="ch-fill" style:width={`${(current.answer.bar * 100).toFixed(1)}%`}></span>
+    </span>
+  {/if}
+  {#if current.answer.note !== undefined}
+    <span class="ch-note" data-testid={ghost ? undefined : 'character-header-note'}
+      >{@render txt(current.answer.note.text, ghost)}{#if current.answer.note.link !== undefined}
+        &nbsp;&middot;
+        <a class="ch-inline-link" href={current.answer.note.link.href}
+          >{current.answer.note.link.label}&nbsp;→</a
+        >{/if}</span
+    >
+  {/if}
+  {#if current.answer.secondNote !== undefined}
+    <a
+      class="ch-second-note"
+      href={current.answer.secondNote.href}
+      data-testid={ghost ? undefined : 'character-header-second-note'}>{current.answer.secondNote.text}</a
+    >
+  {/if}
+{/snippet}
+
 {#snippet answerSlot(current: AnswerView, ghost: boolean)}
-  <div class="ch-answer" data-testid="character-header-answer" data-answer={current.kind}>
+  <div
+    class="ch-answer"
+    data-testid={ghost ? undefined : 'character-header-answer'}
+    data-answer={current.kind}
+  >
     {#if current.kind === 'loading'}
-      <span class="ch-ask" data-testid="character-header-answer-loading" aria-hidden="true">
+      <!-- The figures it is waiting for, hidden, so the answer column already has their height. -->
+      {#if placeholderView !== null && placeholderView.kind === 'figures'}
+        <span class="ch-hidden" aria-hidden="true">{@render figuresBody(placeholderView, true)}</span>
+      {/if}
+      <span
+        class="ch-ask ch-ask-over"
+        data-testid={ghost ? undefined : 'character-header-answer-loading'}
+        aria-hidden="true"
+      >
         <span class="skeleton-block ch-sk-label"></span>
         <span class="skeleton-block ch-sk-figure"></span>
         <span class="skeleton-block ch-sk-note"></span>
       </span>
     {:else if current.kind === 'figures'}
-      <span class="label ch-answer-label" data-testid="character-header-answer-label"
-        >{@render txt(current.label, ghost)}</span
-      >
-      <span class="ch-figures">
-        {#each current.answer.figures as figure, index (index)}
-          <span
-            class="ch-figure"
-            data-testid={`character-header-figure-${index + 1}`}
-            style:color={figure.color}
-            >{@render txt(figure.value, ghost)}{#if figure.unit !== undefined}<span class="ch-unit"
-                >{` ${figure.unit}`}</span
-              >{/if}</span
-          >
-        {/each}
-      </span>
-      {#if current.answer.bar !== undefined}
-        <span class="ch-track" aria-hidden="true">
-          <span class="ch-fill" style:width={`${(current.answer.bar * 100).toFixed(1)}%`}></span>
-        </span>
-      {/if}
-      {#if current.answer.note !== undefined}
-        <span class="ch-note" data-testid="character-header-note"
-          >{@render txt(current.answer.note.text, ghost)}{#if current.answer.note.link !== undefined}
-            &nbsp;&middot;
-            <a class="ch-inline-link" href={current.answer.note.link.href}
-              >{current.answer.note.link.label}&nbsp;→</a
-            >{/if}</span
-        >
-      {/if}
-      {#if current.answer.secondNote !== undefined}
-        <a
-          class="ch-second-note"
-          href={current.answer.secondNote.href}
-          data-testid="character-header-second-note">{current.answer.secondNote.text}</a
-        >
-      {/if}
+      {@render figuresBody(current, ghost)}
     {:else if current.kind === 'sentence'}
-      <span class="ch-sentence" data-testid="character-header-sentence">{current.text}</span>
+      <span class="ch-sentence" data-testid={ghost ? undefined : 'character-header-sentence'}
+        >{current.text}</span
+      >
     {:else if current.kind === 'no-gear'}
-      <span class="ch-small" data-testid="character-header-no-gear">
-        {current.sentence}
-        <a class="ch-text-link" href={current.link.href}>{current.link.label}&nbsp;→</a>
+      <span class="ch-small" data-testid={ghost ? undefined : 'character-header-no-gear'}>
+        {@render txt(current.sentence, ghost)}
+        <a class="ch-text-link" href={current.link.href}
+          >{@render txt(`${current.link.label}\u00a0→`, ghost)}</a
+        >
       </span>
     {:else}
-      <span class="ch-small" data-testid="character-header-failed">
+      <span class="ch-small" data-testid={ghost ? undefined : 'character-header-failed'}>
         {current.text}
         <button
           type="button"
           class="ch-text-link"
           onclick={() => (attempt += 1)}
-          data-testid="character-header-retry">{characterHeaderCopy.tryAgain}</button
+          data-testid={ghost ? undefined : 'character-header-retry'}>{characterHeaderCopy.tryAgain}</button
         >
       </span>
     {/if}
@@ -333,7 +375,7 @@
       class="ch-cta"
       disabled={act.disabled === true}
       onclick={() => onPick?.()}
-      data-testid="character-header-action">{@render txt(act.label, ghost)}</button
+      data-testid={ghost ? undefined : 'character-header-action'}>{@render txt(act.label, ghost)}</button
     >
     {#if act.secondary !== undefined}
       {#if act.secondary.href !== undefined}
@@ -356,22 +398,29 @@
         class="ch-note"
         class:ch-note-error={act.note.tone === 'error'}
         role={act.note.tone === 'error' ? 'alert' : 'status'}
-        data-testid="character-header-note"
+        data-testid={ghost ? undefined : 'character-header-note'}
       >
         {act.note.text}
         {#if act.note.link !== undefined}
-          <a class="ch-note-link" href={act.note.link.href} data-testid="character-header-note-link"
-            >{act.note.link.label}</a
+          <a
+            class="ch-note-link"
+            href={act.note.link.href}
+            data-testid={ghost ? undefined : 'character-header-note-link'}>{act.note.link.label}</a
           >
         {/if}
         {#if act.note.detail !== undefined}
-          <span class="ch-note-detail" data-testid="character-header-note-detail">{act.note.detail}</span>
+          <span class="ch-note-detail" data-testid={ghost ? undefined : 'character-header-note-detail'}
+            >{act.note.detail}</span
+          >
         {/if}
       </p>
     {/if}
   {:else}
-    <a bind:this={actionEl} class="ch-cta" href={act.href} data-testid="character-header-action"
-      >{@render txt(act.label, ghost)}</a
+    <a
+      bind:this={actionEl}
+      class="ch-cta"
+      href={act.href}
+      data-testid={ghost ? undefined : 'character-header-action'}>{@render txt(act.label, ghost)}</a
     >
   {/if}
 {/snippet}
@@ -418,8 +467,20 @@
     data-testid="character-header-loading"
     data-layout={layout}
   >
-    <div class="ch-hidden" aria-hidden="true" style="display: contents; visibility: hidden">
-      {@render panel(PLACEHOLDER_CHARACTER, placeholderView, PLACEHOLDER_ACTION, PLACEHOLDER_SYNC, true)}
+    <!-- One ghost; the parts a gearless header lacks (the sync line, the figures answer) carry
+         .ch-ghost-geared and show only when the pre-paint script hinted data-ch-gear, the
+         gearless answer .ch-ghost-gearless the other way round (lib/character-header/gear-hint.ts). -->
+    <div class="ch-hidden" aria-hidden="true">
+      {@render identity(PLACEHOLDER_CHARACTER, PLACEHOLDER_ACTION.href, PLACEHOLDER_SYNC, true)}
+      {#if placeholderView !== null && gearlessPlaceholderView === placeholderView}
+        {@render answerSlot(placeholderView, true)}
+      {:else if placeholderView !== null}
+        <div class="ch-hidden ch-ghost-geared">{@render answerSlot(placeholderView, true)}</div>
+        {#if gearlessPlaceholderView !== null}
+          <div class="ch-hidden ch-ghost-gearless">{@render answerSlot(gearlessPlaceholderView, true)}</div>
+        {/if}
+      {/if}
+      {@render button(PLACEHOLDER_ACTION, true)}
     </div>
     <div class="ch-overlay" aria-hidden="true">
       <span class="ch-sk-identity">
@@ -862,6 +923,22 @@
   }
 
   /* ---- loading: the ready box hidden, skeletons drawn over it ---- */
+  .ch-hidden {
+    display: contents;
+    visibility: hidden;
+  }
+  :global(html:not([data-ch-gear='1'])) .ch-ghost-geared,
+  :global(html[data-ch-gear='1']) .ch-ghost-gearless {
+    display: none;
+  }
+  /* The answer's own loading state: the hidden figures hold the column, the skeleton sits on top. */
+  .ch-answer:has(> .ch-ask-over) {
+    position: relative;
+  }
+  .ch-ask-over {
+    position: absolute;
+    inset: 0 0 auto;
+  }
   .ch-overlay {
     position: absolute;
     inset: 0 0 var(--ch-foot-reserve, 0);

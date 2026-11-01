@@ -1,6 +1,6 @@
 {
   "spec": "priest-shadow",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Shadow Word: Death",
@@ -11,7 +11,7 @@
         1309636
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/priest.json#1309636"
+      "verified": "1.60.1.70707/spellconst/priest.json#1309636"
     },
     {
       "family": "Devouring Plague",
@@ -24,7 +24,7 @@
         19280
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/priest.json#19280"
+      "verified": "1.60.1.70707/spellconst/priest.json#19280"
     },
     {
       "family": "Inner Focus",
@@ -32,7 +32,7 @@
         14751
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/priest.json#14751"
+      "verified": "1.60.1.70707/spellconst/priest.json#14751"
     }
   ],
   "auras": [
@@ -52,7 +52,7 @@
       ],
       "name": "Shadow Word: Pain",
       "kind": "dot",
-      "verified": "1.60.1.70658/spellconst/priest.json#10894"
+      "verified": "1.60.1.70707/spellconst/priest.json#10894"
     },
     {
       "spell_id": 15473,
@@ -62,7 +62,7 @@
       "name": "Shadowform",
       "kind": "self_buff",
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/priest.json#15473"
+      "verified": "1.60.1.70707/spellconst/priest.json#15473"
     }
   ],
   "downranks": [],
@@ -79,7 +79,7 @@
         19243
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/priest.json#19243"
+      "verified": "1.60.1.70707/spellconst/priest.json#19243"
     }
   ],
   "efficiency": []

@@ -99,12 +99,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 15.3 | 4 | spell:5186=32.0, spell:1058=24.0, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 20 | 0000000000000000-00000000000000000000-5050010000000000 | main_hand:890 | 26.3 | 5 | spell:1430=24.3, spell:8938=11.0, spell:5188=5.7, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 30 | 0000000000000000-00000000000000000000-5050035110010000 | main_hand:9604 | 42.6 | 7 | spell:2091=24.5, spell:8940=6.7, spell:5189=3.2, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
-| 38 | 0000000000000000-00000000000000000000-5050035153110000 | main_hand:9604 | 52.1 | 8 | spell:3627=24.0, spell:8941=6.4, spell:8903=2.0, spell:1259799=2.0, spell:17116=2.0 | - |
-| 40 | 0000000000000000-00000000000000000000-5050035153112000 | main_hand:7723 | 61.4 | 8 | spell:8910=23.1, spell:8941=6.3, spell:1259799=2.0, spell:17116=2.0, spell:8903=1.9 | {SpellID: 408120} |
-| 50 | 4300000000000000-00000000000000000000-5050035153113200 | main_hand:812 | 105.8 | 8 | spell:9839=23.2, spell:9856=5.9, spell:1259799=2.0, spell:17116=2.0, spell:9888=1.6 | {SpellID: 1238214} |
-| 60 | 4532200100000000-00000000000000000000-5050035153113200 | main_hand:19355 | 155.8 | 8 | spell:9841=18.3, spell:9858=5.3, spell:18562=2.6, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 1238215} |
+| 20 | 0000000000000000-00000000000000000000-5051000000000000 | main_hand:890 | 26.3 | 5 | spell:1430=24.3, spell:8938=11.0, spell:5188=5.7, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 30 | 0000000000000000-00000000000000000000-5053005110010000 | main_hand:9604 | 54.2 | 7 | spell:2091=24.3, spell:8940=7.9, spell:5189=4.2, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5053005153110000 | main_hand:9604 | 63.9 | 8 | spell:3627=23.9, spell:8941=7.3, spell:8903=2.5, spell:1259799=2.0, spell:17116=2.0 | - |
+| 40 | 0000000000000000-00000000000000000000-5053005153112000 | main_hand:7723 | 74.8 | 8 | spell:8910=22.7, spell:8941=7.3, spell:8903=2.5, spell:1259799=2.0, spell:17116=2.0 | - |
+| 50 | 4300000000000000-00000000000000000000-5053005153113200 | main_hand:812 | 129.5 | 8 | spell:9839=22.9, spell:9856=6.8, spell:9888=2.1, spell:1259799=2.0, spell:17116=2.0 | - |
+| 60 | 4532200100000000-00000000000000000000-5053005153113200 | main_hand:19355 | 185.3 | 8 | spell:9841=18.0, spell:9858=5.9, spell:18562=3.0, spell:1259799=2.0, spell:17116=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -135,7 +135,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 24974)
 - Maul (spell 6809)
 - Moonfire (spell 8927)
-- Primal Bite (spell 407995)
 - Rake (spell 1822)
 - Rip (spell 9492)
 - Shred (spell 6800)
@@ -151,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 24974)
 - Maul (spell 8972)
 - Moonfire (spell 8928)
-- Primal Bite (spell 1238069)
 - Rake (spell 1823)
 - Ravage (spell 6785)
 - Rip (spell 9493)
@@ -169,7 +167,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 24975)
 - Maul (spell 8972)
 - Moonfire (spell 8929)
-- Primal Bite (spell 1238069)
+- Primal Bite (spell 407995)
 - Rake (spell 1823)
 - Ravage (spell 6785)
 - Rip (spell 9493)
@@ -188,7 +186,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 1235826)
 - Maul (spell 9880)
 - Moonfire (spell 9833)
-- Primal Bite (spell 1238070)
+- Primal Bite (spell 1238069)
 - Rake (spell 1824)
 - Ravage (spell 9866)
 - Rip (spell 9752)
