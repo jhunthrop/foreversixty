@@ -263,14 +263,17 @@ func TestKnownHandOfJusticeRegression(t *testing.T) {
 	}
 }
 
-// The Immovable Object states a flat block value (27 before client
-// 1.60.1.70425 moved it to item level 60, 25 since). It once crossed as
-// block chance (27 / 5 = 5.4%) and no block value at all; the engine
-// takes a shield's block chance from the character's own base block, so
-// the shield row must carry the flat value alone.
+// The Immovable Object's on-equip spell states a flat block value (27
+// before client 1.60.1.70425 moved it to item level 60, 25 since). It once
+// crossed as block chance (27 / 5 = 5.4%) and no block value at all; the
+// engine takes a shield's block chance from the character's own base
+// block, so the shield row must carry block value alone. Since round 5
+// the row carries the shield's whole block value, Wowhead Forever's
+// `blockamount` (data/pipeline/simdb/shield_block.py): the shield's own 41
+// plus the spell's 25.
 func TestAShieldCarriesBlockValueAndNoBlockChance(t *testing.T) {
 	const immovableObject = 19321
-	const immovableObjectBlockValue = 25
+	const immovableObjectBlockValue = 66
 	db, err := load()
 	if err != nil {
 		t.Fatal(err)

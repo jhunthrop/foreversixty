@@ -12,13 +12,16 @@
 const GZIP_MAGIC = [0x1f, 0x8b] as const;
 const WASM_MAGIC = [0x00, 0x61, 0x73, 0x6d] as const;
 
+/** The fetched body's chunks: bytes over a plain ArrayBuffer, which a BufferSource accepts. */
+type Bytes = Uint8Array<ArrayBuffer>;
+
 function startsWith(bytes: Uint8Array, magic: readonly number[]): boolean {
   return magic.every((byte, index) => bytes[index] === byte);
 }
 
 /** Reads until at least `count` bytes have arrived (or the body ends) and returns them all. */
-async function readHead(reader: ReadableStreamDefaultReader<Uint8Array>, count: number): Promise<Uint8Array> {
-  const chunks: Uint8Array[] = [];
+async function readHead(reader: ReadableStreamDefaultReader<Bytes>, count: number): Promise<Bytes> {
+  const chunks: Bytes[] = [];
   let length = 0;
   while (length < count) {
     const { done, value } = await reader.read();
@@ -40,8 +43,8 @@ async function readHead(reader: ReadableStreamDefaultReader<Uint8Array>, count: 
  * BufferSource chunks because that is what DecompressionStream's writable side takes.
  */
 function rejoin(
-  head: Uint8Array,
-  reader: ReadableStreamDefaultReader<Uint8Array>,
+  head: Bytes,
+  reader: ReadableStreamDefaultReader<Bytes>,
 ): ReadableStream<BufferSource> {
   return new ReadableStream<BufferSource>({
     start(controller) {

@@ -165,7 +165,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"shaman-restoration": {
 		"{SpellID: 1239243}": "Riptide is a talent (sim/shaman/riptide.go); this build takes none.",
 		"{SpellID: 16188}":   "Nature's Swiftness is a talent (sim/shaman/talents.go); this build takes none.",
-		"{SpellID: 17359}":   "Mana Tide Totem is a talent (sim/shaman/mana_tide_totem.go); this build takes none.",
+		"{SpellID: 1325256}": "Mana Tide Totem is a talent (sim/shaman/mana_tide_totem.go); this build takes none.",
 		"{SpellID: 408510}":  "Water Shield is a talent (sim/shaman/talents.go); this build takes none.",
 	},
 	"priest-shadow": {

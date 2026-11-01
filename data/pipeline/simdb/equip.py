@@ -362,26 +362,6 @@ def _add(target: dict[str, float], key: str, amount: float) -> None:
 UNIFIED_SCHOOL_KEYS: dict[str, str] = {"spell_hit": "hit", "spell_crit": "crit"}
 
 
-#: A spell's generic attack power and its ranged attack power. simdb mirrors the
-#: generic one into ranged attack power (`statmap.stat_array`), so a spell that
-#: states "+X Attack Power" with aura 99 and aura 124 at X each (Rune of the Guard
-#: Captain's 1318000) already has its ranged half: only ranged attack power
-#: beyond the generic amount is a separate stat.
-GENERIC_ATTACK_POWER = "attack_power"
-RANGED_ATTACK_POWER = "ranged_attack_power"
-
-
-def _without_mirrored_ranged_attack_power(spell_stats: dict[str, float]) -> dict[str, float]:
-    generic = spell_stats.get(GENERIC_ATTACK_POWER, 0.0)
-    if not generic or RANGED_ATTACK_POWER not in spell_stats:
-        return spell_stats
-    out = dict(spell_stats)
-    beyond = out.pop(RANGED_ATTACK_POWER) - generic
-    if beyond > 0:
-        out[RANGED_ATTACK_POWER] = beyond
-    return out
-
-
 #: Forever's environment riders state their condition in the client's own text:
 #: "In a Forest or Grassland area, Attack Power increased by an additional $w1."
 #: (Rune of the Guard Captain's 1287704), "In a Snowy area, ...", and once
@@ -506,7 +486,7 @@ def spell_bonus(
                     # an item effect.
                     continue
                 _add(spell_stats, STAT_AURAS[aura], amount)
-        spell_stats = _without_mirrored_ranged_attack_power(_unify_school_keys(spell_stats))
+        spell_stats = _unify_school_keys(spell_stats)
         for key, amount in spell_stats.items():
             _add(stats, key, amount)
     return SpellBonus(

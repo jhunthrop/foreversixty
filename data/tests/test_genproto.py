@@ -56,6 +56,7 @@ def test_the_engine_messages_this_lane_depends_on_exist():
         "required_level",
         "faction_restriction",
         "random_suffix_options",
+        "damage_school",
     }
     assert set(pb.SimEnchant.DESCRIPTOR.fields_by_name) == {"effect_id", "stats"}
     assert set(pb.ItemSpec.DESCRIPTOR.fields_by_name) == {"id", "random_suffix", "enchant"}

@@ -54,7 +54,7 @@ ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 # before. The "no sha to replace" case is a different thing and stays a
 # skip: a fixture may legitimately carry an empty engine_version.
 engine-pin:
-	@test -d "$(ENGINE_DIR)/.git" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
+	@test -e "$(ENGINE_DIR)/.git" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
 	@if [ -n "$$(git -C "$(ENGINE_DIR)" status --porcelain)" ]; then \
 	  echo "engine checkout at $(ENGINE_DIR) is dirty; commit or stash before pinning"; exit 1; \
 	fi
