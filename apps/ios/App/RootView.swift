@@ -182,7 +182,8 @@ struct RootView: View {
                 plansLink: environment.plansLink,
                 liveSurfaces: environment.isAvailable(.widgets),
                 onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
-                calendar: guildExtras.map { ($0, calendarSync) }
+                calendar: guildExtras.map { ($0, calendarSync) },
+                offlineData: environment.isAvailable(.system) ? { OfflineDataModel.live(environment) } : nil
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
@@ -263,7 +264,10 @@ extension RootView {
     /// Lane F9: on launch and on foreground (at most hourly), the guides of every class the
     /// player has a character in are fetched, so they open offline.
     private func prefetchGuides() async {
-        guard scenePhase == .active, environment.isAvailable(.guides) else { return }
+        // Lane F15: `Keep my classes ready` drives it; `Download on Wi-Fi only` holds new guides.
+        let settings = OfflineSettings()
+        guard scenePhase == .active, environment.isAvailable(.guides), settings.keepClassesReady,
+              settings.mayDownload(on: PathConnectivity.shared) else { return }
         let prefetcher = guidesPrefetcher ?? GuidesPrefetcher(
             source: GuidesDependencies.live(environment, session: signInAvailable ? environment.session : nil).source,
             now: { Date() }

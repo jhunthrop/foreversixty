@@ -19,13 +19,36 @@ final class RemoteItemIconSource: ItemIconSource, @unchecked Sendable {
     private let session: URLSession
     private let siteURL: URL
     private let images = NSCache<NSString, UIImage>()
+    private let urlCache: URLCache
+    /// Lane F15: `Download on Wi-Fi only` (on by default) makes a new icon wait for an unmetered
+    /// connection; icons already on the phone still draw.
+    private let settings: OfflineSettings
 
-    init(siteURL: URL = URL(string: "https://foreversixty.gg")!, diskCapacity: Int = 200 * 1024 * 1024) {
+    init(siteURL: URL = URL(string: "https://foreversixty.gg")!, diskCapacity: Int = 200 * 1024 * 1024, settings: OfflineSettings = OfflineSettings()) {
         let configuration = URLSessionConfiguration.default
-        configuration.urlCache = URLCache(memoryCapacity: 16 * 1024 * 1024, diskCapacity: diskCapacity, directory: Self.cacheDirectory)
+        urlCache = URLCache(memoryCapacity: 16 * 1024 * 1024, diskCapacity: diskCapacity, directory: Self.cacheDirectory)
+        configuration.urlCache = urlCache
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         session = URLSession(configuration: configuration)
         self.siteURL = siteURL
+        self.settings = settings
+    }
+
+    /// The bytes the icons take on disk (You › Offline data).
+    var diskBytes: Int { urlCache.currentDiskUsage }
+
+    /// When an icon was last saved, from the cache folder.
+    var lastSaved: Date? {
+        guard let directory = Self.cacheDirectory,
+              let walker = FileManager.default.enumerator(at: directory, includingPropertiesForKeys: [.contentModificationDateKey])
+        else { return nil }
+        return walker.compactMap { ($0 as? URL).flatMap { try? $0.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate } }.max()
+    }
+
+    /// Remove downloaded data: every saved icon goes.
+    func removeAll() {
+        urlCache.removeAllCachedResponses()
+        images.removeAllObjects()
     }
 
     private static var cacheDirectory: URL? {
@@ -42,7 +65,9 @@ final class RemoteItemIconSource: ItemIconSource, @unchecked Sendable {
 
     func load(icon: String, build: String) async -> UIImage? {
         if let image = cached(icon: icon, build: build) { return image }
-        guard let (data, response) = try? await session.data(from: url(icon: icon, build: build)),
+        var request = URLRequest(url: url(icon: icon, build: build))
+        request.allowsExpensiveNetworkAccess = !settings.wifiOnly
+        guard let (data, response) = try? await session.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 200,
               let image = UIImage(data: data)
         else { return nil }

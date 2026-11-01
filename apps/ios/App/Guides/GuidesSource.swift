@@ -80,12 +80,8 @@ struct GuidesDependencies {
 
     @MainActor
     static func live(_ environment: AppEnvironment, session: SessionStore?) -> GuidesDependencies {
-        let transport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let cache = DiskStaticFileCache.applicationSupport()
-        let files = CachedStaticDataClient(client: StaticDataClient(transport: transport), cache: cache)
+        let cache = environment.staticData.fileCache
+        let files = environment.staticData.files
         let bis = LiveBisDataSource(
             files: files, appConfig: environment.appConfig,
             character: { session?.currentCharacter }, bundledBuild: BundledBuild.read()

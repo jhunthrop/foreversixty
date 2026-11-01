@@ -85,11 +85,7 @@ extension LiveTalentsSource {
     /// The live source over the same CDN, offline cache and active build the BiS tab reads.
     @MainActor
     static func make(_ environment: AppEnvironment) -> LiveTalentsSource {
-        let transport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let files = CachedStaticDataClient(client: StaticDataClient(transport: transport), cache: DiskStaticFileCache.applicationSupport())
+        let files = environment.staticData.files
         let bis = LiveBisDataSource(files: files, appConfig: environment.appConfig, character: { nil }, bundledBuild: BundledBuild.read())
         return LiveTalentsSource(files: files, bisSource: bis)
     }

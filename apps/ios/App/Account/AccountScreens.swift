@@ -75,13 +75,18 @@ struct YouScreen: View {
     var onLiveSettingsChange: () -> Void = {}
     /// Lane F16: You › Calendar, nil while `guild_extras` is off.
     var calendar: (extras: GuildExtrasDependencies, sync: CalendarSyncController)?
+    /// Lane F15: You › Offline data's model, nil while `system` is off.
+    var offlineData: (@MainActor () -> OfflineDataModel)?
     @State private var deviceCount: Int?
 
     var body: some View {
         NavigationStack {
             if let me = session.phase.me {
                 let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
-                YouView(summary: summary, mayLink: plansLink.mayLink, showsLiveSurfaces: liveSurfaces, showsCalendar: calendar != nil) {
+                YouView(
+                    summary: summary, mayLink: plansLink.mayLink, showsLiveSurfaces: liveSurfaces, showsCalendar: calendar != nil,
+                    showsOfflineData: offlineData != nil
+                ) {
                     Task { await session.signOut() }
                 }
                 .navigationDestination(for: YouRoute.self) { route in
@@ -95,6 +100,10 @@ struct YouScreen: View {
                     case .calendar:
                         if let calendar {
                             CalendarRoute(extras: calendar.extras, sync: calendar.sync, account: String(me.user.id))
+                        }
+                    case .offlineData:
+                        if let offlineData {
+                            OfflineDataScreen(model: offlineData(), now: { Date() })
                         }
                     }
                 }

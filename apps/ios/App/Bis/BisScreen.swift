@@ -131,13 +131,8 @@ extension BisScreen {
     /// The live tab: the CDN through the offline cache, the build from the app config.
     @MainActor
     static func live(_ environment: AppEnvironment, session: SessionStore?, router: BisRouter? = nil) -> BisScreen {
-        let transport: any HTTPTransport = switch environment.configuration.mode {
-        case .live: URLSessionTransport()
-        case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
-        }
-        let staticClient = StaticDataClient(transport: transport)
         let source = LiveBisDataSource(
-            files: CachedStaticDataClient(client: staticClient, cache: DiskStaticFileCache.applicationSupport()),
+            files: environment.staticData.files,
             appConfig: environment.appConfig,
             character: { session?.currentCharacter },
             bundledBuild: BundledBuild.read()
