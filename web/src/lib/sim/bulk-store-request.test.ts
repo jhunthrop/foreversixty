@@ -12,7 +12,7 @@ import type { WeightsRequest } from './bulk-types';
 import { bulkCopy, weightsUnsupportedSpec } from './copy';
 import { PRECISION_ITERATIONS } from './precision';
 import { defaultSettings } from './settings';
-import { referenceStatOf, specLabel } from './spec-label';
+import { specLabel } from './spec-label';
 import { WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from './weights';
 import type { SimCharacter } from './character';
 import type { SimPool } from './worker';
@@ -113,7 +113,7 @@ describe('buildRequest: precision drives the weights iteration count (sub-item 1
     deps({
       getPrecision: () => id,
       getTalentFile: () => warriorTalents,
-      getSettings: () => defaultSettings(referenceStatOf('warrior-fury')),
+      getSettings: () => defaultSettings('warrior-fury'),
     });
 
   // Task 8, sub-item 2: `buildRequest` defaults to the browser lane (the same lane `run()`
@@ -143,7 +143,7 @@ describe('buildRequest: the browser lane is guarded, the server lane is not (Tas
     deps({
       getPrecision: () => 'fast',
       getTalentFile: () => warriorTalents,
-      getSettings: () => defaultSettings(referenceStatOf('warrior-fury')),
+      getSettings: () => defaultSettings('warrior-fury'),
     });
 
   it('sends the guarded count when called with no lane at all (run()’s own call), the same as an explicit browser lane', () => {

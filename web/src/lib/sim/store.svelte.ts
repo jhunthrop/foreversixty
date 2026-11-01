@@ -136,7 +136,7 @@ export function createSimStore(init: SimStoreInit) {
 
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings('attack_power'));
+  let settings = $state<SimSettings>(defaultSettings());
   let precisionId = $state<PrecisionId>('normal');
   // Empty means "the settings clause", which moves with the settings; anything the player
   // types wins until they clear it again. Blank-but-not-empty counts as empty: a title of

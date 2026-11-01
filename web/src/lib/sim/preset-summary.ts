@@ -28,10 +28,10 @@ export interface PresetSummaryGroup {
  */
 export function presetSummary(
   preset: Exclude<BuffPresetId, 'custom'>,
-  referenceStat: string,
+  spec: string,
   names: BuffNames | null,
 ): PresetSummaryGroup[] {
-  const applied = new Set([...PRESET_BUFFS[preset], ...presetConsumables(preset, referenceStat)]);
+  const applied = new Set([...PRESET_BUFFS[preset], ...presetConsumables(preset, spec)]);
   return BUFF_GROUPS.map((group) => ({
     group,
     rows: rowsIn(group)

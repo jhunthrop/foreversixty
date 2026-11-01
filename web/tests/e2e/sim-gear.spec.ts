@@ -139,11 +139,10 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
     // give it the same allowance a run gets, not the 5 s default.
     timeout: 20_000,
   });
-  // FURY is warrior-fury (reference_stat attack_power), so the candidates offered are the
-  // physical consumable set (settings.ts's PHYSICAL_CONSUMABLES) -- flask_of_the_titans and
-  // elixir_of_the_mongoose replace the pre-Task-4 flask_of_supreme_power (now caster-only),
-  // same two Consumes fields (flask, battle-elixir) the multiplier below counts on.
-  await page.getByTestId('sim-consumable-flask_of_the_titans').check();
+  // FURY is warrior-fury, so the candidates offered are Fury's published raid set
+  // (sim/request/raid-consumes.json) -- elixir_of_the_mongoose and food_grilled_squid fill
+  // two different Consumes fields (agility elixir, food), which the multiplier counts on.
+  await page.getByTestId('sim-consumable-food_grilled_squid').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4), {

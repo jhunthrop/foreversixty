@@ -9,7 +9,6 @@
   import { dataUrl } from '../../../lib/planner/load';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { presetConsumables } from '../../../lib/sim/settings';
-  import { referenceStatOf } from '../../../lib/sim/spec-label';
   import { buffIcon, buffName, type SimBuffFile } from '../../../lib/sim/sim-buffs';
 
   let {
@@ -28,7 +27,7 @@
     ontoggle: (id: string) => void;
   } = $props();
 
-  const offered = $derived([...new Set(presetConsumables('raid-buffed', referenceStatOf(spec)))]);
+  const offered = $derived([...new Set(presetConsumables('raid-buffed', spec))]);
 </script>
 
 <section

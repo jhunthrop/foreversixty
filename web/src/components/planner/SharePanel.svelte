@@ -32,7 +32,6 @@
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { runSim } from '../../lib/sim/run';
   import { defaultSettings } from '../../lib/sim/settings';
-  import { referenceStatOf } from '../../lib/sim/spec-label';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
   import { BUSY_CLASS } from '../../lib/ui/busy';
@@ -195,7 +194,7 @@
     // minutes, single target, split physical or caster by this build's own spec. The
     // planner has no settings bar of its own, and inventing one here would put two
     // vocabularies on one page; `/sim` is where settings are chosen.
-    const settings = defaultSettings(referenceStatOf(character.spec));
+    const settings = defaultSettings(character.spec);
     try {
       const result = await runSim(
         poolOnce(),

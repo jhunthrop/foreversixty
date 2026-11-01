@@ -3,7 +3,6 @@
 // re-exported so every caller has one import for "the settings vocabulary".
 import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
-import { referenceStatOf } from './spec-label';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
@@ -141,48 +140,23 @@ export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly stri
 };
 
 /**
- * Consumables split by role (task-4-brief.md, Ruling 2): the engine's `Consumes` has one
- * field per effect, so a caster's flask and a warrior's flask can never both apply at once.
- * The off-hand imbue in `PHYSICAL_CONSUMABLES` is included even for a character with no
- * off-hand weapon -- the engine ignores an imbue it has nowhere to apply, so this file does
- * not branch on gear.
+ * The published set's consumables per spec key (owner ruling, round 5): the raid preset
+ * resolved for each spec with its class kit on top -- a rogue's poisons and Thistle Tea, a
+ * Survival hunter's ranged group, a Fire mage's Fire Power elixir -- exactly what the BiS
+ * ranker, the tier list and spec-breakdown send, so the page's default figure is the
+ * published one. Generated in Go (sim/request/raid-consumes.json, held current by
+ * TestRaidConsumesJSONIsCommitted) and synced here by scripts/sync-raid-preset.mjs.
  */
-export const PHYSICAL_CONSUMABLES: readonly string[] = [
-  'flask_of_the_titans',
-  'elixir_of_the_mongoose',
-  'juju_power',
-  'winterfall_firewater',
-  'food_bless_sunfruit',
-  'main_hand_imbue:elemental_sharpening_stone',
-  'off_hand_imbue:elemental_sharpening_stone',
-  'ground_scorpok_assay',
-  'mighty_rage_potion',
-];
-
-export const CASTER_CONSUMABLES: readonly string[] = [
-  'flask_of_supreme_power',
-  'greater_arcane_elixir',
-  'food_nightfin_soup',
-  'main_hand_imbue:brilliant_wizard_oil',
-  'cerebral_cortex_compound',
-  'mageblood_potion',
-  'major_mana_potion',
-];
+const RAID_CONSUMES: Readonly<Record<string, readonly string[]>> = raidPreset.consumes;
 
 /**
- * The Raid-buffed preset's consumable half, keyed off `Spec.reference_stat` (specs.ts) --
- * `'spell_power'` is caster, anything else physical. Physical is the deliberate fallback
- * for a spec `reference_stat` does not resolve, since an unrecognised spec still needs an
- * answer from `defaultSettings()`: an empty preset that still claims "Raid-buffed" would be
- * worse than defaulting to the wrong half, and every spec the site simulates but one
- * (druid-balance and the other caster specs) is physical to begin with.
+ * The preset's consumable half for one spec key ("rogue-combat"). Solo carries none. A spec
+ * the published set does not know (no character yet, or a malformed one) carries none
+ * either, rather than another spec's set: the request then sims what it says it does.
  */
-export function presetConsumables(
-  preset: Exclude<BuffPresetId, 'custom'>,
-  referenceStat: string,
-): readonly string[] {
+export function presetConsumables(preset: Exclude<BuffPresetId, 'custom'>, spec: string): readonly string[] {
   if (preset === 'solo') return [];
-  return referenceStat === 'spell_power' ? CASTER_CONSUMABLES : PHYSICAL_CONSUMABLES;
+  return RAID_CONSUMES[spec] ?? [];
 }
 
 export interface SimSettings {
@@ -195,31 +169,28 @@ export interface SimSettings {
 }
 
 /**
- * `referenceStat` is `Spec.reference_stat` ('attack_power' | 'ranged_attack_power' |
- * 'spell_power'), or the result of `spec-label.ts`'s `referenceStatOf` for a caller that
- * only has the spec slug -- both
- * this and `withPreset` stay pure over it rather than resolving a spec themselves, so a
- * store can call them from wherever it already knows the answer (live-dps.svelte.ts and
- * SharePanel.svelte know it from the character in hand; the sim/bulk stores own the
- * re-apply, below).
+ * `spec` is the character's spec key ("warrior-fury"); empty before a character is in hand.
+ * This and `withPreset` stay pure over it, so a store calls them from wherever it already
+ * knows the spec (live-dps.svelte.ts and SharePanel.svelte from the character in hand; the
+ * sim/bulk stores own the re-apply, below).
  */
-export function defaultSettings(referenceStat: string): SimSettings {
+export function defaultSettings(spec = ''): SimSettings {
   return {
     encounter: applyFightStyle({ ...DEFAULT_ENCOUNTER }, DEFAULT_STYLE_ID),
     preset: 'raid-buffed',
     buffs: [...PRESET_BUFFS['raid-buffed']],
-    consumables: [...presetConsumables('raid-buffed', referenceStat)],
+    consumables: [...presetConsumables('raid-buffed', spec)],
     cooldowns: [],
   };
 }
 
-export function withPreset(settings: SimSettings, preset: BuffPresetId, referenceStat: string): SimSettings {
+export function withPreset(settings: SimSettings, preset: BuffPresetId, spec: string): SimSettings {
   if (preset === 'custom') return { ...settings, preset };
   return {
     ...settings,
     preset,
     buffs: [...PRESET_BUFFS[preset]],
-    consumables: [...presetConsumables(preset, referenceStat)],
+    consumables: [...presetConsumables(preset, spec)],
   };
 }
 
@@ -233,7 +204,7 @@ export function withPreset(settings: SimSettings, preset: BuffPresetId, referenc
  */
 export function withSpecForPreset(settings: SimSettings, spec: string): SimSettings {
   if (settings.preset === 'custom') return settings;
-  return withPreset(settings, settings.preset, referenceStatOf(spec));
+  return withPreset(settings, settings.preset, spec);
 }
 
 /**

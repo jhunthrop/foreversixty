@@ -24,7 +24,7 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle, targetsSummary } from '../../lib/sim/styles';
-  import { isSimulatedSpec, referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
+  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import Disclosure from './Disclosure.svelte';
   import HelpNote from './HelpNote.svelte';
   import RotationDisclosure from './RotationDisclosure.svelte';
@@ -51,11 +51,10 @@
     characterLevel?: number;
   } = $props();
 
-  const referenceStat = $derived(referenceStatOf(spec));
   // Custom has its own always-visible panel (BuffPanel.svelte) for exactly this, so the
   // disclosure only exists for the two static presets it actually summarises.
   const presetGroups = $derived(
-    settings.preset === 'custom' ? [] : presetSummary(settings.preset, referenceStat, names),
+    settings.preset === 'custom' ? [] : presetSummary(settings.preset, spec, names),
   );
 
   // min-w-0 on phone, not min-w-[7rem]: at 412px, five selects each demanding 112px force
@@ -198,11 +197,7 @@
         testid="sim-preset"
         onchange={(event) =>
           onchange(
-            withPreset(
-              settings,
-              (event.currentTarget as HTMLSelectElement).value as BuffPresetId,
-              referenceStat,
-            ),
+            withPreset(settings, (event.currentTarget as HTMLSelectElement).value as BuffPresetId, spec),
           )}
       />
       <div class="flex flex-wrap items-center gap-3">

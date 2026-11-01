@@ -1,17 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_BUFF_NAMES } from './buff-names';
 import { presetSummary } from './preset-summary';
-import { CASTER_CONSUMABLES, PHYSICAL_CONSUMABLES, RAID_BUFFS } from './settings';
+import { presetConsumables, RAID_BUFFS } from './settings';
 
 describe('presetSummary', () => {
   it('is empty for solo, which applies nothing', () => {
-    expect(presetSummary('solo', 'attack_power', null)).toEqual([]);
+    expect(presetSummary('solo', 'warrior-fury', null)).toEqual([]);
   });
 
   it('carries every raid-buffed id, grouped, none lost and none invented', () => {
-    const groups = presetSummary('raid-buffed', 'attack_power', null);
+    const groups = presetSummary('raid-buffed', 'warrior-fury', null);
     const ids = groups.flatMap((group) => group.rows.map((row) => row.id));
-    expect(new Set(ids)).toEqual(new Set([...RAID_BUFFS, ...PHYSICAL_CONSUMABLES]));
+    expect(new Set(ids)).toEqual(
+      new Set([...RAID_BUFFS, ...presetConsumables('raid-buffed', 'warrior-fury')]),
+    );
     // Every group this task-4-brief.md's motivating finding named as under-populated
     // (raid buffs, on the target, weapon oils and stones) actually has rows now.
     expect(groups.some((group) => group.group === 'raid-buffs')).toBe(true);
@@ -19,19 +21,24 @@ describe('presetSummary', () => {
     expect(groups.some((group) => group.group === 'weapon-imbue')).toBe(true);
   });
 
-  it('splits the consumable half by reference_stat, physical from caster', () => {
-    const physical = presetSummary('raid-buffed', 'attack_power', null);
-    const caster = presetSummary('raid-buffed', 'spell_power', null);
-    const physicalIds = new Set(physical.flatMap((group) => group.rows.map((row) => row.id)));
-    const casterIds = new Set(caster.flatMap((group) => group.rows.map((row) => row.id)));
-    for (const id of PHYSICAL_CONSUMABLES) expect(physicalIds.has(id)).toBe(true);
-    for (const id of CASTER_CONSUMABLES) expect(casterIds.has(id)).toBe(true);
-    for (const id of CASTER_CONSUMABLES) expect(physicalIds.has(id)).toBe(false);
-    // The buff half never splits (Ruling 2): both answers carry the identical 54 ids.
+  it('carries each spec’s own published consumables: a rogue’s poisons, never a mage’s oil', () => {
+    const rogue = presetSummary('raid-buffed', 'rogue-combat', null);
+    const mage = presetSummary('raid-buffed', 'mage-fire', null);
+    const rogueIds = new Set(rogue.flatMap((group) => group.rows.map((row) => row.id)));
+    const mageIds = new Set(mage.flatMap((group) => group.rows.map((row) => row.id)));
+    for (const id of presetConsumables('raid-buffed', 'rogue-combat'))
+      expect(rogueIds.has(id), id).toBe(true);
+    for (const id of presetConsumables('raid-buffed', 'mage-fire')) expect(mageIds.has(id), id).toBe(true);
+    expect(rogueIds.has('main_hand_imbue:deadly_poison')).toBe(true);
+    expect(rogueIds.has('main_hand_imbue:brilliant_wizard_oil')).toBe(false);
+    // The buff half never splits: both answers carry the identical raid list.
     for (const id of RAID_BUFFS) {
-      expect(physicalIds.has(id)).toBe(true);
-      expect(casterIds.has(id)).toBe(true);
+      expect(rogueIds.has(id)).toBe(true);
+      expect(mageIds.has(id)).toBe(true);
     }
+    // A poisoned hand's stone is filed with the weapon oils and stones, not the potions.
+    const stones = rogue.find((group) => group.group === 'weapon-imbue')?.rows.map((row) => row.id) ?? [];
+    expect(stones).toContain('main_hand_stone:elemental_sharpening_stone');
   });
 
   /**
@@ -43,7 +50,7 @@ describe('presetSummary', () => {
    * trueshot_aura are not among them).
    */
   it('never prints a bare id, even for a build whose table has no row for it', () => {
-    const groups = presetSummary('raid-buffed', 'attack_power', EMPTY_BUFF_NAMES);
+    const groups = presetSummary('raid-buffed', 'warrior-fury', EMPTY_BUFF_NAMES);
     for (const group of groups) {
       for (const row of group.rows) {
         expect(row.label, row.id).not.toBe(row.id);
