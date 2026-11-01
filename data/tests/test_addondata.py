@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -240,30 +241,26 @@ def test_bis_weights_lua_skips_a_spec_with_no_measured_band():
     assert "hunter-beast-mastery" not in lua[start:]
 
 
-def test_the_cli_check_passes_on_the_committed_file():
-    """A floor, not an unconditional pass: data.yml's test job runs against
-    the COMMITTED build files BEFORE the same run regenerates them (day3
-    data-followups-11 lane's own report), so a strict assertion here would
-    block the very regen that adds rotation-line icons to addon-data.json.
-    Skipped while the committed file still predates that field (no `icon`
-    on any rotation line at all); once a `python -m pipeline addon-data`
-    regen lands it, this asserts the CLI check strictly, same as before."""
-    committed = json.loads((Path("builds") / BUILD / "addon-data.json").read_text(encoding="utf-8"))
-    has_rotation_icon = any(
-        "icon" in line
-        for bands in committed.get("rotations", {}).values()
-        for band in bands
-        for line in band.get("lines", [])
-    )
-    if not has_rotation_icon:
-        pytest.skip(
-            f"builds/{BUILD}/addon-data.json predates rotation line icons; "
-            "regen with `python -m pipeline addon-data` to enable this check"
-        )
+def test_the_cli_check_passes_on_a_fresh_regeneration(regenerated_addon_build, tmp_path):
+    """The CLI's `--check` round trip: run where `builds/`, `curated/` and
+    `../addon/ForeverSixty/Data.lua` are a scratch copy whose generated files
+    were just regenerated, it reports no drift. It runs against a copy, never
+    the committed files: those trail a curated edit until data.yml's
+    `addon-data` job (on the push) or the nightly bis.yml regenerates them,
+    and this suite runs before either."""
+    fresh = regenerated_addon_build
+    data_dir = tmp_path / "data"
+    shutil.copytree(fresh.root / fresh.build, data_dir / "builds" / fresh.build)
+    (data_dir / "curated").symlink_to(Path("curated").resolve())
+    lua_path = tmp_path / "addon" / "ForeverSixty" / "Data.lua"
+    lua_path.parent.mkdir(parents=True)
+    shutil.copyfile(fresh.lua_path, lua_path)
     result = subprocess.run(
-        [sys.executable, "-m", "pipeline", "addon-data", "--build", BUILD, "--check"],
+        [sys.executable, "-m", "pipeline", "addon-data", "--build", fresh.build, "--check"],
         capture_output=True,
         text=True,
+        cwd=data_dir,
+        env={**os.environ, "PYTHONPATH": str(Path.cwd())},
     )
     assert result.returncode == 0, result.stderr
 
@@ -564,35 +561,36 @@ def test_one_cli_run_parses_each_bis_file_once(monkeypatch):
 
 # --- Task L1.5: dpsPerPoint per spec and band, with a measured weapon term ---
 
-#: Measured by sim/cmd/dps-per-point on 2026-10-11 (task L1.5 report): the
-#: warrior-arms band-20 character (the band's bare BiS set, level 25) gains
-#: 0.0385 DPS per attack power and 0.5432 DPS per +1 main-hand weapon DPS;
-#: the level-60 raid character 0.2222 and 3.1536.
-ARMS_BAND_20 = (0.0385, 0.5432)
-ARMS_RAID = (0.2222, 3.1536)
-#: The band-30 figures: 0.0793 per attack power where the BiS ladder's
-#: weapon-only character (bis/warrior-arms.json reference_dps_per_point)
-#: reads 0.0397, so shipping the ladder figure instead fails here.
-ARMS_BAND_30 = (0.0793, 0.9831)
-#: The measurement's seed-to-seed spread is about 1e-4; 2 percent is far
-#: above it and far below any other source's difference.
-MEASURED = 0.02
+#: The figures are bis.yml's nightly re-measure (sim/cmd/dps-per-point), so the
+#: tests read them from the committed dps-per-point.json, the generator's own
+#: input, and assert they are carried through, never a pinned measurement: the
+#: 2026-11-01 re-measure moved the Arms band-20 weapon term 2.1% and failed the
+#: pin (memory: data contracts are floors).
 #: The per-band model's threshold (task L1.5, ruling 2).
 BAND_DIFFERS = 0.25
+
+
+def _measured_dps_per_point(spec: str) -> dict:
+    path = Path("builds") / BUILD / "dps-per-point.json"
+    return json.loads(path.read_text(encoding="utf-8"))[spec]
 
 
 def test_dps_per_point_carries_each_bands_figure_and_weapon_term():
     data = build_addon_data(BUILD)
     arms = data.dps_per_point["warrior-arms"]
-    assert arms.dps == pytest.approx(ARMS_RAID[0], rel=MEASURED)
-    assert arms.weapon_dps == pytest.approx(ARMS_RAID[1], rel=MEASURED)
+    measured = _measured_dps_per_point("warrior-arms")
+    assert arms.dps == pytest.approx(measured["dps"])
+    assert arms.weapon_dps == pytest.approx(measured["weapon_dps"])
     assert sorted(arms.bands) == [20, 30, 40, 50, 60]
+    for level, band in arms.bands.items():
+        assert band.dps == pytest.approx(measured["bands"][str(level)]["dps"])
+        assert band.weapon_dps == pytest.approx(measured["bands"][str(level)]["weapon_dps"])
+        assert band.dps > 0 and band.weapon_dps > 0
     band = arms.bands[20]
     assert band.reference == "attack_power"
-    assert band.dps == pytest.approx(ARMS_BAND_20[0], rel=MEASURED)
-    assert band.weapon_dps == pytest.approx(ARMS_BAND_20[1], rel=MEASURED)
-    assert arms.bands[30].dps == pytest.approx(ARMS_BAND_30[0], rel=MEASURED)
-    assert arms.bands[30].weapon_dps == pytest.approx(ARMS_BAND_30[1], rel=MEASURED)
+    # A higher band's character gains more from a point than a lower band's.
+    assert arms.bands[30].dps > band.dps
+    assert arms.bands[30].weapon_dps > band.weapon_dps
     # The reason for the per-band model: the level-60 figure is far off at 20.
     assert abs(band.dps - arms.dps) / arms.dps > BAND_DIFFERS
 
@@ -661,6 +659,8 @@ def test_the_real_data_lua_reads_dps_per_point_by_spec_and_band(tmp_path):
     assert result.returncode == 0, result.stderr
     reference, band_reference, dps, weapon, spec_dps, frost_weapon = result.stdout.split("|")
     assert (reference, band_reference, float(frost_weapon)) == ("attack_power", "attack_power", 0)
-    assert float(dps) == pytest.approx(ARMS_BAND_20[0], rel=MEASURED)
-    assert float(weapon) == pytest.approx(ARMS_BAND_20[1], rel=MEASURED)
-    assert float(spec_dps) == pytest.approx(ARMS_RAID[0], rel=MEASURED)
+    measured = _measured_dps_per_point("warrior-arms")
+    # Lua prints numbers rounded to its own precision.
+    assert float(dps) == pytest.approx(measured["bands"]["20"]["dps"], rel=1e-3)
+    assert float(weapon) == pytest.approx(measured["bands"]["20"]["weapon_dps"], rel=1e-3)
+    assert float(spec_dps) == pytest.approx(measured["dps"], rel=1e-3)

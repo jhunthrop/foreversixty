@@ -47,12 +47,15 @@ def check(ctx: AuditContext) -> CategoryResult:
         return result
 
     result.checked += 1
+    lua_path = ctx.lua_path or LUA_PATH
     try:
-        if lua_has_drifted(ctx.build, root=ctx.root, curated_dir=ctx.curated_dir):
+        if lua_has_drifted(
+            ctx.build, root=ctx.root, curated_dir=ctx.curated_dir, lua_path=lua_path
+        ):
             result.add(
                 "blocker",
                 ctx.build,
-                f"{LUA_PATH} has drifted from build_addon_data's regenerated Lua",
+                f"{lua_path} has drifted from build_addon_data's regenerated Lua",
             )
     except (AddonDataError, AddonBisError, AddonRotationError) as error:
         result.add("blocker", ctx.build, f"Data.lua could not even be regenerated: {error}")
