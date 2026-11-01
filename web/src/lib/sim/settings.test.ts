@@ -120,6 +120,18 @@ describe('defaultSettings', () => {
     );
   });
 
+  it('carries only consumables the character’s level can use (the client’s RequiredLevel)', () => {
+    const fury40 = defaultSettings('warrior-fury', 40).consumables;
+    for (const id of [
+      'elixir_of_the_mongoose',
+      'mighty_rage_potion',
+      'main_hand_imbue:elemental_sharpening_stone',
+    ]) {
+      expect(fury40).not.toContain(id);
+    }
+    expect(defaultSettings('warrior-fury', 60).consumables).toContain('elixir_of_the_mongoose');
+  });
+
   it('gives rogues their poisons and Survival its ranged set, not a shared physical list', () => {
     const combat = defaultSettings('rogue-combat', MAX).consumables;
     expect(combat).toContain('main_hand_imbue:deadly_poison');
