@@ -1163,6 +1163,8 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
     public let tier: String?
     public let asOf: String?
     public let components: ScoreComponents?
+    /// Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score.
+    public let componentCaps: ScoreComponentCaps?
     public let experience: ScoreExperience?
 
     public init(
@@ -1180,6 +1182,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         tier: String? = nil,
         asOf: String? = nil,
         components: ScoreComponents? = nil,
+        componentCaps: ScoreComponentCaps? = nil,
         experience: ScoreExperience? = nil
     ) {
         self.character = character
@@ -1196,6 +1199,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         self.tier = tier
         self.asOf = asOf
         self.components = components
+        self.componentCaps = componentCaps
         self.experience = experience
     }
 
@@ -1215,6 +1219,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         tier = try c.decodeIfPresent(String.self, forKey: .tier)
         asOf = try c.decodeIfPresent(String.self, forKey: .asOf)
         components = try c.decodeIfPresent(ScoreComponents.self, forKey: .components)
+        componentCaps = try c.decodeIfPresent(ScoreComponentCaps.self, forKey: .componentCaps)
         experience = try c.decodeIfPresent(ScoreExperience.self, forKey: .experience)
     }
 }
@@ -1285,6 +1290,20 @@ public struct CharacterProfileHeader: Codable, Sendable, Equatable {
         case className = "class"
         case avatarUrl
         case renderUrl
+    }
+}
+
+/// Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort
+public struct CharacterRank: Codable, Sendable, Equatable {
+    public let rank: Int
+    public let row: RankingRow
+
+    public init(
+        rank: Int,
+        row: RankingRow
+    ) {
+        self.rank = rank
+        self.row = row
     }
 }
 
@@ -3573,6 +3592,34 @@ public struct NotificationsPatch: Codable, Sendable, Equatable {
     }
 }
 
+public struct PhaseBoundary: Codable, Sendable, Equatable {
+    public let name: String
+    public let start: Date
+
+    public init(
+        name: String,
+        start: Date
+    ) {
+        self.name = name
+        self.start = start
+    }
+}
+
+public struct Phases: Codable, Sendable, Equatable {
+    public let phases: [PhaseBoundary]
+
+    public init(
+        phases: [PhaseBoundary] = []
+    ) {
+        self.phases = phases
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        phases = try c.decodeIfPresent([PhaseBoundary].self, forKey: .phases) ?? []
+    }
+}
+
 public struct PushTokenRegistered: Codable, Sendable, Equatable {
     public let platform: String
     public let appVersion: String
@@ -4672,6 +4719,204 @@ public struct RaidZone: Codable, Sendable, Equatable {
     }
 }
 
+public struct RankedEncounter: Codable, Sendable, Equatable {
+    public let id: Int64
+    public let slug: String
+    public let name: String
+    /// The zone the newest log of it named
+    public let zone: String?
+    /// The raid size most of its ranked kills had
+    public let size: Int?
+    /// Ranked kills
+    public let kills: Int
+
+    public init(
+        id: Int64,
+        slug: String,
+        name: String,
+        zone: String? = nil,
+        size: Int? = nil,
+        kills: Int
+    ) {
+        self.id = id
+        self.slug = slug
+        self.name = name
+        self.zone = zone
+        self.size = size
+        self.kills = kills
+    }
+}
+
+public struct RankedEncounters: Codable, Sendable, Equatable {
+    public let encounters: [RankedEncounter]
+
+    public init(
+        encounters: [RankedEncounter] = []
+    ) {
+        self.encounters = encounters
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        encounters = try c.decodeIfPresent([RankedEncounter].self, forKey: .encounters) ?? []
+    }
+}
+
+/// Absent when the report is filed to no guild
+public struct RankingGuild: Codable, Sendable, Equatable {
+    public let name: String
+    public let region: String
+    public let ruleset: String
+
+    public init(
+        name: String,
+        region: String,
+        ruleset: String
+    ) {
+        self.name = name
+        self.region = region
+        self.ruleset = ruleset
+    }
+}
+
+public struct RankingPercentile: Codable, Sendable, Equatable {
+    /// 0 to 100
+    public let percentile: Double
+    /// Kills the bracket ranks
+    public let ranked: Int
+
+    public init(
+        percentile: Double,
+        ranked: Int
+    ) {
+        self.percentile = percentile
+        self.ranked = ranked
+    }
+}
+
+public struct RankingPlayer: Codable, Sendable, Equatable {
+    /// <region>/<ruleset>/<name-slug>
+    public let key: String
+    public let name: String
+    /// Absent when the log did not say
+    public let className: String?
+    /// Absent when the log did not say
+    public let spec: String?
+
+    public init(
+        key: String,
+        name: String,
+        className: String? = nil,
+        spec: String? = nil
+    ) {
+        self.key = key
+        self.name = name
+        self.className = className
+        self.spec = spec
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case name
+        case className = "class"
+        case spec
+    }
+}
+
+public struct RankingRow: Codable, Sendable, Equatable {
+    public let rank: Int
+    public let player: RankingPlayer
+    /// Absent when the report is filed to no guild
+    public let guild: RankingGuild?
+    public let value: Double
+    public let ilvl: Int?
+    public let size: Int
+    public let foughtAt: Date
+    public let durationMs: Int
+    public let talentSplit: String?
+    public let trinkets: [Int]?
+    public let buffCount: Int?
+    public let reportId: String
+    public let fightIndex: Int
+    public let state: String
+    public let executionScore: Double?
+
+    public init(
+        rank: Int,
+        player: RankingPlayer,
+        guild: RankingGuild? = nil,
+        value: Double,
+        ilvl: Int? = nil,
+        size: Int,
+        foughtAt: Date,
+        durationMs: Int,
+        talentSplit: String? = nil,
+        trinkets: [Int]? = nil,
+        buffCount: Int? = nil,
+        reportId: String,
+        fightIndex: Int,
+        state: String,
+        executionScore: Double? = nil
+    ) {
+        self.rank = rank
+        self.player = player
+        self.guild = guild
+        self.value = value
+        self.ilvl = ilvl
+        self.size = size
+        self.foughtAt = foughtAt
+        self.durationMs = durationMs
+        self.talentSplit = talentSplit
+        self.trinkets = trinkets
+        self.buffCount = buffCount
+        self.reportId = reportId
+        self.fightIndex = fightIndex
+        self.state = state
+        self.executionScore = executionScore
+    }
+}
+
+public struct RankingsPage: Codable, Sendable, Equatable {
+    public let rows: [RankingRow]
+    public let total: Int
+    public let page: Int
+    public let perPage: Int
+    public let updatedAt: Date
+    /// True when each row is a different character's best kill (distinct=character): the apps then say characters, else kills
+    public let deduped: Bool
+    /// Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort
+    public let characterRank: CharacterRank?
+
+    public init(
+        rows: [RankingRow] = [],
+        total: Int,
+        page: Int,
+        perPage: Int,
+        updatedAt: Date,
+        deduped: Bool,
+        characterRank: CharacterRank? = nil
+    ) {
+        self.rows = rows
+        self.total = total
+        self.page = page
+        self.perPage = perPage
+        self.updatedAt = updatedAt
+        self.deduped = deduped
+        self.characterRank = characterRank
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([RankingRow].self, forKey: .rows) ?? []
+        total = try c.decode(Int.self, forKey: .total)
+        page = try c.decode(Int.self, forKey: .page)
+        perPage = try c.decode(Int.self, forKey: .perPage)
+        updatedAt = try c.decode(Date.self, forKey: .updatedAt)
+        deduped = try c.decode(Bool.self, forKey: .deduped)
+        characterRank = try c.decodeIfPresent(CharacterRank.self, forKey: .characterRank)
+    }
+}
+
 public struct Report: Codable, Sendable, Equatable {
     public let id: String
     public let title: String
@@ -5065,6 +5310,29 @@ public struct SampleCast: Codable, Sendable, Equatable {
         self.action = action
         self.target = target
         self.resources = resources
+    }
+}
+
+/// Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score.
+public struct ScoreComponentCaps: Codable, Sendable, Equatable {
+    public let gear: Int
+    public let experience: Int
+    public let parses: Int
+    public let attendance: Int
+    public let discipline: Int
+
+    public init(
+        gear: Int,
+        experience: Int,
+        parses: Int,
+        attendance: Int,
+        discipline: Int
+    ) {
+        self.gear = gear
+        self.experience = experience
+        self.parses = parses
+        self.attendance = attendance
+        self.discipline = discipline
     }
 }
 
@@ -5811,6 +6079,61 @@ public struct TrashGroup: Codable, Sendable, Equatable {
         zone = try c.decode(String.self, forKey: .zone)
         fights = try c.decodeIfPresent([Int].self, forKey: .fights) ?? []
         durationMs = try c.decode(Int64.self, forKey: .durationMs)
+    }
+}
+
+public struct WatchedCharacter: Codable, Sendable, Equatable {
+    /// <region>/<ruleset>/<name-slug>
+    public let key: String
+    public let region: String
+    public let ruleset: String
+    public let name: String
+    public let className: String?
+    /// The character page's level, null when no source knows it
+    public let level: Int?
+    public let addedAt: Date
+
+    public init(
+        key: String,
+        region: String,
+        ruleset: String,
+        name: String,
+        className: String? = nil,
+        level: Int? = nil,
+        addedAt: Date
+    ) {
+        self.key = key
+        self.region = region
+        self.ruleset = ruleset
+        self.name = name
+        self.className = className
+        self.level = level
+        self.addedAt = addedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case region
+        case ruleset
+        case name
+        case className = "class"
+        case level
+        case addedAt
+    }
+}
+
+public struct WatchingList: Codable, Sendable, Equatable {
+    public let rows: [WatchedCharacter]
+
+    public init(
+        rows: [WatchedCharacter] = []
+    ) {
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([WatchedCharacter].self, forKey: .rows) ?? []
     }
 }
 

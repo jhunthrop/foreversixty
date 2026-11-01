@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "key": "us/normal/voltaris",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Voltaris",
+        "class": "Shaman",
+        "level": 60,
+        "added_at": "2026-12-15T20:00:00Z"
+      },
+      {
+        "key": "us/normal/stormwrath",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Stormwrath",
+        "class": "Shaman",
+        "level": 60,
+        "added_at": "2026-12-12T20:00:00Z"
+      },
+      {
+        "key": "us/normal/kraggor",
+        "region": "us",
+        "ruleset": "normal",
+        "name": "Kraggor",
+        "class": "Warrior",
+        "level": null,
+        "added_at": "2026-12-11T20:00:00Z"
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

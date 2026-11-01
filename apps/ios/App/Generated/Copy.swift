@@ -2296,6 +2296,413 @@ enum Copy {
     /// Open the full report
     static var nightOpenReport: String { text("night.openReport") }
 
+    /// Rankings
+    static var homeRankings: String { text("home.rankings") }
+
+    /// {ordinal} of {total} {spec} {class} characters on {encounter}
+    static func homeRankingsLine(ordinal: String, total: Int, spec: String, className: String, encounter: String) -> String {
+        format("home.rankings.line", ordinal, total, spec, className, encounter)
+    }
+
+    /// Not ranked yet.
+    static var homeRankingsNone: String { text("home.rankings.none") }
+
+    /// Rankings
+    static var rankTitle: String { text("rank.title") }
+
+    /// Your rank
+    static var rankLabel: String { text("rank.label") }
+
+    /// of {total} {spec} {class} characters
+    static func rankUnit(total: Int, spec: String, className: String) -> String {
+        format("rank.unit", total, spec, className)
+    }
+
+    /// of {total} {spec} {class} kills
+    static func rankUnitKills(total: Int, spec: String, className: String) -> String {
+        format("rank.unitKills", total, spec, className)
+    }
+
+    /// Your best kill on {encounter}, {ruleset}, {phase}.
+    static func rankMeta(encounter: String, ruleset: String, phase: String) -> String {
+        format("rank.meta", encounter, ruleset, phase)
+    }
+
+    /// {name} · best kill on {encounter}, {ruleset}, {phase}.
+    static func rankMetaNamed(name: String, encounter: String, ruleset: String, phase: String) -> String {
+        format("rank.metaNamed", name, encounter, ruleset, phase)
+    }
+
+    /// Not ranked yet on {encounter}.
+    static func rankNone(encounter: String) -> String {
+        format("rank.none", encounter)
+    }
+
+    /// A logged kill puts you on the board.
+    static var rankNoneMeta: String { text("rank.noneMeta") }
+
+    /// No ranked fights yet for this filter. Rankings fill in as reports are uploaded.
+    static var rankEmpty: String { text("rank.empty") }
+
+    /// Your best kill
+    static var rankPin: String { text("rank.pin") }
+
+    /// Jump to your row, {ordinal}
+    static func rankJump(ordinal: String) -> String {
+        format("rank.jump", ordinal)
+    }
+
+    /// Filters
+    static var rankFilters: String { text("rank.filters") }
+
+    /// Reset filters
+    static var rankReset: String { text("rank.reset") }
+
+    /// The rankings did not load.
+    static var rankError: String { text("rank.error") }
+
+    /// Loading more
+    static var rankLoadingMore: String { text("rank.loadingMore") }
+
+    /// Choose a class and spec
+    static var rankChooseSpec: String { text("rank.chooseSpec") }
+
+    /// You
+    static var rankYou: String { text("rank.you") }
+
+    /// {guild} · {size} players · {time} · {age}
+    static func rankRowMeta(guild: String, size: Int, time: String, age: String) -> String {
+        format("rank.rowMeta", guild, size, time, age)
+    }
+
+    /// {size} players · {time} · {age}
+    static func rankRowMetaNoGuild(size: Int, time: String, age: String) -> String {
+        format("rank.rowMetaNoGuild", size, time, age)
+    }
+
+    /// DPS
+    static var rankUnitDps: String { text("rank.unit.dps") }
+
+    /// HPS
+    static var rankUnitHps: String { text("rank.unit.hps") }
+
+    /// DTPS
+    static var rankUnitDtps: String { text("rank.unit.dtps") }
+
+    /// Executed
+    static var rankUnitExecution: String { text("rank.unit.execution") }
+
+    /// All regions
+    static var rankLineAllRegions: String { text("rank.line.allRegions") }
+
+    /// Encounter
+    static var rankFilterEncounter: String { text("rank.filter.encounter") }
+
+    /// Measure
+    static var rankFilterMeasure: String { text("rank.filter.measure") }
+
+    /// Ruleset
+    static var rankFilterRuleset: String { text("rank.filter.ruleset") }
+
+    /// Region
+    static var rankFilterRegion: String { text("rank.filter.region") }
+
+    /// Phase
+    static var rankFilterPhase: String { text("rank.filter.phase") }
+
+    /// Faction
+    static var rankFilterFaction: String { text("rank.filter.faction") }
+
+    /// Today only
+    static var rankFilterToday: String { text("rank.filter.today") }
+
+    /// Damage
+    static var rankMeasureDamage: String { text("rank.measure.damage") }
+
+    /// Healing
+    static var rankMeasureHealing: String { text("rank.measure.healing") }
+
+    /// Damage taken
+    static var rankMeasureTaken: String { text("rank.measure.taken") }
+
+    /// Execution
+    static var rankMeasureExecution: String { text("rank.measure.execution") }
+
+    /// Normal
+    static var rankRulesetNormal: String { text("rank.ruleset.normal") }
+
+    /// PvP
+    static var rankRulesetPvp: String { text("rank.ruleset.pvp") }
+
+    /// RP
+    static var rankRulesetRp: String { text("rank.ruleset.rp") }
+
+    /// Hardcore
+    static var rankRulesetHardcore: String { text("rank.ruleset.hardcore") }
+
+    /// Every ruleset
+    static var rankRulesetAll: String { text("rank.ruleset.all") }
+
+    /// All
+    static var rankRegionAll: String { text("rank.region.all") }
+
+    /// Both
+    static var rankFactionBoth: String { text("rank.faction.both") }
+
+    /// Alliance
+    static var rankFactionAlliance: String { text("rank.faction.alliance") }
+
+    /// Horde
+    static var rankFactionHorde: String { text("rank.faction.horde") }
+
+    /// Pre-beta
+    static var rankPhasePreBeta: String { text("rank.phase.preBeta") }
+
+    /// Beta
+    static var rankPhaseBeta: String { text("rank.phase.beta") }
+
+    /// Launch
+    static var rankPhaseLaunch: String { text("rank.phase.launch") }
+
+    /// Phase 1
+    static var rankPhaseRaids1: String { text("rank.phase.raids1") }
+
+    /// {zone} · {size} players · {kills}
+    static func rankEncounterMeta(zone: String, size: Int, kills: String) -> String {
+        format("rank.encounterMeta", zone, size, kills)
+    }
+
+    /// {n} ranked kills
+    static func rankKills(n: Int) -> String {
+        format("rank.kills", n)
+    }
+
+    /// Watch
+    static var rankMenuWatch: String { text("rank.menu.watch") }
+
+    /// Stop watching
+    static var rankMenuUnwatch: String { text("rank.menu.unwatch") }
+
+    /// Open the report
+    static var rankMenuReport: String { text("rank.menu.report") }
+
+    /// Share
+    static var rankMenuShare: String { text("rank.menu.share") }
+
+    /// Rank {rank} of {total}, {name}, {value} {unit}, {guild}
+    static func rankA11yRow(rank: Int, total: Int, name: String, value: String, unit: String, guild: String) -> String {
+        format("rank.a11y.row", rank, total, name, value, unit, guild)
+    }
+
+    /// your character
+    static var rankA11yYours: String { text("rank.a11y.yours") }
+
+    /// damage per second
+    static var rankA11yPerSecondDps: String { text("rank.a11y.perSecond.dps") }
+
+    /// healing per second
+    static var rankA11yPerSecondHps: String { text("rank.a11y.perSecond.hps") }
+
+    /// damage taken per second
+    static var rankA11yPerSecondDtps: String { text("rank.a11y.perSecond.dtps") }
+
+    /// percent executed
+    static var rankA11yExecuted: String { text("rank.a11y.executed") }
+
+    /// Forever Score
+    static var charScore: String { text("char.score") }
+
+    /// How is this calculated?
+    static var charHow: String { text("char.how") }
+
+    /// As of {date}
+    static func charAsOf(date: String) -> String {
+        format("char.asOf", date)
+    }
+
+    /// Bests
+    static var charBests: String { text("char.bests") }
+
+    /// Recent fights
+    static var charRecent: String { text("char.recent") }
+
+    /// Gear
+    static var charGear: String { text("char.gear") }
+
+    /// Gear gap
+    static var charGap: String { text("char.gap") }
+
+    /// Builds seen
+    static var charBuilds: String { text("char.builds") }
+
+    /// No logs yet.
+    static var charNoLogs: String { text("char.noLogs") }
+
+    /// {name} has no rated fight in a public report, so there is no score to show.
+    static func charNoScore(name: String) -> String {
+        format("char.noScore", name)
+    }
+
+    /// {name} has not sent gear to Forever Sixty.
+    static func charNoGear(name: String) -> String {
+        format("char.noGear", name)
+    }
+
+    /// We have no character called {name}.
+    static func charNotFound(name: String) -> String {
+        format("char.notFound", name)
+    }
+
+    /// Check the spelling, the region and the ruleset.
+    static var charNotFoundHelp: String { text("char.notFoundHelp") }
+
+    /// Search again
+    static var charSearchAgain: String { text("char.searchAgain") }
+
+    /// Watch
+    static var charWatch: String { text("char.watch") }
+
+    /// Watching
+    static var charWatching: String { text("char.watching") }
+
+    /// Watch {name}
+    static func charWatchA11y(name: String) -> String {
+        format("char.watchA11y", name)
+    }
+
+    /// Stop watching {name}
+    static func charUnwatchA11y(name: String) -> String {
+        format("char.unwatchA11y", name)
+    }
+
+    /// {name} was not saved. Try again.
+    static func charWatchFailed(name: String) -> String {
+        format("char.watchFailed", name)
+    }
+
+    /// Share
+    static var charShare: String { text("char.share") }
+
+    /// That character did not load.
+    static var charError: String { text("char.error") }
+
+    /// You
+    static var charYou: String { text("char.you") }
+
+    /// Supporter
+    static var charSupporter: String { text("char.supporter") }
+
+    /// {race} {spec} {class} · Level {level}
+    static func charDescriptor(race: String, spec: String, className: String, level: Int) -> String {
+        format("char.descriptor", race, spec, className, level)
+    }
+
+    /// {race} {spec} {class}
+    static func charDescriptorNoLevel(race: String, spec: String, className: String) -> String {
+        format("char.descriptorNoLevel", race, spec, className)
+    }
+
+    /// {guild} · {region} {ruleset}
+    static func charWhere(guild: String, region: String, ruleset: String) -> String {
+        format("char.where", guild, region, ruleset)
+    }
+
+    /// {region} {ruleset}
+    static func charWhereNoGuild(region: String, ruleset: String) -> String {
+        format("char.whereNoGuild", region, ruleset)
+    }
+
+    /// Gear
+    static var charComponentGear: String { text("char.component.gear") }
+
+    /// Experience
+    static var charComponentExperience: String { text("char.component.experience") }
+
+    /// Parses
+    static var charComponentParses: String { text("char.component.parses") }
+
+    /// Attendance
+    static var charComponentAttendance: String { text("char.component.attendance") }
+
+    /// Discipline
+    static var charComponentDiscipline: String { text("char.component.discipline") }
+
+    /// Common
+    static var charTierCommon: String { text("char.tier.common") }
+
+    /// Uncommon
+    static var charTierUncommon: String { text("char.tier.uncommon") }
+
+    /// Rare
+    static var charTierRare: String { text("char.tier.rare") }
+
+    /// Epic
+    static var charTierEpic: String { text("char.tier.epic") }
+
+    /// Legendary
+    static var charTierLegendary: String { text("char.tier.legendary") }
+
+    /// {ruleset} · {age}
+    static func charBestMeta(ruleset: String, age: String) -> String {
+        format("char.bestMeta", ruleset, age)
+    }
+
+    /// Kill
+    static var charKill: String { text("char.kill") }
+
+    /// Wipe
+    static var charWipe: String { text("char.wipe") }
+
+    /// {result} · {age}
+    static func charFightMeta(result: String, age: String) -> String {
+        format("char.fightMeta", result, age)
+    }
+
+    /// percentile
+    static var charPercentile: String { text("char.percentile") }
+
+    /// Gold dot: the BiS list has a better item for this slot.
+    static var charGoldDot: String { text("char.goldDot") }
+
+    /// {points} points
+    static func charGapPoints(points: String) -> String {
+        format("char.gapPoints", points)
+    }
+
+    /// {spec} · first seen {date}
+    static func charBuildMeta(spec: String, date: String) -> String {
+        format("char.buildMeta", spec, date)
+    }
+
+    /// Open in planner
+    static var charOpenPlanner: String { text("char.openPlanner") }
+
+    /// Parse history
+    static var charParseHistory: String { text("char.parseHistory") }
+
+    /// Forever Score {score}, {tier}.
+    static func charA11yScore(score: String, tier: String) -> String {
+        format("char.a11y.score", score, tier)
+    }
+
+    /// {component} {value} of {cap}.
+    static func charA11yComponent(component: String, value: Int, cap: Int) -> String {
+        format("char.a11y.component", component, value, cap)
+    }
+
+    /// {slot}, {item}, {quality}, item level {level}.
+    static func paperdollA11ySocket(slot: String, item: String, quality: String, level: String) -> String {
+        format("paperdoll.a11y.socket", slot, item, quality, level)
+    }
+
+    /// {slot}, empty.
+    static func paperdollA11yEmpty(slot: String) -> String {
+        format("paperdoll.a11y.empty", slot)
+    }
+
+    /// A better item is on your best in slot list.
+    static var paperdollA11yBetter: String { text("paperdoll.a11y.better") }
+
     /// Your reports
     static var reportsTitle: String { text("reports.title") }
 

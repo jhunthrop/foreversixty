@@ -346,6 +346,51 @@ components:
         zone: { type: string }
         fights: { type: array, items: { type: integer }, description: "The pulls, in the night's order" }
         duration_ms: { type: integer, format: int64, description: "The pulls' lengths summed" }
+    RankingsPage:
+      type: object
+      required: [rows, total, page, per_page, updated_at, deduped]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/RankingRow' } }
+        total: { type: integer }
+        page: { type: integer }
+        per_page: { type: integer, enum: [100] }
+        updated_at: { type: string, format: date-time }
+        deduped: { type: boolean, description: "True when each row is a different character's best kill (distinct=character): the apps then say characters, else kills" }
+        character_rank:
+          type: object
+          title: CharacterRank
+          required: [rank, row]
+          description: "Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort"
+          properties:
+            rank: { type: integer }
+            row: { $ref: '#/components/schemas/RankingRow' }
+    RankingPercentile:
+      type: object
+      required: [percentile, ranked]
+      properties:
+        percentile: { type: number, description: "0 to 100" }
+        ranked: { type: integer, description: "Kills the bracket ranks" }
+    RankedEncounter:
+      type: object
+      required: [id, slug, name, zone, size, kills]
+      properties:
+        id: { type: integer, format: int64 }
+        slug: { type: string }
+        name: { type: string }
+        zone: { type: [string, "null"], description: "The zone the newest log of it named" }
+        size: { type: [integer, "null"], description: "The raid size most of its ranked kills had" }
+        kills: { type: integer, description: "Ranked kills" }
+    WatchedCharacter:
+      type: object
+      required: [key, region, ruleset, name, class, level, added_at]
+      properties:
+        key: { type: string, description: "<region>/<ruleset>/<name-slug>" }
+        region: { type: string }
+        ruleset: { type: string }
+        name: { type: string }
+        class: { type: [string, "null"], x-name: className }
+        level: { type: [integer, "null"], description: "The character page's level, null when no source knows it" }
+        added_at: { type: string, format: date-time }
     ReportMe:
       type: object
       description: >-
@@ -568,13 +613,18 @@ components:
         rank: { type: integer }
         player:
           type: object
+          title: RankingPlayer
+          required: [key, name]
           properties:
             key: { type: string, description: "<region>/<ruleset>/<name-slug>" }
             name: { type: string }
-            class: { type: string }
-            spec: { type: string }
+            class: { type: string, x-name: className, description: "Absent when the log did not say" }
+            spec: { type: string, description: "Absent when the log did not say" }
         guild:
           type: object
+          title: RankingGuild
+          required: [name, region, ruleset]
+          description: "Absent when the report is filed to no guild"
           properties:
             name: { type: string }
             region: { type: string }
@@ -1328,6 +1378,16 @@ components:
             parses: { type: integer, description: "Mean best parse percentile per boss, scaled 0-600." }
             attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }
             discipline: { type: integer, description: "Share of rated fights with a flask, a food and every enchantable slot (chest, feet, back, main hand) enchanted, times 100." }
+        component_caps:
+          type: [object, "null"]
+          description: "Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100), so a bar is drawn as value over cap; null with the score."
+          required: [gear, experience, parses, attendance, discipline]
+          properties:
+            gear: { type: integer }
+            experience: { type: integer }
+            parses: { type: integer }
+            attendance: { type: integer }
+            discipline: { type: integer }
         experience:
           type: [object, "null"]
           properties:
@@ -1621,7 +1681,7 @@ components:
       description: >-
         GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score
         field is null for a character with no rated fight: render "no logs yet", never 0.
-      required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, experience]
+      required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, component_caps, experience]
       properties:
         character:
           type: object
@@ -1670,6 +1730,17 @@ components:
         components:
           type: [object, "null"]
           title: ScoreComponents
+          required: [gear, experience, parses, attendance, discipline]
+          properties:
+            gear: { type: integer }
+            experience: { type: integer }
+            parses: { type: integer }
+            attendance: { type: integer }
+            discipline: { type: integer }
+        component_caps:
+          type: [object, "null"]
+          title: ScoreComponentCaps
+          description: "Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score."
           required: [gear, experience, parses, attendance, discipline]
           properties:
             gear: { type: integer }
@@ -4332,8 +4403,17 @@ paths:
         '502': { description: "Stored, but the parse job could not be started", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/rankings:
     get:
-      summary: A leaderboard page
+      operationId: getRankings
+      tags: [app]
+      summary: A leaderboard page (W3-C5)
+      description: >-
+        One page of 100 ranked kills (or, with distinct=character, each character's best kill)
+        for one encounter, filtered. Public; Cache-Control public, max-age=30. The apps' F11.1
+        board asks with distinct=character and the current character's class, spec and key, so
+        character_rank answers "where do I stand" whichever page the character is on.
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - name: encounter
           in: query
           required: true
@@ -4352,8 +4432,65 @@ paths:
         - { name: character, in: query, schema: { type: string, example: "us/normal/obnoxious yell" }, description: "A player key (region/ruleset/name). Needs distinct=character. Adds character_rank to the response" }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Cache-Control: public, max-age=30"
+          x-fixtures: [rankings.list, rankings.list.off-page, rankings.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RankingsPage' } } }
+        '400':
+          description: "invalid: a metric, phase, region, ruleset, page, since or character the route does not know"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found: no encounter by that id or slug"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/rankings/percentile:
+    get:
+      operationId: getRankingPercentile
+      tags: [app]
+      summary: Where one value stands in its bracket (W3-C5)
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: encounter, in: query, required: true, schema: { type: string }, description: "Encounter id or slug" }
+        - { name: difficulty, in: query, required: true, schema: { type: integer } }
+        - { name: spec, in: query, schema: { type: string } }
+        - { name: phase, in: query, schema: { type: string } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken] } }
+        - { name: value, in: query, required: true, schema: { type: number } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "percentile, 0 to 100, and how many kills the bracket ranks"
+          x-fixtures: [rankings.percentile]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RankingPercentile' } } }
+        '404': { description: "Nothing ranked in that bracket yet", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/rankings/encounters:
+    get:
+      operationId: getRankingEncounters
+      tags: [app]
+      summary: The encounters that have ranked kills (W3-C6)
+      description: >-
+        For the F11.2 encounter list: every encounter with a ranked kill, most kills first, with
+        the zone the newest of its logs named and its usual raid size (each null when no log
+        says). Public; Cache-Control public, max-age=30.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The encounters"
+          x-fixtures: [rankings.encounters]
           content:
             application/json:
               schema:
@@ -4363,32 +4500,96 @@ paths:
                     properties:
                       data:
                         type: object
+                        title: RankedEncounters
+                        required: [encounters]
                         properties:
-                          rows: { type: array, items: { $ref: '#/components/schemas/RankingRow' } }
-                          total: { type: integer }
-                          page: { type: integer }
-                          per_page: { type: integer, enum: [100] }
-                          updated_at: { type: string, format: date-time }
-                          deduped: { type: boolean, description: "True when each row is a different character's best kill (distinct=character)" }
-                          character_rank:
-                            type: object
-                            description: "Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort"
-                            properties:
-                              rank: { type: integer }
-                              row: { $ref: '#/components/schemas/RankingRow' }
-  /v1/rankings/percentile:
+                          encounters: { type: array, items: { $ref: '#/components/schemas/RankedEncounter' } }
+  /v1/me/watching:
     get:
-      summary: Where one value stands in its bracket
+      operationId: getWatching
+      tags: [app]
+      summary: The characters you watch (W3-C7)
+      description: >-
+        Session or device token. Newest first, up to 50. A watched character whose account
+        turns anonymous is left out. Cache-Control private, no-cache.
       parameters:
-        - { name: encounter, in: query, required: true, schema: { type: string }, description: "Encounter id or slug" }
-        - { name: difficulty, in: query, required: true, schema: { type: integer } }
-        - { name: spec, in: query, schema: { type: string } }
-        - { name: phase, in: query, schema: { type: string } }
-        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken] } }
-        - { name: value, in: query, required: true, schema: { type: number } }
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
-        '200': { description: "percentile, 0 to 100", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "Nothing ranked in that bracket yet", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The watch list"
+          x-fixtures: [watching.list, watching.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        title: WatchingList
+                        required: [rows]
+                        properties:
+                          rows: { type: array, items: { $ref: '#/components/schemas/WatchedCharacter' } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/watching/{region}/{ruleset}/{name}:
+    put:
+      operationId: watchCharacter
+      tags: [app]
+      summary: Watch a character (W3-C7)
+      description: >-
+        Session or device token. Idempotent: watching again answers the same row. 404 for a
+        character the site does not show (unknown, or its account is anonymous); 409 limit past
+        50, with fields.character.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Watched; the row as GET /v1/me/watching lists it"
+          x-fixtures: [watching.put]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/WatchedCharacter' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "not_found: no such character, or its account is anonymous"
+          x-fixtures: [watching.put.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "limit: you already watch 50"
+          x-fixtures: [watching.put.error-limit]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      operationId: unwatchCharacter
+      tags: [app]
+      summary: Stop watching a character (W3-C7)
+      description: Session or device token. 204 whether or not it was watched.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '204': { description: "Not watched" }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/rankings/guilds:
     get:
       summary: A guild leaderboard
@@ -4743,15 +4944,21 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/phases:
     get:
-      summary: The content phase boundaries
+      summary: The content phase boundaries (W3-C5)
       operationId: getPhases
+      tags: [app]
       description: >-
         The same four instants the rankings bucket by, from
         data/curated/phases.json. Cached an hour: they change only with a
-        deploy.
+        deploy. pre-beta's start is 0001-01-01T00:00:00Z, a phase with no opening instant.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: The phases, in order
+          x-fixtures: [phases]
           content:
             application/json:
               schema:
@@ -4761,11 +4968,15 @@ paths:
                     properties:
                       data:
                         type: object
+                        title: Phases
+                        required: [phases]
                         properties:
                           phases:
                             type: array
                             items:
                               type: object
+                              title: PhaseBoundary
+                              required: [name, start]
                               properties:
                                 name: { type: string, example: raids-1 }
                                 start: { type: string, format: date-time }
@@ -4863,7 +5074,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character card"
-          x-fixtures: [character.card, character.card.empty]
+          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours]
           content:
             application/json:
               schema:
@@ -5818,7 +6029,7 @@ paths:
         '200':
           description: "The class's items"
           x-fixture-route: cdn.items.{class}
-          x-fixtures: [cdn.items.warrior, cdn.items.hunter]
+          x-fixtures: [cdn.items.warrior, cdn.items.hunter, cdn.items.shaman]
           content: { application/json: { schema: { $ref: '#/components/schemas/ItemsFile' } } }
   /data/{build}/sets.json:
     servers: [{ url: 'https://foreversixty.gg' }]

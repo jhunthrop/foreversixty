@@ -22,6 +22,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case widgets = "widgets"
     /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
     case reports = "reports"
+    /// F11: Rankings and character pages: your rank, the board and its filters, a character's Forever Score, bests and gear (the Paperdoll), watching
+    case rankings = "rankings"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -36,6 +38,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .premiumLink: false
         case .widgets: false
         case .reports: false
+        case .rankings: false
         }
     }
 }

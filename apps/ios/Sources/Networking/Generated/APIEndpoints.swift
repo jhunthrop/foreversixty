@@ -55,6 +55,11 @@ public extension Endpoint where Response == Empty {
         Endpoint(method: .delete, path: "/v1/devices/\(id)")
     }
 
+    /// DELETE /v1/me/watching/{region}/{ruleset}/{name}: Stop watching a character (W3-C7)
+    static func unwatchCharacter(region: String, ruleset: String, name: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/watching/\(region)/\(ruleset)/\(name)")
+    }
+
     /// POST /v1/sims/{id}/seen: Mark the caller's finished server run as looked at
     static func markSimSeen(id: String) -> Endpoint {
         Endpoint(method: .post, path: "/v1/sims/\(id)/seen")
@@ -130,6 +135,58 @@ public extension Endpoint where Response == CoachRecent {
     static var getCoachRecent: Endpoint { Endpoint(method: .get, path: "/v1/me/coach/recent") }
 }
 
+public extension Endpoint where Response == RankingsPage {
+    /// GET /v1/rankings: A leaderboard page (W3-C5)
+    static func getRankings(encounter: String, difficulty: Int? = nil, metric: String? = nil, spec: String? = nil, class: String? = nil, phase: String? = nil, region: String? = nil, ruleset: String? = nil, faction: String? = nil, since: String? = nil, distinct: String? = nil, character: String? = nil, page: Int? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/rankings", query: [
+            URLQueryItem(name: "encounter", value: "\(encounter)"),
+            difficulty.map { URLQueryItem(name: "difficulty", value: "\($0)") },
+            metric.map { URLQueryItem(name: "metric", value: "\($0)") },
+            spec.map { URLQueryItem(name: "spec", value: "\($0)") },
+            class.map { URLQueryItem(name: "class", value: "\($0)") },
+            phase.map { URLQueryItem(name: "phase", value: "\($0)") },
+            region.map { URLQueryItem(name: "region", value: "\($0)") },
+            ruleset.map { URLQueryItem(name: "ruleset", value: "\($0)") },
+            faction.map { URLQueryItem(name: "faction", value: "\($0)") },
+            since.map { URLQueryItem(name: "since", value: "\($0)") },
+            distinct.map { URLQueryItem(name: "distinct", value: "\($0)") },
+            character.map { URLQueryItem(name: "character", value: "\($0)") },
+            page.map { URLQueryItem(name: "page", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == RankingPercentile {
+    /// GET /v1/rankings/percentile: Where one value stands in its bracket (W3-C5)
+    static func getRankingPercentile(encounter: String, difficulty: Int, spec: String? = nil, phase: String? = nil, metric: String? = nil, value: Double) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/rankings/percentile", query: [
+            URLQueryItem(name: "encounter", value: "\(encounter)"),
+            URLQueryItem(name: "difficulty", value: "\(difficulty)"),
+            spec.map { URLQueryItem(name: "spec", value: "\($0)") },
+            phase.map { URLQueryItem(name: "phase", value: "\($0)") },
+            metric.map { URLQueryItem(name: "metric", value: "\($0)") },
+            URLQueryItem(name: "value", value: "\(value)"),
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == RankedEncounters {
+    /// GET /v1/rankings/encounters: The encounters that have ranked kills (W3-C6)
+    static var getRankingEncounters: Endpoint { Endpoint(method: .get, path: "/v1/rankings/encounters") }
+}
+
+public extension Endpoint where Response == WatchingList {
+    /// GET /v1/me/watching: The characters you watch (W3-C7)
+    static var getWatching: Endpoint { Endpoint(method: .get, path: "/v1/me/watching") }
+}
+
+public extension Endpoint where Response == WatchedCharacter {
+    /// PUT /v1/me/watching/{region}/{ruleset}/{name}: Watch a character (W3-C7)
+    static func watchCharacter(region: String, ruleset: String, name: String) -> Endpoint {
+        Endpoint(method: .put, path: "/v1/me/watching/\(region)/\(ruleset)/\(name)")
+    }
+}
+
 public extension Endpoint where Response == SimList {
     /// GET /v1/sims: The caller's own saved sims
     static func listMySims(page: Int? = nil, kind: String? = nil, lane: String? = nil) -> Endpoint {
@@ -168,6 +225,11 @@ public extension Endpoint where Response == SimInput {
     static func getSimInput(region: String, ruleset: String, name: String) -> Endpoint {
         Endpoint(method: .get, path: "/v1/characters/\(region)/\(ruleset)/\(name)/sim-input")
     }
+}
+
+public extension Endpoint where Response == Phases {
+    /// GET /v1/phases: The content phase boundaries (W3-C5)
+    static var getPhases: Endpoint { Endpoint(method: .get, path: "/v1/phases") }
 }
 
 public extension Endpoint where Response == CharacterSearch {
@@ -375,12 +437,19 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/reports/{id}/coach/night", fixture: "coach.night", status: 200),
         FixtureRoute(.get, "/v1/reports/{id}/fights/{n}/coach", fixture: "coach.fight", status: 200),
         FixtureRoute(.get, "/v1/me/coach/recent", fixture: "coach.recent", status: 200),
+        FixtureRoute(.get, "/v1/rankings", fixture: "rankings.list", status: 200),
+        FixtureRoute(.get, "/v1/rankings/percentile", fixture: "rankings.percentile", status: 200),
+        FixtureRoute(.get, "/v1/rankings/encounters", fixture: "rankings.encounters", status: 200),
+        FixtureRoute(.get, "/v1/me/watching", fixture: "watching.list", status: 200),
+        FixtureRoute(.put, "/v1/me/watching/{region}/{ruleset}/{name}", fixture: "watching.put", status: 200),
+        FixtureRoute(.delete, "/v1/me/watching/{region}/{ruleset}/{name}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/sims", fixture: "sims.list", status: 200),
         FixtureRoute(.get, "/v1/sims/{id}", fixture: "sims.result", status: 200),
         FixtureRoute(.post, "/v1/sims/{id}/seen", fixture: nil, status: 204),
         FixtureRoute(.post, "/v1/sims/{id}/rerun", fixture: "sims.rerun", status: 202),
         FixtureRoute(.get, "/v1/sims/{id}/progress", fixture: "sims.progress", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/sim-input", fixture: "character.sim-input.addon", status: 200),
+        FixtureRoute(.get, "/v1/phases", fixture: "phases", status: 200),
         FixtureRoute(.get, "/v1/characters/search", fixture: "character.search", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}", fixture: "character.card", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/home", fixture: "guild.home", status: 200),
