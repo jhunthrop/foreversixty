@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"sort"
 	"strconv"
@@ -458,8 +459,73 @@ func rankByMeasuredGain(runner engineRunner, spec specInfo, race, classSlug stri
 		}
 		sp.RunnerUp = &runnerUp
 	}
+	if baselineErr == nil && !trinketGainSignificant(best.MeasuredGainDPS, best.MeasuredGainStdErr) {
+		ordered := make([]scored, 0, len(results))
+		ordered = append(ordered, results[winner].item)
+		for i := range results {
+			if i != winner {
+				ordered = append(ordered, results[i].item)
+			}
+		}
+		fallback, found, err := gainAtCeiling(runner, spec, race, classSlug, level, talents, picks, slot, ordered)
+		switch {
+		case err != nil:
+			notes = append(notes, slot+": re-measuring the shortlist at the ceiling failed: "+err.Error())
+		case found && fallback.ID != best.ID:
+			demoted := best
+			sp = slotPick{Item: &fallback, RunnerUp: &demoted}
+			notes = append(notes, fmt.Sprintf("%s: %s had no gain beyond its error; %s gains %.2f +/- %.2f at %d iterations", slot, best.Name, fallback.Name, fallback.MeasuredGainDPS, fallback.MeasuredGainStdErr, trinketGainAdaptiveIterationCeiling))
+		case found:
+			sp.Item = &fallback
+		}
+	}
 	out[slot] = sp
 	return out, notes
+}
+
+// trinketCeilingCandidates is how many of the shortlist's best-measured
+// candidates gainAtCeiling re-measures.
+const trinketCeilingCandidates = 3
+
+// gainAtCeiling re-measures the empty slot and the first
+// trinketCeilingCandidates of ordered (best measured first) at
+// trinketGainAdaptiveIterationCeiling, and returns the candidate with the
+// largest gain that is significant there. rankByMeasuredGain calls it only
+// when its 100-iteration winner shows no significant gain, which would
+// publish the slot empty: at 100 iterations a raid set's error is several
+// DPS, so the ordering can put a candidate that gains nothing ahead of one
+// that gains 0.7% (round 6, warlock-demonology horde band 60 raid, Rune of
+// the Guard Captain), and trinketAdaptiveGain never refines a gain that
+// measured at or below zero.
+func gainAtCeiling(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, slot string, ordered []scored) (scored, bool, error) {
+	run := func(label string, itemID int) (float64, float64, error) {
+		gear := swapSlot(picks, slot, itemID, false)
+		req := plainRequest(spec, bandCharacter(label, race, classSlug, spec.Spec, level, talents, gear), trinketGainAdaptiveIterationCeiling, verifySeed)
+		return runner.RunPlainDPSWithError(req)
+	}
+	baseDPS, baseErr, err := run("trinket-ceiling-baseline", 0)
+	if err != nil {
+		return scored{}, false, err
+	}
+	var best scored
+	found := false
+	for i, c := range ordered {
+		if i == trinketCeilingCandidates {
+			break
+		}
+		dps, stdErr, err := run("trinket-ceiling", c.ID)
+		if err != nil {
+			return scored{}, false, err
+		}
+		gain, gainErr := dps-baseDPS, math.Hypot(stdErr, baseErr)
+		if !trinketGainSignificant(gain, gainErr) || (found && gain <= best.MeasuredGainDPS) {
+			continue
+		}
+		best = c
+		best.MeasuredDPS, best.MeasuredGainDPS, best.MeasuredGainStdErr, best.GainMeasured = dps, gain, gainErr, true
+		found = true
+	}
+	return best, found, nil
 }
 
 func formatTrinketRankError(slot string, c scored, err error) string {
