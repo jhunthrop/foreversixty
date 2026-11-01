@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Tests for tools/engine/follow-inputs-hash.sh, tools/engine/pin-conditions.sh,
-# tools/engine/push-review-branch.sh and tools/engine/pinned-build.sh, the scripts
+# tools/engine/push-review-branch.sh, tools/engine/pinned-build.sh and
+# tools/engine/check-checkout.sh, the scripts
 # .github/workflows/engine.yml, bis.yml and tools/activate-build.sh call. Plain bash, no bats: each
 # case builds scratch git repositories under mktemp -d and stubs `gh`.
 #
@@ -18,6 +19,7 @@ readonly PUSH=$HERE/../push-review-branch.sh
 readonly PINNED=$HERE/../pinned-build.sh
 readonly WAIT=$HERE/../ranking-wait.sh
 readonly VERDICT=$HERE/../ranking-verdict.sh
+readonly CHECKOUT=$HERE/../check-checkout.sh
 readonly BUILD=1.60.1.70532
 readonly OTHER_BUILD=1.60.1.70425
 
@@ -331,6 +333,32 @@ test_push_review_branch_fails_on_a_bad_remote() {
 	assert "bad remote: exits 1 (got $PUSH_STATUS)" equal "$PUSH_STATUS" 1
 }
 
+
+# check-checkout: silent at the pin and on CI's module path, warns off the pin or dirty.
+test_check_checkout_warns_off_the_pin() {
+	local site=$SCRATCH/checkout-site engine=$SCRATCH/checkout-engine pin out
+	git init --quiet "$engine"
+	echo one >"$engine/a"
+	commit_all "$engine" one
+	pin=$(git -C "$engine" rev-parse --short=9 HEAD)
+	mkdir -p "$site/sim/enginever"
+	printf 'package enginever\n\nconst Version = "%s"\n' "$pin" >"$site/sim/enginever/version.go"
+	out=$("$CHECKOUT" "$site" "$engine" 2>&1)
+	assert "check-checkout is silent at the pin" equal "$out" ""
+	out=$("$CHECKOUT" "$site" github.com/jhunthrop/wowsims-forever 2>&1)
+	assert "check-checkout is silent on CI's module path" equal "$out" ""
+	echo dirty >"$engine/a"
+	out=$("$CHECKOUT" "$site" "$engine" 2>&1)
+	assert "check-checkout warns on a dirty checkout at the pin" contains "$out" "uncommitted changes"
+	commit_all "$engine" two
+	out=$("$CHECKOUT" "$site" "$engine" 2>&1)
+	assert "check-checkout warns off the pin" contains "$out" "not the pinned $pin"
+	"$CHECKOUT" "$site" "$engine" 2>/dev/null
+	assert "check-checkout never fails the build" equal "$?" 0
+	"$CHECKOUT" "$site" >/dev/null 2>&1
+	assert "check-checkout usage exits 2" equal "$?" 2
+}
+
 test_hash_is_stable_and_follows_the_inputs
 test_hash_refuses_a_build_the_site_does_not_have
 test_last_reads_the_newest_follow_inputs_trailer
@@ -443,6 +471,7 @@ test_pinned_build_asks_github_without_a_fork
 test_pinned_build_fails_rather_than_guess
 test_ranking_wait_verdicts
 test_ranking_verdict
+test_check_checkout_warns_off_the_pin
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "FAILED $FAILED of $((PASSED + FAILED)) assertions" >&2

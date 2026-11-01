@@ -23,8 +23,18 @@ export const ENGINE_VERSION = '8baffe5fc';
 const viteEnv: Record<string, string | undefined> | undefined = import.meta.env;
 export const ENGINE_ARTIFACT: string = viteEnv?.PUBLIC_SIM_ARTIFACT ?? ENGINE_VERSION;
 
+/**
+ * The engine module's published file name. It is gzipped (`make publish-wasm`): the raw module
+ * sits within a few percent of Cloudflare's 25 MiB per-file static-asset limit, and the page
+ * inflates it itself (wasm-fetch.ts).
+ */
+export const WASM_FILE = 'sim.wasm.gz';
+
 /** Where the browser artifacts live. Cached immutably, so the path carries the bytes' name. */
-export function engineAssetUrl(file: 'sim.wasm' | 'sim.js', artifact: string = ENGINE_ARTIFACT): string {
+export function engineAssetUrl(
+  file: typeof WASM_FILE | 'sim.js',
+  artifact: string = ENGINE_ARTIFACT,
+): string {
   return `/_sim/${artifact}/${file}`;
 }
 

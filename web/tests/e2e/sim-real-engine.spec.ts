@@ -17,15 +17,16 @@
 // from the repository root: `make simdb && make artifacts && make publish-wasm`. That npm
 // script sets PUBLIC_SIM_ENGINE=wasm and E2E_PORT=4325 so its preview server never collides
 // with the fixture preview `npm run test:e2e` may already be holding on 4321.
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { ENGINE_VERSION, engineLabel } from '../../src/lib/sim/version';
+import { artifactPublished as artifactPublishedAt } from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const artifactPublished = existsSync(path.join(WEB_ROOT, 'public/_sim', ENGINE_VERSION, 'sim.wasm'));
+const artifactPublished = artifactPublishedAt(WEB_ROOT, ENGINE_VERSION);
 
 test.skip(
   process.env.PUBLIC_SIM_ENGINE !== 'wasm' || !artifactPublished,
