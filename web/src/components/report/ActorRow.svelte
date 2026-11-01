@@ -119,6 +119,9 @@
 
   /** Below ten one-second buckets, a percentage rounds to steps of 10% or coarser. */
   const ACTIVITY_SECONDS_BELOW_MS = 10_000;
+  /** What Active reads for a sim pet row whose uptime was never measured. */
+  const ACTIVE_UNKNOWN = '—';
+  const ACTIVE_UNKNOWN_TITLE = 'Not measured: this result was saved before the sim tracked pet uptime';
 
   let open = $state(false);
   /** The exact split once measured; the prorated one shows until then. */
@@ -254,7 +257,12 @@
   });
   const showActivitySeconds = $derived(durationMs > 0 && durationMs < ACTIVITY_SECONDS_BELOW_MS);
   /** One source for the figure, which the desktop column and the phone card both read. */
-  const activeText = $derived(showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct));
+  const activeText = $derived.by(() => {
+    // A sim pet row saved before pet uptime was measured (lib/sim/pet-rows.ts): its
+    // active_ms is the fight's length, not the pet's, so it says nothing rather than 100%.
+    if (actor.active_unknown === true) return ACTIVE_UNKNOWN;
+    return showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct);
+  });
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
   /** Overhealing as a share of the raw total, for healing rows; null where there is none. */
@@ -450,7 +458,7 @@
             class="quiet-label ml-1.5 md:hidden">per sec</span
           ></span
         >
-        {#if actor.active_ms > 0 && actor.active_ms < durationMs}
+        {#if actor.active_unknown !== true && actor.active_ms > 0 && actor.active_ms < durationMs}
           <span
             class="text-[11px]"
             title="Per second over the time this row was active, not the whole window"
@@ -460,7 +468,11 @@
         {/if}
       </span>
     </span>
-    <span class="text-muted numeric hidden text-right text-[13px] md:inline" data-testid="row-active">
+    <span
+      class="text-muted numeric hidden text-right text-[13px] md:inline"
+      data-testid="row-active"
+      title={actor.active_unknown === true ? ACTIVE_UNKNOWN_TITLE : undefined}
+    >
       {activeText}
     </span>
   </button>

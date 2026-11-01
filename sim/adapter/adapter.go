@@ -167,6 +167,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	out.DamageDone[0].ActiveMS = durationMS
 	for i, pet := range player.Pets {
 		out.DamageDone[i+1].ActiveMS = petActiveMS(pet, res.AvgIterationDuration, durationMS)
+		out.DamageDone[i+1].PetUptime = true
 	}
 
 	out.Auras = auras(player)

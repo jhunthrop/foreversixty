@@ -58,6 +58,33 @@ describe('withoutAbsentPets', () => {
     expect(kept.casts).toHaveLength(demonology.casts.length);
   });
 
+  describe('a result saved before the engine measured pet uptime', () => {
+    // What sim/adapter wrote before pet_active_seconds_avg: no pet_uptime mark, and every
+    // row, every demon included, stamped active for the whole fight.
+    const legacy: Summary = {
+      ...demonology,
+      damage_done: demonology.damage_done.map(({ pet_uptime: _mark, ...actor }) => ({
+        ...actor,
+        active_ms: demonology.duration_ms,
+      })),
+    };
+
+    it('drops a pet with no damage, whatever Active it was stamped with', () => {
+      expect(names(withoutAbsentPets(legacy))).toEqual(['Demo', 'Succubus']);
+    });
+
+    it('marks a pet that did damage as having no measured Active', () => {
+      const rows = withoutAbsentPets(legacy).damage_done;
+      expect(rows.find((actor) => actor.name === 'Succubus')?.active_unknown).toBe(true);
+      expect(rows.find((actor) => actor.name === 'Demo')?.active_unknown).toBeUndefined();
+    });
+  });
+
+  it('never marks a measured pet row as unknown', () => {
+    const rows = withoutAbsentPets(demonology).damage_done;
+    expect(rows.some((actor) => actor.active_unknown)).toBe(false);
+  });
+
   it('leaves a result with no absent pet as it found it', () => {
     const fury = furyJson.summary as unknown as Summary;
     expect(withoutAbsentPets(fury)).toBe(fury);

@@ -35,5 +35,9 @@ func TestSummarizePetActiveIsTheEnginesUptime(t *testing.T) {
 		if row.ActiveMS != want[row.Name] {
 			t.Errorf("%s ActiveMS = %d, want %d", row.Name, row.ActiveMS, want[row.Name])
 		}
+		// Only a pet row says its Active is a measured uptime; the player's is the fight.
+		if isPet := row.Name != "Fury"; row.PetUptime != isPet {
+			t.Errorf("%s PetUptime = %v, want %v", row.Name, row.PetUptime, isPet)
+		}
 	}
 }

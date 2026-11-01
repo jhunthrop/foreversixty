@@ -256,7 +256,8 @@
         "active_ms": 0,
         "abilities": [],
         "targets": [],
-        "series": []
+        "series": [],
+        "pet_uptime": true
       },
       {
         "guid": "sim-player-pet-1",
@@ -267,7 +268,8 @@
         "active_ms": 0,
         "abilities": [],
         "targets": [],
-        "series": []
+        "series": [],
+        "pet_uptime": true
       },
       {
         "guid": "sim-player-pet-2",
@@ -328,7 +330,8 @@
             "total": 19555
           }
         ],
-        "series": []
+        "series": [],
+        "pet_uptime": true
       },
       {
         "guid": "sim-player-pet-3",
@@ -339,7 +342,8 @@
         "active_ms": 0,
         "abilities": [],
         "targets": [],
-        "series": []
+        "series": [],
+        "pet_uptime": true
       }
     ],
     "damage_taken": [],
