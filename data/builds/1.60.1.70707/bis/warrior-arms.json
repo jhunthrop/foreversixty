@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T05:30:29Z",
+  "generated_at": "2026-11-01T15:04:28Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -742,8 +742,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.339428303,
-      "verify_run_seconds": 3.4905168030000002,
+      "weights_run_seconds": 2.378420164,
+      "verify_run_seconds": 3.470709881,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1588,8 +1588,8 @@
         "main_hand: Hammerbone",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.339428303,
-      "verify_run_seconds": 3.482214999,
+      "weights_run_seconds": 2.378420164,
+      "verify_run_seconds": 3.467752448,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2436,8 +2436,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.547272091,
-      "verify_run_seconds": 2.225122278,
+      "weights_run_seconds": 2.582308024,
+      "verify_run_seconds": 2.291439064,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3286,8 +3286,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.547272091,
-      "verify_run_seconds": 2.232976574,
+      "weights_run_seconds": 2.582308024,
+      "verify_run_seconds": 2.28061148,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4135,8 +4135,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.872343749,
-      "verify_run_seconds": 2.569732834,
+      "weights_run_seconds": 2.876284267,
+      "verify_run_seconds": 2.545565148,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4984,8 +4984,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.872343749,
-      "verify_run_seconds": 2.592770855,
+      "weights_run_seconds": 2.876284267,
+      "verify_run_seconds": 2.569367388,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5874,8 +5874,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.9824208690000003,
-      "verify_run_seconds": 3.153526635,
+      "weights_run_seconds": 3.031141086,
+      "verify_run_seconds": 3.233197714,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6776,8 +6776,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.9824208690000003,
-      "verify_run_seconds": 3.176541856,
+      "weights_run_seconds": 3.031141086,
+      "verify_run_seconds": 3.179936403,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7659,8 +7659,8 @@
         "main_hand: Forest Defender's Axe",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.989340703,
-      "verify_run_seconds": 9.794036164,
+      "weights_run_seconds": 3.01035102,
+      "verify_run_seconds": 9.885105313,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8548,8 +8548,8 @@
         "main_hand: Forest Defender's Axe",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.989340703,
-      "verify_run_seconds": 9.790985271,
+      "weights_run_seconds": 3.01035102,
+      "verify_run_seconds": 9.950651981,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9432,8 +9432,8 @@
         "main_hand: Arcanite Champion",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.526150822,
-      "verify_run_seconds": 9.004151217,
+      "weights_run_seconds": 2.542643475,
+      "verify_run_seconds": 9.081488012,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10317,8 +10317,8 @@
         "main_hand: Arcanite Champion",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.526150822,
-      "verify_run_seconds": 9.020419005,
+      "weights_run_seconds": 2.542643475,
+      "verify_run_seconds": 9.143973438,
       "coverage": {
         "back": {
           "eligible": 390,

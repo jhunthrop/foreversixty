@@ -2,7 +2,7 @@
   "spec": "warrior-protection",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T05:34:39Z",
+  "generated_at": "2026-11-01T15:08:44Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -871,8 +871,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 5.25509049,
-      "verify_run_seconds": 2.005931007,
+      "weights_run_seconds": 5.329584941,
+      "verify_run_seconds": 2.057968124,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1830,8 +1830,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 5.25509049,
-      "verify_run_seconds": 1.989760204,
+      "weights_run_seconds": 5.329584941,
+      "verify_run_seconds": 2.022812473,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2809,8 +2809,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.118812219,
-      "verify_run_seconds": 2.158615556,
+      "weights_run_seconds": 5.21681334,
+      "verify_run_seconds": 2.256871427,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3794,8 +3794,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.118812219,
-      "verify_run_seconds": 2.1592902609999998,
+      "weights_run_seconds": 5.21681334,
+      "verify_run_seconds": 2.18969571,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4780,8 +4780,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.8601881559999995,
-      "verify_run_seconds": 2.25347894,
+      "weights_run_seconds": 4.899728657,
+      "verify_run_seconds": 2.24320514,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5771,8 +5771,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.8601881559999995,
-      "verify_run_seconds": 2.246061198,
+      "weights_run_seconds": 4.899728657,
+      "verify_run_seconds": 2.303134428,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6844,8 +6844,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.122567886,
-      "verify_run_seconds": 4.653613995,
+      "weights_run_seconds": 5.160601083,
+      "verify_run_seconds": 4.754610772,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7909,8 +7909,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.122567886,
-      "verify_run_seconds": 4.715435206,
+      "weights_run_seconds": 5.160601083,
+      "verify_run_seconds": 4.793379247,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8968,8 +8968,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.205264264,
-      "verify_run_seconds": 6.921786806,
+      "weights_run_seconds": 5.275266462,
+      "verify_run_seconds": 7.187635307,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10033,8 +10033,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.205264264,
-      "verify_run_seconds": 6.8845057,
+      "weights_run_seconds": 5.275266462,
+      "verify_run_seconds": 7.057204446,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -11096,8 +11096,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.915352048,
-      "verify_run_seconds": 7.48223017,
+      "weights_run_seconds": 6.079248091,
+      "verify_run_seconds": 7.707426725,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -12154,8 +12154,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.915352048,
-      "verify_run_seconds": 7.473237659,
+      "weights_run_seconds": 6.079248091,
+      "verify_run_seconds": 7.694344587,
       "coverage": {
         "back": {
           "eligible": 390,

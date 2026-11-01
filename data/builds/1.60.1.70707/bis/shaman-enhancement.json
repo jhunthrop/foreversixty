@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T05:14:24Z",
+  "generated_at": "2026-11-01T14:48:17Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -651,8 +651,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.02850542,
-      "verify_run_seconds": 1.76179832,
+      "weights_run_seconds": 2.116341583,
+      "verify_run_seconds": 1.779698078,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1409,8 +1409,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.02850542,
-      "verify_run_seconds": 1.882327305,
+      "weights_run_seconds": 2.116341583,
+      "verify_run_seconds": 2.032966006,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2227,8 +2227,8 @@
         "finger2: Tiger Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.078255946,
-      "verify_run_seconds": 1.9454915609999999,
+      "weights_run_seconds": 2.122969482,
+      "verify_run_seconds": 2.041588049,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3038,8 +3038,8 @@
         "finger2: Band of the Fist",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.078255946,
-      "verify_run_seconds": 1.847350779,
+      "weights_run_seconds": 2.122969482,
+      "verify_run_seconds": 1.944874692,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3854,8 +3854,8 @@
         "finger2: Assault Band",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.688401785,
-      "verify_run_seconds": 2.270038398,
+      "weights_run_seconds": 2.734856276,
+      "verify_run_seconds": 2.391138385,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4667,8 +4667,8 @@
         "finger2: Assault Band",
         "main_hand: Staff of Jordan"
       ],
-      "weights_run_seconds": 2.688401785,
-      "verify_run_seconds": 2.350878326,
+      "weights_run_seconds": 2.734856276,
+      "verify_run_seconds": 2.436910071,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5528,8 +5528,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.530746142,
-      "verify_run_seconds": 4.67545629,
+      "weights_run_seconds": 2.579162112,
+      "verify_run_seconds": 4.896188477,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6398,8 +6398,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.530746142,
-      "verify_run_seconds": 2.67661703,
+      "weights_run_seconds": 2.579162112,
+      "verify_run_seconds": 2.843182782,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7253,8 +7253,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.508155013,
-      "verify_run_seconds": 7.7052869699999995,
+      "weights_run_seconds": 2.60989883,
+      "verify_run_seconds": 7.991378563,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8107,8 +8107,8 @@
         "finger2: Masons Fraternity Ring",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.508155013,
-      "verify_run_seconds": 7.292228882,
+      "weights_run_seconds": 2.60989883,
+      "verify_run_seconds": 7.616936041,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8950,8 +8950,8 @@
         "finger2: Ring of the Underwood",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.529874027,
-      "verify_run_seconds": 5.842289263,
+      "weights_run_seconds": 2.51761994,
+      "verify_run_seconds": 6.014217602,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9805,8 +9805,8 @@
         "finger2: Ring of the Underwood",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 2.529874027,
-      "verify_run_seconds": 7.479462129,
+      "weights_run_seconds": 2.51761994,
+      "verify_run_seconds": 7.700017094,
       "coverage": {
         "back": {
           "eligible": 391,

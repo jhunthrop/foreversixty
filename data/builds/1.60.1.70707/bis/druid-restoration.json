@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T04:18:39Z",
+  "generated_at": "2026-11-01T13:52:40Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -711,8 +711,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.739413293,
-      "verify_run_seconds": 19.886419131,
+      "weights_run_seconds": 5.773553265,
+      "verify_run_seconds": 19.86788245,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1519,8 +1519,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 5.739413293,
-      "verify_run_seconds": 18.551847194,
+      "weights_run_seconds": 5.773553265,
+      "verify_run_seconds": 18.634381484,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2386,8 +2386,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.609394655,
-      "verify_run_seconds": 25.339550187,
+      "weights_run_seconds": 7.562627695,
+      "verify_run_seconds": 25.393169026,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3240,8 +3240,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.609394655,
-      "verify_run_seconds": 25.665334891,
+      "weights_run_seconds": 7.562627695,
+      "verify_run_seconds": 25.595329545,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4100,8 +4100,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.537180597,
-      "verify_run_seconds": 29.369839657,
+      "weights_run_seconds": 8.45709014,
+      "verify_run_seconds": 29.305243567,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4960,8 +4960,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.537180597,
-      "verify_run_seconds": 29.262452909,
+      "weights_run_seconds": 8.45709014,
+      "verify_run_seconds": 29.593805634,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5850,8 +5850,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 8.614424781,
-      "verify_run_seconds": 29.243536212,
+      "weights_run_seconds": 8.636181605,
+      "verify_run_seconds": 29.138261054,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6724,8 +6724,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 8.614424781,
-      "verify_run_seconds": 29.283298118,
+      "weights_run_seconds": 8.636181605,
+      "verify_run_seconds": 29.208125248,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7626,8 +7626,8 @@
         "finger1: Band of the Hierophant",
         "finger2: Eye of Adaegus"
       ],
-      "weights_run_seconds": 8.880449031,
-      "verify_run_seconds": 79.150357924,
+      "weights_run_seconds": 8.877268352,
+      "verify_run_seconds": 79.070956248,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8548,8 +8548,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 8.880449031,
-      "verify_run_seconds": 79.064463577,
+      "weights_run_seconds": 8.877268352,
+      "verify_run_seconds": 79.387008693,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9467,8 +9467,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 6.162769574,
-      "verify_run_seconds": 47.238886147,
+      "weights_run_seconds": 6.207018501,
+      "verify_run_seconds": 47.213387498,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10386,8 +10386,8 @@
         "finger2: Eye of Adaegus",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 6.162769574,
-      "verify_run_seconds": 47.059427144,
+      "weights_run_seconds": 6.207018501,
+      "verify_run_seconds": 47.089821263,
       "coverage": {
         "back": {
           "eligible": 391,

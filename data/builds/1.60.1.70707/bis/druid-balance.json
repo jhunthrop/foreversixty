@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T04:04:30Z",
+  "generated_at": "2026-11-01T13:38:29Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -682,8 +682,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.53036748,
-      "verify_run_seconds": 1.17119868,
+      "weights_run_seconds": 2.566359758,
+      "verify_run_seconds": 1.292993465,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1461,8 +1461,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.53036748,
-      "verify_run_seconds": 1.207042068,
+      "weights_run_seconds": 2.566359758,
+      "verify_run_seconds": 1.221764437,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2286,8 +2286,8 @@
         "finger2: Ring of Power Regulation",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.7732991350000002,
-      "verify_run_seconds": 1.468707867,
+      "weights_run_seconds": 2.750223098,
+      "verify_run_seconds": 1.362602443,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3124,8 +3124,8 @@
         "finger2: Ring of Power Regulation",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.7732991350000002,
-      "verify_run_seconds": 1.413519716,
+      "weights_run_seconds": 2.750223098,
+      "verify_run_seconds": 1.4237958800000001,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4014,8 +4014,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Talons of Wrath"
       ],
-      "weights_run_seconds": 2.994782978,
-      "verify_run_seconds": 1.559697688,
+      "weights_run_seconds": 2.966573771,
+      "verify_run_seconds": 1.591357308,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4899,8 +4899,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Talons of Wrath"
       ],
-      "weights_run_seconds": 2.994782978,
-      "verify_run_seconds": 1.490510209,
+      "weights_run_seconds": 2.966573771,
+      "verify_run_seconds": 1.4609685049999999,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5769,8 +5769,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 3.161567141,
-      "verify_run_seconds": 1.757374419,
+      "weights_run_seconds": 3.268697787,
+      "verify_run_seconds": 1.794686074,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6658,8 +6658,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 3.161567141,
-      "verify_run_seconds": 1.740801826,
+      "weights_run_seconds": 3.268697787,
+      "verify_run_seconds": 1.783434718,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7613,8 +7613,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.969769354,
-      "verify_run_seconds": 5.104830662,
+      "weights_run_seconds": 2.929044552,
+      "verify_run_seconds": 5.060036556,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8582,8 +8582,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.969769354,
-      "verify_run_seconds": 4.994396431,
+      "weights_run_seconds": 2.929044552,
+      "verify_run_seconds": 5.007863449,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9502,8 +9502,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.140030583,
-      "verify_run_seconds": 3.791747841,
+      "weights_run_seconds": 2.160024045,
+      "verify_run_seconds": 3.794518009,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10435,8 +10435,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Spirit of Aquementas"
       ],
-      "weights_run_seconds": 2.140030583,
-      "verify_run_seconds": 4.781014346,
+      "weights_run_seconds": 2.160024045,
+      "verify_run_seconds": 4.899518258,
       "coverage": {
         "back": {
           "eligible": 391,

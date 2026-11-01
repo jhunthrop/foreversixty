@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T04:24:53Z",
+  "generated_at": "2026-11-01T13:58:58Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -694,8 +694,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.100439203,
-      "verify_run_seconds": 0.742804744,
+      "weights_run_seconds": 1.112846196,
+      "verify_run_seconds": 0.729429473,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1484,8 +1484,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.100439203,
-      "verify_run_seconds": 0.720693031,
+      "weights_run_seconds": 1.112846196,
+      "verify_run_seconds": 0.736532781,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2356,8 +2356,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 1.239168819,
-      "verify_run_seconds": 0.837410994,
+      "weights_run_seconds": 1.2802052609999999,
+      "verify_run_seconds": 0.847727785,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3222,8 +3222,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.239168819,
-      "verify_run_seconds": 0.860629614,
+      "weights_run_seconds": 1.2802052609999999,
+      "verify_run_seconds": 0.8609593,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4132,8 +4132,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.353380081,
-      "verify_run_seconds": 0.952369414,
+      "weights_run_seconds": 1.3330625569999999,
+      "verify_run_seconds": 0.963771622,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5036,8 +5036,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.353380081,
-      "verify_run_seconds": 1.019132936,
+      "weights_run_seconds": 1.3330625569999999,
+      "verify_run_seconds": 1.004790486,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5917,8 +5917,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.2624912400000001,
-      "verify_run_seconds": 1.174785436,
+      "weights_run_seconds": 1.259817113,
+      "verify_run_seconds": 1.203397726,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6829,8 +6829,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.2624912400000001,
-      "verify_run_seconds": 1.162446539,
+      "weights_run_seconds": 1.259817113,
+      "verify_run_seconds": 1.177612132,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7748,8 +7748,8 @@
         "finger2: Philanthropist's Ring",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.410636716,
-      "verify_run_seconds": 3.18168789,
+      "weights_run_seconds": 1.402491123,
+      "verify_run_seconds": 3.221326459,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8677,8 +8677,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.410636716,
-      "verify_run_seconds": 3.118638007,
+      "weights_run_seconds": 1.402491123,
+      "verify_run_seconds": 3.181793169,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9580,8 +9580,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.629447334,
-      "verify_run_seconds": 2.233693081,
+      "weights_run_seconds": 1.645895421,
+      "verify_run_seconds": 2.284184669,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10481,8 +10481,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.629447334,
-      "verify_run_seconds": 2.271414027,
+      "weights_run_seconds": 1.645895421,
+      "verify_run_seconds": 2.273325558,
       "coverage": {
         "back": {
           "eligible": 390,

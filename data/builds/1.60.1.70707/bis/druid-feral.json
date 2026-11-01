@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T04:06:57Z",
+  "generated_at": "2026-11-01T13:40:57Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -678,8 +678,8 @@
         "finger2: The 1 Ring",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.420362611,
-      "verify_run_seconds": 4.908209792,
+      "weights_run_seconds": 4.394273073,
+      "verify_run_seconds": 4.928390794,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1459,8 +1459,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 4.420362611,
-      "verify_run_seconds": 4.8719319930000005,
+      "weights_run_seconds": 4.394273073,
+      "verify_run_seconds": 4.93599865,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2275,8 +2275,8 @@
         "finger2: Seal of Wrynn",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.414534822,
-      "verify_run_seconds": 3.144852243,
+      "weights_run_seconds": 4.41960316,
+      "verify_run_seconds": 3.148021579,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3097,8 +3097,8 @@
         "finger2: Band of the Fist",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.414534822,
-      "verify_run_seconds": 3.165835925,
+      "weights_run_seconds": 4.41960316,
+      "verify_run_seconds": 3.183028239,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3915,8 +3915,8 @@
         "finger1: Falcon's Hook",
         "finger2: Ring of the Underwood"
       ],
-      "weights_run_seconds": 5.116256339,
-      "verify_run_seconds": 3.1256737980000002,
+      "weights_run_seconds": 5.237092195,
+      "verify_run_seconds": 3.273527462,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4732,8 +4732,8 @@
         "finger1: Falcon's Hook",
         "finger2: Ring of the Underwood"
       ],
-      "weights_run_seconds": 5.116256339,
-      "verify_run_seconds": 3.158581149,
+      "weights_run_seconds": 5.237092195,
+      "verify_run_seconds": 3.180292362,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5578,8 +5578,8 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 5.178477273,
-      "verify_run_seconds": 3.828806504,
+      "weights_run_seconds": 5.143841226,
+      "verify_run_seconds": 3.84542623,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6440,8 +6440,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 5.178477273,
-      "verify_run_seconds": 3.82017354,
+      "weights_run_seconds": 5.143841226,
+      "verify_run_seconds": 3.822313433,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7362,8 +7362,8 @@
         "main_hand: Elemental Mage Staff",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.072203464,
-      "verify_run_seconds": 10.051562762,
+      "weights_run_seconds": 5.063222508,
+      "verify_run_seconds": 10.090300895,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8271,8 +8271,8 @@
         "main_hand: Elemental Mage Staff",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.072203464,
-      "verify_run_seconds": 9.923950767000001,
+      "weights_run_seconds": 5.063222508,
+      "verify_run_seconds": 9.906764815,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9166,8 +9166,8 @@
         "main_hand: Elemental Mage Staff",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.905961703,
-      "verify_run_seconds": 9.77923263,
+      "weights_run_seconds": 4.903915253,
+      "verify_run_seconds": 9.866148821,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10087,8 +10087,8 @@
         "main_hand: Elemental Mage Staff",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.905961703,
-      "verify_run_seconds": 9.810072899,
+      "weights_run_seconds": 4.903915253,
+      "verify_run_seconds": 9.777972641,
       "coverage": {
         "back": {
           "eligible": 391,

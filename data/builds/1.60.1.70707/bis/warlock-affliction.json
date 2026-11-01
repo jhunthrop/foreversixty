@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70707",
   "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T05:27:05Z",
+  "generated_at": "2026-11-01T15:01:02Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -1030,8 +1030,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.246051844,
-      "verify_run_seconds": 1.329152699,
+      "weights_run_seconds": 2.196588337,
+      "verify_run_seconds": 1.308414971,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -2205,8 +2205,8 @@
         "off_hand: Seer's Fine Stein",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.246051844,
-      "verify_run_seconds": 1.312603764,
+      "weights_run_seconds": 2.196588337,
+      "verify_run_seconds": 1.313038566,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -3067,8 +3067,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.204001224,
-      "verify_run_seconds": 1.150625983,
+      "weights_run_seconds": 2.230665466,
+      "verify_run_seconds": 1.195060137,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3937,8 +3937,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.204001224,
-      "verify_run_seconds": 1.209896605,
+      "weights_run_seconds": 2.230665466,
+      "verify_run_seconds": 1.233959655,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4844,8 +4844,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.8335113870000002,
-      "verify_run_seconds": 1.2751936910000001,
+      "weights_run_seconds": 1.913131356,
+      "verify_run_seconds": 1.2861578,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5745,8 +5745,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Earthen Rod"
       ],
-      "weights_run_seconds": 1.8335113870000002,
-      "verify_run_seconds": 1.354651558,
+      "weights_run_seconds": 1.913131356,
+      "verify_run_seconds": 1.360692918,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6666,8 +6666,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.8707039619999999,
-      "verify_run_seconds": 1.475683639,
+      "weights_run_seconds": 1.906406784,
+      "verify_run_seconds": 1.4871675,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7574,8 +7574,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.8707039619999999,
-      "verify_run_seconds": 1.523665828,
+      "weights_run_seconds": 1.906406784,
+      "verify_run_seconds": 1.519120493,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8484,8 +8484,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.997630061,
-      "verify_run_seconds": 3.876348147,
+      "weights_run_seconds": 2.00789142,
+      "verify_run_seconds": 3.915934747,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9405,8 +9405,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.997630061,
-      "verify_run_seconds": 4.10353169,
+      "weights_run_seconds": 2.00789142,
+      "verify_run_seconds": 4.138652262,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10290,8 +10290,8 @@
         "trinket1: Frozen Heart of the Mountain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.267695839,
-      "verify_run_seconds": 2.997499035,
+      "weights_run_seconds": 2.277201777,
+      "verify_run_seconds": 3.015177869,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11212,8 +11212,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.267695839,
-      "verify_run_seconds": 4.481355477,
+      "weights_run_seconds": 2.277201777,
+      "verify_run_seconds": 4.478559093,
       "coverage": {
         "back": {
           "eligible": 390,
