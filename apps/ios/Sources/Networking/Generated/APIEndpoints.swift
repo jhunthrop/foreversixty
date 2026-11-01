@@ -308,6 +308,14 @@ public extension Endpoint where Response == LiveActivityRegistered {
     }
 }
 
+public extension Endpoint where Response == CalendarFeed {
+    /// GET /v1/me/calendar-feed: Your calendar link, made on first call (W3-C17; session or app token)
+    static var getCalendarFeed: Endpoint { Endpoint(method: .get, path: "/v1/me/calendar-feed") }
+
+    /// POST /v1/me/calendar-feed/reset: Replace your calendar link; the old one stops working (W3-C17; session or app token)
+    static var resetCalendarFeed: Endpoint { Endpoint(method: .post, path: "/v1/me/calendar-feed/reset") }
+}
+
 public extension Endpoint where Response == AppConfig {
     /// GET /v1/app/config: What the apps read once at launch (APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
@@ -424,6 +432,8 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),
         FixtureRoute(.post, "/v1/me/live-activities", fixture: "live.register", status: 201),
         FixtureRoute(.delete, "/v1/me/live-activities/{id}", fixture: nil, status: 204),
+        FixtureRoute(.get, "/v1/me/calendar-feed", fixture: "calendar.feed", status: 200),
+        FixtureRoute(.post, "/v1/me/calendar-feed/reset", fixture: "calendar.feed", status: 200),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
     ]
 

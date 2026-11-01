@@ -76,17 +76,16 @@ describe('rotationLinesFor', () => {
 describe('rotationLinesFor on the holy priest band 20 list', () => {
   const entry = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
   const rows = () => rotationLinesFor(entry!, BUILD, 'priest', 'priest-holy');
+  // Round 3 took Shadowfiend out of the curated list. The published addon-data.json
+  // is nightly-owned and keeps the line until bis.yml regenerates it; a spell only one side
+  // casts is set aside, so the other rows keep their words.
+  const SHADOWFIEND = 'Shadowfiend';
+  const curatedRows = () => rows().filter((row) => row.name !== SHADOWFIEND);
 
   it('has one row per run of the same spell', () => {
     expect(entry).toBeDefined();
-    expect(rows().map((row) => row.name)).toEqual([
-      'Shadowfiend',
-      'Dark Sacrifice',
-      'Renew',
-      'Flash Heal',
-      'Heal',
-    ]);
-    expect(rows().map((row) => row.steps)).toEqual([1, 1, 1, 5, 10]);
+    expect(curatedRows().map((row) => row.name)).toEqual(['Dark Sacrifice', 'Renew', 'Flash Heal', 'Heal']);
+    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 10]);
   });
 
   it('says every condition of the collapsed steps in words', () => {
@@ -105,6 +104,27 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
     expect(heal?.condition).toContain("Heal at the band's rank is the mana-efficient filler");
     expect(heal?.condition).not.toContain('Heal rank 4');
     expect(rows().find((row) => row.name === 'Renew')?.condition).toContain('at a cheap rank');
+  });
+});
+
+describe('rotationLinesFor when the published lines and the curated steps differ', () => {
+  const holy = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
+  const heal = holy?.lines.find((line) => line.name === 'Heal');
+  const words = (entry: RotationEntry) =>
+    rotationLinesFor(entry, BUILD, 'priest', 'priest-holy').find((row) => row.name === 'Heal')?.condition;
+
+  it('sets aside a spell the curated list does not cast and keeps the words for the rest', () => {
+    const dropped = { spell_id: 999999, name: 'Dropped Ability', condition: 'note' };
+    const withExtra: RotationEntry = { ...holy!, lines: [dropped, ...holy!.lines] };
+    const rows = rotationLinesFor(withExtra, BUILD, 'priest', 'priest-holy');
+    expect(rows[0].condition).toBe('note');
+    expect(words(withExtra)).toMatch(/Cast on the tank below \d+%/);
+  });
+
+  it('leaves the words off when a spell both sides cast no longer lines up', () => {
+    const shortHeal: RotationEntry = { ...holy!, lines: holy!.lines.filter((line) => line !== heal) };
+    expect(shortHeal.lines.length).toBe(holy!.lines.length - 1);
+    expect(words(shortHeal)).not.toMatch(/Cast on the tank below/);
   });
 });
 

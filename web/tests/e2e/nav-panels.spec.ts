@@ -18,8 +18,11 @@ const BAR_HEIGHT_PX = 81;
 const door = (page: Page, key: string): Locator => page.locator(`a.site-door[data-door="${key}"]`);
 const panel = (page: Page, key: string): Locator => page.locator(`#site-panel-${key}`);
 
-async function signedInOnGuides(page: Page, width: number, guilds: Record<string, unknown>[] = []) {
-  await signInWith(page, [OBNOXIOUS], guilds);
+async function signedInOnGuides(page: Page, width: number, guilds: (typeof GUILD)[] = []) {
+  // The Guild menu follows the current character's own guild line: Obnoxious is in the first.
+  const guildLine =
+    guilds[0] === undefined ? {} : { guild: { id: guilds[0].id, name: guilds[0].name, verified: true } };
+  await signInWith(page, [{ ...OBNOXIOUS, ...guildLine }], guilds);
   await storePointer(page, armoryPointer(OBNOXIOUS));
   await page.setViewportSize({ width, height: 900 });
   await page.goto('/guides');

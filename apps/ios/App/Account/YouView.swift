@@ -49,6 +49,8 @@ enum YouRoute: Hashable {
     case about
     /// Lane F14: You › Live surfaces.
     case liveSurfaces
+    /// Lane F16: You › Calendar.
+    case calendar
 }
 
 /// The You tab. Pure: the snapshot tests render it with a summary.
@@ -58,6 +60,8 @@ struct YouView: View {
     var mayLink = false
     /// Lane F14: the Live surfaces row, behind the widgets switch.
     var showsLiveSurfaces = false
+    /// Lane F16: the Calendar row, while `guild_extras` is on.
+    var showsCalendar = false
     let onSignOut: () -> Void
     @Environment(\.openURL) private var openURL
     @State private var confirmingSignOut = false
@@ -80,6 +84,12 @@ struct YouView: View {
                         Divider().overlay(FSColor.lineSoft)
                         NavigationLink(value: YouRoute.liveSurfaces) {
                             AccountRow(icon: "rectangle.stack", title: Copy.liveSettings, chevron: true)
+                        }
+                    }
+                    if showsCalendar {
+                        Divider().overlay(FSColor.lineSoft)
+                        NavigationLink(value: YouRoute.calendar) {
+                            AccountRow(icon: "calendar", title: Copy.calendarTitle, subtitle: Copy.calendarYouRowSub, chevron: true)
                         }
                     }
                 }
@@ -206,19 +216,28 @@ struct AccountRow: View {
     /// Opens the browser: the external glyph instead of the chevron.
     var external = false
     var tint: Color = FSColor.strong
+    /// The icon tile grows with the text, so a large glyph never spills over the title.
+    @ScaledMetric(relativeTo: .callout) private var tile: CGFloat = 32
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: FSSpacing.space3) {
-            Image(systemName: icon)
-                .font(.callout)
-                .foregroundStyle(tint == FSColor.strong ? FSColor.gold : tint)
-                .frame(width: 32, height: 32)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(ScaledType.bodyStrong).foregroundStyle(tint)
-                if let subtitle {
-                    Text(subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            // Accessibility sizes: the tile sits above the words, so they keep the row's width
+            // and never break inside a word.
+            (typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpacing.space2))
+                : AnyLayout(HStackLayout(spacing: FSSpacing.space3))) {
+                Image(systemName: icon)
+                    .font(.callout)
+                    .foregroundStyle(tint == FSColor.strong ? FSColor.gold : tint)
+                    .frame(width: tile, height: tile)
+                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(ScaledType.bodyStrong).foregroundStyle(tint)
+                    if let subtitle {
+                        Text(subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    }
                 }
             }
             Spacer(minLength: FSSpacing.space2)
@@ -236,6 +255,7 @@ struct AccountRow: View {
             }
         }
         .padding(.horizontal, FSSpacing.space4)
+        .padding(.vertical, FSSpacing.space2)
         .frame(minHeight: 56)
         .contentShape(.rect)
         .accessibilityElement(children: .combine)

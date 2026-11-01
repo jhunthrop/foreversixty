@@ -4,7 +4,7 @@ classSlug: warlock
 spec: destruction
 role: dps
 build: 'FS1:1.60.1.70707:warlock:gnome:25522/0/2053235103101351:'
-raidBuild: 'FS1:1.60.1.70707:warlock:gnome:255/0005/2053045103101351:'
+raidBuild: 'FS1:1.60.1.70707:warlock:gnome:2550000002/0/2053345103101351:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]

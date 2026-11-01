@@ -52,12 +52,14 @@ struct RaidsTabContent: Equatable {
     let waiting: Int?
     /// Set while the cached answer shows because a refresh could not connect.
     let offlineSince: Date?
+    /// Every character key on the account (lane F16's `You were there`).
+    var accountKeys: Set<String> = []
 
     func replacing(_ raid: RaidView) -> RaidsTabContent {
         RaidsTabContent(
             head: head, character: character,
             planned: planned.map { $0.id == raid.id ? raid : $0 },
-            nights: nights, waiting: waiting, offlineSince: offlineSince
+            nights: nights, waiting: waiting, offlineSince: offlineSince, accountKeys: accountKeys
         )
     }
 }
@@ -102,28 +104,29 @@ final class RaidsTabModel {
         guard membership.verified else { state = .waiting(head: head, character: character); return }
         let key = "guild-\(membership.id)-raids"
         if case .loading = state, let cached = cache.read(GuildRaids.self, key: key) {
-            state = .loaded(content(head, character, cached.value, offlineSince: nil))
+            state = .loaded(content(head, character, cached.value, offlineSince: nil, me: me))
         }
         do {
             let raids = try await service.raids(guild: membership.id)
             cache.write(raids, key: key, at: now())
-            state = .loaded(content(head, character, raids, offlineSince: nil))
+            state = .loaded(content(head, character, raids, offlineSince: nil, me: me))
         } catch {
             if SignupRefusal.isOffline(error), let cached = cache.read(GuildRaids.self, key: key) {
-                state = .loaded(content(head, character, cached.value, offlineSince: cached.savedAt))
+                state = .loaded(content(head, character, cached.value, offlineSince: cached.savedAt, me: me))
             } else {
                 state = .failed
             }
         }
     }
 
-    private func content(_ head: GuildHead, _ character: AccountCharacter, _ raids: GuildRaids, offlineSince: Date?) -> RaidsTabContent {
+    private func content(_ head: GuildHead, _ character: AccountCharacter, _ raids: GuildRaids, offlineSince: Date?, me: Me) -> RaidsTabContent {
         RaidsTabContent(
             head: head, character: character,
             planned: raids.planned ?? [],
             nights: Array(raids.rows.filter { $0.raidId != nil }.prefix(Self.nightRows)),
             waiting: raids.waitingForApproval.flatMap { $0 > 0 ? $0 : nil },
-            offlineSince: offlineSince
+            offlineSince: offlineSince,
+            accountKeys: Set(me.characters.map(\.key))
         )
     }
 

@@ -83,6 +83,8 @@ struct AppEnvironment {
                 DiskRaidCache.reports().removeAll()
                 widgets.clear()
                 Task { await liveActivities.endAll() }
+                // Lane F16: the calendar link is the account's, never the next one's.
+                KeychainCalendarLinkStore().clear()
             }
         )
     }

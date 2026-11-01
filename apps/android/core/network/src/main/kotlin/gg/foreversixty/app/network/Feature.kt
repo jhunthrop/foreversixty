@@ -25,4 +25,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Widgets("widgets", false),
     /** F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach */
     Reports("reports", false),
+    /** F16: Guild roster with attendance, raid history, calendar sync and the calendar link */
+    GuildExtras("guild_extras", false),
 }
