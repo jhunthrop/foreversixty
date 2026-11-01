@@ -16,7 +16,7 @@
     "rogue-subtlety": ["Ghostly Strike", "Premeditation", "Hemorrhage", "Elusiveness", "Preparation"],
     "shaman-elemental": ["Lava Burst", "Elemental Mastery", "Elemental Warding", "Mindfulness"],
     "shaman-enhancement": ["Stormstrike", "Elemental Warding", "Mindfulness", "Spirit Weapons"],
-    "warlock-affliction": ["Amplify Curse", "Wrack", "Siphon Life", "Suppression", "Demonic Aegis"],
+    "warlock-affliction": ["Amplify Curse", "Siphon Life", "Suppression", "Demonic Aegis"],
     "warlock-demonology": ["Soul Link", "Demonic Sacrifice", "Demonic Pact", "Demonic Aegis", "Suppression"],
     "warlock-destruction": ["Suppression", "Shadowburn", "Conflagrate", "Incinerate", "Destructive Reach", "Molten Skin"],
     "warrior-arms": ["Mortal Strike"],
