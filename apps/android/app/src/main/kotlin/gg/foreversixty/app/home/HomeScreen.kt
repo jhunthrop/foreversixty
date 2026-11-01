@@ -58,6 +58,8 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
+import gg.foreversixty.app.search.ui.RootSearchBar
 import gg.foreversixty.app.sims.SimsFeature
 import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.talents.TalentsFeature
@@ -98,12 +100,13 @@ class HomeDependencies(
             accountApi: AccountApi,
             client: ApiClient,
             talents: TalentsFeature?,
+            statics: StaticDataStore,
             isSimsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
-            val catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data"))
+            val catalog = ItemCatalog(statics)
             return HomeDependencies(
                 accountApi = accountApi,
                 client = client,
@@ -127,6 +130,8 @@ fun HomeRoute(
     dependencies: HomeDependencies,
     session: SessionManager? = null,
     openBis: () -> Unit = {},
+    /** Lane F12: the bar's search button; null while the `search` switch is off. */
+    onSearch: (() -> Unit)? = null,
     placeholder: @Composable () -> Unit,
 ) {
     if (!dependencies.isEnabled) {
@@ -140,12 +145,12 @@ fun HomeRoute(
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
             HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims) {
-                CharacterSelectorBar(session)
+                RootSearchBar(onSearch) { CharacterSelectorBar(session) }
             }
             return
         }
     }
-    HomeFromMe(dependencies, openBis) { if (session != null) CharacterSelectorBar(session) }
+    HomeFromMe(dependencies, openBis) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
 }
 
 /**

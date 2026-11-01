@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                         bis = graph.bisModel,
                         account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
                         raids = graph.raids.takeIf { it.enabled },
+                        search = graph.search.takeIf { it.enabled },
                     )
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
