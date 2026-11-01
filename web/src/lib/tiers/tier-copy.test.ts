@@ -64,13 +64,32 @@ describe('tierNotes', () => {
 });
 
 describe('the healer tie rule (owner ruling, round 5)', () => {
-  it('says tied healers are within error and share a rank', () => {
-    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300 })
+  it('says tied healers are within error and share a rank, and how the next rank counts', () => {
+    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: true })
       .map(flat)
       .join(' ');
     expect(healer).toContain(
-      '≈ tie marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank.',
+      '≈ tie marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning.',
     );
+    expect(healer).toContain(
+      'Tied healers share a rank, written =2, and the next rank counts them: =2, =2, then 4.',
+    );
+    expect(healer).not.toContain('waits on');
+  });
+
+  it('says the order waits on the measured error when a file publishes none', () => {
+    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: false })
+      .map(flat)
+      .join(' ');
+    expect(healer).toContain(
+      'The order waits on the measured error, which the next ranking publishes; until then every healer is shown tied.',
+    );
+  });
+
+  it('writes a tied healer’s rank with an equals sign and an untied one plainly', () => {
+    expect(tiersCopy.rankLabel({ rank: 2, role: 'healer', tie: 'above' })).toBe('=2');
+    expect(tiersCopy.rankLabel({ rank: 4, role: 'healer', tie: null })).toBe('4');
+    expect(tiersCopy.rankLabel({ rank: 3, role: 'dps', tie: 'below' })).toBe('3');
   });
 
   it('titles a healer tie by the error and the tuning, not the DPS margin', () => {

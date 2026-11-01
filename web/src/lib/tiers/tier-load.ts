@@ -10,7 +10,7 @@ import { latest } from '../dates';
 import { bandEntry, loadBisFile, readSpecCatalog } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import type { BisFile, BisRole, Faction, SpecCatalogEntry } from '../bis/types';
-import { TIER_ROLES, rankRole, type TierInput, type TierRow } from './tier-list';
+import { TIER_ROLES, healerOrderMeasured, rankRole, type TierInput, type TierRow } from './tier-list';
 
 const TIER_BAND = 60;
 
@@ -29,6 +29,9 @@ export interface TierData {
   /** `build` and `engine_version` of the newest file, for the stamp's tooltip. */
   build: string | null;
   engineVersion: string | null;
+  /** Per faction: every healer band publishes its error and both tuning bounds, so the
+   *  healer list can order at all. Without them every healer shows tied. */
+  healerOrderMeasured: Record<Faction, boolean>;
   /** `heal_profile.duration_sec` from a healer file. */
   healSeconds?: number;
   /** `tank-encounter.json` boss swing speed. */
@@ -87,6 +90,10 @@ export function buildTierData(deps: TierLoadDeps): TierData {
     updated: files.length === 0 ? null : latest(files.map((file) => new Date(file.generated_at))),
     build: newest?.build ?? null,
     engineVersion: newest?.engine_version ?? null,
+    healerOrderMeasured: {
+      alliance: healerOrderMeasured(inputsFor(loaded, 'alliance')),
+      horde: healerOrderMeasured(inputsFor(loaded, 'horde')),
+    },
     healSeconds: healSecondsOf(files),
     bossSwingSeconds: deps.readBossSwingSeconds(),
   };

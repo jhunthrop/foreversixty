@@ -4,6 +4,7 @@ import { band, catalogEntry, dpsInput, healerInput, tankInput } from './tier-tes
 import {
   hrefsFor,
   groupByTier,
+  healerOrderMeasured,
   rankRole,
   raceLabel,
   sortMetricOf,
@@ -148,8 +149,8 @@ describe('ties', () => {
  * otherwise they share a rank and are marked tied.
  */
 describe('healer ties within error and across the profile’s tuning', () => {
-  type Healer = { hps: number; error?: number; bounds?: [number, number, number, number] };
-  // bounds: [hps at 1.5, error, hps at 1.65, error]
+  type Healer = { hps: number; error?: number; bounds?: [number, number, number, number] | 'flat' };
+  // bounds: [hps at 1.5, error, hps at 1.65, error]; 'flat' is the tuned figure at both.
   const ranked = (rows: Healer[]) =>
     rankRole(
       rows.map((row, i) =>
@@ -159,10 +160,15 @@ describe('healer ties within error and across the profile’s tuning', () => {
           `H${i}`,
           row.hps,
           row.error,
-          row.bounds && [
-            { scale: 1.5, hps: row.bounds[0], hps_error: row.bounds[1] },
-            { scale: 1.65, hps: row.bounds[2], hps_error: row.bounds[3] },
-          ],
+          row.bounds === 'flat'
+            ? [
+                { scale: 1.5, hps: row.hps, hps_error: row.error ?? 0 },
+                { scale: 1.65, hps: row.hps, hps_error: row.error ?? 0 },
+              ]
+            : row.bounds && [
+                { scale: 1.5, hps: row.bounds[0], hps_error: row.bounds[1] },
+                { scale: 1.65, hps: row.bounds[2], hps_error: row.bounds[3] },
+              ],
         ),
       ),
       'healer',
@@ -170,8 +176,8 @@ describe('healer ties within error and across the profile’s tuning', () => {
 
   it('orders two healers whose gap is beyond two standard errors of the difference', () => {
     const rows = ranked([
-      { hps: 1000, error: 1 },
-      { hps: 995, error: 1 },
+      { hps: 1000, error: 1, bounds: 'flat' },
+      { hps: 995, error: 1, bounds: 'flat' },
     ]);
     expect(rows.map((r) => r.rank)).toEqual([1, 2]);
     expect(rows.map((r) => r.tie)).toEqual([null, null]);
@@ -179,8 +185,8 @@ describe('healer ties within error and across the profile’s tuning', () => {
 
   it('ties two healers whose gap the error cannot tell apart, with no fixed floor', () => {
     const rows = ranked([
-      { hps: 1000, error: 6 },
-      { hps: 985, error: 6 },
+      { hps: 1000, error: 6, bounds: 'flat' },
+      { hps: 985, error: 6, bounds: 'flat' },
     ]);
     expect(rows.map((r) => r.rank)).toEqual([1, 1]);
     expect(rows.map((r) => r.tie)).toEqual(['below', 'above']);
@@ -218,18 +224,58 @@ describe('healer ties within error and across the profile’s tuning', () => {
 
   it('chains a tie, so no two neighbours are ordered by less than the error', () => {
     const rows = ranked([
-      { hps: 1000, error: 3 },
-      { hps: 993, error: 3 },
-      { hps: 986, error: 3 },
-      { hps: 900, error: 3 },
+      { hps: 1000, error: 3, bounds: 'flat' },
+      { hps: 993, error: 3, bounds: 'flat' },
+      { hps: 986, error: 3, bounds: 'flat' },
+      { hps: 900, error: 3, bounds: 'flat' },
     ]);
     expect(rows.map((r) => r.rank)).toEqual([1, 1, 1, 4]);
     expect(rows.map((r) => r.tie)).toEqual(['below', 'both', 'above', null]);
   });
 
-  it('falls back to the site’s 1% tie margin only for a file that publishes no error', () => {
-    expect(ranked([{ hps: 1000 }, { hps: 992 }]).map((r) => r.rank)).toEqual([1, 1]);
-    expect(ranked([{ hps: 1000 }, { hps: 980 }]).map((r) => r.rank)).toEqual([1, 2]);
+  it('never orders a pair without the error and both bounds: a file ranked before they were published ties every healer', () => {
+    expect(ranked([{ hps: 1000 }, { hps: 700 }, { hps: 500 }]).map((r) => r.rank)).toEqual([1, 1, 1]);
+    expect(
+      ranked([
+        { hps: 1000, error: 1 },
+        { hps: 700, error: 1 },
+      ]).map((r) => r.rank),
+    ).toEqual([1, 1]);
+    expect(
+      ranked([
+        { hps: 1000, error: 1, bounds: 'flat' },
+        { hps: 700, error: 1 },
+      ]).map((r) => r.rank),
+    ).toEqual([1, 1]);
+  });
+
+  it('says whether a healer list’s order is measured: every band with its error and both bounds', () => {
+    const measured = (rows: Healer[]) =>
+      healerOrderMeasured(
+        rows.map((row, i) =>
+          healerInput(
+            'c',
+            `h${i}`,
+            `H${i}`,
+            row.hps,
+            row.error,
+            row.bounds === 'flat'
+              ? [
+                  { scale: 1.5, hps: row.hps, hps_error: row.error ?? 0 },
+                  { scale: 1.65, hps: row.hps, hps_error: row.error ?? 0 },
+                ]
+              : undefined,
+          ),
+        ),
+      );
+    expect(
+      measured([
+        { hps: 1000, error: 1, bounds: 'flat' },
+        { hps: 900, error: 1, bounds: 'flat' },
+      ]),
+    ).toBe(true);
+    expect(measured([{ hps: 1000, error: 1, bounds: 'flat' }, { hps: 900 }])).toBe(false);
+    expect(measured([])).toBe(true);
   });
 
   it('leaves the DPS list on its own fixed margin and its own ranks', () => {

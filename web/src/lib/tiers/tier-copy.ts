@@ -45,6 +45,8 @@ export interface NoteContext {
   healSeconds?: number;
   /** `tank-encounter.json` `boss.swing_speed_sec.value`; tank notes only. */
   bossSwingSeconds?: number;
+  /** Whether the healer list's order is measured (`TierData.healerOrderMeasured`); healer notes only. */
+  healerOrderMeasured?: boolean;
 }
 
 function plain(text: string): NoteSegment[] {
@@ -105,7 +107,7 @@ function healerNotes(ctx: NoteContext): NoteSegment[][] {
       { text: ' is less healing in this fight, not a verdict on the class. ' },
       { text: '≈ tie', strong: true },
       {
-        text: ' marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank.',
+        text: ` marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank, written =2, and the next rank counts them: =2, =2, then 4.${ctx.healerOrderMeasured === false ? ' The order waits on the measured error, which the next ranking publishes; until then every healer is shown tied.' : ''}`,
       },
     ],
   ];
@@ -184,6 +186,9 @@ export const tiersCopy = {
     "This spec's stat weights did not settle cleanly, so its gear pick and number are less firm.",
   tie: '≈ tie',
   tieTitle,
+  /** The rank column: a tied healer's shared rank reads "=2"; every other row its plain rank. */
+  rankLabel: (row: Pick<TierRow, 'rank' | 'role' | 'tie'>): string =>
+    row.role === 'healer' && row.tie !== null ? `=${row.rank}` : String(row.rank),
   topGap: 'Top',
   leastGap: 'Least',
   rowLinks: { bis: 'BiS', guide: 'Guide', planner: 'Planner' },

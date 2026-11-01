@@ -34,7 +34,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   data-spec-key={key}
   data-rank={row.rank}
 >
-  <span class="tier-rank">{row.rank}</span>
+  <span class="tier-rank">{tiersCopy.rankLabel(row)}</span>
   <span class="tier-crest">
     <ClassCrest slug={row.classSlug} size={36} />
   </span>
@@ -312,8 +312,9 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     font-weight: 700;
   }
   .tier-tie {
-    font-size: 10px;
-    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text);
   }
   .tier-links {
     grid-area: links;

@@ -131,15 +131,19 @@ interface HealerPoint {
   error: number;
 }
 
-/** A healer's measurements: the tuned profile and each tuning bound. `null` when the file
- *  publishes no error, which leaves only the fixed margin to go on. */
+/** A healer's measurements: the tuned profile and each tuning bound. `null` until the file
+ *  publishes the error and the bounds, and without them no order is measured. */
 function healerPoints(band: BisBand, metric: number): HealerPoint[] | null {
   const metrics = band.metrics;
   if (metrics === null || metrics === undefined || !('hps' in metrics) || metrics.hps_error === undefined) {
     return null;
   }
-  const bounds = (metrics.hps_at_bounds ?? []).map((row) => ({ hps: row.hps, error: row.hps_error }));
-  return [{ hps: metric, error: metrics.hps_error }, ...bounds];
+  const bounds = metrics.hps_at_bounds ?? [];
+  if (bounds.length === 0) return null;
+  return [
+    { hps: metric, error: metrics.hps_error },
+    ...bounds.map((row) => ({ hps: row.hps, error: row.hps_error })),
+  ];
 }
 
 /** Whether the healer above leads the one below at one measurement, beyond the error. */
@@ -149,14 +153,19 @@ function leadsBeyondError(above: HealerPoint, below: HealerPoint): boolean {
 
 /** Whether two neighbouring healers tie: unless the one above leads beyond the error at the
  *  tuned profile and at every tuning bound, the order is the error's or the tuning's, not the
- *  healers'. A file with no error ties on the site's fixed margin. */
+ *  healers'. A pair missing the error or the bounds is never ordered (owner ruling, round 5). */
 function healerTiedWith(above: Scored, below: Scored): boolean {
   const pointsAbove = healerPoints(above.input.band, above.metric);
   const pointsBelow = healerPoints(below.input.band, below.metric);
-  if (pointsAbove === null || pointsBelow === null || pointsAbove.length !== pointsBelow.length) {
-    return (1 - below.metric / above.metric) * PERCENT <= TIE_MARGIN_PERCENT;
-  }
+  if (pointsAbove === null || pointsBelow === null || pointsAbove.length !== pointsBelow.length) return true;
   return !pointsAbove.every((point, index) => leadsBeyondError(point, pointsBelow[index]!));
+}
+
+/** Whether every healer band carries the error and both bounds, so the list can order at all. */
+export function healerOrderMeasured(inputs: readonly TierInput[]): boolean {
+  return inputs
+    .filter((input) => roleOf(input.band) === 'healer')
+    .every((input) => healerPoints(input.band, sortMetricOf(input.band)) !== null);
 }
 
 /** Healer tie marks and ranks. A healer within error of the one above shares its rank, and
