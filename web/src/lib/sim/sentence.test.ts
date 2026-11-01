@@ -4,6 +4,7 @@ import type { Summary } from '../report/types';
 import { fixtureResult } from '../../test-support/sim-api';
 import { simCopy } from './copy';
 import { namedSummary, playerActor, summarySentence } from './sentence';
+import { NAMELESS_REQUEST_NAME } from './character';
 
 const summary = fixtureResult.summary;
 
@@ -356,6 +357,17 @@ describe('summarySentence', () => {
 });
 
 describe('namedSummary', () => {
+  it('names the player of a nameless build "You", never the request placeholder', () => {
+    const nameless = {
+      ...summary,
+      damage_done: summary.damage_done.map((actor, index) =>
+        index === 0 ? { ...actor, name: NAMELESS_REQUEST_NAME } : actor,
+      ),
+    };
+    expect(namedSummary(nameless, names).damage_done[0].name).toBe(simCopy.namelessActor);
+    expect(namedSummary(summary, names).damage_done[0].name).toBe(summary.damage_done[0].name);
+  });
+
   it('rewrites ability, aura and cast names and touches nothing else', () => {
     const named = namedSummary(summary, names);
     // abilities[0] is the fixture's own auto-attack row (a tagged "other:" key, resolved

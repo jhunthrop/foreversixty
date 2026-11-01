@@ -136,7 +136,7 @@
 
   <div class="border-line bg-raised rounded-panel mx-[18px] border md:mx-0">
     {#if tab === 'damage'}
-      <ActorTable actors={named.damage_done} durationMs={named.duration_ms} metricLabel="DPS" />
+      <ActorTable actors={named.damage_done} durationMs={named.duration_ms} metricLabel="DPS" openFirst />
     {:else if tab === 'buffs'}
       <AuraTable
         tracks={buffs}

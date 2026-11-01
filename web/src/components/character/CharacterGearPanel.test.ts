@@ -119,6 +119,18 @@ describe('CharacterGearPanel as the paperdoll (paperdoll spec call site 2)', () 
     expect(text(body)).toContain(gearCopy.paperdoll.twoHand);
   });
 
+  it('draws the two-hander greyed in the off-hand slot, as the character pane does, not an empty socket', () => {
+    const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
+    const mainHandId = GEAR_FIXTURE.find((slot) => slot.slot === 'main_hand')!.worn!.id;
+    const icon = FACTS.get(mainHandId)!.icon;
+    const off = body.slice(body.indexOf('data-testid="paperdoll-slot-off_hand"'));
+    const cell = off.slice(0, off.indexOf('data-testid="paperdoll-slot-', 10));
+    // paperdoll.css greys the socket of a data-state="two-hand" cell.
+    expect(cell).toContain('data-state="two-hand"');
+    expect(cell).toContain(`/icons/${icon}.webp`);
+    expect(cell).not.toContain('/icons/hd/slots/');
+  });
+
   it('mid-load: the frame shimmers and the BiS link holds its place', () => {
     const body = bare(render(CharacterGearPanel, { props: { ...PROPS, preloaded: undefined } }).body);
     expect(body).toMatch(/data-testid="paperdoll-slot-head"[^>]*data-state="loading"/);

@@ -27,6 +27,7 @@
     measure = undefined,
     onChart = undefined,
     charted = '',
+    openFirst = false,
   }: {
     actors: Actor[];
     durationMs: number;
@@ -58,6 +59,8 @@
     onChart?: (actor: Actor, ability: Ability) => void;
     /** `${guid}|${abilityKey(ability)}` of the ability currently on the chart; '' for none. */
     charted?: string;
+    /** The first row starts open on its abilities: /sim, where it is the player's own character. */
+    openFirst?: boolean;
   } = $props();
 
   const peak = $derived(actors.reduce((highest, actor) => Math.max(highest, actor.effective), 0));
@@ -183,6 +186,7 @@
           {measure}
           {onChart}
           {charted}
+          initiallyOpen={openFirst && index === 0}
           percentile={percentiles.get(actor.guid) ?? null}
           share={total === 0 ? 0 : (actor.effective / total) * 100}
         />

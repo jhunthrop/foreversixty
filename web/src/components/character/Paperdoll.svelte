@@ -183,7 +183,7 @@
     style={place(cell)}
     role="listitem"
     data-testid={`paperdoll-slot-${cell.slot}`}
-    data-state={cell.twoHandOff ? 'two-hand' : loading ? 'loading' : data.state}
+    data-state={cell.coveredBy ? 'two-hand' : loading ? 'loading' : data.state}
   >
     {#if loading}
       <div class="pd-slot" aria-busy="true">
@@ -226,10 +226,10 @@
         >
       </div>
     {:else}
-      <div class="pd-slot" aria-label={cellLabel(data, classSlug, cell.twoHandOff)} role="img">
+      <div class="pd-slot" aria-label={cellLabel(data, classSlug, !!cell.coveredBy)} role="img">
         <span class="pd-sock pd-empty"
           ><img
-            src={textureFor(cell.slot)}
+            src={cell.coveredBy?.icon ? iconSrc(cell.coveredBy.icon) : textureFor(cell.slot)}
             alt=""
             width="44"
             height="44"
@@ -240,7 +240,7 @@
         >
         <span class="pd-txt"
           ><span class="pd-name pd-word" data-testid="paperdoll-empty"
-            >{cell.twoHandOff ? copy.twoHand : slotLabel(cell.slot, classSlug)}</span
+            >{cell.coveredBy ? copy.twoHand : slotLabel(cell.slot, classSlug)}</span
           ></span
         >
       </div>

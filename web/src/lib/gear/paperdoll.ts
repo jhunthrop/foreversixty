@@ -73,8 +73,11 @@ export interface PaperdollCell {
   phoneRow: number;
   /** DOM order. */
   order: number;
-  /** The empty off hand under a two-handed main hand: "Two-hand in main hand". */
-  twoHandOff: boolean;
+  /**
+   * The empty off hand under a two-handed main hand ("Two-hand in main hand"): the two-hander,
+   * which the frame draws greyed in the slot as the game's character pane does. Null otherwise.
+   */
+  coveredBy: PaperdollItemRef | null;
   data: PaperdollSlot;
 }
 
@@ -110,9 +113,10 @@ export function phoneUpgradeShown(upgrade: PaperdollUpgrade | undefined): boolea
   return upgrade !== undefined && upgrade.kind !== 'best';
 }
 
-/** The off hand is empty and the main hand is two-handed. */
-function twoHandOffHand(bySlot: ReadonlyMap<PaperdollSlotKey, PaperdollSlot>): boolean {
-  return bySlot.get('off_hand')?.state !== 'item' && bySlot.get('main_hand')?.item?.twoHand === true;
+/** The two-handed main hand, when the off hand is empty under it. */
+function twoHandOver(bySlot: ReadonlyMap<PaperdollSlotKey, PaperdollSlot>): PaperdollItemRef | null {
+  const main = bySlot.get('main_hand')?.item;
+  return bySlot.get('off_hand')?.state !== 'item' && main?.twoHand === true ? main : null;
 }
 
 /** Every slot the frame draws, in its column order; a missing required slot is drawn empty. */
@@ -135,7 +139,7 @@ function columns(bySlot: ReadonlyMap<PaperdollSlotKey, PaperdollSlot>): {
  */
 export function paperdollLayout(slots: readonly PaperdollSlot[]): PaperdollCell[] {
   const bySlot = new Map(slots.map((slot) => [slot.slot, slot]));
-  const offUnderTwoHand = twoHandOffHand(bySlot);
+  const twoHander = twoHandOver(bySlot);
   const { left, right } = columns(bySlot);
   const empty = (key: PaperdollSlotKey): PaperdollSlot => bySlot.get(key) ?? { slot: key, state: 'empty' };
   const pairs: { left?: PaperdollSlot; right?: PaperdollSlot; row: number }[] = [];
@@ -159,7 +163,7 @@ export function paperdollLayout(slots: readonly PaperdollSlot[]): PaperdollCell[
       row,
       phoneRow: at,
       order: cells.length,
-      twoHandOff: kind === 'slot' && data.slot === 'off_hand' && offUnderTwoHand,
+      coveredBy: kind === 'slot' && data.slot === 'off_hand' ? twoHander : null,
       data,
     });
   for (const pair of pairs) {

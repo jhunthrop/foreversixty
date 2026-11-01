@@ -126,7 +126,7 @@ describe('paperdollLayout', () => {
     );
   });
 
-  it('marks an empty off hand under a two-hander, and only then', () => {
+  it('marks an empty off hand under a two-hander with the two-hander covering it, and only then', () => {
     const twoHander = fullSet().map((slot) =>
       slot.slot === 'main_hand'
         ? known('main_hand', 7, 63, true)
@@ -134,9 +134,13 @@ describe('paperdollLayout', () => {
           ? ({ slot: 'off_hand', state: 'empty' } as const)
           : slot,
     );
-    expect(paperdollLayout(twoHander).find((cell) => cell.slot === 'off_hand')?.twoHandOff).toBe(true);
+    const off = paperdollLayout(twoHander).find((cell) => cell.slot === 'off_hand');
+    // The game's character pane shows the two-hander greyed in the off-hand slot: the cell
+    // carries the main hand's item, so the frame can draw its icon there.
+    expect(off?.coveredBy).toMatchObject({ id: 7, icon: 'inv_x' });
+    expect(paperdollLayout(twoHander).find((cell) => cell.slot === 'main_hand')?.coveredBy).toBeNull();
     const oneHander = twoHander.map((slot) => (slot.slot === 'main_hand' ? known('main_hand', 7) : slot));
-    expect(paperdollLayout(oneHander).find((cell) => cell.slot === 'off_hand')?.twoHandOff).toBe(false);
+    expect(paperdollLayout(oneHander).find((cell) => cell.slot === 'off_hand')?.coveredBy).toBeNull();
   });
 });
 

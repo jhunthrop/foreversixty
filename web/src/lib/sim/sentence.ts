@@ -10,6 +10,7 @@ import { attackHand, parseActionKey, resolveActionName, type ActionNames } from 
 import { sanitizeAuraTracks } from './aura-rows';
 import { attackHandProse, simCopy } from './copy';
 import type { Actor, Summary } from '../report/types';
+import { NAMELESS_REQUEST_NAME } from './character';
 
 /**
  * The sentence's own phrasing for one raw action key -- "main-hand white hits", not the
@@ -70,6 +71,7 @@ export function namedSummary(summary: Summary, names: ActionNames | null): Summa
     ...summary,
     damage_done: summary.damage_done.map((actor) => ({
       ...actor,
+      name: actor.name === NAMELESS_REQUEST_NAME ? simCopy.namelessActor : actor.name,
       abilities: actor.abilities.map((ability) => ({ ...ability, name: name(ability.name) })),
     })),
     auras: sanitizeAuraTracks(summary.auras).map((track) => ({ ...track, name: name(track.name) })),
