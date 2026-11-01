@@ -142,10 +142,12 @@ object DynamicShortcuts {
         zone: ZoneId = ZoneId.systemDefault(),
     ): List<DynamicShortcut> {
         val sub = res.getString(R.string.shortcut_characterSub)
-        val characters = listOfNotNull(current?.let { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }) +
-            watched.filter { it.key != current?.key }.take(WATCHED).map { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }
+        // Rank order (lead ruling, review round 2): the current character, the next raid, then the
+        // watched ones; the launcher's two dynamic slots then show the character and the raid.
+        val mine = current?.let { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }
         val raid = nextRaid?.let { (guild, view) -> raid(guild, view, res, zone) }
-        return (characters + listOfNotNull(raid)).take(MAX)
+        val others = watched.filter { it.key != current?.key }.take(WATCHED).map { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }
+        return (listOfNotNull(mine, raid) + others).take(MAX)
     }
 
     private fun character(key: String, region: String, ruleset: String, name: String, className: String?, sub: String) = DynamicShortcut(

@@ -52,7 +52,8 @@ fun BrandButton(
     val iconSize = if (iconScalesWithText) with(LocalDensity.current) { ICON_TEXT_SIZE.toDp() } else ICON_SIZE
     val shape = RoundedCornerShape(FsRadius.control)
     val size = if (fill) modifier.fillMaxWidth().heightIn(min = height) else modifier.heightIn(min = height)
-    val padding = PaddingValues(horizontal = HORIZONTAL_PADDING)
+    // The vertical padding keeps a wrapped label off the border at large text; one line still sits at [height].
+    val padding = PaddingValues(horizontal = HORIZONTAL_PADDING, vertical = VERTICAL_PADDING)
     val content: @Composable () -> Unit = {
         if (busy) {
             CircularProgressIndicator(Modifier.size(20.dp), color = contentColor(kind), strokeWidth = 2.dp)
@@ -104,6 +105,7 @@ fun BrandButton(
 }
 
 private val HORIZONTAL_PADDING = 18.dp
+private val VERTICAL_PADDING = 12.dp
 private val ICON_SIZE = 16.dp
 private val ICON_TEXT_SIZE = 16.sp
 private const val DISABLED_ALPHA = 0.38f

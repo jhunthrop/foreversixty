@@ -205,7 +205,8 @@ fun CharacterRouteScreen(
         share = {
             val loaded = profile
             val message = ShareText.character(
-                res, CharacterCard.shareUrl(route), loaded?.character?.name ?: route.name,
+                // The card's own key names the page, so the link and the sentence are one character.
+                res, loaded?.character?.key?.let(CharacterCard::shareUrl) ?: CharacterCard.shareUrl(route), loaded?.character?.name ?: route.name,
                 loaded?.let { CharacterCard.specName(it, feature.specs) },
                 loaded?.character?.className?.let { slug -> GameClass.of(slug)?.let { res.getString(it.label) } },
                 loaded?.character?.level,

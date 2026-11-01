@@ -147,7 +147,8 @@ class ShortcutLogicTest {
         assertEquals("character:${current.key}", list.first().id)
         assertEquals("${current.name} · Forever Sixty · character", list.first().longLabel)
         assertEquals(current.className, list.first().crestClass)
-        val raid = list.last()
+        // Rank 0 is the current character, rank 1 the next raid, then the watched characters.
+        val raid = list[1]
         assertEquals("Next raid", raid.shortLabel)
         assertEquals("Onyxia's Lair · Sat 7 pm", raid.longLabel)
         assertEquals(DeepLink.Raid(GUILD, ONYXIA), raid.link)

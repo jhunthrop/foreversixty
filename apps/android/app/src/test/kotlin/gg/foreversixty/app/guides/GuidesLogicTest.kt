@@ -66,7 +66,7 @@ class GuidesLogicTest {
         assertEquals(listOf("Shaman", "Mage"), footer?.classNames)
         assertEquals(52_000L, footer?.bytes)
         assertEquals(
-            "Saved on this phone: Shaman, Mage · 51 KB. Guides update by themselves when the game data does.",
+            "Saved on this phone: Shaman, Mage · 52 KB. Guides update by themselves when the game data does.",
             copy().footer(footer),
         )
         assertNull(Guides.footer(index, emptyMap()))
@@ -75,8 +75,9 @@ class GuidesLogicTest {
 
     @Test
     fun `sizes read in KB under a megabyte and in MB with one decimal over`() {
-        assertEquals("47 KB", Guides.formatSize(48_000))
-        assertEquals("2.4 MB", Guides.formatSize(2_516_582))
+        // One formatter with Offline data (decimal units, as iOS): the Guides footer and Offline data agree.
+        assertEquals("48 KB", Guides.formatSize(48_000))
+        assertEquals("2.4 MB", Guides.formatSize(2_400_000))
         assertEquals("1 KB", Guides.formatSize(10))
     }
 

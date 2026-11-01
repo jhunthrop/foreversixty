@@ -1,20 +1,18 @@
 package gg.foreversixty.app.system
 
+import gg.foreversixty.app.model.Me
+import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.bis.BisTestData
 import gg.foreversixty.app.talents.TalentBuildKind
 import gg.foreversixty.app.talents.TalentsPhase
 import gg.foreversixty.app.talents.TalentsPage
 import gg.foreversixty.app.talents.TalentTestData
-import gg.foreversixty.app.model.CharacterBuild
-import gg.foreversixty.app.model.BuildTalents
-import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.planner.ui.SharedPageState
 import gg.foreversixty.app.planner.ui.SharedBuildPage
 import gg.foreversixty.app.planner.ui.SharedActions
 import gg.foreversixty.app.planner.logic.SharedCompare
 import gg.foreversixty.app.planner.logic.SharedBuildPhase
 import gg.foreversixty.app.planner.logic.SharedBuildView
-import gg.foreversixty.app.planner.PlannerTestData
 import gg.foreversixty.app.rankings.ui.CharacterScreenState
 import gg.foreversixty.app.rankings.ui.CharacterContent
 import gg.foreversixty.app.rankings.ui.CharacterActions
@@ -246,8 +244,8 @@ class SystemScreenshotTest {
 
     private fun openPlanner(large: Boolean) = capture("f15-char-open-planner", large, ForeverTab.Home) {
         val state = CharacterScreenState(
-            CharacterRoute("us", "normal", "Voltaris"),
-            CharacterPagePhase.Loaded(RankingsTestData.voltaris()),
+            CharacterRoute("us", "normal", "Lightningbolltz"),
+            CharacterPagePhase.Loaded(RankingsTestData.yours()),
             WatchState(watching = true),
             RankingsTestData.viewer(),
             RankingsTestData.items().items.associateBy { it.id },
@@ -266,12 +264,8 @@ class SystemScreenshotTest {
 
     // Round 2: F13.5 `Compare with mine` and the compare it opens
 
-    private val sharedView = SharedBuildView(PlannerTestData.sharedBuild(), PlannerTestData.shaman(), "shaman", "Shaman", "Orc")
-    private val mine = AccountCharacter(
-        key = "us/normal/lightningbolltz", region = "us", ruleset = "normal", name = "Lightningbolltz", source = "export",
-        className = "shaman", level = 60,
-        build = CharacterBuild(source = "export", capturedAt = "2026-11-04T19:00:00Z", talents = BuildTalents(TalentTestData.SHAMAN_YOURS.split("-"), listOf(1, 1, 1))),
-    )
+    private val sharedView = SharedBuildView(RaidFixture.load(Build.serializer(), "builds.get"), TalentTestData.warrior(), "warrior", "Warrior", "Orc")
+    private val mine = RaidFixture.load(Me.serializer(), "me").characters.first { it.name == "Obnoxious Yell" }
 
     private fun compareButton(name: String, large: Boolean, canCompare: Boolean) = capture(name, large, ForeverTab.Home) {
         SharedBuildPage(SharedPageState(SharedBuildPhase.Loaded(sharedView), 0, canCompare = canCompare), SharedActions())
