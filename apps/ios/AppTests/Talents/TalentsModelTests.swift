@@ -82,7 +82,8 @@ struct TalentsModelTests {
         let model = model()
         await model.load()
         let (presenter, since) = try presenter(model)
-        #expect(presenter.status.sentence == "8 of your 49 points differ from the 50 to 59 guide build.")
+        #expect(presenter.status.sentence == "Your build has every point of the Fury 50 to 59 guide build.")
+        #expect(presenter.notes == ["+8 beyond the guide"])
         #expect(presenter.tabs(.yours).map(\.points) == [17, 32, 0])
         #expect(since == nil)
     }

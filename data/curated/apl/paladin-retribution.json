@@ -1,7 +1,7 @@
 {
   "spec": "paladin-retribution",
   "state": "written",
-  "notes": "Vanilla Retribution at 60 has few buttons: keep a seal up, Judgement it off cooldown, Holy Strike it off cooldown, autoattack, and swap to Hammer of Wrath in the execute window. This rotation used to seal-twist every swing (swap Seal of Righteousness <-> Seal of Command right before each melee hit), ported directly from wowsims-forever's basic_ret.apl.json. Measured against this engine's own mechanics (2026-09-28 rotation-accuracy audit) that twist is a DPS loss here, not a gain, for three reasons specific to this fork: (1) sim/paladin/soc.go and sor.go's applySeal deactivates whichever seal is active before activating the new one -- the two auras are strictly mutually exclusive, so there is no overlap window for a swing to benefit from both, unlike the historical 1.12 latency exploit the technique is named for; (2) sim/paladin/judgement.go's castSpecificJudgement calls matchingSeal.Deactivate(sim) on every Judgement cast, and sim/request/request.go hardcodes PrimarySeal to Seal of Righteousness for every paladin request, so the very next decision after any Judgement always recasts Seal of Righteousness regardless of which seal the twist had up at that instant -- Judgement's damage is not actually being steered onto Seal of Command's judgement by twisting here; (3) Twist of Light (talents/paladin.json, Retribution capstone, proto field PaladinTalents.TwistOfLight) -- the talent whose whole point is removing the old exploit's timing risk by echoing the outgoing seal's effect onto the next hit -- has a proto field but is never read anywhere in sim/paladin, so the engine grants no benefit for having the talent either. Each seal recast costs a full GCD and 200+ mana at 60 (Seal of Righteousness rank 8 is 200, Seal of Command rank 5 is 210); swinging every ~2-3s pays that mana and GCD for no measurable benefit. Removing the twist and adding Holy Strike (below) as a filler on the freed GCDs was measured directly: forever-sim, level 60, band-60 BiS gear (data/builds/1.60.1.70009/bis/paladin-retribution.json), no buffs/consumes, 3000 iterations, patchwerk single-target -- twist-every-swing (the old rotation) 153.8 DPS; no twist, no Holy Strike 165.6 DPS; no twist plus Holy Strike (this rotation) 190.0 DPS, +23.5% over the old rotation. Consecration (baseline in Forever, sim/paladin/consecration.go, ranks from level 20) is deliberately left out of this single-target priority list: the same forever-sim comparison with Consecration added on cooldown measured 184.3 DPS, a DPS LOSS versus the 190.0 without it, because its scaling mana cost (135 at rank 1 up to 565 at rank 5) crowds out Judgement/Holy Strike/Exorcism casts for a ground-AOE effect that does nothing extra against one target. Consecration is genuinely valuable while leveling or tanking adds (see the guide's Leveling section), just not in a single-target damage priority, which is why it carries no expected_idle entry here at all rather than a castSpell line -- it is never named by this rotation, not named-and-silent. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Rotation-accuracy program, unused-ability pass (2026-09-28): Holy Wrath (2812/10318, learnable at 50) is left out of this priority list for the same reason as Consecration above, not measured separately -- sim/paladin/holy_wrath.go's ApplyEffects loops the encounter's targets and only deals damage to target.MobType == Demon || Undead (the same restriction Exorcism's ExtraCastCondition enforces above), so against this ladder's default Humanoid target, or any Humanoid boss, it is a full GCD and 645-805 mana spent on zero damage. Judgement of Command (20425/20966) and Judgement of Fury (also on the class's own learned-ability list at every level) are not separate castable buttons at all: sim/paladin/judgement.go's generic Judgement (20271) resolves to whichever of these the active seal implies, and this rotation's seal never leaves Seal of Righteousness (see the seal-twist paragraph above) -- so they show as permanently unused by name only, with no line for this file to add or gate.",
+  "notes": "Vanilla Retribution at 60 has few buttons: keep a seal up, Judgement it off cooldown, Holy Strike it off cooldown, autoattack, and swap to Hammer of Wrath in the execute window. This rotation used to seal-twist every swing (swap Seal of Righteousness <-> Seal of Command right before each melee hit), ported directly from wowsims-forever's basic_ret.apl.json. Measured against this engine's own mechanics (2026-09-28 rotation-accuracy audit) that twist is a DPS loss here, not a gain, for three reasons specific to this fork: (1) sim/paladin/soc.go and sor.go's applySeal deactivates whichever seal is active before activating the new one -- the two auras are strictly mutually exclusive, so there is no overlap window for a swing to benefit from both, unlike the historical 1.12 latency exploit the technique is named for; (2) sim/paladin/judgement.go's castSpecificJudgement calls matchingSeal.Deactivate(sim) on every Judgement cast, and sim/request/request.go hardcodes PrimarySeal to Seal of Righteousness for every paladin request, so the very next decision after any Judgement always recasts Seal of Righteousness regardless of which seal the twist had up at that instant -- Judgement's damage is not actually being steered onto Seal of Command's judgement by twisting here; (3) Twist of Light, the talent that once removed the old exploit's timing risk, is gone in client 1.60.1.70707; its replacement capstone, Unsealed Wrath, stores a copy of the active Seal on each landed swing (3 stacks, 15 s) and rolls the stored Seal once a stack when a swing lands under a different Seal. The engine models it (sim/paladin/unsealed_wrath.go), and a Seal of Righteousness <-> Seal of Command swap at three stacks was measured on the 70707 guide gear (talent-search conditions, seed 7, 2000 iterations): about +1% on the raid preset when the swap only takes free global cooldowns, and a 12 to 18% loss on the bare preset, where every swap's mana runs the paladin dry. One rotation serves both presets, so this list does not twist and the guide builds do not take Unsealed Wrath. Each seal recast costs a full GCD and 200+ mana at 60 (Seal of Righteousness rank 8 is 200, Seal of Command rank 5 is 210); swinging every ~2-3s pays that mana and GCD for no measurable benefit. Removing the twist and adding Holy Strike (below) as a filler on the freed GCDs was measured directly: forever-sim, level 60, band-60 BiS gear (data/builds/1.60.1.70009/bis/paladin-retribution.json), no buffs/consumes, 3000 iterations, patchwerk single-target -- twist-every-swing (the old rotation) 153.8 DPS; no twist, no Holy Strike 165.6 DPS; no twist plus Holy Strike (this rotation) 190.0 DPS, +23.5% over the old rotation. Consecration (baseline in Forever, sim/paladin/consecration.go, ranks from level 20) is deliberately left out of this single-target priority list: the same forever-sim comparison with Consecration added on cooldown measured 184.3 DPS, a DPS LOSS versus the 190.0 without it, because its scaling mana cost (135 at rank 1 up to 565 at rank 5) crowds out Judgement/Holy Strike/Exorcism casts for a ground-AOE effect that does nothing extra against one target. Consecration is genuinely valuable while leveling or tanking adds (see the guide's Leveling section), just not in a single-target damage priority, which is why it carries no expected_idle entry here at all rather than a castSpell line -- it is never named by this rotation, not named-and-silent. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Rotation-accuracy program, unused-ability pass (2026-09-28): Holy Wrath (2812/10318, learnable at 50) is left out of this priority list for the same reason as Consecration above, not measured separately -- sim/paladin/holy_wrath.go's ApplyEffects loops the encounter's targets and only deals damage to target.MobType == Demon || Undead (the same restriction Exorcism's ExtraCastCondition enforces above), so against this ladder's default Humanoid target, or any Humanoid boss, it is a full GCD and 645-805 mana spent on zero damage. Judgement of Command (20425/20966) and Judgement of Fury (also on the class's own learned-ability list at every level) are not separate castable buttons at all: sim/paladin/judgement.go's generic Judgement (20271) resolves to whichever of these the active seal implies, and this rotation's seal never leaves Seal of Righteousness (see the seal-twist paragraph above) -- so they show as permanently unused by name only, with no line for this file to add or gate. Sim audit round 2 (2026-11-01): Unsealed Wrath twist. With the capstone, three swings store three copies of Seal of Righteousness; one swing under Seal of Command releases them (three Righteousness hits) and stores one Command copy, and switching straight back releases that copy's normal Seal of Command chance. Store-three-then-flip-for-one-swing beat a three-and-three alternation (+0.9%) and Seal of Command as the only seal (-2.7%); with the raid build taking Unsealed Wrath for its Reverence point (Benediction 4 measured higher but leaves Retribution's tier 1 short of 5 points) it measured about +1.3% in the raid run (seeds 1 and 50001, 10000 iterations), with no time out of mana. The two lines only fire while Unsealed Wrath has stacks, so a build without the talent never twists; the 30% mana gate keeps the bare-preset loss away from a raid build that runs low. Both lines open with auraIsKnown(Unsealed Wrath): an aura the build never registers leaves auraNumStacks unresolved, and an unresolved value drops out of an and, which would twist a build without the talent.",
   "expected_idle": [
     {
       "id": 10314,
@@ -104,6 +104,112 @@
               "rank": 3
             }
           }
+        }
+      },
+      {
+        "notes": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness. Skipped below 30% mana, because every Seal costs a global and over 200 mana.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 1310735
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "auraNumStacks": {
+                        "auraId": {
+                          "spellId": 1310735
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3"
+                      }
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 20293,
+                      "rank": 8
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "30%"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 20920,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "After one swing under Seal of Command, go straight back to Seal of Righteousness.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 1310735
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "auraNumStacks": {
+                        "auraId": {
+                          "spellId": 1310735
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 20920,
+                      "rank": 5
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castPaladinPrimarySeal": {}
         }
       },
       {

@@ -43,6 +43,12 @@
       "example": "/app/sim/t4pm8k2xv9ca"
     },
     {
+      "path": "/app/report/{id}",
+      "screen": "report",
+      "opens": "Home, Your reports, the report (read only when it is not yours).",
+      "example": "/app/report/ewlrx3enxbeb"
+    },
+    {
       "path": "/app/you/notifications",
       "screen": "notifications",
       "opens": "You, Notifications.",

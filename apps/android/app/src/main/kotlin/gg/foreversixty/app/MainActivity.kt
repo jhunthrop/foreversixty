@@ -58,12 +58,16 @@ class MainActivity : ComponentActivity() {
             graph.session.refresh()
         }
         lifecycleScope.launch { graph.session.watchForDeadTokens() }
+        // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
+        if (graph.widgets != null) gg.foreversixty.app.widgets.WidgetRefreshWork.periodic(this)
     }
 
     override fun onResume() {
         super.onResume()
         // A Custom Tab closed without a redirect: back to signed out (spec F1.2's cancel).
         graph.session.onReturnedToApp()
+        // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
+        graph.widgets?.let { widgets -> lifecycleScope.launch { widgets.refresher.refresh() } }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -93,6 +97,8 @@ class MainActivity : ComponentActivity() {
             null -> Unit
             // Lane F5: a sim link opens Home, Sims and the result.
             is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
+            // Lane F10: a report link opens Home, Your reports and the report.
+            is DeepLink.Report -> graph.home.reports?.navigator?.open(parsed)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

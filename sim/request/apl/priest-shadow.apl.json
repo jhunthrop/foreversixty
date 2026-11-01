@@ -23,6 +23,29 @@
       }
     },
     {
+      "notes": "Shadowfiend below 30% mana: the fiend returns 5% of your maximum mana with each attack for 15 seconds, on a five-minute cooldown. Forever lists it in the Shadow Magic skill line from level 1 (SkillLineAbility row 49886, spell 401977).",
+      "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpLt",
+            "lhs": {
+              "currentManaPercent": {}
+            },
+            "rhs": {
+              "const": {
+                "val": "0.3"
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 401977
+          }
+        }
+      }
+    },
+    {
       "notes": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
       "action": {
         "condition": {
@@ -65,39 +88,30 @@
       }
     },
     {
-      "notes": "Shadow Word: Death gets bonus crit chance below 20% target health from the Early Demise talent.",
+      "notes": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
       "action": {
         "condition": {
-          "isExecutePhase": {
-            "threshold": "E20"
+          "not": {
+            "val": {
+              "dotIsActive": {
+                "spellId": {
+                  "spellId": 19280,
+                  "rank": 6
+                }
+              }
+            }
           }
         },
         "castSpell": {
           "spellId": {
-            "spellId": 1309636,
-            "rank": 4
+            "spellId": 19280,
+            "rank": 6
           }
         }
       }
     },
     {
-      "notes": "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay.",
-      "action": {
-        "condition": {
-          "isExecutePhase": {
-            "threshold": "E20"
-          }
-        },
-        "castSpell": {
-          "spellId": {
-            "spellId": 10947,
-            "rank": 9
-          }
-        }
-      }
-    },
-    {
-      "notes": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, using your highest learned rank at level 60.",
+      "notes": "Inner Focus into Mind Blast: a free Mind Blast with extra crit chance whenever Inner Focus is ready.",
       "action": {
         "strictSequence": {
           "actions": [
@@ -111,8 +125,8 @@
             {
               "castSpell": {
                 "spellId": {
-                  "spellId": 19280,
-                  "rank": 6
+                  "spellId": 10947,
+                  "rank": 9
                 }
               }
             }
@@ -121,18 +135,7 @@
       }
     },
     {
-      "notes": "Mind Flay fills every remaining global, including the rest of the execute fallback above.",
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 18807,
-            "rank": 6
-          }
-        }
-      }
-    },
-    {
-      "notes": "Mind Blast only when Mind Flay cannot be cast: in our level-60 search run Mind Flay on every free global beat Mind Blast on cooldown, so outside the execute window this line rarely fires.",
+      "notes": "Mind Blast on cooldown ahead of Mind Flay: it is the bigger hit per cast time, and Shadowform halves its cost and doubles its crit bonus.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -143,7 +146,29 @@
       }
     },
     {
-      "notes": "Shoot with your wand whenever nothing else is ready: it costs no mana and always beats standing idle. Mind Flay and Mind Blast still come first whenever they are available, and Wand Specialization adds to it.",
+      "notes": "Shadow Word: Death on cooldown ahead of Mind Flay, as both Forever guides order it; below 20% target health Early Demise adds crit chance.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 1309636,
+            "rank": 4
+          }
+        }
+      }
+    },
+    {
+      "notes": "Mind Flay fills every remaining global.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 18807,
+            "rank": 6
+          }
+        }
+      }
+    },
+    {
+      "notes": "Shoot only when nothing else can be cast: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.",
       "action": {
         "castSpell": {
           "spellId": {

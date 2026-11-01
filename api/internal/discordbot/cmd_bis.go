@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -79,7 +80,7 @@ func (s *Service) resolveBis(ctx context.Context, in Interaction, guildID int64,
 	}
 	if _, valid := bandLabels[phase]; !valid {
 		phase = phaseRaid
-		if band, known := levelBand(main.level); hasMain && known && main.spec.ClassSlug == chosen.ClassSlug {
+		if band, known := upgrades.LevelBand(main.level); hasMain && known && main.spec.ClassSlug == chosen.ClassSlug {
 			phase = phaseOfBand(band)
 		}
 	}
@@ -89,7 +90,7 @@ func (s *Service) resolveBis(ctx context.Context, in Interaction, guildID int64,
 // phaseOfBand is a level band's phase choice; level 60 reads the Phase 1 raid (the site's
 // default preset at 60 is raid-ready).
 func phaseOfBand(band int) string {
-	if band == levelBands[len(levelBands)-1] {
+	if band == upgrades.TopBand {
 		return phaseRaid
 	}
 	return fmt.Sprint(band)
@@ -150,7 +151,7 @@ func resolveSpec(class, text string) (specs.Spec, bool) {
 // raid-ready; the bare levels the bare preset.
 func phaseBand(phase string) (int, string) {
 	if phase == phaseRaid {
-		return levelBands[len(levelBands)-1], bis.RaidPreset
+		return upgrades.TopBand, bis.RaidPreset
 	}
 	var band int
 	_, _ = fmt.Sscan(phase, &band)

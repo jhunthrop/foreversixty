@@ -1,0 +1,14 @@
+{
+  "aps": {
+    "timestamp": 1796950800,
+    "event": "update",
+    "content-state": {
+      "state": "running",
+      "done": 40,
+      "total": 64,
+      "eta_sec": 120,
+      "dps": null
+    },
+    "stale-date": 1796951700
+  }
+}

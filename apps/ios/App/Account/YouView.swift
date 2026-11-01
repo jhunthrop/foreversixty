@@ -47,6 +47,8 @@ enum YouRoute: Hashable {
     case devices
     case deleteAccount
     case about
+    /// Lane F14: You › Live surfaces.
+    case liveSurfaces
 }
 
 /// The You tab. Pure: the snapshot tests render it with a summary.
@@ -54,6 +56,8 @@ struct YouView: View {
     let summary: YouSummary
     /// Lane F8: whether the store allows the link to web checkout (`PlansLink`).
     var mayLink = false
+    /// Lane F14: the Live surfaces row, behind the widgets switch.
+    var showsLiveSurfaces = false
     let onSignOut: () -> Void
     @Environment(\.openURL) private var openURL
     @State private var confirmingSignOut = false
@@ -71,6 +75,12 @@ struct YouView: View {
                     Divider().overlay(FSColor.lineSoft)
                     NavigationLink(value: YouRoute.devices) {
                         AccountRow(icon: "iphone", title: Copy.youDevices, subtitle: summary.devices, chevron: true)
+                    }
+                    if showsLiveSurfaces {
+                        Divider().overlay(FSColor.lineSoft)
+                        NavigationLink(value: YouRoute.liveSurfaces) {
+                            AccountRow(icon: "rectangle.stack", title: Copy.liveSettings, chevron: true)
+                        }
                     }
                 }
                 .quietCard()

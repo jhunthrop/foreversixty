@@ -1,6 +1,6 @@
 {
   "spec": "hunter-marksmanship",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Rapid Fire",
@@ -8,7 +8,7 @@
         3045
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#3045"
+      "verified": "1.60.1.70707/spellconst/hunter.json#3045"
     },
     {
       "family": "Aimed Shot",
@@ -23,7 +23,7 @@
         20904
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#20904"
+      "verified": "1.60.1.70707/spellconst/hunter.json#20904"
     },
     {
       "family": "Multi-Shot",
@@ -31,7 +31,7 @@
         2643
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#2643"
+      "verified": "1.60.1.70707/spellconst/hunter.json#2643"
     }
   ],
   "auras": [
@@ -48,7 +48,7 @@
       ],
       "name": "Aspect of the Hawk",
       "kind": "self_buff",
-      "verified": "1.60.1.70658/spellconst/hunter.json#25296"
+      "verified": "1.60.1.70707/spellconst/hunter.json#25296"
     }
   ],
   "downranks": [],
@@ -59,7 +59,7 @@
         5384
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/hunter.json#5384"
+      "verified": "1.60.1.70707/spellconst/hunter.json#5384"
     },
     {
       "family": "Deterrence",
@@ -67,7 +67,7 @@
         19263
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/hunter.json#19263"
+      "verified": "1.60.1.70707/spellconst/hunter.json#19263"
     }
   ],
   "efficiency": []

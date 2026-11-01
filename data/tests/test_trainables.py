@@ -267,3 +267,37 @@ def test_no_development_spell_is_trainable():
     for slug, record in committed().items():
         for trainable in record["trainables"]:
             assert not is_excluded_name(trainable["name"]), (slug, trainable["name"])
+
+
+def _write_live_tree(talents_dir: Path, talent_names: list[str]) -> Path:
+    talents_dir.mkdir(parents=True, exist_ok=True)
+    tree = {"name": "Fire", "position": 0, "talents": [{"name": n} for n in talent_names]}
+    (talents_dir / "mage.json").write_text(json.dumps({"trees": [tree]}), encoding="utf-8")
+    return talents_dir
+
+
+def test_a_talent_spell_the_live_tree_removed_is_not_trainable(raw, tmp_path):
+    """1.60.1.70707's hotfix removed Voice of Truth and Binding Heal from the trees, but the
+    client's SkillLineAbility rows (pre-hotfix) still list them: a spell the client's trait
+    tables teach through a talent, with no talent of that name left in the live tree, is not
+    learnable."""
+    _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
+    talents = _write_live_tree(tmp_path / "talents", ["Ignite"])
+    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, talents)}["mage"])
+    assert "Frostfire Bolt" not in mage
+    assert "Frostbolt" in mage
+
+
+def test_a_talent_spell_the_live_tree_still_names_stays_trainable(raw, tmp_path):
+    _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
+    talents = _write_live_tree(tmp_path / "talents", ["Frostfire Bolt"])
+    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, talents)}["mage"])
+    assert "Frostfire Bolt" in mage
+
+
+def test_without_live_trees_every_trainable_is_kept(raw, tmp_path):
+    _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
+    assert "Frostfire Bolt" in names(by_slug(raw)["mage"])
+    missing = tmp_path / "no-talents"
+    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, missing)}["mage"])
+    assert "Frostfire Bolt" in mage

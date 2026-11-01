@@ -150,12 +150,12 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toMatch(/guide-key-talent-0[\s\S]*?<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
   });
 
-  it('numbers a priority with spell icons, names the real cooldowns, and prints no opener when the APL has no pre-pull', async () => {
+  it('numbers a priority with spell icons, names the real cooldowns, and prints the pre-pull Ice Barrier as the opener', async () => {
     const html = await frostHtml();
     expect(html).toContain('data-testid="guide-rotation-priority"');
     expect(html).toMatch(/guide-rotation-priority-0[\s\S]*?<img[^>]+icons\/spell_frost_frostblast\.webp/);
     expect(html).toContain('Ice Lance');
-    expect(html).not.toContain('data-testid="guide-rotation-opener"');
+    expect(html).toMatch(/data-testid="guide-rotation-opener-0"(?:(?!<\/li>)[\s\S])*?Ice Barrier/);
     expect(html).not.toContain('Then work down it from the top');
     for (const name of ['Evocation', 'Cold Snap', 'Ice Block']) {
       expect(html, name).toMatch(new RegExp(`data-testid="guide-rotation-cooldowns-\\d+"[\\s\\S]*?${name}`));
@@ -176,10 +176,13 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
         `the frost hit line names no talent on ${activeBuild.build}: add its school-hit talent to SCHOOL_HIT_TALENTS, or the build to HIT_LINE_FALLBACK_BUILDS`,
       ).not.toBe('talents');
     }
+    // Precision adds hit to every Mage spell, so whether the band's cap still carries a
+    // talent split is the nightly ranking's call. When it does, the split names the build's
+    // talent, not the "talents" fallback.
     const talent = escapeRegExp(named);
     expect(html).toMatch(
       new RegExp(
-        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?% · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear<`,
+        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear)?<`,
       ),
     );
     expect(html).toContain('DPS per point');

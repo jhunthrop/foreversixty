@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "data": {
+    "id": "m4xk9d2pqz7a",
+    "title": "",
+    "visibility": "private",
+    "owner": {
+      "id": 1812,
+      "battletag": "Yell#1604"
+    },
+    "zone": "Blackrock Spire",
+    "status": "live",
+    "engine_version": "1f542def3",
+    "fights": [
+      {
+        "index": 1,
+        "kind": "trash",
+        "name": "Trash",
+        "kill": false,
+        "in_progress": false,
+        "zone": "Blackrock Spire",
+        "start": "2026-12-16T00:12:00Z",
+        "end": "2026-12-16T00:12:48Z",
+        "duration_ms": 48000,
+        "players": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "deaths": 0,
+        "mob_deaths": 6,
+        "group_kills": 6,
+        "group_deaths": 0,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "verified": true
+      },
+      {
+        "index": 2,
+        "kind": "trash",
+        "name": "Trash",
+        "kill": false,
+        "in_progress": false,
+        "zone": "Blackrock Spire",
+        "start": "2026-12-16T00:15:48Z",
+        "end": "2026-12-16T00:16:59Z",
+        "duration_ms": 71000,
+        "players": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "deaths": 0,
+        "mob_deaths": 6,
+        "group_kills": 6,
+        "group_deaths": 0,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "verified": true
+      },
+      {
+        "index": 3,
+        "kind": "trash",
+        "name": "Trash",
+        "kill": false,
+        "in_progress": false,
+        "zone": "Blackrock Spire",
+        "start": "2026-12-16T00:19:59Z",
+        "end": "2026-12-16T00:20:38Z",
+        "duration_ms": 39000,
+        "players": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "deaths": 0,
+        "mob_deaths": 6,
+        "group_kills": 6,
+        "group_deaths": 0,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "verified": true
+      },
+      {
+        "index": 4,
+        "kind": "trash",
+        "name": "Trash",
+        "kill": false,
+        "in_progress": false,
+        "zone": "Blackrock Spire",
+        "start": "2026-12-16T00:23:38Z",
+        "end": "2026-12-16T00:24:44Z",
+        "duration_ms": 66000,
+        "players": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "deaths": 0,
+        "mob_deaths": 6,
+        "group_kills": 6,
+        "group_deaths": 0,
+        "group": [
+          "Player-4184-000000A1",
+          "Player-4184-000000A2",
+          "Player-4184-000000A3",
+          "Player-4184-000000A4",
+          "Player-4184-000000A5"
+        ],
+        "verified": true
+      }
+    ],
+    "players": [
+      "Player-4184-000000A1",
+      "Player-4184-000000A2",
+      "Player-4184-000000A3",
+      "Player-4184-000000A4",
+      "Player-4184-000000A5"
+    ],
+    "created_at": "2026-12-16T00:10:00Z",
+    "last_upload_at": "2026-12-16T00:31:12Z",
+    "heartbeat_at": "2026-12-16T00:31:40Z",
+    "data_base_url": "https://api.foreversixty.gg/v1/reports/m4xk9d2pqz7a/files",
+    "logging_character": {
+      "key": "us/pvp/obnoxious-yell",
+      "name": "Obnoxious Yell"
+    },
+    "trash_groups": [
+      {
+        "key": 1,
+        "zone": "Blackrock Spire",
+        "fights": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "duration_ms": 224000
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

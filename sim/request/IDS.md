@@ -134,6 +134,9 @@ lists the ones that do.
 Both weapon imbue slots hold one enum, so an imbue must say which hand:
 `main_hand_imbue:shadow_oil`, `off_hand_imbue:item:3824`. Any id may be
 qualified by its field this way; only the ambiguous ones must be.
+A hand whose imbue is a rogue poison also takes a stone, weightstone or
+oil in its stone field (`main_hand_stone:dense_sharpening_stone`): Forever
+lets the two share a weapon, and the engine refuses anything else there.
 
 | id | sets |
 | --- | --- |
@@ -242,6 +245,30 @@ qualified by its field this way; only the ambiguous ones must be.
 | `main_hand_imbue:windfury_weapon` | Consumes.main_hand_imbue |
 | `main_hand_imbue:wizard_oil` | Consumes.main_hand_imbue |
 | `main_hand_imbue:wound_poison` | Consumes.main_hand_imbue |
+| `main_hand_stone:blessed_wizard_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:brilliant_mana_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:brilliant_wizard_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:consecrated_sharpening_stone` | Consumes.main_hand_stone |
+| `main_hand_stone:deadly_poison` | Consumes.main_hand_stone |
+| `main_hand_stone:dense_sharpening_stone` | Consumes.main_hand_stone |
+| `main_hand_stone:dense_weightstone` | Consumes.main_hand_stone |
+| `main_hand_stone:elemental_sharpening_stone` | Consumes.main_hand_stone |
+| `main_hand_stone:flametongue_weapon` | Consumes.main_hand_stone |
+| `main_hand_stone:frost_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:frostbrand_weapon` | Consumes.main_hand_stone |
+| `main_hand_stone:instant_poison` | Consumes.main_hand_stone |
+| `main_hand_stone:lesser_mana_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:lesser_wizard_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:minor_mana_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:minor_wizard_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:rockbiter_weapon` | Consumes.main_hand_stone |
+| `main_hand_stone:shadow_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:solid_sharpening_stone` | Consumes.main_hand_stone |
+| `main_hand_stone:solid_weightstone` | Consumes.main_hand_stone |
+| `main_hand_stone:windfury` | Consumes.main_hand_stone |
+| `main_hand_stone:windfury_weapon` | Consumes.main_hand_stone |
+| `main_hand_stone:wizard_oil` | Consumes.main_hand_stone |
+| `main_hand_stone:wound_poison` | Consumes.main_hand_stone |
 | `major_healing_potion` | Consumes.default_potion |
 | `major_mana_potion` | Consumes.default_potion |
 | `mana_potion` | Consumes.default_potion |
@@ -270,6 +297,30 @@ qualified by its field this way; only the ambiguous ones must be.
 | `off_hand_imbue:windfury_weapon` | Consumes.off_hand_imbue |
 | `off_hand_imbue:wizard_oil` | Consumes.off_hand_imbue |
 | `off_hand_imbue:wound_poison` | Consumes.off_hand_imbue |
+| `off_hand_stone:blessed_wizard_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:brilliant_mana_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:brilliant_wizard_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:consecrated_sharpening_stone` | Consumes.off_hand_stone |
+| `off_hand_stone:deadly_poison` | Consumes.off_hand_stone |
+| `off_hand_stone:dense_sharpening_stone` | Consumes.off_hand_stone |
+| `off_hand_stone:dense_weightstone` | Consumes.off_hand_stone |
+| `off_hand_stone:elemental_sharpening_stone` | Consumes.off_hand_stone |
+| `off_hand_stone:flametongue_weapon` | Consumes.off_hand_stone |
+| `off_hand_stone:frost_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:frostbrand_weapon` | Consumes.off_hand_stone |
+| `off_hand_stone:instant_poison` | Consumes.off_hand_stone |
+| `off_hand_stone:lesser_mana_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:lesser_wizard_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:minor_mana_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:minor_wizard_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:rockbiter_weapon` | Consumes.off_hand_stone |
+| `off_hand_stone:shadow_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:solid_sharpening_stone` | Consumes.off_hand_stone |
+| `off_hand_stone:solid_weightstone` | Consumes.off_hand_stone |
+| `off_hand_stone:windfury` | Consumes.off_hand_stone |
+| `off_hand_stone:windfury_weapon` | Consumes.off_hand_stone |
+| `off_hand_stone:wizard_oil` | Consumes.off_hand_stone |
+| `off_hand_stone:wound_poison` | Consumes.off_hand_stone |
 | `r_o_i_d_s` | Consumes.zanza_buff |
 | `rage_potion` | Consumes.default_potion |
 | `sapper_goblin_sapper` | Consumes.sapper_explosive |

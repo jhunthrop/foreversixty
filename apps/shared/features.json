@@ -9,6 +9,8 @@
     "talents": { "default": false, "lane": "F6", "about": "Talent builds on the trees" },
     "notifications": { "default": false, "lane": "F7", "about": "Push notifications and their settings" },
     "premium_link": { "default": false, "lane": "F8", "about": "See plans, where the storefront allows a web checkout link" },
-    "search": { "default": false, "lane": "F12", "about": "One search for items, characters, guides and talents, and the item page" }
+    "search": { "default": false, "lane": "F12", "about": "One search for items, characters, guides and talents, and the item page" },
+    "widgets": { "default": false, "lane": "F14", "about": "Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications" },
+    "reports": { "default": false, "lane": "F10", "about": "Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach" }
   }
 }

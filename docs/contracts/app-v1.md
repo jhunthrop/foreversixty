@@ -434,6 +434,45 @@ indexed earlier has none of them, and the app shows no kill count for it (the re
 `data_base_url`, which v1 does not read: the app shows the summary and opens the full report on the
 web. Fixtures `reports.get`. Errors: 404 (`reports.get.error-not-found`).
 
+`?fold=trash` (Wave 3, W3-C2 lane) adds `trash_groups[]`, each `{ key, zone, fights[], duration_ms }`:
+each zone's trash as one entry, zone by zone in the order the night reached them, read from the
+report's `report.json` (the database keeps no zone per fight) by the Go port of the web's
+`fights.ts fightRows`. Trash with no zone is never grouped. Empty when `report.json` cannot be read.
+The apps draw the Fights card from it and never group fights themselves.
+
+### GET /v1/reports/{id}/me (W3-C2)
+Your results in one call. Auth session or app. The report's visibility rules exactly: 404, never
+403; a flagged report is 404 `flagged`; no report bucket is 503. Answer `{ report_id, characters[]
+}`, a character `{ key, name, class, spec (slug, nullable), spec_name, role, fights[] }`, a fight
+`{ index, encounter_id, encounter, kill (always true), duration_ms, value, unit ("dps"|"hps"),
+percentile (int|null), ranked (int|null), new_best, deaths }`. Parses count boss kills only.
+`value` is the role figure (hps for a healer, dps for everyone else, the web Summary tab's rule)
+read off the fight's stored summary and rounded to hundredths: it is exactly the `dps` (or `hps`)
+of that character's row in the meters below. `percentile` is the bracket placement the web's report
+page asks for (the fight's phase, the row's spec, the rounded value), rounded; null when the
+bracket has no ranked kill, and the app then prints no parse number. `new_best` is higher than
+every earlier ranked kill of that boss and difficulty by that character; a first kill is not one.
+The spec's `rank` is left out: a rank among kills would contradict the character-board rank F11
+prints. Fixtures `reports.me`, `reports.me.empty`; errors `reports.me.error-not-found`.
+
+### GET /v1/reports/{id}/fights/{n}/meters (W3-C3)
+One fight's players for the Details!-style sheet. `?metric=damage|healing|taken` (default damage),
+`?scope=trash` folds a zone's trash (n is its `trash_groups[].key`). Auth as the report. Answer
+`{ fight_index, scope, metric, kill, duration_ms, players[] }`, a player `{ key (nullable), name,
+class, spec (nullable), spec_name, role, active_ms, damage_done, healing_done, damage_taken, dps,
+hps, dtps, deaths, mine }`, sorted high to low by the metric's per-second figure; a player with none
+of it is left off. Per-second figures are the total over the player's time in the folded pulls,
+rounded to hundredths (the web's `night.ts`). `key` is set only on a public or guild report and
+only for a character with a page. A fight in progress has no meters (404). Fixtures
+`reports.meters`; errors `reports.meters.error-not-found`.
+
+### Coach (W3-C4): GET /v1/reports/{id}/coach/night, GET /v1/reports/{id}/fights/{n}/coach, GET /v1/me/coach/recent
+Existing routes, now app operations; no behaviour change. The app draws the coach card only with
+`entitlements.log_coach`: it asks the night line for the character (`?player=key`; data null means
+no card), then that line's `fight_index` review. Free accounts never call them (the night route
+would answer 403 `no_plan`, `coach.night.error-premium-required`). The app prints the review text
+as given. Fixtures `coach.night`, `coach.fight`, `coach.recent`.
+
 ## Builds
 
 ### GET /v1/builds?mine=1
@@ -713,7 +752,7 @@ app's device token once A1 admits app tokens on session routes; the sign-up PUT 
 while `APP_NOTIFICATIONS_ENABLED` is on. There is no delete route: Out removes a player.
 
 ### GET /v1/app/config
-Auth public. Caching `public, max-age=300, stale-while-revalidate=3600`. Call on launch. Answer
+Auth public. Caching `private, max-age=300`, `Vary: X-App` (never the CDN, which does not key on `X-App`). Call on launch. Answer
 `{ web_checkout_regions[], min_app_version { ios, android }, active_build, features { <key>: bool } }`. `web_checkout_regions` are the
 storefront countries (ISO 3166-1 alpha-2, upper case) where the app may show a "See plans" button
 that opens `https://foreversixty.gg/premium` in the browser; read the storefront country from
@@ -729,8 +768,82 @@ at once. The apps read the config once at launch and cache it (iOS `AppConfigSto
 `AppConfigRepository`): a key the answer leaves out takes the bundled default, a key the build
 does not know is ignored, and offline the cached answer, else the defaults, stands. The map is
 always present (`{}` when nothing is switched). Fixture `app.config`. The handler is lane A3's
-(`api/internal/app`, dark behind `APP_API`); it does not send `features` yet (see lane P1's
-report for the addition).
+(`api/internal/app`, behind `APP_API`). It fills `features` from `APP_FEATURES` (a comma list
+of keys, each sent `true`; unset is `{}`), and the checkout lists from
+`APP_WEB_CHECKOUT_REGIONS_IOS` (default `US`) and `APP_WEB_CHECKOUT_REGIONS_ANDROID` (default
+`none`); a missing, malformed or unknown `X-App` platform gets `[]`. All of it is server config:
+a change needs no code and no app release.
+
+## Live surfaces (Wave 3 lane F14)
+
+Spec `design/specs/2026-10-31-mobile-wave3.md` §5.6, contracts W3-C12 to W3-C14. Dark: mounted
+only with `APP_WIDGETS=true` (404 until then), and the apps draw nothing until the `widgets`
+feature switch is on. Handler `api/internal/livesurface`.
+
+### GET /v1/me/widget
+Auth session or device. Caching private; send the ETag back (an unchanged answer is a free 304).
+Query `character` (optional): the widget's setting, a key of one of your characters; empty or
+unknown reads your main, else your first. **The one snapshot every surface draws from**: the
+home-screen and lock-screen widgets, the Live Activity and the Android ongoing notification and
+quick-settings tile all read this answer from the app's shared container (iOS App Group, Android
+DataStore) and compute their figures from it with the same clock, so no two surfaces disagree.
+`data` is `{ generated_at, character, guild, next_raid, last_raid, upgrades, live }`:
+- `character` `{ key, name, class, spec_name }` or null (no characters).
+- `guild` `{ id, name }` or null: `No guild yet`.
+- `next_raid` or null (`No raid planned`): the first raid of the raids tab's calendar that has not
+  ended, cancelled ones included. `{ raid_id, guild_id, guild_name, zone, zone_name, starts_at,
+  invite_at (null until raids carry an invite time), pull_at (= starts_at), ends_at, size,
+  signed_up (In plus Late, the raid page's band count), status ("open"|"locked"|"cancelled"),
+  my { state ("in"|"late"|"bench"|"out"|null), spec (null: `Choose a spec`), role }, can_sign_up }`.
+  A press on In, Late or Out is the sign-up `PUT` above.
+- `last_raid` `{ zone_name, starts_at }` or null: `Last: {zone}, {d Mon}.`
+- `upgrades` `{ state, sentence, count, total_gain, unit, rows[] }` or null: the Home answer's
+  first three rows in its order with the whole list's count and total; any state but `ok` has no
+  rows and a `sentence` the widget shows as is (an `ok` answer with no rows says every slot
+  matches). Null while the Home answer (`APP_API`) is off.
+- `live` `{ sim_runs_running }`.
+
+`generated_at` is to the minute. `Updated {n} h ago` (past 12 hours) is measured from when the app
+last fetched, a 304 included. Fixtures `widget.get`, `widget.get.no-guild`. Errors: 401 (the
+widget shows its signed-out state).
+
+### POST /v1/me/live-activities and DELETE /v1/me/live-activities/{id}
+Auth session or device; 30 registrations a minute per account, at most 20 kept (the oldest goes).
+Body `{ kind ("raid"|"sim"), platform ("ios"|"android"), push_token, push_to_start_token?,
+object_id }`: `push_token` is the ActivityKit update token (hex, 64 to 200) or the FCM token,
+`push_to_start_token` iOS only, `object_id` the raid id or the server sim's id. Answer **201**
+`{ id }` (`live.register`). Registering the same token for the same object again refreshes it.
+A registration ends with its object (a raid's end plus 15 minutes; a sim after 6 hours), when its
+token fails, or on `DELETE` (**204** whether or not it was there; only your own). Tokens are never
+logged or answered back. Errors: 400 `invalid` (not JSON), 422 `invalid` with `fields` (`kind`,
+`platform`, `push_token`, `push_to_start_token`, `object_id`), 402 `premium_required` for a sim
+without `server_sims` (`live.register.error-premium-required`), 404 for a raid you may not see,
+one that has ended, or a sim that is not yours, 429.
+
+### Live-surface pushes (W3-C14)
+Built by `api/internal/livesurface/payloads.go` and pinned to their fixtures exactly. Events:
+`widget.refresh` (silent, collapses per user), `live.raid.start`, `live.raid.update`,
+`live.raid.end`, `live.sim.update`, `live.sim.end`.
+- **APNs Live Activity** (`apns-push-type: liveactivity`): `aps { timestamp, event
+  ("start"|"update"|"end"), content-state, stale-date?, dismissal-date? }`; a push-to-start adds
+  `attributes-type` (`RaidActivityAttributes`|`SimActivityAttributes`), `attributes` and `alert`.
+  The raid's attributes are `{ raid_id, guild_id, guild_name, zone_name, character_name }` and its
+  content-state `{ starts_at, invite_at, status, my_state, role, signed_up, size }`; a sim's
+  `{ sim_id, title }` and `{ state ("running"|"finished"|"failed"), done, total, eta_sec, dps }`.
+  **Times are Unix seconds** (ActivityKit decodes a Date as seconds since 2001).
+  Fixtures `surface.live-raid-start.apns`, `surface.live-sim-update.apns`.
+- **APNs widget refresh** (`apns-push-type: background`): `{ aps { content-available: 1 }, kind }`
+  (`surface.widget-refresh.apns`).
+- **FCM**: a data message `{ message { token, data { kind, ... }, android { priority,
+  collapse_key } } }`; `data` is the attributes and state above as strings, and `collapse_key` is
+  `widget.refresh`, `live-raid-<id>` or `live-sim-<id>`. Android draws the ongoing notification
+  itself. Fixtures `surface.*.fcm`.
+
+**Pending.** No live-surface push is sent yet. Lane A2's senders (`api/internal/push`) send alert
+pushes only; a Live Activity push needs `apns-push-type: liveactivity` and its own topic, and
+Apple's APNs key does not exist yet. So iOS Live Activities and the Android ongoing notification
+are started and updated by the app while it runs, and widgets tick on their timelines; the
+registrations are kept and swept so the senders can use them the day they exist.
 
 ## Not in v1
 

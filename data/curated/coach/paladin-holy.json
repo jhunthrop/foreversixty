@@ -1,6 +1,6 @@
 {
   "spec": "paladin-holy",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [],
   "auras": [],
   "downranks": [
@@ -21,7 +21,7 @@
         20930
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/paladin.json#20930"
+      "verified": "1.60.1.70707/spellconst/paladin.json#20930"
     },
     {
       "family": "Flash of Light",
@@ -34,7 +34,7 @@
         19943
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/paladin.json#19943"
+      "verified": "1.60.1.70707/spellconst/paladin.json#19943"
     }
   ],
   "defensives": [
@@ -45,7 +45,7 @@
         1020
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/paladin.json#1020"
+      "verified": "1.60.1.70707/spellconst/paladin.json#1020"
     },
     {
       "family": "Divine Protection",
@@ -56,7 +56,7 @@
         5573
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/paladin.json#5573"
+      "verified": "1.60.1.70707/spellconst/paladin.json#5573"
     },
     {
       "family": "Lay on Hands",
@@ -66,7 +66,7 @@
         10310
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/paladin.json#10310"
+      "verified": "1.60.1.70707/spellconst/paladin.json#10310"
     }
   ],
   "efficiency": []

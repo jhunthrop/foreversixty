@@ -190,14 +190,18 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	out.Summary.DurationMS = adapter.DeriveDurationMS(
 		adapter.SumActorTotals(out.Summary.DamageDone), out.DPS.Mean, fallbackDurationMS(parts, total),
 	)
-	// Every actor's ActiveMS is the fight's own duration, the same
-	// invariant sim/adapter.Summarize keeps (a sim models no activity
-	// gaps, so every row is "active" the whole fight) - it has to be
-	// restated here because weightSummaries carries each merged actor's
-	// ActiveMS in from whichever part first introduced that GUID, and
-	// that part's own duration is no longer the summary's.
-	for i := range out.Summary.DamageDone {
-		out.Summary.DamageDone[i].ActiveMS = out.Summary.DurationMS
+	// The player's ActiveMS is the fight's own duration, and a measured
+	// pet's is its share of the fight, the same rules sim/adapter.Summarize
+	// keeps. Both are restated here because weightSummaries carries each
+	// merged actor's ActiveMS in from whichever part first introduced that
+	// GUID, and that part's own duration is no longer the summary's.
+	shares := petActiveShares(parts, total)
+	for i, row := range out.Summary.DamageDone {
+		active := out.Summary.DurationMS
+		if row.PetUptime {
+			active = int64(math.Round(shares[row.GUID] * float64(out.Summary.DurationMS)))
+		}
+		out.Summary.DamageDone[i].ActiveMS = active
 	}
 	// Auras, casts and resources are still part 0's own - weightSummaries'
 	// own doc comment calls that a "share the largest part already
@@ -227,6 +231,26 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 // rate has no well-defined duration - and a blended measured duration is
 // the sane answer either way, the same role sim/adapter's own
 // AvgIterationDuration fallback plays for one part.
+// petActiveShares is each measured pet row's share of the fight it was
+// summoned for, weighted by each part's iterations: a pet out for all of
+// one shard and half of an equal other was out for three quarters.
+func petActiveShares(parts []api.SimResult, total int) map[string]float64 {
+	shares := map[string]float64{}
+	for _, p := range parts {
+		if p.Summary.DurationMS <= 0 {
+			continue
+		}
+		w := float64(p.IterationsRun) / float64(total)
+		for _, row := range p.Summary.DamageDone {
+			if row.PetUptime {
+				share := min(float64(row.ActiveMS)/float64(p.Summary.DurationMS), 1)
+				shares[row.GUID] += w * share
+			}
+		}
+	}
+	return shares
+}
+
 func fallbackDurationMS(parts []api.SimResult, total int) int64 {
 	var weighted float64
 	for _, p := range parts {

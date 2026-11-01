@@ -24,6 +24,10 @@ struct AppEnvironment {
     let staticData: StaticDataStore
     /// Lane F12: the search index over `staticData`, built once per build.
     let searchIndex: SearchIndexReader
+    /// Lane F14: the App Group snapshot every widget and Live Activity draws from.
+    let widgets: WidgetRefresher
+    /// Lane F14: the raid countdown and server-sim Live Activities.
+    let liveActivities: LiveActivityController
 
     @MainActor
     init(
@@ -54,6 +58,15 @@ struct AppEnvironment {
         self.plansLink = PlansLink(appConfig: appConfig, storefront: storefront) {
             appConfig.isAvailable(.premiumLink, mode: mode, isDebugBuild: Self.isDebugBuild)
         }
+        let widgets = WidgetRefresher(
+            calls: LiveWidgetCalls(client: client),
+            iconBuild: { appConfig.current?.activeBuild ?? BundledBuild.read() },
+            enabled: { appConfig.isAvailable(.widgets, mode: mode, isDebugBuild: Self.isDebugBuild) }
+        )
+        let liveActivities = LiveActivityController(registrations: LiveRegistrationCalls(client: client))
+        widgets.afterRefresh = { snapshot in await liveActivities.syncRaid(snapshot) }
+        self.widgets = widgets
+        self.liveActivities = liveActivities
         self.session = SessionStore(
             client: client,
             tokens: sessionTokens,
@@ -67,6 +80,9 @@ struct AppEnvironment {
                 DiskRaidCache.sims().removeAll()
                 recentSearches.clear()
                 Task { await staticData.removeAll() }
+                DiskRaidCache.reports().removeAll()
+                widgets.clear()
+                Task { await liveActivities.endAll() }
             }
         )
     }
@@ -100,7 +116,8 @@ struct AppEnvironment {
             preconditionFailure("Build is misconfigured: \(error)")
         }
         let tokens: any TokenStore = switch configuration.mode {
-        case .live: KeychainTokenStore()
+        // Lane F14: written to the App Group's keychain group so the widget's sign-up intent reads it.
+        case .live: KeychainTokenStore(accessGroup: AppGroup.containerURL == nil ? nil : AppGroup.id)
         case .fixture: InMemoryTokenStore(token: "fsd_fixture")
         }
         let account: AccountStorage = switch configuration.mode {

@@ -71,10 +71,10 @@ func TestRepositionPutsRankedTalentsOnTheEnginesOwnIndex(t *testing.T) {
 			specSlug:  "retribution",
 			treeIndex: 2,
 			wantField: map[int]string{
-				105703: "conviction",        // unaffected row (idx4 both layouts) - still must resolve by id, not coast on position.
-				110880: "instrument_of_law", // active idx15, engine idx16 - Crusade's removal shifts this field by one.
-				105692: "twist_of_light",    // active idx16, engine idx17 - same shift.
-				105693: "vengeance",         // active idx12 unranked (0) in this build - Encode must still omit it, not leak a stray digit onto it.
+				105703: "conviction",            // ranked in this build; must resolve by id, not coast on position.
+				105693: "vengeance",             // ranked; 1.60.1.70707's rework moved the Retribution rows around it.
+				110882: "champion_of_the_light", // ranked 5/5 since 70707 gave it five ranks.
+				105692: "unsealed_wrath",        // unranked (0) in this build - Encode must still omit it, not leak a stray digit onto it.
 			},
 		},
 		{

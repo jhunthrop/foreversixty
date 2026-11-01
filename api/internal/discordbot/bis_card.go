@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -79,7 +80,7 @@ func (s *Service) mainPicks(ctx context.Context, guildID int64, viewer *int64) (
 		return nil, err
 	}
 	rng := phaseRaid
-	if band, known := levelBand(main.level); known {
+	if band, known := upgrades.LevelBand(main.level); known {
 		rng = phaseOfBand(band)
 	}
 	return &bisMain{Name: main.name, Picks: bisPicks{Class: main.spec.ClassSlug, Spec: main.spec.SpecSlug, Range: rng}}, nil

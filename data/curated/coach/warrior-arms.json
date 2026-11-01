@@ -1,6 +1,6 @@
 {
   "spec": "warrior-arms",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Bloodrage",
@@ -8,7 +8,7 @@
         2687
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/warrior.json#2687"
+      "verified": "1.60.1.70707/spellconst/warrior.json#2687"
     },
     {
       "family": "Mortal Strike",
@@ -20,7 +20,7 @@
         21553
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#21553"
+      "verified": "1.60.1.70707/spellconst/warrior.json#21553"
     }
   ],
   "auras": [
@@ -38,7 +38,7 @@
       ],
       "name": "Battle Shout",
       "kind": "self_buff",
-      "verified": "1.60.1.70658/spellconst/warrior.json#25289"
+      "verified": "1.60.1.70707/spellconst/warrior.json#25289"
     },
     {
       "spell_id": 11574,
@@ -53,7 +53,7 @@
       ],
       "name": "Rend",
       "kind": "dot",
-      "verified": "1.60.1.70658/spellconst/warrior.json#11574"
+      "verified": "1.60.1.70707/spellconst/warrior.json#11574"
     }
   ],
   "downranks": [],
@@ -64,7 +64,7 @@
         12975
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#12975"
+      "verified": "1.60.1.70707/spellconst/warrior.json#12975"
     }
   ],
   "efficiency": []

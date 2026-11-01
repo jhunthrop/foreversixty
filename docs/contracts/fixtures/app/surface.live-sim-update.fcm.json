@@ -1,0 +1,18 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "kind": "live.sim.update",
+      "sim_id": "k3v9q2m8x1ab",
+      "title": "Elemental · Top Gear",
+      "state": "running",
+      "done": "40",
+      "total": "64",
+      "eta_sec": "120"
+    },
+    "android": {
+      "priority": "NORMAL",
+      "collapse_key": "live-sim-k3v9q2m8x1ab"
+    }
+  }
+}

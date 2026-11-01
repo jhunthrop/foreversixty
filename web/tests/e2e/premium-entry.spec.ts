@@ -56,13 +56,19 @@ declare global {
   interface Window {
     __barShift: number;
     __holdMoved: number | null;
+    __fontsSettled: boolean;
   }
 }
 
 /**
- * Sums the layout shifts whose moved nodes sit in the site header (the bar's own CLS). The bar
- * already shifts by about 0.0006 on load without the tag (the doors' web-font swap, measured on a
- * build from before this change), so the tag's states are held to that floor, not to zero.
+ * Sums the layout shifts whose moved nodes sit in the site header (the bar's own CLS), from the
+ * frame after the page's web fonts are in. The bar already shifts by about 0.0006 on load without
+ * the tag (the doors' web-font swap, measured on a build from before this change), so the tag's
+ * states are held to that floor, not to zero. A layout-shift entry scores its whole frame, and
+ * under CI load the doors' font-swap frame is often also the frame the 320 KB home page paints
+ * the rest of its body into (the sky band growing 257 px as the parser reaches the hero), so an
+ * entry the bar only touched read 0.13. The tag's own two moves are also pinned directly: the
+ * pre-paint hide (__navAtLoad) and the hold's 0 px at its frame (__holdMoved).
  */
 const BAR_FONT_SWAP_FLOOR = 0.001;
 
@@ -71,6 +77,19 @@ async function trackBarShift(page: Page): Promise<void> {
   await page.addInitScript(() => {
     window.__barShift = 0;
     window.__holdMoved = null;
+    window.__fontsSettled = false;
+    // performance.now() once every font the loaded page asked for is in and painted.
+    let fontsSettledAt = Number.POSITIVE_INFINITY;
+    window.addEventListener('load', () => {
+      void document.fonts.ready.then(() =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            fontsSettledAt = performance.now();
+            window.__fontsSettled = true;
+          }),
+        ),
+      );
+    });
     // The hold path: the doors' left edge sampled just before `hold` lands and right after it
     // (a light timer, not a frame loop, so the page's idle-time hydration still runs).
     let lastLeft: number | null = null;
@@ -93,7 +112,7 @@ async function trackBarShift(page: Page): Promise<void> {
         hadRecentInput: boolean;
         sources?: { node?: Node | null }[];
       })[]) {
-        if (entry.hadRecentInput) continue;
+        if (entry.hadRecentInput || entry.startTime < fontsSettledAt) continue;
         const inBar = (entry.sources ?? []).filter((source) =>
           source.node instanceof Element ? source.node.closest('[data-site-header]') !== null : false,
         );
@@ -106,6 +125,8 @@ async function trackBarShift(page: Page): Promise<void> {
 
 async function readBarShift(page: Page): Promise<number> {
   await page.waitForTimeout(500);
+  // A measurement that never started would read 0 and pass anything.
+  await expect.poll(() => page.evaluate(() => window.__fontsSettled)).toBe(true);
   return page.evaluate(() => window.__barShift);
 }
 

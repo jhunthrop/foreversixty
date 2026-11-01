@@ -5,6 +5,48 @@
       "action": {
         "castSpell": {
           "spellId": {
+            "spellId": 688
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-60s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 18788
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-45s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 712
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-44s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
             "spellId": 19028
           }
         }
@@ -71,6 +113,13 @@
     },
     {
       "action": {
+        "condition": {
+          "auraIsActive": {
+            "auraId": {
+              "spellId": 440873
+            }
+          }
+        },
         "castSpell": {
           "spellId": {
             "rank": 2,
@@ -78,7 +127,7 @@
           }
         }
       },
-      "notes": "Soul Fire whenever it is ready: the Demonology tree's Decimation cuts its cooldown by 90 percent, and its 6 second cast carries a spell power coefficient of 1.0, so it out-damages the Shadow Bolts it displaces. The client states its cost, cast time, cooldown and damage."
+      "notes": "Soul Fire only while Decimation's buff is up. Decimation (440870) cuts Soul Fire's cooldown by 90 percent, and a Shadow Bolt on a target below 35 percent health grants the 10 second buff (440873): 40 percent off the cast time after Bane's 2 seconds, so 2.4 seconds, and no Soul Shard (aura 256, no reagent use). Outside it Soul Fire is a 4 second cast that costs a shard and deals less per second of casting than Shadow Bolt."
     },
     {
       "notes": "Life Tap to keep casting once mana runs low.",
@@ -149,7 +198,7 @@
       }
     },
     {
-      "notes": "Immolate follows the two curses and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
+      "notes": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
       "action": {
         "condition": {
           "cmp": {
@@ -178,32 +227,19 @@
       }
     },
     {
-      "notes": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
+      "notes": "Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 17923,
-            "rank": 6
+            "spellId": 11661,
+            "rank": 9
           }
         }
       }
     },
     {
-      "notes": "Shoot with your wand once mana is under 50 percent: it costs nothing, so mana regenerates while it keeps damage going. Life Tap is only the backstop below 10 percent.",
+      "notes": "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells. Life Tap below 10 percent mana keeps the rotation going first.",
       "action": {
-        "condition": {
-          "cmp": {
-            "op": "OpLt",
-            "lhs": {
-              "currentManaPercent": {}
-            },
-            "rhs": {
-              "const": {
-                "val": "50%"
-              }
-            }
-          }
-        },
         "castSpell": {
           "spellId": {
             "spellId": 5019

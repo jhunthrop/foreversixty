@@ -1,6 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { invalidate } from '../data/query';
-import { DATA_LOAD_FAILED, dataUrl, fetchJson, loadReference, loadSets, loadTalents } from './load';
+import {
+  DATA_LOAD_FAILED,
+  dataUrl,
+  fetchJson,
+  loadItemsWithCurrentFallback,
+  loadReference,
+  loadSets,
+  loadTalents,
+} from './load';
 
 function stubFetch(map: Record<string, unknown>, status = 200): void {
   vi.stubGlobal(
@@ -50,6 +58,69 @@ describe('loadTalents', () => {
       }),
     );
     await expect(loadTalents('b1', 'warrior')).rejects.toThrow(DATA_LOAD_FAILED);
+  });
+});
+
+describe('loadItemsWithCurrentFallback', () => {
+  const OLD = '1.60.1.70450';
+  const CURRENT = '1.60.1.70707';
+  const row = (id: number, name: string, icon: string) => ({ id, name, icon });
+
+  // An old export is read against its own build's items, but an item added since (Quick
+  // Strike Ring 288927 on 1.60.1.70707) is only in the current build's file; without the
+  // fallback the paperdoll named it "Item 288927".
+  it("names an item the export's build lacks from the current build", async () => {
+    stubFetch({
+      [`/data/${OLD}/items/hunter.json`]: {
+        build: OLD,
+        class_slug: 'hunter',
+        items: [row(1, 'Old Bow', 'inv_bow')],
+      },
+      [`/data/${CURRENT}/items/hunter.json`]: {
+        build: CURRENT,
+        class_slug: 'hunter',
+        items: [row(1, 'Renamed Bow', 'inv_bow_new'), row(288927, 'Quick Strike Ring', 'inv_jewelry_ring')],
+      },
+    });
+    const file = await loadItemsWithCurrentFallback(OLD, CURRENT, 'hunter');
+    expect(file.build).toBe(OLD);
+    expect(file.items.find((item) => item.id === 288927)).toMatchObject({
+      name: 'Quick Strike Ring',
+      icon: 'inv_jewelry_ring',
+    });
+    // The export's own build still names what it has.
+    expect(file.items.find((item) => item.id === 1)?.name).toBe('Old Bow');
+    expect(file.items.filter((item) => item.id === 1)).toHaveLength(1);
+  });
+
+  it('reads the current build alone when the export build ships no items file', async () => {
+    stubFetch({
+      [`/data/${CURRENT}/items/hunter.json`]: {
+        build: CURRENT,
+        class_slug: 'hunter',
+        items: [row(288927, 'Quick Strike Ring', 'r')],
+      },
+    });
+    const file = await loadItemsWithCurrentFallback(OLD, CURRENT, 'hunter');
+    expect(file.items.map((item) => item.id)).toEqual([288927]);
+  });
+
+  it('fetches once when the export is on the current build', async () => {
+    stubFetch({
+      [`/data/${CURRENT}/items/hunter.json`]: {
+        build: CURRENT,
+        class_slug: 'hunter',
+        items: [row(1, 'Bow', 'b')],
+      },
+    });
+    const file = await loadItemsWithCurrentFallback(CURRENT, CURRENT, 'hunter');
+    expect(file.items).toHaveLength(1);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects when the export build is broken rather than absent', async () => {
+    stubFetch({ [`/data/${OLD}/items/hunter.json`]: {} }, 500);
+    await expect(loadItemsWithCurrentFallback(OLD, CURRENT, 'hunter')).rejects.toThrow(DATA_LOAD_FAILED);
   });
 });
 

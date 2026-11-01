@@ -232,7 +232,7 @@ export const bisCopy = {
     `Spell hit to cap: ${spell}%${school === undefined ? '' : ` (school ${school}%)`}`,
   /** The hover on the caster's line. */
   spellHitToCapTitle:
-    'Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Elemental Precision add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.',
+    'Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Shadow Focus add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.',
   /** The hover on that line: hit is worth its full weight until the cap and nothing past it,
    *  and the rail's weights are per rating point. */
   hitToCapTitle:

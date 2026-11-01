@@ -25,7 +25,7 @@ SPECS = {
         core=[], auras=[("Insect Swarm", DOT)], downranks=[], defensives=["Barkskin"]
     ),
     "druid-feral": dict(
-        core=["Tiger's Fury", "Shifting Power"],
+        core=["Shifting Power"],
         auras=[("Rip", DOT)],
         downranks=[],
         defensives=["Barkskin"],
@@ -126,7 +126,7 @@ SPECS = {
     ),
     # ---- tanks (3)
     "druid-feral-bear": dict(
-        core=["Primal Bite", "Berserk"],
+        core=["Primal Bite"],
         auras=[("Demoralizing Roar", DEF)],
         downranks=[],
         defensives=["Barkskin", "Frenzied Regeneration"],

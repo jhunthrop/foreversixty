@@ -249,17 +249,6 @@ func averageItemLevel(gear []rankings.GearSlot) (string, bool) {
 	return fmt.Sprintf("%.1f", float64(total)/float64(count)), true
 }
 
-// levelBands are the BiS data's level bands.
-var levelBands = []int{20, 30, 40, 50, 60}
-
-// levelBand is the band a level falls in (20 to 29 is 20); false under the first band.
-func levelBand(level *int) (int, bool) {
-	if level == nil || *level < levelBands[0] {
-		return 0, false
-	}
-	return min(*level/10*10, levelBands[len(levelBands)-1]), true
-}
-
 // itemFacts is an item as the build's table knows it, with the BiS data's name and source.
 func (s *Service) itemFacts(build, class string, id int, name, source, url string) ItemFacts {
 	facts := ItemFacts{ID: id, Name: name, Quality: -1, Source: source, URL: url}

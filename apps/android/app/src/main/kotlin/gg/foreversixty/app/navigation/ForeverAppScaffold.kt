@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,7 @@ import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.RaidsReports
 import gg.foreversixty.app.raids.RaidsRoute
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -46,6 +48,8 @@ import gg.foreversixty.app.search.SearchOverlay
 import gg.foreversixty.app.search.SearchOwner
 import gg.foreversixty.app.search.ui.RootSearchBar
 import kotlinx.coroutines.launch
+import gg.foreversixty.app.reports.ReportsFeature
+import gg.foreversixty.app.reports.logic.ReportsViewer
 
 /**
  * The app shell: a Material 3 navigation bar over one screen per tab. [account] is lane F1's
@@ -80,14 +84,16 @@ fun ForeverAppScaffold(
             raids.navigator.wantsTab = false
         }
     }
-    // Lane F5: a sim link selects Home, where Sims and the result are pushed.
-    val wantsHome = home.sims?.navigator?.wantsHome == true
+    // Lanes F5 and F10: a sim or report link selects Home, where its screens are pushed.
+    val wantsHome = home.sims?.navigator?.wantsHome == true || home.reports?.navigator?.wantsHome == true
     LaunchedEffect(wantsHome) {
         if (wantsHome) {
             selected = ForeverTab.Home
             home.sims?.navigator?.wantsHome = false
+            home.reports?.navigator?.wantsHome = false
         }
     }
+    val context = LocalContext.current
     val searchOpen = search?.navigator?.stack?.isNotEmpty() == true
     CompositionLocalProvider(LocalItemPageOpener provides openItemPage) {
         Box(Modifier.fillMaxSize()) {
@@ -101,10 +107,10 @@ fun ForeverAppScaffold(
                                 HomeRoute(home, openBis = openBis, onSearch = onSearch) { ComingSoon(selected) }
                             } else {
                                 HomeAccountGate(account, openBis) {
-                                    HomeRoute(home, account.session, openBis, onSearch) { ComingSoon(selected) }
+                                    HomeRoute(home, account.session, openBis, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
                                 }
                             }
-                        ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, onSearch)
+                        ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports, onSearch)
                         ForeverTab.Bis ->
                             if (bis == null) {
                                 ComingSoon(selected)
@@ -139,12 +145,15 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?,
  * and BiS; signed out or with sign-in off, it follows `/v1/me`'s main character.
  */
 @Composable
-private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, onSearch: (() -> Unit)?) {
+private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: ReportsFeature?, onSearch: (() -> Unit)?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
-    RaidsRoute(raids, characterKey) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
+    // Lane F10: Your raid night's `Open the full report` pushes the report on this stack.
+    val me = (phase as? SessionPhase.SignedIn)?.me
+    val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
+    RaidsRoute(raids, characterKey, reportsLink) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
 }
 
 /** Search's owner: the session's current character and the account's character keys (`You`). */

@@ -3,11 +3,11 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70658:hunter:dwarf:5420001505001251/0053502001/4:'
+build: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00524510012/0:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
+statPriority: [Agility, Critical strike, Ranged attack power, Hit, Attack speed]
 description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -50,14 +50,14 @@ sources:
 
 ## Overview
 
-Beast Mastery is the pet-focused ranged Hunter spec: a strengthened pet deals a large share of the damage, and Bestial Wrath is its burst cooldown.
+Beast Mastery is the pet-focused ranged Hunter spec: the pet, drawing its stats from the Hunter's gear, deals much of the damage, and Bestial Wrath is its burst.
 
 ### Strengths
 
 - A large share of damage comes from the pet
 - Bestial Wrath gives the pet 50% more damage for 18 seconds
 - The pet absorbs hits and threat the Hunter would otherwise take
-- Efficiency cuts shot and sting mana cost by 15%
+- Careful Aim turns Intellect into attack power, which the pet shares
 
 ### Weaknesses
 
@@ -74,11 +74,11 @@ Beast Mastery is the pet-focused ranged Hunter spec: a strengthened pet deals a 
 
 Reading the Beast Mastery tree in priority order for a pet-damage build: **Unleashed Fury** (a flat damage increase for pets and hawks) and **Ferocity** (pet critical strike chance) come first, since both scale every hit the pet lands afterward. **Focused Fire** follows — its damage bonus applies to the Hunter as well as the pet, unlike the two talents above it. **Frenzy** gives the pet a chance at bonus attack speed off its own critical strikes, compounding with Ferocity. **Bestial Discipline** helps mana sustain by letting some regeneration continue through casting. The tree's capstone, **Bestial Wrath**, is the spec's defining cooldown: an 18-second window of 50% additional pet damage.
 
-To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. It also gives back the fifth point in **Improved Tracking** (the per-point damage bonus against your tracked creature type), keeping it at 4/5 instead of 5/5 — that fifth point is a real, measured damage pick, just a smaller one than what replaced it, so it's a deliberate trade rather than a wasted point. This build measures about +8.5% over the previous spend in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. In Marksmanship the build takes **Careful Aim** (5/5), which turns Intellect into melee and ranged attack power, and **Mortal Shots** (2/5), more critical strike damage on ranged abilities, in place of Improved Tracking, Improved Stings, Efficiency and Rapid Killing: about +1.9% in our level-60 raid run. In Forever the pet takes a tenth of your attack power and all of your critical strike chance, and it gets no raid buffs of its own, so the Hunter's own gear and talents now raise the pet's damage too. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
 
 ## Rotation and priority
 
-This site's own simulator plays Beast Mastery on the same Aimed Shot and Multi-Shot shell the other two specs share, with Bestial Wrath layered in as this spec's own cooldown. Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens. Once engaged, Bestial Wrath is used on cooldown first and timed to land together with Rapid Fire, since a fight of Classic length only gives room for one real burst window — stacking both cooldowns into it beats spreading them apart. Aimed Shot is then recast every time it comes off cooldown, as long as the cast won't clip the next auto shot. Multi-Shot comes next on every free global between Aimed Shot casts, then Serpent Sting is refreshed whenever it's close to falling off and neither Rapid Fire nor Aimed Shot is close to ready (putting Multi-Shot ahead of the sting was a small gain, about +0.4% in the raid-ready run, and level for the bare character), and Arcane Shot is the last filler whenever Aimed Shot itself is more than 1.5 seconds from ready and mana is above a 25% reserve — Multi-Shot's own cooldown comes up often enough that gating Arcane Shot on it too would zero out Arcane Shot's casts entirely, so the priority no longer waits on it. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. The priority list doesn't call for active pet repositioning beyond keeping the pet alive and attacking through the Bestial Wrath window.
+This site's own simulator plays Beast Mastery on the same shot shell as Marksmanship, with Bestial Wrath layered in as this spec's own cooldown. In Forever, Multi-Shot and Aimed Shot share one 6-second cooldown. Instant Multi-Shot does more over a fight than Aimed Shot, whose cast pauses the auto shot, so Aimed Shot is only the opener: before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens. Once engaged, Bestial Wrath is used on cooldown first and timed to land together with Rapid Fire, since a fight of Classic length only gives room for one real burst window — stacking both cooldowns into it beats spreading them apart. Multi-Shot is then cast every time the shared cooldown comes up. Serpent Sting is refreshed whenever it's close to falling off and Multi-Shot is not about to come back, and Arcane Shot, which has its own cooldown, is the last filler whenever Multi-Shot is more than 1.5 seconds from ready and mana is above a 25% reserve. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. The priority list doesn't call for active pet repositioning beyond keeping the pet alive and attacking through the Bestial Wrath window.
 
 ## Stat priority
 

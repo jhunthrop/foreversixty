@@ -6,6 +6,12 @@ import { DEAD_API_BASE, HERMETIC_LAUNCH_ARGS } from './tests/hermetic';
 // review harness keeps the main build on 4321), so the suite is not pinned to one port.
 const port = process.env.E2E_PORT ?? '4321';
 
+// Linux Chromium hints glyphs to whole pixels, so CI's text runs a few percent wider than the
+// fractional advances macOS, iOS and Android lay out with; at 360 a two-button row that fits
+// with a pixel to spare on those wraps on the runner and every height cap reads the wrap.
+// Unhinted text gives the runner the same advances the owner and the players see.
+const UNHINTED_TEXT = '--font-render-hinting=none';
+
 export default defineConfig({
   testDir: './tests/e2e',
   // 30 s is right for everything but tests/e2e/report-queries.spec.ts, where the first
@@ -18,7 +24,7 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
     trace: 'retain-on-failure',
-    launchOptions: { args: [...HERMETIC_LAUNCH_ARGS] },
+    launchOptions: { args: [...HERMETIC_LAUNCH_ARGS, UNHINTED_TEXT] },
   },
   // ASTRO_PREVIEW_BACKGROUND disables Astro's auto-detected-AI-agent daemon mode for `astro preview`
   // (see astro/dist/cli/preview/index.js `isRunByAgent()`), which otherwise forks preview into the

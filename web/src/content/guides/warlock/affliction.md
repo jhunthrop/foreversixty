@@ -3,8 +3,8 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70658:warlock:gnome:25522300130201351/200522/005:'
-raidBuild: 'FS1:1.60.1.70658:warlock:gnome:25520300130201351/00052/0550001:'
+build: 'FS1:1.60.1.70707:warlock:gnome:25522300130201351/200522/005:'
+raidBuild: 'FS1:1.60.1.70707:warlock:gnome:2552010013500105/00052/0550004:'
 recommendedRaces: [gnome, troll]
 statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Affliction Warlock in Forever, and what is confirmed versus projected from the beta.'
@@ -48,7 +48,7 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 ### In a raid
 
 - **Role:** Ranged shadow damage over time
-- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
+- **Brings:** A curse on the target (Bane of Agony in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
@@ -56,13 +56,14 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 - **Improved Corruption** — cuts Corruption's cast time by up to 2 seconds and adds up to 10% more damage at rank 5.
 - **Amplify Curse** (1 point) — a required pick, not an optional one, and missing from an earlier draft of this guide's talent section: this build's rotation prepull-casts it before the pull, so it has to be taken for that line to be legal.
 - **Pandemic** — up to a 100% critical-strike-damage bonus at rank 3 on Corruption, both Banes, and the drain spells. This build takes two of its three points; the search run measured no damage in the last one, so it went elsewhere.
-- **Nightfall** — up to a 4% chance per DoT tick at rank 2 to make your next Shadow Bolt instant, a real mana and time saver.
-- **Shadow Mastery** — up to 5% more Shadow damage and life drained at rank 5.
-- **Wrack** — the capstone: a DoT that also boosts your other Shadow DoTs on the same target by 10% while it's active.
+- **Nightfall** — up to a 4% chance per tick of Corruption, the drains or Wrack at rank 2 to make your next Shadow Bolt instant. The raid build skips it: with Wrack out of the rotation it procs too rarely to beat Malevolence.
+- **Malevolence** — up to 5% more critical strike chance on your Shadow spells at rank 5. Every DoT tick can crit in Forever, and Pandemic doubles those crits, so the raid build takes all five points.
+- **Shadow Mastery** — up to 10% more Shadow damage and life drained at rank 5.
+- **Wrack** — the capstone, a 6 second channel that raises your Corruption and Bane of Agony damage by 10% while you channel it. It deals about half of Shadow Bolt's damage per second of casting, so the raid build leaves it, Soul Siphon and Improved Drains out and puts the points into Malevolence and Ruin: about +5% in the search run.
 
 ## Rotation and priority
 
-Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Doom goes up right behind it as your one curse: it does all of its damage in a single hit when its minute is up, so recast it the moment it fires. In our simulator it beat Bane of Agony by a small margin and Curse of the Elements by a wide one, since a lone caster's own damage gains less from Elements than Doom or Agony deal themselves; on a fight shorter than a minute Doom never lands, so use Agony there. Wrack is live in this site's simulator: an instant, no-cooldown DoT that also stacks a 10% Shadow-damage-taken vulnerability on the target, so recast it in its last second to keep the vulnerability from ever dropping. Immolate is the fourth DoT: the search found that a running Immolate out-damages the Shadow Bolt global it costs, so it joins the upkeep order ahead of the filler, and that recasting it when under 3 seconds remain, rather than after it lapses, measured a little better. Once all four DoTs are running, spend every remaining global on Shadow Bolt. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs keep ticking, and Life Tap is only the backstop below about 10%. Together these changes were worth about +6% in our level-60 search run.
+Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Agony goes up right behind it as your one curse. In Forever your damage over time can crit, so the ticking curse beats Bane of Doom's single hit. Siphon Life comes next: the build takes it, and its ticks crit and heal you. Wrack is a 6 second channel, and channelling it costs more damage than its ticks and its 10% on Corruption and Agony return, so the rotation does not cast it. Immolate is the fifth DoT: a running Immolate out-damages the Shadow Bolt global it costs, and recasting it when under 3 seconds remain measured a little better than waiting for it to lapse. Once every DoT is running, spend each remaining global on Shadow Bolt. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells. Keeping Siphon Life up and switching to Agony were worth about +4% in our audit run.
 
 ## Stat priority
 

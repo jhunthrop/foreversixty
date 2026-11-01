@@ -11,6 +11,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/specs"
+	"github.com/wowsims/classic/sim/core/proto"
 )
 
 const realPresetsPath = "../../data/curated/presets.json"
@@ -87,7 +88,7 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 	for _, want := range []string{
 		"arcane_brilliance", "gift_of_the_wild", "power_word_fortitude", "divine_spirit",
 		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura", "heart_of_the_lion",
-		"leader_of_the_pack", "sanctity_aura", "strength_of_earth_totem",
+		"leader_of_the_pack", "strength_of_earth_totem",
 		"mana_spring_totem", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
 		"judgement_of_wisdom", "judgement_of_light", "hunters_mark", "curse_of_recklessness",
 	} {
@@ -95,7 +96,9 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 			t.Errorf("the raid preset lacks %q", want)
 		}
 	}
-	for _, banned := range []string{"shadow_weaving", "blessing_of_kings"} {
+	// Sanctity Aura (spell 20218) has no SkillLineAbility row in the Forever
+	// client: no paladin can learn it, so no raid carries it.
+	for _, banned := range []string{"shadow_weaving", "blessing_of_kings", "sanctity_aura"} {
 		if slices.Contains(have, banned) {
 			t.Errorf("the raid preset carries %q", banned)
 		}
@@ -258,6 +261,26 @@ func TestLayerKeepsTheKitOnTopOfThePreset(t *testing.T) {
 	}
 }
 
+// Forever lets a stone share a weapon with a rogue poison (the rogue and
+// warlock Deep Dive, 2026-10-07), so the raid preset's stones move beside
+// the kit's poisons instead of being dropped.
+func TestLayerPutsThePresetStoneBesideARoguePoison(t *testing.T) {
+	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["rogue-combat"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	kit := []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"}
+	_, consumeIDs := resolved.Layer(nil, kit)
+	for _, want := range append(kit, "main_hand_stone:elemental_sharpening_stone", "off_hand_stone:dense_sharpening_stone") {
+		if !slices.Contains(consumeIDs, want) {
+			t.Errorf("%s is missing from %v", want, consumeIDs)
+		}
+	}
+	if _, err := consumes(consumeIDs, nil); err != nil {
+		t.Errorf("layered consumables do not map onto the engine: %v", err)
+	}
+}
+
 func TestLayerKitImprovedFormWinsOverThePresetPlainForm(t *testing.T) {
 	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["druid-feral"])
 	if err != nil {
@@ -347,5 +370,15 @@ func TestHealersCarryTheHealerConsumables(t *testing.T) {
 		if isHealer && slices.Contains(got, "greater_arcane_elixir") {
 			t.Errorf("%s: a healer carries the caster's spell-power elixir", spec.Spec)
 		}
+	}
+}
+
+// No Forever paladin can learn Sanctity Aura (spell 20218 has no
+// SkillLineAbility row), so the Retribution request must not run it.
+func TestRetributionPaladinRunsNoSanctityAura(t *testing.T) {
+	var player proto.Player
+	retributionPaladinOptions(&player)
+	if got := player.GetRetributionPaladin().GetOptions().GetAura(); got == proto.PaladinAura_SanctityAura {
+		t.Errorf("Retribution aura = %v, want no Sanctity Aura", got)
 	}
 }

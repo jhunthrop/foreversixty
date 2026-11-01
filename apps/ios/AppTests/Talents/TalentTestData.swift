@@ -20,6 +20,8 @@ enum TalentTestData {
     static let band60 = "34320003002000000-05153105022011501-200000000000000000"
     /// Obnoxious Yell's build in `me.json`: the level-60 path less Improved Bloodrage, 49 points.
     static let yoursTrees: [[Int]] = ["34320003002", "05153105022011501", "0"].map { TalentRules.ranks(ofTree: $0) }
+    /// `band60` without Fury's 5-point second talent: 46 points, 5 of `band50`'s missing, 10 stray.
+    static let strayAndShort = "34320003002000000-00153105022011501-200000000000000000"
 
     /// The spec's §4.4 vector: Elemental Shaman, level 60, Horde, band 60 raid.
     static let shamanGuide = "5510331300001350-030000000000000000-0533520000000000"

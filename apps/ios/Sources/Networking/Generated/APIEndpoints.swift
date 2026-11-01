@@ -64,6 +64,11 @@ public extension Endpoint where Response == Empty {
     static func deletePushToken(token: String) -> Endpoint {
         Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
     }
+
+    /// DELETE /v1/me/live-activities/{id}: End a live registration (dark, APP_WIDGETS)
+    static func deleteLiveActivity(id: Int64) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/live-activities/\(id)")
+    }
 }
 
 public extension Endpoint where Response == ReportList {
@@ -78,9 +83,51 @@ public extension Endpoint where Response == ReportList {
 
 public extension Endpoint where Response == Report {
     /// GET /v1/reports/{id}: A report and its fights
-    static func getReport(id: String) -> Endpoint {
-        Endpoint(method: .get, path: "/v1/reports/\(id)")
+    static func getReport(id: String, fold: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)", query: [
+            fold.map { URLQueryItem(name: "fold", value: "\($0)") },
+        ].compactMap { $0 })
     }
+}
+
+public extension Endpoint where Response == ReportMe {
+    /// GET /v1/reports/{id}/me: Your results in a report (W3-C2)
+    static func getReportMe(id: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/me")
+    }
+}
+
+public extension Endpoint where Response == FightMeters {
+    /// GET /v1/reports/{id}/fights/{n}/meters: A fight's meters (W3-C3)
+    static func getFightMeters(id: String, n: Int, metric: String? = nil, scope: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/fights/\(n)/meters", query: [
+            metric.map { URLQueryItem(name: "metric", value: "\($0)") },
+            scope.map { URLQueryItem(name: "scope", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachNight {
+    /// GET /v1/reports/{id}/coach/night: The night's coach line for one of your characters (W3-C4)
+    static func getCoachNight(id: String, player: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/coach/night", query: [
+            URLQueryItem(name: "player", value: "\(player)"),
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachReview {
+    /// GET /v1/reports/{id}/fights/{n}/coach: One pull's coach review for one of your characters (W3-C4)
+    static func getFightCoach(id: String, n: Int, player: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/reports/\(id)/fights/\(n)/coach", query: [
+            URLQueryItem(name: "player", value: "\(player)"),
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == CoachRecent {
+    /// GET /v1/me/coach/recent: The account's recent coach line and reviews (W3-C4)
+    static var getCoachRecent: Endpoint { Endpoint(method: .get, path: "/v1/me/coach/recent") }
 }
 
 public extension Endpoint where Response == SimList {
@@ -245,8 +292,24 @@ public extension Endpoint where Response == PushTokenRegistered {
     }
 }
 
+public extension Endpoint where Response == Widget {
+    /// GET /v1/me/widget: The home-screen and lock-screen snapshot (dark, APP_WIDGETS)
+    static func getWidget(character: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/me/widget", query: [
+            character.map { URLQueryItem(name: "character", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == LiveActivityRegistered {
+    /// POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS)
+    static func registerLiveActivity(_ body: LiveActivityRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/me/live-activities", body: body)
+    }
+}
+
 public extension Endpoint where Response == AppConfig {
-    /// GET /v1/app/config: What the apps read once at launch (dark, APP_API)
+    /// GET /v1/app/config: What the apps read once at launch (APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
 }
 
@@ -328,6 +391,11 @@ public enum ContractRoutes {
         FixtureRoute(.delete, "/v1/devices/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/reports", fixture: "reports.list", status: 200),
         FixtureRoute(.get, "/v1/reports/{id}", fixture: "reports.get", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/me", fixture: "reports.me", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/fights/{n}/meters", fixture: "reports.meters", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/coach/night", fixture: "coach.night", status: 200),
+        FixtureRoute(.get, "/v1/reports/{id}/fights/{n}/coach", fixture: "coach.fight", status: 200),
+        FixtureRoute(.get, "/v1/me/coach/recent", fixture: "coach.recent", status: 200),
         FixtureRoute(.get, "/v1/sims", fixture: "sims.list", status: 200),
         FixtureRoute(.get, "/v1/sims/{id}", fixture: "sims.result", status: 200),
         FixtureRoute(.post, "/v1/sims/{id}/seen", fixture: nil, status: 204),
@@ -353,6 +421,9 @@ public enum ContractRoutes {
         FixtureRoute(.patch, "/v1/me/notifications", fixture: "app.notifications", status: 200),
         FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
         FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
+        FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),
+        FixtureRoute(.post, "/v1/me/live-activities", fixture: "live.register", status: 201),
+        FixtureRoute(.delete, "/v1/me/live-activities/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
     ]
 

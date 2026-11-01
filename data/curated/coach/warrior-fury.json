@@ -1,6 +1,6 @@
 {
   "spec": "warrior-fury",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Bloodrage",
@@ -8,7 +8,7 @@
         2687
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/warrior.json#2687"
+      "verified": "1.60.1.70707/spellconst/warrior.json#2687"
     },
     {
       "family": "Death Wish",
@@ -16,7 +16,7 @@
         12328
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#12328"
+      "verified": "1.60.1.70707/spellconst/warrior.json#12328"
     },
     {
       "family": "Bloodthirst",
@@ -27,7 +27,7 @@
         23894
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/warrior.json#23894"
+      "verified": "1.60.1.70707/spellconst/warrior.json#23894"
     },
     {
       "family": "Whirlwind",
@@ -35,7 +35,7 @@
         1680
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/warrior.json#1680"
+      "verified": "1.60.1.70707/spellconst/warrior.json#1680"
     }
   ],
   "auras": [
@@ -53,7 +53,7 @@
       ],
       "name": "Battle Shout",
       "kind": "self_buff",
-      "verified": "1.60.1.70658/spellconst/warrior.json#25289"
+      "verified": "1.60.1.70707/spellconst/warrior.json#25289"
     }
   ],
   "downranks": [],

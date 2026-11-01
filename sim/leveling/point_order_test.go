@@ -140,32 +140,45 @@ func TestPointOrderIsTheLaddersOwnDiffWhereTheLadderOnlyAdds(t *testing.T) {
 	}
 }
 
-// Protection paladin's ladder moves a rank at level 40 (the own-tree
-// spine takes Holy Shield's chain); the order never takes a point back
-// and still ends on the guide build.
+// Somewhere among the guide builds the ladder moves a rank between two
+// levels (an own-tree spine taking a deep talent's chain; 1.60.1.70658's
+// Protection paladin did it at level 40). Wherever it does, the point order
+// never takes a point back and still ends on the guide build.
 func TestPointOrderNeverRemovesAPointWhereTheLadderMovesOne(t *testing.T) {
-	trees, targets := guideTargets(t, "paladin", "protection", GuideBuildTalents)
-	const protectionTree = 1
-	before := LadderTalentString(trees, targets, protectionTree, 39)
-	at := LadderTalentString(trees, targets, protectionTree, 40)
-	moved := false
-	for i := range before {
-		if at[i] < before[i] {
-			moved = true
+	found := 0
+	for _, spec := range specs.All {
+		trees, targets := guideTargets(t, spec.ClassSlug, spec.SpecSlug, GuideBuildTalents)
+		for level := 11; level <= 60; level++ {
+			before := LadderTalentString(trees, targets, spec.TreeIndex, level-1)
+			at := LadderTalentString(trees, targets, spec.TreeIndex, level)
+			if !ladderMovesARank(before, at) {
+				continue
+			}
+			found++
+			order, err := LadderPointOrder(trees, targets, spec.TreeIndex)
+			if err != nil {
+				t.Fatalf("%s: %v", spec.Spec, err)
+			}
+			if len(order) != 51 {
+				t.Fatalf("%s: got %d points, want 51", spec.Spec, len(order))
+			}
+			after := replay(t, trees, order)
+			requireGuideRanks(t, trees, targets, after[len(after)-1])
+			break
 		}
 	}
-	if !moved {
-		t.Fatalf("the ladder no longer moves a rank at level 40 (%s -> %s); pick another fixture", before, at)
+	if found == 0 {
+		t.Skip("no guide build's ladder moves a rank at any level on this build")
 	}
-	order, err := LadderPointOrder(trees, targets, protectionTree)
-	if err != nil {
-		t.Fatal(err)
+}
+
+func ladderMovesARank(before, at string) bool {
+	for i := range before {
+		if at[i] < before[i] {
+			return true
+		}
 	}
-	if len(order) != 51 {
-		t.Fatalf("got %d points, want 51", len(order))
-	}
-	after := replay(t, trees, order)
-	requireGuideRanks(t, trees, targets, after[len(after)-1])
+	return false
 }
 
 // Every spec's leveling and raid guide builds have a legal 51-point

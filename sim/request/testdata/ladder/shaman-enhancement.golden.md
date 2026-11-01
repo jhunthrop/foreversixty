@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 19.2 | 5 | other:attack/1=70.3, spell:3606=69.4, spell:8044=18.9, spell:3599=5.9, spell:20572=2.0 | {SpellID: 17364} |
-| 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 29.0 | 5 | other:attack/1=121.6, spell:6350=69.5, spell:8045=15.4, spell:6363=5.1, spell:20572=2.0 | {SpellID: 17364} |
-| 30 | 0000000000000000-255130030002000000-0000000000000000 | main_hand:6692 off_hand:4066 | 47.0 | 5 | other:attack/1=77.8, spell:6351=69.8, spell:8046=12.7, spell:6364=4.5, spell:20572=2.0 | {SpellID: 17364} |
-| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 65.4 | 7 | other:attack/1=91.9, spell:6351=63.0, spell:17364=22.6, spell:6364=4.0, spell:10412=2.0 | - |
-| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 71.8 | 9 | other:attack/1=112.9, spell:6352=65.4, spell:17364=21.7, spell:18107=4.8, spell:6365=3.7 | - |
-| 50 | 3200300000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 89.1 | 8 | other:attack/1=96.7, spell:10435=59.7, spell:17364=21.0, spell:10437=3.0, spell:10413=2.0 | - |
-| 60 | 3200330000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 140.6 | 8 | other:attack/1=114.5, spell:10436=68.9, spell:17364=23.0, spell:10438=3.4, spell:10414=2.0 | - |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 19.2 | 5 | other:attack/1=70.3, spell:3606=70.1, spell:8044=19.1, spell:3599=5.9, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 29.2 | 5 | other:attack/1=121.6, spell:6350=70.1, spell:8045=16.0, spell:6363=5.1, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 30 | 0000000000000000-255130030002000000-0000000000000000 | main_hand:6692 off_hand:4066 | 47.5 | 5 | other:attack/1=77.8, spell:6351=70.3, spell:8046=13.1, spell:6364=4.5, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 63.5 | 8 | other:attack/1=88.2, spell:6351=33.3, spell:17364=20.9, spell:10391=3.8, spell:6364=2.1 | - |
+| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 68.9 | 10 | other:attack/1=102.6, spell:6352=35.9, spell:17364=15.6, spell:10391=10.6, spell:18107=4.0 | - |
+| 50 | 3200300000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 100.1 | 9 | other:attack/1=94.6, spell:10435=53.8, spell:17364=20.6, spell:15207=12.1, spell:10437=2.7 | - |
+| 60 | 3200330000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 160.9 | 9 | other:attack/1=112.0, spell:10436=69.3, spell:17364=22.8, spell:15208=14.9, spell:10438=3.4 | - |
 
 ## Learned but unused (informational)
 
@@ -143,7 +143,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 408490)
-- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 40
@@ -154,7 +153,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 1238299)
-- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 50
@@ -165,7 +163,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238300)
-- Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
 ### Level 60
@@ -176,9 +173,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
 - Lava Burst (spell 1326047)
-- Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 
 ## Violations found in this run
 
-None.
+- shaman-enhancement level=10 kind=zero_casts spell="Lightning Bolt" id=529 authored=15208
+- shaman-enhancement level=20 kind=zero_casts spell="Lightning Bolt" id=915 authored=15208
+- shaman-enhancement level=30 kind=zero_casts spell="Lightning Bolt" id=943 authored=15208

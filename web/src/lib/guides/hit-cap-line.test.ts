@@ -24,12 +24,12 @@ function tree(...talents: [string, number][]): DecodedTreeView {
 }
 
 describe('guideHitCapLine', () => {
-  it('splits a caster’s cap into talent and gear: "Hit cap: 16% · 3% from Elemental Precision, 13% from gear"', () => {
+  it('splits a caster’s cap into talent and gear: "Hit cap: 16% · 3% from Precision, 13% from gear"', () => {
     const line = guideHitCapLine(
       { kind: 'spell', baseline: 0, spell: 16, school: { names: ['Frost'], hit: 3, to_cap: 13 } },
-      'Elemental Precision',
+      'Precision',
     );
-    expect(line?.text).toBe('Hit cap: 16% · 3% from Elemental Precision, 13% from gear');
+    expect(line?.text).toBe('Hit cap: 16% · 3% from Precision, 13% from gear');
   });
 
   it('says "talents" when the build names no school-hit talent', () => {
@@ -61,11 +61,11 @@ describe('guideHitCapLine', () => {
 
 describe('schoolHitTalent', () => {
   it('finds the school-hit talent the build spends points in', () => {
-    expect(schoolHitTalent([tree(['Frostbolt', 5], ['Elemental Precision', 3])])).toBe('Elemental Precision');
+    expect(schoolHitTalent([tree(['Frostbolt', 5], ['Precision', 3])])).toBe('Precision');
   });
 
   it('ignores one with no points and returns undefined when there is none', () => {
-    expect(schoolHitTalent([tree(['Elemental Precision', 0])])).toBeUndefined();
+    expect(schoolHitTalent([tree(['Precision', 0])])).toBeUndefined();
     expect(schoolHitTalent([])).toBeUndefined();
   });
 });

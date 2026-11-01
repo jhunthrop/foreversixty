@@ -149,9 +149,8 @@ var smokeBuildWarnings = map[string]map[string]string{
 			"loop: a real artifact of this bare build, not a defect in the gate.",
 	},
 	"druid-restoration": {
-		"{SpellID: 1238215}": "Wild Growth is a talent (sim/druid/wild_growth.go); this build takes none.",
-		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
-		"{SpellID: 18562}":   "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 17116}": "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
+		"{SpellID: 18562}": "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
 	},
 	"paladin-holy": {
 		"{SpellID: 20216}":   "Divine Favor is a talent (sim/paladin/divine_favor.go); this build takes none.",
@@ -187,19 +186,23 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"shaman-elemental": {
-		"{SpellID: 1238300}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
+		"{SpellID: 1326047}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
+		"{SpellID: 16246}":   "Clearcasting comes from Elemental Focus, a talent (sim/shaman/talents.go); this build takes none.",
 	},
 	"shaman-enhancement": {
-		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
+		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
+		"{SpellID: 408498}": "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
-		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go, Forever's tree); this build takes none.",
-		"{OtherID: 13}":      noPotionWarning,
-		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{OtherID: 13}":    noPotionWarning,
+		"{SpellID: 18288}": "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{SpellID: 18881}": "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
 	},
 	"warlock-demonology": {
-		"{OtherID: 13}":    noPotionWarning,
-		"{SpellID: 19028}": "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
+		"{OtherID: 13}":     noPotionWarning,
+		"{SpellID: 19028}":  "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
+		"{SpellID: 18788}":  "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
+		"{SpellID: 440873}": "Decimation's buff comes from its talent (sim/warlock/talents.go); this build takes none.",
 	},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
@@ -208,11 +211,16 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
 		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
 	},
+	"paladin-retribution": {
+		"{SpellID: 1310735}": "Unsealed Wrath is a talent (sim/paladin/unsealed_wrath.go, Forever's tree); this build takes none.",
+		"{SpellID: 20920}":   "Seal of Command is a talent (sim/paladin/sotc.go); this build takes none.",
+	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
 	},
 	"druid-balance": {
-		"{SpellID: 24977}": "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
+		"{SpellID: 24977}":  "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
+		"{SpellID: 408248}": "Eclipse's charge aura, which the Wrath weave reads, only exists with its Balance talent (sim/druid/talents.go's applyEclipse returns before registering it when Talents.Eclipse == 0); this build takes none.",
 	},
 	"druid-feral": {
 		"{SpellID: 1322605}": "Shifting Power is a Feral talent (hotfix-only spell 1322605, sim/druid/shifting_power.go, gated on Talents.ShiftingPower); this build takes none.",

@@ -52,6 +52,7 @@ struct SimsScreen: View {
             build = await dependencies.iconBuild()
             mayLinkToPlans = await dependencies.mayLinkToPlans()
             await store.load()
+            await followLiveRuns()
         }
         .task(id: scenePhase) { await poll() }
     }
@@ -73,7 +74,25 @@ struct SimsScreen: View {
             try? await Task.sleep(for: ServerRuns.pollInterval)
             guard !Task.isCancelled, store.isPolling else { continue }
             await store.pollOnce()
+            await followLiveRuns()
         }
+    }
+
+    /// Lane F14: each polled server run's Live Activity, from the poll's own answers.
+    private func followLiveRuns() async {
+        guard let liveSims = dependencies.liveSims, case let .loaded(content) = store.phase else { return }
+        let now = dependencies.now()
+        let runs: [SimLiveRun] = content.serverRows.compactMap { row in
+            guard let id = row.simId else { return nil }
+            let inFlight = ServerRuns.inFlightIDs([row], now: now).contains(id)
+            guard inFlight || store.progress[id] != nil else { return nil }
+            let face = SimRowFace(row, specs: dependencies.specs, now: now)
+            return SimLiveRun(
+                id: id, title: "\(face.specName) · \(face.kind)", progress: store.progress[id],
+                estimateSeconds: row.estimateSeconds, elapsedSeconds: ServerRuns.elapsedSeconds(row, now: now), dps: row.dps
+            )
+        }
+        await liveSims(runs)
     }
 }
 

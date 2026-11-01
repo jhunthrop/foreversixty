@@ -1,8 +1,10 @@
 // web/src/lib/planner/band-compare.test.ts
 import { describe, expect, it } from 'vitest';
 import talents from '../../fixtures/planner/talents/warrior.json';
+import contractWarrior from '../../../../docs/contracts/fixtures/app/cdn.talents.warrior.json';
 import {
   VISITOR_DEFAULT_BAND,
+  bandDiffStatus,
   bandForPanel,
   bandTreeRanksFrom,
   diffAgainstBand,
@@ -14,6 +16,27 @@ import { indexTalents } from './rules';
 import type { TalentFile } from './types';
 
 const index = indexTalents(talents as TalentFile);
+
+// The case list the apps run too (TalentRulesTests.swift, TalentRulesTest.kt): the real warrior
+// tree and the Fury BiS bands of the active build.
+const warrior = indexTalents(contractWarrior as TalentFile);
+/** The Fury BiS file's 50 to 59 Horde guide build (41 points). */
+const BAND_50 = '34200000000000000-05153105022011501-000000000000000000';
+/** The Fury BiS file's level-60 raid guide build (51 points). */
+const BAND_60 = '34320003002000000-05153105022011501-200000000000000000';
+/** A level-58 build (49 points) holding every point of BAND_50: the level-60 path less Improved Bloodrage. */
+const LEVEL_58 = '34320003002-05153105022011501-0';
+/** BAND_60 without Fury's 5-point second talent: 46 points, 5 of BAND_50's missing, 10 stray. */
+const STRAY_AND_SHORT = '34320003002000000-00153105022011501-200000000000000000';
+
+function ranksOf(talentIndex: typeof warrior, build: string): Map<number, number> {
+  const trees = bandTreeRanksFrom(build);
+  return new Map(
+    talentIndex.trees.flatMap((tree, t) =>
+      tree.talents.map((talent, i) => [talent.id, trees[t]?.[i] ?? 0] as [number, number]),
+    ),
+  );
+}
 
 describe('bandTreeRanksFrom', () => {
   it('splits a band talents string into one base-36 digit array per tree', () => {
@@ -41,10 +64,11 @@ describe('diffAgainstBand', () => {
     expect(result.bandRankById.get(1001)).toBe(3);
   });
 
-  it('counts the build’s points spent where the band spends none', () => {
+  it('an empty band: every build point is beyond its total, so none of them differ', () => {
     const result = diffAgainstBand(index, new Map([[1001, 3]]), '0-0-0');
-    expect(result.diffCount).toBe(3);
+    expect(result.diffCount).toBe(0);
     expect(result.missingCount).toBe(0);
+    expect(result.extraCount).toBe(3);
     expect([...result.diffTalentIds]).toEqual([1001]);
   });
 
@@ -75,6 +99,33 @@ describe('diffAgainstBand', () => {
     const result = diffAgainstBand(index, new Map(), '9-0-0');
     expect(result.bandRankById.get(1001)).toBe(3);
     expect(result.missingCount).toBe(3);
+  });
+});
+
+describe('diffAgainstBand: points beyond the band (shared case list)', () => {
+  it('the same build matches with nothing beyond', () => {
+    const result = diffAgainstBand(warrior, ranksOf(warrior, BAND_50), BAND_50);
+    expect(result).toMatchObject({ diffCount: 0, missingCount: 0, extraCount: 0 });
+    expect(bandDiffStatus(result)).toEqual({ kind: 'matches', beyond: 0 });
+  });
+
+  it('a build inside the band and short of it reads as points still to take', () => {
+    const result = diffAgainstBand(warrior, ranksOf(warrior, BAND_50), BAND_60);
+    expect(result).toMatchObject({ diffCount: 0, missingCount: 10, extraCount: 0 });
+    expect(bandDiffStatus(result)).toEqual({ kind: 'toTake', count: 10 });
+  });
+
+  it('level 58: 49 points holding the whole 41-point band match, 8 beyond the guide', () => {
+    const result = diffAgainstBand(warrior, ranksOf(warrior, LEVEL_58), BAND_50);
+    expect(result).toMatchObject({ diffCount: 0, missingCount: 0, extraCount: 8 });
+    expect(bandDiffStatus(result)).toEqual({ kind: 'matches', beyond: 8 });
+    expect(bandCompareCopy.beyondGuide(8)).toBe('+8 beyond the guide');
+  });
+
+  it('stray points differ only up to the band total: 10 stray − (46 − 41) = 5', () => {
+    const result = diffAgainstBand(warrior, ranksOf(warrior, STRAY_AND_SHORT), BAND_50);
+    expect(result).toMatchObject({ diffCount: 5, missingCount: 5, extraCount: 5 });
+    expect(bandDiffStatus(result)).toEqual({ kind: 'differs', count: 5, beyond: 5 });
   });
 });
 

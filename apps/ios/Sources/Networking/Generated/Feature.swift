@@ -20,6 +20,10 @@ public enum Feature: String, CaseIterable, Sendable {
     case premiumLink = "premium_link"
     /// F12: One search for items, characters, guides and talents, and the item page
     case search = "search"
+    /// F14: Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications
+    case widgets = "widgets"
+    /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
+    case reports = "reports"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -33,6 +37,8 @@ public enum Feature: String, CaseIterable, Sendable {
         case .notifications: false
         case .premiumLink: false
         case .search: false
+        case .widgets: false
+        case .reports: false
         }
     }
 }

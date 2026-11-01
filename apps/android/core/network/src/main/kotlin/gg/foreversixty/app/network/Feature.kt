@@ -21,4 +21,8 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     PremiumLink("premium_link", false),
     /** F12: One search for items, characters, guides and talents, and the item page */
     Search("search", false),
+    /** F14: Home-screen and lock-screen widgets, the raid and server-sim Live Activities, ongoing notifications */
+    Widgets("widgets", false),
+    /** F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach */
+    Reports("reports", false),
 }

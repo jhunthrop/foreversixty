@@ -1,6 +1,6 @@
 {
   "spec": "rogue-assassination",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Cold Blood",
@@ -8,7 +8,7 @@
         14177
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/rogue.json#14177"
+      "verified": "1.60.1.70707/spellconst/rogue.json#14177"
     }
   ],
   "auras": [
@@ -20,7 +20,7 @@
       ],
       "name": "Slice and Dice",
       "kind": "self_buff",
-      "verified": "1.60.1.70658/spellconst/rogue.json#6774"
+      "verified": "1.60.1.70707/spellconst/rogue.json#6774"
     }
   ],
   "downranks": [],
@@ -31,7 +31,7 @@
         5277
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/rogue.json#5277"
+      "verified": "1.60.1.70707/spellconst/rogue.json#5277"
     },
     {
       "family": "Vanish",
@@ -44,7 +44,7 @@
         1285372
       ],
       "talent": false,
-      "verified": "1.60.1.70658/spellconst/rogue.json#1285372"
+      "verified": "1.60.1.70707/spellconst/rogue.json#1285372"
     }
   ],
   "efficiency": []

@@ -12,7 +12,7 @@
 //     page has the site's 1.6 s mobile LCP budget, so nothing touches the engine until the
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
-import { loadItems, loadReference, loadTalents } from '../planner/load';
+import { loadItemsWithCurrentFallback, loadReference, loadTalents } from '../planner/load';
 import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim } from './api';
@@ -271,7 +271,13 @@ export function createSimStore(init: SimStoreInit) {
     phase = 'idle';
     itemsStatus = 'loading';
     try {
-      const file = await loadItems(outcome.character.tree_version, outcome.character.class_slug);
+      // The character's own build names its items; an item added since (an old export
+      // wearing it) takes the current build's name and icon.
+      const file = await loadItemsWithCurrentFallback(
+        outcome.character.tree_version,
+        init.treeVersion,
+        outcome.character.class_slug,
+      );
       items = toItemMap(file.items);
       itemsStatus = 'ready';
     } catch {

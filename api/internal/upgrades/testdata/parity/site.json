@@ -1,0 +1,122 @@
+{
+ "upgrades": [
+  {
+   "slot": "chest",
+   "pick_id": 252483,
+   "worn_id": 16721,
+   "worn_unknown": false,
+   "gain": 10.962396,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "feet",
+   "pick_id": 226881,
+   "worn_id": 16711,
+   "worn_unknown": false,
+   "gain": 7.618998,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "finger1",
+   "pick_id": 234202,
+   "worn_id": 9533,
+   "worn_unknown": false,
+   "gain": 8.219766,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "hands",
+   "pick_id": 272099,
+   "worn_id": 0,
+   "worn_unknown": false,
+   "gain": 11.054858,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "head",
+   "pick_id": 226887,
+   "worn_id": 279253,
+   "worn_unknown": false,
+   "gain": 11.155828,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "legs",
+   "pick_id": 237819,
+   "worn_id": 239541,
+   "worn_unknown": false,
+   "gain": -0.787896,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "main_hand",
+   "pick_id": 250619,
+   "worn_id": 13246,
+   "worn_unknown": false,
+   "gain": null,
+   "not_sim_checked": true
+  },
+  {
+   "slot": "neck",
+   "pick_id": 19491,
+   "worn_id": 23023,
+   "worn_unknown": false,
+   "gain": 4.897246,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "ranged",
+   "pick_id": 279273,
+   "worn_id": 16004,
+   "worn_unknown": false,
+   "gain": 23.116235,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "trinket1",
+   "pick_id": 249469,
+   "worn_id": 0,
+   "worn_unknown": false,
+   "gain": null,
+   "not_sim_checked": false
+  },
+  {
+   "slot": "wrist",
+   "pick_id": 226885,
+   "worn_id": 999999,
+   "worn_unknown": true,
+   "gain": null,
+   "not_sim_checked": false
+  }
+ ],
+ "already_best": [
+  {
+   "slot": "shoulder",
+   "item_id": 16468,
+   "item_name": "Field Marshal's Chain Spaulders"
+  },
+  {
+   "slot": "back",
+   "item_id": 13340,
+   "item_name": "Cape of the Black Baron"
+  },
+  {
+   "slot": "waist",
+   "item_id": 20216,
+   "item_name": "Belt of Preserved Heads"
+  },
+  {
+   "slot": "finger2",
+   "item_id": 272408,
+   "item_name": "Cutthroat's Signet"
+  },
+  {
+   "slot": "trinket2",
+   "item_id": 19287,
+   "item_name": "Darkmoon Card: Heroism"
+  }
+ ],
+ "total_gain": 76.237431,
+ "not_sim_checked_count": 1,
+ "unit": "dps"
+}

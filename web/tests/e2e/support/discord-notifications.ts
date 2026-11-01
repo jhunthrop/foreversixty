@@ -66,6 +66,12 @@ export interface DiscordRouteOptions {
   testFailure?: { status: number; message: string };
 }
 
+/** What the API stores and answers for a PUT: the saved block carrying the events it was sent,
+ *  so the page's patch of `me` never puts a switch back to its old position. */
+function savedBlock(put: { events?: DiscordNotifications['events'] }): DiscordNotifications {
+  return put.events === undefined ? discordBlock() : discordBlock({ events: put.events });
+}
+
 function fulfillFailure(route: Route, failed: { status: number; message: string }): Promise<void> {
   return route.fulfill({
     status: failed.status,
@@ -85,12 +91,13 @@ export async function routeDiscordNotifications(
       seen.deletes += 1;
       return route.fulfill({ status: 204 });
     }
-    seen.puts.push(request.postDataJSON());
+    const put = request.postDataJSON() as { events?: DiscordNotifications['events'] };
+    seen.puts.push(put);
     if (options.putFailure !== undefined) return fulfillFailure(route, options.putFailure);
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: envelopeBody(options.block ?? discordBlock()),
+      body: envelopeBody(options.block ?? savedBlock(put)),
     });
   });
   await page.route(DISCORD_TEST_URL_GLOB, (route) => {

@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "data": {
+    "report_id": "ewlrx3enxbeb",
+    "fight_index": 9,
+    "player_key": "us/pvp/obnoxious-yell",
+    "spec": "Fury",
+    "role": "dps",
+    "size": 40,
+    "kill": true,
+    "status": "ready",
+    "source": "model",
+    "busy": false,
+    "access": "full",
+    "persona": {
+      "label": "Your Fury coach",
+      "status": "full"
+    },
+    "reviewed_at": "2026-12-15T03:20:00Z",
+    "review": {
+      "opening": "A clean kill with one habit to fix: Bloodthirst sat ready while you had the rage for it.",
+      "fixFirst": {
+        "finding": "f1",
+        "title": "Bloodthirst: 9 casts lost",
+        "why": "Bloodthirst is the button the Fury rotation is built around, and 9 of a possible 40 went unused while you had the rage, longest at 1:12–1:25. At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.",
+        "drill": "drill.core_casts",
+        "drillText": "On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn."
+      },
+      "thenFix": [
+        {
+          "finding": "f6",
+          "title": "No flask at the pull",
+          "why": "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss."
+        },
+        {
+          "finding": "f4",
+          "title": "Rage full for 14 seconds",
+          "why": "When the bar is full, Heroic Strike turns rage into damage instead of losing it."
+        }
+      ],
+      "doingWell": [
+        {
+          "strength": "s1",
+          "text": "You were alive the whole fight."
+        },
+        {
+          "strength": "s2",
+          "text": "Battle Shout was up 100% of the fight, against 97% for the top 25."
+        }
+      ],
+      "couldntCheck": [
+        "Talents and race: Forever logs don't record them.",
+        "Range and movement: the log doesn't say where you stood."
+      ]
+    },
+    "basis_labels": [
+      "Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
+      "From the character sheet in your log, against the site's consumable list for damage dealers.",
+      "Measured against your own rage bar."
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

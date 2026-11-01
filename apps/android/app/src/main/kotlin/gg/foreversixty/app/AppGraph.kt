@@ -36,6 +36,8 @@ import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.update.InstallId
+import gg.foreversixty.app.widgets.WidgetsFeature
+import gg.foreversixty.app.auth.session.me
 
 /**
  * The app's object graph, built once per process and passed down explicitly. Feature lanes add
@@ -101,6 +103,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         talents,
         statics,
         isSimsOn = { isAvailable(Feature.Sims) },
+        isReportsOn = { isAvailable(Feature.Reports) },
         mayLinkToPlans = {
             plansLink.resolve()
             plansLink.mayLink.value
@@ -148,8 +151,27 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             home.sims?.cache?.removeAll()
             statics.deleteAll()
             search.clear()
+            home.reports?.cache?.removeAll()
+            widgets?.signOut()
         },
     )
+
+    /**
+     * Lane F14: the widgets, the tile and the ongoing notifications, all from one snapshot; null
+     * while the `widgets` switch is off (WidgetComponents then keeps the widgets out of the picker).
+     */
+    val widgets: WidgetsFeature? = if (isAvailable(Feature.Widgets)) {
+        WidgetsFeature(
+            context = context.applicationContext,
+            apiClient = apiClient,
+            raids = raids.service,
+            signedIn = { tokens.bearerToken() != null },
+            currentCharacter = { session.currentCharacter()?.key ?: session.pickedKey.value },
+            serverSims = { session.phase.value.me?.entitlements?.serverSims == true },
+        )
+    } else {
+        null
+    }.also { feature -> home.sims?.liveProgress = feature?.let { it::onSimProgress } }
 
     /** Fixture builds sign in against the contract fixtures; live builds open a Custom Tab. */
     val account = AccountDeps(
@@ -164,6 +186,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         versionCode = identity.build,
         dataBuild = { appConfig.current?.activeBuild },
         plansLink = plansLink,
+        liveSurfaces = widgets?.settings,
     )
 
     /**

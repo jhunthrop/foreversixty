@@ -19,18 +19,26 @@
   ],
   "priorityList": [
     {
-      "notes": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast. It carries no Flame Shock condition because the rotation does not keep Flame Shock up: under the raid preset the shock costs 410 mana for about 940 damage against Lightning Bolt's 220 for about 835, the character runs dry either way, and every Flame Shock variant swept (always kept up, kept up above 50/70/90% mana) lost to leaving it out. The +20% Flame Shock bonus is therefore never collected.",
+      "notes": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight. 10 s cooldown, 2.0 s cast with Elemental Alacrity.",
       "action": {
+        "condition": {
+          "dotIsActive": {
+            "spellId": {
+              "spellId": 29228,
+              "rank": 6
+            }
+          }
+        },
         "castSpell": {
           "spellId": {
-            "spellId": 1238300,
-            "rank": 3
+            "spellId": 1326047,
+            "rank": 4
           }
         }
       }
     },
     {
-      "notes": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
+      "notes": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -58,6 +66,30 @@
     {
       "action": {
         "autocastOtherCooldowns": {}
+      },
+      "notes": "Elemental Mastery and the trinkets go on cooldown here. Forever's Elemental Mastery takes 0.5 sec off Lightning Bolt and Lava Burst for 15 seconds (a 1.5 sec Lightning Bolt with Elemental Alacrity) and removes Chain Lightning's cooldown; the next-spell crit it gave in 1.12 is gone."
+    },
+    {
+      "notes": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+      "action": {
+        "condition": {
+          "not": {
+            "val": {
+              "dotIsActive": {
+                "spellId": {
+                  "spellId": 29228,
+                  "rank": 6
+                }
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 29228,
+            "rank": 6
+          }
+        }
       }
     },
     {
@@ -169,36 +201,43 @@
       }
     },
     {
+      "notes": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 16246
+                  }
+                }
+              },
+              {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 16246
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 408345,
+            "rank": 5
+          }
+        }
+      }
+    },
+    {
       "notes": "Lightning Bolt is the rest of the single-target rotation.",
       "action": {
         "castSpell": {
           "spellId": {
             "spellId": 15208,
             "rank": 10
-          }
-        }
-      }
-    },
-    {
-      "notes": "Earth Shock sits below Lightning Bolt, so it only fires when Lightning Bolt cannot be cast; the search found Lightning Bolt on every global beats shocking at low mana.",
-      "action": {
-        "condition": {
-          "cmp": {
-            "op": "OpGe",
-            "lhs": {
-              "currentManaPercent": {}
-            },
-            "rhs": {
-              "const": {
-                "val": "30%"
-              }
-            }
-          }
-        },
-        "castSpell": {
-          "spellId": {
-            "spellId": 10414,
-            "rank": 7
           }
         }
       }

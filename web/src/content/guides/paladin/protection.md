@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70658:paladin:dwarf:50003/5530513321301051/5:'
+build: 'FS1:1.60.1.70707:paladin:dwarf:05005/15302102513501031/5003:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
@@ -21,7 +21,7 @@ statPriority:
     Expertise,
   ]
 description: 'Talents, rotation, stats, gear, races, and professions for Protection Paladin tanking in Forever.'
-updated: 2026-10-07
+updated: 2026-10-31
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -48,7 +48,7 @@ Protection is the Paladin tanking tree: Seal of Fury and Judgement hold threat f
 ### Strengths
 
 - Judgement taunts from farther away than other tanks can
-- Seal of Fury returns mana and gives a tanking Seal
+- Seal of Fury gives a tanking Seal with a small absorb on every proc
 - Holy Shield raises block and adds threat on every block
 - Righteous Fury lowers damage taken, and Templar's Bulwark gives an emergency absorb
 
@@ -65,27 +65,27 @@ Protection is the Paladin tanking tree: Seal of Fury and Judgement hold threat f
 
 ## Talents and builds
 
-This build spends 38 points in Protection, 5 in Retribution and 8 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. An earlier draft of it put the points past Holy Shield into the Holy tree's healing talents; pricing each choice in the simulator showed that Deflection, Sacred Duty and Iron Creed together cut the chance of death in the tank fight many times over, which is why the list below spends them where it does.
+This build spends 33 points in Protection, 8 in Retribution and 10 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. Pricing each choice in the simulator's tank fight is what put the points past the Protection core into Deflection, Sacred Duty, Iron Creed and Shieldsworn.
 
-- **Toughness** — more armor from your items.
+- **Divine Intellect** — one point on the first row, for a little more mana.
 - **Redoubt** — a chance, whenever a melee attack damages you, to gain extra Block chance for a short window or until it has absorbed a few blocks.
 - **Precision** — hit, so the Judgement and Holy Strike that carry your threat land.
-- **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
-- **Improved Seal of Fury** — when Seal of Fury's shield is spent, you get mana back; it is the talent that makes the shield a mana source.
-- **Improved Righteous Fury** — while Righteous Fury is on, all damage you take is reduced. In Forever it is a mitigation talent, not a threat one.
+- **Sacred Duty** — shorter cooldowns on your three emergency defensives, and a shorter Forbearance.
+- **Templar's Bulwark** — an activated absorb shield worth your whole health bar, followed by Forbearance. Swift Judgement requires it.
 - **Shield Specialization** — a stronger shield absorb and mana back on a Block, no more than once every few seconds.
-- **Sacred Duty** — more total Stamina, and shorter cooldowns on your three emergency defensives.
-- **Swift Judgement** — finishes Judgement's cooldown and makes the next one free.
-- **One-Handed Weapon Specialization** — more damage with the one-hander you tank with.
-- **Templar's Bulwark** — an activated absorb shield worth a large share of your health, followed by Forbearance. It is one point because Holy Shield requires it.
-- **Iron Creed** — more threat on Holy Strike, and while Righteous Fury is on, Holy Strike also cuts the damage you take for a few seconds. With Holy Strike on its ten second cooldown that is a damage cut about half the time, the largest single mitigation gain left after the 31 points.
-- **Holy Shield** — the 31-point talent: more Block for a short window, Holy damage on every Block, and a little extra threat on that damage.
+- **Toughness** — more armor from your items.
+- **Swift Judgement** — a second Judgement of your Seal on its own one minute cooldown, free and off the global cooldown.
+- **Improved Righteous Fury** — while Righteous Fury is on, all damage you take is reduced. In Forever it is a mitigation talent, not a threat one.
+- **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
+- **Holy Shield** — now on the 21-point row: more Block for a short window, Holy damage on every Block, and a little extra threat on that damage.
+- **Iron Creed** — more threat on Holy Strike, and while Righteous Fury is on, Holy Strike also cuts the damage you take for a few seconds.
+- **Shieldsworn** — the capstone: Holy Strike's cooldown drops to six seconds, which keeps Iron Creed up all the time, and each Holy Strike also fires Holy Shield's damage and Shield Specialization's mana while Holy Shield is up. It is the largest single gain in the build, mostly in threat.
 
-**Retribution**: all five points in **Deflection**, five percent more Parry. It is the only parry a paladin can get from a talent, and it sits in the Retribution tree.
+**Retribution**: five points in **Deflection**, five percent more Parry and the only parry a paladin can get from a talent, then **Conviction** for critical strike on every attack and spell.
 
-**Holy**, the eight that remain: Divine Strength for the raw Strength, and Improved Seals for more Seal of Fury and Judgement damage.
+**Holy**: **Divine Strength** for the raw Strength, and **Improved Seals** for more Seal of Fury and Judgement damage.
 
-Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit; priced in the simulator it adds threat but no survival), Guardian's Favor and Improved Hammer of Justice (utility). Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own; the paladin's own contribution to its armor is Devotion Aura, which the simulator keeps on.
+Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit; priced in the simulator it adds less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice (utility). Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own; the paladin's own contribution to its armor is Devotion Aura, which the simulator keeps on.
 
 Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
@@ -96,8 +96,8 @@ This is the rotation the simulator runs. It was measured in the simulator's tank
 1. **Righteous Fury** is a setting, not a button: keep it on. It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take. A Righteous-Fury-less rotation of the same gear makes far less threat.
 2. **Seal of Fury** up. Judgement no longer consumes your seal in Forever, so you recast the seal only when it runs out, not after every Judgement.
 3. **Holy Shield** on cooldown. It is both the best mitigation you have and the best use of your mana, so every other spell leaves its cost in the pool.
-4. **Hammer of the Righteous** and **Holy Strike** on their cooldowns, the first of which is the largest single threat gain in this list.
-5. **Judgement** on cooldown; with Swift Judgement the next one is free.
+4. **Hammer of the Righteous** and **Holy Strike** on their cooldowns, the first of which is the largest single threat gain in this list; with Shieldsworn, Holy Strike comes back every six seconds.
+5. **Judgement** on cooldown, and **Swift Judgement** whenever it is ready: it is a second Judgement on its own cooldown.
 6. **Consecration** only with spare mana, where it pays for itself in threat.
 
 Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing: the simulator uses them on low health, where they cut the chance of death on a harder boss, and they never fire on the standard fight. Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.

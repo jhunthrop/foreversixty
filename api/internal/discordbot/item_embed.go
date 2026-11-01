@@ -2,13 +2,13 @@ package discordbot
 
 import (
 	"fmt"
-	"math"
 	"net/url"
 	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // ItemFacts is what an item embed shows. Name, Quality, ItemLevel and the icon come from the
@@ -24,9 +24,6 @@ type ItemFacts struct {
 	Source    string
 	URL       string
 }
-
-// minusSign is U+2212, the SimC convention for a negative DPS figure.
-const minusSign = "−"
 
 // lineJoin joins the parts of an item embed's lines.
 const lineJoin = " · "
@@ -101,19 +98,10 @@ func joinPresent(parts ...string) string {
 }
 
 // signedDPS is a DPS gain or loss, one decimal, with its sign: "+9.2 DPS", "−15.0 DPS".
-func signedDPS(v float64) string { return signedFigure(v, "DPS") }
+func signedDPS(v float64) string { return upgrades.SignedFigure(v, "DPS") }
 
 // signedPoints is a Forever Score gain: "+12.4 points".
-func signedPoints(v float64) string { return signedFigure(v, pointsWord) }
-
-func signedFigure(v float64, unit string) string {
-	v = math.Round(v*10) / 10
-	sign := "+"
-	if v < 0 {
-		sign, v = minusSign, -v
-	}
-	return fmt.Sprintf("%s%.1f %s", sign, v, unit)
-}
+func signedPoints(v float64) string { return upgrades.SignedFigure(v, pointsWord) }
 
 // closeEmbeds puts footer and the time on the last embed alone (spec §3.3.0).
 func closeEmbeds(embeds []notify.Embed, footer string, at time.Time) {

@@ -14,11 +14,11 @@ import (
 // talents, by their client names, to land in all three engine trees.
 func paladinTrees() []leveling.TalentTree {
 	return []leveling.TalentTree{
-		{Position: 0, Talents: []leveling.TalentNode{{ID: 105639, Name: "Divine Strength", MaxRank: 5}}},
+		{Position: 0, Talents: []leveling.TalentNode{{ID: 113630, Name: "Divine Strength", MaxRank: 5}}},
 		{Position: 1, Talents: []leveling.TalentNode{{ID: 105630, Name: "Toughness", MaxRank: 5}}},
 		{Position: 2, Talents: []leveling.TalentNode{
-			{ID: 110882, Name: "Champion of the Light", Tier: 5, Column: 1, MaxRank: 3},
-			{ID: 105692, Name: "Twist of Light", Tier: 6, Column: 1, MaxRank: 1},
+			{ID: 110882, Name: "Champion of the Light", Tier: 5, Column: 2, MaxRank: 5},
+			{ID: 105692, Name: "Unsealed Wrath", Tier: 6, Column: 1, MaxRank: 1},
 		}},
 	}
 }
@@ -42,20 +42,21 @@ func paladinLayout(t *testing.T) Layout {
 }
 
 // A renamed talent keeps its node id, and the id is what is matched:
-// druid node 104949 is Primal Bite. Before the engine's proto was
-// regenerated from the live trees (2026-10-07) the engine called that
-// field "mangle".
+// druid node 104956 is Primal Bite on 1.60.1.70707 (the hotfixed rework
+// moved it from node 104949, which is now Lacerate). Before the engine's
+// proto was regenerated from the live trees (2026-10-07) the engine called
+// Primal Bite's field "mangle".
 func TestEncodeMatchesByIDNotName(t *testing.T) {
 	l, err := ForClass(engineDir(t), "druid")
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := l.FieldFor(1, leveling.TalentNode{ID: 104949, Name: "Primal Bite"})
+	f, err := l.FieldFor(1, leveling.TalentNode{ID: 104956, Name: "Primal Bite"})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if f.Name != "primal_bite" {
-		t.Fatalf("node 104949 -> %q, want primal_bite", f.Name)
+		t.Fatalf("node 104956 -> %q, want primal_bite", f.Name)
 	}
 }
 
@@ -64,13 +65,13 @@ func TestEncodeMatchesByIDNotName(t *testing.T) {
 // position each field happens to sit at in this engine's message.
 func TestEncodeRoundTripsThroughTheEngine(t *testing.T) {
 	l := paladinLayout(t)
-	s, err := l.Encode(paladinTrees(), map[int]int{105639: 5, 105630: 3, 110882: 2, 105692: 1})
+	s, err := l.Encode(paladinTrees(), map[int]int{113630: 5, 105630: 3, 110882: 2, 105692: 1})
 	if err != nil {
 		t.Fatal(err)
 	}
 	got := &proto.PaladinTalents{}
 	core.FillTalentsProto(got.ProtoReflect(), s, paladin.TalentTreeSizes)
-	if got.DivineStrength != 5 || got.Toughness != 3 || got.ChampionOfTheLight != 2 || !got.TwistOfLight {
+	if got.DivineStrength != 5 || got.Toughness != 3 || got.ChampionOfTheLight != 2 || !got.UnsealedWrath {
 		t.Fatalf("engine read %q as %+v", s, got)
 	}
 }

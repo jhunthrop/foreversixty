@@ -1,6 +1,6 @@
 {
   "spec": "shaman-enhancement",
-  "build": "1.60.1.70658",
+  "build": "1.60.1.70707",
   "core": [
     {
       "family": "Stormstrike",
@@ -9,7 +9,7 @@
         17364
       ],
       "talent": true,
-      "verified": "1.60.1.70658/spellconst/shaman.json#17364"
+      "verified": "1.60.1.70707/spellconst/shaman.json#17364"
     }
   ],
   "auras": [],

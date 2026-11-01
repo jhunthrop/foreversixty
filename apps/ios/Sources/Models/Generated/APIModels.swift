@@ -1374,6 +1374,321 @@ public struct ClassInfo: Codable, Sendable, Equatable {
     }
 }
 
+public struct CoachFixFirst: Codable, Sendable, Equatable {
+    public let finding: String?
+    public let title: String
+    public let why: String
+    public let drill: String?
+    public let drillText: String
+
+    public init(
+        finding: String? = nil,
+        title: String,
+        why: String,
+        drill: String? = nil,
+        drillText: String
+    ) {
+        self.finding = finding
+        self.title = title
+        self.why = why
+        self.drill = drill
+        self.drillText = drillText
+    }
+}
+
+public struct CoachLastRaid: Codable, Sendable, Equatable {
+    public let zone: String?
+    public let foughtAt: Date?
+    public let reportId: String?
+    public let findingCount: Int?
+    public let first: CoachLastRaidFirst?
+    public let url: String?
+
+    public init(
+        zone: String? = nil,
+        foughtAt: Date? = nil,
+        reportId: String? = nil,
+        findingCount: Int? = nil,
+        first: CoachLastRaidFirst? = nil,
+        url: String? = nil
+    ) {
+        self.zone = zone
+        self.foughtAt = foughtAt
+        self.reportId = reportId
+        self.findingCount = findingCount
+        self.first = first
+        self.url = url
+    }
+}
+
+public struct CoachLastRaidFirst: Codable, Sendable, Equatable {
+    public let stem: String?
+    public let onPulls: Int?
+    public let of: Int?
+
+    public init(
+        stem: String? = nil,
+        onPulls: Int? = nil,
+        of: Int? = nil
+    ) {
+        self.stem = stem
+        self.onPulls = onPulls
+        self.of = of
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case stem
+        case onPulls = "on"
+        case of
+    }
+}
+
+/// The night line; null when the night has none.
+public struct CoachNight: Codable, Sendable, Equatable {
+    public let stem: String
+    public let onPulls: Int
+    public let of: Int
+    public let findingCount: Int
+    /// The pull whose review the coach card shows
+    public let fightIndex: Int
+
+    public init(
+        stem: String,
+        onPulls: Int,
+        of: Int,
+        findingCount: Int,
+        fightIndex: Int
+    ) {
+        self.stem = stem
+        self.onPulls = onPulls
+        self.of = of
+        self.findingCount = findingCount
+        self.fightIndex = fightIndex
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case stem
+        case onPulls = "on"
+        case of
+        case findingCount
+        case fightIndex
+    }
+}
+
+public struct CoachPersona: Codable, Sendable, Equatable {
+    public let label: String
+    public let status: String
+
+    public init(
+        label: String,
+        status: String
+    ) {
+        self.label = label
+        self.status = status
+    }
+}
+
+/// The account's recent coach line and reviews (premium); free accounts get reviews [].
+public struct CoachRecent: Codable, Sendable, Equatable {
+    public let lastRaid: CoachLastRaid?
+    public let pending: Bool
+    public let reviews: [CoachRecentReview]
+
+    public init(
+        lastRaid: CoachLastRaid? = nil,
+        pending: Bool,
+        reviews: [CoachRecentReview] = []
+    ) {
+        self.lastRaid = lastRaid
+        self.pending = pending
+        self.reviews = reviews
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        lastRaid = try c.decodeIfPresent(CoachLastRaid.self, forKey: .lastRaid)
+        pending = try c.decode(Bool.self, forKey: .pending)
+        reviews = try c.decodeIfPresent([CoachRecentReview].self, forKey: .reviews) ?? []
+    }
+}
+
+public struct CoachRecentFixFirst: Codable, Sendable, Equatable {
+    public let title: String?
+
+    public init(
+        title: String? = nil
+    ) {
+        self.title = title
+    }
+}
+
+public struct CoachRecentReview: Codable, Sendable, Equatable {
+    public let reportId: String
+    public let fightIndex: Int
+    public let playerKey: String
+    public let spec: String
+    public let boss: String
+    public let kill: Bool
+    public let source: String
+    public let generatedAt: Date
+    public let fixFirst: CoachRecentFixFirst?
+
+    public init(
+        reportId: String,
+        fightIndex: Int,
+        playerKey: String,
+        spec: String,
+        boss: String,
+        kill: Bool,
+        source: String,
+        generatedAt: Date,
+        fixFirst: CoachRecentFixFirst? = nil
+    ) {
+        self.reportId = reportId
+        self.fightIndex = fightIndex
+        self.playerKey = playerKey
+        self.spec = spec
+        self.boss = boss
+        self.kill = kill
+        self.source = source
+        self.generatedAt = generatedAt
+        self.fixFirst = fixFirst
+    }
+}
+
+/// One pull's coach review (the full answer; a free owner never reaches the app's card). The apps print the text as given and never edit it.
+public struct CoachReview: Codable, Sendable, Equatable {
+    public let reportId: String
+    public let fightIndex: Int
+    public let playerKey: String
+    public let spec: String
+    public let role: String?
+    public let size: Int?
+    public let kill: Bool?
+    /// ready, writing, preparing, failed, ...
+    public let status: String
+    public let source: String
+    public let busy: Bool
+    public let access: String
+    public let persona: CoachPersona
+    public let reviewedAt: Date
+    public let review: CoachReviewDoc
+    public let basisLabels: [String]
+
+    public init(
+        reportId: String,
+        fightIndex: Int,
+        playerKey: String,
+        spec: String,
+        role: String? = nil,
+        size: Int? = nil,
+        kill: Bool? = nil,
+        status: String,
+        source: String,
+        busy: Bool,
+        access: String,
+        persona: CoachPersona,
+        reviewedAt: Date,
+        review: CoachReviewDoc,
+        basisLabels: [String] = []
+    ) {
+        self.reportId = reportId
+        self.fightIndex = fightIndex
+        self.playerKey = playerKey
+        self.spec = spec
+        self.role = role
+        self.size = size
+        self.kill = kill
+        self.status = status
+        self.source = source
+        self.busy = busy
+        self.access = access
+        self.persona = persona
+        self.reviewedAt = reviewedAt
+        self.review = review
+        self.basisLabels = basisLabels
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        reportId = try c.decode(String.self, forKey: .reportId)
+        fightIndex = try c.decode(Int.self, forKey: .fightIndex)
+        playerKey = try c.decode(String.self, forKey: .playerKey)
+        spec = try c.decode(String.self, forKey: .spec)
+        role = try c.decodeIfPresent(String.self, forKey: .role)
+        size = try c.decodeIfPresent(Int.self, forKey: .size)
+        kill = try c.decodeIfPresent(Bool.self, forKey: .kill)
+        status = try c.decode(String.self, forKey: .status)
+        source = try c.decode(String.self, forKey: .source)
+        busy = try c.decode(Bool.self, forKey: .busy)
+        access = try c.decode(String.self, forKey: .access)
+        persona = try c.decode(CoachPersona.self, forKey: .persona)
+        reviewedAt = try c.decode(Date.self, forKey: .reviewedAt)
+        review = try c.decode(CoachReviewDoc.self, forKey: .review)
+        basisLabels = try c.decodeIfPresent([String].self, forKey: .basisLabels) ?? []
+    }
+}
+
+public struct CoachReviewDoc: Codable, Sendable, Equatable {
+    public let opening: String
+    public let fixFirst: CoachFixFirst?
+    public let thenFix: [CoachThen]
+    public let doingWell: [CoachWell]
+    public let couldntCheck: [String]
+
+    public init(
+        opening: String,
+        fixFirst: CoachFixFirst? = nil,
+        thenFix: [CoachThen] = [],
+        doingWell: [CoachWell] = [],
+        couldntCheck: [String] = []
+    ) {
+        self.opening = opening
+        self.fixFirst = fixFirst
+        self.thenFix = thenFix
+        self.doingWell = doingWell
+        self.couldntCheck = couldntCheck
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        opening = try c.decode(String.self, forKey: .opening)
+        fixFirst = try c.decodeIfPresent(CoachFixFirst.self, forKey: .fixFirst)
+        thenFix = try c.decodeIfPresent([CoachThen].self, forKey: .thenFix) ?? []
+        doingWell = try c.decodeIfPresent([CoachWell].self, forKey: .doingWell) ?? []
+        couldntCheck = try c.decodeIfPresent([String].self, forKey: .couldntCheck) ?? []
+    }
+}
+
+public struct CoachThen: Codable, Sendable, Equatable {
+    public let finding: String?
+    public let title: String
+    public let why: String
+
+    public init(
+        finding: String? = nil,
+        title: String,
+        why: String
+    ) {
+        self.finding = finding
+        self.title = title
+        self.why = why
+    }
+}
+
+public struct CoachWell: Codable, Sendable, Equatable {
+    public let strength: String?
+    public let text: String
+
+    public init(
+        strength: String? = nil,
+        text: String
+    ) {
+        self.strength = strength
+        self.text = text
+    }
+}
+
 /// One substitution set's result.
 public struct Combo: Codable, Sendable, Equatable {
     public let substitutions: [Substitution]
@@ -1582,6 +1897,8 @@ public struct FightEntry: Codable, Sendable, Equatable {
     public let groupDeaths: Int?
     /// Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was
     public let group: [String]?
+    /// What a wipe got the boss down to, in percent; absent on a kill and on trash, -1 when the log never showed the boss
+    public let bossHealthPct: Double?
     public let verified: Bool
 
     public init(
@@ -1603,6 +1920,7 @@ public struct FightEntry: Codable, Sendable, Equatable {
         groupKills: Int? = nil,
         groupDeaths: Int? = nil,
         group: [String]? = nil,
+        bossHealthPct: Double? = nil,
         verified: Bool
     ) {
         self.index = index
@@ -1623,6 +1941,7 @@ public struct FightEntry: Codable, Sendable, Equatable {
         self.groupKills = groupKills
         self.groupDeaths = groupDeaths
         self.group = group
+        self.bossHealthPct = bossHealthPct
         self.verified = verified
     }
 
@@ -1646,7 +1965,47 @@ public struct FightEntry: Codable, Sendable, Equatable {
         groupKills = try c.decodeIfPresent(Int.self, forKey: .groupKills)
         groupDeaths = try c.decodeIfPresent(Int.self, forKey: .groupDeaths)
         group = try c.decodeIfPresent([String].self, forKey: .group)
+        bossHealthPct = try c.decodeIfPresent(Double.self, forKey: .bossHealthPct)
         verified = try c.decode(Bool.self, forKey: .verified)
+    }
+}
+
+/// GET /v1/reports/{id}/fights/{n}/meters (W3-C3). Per-second figures are the total over the player's time in the folded pulls, rounded to hundredths (the web's night.ts arithmetic).
+public struct FightMeters: Codable, Sendable, Equatable {
+    /// The fight, or the trash group's key
+    public let fightIndex: Int
+    public let scope: String
+    public let metric: String
+    /// false for a trash group
+    public let kill: Bool
+    public let durationMs: Int64
+    /// Sorted high to low by the metric's per-second figure; a player with none of it is left off.
+    public let players: [MeterPlayer]
+
+    public init(
+        fightIndex: Int,
+        scope: String,
+        metric: String,
+        kill: Bool,
+        durationMs: Int64,
+        players: [MeterPlayer] = []
+    ) {
+        self.fightIndex = fightIndex
+        self.scope = scope
+        self.metric = metric
+        self.kill = kill
+        self.durationMs = durationMs
+        self.players = players
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        fightIndex = try c.decode(Int.self, forKey: .fightIndex)
+        scope = try c.decode(String.self, forKey: .scope)
+        metric = try c.decode(String.self, forKey: .metric)
+        kill = try c.decode(Bool.self, forKey: .kill)
+        durationMs = try c.decode(Int64.self, forKey: .durationMs)
+        players = try c.decodeIfPresent([MeterPlayer].self, forKey: .players) ?? []
     }
 }
 
@@ -2830,6 +3189,40 @@ public struct KeyDate: Codable, Sendable, Equatable {
     }
 }
 
+public struct LiveActivityRegistered: Codable, Sendable, Equatable {
+    /// What DELETE /v1/me/live-activities/{id} takes.
+    public let id: Int64
+
+    public init(
+        id: Int64
+    ) {
+        self.id = id
+    }
+}
+
+/// POST /v1/me/live-activities (W3-C13). push_token is the ActivityKit update token (hex) or the FCM registration token; push_to_start_token iOS only. object_id is the raid id or the server sim's id.
+public struct LiveActivityRequest: Codable, Sendable, Equatable {
+    public let kind: String
+    public let platform: String
+    public let pushToken: String
+    public let pushToStartToken: String?
+    public let objectId: String
+
+    public init(
+        kind: String,
+        platform: String,
+        pushToken: String,
+        pushToStartToken: String? = nil,
+        objectId: String
+    ) {
+        self.kind = kind
+        self.platform = platform
+        self.pushToken = pushToken
+        self.pushToStartToken = pushToStartToken
+        self.objectId = objectId
+    }
+}
+
 public struct LoggingCharacter: Codable, Sendable, Equatable {
     public let key: String
     public let name: String
@@ -3307,6 +3700,79 @@ public struct MeSeat: Codable, Sendable, Equatable {
         self.givenBy = givenBy
         self.since = since
         self.startsAt = startsAt
+    }
+}
+
+public struct MeterPlayer: Codable, Sendable, Equatable {
+    /// The character page; null on a private or unlisted report, or for a player with no page
+    public let key: String?
+    public let name: String
+    /// Lowercase class word; "" when the log named none
+    public let className: String
+    public let spec: String?
+    public let specName: String
+    public let role: String
+    public let activeMs: Int64
+    public let damageDone: Int64
+    public let healingDone: Int64
+    public let damageTaken: Int64
+    public let dps: Double
+    public let hps: Double
+    public let dtps: Double
+    public let deaths: Int
+    /// One of the signed-in caller's characters
+    public let mine: Bool
+
+    public init(
+        key: String? = nil,
+        name: String,
+        className: String,
+        spec: String? = nil,
+        specName: String,
+        role: String,
+        activeMs: Int64,
+        damageDone: Int64,
+        healingDone: Int64,
+        damageTaken: Int64,
+        dps: Double,
+        hps: Double,
+        dtps: Double,
+        deaths: Int,
+        mine: Bool
+    ) {
+        self.key = key
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specName = specName
+        self.role = role
+        self.activeMs = activeMs
+        self.damageDone = damageDone
+        self.healingDone = healingDone
+        self.damageTaken = damageTaken
+        self.dps = dps
+        self.hps = hps
+        self.dtps = dtps
+        self.deaths = deaths
+        self.mine = mine
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case name
+        case className = "class"
+        case spec
+        case specName
+        case role
+        case activeMs
+        case damageDone
+        case healingDone
+        case damageTaken
+        case dps
+        case hps
+        case dtps
+        case deaths
+        case mine
     }
 }
 
@@ -4544,6 +5010,8 @@ public struct Report: Codable, Sendable, Equatable {
     public let loggingCharacter: ReportLoggingCharacter?
     /// Where the island reads report.json and the per-fight files. Public and unlisted reports are served off the bucket by the site Worker; everything else points at /v1/reports/{id}/files, which redirects each object to a signed URL valid ten minutes.
     public let dataBaseUrl: String
+    /// Only with ?fold=trash. Each zone's trash pulls as one entry, zone by zone in the order the night reached them, the web's fights.ts fightRows rule. Trash with no zone is never grouped and keeps its own rows. Empty when report.json cannot be read.
+    public let trashGroups: [TrashGroup]?
 
     public init(
         id: String,
@@ -4561,7 +5029,8 @@ public struct Report: Codable, Sendable, Equatable {
         lastUploadAt: Date? = nil,
         heartbeatAt: Date? = nil,
         loggingCharacter: ReportLoggingCharacter? = nil,
-        dataBaseUrl: String
+        dataBaseUrl: String,
+        trashGroups: [TrashGroup]? = nil
     ) {
         self.id = id
         self.title = title
@@ -4579,6 +5048,7 @@ public struct Report: Codable, Sendable, Equatable {
         self.heartbeatAt = heartbeatAt
         self.loggingCharacter = loggingCharacter
         self.dataBaseUrl = dataBaseUrl
+        self.trashGroups = trashGroups
     }
 
     public init(from decoder: any Decoder) throws {
@@ -4599,6 +5069,7 @@ public struct Report: Codable, Sendable, Equatable {
         heartbeatAt = try c.decodeIfPresent(Date.self, forKey: .heartbeatAt)
         loggingCharacter = try c.decodeIfPresent(ReportLoggingCharacter.self, forKey: .loggingCharacter)
         dataBaseUrl = try c.decode(String.self, forKey: .dataBaseUrl)
+        trashGroups = try c.decodeIfPresent([TrashGroup].self, forKey: .trashGroups)
     }
 }
 
@@ -4660,6 +5131,122 @@ public struct ReportLoggingCharacter: Codable, Sendable, Equatable {
     ) {
         self.key = key
         self.name = name
+    }
+}
+
+/// GET /v1/reports/{id}/me (W3-C2): the caller's characters in the report and each one's boss kills. Every figure is read off the fight's stored summary through the arithmetic the meters use, so a character's value here is the dps (or hps) of its meter row.
+public struct ReportMe: Codable, Sendable, Equatable {
+    public let reportId: String
+    public let characters: [ReportMeCharacter]
+
+    public init(
+        reportId: String,
+        characters: [ReportMeCharacter] = []
+    ) {
+        self.reportId = reportId
+        self.characters = characters
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        reportId = try c.decode(String.self, forKey: .reportId)
+        characters = try c.decodeIfPresent([ReportMeCharacter].self, forKey: .characters) ?? []
+    }
+}
+
+public struct ReportMeCharacter: Codable, Sendable, Equatable {
+    public let key: String
+    public let name: String
+    public let className: String
+    /// The site's spec slug; null when the log named none the data knows
+    public let spec: String?
+    /// The log's spec word ("Fury"); may be ""
+    public let specName: String
+    public let role: String
+    public let fights: [ReportMeFight]
+
+    public init(
+        key: String,
+        name: String,
+        className: String,
+        spec: String? = nil,
+        specName: String,
+        role: String,
+        fights: [ReportMeFight] = []
+    ) {
+        self.key = key
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specName = specName
+        self.role = role
+        self.fights = fights
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case name
+        case className = "class"
+        case spec
+        case specName
+        case role
+        case fights
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decode(String.self, forKey: .key)
+        name = try c.decode(String.self, forKey: .name)
+        className = try c.decode(String.self, forKey: .className)
+        spec = try c.decodeIfPresent(String.self, forKey: .spec)
+        specName = try c.decode(String.self, forKey: .specName)
+        role = try c.decode(String.self, forKey: .role)
+        fights = try c.decodeIfPresent([ReportMeFight].self, forKey: .fights) ?? []
+    }
+}
+
+public struct ReportMeFight: Codable, Sendable, Equatable {
+    public let index: Int
+    public let encounterId: Int64
+    public let encounter: String
+    /// Always true: parses count kills only
+    public let kill: Bool
+    public let durationMs: Int64
+    /// The role figure, rounded to hundredths: hps for a healer, dps for everyone else
+    public let value: Double
+    public let unit: String
+    /// The parse, 0 to 100; null when the bracket has no ranked kill (print no parse number)
+    public let percentile: Int?
+    /// How many ranked kills the bracket holds; null with percentile
+    public let ranked: Int64?
+    /// Higher than every earlier ranked kill of this boss by this character; a first kill is not one
+    public let newBest: Bool
+    public let deaths: Int
+
+    public init(
+        index: Int,
+        encounterId: Int64,
+        encounter: String,
+        kill: Bool,
+        durationMs: Int64,
+        value: Double,
+        unit: String,
+        percentile: Int? = nil,
+        ranked: Int64? = nil,
+        newBest: Bool,
+        deaths: Int
+    ) {
+        self.index = index
+        self.encounterId = encounterId
+        self.encounter = encounter
+        self.kill = kill
+        self.durationMs = durationMs
+        self.value = value
+        self.unit = unit
+        self.percentile = percentile
+        self.ranked = ranked
+        self.newBest = newBest
+        self.deaths = deaths
     }
 }
 
@@ -5661,6 +6248,36 @@ public struct TankResult: Codable, Sendable, Equatable {
     }
 }
 
+public struct TrashGroup: Codable, Sendable, Equatable {
+    /// The first pull's index; a meters call names the group by it (scope=trash)
+    public let key: Int
+    public let zone: String
+    /// The pulls, in the night's order
+    public let fights: [Int]
+    /// The pulls' lengths summed
+    public let durationMs: Int64
+
+    public init(
+        key: Int,
+        zone: String,
+        fights: [Int] = [],
+        durationMs: Int64
+    ) {
+        self.key = key
+        self.zone = zone
+        self.fights = fights
+        self.durationMs = durationMs
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decode(Int.self, forKey: .key)
+        zone = try c.decode(String.self, forKey: .zone)
+        fights = try c.decodeIfPresent([Int].self, forKey: .fights) ?? []
+        durationMs = try c.decode(Int64.self, forKey: .durationMs)
+    }
+}
+
 /// Asks for stat weights instead of a DPS number.
 public struct WeightsSpec: Codable, Sendable, Equatable {
     /// Engine stat ids: the Stat enum names in lower snake case - attack_power, crit, spell_haste. There is no melee_crit or spell_crit; the engine carries one hit and one crit. A stat the engine does not have is refused rather than weighed as nothing.
@@ -5680,5 +6297,248 @@ public struct WeightsSpec: Codable, Sendable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         stats = try c.decodeIfPresent([String].self, forKey: .stats) ?? []
         reference = try c.decode(String.self, forKey: .reference)
+    }
+}
+
+/// GET /v1/me/widget (W3-C12): the one snapshot every widget, lock-screen widget, Live Activity and ongoing notification draws from, so no two surfaces disagree. The apps keep it in their shared container (iOS App Group, Android DataStore). generated_at is to the minute; staleness (`Updated {n} h ago` past 12 hours) is measured from when the app last fetched it, a 304 included.
+public struct Widget: Codable, Sendable, Equatable {
+    public let generatedAt: Date
+    /// null for an account with no characters.
+    public let character: WidgetCharacter?
+    /// null when the character is on no guild's roster (`No guild yet`).
+    public let guild: WidgetGuild?
+    /// null when the guild has nothing planned (`No raid planned`).
+    public let nextRaid: WidgetNextRaid?
+    public let lastRaid: WidgetLastRaid?
+    /// null while the Home answer (APP_API) is off.
+    public let upgrades: WidgetUpgrades?
+    public let live: WidgetLive
+
+    public init(
+        generatedAt: Date,
+        character: WidgetCharacter? = nil,
+        guild: WidgetGuild? = nil,
+        nextRaid: WidgetNextRaid? = nil,
+        lastRaid: WidgetLastRaid? = nil,
+        upgrades: WidgetUpgrades? = nil,
+        live: WidgetLive
+    ) {
+        self.generatedAt = generatedAt
+        self.character = character
+        self.guild = guild
+        self.nextRaid = nextRaid
+        self.lastRaid = lastRaid
+        self.upgrades = upgrades
+        self.live = live
+    }
+}
+
+public struct WidgetCharacter: Codable, Sendable, Equatable {
+    public let key: String
+    public let name: String
+    public let className: String?
+    /// The primary tree; null when not known yet.
+    public let specName: String?
+
+    public init(
+        key: String,
+        name: String,
+        className: String? = nil,
+        specName: String? = nil
+    ) {
+        self.key = key
+        self.name = name
+        self.className = className
+        self.specName = specName
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case name
+        case className = "class"
+        case specName
+    }
+}
+
+public struct WidgetGuild: Codable, Sendable, Equatable {
+    public let id: Int64
+    public let name: String
+
+    public init(
+        id: Int64,
+        name: String
+    ) {
+        self.id = id
+        self.name = name
+    }
+}
+
+public struct WidgetLastRaid: Codable, Sendable, Equatable {
+    public let zoneName: String
+    public let startsAt: Date
+
+    public init(
+        zoneName: String,
+        startsAt: Date
+    ) {
+        self.zoneName = zoneName
+        self.startsAt = startsAt
+    }
+}
+
+public struct WidgetLive: Codable, Sendable, Equatable {
+    /// The caller's server runs queued or running.
+    public let simRunsRunning: Int
+
+    public init(
+        simRunsRunning: Int
+    ) {
+        self.simRunsRunning = simRunsRunning
+    }
+}
+
+public struct WidgetMine: Codable, Sendable, Equatable {
+    public let state: String?
+    /// The raid spec's name; null means the widget shows `Choose a spec`.
+    public let spec: String?
+    public let role: String
+
+    public init(
+        state: String? = nil,
+        spec: String? = nil,
+        role: String
+    ) {
+        self.state = state
+        self.spec = spec
+        self.role = role
+    }
+}
+
+/// The next raid on the guild's calendar (the raids tab's list), cancelled ones included. pull_at is the raid's start; invite_at is null until raids carry an invite time. signed_up is In plus Late, the raid page's band count.
+public struct WidgetNextRaid: Codable, Sendable, Equatable {
+    public let raidId: Int64
+    public let guildId: Int64
+    public let guildName: String
+    public let zone: String
+    public let zoneName: String
+    public let startsAt: Date
+    public let inviteAt: Date?
+    public let pullAt: Date
+    public let endsAt: Date
+    public let size: Int?
+    public let signedUp: Int
+    public let status: String
+    public let my: WidgetMine
+    /// The character may answer In, Late or Out now: open, not ended, verified.
+    public let canSignUp: Bool
+
+    public init(
+        raidId: Int64,
+        guildId: Int64,
+        guildName: String,
+        zone: String,
+        zoneName: String,
+        startsAt: Date,
+        inviteAt: Date? = nil,
+        pullAt: Date,
+        endsAt: Date,
+        size: Int? = nil,
+        signedUp: Int,
+        status: String,
+        my: WidgetMine,
+        canSignUp: Bool
+    ) {
+        self.raidId = raidId
+        self.guildId = guildId
+        self.guildName = guildName
+        self.zone = zone
+        self.zoneName = zoneName
+        self.startsAt = startsAt
+        self.inviteAt = inviteAt
+        self.pullAt = pullAt
+        self.endsAt = endsAt
+        self.size = size
+        self.signedUp = signedUp
+        self.status = status
+        self.my = my
+        self.canSignUp = canSignUp
+    }
+}
+
+public struct WidgetUpgradePick: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let quality: Int
+    public let icon: String
+    public let itemLevel: Int
+
+    public init(
+        id: Int,
+        name: String,
+        quality: Int,
+        icon: String,
+        itemLevel: Int
+    ) {
+        self.id = id
+        self.name = name
+        self.quality = quality
+        self.icon = icon
+        self.itemLevel = itemLevel
+    }
+}
+
+public struct WidgetUpgradeRow: Codable, Sendable, Equatable {
+    public let slot: String
+    public let slotLabel: String
+    public let pick: WidgetUpgradePick
+    /// null: `Gain not modelled yet`, drawn as `—`.
+    public let gain: Double?
+
+    public init(
+        slot: String,
+        slotLabel: String,
+        pick: WidgetUpgradePick,
+        gain: Double? = nil
+    ) {
+        self.slot = slot
+        self.slotLabel = slotLabel
+        self.pick = pick
+        self.gain = gain
+    }
+}
+
+/// The Home answer's first three rows in its order, with the whole list's count and total. Any state but ok has no rows and a sentence the widget shows as is.
+public struct WidgetUpgrades: Codable, Sendable, Equatable {
+    public let state: String
+    public let sentence: String?
+    public let count: Int
+    public let totalGain: Double?
+    public let unit: String
+    public let rows: [WidgetUpgradeRow]
+
+    public init(
+        state: String,
+        sentence: String? = nil,
+        count: Int,
+        totalGain: Double? = nil,
+        unit: String,
+        rows: [WidgetUpgradeRow] = []
+    ) {
+        self.state = state
+        self.sentence = sentence
+        self.count = count
+        self.totalGain = totalGain
+        self.unit = unit
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        state = try c.decode(String.self, forKey: .state)
+        sentence = try c.decodeIfPresent(String.self, forKey: .sentence)
+        count = try c.decode(Int.self, forKey: .count)
+        totalGain = try c.decodeIfPresent(Double.self, forKey: .totalGain)
+        unit = try c.decode(String.self, forKey: .unit)
+        rows = try c.decodeIfPresent([WidgetUpgradeRow].self, forKey: .rows) ?? []
     }
 }

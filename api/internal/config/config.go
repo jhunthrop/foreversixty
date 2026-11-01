@@ -128,6 +128,10 @@ type Config struct {
 	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
 	// answer 404 until the apps ship. It needs Battle.net configured to do anything.
 	AppSignIn bool
+	// AppWidgets (APP_WIDGETS=true) mounts the mobile live surfaces (Wave 3 lane F14):
+	// GET /v1/me/widget and POST, DELETE /v1/me/live-activities. Off by default; the routes
+	// answer 404 until the apps' widgets ship.
+	AppWidgets bool
 	// AppTokenIdle (APP_TOKEN_IDLE_DAYS, default 30) and AppTokenMaxAge
 	// (APP_TOKEN_MAX_AGE_DAYS, default 180) are when a native app's device token lapses:
 	// after that long unused, or that long after sign-in, whichever comes first. A lapsed
@@ -185,6 +189,9 @@ type Config struct {
 
 	// Coach is the Log Coach's model client and cap settings.
 	Coach CoachConfig
+
+	// App is the mobile apps' API settings (off by default).
+	App AppConfig
 	// Push is the apps' notifications: the dark-launch flag and the APNs and FCM keys.
 	Push PushConfig
 }
@@ -277,6 +284,7 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") == "true"
 	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
+	c.AppWidgets = getenv("APP_WIDGETS") == "true"
 	if err := loadAppTokenLifetimes(&c, getenv); err != nil {
 		return Config{}, err
 	}
@@ -329,6 +337,9 @@ func Load(getenv func(string) string) (Config, error) {
 		return c, err
 	}
 	if c.Coach, err = loadCoach(getenv); err != nil {
+		return c, err
+	}
+	if c.App, err = loadApp(getenv); err != nil {
 		return c, err
 	}
 	if c.Push, err = loadPush(getenv); err != nil {

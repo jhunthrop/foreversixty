@@ -520,6 +520,118 @@ data class ClassInfo(
     @SerialName("forever_changes") val foreverChanges: List<ForeverChange> = emptyList(),
 )
 
+@Serializable
+data class CoachFixFirst(
+    @SerialName("finding") val finding: String? = null,
+    @SerialName("title") val title: String,
+    @SerialName("why") val why: String,
+    @SerialName("drill") val drill: String? = null,
+    @SerialName("drillText") val drillText: String,
+)
+
+@Serializable
+data class CoachLastRaid(
+    @SerialName("zone") val zone: String? = null,
+    @SerialName("fought_at") val foughtAt: String? = null,
+    @SerialName("report_id") val reportId: String? = null,
+    @SerialName("finding_count") val findingCount: Int? = null,
+    @SerialName("first") val first: CoachLastRaidFirst? = null,
+    @SerialName("url") val url: String? = null,
+)
+
+@Serializable
+data class CoachLastRaidFirst(
+    @SerialName("stem") val stem: String? = null,
+    @SerialName("on") val onPulls: Int? = null,
+    @SerialName("of") val of: Int? = null,
+)
+
+/** The night line; null when the night has none. */
+@Serializable
+data class CoachNight(
+    @SerialName("stem") val stem: String,
+    @SerialName("on") val onPulls: Int,
+    @SerialName("of") val of: Int,
+    @SerialName("finding_count") val findingCount: Int,
+    /** The pull whose review the coach card shows */
+    @SerialName("fight_index") val fightIndex: Int,
+)
+
+@Serializable
+data class CoachPersona(
+    @SerialName("label") val label: String,
+    @SerialName("status") val status: String,
+)
+
+/** The account's recent coach line and reviews (premium); free accounts get reviews []. */
+@Serializable
+data class CoachRecent(
+    @SerialName("last_raid") val lastRaid: CoachLastRaid? = null,
+    @SerialName("pending") val pending: Boolean,
+    @SerialName("reviews") val reviews: List<CoachRecentReview> = emptyList(),
+)
+
+@Serializable
+data class CoachRecentFixFirst(
+    @SerialName("title") val title: String? = null,
+)
+
+@Serializable
+data class CoachRecentReview(
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
+    @SerialName("player_key") val playerKey: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("boss") val boss: String,
+    @SerialName("kill") val kill: Boolean,
+    @SerialName("source") val source: String,
+    @SerialName("generated_at") val generatedAt: String,
+    @SerialName("fix_first") val fixFirst: CoachRecentFixFirst? = null,
+)
+
+/** One pull's coach review (the full answer; a free owner never reaches the app's card). The apps print the text as given and never edit it. */
+@Serializable
+data class CoachReview(
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
+    @SerialName("player_key") val playerKey: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("role") val role: String? = null,
+    @SerialName("size") val size: Int? = null,
+    @SerialName("kill") val kill: Boolean? = null,
+    /** ready, writing, preparing, failed, ... */
+    @SerialName("status") val status: String,
+    @SerialName("source") val source: String,
+    @SerialName("busy") val busy: Boolean,
+    @SerialName("access") val access: String,
+    @SerialName("persona") val persona: CoachPersona,
+    @SerialName("reviewed_at") val reviewedAt: String,
+    @SerialName("review") val review: CoachReviewDoc,
+    @SerialName("basis_labels") val basisLabels: List<String> = emptyList(),
+)
+
+@Serializable
+data class CoachReviewDoc(
+    @SerialName("opening") val opening: String,
+    @SerialName("fixFirst") val fixFirst: CoachFixFirst? = null,
+    @SerialName("thenFix") val thenFix: List<CoachThen> = emptyList(),
+    @SerialName("doingWell") val doingWell: List<CoachWell> = emptyList(),
+    @SerialName("couldntCheck") val couldntCheck: List<String> = emptyList(),
+)
+
+@Serializable
+data class CoachThen(
+    @SerialName("finding") val finding: String? = null,
+    @SerialName("title") val title: String,
+    @SerialName("why") val why: String,
+)
+
+@Serializable
+data class CoachWell(
+    @SerialName("strength") val strength: String? = null,
+    @SerialName("text") val text: String,
+)
+
 /** One substitution set's result. */
 @Serializable
 data class Combo(
@@ -624,7 +736,23 @@ data class FightEntry(
     @SerialName("group_deaths") val groupDeaths: Int? = null,
     /** Player GUIDs flagged MINE, PARTY or RAID during this fight. Absent before engine 0.6.0 or when nobody was */
     @SerialName("group") val group: List<String>? = null,
+    /** What a wipe got the boss down to, in percent; absent on a kill and on trash, -1 when the log never showed the boss */
+    @SerialName("boss_health_pct") val bossHealthPct: Double? = null,
     @SerialName("verified") val verified: Boolean,
+)
+
+/** GET /v1/reports/{id}/fights/{n}/meters (W3-C3). Per-second figures are the total over the player's time in the folded pulls, rounded to hundredths (the web's night.ts arithmetic). */
+@Serializable
+data class FightMeters(
+    /** The fight, or the trash group's key */
+    @SerialName("fight_index") val fightIndex: Int,
+    @SerialName("scope") val scope: String,
+    @SerialName("metric") val metric: String,
+    /** false for a trash group */
+    @SerialName("kill") val kill: Boolean,
+    @SerialName("duration_ms") val durationMs: Long,
+    /** Sorted high to low by the metric's per-second figure; a player with none of it is left off. */
+    @SerialName("players") val players: List<MeterPlayer> = emptyList(),
 )
 
 @Serializable
@@ -1062,6 +1190,22 @@ data class KeyDate(
 )
 
 @Serializable
+data class LiveActivityRegistered(
+    /** What DELETE /v1/me/live-activities/{id} takes. */
+    @SerialName("id") val id: Long,
+)
+
+/** POST /v1/me/live-activities (W3-C13). push_token is the ActivityKit update token (hex) or the FCM registration token; push_to_start_token iOS only. object_id is the raid id or the server sim's id. */
+@Serializable
+data class LiveActivityRequest(
+    @SerialName("kind") val kind: String,
+    @SerialName("platform") val platform: String,
+    @SerialName("push_token") val pushToken: String,
+    @SerialName("push_to_start_token") val pushToStartToken: String? = null,
+    @SerialName("object_id") val objectId: String,
+)
+
+@Serializable
 data class LoggingCharacter(
     @SerialName("key") val key: String,
     @SerialName("name") val name: String,
@@ -1233,6 +1377,28 @@ data class MeSeat(
     @SerialName("given_by") val givenBy: String,
     @SerialName("since") val since: String,
     @SerialName("starts_at") val startsAt: String? = null,
+)
+
+@Serializable
+data class MeterPlayer(
+    /** The character page; null on a private or unlisted report, or for a player with no page */
+    @SerialName("key") val key: String? = null,
+    @SerialName("name") val name: String,
+    /** Lowercase class word; "" when the log named none */
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String? = null,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("active_ms") val activeMs: Long,
+    @SerialName("damage_done") val damageDone: Long,
+    @SerialName("healing_done") val healingDone: Long,
+    @SerialName("damage_taken") val damageTaken: Long,
+    @SerialName("dps") val dps: Double,
+    @SerialName("hps") val hps: Double,
+    @SerialName("dtps") val dtps: Double,
+    @SerialName("deaths") val deaths: Int,
+    /** One of the signed-in caller's characters */
+    @SerialName("mine") val mine: Boolean,
 )
 
 @Serializable
@@ -1701,6 +1867,8 @@ data class Report(
     @SerialName("logging_character") val loggingCharacter: ReportLoggingCharacter? = null,
     /** Where the island reads report.json and the per-fight files. Public and unlisted reports are served off the bucket by the site Worker; everything else points at /v1/reports/{id}/files, which redirects each object to a signed URL valid ten minutes. */
     @SerialName("data_base_url") val dataBaseUrl: String,
+    /** Only with ?fold=trash. Each zone's trash pulls as one entry, zone by zone in the order the night reached them, the web's fights.ts fightRows rule. Trash with no zone is never grouped and keeps its own rows. Empty when report.json cannot be read. */
+    @SerialName("trash_groups") val trashGroups: List<TrashGroup>? = null,
 )
 
 @Serializable
@@ -1725,6 +1893,46 @@ data class ReportLoggingCharacter(
     /** region/ruleset/slug, e.g. us/pvp/bow-jackzon */
     @SerialName("key") val key: String,
     @SerialName("name") val name: String,
+)
+
+/** GET /v1/reports/{id}/me (W3-C2): the caller's characters in the report and each one's boss kills. Every figure is read off the fight's stored summary through the arithmetic the meters use, so a character's value here is the dps (or hps) of its meter row. */
+@Serializable
+data class ReportMe(
+    @SerialName("report_id") val reportId: String,
+    @SerialName("characters") val characters: List<ReportMeCharacter> = emptyList(),
+)
+
+@Serializable
+data class ReportMeCharacter(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    /** The site's spec slug; null when the log named none the data knows */
+    @SerialName("spec") val spec: String? = null,
+    /** The log's spec word ("Fury"); may be "" */
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("fights") val fights: List<ReportMeFight> = emptyList(),
+)
+
+@Serializable
+data class ReportMeFight(
+    @SerialName("index") val index: Int,
+    @SerialName("encounter_id") val encounterId: Long,
+    @SerialName("encounter") val encounter: String,
+    /** Always true: parses count kills only */
+    @SerialName("kill") val kill: Boolean,
+    @SerialName("duration_ms") val durationMs: Long,
+    /** The role figure, rounded to hundredths: hps for a healer, dps for everyone else */
+    @SerialName("value") val value: Double,
+    @SerialName("unit") val unit: String,
+    /** The parse, 0 to 100; null when the bracket has no ranked kill (print no parse number) */
+    @SerialName("percentile") val percentile: Int? = null,
+    /** How many ranked kills the bracket holds; null with percentile */
+    @SerialName("ranked") val ranked: Long? = null,
+    /** Higher than every earlier ranked kill of this boss by this character; a first kill is not one */
+    @SerialName("new_best") val newBest: Boolean,
+    @SerialName("deaths") val deaths: Int,
 )
 
 @Serializable
@@ -2122,6 +2330,17 @@ data class TankResult(
     @SerialName("score") val score: Estimate,
 )
 
+@Serializable
+data class TrashGroup(
+    /** The first pull's index; a meters call names the group by it (scope=trash) */
+    @SerialName("key") val key: Int,
+    @SerialName("zone") val zone: String,
+    /** The pulls, in the night's order */
+    @SerialName("fights") val fights: List<Int> = emptyList(),
+    /** The pulls' lengths summed */
+    @SerialName("duration_ms") val durationMs: Long,
+)
+
 /** Asks for stat weights instead of a DPS number. */
 @Serializable
 data class WeightsSpec(
@@ -2129,4 +2348,104 @@ data class WeightsSpec(
     @SerialName("stats") val stats: List<String> = emptyList(),
     /** The stat normalised to exactly 1.0. It is required and must be one of stats: a reference that is not among the stats being weighed would normalise against a number nobody computed. The per-spec default is reference_stat on GET /v1/specs. */
     @SerialName("reference") val reference: String,
+)
+
+/** GET /v1/me/widget (W3-C12): the one snapshot every widget, lock-screen widget, Live Activity and ongoing notification draws from, so no two surfaces disagree. The apps keep it in their shared container (iOS App Group, Android DataStore). generated_at is to the minute; staleness (`Updated {n} h ago` past 12 hours) is measured from when the app last fetched it, a 304 included. */
+@Serializable
+data class Widget(
+    @SerialName("generated_at") val generatedAt: String,
+    /** null for an account with no characters. */
+    @SerialName("character") val character: WidgetCharacter? = null,
+    /** null when the character is on no guild's roster (`No guild yet`). */
+    @SerialName("guild") val guild: WidgetGuild? = null,
+    /** null when the guild has nothing planned (`No raid planned`). */
+    @SerialName("next_raid") val nextRaid: WidgetNextRaid? = null,
+    @SerialName("last_raid") val lastRaid: WidgetLastRaid? = null,
+    /** null while the Home answer (APP_API) is off. */
+    @SerialName("upgrades") val upgrades: WidgetUpgrades? = null,
+    @SerialName("live") val live: WidgetLive,
+)
+
+@Serializable
+data class WidgetCharacter(
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    /** The primary tree; null when not known yet. */
+    @SerialName("spec_name") val specName: String? = null,
+)
+
+@Serializable
+data class WidgetGuild(
+    @SerialName("id") val id: Long,
+    @SerialName("name") val name: String,
+)
+
+@Serializable
+data class WidgetLastRaid(
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("starts_at") val startsAt: String,
+)
+
+@Serializable
+data class WidgetLive(
+    /** The caller's server runs queued or running. */
+    @SerialName("sim_runs_running") val simRunsRunning: Int,
+)
+
+@Serializable
+data class WidgetMine(
+    @SerialName("state") val state: String? = null,
+    /** The raid spec's name; null means the widget shows `Choose a spec`. */
+    @SerialName("spec") val spec: String? = null,
+    @SerialName("role") val role: String,
+)
+
+/** The next raid on the guild's calendar (the raids tab's list), cancelled ones included. pull_at is the raid's start; invite_at is null until raids carry an invite time. signed_up is In plus Late, the raid page's band count. */
+@Serializable
+data class WidgetNextRaid(
+    @SerialName("raid_id") val raidId: Long,
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("zone") val zone: String,
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("starts_at") val startsAt: String,
+    @SerialName("invite_at") val inviteAt: String? = null,
+    @SerialName("pull_at") val pullAt: String,
+    @SerialName("ends_at") val endsAt: String,
+    @SerialName("size") val size: Int? = null,
+    @SerialName("signed_up") val signedUp: Int,
+    @SerialName("status") val status: String,
+    @SerialName("my") val my: WidgetMine,
+    /** The character may answer In, Late or Out now: open, not ended, verified. */
+    @SerialName("can_sign_up") val canSignUp: Boolean,
+)
+
+@Serializable
+data class WidgetUpgradePick(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("icon") val icon: String,
+    @SerialName("item_level") val itemLevel: Int,
+)
+
+@Serializable
+data class WidgetUpgradeRow(
+    @SerialName("slot") val slot: String,
+    @SerialName("slot_label") val slotLabel: String,
+    @SerialName("pick") val pick: WidgetUpgradePick,
+    /** null: `Gain not modelled yet`, drawn as `—`. */
+    @SerialName("gain") val gain: Double? = null,
+)
+
+/** The Home answer's first three rows in its order, with the whole list's count and total. Any state but ok has no rows and a sentence the widget shows as is. */
+@Serializable
+data class WidgetUpgrades(
+    @SerialName("state") val state: String,
+    @SerialName("sentence") val sentence: String? = null,
+    @SerialName("count") val count: Int,
+    @SerialName("total_gain") val totalGain: Double? = null,
+    @SerialName("unit") val unit: String,
+    @SerialName("rows") val rows: List<WidgetUpgradeRow> = emptyList(),
 )

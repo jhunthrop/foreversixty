@@ -7,7 +7,7 @@
   "engineering_notes": {
     "3": "The fork's own shared warlock preset (ui/warlock/apls/rotation.apl.json) already maintains this curse for every spec -- only Affliction's own maintenance kept it after the three files were split apart."
   },
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 58 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character. Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Dropped the shared preset's prepull Demonic Sacrifice (18788): this rotation plays with the demon out, and the guide takes Demonic Sacrifice only because Forever's tree makes it Soul Link's prerequisite, so the sacrifice is never cast here. An earlier version of this note said the build could not cast 18788 because spellconst has no entry for it; that was wrong. Spellconst carries class spellbook rows, and 18788 and Soul Link (19028) are talent-granted ids the client's talent table names (talents.json spell_ids), which the rank check already accepts; the engine registers both itself as APL-castable spells in sim/warlock/talents.go (applyDemonicSacrifice, applySoulLink). Soul Link before the pull (2026-10-28): the engine models it as a cast, not a passive (20 percent of base mana, a global, needs a demon out), so with no cast its 3 percent damage bonus for the warlock and the demon never applied and every Demonology sim and talent search read the talent, and Demonic Pact behind it, as worth nothing. Corruption and Life Tap were kept from the shared preset. Fixed the same stale Shadow Bolt rank the preset carried (25307 cast at rank 9 where the build's current top rank is 10). Immolate and the Bane of Agony curse maintenance from the shared preset were dropped -- Demonology's own capstone is meant to be Decimation (440870), a talent that is supposed to drop Soul Fire's 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit. Fix round 1 (superseded): Decimation was reported as having no implementation in sim/warlock. Rotation-accuracy program (2026-09-28): sim/warlock/soul_fire.go now wires Decimation for real (applyDecimation: up to 90% cooldown reduction passively, plus the 10 s post-crit cast-time/cost window) -- but the guide's own recommended level-60 build (web/src/content/guides/warlock/demonology.md) spends 0 of Decimation's 2 points, rushing past it to reach Demonic Pact instead, so on THIS build Soul Fire still only comes off cooldown once a minute; the level-60 ladder golden confirms 17924 (rank 2) casting on that flat cadence. The guide's rotation prose is corrected to say so rather than describe a Decimation synergy this exact build does not take. Soul Fire is still placed ahead of the Shadow Bolt filler so it fires the instant it is off cooldown either way. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Soul Fire's base damage in sim/warlock carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each, which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): Soul Fire is dropped (it lost damage against the Shadow Bolt it displaced on this no-Decimation build), Immolate is added after Corruption and recast under 3 seconds remaining, and the wand gate moved from 20 to 50 percent mana; about +13 percent in that run. The search's duplicate Immolate line near the top was collapsed to the single later line, which measured the same. Rotation search (2026-10-07, level 60, 800 iterations, seed 7): Bane of Doom (603) replaces Bane of Agony as the maintained curse after the engine took Doom's damage from the learnable client row (1742, coefficient 4.0): about +0.7 percent in this spec's run (a fight shorter than a minute would not pay Doom's single hit), beyond the combined error; Curse of the Elements measured lower than Agony. Bane of Doom (2026-10-07): the Doom line replaced Bane of Agony once Bane of Doom read client row 603 (1742 at coefficient 4.0) and carried spell power; the Doom-versus-Agony and Curse of the Elements comparisons are in design/reviews/2026-10-07-warlock-ua-coe.md. Searing Pain replaced Shadow Bolt as the filler on 2026-10-08, when the rotation search measured it ahead beyond error; the unreachable Shadow Bolt line was removed.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 58 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character. Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Dropped the shared preset's prepull Demonic Sacrifice (18788): this rotation plays with the demon out, and the guide takes Demonic Sacrifice only because Forever's tree makes it Soul Link's prerequisite, so the sacrifice is never cast here. An earlier version of this note said the build could not cast 18788 because spellconst has no entry for it; that was wrong. Spellconst carries class spellbook rows, and 18788 and Soul Link (19028) are talent-granted ids the client's talent table names (talents.json spell_ids), which the rank check already accepts; the engine registers both itself as APL-castable spells in sim/warlock/talents.go (applyDemonicSacrifice, applySoulLink). Soul Link before the pull (2026-10-28): the engine models it as a cast, not a passive (20 percent of base mana, a global, needs a demon out), so with no cast its 3 percent damage bonus for the warlock and the demon never applied and every Demonology sim and talent search read the talent, and Demonic Pact behind it, as worth nothing. Corruption and Life Tap were kept from the shared preset. Fixed the same stale Shadow Bolt rank the preset carried (25307 cast at rank 9 where the build's current top rank is 10). Immolate and the Bane of Agony curse maintenance from the shared preset were dropped -- Demonology's own capstone is meant to be Decimation (440870), a talent that is supposed to drop Soul Fire's 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit. Fix round 1 (superseded): Decimation was reported as having no implementation in sim/warlock. Rotation-accuracy program (2026-09-28): sim/warlock/soul_fire.go now wires Decimation for real (applyDecimation: up to 90% cooldown reduction passively, plus the 10 s post-crit cast-time/cost window) -- but the guide's own recommended level-60 build (web/src/content/guides/warlock/demonology.md) spends 0 of Decimation's 2 points, rushing past it to reach Demonic Pact instead, so on THIS build Soul Fire still only comes off cooldown once a minute; the level-60 ladder golden confirms 17924 (rank 2) casting on that flat cadence. The guide's rotation prose is corrected to say so rather than describe a Decimation synergy this exact build does not take. Soul Fire is still placed ahead of the Shadow Bolt filler so it fires the instant it is off cooldown either way. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Soul Fire's base damage in sim/warlock carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each, which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): Soul Fire is dropped (it lost damage against the Shadow Bolt it displaced on this no-Decimation build), Immolate is added after Corruption and recast under 3 seconds remaining, and the wand gate moved from 20 to 50 percent mana; about +13 percent in that run. The search's duplicate Immolate line near the top was collapsed to the single later line, which measured the same. Rotation search (2026-10-07, level 60, 800 iterations, seed 7): Bane of Doom (603) replaces Bane of Agony as the maintained curse after the engine took Doom's damage from the learnable client row (1742, coefficient 4.0): about +0.7 percent in this spec's run (a fight shorter than a minute would not pay Doom's single hit), beyond the combined error; Curse of the Elements measured lower than Agony. Bane of Doom (2026-10-07): the Doom line replaced Bane of Agony once Bane of Doom read client row 603 (1742 at coefficient 4.0) and carried spell power; the Doom-versus-Agony and Curse of the Elements comparisons are in design/reviews/2026-10-07-warlock-ua-coe.md. Searing Pain replaced Shadow Bolt as the filler on 2026-10-08, when the rotation search measured it ahead beyond error; the unreachable Shadow Bolt line was removed. Theorycraft audit fix (2026-10-31, design/reviews/2026-10-31-theorycraft-audit/casters.md D2): the raid build takes Demonic Pact (31st Demonology point; the talent search then moved Improved Corruption, Aftermath and a Demonic Energies point into Improved Shadow Bolt, Ruin and Master Summoner, about +1.2 percent more), and the prepull summons the Imp, sacrifices it (+15% Shadow), then summons the Succubus (+10% Shadow from Master Demonologist) before Soul Link; Demonic Pact keeps the sacrifice when a different demon is summoned. With both Shadow bonuses Shadow Bolt replaces Searing Pain as the filler. About +4 percent in that run; Bane of Agony measured lower than Doom on this build.",
   "sources": [
     {
       "label": "wowsims-forever warlock default priority list (shared across all three specs)",
@@ -23,6 +23,48 @@
   "rotation": {
     "type": "TypeAPL",
     "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 688
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-60s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 18788
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-45s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 712
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-44s"
+          }
+        }
+      },
       {
         "action": {
           "castSpell": {
@@ -93,6 +135,13 @@
       },
       {
         "action": {
+          "condition": {
+            "auraIsActive": {
+              "auraId": {
+                "spellId": 440873
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
               "rank": 2,
@@ -100,7 +149,7 @@
             }
           }
         },
-        "notes": "Soul Fire whenever it is ready: the Demonology tree's Decimation cuts its cooldown by 90 percent, and its 6 second cast carries a spell power coefficient of 1.0, so it out-damages the Shadow Bolts it displaces. The client states its cost, cast time, cooldown and damage."
+        "notes": "Soul Fire only while Decimation's buff is up. Decimation (440870) cuts Soul Fire's cooldown by 90 percent, and a Shadow Bolt on a target below 35 percent health grants the 10 second buff (440873): 40 percent off the cast time after Bane's 2 seconds, so 2.4 seconds, and no Soul Shard (aura 256, no reagent use). Outside it Soul Fire is a 4 second cast that costs a shard and deals less per second of casting than Shadow Bolt."
       },
       {
         "notes": "Life Tap to keep casting once mana runs low.",
@@ -171,7 +220,7 @@
         }
       },
       {
-        "notes": "Immolate follows the two curses and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
+        "notes": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
         "action": {
           "condition": {
             "cmp": {
@@ -200,32 +249,19 @@
         }
       },
       {
-        "notes": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
+        "notes": "Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.",
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 17923,
-              "rank": 6
+              "spellId": 11661,
+              "rank": 9
             }
           }
         }
       },
       {
-        "notes": "Shoot with your wand once mana is under 50 percent: it costs nothing, so mana regenerates while it keeps damage going. Life Tap is only the backstop below 10 percent.",
+        "notes": "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells. Life Tap below 10 percent mana keeps the rotation going first.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentManaPercent": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "50%"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
               "spellId": 5019

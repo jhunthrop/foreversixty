@@ -251,17 +251,23 @@ func buildRequest(o options) (api.SimRequest, error) {
 	}
 	encounter := api.DefaultEncounter()
 	encounter.TargetType = api.TargetTypeUnknown
+	character := api.CharacterSpec{
+		Name: "breakdown", Race: entry.Race, Class: info.ClassSlug, Level: o.band,
+		Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
+	}
+	// Where the ranker stands the spec (leveling-bis's bandCharacter), so
+	// a range-gated spell behaves the same in both.
+	if leveling.NoMeleeAutoAttackSpecs[o.spec] {
+		character.DistanceFromTarget = leveling.CasterDistanceFromTarget
+	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          o.spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
-		Character: api.CharacterSpec{
-			Name: "breakdown", Race: entry.Race, Class: info.ClassSlug, Level: o.band,
-			Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
-		},
-		Encounter:  encounter,
-		Iterations: o.iterations,
-		RandomSeed: o.seed,
+		Character:     character,
+		Encounter:     encounter,
+		Iterations:    o.iterations,
+		RandomSeed:    o.seed,
 	}, nil
 }
 
@@ -315,6 +321,8 @@ type report struct {
 	Spec, Preset       string
 	Consumes, Buffs    []string
 	DPS, Error         float64
+	FightSeconds       float64
+	SecondsOOM         float64 // average seconds per iteration spent out of mana
 	Actions            []actionRow
 	Auras              []auraRow
 	Resources          []resourceRow
@@ -325,9 +333,19 @@ type report struct {
 func newReport(req api.SimRequest, est api.Estimate, p *proto.UnitMetrics, names map[int32]string) report {
 	iters := float64(req.Iterations)
 	secs := float64(req.Encounter.DurationSec)
-	r := report{Spec: req.Spec, Consumes: req.Character.Consumes, Buffs: req.Character.Buffs, DPS: est.Mean, Error: est.Error}
+	r := report{Spec: req.Spec, Consumes: req.Character.Consumes, Buffs: req.Character.Buffs, DPS: est.Mean, Error: est.Error,
+		FightSeconds: secs, SecondsOOM: p.GetSecondsOomAvg()}
 	for _, a := range p.GetActions() {
 		r.Actions = append(r.Actions, foldAction(a, iters, secs, est.Mean, names))
+	}
+	// Pet damage counts toward the player's DPS, so its rows sit in the same
+	// table under the pet's name.
+	for _, pet := range p.GetPets() {
+		for _, a := range pet.GetActions() {
+			row := foldAction(a, iters, secs, est.Mean, names)
+			row.Name = pet.GetName() + ": " + row.Name
+			r.Actions = append(r.Actions, row)
+		}
 	}
 	sort.Slice(r.Actions, func(i, j int) bool { return r.Actions[i].DPS > r.Actions[j].DPS })
 	for _, a := range p.GetAuras() {
@@ -410,7 +428,8 @@ func actionName(id *proto.ActionID, names map[int32]string) string {
 
 func (r report) markdown() string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s  DPS %.1f +/- %.1f\nconsumes: %v\nbuffs: %v\n\n", r.Spec, r.DPS, r.Error, r.Consumes, r.Buffs)
+	fmt.Fprintf(&b, "%s  DPS %.1f +/- %.1f\nout of mana: %.1f s of %.0f s\nconsumes: %v\nbuffs: %v\n\n",
+		r.Spec, r.DPS, r.Error, r.SecondsOOM, r.FightSeconds, r.Consumes, r.Buffs)
 	b.WriteString("| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |\n|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, a := range r.Actions {
 		if a.DPS == 0 && a.CastsPerIter == 0 {

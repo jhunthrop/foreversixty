@@ -90,7 +90,7 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit cap: 16% · 3% from Elemental Precision, 13% from gear". */
+  /** The Stat priority headline: "Hit cap: 16% · 3% from Precision, 13% from gear". */
   hitToCap: (
     percent: string,
     split?: { talentPercent: string; talent: string; gearPercent: string },

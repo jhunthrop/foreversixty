@@ -21,6 +21,8 @@ struct HomeDependencies {
     var sims: SimsDependencies?
     /// Lane F6: the Talents screen's files; nil while its feature switch is off.
     var talents: (any TalentsSource)?
+    /// Lane F10: Your reports, pushed from the Logs row; nil while its feature switch is off.
+    var reports: ReportsDependencies?
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
@@ -31,7 +33,8 @@ struct HomeDependencies {
             cache: FileHomeCache.standard() ?? MemoryHomeCache(),
             isEnabled: environment.isAvailable(.characterHome),
             sims: environment.isAvailable(.sims) ? .live(environment, catalog: catalog) : nil,
-            talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil
+            talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil,
+            reports: environment.isAvailable(.reports) ? .live(environment) : nil
         )
     }
 }
@@ -66,6 +69,7 @@ struct HomeTab: View {
                 character: HomeCharacter(character),
                 finishedSims: me.finishedSims,
                 serverSims: me.entitlements.serverSims,
+                reportsAccount: ReportsAccount.of(me, current: character),
                 dependencies: dependencies,
                 showsSelector: session != nil,
                 openBis: openBis
@@ -113,6 +117,8 @@ struct HomeCharacterScreen: View {
     let finishedSims: [FinishedSim]
     /// `entitlements.server_sims`, for Sims' Server runs section (lane F5).
     let serverSims: Bool
+    /// Lane F10: who reads Your reports (crests, the coach card's `log_coach`).
+    let reportsAccount: ReportsAccount
     let dependencies: HomeDependencies
     /// Signed in, the toolbar carries lane F1's selector in place of the name title.
     let showsSelector: Bool
@@ -125,6 +131,9 @@ struct HomeCharacterScreen: View {
     @Environment(\.searchNavigator) private var search
     @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
+    @Environment(ReportsRouter.self) private var reportsRouter: ReportsRouter?
+    /// Lane F10: the Logs row's sub, from the newest report; nil until read.
+    @State private var logsLine: String?
     @State private var showTalents = false
     /// Lane F6: one Talents model per character, shared by Home's row and the pushed screen.
     @State private var talentsModel: TalentsModel?
@@ -135,6 +144,7 @@ struct HomeCharacterScreen: View {
         character: HomeCharacter,
         finishedSims: [FinishedSim],
         serverSims: Bool = false,
+        reportsAccount: ReportsAccount = .signedOut,
         dependencies: HomeDependencies,
         showsSelector: Bool = false,
         openBis: @escaping () -> Void
@@ -142,6 +152,7 @@ struct HomeCharacterScreen: View {
         self.character = character
         self.finishedSims = finishedSims
         self.serverSims = serverSims
+        self.reportsAccount = reportsAccount
         self.dependencies = dependencies
         self.showsSelector = showsSelector
         self.openBis = openBis
@@ -158,7 +169,8 @@ struct HomeCharacterScreen: View {
                     phase: store.phase,
                     presenter: HomePresenter(
                         character: character, finishedSims: finishedSims, time: HomeTime(now: Date()),
-                        talentStatus: talentsModel?.phase.presenter?.status
+                        talentStatus: talentsModel?.phase.presenter?.status,
+                        logsLine: dependencies.reports == nil ? nil : logsLine ?? ""
                     ),
                     build: home?.dataBuild ?? "",
                     offlineStamp: offlineStamp,
@@ -177,6 +189,7 @@ struct HomeCharacterScreen: View {
                     ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
                 }
             }
+            .navigationDestination(isPresented: reportsShown) { reports }
             .characterSelector(isOn: showsSelector)
             .searchButton()
         }
@@ -188,6 +201,7 @@ struct HomeCharacterScreen: View {
         }
         .task { await store.load(character) }
         .task { await talentsModel?.load() }
+        .task { await loadLogsLine() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.refreshIfStale(character) } }
         }
@@ -238,6 +252,8 @@ struct HomeCharacterScreen: View {
             simsRouter?.showsList = dependencies.sims != nil
         case .openNext(.talents):
             showTalents = talentsModel != nil
+        case .openNext(.logs):
+            reportsRouter?.showsList = dependencies.reports != nil
         case .openNext:
             break
         case .retry:
@@ -255,6 +271,23 @@ struct HomeCharacterScreen: View {
         if let deps = dependencies.sims, let simsRouter {
             SimsScreen(dependencies: deps, entitled: serverSims, router: simsRouter)
         }
+    }
+
+    /// Lane F10: Your reports on Home's stack, driven by the router so a report link can push it too.
+    private var reportsShown: Binding<Bool> {
+        Binding(get: { reportsRouter?.showsList ?? false }, set: { reportsRouter?.showsList = $0 })
+    }
+
+    @ViewBuilder
+    private var reports: some View {
+        if let deps = dependencies.reports, let reportsRouter {
+            ReportsScreen(dependencies: deps, account: reportsAccount, router: reportsRouter)
+        }
+    }
+
+    private func loadLogsLine() async {
+        guard let deps = dependencies.reports, reportsAccount.signedIn else { return }
+        logsLine = await ReportsStore.homeLine(service: deps.service, cache: deps.cache, now: deps.now)
     }
 
     private func request(for look: HomeItemLook, home: CharacterHome, sourceLine: String?, wornID: Int?) -> ItemTooltipRequest {

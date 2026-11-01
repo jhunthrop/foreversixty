@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"math"
 	"os"
 	"path/filepath"
@@ -117,6 +118,7 @@ func sampleMetrics() *proto.UnitMetrics {
 		Resources: []*proto.ResourceMetrics{
 			{Id: spellID(20, 0), Type: proto.ResourceType_ResourceTypeEnergy, Gain: 100, ActualGain: 80},
 		},
+		SecondsOomAvg: 2.5,
 	}
 }
 
@@ -135,6 +137,9 @@ func TestNewReportSortsAndScalesRows(t *testing.T) {
 	if !strings.HasPrefix(r.Actions[0].Name, "High") || !strings.HasPrefix(r.Actions[1].Name, "Low") {
 		t.Errorf("actions not sorted by DPS: %+v", r.Actions)
 	}
+	if !near(r.SecondsOOM, 2.5) {
+		t.Errorf("seconds out of mana = %v, want 2.5", r.SecondsOOM)
+	}
 	if !near(r.Actions[0].DPS, 40) || !near(r.Actions[0].Share, 80) {
 		t.Errorf("top action dps/share = %v/%v", r.Actions[0].DPS, r.Actions[0].Share)
 	}
@@ -147,10 +152,31 @@ func TestNewReportSortsAndScalesRows(t *testing.T) {
 	}
 }
 
+func TestNewReportFoldsPetActionsUnderThePetName(t *testing.T) {
+	req := api.SimRequest{Spec: testSpec, Iterations: 2, Encounter: api.EncounterSpec{DurationSec: 10}}
+	m := sampleMetrics()
+	m.Pets = []*proto.UnitMetrics{{Name: "Succubus", Actions: []*proto.ActionMetrics{
+		{Id: spellID(4, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 4, Hits: 4, Damage: 400}}},
+	}}}
+	r := newReport(req, api.Estimate{Mean: 100}, m, map[int32]string{4: "Lash of Pain"})
+	var pet *actionRow
+	for i := range r.Actions {
+		if r.Actions[i].Name == "Succubus: Lash of Pain (4)" {
+			pet = &r.Actions[i]
+		}
+	}
+	if pet == nil {
+		t.Fatalf("no pet row in %+v", r.Actions)
+	}
+	if !near(pet.DPS, 20) || !near(pet.Share, 20) {
+		t.Errorf("pet row dps/share = %v/%v, want 20/20", pet.DPS, pet.Share)
+	}
+}
+
 func TestMarkdownRendersTablesAndSkipsEmptyRows(t *testing.T) {
 	out := sampleReport().markdown()
 	for _, want := range []string{
-		testSpec + "  DPS 50.0 +/- 1.5", "consumes: [a]", "buffs: [b]",
+		testSpec + "  DPS 50.0 +/- 1.5", "out of mana: 2.5 s of 10 s", "consumes: [a]", "buffs: [b]",
 		"| High (2) | 40.0 | 80.0 |", "| Long (11) | 50.0 | 2.00 |", "| Combo (20) | ResourceTypeEnergy | 50.0 | 40.0 |",
 	} {
 		if !strings.Contains(out, want) {
@@ -284,6 +310,33 @@ func TestBuildRequestLayersEntryAndOverrides(t *testing.T) {
 	}
 	if got := over.Character.Buffs; got[len(got)-1] != "extra" || len(got) != len(c.Buffs)+1 {
 		t.Errorf("buffs = %v, want kit buffs plus extra", got)
+	}
+}
+
+// The ranker stands a caster out of melee range (leveling-bis's
+// bandCharacter), so the breakdown of its entry must too, or a range-gated
+// spell such as Cone of Cold would fire here and not in the ranker.
+func TestBuildRequestStandsCastersWhereTheRankerDoes(t *testing.T) {
+	root := activeRoot(t)
+	const caster = "mage-frost"
+	writeFile(t, filepath.Join(root, testBuildDir, "bis", caster+".json"), `{"bands":[
+	  {"band":60,"preset":"bare","faction":"alliance","race":"gnome","talents":"0","slots":[]}]}`)
+	o := baseOptions(root)
+	o.spec = caster
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := req.Character.DistanceFromTarget; got != leveling.CasterDistanceFromTarget {
+		t.Errorf("%s stands at %v yd, want the ranker's %v", caster, got, float64(leveling.CasterDistanceFromTarget))
+	}
+
+	melee, err := buildRequest(baseOptions(bisFixture(t)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := melee.Character.DistanceFromTarget; got != 0 {
+		t.Errorf("%s stands at %v yd, want melee range (0)", testSpec, got)
 	}
 }
 
