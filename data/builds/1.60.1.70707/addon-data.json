@@ -4074,7 +4074,7 @@
             "spell_id": 6785,
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_druid_ravage"
           },
           {
             "spell_id": 8928,
@@ -4127,7 +4127,7 @@
             "spell_id": 6785,
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_druid_ravage"
           },
           {
             "spell_id": 8929,
@@ -4180,7 +4180,7 @@
             "spell_id": 9866,
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_druid_ravage"
           },
           {
             "spell_id": 9833,
@@ -4233,7 +4233,7 @@
             "spell_id": 9867,
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_druid_ravage"
           },
           {
             "spell_id": 9835,
@@ -7225,13 +7225,13 @@
             "spell_id": 20375,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20375,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 1866,
@@ -7272,13 +7272,13 @@
             "spell_id": 20915,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20915,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 680,
@@ -7319,13 +7319,13 @@
             "spell_id": 20915,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20915,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 2495,
@@ -7366,13 +7366,13 @@
             "spell_id": 20918,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20918,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 2495,
@@ -7419,13 +7419,13 @@
             "spell_id": 20919,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20919,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 5569,
@@ -7472,13 +7472,13 @@
             "spell_id": 20920,
             "name": "Seal of Command",
             "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 20920,
             "name": "Seal of Command",
             "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_warrior_innerrage"
           },
           {
             "spell_id": 10333,
@@ -10004,7 +10004,7 @@
             "spell_id": 408341,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 915,
@@ -10051,7 +10051,7 @@
             "spell_id": 408342,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 943,
@@ -10104,7 +10104,7 @@
             "spell_id": 408343,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 10391,
@@ -10157,7 +10157,7 @@
             "spell_id": 408343,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 10391,
@@ -10210,7 +10210,7 @@
             "spell_id": 408344,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 15207,
@@ -10263,7 +10263,7 @@
             "spell_id": 408345,
             "name": "Fire Nova",
             "condition": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
-            "icon": "inv_misc_questionmark"
+            "icon": "spell_fire_sealoffire"
           },
           {
             "spell_id": 15208,
@@ -12509,7 +12509,7 @@
             "spell_id": 1719,
             "name": "Recklessness",
             "condition": "Recklessness (15 s, 30 min cooldown: one use a fight) in the execute phase, or in the last 15 s when the execute phase is shorter than the buff.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_criticalstrike"
           },
           {
             "spell_id": 11550,
@@ -12562,7 +12562,7 @@
             "spell_id": 1719,
             "name": "Recklessness",
             "condition": "Recklessness (15 s, 30 min cooldown: one use a fight) in the execute phase, or in the last 15 s when the execute phase is shorter than the buff.",
-            "icon": "inv_misc_questionmark"
+            "icon": "ability_criticalstrike"
           },
           {
             "spell_id": 25289,
@@ -111088,53 +111088,53 @@
     "776": 19.2,
     "791": 25.6,
     "810": 39.5,
-    "812": 51.3,
+    "812": 38.1,
     "868": 32.9,
     "869": 31.5,
-    "870": 40.3,
+    "870": 40.4,
     "871": 35.3,
-    "872": 13.8,
-    "873": 40.4,
+    "872": 19.7,
+    "873": 29.9,
     "890": 20.4,
     "935": 13.5,
     "1220": 13.0,
     "1292": 16.2,
     "1300": 13.1,
-    "1317": 16.8,
-    "1484": 19.2,
+    "1317": 13.6,
+    "1484": 14.0,
     "1522": 24.7,
     "1607": 46.6,
     "1721": 35.8,
     "1722": 37.2,
     "1728": 47.2,
     "1935": 15.5,
-    "1937": 10.4,
+    "1937": 15.2,
     "1975": 22.9,
     "1982": 43.4,
-    "2042": 20.5,
+    "2042": 15.2,
     "2098": 13.3,
-    "2100": 27.7,
+    "2100": 28.0,
     "2164": 33.9,
     "2194": 16.2,
     "2205": 21.0,
     "2236": 16.3,
-    "2243": 45.0,
-    "2271": 19.7,
-    "2280": 18.4,
-    "2549": 22.3,
-    "2567": 15.3,
+    "2243": 29.7,
+    "2271": 15.7,
+    "2280": 17.7,
+    "2549": 16.5,
+    "2567": 10.9,
     "2801": 60.2,
-    "2816": 17.1,
+    "2816": 14.3,
     "2825": 25.0,
     "2912": 20.5,
     "3021": 12.6,
     "3037": 13.6,
     "3042": 13.2,
     "3187": 25.7,
-    "3414": 17.1,
-    "3415": 20.4,
+    "3414": 12.1,
+    "3415": 16.0,
     "3567": 7.4,
-    "3850": 18.3,
+    "3850": 18.2,
     "3854": 28.8,
     "4091": 31.6,
     "4362": 4.1,
@@ -111144,7 +111144,7 @@
     "5187": 18.4,
     "5191": 15.5,
     "5198": 22.3,
-    "5200": 14.4,
+    "5200": 19.0,
     "5216": 35.7,
     "5241": 13.6,
     "5244": 24.2,
@@ -111155,17 +111155,17 @@
     "5309": 7.8,
     "5326": 13.7,
     "6186": 11.9,
-    "6448": 11.1,
-    "6469": 9.6,
+    "6448": 13.9,
+    "6469": 12.1,
     "6504": 15.7,
-    "6505": 20.3,
-    "6633": 11.6,
+    "6505": 15.2,
+    "6633": 15.0,
     "6660": 36.5,
     "6679": 19.8,
     "6681": 20.6,
     "6687": 28.9,
-    "6691": 23.0,
-    "6692": 24.0,
+    "6691": 15.3,
+    "6692": 22.9,
     "6829": 30.0,
     "6830": 38.8,
     "6831": 29.7,
@@ -111174,21 +111174,21 @@
     "7513": 37.1,
     "7514": 37.2,
     "7607": 16.9,
-    "7682": 21.2,
+    "7682": 19.7,
     "7683": 21.9,
-    "7713": 34.7,
-    "7714": 26.8,
+    "7713": 25.7,
+    "7714": 17.5,
     "7717": 37.3,
-    "7721": 29.8,
-    "7723": 38.9,
+    "7721": 19.8,
+    "7723": 38.8,
     "7729": 16.5,
     "7730": 28.9,
-    "7757": 32.4,
+    "7757": 24.2,
     "7761": 25.8,
     "7942": 25.8,
     "7944": 28.5,
     "7947": 30.3,
-    "7959": 43.3,
+    "7959": 43.4,
     "8006": 26.5,
     "8071": 17.6,
     "8190": 36.3,
@@ -111202,39 +111202,39 @@
     "9425": 38.9,
     "9426": 21.9,
     "9449": 29.0,
-    "9452": 21.6,
-    "9467": 28.1,
-    "9489": 25.0,
-    "9527": 35.7,
-    "9608": 16.1,
+    "9452": 19.8,
+    "9467": 32.2,
+    "9489": 30.4,
+    "9527": 31.1,
+    "9608": 16.6,
     "9654": 41.4,
     "9678": 32.3,
     "9684": 30.4,
     "9686": 30.4,
     "10704": 37.1,
     "10750": 35.9,
-    "10761": 29.7,
+    "10761": 29.0,
     "10823": 30.0,
     "10838": 35.8,
-    "10844": 46.5,
+    "10844": 34.7,
     "11263": 37.3,
-    "11265": 31.2,
+    "11265": 37.1,
     "11289": 25.4,
     "11304": 7.4,
     "11608": 47.4,
     "11628": 27.2,
     "11748": 52.5,
-    "11750": 45.9,
+    "11750": 34.1,
     "11854": 12.6,
     "11863": 31.1,
-    "12062": 35.7,
+    "12062": 39.3,
     "12769": 46.5,
     "12774": 36.4,
-    "12783": 41.5,
+    "12783": 41.3,
     "12790": 53.8,
-    "12794": 41.5,
+    "12794": 41.2,
     "12796": 53.8,
-    "12798": 41.5,
+    "12798": 41.2,
     "12983": 18.3,
     "12984": 21.6,
     "13000": 53.0,
@@ -111256,20 +111256,20 @@
     "13137": 17.3,
     "13138": 22.3,
     "13139": 26.1,
-    "15109": 16.9,
+    "15109": 15.7,
     "15204": 13.6,
     "15444": 11.8,
     "16789": 29.7,
     "16996": 31.8,
     "16997": 62.7,
-    "17039": 18.8,
+    "17039": 13.8,
     "17687": 19.4,
     "17705": 35.2,
-    "17710": 35.9,
+    "17710": 23.8,
     "17738": 34.4,
     "17745": 50.0,
     "19808": 26.6,
-    "22383": 41.4,
+    "22383": 31.1,
     "22384": 45.7,
     "24222": 37.5,
     "217287": 29.0,
@@ -111279,9 +111279,9 @@
     "234546": 80.3,
     "234547": 80.3,
     "234548": 80.3,
-    "234549": 80.2,
-    "234550": 61.5,
-    "234551": 61.7,
+    "234549": 59.8,
+    "234550": 41.0,
+    "234551": 41.0,
     "234553": 61.9,
     "234556": 61.5,
     "234558": 61.7,
@@ -111293,9 +111293,9 @@
     "234568": 80.3,
     "234569": 80.3,
     "234570": 80.3,
-    "234571": 80.2,
-    "234574": 61.5,
-    "234576": 61.7,
+    "234571": 59.8,
+    "234574": 41.0,
+    "234576": 41.0,
     "234579": 61.9,
     "234582": 61.5,
     "234584": 61.7,
@@ -111306,16 +111306,16 @@
     "249144": 34.0,
     "249232": 45.8,
     "249385": 59.6,
-    "249392": 24.6,
-    "249453": 43.3,
-    "249454": 43.3,
+    "249392": 18.4,
+    "249453": 32.3,
+    "249454": 32.3,
     "250603": 16.8,
     "250605": 25.6,
     "250613": 47.4,
     "250614": 36.5,
     "250619": 53.9,
     "251533": 20.5,
-    "251534": 20.4,
+    "251534": 15.2,
     "270018": 20.4,
     "273029": 16.6,
     "273033": 15.4,
@@ -111330,12 +111330,12 @@
     "279260": 61.5,
     "279261": 47.4,
     "279273": 36.8,
-    "279874": 15.6,
+    "279874": 8.1,
     "279894": 9.6,
-    "285275": 8.0,
-    "285277": 24.5,
+    "285275": 2.8,
+    "285277": 8.2,
     "285279": 10.0,
-    "286750": 7.1,
+    "286750": 8.8,
     "286977": 19.7
   }
 }

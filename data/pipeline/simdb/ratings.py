@@ -24,9 +24,9 @@ What is *not* converted, and why:
   54 "chance to hit") states its amount as a literal percentage already --
   Classic's older, pre-rating itemisation convention -- not a rating, so
   `equip.spell_bonus`'s output never passes through here.
-* Haste (`ITEM_MOD_HASTE_RATING`, id 36) and expertise/armor penetration
-  (37, 44) are mapped to `None` in `gear.STAT_BY_MODIFIER_ID`: the planner has
-  no stat for them and simdb never sees them, rating or not.
+* Armor penetration (`ITEM_MOD_ARMOR_PENETRATION_RATING`, 44) is mapped to
+  `None` in `gear.STAT_BY_MODIFIER_ID`. Haste (36) and expertise (37) are
+  converted here like hit (sim-accuracy round 5).
 * `spell_hit`/`spell_crit` have no `StatModifier_bonusStat` id of their own --
   the unified `hit`/`crit` ids (31/32) cover every school -- so they are only
   ever equip-spell sourced, and fall under the first bullet.
@@ -57,6 +57,8 @@ RATING_STAT_COLUMNS: dict[str, tuple[str, ...]] = {
     "parry": ("Parry",),
     "block": ("Block",),
     "defense": ("Defense Skill",),
+    "expertise": ("Expertise",),
+    "haste": ("Haste - Melee", "Haste - Ranged", "Haste - Spell"),
 }
 
 
@@ -112,6 +114,5 @@ def convert_rating_stats(
     it.
     """
     return {
-        key: (amount / factors[key] if key in factors else amount)
-        for key, amount in stats.items()
+        key: (amount / factors[key] if key in factors else amount) for key, amount in stats.items()
     }

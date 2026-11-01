@@ -96,6 +96,13 @@ func isHealer(spec specInfo) bool { return spec.Role == healerRole }
 type healingMetrics struct {
 	// HPS is effective healing per second: what landed.
 	HPS float64 `json:"hps"`
+	// HPSError is the standard error of HPS in the same run. /tiers/healer ties two
+	// healers whose gap the error cannot tell apart (owner ruling, 2026-11-01).
+	HPSError float64 `json:"hps_error"`
+	// AtBounds is the same set measured with the profile scaled to each of its tuning
+	// bounds (heal-profile.json tuning.bounds), so /tiers/healer orders two healers only
+	// where the order holds across the tuning, not at the tuned value alone.
+	AtBounds []boundHPS `json:"hps_at_bounds"`
 	// RawHPS includes the overheal.
 	RawHPS float64 `json:"raw_hps"`
 	// OverhealPct is the share of raw healing that overhealed, 0 to 1.
@@ -104,6 +111,13 @@ type healingMetrics struct {
 	ManaLastsSec float64 `json:"mana_lasts_sec"`
 	// HPM is effective healing per point of mana spent.
 	HPM float64 `json:"hpm"`
+}
+
+// boundHPS is a set's effective HPS and its error under the profile at one tuning bound.
+type boundHPS struct {
+	Scale    float64 `json:"scale"`
+	HPS      float64 `json:"hps"`
+	HPSError float64 `json:"hps_error"`
 }
 
 // healerFields are the band-entry keys a healer adds to the DPS shape. A
@@ -184,6 +198,7 @@ func (healEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
 func metricsFor(result simscore.HealingResult) healingMetrics {
 	return healingMetrics{
 		HPS:          result.Effective.Mean,
+		HPSError:     result.Effective.Error,
 		RawHPS:       result.Raw.Mean,
 		OverhealPct:  result.OverhealShare(),
 		ManaLastsSec: math.Min(result.ManaLastsSec, maxManaLastsSec),
@@ -201,7 +216,26 @@ func (h healEngine) healerFieldsFor(spec specInfo, race, classSlug string, band 
 		return healerFields{}, 0, err
 	}
 	metrics := metricsFor(result)
+	atBounds, err := h.measureAtBounds(req)
+	if err != nil {
+		return healerFields{}, 0, err
+	}
+	metrics.AtBounds = atBounds
 	return healerFields{Role: healerRole, Profile: h.profile.ID, Metrics: &metrics}, metrics.HPS, nil
+}
+
+// measureAtBounds runs req under the profile scaled to each tuning bound.
+func (h healEngine) measureAtBounds(req api.SimRequest) ([]boundHPS, error) {
+	out := make([]boundHPS, 0, len(h.profile.Tuning.Bounds))
+	for _, scale := range h.profile.Tuning.Bounds {
+		bounded := healEngine{backend: h.backend, profile: h.profile.AtScale(scale)}
+		result, err := bounded.measure(req)
+		if err != nil {
+			return nil, fmt.Errorf("measuring the set at profile scale %v: %w", scale, err)
+		}
+		out = append(out, boundHPS{Scale: scale, HPS: result.Effective.Mean, HPSError: result.Effective.Error})
+	}
+	return out, nil
 }
 
 // healFieldsAttacher is what a band report needs of a healer's engine; a

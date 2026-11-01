@@ -63,6 +63,49 @@ describe('tierNotes', () => {
   });
 });
 
+describe('the healer tie rule (owner ruling, round 5)', () => {
+  it('says in one plain sentence why a pair ties, and how a shared rank counts', () => {
+    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: true })
+      .map(flat)
+      .join(' ');
+    expect(healer).toContain(
+      '≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error.',
+    );
+    expect(healer).toContain('Tied healers share a rank: =2, =2, then 4.');
+    expect(healer).not.toContain('Ranks appear');
+  });
+
+  it('claims no order and no ties when the measured error is not published yet', () => {
+    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: false })
+      .map(flat)
+      .join(' ');
+    expect(healer).toContain('Ranks appear once the next ranking publishes the measured error.');
+    expect(healer).not.toContain('≈ tie');
+    expect(healer).not.toContain('share a rank');
+  });
+
+  it('writes a tied healer’s rank with an equals sign, an untied one plainly, and an unranked one not at all', () => {
+    expect(tiersCopy.rankLabel({ rank: 2, role: 'healer', tie: 'above', ranked: true })).toBe('=2');
+    expect(tiersCopy.rankLabel({ rank: 4, role: 'healer', tie: null, ranked: true })).toBe('4');
+    expect(tiersCopy.rankLabel({ rank: 3, role: 'dps', tie: 'below', ranked: true })).toBe('3');
+    expect(tiersCopy.rankLabel({ rank: 1, role: 'healer', tie: null, ranked: false })).toBe('');
+  });
+
+  it('titles a healer tie by the same reason', () => {
+    expect(tiersCopy.tieTitle('above', 'healer')).toBe(
+      'Tied with the healer above: the order changes with the heal profile’s tuning, or the gap is within the measured error',
+    );
+    expect(tiersCopy.tieTitle('both', 'healer')).toContain('healers above and below');
+    expect(tiersCopy.tieTitle('above', 'dps')).toBe('Within 1% of the spec above: a tie');
+  });
+
+  it('shows a gap figure on a healer tied for the top or unranked, and Top only on a ranked leader', () => {
+    expect(gapText({ rank: 1, role: 'healer', gapPercent: 0.3, ranked: true })).toBe('−0.3%');
+    expect(gapText({ rank: 1, role: 'healer', gapPercent: 0, ranked: true })).toBe(tiersCopy.topGap);
+    expect(gapText({ rank: 1, role: 'healer', gapPercent: 0, ranked: false })).toBe('0.0%');
+  });
+});
+
 describe('how to read this', () => {
   it('carries the spec bullets, with the preset and the fight length from the data and constants', () => {
     const dps = howToReadBullets('dps', 'Raid-ready, Phase 1');
@@ -87,10 +130,10 @@ describe('how to read this', () => {
 
 describe('gapText', () => {
   it('reads Top or Least on the leader, a signed gap below', () => {
-    expect(gapText({ rank: 1, role: 'dps', gapPercent: 0 })).toBe(tiersCopy.topGap);
-    expect(gapText({ rank: 1, role: 'tank', gapPercent: 0 })).toBe(tiersCopy.leastGap);
-    expect(gapText({ rank: 2, role: 'dps', gapPercent: 4.84 })).toBe('−4.8%');
-    expect(gapText({ rank: 2, role: 'tank', gapPercent: 15.23 })).toBe('+15.2%');
+    expect(gapText({ rank: 1, role: 'dps', gapPercent: 0, ranked: true })).toBe(tiersCopy.topGap);
+    expect(gapText({ rank: 1, role: 'tank', gapPercent: 0, ranked: true })).toBe(tiersCopy.leastGap);
+    expect(gapText({ rank: 2, role: 'dps', gapPercent: 4.84, ranked: true })).toBe('−4.8%');
+    expect(gapText({ rank: 2, role: 'tank', gapPercent: 15.23, ranked: true })).toBe('+15.2%');
   });
 });
 

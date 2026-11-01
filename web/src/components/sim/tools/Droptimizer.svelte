@@ -14,7 +14,7 @@
   import { topUpgradeOf } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
-  import { writeLastUpgrade } from '../../../lib/sim/last-upgrade';
+  import { upgradeKeyOf, writeLastUpgrade } from '../../../lib/sim/last-upgrade';
   import BulkRunBar from './BulkRunBar.svelte';
   import DropResults from './DropResults.svelte';
   import SourcePicker from './SourcePicker.svelte';
@@ -62,10 +62,14 @@
   // in place rather than overwriting a real upgrade with "no upgrade" from an unrelated
   // later run.
   $effect(() => {
-    if (store.result === null) return;
+    if (store.result === null || store.character === null) return;
     const upgrade = topUpgradeOf(store.result as BulkResult);
     if (upgrade === null) return;
-    writeLastUpgrade({ ...upgrade, savedAt: new Date().toISOString() });
+    writeLastUpgrade({
+      ...upgrade,
+      savedAt: new Date().toISOString(),
+      characterKey: upgradeKeyOf(store.character),
+    });
   });
 </script>
 

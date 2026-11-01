@@ -155,6 +155,32 @@ describe('createSimStore', () => {
   // before stop() can truly interrupt anything); this one forces the rejected/cancelled
   // branch -- the one the brief's own runRequest snippet got wrong -- by aborting a
   // shard genuinely in flight, the same technique run.test.ts's own cancel test uses.
+  it('never shows a run under a character loaded while it ran: the result belongs to the character it was run for', async () => {
+    vi.useFakeTimers();
+    const sim = createSimStore({
+      treeVersion: '1.15.9.69722',
+      apiBase: 'https://api.test',
+      pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker(20) }),
+    });
+    await sim.loadAddon(FURY);
+    const running = sim.run();
+    await vi.advanceTimersByTimeAsync(25);
+    expect(sim.phase).toBe('running');
+
+    // Another character, another spec: an Arms human.
+    const ARMS = 'FS1:1.15.9.69722:warrior:human:5/0/0:head=12640';
+    const switched = sim.loadCode(ARMS);
+    await vi.advanceTimersByTimeAsync(2000);
+    await switched;
+    await running;
+
+    expect(sim.message).toBeNull();
+    expect(sim.character?.spec).toBe('warrior-arms');
+    expect(sim.result).toBeNull();
+    expect(sim.phase).not.toBe('done');
+    vi.useRealTimers();
+  });
+
   it('restores the previous result and lands on done after a genuine cancel, not error', async () => {
     vi.useFakeTimers();
     const sim = createSimStore({

@@ -1,0 +1,1587 @@
+{
+  "preset": "raid",
+  "specs": {
+    "druid-balance": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      }
+    ],
+    "druid-feral": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      }
+    ],
+    "druid-feral-bear": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 43,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "greater_stoneshield_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_the_titans",
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "greater_stoneshield_potion"
+        ]
+      }
+    ],
+    "druid-restoration": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 55,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "greater_mageblood_elixir",
+          "greater_clerics_elixir",
+          "elixir_of_sages",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      }
+    ],
+    "hunter-beast-mastery": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "hunter-marksmanship": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "hunter-survival": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "mage-arcane": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      }
+    ],
+    "mage-fire": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 18,
+        "consumes": [
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      }
+    ],
+    "mage-frost": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 28,
+        "consumes": [
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_frost_power"
+        ]
+      }
+    ],
+    "paladin-holy": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 55,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "greater_mageblood_elixir",
+          "greater_clerics_elixir",
+          "elixir_of_sages",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "paladin-protection": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 43,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_the_titans",
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "paladin-retribution": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_imbue:elemental_sharpening_stone",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "priest-discipline": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 55,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "greater_mageblood_elixir",
+          "greater_clerics_elixir",
+          "elixir_of_sages",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      }
+    ],
+    "priest-holy": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 55,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "greater_mageblood_elixir",
+          "greater_clerics_elixir",
+          "elixir_of_sages",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune"
+        ]
+      }
+    ],
+    "priest-shadow": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 40,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      }
+    ],
+    "rogue-assassination": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 5,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 20,
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 30,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_stone:elemental_sharpening_stone",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      }
+    ],
+    "rogue-combat": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 5,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 20,
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 30,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_stone:elemental_sharpening_stone",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      }
+    ],
+    "rogue-subtlety": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 5,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 20,
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 30,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_stone:elemental_sharpening_stone",
+          "off_hand_stone:dense_sharpening_stone",
+          "conjured_rogue_thistle_tea"
+        ]
+      }
+    ],
+    "shaman-elemental": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "shaman-enhancement": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "main_hand_imbue:rockbiter_weapon",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 30,
+        "consumes": [
+          "main_hand_imbue:windfury_weapon",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "main_hand_imbue:windfury_weapon",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "main_hand_imbue:windfury_weapon",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "main_hand_imbue:windfury_weapon",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "shaman-restoration": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      },
+      {
+        "from_level": 55,
+        "consumes": [
+          "flask_of_distilled_wisdom",
+          "greater_mageblood_elixir",
+          "greater_clerics_elixir",
+          "elixir_of_sages",
+          "food_sages_tea",
+          "main_hand_imbue:brilliant_mana_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "major_mana_potion"
+        ]
+      }
+    ],
+    "warlock-affliction": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 40,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      }
+    ],
+    "warlock-demonology": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 40,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power"
+        ]
+      }
+    ],
+    "warlock-destruction": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "conjured_demonic_rune"
+        ]
+      },
+      {
+        "from_level": 18,
+        "consumes": [
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 47,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 49,
+        "consumes": [
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_supreme_power",
+          "greater_arcane_elixir",
+          "food_runn_tum_tuber_surprise",
+          "main_hand_imbue:brilliant_wizard_oil",
+          "major_mana_potion",
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      }
+    ],
+    "warrior-arms": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "mighty_rage_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_imbue:elemental_sharpening_stone",
+          "mighty_rage_potion"
+        ]
+      }
+    ],
+    "warrior-fury": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_imbue:dense_sharpening_stone"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "off_hand_imbue:dense_sharpening_stone",
+          "mighty_rage_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "r_o_i_d_s",
+          "food_grilled_squid",
+          "juju_might",
+          "main_hand_imbue:elemental_sharpening_stone",
+          "off_hand_imbue:dense_sharpening_stone",
+          "mighty_rage_potion"
+        ]
+      }
+    ],
+    "warrior-protection": [
+      {
+        "from_level": 1,
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "consumes": [
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 43,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 45,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 46,
+        "consumes": [
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "mighty_rage_potion"
+        ]
+      },
+      {
+        "from_level": 50,
+        "consumes": [
+          "flask_of_the_titans",
+          "elixir_of_greater_defense",
+          "elixir_of_fortitude",
+          "food_tender_wolf_steak",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "mighty_rage_potion"
+        ]
+      }
+    ]
+  }
+}

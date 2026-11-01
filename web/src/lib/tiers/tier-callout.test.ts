@@ -1,6 +1,6 @@
 // web/src/lib/tiers/tier-callout.test.ts
 import { describe, expect, it } from 'vitest';
-import { dpsInput, tankInput } from './tier-test-support';
+import { dpsInput, healerInput, tankInput } from './tier-test-support';
 import { rankRole } from './tier-list';
 import { specViewKey, specViewKeyForCharacter, tierSpecViews } from './tier-callout';
 
@@ -62,6 +62,37 @@ describe('tierSpecViews', () => {
       colorVar: 'var(--color-class-mage)',
       crestSrc: '/icons/hd/crests/mage.webp',
     });
+  });
+
+  it('names no place for a healer whose list is not ranked yet, and a shared place for a tie', () => {
+    const unranked = tierSpecViews({
+      dps: [],
+      tank: [],
+      healer: rankRole(
+        [healerInput('druid', 'restoration', 'Restoration', 700), healerInput('priest', 'holy', 'Holy', 600)],
+        'healer',
+      ),
+    });
+    expect(unranked['priest/holy']!.title).toBe(
+      'Holy Priest is on the Healer list; ranks appear once the next ranking publishes the measured error.',
+    );
+    const bounds = (hps: number) => [
+      { scale: 1.5, hps, hps_error: 1 },
+      { scale: 1.65, hps, hps_error: 1 },
+    ];
+    const tied = tierSpecViews({
+      dps: [],
+      tank: [],
+      healer: rankRole(
+        [
+          healerInput('druid', 'restoration', 'Restoration', 700, 1, bounds(700)),
+          healerInput('priest', 'holy', 'Holy', 600, 1, bounds(600)),
+          healerInput('shaman', 'restoration', 'Restoration', 599.5, 1, bounds(599.5)),
+        ],
+        'healer',
+      ),
+    });
+    expect(tied['priest/holy']!.title).toBe('Holy Priest is tied 2nd of 3 Healer specs.');
   });
 
   it('skips an empty role', () => {

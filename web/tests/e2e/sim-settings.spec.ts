@@ -8,6 +8,9 @@ const activeBuild = JSON.parse(
 ) as { build: string };
 
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+// The same character recorded at level 60: the Raid-buffed consumables follow the level
+// (sim/request/raid-consumes.json), and a fresh 33's set holds no weapon stone.
+const FURY_60 = `${FURY}|level=60`;
 
 test('the settings bar reads the defaults and every control changes the settings', async ({ page }) => {
   await page.goto('/sim');
@@ -127,7 +130,7 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
   // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
   // `disabled` prop), so this waits it out before touching any of them.
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-input').fill(FURY_60);
   await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });

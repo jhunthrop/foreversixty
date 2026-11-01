@@ -8,6 +8,124 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 2 | 2026-10-31 to 2026-11-01 | design/reviews/2026-11-01-sim-audit-round2/ (warlock, casters, hybrids, physical) | about 35 fixed; 2 held (warlock demons refusing player buffs, and the Destruction build that depends on it) | c8d29ea33 | no |
 | 3 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round3/ (warlock, physical, hybrids, casters) | 22 fixed (12 from the fresh re-audit, 1 from the wow-player review); round 2's two holds landed | 640da215f | no |
 | 4 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round4/ (warlock, physical, hybrids, casters, integration) | 33 fixed (warlock 6, physical 6, hybrids 8, casters 7, integrator 6); 1 from the wow-player review | f8a5f94ce | no |
+| 5 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round5/ (warlock, physical, hybrids, casters, ranker, page, integration) | 30 fixed (warlock 1, casters 8, hybrids 4, physical 6, ranker 3, page 5, integrator 1); 2 more from the wow-player review | 8baffe5fc | no |
+
+## Round 5 at a glance
+
+The owner's rulings this round:
+- **/tiers/healer orders healers only by gaps beyond error at every tuning of the heal profile.** The ranker publishes `hps_error` and `hps_at_bounds` (×1.5 and ×1.65, now configuration in heal-profile.json). With no error published, the page shows no ranks.
+- **Power Infusion stays out of every default.** No default carried it; tests now hold that.
+- **/sim consumables are each spec's published set,** resolved by level, cut to the character's RequiredLevel and loaded lazily.
+- **The ranker's guard covers every role,** and the root causes are fixed.
+- **Rhok'delar** is not obtainable in Forever's phase 1. Its leaf drops only in Molten Core, and its sinew comes from Onyxia, which opens 9 December.
+- **Ice Barrier's 15% / 5% has three sources:** the 31 October hotfix push on wago.tools, the hotfix cache wowforevertalents.com reads, and Wowhead Forever. Frigid Power carries the 15%, Ice Barrier's own effects the 5%, so the engine stands.
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (1).** Healing on items gave a hidden third as spell damage, on top of the damage half the client states. The sources that grant both now state both halves. This is the largest cross-class move of the round.
+- **Casters (8).**
+  - Mages wore no armor: Molten Armor is an SoD rune a Forever mage cannot learn, so they now wear Mage Armor. Fire also adopts Improved Fire Blast 2/2, +3.3%.
+  - Racials follow Blizzard's 26-27 October notes and the hotfix push: Orc Command (Savage removed), Berserking 15 s, Touch of the Grave every 15 s, The Human Spirit 10%, Wind Blessed 2%.
+  - Holy Binding is modeled.
+  - A Demonic Rune costs 800 health.
+  - The race text follows the client.
+- **Hybrids (4).**
+  - Righteous Fury is +33% all threat and +90% Holy threat, multiplied.
+  - Holy Shield costs 100/150/195 mana.
+  - Champion of the Light is spell damage only.
+  - Healing Stream ticks crit, as periodic heals.
+- **Physical (6).**
+  - Hunter's Mark rank 4 is 14325 at 143 ranged attack power, not SoD's 1213268 at 110.
+  - Deadly Aspects procs Quick Strikes from melee.
+  - The item hotfix dump was frozen at build 70009: 201 rows wrong and 569 items missing at 70707. data.yml now layers wago.tools' hotfix pushes.
+  - Shields carry block value.
+  - Client items take Wowhead's on-equip stats where the client lost the link (Benediction among 153).
+  - Item stats 36 and 37 are haste and expertise rating.
+- **Ranker (3).**
+  - `weight_stats` missed stats Forever's talents turn into damage: Intellect for Enhancement, the hunters and Retribution; spirit and mp5 for mana casters.
+  - The stat runner-up never reached verify.
+  - Only healers had the published-set guard.
+- **Page (5).**
+  - The /sim consumables were the page's own lists.
+  - They were the level-60 set at every level.
+  - They included items above the character's level.
+  - A rogue's stone was filed with the potions.
+  - /tiers/healer ordered healers by any margin and by the tuned profile.
+- **wow-player review (2).** A run in flight when another character loaded wrote its result onto the new character, and the after-sim line read an unowned Droptimizer upgrade.
+- **Integrator (1).** The addon showed 20 rotation lines bands before the player can train them, from client copies with no SkillLineAbility row (Recklessness at 30 for Fury, among others).
+
+Also fixed, not counted as sim bugs:
+- **data.yml had been red on every push since round 4.** The addon data derived from curated rotations that only the nightly regenerated. A push job now owns it.
+- **Two data tests pinned generated state.**
+- **The bis.yml conflict handler,** which my push job broke for run 41332442067: that run's picks were lost.
+
+Before and after, pin f8a5f94ce against 8baffe5fc on today's published data. Raid preset, band 60, 10,000 iterations, alliance / horde, seed 1 (seed 50001 within 0.3):
+- Protection paladin threat +50.0 / +51.1.
+- Fire +5.4 / +5.2 on the published build; the new raid build adds +3.3 at the bis run.
+- Balance -4.6 / -3.9.
+- Demonology -4.2 / -2.6.
+- Elemental -3.4 / -4.1.
+- Arcane -2.7 / -3.4.
+- Affliction -3.0 / -2.3.
+- Destruction -3.0 / -2.3.
+- Frost -2.6 / -1.6.
+- Shadow -2.2 / -1.8.
+- Discipline HPS +1.8 / +0.5.
+- Enhancement -0.5 / -1.4.
+- Marksmanship +0.9 / +1.1.
+- Beast Mastery +0.8 / +1.0.
+- Restoration druid HPS +1.0 / +1.0.
+- Arms 0.0 / -0.8.
+- Retribution 0.0 / +0.8.
+- Every other spec within 0.5.
+
+The item-data fixes, the ranker fixes and the re-ranks reach published numbers only after data.yml's fetch and bis.yml run on the pin. The integrator dispatches both after the push. The ranker lane's local re-ranks (verify against the published set, alliance / horde):
+- Survival +19.6 / +20.1 (Heartseeker in the off hand).
+- Retribution horde +11.6 (Arcanite Champion).
+- Enhancement +2.7 / +2.3.
+
+Open going into round 6:
+- **Owner decisions.**
+  - Horde race picks. Orc beats the published Troll by about 1.0% on all three warlocks (Command). Undead beats the published Orc by 0.5 to 0.7% on Arcane and Fire.
+  - /sim defaults to Raid-buffed below 60 while the published bands below 60 are bare. At band 40, buffs give +65 to +181%.
+  - The Restoration druid's lead over the other healers rests on the heal profile.
+- **After this round's nightly, check:**
+  - /tiers/healer shows 1, =2, =2, 4, 5 on the published error.
+  - Survival's off hand is Heartseeker; re-shoot /sim.
+  - The warlock sets drop the healing-hybrid pieces.
+  - Retribution horde is off The Needler.
+  - Fire publishes its new build.
+- **Blocked on level-60 logs** (launch is 2026-11-04):
+  - Demon crit, haste and hit.
+  - The demon level-60 sheets.
+  - Pet haste.
+  - The rage-crit factor and Sunder's AP threat.
+  - Holy Strike's flat bonus.
+  - Omen's 4% at 60.
+  - Master of Elements on a Clearcasting cast.
+  - Righteous Fury's two threat bonuses, multiplied or added (about 12% of Holy threat).
+  - Fire traps scaling with attack power.
+  - Rogue Armor Energize.
+  - Raptor Strike lifting the dual-wield penalty.
+- **Single source or open:**
+  - Tauren row 1349372, +2% critical healing, which survives the push while the notes and tooltip say health only (0.2 to 0.35% HPS).
+  - Forever DoTs may read spell power each tick (forever-bugs #398).
+  - Demonic Brand: its client rows carry no amounts.
+  - Shadowfiend at launch.
+  - Kings with Heart of the Lion.
+  - Pet family.
+  - Siphon Life crit, held for the owner.
+- **Pipeline follow-ups:**
+  - The spell-table generators still read only the shipped tables, not the hotfix push, so the lanes read the push by hand.
+  - About 17 items keep a stat gap Wowhead lists.
+  - Keen Machete's quality.
+  - 24 rotation lines carry placeholder icons until the next icons run.
+  - The local sim.wasm build is 40.4 MB, over Cloudflare's 25 MiB, and sim/go.mod points at the owner's fork checkout rather than the pin.
+  - header-finished-sim's CLS check is flaky on origin/main (2 failures in 6).
+  - The comment-only fork commit e203aca7e merges with the next pin.
+- **Held under the adoption rule:**
+  - Affliction +0.7%.
+  - Arcane +0.9%.
+  - Survival's Deadly Aspects build, +8.6% on a legal dual-wield set, which needs Hawk Eye and Improved Concussive Shot freed from the raid keeps.
 
 ## Round 4 at a glance
 

@@ -141,6 +141,11 @@ func TestMetricsForPublishesTheContractsFigures(t *testing.T) {
 	if metrics.HPS != 400 || metrics.RawHPS != 500 {
 		t.Errorf("hps/raw = %v/%v, want 400/500", metrics.HPS, metrics.RawHPS)
 	}
+	// The run's own standard error rides with the figure, so /tiers/healer never orders two
+	// healers by less than the measurement can tell (owner ruling, round 5).
+	if metrics.HPSError != result.Effective.Error || metrics.HPSError == 0 {
+		t.Errorf("hps_error = %v, want the run's %v", metrics.HPSError, result.Effective.Error)
+	}
 	if math.Abs(metrics.OverhealPct-0.2) > 1e-9 {
 		t.Errorf("overheal = %v, want 0.2", metrics.OverhealPct)
 	}
@@ -245,5 +250,41 @@ func TestAHealersItemHealingIsWeighedByTheHealingPowerRow(t *testing.T) {
 	}
 	if got := statWeight("intellect", weights); got != 0.4 {
 		t.Errorf("intellect weighs %v, want 0.4", got)
+	}
+}
+
+// The tuned profile must not set an order on its own (owner ruling, round 5): the metrics
+// carry the final set's effective HPS and error at each tuning bound as well, measured
+// under the profile scaled to that bound.
+func TestAttachHealerFieldsMeasuresTheSetAtBothTuningBounds(t *testing.T) {
+	profile := testHealProfile(t)
+	var scales []float64
+	backend := &fakeHealing{}
+	backend.byGear = func(api.SimRequest) simscore.HealingResult {
+		scale := backend.profile.Tuning.Scale
+		scales = append(scales, scale)
+		return healingResult(400*scale, 500, 300)
+	}
+	engine := healEngine{backend: backend, profile: profile}
+	var report bandReport
+	spec := specInfo{Spec: "priest-holy", ClassSlug: "priest", Role: "healer"}
+	if err := attachHealerFields(&report, engine, spec, "human", "priest", 60, "", map[string]slotPick{}); err != nil {
+		t.Fatal(err)
+	}
+	metrics := report.Metrics.(*healingMetrics)
+	if len(metrics.AtBounds) != len(profile.Tuning.Bounds) {
+		t.Fatalf("hps_at_bounds = %+v, want one row per bound %v", metrics.AtBounds, profile.Tuning.Bounds)
+	}
+	for i, bound := range profile.Tuning.Bounds {
+		row := metrics.AtBounds[i]
+		if row.Scale != bound || math.Abs(row.HPS-400*bound) > 1e-9 || row.HPSError == 0 {
+			t.Errorf("bound %v: %+v, want hps %v with its error", bound, row, 400*bound)
+		}
+	}
+	if metrics.HPS != 400*profile.Tuning.Scale {
+		t.Errorf("hps = %v, want the tuned profile's %v", metrics.HPS, 400*profile.Tuning.Scale)
+	}
+	if engine.profile.Tank.HitDamage != profile.Tank.HitDamage {
+		t.Error("measuring at the bounds changed the engine's profile")
 	}
 }

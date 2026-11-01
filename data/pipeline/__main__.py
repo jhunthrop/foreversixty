@@ -25,6 +25,14 @@ def build_parser() -> argparse.ArgumentParser:
         "(pipeline.build_floors.MIN_LIVE_COVERAGE); the seeded records are still carried",
     )
 
+    fwh = sub.add_parser(
+        "fetch-wago-hotfixes",
+        help="download wago.tools' record of the item hotfix pushes on the build's patch "
+        "line into raw/wago-hotfixes/; the hotfix merge layers it over raw/hotfixes/",
+    )
+    fwh.add_argument("--build", required=True, help="the build whose raw/ receives the rows")
+    fwh.add_argument("--product", required=True, help="wago.tools product key, e.g. wowf")
+
     fwt = sub.add_parser(
         "fetch-wowhead-talents",
         help="download wowhead's live Forever talent payload, which carries the hotfixed "
@@ -370,6 +378,11 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_items import fetch_wowhead
 
         print(fetch_wowhead(args.build, allow_shrink=args.allow_shrink))
+    elif args.command == "fetch-wago-hotfixes":
+        from pipeline.wago_hotfixes import fetch_wago_hotfixes
+
+        for table, count in fetch_wago_hotfixes(args.build, args.product).items():
+            print(f"fetch-wago-hotfixes {table}: {count} rows")
     elif args.command == "fetch-wowhead-talents":
         from pipeline.wowhead_talents import fetch_wowhead_talents
 

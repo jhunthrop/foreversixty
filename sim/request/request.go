@@ -700,7 +700,10 @@ func hunterTakesLoneWolf(talents string) bool {
 
 func mageOptions(p *proto.Player) {
 	p.Spec = &proto.Player_Mage{Mage: &proto.Mage{
-		Options: &proto.Mage_Options{Armor: proto.Mage_Options_MoltenArmor},
+		// Mage Armor keeps 50% of mana regeneration while casting (client
+		// 22783). Molten Armor is a Season of Discovery rune a Forever mage
+		// cannot learn, and the engine wears nothing for it.
+		Options: &proto.Mage_Options{Armor: proto.Mage_Options_MageArmor},
 	}}
 }
 
