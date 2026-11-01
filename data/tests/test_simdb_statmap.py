@@ -1,6 +1,6 @@
 import pytest
 
-from pipeline.normalize.gear import STAT_BY_MODIFIER_ID, WEAPON_DAMAGE_STAT_KEY
+from pipeline.normalize.gear import HASTE_STAT_KEY, STAT_BY_MODIFIER_ID, WEAPON_DAMAGE_STAT_KEY
 from pipeline.simdb.statmap import (
     PROTO_STAT_ALIASES,
     STAT_IDS,
@@ -30,8 +30,9 @@ def test_every_planner_stat_key_has_an_engine_stat():
     """gear.py's vocabulary is the pipeline's one set of stat names. A key the
     planner emits that simdb cannot map would be a stat the sim silently loses."""
     for key in STAT_BY_MODIFIER_ID.values():
-        # Flat weapon damage is a SimItem field, not a Stat (simdb/items.py).
-        if key is not None and key != WEAPON_DAMAGE_STAT_KEY:
+        # Flat weapon damage is a SimItem field, not a Stat, and haste splits
+        # into melee and spell haste (simdb/items.py).
+        if key is not None and key not in (WEAPON_DAMAGE_STAT_KEY, HASTE_STAT_KEY):
             assert stat_index(key) >= 0, key
 
 

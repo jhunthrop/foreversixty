@@ -24,6 +24,7 @@ from collections.abc import Iterable, Mapping
 from pipeline import classicdb_items as cdb
 from pipeline import wowhead_items as wh
 from pipeline.normalize.gear import (
+    HASTE_STAT_KEY,
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
     WEAPON_DAMAGE_STAT_KEY,
@@ -211,9 +212,19 @@ def _apply_class_subclass(item: pb.SimItem, class_id: int, subclass: int, invent
             if inventory in HAND_TYPE_BY_INVENTORY_TYPE:
                 item.hand_type = pb.HandType.Value(HAND_TYPE_BY_INVENTORY_TYPE[inventory])
         if subclass in RANGED_TYPE_BY_SUBCLASS:
-            item.ranged_weapon_type = pb.RangedWeaponType.Value(
-                RANGED_TYPE_BY_SUBCLASS[subclass]
-            )
+            item.ranged_weapon_type = pb.RangedWeaponType.Value(RANGED_TYPE_BY_SUBCLASS[subclass])
+
+
+def _split_haste(stats: dict[str, float]) -> list[tuple[str, float]]:
+    """`stats` as pairs, ItemSparse's one haste rating (already a percentage)
+    given to both the engine's melee and spell haste."""
+    pairs: list[tuple[str, float]] = []
+    for key, amount in stats.items():
+        if key == HASTE_STAT_KEY:
+            pairs.extend((("melee_haste", amount), ("spell_haste", amount)))
+        else:
+            pairs.append((key, amount))
+    return pairs
 
 
 def build_sim_items(
@@ -247,8 +258,8 @@ def build_sim_items(
         armor, all_resolved = resolve_item_values(sparse, item_row, curves)
         flat_weapon_damage = all_resolved.get(WEAPON_DAMAGE_STAT_KEY, 0)
         resolved = {k: v for k, v in all_resolved.items() if k != WEAPON_DAMAGE_STAT_KEY}
-        stat_pairs: list[tuple[str, float]] = list(
-            convert_rating_stats(resolved, rating_factors).items()
+        stat_pairs: list[tuple[str, float]] = _split_haste(
+            convert_rating_stats(resolved, rating_factors)
         )
         if armor:
             stat_pairs.append(("armor", armor))

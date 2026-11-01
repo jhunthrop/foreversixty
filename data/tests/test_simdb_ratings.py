@@ -30,6 +30,8 @@ def test_factors_are_read_from_the_build_s_own_gametable(tmp_path: Path):
         "parry": 15.0,
         "block": 5.0,
         "defense": 1.0,
+        "expertise": 10.0,
+        "haste": 10.0,
     }
 
 
@@ -73,9 +75,7 @@ def test_schools_that_disagree_on_their_factor_are_an_error(tmp_path: Path):
 
 def test_convert_rating_stats_only_touches_known_keys():
     factors = {"hit": 10.0, "crit": 14.0}
-    converted = convert_rating_stats(
-        {"hit": 20.0, "crit": 28.0, "strength": 18.0}, factors
-    )
+    converted = convert_rating_stats({"hit": 20.0, "crit": 28.0, "strength": 18.0}, factors)
     assert converted == {"hit": 2.0, "crit": 2.0, "strength": 18.0}
 
 
